@@ -3,6 +3,10 @@ import { BaseObj } from './base_obj';
 export class ChangeObj<T extends BaseObj> {
     deleted?: boolean;
     obj: T;
+
+    constructor(e: T) {
+        this.obj = e
+    }
 }
 
 /**
@@ -11,7 +15,7 @@ export class ChangeObj<T extends BaseObj> {
  * @param changes 
  */
 export function applyChanges<T extends BaseObj>(existing: T[], changes: ChangeObj<T>[]): T[] {
-    let ret: T[] = [];
+    let ret = [] as T[];
 
     existing.forEach(x => {
         let change = changes.find(y => y.obj._id === x._id);

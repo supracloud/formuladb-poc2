@@ -1,6 +1,6 @@
 import * as metadata from './mock-metadata';
-import {Entity} from '../domain/metadata/entity'
-import {Form} from '../domain/uimetadata/form'
+import {Entity} from '../../domain/metadata/entity'
+import {Form} from '../../domain/uimetadata/form'
 
 // export function mockForm(entity: Entity): Form {
 //   let arr:any[] = [];

@@ -1,4 +1,6 @@
-import * as appState from '../state/app.state';
+import * as appState from '../app.state';
+
+import { MockMetadata } from './mocks/mock-metadata';
 
 export const MainDemoFlow = {
     When_user_first_accesses_the_app: {},

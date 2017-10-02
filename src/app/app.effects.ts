@@ -11,7 +11,7 @@ import {
     RouterNavigationAction, RouterNavigationPayload
 } from '@ngrx/router-store';
 
-import { BackendService } from '../backend.service';
+// import { BackendService } from '../backend.service';
 import * as appState from './app.state';
 
 @Injectable()
@@ -19,15 +19,16 @@ export class AppEffects {
 
     constructor(
         private actions$: Actions,
-        private mwzBackendService: BackendService
+        // private mwzBackendService: BackendService
     ) { }
 
-    // Change state on router navigation: get metadata and data from server and replace change current state
-    @Effect() navigation$: Observable<Action> = this.actions$.ofType<RouterNavigationAction<appState.RouterState>>('ROUTER_NAVIGATION')
-        .map(x => {
-            //FIXME: call backend and get the new metadata
+    // // Change state on router navigation: get metadata and data from server and replace change current state
+    // @Effect() navigation$: Observable<Action> = this.actions$.ofType<RouterNavigationAction<appState.RouterState>>('ROUTER_NAVIGATION')
+    //     .map(x => {
+    //         //FIXME: call backend and get the new metadata
             
-            return new appState.ChangeCurrentEntity()
-        })
-    ;
+    //         // return new appState.ChangeCurrentEntity()
+    //         return  null;
+    //     })
+    // ;
 }

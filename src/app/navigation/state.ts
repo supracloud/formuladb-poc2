@@ -1,47 +1,67 @@
-import { Action, ActionReducerMap } from '@ngrx/store';
+import { Params, RouterStateSnapshot } from '@angular/router';
+import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import {
+  StoreRouterConnectingModule,
+  routerReducer,
+  RouterReducerState,
+  RouterStateSerializer
+} from '@ngrx/router-store';
 
+import { DataObj } from '../domain/metadata/data_obj';
 import { Entity } from '../domain/metadata/entity';
 import { ChangeObj, applyChanges } from '../domain/change_obj';
 
-export class State {
-    entities: Entity[];
-    selectedEntity: Entity;
+
+export { DataObj };
+export { Entity };
+export { ChangeObj, applyChanges };
+
+
+export interface State {
+  entities: Entity[];
+  selectedEntity: Entity;
 }
 
 export const initialState: State = {
-    entities: [] as Entity[],
-    selectedEntity: {} as Entity,
+  entities: [] as Entity[],
+  selectedEntity: {} as Entity,
 };
 
-export class EntitiesChangesAction implements Action {
-    readonly type = SelectEntityAction.name;
+export const ENTITIES_CHANGES = "[Metadata] EntitiesChangesAction";
+export const SELECT_ENTITY = "[Metadata] SelectEntityAction";
+export const NEW_ENTITY = "[Metadata] NewEntityAction";
+export const DELETE_ENTITY = "[Metadata] DeleteEntityAction";
 
-    constructor(public changes: ChangeObj<Entity>[]) { }
+
+export class EntitiesChangesAction implements Action {
+  readonly type = ENTITIES_CHANGES;
+
+  constructor(public changes: ChangeObj<Entity>[]) { }
 }
 
 export class SelectEntityAction implements Action {
-    readonly type = SelectEntityAction.name;
+  readonly type = SELECT_ENTITY;
 
-    constructor(public entity: Entity) { }
+  constructor(public entity: Entity) { }
 }
 
 export class NewEntityAction implements Action {
-    readonly type = SelectEntityAction.name;
+  readonly type = NEW_ENTITY;
 
-    constructor() { }
+  constructor() { }
 }
 
 export class DeleteEntityAction implements Action {
-    readonly type = SelectEntityAction.name;
+  readonly type = DELETE_ENTITY;
 
-    constructor() { }
+  constructor() { }
 }
 
-export type Actions = 
-    | EntitiesChangesAction
-    | SelectEntityAction
-    | NewEntityAction
-    | DeleteEntityAction;
+export type Actions =
+  | EntitiesChangesAction
+  | SelectEntityAction
+  | NewEntityAction
+  | DeleteEntityAction;
 
 /**
  * TODO: check if immutable.js is needed, probably only for large data sets
@@ -49,23 +69,34 @@ export type Actions =
  * @param state 
  * @param action 
  */
-export function reducer(state = initialState, action: Actions) {
-    switch (action.type) {
-        //changes from the server are commning: added/removed entities
-        case EntitiesChangesAction.name:
-            if (!(action instanceof EntitiesChangesAction)) return state;//compiler hint
-            return {
-                ...state,
-                entities: applyChanges<Entity>(state.entities, action.changes)
-            };
-        //user navigates to different tables
-        case SelectEntityAction.name:
-            if (!(action instanceof SelectEntityAction)) return state;//compiler hint
-            return {
-                ...state, 
-                selectedEntity: action.entity
-            };
-        default:
-            return state;
-    }
+export function reducer(state = initialState, action: Actions): State {
+  console.log(state);
+  switch (action.type) {
+    //changes from the server are commning: added/removed entities
+    case ENTITIES_CHANGES:
+      return {
+        ...state,
+        entities: applyChanges<Entity>(state.entities, action.changes)
+      };
+    //user navigates to different tables
+    case SELECT_ENTITY:
+      return {
+        ...state,
+        selectedEntity: action.entity
+      };
+    default:
+      return state;
+  }
 }
+
+/**
+ * Link with global application state
+ */
+export const reducers = {
+  'nav': reducer
+};
+export const getNavState = createFeatureSelector<State>('nav');
+export const getNavEntitiesState = createSelector(
+  getNavState,
+  (state: State) => state.entities
+);

@@ -1,5 +1,5 @@
 import * as metadata from './mock-metadata';
-import { Entity } from '../domain/metadata/entity'
+import { Entity } from '../../domain/metadata/entity'
 
 const nouns: string[] = ["Lama", "Basket", "Freckle", "Taco", "Suspect", "Ball", "Moustache", "Semantic", "Charlie", "Bouquet"];
 const adjectives: string[] = ["Chic", "Cracked", "Tender", "Tourquoise", "Vengeful", "Cranberry", "Shy", "Liquid", "Whining"]
