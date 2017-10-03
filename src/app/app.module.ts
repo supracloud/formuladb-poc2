@@ -22,6 +22,8 @@ import { environment } from '../environments/environment';
 
 import * as appState from './app.state';
 
+import { MockService } from "./test/mock.service";
+
 const routes: Routes = [
   // { path: ':path', component: MwzTableComponent,
   //     children: [{
@@ -51,7 +53,7 @@ const routes: Routes = [
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
   exports: [RouterModule],
-  providers: [],
+  providers: [MockService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

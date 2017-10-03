@@ -30,8 +30,7 @@ import { Component } from '@angular/core';
         </div>
 
         <!-- <mwz-editor></mwz-editor> -->
-  `,
-    styleUrls: ['./app.component.scss']
+  `
 })
 export class AppComponent {
     title = 'app';

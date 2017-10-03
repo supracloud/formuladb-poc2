@@ -7,8 +7,10 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { NavigationComponent } from './navigation.component';
 import * as state from './state';
 
-import { MainDemoFlow } from '../test/main_demo_flow';
+import * as mainDemoFlow from '../test/main_demo_flow';
 import { MockMetadata } from '../test/mocks/mock-metadata';
+
+import { MockService } from "../test/mock.service";
 
 interface AppState {
   nav: state.State;
@@ -30,7 +32,8 @@ describe('NavigationComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot(reducers),
       ],      
-      declarations: [ NavigationComponent ]
+      declarations: [ NavigationComponent ],
+      providers: [MockService]
     })
     .compileComponents();
   }));

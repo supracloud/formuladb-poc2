@@ -7,9 +7,6 @@ import { Subscribable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 
-// import { mockData } from '../mocks/mock-data';
-// import { MockMetadata } from '../mocks/mock-metadata';
-
 import { BaseObj } from './domain/base_obj';
 import { Form } from './domain/uimetadata/form';
 import { Table } from './domain/uimetadata/table';
@@ -19,43 +16,6 @@ import { Entity } from './domain/metadata/entity';
 import { TableColumn } from './domain/uimetadata/table';
 
 export type MwzFilter<T> = {_id: string};
-
-export interface MwzTopic<VAL extends BaseObj> {
-    setFilter(filter: MwzFilter<VAL>);
-    observable(): Observable<VAL>;
-    set(id: string, value: VAL);
-    destroy();
-}
-
-export class MockTopic<VAL extends BaseObj> implements MwzTopic<VAL> {
-    private subject: Subject<VAL> = new Subject();
-
-    public constructor(private filter: MwzFilter<VAL>, private mockDB: Map<string, any>) {
-    }
-
-    setFilter(filter: MwzFilter<VAL>) {
-        this.filter = filter;
-    }
-    observable(): Observable<VAL> {
-        return this.subject.filter(v => this.matchFilter(v));
-    }
-
-    set(id: string, value: VAL) {
-        console.log("MwzTopic.set ", id, value);
-        setTimeout(_ => {
-            this.mockDB.set(id, value);
-            this.subject.next(value);
-        }, Math.random() * 250);
-    }
-
-    destroy() {
-        console.log("MwzTopic " + this.filter + " destroyed");
-    }
-    
-    private matchFilter(obj: any): boolean {
-        return null == this.filter? true : obj._id === this.filter._id;
-    }
-}
 
 @Injectable()
 export class BackendService {

@@ -1,13 +1,25 @@
 import { TestBed, async } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
+import { StoreModule, Store, combineReducers } from '@ngrx/store';
+import * as appState from "./app.state";
 import { AppComponent } from './app.component';
+import { NavigationComponent } from './navigation/navigation.component';
+
+import { MockService } from "./test/mock.service";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+        StoreModule.forRoot(appState.reducers)
+      ],      
       declarations: [
-        AppComponent
+        AppComponent,
+        NavigationComponent
       ],
+      providers: [MockService]
     }).compileComponents();
   }));
   it('should create the app', async(() => {

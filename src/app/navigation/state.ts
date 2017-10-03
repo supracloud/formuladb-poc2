@@ -27,10 +27,10 @@ export const initialState: State = {
   selectedEntity: {} as Entity,
 };
 
-export const ENTITIES_CHANGES = "[Metadata] EntitiesChangesAction";
-export const SELECT_ENTITY = "[Metadata] SelectEntityAction";
-export const NEW_ENTITY = "[Metadata] NewEntityAction";
-export const DELETE_ENTITY = "[Metadata] DeleteEntityAction";
+export const ENTITIES_CHANGES = "[nav] EntitiesChangesAction";
+export const SELECT_ENTITY = "[nav] SelectEntityAction";
+export const NEW_ENTITY = "[nav] NewEntityAction";
+export const DELETE_ENTITY = "[nav] DeleteEntityAction";
 
 
 export class EntitiesChangesAction implements Action {
@@ -70,23 +70,27 @@ export type Actions =
  * @param action 
  */
 export function reducer(state = initialState, action: Actions): State {
-  console.log(state);
+  console.log('[nav] reducer:', state, action);
+  let ret: State = state;
   switch (action.type) {
     //changes from the server are commning: added/removed entities
     case ENTITIES_CHANGES:
-      return {
-        ...state,
-        entities: applyChanges<Entity>(state.entities, action.changes)
+      ret = {
+        entities: applyChanges<Entity>(state.entities, action.changes),
+        selectedEntity: state.selectedEntity
       };
+      break;
     //user navigates to different tables
     case SELECT_ENTITY:
-      return {
+      ret = {
         ...state,
         selectedEntity: action.entity
       };
-    default:
-      return state;
+      break
   }
+
+  console.log('[nav] reducer returns:', ret);
+  return ret;
 }
 
 /**
