@@ -9,7 +9,7 @@ import { MockService } from "../test/mock.service";
 
 @Component({
   selector: 'mwz-navigation',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <ul class="list-group">
       <li *ngFor="let entity of metadataCatalog" class="list-group-item">
@@ -27,13 +27,16 @@ export class NavigationComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.entities$.subscribe(x => 
+    this.entities$.subscribe(x => {
+      console.log("#############", x);
       this.metadataCatalog = x.map(entity => ({
         linkName: entity.path.split(/__/).slice(-1)[0],
         path: entity.path,
         indent: '- '.repeat(entity.path.split(/__/).length - 1)
-      })));
-      
+      }))
+      console.log("#############", x, this.metadataCatalog);
+    });
+
     this.mockService.loadInitialEntities();
   }
 }
