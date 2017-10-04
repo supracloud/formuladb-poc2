@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { TableComponent } from './table.component';
+import { ModalComponent } from "../modal/modal.component";
+import { TableService } from "./table.service";
+import { FormModalService } from "../form-modal.service";
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -8,7 +12,11 @@ describe('TableComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableComponent ]
+      imports: [
+        RouterTestingModule,        
+      ],
+      declarations: [ TableComponent, ModalComponent ],
+      providers: [ TableService, FormModalService ]
     })
     .compileComponents();
   }));

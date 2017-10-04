@@ -1,5 +1,5 @@
 import * as appState from '../app.state';
-import * as navState from '../navigation/state';
+import * as navState from '../navigation/navigation.state';
 
 import { ChangeObj } from "../domain/change_obj";
 

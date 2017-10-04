@@ -20,12 +20,32 @@ export { DataObj };
 export { Entity };
 export { ChangeObj, applyChanges };
 
-import * as fromNav from './navigation/state';
+import * as fromNav from './navigation/navigation.state';
+
+export interface RouterState {
+  url: string;
+  queryParams: Params;
+  path: string;
+}
 
 export interface AppState {
-  'nav': fromNav.State
+  'router': RouterReducerState<RouterState>;
+  'nav': fromNav.State;
 };
 
+export class CustomSerializer implements RouterStateSerializer<RouterState> {
+  serialize(routerState: RouterStateSnapshot): RouterState {
+    const { url } = routerState;
+    const queryParams = routerState.root.queryParams;
+    const path = queryParams['path'];
+
+    // Only return an object including the URL and query params
+    // instead of the entire snapshot
+    return { url, queryParams, path };
+  }
+}
+
 export const reducers = {
+  'router': routerReducer,
   ...fromNav.reducers
 };

@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 
 import { NavigationComponent } from './navigation.component';
-import * as state from './state';
+import * as state from './navigation.state';
 
 import * as mainDemoFlow from '../test/main_demo_flow';
 import { MockMetadata } from '../test/mocks/mock-metadata';

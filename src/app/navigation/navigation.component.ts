@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
 
-import * as state from './state';
+import * as fromNav from './navigation.state';
 
 import { MockService } from "../test/mock.service";
 
@@ -20,10 +20,10 @@ import { MockService } from "../test/mock.service";
 })
 export class NavigationComponent implements OnInit {
   metadataCatalog: { linkName: string, path: string, indent: string }[] = [];
-  entities$: Observable<state.Entity[]>;
+  entities$: Observable<fromNav.Entity[]>;
 
-  constructor(private store: Store<state.State>, private mockService: MockService) {
-    this.entities$ = this.store.select(state.getNavEntitiesState);
+  constructor(private store: Store<fromNav.State>, private mockService: MockService) {
+    this.entities$ = this.store.select(fromNav.getNavEntitiesState);
   }
 
   ngOnInit() {

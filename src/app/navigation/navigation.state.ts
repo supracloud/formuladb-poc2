@@ -76,8 +76,8 @@ export function reducer(state = initialState, action: Actions): State {
     //changes from the server are commning: added/removed entities
     case ENTITIES_CHANGES:
       ret = {
+        ...state,
         entities: applyChanges<Entity>(state.entities, action.changes),
-        selectedEntity: state.selectedEntity
       };
       break;
     //user navigates to different tables

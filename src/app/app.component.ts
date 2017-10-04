@@ -25,7 +25,7 @@ import { Component } from '@angular/core';
                 <mwz-navigation></mwz-navigation>
             </div>
             <div class="mwz-content mwz-independent-scroll ml-2 card">
-                <!-- <router-outlet></router-outlet> -->
+                <router-outlet></router-outlet>
             </div>
         </div>
 

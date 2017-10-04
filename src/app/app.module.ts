@@ -22,17 +22,17 @@ import { environment } from '../environments/environment';
 
 import * as appState from './app.state';
 
+import { FormModalService } from "./form-modal.service";
+import { TableService } from "./table/table.service";
 import { MockService } from "./test/mock.service";
 
 const routes: Routes = [
-  // { path: ':path', component: MwzTableComponent,
-  //     children: [{
-  //         path: ':_id',
-  //         component: MwzFormComponent
-  //     }]
-  // },
-  // { path: 'table-editor', component: MwzTableComponent },
-  // { path: 'ecommerce', component: MwzEcommerceComponent },
+  { path: ':path', component: TableComponent,
+      // children: [{
+      //     path: ':_id',
+      //     component: MwzFormComponent
+      // }]
+  },
   { path: '**', component: NotFoundComponent }
 ];
 
@@ -53,7 +53,7 @@ const routes: Routes = [
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
   exports: [RouterModule],
-  providers: [MockService],
+  providers: [MockService, TableService, FormModalService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

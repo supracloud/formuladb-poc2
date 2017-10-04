@@ -22,13 +22,13 @@ export class AppEffects {
         // private mwzBackendService: BackendService
     ) { }
 
-    // // Change state on router navigation: get metadata and data from server and replace change current state
-    // @Effect() navigation$: Observable<Action> = this.actions$.ofType<RouterNavigationAction<appState.RouterState>>('ROUTER_NAVIGATION')
-    //     .map(x => {
-    //         //FIXME: call backend and get the new metadata
+    // Change state on router navigation: get metadata and data from server and replace change current state
+    @Effect() navigation$: Observable<Action> = this.actions$.ofType<RouterNavigationAction<appState.RouterState>>('ROUTER_NAVIGATION')
+        .map(x => {
+            //FIXME: call backend and get the new metadata
             
-    //         // return new appState.ChangeCurrentEntity()
-    //         return  null;
-    //     })
-    // ;
+            // return new appState.ChangeCurrentEntity()
+            return  null;
+        })
+    ;
 }
