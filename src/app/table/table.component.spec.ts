@@ -8,7 +8,7 @@ import { TableComponent } from './table.component';
 import { ModalComponent } from "../modal/modal.component";
 import { TableService } from "./table.service";
 import { FormModalService } from "../form-modal.service";
-// import { BackendService } from "../backend.service";
+import { BackendService } from "../backend.service";
 
 import * as state from './table.state';
 import { MockMetadata } from '../test/mocks/mock-metadata';
@@ -35,23 +35,25 @@ describe('TableComponent', () => {
         StoreModule.forRoot(reducers),
       ],
       declarations: [ TableComponent, ModalComponent ],
-      providers: [ TableService, FormModalService ]
+      providers: [ TableService, FormModalService, BackendService ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
+    store = TestBed.get(Store);
+    
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('main flow', () => {
+  it('main flow', inject([BackendService], (backendService: BackendService) => {
     expect(component).toBeTruthy();
 
-    // store.dispatch(new state.TableChangesAction(backendService.getDefaultTable(MockMetadata.General__Actor)));
+    store.dispatch(new state.TableChangesAction(backendService.getDefaultTable(MockMetadata.General__Actor)));
     
     let firstEntity = fixture.debugElement.query(By.css('tr'));
         
-  });
+  }));
 });

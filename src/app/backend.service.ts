@@ -37,7 +37,7 @@ export class BackendService {
         return Promise.resolve(ret);
     }
 
-    private getDefaultForm(entity: Entity): Form {
+    public getDefaultForm(entity: Entity): Form {
         let form = new Form();
         form = { nodeName: 'mwz-gridster', mwzType: "Form_" };
         form.childNodes = entity.properties.map((prop, idx) => ({
@@ -53,7 +53,7 @@ export class BackendService {
         return form;
     }
 
-    private getDefaultTable(entity: Entity): Table {
+    public getDefaultTable(entity: Entity): Table {
         let table = new Table();
         table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
         return table;
