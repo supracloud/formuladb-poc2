@@ -11,6 +11,8 @@ export class TableService {
   public table$: Observable<appState.Table>;
   public data$: Observable<appState.DataObj[]>;
 
-  constructor() { }
+  constructor() { 
+    //TODO: aggregate
+  }
 
 }

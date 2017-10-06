@@ -1,11 +1,5 @@
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
-import {
-  StoreRouterConnectingModule,
-  routerReducer,
-  RouterReducerState,
-  RouterStateSerializer
-} from '@ngrx/router-store';
 
 import { DataObj } from '../domain/metadata/data_obj';
 import { Entity } from '../domain/metadata/entity';

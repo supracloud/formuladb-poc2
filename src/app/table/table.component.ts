@@ -32,7 +32,6 @@ import { TableService, DataObj } from "./table.service";
 export class TableComponent {
     private path: string;
 
-    private gridOptions;
     constructor(private tableService: TableService, private router: Router) {
     }
 
