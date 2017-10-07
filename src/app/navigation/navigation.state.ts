@@ -80,7 +80,9 @@ export function reducer(state = initialState, action: Actions): State {
         ...state,
         selectedEntity: action.entity
       };
-      break
+      break;
+    default:
+      ret = state;
   }
 
   console.log('[nav] reducer returns:', ret);

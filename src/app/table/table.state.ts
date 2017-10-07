@@ -23,6 +23,7 @@ export const initialState: State = {
 
 export const TABLE_DATA_CHANGES = "[table] TableDataChangesAction";
 export const TABLE_CHANGES = "[table] TableChangesAction";
+export const TABLE_ROW_CHOSEN = "[table] TableRowChosenAction";
 
 
 export class TableDataChangesAction implements Action {
@@ -37,9 +38,16 @@ export class TableChangesAction implements Action {
   constructor(public table: Table) { }
 }
 
+export class TableRowChosenAction implements Action {
+  readonly type = TABLE_ROW_CHOSEN;
+
+  constructor(public row: DataObj) { }
+}
+
 export type Actions =
   | TableDataChangesAction
   | TableChangesAction
+  | TableRowChosenAction
   ;
 
 /**
@@ -65,7 +73,13 @@ export function reducer(state = initialState, action: Actions): State {
         ...state,
         table: action.table
       };
+      break;
+    case TABLE_ROW_CHOSEN:
+      //TODO: highlight chosen row
+      ret = state;
       break
+    default:
+      ret = state;
   }
 
   console.log('[table] reducer returns:', ret);

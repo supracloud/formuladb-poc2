@@ -8,6 +8,7 @@ import {
   StoreRouterConnectingModule,
   RouterStateSerializer,
 } from '@ngrx/router-store';
+import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { AppComponent } from './app.component';
@@ -22,9 +23,11 @@ import { environment } from '../environments/environment';
 
 import * as appState from './app.state';
 
+import { AppEffects } from "./app.effects";
+
 import { FormModalService } from "./form-modal.service";
-import { TableService } from "./table/table.service";
 import { MockService } from "./test/mock.service";
+import { BackendReadService } from "./backend-read.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -51,9 +54,10 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     StoreModule.forRoot(appState.reducers),
     !environment.production ? StoreDevtoolsModule.instrument() : [],
+    EffectsModule.forRoot([AppEffects])
   ],
   exports: [RouterModule],
-  providers: [MockService, TableService, FormModalService ],
+  providers: [MockService, FormModalService, BackendReadService, AppEffects ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

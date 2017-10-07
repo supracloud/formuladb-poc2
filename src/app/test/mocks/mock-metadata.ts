@@ -11,7 +11,7 @@ export class MockMetadata {
 
     this.entities.forEach(meta => {
       meta._id = `Entity_:${meta.path}`;
-      this.entitiesMap.set(meta._id, meta);
+      this.entitiesMap.set(meta.path, meta);
     });
 
   }

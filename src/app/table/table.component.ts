@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { Store } from '@ngrx/store';
 
-import { TableService, DataObj } from "./table.service";
+import * as tableState from './table.state';
 
 @Component({
     moduleId: module.id,
@@ -15,13 +15,13 @@ import { TableService, DataObj } from "./table.service";
     <thead>
         <tr>
             <th>#</th>
-            <th *ngFor="let prop of (this.tableService.table$ | async)?.columns">{{prop.name}}</th>
+            <th *ngFor="let prop of (table$ | async)?.columns">{{prop.name}}</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let row of (this.tableService.data$ | async)">
+        <tr *ngFor="let row of (data$ | async)">
             <td>{{idx}}</td>
-            <td *ngFor="let prop of (this.tableService.table$ | async)?.columns" (dblclick)="onRowDoubleClicked(row)" data-toggle="tooltip" data-placement="top" title="{{row[prop.name]}}">{{row[prop.name]}}</td>
+            <td *ngFor="let prop of (table$ | async)?.columns" (dblclick)="onRowDoubleClicked(row)" data-toggle="tooltip" data-placement="top" title="{{row[prop.name]}}">{{row[prop.name]}}</td>
         </tr>
     </tbody>
 </table>
@@ -30,13 +30,15 @@ import { TableService, DataObj } from "./table.service";
 })
 
 export class TableComponent {
-    private path: string;
+    private $table: Observable<tableState.Table>;
+    private $data: Observable<tableState.DataObj[]>;
 
-    constructor(private tableService: TableService, private router: Router) {
+    constructor(private store: Store<tableState.State>) {
     }
 
-    onRowDoubleClicked(row: DataObj) {
+    onRowDoubleClicked(row: tableState.DataObj) {
         console.log('MwzTableComponent: onRowDoubleClicked: ', row);
-        this.router.navigate([this.path, row._id]);
+        this.store.dispatch(new tableState.TableRowChosenAction(row));
     }
+
 }

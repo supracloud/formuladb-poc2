@@ -1,15 +1,15 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { BackendService } from './backend.service';
+import { BackendReadService } from './backend-read.service';
 
 describe('BackendService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BackendService ]
+      providers: [BackendReadService ]
     });
   });
 
-  it('should be created', inject([BackendService], (service: BackendService) => {
+  it('should be created', inject([BackendReadService], (service: BackendReadService) => {
     expect(service).toBeTruthy();
   }));
 });

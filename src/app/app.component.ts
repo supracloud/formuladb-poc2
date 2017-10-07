@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
+import { MockService } from "./test/mock.service";
 
 @Component({
     selector: 'app-root',
@@ -32,6 +34,12 @@ import { Component } from '@angular/core';
         <!-- <mwz-editor></mwz-editor> -->
   `
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     title = 'app';
+
+    public constructor(private mockService: MockService) {}
+
+    ngOnInit(): void {
+        this.mockService.loadInitialEntities();
+    }
 }
