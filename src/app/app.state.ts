@@ -37,6 +37,7 @@ export interface AppState {
 
 export class CustomSerializer implements RouterStateSerializer<RouterState> {
   serialize(routerState: RouterStateSnapshot): RouterState {
+    console.log(routerState);
     const { url } = routerState;
     const queryParams = routerState.root.queryParams;
     const path = queryParams['path'];

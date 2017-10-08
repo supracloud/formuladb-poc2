@@ -64,7 +64,6 @@ export type Actions =
  * @param action 
  */
 export function reducer(state = initialState, action: Actions): State {
-  console.log('[nav] reducer:', state, action);
   let ret: State = state;
   switch (action.type) {
     //changes from the server are commning: added/removed entities
@@ -85,7 +84,7 @@ export function reducer(state = initialState, action: Actions): State {
       ret = state;
   }
 
-  console.log('[nav] reducer returns:', ret);
+  if (action.type.match(/^\[nav\]/)) console.log('[nav] reducer returns:', state, action, ret);
   return ret;
 }
 

@@ -30,10 +30,13 @@ import * as tableState from './table.state';
 })
 
 export class TableComponent {
-    private $table: Observable<tableState.Table>;
-    private $data: Observable<tableState.DataObj[]>;
+    private table$: Observable<tableState.Table>;
+    private data$: Observable<tableState.DataObj[]>;
 
     constructor(private store: Store<tableState.State>) {
+        this.table$ = store.select(tableState.getTableState);
+        this.data$ = store.select(tableState.getTableDataState);
+        this.table$.subscribe(x => console.log("TABLE:", x, x.columns));
     }
 
     onRowDoubleClicked(row: tableState.DataObj) {

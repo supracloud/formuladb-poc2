@@ -57,7 +57,6 @@ export type Actions =
  * @param action 
  */
 export function reducer(state = initialState, action: Actions): State {
-  console.log('[table] reducer:', state, action);
   let ret: State = state;
   switch (action.type) {
     //changes from the server are commning: added/removed entities
@@ -82,7 +81,7 @@ export function reducer(state = initialState, action: Actions): State {
       ret = state;
   }
 
-  console.log('[table] reducer returns:', ret);
+  if (action.type.match(/^\[table\]/)) console.log('[table] reducer:', state, action, ret);
   return ret;
 }
 
@@ -92,12 +91,12 @@ export function reducer(state = initialState, action: Actions): State {
 export const reducers = {
   'table': reducer
 };
-export const getTableState = createFeatureSelector<State>('table');
+export const getTable = createFeatureSelector<State>('table');
 export const getTableDataState = createSelector(
-  getTableState,
+  getTable,
   (state: State) => state.tableData
 );
-export const getTableMetaState = createSelector(
-  getTableState,
+export const getTableState = createSelector(
+  getTable,
   (state: State) => state.table
 );

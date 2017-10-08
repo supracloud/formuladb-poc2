@@ -18,18 +18,34 @@ import * as fromTable from './table/table.state';
 @Injectable()
 export class AppEffects {
 
+    private currentPath: string;
+
     constructor(
         private actions$: Actions,
         private backendReadService: BackendReadService
     ) { }
 
     // Change state on router navigation: get metadata and data from server and replace change current state
-    @Effect() navigation$: Observable<Action> = 
+    @Effect() navigation$: Observable<fromTable.TableChangesAction|fromTable.TableDataChangesAction> = 
         this.actions$.ofType<RouterNavigationAction<appState.RouterState>>(ROUTER_NAVIGATION)
         .flatMap(routerNav => {
+            //FIXME: why is queryParams empty ?!?!
             console.log("AppEffects", routerNav.payload.routerState);
-            return this.backendReadService.syncTable(routerNav.payload.routerState.path)
-            .map(t => new fromTable.TableChangesAction(t));
+            let match = routerNav.payload.routerState.url.match(/^\/(\w+)/)
+            let path: string = null;
+            if (null != match) {
+                path = match[1];
+            } else {
+                throw Error('Unknown url: ' + routerNav.payload.routerState.url);
+            }
+
+            if (path != this.currentPath) {
+                this.currentPath = path;
+            }
+
+            return this.backendReadService.syncTable(path)
+            .map(t =>(t instanceof fromTable.Table) ? new fromTable.TableChangesAction(t) 
+                : new fromTable.TableDataChangesAction(t));
         });
     ;
 }

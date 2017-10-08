@@ -12,37 +12,36 @@ import { BaseObj } from './domain/base_obj';
 import { Form } from './domain/uimetadata/form';
 import { Table } from './domain/uimetadata/table';
 import { DataObj } from './domain/metadata/data_obj';
+import { ChangeObj } from "./domain/change_obj";
 import { Entity } from './domain/metadata/entity';
 
 import { TableColumn } from './domain/uimetadata/table';
 
 import { MockMetadata } from "./test/mocks/mock-metadata";
+import { MockData } from "./test/mocks/mock-data";
 
 export type MwzFilter<T> = {_id: string};
 
 @Injectable()
 export class BackendReadService {
 
-    private mockBakendDB: Map<string, any> = new Map();
+    private mockData: MockData = new MockData();
     private mockMetadata = new MockMetadata();
-    private table$ = new Subject<Table>();
+    private table$ = new Subject<Table|ChangeObj<DataObj>[]>();
 
     constructor() {
     }
 
-    public syncTable(path: string): Observable<Table> {
-        this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+    public syncTable(path: string): Observable<Table|ChangeObj<DataObj>[]> {
+        setTimeout(() => {
+            this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+            setTimeout(() => {
+                this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
+            }, 100);
+        }, 100);
         return this.table$;
     }
     
-    getMetadataCatalog() {
-        let ret = [];
-        this.mockBakendDB.forEach((v) => {
-            if (v.mwzType == 'Entity_') ret.push(v);
-        });
-        return Promise.resolve(ret);
-    }
-
     public static getDefaultForm(entity: Entity): Form {
         let form = new Form();
         form = { nodeName: 'mwz-gridster', mwzType: "Form_" };

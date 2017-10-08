@@ -53,11 +53,17 @@ const routes: Routes = [
     BrowserModule,
     RouterModule.forRoot(routes),
     StoreModule.forRoot(appState.reducers),
+    StoreRouterConnectingModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects])
   ],
   exports: [RouterModule],
-  providers: [MockService, FormModalService, BackendReadService, AppEffects ],
+  providers: [
+    MockService, 
+    FormModalService, 
+    BackendReadService, 
+    { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
