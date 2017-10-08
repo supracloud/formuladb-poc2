@@ -1,0 +1,13 @@
+image: node:latest
+
+before_script:
+- chmod +x ci/install-chrome
+- ci/install-chrome
+- npm install
+
+test:
+  script:
+  # Run npm test in virtual display mode
+  - npm test
+  cache:
+    untracked: true
