@@ -12,8 +12,10 @@ import {
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
 import { AppEffects } from "./app.effects";
+import { ChangeObj } from "./domain/change_obj";
 
 import { MockMetadata } from "./test/mocks/mock-metadata";
+import { MockData } from "./test/mocks/mock-data";
 import { BackendReadService } from "./backend-read.service";
 
 export class TestActions extends Actions {
@@ -36,6 +38,7 @@ fdescribe('AppEffects', () => {
     let effects: AppEffects;
     let googleBooksService: any;
     let actions$: TestActions;
+    let mockData = new MockData();
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -61,8 +64,11 @@ fdescribe('AppEffects', () => {
                     payload: {routerState: {path: 'General__Actor'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>
             });
-            const expectedResult = new fromTable.TableChangesAction(BackendReadService.getDefaultTable(MockMetadata.General__Actor));
-            const expected = cold('--b', { b: expectedResult });
+            const expected = cold('--bc', { 
+                b: new fromTable.TableChangesAction(BackendReadService.getDefaultTable(MockMetadata.General__Actor)),
+                c: new fromTable.TableDataChangesAction(
+                    mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o)))
+            });
 
             let i = 0;
             expect(effects.navigation$).toBeObservable(expected);//FIXME: assertion does not work!

@@ -17,7 +17,7 @@ interface AppState {
 }
 
 const reducers = {
-  nav: state.reducer
+  'table': state.reducer
 };
 
 describe('TableComponent', () => {
