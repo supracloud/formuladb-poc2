@@ -1,6 +1,7 @@
 image: node:latest
 
 before_script:
+- chmod +x ci/install-chrome
 - ci/install-chrome
 - npm install
 
