@@ -5,11 +5,9 @@ before_script:
 - ci/install-chrome
 - npm install
 
-cache:
-  paths:
-  - node_modules/
-
 test:
   script:
   # Run npm test in virtual display mode
   - npm test
+  cache:
+    untracked: true
