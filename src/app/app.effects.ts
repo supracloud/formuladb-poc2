@@ -43,6 +43,7 @@ export class AppEffects {
                 this.currentPath = path;
             }
 
+            // return this.backendReadService.getTable(path).map(t => new fromTable.TableChangesAction(t));
             return this.backendReadService.syncTable(path)
             .map(t =>(t instanceof fromTable.Table) ? new fromTable.TableChangesAction(t) 
                 : new fromTable.TableDataChangesAction(t));

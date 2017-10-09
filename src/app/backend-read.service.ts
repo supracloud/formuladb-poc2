@@ -6,6 +6,7 @@ import { ReplaySubject } from 'rxjs/ReplaySubject';
 import { Subscribable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/observable/from';
 import { from } from 'rxjs/observable/from';
 
 import { BaseObj } from './domain/base_obj';
@@ -25,21 +26,29 @@ export type MwzFilter<T> = {_id: string};
 @Injectable()
 export class BackendReadService {
 
-    private mockData: MockData = new MockData();
+    public mockData: MockData = new MockData();
     private mockMetadata = new MockMetadata();
-    private table$ = new Subject<Table|ChangeObj<DataObj>[]>();
-
+    private table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>();
+    private tmp$ = new ReplaySubject<Table>();
+    
     constructor() {
     }
 
+    public getTable(path: string): Observable<Table> {
+        this.tmp$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+        return this.tmp$;
+    }
+
     public syncTable(path: string): Observable<Table|ChangeObj<DataObj>[]> {
-        setTimeout(() => {
-            this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
-            setTimeout(() => {
-                this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
-            }, 100);
-        }, 100);
-        return this.table$;
+        this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+        this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
+        // setTimeout(() => {
+        //     this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+        //     setTimeout(() => {
+        //         this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
+        //     }, 50);
+        // }, 50);
+        return this.table$.asObservable();
     }
     
     public static getDefaultForm(entity: Entity): Form {

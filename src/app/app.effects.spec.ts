@@ -15,7 +15,6 @@ import { AppEffects } from "./app.effects";
 import { ChangeObj } from "./domain/change_obj";
 
 import { MockMetadata } from "./test/mocks/mock-metadata";
-import { MockData } from "./test/mocks/mock-data";
 import { BackendReadService } from "./backend-read.service";
 
 export class TestActions extends Actions {
@@ -36,9 +35,8 @@ export function getActions() {
 describe('AppEffects', () => {
 
     let effects: AppEffects;
-    let googleBooksService: any;
+    let backendReadService: BackendReadService;
     let actions$: TestActions;
-    let mockData = new MockData();
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -55,19 +53,23 @@ describe('AppEffects', () => {
 
         effects = TestBed.get(AppEffects);
         actions$ = TestBed.get(Actions);
+        backendReadService = TestBed.get(BackendReadService);
     });
 
     it('a router effect test', () => {
             actions$.stream = hot('--a', {
                 a: {
                     type: ROUTER_NAVIGATION,
-                    payload: {routerState: {path: 'General__Actor'}} as RouterNavigationPayload<appState.RouterState>
+                    payload: {routerState: {url: '/General__Actor'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>
             });
-            const expected = cold('--bc', { 
+            const expected = cold('--(bc)', {
+                m: 1111,
+                n: 2222,
+                p: 3333, 
                 b: new fromTable.TableChangesAction(BackendReadService.getDefaultTable(MockMetadata.General__Actor)),
                 c: new fromTable.TableDataChangesAction(
-                    mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o)))
+                    backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o)))
             });
 
             let i = 0;
