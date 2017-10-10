@@ -49,4 +49,5 @@ export class AppEffects {
                 : new fromTable.TableDataChangesAction(t));
         });
     ;
+    
 }

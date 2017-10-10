@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { RouterModule, Routes } from '@angular/router';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { StoreModule } from '@ngrx/store';
 import {
@@ -15,6 +16,10 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { FormComponent } from './form/form.component';
+import { FormGridComponent } from './form/form-grid.component';
+import { FormGridRowComponent } from './form/form-grid-row.component';
+import { FormGridColComponent } from './form/form-grid-col.component';
+import { FormInputComponent } from './form/form-input.component';
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
@@ -31,10 +36,10 @@ import { BackendReadService } from "./backend-read.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
-      // children: [{
-      //     path: ':_id',
-      //     component: MwzFormComponent
-      // }]
+      children: [{
+          path: ':_id',
+          component: FormComponent
+      }]
   },
   { path: '**', component: NotFoundComponent }
 ];
@@ -45,12 +50,18 @@ const routes: Routes = [
     NotFoundComponent,
     NavigationComponent,
     FormComponent,
+    FormGridComponent,
+    FormGridRowComponent,
+    FormGridColComponent,
+    FormInputComponent,
     TableComponent,
     EditorComponent,
     ModalComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot(routes),
     StoreModule.forRoot(appState.reducers),
     StoreRouterConnectingModule,

@@ -29,49 +29,45 @@ export class BackendReadService {
     public mockData: MockData = new MockData();
     private mockMetadata = new MockMetadata();
     private table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>();
-    private tmp$ = new ReplaySubject<Table>();
     
     constructor() {
     }
 
-    public getTable(path: string): Observable<Table> {
-        this.tmp$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
-        return this.tmp$;
-    }
 
     public syncTable(path: string): Observable<Table|ChangeObj<DataObj>[]> {
-        this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+        this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
         this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
         // setTimeout(() => {
-        //     this.table$.next(BackendReadService.getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+        //     this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
         //     setTimeout(() => {
         //         this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
         //     }, 50);
         // }, 50);
-        return this.table$.asObservable();
+        return this.table$;
     }
     
-    public static getDefaultForm(entity: Entity): Form {
-        let form = new Form();
-        form = { nodeName: 'mwz-gridster', mwzType: "Form_" };
-        form.childNodes = entity.properties.map((prop, idx) => ({
-            nodeName: 'mwz-gridster-row',
-            childNodes: [{
-                nodeName: 'mwz-gridster-col',
-                childNodes: [{
-                    nodeName: 'mwz-input',
-                    attributes: { formControlName: prop.name }
-                }]
-            }]
-        }));
-        return form;
-    }
+}
 
-    public static getDefaultTable(entity: Entity): Table {
-        if (null == entity) return null;
-        
-        let table = new Table();
-        table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
-        return table;
-    }
+export function getDefaultForm(entity: Entity): Form {
+    let form = new Form();
+    form = { nodeName: 'form-grid', mwzType: "Form_" };
+    form.childNodes = entity.properties.map((prop, idx) => ({
+        nodeName: 'form-grid-row',
+        childNodes: [{
+            nodeName: 'form-grid-col',
+            childNodes: [{
+                nodeName: 'form-input',
+                attributes: { formControlName: prop.name }
+            }]
+        }]
+    }));
+    return form;
+}
+
+export function getDefaultTable(entity: Entity): Table {
+    if (null == entity) return null;
+    
+    let table = new Table();
+    table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
+    return table;
 }

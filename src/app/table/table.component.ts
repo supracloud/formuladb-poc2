@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 import * as tableState from './table.state';
+import { TableService } from "./table.service";
 
 @Component({
     moduleId: module.id,
@@ -33,7 +34,7 @@ export class TableComponent {
     private table$: Observable<tableState.Table>;
     private data$: Observable<tableState.DataObj[]>;
 
-    constructor(private store: Store<tableState.State>) {
+    constructor(private store: Store<tableState.State>, private tableService: TableService) {
         this.table$ = store.select(tableState.getTableState);
         this.data$ = store.select(tableState.getTableDataState);
         this.table$.subscribe(x => console.log("TABLE:", x, x.columns));
@@ -41,7 +42,8 @@ export class TableComponent {
 
     onRowDoubleClicked(row: tableState.DataObj) {
         console.log('MwzTableComponent: onRowDoubleClicked: ', row);
-        this.store.dispatch(new tableState.TableRowChosenAction(row));
+        // this.store.dispatch(new tableState.TableRowChosenAction(row));
+        this.tableService.selectTableRow(row);
     }
 
 }

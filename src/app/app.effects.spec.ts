@@ -15,7 +15,7 @@ import { AppEffects } from "./app.effects";
 import { ChangeObj } from "./domain/change_obj";
 
 import { MockMetadata } from "./test/mocks/mock-metadata";
-import { BackendReadService } from "./backend-read.service";
+import { BackendReadService, getDefaultTable, getDefaultForm } from "./backend-read.service";
 
 export class TestActions extends Actions {
     constructor() {
@@ -67,7 +67,7 @@ describe('AppEffects', () => {
                 m: 1111,
                 n: 2222,
                 p: 3333, 
-                b: new fromTable.TableChangesAction(BackendReadService.getDefaultTable(MockMetadata.General__Actor)),
+                b: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Actor)),
                 c: new fromTable.TableDataChangesAction(
                     backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o)))
             });

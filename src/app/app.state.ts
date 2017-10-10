@@ -22,6 +22,7 @@ export { ChangeObj, applyChanges };
 
 import * as fromNav from './navigation/navigation.state';
 import * as fromTable from './table/table.state';
+import * as fromForm from './form/form.state';
 
 export interface RouterState {
   url: string;
@@ -32,7 +33,8 @@ export interface RouterState {
 export interface AppState {
   'router': RouterReducerState<RouterState>;
   'nav': fromNav.State;
-  'table': fromTable.State
+  'table': fromTable.State;
+  'form': fromForm.State;
 };
 
 export class CustomSerializer implements RouterStateSerializer<RouterState> {
@@ -51,5 +53,6 @@ export class CustomSerializer implements RouterStateSerializer<RouterState> {
 export const reducers = {
   'router': routerReducer,
   ...fromNav.reducers,
-  ...fromTable.reducers
+  ...fromTable.reducers,
+  ...fromForm.reducers
 };
