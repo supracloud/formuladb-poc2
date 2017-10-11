@@ -11,6 +11,7 @@ import {
 
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
+import * as fromForm from './form/form.state';
 import { AppEffects } from "./app.effects";
 import { ChangeObj } from "./domain/change_obj";
 
@@ -32,11 +33,12 @@ export function getActions() {
 }
 
 
-describe('AppEffects', () => {
+fdescribe('AppEffects', () => {
 
     let effects: AppEffects;
     let backendReadService: BackendReadService;
     let actions$: TestActions;
+    let actorTestId: string = null;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -54,22 +56,36 @@ describe('AppEffects', () => {
         effects = TestBed.get(AppEffects);
         actions$ = TestBed.get(Actions);
         backendReadService = TestBed.get(BackendReadService);
+        actorTestId = backendReadService.mockData.getAll(MockMetadata.General__Actor.path)[0]._id;
     });
 
     it('a router effect test', () => {
-            actions$.stream = hot('--a', {
+            actions$.stream = hot('--abc', {
                 a: {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {url: '/General__Actor'}} as RouterNavigationPayload<appState.RouterState>
-                } as RouterNavigationAction<appState.RouterState>
+                } as RouterNavigationAction<appState.RouterState>,
+                b: {
+                    type: ROUTER_NAVIGATION,
+                    payload: {routerState: {
+                        url: '/General__Actor/' + actorTestId
+                    }} as RouterNavigationPayload<appState.RouterState>
+                } as RouterNavigationAction<appState.RouterState>,
+                c: {
+                    type: ROUTER_NAVIGATION,
+                    payload: {routerState: {url: '/General__Currency'}} as RouterNavigationPayload<appState.RouterState>
+                } as RouterNavigationAction<appState.RouterState>,
             });
-            const expected = cold('--(bc)', {
+            const expected = cold('--(bc)(de)(fg)', {
                 m: 1111,
-                n: 2222,
-                p: 3333, 
                 b: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Actor)),
                 c: new fromTable.TableDataChangesAction(
-                    backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o)))
+                    backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o))),
+                d: new fromForm.FormChangesAction(getDefaultForm(MockMetadata.General__Actor)),
+                e: new fromForm.FormDataChangesAction(backendReadService.mockData.get(MockMetadata.General__Actor.path, actorTestId)),
+                f: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Currency)),
+                g: new fromTable.TableDataChangesAction(
+                    backendReadService.mockData.getAll(MockMetadata.General__Currency.path).map(o => new ChangeObj(o))),
             });
 
             let i = 0;

@@ -7,7 +7,6 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { TableComponent } from './table.component';
 import { ModalComponent } from "../modal/modal.component";
 import { FormModalService } from "../form-modal.service";
-import { TableService } from "./table.service";
 
 import * as state from './table.state';
 
@@ -34,12 +33,7 @@ describe('TableComponent', () => {
       ],
       declarations: [ TableComponent, ModalComponent ],
       providers: [ 
-        FormModalService ,
-        {
-          provide: TableService,
-          useValue: jasmine.createSpyObj('TableService', ['selectTableRow']),
-        },
-        
+        FormModalService        
       ]
     })
     .compileComponents();

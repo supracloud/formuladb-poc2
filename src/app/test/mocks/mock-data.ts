@@ -18,6 +18,10 @@ export class MockData {
     return Array.from(this.mockDB.get(path).values());
   }
 
+  public get(path: string, id: string): DataObj {
+    return this.mockDB.get(path).get(id);
+  }
+  
   mockEntity(entity: Entity, nbEntities: number) {
     let db: Map<string, DataObj> = new Map();
     this.mockDB.set(entity.path, db);
