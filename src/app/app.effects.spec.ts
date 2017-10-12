@@ -34,7 +34,7 @@ export function getActions() {
 }
 
 
-fdescribe('AppEffects', () => {
+describe('AppEffects', () => {
 
     let effects: AppEffects;
     let backendReadService: BackendReadService;
