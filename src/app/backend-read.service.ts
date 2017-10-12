@@ -30,37 +30,33 @@ export class BackendReadService {
     private mockMetadata = new MockMetadata();
 
     private currentUrl: { path: string, id: string } = { path: null, id: null };
-    private table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>();
-    private form$ = new ReplaySubject<Form|DataObj>();
+    private table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>(2);
+    private form$ = new ReplaySubject<Form|DataObj>(2);
+    public tableForm$ = this.table$.merge(this.form$);
     
     constructor() {
     }
 
+    public setCurrentPathAndId(path: string, id: string) {
+        if (path === this.currentUrl.path && id === this.currentUrl.id) return;
 
-    public syncTable(path: string): Observable<Table|ChangeObj<DataObj>[]> {
-        if (path === this.currentUrl.path) return this.table$;
+        if (path !== this.currentUrl.path) {
+            this.currentUrl.path = path;
+            this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
+            this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
+            this.form$.next(getDefaultForm(this.mockMetadata.entitiesMap.get(path)));
+        }
 
-        this.currentUrl.path = path;
-        this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
-        this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
+        if (id != this.currentUrl.id) {
+            this.form$.next(this.mockData.get(path, id));
+        }
+        
         // setTimeout(() => {
         //     this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
         //     setTimeout(() => {
         //         this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
         //     }, 50);
         // }, 50);
-        return this.table$;
-    }
-
-    public syncForm(path: string, id: string) {
-        if (path === this.currentUrl.path && id === this.currentUrl.id) return this.form$;
-
-        if (path != this.currentUrl.path) {
-            this.form$.next(getDefaultForm(this.mockMetadata.entitiesMap.get(path)));
-        }
-        this.form$.next(this.mockData.get(path, id));
-        
-        return this.form$;
     }
     
 }

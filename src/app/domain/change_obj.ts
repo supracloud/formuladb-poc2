@@ -31,7 +31,8 @@ export function applyChanges<T extends BaseObj>(existing: T[], changes: ChangeOb
 
     //add new objects
     changes.forEach(change => {
-        if (change.deleted || change.synced) return;
+        if (change.deleted) return;
+        if (change.synced) {delete change.synced; return;}
         ret.push(change.obj);
     });
     

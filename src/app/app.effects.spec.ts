@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
     RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
 } from '@ngrx/router-store';
+import 'rxjs/add/observable/merge';
 
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
@@ -60,7 +61,7 @@ fdescribe('AppEffects', () => {
     });
 
     it('a router effect test', () => {
-            actions$.stream = hot('--abc', {
+            let values = {
                 a: {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {url: '/General__Actor'}} as RouterNavigationPayload<appState.RouterState>
@@ -75,21 +76,23 @@ fdescribe('AppEffects', () => {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {url: '/General__Currency'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
-            });
-            const expected = cold('--(bc)(de)(fg)', {
-                m: 1111,
-                b: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Actor)),
-                c: new fromTable.TableDataChangesAction(
+                m: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Actor)),
+                n: new fromTable.TableDataChangesAction(
                     backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o))),
-                d: new fromForm.FormChangesAction(getDefaultForm(MockMetadata.General__Actor)),
-                e: new fromForm.FormDataChangesAction(backendReadService.mockData.get(MockMetadata.General__Actor.path, actorTestId)),
-                f: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Currency)),
-                g: new fromTable.TableDataChangesAction(
+                o: new fromForm.FormChangesAction(getDefaultForm(MockMetadata.General__Actor)),
+                p: new fromForm.FormDataChangesAction(backendReadService.mockData.get(MockMetadata.General__Actor.path, actorTestId)),
+                q: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Currency)),
+                r: new fromTable.TableDataChangesAction(
                     backendReadService.mockData.getAll(MockMetadata.General__Currency.path).map(o => new ChangeObj(o))),
-            });
+                s: new fromForm.FormChangesAction(getDefaultForm(MockMetadata.General__Currency)),
+            }
+
+            actions$.stream = hot('--a----bc',values);
+            const expected = cold('--(mno)p(qrs)', values);
 
             let i = 0;
-            expect(effects.navigation$).toBeObservable(expected);//FIXME: assertion does not work!
+            effects.listenForRouterChanges();
+            expect(effects.tableFormActions$).toBeObservable(expected);
         }
     );
 });

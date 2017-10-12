@@ -1,11 +1,13 @@
 // ./effects/auth.ts
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/merge';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/switch';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/empty';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Action } from '@ngrx/store';
+import { Action, Store } from '@ngrx/store';
 import { Actions, Effect, toPayload } from '@ngrx/effects';
 import { of } from 'rxjs/observable/of';
 
@@ -18,20 +20,41 @@ import * as appState from './app.state';
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
 
+type TableFormActionsObservable = Observable<
+    | fromTable.TableChangesAction 
+    | fromTable.TableDataChangesAction 
+    | fromForm.FormChangesAction 
+    | fromForm.FormDataChangesAction>;
+
 @Injectable()
 export class AppEffects {
 
+    public tableFormActions$: TableFormActionsObservable;
+
     constructor(
         private actions$: Actions,
-        private backendReadService: BackendReadService
-    ) { }
+        private backendReadService: BackendReadService,
+        private store: Store<appState.AppState>
+    ) {
 
-    // Change state on router navigation: get metadata and data from server and replace change current state
-    @Effect() navigation$: Observable<fromTable.TableChangesAction | fromTable.TableDataChangesAction | fromForm.FormChangesAction | fromForm.FormDataChangesAction> =
-    this.actions$.ofType<RouterNavigationAction<appState.RouterState>>(ROUTER_NAVIGATION)
-        .flatMap(routerNav => {
+
+        this.tableFormActions$ = this.backendReadService.tableForm$.map(x => {
+            console.log("XXXXXX", x);
+            if (x instanceof Array) return new fromTable.TableDataChangesAction(x);
+            if (x.mwzType == 'Form_') return new fromForm.FormChangesAction(x as fromForm.Form);
+            if (x.mwzType == 'Table_') return new fromTable.TableChangesAction(x as fromTable.Table);
+            return new fromForm.FormDataChangesAction(x as fromForm.DataObj);
+        });
+        this.tableFormActions$.subscribe(x => this.store.dispatch(x));
+
+        this.listenForRouterChanges();
+    }
+
+    public listenForRouterChanges() {
+        this.actions$.ofType<RouterNavigationAction<appState.RouterState>>(ROUTER_NAVIGATION)
+        .subscribe(routerNav => {
             //FIXME: why is queryParams empty ?!?!
-            console.log("AppEffects", routerNav.payload.routerState);
+            console.log("AppEffects:", routerNav.payload.routerState);
             let match = routerNav.payload.routerState.url.match(/^\/(\w+)\/?(\w+)?/)
             let path: string = null;
             let id: string = null;
@@ -41,18 +64,12 @@ export class AppEffects {
             } else {
                 throw Error('Unknown url: ' + routerNav.payload.routerState.url);
             }
-
-            let formObservable: Observable<fromForm.FormChangesAction | fromForm.FormDataChangesAction> = Observable.empty();
-            if (null != id) {
-                formObservable = this.backendReadService.syncForm(path, id)
-                    .map(f => (f.mwzType == 'Form_') ? new fromForm.FormChangesAction(f as fromForm.Form)
-                        : new fromForm.FormDataChangesAction(f as fromForm.DataObj));
-            }
-
-            return this.backendReadService.syncTable(path)
-                .map(t => (t instanceof Array) ? new fromTable.TableDataChangesAction(t) : new fromTable.TableChangesAction(t))
-                .merge(formObservable);
+    
+            this.backendReadService.setCurrentPathAndId(path, id);
+    
         });
-    ;
+    }
 
+    // Change state on router navigation: get metadata and data from server and replace change current state
+    // @Effect() navigation$: TableFormActionsObservable =
 }
