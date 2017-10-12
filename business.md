@@ -11,6 +11,13 @@
     * Testing tool
     * User-defined GUI embedded 
 
+ * Cloud platform use cases
+    * There are a lot of cloud platforms lately, offering simple ways to build scalable and fault tolerant backend apps, IoT, big data, etc
+    * They are super vendor-specific and not open source
+    * They are still very complex, requiring trainings and real developers to operate, they are not at all targeted at business people
+    * we could position as a simple "Reactive Cloud" platform, where each table can also be seen as an event stream and each formula is a reactive piece of functionality, similar to the "Cloud Functions" in Azure/Google/AWS
+    
+
 # Competition
 
 Direct competition:
