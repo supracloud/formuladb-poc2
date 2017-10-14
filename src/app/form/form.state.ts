@@ -28,7 +28,7 @@ export const FORM_CHANGES = "[form] FormChangesAction";
 export class FormDataChangesAction implements Action {
   readonly type = FORM_DATA_CHANGES;
 
-  constructor(public changes: DataObj) { }
+  constructor(public obj: DataObj) { }
 }
 
 export class FormChangesAction implements Action {
@@ -52,22 +52,20 @@ export type Actions =
 export function reducer(state = initialState, action: Actions): State {
   let ret: State = state;
   switch (action.type) {
-    //changes from the server are commning: added/removed entities
+    //changes from the server are commning: properties modified
     case FORM_DATA_CHANGES:
       ret = {
-        ...state,
-        formData: state.formData,
+        form: state.form,
+        formData: action.obj,
       };
       break;
     //user navigates to different forms
     case FORM_CHANGES:
       ret = {
-        ...state,
-        form: action.form
+        form: action.form,
+        formData: state.formData
       };
       break;
-    default:
-      ret = state;
   }
 
   if (action.type.match(/^\[form\]/)) console.log('[form] reducer:', state, action, ret);

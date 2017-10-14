@@ -39,7 +39,6 @@ export class AppEffects {
 
 
         this.tableFormActions$ = this.backendReadService.tableForm$.map(x => {
-            console.log("XXXXXX", x);
             if (x instanceof Array) return new fromTable.TableDataChangesAction(x);
             if (x.mwzType == 'Form_') return new fromForm.FormChangesAction(x as fromForm.Form);
             if (x.mwzType == 'Table_') return new fromTable.TableChangesAction(x as fromTable.Table);

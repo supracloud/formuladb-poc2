@@ -76,9 +76,7 @@ export function reducer(state = initialState, action: Actions): State {
     case TABLE_ROW_CHOSEN:
       //TODO: highlight chosen row
       ret = state;
-      break
-    default:
-      ret = state;
+      break;
   }
 
   if (action.type.match(/^\[table\]/)) console.log('[table] reducer:', state, action, ret);
