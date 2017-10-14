@@ -65,7 +65,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     StoreModule.forRoot(appState.reducers),
     StoreRouterConnectingModule,
-    // !environment.production ? StoreDevtoolsModule.instrument() : [],
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects])
   ],
   exports: [RouterModule],

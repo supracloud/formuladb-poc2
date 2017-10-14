@@ -13,6 +13,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/sampleTime';
+import 'rxjs/add/observable/fromEvent';
 import { Observable } from 'rxjs/Observable';
 
 import * as formState from './form.state';
@@ -103,17 +105,13 @@ export class FormComponent implements OnInit {
             err => console.error(err)
         );
 
-
-        this.theFormGroup.valueChanges.forEach(val => {
-            //FIXME: something is not right here, deleted chars come back from the server...not loosing time now to fix it, but a solid solution must be implemented
-            if (!this.tickUsed && this.theFormGroup.dirty /*without dirty check we go into an infinite loop*/) {
-                this.tickUsed = true;
-                setTimeout(() => {
-                    this.tickUsed = false;
-                    // this.mwzStateService.setObj(this.theFormGroup.value);
-                }, 350);//throttle saving
-            }
-        });
+        this.theFormGroup.valueChanges
+            .filter(() => this.theFormGroup.valid)
+            .sampleTime(500)
+            .forEach(val => {
+                this.changes.push(val);
+                //TODO: send data to validators and backend
+            });
     }
 
     private createFormGroup(formEl: FormElement) {
@@ -124,13 +122,11 @@ export class FormComponent implements OnInit {
     }
 
     private updateFormData(obj: any) {
-        setTimeout(() => {
-            if (this.areEqual(obj, this.theFormGroup)) {
-                this.theFormGroup.reset(obj);
-            } else {
-                this.theFormGroup.setValue(obj);
-            }
-        }, 250);
+        if (this.areEqual(obj, this.theFormGroup)) {
+            this.theFormGroup.reset(obj);
+        } else {
+            this.theFormGroup.setValue(obj);
+        }
     }
 
     ngAfterViewInit() {
