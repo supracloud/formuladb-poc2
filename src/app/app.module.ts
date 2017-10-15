@@ -33,6 +33,7 @@ import { AppEffects } from "./app.effects";
 import { FormModalService } from "./form-modal.service";
 import { MockService } from "./test/mock.service";
 import { BackendReadService } from "./backend-read.service";
+import { BackendWriteService } from "./backend-write.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -65,7 +66,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     StoreModule.forRoot(appState.reducers),
     StoreRouterConnectingModule,
-    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    // !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects])
   ],
   exports: [RouterModule],
@@ -73,6 +74,7 @@ const routes: Routes = [
     MockService, 
     FormModalService, 
     BackendReadService, 
+    BackendWriteService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

@@ -30,8 +30,8 @@ export class BackendReadService {
     private mockMetadata = new MockMetadata();
 
     private currentUrl: { path: string, id: string } = { path: null, id: null };
-    private table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>(2);
-    private form$ = new ReplaySubject<Form|DataObj>(2);
+    public table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>(2);
+    public form$ = new ReplaySubject<Form|DataObj>(2);
     public tableForm$ = this.table$.merge(this.form$);
     
     constructor() {
@@ -70,7 +70,7 @@ export function getDefaultForm(entity: Entity): Form {
             nodeName: 'form-grid-col',
             childNodes: [{
                 nodeName: 'form-input',
-                attributes: { formControlName: prop.name }
+                formControlName: prop.name
             }]
         }]
     }));

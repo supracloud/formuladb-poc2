@@ -2,7 +2,7 @@ import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
     ChangeDetectionStrategy
 } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { FormModalService } from '../form-modal.service';
@@ -17,6 +17,7 @@ import 'rxjs/add/operator/sampleTime';
 import 'rxjs/add/observable/fromEvent';
 import { Observable } from 'rxjs/Observable';
 
+import { BackendWriteService } from "../backend-write.service";
 import * as formState from './form.state';
 
 let snippet: string = `
@@ -34,7 +35,7 @@ let snippet: string = `
           NESTED
       </div>
 
-      <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.attributes.formControlName" ngDefaultControl></div>
+      <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.formControlName" ngDefaultControl></div>
       <div *ngSwitchDefault style="border: 1px solid red;">Element NOT KNOWN /{{ELEM.nodeName}}/!</div>
   </ng-container>
 </ng-container>
@@ -76,8 +77,9 @@ export class FormComponent implements OnInit {
 
     constructor(
         private store: Store<formState.State>,
+        private formBuilder: FormBuilder,
         private formModalService: FormModalService,
-        private formBuilder: FormBuilder) {
+        private backendWriteService: BackendWriteService) {
         try {
             this.form$ = store.select(formState.getFormState);
             this.formData$ = store.select(formState.getFormDataState);
@@ -93,17 +95,25 @@ export class FormComponent implements OnInit {
         let cmp = this;
         this.form$.subscribe(frm => {
             console.log("MwzFormComponent frm:", frm);
-            this.createFormGroup(frm);
+            this.createFormGroup(this.theFormGroup, frm);
             // this.updateFormData(this.lastObj);
         });
 
         this.formData$.subscribe(obj => {
             console.log("MwzFormComponent obj from server:", obj);
-            this.updateFormData(obj);
+            this.updateFormData(obj, this.theFormGroup);
             this.lastObj = obj;
         },
             err => console.error(err)
         );
+
+        // Object.keys(this.theFormGroup.controls).forEach(k => {
+        //     let control = this.theFormGroup.controls[k];
+        //     control.valueChanges.forEach(val => {
+        //         if (!x.valid) return;
+        //         this.backendWriteService.setFormData(this.theFormGroup.value, x.)
+        //     });
+        // });
 
         this.theFormGroup.valueChanges
             .filter(() => this.theFormGroup.valid)
@@ -114,18 +124,61 @@ export class FormComponent implements OnInit {
             });
     }
 
-    private createFormGroup(formEl: FormElement) {
-        if (null != (formEl.attributes && formEl.attributes.formControlName || null)) {
-            this.theFormGroup.addControl(formEl.attributes.formControlName, new FormControl());
+    private createFormGroup(parentFormGroup: FormGroup, formEl: FormElement) {
+        let newParent = parentFormGroup;
+        if (null != formEl.attributes) {
+            if (null != formEl.formControlName) {
+                let control = new FormControl();
+                parentFormGroup.addControl(formEl.formControlName, control);
+                control.valueChanges.sampleTime(350).forEach(val => {
+                    this.backendWriteService.setFormData(parentFormGroup.value, formEl.formControlName, val);
+                });
+            } 
         }
-        (formEl.childNodes || []).forEach(child => this.createFormGroup(child));
+        if (null != formEl.childNodes) {
+            newParent = new FormGroup({});
+            if (null != formEl.formArrayName) {
+                parentFormGroup.addControl(formEl.formArrayName, new FormArray([newParent]));
+            }
+            else if (null != formEl.formGroupName) {
+                parentFormGroup.addControl(formEl.formGroupName, newParent);
+            }
+
+            formEl.childNodes.forEach(child => this.createFormGroup(newParent, child));
+        }
     }
 
-    private updateFormData(obj: any) {
-        if (this.areEqual(obj, this.theFormGroup)) {
-            this.theFormGroup.reset(obj);
-        } else {
-            this.theFormGroup.setValue(obj);
+    private updateFormData(obj: DataObj, formGroup: FormGroup) {
+        for (var key in obj) {
+            // if ('_rev' === key) continue;
+
+            let objVal = obj[key];
+            let formVal = formGroup.get(key);
+            if (null == objVal || null == formVal) continue;
+
+            if (objVal instanceof Array) {
+                if (!(formVal instanceof FormArray)) {
+                    throw new Error("key " + key + ", objVal Array '" + objVal + "', but formVal not FormArray: '" + formVal + "'");
+                }
+
+                objVal.forEach((o, i) => this.updateFormData(o, (formVal as FormArray).at(i) as FormGroup));
+                
+            } else if (/string|boolean|number/.test(typeof objVal) ) {
+                if (!(formVal instanceof FormControl)) {
+                    throw new Error("key " + key + ", objVal scalar '" + objVal + "', but formVal not FormControl: '" + formVal + "'");
+                }
+
+                formVal.reset(objVal);
+            } else if ('object' === typeof objVal) {
+                if (!(formVal instanceof FormGroup)) {
+                    throw new Error("key " + key + ", objVal object '" + objVal + "', but formVal not FormGroup: '" + formVal + "'");
+                }
+
+                this.updateFormData(objVal, formVal);
+            } else {
+                throw new Error("unkown objVal type: '" + objVal + "'");
+            }
+
         }
     }
 

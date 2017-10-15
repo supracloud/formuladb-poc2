@@ -9,8 +9,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
     selector: '[form-input]',
     template: `
-        <label [for]="element.attributes.formControlName">{{element.attributes.formControlName}}</label>
-        <input class="form-control" type="text" [id]="element.attributes.formControlName" [(ngModel)]="value" />
+        <label [for]="element.formControlName">{{element.formControlName}}</label>
+        <input class="form-control" type="text" [id]="element.formControlName" [(ngModel)]="value" />
     `,
     host: { class: 'form-group' },
     providers: [
