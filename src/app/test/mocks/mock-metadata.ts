@@ -135,8 +135,7 @@ export class MockMetadata {
       { "name": "inventory_code", "type": "string", "allow_null": false },
       {
         "name": "product",
-        "type": "reference",
-        "$ref": "Inventory/Product",
+        "type": "ENTITY(/Inventory/Product)",
         "copied_properties": [
           "code",
           "name"
@@ -146,8 +145,7 @@ export class MockMetadata {
       { "name": "price", "type": "decimal", "allow_null": true },
       {
         "name": "currency",
-        "type": "reference",
-        "$ref": "General/Currency",
+        "type": "ENTITY(/General/Currency)",
         "copied_properties": [
           "code",
           "name"
@@ -185,8 +183,7 @@ export class MockMetadata {
     mwzType: "Entity_", "path": "Inventory__ProductListItem",
     "properties": [
       {
-        "type": "reference",
-        "$ref": "Inventory/InventoryProduct",
+        "type": "ENTITY(/Inventory/InventoryProduct)",
         "name": "product",
         "copied_properties": [
           "inventory_code",
@@ -376,7 +373,7 @@ export class MockMetadata {
         "formula": "CONCATENATE(client.code;LPAD(\"0\";\"9\";INDEX_IN_INTERVAL(time_of_arrival,monthly))"
       },
       { "name": "product_form_id", "type": "integer", "allow_null": false },
-      { "name": "client", "type": "ENTITY(/Inventory/Client)" },
+      { "name": "client", "type": "ENTITY(/Inventory/Client)", "copied_properties": ["code", "username"] },
       { "name": "time_of_arrival", "type": "datetime" },
       { "name": "time_of_departure", "type": "datetime" },
       { "name": "normal_hours", "type": "decimal" },
@@ -390,7 +387,7 @@ export class MockMetadata {
       { "name": "state", "type": "string", "allow_null": false },
       { "name": "nb_installments", "type": "integer" },
       { "name": "accommodation", "type": "decimal" },
-      { "name": "service_form_units", "type": "table", "$ref": "/TestApplication/ServiceFormUnit" }
+      { "name": "service_form_units", "type": "TABLE(/TestApplication/ServiceFormUnit)", "copied_properties": [] }
     ]
   };
 

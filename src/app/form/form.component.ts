@@ -126,21 +126,16 @@ export class FormComponent implements OnInit {
 
     private createFormGroup(parentFormGroup: FormGroup, formEl: FormElement) {
         let newParent = parentFormGroup;
-        if (null != formEl.attributes) {
-            if (null != formEl.formControlName) {
-                let control = new FormControl();
-                parentFormGroup.addControl(formEl.formControlName, control);
-                control.valueChanges.sampleTime(350).forEach(val => {
-                    this.backendWriteService.setFormData(parentFormGroup.value, formEl.formControlName, val);
-                });
-            } 
-        }
+        if (null != formEl.formControlName) {
+            parentFormGroup.addControl(formEl.formControlName, new FormControl());
+        } 
         if (null != formEl.childNodes) {
-            newParent = new FormGroup({});
             if (null != formEl.formArrayName) {
+                newParent = new FormGroup({});
                 parentFormGroup.addControl(formEl.formArrayName, new FormArray([newParent]));
             }
             else if (null != formEl.formGroupName) {
+                newParent = new FormGroup({});
                 parentFormGroup.addControl(formEl.formGroupName, newParent);
             }
 
@@ -163,7 +158,7 @@ export class FormComponent implements OnInit {
 
                 objVal.forEach((o, i) => this.updateFormData(o, (formVal as FormArray).at(i) as FormGroup));
                 
-            } else if (/string|boolean|number/.test(typeof objVal) ) {
+            } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
                 if (!(formVal instanceof FormControl)) {
                     throw new Error("key " + key + ", objVal scalar '" + objVal + "', but formVal not FormControl: '" + formVal + "'");
                 }

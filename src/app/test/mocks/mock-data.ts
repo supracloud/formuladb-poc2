@@ -10,7 +10,7 @@ export class MockData {
 
   private mockDB: Map<String, Map<string, DataObj>> = new Map();
 
-  public constructor() {
+  public constructor(private entitiesMap: Map<string, Entity>) {
     this.mockData();
   }
 
@@ -22,11 +22,17 @@ export class MockData {
     return this.mockDB.get(path).get(id);
   }
   
-  mockEntity(entity: Entity, nbEntities: number) {
-    let db: Map<string, DataObj> = new Map();
-    this.mockDB.set(entity.path, db);
-    for (let i: number = 0; i < nbEntities; i++) {
-      let ret = { mwzType: entity.path, _id: `123400${i}` };
+  mockEntities(entity: Entity, entitiesIndexes: number[]) {
+    return entitiesIndexes.map(i => this.mockEntity(entity, i));
+  }
+  mockEntity(entity: Entity, entityIdx: number): DataObj {
+      let db: Map<string, DataObj> = this.mockDB.get(entity.path);
+      if (null == db) {
+        db = new Map();
+        this.mockDB.set(entity.path, db);
+      }
+      this.mockDB.set(entity.path, db);
+      let ret = { mwzType: entity.path, _id: `123400${entityIdx}` };
       entity.properties.forEach((p, index) => {
         p.grid_row = index;
         if (p.name == "_id") {
@@ -47,13 +53,19 @@ export class MockData {
           ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
         } else if (p.type == "datetime") {
           ret[p.name] = new Date();
-        } else if (p.type.match(/^TABLE\(|^ENTITY\(/)) {
-          console.error("references not currently mocked: TODO");
-          ret[p.name] = null;
+        } else if (p.type.match(/^ENTITY\(/)) {
+          let m = p.type.match(/^ENTITY\((.*)\)/);
+          let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
+          ret[p.name] = this.mockEntity(ref, Math.random() * 100 % 100);
+        } else if (p.type.match(/^TABLE\(/)) {
+          let m = p.type.match(/^TABLE\((.*)\)/);
+          let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
+          ret[p.name] = this.mockEntities(ref, [Math.random() * 1000 % 1000, Math.random() * 1000 % 1000, Math.random() * 1000 % 1000, Math.random() * 1000 % 1000]);
         }
       });
-      db.set(ret._id, ret);
-    }
+
+      db.set(ret._id, ret);      
+      return ret;
   }
 
   mockName(): string {
@@ -62,26 +74,26 @@ export class MockData {
 
   mockData() {
     console.log("mockData called");
-    this.mockEntity(metadata.MockMetadata.General__Actor, 5);
-    this.mockEntity(metadata.MockMetadata.General__Currency, 5);
-    this.mockEntity(metadata.MockMetadata.General__GenericUser, 5);
-    this.mockEntity(metadata.MockMetadata.General__Person, 5);
-    this.mockEntity(metadata.MockMetadata.General__User, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__Client, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__InventoryProduct, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__ProductListItem, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__Product, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__ProductUnitCategory, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__ProductUnit, 5);
-    this.mockEntity(metadata.MockMetadata.Inventory__Supplier, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__Acquisition, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__DetailedCentralizerReport, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__GenericReport, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__Order, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__ProductForm, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__ServiceCentralizerReport, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__ServiceForm, 5);
-    this.mockEntity(metadata.MockMetadata.TestApplication__ServiceFormUnit, 5);
+    this.mockEntities(metadata.MockMetadata.General__Actor, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.General__Currency, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.General__GenericUser, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.General__Person, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.General__User, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__Client, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__ProductListItem, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__Product, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__ProductUnitCategory, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__Supplier, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__Acquisition, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__DetailedCentralizerReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__GenericReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__Order, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__ProductForm, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__ServiceCentralizerReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__ServiceForm, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.TestApplication__ServiceFormUnit, [1, 2, 3, 4, 5]);
   }
 
 }

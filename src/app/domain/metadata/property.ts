@@ -3,7 +3,6 @@ export class Property {
     name:string;
     type:string;
     allow_null?:boolean;
-    $ref?: string;
     copied_properties?: string[];
     default?: any;
     formula?: any;

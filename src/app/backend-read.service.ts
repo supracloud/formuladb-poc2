@@ -26,9 +26,9 @@ export type MwzFilter<T> = {_id: string};
 @Injectable()
 export class BackendReadService {
 
-    public mockData: MockData = new MockData();
     private mockMetadata = new MockMetadata();
-
+    public mockData: MockData = new MockData(this.mockMetadata.entitiesMap);
+    
     private currentUrl: { path: string, id: string } = { path: null, id: null };
     public table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>(2);
     public form$ = new ReplaySubject<Form|DataObj>(2);

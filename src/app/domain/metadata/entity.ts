@@ -10,4 +10,13 @@ export class Entity extends BaseObj {
             prop.index = idx;
         });
     }
+
+    /**
+     * Convert path
+     * @param dirPath directory-like path, e.g. /Inventory/Product
+     * @return entity like path, e.g. Inventory__Product 
+     */
+    static fromDirPath(dirPath: string) {
+        return dirPath.replace(/^\//, '').replace(/\//g, '__');
+    }
 }
