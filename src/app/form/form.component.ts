@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 
 import { FormModalService } from '../form-modal.service';
 import { Entity } from '../domain/metadata/entity';
+import { Property } from "../domain/metadata/property";
 import { DataObj } from '../domain/metadata/data_obj';
 import { Form, FormElement } from '../domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,7 +36,8 @@ let snippet: string = `
           NESTED
       </div>
 
-      <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.formControlName" ngDefaultControl></div>
+      <form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.property.name" ngDefaultControl></form-input>
+
       <div *ngSwitchDefault style="border: 1px solid red;">Element NOT KNOWN /{{ELEM.nodeName}}/!</div>
   </ng-container>
 </ng-container>
@@ -126,19 +128,18 @@ export class FormComponent implements OnInit {
 
     private createFormGroup(parentFormGroup: FormGroup, formEl: FormElement) {
         let newParent = parentFormGroup;
-        if (null != formEl.formControlName) {
-            parentFormGroup.addControl(formEl.formControlName, new FormControl());
+        if (null != formEl.property && null != formEl.property.name) {
+            if (Property.isTable(formEl.property)) {
+                newParent = new FormGroup({});
+                parentFormGroup.addControl(formEl.property.name, new FormArray([newParent]));
+            }
+            else if (Property.isEntity(formEl.property)) {
+                newParent = new FormGroup({});
+                parentFormGroup.addControl(formEl.property.name, newParent);
+            }
+            else parentFormGroup.addControl(formEl.property.name, new FormControl());
         } 
         if (null != formEl.childNodes) {
-            if (null != formEl.formArrayName) {
-                newParent = new FormGroup({});
-                parentFormGroup.addControl(formEl.formArrayName, new FormArray([newParent]));
-            }
-            else if (null != formEl.formGroupName) {
-                newParent = new FormGroup({});
-                parentFormGroup.addControl(formEl.formGroupName, newParent);
-            }
-
             formEl.childNodes.forEach(child => this.createFormGroup(newParent, child));
         }
     }

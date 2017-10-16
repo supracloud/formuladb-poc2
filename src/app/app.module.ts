@@ -20,6 +20,9 @@ import { FormGridComponent } from './form/form-grid.component';
 import { FormGridRowComponent } from './form/form-grid-row.component';
 import { FormGridColComponent } from './form/form-grid-col.component';
 import { FormInputComponent } from './form/form-input.component';
+import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
+import { FormTabsComponent } from "./form/form-tabs.component";
+import { FormTableComponent } from "./form/form-table.component";
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
@@ -55,6 +58,9 @@ const routes: Routes = [
     FormGridRowComponent,
     FormGridColComponent,
     FormInputComponent,
+    FormAutocompleteComponent,
+    FormTabsComponent,
+    FormTableComponent,
     TableComponent,
     EditorComponent,
     ModalComponent

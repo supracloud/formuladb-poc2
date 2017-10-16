@@ -5,19 +5,19 @@
 //  "properties": {
 //    "id": {
 //      "type": "string",
-//      "allow_null": false
+//      "allowNull": false
 //    },
 //    "created_at": {
 //      "type": "datetime",
-//      "allow_null": true
+//      "allowNull": true
 //    },
 //    "updated_at": {
 //      "type": "datetime",
-//      "allow_null": true
+//      "allowNull": true
 //    },
 //    "state": {
 //      "type": "string",
-//      "allow_null": false
+//      "allowNull": false
 //    },
 //    "field1": {
 //      "type": "formula",

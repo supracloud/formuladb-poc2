@@ -1,4 +1,5 @@
 import { BaseObj } from '../base_obj';
+import { Property } from "../metadata/property";
 import { Label } from './label';
 
 export class FormElementAttributes {
@@ -6,15 +7,9 @@ export class FormElementAttributes {
 }
 export class FormElement extends BaseObj {
     nodeName: string;
-    formControlName?: string;
-    formArrayName?: string;
-    formGroupName?: string;
+    property?: Property;
     attributes?: FormElementAttributes;
     childNodes?: FormElement[] = [];
-}
-
-export class MwzInputFormElement extends FormElement {
-    attributes: {value: string};
 }
 
 export class Form extends FormElement {

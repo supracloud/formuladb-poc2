@@ -7,7 +7,7 @@ import {Form} from '../../domain/uimetadata/form'
 //   for (let i:number = 0; i < nbEntities; i++) {
 //     let ret = {};
 //     entity.properties.forEach((p, index) => {
-//       p.grid_row = index;
+//       p.gridRow = index;
 //       if (p.type == "integer") {
 //         ret[p.name] = Math.random() * 100;
 //       } else if (p.type == "decimal") {

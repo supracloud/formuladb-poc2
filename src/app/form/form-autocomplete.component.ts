@@ -7,22 +7,22 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'form-input',
+    selector: 'form-autocomplete',
     template: `
-        <div class="form-group col">
-            <label [for]="element.property.name">{{element.property.name}}</label>
-            <input class="form-control" type="text" [id]="element.property.name" [(ngModel)]="value" />
+        <div class="form-group col" *ngFor="let propName of element.property.copiedProperties">
+            <label [for]="element.property.name + '/' + propName">{{element.property.name}}/{{propName}}</label>
+            <input class="form-control" type="text" [id]="element.property.name + '/' + propName" />
         </div>
     `,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => FormInputComponent),
-            multi: true
-        }
-    ]
+    // providers: [
+    //     {
+    //         provide: NG_VALUE_ACCESSOR,
+    //         useExisting: forwardRef(() => FormAutocompleteComponent),
+    //         multi: true
+    //     }
+    // ]
 })
-export class FormInputComponent implements OnInit, ControlValueAccessor {
+export class FormAutocompleteComponent implements OnInit, ControlValueAccessor {
     constructor() { }
 
     @Input() element: FormElement;

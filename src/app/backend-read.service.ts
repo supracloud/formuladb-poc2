@@ -15,6 +15,7 @@ import { Table } from './domain/uimetadata/table';
 import { DataObj } from './domain/metadata/data_obj';
 import { ChangeObj } from "./domain/change_obj";
 import { Entity } from './domain/metadata/entity';
+import { Property } from "./domain/metadata/property";
 
 import { TableColumn } from './domain/uimetadata/table';
 
@@ -44,7 +45,7 @@ export class BackendReadService {
             this.currentUrl.path = path;
             this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
             this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
-            this.form$.next(getDefaultForm(this.mockMetadata.entitiesMap.get(path)));
+            this.form$.next(getDefaultForm(this.mockMetadata.entitiesMap.get(path), this.mockMetadata.entitiesMap));
         }
 
         if (id != this.currentUrl.id) {
@@ -61,18 +62,20 @@ export class BackendReadService {
     
 }
 
-export function getDefaultForm(entity: Entity): Form {
+export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
     form = { nodeName: 'form-grid', mwzType: "Form_" };
     form.childNodes = entity.properties.map((prop, idx) => ({
-        nodeName: 'form-grid-row',
-        childNodes: [{
-            nodeName: 'form-grid-col',
+            nodeName: 'form-grid-row',
             childNodes: [{
-                nodeName: 'form-input',
-                formControlName: prop.name
+                nodeName: 
+                    Property.isEntity(prop) ? 
+                        'form-autocomplete' :
+                        (Property.isTable(prop) ? 
+                            (prop.isLargeTable ? 'form-table' : 'form-tabs') : 
+                            'form-input'),
+                property: prop
             }]
-        }]
     }));
     return form;
 }

@@ -21,6 +21,10 @@ export class MockData {
   public get(path: string, id: string): DataObj {
     return this.mockDB.get(path).get(id);
   }
+
+  private getRandomId(): number {
+    return Math.trunc(Math.random() * 10000);
+  }
   
   mockEntities(entity: Entity, entitiesIndexes: number[]) {
     return entitiesIndexes.map(i => this.mockEntity(entity, i));
@@ -34,7 +38,7 @@ export class MockData {
       this.mockDB.set(entity.path, db);
       let ret = { mwzType: entity.path, _id: `123400${entityIdx}` };
       entity.properties.forEach((p, index) => {
-        p.grid_row = index;
+        p.gridRow = index;
         if (p.name == "_id") {
           //already set above
         } else if (p.name == "_rev") {
@@ -56,11 +60,11 @@ export class MockData {
         } else if (p.type.match(/^ENTITY\(/)) {
           let m = p.type.match(/^ENTITY\((.*)\)/);
           let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
-          ret[p.name] = this.mockEntity(ref, Math.random() * 100 % 100);
+          ret[p.name] = this.mockEntity(ref, this.getRandomId());
         } else if (p.type.match(/^TABLE\(/)) {
           let m = p.type.match(/^TABLE\((.*)\)/);
           let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
-          ret[p.name] = this.mockEntities(ref, [Math.random() * 1000 % 1000, Math.random() * 1000 % 1000, Math.random() * 1000 % 1000, Math.random() * 1000 % 1000]);
+          ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
         }
       });
 
@@ -90,7 +94,6 @@ export class MockData {
     this.mockEntities(metadata.MockMetadata.TestApplication__DetailedCentralizerReport, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.TestApplication__GenericReport, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.TestApplication__Order, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.TestApplication__ProductForm, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.TestApplication__ServiceCentralizerReport, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.TestApplication__ServiceForm, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.TestApplication__ServiceFormUnit, [1, 2, 3, 4, 5]);
