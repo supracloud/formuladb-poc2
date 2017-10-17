@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-form-tabs',
+  selector: 'form-tabs',
   template: `
-    <p>
-      form-tabs Works!
-    </p>
+  <div class="row" *ngFor="let propName of element.property.copiedProperties">
+    <label [for]="element.property.name + '/' + propName">{{element.property.name}}/{{propName}}</label>
+    <input class="form-control" type="text" [id]="element.property.name + '/' + propName" />
+  </div>
   `,
   styles: []
 })

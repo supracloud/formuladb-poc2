@@ -55,14 +55,7 @@ export class AppEffects {
             //FIXME: why is queryParams empty ?!?!
             console.log("AppEffects:", routerNav.payload.routerState);
             let match = routerNav.payload.routerState.url.match(/^\/(\w+)\/?(\w+)?/)
-            let path: string = null;
-            let id: string = null;
-            if (null != match) {
-                path = match[1];
-                if (match.length >= 2) id = match[2];
-            } else {
-                throw Error('Unknown url: ' + routerNav.payload.routerState.url);
-            }
+            let { path, id } = appState.parseUrl(routerNav.payload.routerState.url);
     
             this.backendReadService.setCurrentPathAndId(path, id);
     

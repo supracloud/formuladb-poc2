@@ -37,7 +37,7 @@ let snippet: string = `
       </div>
 
       <form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.property.name" ngDefaultControl></form-input>
-
+      
       <div *ngSwitchDefault style="border: 1px solid red;">Element NOT KNOWN /{{ELEM.nodeName}}/!</div>
   </ng-container>
 </ng-container>

@@ -7,7 +7,6 @@ export class Property {
     isLargeTable?: boolean;
     default?: any;
     formula?: any;
-    gridRow?: number;
     index?: number;
 
     static isEntity(prop: Property) {

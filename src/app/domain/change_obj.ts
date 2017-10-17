@@ -21,12 +21,10 @@ export function applyChanges<T extends BaseObj>(existing: T[], changes: ChangeOb
     //sync existing objects
     existing.forEach(x => {
         let change = changes.find(y => y.obj._id === x._id);
+        if (null == change) {ret.push(x); return}
         if (change.deleted) return;
-        if (null == change) ret.push(x);
-        else {
-            ret.push(Object.assign({}, x, change.obj));
-            change.synced = true;
-        }
+        ret.push(Object.assign({}, x, change.obj));
+        change.synced = true;
     });
 
     //add new objects

@@ -31,7 +31,7 @@ import { MockService } from "./test/mock.service";
             </div>
         </div>
 
-        <!-- <mwz-editor></mwz-editor> -->
+        <editor></editor>
   `
 })
 export class AppComponent implements OnInit {

@@ -37,6 +37,7 @@ import { FormModalService } from "./form-modal.service";
 import { MockService } from "./test/mock.service";
 import { BackendReadService } from "./backend-read.service";
 import { BackendWriteService } from "./backend-write.service";
+import { ParserService } from "./parser.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -81,6 +82,7 @@ const routes: Routes = [
     FormModalService, 
     BackendReadService, 
     BackendWriteService,
+    ParserService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

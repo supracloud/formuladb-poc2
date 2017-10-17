@@ -38,7 +38,6 @@ export class MockData {
       this.mockDB.set(entity.path, db);
       let ret = { mwzType: entity.path, _id: `123400${entityIdx}` };
       entity.properties.forEach((p, index) => {
-        p.gridRow = index;
         if (p.name == "_id") {
           //already set above
         } else if (p.name == "_rev") {

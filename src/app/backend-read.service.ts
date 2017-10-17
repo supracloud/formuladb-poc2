@@ -77,6 +77,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>)
                 property: prop
             }]
     }));
+    console.log('form:', JSON.stringify(form));
     return form;
 }
 

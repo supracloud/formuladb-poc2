@@ -56,3 +56,19 @@ export const reducers = {
   ...fromTable.reducers,
   ...fromForm.reducers
 };
+
+
+export function parseUrl(url: string): {path: string, id: string} {
+  let match = url.match(/^\/(\w+)\/?(\w+)?/)
+  let path: string = null;
+  let id: string = null;
+  if (null != match) {
+      path = match[1];
+      if (match.length >= 2) id = match[2];
+  } else {
+      throw Error('Unknown url: ' + url);
+  }
+
+  return {path: path, id: id};
+
+}
