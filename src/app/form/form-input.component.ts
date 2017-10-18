@@ -7,12 +7,11 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'form-input',
+    selector: '[form-input]',
+    host: { class: "form-group col" },
     template: `
-        <div class="form-group col">
-            <label [for]="element.property.name">{{element.property.name}}</label>
-            <input class="form-control" type="text" [id]="element.property.name" [(ngModel)]="value" />
-        </div>
+        <label [for]="element.propertyName">{{element.propertyName}}</label>
+        <input class="form-control" type="text" [id]="element.propertyName" [(ngModel)]="value" />
     `,
     providers: [
         {

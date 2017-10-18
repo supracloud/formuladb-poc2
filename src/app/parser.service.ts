@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Form, FormElement } from './domain/uimetadata/form'; 
-import { Table, TableColumn } from './domain/uimetadata/table'; 
+import { Form, FormElement } from './domain/uimetadata/form';
+import { Table, TableColumn } from './domain/uimetadata/table';
 
 @Injectable()
 export class ParserService {
-  private INDENT:string = "  ";
+  private INDENT: string = "  ";
 
   public serializeForm(form: Form): string {
     if (null == form) return '';
@@ -17,10 +17,27 @@ export class ParserService {
     let elementsPath: FormElement[] = [form];
 
     text.split(/\n/).map(line => {
-      let match = line.match(/^(\s*)([\w-]+)(?:: (.*))?/);
+      let match = line.match(/^(\s*)([\w-=.#]+)(?:: (.*))?/);
       if (null != match) {
         let newEl = new FormElement();
-        newEl.nodeName = match[2];
+        let m = match[2].match(/([\w-]+)(?:([=#.])(\w+))?/);
+        if (null != m) {
+          newEl.nodeName = m[1];
+          if (null != m[2]) {
+            switch (m[2]) {
+              case '=':
+                newEl.propertyName = m[3];
+                break;
+              case '#':
+                newEl.tableName = m[3];
+                break;
+              case '.':
+                newEl.entityName = m[3];
+                break;
+            }
+          }
+        } else throw new Error("Cannot parse element name: " + match[2]);
+
         if (null != match[3]) {
           newEl.attributes = {};
           match[3].split(/, /).forEach(attrStr => {
@@ -30,7 +47,7 @@ export class ParserService {
             }
           });
         }
-      
+
         let level = match[1].length / this.INDENT.length + 1;
         let currentLevel = elementsPath.length - 1;
 
@@ -44,9 +61,9 @@ export class ParserService {
           //it's ok, nothing to do
         } else console.error("Error on levels>", currentLevel, level);
 
-        elementsPath[elementsPath.length-1].childNodes.push(newEl);
+        elementsPath[elementsPath.length - 1].childNodes.push(newEl);
         elementsPath.push(newEl);
-        
+
       } else console.error("Errr on line>", line);
     });
 
@@ -75,19 +92,22 @@ export class ParserService {
   private _serializeForm(level: number, ret: string[], formElem: FormElement) {
     if (level > 0) {//do not show top level, it would just waste a level for nothing
       let s = [this.INDENT.repeat(level - 1), formElem.nodeName];
+      if (null != formElem.propertyName) s.push('=', formElem.propertyName);
+      if (null != formElem.tableName) s.push('#', formElem.tableName);
+      if (null != formElem.entityName) s.push('.', formElem.entityName);
       if (formElem.attributes) {
         s.push(": ");
         s.push(Object.entries(formElem.attributes).map(x => `${x[0]}="${x[1]}"`).join(', '));
       }
       ret.push(s.join(''));
     }
-    (formElem.childNodes||[]).forEach(child => {
+    (formElem.childNodes || []).forEach(child => {
       this._serializeForm(level + 1, ret, child);
     });
   }
 
   private _serializeTable(ret: string[], table: Table) {
-    (table.columns||[]).forEach(column => {
+    (table.columns || []).forEach(column => {
       let s = [column.name, ": ", column.type, "\n  other stuff"];
       ret.push(s.join(''));
     });

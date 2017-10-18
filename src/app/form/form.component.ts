@@ -36,7 +36,7 @@ let snippet: string = `
           NESTED
       </div>
 
-      <form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.property.name" ngDefaultControl></form-input>
+      <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.propertyName" ngDefaultControl></div>
       
       <div *ngSwitchDefault style="border: 1px solid red;">Element NOT KNOWN /{{ELEM.nodeName}}/!</div>
   </ng-container>
@@ -128,16 +128,16 @@ export class FormComponent implements OnInit {
 
     private createFormGroup(parentFormGroup: FormGroup, formEl: FormElement) {
         let newParent = parentFormGroup;
-        if (null != formEl.property && null != formEl.property.name) {
-            if (Property.isTable(formEl.property)) {
+        if (null != formEl.propertyName) {
+            if (null != formEl.tableName) {
                 newParent = new FormGroup({});
-                parentFormGroup.addControl(formEl.property.name, new FormArray([newParent]));
+                parentFormGroup.addControl(formEl.tableName, new FormArray([newParent]));
             }
-            else if (Property.isEntity(formEl.property)) {
+            else if (null != formEl.entityName) {
                 newParent = new FormGroup({});
-                parentFormGroup.addControl(formEl.property.name, newParent);
+                parentFormGroup.addControl(formEl.entityName, newParent);
             }
-            else parentFormGroup.addControl(formEl.property.name, new FormControl());
+            else parentFormGroup.addControl(formEl.propertyName, new FormControl());
         } 
         if (null != formEl.childNodes) {
             formEl.childNodes.forEach(child => this.createFormGroup(newParent, child));

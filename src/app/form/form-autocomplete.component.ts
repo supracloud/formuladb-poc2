@@ -10,8 +10,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     selector: 'form-autocomplete',
     template: `
         <div class="form-group col" *ngFor="let propName of element.property.copiedProperties">
-            <label [for]="element.property.name + '/' + propName">{{element.property.name}}/{{propName}}</label>
-            <input class="form-control" type="text" [id]="element.property.name + '/' + propName" />
+            <label [for]="element.propertyName + '/' + propName">{{element.propertyName}}/{{propName}}</label>
+            <input class="form-control" type="text" [id]="element.propertyName + '/' + propName" />
         </div>
     `,
     // providers: [

@@ -5,9 +5,12 @@ import { Label } from './label';
 export class FormElementAttributes {
     [x: string]: any;
 }
+
 export class FormElement extends BaseObj {
     nodeName: string;
-    property?: Property;
+    propertyName?: string;
+    tableName?: string;
+    entityName?: string;
     attributes?: FormElementAttributes;
     childNodes?: FormElement[] = [];
 }

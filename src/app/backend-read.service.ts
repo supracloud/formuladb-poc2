@@ -10,7 +10,7 @@ import 'rxjs/add/observable/from';
 import { from } from 'rxjs/observable/from';
 
 import { BaseObj } from './domain/base_obj';
-import { Form } from './domain/uimetadata/form';
+import { Form, FormElement } from './domain/uimetadata/form';
 import { Table } from './domain/uimetadata/table';
 import { DataObj } from './domain/metadata/data_obj';
 import { ChangeObj } from "./domain/change_obj";
@@ -65,18 +65,21 @@ export class BackendReadService {
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
     form = { nodeName: 'form-grid', mwzType: "Form_" };
-    form.childNodes = entity.properties.map((prop, idx) => ({
+    form.childNodes = entity.properties.map((prop, idx) => {
+        let child = {nodeName: 'form-input'} as FormElement;
+        if (Property.isTable(prop)) {
+            child.tableName = prop.name;
+        } else if (Property.isEntity(prop)) {
+            child.entityName = prop.name;
+        } else {
+            child.propertyName = prop.name;
+        }
+        
+        return {
             nodeName: 'form-grid-row',
-            childNodes: [{
-                nodeName: 
-                    Property.isEntity(prop) ? 
-                        'form-autocomplete' :
-                        (Property.isTable(prop) ? 
-                            (prop.isLargeTable ? 'form-table' : 'form-tabs') : 
-                            'form-input'),
-                property: prop
-            }]
-    }));
+            childNodes: [child]
+        };
+    });
     console.log('form:', JSON.stringify(form));
     return form;
 }
