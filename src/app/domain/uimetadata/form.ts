@@ -13,6 +13,7 @@ export class FormElement extends BaseObj {
     entityName?: string;
     attributes?: FormElementAttributes;
     childNodes?: FormElement[] = [];
+    copiedProperties?: string[];
 }
 
 export class Form extends FormElement {

@@ -7,13 +7,18 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
-    selector: 'form-autocomplete',
+    selector: '[form-autocomplete]',
+    host: { style: "margin-left: 15px" },
     template: `
-        <div class="form-group col" *ngFor="let propName of element.property.copiedProperties">
-            <label [for]="element.propertyName + '/' + propName">{{element.propertyName}}/{{propName}}</label>
-            <input class="form-control" type="text" [id]="element.propertyName + '/' + propName" />
+        <label>{{element.entityName}}</label>
+        <div class="form-group col mwz-form-autocomplete" *ngFor="let propName of element.copiedProperties">
+            <label [for]="element.propertyName + '/' + propName">{{element.entityName}}/{{propName}}</label>
+            <input class="form-control" type="text" [id]="element.entityName + '/' + propName" />
         </div>
     `,
+    styles: [
+        '.mwz-form-autocomplete {margin-left: 25px;}'
+    ]
     // providers: [
     //     {
     //         provide: NG_VALUE_ACCESSOR,

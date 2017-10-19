@@ -36,6 +36,8 @@ let snippet: string = `
           NESTED
       </div>
 
+      <div form-autocomplete [element]="ELEM" *ngSwitchCase="'form-autocomplete'" [formGroupName]="ELEM.entityName" ngDefaultControl></div>
+      
       <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.propertyName" ngDefaultControl></div>
       
       <div *ngSwitchDefault style="border: 1px solid red;">Element NOT KNOWN /{{ELEM.nodeName}}/!</div>
@@ -49,7 +51,6 @@ let snippet: string = `
 
     template:
     `<form [formGroup]="theFormGroup" novalidate>
-      <p>Form value: {{ theFormGroup.value | json }}</p>
       <p>Form status: {{ theFormGroup.status | json }}</p>
       <div form-grid>
   ` +
@@ -63,7 +64,8 @@ let snippet: string = `
         )
     ) +
     `</div>
-  <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>
+    <p>Form value: {{ theFormGroup.value | json }}</p>
+    <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>
   </form>`,
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -128,17 +130,16 @@ export class FormComponent implements OnInit {
 
     private createFormGroup(parentFormGroup: FormGroup, formEl: FormElement) {
         let newParent = parentFormGroup;
-        if (null != formEl.propertyName) {
-            if (null != formEl.tableName) {
-                newParent = new FormGroup({});
-                parentFormGroup.addControl(formEl.tableName, new FormArray([newParent]));
-            }
-            else if (null != formEl.entityName) {
-                newParent = new FormGroup({});
-                parentFormGroup.addControl(formEl.entityName, newParent);
-            }
-            else parentFormGroup.addControl(formEl.propertyName, new FormControl());
-        } 
+        if (null != formEl.tableName) {
+            newParent = new FormGroup({});
+            parentFormGroup.addControl(formEl.tableName, new FormArray([newParent]));
+        }
+        else if (null != formEl.entityName) {
+            newParent = new FormGroup({});
+            parentFormGroup.addControl(formEl.entityName, newParent);
+        } if (null != formEl.propertyName) {
+            parentFormGroup.addControl(formEl.propertyName, new FormControl());
+        }
         if (null != formEl.childNodes) {
             formEl.childNodes.forEach(child => this.createFormGroup(newParent, child));
         }
@@ -150,22 +151,40 @@ export class FormComponent implements OnInit {
 
             let objVal = obj[key];
             let formVal = formGroup.get(key);
-            if (null == objVal || null == formVal) continue;
+            if (null == objVal) continue;
 
             if (objVal instanceof Array) {
+                if (null == formVal) {
+                    formVal = new FormArray([]);
+                    formGroup.setControl(key, formVal);
+                }
                 if (!(formVal instanceof FormArray)) {
                     throw new Error("key " + key + ", objVal Array '" + objVal + "', but formVal not FormArray: '" + formVal + "'");
                 }
 
-                objVal.forEach((o, i) => this.updateFormData(o, (formVal as FormArray).at(i) as FormGroup));
+                objVal.forEach((o, i) => {
+                    let formArray = formVal as FormArray;
+                    if (formArray.length <= i) {
+                        formArray.push(new FormGroup({}));
+                    }
+                    this.updateFormData(o, formArray.at(i) as FormGroup)
+                });
                 
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
+                if (null == formVal) {
+                    formVal = new FormControl();
+                    formGroup.setControl(key, formVal);
+                }
                 if (!(formVal instanceof FormControl)) {
                     throw new Error("key " + key + ", objVal scalar '" + objVal + "', but formVal not FormControl: '" + formVal + "'");
                 }
 
                 formVal.reset(objVal);
             } else if ('object' === typeof objVal) {
+                if (null == formVal) {
+                    formVal = new FormGroup({});
+                    formGroup.setControl(key, formVal);
+                }
                 if (!(formVal instanceof FormGroup)) {
                     throw new Error("key " + key + ", objVal object '" + objVal + "', but formVal not FormGroup: '" + formVal + "'");
                 }

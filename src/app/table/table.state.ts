@@ -69,8 +69,8 @@ export function reducer(state = initialState, action: Actions): State {
     //user navigates to different tables
     case TABLE_CHANGES:
       ret = {
-        ...state,
-        table: action.table
+        table: action.table,
+        tableData: []
       };
       break;
     case TABLE_ROW_CHOSEN:

@@ -15,6 +15,7 @@ export class MockData {
   }
 
   public getAll(path: string): DataObj[] {
+    console.log("########", path, Array.from(this.mockDB.get(path).values()));
     return Array.from(this.mockDB.get(path).values());
   }
 

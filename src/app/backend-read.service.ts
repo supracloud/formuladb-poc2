@@ -69,8 +69,11 @@ export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>)
         let child = {nodeName: 'form-input'} as FormElement;
         if (Property.isTable(prop)) {
             child.tableName = prop.name;
+            child.nodeName = prop.isLargeTable ? 'form-table': 'form-tabs';
         } else if (Property.isEntity(prop)) {
             child.entityName = prop.name;
+            child.nodeName = 'form-autocomplete';
+            child.copiedProperties = prop.copiedProperties;
         } else {
             child.propertyName = prop.name;
         }
