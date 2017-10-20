@@ -35,7 +35,7 @@ let snippet: string = `
       <div form-grid-col *ngSwitchCase="'form-grid-col'">
           NESTED
       </div>
-
+      
       <div form-autocomplete [element]="ELEM" *ngSwitchCase="'form-autocomplete'" [formGroupName]="ELEM.entityName" ngDefaultControl></div>
       
       <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.propertyName" ngDefaultControl></div>

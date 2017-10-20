@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-form-table',
+  selector: '[form-table]',
   template: `
     <p>
       form-table Works!
