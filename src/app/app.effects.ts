@@ -40,8 +40,8 @@ export class AppEffects {
 
         this.tableFormActions$ = this.backendReadService.tableForm$.map(x => {
             if (x instanceof Array) return new fromTable.TableDataChangesAction(x);
-            if (x.mwzType == 'Form_') return new fromForm.FormChangesAction(x as fromForm.Form);
-            if (x.mwzType == 'Table_') return new fromTable.TableChangesAction(x as fromTable.Table);
+            if (x._type == 'Form_') return new fromForm.FormChangesAction(x as fromForm.Form);
+            if (x._type == 'Table_') return new fromTable.TableChangesAction(x as fromTable.Table);
             return new fromForm.FormDataChangesAction(x as fromForm.DataObj);
         });
         this.tableFormActions$.subscribe(x => this.store.dispatch(x));

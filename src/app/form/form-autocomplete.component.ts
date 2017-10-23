@@ -4,16 +4,16 @@ import {
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
     forwardRef
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
 
 @Component({
     selector: '[form-autocomplete]',
     host: { style: "margin-left: 15px" },
     template: `
         <label>{{element.entityName}}</label>
-        <div class="form-group col mwz-form-autocomplete" *ngFor="let propName of element.copiedProperties">
+        <div class="form-group col mwz-form-autocomplete" [formGroup]="formGroup" *ngFor="let propName of element.copiedProperties">
             <label [for]="element.propertyName + '/' + propName">{{element.entityName}}/{{propName}}</label>
-            <input class="form-control" type="text" [id]="element.entityName + '/' + propName" />
+            <input class="form-control" type="text" [id]="element.entityName + '/' + propName" [formControlName]="propName" />
         </div>
     `,
     styles: [
@@ -31,6 +31,7 @@ export class FormAutocompleteComponent implements OnInit, ControlValueAccessor {
     constructor() { }
 
     @Input() element: FormElement;
+    @Input() formGroup: FormGroup;
     private onChange = (_: any) => { }
     private onTouched = () => { }
     private _value = "";
@@ -43,7 +44,9 @@ export class FormAutocompleteComponent implements OnInit, ControlValueAccessor {
         this.onChange(v);
         this.onTouched();
     }
-    ngOnInit(): void { }
+    ngOnInit(): void { 
+        console.log(this.element, this.formGroup);
+    }
 
     writeValue(obj: any): void {
         this._value = obj;

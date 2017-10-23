@@ -64,7 +64,7 @@ export class BackendReadService {
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
-    form = { nodeName: 'form-grid', mwzType: "Form_" };
+    form = { nodeName: 'form-grid', _type: "Form_" };
     form.childNodes = entity.properties.map((prop, idx) => {
         let child = {nodeName: 'form-input'} as FormElement;
         if (Property.isTable(prop)) {
@@ -91,7 +91,7 @@ export function getDefaultTable(entity: Entity): Table {
     if (null == entity) return null;
     
     let table = new Table();
-    table.mwzType = 'Table_';
+    table._type = 'Table_';
     table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
     return table;
 }

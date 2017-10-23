@@ -8,12 +8,21 @@ export class FormElementAttributes {
 
 export class FormElement extends BaseObj {
     nodeName: string;
+
+    //this element is a property (formControl), in case this attribute is not null
     propertyName?: string;
+
+    //this element is a table (formArray), in case this attribute is not null
     tableName?: string;
+
+    //this element is an entity (formGroup), in case this attribute is not null
     entityName?: string;
+    
+    copiedProperties?: string[];//this only applies to entities
+    
     attributes?: FormElementAttributes;
+    
     childNodes?: FormElement[] = [];
-    copiedProperties?: string[];
 }
 
 export class Form extends FormElement {

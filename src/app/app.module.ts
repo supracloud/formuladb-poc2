@@ -16,6 +16,7 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { FormComponent } from './form/form.component';
+import { FormItemComponent } from './form/form-item.component';
 import { FormGridComponent } from './form/form-grid.component';
 import { FormGridRowComponent } from './form/form-grid-row.component';
 import { FormGridColComponent } from './form/form-grid-col.component';
@@ -55,6 +56,7 @@ const routes: Routes = [
     NotFoundComponent,
     NavigationComponent,
     FormComponent,
+    FormItemComponent,
     FormGridComponent,
     FormGridRowComponent,
     FormGridColComponent,

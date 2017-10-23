@@ -21,30 +21,6 @@ import { Observable } from 'rxjs/Observable';
 import { BackendWriteService } from "../backend-write.service";
 import * as formState from './form.state';
 
-let snippet: string = `
-<ng-container *ngFor="let ELEM of CHILD_NODES">
-  <ng-container [ngSwitch]="ELEM.nodeName">
-      <div form-grid *ngSwitchCase="'form-grid'">
-          NESTED
-      </div>
-      
-      <div form-grid-row *ngSwitchCase="'form-grid-row'">
-          NESTED
-      </div>
-      
-      <div form-grid-col *ngSwitchCase="'form-grid-col'">
-          NESTED
-      </div>
-      
-      <div form-autocomplete [element]="ELEM" *ngSwitchCase="'form-autocomplete'" [formGroupName]="ELEM.entityName" ngDefaultControl></div>
-      
-      <div form-input [element]="ELEM" *ngSwitchCase="'form-input'" [formControlName]="ELEM.propertyName" ngDefaultControl></div>
-      
-      <div *ngSwitchDefault style="border: 1px solid red;">Element NOT KNOWN /{{ELEM.nodeName}}/!</div>
-  </ng-container>
-</ng-container>
-`
-
 @Component({
     moduleId: module.id,
     selector: 'mwz-form',
@@ -53,21 +29,12 @@ let snippet: string = `
     `<form [formGroup]="theFormGroup" novalidate>
       <p>Form status: {{ theFormGroup.status | json }}</p>
       <div form-grid>
-  ` +
-    snippet.replace(/ELEM/g, 'ELEM_L1').replace(/CHILD_NODES/g, '(form$ | async)?.childNodes').replace(/NESTED/g,
-        snippet.replace(/ELEM/g, 'ELEM_L2').replace(/CHILD_NODES/g, 'ELEM_L1.childNodes').replace(/NESTED/g,
-            snippet.replace(/ELEM/g, 'ELEM_L3').replace(/CHILD_NODES/g, 'ELEM_L2.childNodes').replace(/NESTED/g,
-                snippet.replace(/ELEM/g, 'ELEM_L4').replace(/CHILD_NODES/g, 'ELEM_L3.childNodes').replace(/NESTED/g,
-                    snippet.replace(/ELEM/g, 'ELEM_L5').replace(/CHILD_NODES/g, 'ELEM_L4.childNodes')
-                )
-            )
-        )
-    ) +
-    `</div>
+        <form-item [formItemGroup]="theFormGroup" [formEl]="form$ | async"></form-item>
+      </div>
     <p>Form value: {{ theFormGroup.value | json }}</p>
     <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>
   </form>`,
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class FormComponent implements OnInit {
