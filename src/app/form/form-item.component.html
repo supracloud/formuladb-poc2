@@ -17,6 +17,12 @@
         </ng-container>
     </div>
 
+    <ul *ngSwitchCase="'form-tabs'" [attr.data-property-name]="formEl.propertyName" [attr.data-entityName]="formEl.entityName" [attr.data-tableName]="formEl.tableName" >
+        <li *ngFor="let childFormEl of formEl.childNodes; let idx = index">
+            <form-item [formItemGroup]="formItemGroup" [formEl]="childFormEl"></form-item>
+        </li>
+    </ul>
+    
     <div form-autocomplete [element]="formEl" [formGroup]="formItemGroup.get(formEl.entityName)" *ngSwitchCase="'form-autocomplete'" [formGroupName]="formEl.entityName" ngDefaultControl></div>
 
     <div form-input [element]="formEl" *ngSwitchCase="'form-input'" [formControlName]="formEl.propertyName" ngDefaultControl></div>

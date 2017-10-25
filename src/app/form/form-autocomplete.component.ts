@@ -45,7 +45,7 @@ export class FormAutocompleteComponent implements OnInit, ControlValueAccessor {
         this.onTouched();
     }
     ngOnInit(): void { 
-        console.log(this.element, this.formGroup);
+        // console.log(this.element, this.formGroup);
     }
 
     writeValue(obj: any): void {

@@ -16,7 +16,16 @@ export class Entity extends BaseObj {
      * @param dirPath directory-like path, e.g. /Inventory/Product
      * @return entity like path, e.g. Inventory__Product 
      */
-    static fromDirPath(dirPath: string) {
+    static fromDirPath(dirPath: string): string {
         return dirPath.replace(/^\//, '').replace(/\//g, '__');
+    }
+
+    /**
+     * 
+     * @param prop get the
+     * @returns null for simple properties, entity path for tables and entities (e.g. Inventory__Product)
+     */
+    static getPropertyPath(prop: Property): string {
+        return Entity.fromDirPath(Property.getDirPath(prop));
     }
 }

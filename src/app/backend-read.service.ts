@@ -18,8 +18,10 @@ import { Entity } from './domain/metadata/entity';
 import { Property } from "./domain/metadata/property";
 
 import { TableColumn } from './domain/uimetadata/table';
+import { ParserService } from "./parser.service";
 
 import { MockMetadata } from "./test/mocks/mock-metadata";
+import * as mockUiMeta from "./test/mocks/mock-ui-metadata";
 import { MockData } from "./test/mocks/mock-data";
 
 export type MwzFilter<T> = {_id: string};
@@ -35,7 +37,7 @@ export class BackendReadService {
     public form$ = new ReplaySubject<Form|DataObj>(2);
     public tableForm$ = this.table$.merge(this.form$);
     
-    constructor() {
+    constructor(private parserService: ParserService) {
     }
 
     public setCurrentPathAndId(path: string, id: string) {
@@ -45,7 +47,7 @@ export class BackendReadService {
             this.currentUrl.path = path;
             this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
             this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
-            this.form$.next(getDefaultForm(this.mockMetadata.entitiesMap.get(path), this.mockMetadata.entitiesMap));
+            this.form$.next(this.getForm(path));
         }
 
         if (id != this.currentUrl.id) {
@@ -59,17 +61,29 @@ export class BackendReadService {
         //     }, 50);
         // }, 50);
     }
-    
+
+    private getForm(path: string): Form {
+        return this.parserService.parseForm(mockUiMeta.getFormText(path)) ||
+            getDefaultForm(this.mockMetadata.entitiesMap.get(path), this.mockMetadata.entitiesMap);
+    }
 }
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
     form = { nodeName: 'form-grid', _type: "Form_" };
-    form.childNodes = entity.properties.map((prop, idx) => {
-        let child = {nodeName: 'form-input'} as FormElement;
+    setFormElementChildren(form, entity, entitiesMap);
+    console.log('form:', JSON.stringify(form));
+    return form;
+}
+
+function setFormElementChildren(parentFormEl: FormElement, entity: Entity, entitiesMap: Map<string, Entity>) {
+    parentFormEl.childNodes = entity.properties.map((prop, idx) => {
+        let child = new FormElement();
+        child.nodeName = 'form-input';
         if (Property.isTable(prop)) {
             child.tableName = prop.name;
             child.nodeName = prop.isLargeTable ? 'form-table': 'form-tabs';
+            setFormElementChildren(child, entitiesMap.get(Entity.getPropertyPath(prop)), entitiesMap);
         } else if (Property.isEntity(prop)) {
             child.entityName = prop.name;
             child.nodeName = 'form-autocomplete';
@@ -83,8 +97,6 @@ export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>)
             childNodes: [child]
         };
     });
-    console.log('form:', JSON.stringify(form));
-    return form;
 }
 
 export function getDefaultTable(entity: Entity): Table {

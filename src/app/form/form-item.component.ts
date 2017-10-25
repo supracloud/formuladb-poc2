@@ -31,7 +31,7 @@ import * as formState from './form.state';
 
 export class FormItemComponent implements OnInit {
     ngOnInit(): void {
-        console.log(this.formItemGroup);
+        // console.log(this.formItemGroup);
     }
     @Input()
     formEl: FormElement;

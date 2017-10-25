@@ -26,4 +26,9 @@ export class FormElement extends BaseObj {
 }
 
 export class Form extends FormElement {
+    public _type = 'Form_';
+    constructor() {
+        super();
+        this.nodeName = 'form-grid';
+    }
 }

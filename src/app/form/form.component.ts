@@ -67,6 +67,7 @@ export class FormComponent implements OnInit {
         this.form$.subscribe(frm => {
             console.log("MwzFormComponent frm:", frm);
             this.createFormGroup(this.theFormGroup, frm);
+            console.log("MwzFormComponent this.theFormGroup:", this.theFormGroup);
             // this.updateFormData(this.lastObj);
         });
 

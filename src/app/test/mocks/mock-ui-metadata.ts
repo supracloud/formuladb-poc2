@@ -2,29 +2,43 @@ import * as metadata from './mock-metadata';
 import {Entity} from '../../domain/metadata/entity'
 import {Form} from '../../domain/uimetadata/form'
 
-// export function mockForm(entity: Entity): Form {
-//   let arr:any[] = [];
-//   for (let i:number = 0; i < nbEntities; i++) {
-//     let ret = {};
-//     entity.properties.forEach((p, index) => {
-//       if (p.type == "integer") {
-//         ret[p.name] = Math.random() * 100;
-//       } else if (p.type == "decimal") {
-//         ret[p.name] = Math.random() * 100;
-//       } else if (p.type == "float") {
-//         ret[p.name] = Math.random() * 112.45;
-//       } else if (p.type == "string") {
-//         ret[p.name] = p.name + Math.random() * 10000;
-//       } else if (p.type == "text") {
-//         ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
-//       } else if (p.type == "datetime") {
-//         ret[p.name] = new Date();
-//       } else if (p.type == "reference") {
-//         console.error("references not currently mocked: TODO");
-//       }
-//     });
-//     arr.push(ret);
-//   }
+const TestApplication__ServiceForm = `
+form-grid-row
+  form-input=code
+  form-input=time_of_arrival
+  form-input=time_of_departure
+  form-input=state
+form-grid-row
+  form-autocomplete.client: "copiedProperties": ["code", "name"]
+  form-input=technician_code
+  form-input=client_person
+form-grid-row
+  form-input=nb_installments
+  form-input=technician2_code
+form-grid-row
+  form-input=normal_hours
+form-grid-row
+  form-input=warranty_hours
+form-grid-row
+  form-input=night_hours
+form-grid-row
+  form-input=shipment_cost
+form-grid-row
+  form-input=notes
+form-grid-row
+  form-input=accommodation
+form-grid-row
+  form-tabs#service_form_units
+form-grid-row
+  form-input=_id
+form-grid-row
+  form-input=_type
+`;
 
-//   return arr;
-// }
+let forms = {
+    TestApplication__ServiceForm: TestApplication__ServiceForm,
+};
+
+export function getFormText(path: string): string {
+    return forms[path];
+}

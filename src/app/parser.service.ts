@@ -13,10 +13,15 @@ export class ParserService {
     return ret.join("\n");
   }
   public parseForm(text: string): Form {
+    if (null == text) return null;
+
     let form = new Form();
+    console.log(form._type);
     let elementsPath: FormElement[] = [form];
 
     text.split(/\n/).map(line => {
+      if (null != line.match(/^\s*$/)) return;//ignore empty lines
+
       let match = line.match(/^(\s*)([\w-=.#]+)(?:: (.*))?/);
       if (null != match) {
         let newEl = new FormElement();
@@ -39,13 +44,7 @@ export class ParserService {
         } else throw new Error("Cannot parse element name: " + match[2]);
 
         if (null != match[3]) {
-          newEl.attributes = {};
-          match[3].split(/, /).forEach(attrStr => {
-            let m = attrStr.match(/([\w-]+)="([\w-]+)"/);
-            if (null != m) {
-              newEl.attributes[m[1]] = m[2];
-            }
-          });
+          newEl.attributes = JSON.parse('{' + match[3] + '}');
         }
 
         let level = match[1].length / this.INDENT.length + 1;
@@ -97,7 +96,7 @@ export class ParserService {
       if (null != formElem.entityName) s.push('.', formElem.entityName);
       if (formElem.attributes) {
         s.push(": ");
-        s.push(Object.entries(formElem.attributes).map(x => `${x[0]}="${x[1]}"`).join(', '));
+        s.push(JSON.stringify(formElem.attributes));
       }
       ret.push(s.join(''));
     }
