@@ -1,6 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 
 import { MockService } from "./test/mock.service";
+import { NodeChildrenService } from "./form/node-children.service";
+import { NodeType } from "./domain/uimetadata/form";
+import { FormGridComponent } from "./form/form-grid.component";
+import { FormGridRowComponent } from "./form/form-grid-row.component";
+import { FormGridColComponent } from "./form/form-grid-col.component";
+import { FormInputComponent } from "./form/form-input.component";
+import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
+import { FormTableComponent } from "./form/form-table.component";
+import { FormTabsComponent } from "./form/form-tabs.component";
+import { BaseNodeComponent } from "./form/base_node";
 
 @Component({
     selector: 'app-root',
@@ -37,9 +47,19 @@ import { MockService } from "./test/mock.service";
 export class AppComponent implements OnInit {
     title = 'app';
 
-    public constructor(private mockService: MockService) {}
+    public constructor(private mockService: MockService, private nodeChildrenService: NodeChildrenService) {}
 
     ngOnInit(): void {
+        this.nodeChildrenService.setNodeType2ComponentClass(new Map<NodeType, Type<BaseNodeComponent>>(
+            [
+                [NodeType.FormGrid, FormGridComponent],
+                [NodeType.FormGridRow, FormGridRowComponent],
+                [NodeType.FormGridCol, FormGridColComponent],
+                [NodeType.FormInput, FormInputComponent],
+                [NodeType.FormAutocomplete, FormAutocompleteComponent],
+                [NodeType.FormTable, FormTableComponent],
+                [NodeType.FormTabs, FormTabsComponent]
+            ]));
         this.mockService.loadInitialEntities();
     }
 }

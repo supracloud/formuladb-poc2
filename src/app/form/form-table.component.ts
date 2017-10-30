@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BaseNodeComponent } from "./base_node";
 
 @Component({
   selector: '[form-table]',
@@ -9,9 +10,11 @@ import { Component, OnInit } from '@angular/core';
   `,
   styles: []
 })
-export class FormTableComponent implements OnInit {
+export class FormTableComponent extends BaseNodeComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnInit() {
   }

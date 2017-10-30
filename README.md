@@ -25,3 +25,27 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+# Design
+
+**MetaObj**
+
+
+**UiNode**
+
+form-grid-row
+  form-input=code
+  form-input=time_of_arrival
+  form-input=time_of_departure
+  form-input=state
+form-grid-row
+  form-autocomplete=client {"copiedProperties": ["code", "username"]}
+  form-input=technician_code
+  form-input=client_person
+form-grid-row
+  form-tabs=service_form_units
+    
+form-grid-row
+  form-input=_id
+form-grid-row
+  form-input=_type

@@ -1,15 +1,14 @@
 import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
-    ChangeDetectionStrategy
+    ChangeDetectionStrategy, Directive
 } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { FormModalService } from '../form-modal.service';
-import { Entity } from '../domain/metadata/entity';
-import { Property } from "../domain/metadata/property";
+import { Entity, Property } from '../domain/metadata/entity';
 import { DataObj } from '../domain/metadata/data_obj';
-import { Form, FormElement } from '../domain/uimetadata/form';
+import { Form, NodeElement } from '../domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
@@ -22,18 +21,41 @@ import { BackendWriteService } from "../backend-write.service";
 import * as formState from './form.state';
 
 @Component({
-    moduleId: module.id,
-    selector: 'mwz-form',
-
+    selector: 'mwz-form',    
     template:
-    `<form [formGroup]="theFormGroup" novalidate>
-      <p>Form status: {{ theFormGroup.status | json }}</p>
-      <div form-grid>
-        <form-item [formItemGroup]="theFormGroup" [formEl]="form$ | async"></form-item>
+    `
+    <div class="container">
+    <div class="row">
+      <div class="col">
+        1 of 3
       </div>
-    <p>Form value: {{ theFormGroup.value | json }}</p>
-    <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>
-  </form>`,
+      <div class="col-6">
+        2 of 3 (wider)
+      </div>
+      <div class="col">
+        3 of 3
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        1 of 3
+      </div>
+      <div class="col-5">
+        2 of 3 (wider)
+      </div>
+      <div class="col">
+        3 of 3
+      </div>
+    </div>
+  </div>    
+    <form [formGroup]="theFormGroup" novalidate>
+        <p>Form status: {{ theFormGroup.status | json }}</p>
+        <div form-grid [nodeElement]="form$ | async" [formGroup]="theFormGroup">
+        </div>
+        <p>Form value: {{ theFormGroup.value | json }}</p>
+        <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>
+    </form>
+    `,
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
@@ -96,7 +118,7 @@ export class FormComponent implements OnInit {
             });
     }
 
-    private createFormGroup(parentFormGroup: FormGroup, formEl: FormElement) {
+    private createFormGroup(parentFormGroup: FormGroup, formEl: NodeElement) {
         let newParent = parentFormGroup;
         if (null != formEl.tableName) {
             newParent = new FormGroup({});

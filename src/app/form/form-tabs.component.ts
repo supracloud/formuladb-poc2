@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BaseNodeComponent } from "./base_node";
 
 @Component({
   selector: '[form-tabs]',
@@ -10,9 +11,11 @@ import { Component, OnInit } from '@angular/core';
   `,
   styles: []
 })
-export class FormTabsComponent implements OnInit {
+export class FormTabsComponent extends BaseNodeComponent implements OnInit {
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   ngOnInit() {
   }

@@ -20,7 +20,7 @@ import { Subscription }   from 'rxjs/Subscription';
             width: 80%;
             height: 100%;
             z-index: 1050;
-            padding: 4%;
+            padding: 7%;
             overflow: auto;
         }
         .mwz-modal .body {

@@ -1,11 +1,20 @@
-import { Directive, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { BaseNodeComponent } from "./base_node";
+import { NodeChildrenService } from "./node-children.service";
 
-@Directive({
+@Component({
     selector: '[form-grid]',
-    host: { class: "container" }
+    host: { class: "container" },
+    template: '<ng-container #childrenContainer></ng-container>'
 })
-export class FormGridComponent implements OnInit {
-    constructor() { }
+export class FormGridComponent extends BaseNodeComponent implements OnInit {
+    @ViewChild('childrenContainer', { read: ViewContainerRef }) childrenContainer: ViewContainerRef;
+    
+    constructor(private nodeChildrenService: NodeChildrenService) { 
+        super();
+    }
 
-    ngOnInit(): void { }
+    ngOnInit(): void {
+        this.nodeChildrenService.addChildren(this.childrenContainer, this, FormGridComponent);
+    }
 }

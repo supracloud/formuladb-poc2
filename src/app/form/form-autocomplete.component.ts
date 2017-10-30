@@ -1,4 +1,4 @@
-import { FormElement } from './../domain/uimetadata/form';
+import { NodeElement } from './../domain/uimetadata/form';
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
@@ -6,12 +6,14 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/forms';
 
+import { BaseNodeComponent } from "./base_node";
+
 @Component({
     selector: '[form-autocomplete]',
     host: { style: "margin-left: 15px" },
     template: `
         <label>{{element.entityName}}</label>
-        <div class="form-group col mwz-form-autocomplete" [formGroup]="formGroup" *ngFor="let propName of element.copiedProperties">
+        <div class="form-group col mwz-form-autocomplete" [formGroup]="formGroup" *ngFor="let propName of element.attributes?.copiedProperties">
             <label [for]="element.propertyName + '/' + propName">{{element.entityName}}/{{propName}}</label>
             <input class="form-control" type="text" [id]="element.entityName + '/' + propName" [formControlName]="propName" />
         </div>
@@ -27,10 +29,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormGroup } from '@angular/for
     //     }
     // ]
 })
-export class FormAutocompleteComponent implements OnInit, ControlValueAccessor {
-    constructor() { }
+export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, ControlValueAccessor {
+    constructor() {
+        super();
+    }
 
-    @Input() element: FormElement;
+    @Input() element: NodeElement;
     @Input() formGroup: FormGroup;
     private onChange = (_: any) => { }
     private onTouched = () => { }

@@ -54,7 +54,10 @@ body {
   
   .mwz-editor .editor {
     height: 100%;
-    width: 100%;
+    // min-width: 200px;
+    width: 500px;
+    overflow: scroll;
+    white-space: nowrap;
   }
   
   .ld-article-collapsed {

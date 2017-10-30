@@ -10,8 +10,29 @@ export const SETUP = {
     initialEntities: new MockMetadata().entities
 };
 
-let SYSTEMNAME = 'Cloudev'; //NEED IDEAS HERE!!! metawiz is not catchy enough, cloudev sound better by there is a cloudevtech.com, let's open a poll
+let SYSTEMNAME = 'Cloudev'; //NEED IDEAS HERE!!! metawiz is not catchy enough, cloudev sounds better by there is a cloudevtech.com, let's open a poll
+/**
+@startuml
+actor User
+box "Client"
+    participant TableC
+    participant FormC
+end box
+box "Server"
+    participant Express
+end box
 
+note over Express
+    GET /mwz_api/path?filters
+    PUT /mwz_api/path JSON
+    GET /mwz_api/path?__metadata
+    PUT /mwz_api/path?__metadata JSON
+    GET /mwz_api/path?__uiMetadata
+    PUT /mwz_api/path?__uiMetadata JSON
+end note
+
+@enduml
+ */
 export const FLOW = {
     comment1: `The 5 min overview of ${SYSTEMNAME}
         System running off existing metadata and data.

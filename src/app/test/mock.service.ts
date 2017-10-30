@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 
 import * as appState from '../app.state';
 
-import * as mainDemoFlow from "./main_demo_flow";
+import * as mainDemoFlow from "./main_demo.flow.spec";
 
 @Injectable()
 export class MockService {

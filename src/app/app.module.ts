@@ -16,7 +16,6 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { FormComponent } from './form/form.component';
-import { FormItemComponent } from './form/form-item.component';
 import { FormGridComponent } from './form/form-grid.component';
 import { FormGridRowComponent } from './form/form-grid-row.component';
 import { FormGridColComponent } from './form/form-grid-col.component';
@@ -27,6 +26,7 @@ import { FormTableComponent } from "./form/form-table.component";
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
+import { NodeChildrenService } from "./form/node-children.service";
 
 import { environment } from '../environments/environment';
 
@@ -56,7 +56,6 @@ const routes: Routes = [
     NotFoundComponent,
     NavigationComponent,
     FormComponent,
-    FormItemComponent,
     FormGridComponent,
     FormGridRowComponent,
     FormGridColComponent,
@@ -85,7 +84,17 @@ const routes: Routes = [
     BackendReadService, 
     BackendWriteService,
     ParserService,
+    NodeChildrenService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
+  ],
+  entryComponents:[
+    FormGridComponent,
+    FormGridRowComponent,
+    FormGridColComponent,
+    FormInputComponent,
+    FormAutocompleteComponent,
+    FormTableComponent,
+    FormTabsComponent
   ],
   bootstrap: [AppComponent]
 })

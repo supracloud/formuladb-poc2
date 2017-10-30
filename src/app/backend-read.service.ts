@@ -10,12 +10,11 @@ import 'rxjs/add/observable/from';
 import { from } from 'rxjs/observable/from';
 
 import { BaseObj } from './domain/base_obj';
-import { Form, FormElement } from './domain/uimetadata/form';
+import { Form, NodeElement, NodeType } from './domain/uimetadata/form';
 import { Table } from './domain/uimetadata/table';
 import { DataObj } from './domain/metadata/data_obj';
 import { ChangeObj } from "./domain/change_obj";
-import { Entity } from './domain/metadata/entity';
-import { Property } from "./domain/metadata/property";
+import { Entity, Property } from './domain/metadata/entity';
 
 import { TableColumn } from './domain/uimetadata/table';
 import { ParserService } from "./parser.service";
@@ -70,30 +69,30 @@ export class BackendReadService {
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
-    form = { nodeName: 'form-grid', _type: "Form_" };
+    form = { nodeType: NodeType.FormGrid, _type: "Form_" };
     setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', JSON.stringify(form));
     return form;
 }
 
-function setFormElementChildren(parentFormEl: FormElement, entity: Entity, entitiesMap: Map<string, Entity>) {
+function setFormElementChildren(parentFormEl: NodeElement, entity: Entity, entitiesMap: Map<string, Entity>) {
     parentFormEl.childNodes = entity.properties.map((prop, idx) => {
-        let child = new FormElement();
-        child.nodeName = 'form-input';
+        let child = new NodeElement();
+        child.nodeType = NodeType.FormInput;
         if (Property.isTable(prop)) {
             child.tableName = prop.name;
-            child.nodeName = prop.isLargeTable ? 'form-table': 'form-tabs';
+            child.nodeType = prop.isLargeTable ? NodeType.FormTable: NodeType.FormTabs;
             setFormElementChildren(child, entitiesMap.get(Entity.getPropertyPath(prop)), entitiesMap);
         } else if (Property.isEntity(prop)) {
             child.entityName = prop.name;
-            child.nodeName = 'form-autocomplete';
-            child.copiedProperties = prop.copiedProperties;
+            child.nodeType = NodeType.FormAutocomplete;
+            child.attributes = {copiedProperties: prop.copiedProperties};
         } else {
             child.propertyName = prop.name;
         }
         
         return {
-            nodeName: 'form-grid-row',
+            nodeType: NodeType.FormGridRow,
             childNodes: [child]
         };
     });

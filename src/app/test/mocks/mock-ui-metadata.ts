@@ -9,7 +9,7 @@ form-grid-row
   form-input=time_of_departure
   form-input=state
 form-grid-row
-  form-autocomplete.client: "copiedProperties": ["code", "name"]
+  form-autocomplete.client: "copiedProperties": ["code", "username"]
   form-input=technician_code
   form-input=client_person
 form-grid-row

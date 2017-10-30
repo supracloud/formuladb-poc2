@@ -19,7 +19,7 @@ import * as fromTable from '../table/table.state';
   template: `
   <form (ngSubmit)="applyChanges()" class="mwz-editor mwz-independent-scroll ml-2">
       <label>{{isForm ? 'Form' : 'Table'}}</label> <button type="submit">Apply Changes</button>
-      <textarea name="text" class="editor form" [(ngModel)]='text'></textarea>
+      <textarea cols="120" wrap="off" name="text" class="editor form" [(ngModel)]='text'></textarea>
   </form>
   `,
 })

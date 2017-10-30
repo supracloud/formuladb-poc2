@@ -1,10 +1,11 @@
-import { FormElement } from './../domain/uimetadata/form';
+import { NodeElement } from './../domain/uimetadata/form';
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
     forwardRef
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { BaseNodeComponent } from "./base_node";
 
 @Component({
     selector: '[form-input]',
@@ -21,10 +22,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         }
     ]
 })
-export class FormInputComponent implements OnInit, ControlValueAccessor {
-    constructor() { }
+export class FormInputComponent extends BaseNodeComponent implements OnInit, ControlValueAccessor {
+    constructor() { 
+        super();
+    }
 
-    @Input() element: FormElement;
+    @Input() element: NodeElement;
     private onChange = (_: any) => { }
     private onTouched = () => { }
     private _value = "";

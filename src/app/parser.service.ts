@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Form, FormElement } from './domain/uimetadata/form';
+import { Form, NodeElement, NodeType, Str2NodeType, NodeType2Str } from './domain/uimetadata/form';
 import { Table, TableColumn } from './domain/uimetadata/table';
 
 @Injectable()
@@ -17,17 +17,17 @@ export class ParserService {
 
     let form = new Form();
     console.log(form._type);
-    let elementsPath: FormElement[] = [form];
+    let elementsPath: NodeElement[] = [form];
 
     text.split(/\n/).map(line => {
       if (null != line.match(/^\s*$/)) return;//ignore empty lines
 
       let match = line.match(/^(\s*)([\w-=.#]+)(?:: (.*))?/);
       if (null != match) {
-        let newEl = new FormElement();
+        let newEl = new NodeElement();
         let m = match[2].match(/([\w-]+)(?:([=#.])(\w+))?/);
         if (null != m) {
-          newEl.nodeName = m[1];
+          newEl.nodeType = Str2NodeType.get(m[1]);
           if (null != m[2]) {
             switch (m[2]) {
               case '=':
@@ -88,15 +88,15 @@ export class ParserService {
     return table;
   }
 
-  private _serializeForm(level: number, ret: string[], formElem: FormElement) {
+  private _serializeForm(level: number, ret: string[], formElem: NodeElement) {
     if (level > 0) {//do not show top level, it would just waste a level for nothing
-      let s = [this.INDENT.repeat(level - 1), formElem.nodeName];
+      let s = [this.INDENT.repeat(level - 1), NodeType2Str.get(formElem.nodeType)];
       if (null != formElem.propertyName) s.push('=', formElem.propertyName);
       if (null != formElem.tableName) s.push('#', formElem.tableName);
       if (null != formElem.entityName) s.push('.', formElem.entityName);
       if (formElem.attributes) {
         s.push(": ");
-        s.push(JSON.stringify(formElem.attributes));
+        s.push(JSON.stringify(formElem.attributes).replace(/^\{/, '').replace(/\}$/, ''));
       }
       ret.push(s.join(''));
     }
