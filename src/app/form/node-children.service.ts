@@ -4,6 +4,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Form, NodeElement, NodeType } from "../domain/uimetadata/form";
 import { BaseNodeComponent } from "./base_node";
 
+import * as _ from 'lodash';
+
 @Injectable()
 export class NodeChildrenService {
 
@@ -22,8 +24,12 @@ export class NodeChildrenService {
       let componentRef = viewContainerRef.createComponent(factory);
       let instance = <BaseNodeComponent>componentRef.instance;
       instance.nodeElement = childEl;
-      instance.formGroup = parentComponent.formGroup;
-      // instance.formControl = parentComponent.formGroup.get(parentComponent);
+      instance.topLevelFormGroup = parentComponent.topLevelFormGroup;
+      let formPath = _.isEmpty(parentComponent.parentFormPath) ? [] : [parentComponent.parentFormPath]
+      let childPath = childEl.propertyName || childEl.entityName || childEl.tableName;
+      if (childPath) formPath.push(childPath);
+      instance.parentFormPath = formPath.join('.');
+      console.log(instance.parentFormPath);
     });
   }
 }

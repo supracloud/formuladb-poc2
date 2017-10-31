@@ -7,7 +7,7 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { NavigationComponent } from './navigation.component';
 import * as state from './navigation.state';
 
-import * as mainDemoFlow from '../test/main_demo.flow.spec';
+import * as mainDemoFlow from '../test/main_demo.flow';
 import { MockMetadata } from '../test/mocks/mock-metadata';
 
 import { MockService } from "../test/mock.service";

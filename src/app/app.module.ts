@@ -39,6 +39,7 @@ import { MockService } from "./test/mock.service";
 import { BackendReadService } from "./backend-read.service";
 import { BackendWriteService } from "./backend-write.service";
 import { ParserService } from "./parser.service";
+import { ContainerComponent } from './container.component';
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -65,7 +66,8 @@ const routes: Routes = [
     FormTableComponent,
     TableComponent,
     EditorComponent,
-    ModalComponent
+    ModalComponent,
+    ContainerComponent
   ],
   imports: [
     BrowserModule,

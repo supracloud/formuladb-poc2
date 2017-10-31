@@ -1,0 +1,33 @@
+TestApp
+  General: MODULE
+  Inventory: MODULE
+  Forms: MODULE
+  Reports: MODULE
+
+General
+  Actor: TABLE
+  Currency: TABLE
+  GenericUser: TABLE
+  Person: TABLE
+  User: TABLE
+
+Inventory
+  Client: TABLE
+  InventoryProduct: TABLE
+  ProductListItem: TABLE
+  ProductListProductUnit: TABLE
+  Product: TABLE
+  ProductUnitCategory: TABLE
+  ProductUnit: TABLE
+  Supplier: TABLE
+
+Forms
+  Acquisition: TABLE
+  DetailedCentralizerReport: TABLE
+  GenericReport: TABLE
+  Order: TABLE
+  
+Reports
+  ServiceCentralizerReport: TABLE
+  ServiceForm: TABLE
+  ServiceFormUnit: TABLE

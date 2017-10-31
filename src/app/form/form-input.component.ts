@@ -9,10 +9,10 @@ import { BaseNodeComponent } from "./base_node";
 
 @Component({
     selector: '[form-input]',
-    host: { class: "form-group col" },
+    host: { class: "col form-group" },
     template: `
-        <label [for]="element.propertyName">{{element.propertyName}}</label>
-        <input class="form-control" type="text" [id]="element.propertyName" [(ngModel)]="value" />
+        <label [for]="nodeElement.propertyName">{{nodeElement.propertyName}}</label>
+        <input class="form-control" type="text" [id]="parentFormPath + '.' + nodeElement.propertyName" [(ngModel)]="value" />
     `,
     providers: [
         {
@@ -27,7 +27,6 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, Con
         super();
     }
 
-    @Input() element: NodeElement;
     private onChange = (_: any) => { }
     private onTouched = () => { }
     private _value = "";
@@ -40,7 +39,8 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, Con
         this.onChange(v);
         this.onTouched();
     }
-    ngOnInit(): void { }
+    ngOnInit(): void {
+    }
 
     writeValue(obj: any): void {
         this._value = obj;

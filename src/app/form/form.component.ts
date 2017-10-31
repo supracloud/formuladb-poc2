@@ -50,7 +50,7 @@ import * as formState from './form.state';
   </div>    
     <form [formGroup]="theFormGroup" novalidate>
         <p>Form status: {{ theFormGroup.status | json }}</p>
-        <div form-grid [nodeElement]="form$ | async" [formGroup]="theFormGroup">
+        <div form-grid [nodeElement]="form$ | async" [topLevelFormGroup]="theFormGroup" parentFormPath="">
         </div>
         <p>Form value: {{ theFormGroup.value | json }}</p>
         <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>

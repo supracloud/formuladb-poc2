@@ -10,7 +10,7 @@ import { FormModalService } from "../form-modal.service";
 
 import * as state from './table.state';
 
-import * as mainDemoFlow from "../test/main_demo.flow.spec";
+import * as mainDemoFlow from "../test/main_demo.flow";
 
 interface AppState {
   nav: state.State;

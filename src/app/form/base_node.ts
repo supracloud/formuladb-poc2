@@ -18,12 +18,8 @@ export class BaseNodeComponent {
     nodeElement: NodeElement;
 
     @Input()
-    entity: Entity;
+    topLevelFormGroup: FormGroup;
 
     @Input()
-    propertyName?: string;
-
-    @Input()
-    formGroup: FormGroup;
-
+    parentFormPath: string;
 }

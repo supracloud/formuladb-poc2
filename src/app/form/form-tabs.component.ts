@@ -3,11 +3,7 @@ import { BaseNodeComponent } from "./base_node";
 
 @Component({
   selector: '[form-tabs]',
-  template: `
-  <div class="row" *ngFor="let propName of element.copiedProperties">
-    <label [for]="element.propertyName + '/' + propName">{{element.propertyName}}/{{propName}}</label>
-    <input class="form-control" type="text" [id]="element.propertyName + '/' + propName" />
-  </div>
+  template: `form-tabs not yet implemented
   `,
   styles: []
 })

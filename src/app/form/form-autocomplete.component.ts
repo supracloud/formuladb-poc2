@@ -12,10 +12,10 @@ import { BaseNodeComponent } from "./base_node";
     selector: '[form-autocomplete]',
     host: { style: "margin-left: 15px" },
     template: `
-        <label>{{element.entityName}}</label>
-        <div class="form-group col mwz-form-autocomplete" [formGroup]="formGroup" *ngFor="let propName of element.attributes?.copiedProperties">
-            <label [for]="element.propertyName + '/' + propName">{{element.entityName}}/{{propName}}</label>
-            <input class="form-control" type="text" [id]="element.entityName + '/' + propName" [formControlName]="propName" />
+        <label>{{nodeElement.entityName}}</label>
+        <div class="form-group col mwz-form-autocomplete" [formGroup]="topLevelFormGroup" *ngFor="let propName of nodeElement.attributes?.copiedProperties">
+            <label [for]="nodeElement.propertyName + '/' + propName">{{nodeElement.entityName}}/{{propName}}</label>
+            <input class="form-control" type="text" [id]="parentFormPath + '.' + propName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + propName)" />
         </div>
     `,
     styles: [
@@ -34,8 +34,6 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
         super();
     }
 
-    @Input() element: NodeElement;
-    @Input() formGroup: FormGroup;
     private onChange = (_: any) => { }
     private onTouched = () => { }
     private _value = "";

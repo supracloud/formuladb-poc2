@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Entity } from "./domain/metadata/entity";
 import { Form, NodeElement, NodeType, Str2NodeType, NodeType2Str } from './domain/uimetadata/form';
 import { Table, TableColumn } from './domain/uimetadata/table';
 
@@ -6,13 +7,13 @@ import { Table, TableColumn } from './domain/uimetadata/table';
 export class ParserService {
   private INDENT: string = "  ";
 
-  public serializeForm(form: Form): string {
+  public serializeForm(entity: Entity, form: Form): string {
     if (null == form) return '';
     let ret = [];
-    this._serializeForm(0, ret, form);
+    this._serializeForm(entity, 0, ret, form);
     return ret.join("\n");
   }
-  public parseForm(text: string): Form {
+  public parseForm(entity: Entity, text: string): Form {
     if (null == text) return null;
 
     let form = new Form();
@@ -69,14 +70,14 @@ export class ParserService {
     return form;
   }
 
-  public serializeTable(table: Table): string {
+  public serializeTable(entity: Entity, table: Table): string {
     if (null == table) return '';
     let ret = [];
-    this._serializeTable(ret, table);
+    this._serializeTable(entity, ret, table);
     return ret.join("\n");
   }
 
-  public parseTable(text: string): Table {
+  public parseTable(entity: Entity, text: string): Table {
     let table = new Table();
     table.columns = [];
     text.split(/\n/).forEach(line => {
@@ -88,7 +89,7 @@ export class ParserService {
     return table;
   }
 
-  private _serializeForm(level: number, ret: string[], formElem: NodeElement) {
+  private _serializeForm(entity: Entity, level: number, ret: string[], formElem: NodeElement) {
     if (level > 0) {//do not show top level, it would just waste a level for nothing
       let s = [this.INDENT.repeat(level - 1), NodeType2Str.get(formElem.nodeType)];
       if (null != formElem.propertyName) s.push('=', formElem.propertyName);
@@ -101,11 +102,11 @@ export class ParserService {
       ret.push(s.join(''));
     }
     (formElem.childNodes || []).forEach(child => {
-      this._serializeForm(level + 1, ret, child);
+      this._serializeForm(entity, level + 1, ret, child);
     });
   }
 
-  private _serializeTable(ret: string[], table: Table) {
+  private _serializeTable(entity: Entity, ret: string[], table: Table) {
     (table.columns || []).forEach(column => {
       let s = [column.name, ": ", column.type, "\n  other stuff"];
       ret.push(s.join(''));

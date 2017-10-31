@@ -32,6 +32,7 @@ export class BackendReadService {
     public mockData: MockData = new MockData(this.mockMetadata.entitiesMap);
     
     private currentUrl: { path: string, id: string } = { path: null, id: null };
+    public entity$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>(2);
     public table$ = new ReplaySubject<Table|ChangeObj<DataObj>[]>(2);
     public form$ = new ReplaySubject<Form|DataObj>(2);
     public tableForm$ = this.table$.merge(this.form$);
@@ -62,7 +63,7 @@ export class BackendReadService {
     }
 
     private getForm(path: string): Form {
-        return this.parserService.parseForm(mockUiMeta.getFormText(path)) ||
+        return this.parserService.parseForm(this.mockMetadata.entitiesMap.get(path), mockUiMeta.getFormText(path)) ||
             getDefaultForm(this.mockMetadata.entitiesMap.get(path), this.mockMetadata.entitiesMap);
     }
 }

@@ -30,8 +30,7 @@ export class EditorComponent implements OnInit {
   public isForm: boolean = false;
 
   private text: string;
-  private form: Form;
-  private table: Table;
+  private entity: Entity;
 
   constructor(private store: Store<appState.AppState>, private parserService: ParserService) {
   }
@@ -39,46 +38,37 @@ export class EditorComponent implements OnInit {
   public applyChanges() {
     console.log("EditorComponent: isFom=", this.isForm);
     if (this.isForm) {
-      let newForm = this.parserService.parseForm(this.text);
+      let newForm = this.parserService.parseForm(this.entity, this.text);
       newForm._type = 'Form_';
       newForm._id = 'Form_:' + this.path;
       this.store.dispatch(new fromForm.FormChangesAction(newForm));
     } else {
-      let newTable = this.parserService.parseTable(this.text);
+      let newTable = this.parserService.parseTable(this.entity, this.text);
       newTable._type = 'Table_';
       newTable._id = 'Table_:' + this.path;
       this.store.dispatch(new fromTable.TableChangesAction(newTable));
     }
   }
 
-  private setText() {
-    if (this.isForm && null != this.form) {
-      this.text = this.parserService.serializeForm(this.form);
-    }
-    else if (!this.isForm && null != this.table) {
-      this.text = this.parserService.serializeTable(this.table);
-    }
-  }
-
   ngOnInit() {
     let cmp = this;
 
-    this.store.select(s => s.router).subscribe(router => {
-      if (null == router || null == router.state) return;
-      let { path, id } = appState.parseUrl(router.state.url);
+    this.store.subscribe(state => {
+      if (null == state.router || null == state.router.state) return;
+      let { path, id } = appState.parseUrl(state.router.state.url);
       this.isForm = (id != null);
       this.path = path;
-      this.setText(); 
+      let form = state.form.form;
+      let table = state.table.table;
+      this.entity = state.nav.selectedEntity;
+      if (this.isForm && null != form) {
+        this.text = this.parserService.serializeForm(this.entity, form);
+      }
+      else if (!this.isForm && null != table) {
+        this.text = this.parserService.serializeTable(this.entity, table);
+      }
     });
 
-    this.store.select(fromForm.getFormState).subscribe(frm => {
-      this.form = frm;
-      this.setText(); 
-    });
-    this.store.select(fromTable.getTableState).subscribe(tbl => {
-      this.table = tbl;
-      this.setText(); 
-    });
   }
 
   ngOnDestroy() {

@@ -15,6 +15,6 @@ export class FormGridRowComponent extends BaseNodeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.nodeChildrenService.addChildren(this.childrenContainer, this, FormGridRowComponent);
+        this.nodeChildrenService.addChildren(this.childrenContainer, this);
     }
 }
