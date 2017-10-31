@@ -34,6 +34,11 @@ form-grid-row
         form-input=found_problem
       form-grid-row
         form-input=work_description
+      form-grid-row
+        form-table#product_list
+          form-autocomplete.product: "copiedProperties": ["inventory_code", "price"]
+          form-input=requested_quantity
+          form-input=client_stock
 form-grid-row
   form-timepicker=time_of_arrival
   form-timepicker=time_of_departure
