@@ -12,6 +12,8 @@ import {
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -22,7 +24,10 @@ import { FormGridColComponent } from './form/form-grid-col.component';
 import { FormInputComponent } from './form/form-input.component';
 import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
 import { FormTabsComponent } from "./form/form-tabs.component";
+import { FormTabComponent } from "./form/form-tab.component";
 import { FormTableComponent } from "./form/form-table.component";
+import { FormDatepickerComponent } from "./form/form-datepicker.component";
+import { FormTimepickerComponent } from "./form/form-timepicker.component";
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
@@ -63,7 +68,10 @@ const routes: Routes = [
     FormInputComponent,
     FormAutocompleteComponent,
     FormTabsComponent,
+    FormTabComponent,
     FormTableComponent,
+    FormDatepickerComponent,
+    FormTimepickerComponent,
     TableComponent,
     EditorComponent,
     ModalComponent,
@@ -75,6 +83,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     StoreModule.forRoot(appState.reducers),
+    NgbModule.forRoot(),
     StoreRouterConnectingModule,
     // !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects])
@@ -96,7 +105,10 @@ const routes: Routes = [
     FormInputComponent,
     FormAutocompleteComponent,
     FormTableComponent,
-    FormTabsComponent
+    FormTabsComponent,
+    FormTabComponent,
+    FormDatepickerComponent,
+    FormTimepickerComponent,
   ],
   bootstrap: [AppComponent]
 })

@@ -28,7 +28,7 @@ end note
 note right of User: When_user_first_accesses_the_app
 User -> AppCmp: navigate /
 AppEff -> Express: /GET/mwz_api
-AppEff -> AppSt: {nav: {entities}}
+AppEff -> AppSt: {nav: list of entities}
 
 note right of User: Then_navigation_should_show_all_current_tables
 NavCmp -> NavCmp: display sidebar

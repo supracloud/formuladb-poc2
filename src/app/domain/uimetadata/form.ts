@@ -9,7 +9,10 @@ export enum NodeType {
     FormInput ,
     FormAutocomplete ,
     FormTabs ,
+    FormTab ,
     FormTable ,
+    FormDatepicker,
+    FormTimepicker
 }
 
 export const NodeType2Str: Map<NodeType, string> = new Map([
@@ -19,7 +22,10 @@ export const NodeType2Str: Map<NodeType, string> = new Map([
     [NodeType.FormInput, "form-input"],
     [NodeType.FormAutocomplete, "form-autocomplete"],
     [NodeType.FormTabs, "form-tabs"],
+    [NodeType.FormTab, "form-tab"],
     [NodeType.FormTable, "form-table"],
+    [NodeType.FormDatepicker, "form-datepicker"],
+    [NodeType.FormTimepicker, "form-timepicker"],
 ]);
 
 export const Str2NodeType: Map<string, NodeType> = new Map([
@@ -29,12 +35,16 @@ export const Str2NodeType: Map<string, NodeType> = new Map([
     ["form-input", NodeType.FormInput],
     ["form-autocomplete", NodeType.FormAutocomplete],
     ["form-tabs", NodeType.FormTabs],
+    ["form-tab", NodeType.FormTab],
     ["form-table", NodeType.FormTable],
+    ["form-datepicker", NodeType.FormDatepicker],
+    ["form-timepicker", NodeType.FormTimepicker],
 ]);
 
 
 export class NodeElementAttributes {
     copiedProperties?: string[];//this only applies to entities
+    tabNameFormPath?: string;//used for form-tabs to select which field gives the name for the tab
     [x: string]: any;
 }
 

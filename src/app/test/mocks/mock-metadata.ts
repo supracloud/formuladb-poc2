@@ -383,13 +383,9 @@ export class MockMetadata {
   static TestApplication__ServiceFormUnit: Entity = {
     _type: "Entity_", "path": "TestApplication__ServiceFormUnit",
     "properties": [
-      { "name": "equipment", "type": "ENTITY(/Inventory/ProductUnit)" },
+      { "name": "equipment", "type": "ENTITY(/Inventory/ProductUnit)", copiedProperties: ['code', 'product_code', 'serial1'] },
       { "name": "product_list", "type": "TABLE(/Inventory/ProductListItem)", "isLargeTable": true },
       { "name": "product_list_id", "type": "integer", "allowNull": false },
-      { "name": "equipment_serial", "type": "string" },
-      { "name": "equipment_model", "type": "string" },
-      { "name": "equipment_code", "type": "string" },
-      { "name": "equipment_type", "type": "string" },
       { "name": "reported_problem", "type": "text" },
       { "name": "found_problem", "type": "text" },
       { "name": "work_description", "type": "text" },

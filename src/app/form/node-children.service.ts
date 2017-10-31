@@ -1,5 +1,5 @@
 import { Injectable, ViewContainerRef, ComponentFactoryResolver, Type } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ControlValueAccessor } from '@angular/forms';
 
 import { Form, NodeElement, NodeType } from "../domain/uimetadata/form";
 import { BaseNodeComponent } from "./base_node";
@@ -29,7 +29,6 @@ export class NodeChildrenService {
       let childPath = childEl.propertyName || childEl.entityName || childEl.tableName;
       if (childPath) formPath.push(childPath);
       instance.parentFormPath = formPath.join('.');
-      console.log(instance.parentFormPath);
     });
   }
 }

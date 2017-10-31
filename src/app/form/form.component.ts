@@ -1,6 +1,6 @@
 import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
-    ChangeDetectionStrategy, Directive
+    ChangeDetectionStrategy, Directive, ChangeDetectorRef
 } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -24,39 +24,13 @@ import * as formState from './form.state';
     selector: 'mwz-form',    
     template:
     `
-    <div class="container">
-    <div class="row">
-      <div class="col">
-        1 of 3
-      </div>
-      <div class="col-6">
-        2 of 3 (wider)
-      </div>
-      <div class="col">
-        3 of 3
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        1 of 3
-      </div>
-      <div class="col-5">
-        2 of 3 (wider)
-      </div>
-      <div class="col">
-        3 of 3
-      </div>
-    </div>
-  </div>    
     <form [formGroup]="theFormGroup" novalidate>
         <p>Form status: {{ theFormGroup.status | json }}</p>
         <div form-grid [nodeElement]="form$ | async" [topLevelFormGroup]="theFormGroup" parentFormPath="">
         </div>
-        <p>Form value: {{ theFormGroup.value | json }}</p>
-        <p *ngFor="let chg of changes" style="border-bottom: 1px solid black">{{ chg | json }}</p>
     </form>
     `,
-    // changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class FormComponent implements OnInit {
@@ -71,6 +45,7 @@ export class FormComponent implements OnInit {
     constructor(
         private store: Store<formState.State>,
         private formBuilder: FormBuilder,
+        private cdr: ChangeDetectorRef,
         private formModalService: FormModalService,
         private backendWriteService: BackendWriteService) {
         try {
@@ -90,7 +65,6 @@ export class FormComponent implements OnInit {
             console.log("MwzFormComponent frm:", frm);
             this.createFormGroup(this.theFormGroup, frm);
             console.log("MwzFormComponent this.theFormGroup:", this.theFormGroup);
-            // this.updateFormData(this.lastObj);
         });
 
         this.formData$.subscribe(obj => {
@@ -110,12 +84,12 @@ export class FormComponent implements OnInit {
         // });
 
         this.theFormGroup.valueChanges
-            .filter(() => this.theFormGroup.valid)
+            // .filter(() => this.theFormGroup.valid)
             .sampleTime(500)
             .forEach(val => {
-                this.changes.push(val);
-                //TODO: send data to validators and backend
+                console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.status);
             });
+        
     }
 
     private createFormGroup(parentFormGroup: FormGroup, formEl: NodeElement) {

@@ -1,15 +1,13 @@
-import { Component, OnInit, Input, ViewChild, ViewContainerRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { BaseNodeComponent } from "./base_node";
 import { NodeChildrenService } from "./node-children.service";
 
 @Component({
-    selector: '[form-grid-row]',
-    host: { class: "row" },
+    selector: '[form-tab]',
     template: '<ng-container #childrenContainer></ng-container>'
 })
-export class FormGridRowComponent extends BaseNodeComponent implements OnInit, OnChanges {
+export class FormTabComponent extends BaseNodeComponent implements OnInit {
     @ViewChild('childrenContainer', { read: ViewContainerRef }) childrenContainer: ViewContainerRef;
-
     constructor(private nodeChildrenService: NodeChildrenService) { 
         super();
     }
@@ -17,7 +15,4 @@ export class FormGridRowComponent extends BaseNodeComponent implements OnInit, O
     ngOnInit(): void {
         this.nodeChildrenService.addChildren(this.childrenContainer, this);
     }
-    ngOnChanges(changes: SimpleChanges): void {
-        this.nodeChildrenService.addChildren(this.childrenContainer, this);
-    }    
 }

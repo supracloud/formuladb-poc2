@@ -12,12 +12,39 @@ export const SETUP = {
 
 let SYSTEMNAME = 'Cloudev'; //NEED IDEAS HERE!!! metawiz is not catchy enough, cloudev sounds better by there is a cloudevtech.com, let's open a poll
 
+class Participant {
+    msgTo(dst: Participant, payload: any) {
+        return payload;
+    }
+}
+class Actor extends Participant {}
+class Box {
+    participants: Participant[];
+}
+
+export const User = new Actor();
+export const AppCmp   = new Participant(); 
+export const NavCmp   = new Participant(); 
+export const TableCmp = new Participant(); 
+export const FormCmp  = new Participant(); 
+export const AppEff   = new Participant(); 
+export const AppSt    = new Participant(); 
+export const Express  = new Participant();
+
+export const Client = {participants: [AppCmp, NavCmp, TableCmp, FormCmp, AppEff, AppSt]} as Box;
+export const Server = {participants: [Express]} as Box;
 
 export const FLOW = {
     comment1: `The 5 min overview of ${SYSTEMNAME}
         System running off existing metadata and data.
         Nothing really special, just standard looking ERP software`,
-    When_user_first_accesses_the_app: {},
+    When_user_first_accesses_the_app: {
+        sequence: [
+            User.msgTo(AppCmp, 'navigate /'),
+            AppEff.msgTo(Express, '/GET/mwz_api'),
+            AppEff.msgTo(AppSt, {nav: "the list of entities"})
+        ]
+    },
     Then_navigation_should_show_all_current_tables: {
         initialEntitiesChangesAction: new navState.EntitiesChangesAction(SETUP.initialEntities.map(e => new ChangeObj(e)))
     },

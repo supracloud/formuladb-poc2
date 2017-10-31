@@ -10,6 +10,9 @@ import { FormInputComponent } from "./form/form-input.component";
 import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
 import { FormTableComponent } from "./form/form-table.component";
 import { FormTabsComponent } from "./form/form-tabs.component";
+import { FormTabComponent } from "./form/form-tab.component";
+import { FormDatepickerComponent } from "./form/form-datepicker.component";
+import { FormTimepickerComponent } from "./form/form-timepicker.component";
 import { BaseNodeComponent } from "./form/base_node";
 
 @Component({
@@ -58,7 +61,10 @@ export class AppComponent implements OnInit {
                 [NodeType.FormInput, FormInputComponent],
                 [NodeType.FormAutocomplete, FormAutocompleteComponent],
                 [NodeType.FormTable, FormTableComponent],
-                [NodeType.FormTabs, FormTabsComponent]
+                [NodeType.FormTabs, FormTabsComponent],
+                [NodeType.FormDatepicker, FormDatepickerComponent],
+                [NodeType.FormTimepicker, FormTimepickerComponent],
+                [NodeType.FormTab, FormTabComponent]
             ]));
         this.mockService.loadInitialEntities();
     }

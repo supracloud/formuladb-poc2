@@ -10,10 +10,10 @@ import { BaseNodeComponent } from "./base_node";
 
 @Component({
     selector: '[form-autocomplete]',
-    host: { style: "margin-left: 15px" },
+    host: { class: 'col', style: "padding-left: 25px" },
     template: `
         <label>{{nodeElement.entityName}}</label>
-        <div class="form-group col mwz-form-autocomplete" [formGroup]="topLevelFormGroup" *ngFor="let propName of nodeElement.attributes?.copiedProperties">
+        <div class="form-group mwz-form-autocomplete" [formGroup]="topLevelFormGroup" *ngFor="let propName of nodeElement.attributes?.copiedProperties">
             <label [for]="nodeElement.propertyName + '/' + propName">{{nodeElement.entityName}}/{{propName}}</label>
             <input class="form-control" type="text" [id]="parentFormPath + '.' + propName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + propName)" />
         </div>
