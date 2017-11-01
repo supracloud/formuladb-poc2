@@ -13,6 +13,6 @@ export class FormTabComponent extends BaseNodeComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.nodeChildrenService.addChildren(this.childrenContainer, this);
+        // this.nodeChildrenService.addChildren(this.childrenContainer, this);
     }
 }

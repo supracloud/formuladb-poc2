@@ -50,7 +50,8 @@ export class NodeElementAttributes {
 
 export class NodeElement extends BaseObj {
     nodeType: NodeType;
-
+    nodeName: string;
+    
     //this element is a property (formControl), in case this attribute is not null
     propertyName?: string;
 
@@ -70,5 +71,6 @@ export class Form extends NodeElement {
     constructor() {
         super();
         this.nodeType = NodeType.FormGrid;
+        this.nodeName = 'form-grid';
     }
 }

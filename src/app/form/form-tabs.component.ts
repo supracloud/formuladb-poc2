@@ -10,13 +10,13 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
     <ngb-tab *ngFor="let childControl of topLevelFormGroup.get(parentFormPath).controls; let idx = index" 
     [title]="tabNames[idx]">
       <ng-template ngbTabContent>
-        <div form-tab [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath + '.' + idx"></div>
+        <div form-item [nodeElement]="nodeElement.childNodes[0]" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath + '.' + idx"></div>
       </ng-template>
     </ngb-tab>  
   </ngb-tabset>
   `,
   styles: [`
-    div[form-tab] {
+    div.tab-content {
       border-left: 1px solid rgb(221, 221, 221);
       border-right: 1px solid rgb(221, 221, 221);
       border-bottom: 1px solid rgb(221, 221, 221);

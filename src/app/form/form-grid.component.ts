@@ -5,20 +5,21 @@ import { NodeChildrenService } from "./node-children.service";
 @Component({
     selector: '[form-grid]',
     host: { class: "container" },
-    template: '<ng-container #childrenContainer></ng-container>',
+    template: '<div mwz-children></div>',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormGridComponent extends BaseNodeComponent implements OnInit, OnChanges {
-    @ViewChild('childrenContainer', { read: ViewContainerRef }) childrenContainer: ViewContainerRef;
+    // @ViewChild('childrenContainer', { read: ViewContainerRef }) childrenContainer: ViewContainerRef;
     
     constructor(private nodeChildrenService: NodeChildrenService) { 
         super();
     }
 
     ngOnInit(): void {
-        this.nodeChildrenService.addChildren(this.childrenContainer, this);
+        // this.nodeChildrenService.addChildren(this.childrenContainer, this);
     }
     ngOnChanges(changes: SimpleChanges): void {
+        console.log(changes);
         // this.nodeChildrenService.addChildren(this.childrenContainer, this);
     }    
 }

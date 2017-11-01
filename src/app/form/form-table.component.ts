@@ -1,20 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 import { BaseNodeComponent } from "./base_node";
-
-import { NodeType } from "../domain/uimetadata/form";
 
 @Component({
   selector: '[form-table]',
   template: `
-  <table class="table table-bordered">
+  <table class="table table-striped">
     <thead>
       <tr>
         <ng-container *ngFor="let child of nodeElement.childNodes">
-          <ng-container [ngSwitch]="child.nodeType">
-            <ng-container *ngSwitchCase="${NodeType.FormAutocomplete}">
-              <th *ngFor="let propName of child.attributes?.copiedProperties">{{propName}}</th>
+          <ng-container [ngSwitch]="child.nodeName">
+            <ng-container *ngSwitchCase="'form-autocomplete'">
+            <th *ngFor="let propName of child.attributes?.copiedProperties">{{propName}}</th>
             </ng-container>
-            <th *ngSwitchCase="${NodeType.FormInput}">{{child.propertyName}}</th>
+            <th *ngSwitchCase="'form-input'">{{child.propertyName}}</th>
           </ng-container>
         </ng-container>
       </tr>
@@ -22,14 +20,14 @@ import { NodeType } from "../domain/uimetadata/form";
     <tbody>
       <tr *ngFor="let childControl of topLevelFormGroup.get(parentFormPath).controls; let idx = index">
         <ng-container *ngFor="let child of nodeElement.childNodes">
-          <ng-container [ngSwitch]="child.nodeType">
-            <ng-container *ngSwitchCase="${NodeType.FormAutocomplete}">
+          <ng-container [ngSwitch]="child.nodeName">
+            <ng-container *ngSwitchCase="'form-autocomplete'">
               <td *ngFor="let propName of child.attributes?.copiedProperties">
                 <input type="text" [id]="parentFormPath + '.' + idx + '.' + child.entityName + '.' + propName" 
                   [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.entityName + '.' + propName)" />
               </td>
             </ng-container>
-            <td *ngSwitchCase="${NodeType.FormInput}">
+            <td *ngSwitchCase="'form-input'">
             <input type="text" [id]="parentFormPath + '.' + idx + '.' + child.propertyName" 
                 [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.propertyName)" />
             </td>
@@ -41,13 +39,13 @@ import { NodeType } from "../domain/uimetadata/form";
   `,
   styles: []
 })
-export class FormTableComponent extends BaseNodeComponent implements OnInit {
+export class FormTableComponent extends BaseNodeComponent implements OnChanges {
 
   constructor() {
     super();
   }
 
-  ngOnInit() {
+  ngOnChanges() {
     console.log(this.nodeElement);
   }
 

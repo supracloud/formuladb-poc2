@@ -10,7 +10,7 @@ import 'rxjs/add/observable/from';
 import { from } from 'rxjs/observable/from';
 
 import { BaseObj } from './domain/base_obj';
-import { Form, NodeElement, NodeType } from './domain/uimetadata/form';
+import { Form, NodeElement, NodeType, NodeType2Str } from './domain/uimetadata/form';
 import { Table } from './domain/uimetadata/table';
 import { DataObj } from './domain/metadata/data_obj';
 import { ChangeObj } from "./domain/change_obj";
@@ -70,7 +70,7 @@ export class BackendReadService {
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
-    form = { nodeType: NodeType.FormGrid, _type: "Form_" };
+    form = { nodeType: NodeType.FormGrid, nodeName: 'form-grid', _type: "Form_" };
     setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', JSON.stringify(form));
     return form;
@@ -80,6 +80,7 @@ function setFormElementChildren(parentFormEl: NodeElement, entity: Entity, entit
     parentFormEl.childNodes = entity.properties.map((prop, idx) => {
         let child = new NodeElement();
         child.nodeType = NodeType.FormInput;
+        child.nodeName = NodeType2Str.get(child.nodeType);
         if (Property.isTable(prop)) {
             child.tableName = prop.name;
             child.nodeType = prop.isLargeTable ? NodeType.FormTable: NodeType.FormTabs;
@@ -94,6 +95,7 @@ function setFormElementChildren(parentFormEl: NodeElement, entity: Entity, entit
         
         return {
             nodeType: NodeType.FormGridRow,
+            nodeName: 'form-grid-row',
             childNodes: [child]
         };
     });

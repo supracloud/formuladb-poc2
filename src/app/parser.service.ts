@@ -17,7 +17,6 @@ export class ParserService {
     if (null == text) return null;
 
     let form = new Form();
-    console.log(form._type);
     let elementsPath: NodeElement[] = [form];
 
     text.split(/\n/).map(line => {
@@ -28,7 +27,8 @@ export class ParserService {
         let newEl = new NodeElement();
         let m = match[2].match(/([\w-]+)(?:([=#.])(\w+))?/);
         if (null != m) {
-          newEl.nodeType = Str2NodeType.get(m[1]);
+          newEl.nodeName = m[1];
+          newEl.nodeType = Str2NodeType.get(newEl.nodeName);
           if (null != m[2]) {
             switch (m[2]) {
               case '=':

@@ -1,6 +1,6 @@
 import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
-    ChangeDetectionStrategy, Directive, ChangeDetectorRef
+    ChangeDetectionStrategy, Directive
 } from '@angular/core';
 import { FormControl, FormGroup, FormArray, FormBuilder } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -26,7 +26,7 @@ import * as formState from './form.state';
     `
     <form [formGroup]="theFormGroup" novalidate>
         <p>Form status: {{ theFormGroup.status | json }}</p>
-        <div form-grid [nodeElement]="form$ | async" [topLevelFormGroup]="theFormGroup" parentFormPath="">
+        <div form-item [nodeElement]="form$ | async" [topLevelFormGroup]="theFormGroup" parentFormPath="">
         </div>
     </form>
     `,
@@ -45,7 +45,6 @@ export class FormComponent implements OnInit {
     constructor(
         private store: Store<formState.State>,
         private formBuilder: FormBuilder,
-        private cdr: ChangeDetectorRef,
         private formModalService: FormModalService,
         private backendWriteService: BackendWriteService) {
         try {
@@ -65,6 +64,7 @@ export class FormComponent implements OnInit {
             console.log("MwzFormComponent frm:", frm);
             this.createFormGroup(this.theFormGroup, frm);
             console.log("MwzFormComponent this.theFormGroup:", this.theFormGroup);
+            // this.updateFormData(this.lastObj);
         });
 
         this.formData$.subscribe(obj => {
