@@ -1,5 +1,4 @@
 import * as appState from '../app.state';
-import * as navState from '../navigation/navigation.state';
 
 import { ChangeObj } from "../domain/change_obj";
 
@@ -46,7 +45,6 @@ export const FLOW = {
         ]
     },
     Then_navigation_should_show_all_current_tables: {
-        initialEntitiesChangesAction: new navState.EntitiesChangesAction(SETUP.initialEntities.map(e => new ChangeObj(e)))
     },
     And_default_table_page_with_service_forms_should_be_displayed: {
         serviceFormTable: getDefaultTable(MockMetadata.TestApplication__ServiceForm)

@@ -1,9 +1,9 @@
 export class BaseObj {
     _id?: string;
-    _rev?: number = 0;
+    _rev?: string;
     mwzType?: string;
 
-    static id(): string {
+    static uuid(): string {
         var s = [];
         var hexDigits = "0123456789abcdef";
         for (var i = 0; i < 36; i++) {

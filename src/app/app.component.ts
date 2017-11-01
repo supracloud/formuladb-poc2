@@ -3,7 +3,7 @@ import { Component, OnInit, Type } from '@angular/core';
 import { MockService } from "./test/mock.service";
 import { NodeType } from "./domain/uimetadata/form";
 
-import { PouchdbService } from "./pouchdb.service";
+import { AppStateService } from "./app-state.service";
 
 @Component({
     selector: 'app-root',
@@ -40,10 +40,10 @@ import { PouchdbService } from "./pouchdb.service";
 export class AppComponent implements OnInit {
     title = 'app';
 
-    public constructor(private pouchdb: PouchdbService, private mockService: MockService) {}
+    public constructor(private appStateS: AppStateService, private mockService: MockService) {}
 
     ngOnInit(): void {
-        this.pouchdb.sync("http://localhost:5984/mwz");
+        this.appStateS.init();
         this.mockService.loadInitialEntities();
     }
 }

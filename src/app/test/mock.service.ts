@@ -6,19 +6,19 @@ import { Store } from '@ngrx/store';
 
 import * as appState from '../app.state';
 
-import { PouchdbService } from "../pouchdb.service";
+import { AppStateService } from "../app-state.service";
 
 import * as mainDemoFlow from "./main_demo.flow";
 
 @Injectable()
 export class MockService {
 
-    constructor(private store: Store<appState.AppState>, private pouchdb: PouchdbService) { }
+    constructor(private store: Store<appState.AppState>, private appStates: AppStateService) { }
 
     public loadInitialEntities() {
         if (!environment.production) {
-            this.pouchdb.destroy().then(() => mainDemoFlow.SETUP.initialEntities.forEach(entity => {
-                this.pouchdb.put(entity._id, entity);
+            this.appStates.destroy().then(() => mainDemoFlow.SETUP.initialEntities.forEach(entity => {
+                this.appStates.put(entity._id, entity);
             }));
         } else {
             throw new Error("Internal Error mock called in production");

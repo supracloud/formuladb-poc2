@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
 
-import * as fromNav from './navigation.state';
+import { AppStateService } from "../app-state.service";
 
 @Component({
   selector: 'mwz-navigation',
@@ -18,14 +18,12 @@ import * as fromNav from './navigation.state';
 })
 export class NavigationComponent implements OnInit {
   metadataCatalog: { linkName: string, path: string, indent: string }[] = [];
-  entities$: Observable<fromNav.Entity[]>;
 
-  constructor(private store: Store<fromNav.State>) {
-    this.entities$ = this.store.select(fromNav.getNavEntitiesState);
+  constructor(private appState: AppStateService) {
   }
 
   ngOnInit() {
-    this.entities$.subscribe(x => {
+    this.appState.entities$.subscribe(x => {
       this.metadataCatalog = x.map(entity => ({
         linkName: entity.path.split(/__/).slice(-1)[0],
         path: entity.path,

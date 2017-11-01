@@ -10,39 +10,33 @@ box "Client"
     participant NavCmp
     participant TableCmp
     participant FormCmp
-    participant AppEff
     participant AppSt
 end box
 box "Server"
-    participant Express
+    participant Couchdb
 end box
 
 
-note over AppSt
-  router: {url: string}
-  nav: {entities: Entity[]; selectedEntity: Entity;}
-  table: {table: Table; tableData: DataObj[];}
-  form: {form: Form; formData: DataObj;}
-end note
+AppSt <-> Couchdb: **__sync:__**              \n\
+{url: string}                                   \n\
+{entities$: Entity[]; selectedEntity$: Entity;}   \n\
+{table$: Table; tableData$: DataObj[];}           \n\
+{form$: Form; formData$: DataObj;}                \n\
+
+
 
 note right of User: When_user_first_accesses_the_app
 User -> AppCmp: navigate /
-AppEff -> Express: /GET/mwz_api
-AppEff -> AppSt: {nav: list of entities}
 
 note right of User: Then_navigation_should_show_all_current_tables
+AppCmp -> AppCmp: 
 NavCmp -> NavCmp: display sidebar
 
 note right of User: When_user_navigates_to_a_service_form
 User -> NavCmp: select ServiceForm
 'if this sets up replication from the server, then perhaps it is better to be a POST becase it will allocate resources on the server
-AppEff -> Express: /GET?/mwz_api/TestApp/Forms/ServiceForm?uimetadata
-AppEff -> AppSt: {table, form}
-AppEff -> Express: /GET/mwz_api/TestApp/Forms/ServiceForm
-AppEff -> AppSt: {tableData}
 User <- TableCmp: table of ServiceForms
 User -> TableCmp: select ServiceForm
-AppEff -> Express: /GET/mwz_api/TestApp/Forms/ServiceForm/_id
 
 note right of User: Then_the_form_page_should_be_displayed
 User <- FormCmp: edit ServiceForm

@@ -40,7 +40,7 @@ import { MockService } from "./test/mock.service";
 import { BackendReadService } from "./backend-read.service";
 import { BackendWriteService } from "./backend-write.service";
 import { ParserService } from "./parser.service";
-import { PouchdbService } from "./pouchdb.service";
+import { AppStateService } from "./app-state.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -87,7 +87,7 @@ const routes: Routes = [
     BackendReadService, 
     BackendWriteService,
     ParserService,
-    PouchdbService,
+    AppStateService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

@@ -60,7 +60,7 @@ export class EditorComponent implements OnInit {
       this.path = path;
       let form = state.form.form;
       let table = state.table.table;
-      this.entity = state.nav.selectedEntity;
+      this.entity = null;//FIXME: get real selected entity from url or somewhere
       if (this.isForm && null != form) {
         this.text = this.parserService.serializeForm(this.entity, form);
       }

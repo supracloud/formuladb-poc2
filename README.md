@@ -33,8 +33,13 @@ eval $(docker-machine.exe env docker1 --shell bash)
 docker build -t mycouchdb .
 
     # MSYS_NO_PATHCONV=1 makes git-bash not convert paths to windows format
-    #MSYS_NO_PATHCONV=1 docker run -d --name cdb -p 5984:5984 -v $PWD/couchdb_data:/opt/couchdb/data mycouchdb
-MSYS_NO_PATHCONV=1 docker run -d --name cdb -p 5984:5984 mycouchdb
+    #MSYS_NO_PATHCONV=1 docker run --privileged -d --name cdb -p 5984:5984 -v $PWD/couchdb_data:/opt/couchdb/data mycouchdb
+MSYS_NO_PATHCONV=1 docker run --privileged -d --name cdb -p 5984:5984 mycouchdb
+
+
+tc qdisc change dev eth0 root netem delay 150ms
+/wondershaper.sh -a eth0 -d 256 -u 256
+
 
 The follow:
 http://docs.couchdb.org/en/master/install/setup.html#single-node-setup

@@ -20,7 +20,8 @@ import { Observable } from 'rxjs/Observable';
 import { BackendWriteService } from "../backend-write.service";
 import * as formState from './form.state';
 
-import { PouchdbService } from "../pouchdb.service";
+import { BaseObj } from "../domain/base_obj";
+import { AppStateService } from "../app-state.service";
 
 @Component({
     selector: 'mwz-form',    
@@ -42,13 +43,14 @@ export class FormComponent implements OnInit {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
     private tickUsed: boolean = false;
-    private lastObj: any;
+    private lastObj: BaseObj;
+    private lastSavedObj: BaseObj;
 
     constructor(
         private store: Store<formState.State>,
         private formBuilder: FormBuilder,
         private formModalService: FormModalService,
-        private pouchdb: PouchdbService) {
+        private appStateS: AppStateService) {
         try {
             this.form$ = store.select(formState.getFormState);
             this.formData$ = store.select(formState.getFormDataState);
@@ -77,21 +79,17 @@ export class FormComponent implements OnInit {
             err => console.error(err)
         );
 
-        // Object.keys(this.theFormGroup.controls).forEach(k => {
-        //     let control = this.theFormGroup.controls[k];
-        //     control.valueChanges.forEach(val => {
-        //         if (!x.valid) return;
-        //         this.backendWriteService.setFormData(this.theFormGroup.value, x.)
-        //     });
-        // });
+        this.appStateS.formDataUpdatesFromServer$.subscribe((objFromServer: DataObj) => {
+            this.updateFormDataFromServer(objFromServer);
+        });
 
         this.theFormGroup.valueChanges
             // .filter(() => this.theFormGroup.valid)
-            .sampleTime(500)
+            .sampleTime(1500)
             .forEach(val => {
                 console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.status);
+                this.appStateS.put(val._id, val).then(doc => this.lastSavedObj = doc);
             });
-        
     }
 
     private createFormGroup(parentFormGroup: FormGroup, formEl: NodeElement) {
@@ -111,6 +109,26 @@ export class FormComponent implements OnInit {
         }
     }
 
+    private updateFormDataFromServer(objFromServer: DataObj) {
+        this.updateFormData(objFromServer, this.theFormGroup);
+
+        //FIXME: update only delta, don't loose the user's edits!!!
+        // let currentPath = '';
+        // for (var key in objFromServer) {
+        //     let objValFromServer = objFromServer[key];
+
+        //     if (objValFromServer instanceof Array) {
+        //         objValFromServer.forEach((childObjFromServer, idx) => {
+
+        //         });
+        //     } else if (/string|boolean|number/.test(typeof objValFromServer) || objValFromServer instanceof Date) {
+        //     } else if ('object' === typeof objValFromServer) {
+        //     } else {
+        //         throw new Error("unkown objValFromServer type: '" + objValFromServer + "'");
+        //     }
+                
+        // }        
+    }
     private updateFormData(obj: DataObj, formGroup: FormGroup) {
         for (var key in obj) {
             // if ('_rev' === key) continue;
