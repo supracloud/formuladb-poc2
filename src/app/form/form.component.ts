@@ -20,6 +20,8 @@ import { Observable } from 'rxjs/Observable';
 import { BackendWriteService } from "../backend-write.service";
 import * as formState from './form.state';
 
+import { PouchdbService } from "../pouchdb.service";
+
 @Component({
     selector: 'mwz-form',    
     template:
@@ -46,7 +48,7 @@ export class FormComponent implements OnInit {
         private store: Store<formState.State>,
         private formBuilder: FormBuilder,
         private formModalService: FormModalService,
-        private backendWriteService: BackendWriteService) {
+        private pouchdb: PouchdbService) {
         try {
             this.form$ = store.select(formState.getFormState);
             this.formData$ = store.select(formState.getFormDataState);

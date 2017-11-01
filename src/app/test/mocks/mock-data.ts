@@ -38,13 +38,13 @@ export class MockData {
         this.mockDB.set(entity.path, db);
       }
       this.mockDB.set(entity.path, db);
-      let ret = { _type: entity.path, _id: `123400${entityIdx}` };
+      let ret = { mwzType: entity.path, _id: `123400${entityIdx}` };
       entity.properties.forEach((p, index) => {
         if (p.name == "_id") {
           //already set above
         } else if (p.name == "_rev") {
           //do nothing
-        } else if (p.name == "_type") {
+        } else if (p.name == "mwzType") {
           //do nothing
         } else if (p.type == "integer") {
           ret[p.name] = Math.random() * 100;
@@ -61,7 +61,7 @@ export class MockData {
         } else if (p.type.match(/^ENTITY\(/)) {
           let m = p.type.match(/^ENTITY\((.*)\)/);
           let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
-          ret[p.name] = _.pick(this.mockEntity(ref, this.getRandomId()), (p.copiedProperties || []).concat(['_id', '_type']));
+          ret[p.name] = _.pick(this.mockEntity(ref, this.getRandomId()), (p.copiedProperties || []).concat(['_id', 'mwzType']));
         } else if (p.type.match(/^TABLE\(/)) {
           let m = p.type.match(/^TABLE\((.*)\)/);
           let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));

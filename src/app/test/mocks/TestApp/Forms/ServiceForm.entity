@@ -27,4 +27,4 @@ form-grid-row
 form-grid-row
   form-input=_id
 form-grid-row
-  form-input=_type
+  form-input=mwzType

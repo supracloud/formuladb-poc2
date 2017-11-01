@@ -1,19 +1,9 @@
 import { Component, OnInit, Type } from '@angular/core';
 
 import { MockService } from "./test/mock.service";
-import { NodeChildrenService } from "./form/node-children.service";
 import { NodeType } from "./domain/uimetadata/form";
-import { FormGridComponent } from "./form/form-grid.component";
-import { FormGridRowComponent } from "./form/form-grid-row.component";
-import { FormGridColComponent } from "./form/form-grid-col.component";
-import { FormInputComponent } from "./form/form-input.component";
-import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
-import { FormTableComponent } from "./form/form-table.component";
-import { FormTabsComponent } from "./form/form-tabs.component";
-import { FormTabComponent } from "./form/form-tab.component";
-import { FormDatepickerComponent } from "./form/form-datepicker.component";
-import { FormTimepickerComponent } from "./form/form-timepicker.component";
-import { BaseNodeComponent } from "./form/base_node";
+
+import { PouchdbService } from "./pouchdb.service";
 
 @Component({
     selector: 'app-root',
@@ -50,22 +40,10 @@ import { BaseNodeComponent } from "./form/base_node";
 export class AppComponent implements OnInit {
     title = 'app';
 
-    public constructor(private mockService: MockService, private nodeChildrenService: NodeChildrenService) {}
+    public constructor(private pouchdb: PouchdbService, private mockService: MockService) {}
 
     ngOnInit(): void {
-        this.nodeChildrenService.setNodeType2ComponentClass(new Map<NodeType, Type<BaseNodeComponent>>(
-            [
-                [NodeType.FormGrid, FormGridComponent],
-                [NodeType.FormGridRow, FormGridRowComponent],
-                [NodeType.FormGridCol, FormGridColComponent],
-                [NodeType.FormInput, FormInputComponent],
-                [NodeType.FormAutocomplete, FormAutocompleteComponent],
-                [NodeType.FormTable, FormTableComponent],
-                [NodeType.FormTabs, FormTabsComponent],
-                [NodeType.FormDatepicker, FormDatepickerComponent],
-                [NodeType.FormTimepicker, FormTimepickerComponent],
-                [NodeType.FormTab, FormTabComponent]
-            ]));
+        this.pouchdb.sync("http://localhost:5984/mwz");
         this.mockService.loadInitialEntities();
     }
 }

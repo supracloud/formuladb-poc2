@@ -67,7 +67,7 @@ export class NodeElement extends BaseObj {
 }
 
 export class Form extends NodeElement {
-    public _type = 'Form_';
+    public mwzType = 'Form_';
     constructor() {
         super();
         this.nodeType = NodeType.FormGrid;

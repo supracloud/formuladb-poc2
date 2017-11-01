@@ -26,26 +26,17 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-# Design
+# Couchdb
 
-**MetaObj**
+eval $(docker-machine.exe env docker1 --shell bash)
 
+docker build -t mycouchdb .
 
-**UiNode**
+    # MSYS_NO_PATHCONV=1 makes git-bash not convert paths to windows format
+    #MSYS_NO_PATHCONV=1 docker run -d --name cdb -p 5984:5984 -v $PWD/couchdb_data:/opt/couchdb/data mycouchdb
+MSYS_NO_PATHCONV=1 docker run -d --name cdb -p 5984:5984 mycouchdb
 
-form-grid-row
-  form-input=code
-  form-input=time_of_arrival
-  form-input=time_of_departure
-  form-input=state
-form-grid-row
-  form-autocomplete=client {"copiedProperties": ["code", "username"]}
-  form-input=technician_code
-  form-input=client_person
-form-grid-row
-  form-tabs=service_form_units
-    
-form-grid-row
-  form-input=_id
-form-grid-row
-  form-input=_type
+The follow:
+http://docs.couchdb.org/en/master/install/setup.html#single-node-setup
+
+Then Create new database called 'mwz'

@@ -1,5 +1,5 @@
 export interface DataObj {
     _id: string;
-    _type: string;
+    mwzType: string;
     [key: string]: any;
 }

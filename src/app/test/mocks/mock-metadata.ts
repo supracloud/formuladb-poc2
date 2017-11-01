@@ -4,7 +4,7 @@ export class MockMetadata {
 
   public constructor() {
     this.entities.forEach(meta => {
-      meta.properties.push({ "name": "_type", "type": "string", });
+      meta.properties.push({ "name": "mwzType", "type": "string", });
       meta.properties.push({ "name": "_id", "type": "string", });
       // meta.properties.push(    {"name": "_rev","type": "string",});
     });
@@ -17,25 +17,25 @@ export class MockMetadata {
   }
 
   static General: Entity = {
-    _type: "Entity_", "path": "General",
+    mwzType: "Entity_", "path": "General",
     "properties": [],
     module: true
   };
 
   static Inventory: Entity = {
-    _type: "Entity_", "path": "Inventory",
+    mwzType: "Entity_", "path": "Inventory",
     "properties": [],
     module: true
   };
 
   static TestApplication: Entity = {
-    _type: "Entity_", "path": "TestApplication",
+    mwzType: "Entity_", "path": "TestApplication",
     "properties": [],
     module: true
   };
 
   static General__Actor: Entity = {
-    _type: "Entity_", "path": "General__Actor",
+    mwzType: "Entity_", "path": "General__Actor",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -51,7 +51,7 @@ export class MockMetadata {
   };
 
   static General__Currency: Entity = {
-    _type: "Entity_", "path": "General__Currency",
+    mwzType: "Entity_", "path": "General__Currency",
     "properties": [
       { "name": "code", "type": "string" },
       { "name": "rate1", "type": "decimal" },
@@ -63,7 +63,7 @@ export class MockMetadata {
   };
 
   static General__GenericUser: Entity = {
-    _type: "Entity_", "path": "General__GenericUser",
+    mwzType: "Entity_", "path": "General__GenericUser",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -79,7 +79,7 @@ export class MockMetadata {
   };
 
   static General__Person: Entity = {
-    _type: "Entity_", "path": "General__Person",
+    mwzType: "Entity_", "path": "General__Person",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "actor_code", "type": "string", "allowNull": false },
@@ -98,7 +98,7 @@ export class MockMetadata {
   };
 
   static General__User: Entity = {
-    _type: "Entity_", "path": "General__User",
+    mwzType: "Entity_", "path": "General__User",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -114,7 +114,7 @@ export class MockMetadata {
   };
 
   static Inventory__Client: Entity = {
-    _type: "Entity_", "path": "Inventory__Client",
+    mwzType: "Entity_", "path": "Inventory__Client",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -130,7 +130,7 @@ export class MockMetadata {
   };
 
   static Inventory__InventoryProduct: Entity = {
-    _type: "Entity_", "path": "Inventory__InventoryProduct",
+    mwzType: "Entity_", "path": "Inventory__InventoryProduct",
     "properties": [
       { "name": "inventory_code", "type": "string", "allowNull": false },
       {
@@ -178,7 +178,7 @@ export class MockMetadata {
   };
 
   static Inventory__ProductListItem: Entity = {
-    _type: "Entity_", "path": "Inventory__ProductListItem",
+    mwzType: "Entity_", "path": "Inventory__ProductListItem",
     "properties": [
       {
         "type": "ENTITY(/Inventory/InventoryProduct)",
@@ -204,7 +204,7 @@ export class MockMetadata {
   };
 
   static Inventory__ProductListProductUnit: Entity = {
-    _type: "Entity_", "path": "Inventory__ProductListProductUnit",
+    mwzType: "Entity_", "path": "Inventory__ProductListProductUnit",
     "properties": [
       { "name": "product_list_product_id", "type": "integer", "allowNull": false },
       { "name": "sy5_index", "type": "float", "allowNull": false },
@@ -217,7 +217,7 @@ export class MockMetadata {
   };
 
   static Inventory__Product: Entity = {
-    _type: "Entity_", "path": "Inventory__Product",
+    mwzType: "Entity_", "path": "Inventory__Product",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "barcode", "type": "string" },
@@ -226,14 +226,14 @@ export class MockMetadata {
   };
 
   static Inventory__ProductUnitCategory: Entity = {
-    _type: "Entity_", "path": "Inventory__ProductUnitCategory",
+    mwzType: "Entity_", "path": "Inventory__ProductUnitCategory",
     "properties": [
       { "name": "code", "type": "string", }
     ]
   };
 
   static Inventory__ProductUnit: Entity = {
-    _type: "Entity_", "path": "Inventory__ProductUnit",
+    mwzType: "Entity_", "path": "Inventory__ProductUnit",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "product_code", "type": "string", "allowNull": false },
@@ -254,7 +254,7 @@ export class MockMetadata {
   };
 
   static Inventory__Supplier: Entity = {
-    _type: "Entity_", "path": "Inventory__Supplier",
+    mwzType: "Entity_", "path": "Inventory__Supplier",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -270,7 +270,7 @@ export class MockMetadata {
   };
 
   static TestApplication__Acquisition: Entity = {
-    _type: "Entity_", "path": "TestApplication__Acquisition",
+    mwzType: "Entity_", "path": "TestApplication__Acquisition",
     "properties": [
       { "name": "type", "type": "string" },
       { "name": "code", "type": "string", "allowNull": false },
@@ -279,7 +279,7 @@ export class MockMetadata {
   };
 
   static TestApplication__DetailedCentralizerReport: Entity = {
-    _type: "Entity_", "path": "TestApplication__DetailedCentralizerReport",
+    mwzType: "Entity_", "path": "TestApplication__DetailedCentralizerReport",
     "properties": [
       { "name": "name", "type": "string", "allowNull": false },
       { "name": "user_code", "type": "string", "allowNull": false },
@@ -301,7 +301,7 @@ export class MockMetadata {
   };
 
   static TestApplication__GenericReport: Entity = {
-    _type: "Entity_", "path": "TestApplication__GenericReport",
+    mwzType: "Entity_", "path": "TestApplication__GenericReport",
     "properties": [
       { "name": "name", "type": "string", "allowNull": false },
       { "name": "user_code", "type": "string", "allowNull": false },
@@ -323,7 +323,7 @@ export class MockMetadata {
   };
 
   static TestApplication__Order: Entity = {
-    _type: "Entity_", "path": "TestApplication__Order",
+    mwzType: "Entity_", "path": "TestApplication__Order",
     "properties": [
       { "name": "type", "type": "string" },
       { "name": "code", "type": "string", "allowNull": false },
@@ -333,7 +333,7 @@ export class MockMetadata {
   };
 
   static TestApplication__ServiceCentralizerReport: Entity = {
-    _type: "Entity_", "path": "TestApplication__ServiceCentralizerReport",
+    mwzType: "Entity_", "path": "TestApplication__ServiceCentralizerReport",
     "properties": [
       { "name": "name", "type": "string", "allowNull": false },
       { "name": "user_code", "type": "string", "allowNull": false },
@@ -355,7 +355,7 @@ export class MockMetadata {
   };
 
   static TestApplication__ServiceForm: Entity = {
-    _type: "Entity_", "path": "TestApplication__ServiceForm",
+    mwzType: "Entity_", "path": "TestApplication__ServiceForm",
     "properties": [
       {
         "name": "code", 
@@ -381,7 +381,7 @@ export class MockMetadata {
   };
 
   static TestApplication__ServiceFormUnit: Entity = {
-    _type: "Entity_", "path": "TestApplication__ServiceFormUnit",
+    mwzType: "Entity_", "path": "TestApplication__ServiceFormUnit",
     "properties": [
       { "name": "equipment", "type": "ENTITY(/Inventory/ProductUnit)", copiedProperties: ['code', 'product_code', 'serial1'] },
       { "name": "product_list", "type": "TABLE(/Inventory/ProductListItem)", "isLargeTable": true },

@@ -18,22 +18,16 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { FormComponent } from './form/form.component';
-import { FormGridComponent } from './form/form-grid.component';
-import { FormGridRowComponent } from './form/form-grid-row.component';
-import { FormGridColComponent } from './form/form-grid-col.component';
 import { FormInputComponent } from './form/form-input.component';
 import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
 import { FormTabsComponent } from "./form/form-tabs.component";
-import { FormTabComponent } from "./form/form-tab.component";
 import { FormTableComponent } from "./form/form-table.component";
 import { FormDatepickerComponent } from "./form/form-datepicker.component";
 import { FormTimepickerComponent } from "./form/form-timepicker.component";
-import { ChildrenComponent } from "./form/children.component";
 import { FormItemComponent } from "./form/form-item.component";
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
-import { NodeChildrenService } from "./form/node-children.service";
 
 import { environment } from '../environments/environment';
 
@@ -46,7 +40,7 @@ import { MockService } from "./test/mock.service";
 import { BackendReadService } from "./backend-read.service";
 import { BackendWriteService } from "./backend-write.service";
 import { ParserService } from "./parser.service";
-import { ContainerComponent } from './container.component';
+import { PouchdbService } from "./pouchdb.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -64,22 +58,16 @@ const routes: Routes = [
     NotFoundComponent,
     NavigationComponent,
     FormComponent,
-    FormGridComponent,
-    FormGridRowComponent,
-    FormGridColComponent,
     FormInputComponent,
     FormAutocompleteComponent,
     FormTabsComponent,
-    FormTabComponent,
     FormTableComponent,
     FormDatepickerComponent,
     FormTimepickerComponent,
-    ChildrenComponent,
     FormItemComponent,
     TableComponent,
     EditorComponent,
     ModalComponent,
-    ContainerComponent
   ],
   imports: [
     BrowserModule,
@@ -99,20 +87,8 @@ const routes: Routes = [
     BackendReadService, 
     BackendWriteService,
     ParserService,
-    NodeChildrenService,
+    PouchdbService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
-  ],
-  entryComponents:[
-    FormGridComponent,
-    FormGridRowComponent,
-    FormGridColComponent,
-    FormInputComponent,
-    FormAutocompleteComponent,
-    FormTableComponent,
-    FormTabsComponent,
-    FormTabComponent,
-    FormDatepickerComponent,
-    FormTimepickerComponent,
   ],
   bootstrap: [AppComponent]
 })

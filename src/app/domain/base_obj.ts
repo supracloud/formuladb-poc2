@@ -1,7 +1,7 @@
 export class BaseObj {
     _id?: string;
     _rev?: number = 0;
-    _type?: string;
+    mwzType?: string;
 
     static id(): string {
         var s = [];

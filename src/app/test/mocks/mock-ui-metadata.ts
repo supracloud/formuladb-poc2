@@ -47,7 +47,7 @@ form-grid-row
   form-input=night_hours
   form-input=shipment_cost
 form-grid-row
-  form-input=_type
+  form-input=mwzType
   form-input=_id
 `;
 

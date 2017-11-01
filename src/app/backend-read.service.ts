@@ -70,7 +70,7 @@ export class BackendReadService {
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
-    form = { nodeType: NodeType.FormGrid, nodeName: 'form-grid', _type: "Form_" };
+    form = { nodeType: NodeType.FormGrid, nodeName: 'form-grid', mwzType: "Form_" };
     setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', JSON.stringify(form));
     return form;
@@ -105,7 +105,7 @@ export function getDefaultTable(entity: Entity): Table {
     if (null == entity) return null;
     
     let table = new Table();
-    table._type = 'Table_';
+    table.mwzType = 'Table_';
     table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
     return table;
 }

@@ -39,12 +39,12 @@ export class EditorComponent implements OnInit {
     console.log("EditorComponent: isFom=", this.isForm);
     if (this.isForm) {
       let newForm = this.parserService.parseForm(this.entity, this.text);
-      newForm._type = 'Form_';
+      newForm.mwzType = 'Form_';
       newForm._id = 'Form_:' + this.path;
       this.store.dispatch(new fromForm.FormChangesAction(newForm));
     } else {
       let newTable = this.parserService.parseTable(this.entity, this.text);
-      newTable._type = 'Table_';
+      newTable.mwzType = 'Table_';
       newTable._id = 'Table_:' + this.path;
       this.store.dispatch(new fromTable.TableChangesAction(newTable));
     }

@@ -8,6 +8,9 @@
 # dependencies
 /node_modules
 
+#data
+/couchdb_data
+
 # IDEs and editors
 /.idea
 .project
