@@ -87,14 +87,19 @@ export class AppStateService {
         let remoteDatabase = new PouchDB(remote);
         this.db.sync(remoteDatabase, {
             live: true
-        }).on('change', change => {
-            // change.id contains the doc id, change.doc contains the doc
-            if (change.deleted) {
-                // document was deleted
+        }).on('change', sync => {
+            console.log(sync);
+            if (sync.direction == 'push') {
+                //data going to the server
             } else {
-                if (change.doc._id == appStateS.currentlyEditedObjBeforeSave._id) {
-                    appStateS.formDataUpdatesFromServer$.next(change.doc);
-                }
+                //data comming from the server
+                sync.change.docs.forEach(doc => {
+                    if (doc._deleted) {
+                        //TODO
+                    } else if (appStateS.currentlyEditedObjBeforeSave && doc._id == appStateS.currentlyEditedObjBeforeSave._id) {
+                        appStateS.formDataUpdatesFromServer$.next(doc);
+                    }
+                });
             }
         }).on('error', error => {
             console.error(error);
