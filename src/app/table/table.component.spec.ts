@@ -13,17 +13,17 @@ import * as state from './table.state';
 import * as mainDemoFlow from "../test/main_demo.flow";
 
 interface AppState {
-  nav: state.State;
+  nav: state.TableState;
 }
 
 const reducers = {
-  'table': state.reducer
+  'table': state.tableReducer
 };
 
 describe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
-  let store: Store<state.State>;
+  let store: Store<state.TableState>;
   
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,8 +50,8 @@ describe('TableComponent', () => {
   it('main flow', () => {
     expect(component).toBeTruthy();
 
-    store.dispatch(new state.TableChangesAction(
-      mainDemoFlow.FLOW.And_default_table_page_with_service_forms_should_be_displayed.serviceFormTable));
+    store.dispatch(new state.TableFormBackendAction(
+      mainDemoFlow.SIMPLE_FLOW.And_default_table_page_with_service_forms_should_be_displayed.serviceFormTable));
     
     let firstEntity = fixture.debugElement.query(By.css('tr'));
         

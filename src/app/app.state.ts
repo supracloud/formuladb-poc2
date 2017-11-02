@@ -1,5 +1,5 @@
 import { Params, RouterStateSnapshot } from '@angular/router';
-import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import { Action, ActionReducerMap, createSelector, createFeatureSelector, ActionReducer } from '@ngrx/store';
 import {
   StoreRouterConnectingModule,
   routerReducer,
@@ -20,8 +20,15 @@ export { DataObj };
 export { Entity };
 export { ChangeObj, applyChanges };
 
+import * as fromCore from './core.state';
+import * as fromEntity from "./entity-state";
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
+
+export * from "./entity-state";
+export * from "./table/table.state";
+export * from "./form/form.state";
+export * from "./core.state";
 
 export interface RouterState {
   url: string;
@@ -29,16 +36,28 @@ export interface RouterState {
   path: string;
 }
 
-export interface CoreState {
-  entities: Entity[];
-  selectedEntity: Entity;
-}
-
 export interface AppState {
+  'core': fromCore.CoreState;
   'router': RouterReducerState<RouterState>;
-  'table': fromTable.State;
-  'form': fromForm.State;
+  'entity': fromEntity.EntityState;
+  'table': fromTable.TableState;
+  'form': fromForm.FormState;
 };
+
+export const appInitialState: AppState = {
+  'core': fromCore.coreInitialState,
+  'router': null,
+  'entity': fromEntity.entityInitialState,
+  'table': fromTable.tableInitialState,
+  'form': fromForm.formInitialState,
+};
+
+export type AppActions =
+| fromCore.CoresActions
+| fromEntity.EntityActions
+| fromTable.TableActions
+| fromForm.FormActions
+;
 
 export class CustomSerializer implements RouterStateSerializer<RouterState> {
   serialize(routerState: RouterStateSnapshot): RouterState {
@@ -53,8 +72,26 @@ export class CustomSerializer implements RouterStateSerializer<RouterState> {
   }
 }
 
+export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
+  return function(state: AppState, action: AppActions) {
+    let newState = state;
+    if (action.type === fromCore.CoreAppReadonlyActionN) {
+      newState = {
+        ...state,
+        form: {
+          ...state.form,
+          formReadOnly: action.appReadonly
+        }
+      }
+    }
+    return reducer(newState, action);
+  };
+}
+
 export const reducers = {
+  ...fromCore.reducers,
   'router': routerReducer,
+  ...fromEntity.reducers,
   ...fromTable.reducers,
   ...fromForm.reducers
 };
@@ -68,7 +105,7 @@ export function parseUrl(url: string): { path: string, id: string } {
     path = match[1];
     if (match.length >= 2) id = match[2];
   } else {
-    throw Error('Unknown url: ' + url);
+    return {path: 'General__Actor', id: null};
   }
 
   return { path: path, id: id };

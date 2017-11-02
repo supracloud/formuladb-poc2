@@ -36,11 +36,7 @@ import * as appState from './app.state';
 import { AppEffects } from "./app.effects";
 
 import { FormModalService } from "./form-modal.service";
-import { MockService } from "./test/mock.service";
-import { BackendReadService } from "./backend-read.service";
-import { BackendWriteService } from "./backend-write.service";
 import { ParserService } from "./parser.service";
-import { AppStateService } from "./app-state.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -74,7 +70,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
-    StoreModule.forRoot(appState.reducers),
+    StoreModule.forRoot(appState.reducers, {metaReducers: [appState.appMetaReducer]}),
     NgbModule.forRoot(),
     StoreRouterConnectingModule,
     // !environment.production ? StoreDevtoolsModule.instrument() : [],
@@ -82,12 +78,8 @@ const routes: Routes = [
   ],
   exports: [RouterModule],
   providers: [
-    MockService, 
-    FormModalService, 
-    BackendReadService, 
-    BackendWriteService,
+    FormModalService,
     ParserService,
-    AppStateService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

@@ -33,7 +33,7 @@ export class TableComponent {
     private table$: Observable<tableState.Table>;
     private data$: Observable<tableState.DataObj[]>;
 
-    constructor(private store: Store<tableState.State>, private router: Router, private route: ActivatedRoute) {
+    constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute) {
         try {
             this.table$ = store.select(tableState.getTableState);
             this.data$ = store.select(tableState.getTableDataState);

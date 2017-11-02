@@ -11,43 +11,50 @@ export { Table };
 export { ChangeObj, applyChanges };
 
 
-export interface State {
+export interface TableState {
   table: Table;
   tableData: DataObj[];
 }
 
-export const initialState: State = {
+export const tableInitialState: TableState = {
   table: {} as Table,
   tableData: [] as DataObj[],
 };
 
-export const TABLE_DATA_CHANGES = "[table] TableDataChangesAction";
-export const TABLE_CHANGES = "[table] TableChangesAction";
-export const TABLE_ROW_CHOSEN = "[table] TableRowChosenAction";
+export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
+export const TableFromBackendActionN = "[table] TableFromBackendAction";
+export const UserActionEditedTableN = "[table] UserActionEditedTable";
+export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
 
-
-export class TableDataChangesAction implements Action {
-  readonly type = TABLE_DATA_CHANGES;
+export class TableDataFromBackendAction implements Action {
+  readonly type = TableDataFromBackendActionN;
 
   constructor(public changes: ChangeObj<DataObj>[]) { }
 }
 
-export class TableChangesAction implements Action {
-  readonly type = TABLE_CHANGES;
+export class UserActionEditedTable implements Action {
+  readonly type = UserActionEditedTableN;
 
   constructor(public table: Table) { }
 }
 
-export class TableRowChosenAction implements Action {
-  readonly type = TABLE_ROW_CHOSEN;
+export class TableFormBackendAction implements Action {
+  readonly type = TableFromBackendActionN;
+
+  constructor(public table: Table) { }
+}
+
+export class UserActionSelectedRowForEditing implements Action {
+  readonly type = UserActionSelectedRowForEditingN;
 
   constructor(public row: DataObj) { }
 }
 
-export type Actions =
-  | TableDataChangesAction
-  | TableChangesAction
-  | TableRowChosenAction
+export type TableActions =
+  | TableDataFromBackendAction
+  | TableFormBackendAction
+  | UserActionEditedTable
+  | UserActionSelectedRowForEditing
   ;
 
 /**
@@ -56,24 +63,27 @@ export type Actions =
  * @param state 
  * @param action 
  */
-export function reducer(state = initialState, action: Actions): State {
-  let ret: State = state;
+export function tableReducer(state = tableInitialState, action: TableActions): TableState {
+  let ret: TableState = state;
   switch (action.type) {
-    //changes from the server are commning: added/removed entities
-    case TABLE_DATA_CHANGES:
+    //changes from the server are comning: added/removed entities
+    case TableDataFromBackendActionN:
       ret = {
         ...state,
         tableData: applyChanges<DataObj>(state.tableData, action.changes),
       };
       break;
     //user navigates to different tables
-    case TABLE_CHANGES:
+    case TableFromBackendActionN:
       ret = {
         table: action.table,
         tableData: []
       };
       break;
-    case TABLE_ROW_CHOSEN:
+    case UserActionEditedTableN:
+      ret = state;//TODO: implement table metadata editing feature
+      break;
+    case UserActionSelectedRowForEditingN:
       //TODO: highlight chosen row
       ret = state;
       break;
@@ -87,14 +97,14 @@ export function reducer(state = initialState, action: Actions): State {
  * Link with global application state
  */
 export const reducers = {
-  'table': reducer
+  'table': tableReducer
 };
-export const getTable = createFeatureSelector<State>('table');
+export const getTable = createFeatureSelector<TableState>('table');
 export const getTableDataState = createSelector(
   getTable,
-  (state: State) => state.tableData
+  (state: TableState) => state.tableData
 );
 export const getTableState = createSelector(
   getTable,
-  (state: State) => state.table
+  (state: TableState) => state.table
 );

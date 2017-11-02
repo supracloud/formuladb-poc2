@@ -17,11 +17,9 @@ import 'rxjs/add/operator/sampleTime';
 import 'rxjs/add/observable/fromEvent';
 import { Observable } from 'rxjs/Observable';
 
-import { BackendWriteService } from "../backend-write.service";
 import * as formState from './form.state';
 
 import { BaseObj } from "../domain/base_obj";
-import { AppStateService } from "../app-state.service";
 
 @Component({
     selector: 'mwz-form',    
@@ -47,10 +45,9 @@ export class FormComponent implements OnInit {
     private lastSavedObj: BaseObj;
 
     constructor(
-        private store: Store<formState.State>,
+        private store: Store<formState.FormState>,
         private formBuilder: FormBuilder,
-        private formModalService: FormModalService,
-        private appStateS: AppStateService) {
+        private formModalService: FormModalService) {
         try {
             this.form$ = store.select(formState.getFormState);
             this.formData$ = store.select(formState.getFormDataState);
@@ -79,16 +76,16 @@ export class FormComponent implements OnInit {
             err => console.error(err)
         );
 
-        this.appStateS.formDataUpdatesFromServer$.subscribe((objFromServer: DataObj) => {
-            this.updateFormDataFromServer(objFromServer);
-        });
+        // this.appStateS.formDataUpdatesFromServer$.subscribe((objFromServer: DataObj) => {
+        //     this.updateFormDataFromServer(objFromServer);
+        // });
 
         this.theFormGroup.valueChanges
             // .filter(() => this.theFormGroup.valid)
-            .sampleTime(1500)
+            .sampleTime(2000)
             .forEach(val => {
                 console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.status);
-                this.appStateS.put(val._id, val).then(doc => this.lastSavedObj = doc);
+                // this.appStateS.put(val._id, val).then(doc => this.lastSavedObj = doc);
             });
     }
 

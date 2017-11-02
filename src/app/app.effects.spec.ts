@@ -76,15 +76,15 @@ describe('AppEffects', () => {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {url: '/General__Currency'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
-                m: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Actor)),
-                n: new fromTable.TableDataChangesAction(
+                m: new fromTable.TableFormBackendAction(getDefaultTable(MockMetadata.General__Actor)),
+                n: new fromTable.TableDataFromBackendAction(
                     backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o))),
-                o: new fromForm.FormChangesAction(getDefaultForm(MockMetadata.General__Actor)),
-                p: new fromForm.FormDataChangesAction(backendReadService.mockData.get(MockMetadata.General__Actor.path, actorTestId)),
-                q: new fromTable.TableChangesAction(getDefaultTable(MockMetadata.General__Currency)),
-                r: new fromTable.TableDataChangesAction(
+                o: new fromForm.FormFromBackendAction(getDefaultForm(MockMetadata.General__Actor)),
+                p: new fromForm.FormDataFromBackendAction(backendReadService.mockData.get(MockMetadata.General__Actor.path, actorTestId)),
+                q: new fromTable.TableFormBackendAction(getDefaultTable(MockMetadata.General__Currency)),
+                r: new fromTable.TableDataFromBackendAction(
                     backendReadService.mockData.getAll(MockMetadata.General__Currency.path).map(o => new ChangeObj(o))),
-                s: new fromForm.FormChangesAction(getDefaultForm(MockMetadata.General__Currency)),
+                s: new fromForm.FormFromBackendAction(getDefaultForm(MockMetadata.General__Currency)),
             }
 
             actions$.stream = hot('--a----bc',values);

@@ -1,9 +1,6 @@
 import { Component, OnInit, Type } from '@angular/core';
 
-import { MockService } from "./test/mock.service";
 import { NodeType } from "./domain/uimetadata/form";
-
-import { AppStateService } from "./app-state.service";
 
 @Component({
     selector: 'app-root',
@@ -40,10 +37,9 @@ import { AppStateService } from "./app-state.service";
 export class AppComponent implements OnInit {
     title = 'app';
 
-    public constructor(private appStateS: AppStateService, private mockService: MockService) {}
+    public constructor() {}
 
     ngOnInit(): void {
-        this.appStateS.init();
-        this.mockService.loadInitialEntities();
+        console.log(this);
     }
 }

@@ -1,0 +1,73 @@
+@startuml
+
+title __Architecture Overview__\n\
+CQRS/Event-Sourcing unidirectional data flow, commands go out one way, reads come in another way\n\
+This goes very well with the new reactive style of UI development, CQRS commands are ngrx Actions\n\
+CQRS reads are ngrx state updates and the angular components interact only with the state store
+
+actor User
+box "Client UI"
+    participant AngularComponents
+end box
+box "Client Logic"
+    participant AppEffects
+    participant Store
+end box
+box "Server"
+    participant MwzEngine
+    participant EventDB
+    participant DataDB
+end box
+
+note over Store
+**__AppState:__**
+{url: string}
+{entities$: Entity[]; selectedEntity$: Entity;}
+{table$: Table; tableData$: DataObj[];}
+{form$: Form; formData$: DataObj; formDataFromBackend$}
+**__Actions:__**
+EntitiesFromBackendAction,UserActionSelectedEntity,UserActionEditedEntity,UserActionNewEntity,UserActionDeleteEntity
+TableFromBackendAction,TableDataFromBackendAction,UserActionEditedTable,UserActionSelectedRowForEditing
+FormFromBackendAction,FormDataFromBackendAction,UserActionEditedForm,UserActionEditedFormData
+end note
+
+User -> AngularComponents: Events
+
+group web-design decoupled development
+    AngularComponents <- Store: subscribe to state\n and render UI
+    AngularComponents -> Store: User initiated Actions
+end
+
+group front-end decoupled development
+    note over Store
+    - reducers implementing local UI logic
+        that does not involve server side logic
+        only processing User initiated Actions
+    - reducers processing Server initiated Actions
+        inspect Server updates and decide how to 
+        update the AppState
+    end note
+    Store -> Store: Client Logic
+    Store -> AppEffects: Actions
+end
+
+AppEffects -> EventDB: send actions\n\
+  front-end to back-end **INTERFACE**
+
+group back-end decoupled development
+
+    EventDB -> MwzEngine: events
+    note over MwzEngine
+    MwzEngine evaluates all formulas
+    and updates data acordingly
+    (computes projections in envent sourcing lingo)
+    end note
+    MwzEngine -> MwzEngine: Server Logic
+    MwzEngine -> DataDB: update
+    DataDB -> AppEffects: updates
+end
+
+AppEffects -> Store: Server initiated Actions\n\
+  front-end to back-end **INTERFACE**
+
+@enduml

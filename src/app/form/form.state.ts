@@ -11,36 +11,56 @@ export { Form };
 export { ChangeObj, applyChanges };
 
 
-export interface State {
+export interface FormState {
   form: Form;
   formData: DataObj;
+  formDataFromBackend: DataObj;
+  formReadOnly: string;
 }
 
-export const initialState: State = {
+export const formInitialState: FormState = {
   form: {} as Form,
   formData: {} as DataObj,
+  formDataFromBackend: {} as DataObj,
+  formReadOnly: null,
 };
 
-export const FORM_DATA_CHANGES = "[form] FormDataChangesAction";
-export const FORM_CHANGES = "[form] FormChangesAction";
+export const FormDataFromBackendActionN = "[form] FormDataFromBackendAction";
+export const FormFromBackendActionN = "[form] FormFromBackendAction";
+export const UserActionEditedFormN = "[form] UserActionEditedForm";
+export const UserActionEditedFormDataN = "[form] UserActionEditedFormData";
 
 
-export class FormDataChangesAction implements Action {
-  readonly type = FORM_DATA_CHANGES;
+export class FormDataFromBackendAction implements Action {
+  readonly type = FormDataFromBackendActionN;
 
   constructor(public obj: DataObj) { }
 }
 
-export class FormChangesAction implements Action {
-  readonly type = FORM_CHANGES;
+export class FormFromBackendAction implements Action {
+  readonly type = FormFromBackendActionN;
 
   constructor(public form: Form) { }
 }
 
+export class UserActionEditedForm implements Action {
+  readonly type = UserActionEditedFormN;
 
-export type Actions =
-  | FormDataChangesAction
-  | FormChangesAction
+  constructor(public form: Form) { }
+}
+
+export class UserActionEditedFormData implements Action {
+  readonly type = UserActionEditedFormDataN;
+
+  constructor(public obj: DataObj) { }
+}
+
+
+export type FormActions =
+  | FormDataFromBackendAction
+  | FormFromBackendAction
+  | UserActionEditedForm
+  | UserActionEditedFormData
   ;
 
 /**
@@ -49,21 +69,21 @@ export type Actions =
  * @param state 
  * @param action 
  */
-export function reducer(state = initialState, action: Actions): State {
-  let ret: State = state;
+export function formReducer(state = formInitialState, action: FormActions): FormState {
+  let ret: FormState = state;
   switch (action.type) {
     //changes from the server are commning: properties modified
-    case FORM_DATA_CHANGES:
+    case FormDataFromBackendActionN:
       ret = {
-        form: state.form,
+        ...state,
         formData: action.obj,
       };
       break;
     //user navigates to different forms
-    case FORM_CHANGES:
+    case FormFromBackendActionN:
       ret = {
         form: action.form,
-        formData: state.formData
+        ...state,
       };
       break;
   }
@@ -76,14 +96,14 @@ export function reducer(state = initialState, action: Actions): State {
  * Link with global application state
  */
 export const reducers = {
-  'form': reducer
+  'form': formReducer
 };
-export const getForm = createFeatureSelector<State>('form');
+export const getForm = createFeatureSelector<FormState>('form');
 export const getFormDataState = createSelector(
   getForm,
-  (state: State) => state.formData
+  (state: FormState) => state.formData
 );
 export const getFormState = createSelector(
   getForm,
-  (state: State) => state.form
+  (state: FormState) => state.form
 );

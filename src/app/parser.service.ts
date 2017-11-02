@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Entity } from "./domain/metadata/entity";
+import { Entity, Property } from "./domain/metadata/entity";
 import { Form, NodeElement, NodeType, Str2NodeType, NodeType2Str } from './domain/uimetadata/form';
 import { Table, TableColumn } from './domain/uimetadata/table';
 
@@ -108,9 +108,13 @@ export class ParserService {
 
   private _serializeTable(entity: Entity, ret: string[], table: Table) {
     (table.columns || []).forEach(column => {
-      let s = [column.name, ": ", column.type, "\n  other stuff"];
+      let s = [column.name, ": ", column.type];
       ret.push(s.join(''));
     });
   }
-
 }
+
+// private getForm(path: string): Form {
+//   return this.parserService.parseForm(this.mockMetadata.entitiesMap.get(path), mockUiMeta.getFormText(path)) ||
+//     getDefaultForm(this.mockMetadata.entitiesMap.get(path), this.mockMetadata.entitiesMap);
+// }
