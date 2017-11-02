@@ -36,7 +36,8 @@ import * as appState from './app.state';
 import { AppEffects } from "./app.effects";
 
 import { FormModalService } from "./form-modal.service";
-import { ParserService } from "./parser.service";
+import { MwzParser } from "./mwz-parser";
+import { PouchdbService } from "./pouchdb.service";
 
 const routes: Routes = [
   { path: ':path', component: TableComponent,
@@ -79,7 +80,8 @@ const routes: Routes = [
   exports: [RouterModule],
   providers: [
     FormModalService,
-    ParserService,
+    MwzParser,
+    PouchdbService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

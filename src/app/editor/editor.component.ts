@@ -6,7 +6,7 @@ import { Entity } from '../domain/metadata/entity';
 import { Form } from '../domain/uimetadata/form';
 import { Table } from '../domain/uimetadata/table';
 import { Subscription } from 'rxjs/Subscription';
-import { ParserService } from '../parser.service';
+import { MwzParser } from '../mwz-parser';
 
 import { Store } from '@ngrx/store';
 import * as appState from '../app.state';
@@ -31,8 +31,10 @@ export class EditorComponent implements OnInit {
 
   private text: string;
   private entity: Entity;
+  private parserService;
 
-  constructor(private store: Store<appState.AppState>, private parserService: ParserService) {
+  constructor(private store: Store<appState.AppState>) {
+    this.parserService = new MwzParser();
   }
 
   public applyChanges() {

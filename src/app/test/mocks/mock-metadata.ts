@@ -10,32 +10,37 @@ export class MockMetadata {
     });
 
     this.entities.forEach(meta => {
-      meta._id = `Entity_:${meta.path}`;
-      this.entitiesMap.set(meta.path, meta);
+      this.entitiesMap.set(meta._id, meta);
     });
 
   }
 
   static General: Entity = {
-    mwzType: "Entity_", "path": "General",
+    mwzType: "Entity_", _id: "General",
     "properties": [],
     module: true
   };
 
   static Inventory: Entity = {
-    mwzType: "Entity_", "path": "Inventory",
+    mwzType: "Entity_", _id: "Inventory",
     "properties": [],
     module: true
   };
 
-  static TestApplication: Entity = {
-    mwzType: "Entity_", "path": "TestApplication",
+  static Forms: Entity = {
+    mwzType: "Entity_", _id: "Forms",
+    "properties": [],
+    module: true
+  };
+
+  static Reports: Entity = {
+    mwzType: "Entity_", _id: "Reports",
     "properties": [],
     module: true
   };
 
   static General__Actor: Entity = {
-    mwzType: "Entity_", "path": "General__Actor",
+    mwzType: "Entity_", _id:  "General__Actor",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -51,7 +56,7 @@ export class MockMetadata {
   };
 
   static General__Currency: Entity = {
-    mwzType: "Entity_", "path": "General__Currency",
+    mwzType: "Entity_", _id:  "General__Currency",
     "properties": [
       { "name": "code", "type": "string" },
       { "name": "rate1", "type": "decimal" },
@@ -63,7 +68,7 @@ export class MockMetadata {
   };
 
   static General__GenericUser: Entity = {
-    mwzType: "Entity_", "path": "General__GenericUser",
+    mwzType: "Entity_", _id:  "General__GenericUser",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -79,7 +84,7 @@ export class MockMetadata {
   };
 
   static General__Person: Entity = {
-    mwzType: "Entity_", "path": "General__Person",
+    mwzType: "Entity_", _id:  "General__Person",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "actor_code", "type": "string", "allowNull": false },
@@ -98,7 +103,7 @@ export class MockMetadata {
   };
 
   static General__User: Entity = {
-    mwzType: "Entity_", "path": "General__User",
+    mwzType: "Entity_", _id:  "General__User",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -114,7 +119,7 @@ export class MockMetadata {
   };
 
   static Inventory__Client: Entity = {
-    mwzType: "Entity_", "path": "Inventory__Client",
+    mwzType: "Entity_", _id:  "Inventory__Client",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -130,7 +135,7 @@ export class MockMetadata {
   };
 
   static Inventory__InventoryProduct: Entity = {
-    mwzType: "Entity_", "path": "Inventory__InventoryProduct",
+    mwzType: "Entity_", _id:  "Inventory__InventoryProduct",
     "properties": [
       { "name": "inventory_code", "type": "string", "allowNull": false },
       {
@@ -178,7 +183,7 @@ export class MockMetadata {
   };
 
   static Inventory__ProductListItem: Entity = {
-    mwzType: "Entity_", "path": "Inventory__ProductListItem",
+    mwzType: "Entity_", _id:  "Inventory__ProductListItem",
     "properties": [
       {
         "type": "ENTITY(/Inventory/InventoryProduct)",
@@ -204,7 +209,7 @@ export class MockMetadata {
   };
 
   static Inventory__ProductListProductUnit: Entity = {
-    mwzType: "Entity_", "path": "Inventory__ProductListProductUnit",
+    mwzType: "Entity_", _id:  "Inventory__ProductListProductUnit",
     "properties": [
       { "name": "product_list_product_id", "type": "integer", "allowNull": false },
       { "name": "sy5_index", "type": "float", "allowNull": false },
@@ -217,7 +222,7 @@ export class MockMetadata {
   };
 
   static Inventory__Product: Entity = {
-    mwzType: "Entity_", "path": "Inventory__Product",
+    mwzType: "Entity_", _id:  "Inventory__Product",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "barcode", "type": "string" },
@@ -226,14 +231,14 @@ export class MockMetadata {
   };
 
   static Inventory__ProductUnitCategory: Entity = {
-    mwzType: "Entity_", "path": "Inventory__ProductUnitCategory",
+    mwzType: "Entity_", _id:  "Inventory__ProductUnitCategory",
     "properties": [
       { "name": "code", "type": "string", }
     ]
   };
 
   static Inventory__ProductUnit: Entity = {
-    mwzType: "Entity_", "path": "Inventory__ProductUnit",
+    mwzType: "Entity_", _id:  "Inventory__ProductUnit",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "product_code", "type": "string", "allowNull": false },
@@ -254,7 +259,7 @@ export class MockMetadata {
   };
 
   static Inventory__Supplier: Entity = {
-    mwzType: "Entity_", "path": "Inventory__Supplier",
+    mwzType: "Entity_", _id:  "Inventory__Supplier",
     "properties": [
       { "name": "code", "type": "string", "allowNull": false },
       { "name": "username", "type": "string" },
@@ -269,8 +274,8 @@ export class MockMetadata {
     ]
   };
 
-  static TestApplication__Acquisition: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__Acquisition",
+  static Forms__Acquisition: Entity = {
+    mwzType: "Entity_", _id:  "Forms__Acquisition",
     "properties": [
       { "name": "type", "type": "string" },
       { "name": "code", "type": "string", "allowNull": false },
@@ -278,8 +283,8 @@ export class MockMetadata {
     ]
   };
 
-  static TestApplication__DetailedCentralizerReport: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__DetailedCentralizerReport",
+  static Reports__DetailedCentralizerReport: Entity = {
+    mwzType: "Entity_", _id:  "Reports__DetailedCentralizerReport",
     "properties": [
       { "name": "name", "type": "string", "allowNull": false },
       { "name": "user_code", "type": "string", "allowNull": false },
@@ -300,8 +305,8 @@ export class MockMetadata {
     ]
   };
 
-  static TestApplication__GenericReport: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__GenericReport",
+  static Reports__GenericReport: Entity = {
+    mwzType: "Entity_", _id:  "Reports__GenericReport",
     "properties": [
       { "name": "name", "type": "string", "allowNull": false },
       { "name": "user_code", "type": "string", "allowNull": false },
@@ -322,8 +327,8 @@ export class MockMetadata {
     ]
   };
 
-  static TestApplication__Order: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__Order",
+  static Forms__Order: Entity = {
+    mwzType: "Entity_", _id:  "Forms__Order",
     "properties": [
       { "name": "type", "type": "string" },
       { "name": "code", "type": "string", "allowNull": false },
@@ -332,8 +337,8 @@ export class MockMetadata {
     ]
   };
 
-  static TestApplication__ServiceCentralizerReport: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__ServiceCentralizerReport",
+  static Reports__ServiceCentralizerReport: Entity = {
+    mwzType: "Entity_", _id:  "Reports__ServiceCentralizerReport",
     "properties": [
       { "name": "name", "type": "string", "allowNull": false },
       { "name": "user_code", "type": "string", "allowNull": false },
@@ -354,8 +359,8 @@ export class MockMetadata {
     ]
   };
 
-  static TestApplication__ServiceForm: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__ServiceForm",
+  static Forms__ServiceForm: Entity = {
+    mwzType: "Entity_", _id:  "Forms__ServiceForm",
     "properties": [
       {
         "name": "code", 
@@ -376,12 +381,12 @@ export class MockMetadata {
       { "name": "state", "type": "string", "allowNull": false },
       { "name": "nb_installments", "type": "integer" },
       { "name": "accommodation", "type": "decimal" },
-      { "name": "service_form_units", "type": "TABLE(/TestApplication/ServiceFormUnit)", "copiedProperties": [] }
+      { "name": "service_form_units", "type": "TABLE(/Forms/ServiceFormUnit)", "copiedProperties": [] }
     ]
   };
 
-  static TestApplication__ServiceFormUnit: Entity = {
-    mwzType: "Entity_", "path": "TestApplication__ServiceFormUnit",
+  static Forms__ServiceFormUnit: Entity = {
+    mwzType: "Entity_", _id:  "Forms__ServiceFormUnit",
     "properties": [
       { "name": "equipment", "type": "ENTITY(/Inventory/ProductUnit)", copiedProperties: ['code', 'product_code', 'serial1'] },
       { "name": "product_list", "type": "TABLE(/Inventory/ProductListItem)", "isLargeTable": true },
@@ -413,14 +418,14 @@ export class MockMetadata {
     MockMetadata.Inventory__ProductUnitCategory,
     MockMetadata.Inventory__ProductUnit,
     MockMetadata.Inventory__Supplier,
-    MockMetadata.TestApplication,
-    MockMetadata.TestApplication__Acquisition,
-    MockMetadata.TestApplication__DetailedCentralizerReport,
-    MockMetadata.TestApplication__GenericReport,
-    MockMetadata.TestApplication__Order,
-    MockMetadata.TestApplication__ServiceCentralizerReport,
-    MockMetadata.TestApplication__ServiceForm,
-    MockMetadata.TestApplication__ServiceFormUnit,
+    MockMetadata.Forms,
+    MockMetadata.Forms__Acquisition,
+    MockMetadata.Reports__DetailedCentralizerReport,
+    MockMetadata.Reports__GenericReport,
+    MockMetadata.Forms__Order,
+    MockMetadata.Reports__ServiceCentralizerReport,
+    MockMetadata.Forms__ServiceForm,
+    MockMetadata.Forms__ServiceFormUnit,
   ];
 
   public entitiesMap = new Map<string, Entity>();

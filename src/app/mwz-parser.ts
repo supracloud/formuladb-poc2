@@ -1,10 +1,8 @@
-import { Injectable } from '@angular/core';
 import { Entity, Property } from "./domain/metadata/entity";
 import { Form, NodeElement, NodeType, Str2NodeType, NodeType2Str } from './domain/uimetadata/form';
 import { Table, TableColumn } from './domain/uimetadata/table';
 
-@Injectable()
-export class ParserService {
+export class MwzParser {
   private INDENT: string = "  ";
 
   public serializeForm(entity: Entity, form: Form): string {
@@ -17,6 +15,8 @@ export class ParserService {
     if (null == text) return null;
 
     let form = new Form();
+    form._id = 'Form_:' + entity._id;
+    form.mwzType = 'Form_';
     let elementsPath: NodeElement[] = [form];
 
     text.split(/\n/).map(line => {

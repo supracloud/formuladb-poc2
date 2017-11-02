@@ -2,7 +2,7 @@ import * as metadata from './mock-metadata';
 import {Entity} from '../../domain/metadata/entity'
 import {Form} from '../../domain/uimetadata/form'
 
-const TestApplication__ServiceForm = `
+export const Forms__ServiceForm = `
 form-grid-row
   form-input=code
   form-datepicker=time_of_arrival
@@ -51,10 +51,7 @@ form-grid-row
   form-input=_id
 `;
 
-let forms = {
-    TestApplication__ServiceForm: TestApplication__ServiceForm,
-};
+export const serializedForms = [
+    {entity: metadata.MockMetadata.Forms__ServiceForm, formText: Forms__ServiceForm},
+];
 
-export function getFormText(path: string): string {
-    return forms[path];
-}

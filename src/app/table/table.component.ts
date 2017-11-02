@@ -37,7 +37,7 @@ export class TableComponent {
         try {
             this.table$ = store.select(tableState.getTableState);
             this.data$ = store.select(tableState.getTableDataState);
-            this.table$.subscribe(x => console.log("TABLE:", x, x.columns));
+            this.table$.subscribe(x => console.log("TABLE:", x, (x||new tableState.Table()).columns));
         } catch (ex) {
             console.error(ex);
         }

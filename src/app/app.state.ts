@@ -37,19 +37,11 @@ export interface RouterState {
 }
 
 export interface AppState {
-  'core': fromCore.CoreState;
   'router': RouterReducerState<RouterState>;
+  'core': fromCore.CoreState;
   'entity': fromEntity.EntityState;
   'table': fromTable.TableState;
   'form': fromForm.FormState;
-};
-
-export const appInitialState: AppState = {
-  'core': fromCore.coreInitialState,
-  'router': null,
-  'entity': fromEntity.entityInitialState,
-  'table': fromTable.tableInitialState,
-  'form': fromForm.formInitialState,
 };
 
 export type AppActions =
@@ -89,8 +81,8 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
 }
 
 export const reducers = {
-  ...fromCore.reducers,
   'router': routerReducer,
+  ...fromCore.reducers,
   ...fromEntity.reducers,
   ...fromTable.reducers,
   ...fromForm.reducers

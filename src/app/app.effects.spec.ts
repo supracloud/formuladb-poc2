@@ -57,7 +57,7 @@ describe('AppEffects', () => {
         effects = TestBed.get(AppEffects);
         actions$ = TestBed.get(Actions);
         backendReadService = TestBed.get(BackendReadService);
-        actorTestId = backendReadService.mockData.getAll(MockMetadata.General__Actor.path)[0]._id;
+        actorTestId = backendReadService.mockData.getAll(MockMetadata.General__Actor._id)[0]._id;
     });
 
     it('a router effect test', () => {
@@ -78,12 +78,12 @@ describe('AppEffects', () => {
                 } as RouterNavigationAction<appState.RouterState>,
                 m: new fromTable.TableFormBackendAction(getDefaultTable(MockMetadata.General__Actor)),
                 n: new fromTable.TableDataFromBackendAction(
-                    backendReadService.mockData.getAll(MockMetadata.General__Actor.path).map(o => new ChangeObj(o))),
+                    backendReadService.mockData.getAll(MockMetadata.General__Actor._id).map(o => new ChangeObj(o))),
                 o: new fromForm.FormFromBackendAction(getDefaultForm(MockMetadata.General__Actor)),
-                p: new fromForm.FormDataFromBackendAction(backendReadService.mockData.get(MockMetadata.General__Actor.path, actorTestId)),
+                p: new fromForm.FormDataFromBackendAction(backendReadService.mockData.get(MockMetadata.General__Actor._id, actorTestId)),
                 q: new fromTable.TableFormBackendAction(getDefaultTable(MockMetadata.General__Currency)),
                 r: new fromTable.TableDataFromBackendAction(
-                    backendReadService.mockData.getAll(MockMetadata.General__Currency.path).map(o => new ChangeObj(o))),
+                    backendReadService.mockData.getAll(MockMetadata.General__Currency._id).map(o => new ChangeObj(o))),
                 s: new fromForm.FormFromBackendAction(getDefaultForm(MockMetadata.General__Currency)),
             }
 

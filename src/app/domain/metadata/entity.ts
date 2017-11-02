@@ -1,7 +1,6 @@
 import { BaseObj } from '../base_obj';
 
 export class Entity extends BaseObj {
-    path:string;
     properties: Property[];
     module?: true;
 
@@ -10,7 +9,7 @@ export class Entity extends BaseObj {
             prop.index = idx;
         });
     }
-
+ 
     /**
      * Convert path
      * @param dirPath directory-like path, e.g. /Inventory/Product

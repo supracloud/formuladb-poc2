@@ -26,22 +26,32 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-# Couchdb
+# Couchdb setting up test data
 
-eval $(docker-machine.exe env docker1 --shell bash)
+Install docker toolbox: https://www.docker.com/products/docker-toolbox
+
+docker-machine.exe create docker2
+
+eval $(docker-machine.exe env docker2 --shell bash)
 
 docker build -t mycouchdb .
 
-    # MSYS_NO_PATHCONV=1 makes git-bash not convert paths to windows format
-    #MSYS_NO_PATHCONV=1 docker run --privileged -d --name cdb -p 5984:5984 -v $PWD/couchdb_data:/opt/couchdb/data mycouchdb
 MSYS_NO_PATHCONV=1 docker run --privileged -d --name cdb -p 5984:5984 mycouchdb
 
 
-tc qdisc change dev eth0 root netem delay 150ms
-/wondershaper.sh -a eth0 -d 256 -u 256
+docker exec -it cdb tc qdisc change dev eth0 root netem delay 150ms
+RTNETLINK answers: No such file or directory... WTF!!!!
+        
+        ignore this: /wondershaper.sh -a eth0 -d 256 -u 256
 
+VBoxManage controlvm "docker2" natpf1 "couchdb,tcp,,5984,,5984"
 
-The follow:
+Then follow:
 http://docs.couchdb.org/en/master/install/setup.html#single-node-setup
 
-Then Create new database called 'mwz'
+Then Create 2 new databases called 'mwzdata' and 'mwzevents'
+
+./node_modules/.bin/tsc # compile the test data loader
+node dist/out-tsc/src/app/test/mocks/loadTestData.js
+
+ng serve # & the usual stuff

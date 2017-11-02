@@ -14,11 +14,10 @@ import { of } from 'rxjs/observable/of';
 import {
     RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
 } from '@ngrx/router-store';
-
-import PouchDB from 'pouchdb';
-import PouchFind from 'pouchdb-find';
+import { Router } from "@angular/router";
 
 import { BaseObj } from "./domain/base_obj";
+import { DataObj } from "./domain/metadata/data_obj";
 import { Entity, Property } from "./domain/metadata/entity";
 import { ChangeObj } from "./domain/change_obj";
 
@@ -26,6 +25,8 @@ import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/form";
 
 import * as appState from './app.state';
+
+import { PouchdbService } from "./pouchdb.service";
 
 export type ActionsToBeSentToServer =
     | appState.UserActionEditedFormData
@@ -37,24 +38,20 @@ export const ActionsToBeSentToServerNames = [
 @Injectable()
 export class AppEffects {
     private currentUrl: { path: string, id: string } = { path: null, id: null };
-
-    private localDB: any;
-    private remoteEventsDB: any;
-    private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
-    private remoteEventsDBUrl = 'http://localhost:5984/mwzevents';
+    private cachedEntitiesMap: Map<string, Entity> = new Map();
 
     constructor(
         private actions$: Actions,
-        private store: Store<appState.AppState>
+        private store: Store<appState.AppState>,
+        private pouchDbService: PouchdbService,
+        private router: Router
     ) {
 
-        PouchDB.plugin(PouchFind);
         let me = this;
 
-        this.localDB = new PouchDB("mwz");
-
         try {
-            this.init();
+            //we first initialize the DB (sync with remote DB)
+            pouchDbService.init(() => this.init());
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
@@ -62,46 +59,21 @@ export class AppEffects {
     }
 
     private init() {
-        this.remoteEventsDB = new PouchDB(this.remoteEventsDBUrl);
-
-        this.localDB.createIndex({
-            index: { fields: ['mwzType'] }
-        }).then(() => {
-            let appStateS = this;
-
-            //FIXME: remove callback-hell
-            //first catchup local PouchDB with what happened on the server while the application was stopped
-            this.localDB.replicate.from(this.remoteDataDBUrl)
-                .on('complete', info => {
-                    //after initial replication from the server is finished, continue with live replication
-                    this.localDB.replicate.from(this.remoteDataDBUrl, {
-                        live: true,
-                        retry: true,
-                    })
-                        .on('error', err => console.error(err));
-
-                    //get initial list of entities and remove readonly flag
-                    this.localDB.find({
-                        selector: {
-                            mwzType: 'Entity_'
-                        }
-                    }).then((res: { docs: Entity[] }) => {
-                        this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(res.docs));
-                        this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
-                    }).catch(err => console.error(err));
-                })
-                .on('error', err => console.error(err));
-        });
+        //load entities and remove readOnly flag
+        this.pouchDbService.findByMwzType<Entity>('Entity_').then(entities => {
+            this.cachedEntitiesMap.clear();
+            entities.map(entity => this.cachedEntitiesMap.set(entity._id, entity));
+            this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
+            this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
+            this.processRouterUrlChange(this.router.url);
+        }).catch(err => console.error(err));
 
         //change app state based on router actions
         this.listenForRouterChanges();
 
         //send actions to server so that the engine can process them, compute all formulas and update the data
         this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
-            this.remoteEventsDB.post(action)
-                .catch(err => {
-                    console.log(err);
-                });
+            this.pouchDbService.postAction(action);
         });
     }
 
@@ -110,90 +82,64 @@ export class AppEffects {
             .subscribe(routerNav => {
                 //FIXME: why is queryParams empty ?!?!
                 console.log("AppEffects:", routerNav.payload.routerState);
-                let match = routerNav.payload.routerState.url.match(/^\/(\w+)\/?(\w+)?/)
-                let { path, id } = appState.parseUrl(routerNav.payload.routerState.url);
-
-                if (path === this.currentUrl.path && id === this.currentUrl.id) return;
-
-                if (path !== this.currentUrl.path) {
-                    this.currentUrl.path = path;
-                    // this.store.dispatch(new appState.TableFormBackendAction(getDefaultTable()))
-                    // this.table$.next(getDefaultTable(this.mockMetadata.entitiesMap.get(path)));
-                    // this.table$.next(this.mockData.getAll(path).map(o => new ChangeObj(o)));
-                    // this.form$.next(this.getForm(path));
-                }
-
-                if (id != this.currentUrl.id) {
-                    // this.form$.next(this.mockData.get(path, id));
-                }
+                this.processRouterUrlChange(routerNav.payload.routerState.url);
             });
+    }
+
+    private processRouterUrlChange(url: string) {
+        let { path, id } = appState.parseUrl(url);
+
+        if (path === this.currentUrl.path && id === this.currentUrl.id) return;
+
+        if (path !== this.currentUrl.path) {
+            this.currentUrl.path = path;
+            this.changeEntity(path);
+        }
+
+        if (id != this.currentUrl.id) {
+            this.pouchDbService.getDataObj(id)
+                .then(obj => this.store.dispatch(new appState.FormDataFromBackendAction(obj)));
+        }
+
+    }
+
+    private async changeEntity(path: string) {
+        try {
+            let entity = await this.pouchDbService.getEntity(path);
+            this.store.dispatch(new appState.UserActionSelectedEntity(entity));
+
+            let table: Table = null;
+            try {
+                table = await this.pouchDbService.getTable(path);
+            } catch (err) {
+                if (err.status == 404) {
+                    table = getDefaultTable(entity);
+                } else throw err;
+            }
+            this.store.dispatch(new appState.TableFormBackendAction(table));
+
+            let tableData = await this.pouchDbService.findByMwzType<DataObj>(path);
+            this.store.dispatch(new appState.TableDataFromBackendAction(tableData.map(obj => new ChangeObj<DataObj>(obj))))
+
+            let form: Form = null;
+            try {
+                form = await this.pouchDbService.getForm(path);
+            } catch (err) {
+                if (err.status == 404) {
+                    form = getDefaultForm(entity, this.cachedEntitiesMap);
+                } else throw err;
+            }
+            this.store.dispatch(new appState.FormFromBackendAction(form));
+
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     // Change state on router navigation: get metadata and data from server and replace change current state
     // @Effect() navigation$: TableFormActionsObservable = 
 
-    private fetch() {
-        return this.localDB.allDocs({ include_docs: true });
-    }
 
-    private get(id: string) {
-        return this.localDB.get(id);
-    }
-
-    private put(id: string, document: BaseObj): Promise<any> {
-        document._id = id;
-        return this.get(id).then(result => {
-            document._rev = result._rev;
-            return this.localDB.put(document);
-        }, error => {
-            if (error.status == "404") {
-                return this.localDB.put(document);
-            } else {
-                return new Promise((resolve, reject) => {
-                    reject(error);
-                });
-            }
-        });
-    }
-
-    private sync() {
-        // let appStateS = this;
-        // let remoteDatabase = new PouchDB(remote);
-        // this.db.sync(remoteDatabase, {
-        //     live: true
-        // }).on('change', sync => {
-        //     console.log(sync);
-        //     if (sync.direction == 'push') {
-        //         //data going to the server
-        //     } else {
-        //         //data coming from the server
-        //         sync.change.docs.forEach(doc => {
-        //             // if (doc._deleted) {
-        //             //     //TODO
-        //             // } else if (appStateS.currentlyEditedObjBeforeSave && doc._id == appStateS.currentlyEditedObjBeforeSave._id) {
-        //             //     appStateS.formDataUpdatesFromServer$.next(doc);
-        //             // }
-        //         });
-        //     }
-        // }).on('error', error => {
-        //     console.error(error);
-        // });
-    }
-
-    private deleteAll(): Promise<any> {
-        let db = this.localDB;
-
-        let ret = null;
-        ret = db.allDocs().then(function (result) {
-            // Promise isn't supported by all browsers; you may want to use bluebird
-            return Promise.all(result.rows.map(function (row) {
-                return db.remove(row.id, row.value.rev);
-            }));
-        }).catch(function (err) {
-            console.error(err);
-        });
-        return ret;
-    }
 }
 
 

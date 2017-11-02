@@ -27,9 +27,9 @@ export class NavigationComponent implements OnInit {
   ngOnInit() {
     this.entities$.subscribe(x => {
       this.metadataCatalog = x.map(entity => ({
-        linkName: entity.path.split(/__/).slice(-1)[0],
-        path: entity.path,
-        indent: '- '.repeat(entity.path.split(/__/).length - 1)
+        linkName: entity._id.split(/__/).slice(-1)[0],
+        path: entity._id,
+        indent: '- '.repeat(entity._id.split(/__/).length - 1)
       }))
     });
   }
