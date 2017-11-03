@@ -49,6 +49,13 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 ## 1.3 Design
 
+"Everyting is a stream" design goals...before you find some hate/pain points give me a chance to explain the benefits :)
+
+![](./docs/img/docs/architecture.png)
+![](./docs/img/docs/init_and_view_flows.png)
+![](./docs/img/docs/edit_flow.png)
+![](./docs/img/docs/metadata_flow.png)
+
 # 2. Production
 
 TODO

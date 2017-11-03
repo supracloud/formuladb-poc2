@@ -1,6 +1,6 @@
 @startuml init_and_view_flows
 
-title App initialization and user browses through data
+title User first accesses the app, app initialization and user browses through data
 
 actor User
 box "Client UI"
