@@ -31,9 +31,10 @@ export class EditorComponent implements OnInit {
 
   private text: string;
   private entity: Entity;
-  private parserService;
+  private parserService: MwzParser;
 
   constructor(private store: Store<appState.AppState>) {
+    this.store.select(appState.getSelectedEntityState).subscribe(entity => this.entity = entity);
     this.parserService = new MwzParser();
   }
 

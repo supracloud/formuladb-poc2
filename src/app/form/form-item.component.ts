@@ -32,6 +32,8 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
   }
 
   getHostClassForElement(): string {
+    if (null == this.nodeElement) return '';
+    if (null == this.nodeElement.nodeName) return '';
     return this.nodeElement.nodeName == 'form-grid' ? 'container' : this.nodeElement.nodeName.replace(/^form-grid-/, '');
   }
 }

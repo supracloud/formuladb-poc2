@@ -22,9 +22,10 @@ end box
 note over Store
 **__AppState:__**
 {url: string}
+{appReadonly$}
 {entities$: Entity[]; selectedEntity$: Entity;}
 {table$: Table; tableData$: DataObj[];}
-{form$: Form; formData$: DataObj; formDataFromBackend$}
+{form$: Form; formData$: DataObj; formDataFromBackend$; formReadOnly$}
 **__Actions:__**
 EntitiesFromBackendAction,UserActionSelectedEntity,UserActionEditedEntity,UserActionNewEntity,UserActionDeleteEntity
 TableFromBackendAction,TableDataFromBackendAction,UserActionEditedTable,UserActionSelectedRowForEditing

@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
-import { Entity } from '../../domain/metadata/entity'
+import { Entity, Property } from '../../domain/metadata/entity'
 
 import { DataObj } from "../../domain/metadata/data_obj";
 
@@ -36,6 +36,16 @@ export class MockData {
   mockEntities(entity: Entity, entitiesIndexes: number[]) {
     return entitiesIndexes.map(i => this.mockEntity(entity, i));
   }
+
+  getRefDataObj(path: string, refPath: string, refIdx: number): DataObj {
+    let db: Map<string, DataObj> = this.mockDB.get(refPath);
+    console.log(db);
+    if (null == db) throw new Error("Dependent entity " + refPath + " not mocked yet for " + path);
+    let values = Array.from(db.values());
+    if (values.length <= refIdx) throw new Error("Dependent entity " + refPath + " for " + path + " has fewer values " + values.length + " than expected " + refIdx);
+    return values[refIdx];
+  }
+
   mockEntity(entity: Entity, entityIdx: number): DataObj {
       let db: Map<string, DataObj> = this.mockDB.get(entity._id);
       if (null == db) {
@@ -44,39 +54,53 @@ export class MockData {
       }
       this.mockDB.set(entity._id, db);
       let ret = { mwzType: entity._id, _id: `${entity._id}:123400${entityIdx}` };
-      entity.properties.forEach((p, index) => {
-        if (p.name == "_id") {
-          //already set above
-        } else if (p.name == "_rev") {
-          //do nothing
-        } else if (p.name == "mwzType") {
-          //do nothing
-        } else if (p.type == "integer") {
-          ret[p.name] = Math.random() * 100;
-        } else if (p.type == "decimal") {
-          ret[p.name] = Math.random() * 100;
-        } else if (p.type == "float") {
-          ret[p.name] = Math.random() * 112.45;
-        } else if (p.type == "string") {
-          ret[p.name] = p.name + Math.ceil(Math.random() * 100000);
-        } else if (p.type == "text") {
-          ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
-        } else if (p.type == "datetime") {
-          ret[p.name] = new Date();
-        } else if (p.type.match(/^ENTITY\(/)) {
-          let m = p.type.match(/^ENTITY\((.*)\)/);
-          let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
-          ret[p.name] = _.pick(this.mockEntity(ref, this.getRandomId()), (p.copiedProperties || []).concat(['_id', 'mwzType']));
-        } else if (p.type.match(/^TABLE\(/)) {
-          let m = p.type.match(/^TABLE\((.*)\)/);
-          let ref = this.entitiesMap.get(Entity.fromDirPath(m[1]));
-          ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
-        }
-      });
+
+      this.mockObject(entity._id, entity.properties, ret);
 
       db.set(ret._id, ret);
       this.allData.push(ret);
       return ret;
+  }
+
+  mockObject(path: string, properties: Property[], ret: {}): {} {
+    properties.forEach((p, index) => {
+      if (p.name == "_id") {
+        //already set above
+      } else if (p.name == "_rev") {
+        //do nothing
+      } else if (p.name == "mwzType") {
+        //do nothing
+      } else if (p.type == "integer") {
+        ret[p.name] = Math.random() * 100;
+      } else if (p.type == "decimal") {
+        ret[p.name] = Math.random() * 100;
+      } else if (p.type == "float") {
+        ret[p.name] = Math.random() * 112.45;
+      } else if (p.type == "string") {
+        ret[p.name] = p.name + Math.ceil(Math.random() * 100000);
+      } else if (p.type == "text") {
+        ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
+      } else if (p.type == "datetime") {
+        ret[p.name] = new Date();
+      } else if (p.type.match(/^ENTITY\(/)) {
+        let m = p.type.match(/^ENTITY\((\w+)\)/);
+        let refIdx = Math.round(Math.random() * 4);
+        let refPath = m[1];
+        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.copiedProperties || []).concat(['_id', 'mwzType']));
+      } else if (p.type.match(/^TABLE$/)) {
+        let table = [];
+        for (var i = 0; i < 5; i++) {
+          table.push(this.mockObject(path, p.properties, {}));
+        }
+        ret[p.name] = table;
+      } else if (p.type.match(/^TABLE\(/)) {
+        let m = p.type.match(/^TABLE\((\w+)\)/);
+        let ref = this.entitiesMap.get(m[1]);
+        ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
+      }
+    });
+
+    return ret;
   }
 
   mockName(): string {
@@ -87,23 +111,20 @@ export class MockData {
     console.log("mockData called");
     this.mockEntities(metadata.MockMetadata.General__Actor, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.General__Currency, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.General__GenericUser, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.General__Person, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.General__User, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Inventory__Client, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__ProductListItem, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Inventory__Product, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__ProductUnitCategory, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__Supplier, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__Acquisition, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__OrderItem, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Inventory__ReceiptItem, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Forms__Order, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Forms__Receipt, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Reports__DetailedCentralizerReport, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Reports__GenericReport, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__Order, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Reports__ServiceCentralizerReport, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__ServiceFormUnit, [1, 2, 3, 4, 5]);
   }
 
 }

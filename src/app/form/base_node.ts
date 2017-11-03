@@ -13,4 +13,11 @@ export class BaseNodeComponent {
 
     @Input()
     parentFormPath: string;
+
+    @Input()
+    formReadOnly: boolean;
+
+    hasControl(path: string): boolean {
+        return this.topLevelFormGroup.get(path) != null;
+    }
 }

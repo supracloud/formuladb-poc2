@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 import { BaseNodeComponent } from "./base_node";
 
-import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: '[form-tabs]',
   template: `
   <ngb-tabset>
-    <ngb-tab *ngFor="let childControl of topLevelFormGroup.get(parentFormPath).controls; let idx = index" 
+    <ngb-tab *ngFor="let childControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index" 
     [title]="tabNames[idx]">
       <ng-template ngbTabContent>
-        <div form-item [nodeElement]="nodeElement.childNodes[0]" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath + '.' + idx"></div>
+        <div form-item [nodeElement]="nodeElement.childNodes[0]" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath + '.' + idx" [formReadOnly]="formReadOnly"></div>
       </ng-template>
     </ngb-tab>  
   </ngb-tabset>
@@ -23,15 +23,17 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
     }
   `]
 })
-export class FormTabsComponent extends BaseNodeComponent implements OnInit {
+export class FormTabsComponent extends BaseNodeComponent implements OnChanges {
   private tabNames: string[] = [];
 
   constructor() {
     super();
   }
 
-  ngOnInit() {
-    this.tabNames = (this.topLevelFormGroup.get(this.parentFormPath) as FormArray).controls.map(child => {
+  ngOnChanges() {
+    let formArray = this.topLevelFormGroup.get(this.parentFormPath) as FormArray;
+    if (!formArray) return;
+    this.tabNames = formArray.controls.map(child => {
       return child.get(this.nodeElement.attributes.tabNameFormPath).value;
     });
   }

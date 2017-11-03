@@ -2,7 +2,7 @@ import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
     ChangeDetectionStrategy, Directive
 } from '@angular/core';
-import { FormControl, FormGroup, FormArray, FormBuilder } from '@angular/forms';
+import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { FormModalService } from '../form-modal.service';
@@ -17,7 +17,7 @@ import 'rxjs/add/operator/sampleTime';
 import 'rxjs/add/observable/fromEvent';
 import { Observable } from 'rxjs/Observable';
 
-import * as formState from './form.state';
+import * as fromForm from './form.state';
 
 import { BaseObj } from "../domain/base_obj";
 
@@ -27,7 +27,9 @@ import { BaseObj } from "../domain/base_obj";
     `
     <form [formGroup]="theFormGroup" novalidate>
         <p>Form status: {{ theFormGroup.status | json }}</p>
-        <div form-item [nodeElement]="form$ | async" [topLevelFormGroup]="theFormGroup" parentFormPath="">
+        <div form-item [nodeElement]="(formState$ | async)?.form" [topLevelFormGroup]="theFormGroup" 
+            parentFormPath="" [formReadOnly]="formReadOnly$ | async"
+            *ngIf="(formState$ | async)?.form">
         </div>
     </form>
     `,
@@ -35,23 +37,17 @@ import { BaseObj } from "../domain/base_obj";
 })
 
 export class FormComponent implements OnInit {
-    private form$: Observable<formState.Form>;
-    private formData$: Observable<formState.DataObj>;
-
     public theFormGroup: FormGroup;
     public changes: any[] = [];
     private tickUsed: boolean = false;
     private lastObj: BaseObj;
-    private lastSavedObj: BaseObj;
+    private formState$: Observable<fromForm.FormState>;
 
     constructor(
-        private store: Store<formState.FormState>,
-        private formBuilder: FormBuilder,
+        private store: Store<fromForm.FormState>,
         private formModalService: FormModalService) {
+        this.formState$ = store.select(fromForm.getForm);
         try {
-            this.form$ = store.select(formState.getFormState);
-            this.formData$ = store.select(formState.getFormDataState);
-
             this.theFormGroup = new FormGroup({});
         } catch (ex) {
             console.error(ex);
@@ -61,72 +57,46 @@ export class FormComponent implements OnInit {
 
     ngOnInit() {
         let cmp = this;
-        this.form$.subscribe(frm => {
-            console.log("MwzFormComponent frm:", frm);
-            this.createFormGroup(this.theFormGroup, frm);
-            console.log("MwzFormComponent this.theFormGroup:", this.theFormGroup);
-            // this.updateFormData(this.lastObj);
+
+        this.formState$.subscribe(formState => {
+            console.log("MwzFormComponent:", formState.form, formState.formData, formState.formReadOnly);
+
+            if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form, formState.formReadOnly);
+            if (formState.formData) this.updateFormGroupWithData(formState.formData, this.theFormGroup, formState.formReadOnly);
+
+            if (formState.formReadOnly && !this.theFormGroup.disabled) {
+                this.theFormGroup.disable();
+            } else if (!formState.formReadOnly && this.theFormGroup.disabled) {
+                this.theFormGroup.enable();
+            }
         });
-
-        this.formData$.subscribe(obj => {
-            console.log("MwzFormComponent obj from server:", obj);
-            this.updateFormData(obj, this.theFormGroup);
-            this.lastObj = obj;
-        },
-            err => console.error(err)
-        );
-
-        // this.appStateS.formDataUpdatesFromServer$.subscribe((objFromServer: DataObj) => {
-        //     this.updateFormDataFromServer(objFromServer);
-        // });
 
         this.theFormGroup.valueChanges
             // .filter(() => this.theFormGroup.valid)
             .sampleTime(2000)
             .forEach(val => {
                 console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.status);
-                // this.appStateS.put(val._id, val).then(doc => this.lastSavedObj = doc);
             });
     }
 
-    private createFormGroup(parentFormGroup: FormGroup, formEl: NodeElement) {
+    private updateFormGroup(parentFormGroup: FormGroup, formEl: NodeElement, formReadOnly: boolean) {
         let newParent = parentFormGroup;
         if (null != formEl.tableName) {
             newParent = new FormGroup({});
-            parentFormGroup.addControl(formEl.tableName, new FormArray([newParent]));
+            parentFormGroup.setControl(formEl.tableName, new FormArray([newParent]));
         }
         else if (null != formEl.entityName) {
             newParent = new FormGroup({});
-            parentFormGroup.addControl(formEl.entityName, newParent);
+            parentFormGroup.setControl(formEl.entityName, newParent);
         } if (null != formEl.propertyName) {
-            parentFormGroup.addControl(formEl.propertyName, new FormControl());
+            parentFormGroup.setControl(formEl.propertyName, new FormControl({disabled: formReadOnly}));
         }
         if (null != formEl.childNodes) {
-            formEl.childNodes.forEach(child => this.createFormGroup(newParent, child));
+            formEl.childNodes.forEach(child => this.updateFormGroup(newParent, child, formReadOnly));
         }
     }
 
-    private updateFormDataFromServer(objFromServer: DataObj) {
-        this.updateFormData(objFromServer, this.theFormGroup);
-
-        //FIXME: update only delta, don't loose the user's edits!!!
-        // let currentPath = '';
-        // for (var key in objFromServer) {
-        //     let objValFromServer = objFromServer[key];
-
-        //     if (objValFromServer instanceof Array) {
-        //         objValFromServer.forEach((childObjFromServer, idx) => {
-
-        //         });
-        //     } else if (/string|boolean|number/.test(typeof objValFromServer) || objValFromServer instanceof Date) {
-        //     } else if ('object' === typeof objValFromServer) {
-        //     } else {
-        //         throw new Error("unkown objValFromServer type: '" + objValFromServer + "'");
-        //     }
-                
-        // }        
-    }
-    private updateFormData(obj: DataObj, formGroup: FormGroup) {
+    private updateFormGroupWithData(obj: DataObj, formGroup: FormGroup, formReadOnly: boolean) {
         for (var key in obj) {
             // if ('_rev' === key) continue;
 
@@ -148,12 +118,12 @@ export class FormComponent implements OnInit {
                     if (formArray.length <= i) {
                         formArray.push(new FormGroup({}));
                     }
-                    this.updateFormData(o, formArray.at(i) as FormGroup)
+                    this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly)
                 });
                 
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
                 if (null == formVal) {
-                    formVal = new FormControl();
+                    formVal = new FormControl({disabled: formReadOnly});
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormControl)) {
@@ -170,7 +140,7 @@ export class FormComponent implements OnInit {
                     throw new Error("key " + key + ", objVal object '" + objVal + "', but formVal not FormGroup: '" + formVal + "'");
                 }
 
-                this.updateFormData(objVal, formVal);
+                this.updateFormGroupWithData(objVal, formVal, formReadOnly);
             } else {
                 throw new Error("unkown objVal type: '" + objVal + "'");
             }

@@ -67,22 +67,6 @@ export class MockMetadata {
     ]
   };
 
-  static General__GenericUser: Entity = {
-    mwzType: "Entity_", _id:  "General__GenericUser",
-    "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "username", "type": "string" },
-      { "name": "name", "type": "string" },
-      { "name": "role", "type": "string" },
-      { "name": "password", "type": "string" },
-      { "name": "details", "type": "string" },
-      { "name": "type", "type": "string" },
-      { "name": "parent_code", "type": "string" },
-      { "name": "param1", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false, }
-    ]
-  };
-
   static General__Person: Entity = {
     mwzType: "Entity_", _id:  "General__Person",
     "properties": [
@@ -140,7 +124,7 @@ export class MockMetadata {
       { "name": "inventory_code", "type": "string", "allowNull": false },
       {
         "name": "product",
-        "type": "ENTITY(/Inventory/Product)",
+        "type": "ENTITY(Inventory__Product)",
         "copiedProperties": [
           "code",
           "name"
@@ -150,7 +134,7 @@ export class MockMetadata {
       { "name": "price", "type": "decimal", "allowNull": true },
       {
         "name": "currency",
-        "type": "ENTITY(/General/Currency)",
+        "type": "ENTITY(General__Currency)",
         "copiedProperties": [
           "code",
           "name"
@@ -159,8 +143,9 @@ export class MockMetadata {
       { "name": "minimal_stock", "type": "integer", "allowNull": false },
       {
         "name": "received_stock",
-        "type": "integer",
-        "allowNull": false,
+        "type": `FORMULA:
+        SUM(receiptItems.received_quantity)
+        `
       },
       {
         "name": "available_stock", 
@@ -169,9 +154,8 @@ export class MockMetadata {
       {
         "name": "reserved_stock",
         "type": `FORMULA:
-          FILTER(productListItems,productList.isNew?)
-          SUM(^.reserved_quantity)
-      `,
+          SUM(orderItems.reserved_quantity)
+        `
       },
       {
         "name": "delivered_stock", 
@@ -182,11 +166,29 @@ export class MockMetadata {
     ]
   };
 
-  static Inventory__ProductListItem: Entity = {
-    mwzType: "Entity_", _id:  "Inventory__ProductListItem",
+  static Inventory__ReceiptItem: Entity = {
+    mwzType: "Entity_", _id:  "Inventory__ReceiptItem",
     "properties": [
       {
-        "type": "ENTITY(/Inventory/InventoryProduct)",
+        "type": "ENTITY(Inventory__InventoryProduct)",
+        "name": "product",
+        "copiedProperties": [
+          "inventory_code",
+          "product_code",
+          "price",
+          "currency_code",
+          "name"
+        ],
+      },
+      { "name": "received_quantity", "type": "integer", "allowNull": false },
+    ]
+  };
+
+  static Inventory__OrderItem: Entity = {
+    mwzType: "Entity_", _id:  "Inventory__OrderItem",
+    "properties": [
+      {
+        "type": "ENTITY(Inventory__InventoryProduct)",
         "name": "product",
         "copiedProperties": [
           "inventory_code",
@@ -230,13 +232,6 @@ export class MockMetadata {
     ]
   };
 
-  static Inventory__ProductUnitCategory: Entity = {
-    mwzType: "Entity_", _id:  "Inventory__ProductUnitCategory",
-    "properties": [
-      { "name": "code", "type": "string", }
-    ]
-  };
-
   static Inventory__ProductUnit: Entity = {
     mwzType: "Entity_", _id:  "Inventory__ProductUnit",
     "properties": [
@@ -258,23 +253,7 @@ export class MockMetadata {
     ]
   };
 
-  static Inventory__Supplier: Entity = {
-    mwzType: "Entity_", _id:  "Inventory__Supplier",
-    "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "username", "type": "string" },
-      { "name": "name", "type": "string" },
-      { "name": "role", "type": "string" },
-      { "name": "password", "type": "string" },
-      { "name": "details", "type": "string" },
-      { "name": "type", "type": "string" },
-      { "name": "parent_code", "type": "string" },
-      { "name": "param1", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false, }
-    ]
-  };
-
-  static Forms__Acquisition: Entity = {
+  static Forms__Receipt: Entity = {
     mwzType: "Entity_", _id:  "Forms__Acquisition",
     "properties": [
       { "name": "type", "type": "string" },
@@ -332,7 +311,7 @@ export class MockMetadata {
     "properties": [
       { "name": "type", "type": "string" },
       { "name": "code", "type": "string", "allowNull": false },
-      { "name": "product_list", "type": "TABLE(/Inventory/ProductListItem)" },
+      { "name": "product_list", "type": "TABLE(Inventory__OrderItem)" },
       { "name": "state", "type": "string", "allowNull": false, }
     ]
   };
@@ -367,7 +346,7 @@ export class MockMetadata {
         "type": "FORMULA:CONCATENATE(client.code;LPAD(\"0\";\"9\";INDEX_IN_INTERVAL(time_of_arrival,monthly))",
       },
       { "name": "product_form_id", "type": "integer", "allowNull": false },
-      { "name": "client", "type": "ENTITY(/Inventory/Client)", "copiedProperties": ["code", "username"] },
+      { "name": "client", "type": "ENTITY(Inventory__Client)", "copiedProperties": ["code", "username"] },
       { "name": "time_of_arrival", "type": "datetime" },
       { "name": "time_of_departure", "type": "datetime" },
       { "name": "normal_hours", "type": "decimal" },
@@ -381,51 +360,43 @@ export class MockMetadata {
       { "name": "state", "type": "string", "allowNull": false },
       { "name": "nb_installments", "type": "integer" },
       { "name": "accommodation", "type": "decimal" },
-      { "name": "service_form_units", "type": "TABLE(/Forms/ServiceFormUnit)", "copiedProperties": [] }
+      { "name": "service_form_units", "type": "TABLE", properties: [
+        { "name": "equipment", "type": "ENTITY(Inventory__ProductUnit)", copiedProperties: ['code', 'product_code', 'serial1'] },
+        { "name": "product_list", "type": "TABLE(Inventory__OrderItem)", "isLargeTable": true },
+        { "name": "reported_problem", "type": "text" },
+        { "name": "found_problem", "type": "text" },
+        { "name": "work_description", "type": "text" },
+        { "name": "nb_piston_cycles", "type": "string" },
+        { "name": "brita_counter", "type": "string" },
+        { "name": "washing_cycles", "type": "string" },
+        { "name": "state", "type": "string", "allowNull": false },
+        { "name": "equipment_group", "type": "string", }
+      ]}
     ]
   };
 
-  static Forms__ServiceFormUnit: Entity = {
-    mwzType: "Entity_", _id:  "Forms__ServiceFormUnit",
-    "properties": [
-      { "name": "equipment", "type": "ENTITY(/Inventory/ProductUnit)", copiedProperties: ['code', 'product_code', 'serial1'] },
-      { "name": "product_list", "type": "TABLE(/Inventory/ProductListItem)", "isLargeTable": true },
-      { "name": "product_list_id", "type": "integer", "allowNull": false },
-      { "name": "reported_problem", "type": "text" },
-      { "name": "found_problem", "type": "text" },
-      { "name": "work_description", "type": "text" },
-      { "name": "nb_piston_cycles", "type": "string" },
-      { "name": "brita_counter", "type": "string" },
-      { "name": "washing_cycles", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false },
-      { "name": "equipment_group", "type": "string", }
-    ]
-  };
 
   public entities: Entity[] = [
     MockMetadata.General,
     MockMetadata.General__Actor,
     MockMetadata.General__Currency,
-    MockMetadata.General__GenericUser,
     MockMetadata.General__Person,
     MockMetadata.General__User,
     MockMetadata.Inventory,
     MockMetadata.Inventory__Client,
     MockMetadata.Inventory__InventoryProduct,
-    MockMetadata.Inventory__ProductListItem,
+    MockMetadata.Inventory__OrderItem,
+    MockMetadata.Inventory__ReceiptItem,
     MockMetadata.Inventory__ProductListProductUnit,
     MockMetadata.Inventory__Product,
-    MockMetadata.Inventory__ProductUnitCategory,
     MockMetadata.Inventory__ProductUnit,
-    MockMetadata.Inventory__Supplier,
     MockMetadata.Forms,
-    MockMetadata.Forms__Acquisition,
+    MockMetadata.Forms__Receipt,
+    MockMetadata.Forms__Order,
+    MockMetadata.Forms__ServiceForm,
     MockMetadata.Reports__DetailedCentralizerReport,
     MockMetadata.Reports__GenericReport,
-    MockMetadata.Forms__Order,
     MockMetadata.Reports__ServiceCentralizerReport,
-    MockMetadata.Forms__ServiceForm,
-    MockMetadata.Forms__ServiceFormUnit,
   ];
 
   public entitiesMap = new Map<string, Entity>();

@@ -11,7 +11,9 @@ import { BaseNodeComponent } from "./base_node";
     host: { class: "col form-group" },
     template: `
         <label [for]="nodeElement.propertyName">{{nodeElement.propertyName}}</label>
-        <input class="form-control" type="text" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)" />
+        <input class="form-control" type="text" [name]="parentFormPath" 
+            [formControl]="topLevelFormGroup.get(parentFormPath)"
+            *ngIf="hasControl(parentFormPath)" />
     `
 })
 export class FormInputComponent extends BaseNodeComponent {

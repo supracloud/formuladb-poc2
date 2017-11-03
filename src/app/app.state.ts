@@ -72,7 +72,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         form: {
           ...state.form,
-          formReadOnly: action.appReadonly
+          formReadOnly: action.appReadonly != fromCore.NotReadonly
         }
       }
     }
@@ -90,7 +90,7 @@ export const reducers = {
 
 
 export function parseUrl(url: string): { path: string, id: string } {
-  let match = url.match(/^\/(\w+)\/?(\w+)?/)
+  let match = url.match(/^\/(\w+)\/?([\w:]+)?/)
   let path: string = null;
   let id: string = null;
   if (null != match) {

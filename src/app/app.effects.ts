@@ -97,6 +97,7 @@ export class AppEffects {
         }
 
         if (id != this.currentUrl.id) {
+            this.currentUrl.id = id;
             this.pouchDbService.getDataObj(id)
                 .then(obj => this.store.dispatch(new appState.FormDataFromBackendAction(obj)));
         }
@@ -159,7 +160,7 @@ function setFormElementChildren(parentFormEl: NodeElement, entity: Entity, entit
         if (Property.isTable(prop)) {
             child.tableName = prop.name;
             child.nodeType = prop.isLargeTable ? NodeType.FormTable : NodeType.FormTabs;
-            setFormElementChildren(child, entitiesMap.get(Entity.getPropertyPath(prop)), entitiesMap);
+            setFormElementChildren(child, entitiesMap.get(Property.getPath(prop)), entitiesMap);
         } else if (Property.isEntity(prop)) {
             child.entityName = prop.name;
             child.nodeType = NodeType.FormAutocomplete;

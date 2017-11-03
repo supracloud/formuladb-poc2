@@ -15,13 +15,13 @@ export interface FormState {
   form: Form;
   formData: DataObj;
   formDataFromBackend: DataObj;
-  formReadOnly: string;
+  formReadOnly: boolean;
 }
 
 export const formInitialState: FormState = {
-  form: {} as Form,
-  formData: {} as DataObj,
-  formDataFromBackend: {} as DataObj,
+  form: null,
+  formData: null,
+  formDataFromBackend: null,
   formReadOnly: null,
 };
 
@@ -82,8 +82,8 @@ export function formReducer(state = formInitialState, action: FormActions): Form
     //user navigates to different forms
     case FormFromBackendActionN:
       ret = {
-        form: action.form,
         ...state,
+        form: action.form,
       };
       break;
   }
@@ -106,4 +106,8 @@ export const getFormDataState = createSelector(
 export const getFormState = createSelector(
   getForm,
   (state: FormState) => state.form
+);
+export const getFormReadOnly = createSelector(
+  getForm,
+  (state: FormState) => state.formReadOnly
 );

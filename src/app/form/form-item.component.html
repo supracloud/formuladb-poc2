@@ -2,23 +2,23 @@
   <ng-container *ngFor="let childEl of nodeElement.childNodes">
 
     <div form-tabs *ngIf="childEl.nodeName == 'form-tabs'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
     
     <div form-table *ngIf="childEl.nodeName == 'form-table'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
     
     <div form-autocomplete *ngIf="childEl.nodeName == 'form-autocomplete'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
     
     <div form-input *ngIf="childEl.nodeName == 'form-input'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
     <div form-datepicker *ngIf="childEl.nodeName == 'form-datepicker'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
     <div form-timepicker *ngIf="childEl.nodeName == 'form-timepicker'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
 
     <div form-item *ngIf="childEl.nodeName == 'form-grid' || childEl.nodeName == 'form-grid-row' || childEl.nodeName == 'form-grid-col'"
-    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath"></div>
+    [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath" [formReadOnly]="formReadOnly"></div>
     
     <div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeName}}' !</div>
     
