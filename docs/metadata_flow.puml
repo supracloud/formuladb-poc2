@@ -1,8 +1,7 @@
 @startuml
 
-!include participants.wsd
-
 title
+TODOOO TODOOO
 What is special about Couldev: this standard looking ERP software is implemented using a simple language 
   accessible to business people
 end title
