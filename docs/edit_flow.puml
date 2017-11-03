@@ -1,0 +1,26 @@
+@startuml edit_flow
+
+title User Edit ServiceForm
+
+actor User
+box "Client UI"
+    participant AppCmp
+    participant AppEffects
+    participant NavCmp
+    participant TableCmp
+    participant FormCmp
+    participant Store
+    participant PouchdbService
+end box
+box "Server"
+    participant MwzEngine
+    participant EventDB
+    participant DataDB
+end box
+
+note right of User: When_user_updates_the_requested_quantity_of_a_product_list_item
+note right of User: When_user_updates_the_requested_quantity_of_a_product_list_item
+note right of User: Then_user_will_see_the_reserved_quantity_and_stock_computed_by_the_engine
+note right of User: TODO_user_creates_new_service_form
+
+@enduml

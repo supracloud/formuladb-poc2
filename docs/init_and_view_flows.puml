@@ -1,0 +1,72 @@
+@startuml init_and_view_flows
+
+title App initialization and user browses through data
+
+actor User
+box "Client UI"
+    participant AppCmp
+    participant AppEffects
+    participant NavCmp
+    participant TableCmp
+    participant FormCmp
+    participant Store
+    participant PouchdbService
+end box
+box "Server"
+    participant MwzEngine
+    participant EventDB
+    participant DataDB
+end box
+
+note right of User: When_user_first_accesses_the_app
+User -> AppCmp: navigate /
+note right of AppCmp #CCCCCC
+deep links should work correctly, e.g. /Forms__ServiceForm/_id 
+should display Nav/Table/Form components correctly
+end note
+
+PouchdbService <- DataDB: get new data since last time app ran\n\
+  app is readonly during this period
+PouchdbService <- DataDB: initial catchup finished\n\
+  start live one-way replication\n\
+  receiving data from the server
+
+AppEffects -> PouchdbService: get all entities
+AppEffects -> Store: EntitiesFromBackendFullLoadAction
+AppEffects -> Store: CoreAppReadonlyAction(unset readonly)
+AppEffects -> AppEffects: listenForRouterChanges
+AppEffects -> EventDB: continuously send Actions to server
+
+note right of User: Then_navigation_should_show_all_current_tables
+note right of NavCmp #CCCCCC: entities are already loaded from pouchdb
+NavCmp -> NavCmp: display sidebar
+
+note right of User: When_user_navigates_to_a_service_form
+
+User -> NavCmp: select ServiceForm
+AppEffects -> AppEffects: listenForRouterChanges runs
+AppEffects -> PouchdbService: getEntity
+AppEffects -> Store: UserActionSelectedEntity(Entity)
+AppEffects -> PouchdbService: getTable
+AppEffects -> Store: TableFormBackendAction(Table)
+AppEffects -> PouchdbService: get table data
+AppEffects -> Store: TableDataFromBackendAction(ChangeObj<DataObj>[])
+AppEffects -> PouchdbService: getForm
+AppEffects -> Store: FormFromBackendAction(Form)
+
+User <- TableCmp: display table with ServiceForms
+User -> TableCmp: select ServiceForm
+
+AppEffects -> AppEffects: listenForRouterChanges runs
+AppEffects -> PouchdbService: get form data
+AppEffects -> Store: FormDataFromBackendAction(DataObj)
+
+note right of User: Then_the_form_page_should_be_displayed
+User <- FormCmp: display form for editing ServiceForm
+
+note right of User: When_user_updates_the_requested_quantity_of_a_product_list_item
+note right of User: When_user_updates_the_requested_quantity_of_a_product_list_item
+note right of User: Then_user_will_see_the_reserved_quantity_and_stock_computed_by_the_engine
+note right of User: TODO_user_creates_new_service_form
+
+@enduml

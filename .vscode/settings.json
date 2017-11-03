@@ -1,0 +1,5 @@
+{
+    "plantuml.exportFormat": "png",
+    "plantuml.exportSubFolder": false,
+    "plantuml.exportOutDirName": "docs/img"
+}

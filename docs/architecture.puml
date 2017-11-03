@@ -1,4 +1,4 @@
-@startuml
+@startuml architecture
 
 title __Architecture Overview__\n\
 CQRS/Event-Sourcing unidirectional data flow, commands go out one way, reads come in another way\n\
