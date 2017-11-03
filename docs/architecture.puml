@@ -27,8 +27,10 @@ note over Store
 {table$: Table; tableData$: DataObj[];}
 {form$: Form; formData$: DataObj; formDataFromBackend$; formReadOnly$}
 **__Actions:__**
+ROUTER_NAVIGATION
+CoreAppReadonlyAction
 EntitiesFromBackendAction,UserActionSelectedEntity,UserActionEditedEntity,UserActionNewEntity,UserActionDeleteEntity
-TableFromBackendAction,TableDataFromBackendAction,UserActionEditedTable,UserActionSelectedRowForEditing
+TableFromBackendAction,TableDataFromBackendAction,UserActionEditedTable,UserActionSelectedRowForEditing,UserActionNewRow
 FormFromBackendAction,FormDataFromBackendAction,UserActionEditedForm,UserActionEditedFormData
 end note
 

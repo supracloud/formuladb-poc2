@@ -25,6 +25,7 @@ export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
 export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const UserActionEditedTableN = "[table] UserActionEditedTable";
 export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
+export const UserActionNewRowN = "[table] UserActionNewRow";
 
 export class TableDataFromBackendAction implements Action {
   readonly type = TableDataFromBackendActionN;
@@ -50,11 +51,18 @@ export class UserActionSelectedRowForEditing implements Action {
   constructor(public row: DataObj) { }
 }
 
+export class UserActionNewRow implements Action {
+  readonly type = UserActionNewRowN;
+
+  constructor(mwzType: string) { }
+}
+
 export type TableActions =
   | TableDataFromBackendAction
   | TableFormBackendAction
   | UserActionEditedTable
   | UserActionSelectedRowForEditing
+  | UserActionNewRow
   ;
 
 /**

@@ -10,7 +10,7 @@ box "Client UI"
     participant TableCmp
     participant FormCmp
     participant Store
-    participant PouchdbService
+    participant PouchDB
 end box
 box "Server"
     participant MwzEngine
@@ -25,13 +25,13 @@ deep links should work correctly, e.g. /Forms__ServiceForm/_id
 should display Nav/Table/Form components correctly
 end note
 
-PouchdbService <- DataDB: get new data since last time app ran\n\
+PouchDB <- DataDB: get new data since last time app ran\n\
   app is readonly during this period
-PouchdbService <- DataDB: initial catchup finished\n\
+PouchDB <- DataDB: initial catchup finished\n\
   start live one-way replication\n\
   receiving data from the server
 
-AppEffects -> PouchdbService: get all entities
+AppEffects -> PouchDB: get all entities
 AppEffects -> Store: EntitiesFromBackendFullLoadAction
 AppEffects -> Store: CoreAppReadonlyAction(unset readonly)
 AppEffects -> AppEffects: listenForRouterChanges
@@ -44,21 +44,21 @@ NavCmp -> NavCmp: display sidebar
 note right of User: When_user_navigates_to_a_service_form
 
 User -> NavCmp: select ServiceForm
-AppEffects -> AppEffects: listenForRouterChanges runs
-AppEffects -> PouchdbService: getEntity
+note right of AppEffects #CCCCCC: listenForRouterChanges runs
+AppEffects -> PouchDB: getEntity
 AppEffects -> Store: UserActionSelectedEntity(Entity)
-AppEffects -> PouchdbService: getTable
+AppEffects -> PouchDB: getTable
 AppEffects -> Store: TableFormBackendAction(Table)
-AppEffects -> PouchdbService: get table data
+AppEffects -> PouchDB: get table data
 AppEffects -> Store: TableDataFromBackendAction(ChangeObj<DataObj>[])
-AppEffects -> PouchdbService: getForm
+AppEffects -> PouchDB: getForm
 AppEffects -> Store: FormFromBackendAction(Form)
 
 User <- TableCmp: display table with ServiceForms
 User -> TableCmp: select ServiceForm
 
-AppEffects -> AppEffects: listenForRouterChanges runs
-AppEffects -> PouchdbService: get form data
+note right of AppEffects #CCCCCC: listenForRouterChanges runs
+AppEffects -> PouchDB: get form data
 AppEffects -> Store: FormDataFromBackendAction(DataObj)
 
 note right of User: Then_the_form_page_should_be_displayed

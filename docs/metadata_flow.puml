@@ -1,28 +1,61 @@
-@startuml
+@startuml metadata_flow
 
 title
-TODOOO TODOOO
-What is special about Couldev: this standard looking ERP software is implemented using a simple language 
-  accessible to business people
+TODOO TODOO
+Users can change the actual data-model (add/modify/delete entities)
+There are many edge cases about the existing data/uimetadata
 end title
 
-note right of User: TODO_use_editor_to_change_order_of_columns_in_table
-note right of User: TOOD_use_editor_to_change_form_layout
+note right User
+TODOO TODOOO
+There are many edge cases about the existing data/uimetadata
+Note: the list below does not take into consideration basic editing syntax errors
+Note: on each VALIDATION below all tests are run using the user-defined test data, VALIDATION is successful only if all tests pass
 
-note right of User #aqua
-So far only simple changes in the ui layout, let's see how easy it is to add new functionality to the system.
-We argue it is as simple as editing a Spreadsheet/Excel, anybody who has used Excel with a few formulas can use Cloudev.
+- New entity
+  - VALIDATION: if a formula depends on this entity, formula-specific test data must be defined
+  - IMPACTS on data: none, there is no existing data to check for consistency
+  - IMPACTS on uimetadata: none, there is no existing uimetadata to check for consistency
+- Add property
+  - VALIDATION: ?
+  - IMPACTS on data:
+    - not null with default value: update all existing documents
+    - allow null: no need to update existing documents
+  - IMPACTS on uimetadata: 
+    - if a Table/Form is manually defined this property must be added or else it will not be visible/editable
+      - the default Table/Form is dynamically built from the Entity so the new property will be automatically added
+      - we could automatically update all the existing Table/Form definitions for this entity and add the new property at the beginning
+- Change property add not null constraint
+  - VALIDATION: default value required if there are existing documents with this property 
+  - IMPACTS on data: update all existing documents with default value
+  - IMPACTS on uimetadata: none?
+- Change property type
+  - VALIDATION: 
+    - if types are not compatible what do we do? 
+    - conversion function? this is nasty for end users' experience...
+  - IMPACTS on data
+    - TODO: this is an open point, we will probably allow only "compatible" type conversions
+      like number-string, string-date
+  - IMPACTS on uimetadata: none?
+    - change type: what happens to existing documents?
+- Change property type
+  - VALIDATION: update any formulas using this property with the new name
+  - IMPACTS on data: update all existing documents with default value
+  - IMPACTS on uimetadata: update any Table/Form using this property with the new name
+- Delete property
+  - VALIDATION: validate that no formula depends on this property
+  - IMPACTS on data: update all existing documents
+  - IMPACTS on uimetadata: validate that no non-default uimetadata depends on this property
+- Add/Update formula
+  - VALIDATION: validate that no formula depends on this property
+  - IMPACTS on data:
+   - recalculate all existing documents? 
+   - from the beginning? from a savepoint like the beginning of the month?
+  - IMPACTS on uimetadata: none?
 end note
 
 note right of User: TODO_create_Revision_Entity
 note right of User: TOOD_create_Revision_Form
 note right of User: TODO_create_and_edit_revisions
-
-AppEffects -> Express: GET /mwz_api/path?filters
-AppEffects -> Express: PUT /mwz_api/path JSON
-AppEffects -> Express: GET /mwz_api/path?__metadata
-AppEffects -> Express: PUT /mwz_api/path?__metadata JSON
-AppEffects -> Express: GET /mwz_api/path?__uiMetadata
-AppEffects -> Express: PUT /mwz_api/path?__uiMetadata JSON
 
 @enduml
