@@ -1,5 +1,4 @@
-export interface DataObj {
-    _id: string;
-    mwzType: string;
+import { BaseObj } from "../base_obj";
+export interface DataObj extends BaseObj {
     [key: string]: any;
 }

@@ -15,16 +15,19 @@ export class PouchdbService {
 
     private localDB: any;
     private remoteEventsDB: any;
+    private remoteNotifsDB: any;
     private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
     private remoteEventsDBUrl = 'http://localhost:5984/mwzevents';
+    private remoteNotifsDBUrl = 'http://localhost:5984/mwznotifs';
 
     constructor() {
         PouchDB.plugin(PouchFind);
         this.localDB = new PouchDB("mwz");
     }
 
-    public init(callback: () => void) {
+    public init(initCallback: () => void, notifCallback: (change: any) => void, dataChangeCallback: (change: any) => void) {
         this.remoteEventsDB = new PouchDB(this.remoteEventsDBUrl);
+        this.remoteNotifsDB = new PouchDB(this.remoteNotifsDBUrl);
 
         this.localDB.createIndex({
             index: { fields: ['mwzType'] }
@@ -39,14 +42,29 @@ export class PouchdbService {
                         live: true,
                         retry: true,
                     })
+                        .on('change', function (change) {
+                            dataChangeCallback(change);
+                        })
                         .on('error', err => console.error(err));
 
+                    //notifs will be handled by the effects service
+                    this.remoteNotifsDB.changes({
+                        since: 'now',
+                        include_docs: true,
+                        live: true                                    
+                    })
+                        .on('change', function (change) {
+                            notifCallback(change);
+                        })
+                        .on('error', err => console.error(err));
+
+
                     //application specific initialization
-                    callback();
+                    initCallback();
                 })
                 .on('error', err => console.error(err));
         });
-    }    
+    }
 
     public findByMwzType<T extends BaseObj>(mwzType: string): Promise<T[]> {
         return this.localDB.find({
@@ -60,9 +78,9 @@ export class PouchdbService {
 
     public postAction(action: any) {
         this.remoteEventsDB.post(action)
-        .catch(err => {
-            console.log(err);
-        });
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     public getEntity(path: string): Promise<Entity> {

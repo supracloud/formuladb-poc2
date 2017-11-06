@@ -51,11 +51,42 @@ export class AppEffects {
 
         try {
             //we first initialize the DB (sync with remote DB)
-            pouchDbService.init(() => this.init());
+            pouchDbService.init(() => this.init(),
+                change => this.notifFromServer(change),
+                change => this.dataChangeFromServer(change));
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
 
+    }
+
+    private notifFromServer(change: { doc: BaseObj }) {
+        console.log(change);
+        let obj = change.doc;
+        if (obj.mwzType == 'Entity_') {
+            //TODO
+        } else if (obj.mwzType == 'Table_') {
+            //TODO
+        } else if (obj.mwzType == 'Form_') {
+            //TODO
+        } else {
+            //TODO
+        }
+    }
+
+    private dataChangeFromServer(change: { docs: Array<BaseObj> }) {
+        console.log(change);
+        change.docs.forEach(obj => {
+            if (obj.mwzType == 'Entity_') {
+                //TODO
+            } else if (obj.mwzType == 'Table_') {
+                //TODO
+            } else if (obj.mwzType == 'Form_') {
+                //TODO
+            } else {
+                this.store.dispatch(new appState.FormDataFromBackendAction(obj));
+            }
+        });
     }
 
     private init() {
@@ -182,7 +213,6 @@ export function getDefaultTable(entity: Entity): Table {
     if (null == entity) return null;
 
     let table = new Table();
-    table.mwzType = 'Table_';
     table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
     return table;
 }

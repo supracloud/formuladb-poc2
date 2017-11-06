@@ -2,6 +2,8 @@ import { Component, OnInit, Type } from '@angular/core';
 
 import { NodeType } from "./domain/uimetadata/form";
 
+import { MwzEngine } from "./backend/mwz_engine";//TODO: move this to server side
+
 @Component({
     selector: 'app-root',
     template: `
@@ -37,9 +39,11 @@ import { NodeType } from "./domain/uimetadata/form";
 export class AppComponent implements OnInit {
     title = 'app';
 
-    public constructor() {}
+    public constructor() {
+    }
 
     ngOnInit(): void {
+        new MwzEngine().init();
         console.log(this);
     }
 }

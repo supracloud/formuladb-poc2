@@ -73,9 +73,10 @@ export class FormComponent implements OnInit {
 
         this.theFormGroup.valueChanges
             // .filter(() => this.theFormGroup.valid)
-            .sampleTime(2000)
+            .sampleTime(1000)
             .forEach(val => {
                 console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.status);
+                this.store.dispatch(new fromForm.UserActionEditedFormData(val));
             });
     }
 

@@ -16,6 +16,7 @@ end box
 box "Server"
     participant MwzEngine
     participant EventDB
+    participant NotifDB
     participant DataDB
 end box
 
@@ -66,8 +67,12 @@ group back-end decoupled development
     (computes projections in envent sourcing lingo)
     end note
     MwzEngine -> MwzEngine: Server Logic
+    MwzEngine -> NotifDB: errors, validations, other notifs
+    NotifDB -> Store: notifs Actions only for current user
+    AppEffects <-> Store: handle notifs logic
     MwzEngine -> DataDB: update
-    DataDB -> AppEffects: updates
+    DataDB -> Store: updates Actions
+    AppEffects <-> Store: handle updates logic
 end
 
 AppEffects -> Store: Server initiated Actions\n\

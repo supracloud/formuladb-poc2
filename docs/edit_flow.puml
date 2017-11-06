@@ -13,6 +13,7 @@ end box
 box "Server"
     participant MwzEngine
     participant EventDB
+    participant NotifDB
     participant DataDB
 end box
 
@@ -20,7 +21,8 @@ note right of User: When_user_updates_the_requested_quantity_of_a_product_list_i
 
 User -> FormCmp: edit form
 FormCmp -> Store: UserActionEditedFormData(DataObj)
-AppEffects -> EventDB: UserActionEditedFormData(DataObj)
+AppEffects -> PouchDB: postAction
+PouchDB -> EventDB: UserActionEditedFormData(DataObj)
 MwzEngine <- EventDB: obj: DataObj
 note over MwzEngine #CCCCCC
 LOOP through dependencies of entity(obj)
@@ -28,9 +30,20 @@ LOOP through dependencies of entity(obj)
   check for circular dependencies here too !!
     insanity check in case wrong metadata was defined
 end note
+
+alt errors?
+MwzEngine -> NotifDB: errors
+NotifDB -> PouchDB: **Filetered** replication\n\
+  pull notifs only for this user
+PouchDB -> Store: FormDataNotifFromServer
+FormCmp <- Store: notifs
+User <- FormCmp: errors/notifs
+end
+
 MwzEngine -> DataDB: updates
 PouchDB <- DataDB: updates
-PouchDB -> Store: FormDataFromBackendAction
+AppEffects <- PouchDB: updates
+AppEffects -> Store: FormDataFromBackendAction
 FormCmp <- Store: formData from server
 
 note right of User: Then_user_will_see_the_reserved_quantity_and_stock_computed_by_the_engine

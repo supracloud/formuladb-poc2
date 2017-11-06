@@ -26,7 +26,7 @@ Install docker toolbox: https://www.docker.com/products/docker-toolbox
 Then follow:
 http://docs.couchdb.org/en/master/install/setup.html#single-node-setup
 
-Then Create 2 new databases called 'mwzdata' and 'mwzevents'
+Then Create 3 new databases: mwzdata, mwzevents, mwznotifs
 
 Then load test data:
 

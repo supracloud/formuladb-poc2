@@ -1,5 +1,8 @@
 {
     "plantuml.exportFormat": "png",
     "plantuml.exportSubFolder": false,
-    "plantuml.exportOutDirName": "docs/img"
+    "plantuml.exportOutDirName": "docs/img",
+    "cSpell.words": [
+        "Notifs"
+    ]
 }
