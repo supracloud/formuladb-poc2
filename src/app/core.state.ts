@@ -44,7 +44,7 @@ export function coreReducer(state = coreInitialState, action: CoresActions): Cor
       break;
   }
 
-  if (action.type.match(/^\[core\]/)) console.log('[core] reducer:', state, action, ret);
+  // if (action.type.match(/^\[core\]/)) console.log('[core] reducer:', state, action, ret);
   return ret;
 }
 

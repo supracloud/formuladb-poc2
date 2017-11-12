@@ -66,9 +66,9 @@ export class CustomSerializer implements RouterStateSerializer<RouterState> {
 
 export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
   return function(state: AppState, action: AppActions) {
-    let newState = state;
+    let updatedState = state;
     if (action.type === fromCore.CoreAppReadonlyActionN) {
-      newState = {
+      updatedState = {
         ...state,
         form: {
           ...state.form,
@@ -76,7 +76,12 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         }
       }
     }
-    return reducer(newState, action);
+    let newState = reducer(updatedState, action);
+    console.log("%c ** " + action.type + " **", 
+      "color: red; font-size: 135%; font-weight: bold; text-decoration: underline;", 
+      action, state, newState); 
+    
+    return newState;
   };
 }
 

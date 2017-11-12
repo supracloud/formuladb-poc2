@@ -20,6 +20,7 @@ import { BaseObj } from "./domain/base_obj";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Entity, Property } from "./domain/metadata/entity";
 import { ChangeObj } from "./domain/change_obj";
+import { MwzEvents } from "./domain/metadata/event";
 
 import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/form";
@@ -27,6 +28,7 @@ import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/f
 import * as appState from './app.state';
 
 import { PouchdbService } from "./pouchdb.service";
+
 
 export type ActionsToBeSentToServer =
     | appState.UserActionEditedFormData
@@ -52,29 +54,20 @@ export class AppEffects {
         try {
             //we first initialize the DB (sync with remote DB)
             pouchDbService.init(() => this.init(),
-                change => this.notifFromServer(change),
-                change => this.dataChangeFromServer(change));
+                change => this.listenForNotifsFromServer(change),
+                change => this.listenFormDataChangesFromServer(change));
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
 
     }
 
-    private notifFromServer(change: { doc: BaseObj }) {
+    private listenForNotifsFromServer(change: { doc: MwzEvents }) {
         console.log(change);
-        let obj = change.doc;
-        if (obj.mwzType == 'Entity_') {
-            //TODO
-        } else if (obj.mwzType == 'Table_') {
-            //TODO
-        } else if (obj.mwzType == 'Form_') {
-            //TODO
-        } else {
-            //TODO
-        }
+        let event = change.doc;
     }
 
-    private dataChangeFromServer(change: { docs: Array<BaseObj> }) {
+    private listenFormDataChangesFromServer(change: { docs: Array<BaseObj> }) {
         console.log(change);
         change.docs.forEach(obj => {
             if (obj.mwzType == 'Entity_') {
@@ -103,8 +96,12 @@ export class AppEffects {
         this.listenForRouterChanges();
 
         //send actions to server so that the engine can process them, compute all formulas and update the data
+        this.listenForUserActions();
+    }
+
+    private listenForUserActions() {
         this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
-            this.pouchDbService.postAction(action);
+            this.pouchDbService.putEvent(action.event);
         });
     }
 
@@ -176,8 +173,12 @@ export class AppEffects {
 
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
-    let form = new Form();
-    form = { nodeType: NodeType.FormGrid, nodeName: 'form-grid', mwzType: "Form_" };
+    let form = { 
+        nodeType: NodeType.FormGrid, 
+        nodeName: 'form-grid', 
+        mwzType: "Form_" ,
+        _id: 'Form_:' + entity._id
+    }as Form;
     setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', JSON.stringify(form));
     return form;

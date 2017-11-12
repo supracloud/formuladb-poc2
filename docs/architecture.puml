@@ -35,6 +35,14 @@ TableFromBackendAction,TableDataFromBackendAction,UserActionEditedTable,UserActi
 FormFromBackendAction,FormDataFromBackendAction,UserActionEditedForm,UserActionEditedFormData
 end note
 
+note over AppEffects #CCCCCC
+AppEffects listens for:
+ - router changes
+ - Form/Table/etc Actions
+ - server notifs
+ - server data changes
+end note
+
 User -> AngularComponents: Events
 
 group web-design decoupled development

@@ -15,7 +15,9 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/sampleTime';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/filter';
 import { Observable } from 'rxjs/Observable';
+import * as _ from "lodash";
 
 import * as fromForm from './form.state';
 
@@ -26,7 +28,10 @@ import { BaseObj } from "../domain/base_obj";
     template:
     `
     <form [formGroup]="theFormGroup" novalidate>
-        <p>Form status: {{ theFormGroup.status | json }}</p>
+        <ngb-alert [type]="alertType" [dismissible]="false">
+            Form status: {{ theFormGroup.status | json }}
+            <i *ngIf="saveInProgress" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+        </ngb-alert>
         <div form-item [nodeElement]="(formState$ | async)?.form" [topLevelFormGroup]="theFormGroup" 
             parentFormPath="" [formReadOnly]="formReadOnly$ | async"
             *ngIf="(formState$ | async)?.form">
@@ -40,8 +45,10 @@ export class FormComponent implements OnInit {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
     private tickUsed: boolean = false;
-    private lastObj: BaseObj;
+    private lastSaveAction: fromForm.UserActionEditedFormData;
     private formState$: Observable<fromForm.FormState>;
+    private saveInProgress: boolean = false;
+    private alertType: string = 'success';
 
     constructor(
         private store: Store<fromForm.FormState>,
@@ -69,15 +76,37 @@ export class FormComponent implements OnInit {
             } else if (!formState.formReadOnly && this.theFormGroup.disabled) {
                 this.theFormGroup.enable();
             }
+
+            if (formState.eventFromBackend && formState.eventFromBackend._id === this.lastSaveAction.event._id) {
+                this.saveInProgress = false;
+            }
+
+            this.setAlertType();
         });
 
         this.theFormGroup.valueChanges
-            // .filter(() => this.theFormGroup.valid)
+            // .filter(() => this.theFormGroup.valid) //FIXME: why is the form always invalid for ServiceForm?
+            // .filter(() => !this.theFormGroup.dirty)
+            // .filter(val => val._id.disabled === false)
             .sampleTime(1000)
             .forEach(val => {
-                console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.status);
-                this.store.dispatch(new fromForm.UserActionEditedFormData(val));
+                if (val._id.disabled === false) return;//FIXME: WTF! sometimes all fields are {disabled: false}
+                if (!this.theFormGroup.dirty) return;
+                
+                delete val._revisions;//WORAROUND for error: "doc_validation", reason: "RevId isn't a string", status: 400, name: "doc_validation", message: "RevId isn't a string",
+
+                console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
+                this.lastSaveAction = new fromForm.UserActionEditedFormData(_.cloneDeep(val));
+                this.store.dispatch(this.lastSaveAction);
+                this.saveInProgress = true;
+                this.setAlertType();
             });
+    }
+
+    private setAlertType() {
+        if (this.saveInProgress) this.alertType = 'info';
+        else if (this.theFormGroup.valid) this.alertType = 'success';
+        else this.alertType = 'warning';
     }
 
     private updateFormGroup(parentFormGroup: FormGroup, formEl: NodeElement, formReadOnly: boolean) {
@@ -97,11 +126,14 @@ export class FormComponent implements OnInit {
         }
     }
 
-    private updateFormGroupWithData(obj: DataObj, formGroup: FormGroup, formReadOnly: boolean) {
-        for (var key in obj) {
+    private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, formReadOnly: boolean) {
+
+        //TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
+
+        for (var key in objFromServer) {
             // if ('_rev' === key) continue;
 
-            let objVal = obj[key];
+            let objVal = objFromServer[key];
             let formVal = formGroup.get(key);
             if (null == objVal) continue;
 

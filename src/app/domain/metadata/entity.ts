@@ -1,5 +1,8 @@
 import { BaseObj } from '../base_obj';
 
+/**
+ * the _id of the Entity is the path, e.g. Forms__ServiceForm
+ */
 export class Entity extends BaseObj {
     mwzType = 'Entity_';
     properties: Property[];

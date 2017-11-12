@@ -6,7 +6,7 @@ export class MockMetadata {
     this.entities.forEach(meta => {
       meta.properties.push({ "name": "mwzType", "type": "string", });
       meta.properties.push({ "name": "_id", "type": "string", });
-      // meta.properties.push(    {"name": "_rev","type": "string",});
+      meta.properties.push(    {"name": "_rev","type": "string",});
     });
 
     this.entities.forEach(meta => {

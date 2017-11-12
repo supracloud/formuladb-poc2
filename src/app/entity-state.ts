@@ -103,7 +103,7 @@ export function entityReducer(state = entityInitialState, action: EntityActions)
             break;
     }
 
-    if (action.type.match(/^\[entity\]/)) console.log('[entity] reducer returns:', state, action, ret);
+    // if (action.type.match(/^\[entity\]/)) console.log('[entity] reducer returns:', state, action, ret);
     return ret;
 }
 

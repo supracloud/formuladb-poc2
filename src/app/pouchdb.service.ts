@@ -7,6 +7,7 @@ import { BaseObj } from "./domain/base_obj";
 import { ChangeObj } from "./domain/change_obj";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Entity } from "./domain/metadata/entity";
+import { MwzEvents } from "./domain/metadata/event";
 import { Table } from "./domain/uimetadata/table";
 import { Form } from "./domain/uimetadata/form";
 
@@ -25,7 +26,10 @@ export class PouchdbService {
         this.localDB = new PouchDB("mwz");
     }
 
-    public init(initCallback: () => void, notifCallback: (change: any) => void, dataChangeCallback: (change: any) => void) {
+    public init(initCallback: () => void, 
+        notifCallback: (change: { doc: MwzEvents }) => void, 
+        dataChangeCallback: (change:  { docs: Array<BaseObj> }) => void) 
+    {
         this.remoteEventsDB = new PouchDB(this.remoteEventsDBUrl);
         this.remoteNotifsDB = new PouchDB(this.remoteNotifsDBUrl);
 
@@ -37,6 +41,10 @@ export class PouchdbService {
             //first catchup local PouchDB with what happened on the server while the application was stopped
             this.localDB.replicate.from(this.remoteDataDBUrl)
                 .on('complete', info => {
+
+                    //application specific initialization
+                    initCallback();                    
+                    
                     //after initial replication from the server is finished, continue with live replication
                     this.localDB.replicate.from(this.remoteDataDBUrl, {
                         live: true,
@@ -58,9 +66,6 @@ export class PouchdbService {
                         })
                         .on('error', err => console.error(err));
 
-
-                    //application specific initialization
-                    initCallback();
                 })
                 .on('error', err => console.error(err));
         });
@@ -76,8 +81,8 @@ export class PouchdbService {
         }).catch(err => console.error(err));
     }
 
-    public postAction(action: any) {
-        this.remoteEventsDB.post(action)
+    public putEvent(event: MwzEvents) {
+        this.remoteEventsDB.put(event)
             .catch(err => {
                 console.log(err);
             });

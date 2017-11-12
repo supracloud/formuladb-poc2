@@ -16,7 +16,7 @@ import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/for
   </ngb-tabset>
   `,
   styles: [`
-    div.tab-content {
+    .row .col .tab-content {
       border-left: 1px solid rgb(221, 221, 221);
       border-right: 1px solid rgb(221, 221, 221);
       border-bottom: 1px solid rgb(221, 221, 221);

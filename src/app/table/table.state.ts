@@ -97,7 +97,7 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
       break;
   }
 
-  if (action.type.match(/^\[table\]/)) console.log('[table] reducer:', state, action, ret);
+  // if (action.type.match(/^\[table\]/)) console.log('[table] reducer:', state, action, ret);
   return ret;
 }
 

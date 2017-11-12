@@ -8,8 +8,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Install docker toolbox: https://www.docker.com/products/docker-toolbox
 
-        docker-machine.exe create docker2
-        eval $(docker-machine.exe env docker2 --shell bash)
+        docker-machine.exe create docker1
+        eval $(docker-machine.exe env docker1 --shell bash)
         docker build -t mycouchdb .
         MSYS_NO_PATHCONV=1 docker run --privileged -d --name cdb -p 5984:5984 mycouchdb
 
@@ -21,7 +21,7 @@ Install docker toolbox: https://www.docker.com/products/docker-toolbox
         /wondershaper.sh -a eth0 -d 256 -u 256 #also does not work WTF
         # we should use trickle for user-space traffic shaping
 
-        VBoxManage controlvm "docker2" natpf1 "couchdb,tcp,,5984,,5984"
+        VBoxManage controlvm "docker1" natpf1 "couchdb,tcp,,5984,,5984"
 
 Then follow:
 http://docs.couchdb.org/en/master/install/setup.html#single-node-setup

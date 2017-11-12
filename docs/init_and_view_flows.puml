@@ -5,12 +5,14 @@ title User first accesses the app, app initialization and user browses through d
 actor User
 box "Client UI"
     participant AppCmp
-    participant AppEffects
     participant NavCmp
     participant TableCmp
     participant FormCmp
-    participant Store
+end box
+box "Client Logic"
+    participant AppEffects
     participant PouchDB
+    participant Store
 end box
 box "Server"
     participant MwzEngine
@@ -34,7 +36,14 @@ PouchDB <- DataDB: initial catchup finished\n\
 AppEffects -> PouchDB: get all entities
 AppEffects -> Store: EntitiesFromBackendFullLoadAction
 AppEffects -> Store: CoreAppReadonlyAction(unset readonly)
-AppEffects -> AppEffects: listenForRouterChanges
+note over AppEffects
+AppEffects hub:
+  - listenForRouterChanges
+  - listenForUserActions
+  - listenForNotifsFromServer
+  - listenFormDataChangesFromServer
+end note
+AppEffects -> AppEffects: start
 AppEffects -> EventDB: continuously send Actions to server
 
 note right of User: Then_navigation_should_show_all_current_tables

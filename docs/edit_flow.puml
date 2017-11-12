@@ -6,6 +6,8 @@ actor User
 box "Client UI"
     participant FormCmp
     participant TableCmp
+end box
+box "Client Logic"
     participant AppEffects
     participant PouchDB
     participant Store
@@ -21,8 +23,8 @@ note right of User: When_user_updates_the_requested_quantity_of_a_product_list_i
 
 User -> FormCmp: edit form
 FormCmp -> Store: UserActionEditedFormData(DataObj)
-AppEffects -> PouchDB: postAction
-PouchDB -> EventDB: UserActionEditedFormData(DataObj)
+AppEffects -> PouchDB: postEvent
+PouchDB -> EventDB: UserActionEditedFormDataEvent(DataObj)
 MwzEngine <- EventDB: obj: DataObj
 note over MwzEngine #CCCCCC
 LOOP through dependencies of entity(obj)
@@ -35,19 +37,30 @@ alt errors?
 MwzEngine -> NotifDB: errors
 NotifDB -> PouchDB: **Filetered** replication\n\
   pull notifs only for this user
-PouchDB -> Store: FormDataNotifFromServer
+AppEffects <- PouchDB: UserActionEditedFormDataEvent\n  .notifMsg != 'OK'
+AppEffects -> Store: FormDataNotifFromServer
 FormCmp <- Store: notifs
 User <- FormCmp: errors/notifs
 end
 
 MwzEngine -> DataDB: updates
 PouchDB <- DataDB: updates
-AppEffects <- PouchDB: updates
+note right of AppEffects #CCCCCC
+listenForNotifsFromServer
+listenFormDataChangesFromServer
+end note
+AppEffects <- PouchDB: updates, notifs\n\
+  UserActionEditedFormDataEvent\n\
+    .notifMsg == 'OK'
 AppEffects -> Store: FormDataFromBackendAction
+AppEffects -> Store: FormNotifFromBackendAction
+AppEffects -> Store: TableDataFromBackendAction
+TableCmp <- Store: table updated
 FormCmp <- Store: formData from server
 
 note right of User: Then_user_will_see_the_reserved_quantity_and_stock_computed_by_the_engine
 note right of FormCmp #CCCCCC
+**CONCURRENT-EDITING-CONFLICT-HANDLING**
 FOREACH deep property in formData-from-server compare it with values last sent in UserActionEditedFormData
 IF they match, it means the server did not update this property and keep the current value in FormControl
 IF they don't match, the server updated this value
@@ -66,7 +79,6 @@ AppEffects -> EventDB: UserActionNewRow
 MwzEngine <- EventDB: mwzType
 MwzEngine -> DataDB: create obj
 PouchDB <- DataDB: {_id, _rev, mwzType, default values}
-PouchDB -> Store: FormDataFromBackendAction
 FormCmp <- Store: formData from server
 User <- FormCmp: update form\n with _id\n and default values
 note right FormCmp #CCCCCC: edit form as described above ...
