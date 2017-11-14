@@ -11,7 +11,7 @@ import { BaseObj } from "../domain/base_obj";
 import { Entity, Property } from "../domain/metadata/entity";
 import { DataObj } from "../domain/metadata/data_obj";
 
-import * as events from "../domain/metadata/event";
+import * as events from "../domain/event";
 
 var dataDB = new PouchDB("http://localhost:5984/mwzdata");
 var eventsDB = new PouchDB("http://localhost:5984/mwzevents");
@@ -23,7 +23,7 @@ export class MwzEngine {
         eventsDB.changes({
             since: 'now',//FIXME: start listening from the last action processed, implement proper queue
             include_docs: true,
-            live: true            
+            live: true
         }).on('change', change => {
             console.log(change);
             if (!change.deleted) {
@@ -35,8 +35,15 @@ export class MwzEngine {
     }
 
     private processEvent(event: events.MwzEvents) {
-        if (event.type === events.UserActionEditedFormN) {
-            this.processDataObj(event);
+        switch (event.type) {
+            case events.UserActionEditedFormDataN:
+                this.processDataObj(event);
+                break;
+            case events.UserActionEditedFormN:
+                this.processForm(event);
+                break;
+            default:
+                console.warn("Unknown event", event);
         }
     }
 
@@ -46,5 +53,17 @@ export class MwzEngine {
         event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
         delete event._rev;
         notifsDB.put(event);
+    }
+
+    private processForm(event: events.UserActionEditedFormEvent) {
+        let existingForm = dataDB.get(event.form._id)
+            .catch(err => { console.error(err); return; })
+            .then(frm => {
+                event.form._rev = frm._rev
+                dataDB.put(event.form).catch(err => console.error(err));
+                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                delete event._rev;
+                notifsDB.put(event);
+            });
     }
 }

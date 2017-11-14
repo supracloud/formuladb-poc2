@@ -60,11 +60,12 @@ group front-end decoupled development
         update the AppState
     end note
     Store -> Store: Client Logic
-    Store -> AppEffects: Actions
+    Store -> AppEffects: "User" Actions
 end
 
-AppEffects -> EventDB: send actions\n\
-  front-end to back-end **INTERFACE**
+group **INTERFACE** front-end to back-end
+    AppEffects -> EventDB: events
+end
 
 group back-end decoupled development
 
@@ -76,14 +77,13 @@ group back-end decoupled development
     end note
     MwzEngine -> MwzEngine: Server Logic
     MwzEngine -> NotifDB: errors, validations, other notifs
-    NotifDB -> Store: notifs Actions only for current user
-    AppEffects <-> Store: handle notifs logic
     MwzEngine -> DataDB: update
-    DataDB -> Store: updates Actions
-    AppEffects <-> Store: handle updates logic
 end
 
-AppEffects -> Store: Server initiated Actions\n\
-  front-end to back-end **INTERFACE**
+group **INTERFACE** back-end to front-end
+    NotifDB -> AppEffects: notifs Actions only for current user
+    DataDB -> AppEffects: updates to data/metadata
+    AppEffects -> Store: "FromServer" Actions
+end
 
 @enduml

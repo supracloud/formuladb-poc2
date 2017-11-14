@@ -34,22 +34,21 @@ export class EditorComponent implements OnInit {
   private parserService: MwzParser;
 
   constructor(private store: Store<appState.AppState>) {
-    this.store.select(appState.getSelectedEntityState).subscribe(entity => this.entity = entity);
     this.parserService = new MwzParser();
   }
 
   public applyChanges() {
-    console.log("EditorComponent: isFom=", this.isForm);
+    console.log("EditorComponent: isFom=", this.isForm, this.entity);
     if (this.isForm) {
       let newForm = this.parserService.parseForm(this.entity, this.text);
       newForm.mwzType = 'Form_';
       newForm._id = 'Form_:' + this.path;
-      this.store.dispatch(new fromForm.FormFromBackendAction(newForm));
+      this.store.dispatch(new fromForm.UserActionEditedForm(newForm));
     } else {
       let newTable = this.parserService.parseTable(this.entity, this.text);
       newTable.mwzType = 'Table_';
       newTable._id = 'Table_:' + this.path;
-      this.store.dispatch(new fromTable.TableFormBackendAction(newTable));
+      this.store.dispatch(new fromTable.UserActionEditedTable(newTable));
     }
   }
 
@@ -63,7 +62,7 @@ export class EditorComponent implements OnInit {
       this.path = path;
       let form = state.form.form;
       let table = state.table.table;
-      this.entity = null;//FIXME: get real selected entity from url or somewhere
+      this.entity = state.entity.selectedEntity;
       if (this.isForm && null != form) {
         this.text = this.parserService.serializeForm(this.entity, form);
       }

@@ -34,7 +34,7 @@ export class FormTabsComponent extends BaseNodeComponent implements OnChanges {
     let formArray = this.topLevelFormGroup.get(this.parentFormPath) as FormArray;
     if (!formArray) return;
     this.tabNames = formArray.controls.map(child => {
-      return child.get(this.nodeElement.attributes.tabNameFormPath).value;
+      return (child.get(this.nodeElement.attributes.tabNameFormPath) || {} as any).value;
     });
   }
 

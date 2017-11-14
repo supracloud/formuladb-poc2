@@ -1,6 +1,8 @@
 import { Component, OnChanges } from '@angular/core';
 import { BaseNodeComponent } from "./base_node";
 
+import { NodeElement } from "../domain/uimetadata/form";
+
 @Component({
   selector: '[form-table]',
   template: `
@@ -18,13 +20,13 @@ import { BaseNodeComponent } from "./base_node";
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let childControl of topLevelFormGroup.get(parentFormPath).controls; let idx = index">
+      <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
         <ng-container *ngFor="let child of nodeElement.childNodes">
           <ng-container [ngSwitch]="child.nodeName">
             <ng-container *ngSwitchCase="'form-autocomplete'">
-              <td *ngFor="let propName of child.attributes?.copiedProperties">
-                <input type="text" [id]="parentFormPath + '.' + idx + '.' + child.entityName + '.' + propName" 
-                  [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.entityName + '.' + propName)" />
+              <td *ngFor="let columnControl of topLevelFormGroup.get(parentFormPath + '.' + child.entityName)?.controls; let colIdx = index">
+                <input type="text" [id]="parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx)" 
+                  [formControl]="columnControl" />
               </td>
             </ng-container>
             <td *ngSwitchCase="'form-input'">
@@ -46,7 +48,16 @@ export class FormTableComponent extends BaseNodeComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    console.log(this.nodeElement);
+    console.log(this.nodeElement, this.topLevelFormGroup);
+  }
+
+  getCopiedPropertyName(child: NodeElement, idx: number) {
+    let ret = ((child.attributes || {} as any).copiedProperties || {} as any)[idx];
+    if (! ret) {
+      console.error("copiedProperties does not have enough elements: ", child, idx);
+      ret = 'NOT-FOUND-' + idx;
+    }
+    return ret;
   }
 
 }

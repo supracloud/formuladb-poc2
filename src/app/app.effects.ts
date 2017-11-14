@@ -20,7 +20,7 @@ import { BaseObj } from "./domain/base_obj";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Entity, Property } from "./domain/metadata/entity";
 import { ChangeObj } from "./domain/change_obj";
-import { MwzEvents } from "./domain/metadata/event";
+import { MwzEvents } from "./domain/event";
 
 import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/form";
@@ -32,9 +32,13 @@ import { PouchdbService } from "./pouchdb.service";
 
 export type ActionsToBeSentToServer =
     | appState.UserActionEditedFormData
+    | appState.UserActionEditedForm
+    | appState.UserActionEditedTable
     ;
 export const ActionsToBeSentToServerNames = [
     appState.UserActionEditedFormDataN,
+    appState.UserActionEditedFormN,
+    appState.UserActionEditedTableN
 ];
 
 @Injectable()
@@ -65,6 +69,7 @@ export class AppEffects {
     private listenForNotifsFromServer(change: { doc: MwzEvents }) {
         console.log(change);
         let event = change.doc;
+        this.store.dispatch(new appState.FormNotifFromBackendAction(event));
     }
 
     private listenFormDataChangesFromServer(change: { docs: Array<BaseObj> }) {
@@ -75,9 +80,10 @@ export class AppEffects {
             } else if (obj.mwzType == 'Table_') {
                 //TODO
             } else if (obj.mwzType == 'Form_') {
-                //TODO
+                this.store.dispatch(new appState.FormFromBackendAction(obj as Form));
             } else {
                 this.store.dispatch(new appState.FormDataFromBackendAction(obj));
+                this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(obj as DataObj)]));
             }
         });
     }
@@ -124,7 +130,7 @@ export class AppEffects {
             this.changeEntity(path);
         }
 
-        if (id != this.currentUrl.id) {
+        if (id && id != this.currentUrl.id) {
             this.currentUrl.id = id;
             this.pouchDbService.getDataObj(id)
                 .then(obj => this.store.dispatch(new appState.FormDataFromBackendAction(obj)));

@@ -10,6 +10,7 @@ export { DataObj };
 export { Table };
 export { ChangeObj, applyChanges };
 
+import * as events from '../domain/event';
 
 export interface TableState {
   table: Table;
@@ -23,7 +24,7 @@ export const tableInitialState: TableState = {
 
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
 export const TableFromBackendActionN = "[table] TableFromBackendAction";
-export const UserActionEditedTableN = "[table] UserActionEditedTable";
+export const UserActionEditedTableN = events.UserActionEditedTableN;
 export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
 export const UserActionNewRowN = "[table] UserActionNewRow";
 
@@ -35,8 +36,11 @@ export class TableDataFromBackendAction implements Action {
 
 export class UserActionEditedTable implements Action {
   readonly type = UserActionEditedTableN;
-
-  constructor(public table: Table) { }
+  public event: events.UserActionEditedTableEvent;
+  
+  constructor(public table: Table) {
+    this.event = new events.UserActionEditedTableEvent(table);
+  }
 }
 
 export class TableFormBackendAction implements Action {

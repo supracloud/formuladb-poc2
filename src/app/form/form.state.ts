@@ -2,10 +2,10 @@ import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from '../domain/metadata/data_obj';
-import { MwzEvents } from "../domain/metadata/event";
+import { MwzEvents } from "../domain/event";
 import { Form } from '../domain/uimetadata/form';
 import { ChangeObj, applyChanges } from '../domain/change_obj';
-import * as events from '../domain/metadata/event';
+import * as events from '../domain/event';
 
 export { DataObj };
 export { Form };
@@ -28,7 +28,8 @@ export const formInitialState: FormState = {
 export const FormDataFromBackendActionN = "[form] FormDataFromBackendAction";
 export const FormNotifFromBackendActionN = "[form] FormNotifFromBackendAction";
 export const FormFromBackendActionN = "[form] FormFromBackendAction";
-export const UserActionEditedFormDataN = "[form] UserActionEditedFormData";
+export const UserActionEditedFormDataN = events.UserActionEditedFormDataN;
+export const UserActionEditedFormN = events.UserActionEditedFormN;
 
 
 export class FormDataFromBackendAction implements Action {
@@ -50,9 +51,12 @@ export class FormFromBackendAction implements Action {
 }
 
 export class UserActionEditedForm implements Action {
-  readonly type = events.UserActionEditedFormN;
-
-  constructor(public form: Form) { }
+  readonly type = UserActionEditedFormN;
+  public event: events.UserActionEditedFormEvent;
+  
+  constructor(public form: Form) {
+    this.event = new events.UserActionEditedFormEvent(form);
+  }
 }
 
 export class UserActionEditedFormData implements Action {

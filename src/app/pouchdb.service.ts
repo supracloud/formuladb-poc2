@@ -7,7 +7,7 @@ import { BaseObj } from "./domain/base_obj";
 import { ChangeObj } from "./domain/change_obj";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Entity } from "./domain/metadata/entity";
-import { MwzEvents } from "./domain/metadata/event";
+import { MwzEvents } from "./domain/event";
 import { Table } from "./domain/uimetadata/table";
 import { Form } from "./domain/uimetadata/form";
 
