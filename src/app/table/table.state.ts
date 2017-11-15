@@ -23,6 +23,7 @@ export const tableInitialState: TableState = {
 };
 
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
+export const RestTableDataFromBackendActionN = "[table] ResetTableDataFromBackendAction";
 export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const UserActionEditedTableN = events.UserActionEditedTableN;
 export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
@@ -34,10 +35,16 @@ export class TableDataFromBackendAction implements Action {
   constructor(public changes: ChangeObj<DataObj>[]) { }
 }
 
+export class ResetTableDataFromBackendAction implements Action {
+  readonly type = RestTableDataFromBackendActionN;
+
+  constructor(public tableData: DataObj[]) { }
+}
+
 export class UserActionEditedTable implements Action {
   readonly type = UserActionEditedTableN;
   public event: events.UserActionEditedTableEvent;
-  
+
   constructor(public table: Table) {
     this.event = new events.UserActionEditedTableEvent(table);
   }
@@ -63,6 +70,7 @@ export class UserActionNewRow implements Action {
 
 export type TableActions =
   | TableDataFromBackendAction
+  | ResetTableDataFromBackendAction
   | TableFormBackendAction
   | UserActionEditedTable
   | UserActionSelectedRowForEditing
@@ -85,19 +93,18 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
         tableData: applyChanges<DataObj>(state.tableData, action.changes),
       };
       break;
+    case RestTableDataFromBackendActionN:
+      ret = {
+        ...state,
+        tableData: action.tableData,
+      };
+      break;
     //user navigates to different tables
     case TableFromBackendActionN:
       ret = {
+        ...state,
         table: action.table,
-        tableData: []
       };
-      break;
-    case UserActionEditedTableN:
-      ret = state;//TODO: implement table metadata editing feature
-      break;
-    case UserActionSelectedRowForEditingN:
-      //TODO: highlight chosen row
-      ret = state;
       break;
   }
 

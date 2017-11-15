@@ -42,6 +42,9 @@ export class MwzEngine {
             case events.UserActionEditedFormN:
                 this.processForm(event);
                 break;
+            case events.UserActionEditedTableN:
+                this.processTable(event);
+                break;
             default:
                 console.warn("Unknown event", event);
         }
@@ -57,10 +60,25 @@ export class MwzEngine {
 
     private processForm(event: events.UserActionEditedFormEvent) {
         let existingForm = dataDB.get(event.form._id)
-            .catch(err => { console.error(err); return; })
+            .catch(err => { console.log(err); return; })
             .then(frm => {
-                event.form._rev = frm._rev
+                if (frm) event.form._rev = frm._rev;
+
                 dataDB.put(event.form).catch(err => console.error(err));
+                //TODO: validations; if there are errors, update the notif accordingly
+                event.notifMsg = 'OK';
+                delete event._rev;
+                notifsDB.put(event);
+            });
+    }
+
+    private processTable(event: events.UserActionEditedTableEvent) {
+        let existingTable = dataDB.get(event.table._id)
+            .catch(err => { console.log(err); return; })
+            .then(tbl => {
+                if (tbl) event.table._rev = tbl._rev;
+                
+                dataDB.put(event.table).catch(err => console.error(err));
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 notifsDB.put(event);

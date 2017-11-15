@@ -2,7 +2,6 @@ import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from '../domain/metadata/data_obj';
-import { MwzEvents } from "../domain/event";
 import { Form } from '../domain/uimetadata/form';
 import { ChangeObj, applyChanges } from '../domain/change_obj';
 import * as events from '../domain/event';
@@ -14,7 +13,7 @@ export { ChangeObj, applyChanges };
 export interface FormState {
   form: Form;
   formData: DataObj;
-  eventFromBackend: MwzEvents;
+  eventFromBackend: events.MwzEvents;
   formReadOnly: boolean;
 }
 
@@ -41,7 +40,7 @@ export class FormDataFromBackendAction implements Action {
 export class FormNotifFromBackendAction implements Action {
   readonly type = FormNotifFromBackendActionN;
 
-  constructor(public event: MwzEvents) { }
+  constructor(public event: events.UserActionEditedFormEvent | events.UserActionEditedFormDataEvent) { }
 }
 
 export class FormFromBackendAction implements Action {

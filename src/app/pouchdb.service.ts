@@ -83,9 +83,9 @@ export class PouchdbService {
 
     public putEvent(event: MwzEvents) {
         this.remoteEventsDB.put(event)
-            .catch(err => {
-                console.log(err);
-            });
+            .catch(err => console.error(err))
+            .then(() => console.log("%c * Event **##$$", 
+                "color: blue; font-size: 115%; font-weight: bold; text-decoration: underline;", event));
     }
 
     public getEntity(path: string): Promise<Entity> {

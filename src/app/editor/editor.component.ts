@@ -12,6 +12,7 @@ import { Store } from '@ngrx/store';
 import * as appState from '../app.state';
 import * as fromForm from '../form/form.state';
 import * as fromTable from '../table/table.state';
+import * as fromEntity from '../entity-state';
 
 @Component({
   moduleId: module.id,
@@ -26,7 +27,7 @@ import * as fromTable from '../table/table.state';
 
 export class EditorComponent implements OnInit {
   subscription: Subscription = new Subscription();
-  private path: string;
+  private path: string = null;
   public isForm: boolean = false;
 
   private text: string;
@@ -55,19 +56,25 @@ export class EditorComponent implements OnInit {
   ngOnInit() {
     let cmp = this;
 
-    this.store.subscribe(state => {
-      if (null == state.router || null == state.router.state) return;
-      let { path, id } = appState.parseUrl(state.router.state.url);
+    this.store.select(state => state.router ? state.router.state : null).subscribe(routerState => {
+      if (!routerState) return;
+      
+      let { path, id } = appState.parseUrl(routerState.url);
       this.isForm = (id != null);
       this.path = path;
-      let form = state.form.form;
-      let table = state.table.table;
-      this.entity = state.entity.selectedEntity;
-      if (this.isForm && null != form) {
-        this.text = this.parserService.serializeForm(this.entity, form);
-      }
-      else if (!this.isForm && null != table) {
+    });
+
+    this.store.select(fromEntity.getSelectedEntityState).subscribe(selectedEntity => this.entity = selectedEntity);
+
+    this.store.select(fromTable.getTableState).subscribe(table => {
+      if (this.path && this.entity && !this.isForm) {
         this.text = this.parserService.serializeTable(this.entity, table);
+      }
+    });
+
+    this.store.select(fromForm.getFormState).subscribe(form => {
+      if (this.path && this.entity && this.isForm) {
+        this.text = this.parserService.serializeForm(this.entity, form);
       }
     });
 

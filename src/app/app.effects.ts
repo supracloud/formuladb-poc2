@@ -67,18 +67,32 @@ export class AppEffects {
     }
 
     private listenForNotifsFromServer(change: { doc: MwzEvents }) {
-        console.log(change);
+        console.log("%c * NotifFromServer **##$$", 
+        "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
+
         let event = change.doc;
-        this.store.dispatch(new appState.FormNotifFromBackendAction(event));
+        switch (event.type) {
+            case appState.UserActionEditedFormDataN:
+            case appState.UserActionEditedFormN:
+                this.store.dispatch(new appState.FormNotifFromBackendAction(event));
+                break;
+            case appState.UserActionEditedTableN:
+                // this.store.dispatch(new appState.FormNotifFromBackendAction(event));
+                //TODO: display loading indicator, not currently used
+                break;
+
+        }
     }
 
     private listenFormDataChangesFromServer(change: { docs: Array<BaseObj> }) {
-        console.log(change);
+        console.log("%c * DataFromServer **##$$", 
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
+
         change.docs.forEach(obj => {
             if (obj.mwzType == 'Entity_') {
                 //TODO
             } else if (obj.mwzType == 'Table_') {
-                //TODO
+                this.store.dispatch(new appState.TableFormBackendAction(obj as Table));
             } else if (obj.mwzType == 'Form_') {
                 this.store.dispatch(new appState.FormFromBackendAction(obj as Form));
             } else {
@@ -151,6 +165,7 @@ export class AppEffects {
                     table = getDefaultTable(entity);
                 } else throw err;
             }
+            this.store.dispatch(new appState.ResetTableDataFromBackendAction([]));
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
             let tableData = await this.pouchDbService.findByMwzType<DataObj>(path);
@@ -179,12 +194,12 @@ export class AppEffects {
 
 
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
-    let form = { 
-        nodeType: NodeType.FormGrid, 
-        nodeName: 'form-grid', 
-        mwzType: "Form_" ,
+    let form = {
+        nodeType: NodeType.FormGrid,
+        nodeName: 'form-grid',
+        mwzType: "Form_",
         _id: 'Form_:' + entity._id
-    }as Form;
+    } as Form;
     setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', JSON.stringify(form));
     return form;
