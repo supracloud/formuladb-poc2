@@ -78,6 +78,7 @@ export class FormComponent implements OnInit {
             }
 
             if (formState.eventFromBackend && this.lastSaveAction && formState.eventFromBackend._id === this.lastSaveAction.event._id) {
+                //TODO: show errors
                 this.saveInProgress = false;
             }
 
