@@ -68,6 +68,12 @@ export class FormComponent implements OnInit {
         this.formState$.subscribe(formState => {
             console.log("MwzFormComponent:", formState.form, formState.formData, formState.formReadOnly);
 
+            //set readonly fields
+            this.theFormGroup.setControl('_id', new FormControl({value: (formState.formData || {_id: null})._id, disabled: true}));
+            this.theFormGroup.setControl('_rev', new FormControl({value: (formState.formData || {_rev: null})._rev, disabled: true}));
+            this.theFormGroup.setControl('mwzType', new FormControl({value: (formState.formData || {mwzType: null}).mwzType, disabled: true}));
+            
+
             if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form, formState.formReadOnly);
             if (formState.formData) this.updateFormGroupWithData(formState.formData, this.theFormGroup, formState.formReadOnly);
 
@@ -90,11 +96,12 @@ export class FormComponent implements OnInit {
             // .filter(() => !this.theFormGroup.dirty)
             // .filter(val => val._id.disabled === false)
             .sampleTime(1000)
-            .forEach(val => {
-                if (val._id.disabled === false) return;//FIXME: WTF! sometimes all fields are {disabled: false}
+            .forEach(valueChange => {
+                let val = this.theFormGroup.getRawValue();
+                if (val._id && val._id.disabled === false) return;//FIXME: WTF! sometimes all fields are {disabled: false}
                 if (!this.theFormGroup.dirty) return;
                 
-                delete val._revisions;//WORAROUND for error: "doc_validation", reason: "RevId isn't a string", status: 400, name: "doc_validation", message: "RevId isn't a string",
+                delete val._revisions;//WORKAROUND for error: "doc_validation", reason: "RevId isn't a string", status: 400, name: "doc_validation", message: "RevId isn't a string",
 
                 console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
                 this.lastSaveAction = new fromForm.UserActionEditedFormData(_.cloneDeep(val));
@@ -115,13 +122,16 @@ export class FormComponent implements OnInit {
         if (null != formEl.tableName) {
             newParent = new FormGroup({});
             parentFormGroup.setControl(formEl.tableName, new FormArray([newParent]));
-        }
-        else if (null != formEl.entityName) {
+        } else if (null != formEl.entityName) {
             newParent = new FormGroup({});
             parentFormGroup.setControl(formEl.entityName, newParent);
-        } if (null != formEl.propertyName) {
-            parentFormGroup.setControl(formEl.propertyName, new FormControl({disabled: formReadOnly}));
-        }
+        } else if (null != formEl.propertyName) {
+            if (formEl.propertyName === '_id') return;
+            if (formEl.propertyName === '_rev') return;
+            if (formEl.propertyName === 'mwzType') return;
+            parentFormGroup.setControl(formEl.propertyName, new FormControl({value: undefined, disabled: formReadOnly}));
+        } 
+        
         if (null != formEl.childNodes) {
             formEl.childNodes.forEach(child => this.updateFormGroup(newParent, child, formReadOnly));
         }
@@ -132,8 +142,10 @@ export class FormComponent implements OnInit {
         //TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
 
         for (var key in objFromServer) {
-            // if ('_rev' === key) continue;
-
+            if ('_rev' === key) continue;
+            if ('_id' === key) continue;
+            if ('mwzType' === key) continue;
+            
             let objVal = objFromServer[key];
             let formVal = formGroup.get(key);
             if (null == objVal) continue;
@@ -157,7 +169,7 @@ export class FormComponent implements OnInit {
                 
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
                 if (null == formVal) {
-                    formVal = new FormControl({disabled: formReadOnly});
+                    formVal = new FormControl({value: undefined, disabled: formReadOnly});
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormControl)) {

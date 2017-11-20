@@ -19,6 +19,10 @@ box "Server"
     participant DataDB
 end box
 
+alt Create New DataObj
+    note right of User: TODO: generate UUID and use that as the _id for the new DataObj
+end
+
 note right of User: When_user_updates_the_requested_quantity_of_a_product_list_item
 
 User -> FormCmp: edit form

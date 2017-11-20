@@ -1,0 +1,44 @@
+<nav class="navbar fixed-top navbar-dark bg-primary text-white">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a href="/" class="navbar-brand">Metawiz</a>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav">
+            <li class="nav-item" routerLinkActive="active">
+                <a routerLink="/form-editor" class="nav-link">Form editor</a>
+            </li>
+            <li class="nav-item" routerLinkActive="active">
+                <a routerLink="/ecommerce" class="nav-link"><i class="fa fa-cart"></i> E-commerce</a>
+            </li>
+        </ul>
+    </div>
+    <li class="nav-item">
+        <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Toggle dropdown</button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                <button (click)="newDataObj()" class="dropdown-item">Add {{selectedEntity?._id}}</button>
+                <button class="dropdown-item">Add Entity</button>
+            </div>
+        </div>
+    </li>
+    <!-- <li class="nav-item dropdown">
+        <button class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdown">Data Menu</button>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#"></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#"></a>
+        </div>
+    </li> -->
+</nav>
+<div class="mwz-body">
+    <div class="mwz-sidebar mwz-independent-scroll ml-2">
+        <mwz-navigation></mwz-navigation>
+    </div>
+    <div class="mwz-content mwz-independent-scroll ml-2 card">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<editor></editor>

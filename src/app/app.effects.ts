@@ -43,7 +43,7 @@ export const ActionsToBeSentToServerNames = [
 
 @Injectable()
 export class AppEffects {
-    private currentUrl: { path: string, id: string } = { path: null, id: null };
+    private currentUrl: { path: string, id: string, entity: Entity } = { path: null, id: null, entity: null };
     private cachedEntitiesMap: Map<string, Entity> = new Map();
 
     constructor(
@@ -67,8 +67,8 @@ export class AppEffects {
     }
 
     private listenForNotifsFromServer(change: { doc: MwzEvents }) {
-        console.log("%c * NotifFromServer **##$$", 
-        "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
+        console.log("%c * NotifFromServer **##$$",
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
 
         let event = change.doc;
         switch (event.type) {
@@ -85,7 +85,7 @@ export class AppEffects {
     }
 
     private listenFormDataChangesFromServer(change: { docs: Array<BaseObj> }) {
-        console.log("%c * DataFromServer **##$$", 
+        console.log("%c * DataFromServer **##$$",
             "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
 
         change.docs.forEach(obj => {
@@ -117,6 +117,9 @@ export class AppEffects {
 
         //send actions to server so that the engine can process them, compute all formulas and update the data
         this.listenForUserActions();
+
+        //listen for new object creations
+        this.listenForNewDataObjActions();
     }
 
     private listenForUserActions() {
@@ -147,14 +150,25 @@ export class AppEffects {
         if (id && id != this.currentUrl.id) {
             this.currentUrl.id = id;
             this.pouchDbService.getDataObj(id)
-                .then(obj => this.store.dispatch(new appState.FormDataFromBackendAction(obj)));
+                .then(obj => this.store.dispatch(new appState.FormDataFromBackendAction(obj)))
+                .catch(err => console.error(err))
+                ;
         }
 
+    }
+
+    private listenForNewDataObjActions() {
+        this.actions$.ofType<appState.UserActionNewRow>(appState.UserActionNewRowN).subscribe(action => {
+            this.currentUrl.id = BaseObj.uuid();
+            this.router.navigate([this.currentUrl.entity._id + '/' + this.currentUrl.id]);    
+            this.store.dispatch(new appState.FormDataFromBackendAction({_id: this.currentUrl.id, mwzType: this.currentUrl.entity._id}))
+        });
     }
 
     private async changeEntity(path: string) {
         try {
             let entity = await this.pouchDbService.getEntity(path);
+            this.currentUrl.entity = entity;
             this.store.dispatch(new appState.UserActionSelectedEntity(entity));
 
             let table: Table = null;
@@ -186,9 +200,7 @@ export class AppEffects {
         }
     }
 
-    // Change state on router navigation: get metadata and data from server and replace change current state
-    // @Effect() navigation$: TableFormActionsObservable = 
-
+    // @Effect() newDataObj$: Observable<appState.UserActionNewRow> = null;//TODO
 
 }
 

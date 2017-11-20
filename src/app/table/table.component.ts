@@ -11,7 +11,7 @@ import * as tableState from './table.state';
     moduleId: module.id,
     selector: 'mwz-table',
     template: `
-<table class="table table-bordered table-sm mwz-data-table">
+<table class="table table-bordered table-sm table-striped table-hover mwz-data-table">
     <thead>
         <tr>
             <th>#</th>
@@ -19,9 +19,9 @@ import * as tableState from './table.state';
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let row of (data$ | async)">
-            <td>{{idx}}</td>
-            <td *ngFor="let prop of (table$ | async)?.columns" (dblclick)="onRowDoubleClicked(row)" data-toggle="tooltip" data-placement="top" title="{{row[prop.name]}}">{{row[prop.name]}}</td>
+        <tr *ngFor="let row of (data$ | async); let rowIdx = index" (dblclick)="onEditClicked(row)" [class.table-primary]='rowIdx == selectedRowIdx'>
+            <td><button (click)="onEditClicked(row)" *ngIf="rowIdx == selectedRowIdx"><i class="fa fa-pencil"></i></button> {{rowIdx + 1}}</td>
+            <td *ngFor="let prop of (table$ | async)?.columns" (click)="onRowClicked(rowIdx, row)" data-toggle="tooltip" data-placement="top" title="{{row[prop.name]}}">{{row[prop.name]}}</td>
         </tr>
     </tbody>
 </table>
@@ -32,6 +32,7 @@ import * as tableState from './table.state';
 export class TableComponent {
     private table$: Observable<tableState.Table>;
     private data$: Observable<tableState.DataObj[]>;
+    private selectedRowIdx: number;
 
     constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute) {
         try {
@@ -43,8 +44,12 @@ export class TableComponent {
         }
     }
 
-    onRowDoubleClicked(row: tableState.DataObj) {
-        console.log('MwzTableComponent: onRowDoubleClicked: ', row);
+    onRowClicked(rowIdx: number, row: tableState.DataObj) {
+        this.selectedRowIdx = rowIdx;
+        console.log('MwzTableComponent: onRowClicked: ', row);
+    }
+
+    onEditClicked(row: tableState.DataObj) {
         this.router.navigate(['./' + row._id], { relativeTo: this.route });
     }
 
