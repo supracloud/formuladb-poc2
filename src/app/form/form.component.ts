@@ -89,6 +89,7 @@ export class FormComponent implements OnInit {
             }
 
             this.setAlertType();
+            console.log("MwzFormComponent end");
         });
 
         this.theFormGroup.valueChanges

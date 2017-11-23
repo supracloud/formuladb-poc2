@@ -65,10 +65,12 @@ export class MwzEngine {
                 if (frm) event.form._rev = frm._rev;
 
                 dataDB.put(event.form).catch(err => console.error(err));
+                console.log("form save started");
                 //TODO: validations; if there are errors, update the notif accordingly
                 event.notifMsg = 'OK';
                 delete event._rev;
                 notifsDB.put(event);
+                console.log("form notif save started");
             });
     }
 

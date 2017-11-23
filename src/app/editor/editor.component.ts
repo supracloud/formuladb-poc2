@@ -18,8 +18,8 @@ import * as fromEntity from '../entity-state';
   moduleId: module.id,
   selector: 'editor',
   template: `
-  <form (ngSubmit)="applyChanges()" class="mwz-editor mwz-independent-scroll ml-2">
-      <label>{{isForm ? 'Form' : 'Table'}}</label> <button type="submit">Apply Changes</button>
+  <form class="mwz-editor mwz-independent-scroll ml-2">
+      <label>{{isForm ? 'Form' : 'Table'}}</label> <button (click)="applyChanges(false)">Apply</button><button (click)="applyChanges(true)">Preview</button>
       <textarea cols="120" wrap="off" name="text" class="editor form" [(ngModel)]='text'></textarea>
   </form>
   `,
@@ -29,6 +29,8 @@ export class EditorComponent implements OnInit {
   subscription: Subscription = new Subscription();
   private path: string = null;
   public isForm: boolean = false;
+  private table: Table;
+  private form: Form;
 
   private text: string;
   private entity: Entity;
@@ -38,18 +40,26 @@ export class EditorComponent implements OnInit {
     this.parserService = new MwzParser();
   }
 
-  public applyChanges() {
+  public applyChanges(preview: boolean) {
     console.log("EditorComponent: isFom=", this.isForm, this.entity);
     if (this.isForm) {
       let newForm = this.parserService.parseForm(this.entity, this.text);
       newForm.mwzType = 'Form_';
       newForm._id = 'Form_:' + this.path;
-      this.store.dispatch(new fromForm.UserActionEditedForm(newForm));
+      if (preview) {
+        this.store.dispatch(new fromForm.FormFromBackendAction(newForm));
+      } else {
+        this.store.dispatch(new fromForm.UserActionEditedForm(newForm));
+      }
     } else {
       let newTable = this.parserService.parseTable(this.entity, this.text);
       newTable.mwzType = 'Table_';
       newTable._id = 'Table_:' + this.path;
-      this.store.dispatch(new fromTable.UserActionEditedTable(newTable));
+      if (preview) {
+        this.store.dispatch(new fromTable.TableFormBackendAction(newTable));
+      } else {
+        this.store.dispatch(new fromTable.UserActionEditedTable(newTable));
+      }
     }
   }
 
@@ -58,26 +68,33 @@ export class EditorComponent implements OnInit {
 
     this.store.select(state => state.router ? state.router.state : null).subscribe(routerState => {
       if (!routerState) return;
-      
       let { path, id } = appState.parseUrl(routerState.url);
       this.isForm = (id != null);
       this.path = path;
+      this.setText();
     });
 
     this.store.select(fromEntity.getSelectedEntityState).subscribe(selectedEntity => this.entity = selectedEntity);
 
     this.store.select(fromTable.getTableState).subscribe(table => {
-      if (this.path && this.entity && !this.isForm) {
-        this.text = this.parserService.serializeTable(this.entity, table);
-      }
+      this.table = table;
+      this.setText();
     });
 
     this.store.select(fromForm.getFormState).subscribe(form => {
-      if (this.path && this.entity && this.isForm) {
-        this.text = this.parserService.serializeForm(this.entity, form);
-      }
+      this.form = form;
+      this.setText();
     });
 
+  }
+
+  private setText() {
+    if (this.path && this.entity && !this.isForm && this.table) {
+      this.text = this.parserService.serializeTable(this.entity, this.table);
+    }
+    if (this.path && this.entity && this.isForm && this.form) {
+      this.text = this.parserService.serializeForm(this.entity, this.form);
+    }
   }
 
   ngOnDestroy() {
