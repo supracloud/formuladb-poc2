@@ -5,6 +5,14 @@ import { Table, TableColumn } from './domain/uimetadata/table';
 export class MwzParser {
   private INDENT: string = "  ";
 
+  public serializeEntity(entity: Entity): string {
+    return JSON.stringify(entity, null, 2);
+  }
+
+  public parseEntity(text: string): Entity {
+    return null;
+  }
+
   public serializeForm(entity: Entity, form: Form): string {
     if (null == form) return '';
     let ret = [];

@@ -35,6 +35,9 @@ export class MwzEngine {
     }
 
     private processEvent(event: events.MwzEvents) {
+        console.log("%c * processEvent **##$$",
+        "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
+    
         switch (event.type) {
             case events.UserActionEditedFormDataN:
                 this.processDataObj(event);
