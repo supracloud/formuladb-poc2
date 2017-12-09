@@ -1,44 +1,46 @@
-<nav class="navbar fixed-top navbar-dark bg-primary text-white">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-primary">
+    <a href="/" class="navbar-brand">Metawiz</a>
+    <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
+        [attr.aria-expanded]="!menuCollapsed" (click)="menuCollapsed = !menuCollapsed" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a href="/" class="navbar-brand">Metawiz</a>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav">
+    <div class="collapse navbar-collapse" [ngbCollapse]="menuCollapsed" id="navbarResponsive">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item" routerLinkActive="active">
                 <a routerLink="/form-editor" class="nav-link">Form editor</a>
             </li>
             <li class="nav-item" routerLinkActive="active">
-                <a routerLink="/ecommerce" class="nav-link"><i class="fa fa-cart"></i> E-commerce</a>
+                <a routerLink="/ecommerce" class="nav-link">
+                    <i class="fa fa-cart"></i> E-commerce</a>
+            </li>
+            <li class="nav-item dropdown" ngbDropdown>
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false" ngbDropdownToggle>
+                    Toggle dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown" ngbDropdownMenu>
+                    <a class="dropdown-item" (click)="newDataObj()">Add {{selectedEntity?._id}}</a>
+                    <a class="dropdown-item">Add Entity</a>
+                </div>
             </li>
         </ul>
     </div>
-    <li class="nav-item">
-        <div ngbDropdown class="d-inline-block">
-            <button class="btn btn-outline-primary" id="dropdownBasic1" ngbDropdownToggle>Toggle dropdown</button>
-            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                <button (click)="newDataObj()" class="dropdown-item">Add {{selectedEntity?._id}}</button>
-                <button class="dropdown-item">Add Entity</button>
+</nav>
+<div class="d-flex flex-row justify-content-between">
+    <button class="btn btn-sm btn-outline-primary m-2" data-toggle="collapse" data-target="#leftSideBar" aria-controls="leftSideBar"
+        [attr.aria-expanded]="!leftCollapsed" (click)="leftCollapsed = !leftCollapsed" aria-label="Toggle left side">
+        <i [class.fa-toggle-on]="!leftCollapsed" [class.fa-toggle-off]="leftCollapsed" class="fa"></i> Side panel</button>
+    <button class="btn btn-sm btn-outline-primary m-2" data-toggle="collapse" data-target="#rightSideBar" aria-controls="rightSideBar" [attr.aria-expanded]="!rightCollapsed"
+        (click)="rightCollapsed = !rightCollapsed" aria-label="Toggle right side"><i class="fa" [class.fa-toggle-on]="!rightCollapsed" [class.fa-toggle-off]="rightCollapsed"></i> Editor panel</button>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <mwz-navigation id="leftSideBar" class="col-2" [ngbCollapse]="leftCollapsed"></mwz-navigation>
+        <div [class.col-12]="leftCollapsed&&rightCollapsed" [class.col-10]="leftCollapsed||rightCollapsed" [class.col-8]="!leftCollapsed&&!rightCollapsed">
+            <div class="mwz-panel">
+                <router-outlet></router-outlet>
             </div>
         </div>
-    </li>
-    <!-- <li class="nav-item dropdown">
-        <button class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdown">Data Menu</button>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#"></a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#"></a>
-        </div>
-    </li> -->
-</nav>
-<div class="mwz-body">
-    <div class="mwz-sidebar mwz-independent-scroll ml-2">
-        <mwz-navigation></mwz-navigation>
-    </div>
-    <div class="mwz-content mwz-independent-scroll ml-2 card">
-        <router-outlet></router-outlet>
+        <editor class="col-2" id="rightSideBar" [ngbCollapse]="rightCollapsed"></editor>
     </div>
 </div>
-
-<editor></editor>

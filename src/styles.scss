@@ -2,9 +2,13 @@
 @import "~font-awesome/css/font-awesome.css";
 
 body {
-    padding-top: 5.5rem;
+    padding-top: 3.2rem;
     padding-bottom: 2rem;
     min-width: 25rem;
+  }
+
+  .mwz-panel{
+    overflow: auto
   }
   
   @media print {
@@ -15,74 +19,14 @@ body {
       padding: 2rem;
     }
   }
-  
-  .navbar {
-    margin-right: 20%;
-  }
-  .mwz-body {
-    margin-right: 20%;
-    position: fixed;
-    bottom: 1rem;
-    top: 5rem;
-    width: 100%;
-    min-width: 60rem;
-    .mwz-independent-scroll {
-      height: 100%;
-      overflow: auto;
-    }
-  }
-  
-  .mwz-editor {
-    width: 20%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    right: 0;
-    padding: 10px;
-    border: 1px solid grey;
-  }
-  
-  .mwz-sidebar {
-    width: 20%;
-    float: left;
-  }
-  
-  .mwz-content {
-    width: 55%;
-    float: left;
-  }
-  
+    
   .mwz-editor .editor {
-    height: 100%;
-    min-height: 900px;
-    width: 500px;
-    overflow: scroll;
+    width:100%;
+    min-height: 700px;
     white-space: nowrap;
     background-color: black;
     color: white;
     font-weight: bold;
-  }
-  
-  .ld-article-collapsed {
-    .card-text {
-      max-height: 10.5rem;
-      overflow: hidden;
-    }
-    footer {
-      font-size: 1rem;
-    }
-  }
-  
-  .author-MP {
-    border-bottom: 2px solid #9b59b6;
-  }
-  
-  .author-LAW_OFFICER {
-    border-bottom: 2px solid #f39c12;
-  }
-  
-  .author-REGULAR {
-    border-bottom: 2px solid #bdc3c7;
   }
   
   select:invalid {

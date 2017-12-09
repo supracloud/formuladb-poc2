@@ -1,0 +1,14 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+.mwz-tree-node{
+    width:100%;
+    &:hover{
+        background-color: $gray-200;
+    }
+    .mwz-tree-node-action{
+        display:block;
+        position:absolute;
+        right:1rem;
+        background-color: $gray-200;
+    }
+}

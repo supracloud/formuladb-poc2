@@ -12,7 +12,7 @@ import {
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -28,7 +28,7 @@ import { FormItemComponent } from "./form/form-item.component";
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
-
+import { TreeComponent } from './tree/tree.component';
 import { environment } from '../environments/environment';
 
 import * as appState from './app.state';
@@ -40,11 +40,12 @@ import { MwzParser } from "./mwz-parser";
 import { PouchdbService } from "./pouchdb.service";
 
 const routes: Routes = [
-  { path: ':path', component: TableComponent,
-      children: [{
-          path: ':_id',
-          component: FormComponent
-      }]
+  {
+    path: ':path', component: TableComponent,
+    children: [{
+      path: ':_id',
+      component: FormComponent
+    }]
   },
   { path: '**', component: NotFoundComponent }
 ];
@@ -55,6 +56,7 @@ const routes: Routes = [
     NotFoundComponent,
     NavigationComponent,
     FormComponent,
+    TreeComponent,
     FormInputComponent,
     FormAutocompleteComponent,
     FormTabsComponent,
@@ -71,7 +73,7 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
-    StoreModule.forRoot(appState.reducers, {metaReducers: [appState.appMetaReducer]}),
+    StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
     NgbModule.forRoot(),
     StoreRouterConnectingModule,
     // !environment.production ? StoreDevtoolsModule.instrument() : [],

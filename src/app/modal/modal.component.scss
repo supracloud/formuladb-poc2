@@ -1,0 +1,20 @@
+  .mwz-modal {
+      background-color: rgba(120, 120, 120, 0.5);
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      z-index: 1050;
+      padding: 3rem;
+      overflow: auto;
+  }
+  .mwz-modal .body {
+      background-color: white;
+  }
+
+  .mwz-modal.mwzFormHide {
+      top: -200%;
+  }
+  .mwz-modal.mwzFormShow {
+      top: 0px;
+  }

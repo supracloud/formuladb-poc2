@@ -20,28 +20,7 @@ import * as fromEntity from '../entity-state';
 @Component({
   moduleId: module.id,
   selector: 'editor',
-  template: `
-  <form class="mwz-editor mwz-independent-scroll ml-2">
-    <label>{{isForm ? 'Form' : 'Table'}}</label> <button (click)="applyChanges(false)">Apply</button><button (click)="applyChanges(true)">Preview</button>
-    <ngb-tabset #tabset="ngbTabset">
-        <ngb-tab id="Entity" title="Entity">
-          <ng-template ngbTabContent>
-            <textarea cols="120" wrap="off" name="entityText" class="editor form" [(ngModel)]='entityText'></textarea>
-          </ng-template>
-        </ngb-tab>
-        <ngb-tab id="Table" title="Table">
-          <ng-template ngbTabContent>
-            <textarea cols="120" wrap="off" name="formText" class="editor form" [(ngModel)]='tableText'></textarea>
-          </ng-template>
-        </ngb-tab>
-        <ngb-tab id="Form" title="Form">
-          <ng-template ngbTabContent>
-            <textarea cols="120" wrap="off" name="tableText" class="editor form" [(ngModel)]='formText'></textarea>
-          </ng-template>
-        </ngb-tab>
-      </ngb-tabset>  
-  </form>
-  `,
+  templateUrl: "editor.component.html"
 })
 
 export class EditorComponent implements OnInit {

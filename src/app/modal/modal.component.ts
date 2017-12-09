@@ -4,36 +4,8 @@ import { Subscription }   from 'rxjs/Subscription';
 
 @Component({
   selector: 'mwz-modal',
-  template: `
-<div class="mwz-modal" [ngClass]="modalClasses">
-    <div class="body rounded container">
-        <ng-content></ng-content>
-    </div>
-</div>  
-  `,
-  styles: [`
-        .mwz-modal {
-            background-color: rgba(120, 120, 120, 0.5);
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            width: 80%;
-            height: 100%;
-            z-index: 1050;
-            padding: 7%;
-            overflow: auto;
-        }
-        .mwz-modal .body {
-            background-color: white;
-        }
-
-        .mwz-modal.mwzFormHide {
-            top: -200%;
-        }
-        .mwz-modal.mwzFormShow {
-            top: 0px;
-        }
-    `],
+  templateUrl: "modal.component.html",
+  styleUrls:["modal.component.scss"]
 })
 export class ModalComponent {
     subscription: Subscription = new Subscription();

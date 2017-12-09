@@ -18,6 +18,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class AppComponent implements OnInit {
     title = 'app';
     selectedEntity: appState.Entity;
+    menuCollapsed: boolean = false;
+    leftCollapsed: boolean = false;
+    rightCollapsed: boolean = false;
 
     public constructor(private store: Store<appState.AppState>) {
         store.select(appState.getSelectedEntityState).subscribe(e => this.selectedEntity = e);

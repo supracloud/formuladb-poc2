@@ -51,7 +51,7 @@ export class NodeElementAttributes {
 export class NodeElement extends BaseObj {
     nodeType: NodeType;
     nodeName: string;
-    
+        
     //this element is a property (formControl), in case this attribute is not null
     propertyName?: string;
 

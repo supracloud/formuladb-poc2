@@ -1,0 +1,17 @@
+<div class="d-flex mt-1 mwz-tree-node" (mouseenter)="hover=true" (mouseleave)="hover=false">
+    <i *ngIf="node&&node.childNodes.length!==0" (click)="expanded=!expanded" class="mt-2 fa" [class.fa-chevron-circle-right]="!expanded"
+        [class.fa-chevron-circle-down]="expanded"></i>
+    <span class="mr-auto p-1">{{code}}</span>
+    <div *ngIf="hover" class="mwz-tree-node-action">
+        <i class="fa fa-arrow-up mt-2 ml-1" (click)="moveUp()"></i>
+        <i class="fa fa-arrow-down mt-2 ml-1" (click)="moveDown()"></i>
+        <i class="fa fa-plus mt-2 ml-1" (click)="addChild()"></i>
+        <i class="fa fa-pencil-square-o mt-2 ml-1" (click)="edit()"></i>
+        <i class="fa fa-trash-o mt-2 ml-1" (click)="delete()"></i>
+    </div>
+</div>
+<div class="ml-2" *ngIf="node&&node.childNodes.length!==0" [class.d-none]="!expanded">
+    <div *ngFor="let c of node.childNodes; let i=index">
+        <mwz-tree [node]="c" [index]="i" (change)="childChange($event)"></mwz-tree>
+    </div>
+</div>
