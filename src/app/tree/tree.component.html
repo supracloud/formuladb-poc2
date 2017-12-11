@@ -1,17 +1,109 @@
-<div class="d-flex mt-1 mwz-tree-node" (mouseenter)="hover=true" (mouseleave)="hover=false">
+<div *ngIf="!edited" class="d-flex mt-1 mwz-tree-node" (mouseenter)="hover=true" (mouseleave)="hover=false">
     <i *ngIf="node&&node.childNodes.length!==0" (click)="expanded=!expanded" class="mt-2 fa" [class.fa-chevron-circle-right]="!expanded"
         [class.fa-chevron-circle-down]="expanded"></i>
     <span class="mr-auto p-1">{{code}}</span>
     <div *ngIf="hover" class="mwz-tree-node-action">
-        <i class="fa fa-arrow-up mt-2 ml-1" (click)="moveUp()"></i>
-        <i class="fa fa-arrow-down mt-2 ml-1" (click)="moveDown()"></i>
-        <i class="fa fa-plus mt-2 ml-1" (click)="addChild()"></i>
-        <i class="fa fa-pencil-square-o mt-2 ml-1" (click)="edit()"></i>
-        <i class="fa fa-trash-o mt-2 ml-1" (click)="delete()"></i>
+        <i *ngIf="state.canMoveUp" class="fa fa-arrow-up mt-2 ml-1" (click)="moveUp()"></i>
+        <i *ngIf="state.canMoveDown" class="fa fa-arrow-down mt-2 ml-1" (click)="moveDown()"></i>
+        <i *ngIf="state.canAddChild" class="fa fa-plus mt-2 ml-1" (click)="addChild()"></i>
+        <i *ngIf="state.canEdit" class="fa fa-pencil-square-o mt-2 ml-1" (click)="edit()"></i>
+        <i *ngIf="state.canDelete" class="fa fa-trash-o mt-2 ml-1" (click)="delete()"></i>
     </div>
 </div>
+<ngb-accordion *ngIf="edited" [closeOthers]="true">    
+    <ngb-panel *ngIf="hasType('form-grid-row')" title="Form Grid Row">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-grid-row-args">Form Grid Row Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-grid-row-args" aria-describedby="form-grid-row-help" placeholder="arguments">
+                <small id="form-grid-row-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-grid-col')" title="Form Grid Column">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-grid-col-args">Form Grid Column Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-grid-col-args" aria-describedby="form-grid-col-help" placeholder="arguments">
+                <small id="form-grid-col-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-input')" title="Form Input">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-input-args">Form Input Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-input-args" aria-describedby="form-input-help" placeholder="arguments">
+                <small id="form-input-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-autocomplete')" title="Form Autocomplete">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-ac-args">Form Autocomplete Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-ac-args" aria-describedby="form-ac-help" placeholder="arguments">
+                <small id="form-ac-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-tabs')" title="Form Tabs">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-tabs-args">Form Tabs Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-tabs-args" aria-describedby="form-tabs-help" placeholder="arguments">
+                <small id="form-tabs-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-tab')" title="Form Tab">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-tab-args">Form Tab Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-tab-args" aria-describedby="form-tab-help" placeholder="arguments">
+                <small id="form-tab-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-table')" title="Form Table">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-table-args">Form Table Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-table-args" aria-describedby="form-table-help" placeholder="arguments">
+                <small id="form-table-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-date-picker')" title="Form Datepicker">
+        <ng-template ngbPanelContent>
+            <div class="form-group">
+                <label for="form-datepicker-args">Form Datepicker Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-datepicker-args" aria-describedby="form-datepicker-help" placeholder="arguments">
+                <small id="form-datepicker-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+    <ngb-panel *ngIf="hasType('form-time-picker')" title="Form Timepicker">
+        <ng-template ngbPanelContent>
+            <div class="form-timepicker-group">
+                <label for="form-args">Form Timepicker Arguments</label>
+                <input type="text" class="form-control form-control-sm" id="form-timepicker-args" aria-describedby="form-timepicker-help" placeholder="arguments">
+                <small id="form-timepicker-help" class="form-text text-muted">E.g. ...</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" (click)="save()">Done</button>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>
 <div class="ml-2" *ngIf="node&&node.childNodes.length!==0" [class.d-none]="!expanded">
     <div *ngFor="let c of node.childNodes; let i=index">
-        <mwz-tree [node]="c" [index]="i" (change)="childChange($event)"></mwz-tree>
+        <mwz-tree [node]="c" [index]="i" [state]="calculateTreeState(c,i)" (change)="childChange($event)"></mwz-tree>
     </div>
 </div>

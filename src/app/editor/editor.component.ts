@@ -16,6 +16,7 @@ import * as appState from '../app.state';
 import * as fromForm from '../form/form.state';
 import * as fromTable from '../table/table.state';
 import * as fromEntity from '../entity-state';
+import { TreeState } from '../tree/tree.state';
 
 @Component({
   moduleId: module.id,
@@ -35,6 +36,14 @@ export class EditorComponent implements OnInit {
   private tableText: string;
   private entity: Entity;
   private parserService: MwzParser;
+
+  private rootTreeState:TreeState={
+    canAddChild:true,
+    canDelete:false,
+    canEdit:false,
+    canMoveDown:false,
+    canMoveUp:false
+  }
 
   @ViewChild('tabset')
   private tabset: NgbTabset;
