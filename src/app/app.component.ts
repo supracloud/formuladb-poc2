@@ -18,7 +18,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class AppComponent implements OnInit {
     title = 'app';
     selectedEntity: appState.Entity;
-    menuCollapsed: boolean = false;
+    menuCollapsed: boolean = true;
     leftCollapsed: boolean = false;
     rightCollapsed: boolean = false;
 

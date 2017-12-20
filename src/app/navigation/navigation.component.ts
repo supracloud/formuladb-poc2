@@ -9,11 +9,9 @@ import * as fromEntity from '../entity-state';
   selector: 'mwz-navigation',
   // changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <ul class="list-group">
-      <li *ngFor="let entity of metadataCatalog" class="list-group-item">
-          <a [routerLink]="[entity.path]">{{entity.indent}}{{entity.linkName}}</a>
-      </li>
-    </ul>  
+    <div class="list-group">
+      <a *ngFor="let entity of metadataCatalog" class="list-group-item list-group-item-action" [routerLink]="[entity.path]" routerLinkActive="active">{{entity.indent}}{{entity.linkName}}</a>
+    </div>  
   `
 })
 export class NavigationComponent implements OnInit {

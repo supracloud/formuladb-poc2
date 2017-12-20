@@ -1,7 +1,7 @@
-<nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-primary">
+<nav class="navbar navbar-expand-sm navbar-dark bg-primary">
     <a href="/" class="navbar-brand">Metawiz</a>
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive"
-        [attr.aria-expanded]="!menuCollapsed" (click)="menuCollapsed = !menuCollapsed" aria-label="Toggle navigation">
+        aria-expanded="false" (click)="menuCollapsed = !menuCollapsed" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" [ngbCollapse]="menuCollapsed" id="navbarResponsive">
@@ -26,21 +26,21 @@
         </ul>
     </div>
 </nav>
-<div class="d-flex flex-row justify-content-between">
-    <button class="btn btn-sm btn-outline-primary m-2" data-toggle="collapse" data-target="#leftSideBar" aria-controls="leftSideBar"
-        [attr.aria-expanded]="!leftCollapsed" (click)="leftCollapsed = !leftCollapsed" aria-label="Toggle left side">
-        <i [class.fa-toggle-on]="!leftCollapsed" [class.fa-toggle-off]="leftCollapsed" class="fa"></i> Side panel</button>
-    <button class="btn btn-sm btn-outline-primary m-2" data-toggle="collapse" data-target="#rightSideBar" aria-controls="rightSideBar" [attr.aria-expanded]="!rightCollapsed"
-        (click)="rightCollapsed = !rightCollapsed" aria-label="Toggle right side"><i class="fa" [class.fa-toggle-on]="!rightCollapsed" [class.fa-toggle-off]="rightCollapsed"></i> Editor panel</button>
-</div>
+<nav class="navbar-dark bg-dark d-flex d-flex-row justify-content-between text-light">
+    <a class="btn btn-xs" data-toggle="collapse" data-target="#leftSideBar" aria-controls="leftSideBar" [attr.aria-expanded]="!leftCollapsed"
+        (click)="leftCollapsed = !leftCollapsed" aria-label="Toggle left side">
+        <i [class.fa-toggle-on]="!leftCollapsed" [class.fa-toggle-off]="leftCollapsed" class="fa"></i> Side panel</a>
+    <a class="btn btn-xs" data-toggle="collapse" data-target="#rightSideBar" aria-controls="rightSideBar" [attr.aria-expanded]="!rightCollapsed"
+        (click)="rightCollapsed = !rightCollapsed" aria-label="Toggle right side">
+        <i class="fa" [class.fa-toggle-on]="!rightCollapsed" [class.fa-toggle-off]="rightCollapsed"></i> Editor panel</a>
+</nav>
 <div class="container-fluid">
     <div class="row">
-        <mwz-navigation id="leftSideBar" class="col-2" [ngbCollapse]="leftCollapsed"></mwz-navigation>
-        <div [class.col-12]="leftCollapsed&&rightCollapsed" [class.col-10]="leftCollapsed||rightCollapsed" [class.col-8]="!leftCollapsed&&!rightCollapsed">
-            <div class="mwz-panel">
-                <router-outlet></router-outlet>
-            </div>
+        <mwz-navigation id="leftSideBar" class="col-sm-2" [ngbCollapse]="leftCollapsed"></mwz-navigation>
+        <div class="mwz-panel" [class.col-sm-12]="leftCollapsed&&rightCollapsed" [class.col-sm-10]="leftCollapsed||rightCollapsed"
+            [class.col-sm-8]="!leftCollapsed&&!rightCollapsed">
+            <router-outlet></router-outlet>
         </div>
-        <editor class="col-2" id="rightSideBar" [ngbCollapse]="rightCollapsed"></editor>
+        <editor class="col-sm-2" id="rightSideBar" [ngbCollapse]="rightCollapsed"></editor>
     </div>
 </div>

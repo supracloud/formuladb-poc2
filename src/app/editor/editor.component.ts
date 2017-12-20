@@ -21,7 +21,8 @@ import { TreeState } from '../tree/tree.state';
 @Component({
   moduleId: module.id,
   selector: 'editor',
-  templateUrl: "editor.component.html"
+  templateUrl: "editor.component.html",
+  styleUrls:["editor.component.scss"]
 })
 
 export class EditorComponent implements OnInit {
@@ -37,12 +38,18 @@ export class EditorComponent implements OnInit {
   private entity: Entity;
   private parserService: MwzParser;
 
-  private rootTreeState:TreeState={
-    canAddChild:true,
-    canDelete:false,
-    canEdit:false,
-    canMoveDown:false,
-    canMoveUp:false
+  private rootTreeState: TreeState = {
+    canAddChild: true,
+    canDelete: false,
+    canEdit: false,
+    canMoveDown: false,
+    canMoveUp: false
+  }
+
+  private editorStates: any = {
+    entity: "text",
+    table: "text",
+    form: "text"
   }
 
   @ViewChild('tabset')

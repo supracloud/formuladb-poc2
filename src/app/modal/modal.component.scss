@@ -1,20 +1,21 @@
+  :host {
+      position: relative;
+      width: 100%;
+      margin-left: -100%;
+  }
+
+  :host.mwzFormHide{
+      display:none;
+  }
+
   .mwz-modal {
       background-color: rgba(120, 120, 120, 0.5);
-      position: absolute;
-      left: 0px;
-      top: 0px;
+      position: relative;
       width: 100%;
-      z-index: 1050;
       padding: 3rem;
       overflow: auto;
   }
+
   .mwz-modal .body {
       background-color: white;
-  }
-
-  .mwz-modal.mwzFormHide {
-      top: -200%;
-  }
-  .mwz-modal.mwzFormShow {
-      top: 0px;
   }
