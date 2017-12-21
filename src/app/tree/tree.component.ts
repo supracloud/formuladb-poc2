@@ -88,30 +88,10 @@ export class TreeComponent implements OnInit {
         this.edited = false;
     }
 
-    private calculateTreeState(child: NodeElement, index: number): TreeState {
-        let availableTypes: NodeType[];
-        switch (this.node.nodeType) {
-            case NodeType.FormGrid:
-            case NodeType.FormGridRow:
-            case NodeType.FormGridCol:
-            case NodeType.FormTab:
-                availableTypes = [NodeType.FormGridRow, NodeType.FormGridRow, NodeType.FormGridCol, NodeType.FormTabs, NodeType.FormTab, NodeType.FormTable, NodeType.FormAutocomplete, NodeType.FormDatepicker, NodeType.FormTimepicker, NodeType.FormInput]
-                break;
-            case NodeType.FormTable:
-                availableTypes = [NodeType.FormGridRow];
-                break;
-            case NodeType.FormTabs:
-                availableTypes = [NodeType.FormTab];
-                break;
-        }
-        return {
-            canDelete:child.nodeType !== NodeType.FormGrid,
-            canEdit: child.nodeType !== NodeType.FormGrid,
-            canMoveDown: index < this.node.childNodes.length-1,
-            canAddChild: [NodeType.FormGrid, NodeType.FormGridRow, NodeType.FormGridCol, NodeType.FormTabs, NodeType.FormTab, NodeType.FormTable].includes(child.nodeType),
-            canMoveUp: index > 0,
-            availableTypes: availableTypes
-        };
+    private isHover: boolean = false;
+
+    set hover(is: boolean) {
+        this.isHover = is;
     }
 
     private hasType(t:string):boolean{
