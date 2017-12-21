@@ -1,8 +1,7 @@
-import { NodeElement } from "../domain/uimetadata/form";
+import { TreeObject } from "./tree.object";
 
-export class TreeChange{
-    constructor(public node:NodeElement){}    
-    fromIndex?:number=null;
-    toIndex?:number=null;
-    remove?:number=null;
+export class TreeChange {
+    constructor(public node: TreeObject<any>) { }
+    indexChange: number;
+    remove: boolean=false;
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NodeElement, NodeType2Str, NodeType, Str2NodeType } from '../domain/uimetadata/form';
 import { TreeChange } from './tree.change';
-import { TreeState } from './tree.state';
+import { TreeObject } from './tree.object';
 
 @Component({
     selector: 'mwz-tree',
@@ -13,70 +12,41 @@ export class TreeComponent implements OnInit {
     constructor() { }
 
     expanded: boolean = false;
-    hover: boolean = false;
     edited: boolean = false;
 
     @Input()
-    node: NodeElement;
+    node: TreeObject<any>;
 
     @Input()
     index?: number;
 
-    @Input()
-    state: TreeState;
-
     @Output()
     change = new EventEmitter();
 
+    @Output()
+    selected = new EventEmitter();
+
     ngOnInit() { }
 
-    get code(): string {
-        if (!this.node) return "";
-        let s = [NodeType2Str.get(this.node.nodeType)];
-        if (null != this.node.propertyName) s.push('=', this.node.propertyName);
-        if (null != this.node.tableName) s.push('#', this.node.tableName);
-        if (null != this.node.entityName) s.push('.', this.node.entityName);
-        if (this.node.attributes) {
-            s.push(": ");
-            s.push(JSON.stringify(this.node.attributes).replace(/^\{/, '').replace(/\}$/, ''));
-        }
-        return s.join('');
-    }
-
-    set code(c: string) {
-        //TODO parse after edit
-    }
-
     private childChange(event: TreeChange) {
-        if (null !== event.fromIndex
-            && null !== event.toIndex
-            && event.toIndex >= 0 && event.toIndex < this.node.childNodes.length) {
-            this.node.childNodes.splice(event.fromIndex, 1);
-            this.node.childNodes.splice(event.toIndex, 0, event.node);
-        }
-        if (null !== event.remove) {
-            this.node.childNodes.splice(event.remove, 1);
-        }
-        let tc: TreeChange = new TreeChange(this.node);
-        this.change.emit(tc);
+        this.node.childChange(event);
+        this.change.emit(new TreeChange(this.node));
     }
 
     private moveUp(): void {
         let tc: TreeChange = new TreeChange(this.node);
-        tc.fromIndex = this.index;
-        tc.toIndex = this.index - 1;
+        tc.indexChange=-1;
         this.change.emit(tc);
     }
 
     private moveDown(): void {
         let tc: TreeChange = new TreeChange(this.node);
-        tc.fromIndex = this.index;
-        tc.toIndex = this.index + 1;
+        tc.indexChange=1;
         this.change.emit(tc);
     }
     private delete(): void {
         let tc: TreeChange = new TreeChange(this.node);
-        tc.remove = this.index;
+        tc.remove = true;
         this.change.emit(tc);
     }
 
@@ -92,9 +62,19 @@ export class TreeComponent implements OnInit {
 
     set hover(is: boolean) {
         this.isHover = is;
+        if (is) {
+            this.selected.emit(this.node);
+        } else {
+            this.selected.emit(null);
+        }
     }
 
-    private hasType(t:string):boolean{
-        return this.state.availableTypes.includes(Str2NodeType.get(t));
+    get hover(): boolean {
+        return this.isHover;
     }
+
+    private childSelected(event: TreeObject<any>) {
+        this.selected.emit(event);
+    }
+
 }

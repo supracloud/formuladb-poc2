@@ -1,7 +1,7 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { NodeType } from "./domain/uimetadata/form";
+import { NodeType, NodeElement } from "./domain/uimetadata/form";
 
 import { BaseObj } from "./domain/base_obj";
 
@@ -33,5 +33,9 @@ export class AppComponent implements OnInit {
 
     newDataObj() {
         this.store.dispatch(new appState.UserActionNewRow(this.selectedEntity._id));
+    }
+
+    selectFormItem(node:NodeElement){
+        
     }
 }

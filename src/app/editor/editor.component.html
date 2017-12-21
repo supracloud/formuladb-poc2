@@ -54,7 +54,7 @@
             <button class="btn btn-primary btn-sm" (click)="applyChanges(true)">Preview</button>
           </div>
         </div>
-        <mwz-tree *ngIf="editorStates.form=='tree'" [node]="form" [state]="rootTreeState"></mwz-tree>
+        <mwz-tree *ngIf="editorStates.form=='tree'" [node]="formTree" (selected)="selectedFormItem($formSelectEvent)"></mwz-tree>
         <textarea *ngIf="editorStates.form=='text'" cols="120" wrap="off" name="formText" class="editor form" [(ngModel)]='formText'></textarea>
       </ng-template>
     </ngb-tab>

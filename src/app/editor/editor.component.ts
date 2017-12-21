@@ -16,13 +16,13 @@ import * as appState from '../app.state';
 import * as fromForm from '../form/form.state';
 import * as fromTable from '../table/table.state';
 import * as fromEntity from '../entity-state';
-import { TreeState } from '../tree/tree.state';
+import { FormTreeObject } from '../tree/tree.object.form';
 
 @Component({
   moduleId: module.id,
   selector: 'editor',
   templateUrl: "editor.component.html",
-  styleUrls:["editor.component.scss"]
+  styleUrls: ["editor.component.scss"]
 })
 
 export class EditorComponent implements OnInit {
@@ -31,6 +31,7 @@ export class EditorComponent implements OnInit {
   public isForm: boolean = false;
   private table: Table;
   private form: Form;
+  private formTree: FormTreeObject;
 
   private entityText: string;
   private formText: string;
@@ -38,22 +39,18 @@ export class EditorComponent implements OnInit {
   private entity: Entity;
   private parserService: MwzParser;
 
-  private rootTreeState: TreeState = {
-    canAddChild: true,
-    canDelete: false,
-    canEdit: false,
-    canMoveDown: false,
-    canMoveUp: false
-  }
 
   private editorStates: any = {
-    entity: "text",
-    table: "text",
-    form: "text"
+    entity: "tree",
+    table: "tree",
+    form: "tree"
   }
 
   @ViewChild('tabset')
   private tabset: NgbTabset;
+
+  @Output()
+  formItemSelected = new EventEmitter();
 
   constructor(private store: Store<appState.AppState>) {
     this.parserService = new MwzParser();
@@ -111,6 +108,9 @@ export class EditorComponent implements OnInit {
 
     this.store.select(fromForm.getFormState).subscribe(form => {
       this.form = form;
+      this.formTree = new FormTreeObject(this.form);
+      this.formTree.canDelete = false;
+      this.formTree.canEdit = false;
       this.setText();
     });
 
@@ -128,7 +128,12 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  private selectedFormItem(node: FormTreeObject) {
+    this.formItemSelected.emit(node ? node.item : null);
+  }
+
   ngOnDestroy() {
     //TODO: cleanup
   }
+
 }
