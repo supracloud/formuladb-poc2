@@ -1,24 +1,5 @@
 <form class="mwz-editor">
   <ngb-tabset #tabset="ngbTabset">
-    <ngb-tab id="Entity" title="Entity">
-      <ng-template ngbTabContent>
-        <div class="btn-toolbar mt-4 mb-2" role="toolbar">
-          <div class="btn-group" data-toggle="buttons" name="formStateSelect" ngbRadioGroup [(ngModel)]="editorStates.entity">
-            <label class="btn btn-sm btn-secondary" ngbButtonLabel>
-              <input type="radio" ngbButton value="tree" autocomplete="off">Tree
-            </label>
-            <label class="btn btn-sm btn-secondary" ngbButtonLabel>
-              <input type="radio" ngbButton value="text" autocomplete="off">Text
-            </label>
-          </div>
-          <div class="btn-group ml-4" role="group">
-            <button class="btn btn-primary btn-sm" (click)="applyChanges(false)">Apply</button>
-            <button class="btn btn-primary btn-sm" (click)="applyChanges(true)">Preview</button>
-          </div>
-        </div>
-        <textarea *ngIf="editorStates.entity=='text'" cols="120" wrap="off" name="entityText" class="editor form" [(ngModel)]='entityText'></textarea>
-      </ng-template>
-    </ngb-tab>
     <ngb-tab id="Table" title="Table" *ngIf="!isForm">
       <ng-template ngbTabContent>
         <div class="btn-toolbar mt-4 mb-2" role="toolbar">
@@ -35,6 +16,7 @@
             <button class="btn btn-primary btn-sm" (click)="applyChanges(true)">Preview</button>
           </div>
         </div>
+        <mwz-tree *ngIf="editorStates.table=='tree'" [node]="tableTree"></mwz-tree>
         <textarea *ngIf="editorStates.table=='text'" cols="120" wrap="off" name="formText" class="editor form" [(ngModel)]='tableText'></textarea>
       </ng-template>
     </ngb-tab>
@@ -54,8 +36,27 @@
             <button class="btn btn-primary btn-sm" (click)="applyChanges(true)">Preview</button>
           </div>
         </div>
-        <mwz-tree *ngIf="editorStates.form=='tree'" [node]="formTree" (selected)="selectedFormItem($formSelectEvent)"></mwz-tree>
+        <mwz-tree *ngIf="editorStates.form=='tree'" [node]="formTree"></mwz-tree>
         <textarea *ngIf="editorStates.form=='text'" cols="120" wrap="off" name="formText" class="editor form" [(ngModel)]='formText'></textarea>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab id="Entity" title="Entity">
+      <ng-template ngbTabContent>
+        <div class="btn-toolbar mt-4 mb-2" role="toolbar">
+          <div class="btn-group" data-toggle="buttons" name="formStateSelect" ngbRadioGroup [(ngModel)]="editorStates.entity">
+            <label class="btn btn-sm btn-secondary" ngbButtonLabel>
+              <input type="radio" ngbButton value="tree" autocomplete="off">Tree
+            </label>
+            <label class="btn btn-sm btn-secondary" ngbButtonLabel>
+              <input type="radio" ngbButton value="text" autocomplete="off">Text
+            </label>
+          </div>
+          <div class="btn-group ml-4" role="group">
+            <button class="btn btn-primary btn-sm" (click)="applyChanges(false)">Apply</button>
+            <button class="btn btn-primary btn-sm" (click)="applyChanges(true)">Preview</button>
+          </div>
+        </div>
+        <textarea *ngIf="editorStates.entity=='text'" cols="120" wrap="off" name="entityText" class="editor form" [(ngModel)]='entityText'></textarea>
       </ng-template>
     </ngb-tab>
   </ngb-tabset>

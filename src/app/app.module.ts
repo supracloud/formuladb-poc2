@@ -38,6 +38,7 @@ import { AppEffects } from "./app.effects";
 import { FormModalService } from "./form-modal.service";
 import { MwzParser } from "./mwz-parser";
 import { PouchdbService } from "./pouchdb.service";
+import { HighlightService } from './services/hightlight.service';
 
 const routes: Routes = [
   {
@@ -84,6 +85,7 @@ const routes: Routes = [
     FormModalService,
     MwzParser,
     PouchdbService,
+    HighlightService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

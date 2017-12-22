@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TreeChange } from './tree.change';
 import { TreeObject } from './tree.object';
+import { HighlightService } from '../services/hightlight.service';
 
 @Component({
     selector: 'mwz-tree',
@@ -9,9 +10,9 @@ import { TreeObject } from './tree.object';
 })
 
 export class TreeComponent implements OnInit {
-    constructor() { }
+    constructor(private highlightSvc: HighlightService) { }
 
-    expanded: boolean = false;
+    expanded: boolean = true;
     edited: boolean = false;
 
     @Input()
@@ -23,9 +24,6 @@ export class TreeComponent implements OnInit {
     @Output()
     change = new EventEmitter();
 
-    @Output()
-    selected = new EventEmitter();
-
     ngOnInit() { }
 
     private childChange(event: TreeChange) {
@@ -35,13 +33,13 @@ export class TreeComponent implements OnInit {
 
     private moveUp(): void {
         let tc: TreeChange = new TreeChange(this.node);
-        tc.indexChange=-1;
+        tc.indexChange = -1;
         this.change.emit(tc);
     }
 
     private moveDown(): void {
         let tc: TreeChange = new TreeChange(this.node);
-        tc.indexChange=1;
+        tc.indexChange = 1;
         this.change.emit(tc);
     }
     private delete(): void {
@@ -62,19 +60,15 @@ export class TreeComponent implements OnInit {
 
     set hover(is: boolean) {
         this.isHover = is;
-        if (is) {
-            this.selected.emit(this.node);
+        if (is && this.node && this.node.item) {
+            this.highlightSvc.highlight(this.node.item._id);
+            console.log("Tag" + this.node.item._id);
         } else {
-            this.selected.emit(null);
+            this.highlightSvc.highlight(null);
         }
     }
 
     get hover(): boolean {
         return this.isHover;
     }
-
-    private childSelected(event: TreeObject<any>) {
-        this.selected.emit(event);
-    }
-
 }

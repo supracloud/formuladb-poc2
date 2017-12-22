@@ -12,6 +12,6 @@
 </div>
 <div class="ml-4" *ngIf="node&&node.children.length!==0" [class.d-none]="!expanded">
     <div *ngFor="let c of node.children">
-        <mwz-tree [node]="c" [index]="c.index" (change)="childChange($event)" (selected)="childSelected($event)"></mwz-tree>
+        <mwz-tree [node]="c" [index]="c.index" (change)="childChange($event)"></mwz-tree>
     </div>
 </div>

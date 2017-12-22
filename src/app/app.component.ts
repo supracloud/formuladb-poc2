@@ -34,8 +34,4 @@ export class AppComponent implements OnInit {
     newDataObj() {
         this.store.dispatch(new appState.UserActionNewRow(this.selectedEntity._id));
     }
-
-    selectFormItem(node:NodeElement){
-        
-    }
 }

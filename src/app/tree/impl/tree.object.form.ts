@@ -1,6 +1,6 @@
-import { TreeObject } from "./tree.object";
-import { NodeElement, NodeType2Str, NodeType } from "../domain/uimetadata/form";
-import { TreeChange } from "./tree.change";
+import { TreeObject } from "../tree.object";
+import { NodeElement, NodeType2Str, NodeType } from "../../domain/uimetadata/form";
+import { TreeChange } from "../tree.change";
 
 export class FormTreeObject implements TreeObject<NodeElement>{
 

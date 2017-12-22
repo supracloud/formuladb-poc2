@@ -1,0 +1,4 @@
+@import "~bootstrap/scss/bootstrap";
+:host(.highlighted) {
+    background-color: $gray-300!important;
+}

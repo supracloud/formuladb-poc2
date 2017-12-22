@@ -6,24 +6,27 @@ import { Observable } from 'rxjs/Observable';
 import { Store } from '@ngrx/store';
 
 import * as tableState from './table.state';
+import { HighlightService } from '../services/hightlight.service';
 
 @Component({
     moduleId: module.id,
     selector: 'mwz-table',
-    templateUrl:'table.component.html',
-    styleUrls:['table.component.scss']
+    templateUrl: 'table.component.html',
+    styleUrls: ['table.component.scss']
 })
 
 export class TableComponent {
     private table$: Observable<tableState.Table>;
     private data$: Observable<tableState.DataObj[]>;
     private selectedRowIdx: number;
+    private highlighted: string;
 
-    constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute) {
+    constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute, private highlightSvc: HighlightService) {
         try {
             this.table$ = store.select(tableState.getTableState);
             this.data$ = store.select(tableState.getTableDataState);
-            this.table$.subscribe(x => console.log("TABLE:", x, (x||new tableState.Table()).columns));
+            this.table$.subscribe(x => console.log("TABLE:", x, (x || new tableState.Table()).columns));
+            this.highlightSvc.highlighted$.subscribe(h => this.highlighted = h);
         } catch (ex) {
             console.error(ex);
         }

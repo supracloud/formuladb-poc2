@@ -9,7 +9,7 @@ import { DataObj } from "./domain/metadata/data_obj";
 import { Entity } from "./domain/metadata/entity";
 import { MwzEvents } from "./domain/event";
 import { Table } from "./domain/uimetadata/table";
-import { Form } from "./domain/uimetadata/form";
+import { Form, NodeElement } from "./domain/uimetadata/form";
 
 @Injectable()
 export class PouchdbService {
@@ -26,10 +26,9 @@ export class PouchdbService {
         this.localDB = new PouchDB("mwz");
     }
 
-    public init(initCallback: () => void, 
-        notifCallback: (change: { doc: MwzEvents }) => void, 
-        dataChangeCallback: (change:  { docs: Array<BaseObj> }) => void) 
-    {
+    public init(initCallback: () => void,
+        notifCallback: (change: { doc: MwzEvents }) => void,
+        dataChangeCallback: (change: { docs: Array<BaseObj> }) => void) {
         this.remoteEventsDB = new PouchDB(this.remoteEventsDBUrl);
         this.remoteNotifsDB = new PouchDB(this.remoteNotifsDBUrl);
 
@@ -43,8 +42,8 @@ export class PouchdbService {
                 .on('complete', info => {
 
                     //application specific initialization
-                    initCallback();                    
-                    
+                    initCallback();
+
                     //after initial replication from the server is finished, continue with live replication
                     this.localDB.replicate.from(this.remoteDataDBUrl, {
                         live: true,
@@ -59,7 +58,7 @@ export class PouchdbService {
                     this.remoteNotifsDB.changes({
                         since: 'now',
                         include_docs: true,
-                        live: true                                    
+                        live: true
                     })
                         .on('change', function (change) {
                             notifCallback(change);
@@ -84,7 +83,7 @@ export class PouchdbService {
     public putEvent(event: MwzEvents) {
         this.remoteEventsDB.put(event)
             .catch(err => console.error(err))
-            .then(() => console.log("%c * Event **##$$", 
+            .then(() => console.log("%c * Event **##$$",
                 "color: blue; font-size: 115%; font-weight: bold; text-decoration: underline;", event));
     }
 
@@ -94,11 +93,25 @@ export class PouchdbService {
     }
 
     public getTable(path: string): Promise<Table> {
-        return this.localDB.get('Table_:' + path);
+        return this.localDB.get('Table_:' + path).then(ti => { this.addIdsToTable(ti); return ti; });
+    }
+
+    private addIdsToTable(input: Table): void {
+        if (!input._id) { input._id = BaseObj.uuid(); }
+        if (input.columns && input.columns.length > 0) {
+            input.columns.forEach(c => c._id = BaseObj.uuid());
+        }
     }
 
     public getForm(path: string): Promise<Form> {
-        return this.localDB.get('Form_:' + path);
+        return this.localDB.get('Form_:' + path).then(fi => { this.addIdsToForm(fi); return fi; });
+    }
+
+    private addIdsToForm(input: NodeElement): void {
+        if (!input._id) { input._id = BaseObj.uuid(); }
+        if (input.childNodes && input.childNodes.length > 0) {
+            input.childNodes.forEach(c => this.addIdsToForm(c));
+        }
     }
 
     public getDataObj(id: string): Promise<DataObj> {

@@ -16,7 +16,8 @@ import * as appState from '../app.state';
 import * as fromForm from '../form/form.state';
 import * as fromTable from '../table/table.state';
 import * as fromEntity from '../entity-state';
-import { FormTreeObject } from '../tree/tree.object.form';
+import { FormTreeObject } from '../tree/impl/tree.object.form';
+import { TableTreeObject } from '../tree/impl/tree.object.table';
 
 @Component({
   moduleId: module.id,
@@ -30,6 +31,7 @@ export class EditorComponent implements OnInit {
   private path: string = null;
   public isForm: boolean = false;
   private table: Table;
+  private tableTree: TableTreeObject;
   private form: Form;
   private formTree: FormTreeObject;
 
@@ -48,9 +50,6 @@ export class EditorComponent implements OnInit {
 
   @ViewChild('tabset')
   private tabset: NgbTabset;
-
-  @Output()
-  formItemSelected = new EventEmitter();
 
   constructor(private store: Store<appState.AppState>) {
     this.parserService = new MwzParser();
@@ -89,20 +88,23 @@ export class EditorComponent implements OnInit {
       this.path = path;
       this.setText();
 
-      if (this.isForm) {
-        this.tabset.select('Form');
-      } else {
-        this.tabset.select('Table');
-      }
+      // if (this.isForm) {
+      //   this.tabset.select('Form');
+      // } else {
+      //   this.tabset.select('Table');
+      // }
     });
 
     this.store.select(fromEntity.getSelectedEntityState).subscribe(selectedEntity => {
-      this.entity = selectedEntity
+      this.entity = selectedEntity;
       this.setText();
     });
 
     this.store.select(fromTable.getTableState).subscribe(table => {
       this.table = table;
+      this.tableTree=new TableTreeObject(this.table);
+      this.tableTree.canDelete=false;
+      this.tableTree.canEdit=false;
       this.setText();
     });
 
@@ -126,10 +128,6 @@ export class EditorComponent implements OnInit {
     if (this.path && this.entity && this.isForm && this.form) {
       this.formText = this.parserService.serializeForm(this.entity, this.form);
     }
-  }
-
-  private selectedFormItem(node: FormTreeObject) {
-    this.formItemSelected.emit(node ? node.item : null);
   }
 
   ngOnDestroy() {

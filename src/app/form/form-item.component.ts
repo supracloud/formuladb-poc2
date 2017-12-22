@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 
 import * as _ from 'lodash';
 
 import { BaseNodeComponent } from "./base_node";
 import { NodeElement, Str2NodeType } from "../domain/uimetadata/form";
+import { HighlightService } from '../services/hightlight.service';
+import { Observable } from 'rxjs/Observable';
+import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: '[form-item]',
   templateUrl: './form-item.component.html',
-  host: {'[class]': 'getHostClassForElement()'}
+  // host: { '[class]': 'getHostClassForElement()' },
+  styleUrls: ['form-item.component.scss']
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
-  constructor() {
+  private highlighted: string;
+
+  constructor(private highlightSvc: HighlightService) {
     super();
+    this.highlightSvc.highlighted$.subscribe(h => this.highlighted = h);
   }
 
   ngOnInit() {
@@ -28,7 +35,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
   }
 
   isUnknownElement(nodeElement: NodeElement): boolean {
-    return ! _.includes(Array.from(Str2NodeType.keys()), nodeElement.nodeName);
+    return !_.includes(Array.from(Str2NodeType.keys()), nodeElement.nodeName);
   }
 
   getHostClassForElement(): string {
