@@ -22,18 +22,19 @@ import * as _ from "lodash";
 import * as fromForm from './form.state';
 
 import { BaseObj } from "../domain/base_obj";
+import { HighlightService } from '../services/hightlight.service';
 
 @Component({
-    selector: 'mwz-form',    
+    selector: 'mwz-form',
     template:
-    `
+        `
     <form [formGroup]="theFormGroup" novalidate>
         <ngb-alert [type]="alertType" [dismissible]="false">
             Form status: {{ theFormGroup.status | json }}
             <i *ngIf="saveInProgress" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
         </ngb-alert>
         <div form-item [nodeElement]="(formState$ | async)?.form" [topLevelFormGroup]="theFormGroup" 
-            parentFormPath="" [formReadOnly]="formReadOnly$ | async"
+            parentFormPath="" [formReadOnly]="formReadOnly$ | async" [highlighted]="highlightSvc.highlighted$ | async"
             *ngIf="(formState$ | async)?.form">
         </div>
     </form>
@@ -52,7 +53,8 @@ export class FormComponent implements OnInit {
 
     constructor(
         private store: Store<fromForm.FormState>,
-        private formModalService: FormModalService) {
+        private formModalService: FormModalService,
+        private highlightSvc: HighlightService) {
         this.formState$ = store.select(fromForm.getForm);
         try {
             this.theFormGroup = new FormGroup({});
@@ -69,10 +71,10 @@ export class FormComponent implements OnInit {
             console.log("MwzFormComponent:", formState.form, formState.formData, formState.formReadOnly);
 
             //set readonly fields
-            this.theFormGroup.setControl('_id', new FormControl({value: (formState.formData || {_id: null})._id, disabled: true}));
-            this.theFormGroup.setControl('_rev', new FormControl({value: (formState.formData || {_rev: null})._rev, disabled: true}));
-            this.theFormGroup.setControl('mwzType', new FormControl({value: (formState.formData || {mwzType: null}).mwzType, disabled: true}));
-            
+            this.theFormGroup.setControl('_id', new FormControl({ value: (formState.formData || { _id: null })._id, disabled: true }));
+            this.theFormGroup.setControl('_rev', new FormControl({ value: (formState.formData || { _rev: null })._rev, disabled: true }));
+            this.theFormGroup.setControl('mwzType', new FormControl({ value: (formState.formData || { mwzType: null }).mwzType, disabled: true }));
+
 
             if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form, formState.formReadOnly);
             if (formState.formData) this.updateFormGroupWithData(formState.formData, this.theFormGroup, formState.formReadOnly);
@@ -101,7 +103,7 @@ export class FormComponent implements OnInit {
                 let val = this.theFormGroup.getRawValue();
                 if (val._id && val._id.disabled === false) return;//FIXME: WTF! sometimes all fields are {disabled: false}
                 if (!this.theFormGroup.dirty) return;
-                
+
                 delete val._revisions;//WORKAROUND for error: "doc_validation", reason: "RevId isn't a string", status: 400, name: "doc_validation", message: "RevId isn't a string",
 
                 console.log("CHANGEEEEES:", val, this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
@@ -130,9 +132,9 @@ export class FormComponent implements OnInit {
             if (formEl.propertyName === '_id') return;
             if (formEl.propertyName === '_rev') return;
             if (formEl.propertyName === 'mwzType') return;
-            parentFormGroup.setControl(formEl.propertyName, new FormControl({value: undefined, disabled: formReadOnly}));
-        } 
-        
+            parentFormGroup.setControl(formEl.propertyName, new FormControl({ value: undefined, disabled: formReadOnly }));
+        }
+
         if (null != formEl.childNodes) {
             formEl.childNodes.forEach(child => this.updateFormGroup(newParent, child, formReadOnly));
         }
@@ -146,7 +148,7 @@ export class FormComponent implements OnInit {
             if ('_rev' === key) continue;
             if ('_id' === key) continue;
             if ('mwzType' === key) continue;
-            
+
             let objVal = objFromServer[key];
             let formVal = formGroup.get(key);
             if (null == objVal) continue;
@@ -167,10 +169,10 @@ export class FormComponent implements OnInit {
                     }
                     this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly)
                 });
-                
+
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
                 if (null == formVal) {
-                    formVal = new FormControl({value: undefined, disabled: formReadOnly});
+                    formVal = new FormControl({ value: undefined, disabled: formReadOnly });
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormControl)) {

@@ -1,6 +1,7 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { FormModalService } from '../form-modal.service';
 import { Subscription } from 'rxjs/Subscription';
+import { HighlightService } from '../services/hightlight.service';
 
 @Component({
     selector: 'mwz-modal',
@@ -13,13 +14,16 @@ export class ModalComponent {
     @HostBinding('class.mwzFormHide')
     mwzFormHide = true;
 
-    constructor(private formModalService: FormModalService) {
+    private highlighted:string;
+
+    constructor(private formModalService: FormModalService,private highlightSvc:HighlightService) {
         this.subscription.add(formModalService.gridsterFormFinishedRendering$.subscribe(() => {
             this.mwzFormHide = false;
         }));
         this.subscription.add(formModalService.destroyForm$.subscribe(() => {
             this.mwzFormHide = true;
         }));
+        this.subscription.add(highlightSvc.highlighted$.subscribe((h)=>this.highlighted=h));
     }
 
     ngOnDestroy() {

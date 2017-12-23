@@ -10,21 +10,21 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: '[form-item]',
-  templateUrl: './form-item.component.html',
+  templateUrl: './form-item.component.html'
   // host: { '[class]': 'getHostClassForElement()' },
-  styleUrls: ['form-item.component.scss']
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
-  private highlighted: string;
+  @HostBinding("class.bg-info")
+  private amIHighlighted: boolean;
 
-  constructor(private highlightSvc: HighlightService) {
+  constructor() {
     super();
-    this.highlightSvc.highlighted$.subscribe(h => this.highlighted = h);
   }
 
   ngOnInit() {
     // console.log(this.nodeElement);
+    this.amIHighlighted = this.nodeElement && this.nodeElement._id === this.highlighted;
   }
 
   getChildPath(childEl: NodeElement) {

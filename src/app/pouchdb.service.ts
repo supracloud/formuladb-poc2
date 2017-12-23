@@ -93,10 +93,15 @@ export class PouchdbService {
     }
 
     public getTable(path: string): Promise<Table> {
-        return this.localDB.get('Table_:' + path).then(ti => { this.addIdsToTable(ti); return ti; });
+        return this.localDB.get('Table_:' + path).then(ti => {
+            return new Promise((resolve, reject) => {
+                PouchdbService.addIdsToTable(ti);
+                resolve(ti);
+            })
+        });
     }
 
-    private addIdsToTable(input: Table): void {
+    public static addIdsToTable(input: Table): void {
         if (!input._id) { input._id = BaseObj.uuid(); }
         if (input.columns && input.columns.length > 0) {
             input.columns.forEach(c => c._id = BaseObj.uuid());
@@ -104,10 +109,17 @@ export class PouchdbService {
     }
 
     public getForm(path: string): Promise<Form> {
-        return this.localDB.get('Form_:' + path).then(fi => { this.addIdsToForm(fi); return fi; });
+        return this.localDB.get('Form_:' + path).then(fi => {
+            PouchdbService.addIdsToForm(fi);
+            return fi;
+            // return new Promise((resolve, reject) => {
+            //     PouchdbService.addIdsToForm(fi);
+            //     resolve(fi);
+            // })
+        });
     }
 
-    private addIdsToForm(input: NodeElement): void {
+    public static addIdsToForm(input: NodeElement): void {
         if (!input._id) { input._id = BaseObj.uuid(); }
         if (input.childNodes && input.childNodes.length > 0) {
             input.childNodes.forEach(c => this.addIdsToForm(c));

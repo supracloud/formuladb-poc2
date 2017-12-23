@@ -17,6 +17,9 @@ export class BaseNodeComponent {
     @Input()
     formReadOnly: boolean;
 
+    @Input()
+    highlighted?: string;
+
     hasControl(path: string): boolean {
         return this.topLevelFormGroup.get(path) != null;
     }

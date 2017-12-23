@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th [class.bg-info]="prop._id===highlighted" *ngFor="let prop of (table$ | async)?.columns">{{prop.name}}</th>
+                <th [class.table-highlight]="prop._id&&prop._id===highlighted" *ngFor="let prop of (table$ | async)?.columns">{{prop.name}}</th>
             </tr>
         </thead>
         <tbody>
@@ -12,7 +12,7 @@
                     <button (click)="onEditClicked(row)" *ngIf="rowIdx == selectedRowIdx">
                         <i class="fa fa-pencil"></i>
                     </button> {{rowIdx + 1}}</td>
-                <td *ngFor="let prop of (table$ | async)?.columns" [class.bg-info]="prop._id===highlighted" (click)="onRowClicked(rowIdx, row)"
+                <td *ngFor="let prop of (table$ | async)?.columns" [class.table-highlight]="prop._id&&prop._id===highlighted" (click)="onRowClicked(rowIdx, row)"
                     data-toggle="tooltip" data-placement="top" title="{{row[prop.name]}}">{{row[prop.name]}}</td>
             </tr>
         </tbody>

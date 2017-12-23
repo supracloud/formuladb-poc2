@@ -62,7 +62,6 @@ export class TreeComponent implements OnInit {
         this.isHover = is;
         if (is && this.node && this.node.item) {
             this.highlightSvc.highlight(this.node.item._id);
-            console.log("Tag" + this.node.item._id);
         } else {
             this.highlightSvc.highlight(null);
         }

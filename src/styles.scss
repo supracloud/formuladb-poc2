@@ -3,109 +3,124 @@ $border-radius:0;
 $font-size-base:.8rem;
 $list-group-item-padding-y:.5rem;
 $list-group-item-padding-x:.3rem;
-
 @import "~bootstrap/scss/bootstrap";
 @import "~font-awesome/css/font-awesome.css";
-
 body {
     min-width: 25rem;
-  }
+}
 
-  #leftSideBar{
-    padding-left:0!important;
+#leftSideBar {
+    padding-left: 0!important;
     @include media-breakpoint-down(sm) {
-      padding-right:0!important;
+        padding-right: 0!important;
     }
-  }
+}
 
-  .mwz-panel{
+.mwz-panel {
     overflow: auto;
-    padding-right:0!important;
-    padding-left:0!important;
-  }
-  
-  @media print {
+    padding-right: 0!important;
+    padding-left: 0!important;
+}
+
+@media print {
     @page {
-      margin: 0;
+        margin: 0;
     }
     body {
-      padding: 2rem;
+        padding: 2rem;
     }
-  }
-    
-  .mwz-editor .editor {
-    width:100%;
+}
+
+.mwz-editor .editor {
+    width: 100%;
     min-height: 700px;
     white-space: nowrap;
     background-color: black;
     color: white;
     font-weight: bold;
-  }
-  
-  select:invalid {
+}
+
+select:invalid {
     color: lightgray;
-  }
-  
-  .modal-backdrop {
+}
+
+.modal-backdrop {
     opacity: 0.7;
     &.in {
-      opacity: .7;
+        opacity: .7;
     }
-  }
-  
-  h5.modal-title {
+}
+
+.form-item-highlight {
+    &[form-input] {
+        background-color: $gray-300!important;
+        input{
+          background-color: $gray-300!important;
+        }
+    }
+    &[form-item]{
+      border:2px dashed $gray-300!important;
+      margin:-2px!important;
+    }
+}
+
+.table-highlight{
+  background-color: $gray-700!important;
+  color:white!important;
+}
+
+h5.modal-title {
     display: inline;
-  }
-  
-  .btn-xs,
-  .btn-group-xs>.btn {
+}
+
+.btn-xs,
+.btn-group-xs>.btn {
     padding: 0.15rem 0.3rem;
     font-size: 0.775rem;
     border-radius: 0.2rem;
-  }
-  
-  .form-control-xs,
-  .input-group-xs>.form-control,
-  .input-group-xs>.input-group-addon,
-  .input-group-xs>.input-group-btn>.btn {
+}
+
+.form-control-xs,
+.input-group-xs>.form-control,
+.input-group-xs>.input-group-addon,
+.input-group-xs>.input-group-btn>.btn {
     padding: 0.15rem 0.3rem;
     font-size: 0.775rem;
     border-radius: 0.2rem;
-  }
-  
-  .mwz-table {
-      width: 100%;
-      tbody {
-          height: 30em;
-          overflow-y: auto;
-          width: 90%;
-      }
-      thead{
-          width:90%;
-      }
-      thead,
-      tbody,
-      th {
-          display: block;
-      }
-      tbody {
-          td {
-              float: left;
-          }
-      }
-      thead {
-          tr {
-              th {
-                  float: left;
-              }
-          }
-      }
-  }
-  
-  .mwz-data-table{
-      td{
-          white-space: nowrap;
-          overflow: hidden;
-      }
-  }
-  
+}
+
+.mwz-table {
+    width: 100%;
+    tbody {
+        height: 30em;
+        overflow-y: auto;
+        width: 90%;
+    }
+    thead {
+        width: 90%;
+    }
+    thead,
+    tbody,
+    th {
+        display: block;
+    }
+    tbody {
+        td {
+            float: left;
+        }
+    }
+    thead {
+        tr {
+            th {
+                float: left;
+            }
+        }
+    }
+}
+
+.mwz-data-table {
+    td {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}
