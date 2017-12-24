@@ -6,7 +6,11 @@
         <i *ngIf="node.canMoveUp" class="fa fa-arrow-up mt-2 ml-1" (click)="moveUp()"></i>
         <i *ngIf="node.canMoveDown" class="fa fa-arrow-down mt-2 ml-1" (click)="moveDown()"></i>
         <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-2 ml-1" (click)="addChild()"></i>
-        <i *ngIf="node.canEdit" class="fa fa-pencil-square-o mt-2 ml-1" (click)="edit()"></i>
+        <i *ngIf="node.canEdit" class="fa fa-pencil-square-o mt-2 ml-1" (click)="edited=true" #popEditor="ngbPopover" container="body" placement="left" [ngbPopover]="editContent"
+            popoverTitle="Editing {{node.name}}"></i>
+        <ng-template #editContent>
+            <meta-item-editor [element]="node" (finished)="finishEditing($event)"></meta-item-editor>
+        </ng-template>
         <i *ngIf="node.canDelete" class="fa fa-trash-o mt-2 ml-1" (click)="delete()"></i>
     </div>
 </div>

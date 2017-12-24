@@ -39,6 +39,7 @@ import { FormModalService } from "./form-modal.service";
 import { MwzParser } from "./mwz-parser";
 import { PouchdbService } from "./pouchdb.service";
 import { HighlightService } from './services/hightlight.service';
+import { MetaItemEditorComponent } from './meta-item-editor/meta-item-editor.component';
 
 const routes: Routes = [
   {
@@ -68,6 +69,7 @@ const routes: Routes = [
     TableComponent,
     EditorComponent,
     ModalComponent,
+    MetaItemEditorComponent,
   ],
   imports: [
     BrowserModule,

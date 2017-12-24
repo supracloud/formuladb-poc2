@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { TreeChange } from './tree.change';
 import { TreeObject } from './tree.object';
 import { HighlightService } from '../services/hightlight.service';
+import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'mwz-tree',
@@ -23,6 +24,8 @@ export class TreeComponent implements OnInit {
 
     @Output()
     change = new EventEmitter();
+
+    @ViewChild('popEditor') public popover: NgbPopover;
 
     ngOnInit() { }
 
@@ -59,15 +62,23 @@ export class TreeComponent implements OnInit {
     private isHover: boolean = false;
 
     set hover(is: boolean) {
-        this.isHover = is;
-        if (is && this.node && this.node.item) {
-            this.highlightSvc.highlight(this.node.item._id);
-        } else {
-            this.highlightSvc.highlight(null);
+        if (!this.edited) {
+            this.isHover = is;
+            if (is && this.node && this.node.item) {
+                this.highlightSvc.highlight(this.node.item._id);
+            } else {
+                this.highlightSvc.highlight(null);
+            }
         }
     }
 
     get hover(): boolean {
         return this.isHover;
+    }
+
+    finishEditing(event: boolean) {
+        this.edited = false;
+        this.popover.close();
+        this.hover = false;
     }
 }
