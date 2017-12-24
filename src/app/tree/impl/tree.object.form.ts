@@ -33,7 +33,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
                 case NodeType.FormGridRow:
                 case NodeType.FormGridCol:
                 case NodeType.FormTab:
-                    availableTypes = [NodeType.FormGridRow, NodeType.FormGridRow, NodeType.FormGridCol, NodeType.FormTabs, NodeType.FormTab, NodeType.FormTable, NodeType.FormAutocomplete, NodeType.FormDatepicker, NodeType.FormTimepicker, NodeType.FormInput]
+                    availableTypes = [NodeType.FormGridRow, NodeType.FormGridCol, NodeType.FormTabs, NodeType.FormTab, NodeType.FormTable, NodeType.FormAutocomplete, NodeType.FormDatepicker, NodeType.FormTimepicker, NodeType.FormInput]
                     break;
                 case NodeType.FormTable:
                     availableTypes = [NodeType.FormGridRow];
@@ -42,7 +42,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
                     availableTypes = [NodeType.FormTab];
                     break;
             }
-            this.childTypes = availableTypes.map(t => t.toString());
+            this.childTypes = availableTypes.map(t => NodeType2Str.get(t));
             if (node.childNodes) {
                 for (var i: number = 0; i < node.childNodes.length; i++) {
                     let child: FormTreeObject = new FormTreeObject(node.childNodes[i]);

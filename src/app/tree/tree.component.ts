@@ -25,7 +25,8 @@ export class TreeComponent implements OnInit {
     @Output()
     change = new EventEmitter();
 
-    @ViewChild('popEditor') public popover: NgbPopover;
+    @ViewChild('popEditor') public popEditor: NgbPopover;
+    @ViewChild('popAdd') public popAdd: NgbPopover;
 
     ngOnInit() { }
 
@@ -78,7 +79,13 @@ export class TreeComponent implements OnInit {
 
     finishEditing(event: boolean) {
         this.edited = false;
-        this.popover.close();
+        this.popEditor.close();
         this.hover = false;
+    }
+
+    addItem(option: string) {
+        this.edited = false;
+        this.popAdd.close();
+        this.hover=false;
     }
 }

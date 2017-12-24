@@ -3,15 +3,24 @@
         [class.fa-chevron-circle-down]="expanded"></i>
     <span class="mr-auto p-1">{{node.name}}</span>
     <div *ngIf="hover" class="mwz-tree-node-action">
-        <i *ngIf="node.canMoveUp" class="fa fa-arrow-up mt-2 ml-1" (click)="moveUp()"></i>
-        <i *ngIf="node.canMoveDown" class="fa fa-arrow-down mt-2 ml-1" (click)="moveDown()"></i>
-        <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-2 ml-1" (click)="addChild()"></i>
-        <i *ngIf="node.canEdit" class="fa fa-pencil-square-o mt-2 ml-1" (click)="edited=true" #popEditor="ngbPopover" container="body" placement="left" [ngbPopover]="editContent"
-            popoverTitle="Editing {{node.name}}"></i>
+        <i *ngIf="node.canMoveUp" class="fa fa-arrow-up mt-1 mb-1" (click)="moveUp()"></i>
+        <i *ngIf="node.canMoveDown" class="fa fa-arrow-down mt-1 mb-1" (click)="moveDown()"></i>
+        <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-1 mb-1" #popAdd="ngbPopover" container="body" placement="left"
+            [ngbPopover]="addContent" (click)="edited=true" popoverTitle="Add item to {{node.name}}"></i>
+        <ng-template #addContent>
+            <div class="list-group">
+                <a *ngFor="let option of node.childTypes" class="list-group-item list-group-item-action" (click)="addItem(option)">
+                    {{option}}
+                </a>
+            </div>
+            <button type="button" class="btn btn-danger mt-2" (click)="addItem(null)">Cancel</button>
+        </ng-template>
+        <i *ngIf="node.canEdit" class="fa fa-pencil-square-o mt-1 mb-1" (click)="edited=true" #popEditor="ngbPopover" container="body"
+            placement="left" [ngbPopover]="editContent" popoverTitle="Editing {{node.name}}"></i>
         <ng-template #editContent>
             <meta-item-editor [element]="node" (finished)="finishEditing($event)"></meta-item-editor>
         </ng-template>
-        <i *ngIf="node.canDelete" class="fa fa-trash-o mt-2 ml-1" (click)="delete()"></i>
+        <i *ngIf="node.canDelete" class="fa fa-trash-o mt-1 mb-1" (click)="delete()"></i>
     </div>
 </div>
 <div class="ml-4" *ngIf="node&&node.children.length!==0" [class.d-none]="!expanded">
