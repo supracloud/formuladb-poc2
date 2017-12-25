@@ -1,9 +1,23 @@
-:host{
-    display:flex;
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+:host {
+    display: flex;
     overflow: hidden;
 }
 
-.mwz-table-wrapper{
-    width:100%;
-    overflow:auto;
+.mwz-table-wrapper {
+    width: 100%;
+    overflow: auto;
+}
+
+.mwz-table-action {
+    position: absolute;
+    display: block;
+    left: 0;
+    margin-top: -.25rem;
+    background-color: $gray-200;
+    &:hover {
+        background-color: $gray-600;
+        color: white;
+    }
 }
