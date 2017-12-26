@@ -7,12 +7,13 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let row of (data$ | async); let rowIdx = index" (dblclick)="onEditClicked(row)" [class.table-primary]='rowIdx == selectedRowIdx'>
+            <tr *ngFor="let row of (data$ | async); let rowIdx = index" (mouseenter)="onRowClicked(rowIdx, row)" (dblclick)="onEditClicked(row)" [class.table-primary]='rowIdx == selectedRowIdx'>
                 <td>
-                    <button (click)="onEditClicked(row)" *ngIf="rowIdx == selectedRowIdx">
-                        <i class="fa fa-pencil"></i>
-                    </button> {{rowIdx + 1}}</td>
-                <td *ngFor="let prop of (table$ | async)?.columns" [class.table-highlight]="prop._id&&prop._id===highlighted" (click)="onRowClicked(rowIdx, row)"
+                    <div class="mwz-table-action p-2" *ngIf="rowIdx == selectedRowIdx">
+                        <i (click)="onEditClicked(row)" class="fa fa-pencil"></i>
+                    </div>
+                    {{rowIdx + 1}}</td>
+                <td *ngFor="let prop of (table$ | async)?.columns" [class.table-highlight]="prop._id&&prop._id===highlighted"
                     data-toggle="tooltip" data-placement="top" title="{{row[prop.name]}}">{{row[prop.name]}}</td>
             </tr>
         </tbody>

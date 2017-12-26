@@ -11,10 +11,14 @@ import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class TreeComponent implements OnInit {
-    constructor(private highlightSvc: HighlightService) { }
+    constructor(private highlightSvc: HighlightService) {
+        highlightSvc.highlighted$.subscribe(hid => this.selected = this.node && this.node.item && this.node.item._id === hid);
+    }
 
     expanded: boolean = true;
     edited: boolean = false;
+    selected: boolean = false;
+    isHover: boolean = false;
 
     @Input()
     node: TreeObject<any>;
@@ -60,9 +64,7 @@ export class TreeComponent implements OnInit {
         this.edited = false;
     }
 
-    private isHover: boolean = false;
-
-    set hover(is: boolean) {
+    hover(is: boolean) {
         if (!this.edited) {
             this.isHover = is;
             if (is && this.node && this.node.item) {
@@ -73,19 +75,19 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    get hover(): boolean {
-        return this.isHover;
-    }
-
     finishEditing(event: boolean) {
         this.edited = false;
         this.popEditor.close();
-        this.hover = false;
+        this.hover(false);
     }
 
     addItem(option: string) {
         this.edited = false;
         this.popAdd.close();
-        this.hover=false;
+        this.hover(false);
+    }
+
+    select() {
+        this.selected = this.highlightSvc.highlight(this.node.item._id, true);
     }
 }

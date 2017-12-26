@@ -1,8 +1,8 @@
-<div [class.ml-2]="!node||node.children.length===0" class="mt-1 d-flex mwz-tree-node" (mouseenter)="hover=true" (mouseleave)="hover=false">
+<div [class.ml-2]="!node||node.children.length===0" [class.selected]="selected" class="mt-1 d-flex mwz-tree-node" (click)="select()" (mouseenter)="hover(true)" (mouseleave)="hover(false)">
     <i *ngIf="node&&node.children.length!==0" (click)="expanded=!expanded" class="mt-2 pt-1 mr-2 fa" [class.fa-chevron-circle-right]="!expanded"
         [class.fa-chevron-circle-down]="expanded"></i>
     <span class="mr-auto p-1">{{node.name}}</span>
-    <div *ngIf="hover" class="mwz-tree-node-action">
+    <div *ngIf="isHover" class="mwz-tree-node-action">
         <i *ngIf="node.canMoveUp" class="fa fa-arrow-up mt-1 mb-1" (click)="moveUp()"></i>
         <i *ngIf="node.canMoveDown" class="fa fa-arrow-down mt-1 mb-1" (click)="moveDown()"></i>
         <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-1 mb-1" #popAdd="ngbPopover" container="body" placement="left"
