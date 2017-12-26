@@ -10,8 +10,8 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: '[form-item]',
-  templateUrl: './form-item.component.html'
-  // host: { '[class]': 'getHostClassForElement()' },
+  templateUrl: './form-item.component.html',
+  host: { '[class]': 'getHostClassForElement()' },
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
 

@@ -44,10 +44,9 @@ import { MetaItemEditorComponent } from './meta-item-editor/meta-item-editor.com
 const routes: Routes = [
   {
     path: ':path', component: TableComponent,
-    children: [{
-      path: ':_id',
-      component: FormComponent
-    }]
+  },
+  {
+    path: ':path/:_id', component: FormComponent,
   },
   { path: '**', component: NotFoundComponent }
 ];
