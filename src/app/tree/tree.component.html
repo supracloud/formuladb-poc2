@@ -1,12 +1,14 @@
-<div [class.ml-2]="!node||node.children.length===0" [class.selected]="selected" class="mt-1 d-flex mwz-tree-node" (click)="select()" (mouseenter)="hover(true)" (mouseleave)="hover(false)">
+<div [class.ml-2]="!node||node.children.length===0" [class.selected]="selected" class="d-flex mwz-tree-node" (click)="select()"
+    (mouseenter)="hover(true)" (mouseleave)="hover(false)" (dragstart)="drag()" [attr.draggable]="node.canDrag">
     <i *ngIf="node&&node.children.length!==0" (click)="expanded=!expanded" class="mt-2 pt-1 mr-2 fa" [class.fa-chevron-circle-right]="!expanded"
         [class.fa-chevron-circle-down]="expanded"></i>
+    <i *ngIf="isHover&&node.canDrag" class="fa fa-hand-paper-o mt-2 ml-1 mr-2"></i>
     <span class="mr-auto p-1">{{node.name}}</span>
     <div *ngIf="isHover" class="mwz-tree-node-action">
         <i *ngIf="node.canMoveUp" class="fa fa-arrow-up mt-1 mb-1" (click)="moveUp()"></i>
         <i *ngIf="node.canMoveDown" class="fa fa-arrow-down mt-1 mb-1" (click)="moveDown()"></i>
-        <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-1 mb-1" #popAdd="ngbPopover" container="body" placement="left"
-            [ngbPopover]="addContent" (click)="edited=true" popoverTitle="Add item to {{node.name}}"></i>
+        <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-1 mb-1" #popAdd="ngbPopover" container="body" placement="left" [ngbPopover]="addContent"
+            (click)="edited=true" popoverTitle="Add item to {{node.name}}"></i>
         <ng-template #addContent>
             <div class="list-group">
                 <a *ngFor="let option of node.childTypes" class="list-group-item list-group-item-action" (click)="addItem(option)">
@@ -23,8 +25,10 @@
         <i *ngIf="node.canDelete" class="fa fa-trash-o mt-1 mb-1" (click)="delete()"></i>
     </div>
 </div>
-<div class="ml-4" *ngIf="node&&node.children.length!==0" [class.d-none]="!expanded">
-    <div *ngFor="let c of node.children">
-        <mwz-tree [node]="c" [index]="c.index" (change)="childChange($event)"></mwz-tree>
+<div class="ml-2 pl-2" [class.parent-trace-none]="(dragSvc.dropParent$|async)!==node.id" *ngIf="node&&node.children.length!==0" [class.d-none]="!expanded" [class.parent-trace]="(dragSvc.dropParent$|async)===node.id">
+    <div *ngFor="let c of node.children ">
+        <div class="drag-anchor mt-1 " [class.drop-request-ok]="(dragSvc.dropTarget$|async)===c.id " (dragover)="dropAvailable(c.id,node.id,$event) "
+            (drop)="drop() " (dragleave)="dragOut() "></div>
+        <mwz-tree [node]="c " [index]="c.index " (change)="childChange($event) "></mwz-tree>
     </div>
 </div>

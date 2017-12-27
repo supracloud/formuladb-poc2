@@ -40,6 +40,7 @@ import { MwzParser } from "./mwz-parser";
 import { PouchdbService } from "./pouchdb.service";
 import { HighlightService } from './services/hightlight.service';
 import { MetaItemEditorComponent } from './meta-item-editor/meta-item-editor.component';
+import { DragService } from './services/drag.service';
 
 const routes: Routes = [
   {
@@ -87,6 +88,7 @@ const routes: Routes = [
     MwzParser,
     PouchdbService,
     HighlightService,
+    DragService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

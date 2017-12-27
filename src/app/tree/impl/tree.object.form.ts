@@ -1,14 +1,17 @@
 import { TreeObject } from "../tree.object";
 import { NodeElement, NodeType2Str, NodeType } from "../../domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
+import { UUID } from "angular2-uuid";
 
 export class FormTreeObject implements TreeObject<NodeElement>{
 
     item: NodeElement;
+    id: string = UUID.UUID();
     name: string;
     children?: TreeObject<any>[] = [];
     canMoveUp: boolean = false;
     canMoveDown: boolean = false;
+    canDrag: boolean = false;
     canEdit: boolean = true;
     canDelete: boolean = true;
     siblingId: number = 0;
@@ -46,7 +49,6 @@ export class FormTreeObject implements TreeObject<NodeElement>{
             if (node.childNodes) {
                 for (var i: number = 0; i < node.childNodes.length; i++) {
                     let child: FormTreeObject = new FormTreeObject(node.childNodes[i]);
-                    child.siblingId = i;
                     this.children.push(child);
                 }
                 this.resetMoveOptions();
@@ -59,6 +61,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
             this.children.forEach(c => {
                 c.canMoveDown = true;
                 c.canMoveUp = true;
+                c.canDrag = true;
             });
             this.children[0].canMoveUp = false;
             this.children[this.children.length - 1].canMoveDown = false;
@@ -68,7 +71,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
     public childChange(event: TreeChange) {
         if (event) {
             if (null !== event.indexChange) {
-                var i = this.getIndexById(event.node.siblingId);
+                var i = this.getIndexById(event.node.id);
                 if (i + event.indexChange >= 0 && i + event.indexChange < this.children.length - 1) {
                     this.item.childNodes.splice(i, 1);
                     this.item.childNodes.splice(i + event.indexChange, 0, event.node.item);
@@ -77,7 +80,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
                 }
             }
             if (true === event.remove) {
-                var i = this.getIndexById(event.node.siblingId);
+                var i = this.getIndexById(event.node.id);
                 this.item.childNodes.splice(i, 1);
                 this.children.splice(i, 1);
             }
@@ -85,9 +88,9 @@ export class FormTreeObject implements TreeObject<NodeElement>{
         }
     }
 
-    private getIndexById(id: number): number {
+    private getIndexById(id: string): number {
         for (var i: number = 0; i < this.children.length; i++) {
-            if (this.children[i].siblingId === id) return i;
+            if (this.children[i].id === id) return i;
         }
     }
 

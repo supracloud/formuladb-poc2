@@ -3,6 +3,7 @@ import { TreeChange } from './tree.change';
 import { TreeObject } from './tree.object';
 import { HighlightService } from '../services/hightlight.service';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
+import { DragService } from '../services/drag.service';
 
 @Component({
     selector: 'mwz-tree',
@@ -11,7 +12,7 @@ import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 })
 
 export class TreeComponent implements OnInit {
-    constructor(private highlightSvc: HighlightService) {
+    constructor(private highlightSvc: HighlightService, private dragSvc: DragService) {
         highlightSvc.highlighted$.subscribe(hid => this.selected = this.node && this.node.item && this.node.item._id === hid);
     }
 
@@ -50,6 +51,29 @@ export class TreeComponent implements OnInit {
         tc.indexChange = 1;
         this.change.emit(tc);
     }
+
+    private drag(): void {
+        this.dragSvc.payload = this.node;
+    }
+
+    dropAvailable(id: string, parent: string, event?: any): boolean {
+        if (event) event.preventDefault();
+        this.dragSvc.dropTarget = id;
+        this.dragSvc.dropParent = parent;
+        return true;
+    }
+
+    private drop(): void {
+        this.dragSvc.payload = null;
+        this.dragSvc.dropTarget = null;
+        this.dragSvc.dropParent = null;
+    }
+
+    private dragOut(): void {
+        this.dragSvc.dropTarget = null;
+        this.dragSvc.dropParent = null;
+    }
+
     private delete(): void {
         let tc: TreeChange = new TreeChange(this.node);
         tc.remove = true;
