@@ -5,7 +5,6 @@ import { NodeType, NodeElement } from "./domain/uimetadata/form";
 
 import { BaseObj } from "./domain/base_obj";
 
-import { MwzEngine } from "./backend/mwz_engine";//TODO: move this to server side
 import { Store } from '@ngrx/store';
 
 import * as appState from "./app.state";
@@ -27,7 +26,6 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        new MwzEngine().init();
         console.log(this);
     }
 

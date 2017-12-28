@@ -1,5 +1,5 @@
-//import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
-import PouchDB from 'pouchdb';
+import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
+// import PouchDB from 'pouchdb';//use this when running on webpack in za browser
 
 /**
  * TODO: move this class on the server, outside the web app
@@ -7,11 +7,11 @@ import PouchDB from 'pouchdb';
  *  - the validations on metadata dependencies
  *  - the validations involving test data 
  */
-import { BaseObj } from "../domain/base_obj";
-import { Entity, Property } from "../domain/metadata/entity";
-import { DataObj } from "../domain/metadata/data_obj";
+import { BaseObj } from "../../src/app/domain/base_obj";
+import { Entity, Property } from "../../src/app/domain/metadata/entity";
+import { DataObj } from "../../src/app/domain/metadata/data_obj";
 
-import * as events from "../domain/event";
+import * as events from "../../src/app/domain/event";
 
 var dataDB = new PouchDB("http://localhost:5984/mwzdata");
 var eventsDB = new PouchDB("http://localhost:5984/mwzevents");
@@ -20,6 +20,7 @@ PouchDB.debug.enable('*');
 
 export class MwzEngine {
     public init() {
+        console.log("Starting MwzEngine...");
         eventsDB.changes({
             since: 'now',//FIXME: start listening from the last action processed, implement proper queue
             include_docs: true,
