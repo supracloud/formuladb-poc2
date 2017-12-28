@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"nodemon --inspect dist/server/src/index.js\"",
-    "serve": "concurrently --kill-others \"tsc -p src\" \"node dist/server/src/index.js\""
+    "preserve": "tsc --inlineSourceMap -p src",
+    "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"nodemon --inspect dist/server/src/index.js\"",
+    "start": "echo TODO run in production"
   },
   "dependencies": {
     "@types/express": "^4.0.36",
