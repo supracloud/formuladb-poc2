@@ -5,25 +5,28 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-export default function(db) {
-    var app: express.Express = express();
+import { MwzEngine } from "../mwz_engine";
 
-    //Models
-    for (let model of config.globFiles(config.models)) {
-        require(path.resolve(model));
-    }
+
+export default function (db) {
+    var app: express.Express = express();
 
     //app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
     app.use(logger("dev"));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(cookieParser());
-    app.use(express.static(path.join(__dirname, "../../src/public")));
 
-    //Routes
-    for (let route of config.globFiles(config.routes)) {
-        require(path.resolve(route)).default(app);
-    }
+
+    var mwzEngine = new MwzEngine();
+    
+    app.get('/', function (req, res) {
+        res.json({ message: 'test' });
+    });
+
+    app.post('/api/event', function (req, res) {
+        mwzEngine.processEvent(req.body)
+            .then(notif => res.json(notif));
+    });
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {
@@ -33,7 +36,7 @@ export default function(db) {
 
     // production error handler
     app.use((err: any, req: express.Request, res: express.Response, next): void => {
-        res.status(err.status || 500).render("error", {
+        res.status(err.status || 500).json({
             message: err.message,
             error: {}
         });
@@ -41,7 +44,7 @@ export default function(db) {
 
     if (app.get("env") === "development") {
         app.use((err: Error, req: express.Request, res: express.Response, next): void => {
-            res.status(500).render("error", {
+            res.status(500).json({
                 message: err.message,
                 error: err
             });

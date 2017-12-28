@@ -7,30 +7,26 @@ import { BaseObj } from "./domain/base_obj";
 import { ChangeObj } from "./domain/change_obj";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Entity } from "./domain/metadata/entity";
-import { MwzEvents } from "./domain/event";
+import { MwzEvents, MwzEvent } from "./domain/event";
 import { Table } from "./domain/uimetadata/table";
 import { Form, NodeElement } from "./domain/uimetadata/form";
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class PouchdbService {
 
     private localDB: any;
-    private remoteEventsDB: any;
-    private remoteNotifsDB: any;
     private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
-    private remoteEventsDBUrl = 'http://localhost:5984/mwzevents';
-    private remoteNotifsDBUrl = 'http://localhost:5984/mwznotifs';
 
-    constructor() {
+    constructor(private http: HttpClient) {
         PouchDB.plugin(PouchFind);
         this.localDB = new PouchDB("mwz");
     }
 
     public init(initCallback: () => void,
-        notifCallback: (change: { doc: MwzEvents }) => void,
+        notifCallback: (event: MwzEvents ) => void,
         dataChangeCallback: (change: { docs: Array<BaseObj> }) => void) {
-        this.remoteEventsDB = new PouchDB(this.remoteEventsDBUrl);
-        this.remoteNotifsDB = new PouchDB(this.remoteNotifsDBUrl);
 
         this.localDB.createIndex({
             index: { fields: ['mwzType'] }
@@ -53,18 +49,6 @@ export class PouchdbService {
                             dataChangeCallback(change);
                         })
                         .on('error', err => console.error(err));
-
-                    //notifs will be handled by the effects service
-                    this.remoteNotifsDB.changes({
-                        since: 'now',
-                        include_docs: true,
-                        live: true
-                    })
-                        .on('change', function (change) {
-                            notifCallback(change);
-                        })
-                        .on('error', err => console.error(err));
-
                 })
                 .on('error', err => console.error(err));
         });
@@ -80,11 +64,8 @@ export class PouchdbService {
         }).catch(err => console.error(err));
     }
 
-    public putEvent(event: MwzEvents) {
-        this.remoteEventsDB.put(event)
-            .catch(err => console.error(err))
-            .then(() => console.log("%c * Event **##$$",
-                "color: blue; font-size: 115%; font-weight: bold; text-decoration: underline;", event));
+    public putEvent(event: MwzEvents): Observable<MwzEvents> {
+        return this.http.post<MwzEvents>('/api/event', event);
     }
 
     public getEntity(path: string): Promise<Entity> {

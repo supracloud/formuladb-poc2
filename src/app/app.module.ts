@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
 
 import { StoreModule } from '@ngrx/store';
 import {
@@ -80,7 +81,8 @@ const routes: Routes = [
     NgbModule.forRoot(),
     StoreRouterConnectingModule,
     // !environment.production ? StoreDevtoolsModule.instrument() : [],
-    EffectsModule.forRoot([AppEffects])
+    EffectsModule.forRoot([AppEffects]),
+    HttpClientModule
   ],
   exports: [RouterModule],
   providers: [

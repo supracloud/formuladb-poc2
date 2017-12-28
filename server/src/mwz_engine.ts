@@ -19,51 +19,34 @@ var notifsDB = new PouchDB("http://localhost:5984/mwznotifs");
 PouchDB.debug.enable('*');
 
 export class MwzEngine {
-    public init() {
-        console.log("Starting MwzEngine...");
-        eventsDB.changes({
-            since: 'now',//FIXME: start listening from the last action processed, implement proper queue
-            include_docs: true,
-            live: true
-        }).on('change', change => {
-            console.log(change);
-            if (!change.deleted) {
-                this.processEvent(change.doc);
-            }
-        }).on('error', err => {
-            console.error(err);
-        });
-    }
 
-    private processEvent(event: events.MwzEvents) {
-        console.log("%c * processEvent **##$$",
+    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+        console.log("%c ****** processEvent ***********************************************",
         "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
     
         switch (event.type) {
             case events.UserActionEditedFormDataN:
-                this.processDataObj(event);
-                break;
+                return this.processDataObj(event);
             case events.UserActionEditedFormN:
-                this.processForm(event);
-                break;
+                return this.processForm(event);
             case events.UserActionEditedTableN:
-                this.processTable(event);
-                break;
+                return this.processTable(event);
             default:
                 console.warn("Unknown event", event);
+                return null;
         }
     }
 
-    private processDataObj(event: events.UserActionEditedFormDataEvent) {
+    private processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
         //TODO: compute dependencies and formulas
         dataDB.put(event.obj).catch(err => console.error(err));
         event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
         delete event._rev;
-        notifsDB.put(event);
+        return Promise.resolve(event);
     }
 
-    private processForm(event: events.UserActionEditedFormEvent) {
-        let existingForm = dataDB.get(event.form._id)
+    private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {
+        return dataDB.get(event.form._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
                 if (frm) event.form._rev = frm._rev;
@@ -73,13 +56,12 @@ export class MwzEngine {
                 //TODO: validations; if there are errors, update the notif accordingly
                 event.notifMsg = 'OK';
                 delete event._rev;
-                notifsDB.put(event);
-                console.log("form notif save started");
+                return event;
             });
     }
 
-    private processTable(event: events.UserActionEditedTableEvent) {
-        let existingTable = dataDB.get(event.table._id)
+    private processTable(event: events.UserActionEditedTableEvent): Promise<events.MwzEvents> {
+        return dataDB.get(event.table._id)
             .catch(err => { console.log(err); return; })
             .then(tbl => {
                 if (tbl) event.table._rev = tbl._rev;
@@ -87,7 +69,7 @@ export class MwzEngine {
                 dataDB.put(event.table).catch(err => console.error(err));
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
-                notifsDB.put(event);
+                return event;
             });
     }
 }

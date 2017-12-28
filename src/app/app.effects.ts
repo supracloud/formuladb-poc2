@@ -66,11 +66,10 @@ export class AppEffects {
 
     }
 
-    private listenForNotifsFromServer(change: { doc: MwzEvents }) {
+    private listenForNotifsFromServer(event: MwzEvents) {
         console.log("%c * NotifFromServer **##$$",
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
 
-        let event = change.doc;
         switch (event.type) {
             case appState.UserActionEditedFormDataN:
             case appState.UserActionEditedFormN:
@@ -124,7 +123,8 @@ export class AppEffects {
 
     private listenForUserActions() {
         this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
-            this.pouchDbService.putEvent(action.event);
+            this.pouchDbService.putEvent(action.event)
+                .subscribe(notif => this.listenForNotifsFromServer(notif));
         });
     }
 
@@ -160,8 +160,8 @@ export class AppEffects {
     private listenForNewDataObjActions() {
         this.actions$.ofType<appState.UserActionNewRow>(appState.UserActionNewRowN).subscribe(action => {
             this.currentUrl.id = BaseObj.uuid();
-            this.router.navigate([this.currentUrl.entity._id + '/' + this.currentUrl.id]);    
-            this.store.dispatch(new appState.FormDataFromBackendAction({_id: this.currentUrl.id, mwzType: this.currentUrl.entity._id}))
+            this.router.navigate([this.currentUrl.entity._id + '/' + this.currentUrl.id]);
+            this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id, mwzType: this.currentUrl.entity._id }))
         });
     }
 

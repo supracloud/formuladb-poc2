@@ -26,7 +26,7 @@ Install docker toolbox: https://www.docker.com/products/docker-toolbox
 Then follow:
 http://docs.couchdb.org/en/master/install/setup.html#single-node-setup
 
-Then Create 3 new databases: mwzdata, mwzevents, mwznotifs
+Then Create the database: mwzdata
 
 Then load test data:
 
@@ -37,7 +37,7 @@ Then load test data:
 
 ```bash
         # start angular app
-        ng serve
+        ng serve --proxy-config proxy.config.json
         # start backend
         cd server && npm run serve
 ```
