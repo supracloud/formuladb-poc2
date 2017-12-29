@@ -394,6 +394,7 @@ export class MockMetadata {
     MockMetadata.Forms__Receipt,
     MockMetadata.Forms__Order,
     MockMetadata.Forms__ServiceForm,
+    MockMetadata.Reports,
     MockMetadata.Reports__DetailedCentralizerReport,
     MockMetadata.Reports__GenericReport,
     MockMetadata.Reports__ServiceCentralizerReport,

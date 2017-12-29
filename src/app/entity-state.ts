@@ -10,6 +10,7 @@ export { DataObj };
 export { Entity };
 export { ChangeObj, applyChanges };
 
+import * as events from './domain/event';
 
 export interface EntityState {
     entities: Entity[];
@@ -24,9 +25,9 @@ export const entityInitialState: EntityState = {
 export const EntitiesFromBackendFullLoadActionN = "[entity] EntitiesFromBackendFullLoadAction";
 export const EntitiesFromBackendActionN = "[entity] EntitiesFromBackendAction";
 export const UserActionSelectedEntityN = "[entity] UserActionSelectedEntity";
-export const UserActionEditedEntityN = "[entity] UserActionEditedEntity";
-export const UserActionNewEntityN = "[entity] UserActionNewEntity";
-export const UserActionDeleteEntityN = "[entity] UserActionDeleteEntity";
+export const UserActionEditedEntityN = events.UserActionEditedEntityN;
+export const UserActionNewEntityN = events.UserActionNewEntityN;
+export const UserActionDeleteEntityN = events.UserActionDeleteEntityN;
 
 export class EntitiesFromBackendFullLoadAction implements Action {
     readonly type = EntitiesFromBackendFullLoadActionN;
@@ -48,20 +49,29 @@ export class UserActionSelectedEntity implements Action {
 
 export class UserActionEditedEntity implements Action {
     readonly type = UserActionEditedEntityN;
-
-    constructor(public entity: Entity) { }
+    public event: events.UserActionEditedEntity;
+    
+    constructor(public entity: Entity) {
+        this.event = new events.UserActionEditedEntity(entity);
+    }
 }
 
 export class UserActionNewEntity implements Action {
     readonly type = UserActionNewEntityN;
-
-    constructor() { }
+    public event: events.UserActionNewEntity;
+    
+    constructor(path: string) {
+        this.event = new events.UserActionNewEntity(path);
+    }
 }
 
 export class UserActionDeleteEntity implements Action {
     readonly type = UserActionDeleteEntityN;
-
-    constructor() { }
+    public event: events.UserActionDeleteEntity;
+    
+    constructor(entity: Entity) {
+        this.event = new events.UserActionDeleteEntity(entity);
+    }
 }
 
 export type EntityActions =

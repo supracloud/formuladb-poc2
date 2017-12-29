@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
     menuCollapsed: boolean = true;
     leftCollapsed: boolean = false;
     rightCollapsed: boolean = false;
+    newEntityName: string;
 
     public constructor(private store: Store<appState.AppState>) {
         store.select(appState.getSelectedEntityState).subscribe(e => this.selectedEntity = e);
@@ -32,4 +33,19 @@ export class AppComponent implements OnInit {
     newDataObj() {
         this.store.dispatch(new appState.UserActionNewRow(this.selectedEntity._id));
     }
+
+    newEntity() {
+        this.store.dispatch(new appState.UserActionNewEntity(this.newEntityName));
+    }
+
+    deleteEntity() {
+        if (confirm("Please confirm! Do you really want to delete " + this.selectedEntity._id + " ?")) {
+            this.store.dispatch(new appState.UserActionDeleteEntity(this.selectedEntity));
+        }
+    }
+
+    stopPropagation(event: MouseEvent) {
+        event.stopPropagation();
+    }
+
 }

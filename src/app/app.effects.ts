@@ -34,11 +34,17 @@ export type ActionsToBeSentToServer =
     | appState.UserActionEditedFormData
     | appState.UserActionEditedForm
     | appState.UserActionEditedTable
+    | appState.UserActionEditedEntity
+    | appState.UserActionNewEntity
+    | appState.UserActionDeleteEntity
     ;
 export const ActionsToBeSentToServerNames = [
     appState.UserActionEditedFormDataN,
     appState.UserActionEditedFormN,
-    appState.UserActionEditedTableN
+    appState.UserActionEditedTableN,
+    appState.UserActionEditedEntityN,
+    appState.UserActionNewEntityN,
+    appState.UserActionDeleteEntityN
 ];
 
 @Injectable()
@@ -123,6 +129,9 @@ export class AppEffects {
 
     private listenForUserActions() {
         this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
+            console.log("%c * Event **##$$",
+            "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
+
             this.pouchDbService.putEvent(action.event)
                 .subscribe(notif => this.listenForNotifsFromServer(notif));
         });

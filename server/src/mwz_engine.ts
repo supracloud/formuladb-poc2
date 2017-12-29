@@ -14,16 +14,14 @@ import { DataObj } from "../../src/app/domain/metadata/data_obj";
 import * as events from "../../src/app/domain/event";
 
 var dataDB = new PouchDB("http://localhost:5984/mwzdata");
-var eventsDB = new PouchDB("http://localhost:5984/mwzevents");
-var notifsDB = new PouchDB("http://localhost:5984/mwznotifs");
 PouchDB.debug.enable('*');
 
 export class MwzEngine {
 
     public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
         console.log("%c ****** processEvent ***********************************************",
-        "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
-    
+            "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
+
         switch (event.type) {
             case events.UserActionEditedFormDataN:
                 return this.processDataObj(event);
@@ -31,6 +29,12 @@ export class MwzEngine {
                 return this.processForm(event);
             case events.UserActionEditedTableN:
                 return this.processTable(event);
+            case events.UserActionNewEntityN:
+                return this.newEntity(event)
+            case events.UserActionDeleteEntityN:
+                return this.deleteEntity(event);
+            case events.UserActionEditedEntityN:
+                return this.processEntity(event);
             default:
                 console.warn("Unknown event", event);
                 return null;
@@ -39,10 +43,13 @@ export class MwzEngine {
 
     private processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
         //TODO: compute dependencies and formulas
-        dataDB.put(event.obj).catch(err => console.error(err));
-        event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
-        delete event._rev;
-        return Promise.resolve(event);
+        return dataDB.put(event.obj)
+            .then(() => {
+                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                delete event._rev;
+                return event;
+            })
+            .catch(err => console.error(err));
     }
 
     private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {
@@ -51,7 +58,9 @@ export class MwzEngine {
             .then(frm => {
                 if (frm) event.form._rev = frm._rev;
 
-                dataDB.put(event.form).catch(err => console.error(err));
+                return dataDB.put(event.form).catch(err => console.error(err));
+            })
+            .then(() => {
                 console.log("form save started");
                 //TODO: validations; if there are errors, update the notif accordingly
                 event.notifMsg = 'OK';
@@ -65,11 +74,46 @@ export class MwzEngine {
             .catch(err => { console.log(err); return; })
             .then(tbl => {
                 if (tbl) event.table._rev = tbl._rev;
-                
-                dataDB.put(event.table).catch(err => console.error(err));
+
+                return dataDB.put(event.table).catch(err => console.error(err));
+            })
+            .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             });
+    }
+
+    private newEntity(event: events.UserActionNewEntity): Promise<events.MwzEvents> {
+        let newEntity = new Entity();
+        newEntity._id = event.path;
+
+        return dataDB.put(newEntity)
+            .then(() => {
+                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                delete event._rev;
+                return event;
+            })
+            .catch(err => console.error(err));
+    }
+
+    private deleteEntity(event: events.UserActionDeleteEntity): Promise<events.MwzEvents> {
+        return dataDB.remove(event.entity)
+            .then(() => {
+                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                delete event._rev;
+                return event;
+            })
+            .catch(err => console.error(err));
+    }
+
+    private processEntity(event: events.UserActionEditedEntity): Promise<events.MwzEvents> {
+        return dataDB.put(event.entity)
+            .then(() => {
+                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                delete event._rev;
+                return event;
+            })
+            .catch(err => console.error(err));
     }
 }

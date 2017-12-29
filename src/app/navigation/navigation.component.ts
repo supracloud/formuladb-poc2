@@ -24,11 +24,12 @@ export class NavigationComponent implements OnInit {
 
   ngOnInit() {
     this.entities$.subscribe(x => {
-      this.metadataCatalog = x.map(entity => ({
-        linkName: entity._id.split(/__/).slice(-1)[0],
-        path: entity._id,
-        indent: '- '.repeat(entity._id.split(/__/).length - 1)
-      }))
+      this.metadataCatalog = x.sort((e1, e2) => e1._id < e2._id ? -1 : (e1._id > e2._id ? 1 : 0))
+        .map(entity => ({
+          linkName: entity._id.split(/__/).slice(-1)[0],
+          path: entity._id,
+          indent: '- '.repeat(entity._id.split(/__/).length - 1)
+        }))
     });
   }
 }

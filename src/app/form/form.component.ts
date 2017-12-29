@@ -2,6 +2,9 @@ import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
     ChangeDetectionStrategy, Directive
 } from '@angular/core';
+
+import {Location} from '@angular/common';
+
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
@@ -28,8 +31,10 @@ import { HighlightService } from '../services/hightlight.service';
     selector: 'mwz-form',
     template:
         `
+        <br/>
     <form [formGroup]="theFormGroup" novalidate>
         <ngb-alert [type]="alertType" [dismissible]="false">
+            <button (click)="goBack()"><i class="fa fa-arrow-left" style="font-size:24px"></i>Back to table</button>
             Form status: {{ theFormGroup.status | json }}
             <i *ngIf="saveInProgress" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
         </ngb-alert>
@@ -54,7 +59,9 @@ export class FormComponent implements OnInit {
     constructor(
         private store: Store<fromForm.FormState>,
         private formModalService: FormModalService,
-        private highlightSvc: HighlightService) {
+        private highlightSvc: HighlightService,
+        private _location: Location
+    ) {
         this.formState$ = store.select(fromForm.getForm);
         try {
             this.theFormGroup = new FormGroup({});
@@ -232,5 +239,9 @@ export class FormComponent implements OnInit {
             }
         }
         return true;
+    }
+
+    private goBack() {
+        this._location.back();
     }
 }

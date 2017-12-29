@@ -14,13 +14,16 @@
                     <i class="fa fa-cart"></i> E-commerce</a>
             </li>
             <li class="nav-item dropdown" ngbDropdown>
-                <a class="nav-link dropdown-toggle" href="javascript:void()" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                <a class="nav-link dropdown-toggle" href="javascript:void();" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false" ngbDropdownToggle>
                     Toggle dropdown
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown" ngbDropdownMenu>
                     <a class="dropdown-item" (click)="newDataObj()">Add {{selectedEntity?._id}}</a>
-                    <a class="dropdown-item">Add Entity</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" (click)="newEntity()">Add Entity <input [(ngModel)]="newEntityName" (click)="stopPropagation($event)" /></a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" (click)="deleteEntity()">Delete <strong>{{selectedEntity?._id}}</strong> Entity</a>
                 </div>
             </li>
         </ul>

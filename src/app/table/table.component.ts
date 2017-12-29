@@ -34,7 +34,6 @@ export class TableComponent {
 
     onRowClicked(rowIdx: number, row: tableState.DataObj) {
         this.selectedRowIdx = rowIdx;
-        console.log('MwzTableComponent: onRowClicked: ', row);
     }
 
     onEditClicked(row: tableState.DataObj) {
