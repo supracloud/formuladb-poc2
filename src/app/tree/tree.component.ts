@@ -36,42 +36,31 @@ export class TreeComponent implements OnInit {
     ngOnInit() { }
 
     private childChange(event: TreeChange) {
+        event.reportingNode = this.node;
         this.node.childChange(event);
-        this.change.emit(new TreeChange(this.node));
-    }
-
-    private moveUp(): void {
-        let tc: TreeChange = new TreeChange(this.node);
-        tc.indexChange = -1;
-        this.change.emit(tc);
-    }
-
-    private moveDown(): void {
-        let tc: TreeChange = new TreeChange(this.node);
-        tc.indexChange = 1;
-        this.change.emit(tc);
+        this.change.emit(event);
     }
 
     private drag(): void {
         this.dragSvc.payload = this.node;
     }
 
-    dropAvailable(id: string, parent: string, event?: any): boolean {
+    dropAvailable(id: string, parent: string, after: boolean, event?: any): boolean {
         if (event) event.preventDefault();
-        this.dragSvc.dropTarget = id;
-        this.dragSvc.dropParent = parent;
+        this.dragSvc.dropTarget = { target: id, parent: parent, after: after };
         return true;
     }
 
     private drop(): void {
+        let change: TreeChange = new TreeChange(this.dragSvc.payload);
+        change.drop = this.dragSvc.dropTarget;
+        this.childChange(change);
         this.dragSvc.payload = null;
-        this.dragSvc.dropTarget = null;
-        this.dragSvc.dropParent = null;
+        this.dragSvc.dropTarget = { target: null, parent: null, after: false };
     }
 
     private dragOut(): void {
-        this.dragSvc.dropTarget = null;
-        this.dragSvc.dropParent = null;
+        this.dragSvc.dropTarget = { target: null, parent: null, after: false };
     }
 
     private delete(): void {

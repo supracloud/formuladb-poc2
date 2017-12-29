@@ -6,8 +6,6 @@ export interface TreeObject<T> {
     id:string;
     name: string;
     children?: TreeObject<any>[];
-    canMoveUp: boolean;
-    canMoveDown: boolean;
     canDrag:boolean;
     canEdit: boolean;
     canDelete: boolean;

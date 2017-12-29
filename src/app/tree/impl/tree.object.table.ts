@@ -39,38 +39,45 @@ export class TableTreeObject implements TreeObject<Table>{
     private resetMoveOptions() {
         if (this.children.length > 0) {
             this.children.forEach(c => {
-                c.canMoveDown = true;
-                c.canMoveUp = true;
+                c.canDrag = true;
             });
-            this.children[0].canMoveUp = false;
-            this.children[this.children.length - 1].canMoveDown = false;
         }
     }
 
     public childChange(event: TreeChange) {
         if (event) {
-            if (null !== event.indexChange) {
-                var i = this.getIndexById(event.node.id);
-                if (i + event.indexChange >= 0 && i + event.indexChange < this.children.length - 1) {
-                    this.item.columns.splice(i, 1);
-                    this.item.columns.splice(i + event.indexChange, 0, event.node.item);
-                    this.children.splice(i, 1);
-                    this.children.splice(i + event.indexChange, 0, event.node as TableColumnTreeObject);
+            if (null !== event.drop) {
+                var cpos = this.getIndexById(event.originalNode.id);
+                if (cpos !== null) {
+                    console.log("cpos", cpos);
+                    this.children.splice(cpos, 1);
+                    this.item.columns.splice(cpos, 1);
+                }
+                var npos = this.getIndexById(event.drop.target);
+                if (npos !== null) {
+                    console.log("npos", npos);
+                    npos += (event.drop.after ? 1 : 0);
+                    this.item.columns.splice(npos, 0, event.originalNode.item);
+                    this.children.splice(npos, 0, event.originalNode as TableColumnTreeObject);
                 }
             }
             if (true === event.remove) {
-                var i = this.getIndexById(event.node.id);
-                this.item.columns.splice(i, 1);
-                this.children.splice(i, 1);
+                var i = this.getIndexById(event.originalNode.id);
+                if (i !== null) {
+                    this.item.columns.splice(i, 1);
+                    this.children.splice(i, 1);
+                }
             }
             this.resetMoveOptions();
         }
+        this.children.forEach(c=>c.childChange(event));
     }
 
     private getIndexById(id: string): number {
         for (var i: number = 0; i < this.children.length; i++) {
             if (this.children[i].id === id) return i;
         }
+        return null;
     }
 
     public addChild(childType: string) {

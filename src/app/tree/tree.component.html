@@ -5,8 +5,6 @@
     <i *ngIf="isHover&&node.canDrag" class="fa fa-hand-paper-o mt-2 ml-1 mr-2"></i>
     <span class="mr-auto p-1">{{node.name}}</span>
     <div *ngIf="isHover" class="mwz-tree-node-action">
-        <i *ngIf="node.canMoveUp" class="fa fa-arrow-up mt-1 mb-1" (click)="moveUp()"></i>
-        <i *ngIf="node.canMoveDown" class="fa fa-arrow-down mt-1 mb-1" (click)="moveDown()"></i>
         <i *ngIf="node.childTypes.length>0" class="fa fa-plus mt-1 mb-1" #popAdd="ngbPopover" container="body" placement="left" [ngbPopover]="addContent"
             (click)="edited=true" popoverTitle="Add item to {{node.name}}"></i>
         <ng-template #addContent>
@@ -25,10 +23,16 @@
         <i *ngIf="node.canDelete" class="fa fa-trash-o mt-1 mb-1" (click)="delete()"></i>
     </div>
 </div>
-<div class="ml-2 pl-2" [class.parent-trace-none]="(dragSvc.dropParent$|async)!==node.id" *ngIf="node&&node.children.length!==0" [class.d-none]="!expanded" [class.parent-trace]="(dragSvc.dropParent$|async)===node.id">
+<div class="ml-2 pl-2" [class.parent-trace-none]="dragSvc.dropTarget?.parent!==node.id" *ngIf="node" [class.d-none]="!expanded"
+    [class.parent-trace]="dragSvc.dropTarget?.parent===node.id">
+    <div *ngIf="node.children[0]" class="drag-anchor mt-1 " [class.drop-request-ok]="dragSvc.dropTarget?.target===node.children[0].id && !dragSvc.dropTarget?.after"
+        (dragover)="dropAvailable(node.children[0].id,node.id,false,$event) " (drop)="drop() " (dragleave)="dragOut() "></div>
+    <div *ngIf="node.children.length===0" class="drag-anchor mt-1 " [class.drop-request-ok]="dragSvc.dropTarget?.parent===node.id&&node.childTypes.length!==0"
+        (dragover)="dropAvailable(null,node.id,false,$event) " (drop)="drop() " (dragleave)="dragOut() "></div>
     <div *ngFor="let c of node.children ">
-        <div class="drag-anchor mt-1 " [class.drop-request-ok]="(dragSvc.dropTarget$|async)===c.id " (dragover)="dropAvailable(c.id,node.id,$event) "
-            (drop)="drop() " (dragleave)="dragOut() "></div>
         <mwz-tree [node]="c " [index]="c.index " (change)="childChange($event) "></mwz-tree>
+        <div class="drag-anchor mt-1 " [class.drop-request-ok]="dragSvc.dropTarget?.target===c.id && dragSvc.dropTarget?.after" (dragover)="dropAvailable(c.id,node.id,true,$event) "
+            (drop)="drop() " (dragleave)="dragOut() "></div>
     </div>
+
 </div>
