@@ -18,27 +18,51 @@ PouchDB.debug.enable('*');
 
 export class MwzEngine {
 
+    private eventsQueueProcessor: Promise<events.MwzEvents> = null;
+
+    /**
+     * Events are queued and are processed in the order in which they arrive
+     * @param event the event from client
+     */
     public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+
+        if (null == this.eventsQueueProcessor) {
+            this.eventsQueueProcessor = this.handleEvent(event);
+        } else {
+            this.eventsQueueProcessor = this.eventsQueueProcessor.then(() => this.handleEvent(event));
+        }
+        return this.eventsQueueProcessor;
+    }
+
+    private handleEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+        let ret: Promise<events.MwzEvents> = null;
         console.log("%c ****** processEvent ***********************************************",
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
 
         switch (event.type) {
             case events.UserActionEditedFormDataN:
-                return this.processDataObj(event);
+                ret = this.processDataObj(event);
+                break;
             case events.UserActionEditedFormN:
-                return this.processForm(event);
+                ret = this.processForm(event);
+                break;
             case events.UserActionEditedTableN:
-                return this.processTable(event);
+                ret = this.processTable(event);
+                break;
             case events.UserActionNewEntityN:
-                return this.newEntity(event)
+                ret = this.newEntity(event)
+                break;
             case events.UserActionDeleteEntityN:
-                return this.deleteEntity(event);
+                ret = this.deleteEntity(event);
+                break;
             case events.UserActionEditedEntityN:
-                return this.processEntity(event);
+                ret = this.processEntity(event);
+                break;
             default:
                 console.warn("Unknown event", event);
-                return null;
         }
+
+        return ret;
     }
 
     private processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
