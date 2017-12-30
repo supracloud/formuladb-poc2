@@ -5,6 +5,8 @@ import { BaseObj } from "../../domain/base_obj";
 import { Table, TableColumn } from "../../domain/uimetadata/table";
 import { TableColumnTreeObject } from "./tree.object.table.column";
 import { UUID } from "angular2-uuid";
+import { MetaItemDescriptor } from "../meta.item.descriptor";
+import * as _ from "lodash";
 
 export class TableTreeObject implements TreeObject<Table>{
 
@@ -19,6 +21,7 @@ export class TableTreeObject implements TreeObject<Table>{
     canDelete: boolean = true;
     siblingId: number = 0;
     childTypes: string[] = [];
+    descriptor: MetaItemDescriptor[];
 
     constructor(node: Table) {
         console.log(node);
@@ -33,6 +36,10 @@ export class TableTreeObject implements TreeObject<Table>{
                 }
                 this.resetMoveOptions();
             }
+            this.descriptor = [{
+                type: "text",
+                property: "literal"
+            }]
         }
     }
 
@@ -70,7 +77,7 @@ export class TableTreeObject implements TreeObject<Table>{
             }
             this.resetMoveOptions();
         }
-        this.children.forEach(c=>c.childChange(event));
+        this.children.forEach(c => c.childChange(event));
     }
 
     private getIndexById(id: string): number {
@@ -80,7 +87,9 @@ export class TableTreeObject implements TreeObject<Table>{
         return null;
     }
 
-    public addChild(childType: string) {
-
+    public patch(val: any): Table {
+        const ret: Table = _.cloneDeep(this.item);
+        ret.literal = val.literal;
+        return ret;
     }
 }

@@ -16,8 +16,8 @@ import * as appState from '../app.state';
 import * as fromForm from '../form/form.state';
 import * as fromTable from '../table/table.state';
 import * as fromEntity from '../entity-state';
-import { FormTreeObject } from '../tree/impl/tree.object.form';
-import { TableTreeObject } from '../tree/impl/tree.object.table';
+import { FormTreeObject } from '../tree/object-impl/tree.object.form';
+import { TableTreeObject } from '../tree/object-impl/tree.object.table';
 import * as _ from "lodash";
 import { TreeChange } from '../tree/tree.change';
 

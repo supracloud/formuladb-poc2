@@ -1,7 +1,9 @@
 import { TreeObject } from "../tree.object";
-import { NodeElement, NodeType2Str, NodeType } from "../../domain/uimetadata/form";
+import { NodeElement, NodeType2Str, NodeType, Str2NodeType } from "../../domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
 import { UUID } from "angular2-uuid";
+import { MetaItemDescriptor } from "../meta.item.descriptor";
+import * as _ from "lodash";
 
 export class FormTreeObject implements TreeObject<NodeElement>{
 
@@ -14,6 +16,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
     canDelete: boolean = true;
     siblingId: number = 0;
     childTypes: string[] = [];
+    descriptor: MetaItemDescriptor[];
 
     constructor(node: NodeElement) {
         this.item = node;
@@ -51,6 +54,18 @@ export class FormTreeObject implements TreeObject<NodeElement>{
                 }
                 this.resetMoveOptions();
             }
+            this.descriptor = [{
+                type: "select",
+                property: "propertyName",
+                attributes: {
+                    selectValues: ["a", "b", "c"]
+                }
+            },
+            {
+                type: "text",
+                property: "nodeName"
+            }
+            ]
         }
     }
 
@@ -104,7 +119,11 @@ export class FormTreeObject implements TreeObject<NodeElement>{
         return null;
     }
 
-    public addChild(childType: string) {
-
+    public patch(val: any): NodeElement {
+        const ret: NodeElement = _.cloneDeep(this.item);
+        ret.propertyName = val.propertyName;
+        ret.nodeName = val.nodeName;
+        return ret;
     }
+
 }
