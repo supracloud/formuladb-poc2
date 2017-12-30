@@ -122,7 +122,8 @@ export class MwzEngine {
     }
 
     private deleteEntity(event: events.UserActionDeleteEntity): Promise<events.MwzEvents> {
-        return dataDB.remove(event.entity)
+        event.entity._deleted = true;
+        return dataDB.put(event.entity)
             .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;

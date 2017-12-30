@@ -95,7 +95,11 @@ export class AppEffects {
 
         change.docs.forEach(obj => {
             if (obj.mwzType == 'Entity_') {
-                //TODO
+                console.log("Loading all entities from local DB");
+                this.pouchDbService.findByMwzType<Entity>('Entity_').then(entities => {
+                    console.log("displaying all entities from local DB", entities);
+                    this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
+                }).catch(err => console.error(err));
             } else if (obj.mwzType == 'Table_') {
                 this.store.dispatch(new appState.TableFormBackendAction(obj as Table));
             } else if (obj.mwzType == 'Form_') {

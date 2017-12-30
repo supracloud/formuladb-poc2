@@ -23,7 +23,6 @@ export const entityInitialState: EntityState = {
 };
 
 export const EntitiesFromBackendFullLoadActionN = "[entity] EntitiesFromBackendFullLoadAction";
-export const EntitiesFromBackendActionN = "[entity] EntitiesFromBackendAction";
 export const UserActionSelectedEntityN = "[entity] UserActionSelectedEntity";
 export const UserActionEditedEntityN = events.UserActionEditedEntityN;
 export const UserActionNewEntityN = events.UserActionNewEntityN;
@@ -33,12 +32,6 @@ export class EntitiesFromBackendFullLoadAction implements Action {
     readonly type = EntitiesFromBackendFullLoadActionN;
 
     constructor(public entities: Entity[]) { }
-}
-
-export class EntitiesFromBackendAction implements Action {
-    readonly type = EntitiesFromBackendActionN;
-
-    constructor(public changes: ChangeObj<Entity>[]) { }
 }
 
 export class UserActionSelectedEntity implements Action {
@@ -76,7 +69,6 @@ export class UserActionDeleteEntity implements Action {
 
 export type EntityActions =
     | EntitiesFromBackendFullLoadAction
-    | EntitiesFromBackendAction
     | UserActionSelectedEntity
     | UserActionNewEntity
     | UserActionEditedEntity
@@ -95,13 +87,6 @@ export function entityReducer(state = entityInitialState, action: EntityActions)
             ret = {
                 ...state,
                 entities: action.entities,
-            };
-            break;
-        //changes from the server are commning: added/removed entities
-        case EntitiesFromBackendActionN:
-            ret = {
-                ...state,
-                entities: applyChanges<Entity>(state.entities, action.changes),
             };
             break;
         //user navigates to different tables

@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
     rightCollapsed: boolean = false;
     newEntityName: string;
 
-    public constructor(private store: Store<appState.AppState>) {
+    public constructor(private store: Store<appState.AppState>, private router: Router) {
         store.select(appState.getSelectedEntityState).subscribe(e => this.selectedEntity = e);
     }
 
@@ -41,6 +41,7 @@ export class AppComponent implements OnInit {
     deleteEntity() {
         if (confirm("Please confirm! Do you really want to delete " + this.selectedEntity._id + " ?")) {
             this.store.dispatch(new appState.UserActionDeleteEntity(this.selectedEntity));
+            this.router.navigate(['/']);
         }
     }
 

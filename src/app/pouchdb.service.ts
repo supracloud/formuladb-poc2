@@ -33,6 +33,13 @@ export class PouchdbService {
         }).then(() => {
             let appStateS = this;
 
+            this.localDB.explain({
+                selector: {
+                    mwzType: 'Entity_'
+                }
+            }).then(explanation => console.warn("Check index usage: ", explanation))
+            .catch(err => console.error(err));
+
             //first catchup local PouchDB with what happened on the server while the application was stopped
             this.localDB.replicate.from(this.remoteDataDBUrl)
                 .on('complete', info => {

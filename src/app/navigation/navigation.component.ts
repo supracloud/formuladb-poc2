@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs/Observable';
@@ -18,7 +18,7 @@ export class NavigationComponent implements OnInit {
   metadataCatalog: { linkName: string, path: string, indent: string }[] = [];
   entities$: Observable<fromEntity.Entity[]>;
 
-  constructor(private store: Store<fromEntity.EntityState>) {
+  constructor(private store: Store<fromEntity.EntityState>, private cdr: ChangeDetectorRef) {
     this.entities$ = this.store.select(fromEntity.getEntitiesState);
   }
 
@@ -30,6 +30,7 @@ export class NavigationComponent implements OnInit {
           path: entity._id,
           indent: '- '.repeat(entity._id.split(/__/).length - 1)
         }))
+      this.cdr.detectChanges();
     });
   }
 }

@@ -5,8 +5,8 @@ import { BaseObj } from '../base_obj';
  */
 export class Entity extends BaseObj {
     mwzType = 'Entity_';
-    properties: Property[];
-    module?: true;
+    properties: Property[] = [];
+    module?: boolean;
 
     normalize?() {
         this.properties.forEach((prop, idx) => {
