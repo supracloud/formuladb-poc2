@@ -89,10 +89,15 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    finishEditing(event: boolean) {
+    finishEditing(obj: any) {
         this.edited = false;
         this.popEditor.close();
-        this.hover(false);
+        this.highlightSvc.highlight(null,true);
+        if (obj !== null) {
+            this.node.item = obj;
+            const event: TreeChange = new TreeChange(this.node);
+            this.change.emit(event);
+        }
     }
 
     addItem(option: string) {
