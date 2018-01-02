@@ -4,6 +4,7 @@ import { TreeObject } from './tree.object';
 import { HighlightService } from '../services/hightlight.service';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { DragService } from '../services/drag.service';
+import { EditOptionsService } from '../services/edit.options.service';
 
 @Component({
     selector: 'mwz-tree',

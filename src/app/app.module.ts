@@ -41,6 +41,7 @@ import { PouchdbService } from "./pouchdb.service";
 import { HighlightService } from './services/hightlight.service';
 import { MetaItemEditorComponent } from './tree/meta-item-editor/meta-item-editor.component';
 import { DragService } from './services/drag.service';
+import { EditOptionsService } from './services/edit.options.service';
 
 const routes: Routes = [
   {
@@ -89,6 +90,7 @@ const routes: Routes = [
     PouchdbService,
     HighlightService,
     DragService,
+    EditOptionsService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

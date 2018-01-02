@@ -3,6 +3,7 @@ import { NodeElement } from '../../domain/uimetadata/form';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TreeObject } from '../tree.object';
 import * as _ from 'lodash';
+import { EditOptionsService } from '../../services/edit.options.service';
 
 @Component({
   selector: 'meta-item-editor',
@@ -19,13 +20,13 @@ export class MetaItemEditorComponent implements OnInit {
 
   private metaItemForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private editOptions:EditOptionsService) {
   }
 
   ngOnInit() {
     const fg = {};
     this.element.descriptor.forEach(d => {
-      fg[d.property] = new FormControl(this.element[d.property] || '');
+      fg[d.property] = new FormControl(this.element.item[d.property] || '');
     });
     this.metaItemForm = new FormGroup(fg);
   }

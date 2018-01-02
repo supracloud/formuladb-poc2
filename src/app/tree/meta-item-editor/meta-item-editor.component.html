@@ -3,7 +3,7 @@
     <label class="col-form-label" [attr.for]="d.property">{{d.property}}</label>
     <input *ngIf="d.type==='text'" [formControlName]="d.property" type="text" class="form-control" [attr.id]="d.property">
     <select *ngIf="d.type==='select'" [formControlName]="d.property" class="form-control" [attr.id]="d.property">
-      <option *ngFor="let opt of d.attributes.selectValues">{{opt}}</option>
+      <option *ngFor="let p of editOptions.properties" [value]="p.name">{{p.name}}</option>
     </select>
   </div>
   <button [disabled]="metaItemForm.pristine" type="submit" class="btn btn-primary">Save</button>
