@@ -58,9 +58,14 @@ select:invalid {
           background-color: $gray-300!important;
         }
     }
-    &[form-item]{
+    &[form-item].row{
       border:2px dashed $gray-700!important;
-      margin:-2px!important;
+      margin-top:-2px!important;
+      margin-bottom: -2px!important;
+      .col{
+          padding-left:13px;
+          padding-right:13px;
+      }
     }
 }
 
