@@ -1,0 +1,28 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeName">
+                <ng-container *ngSwitchCase="'form-autocomplete'">
+                    <th *ngFor="let propName of child.attributes?.copiedProperties">{{propName}}</th>
+                </ng-container>
+                <th *ngSwitchCase="'form-input'">{{child.propertyName}}</th>
+            </ng-container>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
+            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeName">
+                <ng-container *ngSwitchCase="'form-autocomplete'">
+                    <td *ngFor="let columnControl of getChildProperties(child,idx); let colIdx = index">
+                        <input type="text" [id]="parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx)"
+                            [formControl]="columnControl" />
+                    </td>
+                </ng-container>
+                <td *ngSwitchCase="'form-input'">
+                    <input type="text" [id]="parentFormPath + '.' + idx + '.' + child.propertyName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.propertyName)"
+                    />
+                </td>
+            </ng-container>
+        </tr>
+    </tbody>
+</table>

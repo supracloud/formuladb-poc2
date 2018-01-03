@@ -5,6 +5,7 @@ import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/for
 
 @Component({
   selector: '[form-tabs]',
+  host: { class: "col" },
   template: `
   <ngb-tabset>
     <ngb-tab *ngFor="let childControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index" 

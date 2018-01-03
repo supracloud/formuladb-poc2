@@ -52,26 +52,33 @@ select:invalid {
 }
 
 .form-item-highlight {
-    &[form-input] {
+    &[form-input],&[form-autocomplete],&[form-datepicker],&[form-timepicker] {
         background-color: $gray-300!important;
-        input{
-          background-color: $gray-300!important;
+        input {
+            background-color: $gray-300!important;
         }
     }
-    &[form-item].row{
-      border:2px dashed $gray-700!important;
-      margin-top:-2px!important;
-      margin-bottom: -2px!important;
-      .col{
-          padding-left:13px;
-          padding-right:13px;
-      }
+    &[form-item] {
+        &.row {
+            border: 2px dashed $gray-700!important;
+            margin-top: -2px!important;
+            margin-bottom: -2px!important;
+            .col {
+                padding-left: 13px;
+                padding-right: 13px;
+            }
+        }
+    }
+
+    &[form-tabs]{
+        border: 2px dashed $gray-700!important;
+        margin:-2px!important;
     }
 }
 
-.table-highlight{
-  background-color: $gray-700!important;
-  color:white!important;
+.table-highlight {
+    background-color: $gray-700!important;
+    color: white!important;
 }
 
 h5.modal-title {

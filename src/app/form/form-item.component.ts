@@ -15,16 +15,12 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
-  @HostBinding("class.bg-info")
-  private amIHighlighted: boolean;
-
   constructor() {
     super();
   }
 
   ngOnInit() {
     // console.log(this.nodeElement);
-    this.amIHighlighted = this.nodeElement && this.nodeElement._id === this.highlighted;
   }
 
   getChildPath(childEl: NodeElement) {
