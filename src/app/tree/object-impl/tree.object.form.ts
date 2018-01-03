@@ -79,6 +79,7 @@ export class FormTreeObject implements TreeObject<NodeElement>{
 
     public childChange(event: TreeChange) {
         if (event) {
+            this.item = this.updateInternal(this.item, event.originalNode.item);
             if (null !== event.drop) {
                 var cpos = this.getIndexById(event.originalNode.id);
                 if (cpos !== null) {
@@ -124,6 +125,15 @@ export class FormTreeObject implements TreeObject<NodeElement>{
         ret.propertyName = val.propertyName;
         ret.nodeName = val.nodeName;
         return ret;
+    }
+
+
+    private updateInternal(node: NodeElement, updated: NodeElement): NodeElement {
+        if (node._id === updated._id) {
+            return updated;
+        }
+        node.childNodes = node.childNodes.map(c => this.updateInternal(c, updated));
+        return node;
     }
 
 }

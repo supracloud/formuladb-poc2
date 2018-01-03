@@ -96,7 +96,7 @@ export class TreeComponent implements OnInit {
         if (obj !== null) {
             this.node.item = obj;
             const event: TreeChange = new TreeChange(this.node);
-            this.change.emit(event);
+            this.childChange(event);
         }
     }
 
