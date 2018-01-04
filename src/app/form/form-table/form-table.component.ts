@@ -1,14 +1,14 @@
 import { Component, OnChanges, OnInit } from '@angular/core';
-import { BaseNodeComponent } from "./base_node";
+import { BaseNodeComponent } from "./../base_node";
 
-import { NodeElement, NodeType } from "../domain/uimetadata/form";
+import { NodeElement, NodeType } from "../../domain/uimetadata/form";
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 @Component({
   selector: '[form-table]',
   host: { class: "col" },
   templateUrl: 'form-table.component.html',
-  styles: []
+  styleUrls:['form-table.component.scss']
 })
 export class FormTableComponent extends BaseNodeComponent implements OnChanges {
 

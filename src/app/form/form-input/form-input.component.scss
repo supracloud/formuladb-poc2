@@ -1,0 +1,11 @@
+@import "~bootstrap/scss/_functions";
+@import "~bootstrap/scss/_variables";
+@import "~bootstrap/scss/_mixins";
+:host {
+    &.form-item-highlight {
+        background-color: $gray-300!important;
+        input {
+            background-color: $gray-300!important;
+        }
+    }
+}

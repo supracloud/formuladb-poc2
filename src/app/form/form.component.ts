@@ -26,19 +26,7 @@ import { HighlightService } from '../services/hightlight.service';
 
 @Component({
     selector: 'mwz-form',
-    template:
-        `
-    <form [formGroup]="theFormGroup" novalidate>
-        <ngb-alert [type]="alertType" [dismissible]="false">
-            Form status: {{ theFormGroup.status | json }}
-            <i *ngIf="saveInProgress" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
-        </ngb-alert>
-        <div form-item [nodeElement]="(formState$ | async)?.form" [topLevelFormGroup]="theFormGroup" 
-            parentFormPath="" [formReadOnly]="formReadOnly$ | async" [highlighted]="highlightSvc.highlighted$ | async"
-            *ngIf="(formState$ | async)?.form">
-        </div>
-    </form>
-    `,
+    templateUrl: 'form.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 

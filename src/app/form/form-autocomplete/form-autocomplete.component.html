@@ -1,0 +1,6 @@
+<label>{{nodeElement.entityName}}</label>
+<div class="form-group mwz-form-autocomplete" [formGroup]="topLevelFormGroup" *ngFor="let propName of nodeElement.attributes?.copiedProperties">
+    <label [for]="nodeElement.propertyName + '/' + propName">{{nodeElement.entityName}}/{{propName}}</label>
+    <input class="form-control" type="text" [id]="parentFormPath + '.' + propName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + propName)"
+        *ngIf="hasControl(parentFormPath + '.' + propName)" />
+</div>
