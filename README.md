@@ -61,6 +61,12 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ![](./docs/img/docs/edit_flow.png)
 ![](./docs/img/docs/metadata_flow.png)
 
+### Formula Engine use cases
+
+![](./docs/img/docs/FormulasInventoryManagement.png)
+![](./docs/img/docs/FormulasMoneyTransfer.png)
+![](./docs/img/docs/FormulasIndexOf.png)
+
 # 2. Production
 
 TODO

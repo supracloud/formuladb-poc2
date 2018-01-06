@@ -1,4 +1,4 @@
-@startuml FormulasInventoryManagement
+@startuml FormulasMoneyTransfer
 
 title Balance Transfer use case\n\
 Transactional SUM(IF)-like formulas

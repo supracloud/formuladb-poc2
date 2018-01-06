@@ -1,4 +1,4 @@
-@startuml FormulasInventoryManagement
+@startuml FormulasIndexOf
 
 title Ordering by some field use case\n\
 This does not necessarily needs to be transactional, updates can be eventual consistent
