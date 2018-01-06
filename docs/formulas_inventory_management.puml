@@ -74,11 +74,11 @@ Transfer "0..*" -- "1..*" InventoryProduct
 Transfer "0..*" - "1..*" InventoryProduct2
 (Transfer, InventoryProduct2) .. TransferItem
 
-class Promotion {
+class Promotion-TODO {
     user: User
 }
 
-class AutomaticRefill-TODO
+class AutomaticStockRefill-TODO
 class ImportedStock-TODO
 
 @enduml
