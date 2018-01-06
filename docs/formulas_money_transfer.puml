@@ -1,0 +1,25 @@
+@startuml FormulasInventoryManagement
+
+title Balance Transfer use case\n\
+Transactional SUM(IF)-like formulas
+
+class Account1 {
+    _id
+    balance
+}
+class Account2 {
+    _id
+    balance
+}
+
+class Transaction {
+  created_by: User
+  created_at: timestamp
+  account1_id
+  account2_id
+  value
+}
+Transaction "0..*" -- "1..*" Account1
+Transaction "0..*" -- "1..*" Account2
+
+@enduml

@@ -65,7 +65,12 @@ export class MwzEngine {
         return ret;
     }
 
-    private processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
+    private async processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
+        let entity = await dataDB.get(event.obj.mwzType);
+        
+        //TODO: get entities that depend on this entity
+        //TODO: get entities that depend on this entity
+
         //TODO: compute dependencies and formulas
         return dataDB.put(event.obj)
             .then(() => {

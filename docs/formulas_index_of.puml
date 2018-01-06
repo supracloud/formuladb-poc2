@@ -1,0 +1,21 @@
+@startuml FormulasInventoryManagement
+
+title Ordering by some field use case\n\
+This does not necessarily needs to be transactional, updates can be eventual consistent
+
+class ServiceForm {
+    _id
+    created_at
+    client: Client
+    --code:--
+    CONCATENATE(client.code
+     , INDEX_SINCE(created_at,BMONTH(created_at)))
+}
+class Client {
+    _id
+    code
+}
+
+ServiceForm "0..*" -- "1" Client
+
+@enduml
