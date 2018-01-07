@@ -6,20 +6,21 @@ title Transaction State Machine
 
 BEGIN -> BEGIN: ExecutionEngine adds Operations\n to the Transaction
 
-BEGIN -left-> ROLLBACK: at least one Operation\n failed for some object
+BEGIN --> ROLLBACK: at least one Operation\n failed for some object
 
 BEGIN --> COMMIT: ExecutionEngine finished adding Operations
 
 state BEGIN {
   [*] --> NEW
   note right of NEW: an Operation is added\n to the Transaction
-  NEW --> OK
-  NEW --> FAIL
-  NEW --> BUSY
-  BUSY -left-> OK
-  OK --> DONE
-  FAIL --> CANCELLED
-  OK --> CANCELLED
+  NEW --> OK: Operation applied sucessfully\n to DataObj.mwzOps
+  NEW --> FAIL: Operation failed to be applied\n to DataObj.mwzOps
+  NEW --> LOCKED: another transaction is keeping\n this DataObj locked
+  LOCKED -left-> OK: winning transaction chosen\n by TransactionControllers
+  OK --> APPLY: all Operations of a Transaction are OK\n TransactionController gave goahead for COMMITTED
+  FAIL --> CANCELLED: TransactionController cancelled the transaction
+  OK --> CANCELLED: TransactionController cancelled the transaction
+  APPLY --> COMPLETED: Operation applied to DataObj and saved sucessfully into to DB
 }
 
 COMMIT --> COMMITED
