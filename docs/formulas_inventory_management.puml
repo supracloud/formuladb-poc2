@@ -22,9 +22,9 @@ class Product {
 class InventoryProduct {
     _id
     code+location
-    received_stock
-    ordered_stock
-    available_stock
+    +received_stock = SUM(receiptItems.quantity)
+    +ordered_stock = SUM(orderItems.quantity)
+    +available_stock = received_stock - ordered_stock
 }
 class InventoryProduct2 {
     _id
@@ -40,7 +40,11 @@ class Order {
 }
 class OrderItem {
     product: InventoryProduct
-    quantity
+    requested_quantity
+    +available_stock = GET_CURRENT_VALUE_OF(
+        product.available_stock)
+    +quantity = IIF(available_stock < requested_quantity
+    , requested_quantity, available_stock)
 }
 Order "0..*" -- "1..*" InventoryProduct
 (Order, InventoryProduct) .. OrderItem
@@ -64,9 +68,9 @@ class Transfer {
   created_at: timestamp
 }
 class TransferItem {
-    product1: InventoryProduct
-    product2: InventoryProduct
-    product1._id == product2._id
+    productDebit: InventoryProduct
+    productCredit: InventoryProduct
+    productDebit._id == productCredit._id
     quantity
 }
 Transfer "0..*" -- "1..*" InventoryProduct
@@ -78,7 +82,10 @@ class Promotion-TODO {
     user: User
 }
 
-class AutomaticStockRefill-TODO
-class ImportedStock-TODO
+class AutomaticStockRefillTODO
+class ImportedStockTODO
+
+AutomaticStockRefillTODO -- InventoryProduct
+ImportedStockTODO - InventoryProduct
 
 @enduml

@@ -1,0 +1,100 @@
+@startuml FormulasMoneyTransfer
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v1.0.0
+!includeurl ICONURL/font-awesome/database.puml
+!includeurl ICONURL/font-awesome/long_arrow_right.puml
+
+title Balance Transfer use case\n\
+Transactional SUM(IF)-like formulas
+
+actor User
+participant "Transaction \nCoordinator 1\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>trans" as Tr1
+participant "Transaction \nCoordinator 2\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>trans" as Tr2
+
+participant "Worker 1\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>opers" as W1
+participant "Worker 2\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>opers" as W2
+
+note over Tr1
+Initial state:
+  A1=12
+  A2=12
+end note
+
+User -> Tr1: T1{A1-10,\nA2+10}
+User -> Tr2: T2{A1-5,\nA2+5}
+
+== concurrent transactions are created ==
+Tr1 -[#red]-> W1: <font color=red>T1{A1-10}
+Tr2 -[#blue]-> W1: <font color=blue>T2{A1-5}
+Tr2 -[#blue]-> W2: <font color=blue>T2{A2+5}
+Tr1 -[#red]-> W2: <font color=red>T1{A2+10}
+note over W1: workers will allow only one transaction \n\
+  to be active (OK) for a certain object _id
+note over W1: \n\
+  <font color=red>T1{A1-10}OK\n\
+  <font color=blue>T2{A1-5}BUSY\n\
+
+note over W2: \n\
+  <font color=blue>T2{A1+5}OK\n\
+  <font color=red>T1{A1+10}BUSY\n\
+
+== deadlock-like situation for T1 and T2 ==  
+
+Tr1 <-[#red]- W1: <font color=red>T1{A1-10}OK
+Tr2 <-[#blue]- W1: <font color=blue>T2{A1-5}BUSY
+Tr2 <-[#blue]- W2: <font color=blue>T2{A2+5}OK
+Tr1 <-[#red]- W2: <font color=red>T1{A2+10}BUSY
+note over Tr1: T1\n\
+  <font color=red>{A1-10}OK\n\
+  <font color=red>{A1+10}BUSY\n\
+
+note over Tr2: T2\n\
+  <font color=blue>{A1-5}BUSY\n\
+  <font color=blue>{A1+5}OK\n\
+
+== Transaction Controllers deterministically choose a winning transaction \n\
+ (e.g. lexicographically smaller _id wins, T1 wins)==
+
+Tr1 -[#red]-> W1: <font color=red>T1{A1-10}OK
+Tr2 -[#blue]-> W1: <font color=blue>T2{A1-5}BUSY
+Tr2 -[#blue]-> W2: <font color=blue>T2{A2+5} LOST-TO T1{A2+10}
+Tr1 -[#red]-> W2: <font color=red>T1{A2+10} WON-OVER T2{A2+5}
+note over W1: workers apply the decision of Transaction Controllers
+
+note over W1: \n\
+  <font color=red>T1{A1-10}OK\n\
+  <font color=blue>T2{A1-5}BUSY\n\
+
+note over W2: \n\
+  <font color=red>T1{A1+10}OK\n\
+  <font color=blue>T2{A1+5}BUSY\n\
+
+Tr1 <-[#red]- W1: <font color=red>T1{A1-10}OK
+Tr2 <-[#blue]- W1: <font color=blue>T2{A1-5}BUSY
+Tr2 <-[#blue]- W2: <font color=blue>T2{A2+5}BUSY
+Tr1 <-[#red]- W2: <font color=red>T1{A2+10}OK
+
+== deadlock situation resolved, T1 can proceed ==
+
+Tr1 -[#red]-> W1: <font color=red>T1{A1-10}COMMIT
+Tr1 -[#red]-> W2: <font color=red>T1{A2+10}COMMIT
+
+note over W1: workers apply the modifications to the DB objects\n\
+We assume this cannot fail logically, OK was returned after computing\n\
+  formulas and writing the intermediary results to local worker state\n\
+In case the worker dies another will pick again the lost messages and apply them
+
+note over W1: when a transaction is committed the next one is automatically evaluated for OK/FAIL\n\
+
+note over Tr1
+New state:
+  A1=2
+  A2=22
+end note
+
+Tr1 <-[#red]- W1: <font color=red>T1{A1-10}COMMITTED
+Tr2 <-[#blue]- W1: <font color=blue>T2{A1-5}FAIL
+Tr2 <-[#blue]- W2: <font color=blue>T2{A2+5}OK
+Tr1 <-[#red]- W2: <font color=red>T1{A2+10}COMMITTED
+
+@enduml

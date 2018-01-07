@@ -3,11 +3,18 @@
 title Balance Transfer use case\n\
 Transactional SUM(IF)-like formulas
 
-class Account1 {
+class Account {
+    _id
+    + balance = SUM(creditedTransactions.value) -
+      SUM(debitedTransactions.value)
+    --validations--
+    balance > 0
+}
+class Account2 {
     _id
     balance
 }
-class Account2 {
+class Account3 {
     _id
     balance
 }
@@ -15,11 +22,21 @@ class Account2 {
 class Transaction {
   created_by: User
   created_at: timestamp
-  account1_id
-  account2_id
+  debitedAccount = Account
+  creditedAccount = Account2
   value
 }
-Transaction "0..*" -- "1..*" Account1
-Transaction "0..*" -- "1..*" Account2
+Transaction "0..*" -- "1..*" Account
+Transaction -- Account2
+
+class Transaction2 {
+  created_by: User
+  created_at: timestamp
+  debitedAccount = Account2
+  creditedAccount = Account3
+  value
+}
+Transaction2 -- Account2
+Transaction2 -- Account3
 
 @enduml

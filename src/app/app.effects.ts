@@ -27,7 +27,7 @@ import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/f
 
 import * as appState from './app.state';
 
-import { PouchdbService } from "./pouchdb.service";
+import { BackendService } from "./pouchdb.service";
 
 
 export type ActionsToBeSentToServer =
@@ -55,7 +55,7 @@ export class AppEffects {
     constructor(
         private actions$: Actions,
         private store: Store<appState.AppState>,
-        private pouchDbService: PouchdbService,
+        private pouchDbService: BackendService,
         private router: Router
     ) {
 
@@ -227,7 +227,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>)
     } as Form;
     setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', JSON.stringify(form));
-    PouchdbService.addIdsToForm(form);
+    BackendService.addIdsToForm(form);
     return form;
 }
 
@@ -262,6 +262,6 @@ export function getDefaultTable(entity: Entity): Table {
 
     let table = new Table();
     table.columns = entity.properties.map((prop, idx) => new TableColumn(prop.name, prop.type));
-    PouchdbService.addIdsToTable(table);
+    BackendService.addIdsToTable(table);
     return table;
 }

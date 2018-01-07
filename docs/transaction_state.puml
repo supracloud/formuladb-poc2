@@ -1,0 +1,29 @@
+@startuml TransactionStateMachine
+
+title Transaction State Machine
+
+[*] --> BEGIN
+
+BEGIN -> BEGIN: ExecutionEngine adds Operations\n to the Transaction
+
+BEGIN -left-> ROLLBACK: at least one Operation\n failed for some object
+
+BEGIN --> COMMIT: ExecutionEngine finished adding Operations
+
+state BEGIN {
+  [*] --> NEW
+  note right of NEW: an Operation is added\n to the Transaction
+  NEW --> OK
+  NEW --> FAIL
+  NEW --> BUSY
+  BUSY -left-> OK
+  OK --> DONE
+  FAIL --> CANCELLED
+  OK --> CANCELLED
+}
+
+COMMIT --> COMMITED
+
+COMMITED --> [*]
+
+@enduml

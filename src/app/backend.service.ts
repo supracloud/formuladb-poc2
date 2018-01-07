@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
-
-import PouchDB from 'pouchdb';
+import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
+// import PouchDB from 'pouchdb';//use this when running on webpack in za browser
 import PouchFind from 'pouchdb-find';
+
+import { Injectable } from '@angular/core';
 
 import { BaseObj } from "./domain/base_obj";
 import { ChangeObj } from "./domain/change_obj";
@@ -13,42 +14,44 @@ import { Form, NodeElement } from "./domain/uimetadata/form";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-@Injectable()
-export class PouchdbService {
+import { PersistenceService } from "./persistence.service";
 
-    private localDB: any;
+@Injectable()
+export class BackendService extends PersistenceService {
+
     private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
 
-    constructor(private http: HttpClient) {
-        PouchDB.plugin(PouchFind);
-        this.localDB = new PouchDB("mwz");
+    constructor(private http: HttpClient,
+        private persistentService: PersistenceService) {
+        super();
+        this.persistentService.dataDB = new PouchDB("mwz");
     }
 
     public init(initCallback: () => void,
-        notifCallback: (event: MwzEvents ) => void,
+        notifCallback: (event: MwzEvents) => void,
         dataChangeCallback: (change: { docs: Array<BaseObj> }) => void) {
 
-        this.localDB.createIndex({
+        this.persistentService.dataDB.createIndex({
             index: { fields: ['mwzType'] }
         }).then(() => {
             let appStateS = this;
 
-            this.localDB.explain({
+            this.persistentService.dataDB.explain({
                 selector: {
                     mwzType: 'Entity_'
                 }
             }).then(explanation => console.warn("Check index usage: ", explanation))
-            .catch(err => console.error(err));
+                .catch(err => console.error(err));
 
             //first catchup local PouchDB with what happened on the server while the application was stopped
-            this.localDB.replicate.from(this.remoteDataDBUrl)
+            this.persistentService.dataDB.replicate.from(this.remoteDataDBUrl)
                 .on('complete', info => {
 
                     //application specific initialization
                     initCallback();
 
                     //after initial replication from the server is finished, continue with live replication
-                    this.localDB.replicate.from(this.remoteDataDBUrl, {
+                    this.persistentService.dataDB.replicate.from(this.remoteDataDBUrl, {
                         live: true,
                         retry: true,
                     })
@@ -61,29 +64,14 @@ export class PouchdbService {
         });
     }
 
-    public findByMwzType<T extends BaseObj>(mwzType: string): Promise<T[]> {
-        return this.localDB.find({
-            selector: {
-                mwzType: mwzType
-            }
-        }).then((res: { docs: T[] }) => {
-            return res.docs;
-        }).catch(err => console.error(err));
-    }
-
     public putEvent(event: MwzEvents): Observable<MwzEvents> {
         return this.http.post<MwzEvents>('/api/event', event);
     }
 
-    public getEntity(path: string): Promise<Entity> {
-        //the Entity's _id is the path
-        return this.localDB.get(path);
-    }
-
     public getTable(path: string): Promise<Table> {
-        return this.localDB.get('Table_:' + path).then(ti => {
-            return new Promise((resolve, reject) => {
-                PouchdbService.addIdsToTable(ti);
+        return super.getTable(path).then(ti => {
+            return new Promise<Table>((resolve, reject) => {
+                BackendService.addIdsToTable(ti);
                 resolve(ti);
             })
         });
@@ -97,8 +85,8 @@ export class PouchdbService {
     }
 
     public getForm(path: string): Promise<Form> {
-        return this.localDB.get('Form_:' + path).then(fi => {
-            PouchdbService.addIdsToForm(fi);
+        return super.getForm(path).then(fi => {
+            BackendService.addIdsToForm(fi);
             return fi;
             // return new Promise((resolve, reject) => {
             //     PouchdbService.addIdsToForm(fi);
@@ -114,23 +102,4 @@ export class PouchdbService {
         }
     }
 
-    public getDataObj(id: string): Promise<DataObj> {
-        return this.localDB.get(id);
-    }
-
-    // private put(id: string, document: BaseObj): Promise<any> {
-    //     document._id = id;
-    //     return this.get(id).then(result => {
-    //         document._rev = result._rev;
-    //         return this.localDB.put(document);
-    //     }, error => {
-    //         if (error.status == "404") {
-    //             return this.localDB.put(document);
-    //         } else {
-    //             return new Promise((resolve, reject) => {
-    //                 reject(error);
-    //             });
-    //         }
-    //     });
-    // }    
 }
