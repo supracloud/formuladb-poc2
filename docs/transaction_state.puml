@@ -17,10 +17,11 @@ state BEGIN {
   NEW --> FAIL: Operation failed to be applied\n to DataObj.mwzOps
   NEW --> LOCKED: another transaction is keeping\n this DataObj locked
   LOCKED -left-> OK: winning transaction chosen\n by TransactionControllers
-  OK --> APPLY: all Operations of a Transaction are OK\n TransactionController gave goahead for COMMITTED
-  FAIL --> CANCELLED: TransactionController cancelled the transaction
-  OK --> CANCELLED: TransactionController cancelled the transaction
+  OK --> APPLY: all Operations of a Transaction are OK\n TransactionController gave goahead to APPLY
+  FAIL --> CANCELLED: TransactionController cancelled the Transaction\n consequently all operations
+  OK --> CANCELLED: TransactionController cancelled the Transaction\n consequently all operations
   APPLY --> COMPLETED: Operation applied to DataObj and saved sucessfully into to DB
+  COMPLETED -> [*]
 }
 
 COMMIT --> COMMITED

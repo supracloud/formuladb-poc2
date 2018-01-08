@@ -64,11 +64,22 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ### Formula Engine architecture
 
 ![](./docs/img/docs/formula_engine_architecture.png)
+![](./docs/img/docs/TransactionStateMachine.png)
 
 ### Formula Engine use cases
 
+#### Inventory Management
+
 ![](./docs/img/docs/FormulasInventoryManagement.png)
+
+#### Balance Transfer
+
 ![](./docs/img/docs/FormulasMoneyTransfer.png)
+![](./docs/img/docs/FormulasMoneyTransferFlow.png)
+
+
+#### INDEX_OF partial global ordering formula
+
 ![](./docs/img/docs/FormulasIndexOf.png)
 
 # 2. Production

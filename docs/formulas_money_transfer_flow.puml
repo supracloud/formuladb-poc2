@@ -1,4 +1,4 @@
-@startuml FormulasMoneyTransfer
+@startuml FormulasMoneyTransferFlow
 
 !define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v1.0.0
 !includeurl ICONURL/font-awesome/database.puml
