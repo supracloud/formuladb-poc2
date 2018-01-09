@@ -12,7 +12,7 @@ title Balance Transfer use case\nTransactional SUM(IF)-like formulas
 !define REPLY_T1(Acc,msg) T1Ex1 <-[#red]- Acc##Ex1: <font color=red>msg
 !define MSG_T2(Acc,msg) T2Ex1 -[#blue]-> Acc##Ex1:<font color=blue> msg
 !define REPLY_T2(Acc,msg) T2Ex1 <-[#blue]- Acc##Ex1: <font color=blue>msg
-!define NO_OP T1Ex1 <-[#lightgrey]-> O2Ex1: <font color=lightgrey>no message
+!define NO_OP T1Ex1 <-[#grey]-> O2Ex1: <font color=grey>n/a, align diagram for Ex1/Ex2/Ex3
 !definelong STATE_T1(msgT1, msgO1, msgO2) 
 note over T1Ex1: <font color=red>msgT1
 / note over O1Ex1: <font color=red>msgO1
@@ -24,20 +24,20 @@ note over T2Ex1: <font color=blue>msgT2
 / note over O2Ex1: <font color=blue>msgO2
 !enddefinelong
 
-!define __MSG_T1(Acc,msg) & T1Ex2 -[#red]-> Acc##Ex2:<font color=red> msg
-!define __REPLY_T1(Acc,msg) & T1Ex2 <-[#red]- Acc##Ex2: <font color=red>msg
-!define __MSG_T2(Acc,msg) & T2Ex2 -[#blue]-> Acc##Ex2:<font color=blue> msg
-!define __REPLY_T2(Acc,msg) & T2Ex2 <-[#blue]- Acc##Ex2: <font color=blue>msg
-!define __NO_OP & T1Ex2 <-[#lightgrey]-> O2Ex2: <font color=lightgrey>no message
+!define __MSG_T1(Acc,msg) T1Ex2 -[#red]-> Acc##Ex2:<font color=red> msg
+!define __REPLY_T1(Acc,msg) T1Ex2 <-[#red]- Acc##Ex2: <font color=red>msg
+!define __MSG_T2(Acc,msg) T2Ex2 -[#blue]-> Acc##Ex2:<font color=blue> msg
+!define __REPLY_T2(Acc,msg) T2Ex2 <-[#blue]- Acc##Ex2: <font color=blue>msg
+!define __NO_OP T1Ex2 <-[#grey]-> O2Ex2: <font color=grey>n/a, align diagram for Ex1/Ex2/Ex3
 !definelong __STATE_T1(msgT1, msgO1, msgO2) 
-/ note over T1Ex2: <font color=red>msgT1
-/ note over O1Ex2: <font color=red>msgO1
-/ note over O2Ex2: <font color=red>msgO2
+note  over T1Ex2: <font color=red>msgT1
+/ note  over O1Ex2: <font color=red>msgO1
+/ note  over O2Ex2: <font color=red>msgO2
 !enddefinelong
 !definelong __STATE_T2(msgT2, msgO1, msgO2) 
-/ note over T2Ex2: <font color=blue>msgT2
-/ note over O1Ex2: <font color=blue>msgO1
-/ note over O2Ex2: <font color=blue>msgO2
+note  over T2Ex2: <font color=blue>msgT2
+/ note  over O1Ex2: <font color=blue>msgO1
+/ note  over O2Ex2: <font color=blue>msgO2
 !enddefinelong
 
 actor User
@@ -76,87 +76,61 @@ User -> T2Ex1: T2{O1-5,\nO2+5}
 
 note right O1Ex1: workers will allow only one transaction to be active (OK) for a certain object _id
 
-MSG_T1(O1, T1-timestamp)
-          __MSG_T2(O1, T2-timestamp)
+MSG_T1(O1, T1-t0)
+          & __MSG_T2(O1, T2-t1)
 STATE_T1(BEGIN, OK, -)
-          __STATE_T2(BEGIN, OK, -)
+          / __STATE_T2(BEGIN, OK, -)
 REPLY_T1(O1, T1-{O1=12}OK)
-          __REPLY_T2(O1,OK)
+          & __REPLY_T2(O1,OK)
 
-MSG_T2(O1, T2-timestamp)
-          __MSG_T2(O2, T2-timestamp)
+MSG_T2(O1, T2-t1)
+          & __MSG_T2(O2, T2-t1)
 STATE_T2(BEGIN, WAIT, -)
-          __STATE_T2(BEGIN, OK, OK)
-NO_OP
-          __REPLY_T2(O2,OK)
+          / __STATE_T2(BEGIN, OK, OK)
+MSG_T2(O2, T2-t1)
+          & __REPLY_T2(O2,OK)
 
-MSG_T2(O2, T2-timestamp)
-          __MSG_T1(O1, T1-timestamp)
+== divider 1 ==
 STATE_T2(BEGIN, WAIT, OK)
-          __STATE_T1(BEGIN, WAIT, -)
+          / __STATE_T2(PRECOMMIT,,)
+          __MSG_T2(O1, PRECOMMIT)
+          / __STATE_T2(, APPLIED, OK)
 REPLY_T2(O2, T2-{O1=12}OK)
-          __NO_OP
+          & __REPLY_T2(O1, T1-{O1=2}APPLIED)
 
-MSG_T1(O2, T1-timestamp)
-          __MSG_T1(O2, T1-timestamp)
-STATE_T1(BEGIN, OK, WAIT)
-          __STATE_T1(BEGIN, WAIT, WAIT)
+MSG_T1(O2, T1-t0)
+          & __MSG_T1(O2, T1-t0)
+STATE_T1(BEGIN, OK, OK(t0<t1))
+          / __STATE_T1(BEGIN, -, OK(t0<t1))
+STATE_T2(BEGIN, WAIT, OK->WAIT\n(t0<t1))
+          / __STATE_T2(-, APPLIED, OK->WAIT\n(t0<t1))
+REPLY_T1(O2, T1-{O2=12}OK)
+          & __MSG_T2(O2, PRECOMMIT)
 
-'=============================================================
-== deadlock-like situation for T1 and T2 (join READ Phase) ==
-'=============================================================
+== divider 2 ==
 
-note over T1Ex1: T1\n\
-  <font color=red>{O1-10}OK\n\
-  <font color=red>{O1+10}WAIT\n\
+STATE_T1(PRECOMMIT,,)
+MSG_T1(O1, PRECOMMIT)
+MSG_T1(O2, PRECOMMIT)
+STATE_T1(, APPLIED, OK)
+REPLY_T1(O1, T1-{O1=2}APPLIED)
+STATE_T1(, APPLIED, APPLIED)
+REPLY_T1(O2, T1-{O2=2}APPLIED)
 
-note over T2Ex1: T2\n\
-  <font color=blue>{O1-5}WAIT\n\
-  <font color=blue>{O1+5}OK\n\
+== divider 3 ==
 
-== Transaction Controllers deterministically choose a winning transaction \n\
- (e.g. lexicographically smaller _id wins, T1 wins)==
+STATE_T1(COMMIT,,)
+MSG_T1(O1, COMMIT)
+MSG_T1(O2, COMMIT)
+STATE_T1(, DONE, APPLIED)
+STATE_T2(, OK, WAIT)
+REPLY_T1(O1, DONE)
+& REPLY_T2(O1, T1-{O1=2}OK)
+STATE_T1(, DONE, DONE)
+STATE_T2(, OK, OK)
+REPLY_T1(O2, DONE)
+& REPLY_T2(O2, T1-{O2=2}OK)
 
-T1Ex1 -[#red]-> O1Ex1: <font color=red>T1{O1-10}OK
-T2Ex1 -[#blue]-> O1Ex1: <font color=blue>T2{O1-5}WAIT
-T2Ex1 -[#blue]-> O2Ex1: <font color=blue>T2{O2+5} LOST-TO T1{O2+10}
-T1Ex1 -[#red]-> O2Ex1: <font color=red>T1{O2+10} WON-OVER T2{O2+5}
-note over O1Ex1: workers apply the decision of Transaction Controllers
-
-note over O1Ex1: \n\
-  <font color=red>T1{O1-10}OK\n\
-  <font color=blue>T2{O1-5}WAIT\n\
-
-note over O2Ex1: \n\
-  <font color=red>T1{O1+10}OK\n\
-  <font color=blue>T2{O1+5}WAIT\n\
-
-T1Ex1 <-[#red]- O1Ex1: <font color=red>T1{O1-10}OK
-T2Ex1 <-[#blue]- O1Ex1: <font color=blue>T2{O1-5}WAIT
-T2Ex1 <-[#blue]- O2Ex1: <font color=blue>T2{O2+5}WAIT
-T1Ex1 <-[#red]- O2Ex1: <font color=red>T1{O2+10}OK
-
-== deadlock situation resolved, T1 can proceed ==
-
-T1Ex1 -[#red]-> O1Ex1: <font color=red>T1{O1-10}COMMIT
-T1Ex1 -[#red]-> O2Ex1: <font color=red>T1{O2+10}COMMIT
-
-note over O1Ex1: workers apply the modifications to the DB objects\n\
-We assume this cannot fail logically, OK was returned after computing\n\
-  formulas and writing the intermediary results to local worker state\n\
-In case the worker dies another will pick again the lost messages and apply them
-
-note over O1Ex1: when a transaction is committed the next one is automatically evaluated for OK/FAIL\n\
-
-note over T1Ex1
-New state:
-  O1=2
-  O2=22
-end note
-
-T1Ex1 <-[#red]- O1Ex1: <font color=red>T1{O1-10}COMMITTED
-T2Ex1 <-[#blue]- O1Ex1: <font color=blue>T2{O1-5}FAIL
-T2Ex1 <-[#blue]- O2Ex1: <font color=blue>T2{O2+5}OK
-T1Ex1 <-[#red]- O2Ex1: <font color=red>T1{O2+10}COMMITTED
+== divider 4 ==
 
 @enduml
