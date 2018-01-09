@@ -39,6 +39,12 @@ testem.log
 # e2e
 /e2e/*.js
 /e2e/*.map
+/src/**/*.js
+/src/**/*.map
+/server/**/*.js
+/server/**/*.map
+
+tmp.txt
 
 # System Files
 .DS_Store
