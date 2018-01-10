@@ -1,0 +1,102 @@
+@startuml formula_engine_architecture_old
+
+!define ICONURL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v1.0.0
+!includeurl ICONURL/font-awesome/database.puml
+!includeurl ICONURL/font-awesome/long_arrow_right.puml
+
+title __Formula Engine Architecture__\n\
+A Transactional Stream Processing Engine
+
+actor User
+participant "Load \nBalancer" as LB
+
+box "Formula DB Engine"
+    participant "Transaction \nCoordinator 1\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>trans" as Tr1
+    participant "Transaction \nCoordinator 2\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>trans" as Tr2
+
+    participant "Worker 1\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>opers" as Ent1
+    participant "Worker 2\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>opers" as Ent2
+    participant "Worker 3\n<$database{scale=0.5}>state\n<$long_arrow_right{scale=0.5}>opers" as Ent3
+end box
+
+note right User: synchronous REST communication \n\
+  even if FormulaDB works in an asynchronous manner internally
+User -> LB: User\nActions\n(REST)
+note right User: LB allocates transaction id for each Action\n\
+Updates global LEDGER with all transaction id(s) in order\n\
+  and dispatches transactions to coordinators
+LB --> Tr1: T1.state=CREATED\nLEDGER=T1
+LB --> Tr2: T2.state=CREATED\nLEDGER=T1|T2
+LB --> Tr2: T3.state=CREATED\nLEDGER=T1|T2|T3
+LB --> Tr1: T4.state=CREATED\nLEDGER=T1|T2|T3
+
+note over Tr1
+T1.state=PENDING
+IMPORTANT: OPERATIONS ARE SORTED BY Entity name AND _id !
+This is important to avoid deadlock-like situations
+end note
+Tr1 --> Ent1: read access\nfor getting the list of impacted\n\
+  entities and objects
+Tr1 --> Ent2: read access
+Tr1 --> Ent1: T1/O1\nLEDGER=T1
+Tr1 --> Ent2: T1/O2\nLEDGER=T1
+note over Ent1: T1
+note over Ent2: T1
+
+note over Tr2
+T2.state=PENDING
+end note
+Tr2 --> Ent2: read access
+Tr2 --> Ent2: T2/O1\nLEDGER=T1|T2
+Tr2 --> Ent3: T2/O2\nLEDGER=T1|T2
+note over Ent2: T1|T2
+note over Ent3: T2
+
+note over Tr2
+T3.state=PENDING
+end note
+Tr2 --> Ent1: T3/O1\nLEDGER=T1|T2|T3
+Tr2 --> Ent2: T3/O2\nLEDGER=T1|T2|T3
+note over Ent1: T1|T3
+note over Ent2: T1|T2|T3
+
+note over Tr1
+T4.state=PENDING
+end note
+Tr1 --> Ent2: T4/O1\nLEDGER=T1|T2|T3|T4
+Tr1 --> Ent3: T4/O2\nLEDGER=T1|T2|T3|T4
+note over Ent2: T1|T2|T3|T4
+note over Ent3: T2|T4
+
+note over Ent1
+Each Worker applies the transactions in order but do not update the main object
+Instead for each transaction it keeps a copy (like redo logs in RDBS) 
+end note
+
+alt OK
+    Tr1 <-- Ent1: T1=OK
+    Tr1 <-- Ent2: T1=OK
+    note over Tr1: T1.state=OK
+    Tr1 --> Ent1: T1/O1=OK
+    Tr1 --> Ent2: T1/O2=OK
+    note over Ent1
+    Workers modify the main objects (commit the transaction)
+    ONLY ALLOWED TO COMMIT THE FIRST TRANSACTION !
+    end note
+    Tr1 <-- Ent1: T1/O1=COMMITTED
+    Tr1 <-- Ent2: T1/O2=COMMITTED
+else FAIL
+    Tr1 <-- Ent1: T1/O1=OK
+    Tr1 <-- Ent2: T1/O2=FAIL!!
+    note over Tr1: T1.state=FAIL
+    Tr1 --> Ent1: T1/O1=COMMIT
+    Tr1 --> Ent2: T1/O2=COMMIT
+    note over Ent1
+    Workers rollback the transaction: remove it form queue
+      and recompute all transactions that follow in the queue
+    end note
+    note over Ent1: remove T1\nrecompute T2
+    note over Ent2: remove T1\nrecompute T2|T3|T4
+end
+
+@enduml
