@@ -8,36 +8,39 @@ title Balance Transfer use case\nTransactional SUM(IF)-like formulas
 
 !pragma teoz true
 
-!define MSG_T1(Acc,msg) T1Ex1 -[#red]-> Acc##Ex1:<font color=red> msg
-!define REPLY_T1(Acc,msg) T1Ex1 <-[#red]- Acc##Ex1: <font color=red>msg
-!define MSG_T2(Acc,msg) T2Ex1 -[#blue]-> Acc##Ex1:<font color=blue> msg
-!define REPLY_T2(Acc,msg) T2Ex1 <-[#blue]- Acc##Ex1: <font color=blue>msg
-!define NO_OP T1Ex1 <-[#grey]-> O2Ex1: <font color=grey>n/a, align diagram for Ex1/Ex2/Ex3
-!definelong STATE_T1(msgT1, msgO1, msgO2) 
-note over T1Ex1: <font color=red>msgT1
-/ note over O1Ex1: <font color=red>msgO1
-/ note over O2Ex1: <font color=red>msgO2
+
+!define M_T1(Ex,Acc,msg) T1##Ex -[#red]-> Acc##Ex:<font color=red> msg
+!define R_T1(Ex,Acc,msg) T1##Ex <-[#red]- Acc##Ex: <font color=red>msg
+!define M_T2(Ex,Acc,msg) T2##Ex -[#blue]-> Acc##Ex:<font color=blue> msg
+!define R_T2(Ex,Acc,msg) T2##Ex <-[#blue]- Acc##Ex: <font color=blue>msg
+!define NAM(Ex) T1##Ex <-[#grey]-> O2##Ex: <font color=lightgrey>n/a align diagram for Ex1/Ex2/Ex3
+!definelong NAS(Ex)
+note right of T1##Ex #lightgrey
+n/a
+end note
 !enddefinelong
-!definelong STATE_T2(msgT2, msgO1, msgO2) 
-note over T2Ex1: <font color=blue>msgT2
-/ note over O1Ex1: <font color=blue>msgO1
-/ note over O2Ex1: <font color=blue>msgO2
+!definelong S_T1(Ex,msgT1, msgO1, msgO2) 
+note over T1##Ex: <font color=red>msgT1
+/ note over O1##Ex: <font color=red>msgO1
+/ note over O2##Ex: <font color=red>msgO2
+!enddefinelong
+!definelong S_T2(Ex,msgT2, msgO1, msgO2) 
+note over T2##Ex: <font color=blue>msgT2
+/ note over O1##Ex: <font color=blue>msgO1
+/ note over O2##Ex: <font color=blue>msgO2
 !enddefinelong
 
-!define __MSG_T1(Acc,msg) T1Ex2 -[#red]-> Acc##Ex2:<font color=red> msg
-!define __REPLY_T1(Acc,msg) T1Ex2 <-[#red]- Acc##Ex2: <font color=red>msg
-!define __MSG_T2(Acc,msg) T2Ex2 -[#blue]-> Acc##Ex2:<font color=blue> msg
-!define __REPLY_T2(Acc,msg) T2Ex2 <-[#blue]- Acc##Ex2: <font color=blue>msg
-!define __NO_OP T1Ex2 <-[#grey]-> O2Ex2: <font color=grey>n/a, align diagram for Ex1/Ex2/Ex3
-!definelong __STATE_T1(msgT1, msgO1, msgO2) 
-note  over T1Ex2: <font color=red>msgT1
-/ note  over O1Ex2: <font color=red>msgO1
-/ note  over O2Ex2: <font color=red>msgO2
+
+!definelong _m(p_ex1, p_ex2, p_ex3) 
+p_ex1
+& p_ex2
+& p_ex3
 !enddefinelong
-!definelong __STATE_T2(msgT2, msgO1, msgO2) 
-note  over T2Ex2: <font color=blue>msgT2
-/ note  over O1Ex2: <font color=blue>msgO1
-/ note  over O2Ex2: <font color=blue>msgO2
+
+!definelong _s(p_ex1, p_ex2, p_ex3)
+p_ex1
+/ p_ex2
+/ p_ex3
 !enddefinelong
 
 actor User
@@ -63,6 +66,13 @@ box "Example 3"
   participant O2Ex3
 end box
 
+box "Example 4"
+  participant T1Ex4
+  participant T2Ex4
+  participant O1Ex4
+  participant O2Ex4
+end box
+
 note over User: Initial state:\n O1=12, O2=12
 / note over T2Ex1: Transaction Coordinators\nsingle owners of transactions \n<$database{scale=0.5}>state, <$long_arrow_right{scale=0.5}>trans
 / note over O1Ex2: Object Owner Read/Write\nsingle owners of objects\nFor this use case O1 and O2 are accounts\n<$database{scale=0.5}>state, <$long_arrow_right{scale=0.5}>opers
@@ -70,67 +80,51 @@ note over User: Initial state:\n O1=12, O2=12
 User -> T1Ex1: T1{O1-10,\nO2+10}
 User -> T2Ex1: T2{O1-5,\nO2+5}
 
-'=============================================================
-== concurrent transactions are created (fan-out) ==
-'=============================================================
-
+== 1. Transaction Controllers fan-out to Object Owners then results from Object Owners are joined by the Transaction Controllers which compute the state of the transaction ==
 note right O1Ex1: workers will allow only one transaction to be active (OK) for a certain object _id
 
-MSG_T1(O1, T1-t0)
-          & __MSG_T2(O1, T2-t1)
-STATE_T1(BEGIN, OK, -)
-          / __STATE_T2(BEGIN, OK, -)
-REPLY_T1(O1, T1-{O1=12}OK)
-          & __REPLY_T2(O1,OK)
+_m(M_T1(Ex1, O1, T1-t0)                        , M_T2(Ex2, O1, T2-t1)                      , M_T2(Ex3, O1, T2-t1)                      )
+_s(S_T1(Ex1, BEGIN, OK, -)                     , S_T2(Ex2, BEGIN, OK, -)                   , S_T2(Ex3, BEGIN, OK, -)                   )
+_m(R_T1(Ex1, O1, {O1=12}OK)                    , R_T2(Ex2, O1, {O1=12}OK)                  , R_T2(Ex3, O1,OK)                          )
+_m(M_T2(Ex1, O1, T2-t1)                        , M_T2(Ex2, O2, T2-t1)                      , M_T2(Ex3, O2, T2-t1)                      )
+_s(S_T2(Ex1, BEGIN, WAIT, -)                   , S_T2(Ex2, BEGIN, OK, OK)                  , S_T2(Ex3, BEGIN, OK, OK)                  )
+_m(M_T2(Ex1, O2, T2-t1)                        , R_T2(Ex2, O2, {O2=12}OK)                  , R_T2(Ex3, O2,OK)                          )
 
-MSG_T2(O1, T2-t1)
-          & __MSG_T2(O2, T2-t1)
-STATE_T2(BEGIN, WAIT, -)
-          / __STATE_T2(BEGIN, OK, OK)
-MSG_T2(O2, T2-t1)
-          & __REPLY_T2(O2,OK)
+== 2. Computations are done by the Transaction Controllers using the values received from  the Object Owners in the initial replies with {O1=12}OK ==
+_s(S_T2(Ex1, BEGIN, WAIT, OK)                  , S_T2(Ex2, PRECOMMIT,,)                    , S_T2(Ex3, PRECOMMIT,,)                    )
+_m(NAM(Ex1)                                    , M_T2(Ex2, O1, PRECOMMIT)                  , M_T2(Ex3, O1, PRECOMMIT)                  )
+_s(NAS(Ex1)                                    , S_T2(Ex2, , READY, OK)                    , S_T2(Ex3, , READY, OK)                    )
+_m(R_T2(Ex1, O2, {O1=12}OK)                    , R_T2(Ex2, O1, {O1=2}READY)                , R_T2(Ex3, O1, {O1=2}READY)                )
+_m(M_T1(Ex1, O2, T1-t0)                        , M_T1(Ex2, O2, T1-t0)                      , M_T2(Ex3, O2, PRECOMMIT)                  )
+_s(S_T1(Ex1, BEGIN, OK, OK(t0<t1))             , S_T1(Ex2, BEGIN, -, OK(t0<t1)             , S_T2(Ex3, -, READY, READY)                )
+_s(S_T2(Ex1, BEGIN, WAIT, OK->WAIT)            , S_T2(Ex2, -, READY, OK->WAIT\n(t0<t1)     , NAS(Ex3)                                  )
+_m(R_T1(Ex1, O2, {O2=12}OK)                    , M_T2(Ex2, O2, PRECOMMIT)                  , R_T2(Ex3, O2, {O2=2}READY)                )
+                                                                                              'M_T1(Ex3, O2, T1-t0) S_T1(Ex3, BEGIN, -, OK(t0<t1)
 
-== divider 1 ==
-STATE_T2(BEGIN, WAIT, OK)
-          / __STATE_T2(PRECOMMIT,,)
-          __MSG_T2(O1, PRECOMMIT)
-          / __STATE_T2(, APPLIED, OK)
-REPLY_T2(O2, T2-{O1=12}OK)
-          & __REPLY_T2(O1, T1-{O1=2}APPLIED)
+== 3. A PRECOMMIT transaction can be pre-empted in the Object Owner by an older transction (T1.to < T2.t1), in this case transaction must be re-computed with values updated by T1 ==
 
-MSG_T1(O2, T1-t0)
-          & __MSG_T1(O2, T1-t0)
-STATE_T1(BEGIN, OK, OK(t0<t1))
-          / __STATE_T1(BEGIN, -, OK(t0<t1))
-STATE_T2(BEGIN, WAIT, OK->WAIT\n(t0<t1))
-          / __STATE_T2(-, APPLIED, OK->WAIT\n(t0<t1))
-REPLY_T1(O2, T1-{O2=12}OK)
-          & __MSG_T2(O2, PRECOMMIT)
+S_T1(Ex1, PRECOMMIT,,)
+M_T1(Ex1, O1, PRECOMMIT)
+M_T1(Ex1, O2, PRECOMMIT)
+S_T1(Ex1, , READY, OK)
+R_T1(Ex1, O1, T1-{O1=2}READY)
+S_T1(Ex1, , READY, READY)
+R_T1(Ex1, O2, T1-{O2=2}READY)
 
-== divider 2 ==
+== 4. TBD ==
 
-STATE_T1(PRECOMMIT,,)
-MSG_T1(O1, PRECOMMIT)
-MSG_T1(O2, PRECOMMIT)
-STATE_T1(, APPLIED, OK)
-REPLY_T1(O1, T1-{O1=2}APPLIED)
-STATE_T1(, APPLIED, APPLIED)
-REPLY_T1(O2, T1-{O2=2}APPLIED)
+S_T1(Ex1, COMMIT,,)
+M_T1(Ex1, O1, COMMIT)
+M_T1(Ex1, O2, COMMIT)
+S_T1(Ex1, , DONE, READY)
+S_T2(Ex1, , OK, WAIT)
+R_T1(Ex1, O1, DONE)
+& R_T2(Ex1, O1, T1-{O1=2}OK)
+S_T1(Ex1, , DONE, DONE)
+S_T2(Ex1, , OK, OK)
+R_T1(Ex1, O2, DONE)
+& R_T2(Ex1, O2, T1-{O2=2}OK)
 
-== divider 3 ==
-
-STATE_T1(COMMIT,,)
-MSG_T1(O1, COMMIT)
-MSG_T1(O2, COMMIT)
-STATE_T1(, DONE, APPLIED)
-STATE_T2(, OK, WAIT)
-REPLY_T1(O1, DONE)
-& REPLY_T2(O1, T1-{O1=2}OK)
-STATE_T1(, DONE, DONE)
-STATE_T2(, OK, OK)
-REPLY_T1(O2, DONE)
-& REPLY_T2(O2, T1-{O2=2}OK)
-
-== divider 4 ==
+== 5. TBD ==
 
 @enduml
