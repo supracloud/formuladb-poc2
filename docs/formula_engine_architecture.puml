@@ -9,21 +9,33 @@ A Transactional Stream Processing Engine
 
 actor User
 
-box "Formula DB Engine"
-    participant "Transaction Controller\n<$database{scale=0.5}>db\n<$long_arrow_right{scale=0.5}>stream" as Trc
-    participant "Object Owner\n<$database{scale=0.5}>db\n<$long_arrow_right{scale=0.5}>stream" as Obj
+participant "Events\n<$database{scale=0.5}>db\n<$long_arrow_right{scale=0.5}>stream" as Events
+box "FormulaDB Engine"
+    participant "Formula Engine\nInstance" as FrmE
+    participant "Transaction Controller\nInstance" as Trc
+    participant "Object Owner\nInstance" as Obj
 end box
+participant "Data Objects\n<$database{scale=0.5}>db\n<$long_arrow_right{scale=0.5}>stream" as DataObj
 
 note right User: synchronous REST communication for the User\n\
   even if FormulaDB works in an asynchronous manner internally
+note over Events: partition by Event _id
+/ note over DataObj: partition by BaseObj _id
 
-User --> Actions: MwzEvents{BaseObj}
+User --> FrmE: FrmdbEvent(\n BaseObj)
+note over FrmE
+extract the chain of formulas from DAG
+  that is triggered by BaseObj
+then break this formula chain in Transactions
+  transactions must be used for GET_CURRENT_VALUE/VALIDATE   
+end note
+FrmE --> Events: FrmdbEvent(\n BaseObj,\n transactions)
+note over Events #red
+1 Write Op
+end note
 
-note over Actions: partition by Action/Transaction _id\nan Action becomes a Transaction
-note over Data: partition by BaseObj _id
-
-
-Trc -> Trc: break down Transaction into Objects
+Events --> Trc: Transactions
+note over Trc: break down Transaction into Operations\n on individual Objects
 
 note over Trc: BEGIN
 Trc --> Obj: BEGIN: read objects
@@ -34,9 +46,18 @@ else
   note over Obj: OK
   Trc <-- Obj: read objects OK+value-of-object
 end
-Trc -> Trc: compute new values based on received values
+Obj --> DataObj: Operations\nfor BaseObj
+note over DataObj #red
+2 Write Ops
+end note
+Trc -> Trc: compute new values\n based on received values
 
 note over Trc: PRECOMMIT
+Trc --> Events: Transaction state=PRECOMMIT
+note over Events #red
+3 Write Ops
+end note
+
 Trc --> Obj: PRECOMMIT: write "redo log"
 alt another "earlier" transaction is in progress on at least one object
   note over Obj: WAIT
@@ -44,23 +65,40 @@ alt another "earlier" transaction is in progress on at least one object
   alt after "earlier" transaction finished
     note over Obj: OK
     Trc <-- Obj: read objects OK+value-of-object
-    Trc -> Trc: compute again transaction with new values
+    Trc -> Trc: compute again transaction\n with new values
     Trc --> Obj: PRECOMMIT again: write "redo log"
   end
 else
   note over Obj: READY
-  Trc <-- Obj: write objects to "redo log", READY + new value
+  Obj --> DataObj: write computed\n values
+  note over DataObj #red
+  4 Write Ops
+  end note
+  Trc <-- Obj: write objects to "redo log",\n READY + new value
 end
+
+Trc --> Events: Transaction state=COMMIT
+note over Events #red
+5 Write Ops
+end note
 
 alt all objects uodate return READY
   note over Trc: COMMIT
   Trc --> Obj: COMMIT: write objects
   note over Obj: DONE
+  Obj --> DataObj: write DONE
+  note over DataObj #red
+  6 Write Ops
+  end note
   Trc <-- Obj: DONE
 else at least one object returns FAIL
   note over Trc: ROLLBACK
   Trc --> Obj: ROLLBACK:discard "redo log"
   note over Obj: CANCEL
+  Obj --> DataObj: write CANCEL
+  note over DataObj #red
+  6 Write Ops
+  end note
   Trc <-- Obj: CANCEL
 end
 
