@@ -52,6 +52,11 @@ note over DataObj #red
 end note
 Trc -> Trc: compute new values\n based on received values
 
+note over Trc
+OPTIMIZATION: Transactions with Operations that do not need
+data from other Objects can start in PRECOMMIT state
+end note
+
 note over Trc: PRECOMMIT
 Trc --> Events: Transaction state=PRECOMMIT
 note over Events #red
@@ -80,6 +85,12 @@ end
 Trc --> Events: Transaction state=COMMIT
 note over Events #red
 5 Write Ops
+end note
+
+note over Trc
+OPTIMIZATION: Simple one-setter Transactions
+with only one Operation that sets some data on a DataObj
+without formulas can start in COMMIT state ?? or PRECOMMIT for this case too ??
 end note
 
 alt all objects uodate return READY
