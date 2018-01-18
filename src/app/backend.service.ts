@@ -14,6 +14,7 @@ import { Form, NodeElement } from "./domain/uimetadata/form";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
+import { generateUUID } from "./domain/uuid";
 import { PersistenceService } from "./persistence.service";
 
 @Injectable()
@@ -78,9 +79,9 @@ export class BackendService extends PersistenceService {
     }
 
     public static addIdsToTable(input: Table): void {
-        if (!input._id) { input._id = BaseObj.uuid(); }
+        if (!input._id) { input._id = generateUUID(); }
         if (input.columns && input.columns.length > 0) {
-            input.columns.forEach(c => c._id = BaseObj.uuid());
+            input.columns.forEach(c => c._id = generateUUID());
         }
     }
 
@@ -96,7 +97,7 @@ export class BackendService extends PersistenceService {
     }
 
     public static addIdsToForm(input: NodeElement): void {
-        if (!input._id) { input._id = BaseObj.uuid(); }
+        if (!input._id) { input._id = generateUUID(); }
         if (input.childNodes && input.childNodes.length > 0) {
             input.childNodes.forEach(c => this.addIdsToForm(c));
         }

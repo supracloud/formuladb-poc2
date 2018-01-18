@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 
 import { BaseObj } from "./domain/base_obj";
 import { DataObj } from "./domain/metadata/data_obj";
-import { Entity, Property } from "./domain/metadata/entity";
+import { Entity, EntityProperty, PropertyTypeN } from "./domain/metadata/entity";
 import { ChangeObj } from "./domain/change_obj";
 import { MwzEvents } from "./domain/event";
 
@@ -26,8 +26,8 @@ import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/form";
 
 import * as appState from './app.state';
-
-import { BackendService } from "./pouchdb.service";
+import { generateUUID } from "./domain/uuid";
+import { BackendService } from "./backend.service";
 
 
 export type ActionsToBeSentToServer =
@@ -172,7 +172,7 @@ export class AppEffects {
 
     private listenForNewDataObjActions() {
         this.actions$.ofType<appState.UserActionNewRow>(appState.UserActionNewRowN).subscribe(action => {
-            this.currentUrl.id = BaseObj.uuid();
+            this.currentUrl.id = generateUUID();
             this.router.navigate([this.currentUrl.entity._id + '/' + this.currentUrl.id]);
             this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id, mwzType: this.currentUrl.entity._id }))
         });
@@ -236,14 +236,14 @@ function setFormElementChildren(parentFormEl: NodeElement, entity: Entity, entit
         let child = new NodeElement();
         child.nodeType = NodeType.FormInput;
         child.nodeName = NodeType2Str.get(child.nodeType);
-        if (Property.isTable(prop)) {
+        if (prop.type === PropertyTypeN.TABLE) {
             child.tableName = prop.name;
             child.nodeType = prop.isLargeTable ? NodeType.FormTable : NodeType.FormTabs;
-            setFormElementChildren(child, entitiesMap.get(Property.getPath(prop)), entitiesMap);
-        } else if (Property.isEntity(prop)) {
+            setFormElementChildren(child, entitiesMap.get(prop.referencedEntity.path), entitiesMap);
+        } else if (prop.type === PropertyTypeN.SUBENTITY) {
             child.entityName = prop.name;
             child.nodeType = NodeType.FormAutocomplete;
-            child.attributes = { copiedProperties: prop.copiedProperties };
+            child.attributes = { copiedProperties: prop.referencedEntity.copiedProperties };
         } else {
             child.propertyName = prop.name;
         }

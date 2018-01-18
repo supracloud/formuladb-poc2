@@ -1,12 +1,12 @@
-import { Entity } from '../../domain/metadata/entity'
+import { Entity, PropertyTypeN, FormulaTypeN } from '../../domain/metadata/entity'
 
 export class MockMetadata {
 
   public constructor() {
     this.entities.forEach(meta => {
-      meta.properties.push({ "name": "mwzType", "type": "string", });
-      meta.properties.push({ "name": "_id", "type": "string", });
-      meta.properties.push(    {"name": "_rev","type": "string",});
+      meta.properties.push({ "name": "mwzType", "type": PropertyTypeN.STRING });
+      meta.properties.push({ "name": "_id", "type": PropertyTypeN.STRING });
+      meta.properties.push(    {"name": "_rev","type": PropertyTypeN.STRING});
     });
 
     this.entities.forEach(meta => {
@@ -42,127 +42,139 @@ export class MockMetadata {
   static General__Actor: Entity = {
     mwzType: "Entity_", _id:  "General__Actor",
     "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "username", "type": "string" },
-      { "name": "name", "type": "string" },
-      { "name": "role", "type": "string" },
-      { "name": "password", "type": "string" },
-      { "name": "details", "type": "string" },
-      { "name": "type", "type": "string" },
-      { "name": "parent_code", "type": "string" },
-      { "name": "param1", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "username", "type": PropertyTypeN.STRING },
+      { "name": "name", "type": PropertyTypeN.STRING },
+      { "name": "role", "type": PropertyTypeN.STRING },
+      { "name": "password", "type": PropertyTypeN.STRING },
+      { "name": "details", "type": PropertyTypeN.STRING },
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "parent_code", "type": PropertyTypeN.STRING },
+      { "name": "param1", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static General__Currency: Entity = {
     mwzType: "Entity_", _id:  "General__Currency",
     "properties": [
-      { "name": "code", "type": "string" },
-      { "name": "rate1", "type": "decimal" },
-      { "name": "rate2", "type": "decimal" },
-      { "name": "rate3", "type": "decimal" },
-      { "name": "rate4", "type": "decimal" },
-      { "name": "rate5", "type": "decimal", }
+      { "name": "code", "type": PropertyTypeN.STRING },
+      { "name": "rate1", "type": PropertyTypeN.NUMBER },
+      { "name": "rate2", "type": PropertyTypeN.NUMBER },
+      { "name": "rate3", "type": PropertyTypeN.NUMBER },
+      { "name": "rate4", "type": PropertyTypeN.NUMBER },
+      { "name": "rate5", "type": PropertyTypeN.NUMBER, }
     ]
   };
 
   static General__Person: Entity = {
     mwzType: "Entity_", _id:  "General__Person",
     "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "actor_code", "type": "string", "allowNull": false },
-      { "name": "name", "type": "string" },
-      { "name": "district", "type": "string" },
-      { "name": "city", "type": "string" },
-      { "name": "address", "type": "string" },
-      { "name": "supervisor", "type": "string" },
-      { "name": "manager", "type": "string" },
-      { "name": "phone", "type": "string" },
-      { "name": "fax", "type": "string" },
-      { "name": "tax_number", "type": "string" },
-      { "name": "details", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "actor_code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "name", "type": PropertyTypeN.STRING },
+      { "name": "district", "type": PropertyTypeN.STRING },
+      { "name": "city", "type": PropertyTypeN.STRING },
+      { "name": "address", "type": PropertyTypeN.STRING },
+      { "name": "supervisor", "type": PropertyTypeN.STRING },
+      { "name": "manager", "type": PropertyTypeN.STRING },
+      { "name": "phone", "type": PropertyTypeN.STRING },
+      { "name": "fax", "type": PropertyTypeN.STRING },
+      { "name": "tax_number", "type": PropertyTypeN.STRING },
+      { "name": "details", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static General__User: Entity = {
     mwzType: "Entity_", _id:  "General__User",
     "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "username", "type": "string" },
-      { "name": "name", "type": "string" },
-      { "name": "role", "type": "string" },
-      { "name": "password", "type": "string" },
-      { "name": "details", "type": "string" },
-      { "name": "type", "type": "string" },
-      { "name": "parent_code", "type": "string" },
-      { "name": "param1", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "username", "type": PropertyTypeN.STRING },
+      { "name": "name", "type": PropertyTypeN.STRING },
+      { "name": "role", "type": PropertyTypeN.STRING },
+      { "name": "password", "type": PropertyTypeN.STRING },
+      { "name": "details", "type": PropertyTypeN.STRING },
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "parent_code", "type": PropertyTypeN.STRING },
+      { "name": "param1", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static Inventory__Client: Entity = {
     mwzType: "Entity_", _id:  "Inventory__Client",
     "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "username", "type": "string" },
-      { "name": "name", "type": "string" },
-      { "name": "role", "type": "string" },
-      { "name": "password", "type": "string" },
-      { "name": "details", "type": "string" },
-      { "name": "type", "type": "string" },
-      { "name": "parent_code", "type": "string" },
-      { "name": "param1", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "username", "type": PropertyTypeN.STRING },
+      { "name": "name", "type": PropertyTypeN.STRING },
+      { "name": "role", "type": PropertyTypeN.STRING },
+      { "name": "password", "type": PropertyTypeN.STRING },
+      { "name": "details", "type": PropertyTypeN.STRING },
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "parent_code", "type": PropertyTypeN.STRING },
+      { "name": "param1", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static Inventory__InventoryProduct: Entity = {
     mwzType: "Entity_", _id:  "Inventory__InventoryProduct",
     "properties": [
-      { "name": "inventory_code", "type": "string", "allowNull": false },
+      { "name": "inventory_code", "type": PropertyTypeN.STRING, "allowNull": false },
       {
-        "name": "product",
-        "type": "ENTITY(Inventory__Product)",
-        "copiedProperties": [
-          "code",
-          "name"
-        ],
+        name: "product",
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "Inventory__Product",
+          copiedProperties: ["code", "name"],
+        }
       },
-      { "name": "category", "type": "string", "allowNull": false },
-      { "name": "price", "type": "decimal", "allowNull": true },
+      { "name": "category", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "price", "type": PropertyTypeN.NUMBER, "allowNull": true },
       {
         "name": "currency",
-        "type": "ENTITY(General__Currency)",
-        "copiedProperties": [
-          "code",
-          "name"
-        ],
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "General__Currency",
+          copiedProperties: ["code", "name"],
+        }
       },
-      { "name": "minimal_stock", "type": "integer", "allowNull": false },
+      { "name": "minimal_stock", "type": PropertyTypeN.NUMBER, "allowNull": false },
       {
         "name": "received_stock",
-        "type": `FORMULA:
-        SUM(receiptItems.received_quantity)
-        `
+        type: PropertyTypeN.FORMULA,
+        formula: {
+          type: FormulaTypeN.SUM,
+          arguments: [{type: FormulaTypeN.VALUE_OF, relativePath: "receiptItems.received_quantity"}]
+        }        
       },
       {
         "name": "available_stock", 
-        "type": "FORMULA:received_stock - reserved_stock - delivered_stock",
+        type: PropertyTypeN.FORMULA,
+        formula: {
+          type: FormulaTypeN.SUBTRACT,
+          minuend: {type: FormulaTypeN.VALUE_OF, relativePath: "received_stock"},
+          subtrahends: [
+            {type: FormulaTypeN.VALUE_OF, relativePath: "reserved_stock"},
+            {type: FormulaTypeN.VALUE_OF, relativePath: "delivered_stock"}
+          ]
+        }        
       },
       {
         "name": "reserved_stock",
-        "type": `FORMULA:
-          SUM(orderItems.reserved_quantity)
-        `
+        type: PropertyTypeN.FORMULA,
+        formula: {
+          type: FormulaTypeN.SUM,
+          arguments: [{type: FormulaTypeN.VALUE_OF, relativePath: "receiptItems.reserved_quantity"}]
+        }        
       },
       {
         "name": "delivered_stock", 
-        "type": "FORMULA:todo",
+        "type": PropertyTypeN.NUMBER,
       },
-      { "name": "moving_stock", "type": "integer", "allowNull": false },
-      { "name": "state", "type": "string", "allowNull": false }
+      { "name": "moving_stock", "type": PropertyTypeN.NUMBER, "allowNull": false },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false }
     ]
   };
 
@@ -170,17 +182,20 @@ export class MockMetadata {
     mwzType: "Entity_", _id:  "Inventory__ReceiptItem",
     "properties": [
       {
-        "type": "ENTITY(Inventory__InventoryProduct)",
-        "name": "product",
-        "copiedProperties": [
-          "inventory_code",
-          "product_code",
-          "price",
-          "currency_code",
-          "name"
-        ],
+        name: "product",
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "Inventory__InventoryProduct",
+          copiedProperties: [
+            "inventory_code",
+            "product_code",
+            "price",
+            "currency_code",
+            "name"
+          ]
+        }
       },
-      { "name": "received_quantity", "type": "integer", "allowNull": false },
+      { "name": "received_quantity", "type": PropertyTypeN.NUMBER, "allowNull": false },
     ]
   };
 
@@ -188,153 +203,166 @@ export class MockMetadata {
     mwzType: "Entity_", _id:  "Inventory__OrderItem",
     "properties": [
       {
-        "type": "ENTITY(Inventory__InventoryProduct)",
-        "name": "product",
-        "copiedProperties": [
-          "inventory_code",
-          "product_code",
-          "price",
-          "currency_code",
-          "name"
-        ],
+        name: "product",
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "Inventory__InventoryProduct",
+          copiedProperties: [
+            "inventory_code",
+            "product_code",
+            "price",
+            "currency_code",
+            "name"
+          ]
+        }
       },
-      { "name": "requested_quantity", "type": "integer", "allowNull": false },
+      { "name": "requested_quantity", "type": PropertyTypeN.NUMBER, "allowNull": false },
       {
-        "name": "reserved_quantity", 
-        "type": `FORMULA:
-          VALUE_NOW(product.available_stock) AS stock
-          IIF(stock < requested_quantity, requested_quantity, stock)
-        `,
+        name: "reserved_quantity", 
+        type: PropertyTypeN.FORMULA,
+        formula: {
+          type: FormulaTypeN.CHAIN,
+          steps: [
+            {formula: {type: FormulaTypeN.CURRENT_VALUE_OF, relativePath: "product.available_stock"}, alias: "stock"},
+            {formula: {
+                type: FormulaTypeN.IF, 
+                expression: null,//stock < requested_quantity
+                trueValue: null,//requested_quantity
+                falseValue: null//stock
+              }
+            }
+          ]
+        }
       },
-      { "name": "client_stock", "type": "integer" },
+      { "name": "client_stock", "type": PropertyTypeN.NUMBER },
     ]
   };
 
   static Inventory__ProductListProductUnit: Entity = {
     mwzType: "Entity_", _id:  "Inventory__ProductListProductUnit",
     "properties": [
-      { "name": "product_list_product_id", "type": "integer", "allowNull": false },
-      { "name": "sy5_index", "type": "float", "allowNull": false },
-      { "name": "product_unit_code", "type": "string" },
-      { "name": "product_code", "type": "string" },
-      { "name": "manual_product_code", "type": "string", "allowNull": false },
-      { "name": "manual_product_serial", "type": "string", "allowNull": false },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "product_list_product_id", "type": PropertyTypeN.NUMBER, "allowNull": false },
+      { "name": "sy5_index", "type": PropertyTypeN.NUMBER, "allowNull": false },
+      { "name": "product_unit_code", "type": PropertyTypeN.STRING },
+      { "name": "product_code", "type": PropertyTypeN.STRING },
+      { "name": "manual_product_code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "manual_product_serial", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static Inventory__Product: Entity = {
     mwzType: "Entity_", _id:  "Inventory__Product",
     "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "barcode", "type": "string" },
-      { "name": "name", "type": "string", "allowNull": false },
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "barcode", "type": PropertyTypeN.STRING },
+      { "name": "name", "type": PropertyTypeN.STRING, "allowNull": false },
     ]
   };
 
   static Inventory__ProductUnit: Entity = {
     mwzType: "Entity_", _id:  "Inventory__ProductUnit",
     "properties": [
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "product_code", "type": "string", "allowNull": false },
-      { "name": "location", "type": "string", "allowNull": false },
-      { "name": "serial1", "type": "string" },
-      { "name": "serial2", "type": "string" },
-      { "name": "serial3", "type": "string" },
-      { "name": "serial4", "type": "string" },
-      { "name": "serial5", "type": "string" },
-      { "name": "serial6", "type": "string" },
-      { "name": "serial7", "type": "string" },
-      { "name": "install_date", "type": "datetime" },
-      { "name": "state", "type": "string", "allowNull": false },
-      { "name": "nb_piston_cycles", "type": "string" },
-      { "name": "brita_counter", "type": "string" },
-      { "name": "washing_cycles", "type": "string", }
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "product_code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "location", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "serial1", "type": PropertyTypeN.STRING },
+      { "name": "serial2", "type": PropertyTypeN.STRING },
+      { "name": "serial3", "type": PropertyTypeN.STRING },
+      { "name": "serial4", "type": PropertyTypeN.STRING },
+      { "name": "serial5", "type": PropertyTypeN.STRING },
+      { "name": "serial6", "type": PropertyTypeN.STRING },
+      { "name": "serial7", "type": PropertyTypeN.STRING },
+      { "name": "install_date", "type": PropertyTypeN.DATETIME },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "nb_piston_cycles", "type": PropertyTypeN.STRING },
+      { "name": "brita_counter", "type": PropertyTypeN.STRING },
+      { "name": "washing_cycles", "type": PropertyTypeN.STRING, }
     ]
   };
 
   static Forms__Receipt: Entity = {
     mwzType: "Entity_", _id:  "Forms__Acquisition",
     "properties": [
-      { "name": "type", "type": "string" },
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static Reports__DetailedCentralizerReport: Entity = {
     mwzType: "Entity_", _id:  "Reports__DetailedCentralizerReport",
     "properties": [
-      { "name": "name", "type": "string", "allowNull": false },
-      { "name": "user_code", "type": "string", "allowNull": false },
-      { "name": "type", "type": "string" },
-      { "name": "group", "type": "string" },
-      { "name": "client_code", "type": "string" },
-      { "name": "file_name", "type": "string" },
-      { "name": "start_date", "type": "datetime" },
-      { "name": "end_date", "type": "datetime" },
-      { "name": "options", "type": "string" },
-      { "name": "flags", "type": "integer" },
-      { "name": "last_user", "type": "string" },
-      { "name": "last_error", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false },
-      { "name": "created_at", "type": "datetime", "allowNull": false },
-      { "name": "updated_at", "type": "datetime", "allowNull": false },
-      { "name": "exchange_rate", "type": "decimal", }
+      { "name": "name", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "user_code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "group", "type": PropertyTypeN.STRING },
+      { "name": "client_code", "type": PropertyTypeN.STRING },
+      { "name": "file_name", "type": PropertyTypeN.STRING },
+      { "name": "start_date", "type": PropertyTypeN.DATETIME },
+      { "name": "end_date", "type": PropertyTypeN.DATETIME },
+      { "name": "options", "type": PropertyTypeN.STRING },
+      { "name": "flags", "type": PropertyTypeN.NUMBER },
+      { "name": "last_user", "type": PropertyTypeN.STRING },
+      { "name": "last_error", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "created_at", "type": PropertyTypeN.DATETIME, "allowNull": false },
+      { "name": "updated_at", "type": PropertyTypeN.DATETIME, "allowNull": false },
+      { "name": "exchange_rate", "type": PropertyTypeN.NUMBER, }
     ]
   };
 
   static Reports__GenericReport: Entity = {
     mwzType: "Entity_", _id:  "Reports__GenericReport",
     "properties": [
-      { "name": "name", "type": "string", "allowNull": false },
-      { "name": "user_code", "type": "string", "allowNull": false },
-      { "name": "type", "type": "string" },
-      { "name": "group", "type": "string" },
-      { "name": "client_code", "type": "string" },
-      { "name": "file_name", "type": "string" },
-      { "name": "start_date", "type": "datetime" },
-      { "name": "end_date", "type": "datetime" },
-      { "name": "options", "type": "string" },
-      { "name": "flags", "type": "integer" },
-      { "name": "last_user", "type": "string" },
-      { "name": "last_error", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false },
-      { "name": "created_at", "type": "datetime", "allowNull": false },
-      { "name": "updated_at", "type": "datetime", "allowNull": false },
-      { "name": "exchange_rate", "type": "decimal", }
+      { "name": "name", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "user_code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "group", "type": PropertyTypeN.STRING },
+      { "name": "client_code", "type": PropertyTypeN.STRING },
+      { "name": "file_name", "type": PropertyTypeN.STRING },
+      { "name": "start_date", "type": PropertyTypeN.DATETIME },
+      { "name": "end_date", "type": PropertyTypeN.DATETIME },
+      { "name": "options", "type": PropertyTypeN.STRING },
+      { "name": "flags", "type": PropertyTypeN.NUMBER },
+      { "name": "last_user", "type": PropertyTypeN.STRING },
+      { "name": "last_error", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "created_at", "type": PropertyTypeN.DATETIME, "allowNull": false },
+      { "name": "updated_at", "type": PropertyTypeN.DATETIME, "allowNull": false },
+      { "name": "exchange_rate", "type": PropertyTypeN.NUMBER, }
     ]
   };
 
   static Forms__Order: Entity = {
     mwzType: "Entity_", _id:  "Forms__Order",
     "properties": [
-      { "name": "type", "type": "string" },
-      { "name": "code", "type": "string", "allowNull": false },
-      { "name": "product_list", "type": "TABLE(Inventory__OrderItem)" },
-      { "name": "state", "type": "string", "allowNull": false, }
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "product_list", type: PropertyTypeN.TABLE, referencedEntity: {path: "Inventory__OrderItem"} },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false, }
     ]
   };
 
   static Reports__ServiceCentralizerReport: Entity = {
     mwzType: "Entity_", _id:  "Reports__ServiceCentralizerReport",
     "properties": [
-      { "name": "name", "type": "string", "allowNull": false },
-      { "name": "user_code", "type": "string", "allowNull": false },
-      { "name": "type", "type": "string" },
-      { "name": "group", "type": "string" },
-      { "name": "client_code", "type": "string" },
-      { "name": "file_name", "type": "string" },
-      { "name": "start_date", "type": "datetime" },
-      { "name": "end_date", "type": "datetime" },
-      { "name": "options", "type": "string" },
-      { "name": "flags", "type": "integer" },
-      { "name": "last_user", "type": "string" },
-      { "name": "last_error", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false },
-      { "name": "created_at", "type": "datetime", "allowNull": false },
-      { "name": "updated_at", "type": "datetime", "allowNull": false },
-      { "name": "exchange_rate", "type": "decimal", }
+      { "name": "name", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "user_code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "type", "type": PropertyTypeN.STRING },
+      { "name": "group", "type": PropertyTypeN.STRING },
+      { "name": "client_code", "type": PropertyTypeN.STRING },
+      { "name": "file_name", "type": PropertyTypeN.STRING },
+      { "name": "start_date", "type": PropertyTypeN.DATETIME },
+      { "name": "end_date", "type": PropertyTypeN.DATETIME },
+      { "name": "options", "type": PropertyTypeN.STRING },
+      { "name": "flags", "type": PropertyTypeN.NUMBER },
+      { "name": "last_user", "type": PropertyTypeN.STRING },
+      { "name": "last_error", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "created_at", "type": PropertyTypeN.DATETIME, "allowNull": false },
+      { "name": "updated_at", "type": PropertyTypeN.DATETIME, "allowNull": false },
+      { "name": "exchange_rate", "type": PropertyTypeN.NUMBER, }
     ]
   };
 
@@ -343,34 +371,42 @@ export class MockMetadata {
     "properties": [
       {
         "name": "code", 
-        "type": "FORMULA:CONCATENATE(client.code;LPAD(\"0\";\"9\";INDEX_IN_INTERVAL(time_of_arrival,monthly))",
+        type: PropertyTypeN.FORMULA,
+        formula: {
+          type: FormulaTypeN.CONCATENATE,
+          arguments: [
+            {type: FormulaTypeN.VALUE_OF, relativePath: "client.code"},
+            {type: FormulaTypeN.FORMAT, format: "%09d", values: [{type: FormulaTypeN.CONSTANT, value: "-3"}]}
+          ]
+        }
+        // "type": "FORMULA:CONCATENATE(client.code;FORMAT(\"0\";\"9\";INDEX_IN_INTERVAL(time_of_arrival,monthly))",
       },
-      { "name": "product_form_id", "type": "integer", "allowNull": false },
-      { "name": "client", "type": "ENTITY(Inventory__Client)", "copiedProperties": ["code", "username"] },
-      { "name": "time_of_arrival", "type": "datetime" },
-      { "name": "time_of_departure", "type": "datetime" },
-      { "name": "normal_hours", "type": "decimal" },
-      { "name": "warranty_hours", "type": "decimal" },
-      { "name": "night_hours", "type": "decimal" },
-      { "name": "shipment_cost", "type": "string" },
-      { "name": "notes", "type": "string" },
-      { "name": "technician_code", "type": "string" },
-      { "name": "technician2_code", "type": "string" },
-      { "name": "client_person", "type": "string" },
-      { "name": "state", "type": "string", "allowNull": false },
-      { "name": "nb_installments", "type": "integer" },
-      { "name": "accommodation", "type": "decimal" },
-      { "name": "service_form_units", "type": "TABLE", properties: [
-        { "name": "equipment", "type": "ENTITY(Inventory__ProductUnit)", copiedProperties: ['code', 'product_code', 'serial1'] },
-        { "name": "product_list", "type": "TABLE(Inventory__OrderItem)", "isLargeTable": true },
-        { "name": "reported_problem", "type": "text" },
-        { "name": "found_problem", "type": "text" },
-        { "name": "work_description", "type": "text" },
-        { "name": "nb_piston_cycles", "type": "string" },
-        { "name": "brita_counter", "type": "string" },
-        { "name": "washing_cycles", "type": "string" },
-        { "name": "state", "type": "string", "allowNull": false },
-        { "name": "equipment_group", "type": "string", }
+      { "name": "product_form_id", "type": PropertyTypeN.NUMBER, "allowNull": false },
+      { "name": "client", "type": PropertyTypeN.SUBENTITY, referencedEntity: {path: "Inventory__Client", copiedProperties: ["code", "username"]} },
+      { "name": "time_of_arrival", "type": PropertyTypeN.DATETIME },
+      { "name": "time_of_departure", "type": PropertyTypeN.DATETIME },
+      { "name": "normal_hours", "type": PropertyTypeN.NUMBER },
+      { "name": "warranty_hours", "type": PropertyTypeN.NUMBER },
+      { "name": "night_hours", "type": PropertyTypeN.NUMBER },
+      { "name": "shipment_cost", "type": PropertyTypeN.STRING },
+      { "name": "notes", "type": PropertyTypeN.STRING },
+      { "name": "technician_code", "type": PropertyTypeN.STRING },
+      { "name": "technician2_code", "type": PropertyTypeN.STRING },
+      { "name": "client_person", "type": PropertyTypeN.STRING },
+      { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "nb_installments", "type": PropertyTypeN.NUMBER },
+      { "name": "accommodation", "type": PropertyTypeN.NUMBER },
+      { "name": "service_form_units", type: PropertyTypeN.TABLE, properties: [
+        { "name": "equipment", "type": PropertyTypeN.SUBENTITY, referencedEntity: {path: "Inventory__ProductUnit", copiedProperties: ['code', 'product_code', 'serial1']} },
+        { "name": "product_list", "type": PropertyTypeN.TABLE, referencedEntity: {path: "Inventory__OrderItem"}, isLargeTable: true },
+        { "name": "reported_problem", "type": PropertyTypeN.TEXT },
+        { "name": "found_problem", "type": PropertyTypeN.TEXT },
+        { "name": "work_description", "type": PropertyTypeN.TEXT },
+        { "name": "nb_piston_cycles", "type": PropertyTypeN.STRING },
+        { "name": "brita_counter", "type": PropertyTypeN.STRING },
+        { "name": "washing_cycles", "type": PropertyTypeN.STRING },
+        { "name": "state", "type": PropertyTypeN.STRING, "allowNull": false },
+        { "name": "equipment_group", "type": PropertyTypeN.STRING, }
       ]}
     ]
   };

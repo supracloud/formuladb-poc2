@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
-import { Entity, Property } from '../../domain/metadata/entity'
+import { Entity, EntityProperty, PropertyTypeN } from '../../domain/metadata/entity'
 
 import { DataObj } from "../../domain/metadata/data_obj";
 
@@ -62,7 +62,7 @@ export class MockData {
       return ret;
   }
 
-  mockObject(path: string, properties: Property[], ret: {}): {} {
+  mockObject(path: string, properties: EntityProperty[], ret: {}): {} {
     properties.forEach((p, index) => {
       if (p.name == "_id") {
         //already set above
@@ -70,33 +70,29 @@ export class MockData {
         //do nothing
       } else if (p.name == "mwzType") {
         //do nothing
-      } else if (p.type == "integer") {
+      } else if (p.type == PropertyTypeN.NUMBER) {
         ret[p.name] = Math.random() * 100;
-      } else if (p.type == "decimal") {
-        ret[p.name] = Math.random() * 100;
-      } else if (p.type == "float") {
-        ret[p.name] = Math.random() * 112.45;
-      } else if (p.type == "string") {
+      } else if (p.type == PropertyTypeN.STRING) {
         ret[p.name] = p.name + Math.ceil(Math.random() * 100000);
-      } else if (p.type == "text") {
+      } else if (p.type == PropertyTypeN.TEXT) {
         ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
-      } else if (p.type == "datetime") {
+      } else if (p.type == PropertyTypeN.DATETIME) {
         ret[p.name] = new Date();
-      } else if (p.type.match(/^ENTITY\(/)) {
-        let m = p.type.match(/^ENTITY\((\w+)\)/);
+      } else if (p.type == PropertyTypeN.SUBENTITY) {
         let refIdx = Math.round(Math.random() * 4);
-        let refPath = m[1];
-        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.copiedProperties || []).concat(['_id', 'mwzType']));
-      } else if (p.type.match(/^TABLE$/)) {
-        let table = [];
-        for (var i = 0; i < 5; i++) {
-          table.push(this.mockObject(path, p.properties, {}));
+        let refPath = p.referencedEntity.path;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.referencedEntity.copiedProperties || []).concat(['_id', 'mwzType']));
+      } else if (p.type == PropertyTypeN.TABLE) {
+        if (p.referencedEntity != null) {
+          let ref = this.entitiesMap.get(p.referencedEntity.path);
+          ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
+        } else {
+          let table = [];
+          for (var i = 0; i < 5; i++) {
+            table.push(this.mockObject(path, p.properties, {}));
+          }
+          ret[p.name] = table;
         }
-        ret[p.name] = table;
-      } else if (p.type.match(/^TABLE\(/)) {
-        let m = p.type.match(/^TABLE\((\w+)\)/);
-        let ref = this.entitiesMap.get(m[1]);
-        ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
       }
     });
 

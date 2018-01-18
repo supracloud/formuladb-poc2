@@ -5,7 +5,8 @@
 !includeurl ICONURL/font-awesome/long_arrow_right.puml
 
 title __Formula Engine Architecture__\n\
-A Transactional Stream Processing Engine
+A Transactional Stream Processing Engine\n\
+basically a 3-phase commit protocol
 
 actor User
 

@@ -3,7 +3,9 @@
     "plantuml.exportSubFolder": false,
     "plantuml.exportOutDirName": "docs/img",
     "cSpell.words": [
-        "Notifs"
+        "DATETIME",
+        "Notifs",
+        "SUBENTITY"
     ],
     "cSpell.enabledLanguageIds": [
         "c",
@@ -32,6 +34,7 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "server/**/*.js": true
+        "server/**/*.js": true,
+        "src/app/**/*.js": true
     }
 }

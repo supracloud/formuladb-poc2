@@ -3,14 +3,16 @@ import { DataObj } from "./metadata/data_obj";
 import { Entity } from "./metadata/entity";
 import { Form } from "./uimetadata/form";
 import { Table } from "./uimetadata/table";
+import { generateUUID } from "./uuid";
 
 export class MwzEvent extends BaseObj {
-    readonly mwzType = 'Event_'
+    readonly mwzType = 'Event_';
+    _id: string;
     type: string;
 
     constructor() {
         super();
-        this._id = BaseObj.uuid();
+        this._id = generateUUID();
     }
 }
 

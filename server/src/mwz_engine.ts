@@ -8,7 +8,7 @@ import * as PouchDB from 'pouchdb';//this does not work with webpack, use this w
  *  - the validations involving test data 
  */
 import { BaseObj } from "../../src/app/domain/base_obj";
-import { Entity, Property } from "../../src/app/domain/metadata/entity";
+import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
 import { DataObj } from "../../src/app/domain/metadata/data_obj";
 
 import * as events from "../../src/app/domain/event";

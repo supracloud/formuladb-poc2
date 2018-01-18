@@ -9,7 +9,7 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { FormModalService } from '../form-modal.service';
-import { Entity, Property } from '../domain/metadata/entity';
+import { Entity, EntityProperty } from '../domain/metadata/entity';
 import { DataObj } from '../domain/metadata/data_obj';
 import { Form, NodeElement } from '../domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';

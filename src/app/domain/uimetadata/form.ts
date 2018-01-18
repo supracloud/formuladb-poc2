@@ -1,5 +1,5 @@
 import { BaseObj } from '../base_obj';
-import { Property } from "../metadata/entity";
+import { EntityProperty } from "../metadata/entity";
 import { Label } from './label';
 
 export enum NodeType { 

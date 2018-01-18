@@ -1,4 +1,4 @@
-import { Entity, Property } from "./domain/metadata/entity";
+import { Entity, EntityProperty } from "./domain/metadata/entity";
 import { Form, NodeElement, NodeType, Str2NodeType, NodeType2Str } from './domain/uimetadata/form';
 import { Table, TableColumn } from './domain/uimetadata/table';
 
