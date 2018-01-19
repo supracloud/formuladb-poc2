@@ -6,7 +6,39 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ### 1.1 Setting up CouchDB and test data
 
-Install docker toolbox: https://www.docker.com/products/docker-toolbox
+Install docker toolbox: https://docs.docker.com/toolbox/toolbox_install_windows/
+The run the following commands from Git Bash:
+
+```bash
+        VBoxManage controlvm "docker1" natpf1 "couchdb,tcp,,5984,,5984"
+        docker run -d --name cdb -p 5984:5984 couchdb
+        curl -X PUT http://127.0.0.1:5984/_users
+        curl -X PUT http://127.0.0.1:5984/_replicator
+        curl -X PUT http://127.0.0.1:5984/_global_changes
+        curl -X PUT http://127.0.0.1:5984/mwzdata
+
+        npm install -g add-cors-to-couchdb
+        add-cors-to-couchdb
+```
+
+Then load test data:
+
+```bash
+        ./node_modules/.bin/tsc # compile the test data loader
+        node dist/out-tsc/src/app/test/mocks/loadTestData.js
+```
+
+### 1.2 Running 
+
+```bash
+        # start angular app
+        ng serve --proxy-config proxy.config.json
+        # start backend
+        cd server && npm run serve
+```
+
+#### traffic shaping (IGNORE, NOT WORKING)
+
 
         docker-machine.exe create docker1
         eval $(docker-machine.exe env docker1 --shell bash)
@@ -22,26 +54,6 @@ Install docker toolbox: https://www.docker.com/products/docker-toolbox
         /wondershaper.sh -a eth0 -d 256 -u 256 #also does not work WTF
         # we should use trickle for user-space traffic shaping
 
-        VBoxManage controlvm "docker1" natpf1 "couchdb,tcp,,5984,,5984"
-
-Then follow:
-http://docs.couchdb.org/en/master/install/setup.html#single-node-setup
-
-Then Create the database: mwzdata
-
-Then load test data:
-
-        ./node_modules/.bin/tsc # compile the test data loader
-        node dist/out-tsc/src/app/test/mocks/loadTestData.js
-
-## 1.2 Running 
-
-```bash
-        # start angular app
-        ng serve --proxy-config proxy.config.json
-        # start backend
-        cd server && npm run serve
-```
 
 ### Other usual commands
 

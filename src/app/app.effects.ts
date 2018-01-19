@@ -55,7 +55,7 @@ export class AppEffects {
     constructor(
         private actions$: Actions,
         private store: Store<appState.AppState>,
-        private pouchDbService: BackendService,
+        private backendService: BackendService,
         private router: Router
     ) {
 
@@ -63,7 +63,7 @@ export class AppEffects {
 
         try {
             //we first initialize the DB (sync with remote DB)
-            pouchDbService.init(() => this.init(),
+            backendService.init(() => this.init(),
                 change => this.listenForNotifsFromServer(change),
                 change => this.listenFormDataChangesFromServer(change));
         } catch (err) {
@@ -96,7 +96,7 @@ export class AppEffects {
         change.docs.forEach(obj => {
             if (obj.mwzType == 'Entity_') {
                 console.log("Loading all entities from local DB");
-                this.pouchDbService.findByMwzType<Entity>('Entity_').then(entities => {
+                this.backendService.findByMwzType<Entity>('Entity_').then(entities => {
                     console.log("displaying all entities from local DB", entities);
                     this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
                 }).catch(err => console.error(err));
@@ -113,7 +113,7 @@ export class AppEffects {
 
     private init() {
         //load entities and remove readOnly flag
-        this.pouchDbService.findByMwzType<Entity>('Entity_').then(entities => {
+        this.backendService.findByMwzType<Entity>('Entity_').then(entities => {
             this.cachedEntitiesMap.clear();
             entities.map(entity => this.cachedEntitiesMap.set(entity._id, entity));
             this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
@@ -136,7 +136,7 @@ export class AppEffects {
             console.log("%c * Event **##$$",
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
 
-            this.pouchDbService.putEvent(action.event)
+            this.backendService.putEvent(action.event)
                 .subscribe(notif => this.listenForNotifsFromServer(notif));
         });
     }
@@ -162,7 +162,7 @@ export class AppEffects {
 
         if (id && id != this.currentUrl.id) {
             this.currentUrl.id = id;
-            this.pouchDbService.getDataObj(id)
+            this.backendService.getDataObj(id)
                 .then(obj => this.store.dispatch(new appState.FormDataFromBackendAction(obj)))
                 .catch(err => console.error(err))
                 ;
@@ -180,13 +180,13 @@ export class AppEffects {
 
     private async changeEntity(path: string) {
         try {
-            let entity = await this.pouchDbService.getEntity(path);
+            let entity = await this.backendService.getEntity(path);
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.UserActionSelectedEntity(entity));
 
             let table: Table = null;
             try {
-                table = await this.pouchDbService.getTable(path);
+                table = await this.backendService.getTable(path);
             } catch (err) {
                 if (err.status == 404) {
                     table = getDefaultTable(entity);
@@ -195,12 +195,12 @@ export class AppEffects {
             this.store.dispatch(new appState.ResetTableDataFromBackendAction([]));
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let tableData = await this.pouchDbService.findByMwzType<DataObj>(path);
+            let tableData = await this.backendService.findByMwzType<DataObj>(path);
             this.store.dispatch(new appState.TableDataFromBackendAction(tableData.map(obj => new ChangeObj<DataObj>(obj))))
 
             let form: Form = null;
             try {
-                form = await this.pouchDbService.getForm(path);
+                form = await this.backendService.getForm(path);
             } catch (err) {
                 if (err.status == 404) {
                     form = getDefaultForm(entity, this.cachedEntitiesMap);

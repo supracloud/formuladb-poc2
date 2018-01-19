@@ -39,7 +39,6 @@ import { AppEffects } from "./app.effects";
 import { FormModalService } from "./form-modal.service";
 import { MwzParser } from "./mwz-parser";
 import { BackendService } from "./backend.service";
-import { PersistenceService } from "./persistence.service";
 import { HighlightService } from './services/hightlight.service';
 import { MetaItemEditorComponent } from './meta-item-editor/meta-item-editor.component';
 import { DragService } from './services/drag.service';
@@ -89,7 +88,6 @@ const routes: Routes = [
   providers: [
     FormModalService,
     MwzParser,
-    PersistenceService,
     BackendService,
     HighlightService,
     DragService,

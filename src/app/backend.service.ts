@@ -23,10 +23,10 @@ export class BackendService extends PersistenceService {
 
     private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
 
-    constructor(private http: HttpClient,
-        private persistentService: PersistenceService) {
+    constructor(private http: HttpClient) {
         super();
-        this.persistentService.dataDB = new PouchDB("mwz");
+        PouchDB.plugin(PouchFind);
+        this.dataDB = new PouchDB("mwz");
     }
 
     public init(initCallback: () => void,
@@ -39,17 +39,17 @@ export class BackendService extends PersistenceService {
             "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
 
         //first catchup local PouchDB with what happened on the server while the application was stopped
-        this.persistentService.dataDB.replicate.from(this.remoteDataDBUrl)
+        this.dataDB.replicate.from(this.remoteDataDBUrl)
             .on('complete', info => {
                 console.log("%c ** INITIAL REPLICATION FINISHED **##$$",
                     "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
 
-                // this.persistentService.dataDB.createIndex({
+                // this.dataDB.createIndex({
                 //     index: { fields: ['mwzType'] }
                 // }).then(() => {
                 //     let appStateS = this;
 
-                //     this.persistentService.dataDB.explain({
+                //     this.dataDB.explain({
                 //         selector: {
                 //             mwzType: 'Entity_'
                 //         }
@@ -62,7 +62,7 @@ export class BackendService extends PersistenceService {
                     initCallback();
 
                     //after initial replication from the server is finished, continue with live replication
-                    this.persistentService.dataDB.replicate.from(this.remoteDataDBUrl, {
+                    this.dataDB.replicate.from(this.remoteDataDBUrl, {
                         live: true,
                         retry: true,
                     })
