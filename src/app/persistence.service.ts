@@ -1,6 +1,3 @@
-import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
-// import PouchDB from 'pouchdb';//use this when running on webpack in za browser
-
 import { Injectable } from '@angular/core';
 
 import { BaseObj } from "./domain/base_obj";
@@ -12,8 +9,6 @@ import { Table } from "./domain/uimetadata/table";
 import { Form, NodeElement } from "./domain/uimetadata/form";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-
-PouchDB.debug.enable('*');
 
 @Injectable()
 export class PersistenceService {

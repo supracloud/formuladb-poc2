@@ -1,5 +1,6 @@
 import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
 // import PouchDB from 'pouchdb';//use this when running on webpack in za browser
+PouchDB.debug.enable('*');
 
 /**
  * TODO: move this class on the server, outside the web app

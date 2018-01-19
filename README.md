@@ -10,6 +10,7 @@ Install docker toolbox: https://www.docker.com/products/docker-toolbox
 
         docker-machine.exe create docker1
         eval $(docker-machine.exe env docker1 --shell bash)
+        cd docker
         docker build -t mycouchdb .
         MSYS_NO_PATHCONV=1 docker run --privileged -d --name cdb -p 5984:5984 mycouchdb
 

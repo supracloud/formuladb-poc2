@@ -1,6 +1,7 @@
-import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
-// import PouchDB from 'pouchdb';//use this when running on webpack in za browser
+import PouchDB from 'pouchdb';//use this when running on webpack in za browser
 import PouchFind from 'pouchdb-find';
+PouchDB.plugin(PouchFind);
+PouchDB.debug.enable('*');
 
 import { Injectable } from '@angular/core';
 
@@ -32,22 +33,31 @@ export class BackendService extends PersistenceService {
         notifCallback: (event: MwzEvents) => void,
         dataChangeCallback: (change: { docs: Array<BaseObj> }) => void) {
 
-        this.persistentService.dataDB.createIndex({
-            index: { fields: ['mwzType'] }
-        }).then(() => {
-            let appStateS = this;
 
-            this.persistentService.dataDB.explain({
-                selector: {
-                    mwzType: 'Entity_'
-                }
-            }).then(explanation => console.warn("Check index usage: ", explanation))
-                .catch(err => console.error(err));
 
-            //first catchup local PouchDB with what happened on the server while the application was stopped
-            this.persistentService.dataDB.replicate.from(this.remoteDataDBUrl)
-                .on('complete', info => {
+        console.log("%c ** INITIAL REPLICATION STARTED **##$$",
+            "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
 
+        //first catchup local PouchDB with what happened on the server while the application was stopped
+        this.persistentService.dataDB.replicate.from(this.remoteDataDBUrl)
+            .on('complete', info => {
+                console.log("%c ** INITIAL REPLICATION FINISHED **##$$",
+                    "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
+
+                // this.persistentService.dataDB.createIndex({
+                //     index: { fields: ['mwzType'] }
+                // }).then(() => {
+                //     let appStateS = this;
+
+                //     this.persistentService.dataDB.explain({
+                //         selector: {
+                //             mwzType: 'Entity_'
+                //         }
+                //     }).then(explanation => console.warn("Check index usage: ", explanation))
+                //         .catch(err => console.error(err));
+                // })
+                Promise.resolve()
+                .then(() => {
                     //application specific initialization
                     initCallback();
 
@@ -60,9 +70,10 @@ export class BackendService extends PersistenceService {
                             dataChangeCallback(change);
                         })
                         .on('error', err => console.error(err));
-                })
-                .on('error', err => console.error(err));
-        });
+
+                });
+            })
+            .on('error', err => console.error(err));
     }
 
     public putEvent(event: MwzEvents): Observable<MwzEvents> {
