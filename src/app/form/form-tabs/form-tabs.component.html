@@ -1,0 +1,8 @@
+<ngb-tabset>
+  <ngb-tab *ngFor="let childControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index" [title]="tabNames[idx]">
+    <ng-template ngbTabContent>
+      <div form-item [class.form-item-highlight]="highlighted===childControl._id" [nodeElement]="nodeElement.childNodes[0]" [topLevelFormGroup]="topLevelFormGroup"
+        [parentFormPath]="parentFormPath + '.' + idx" [formReadOnly]="formReadOnly" [highlighted]="highlighted"></div>
+    </ng-template>
+  </ngb-tab>
+</ngb-tabset>

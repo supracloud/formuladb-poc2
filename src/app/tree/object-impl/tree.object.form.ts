@@ -1,7 +1,9 @@
 import { TreeObject } from "../tree.object";
-import { NodeElement, NodeType2Str, NodeType } from "../../domain/uimetadata/form";
+import { NodeElement, NodeType2Str, NodeType, Str2NodeType } from "../../domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
 import { UUID } from "angular2-uuid";
+import { MetaItemDescriptor } from "../meta.item.descriptor";
+import * as _ from "lodash";
 
 export class FormTreeObject implements TreeObject<NodeElement>{
 
@@ -9,13 +11,12 @@ export class FormTreeObject implements TreeObject<NodeElement>{
     id: string = UUID.UUID();
     name: string;
     children?: TreeObject<any>[] = [];
-    canMoveUp: boolean = false;
-    canMoveDown: boolean = false;
     canDrag: boolean = false;
     canEdit: boolean = true;
     canDelete: boolean = true;
     siblingId: number = 0;
     childTypes: string[] = [];
+    descriptor: MetaItemDescriptor[];
 
     constructor(node: NodeElement) {
         this.item = node;
@@ -53,38 +54,62 @@ export class FormTreeObject implements TreeObject<NodeElement>{
                 }
                 this.resetMoveOptions();
             }
+            this.descriptor = [{
+                type: "select",
+                property: "propertyName",
+                attributes: {
+                    selectValues: ["a", "b", "c"]
+                }
+            },
+            {
+                type: "text",
+                property: "nodeName"
+            }
+            ]
         }
     }
 
     private resetMoveOptions() {
         if (this.children.length > 0) {
             this.children.forEach(c => {
-                c.canMoveDown = true;
-                c.canMoveUp = true;
                 c.canDrag = true;
             });
-            this.children[0].canMoveUp = false;
-            this.children[this.children.length - 1].canMoveDown = false;
         }
     }
 
     public childChange(event: TreeChange) {
         if (event) {
-            if (null !== event.indexChange) {
-                var i = this.getIndexById(event.node.id);
-                if (i + event.indexChange >= 0 && i + event.indexChange < this.children.length - 1) {
-                    this.item.childNodes.splice(i, 1);
-                    this.item.childNodes.splice(i + event.indexChange, 0, event.node.item);
-                    this.children.splice(i, 1);
-                    this.children.splice(i + event.indexChange, 0, event.node as FormTreeObject);
+            this.item = this.updateInternal(this.item, event.originalNode.item);
+            if (null !== event.drop) {
+                var cpos = this.getIndexById(event.originalNode.id);
+                if (cpos !== null) {
+                    this.children.splice(cpos, 1);
+                    this.item.childNodes.splice(cpos, 1);
                 }
+                if (event.drop.target) {
+                    var npos = this.getIndexById(event.drop.target);
+                    if (npos !== null) {
+                        npos += (event.drop.after ? 1 : 0);
+                        this.item.childNodes.splice(npos, 0, event.originalNode.item);
+                        this.children.splice(npos, 0, event.originalNode as FormTreeObject);
+                    }
+                } else {
+                    if (event.drop.parent && event.drop.parent === this.id) {
+                        this.item.childNodes.push(event.originalNode.item);
+                        this.children.push(event.originalNode as FormTreeObject);
+                    }
+                }
+
             }
             if (true === event.remove) {
-                var i = this.getIndexById(event.node.id);
-                this.item.childNodes.splice(i, 1);
-                this.children.splice(i, 1);
+                var i = this.getIndexById(event.originalNode.id);
+                if (i !== null) {
+                    this.item.childNodes.splice(i, 1);
+                    this.children.splice(i, 1);
+                }
             }
             this.resetMoveOptions();
+            this.children.forEach(c => c.childChange(event));
         }
     }
 
@@ -92,9 +117,23 @@ export class FormTreeObject implements TreeObject<NodeElement>{
         for (var i: number = 0; i < this.children.length; i++) {
             if (this.children[i].id === id) return i;
         }
+        return null;
     }
 
-    public addChild(childType: string) {
-
+    public patch(val: any): NodeElement {
+        const ret: NodeElement = _.cloneDeep(this.item);
+        ret.propertyName = val.propertyName;
+        ret.nodeName = val.nodeName;
+        return ret;
     }
+
+
+    private updateInternal(node: NodeElement, updated: NodeElement): NodeElement {
+        if (node._id === updated._id) {
+            return updated;
+        }
+        node.childNodes = node.childNodes.map(c => this.updateInternal(c, updated));
+        return node;
+    }
+
 }

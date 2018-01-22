@@ -51,43 +51,15 @@ select:invalid {
     }
 }
 
-.form-item-highlight {
-    &[form-input] {
-        background-color: $gray-300!important;
-        input{
-          background-color: $gray-300!important;
-        }
-    }
-    &[form-item]{
-      border:2px dashed $gray-700!important;
-      margin:-2px!important;
-    }
-}
-
-.table-highlight{
-  background-color: $gray-700!important;
-  color:white!important;
+.table-highlight {
+    background-color: $gray-700!important;
+    color: white!important;
 }
 
 h5.modal-title {
     display: inline;
 }
 
-.btn-xs,
-.btn-group-xs>.btn {
-    padding: 0.15rem 0.3rem;
-    font-size: 0.775rem;
-    border-radius: 0.2rem;
-}
-
-.form-control-xs,
-.input-group-xs>.form-control,
-.input-group-xs>.input-group-addon,
-.input-group-xs>.input-group-btn>.btn {
-    padding: 0.15rem 0.3rem;
-    font-size: 0.775rem;
-    border-radius: 0.2rem;
-}
 
 .mwz-table {
     width: 100%;

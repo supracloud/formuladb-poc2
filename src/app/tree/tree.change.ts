@@ -1,7 +1,9 @@
 import { TreeObject } from "./tree.object";
+import { DropTarget } from "../services/drop.target";
 
 export class TreeChange {
-    constructor(public node: TreeObject<any>) { }
-    indexChange: number;
-    remove: boolean=false;
+    constructor(public originalNode: TreeObject<any>) { }
+    reportingNode: TreeObject<any> = null;
+    remove: boolean = false;
+    drop: DropTarget = null;
 }

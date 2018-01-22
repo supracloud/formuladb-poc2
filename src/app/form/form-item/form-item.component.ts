@@ -2,21 +2,19 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 
 import * as _ from 'lodash';
 
-import { BaseNodeComponent } from "./base_node";
-import { NodeElement, Str2NodeType } from "../domain/uimetadata/form";
-import { HighlightService } from '../services/hightlight.service';
+import { BaseNodeComponent } from "./../base_node";
+import { NodeElement, Str2NodeType } from "./../../domain/uimetadata/form";
+import { HighlightService } from './../../services/hightlight.service';
 import { Observable } from 'rxjs/Observable';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: '[form-item]',
-  templateUrl: './form-item.component.html',
+  templateUrl: 'form-item.component.html',
   host: { '[class]': 'getHostClassForElement()' },
+  styleUrls: ['form-item.component.scss']
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
-
-  @HostBinding("class.bg-info")
-  private amIHighlighted: boolean;
 
   constructor() {
     super();
@@ -24,7 +22,6 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
   ngOnInit() {
     // console.log(this.nodeElement);
-    this.amIHighlighted = this.nodeElement && this.nodeElement._id === this.highlighted;
   }
 
   getChildPath(childEl: NodeElement) {

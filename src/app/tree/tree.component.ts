@@ -4,6 +4,7 @@ import { TreeObject } from './tree.object';
 import { HighlightService } from '../services/hightlight.service';
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap';
 import { DragService } from '../services/drag.service';
+import { EditOptionsService } from '../services/edit.options.service';
 
 @Component({
     selector: 'mwz-tree',
@@ -36,42 +37,31 @@ export class TreeComponent implements OnInit {
     ngOnInit() { }
 
     private childChange(event: TreeChange) {
+        event.reportingNode = this.node;
         this.node.childChange(event);
-        this.change.emit(new TreeChange(this.node));
-    }
-
-    private moveUp(): void {
-        let tc: TreeChange = new TreeChange(this.node);
-        tc.indexChange = -1;
-        this.change.emit(tc);
-    }
-
-    private moveDown(): void {
-        let tc: TreeChange = new TreeChange(this.node);
-        tc.indexChange = 1;
-        this.change.emit(tc);
+        this.change.emit(event);
     }
 
     private drag(): void {
         this.dragSvc.payload = this.node;
     }
 
-    dropAvailable(id: string, parent: string, event?: any): boolean {
+    dropAvailable(id: string, parent: string, after: boolean, event?: any): boolean {
         if (event) event.preventDefault();
-        this.dragSvc.dropTarget = id;
-        this.dragSvc.dropParent = parent;
+        this.dragSvc.dropTarget = { target: id, parent: parent, after: after };
         return true;
     }
 
     private drop(): void {
+        let change: TreeChange = new TreeChange(this.dragSvc.payload);
+        change.drop = this.dragSvc.dropTarget;
+        this.childChange(change);
         this.dragSvc.payload = null;
-        this.dragSvc.dropTarget = null;
-        this.dragSvc.dropParent = null;
+        this.dragSvc.dropTarget = { target: null, parent: null, after: false };
     }
 
     private dragOut(): void {
-        this.dragSvc.dropTarget = null;
-        this.dragSvc.dropParent = null;
+        this.dragSvc.dropTarget = { target: null, parent: null, after: false };
     }
 
     private delete(): void {
@@ -99,10 +89,15 @@ export class TreeComponent implements OnInit {
         }
     }
 
-    finishEditing(event: boolean) {
+    finishEditing(obj: any) {
         this.edited = false;
         this.popEditor.close();
-        this.hover(false);
+        this.highlightSvc.highlight(null,true);
+        if (obj !== null) {
+            this.node.item = obj;
+            const event: TreeChange = new TreeChange(this.node);
+            this.childChange(event);
+        }
     }
 
     addItem(option: string) {

@@ -1,0 +1,2 @@
+<label [for]="nodeElement.propertyName">{{nodeElement.propertyName}}</label>
+<ngb-timepicker [id]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)" *ngIf="hasControl(parentFormPath)"></ngb-timepicker>

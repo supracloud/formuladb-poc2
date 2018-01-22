@@ -19,13 +19,13 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { FormComponent } from './form/form.component';
-import { FormInputComponent } from './form/form-input.component';
-import { FormAutocompleteComponent } from "./form/form-autocomplete.component";
-import { FormTabsComponent } from "./form/form-tabs.component";
-import { FormTableComponent } from "./form/form-table.component";
-import { FormDatepickerComponent } from "./form/form-datepicker.component";
-import { FormTimepickerComponent } from "./form/form-timepicker.component";
-import { FormItemComponent } from "./form/form-item.component";
+import { FormInputComponent } from './form/form-input/form-input.component';
+import { FormAutocompleteComponent } from "./form/form-autocomplete/form-autocomplete.component";
+import { FormTabsComponent } from "./form/form-tabs/form-tabs.component";
+import { FormTableComponent } from "./form/form-table/form-table.component";
+import { FormDatepickerComponent } from "./form/form-datepicker/form-datepicker.component";
+import { FormTimepickerComponent } from "./form/form-timepicker/form-timepicker.component";
+import { FormItemComponent } from "./form/form-item/form-item.component";
 import { TableComponent } from './table/table.component';
 import { EditorComponent } from './editor/editor.component';
 import { ModalComponent } from './modal/modal.component';
@@ -40,8 +40,9 @@ import { FormModalService } from "./form-modal.service";
 import { MwzParser } from "./mwz-parser";
 import { BackendService } from "./backend.service";
 import { HighlightService } from './services/hightlight.service';
-import { MetaItemEditorComponent } from './meta-item-editor/meta-item-editor.component';
+import { MetaItemEditorComponent } from './tree/meta-item-editor/meta-item-editor.component';
 import { DragService } from './services/drag.service';
+import { EditOptionsService } from './services/edit.options.service';
 
 const routes: Routes = [
   {
@@ -91,6 +92,7 @@ const routes: Routes = [
     BackendService,
     HighlightService,
     DragService,
+    EditOptionsService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
   ],
   bootstrap: [AppComponent]

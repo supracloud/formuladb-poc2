@@ -16,8 +16,10 @@ import * as appState from '../app.state';
 import * as fromForm from '../form/form.state';
 import * as fromTable from '../table/table.state';
 import * as fromEntity from '../entity-state';
-import { FormTreeObject } from '../tree/impl/tree.object.form';
-import { TableTreeObject } from '../tree/impl/tree.object.table';
+import { FormTreeObject } from '../tree/object-impl/tree.object.form';
+import { TableTreeObject } from '../tree/object-impl/tree.object.table';
+import * as _ from "lodash";
+import { TreeChange } from '../tree/tree.change';
 
 @Component({
   moduleId: module.id,
@@ -101,15 +103,15 @@ export class EditorComponent implements OnInit {
     });
 
     this.store.select(fromTable.getTableState).subscribe(table => {
-      this.table = table;
-      this.tableTree=new TableTreeObject(this.table);
-      this.tableTree.canDelete=false;
-      this.tableTree.canEdit=false;
+      this.table = _.cloneDeep(table);
+      this.tableTree = new TableTreeObject(this.table);
+      this.tableTree.canDelete = false;
+      this.tableTree.canEdit = false;
       this.setText();
     });
 
     this.store.select(fromForm.getFormState).subscribe(form => {
-      this.form = form;
+      this.form = _.cloneDeep(form);
       this.formTree = new FormTreeObject(this.form);
       this.formTree.canDelete = false;
       this.formTree.canEdit = false;
@@ -134,4 +136,12 @@ export class EditorComponent implements OnInit {
     //TODO: cleanup
   }
 
+  private formChange(event: TreeChange): void {
+    this.store.dispatch(new fromForm.FormFromBackendAction((event.reportingNode as FormTreeObject).item as Form));
+  }
+
+
+  private tableChange(event: TreeChange): void {
+    this.store.dispatch(new fromTable.TableFormBackendAction((event.reportingNode as TableTreeObject).item));
+  }
 }
