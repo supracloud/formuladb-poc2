@@ -71,6 +71,8 @@ export class ReferencedEntity {
     copiedProperties?: string[];
 }
 
+export type RelativePath = string;
+
 /**
  * This property represents a formula definition
  */
@@ -102,6 +104,9 @@ export const enum FormulaTypeN {
     IF = "IF",
     CHAIN = "CHAIN",
     FORMAT = "FORMAT",
+    INDEX_OF = "INDEX_OF",
+    START_OF_MONTH = "START_OF_MONTH",
+    END_OF_MONTH = "END_OF_MONTH",
 }
 
 export class ConstantFormula {
@@ -111,12 +116,12 @@ export class ConstantFormula {
 
 export class ValueOfFormula {
     readonly type = FormulaTypeN.VALUE_OF;
-    relativePath: string;
+    property: RelativePath;
 }
 
 export class CurrentValueOfFormula {
     readonly type = FormulaTypeN.CURRENT_VALUE_OF;
-    relativePath: string;
+    property: RelativePath;
 }
 
 export class SumFormula {
@@ -157,8 +162,31 @@ export class ChainFormula {
 
 export class FormatFormula {
     readonly type = FormulaTypeN.FORMAT;
+    // readonly description = 'Formats "values" according to a "format" specifier';
     format: string;
     values: Formula[];
+}
+
+export class IndexOfFormula {
+    readonly type = FormulaTypeN.INDEX_OF;
+    // readonly description = 'Finds the index of the current object among its siblings sorted by "property" with the search interval bounded by "startRange" and "endRange"'
+    property: RelativePath;
+    startRange: Formula;
+    endRange: Formula;
+}
+
+export class StartOfMonthFormula {
+    readonly type = FormulaTypeN.START_OF_MONTH;
+    // readonly description = 'Returns a DATETIME representing the start of month relative to the DATETIME "property" parameter'
+    property: RelativePath;
+    // readonly propertyType = PropertyTypeN.DATETIME;
+}
+
+export class EndOfMonthFormula {
+    readonly type = FormulaTypeN.END_OF_MONTH;
+    // readonly description = 'Returns a DATETIME representing the end of month relative to the DATETIME "property" parameter'
+    property: RelativePath;
+    // readonly propertyType = PropertyTypeN.DATETIME;
 }
 
 export type Formula = 
@@ -173,4 +201,7 @@ export type Formula =
     | IfFormula
     | ChainFormula
     | FormatFormula
+    | IndexOfFormula
+    | StartOfMonthFormula
+    | EndOfMonthFormula
 ;

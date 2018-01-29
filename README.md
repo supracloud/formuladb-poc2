@@ -65,36 +65,6 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-## 1.3 Design
-
-"Everyting is a stream" design goals...before you find some hate/pain points give me a chance to explain the benefits :)
-
-![](./docs/img/docs/architecture.png)
-![](./docs/img/docs/init_and_view_flows.png)
-![](./docs/img/docs/edit_flow.png)
-![](./docs/img/docs/metadata_flow.png)
-
-### Formula Engine architecture
-
-![](./docs/img/docs/TransactionStateMachine.png)
-![](./docs/img/docs/formula_engine_architecture.png)
-
-### Formula Engine use cases
-
-#### Inventory Management
-
-![](./docs/img/docs/FormulasInventoryManagement.png)
-
-#### Balance Transfer
-
-![](./docs/img/docs/FormulasMoneyTransfer.png)
-![](./docs/img/docs/FormulasMoneyTransferFlow.png)
-
-
-#### INDEX_OF partial global ordering formula
-
-![](./docs/img/docs/FormulasIndexOf.png)
-
 # 2. Production
 
 TODO

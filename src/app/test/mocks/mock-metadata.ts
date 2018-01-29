@@ -27,6 +27,12 @@ export class MockMetadata {
     module: true
   };
 
+  static Financial: Entity = {
+    mwzType: "Entity_", _id: "Financial",
+    "properties": [],
+    module: true
+  };
+
   static Forms: Entity = {
     mwzType: "Entity_", _id: "Forms",
     "properties": [],
@@ -146,7 +152,7 @@ export class MockMetadata {
         type: PropertyTypeN.FORMULA,
         formula: {
           type: FormulaTypeN.SUM,
-          arguments: [{type: FormulaTypeN.VALUE_OF, relativePath: "receiptItems.received_quantity"}]
+          arguments: [{type: FormulaTypeN.VALUE_OF, property: "receiptItems.received_quantity"}]
         }        
       },
       {
@@ -154,10 +160,10 @@ export class MockMetadata {
         type: PropertyTypeN.FORMULA,
         formula: {
           type: FormulaTypeN.SUBTRACT,
-          minuend: {type: FormulaTypeN.VALUE_OF, relativePath: "received_stock"},
+          minuend: {type: FormulaTypeN.VALUE_OF, property: "received_stock"},
           subtrahends: [
-            {type: FormulaTypeN.VALUE_OF, relativePath: "reserved_stock"},
-            {type: FormulaTypeN.VALUE_OF, relativePath: "delivered_stock"}
+            {type: FormulaTypeN.VALUE_OF, property: "reserved_stock"},
+            {type: FormulaTypeN.VALUE_OF, property: "delivered_stock"}
           ]
         }        
       },
@@ -166,7 +172,7 @@ export class MockMetadata {
         type: PropertyTypeN.FORMULA,
         formula: {
           type: FormulaTypeN.SUM,
-          arguments: [{type: FormulaTypeN.VALUE_OF, relativePath: "receiptItems.reserved_quantity"}]
+          arguments: [{type: FormulaTypeN.VALUE_OF, property: "receiptItems.reserved_quantity"}]
         }        
       },
       {
@@ -223,7 +229,7 @@ export class MockMetadata {
         formula: {
           type: FormulaTypeN.CHAIN,
           steps: [
-            {formula: {type: FormulaTypeN.CURRENT_VALUE_OF, relativePath: "product.available_stock"}, alias: "stock"},
+            {formula: {type: FormulaTypeN.CURRENT_VALUE_OF, property: "product.available_stock"}, alias: "stock"},
             {formula: {
                 type: FormulaTypeN.IF, 
                 expression: null,//stock < requested_quantity
@@ -281,6 +287,54 @@ export class MockMetadata {
     ]
   };
 
+  static Financial__Account: Entity = {
+    mwzType: "Entity_", _id:  "Financial__Account",
+    "properties": [
+      { "name": "code", "type": PropertyTypeN.STRING, "allowNull": false },
+      { "name": "name", "type": PropertyTypeN.STRING, "allowNull": false },
+      {
+        name: "actor",
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "General__Actor",
+          copiedProperties: [
+            "code",
+            "name",
+          ]
+        }
+      },
+    ]
+  };
+
+  static Financial__Transaction: Entity = {
+    mwzType: "Entity_", _id:  "Financial__Transaction",
+    "properties": [
+      {
+        name: "accountDebit",
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "Financial__Account",
+          copiedProperties: [
+            "code",
+            "name",
+          ]
+        }
+      },
+      {
+        name: "accountCredit",
+        type: PropertyTypeN.SUBENTITY,
+        referencedEntity: {
+          path: "Financial__Account",
+          copiedProperties: [
+            "code",
+            "name",
+          ]
+        }
+      },
+      { "name": "amount", "type": PropertyTypeN.NUMBER },
+    ]
+  };
+  
   static Forms__Receipt: Entity = {
     mwzType: "Entity_", _id:  "Forms__Acquisition",
     "properties": [
@@ -375,8 +429,12 @@ export class MockMetadata {
         formula: {
           type: FormulaTypeN.CONCATENATE,
           arguments: [
-            {type: FormulaTypeN.VALUE_OF, relativePath: "client.code"},
-            {type: FormulaTypeN.FORMAT, format: "%09d", values: [{type: FormulaTypeN.CONSTANT, value: "-3"}]}
+            {type: FormulaTypeN.VALUE_OF, property: "client.code"},
+            {type: FormulaTypeN.FORMAT, format: "%09d", values: [{
+              type: FormulaTypeN.INDEX_OF, property: "time_of_arrival",
+              startRange: {type: FormulaTypeN.START_OF_MONTH, property: "time_of_arrival"},
+              endRange: {type: FormulaTypeN.END_OF_MONTH, property: "time_of_arrival"},
+            }]}
           ]
         }
         // "type": "FORMULA:CONCATENATE(client.code;FORMAT(\"0\";\"9\";INDEX_IN_INTERVAL(time_of_arrival,monthly))",
@@ -426,6 +484,9 @@ export class MockMetadata {
     MockMetadata.Inventory__ProductListProductUnit,
     MockMetadata.Inventory__Product,
     MockMetadata.Inventory__ProductUnit,
+    MockMetadata.Financial,
+    MockMetadata.Financial__Account,
+    MockMetadata.Financial__Transaction,
     MockMetadata.Forms,
     MockMetadata.Forms__Receipt,
     MockMetadata.Forms__Order,
