@@ -16,7 +16,8 @@ export const enum PropertyTypeN {
     TEXT = "TEXT",
     DATETIME = "DATETIME",
     TABLE = "TABLE",
-    SUBENTITY = "SUBENTITY",
+    REFERENCE_ENTITY = "REFERENCES_ENTITY",
+    EXTEND_ENTITY = "EXTENDS_ENTITY",
     FORMULA = "FORMULA",
 }
 
@@ -47,22 +48,33 @@ export class DatetimeProperty {
 export class TableProperty {
     readonly type: PropertyTypeN.TABLE;
     name: string;
-    referencedEntity?: ReferencedEntity;
+    entity?: ReferencedEntity;
     isLargeTable?: boolean;
     properties?: EntityProperty[];    
 }
 /**
  * This property represents an embedded entity that is created when the parent entity is created
  */
-export class SubentityProperty {
-    readonly type: PropertyTypeN.SUBENTITY;
+export class ReferenceEntityProperty {
+    readonly type: PropertyTypeN.REFERENCE_ENTITY;
     name: string;
     /**
-     * referencedEntity != null means a new Entity instance is not created with the parent Entity
      * Autocomplete form element must be used to allow the user to reference and existing Entity
      * The possible autocomplete fields are set copiedProperties
      */
-    referencedEntity?: ReferencedEntity;
+    entity?: ReferencedEntity;
+    properties?: EntityProperty[]; 
+}
+/**
+ * This property represents an embedded entity that is created when the parent entity is created
+ */
+export class ExtendEntityProperty {
+    readonly type: PropertyTypeN.EXTEND_ENTITY;
+    name: string;
+    /**
+     * a new Entity instance is not created with the parent Entity
+     */
+    entity?: ReferencedEntity;
     properties?: EntityProperty[]; 
 }
 
@@ -88,7 +100,8 @@ export type EntityProperty =
     | TextProperty
     | DatetimeProperty
     | TableProperty
-    | SubentityProperty
+    | ReferenceEntityProperty
+    | ExtendEntityProperty
     | FormulaProperty
 ;
 

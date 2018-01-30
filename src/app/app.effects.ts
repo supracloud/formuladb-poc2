@@ -239,11 +239,11 @@ function setFormElementChildren(parentFormEl: NodeElement, entity: Entity, entit
         if (prop.type === PropertyTypeN.TABLE) {
             child.tableName = prop.name;
             child.nodeType = prop.isLargeTable ? NodeType.FormTable : NodeType.FormTabs;
-            setFormElementChildren(child, entitiesMap.get(prop.referencedEntity.path), entitiesMap);
-        } else if (prop.type === PropertyTypeN.SUBENTITY) {
+            setFormElementChildren(child, entitiesMap.get(prop.entity.path), entitiesMap);
+        } else if (prop.type === PropertyTypeN.REFERENCE_ENTITY) {
             child.entityName = prop.name;
             child.nodeType = NodeType.FormAutocomplete;
-            child.attributes = { copiedProperties: prop.referencedEntity.copiedProperties };
+            child.attributes = { copiedProperties: prop.entity.copiedProperties };
         } else {
             child.propertyName = prop.name;
         }

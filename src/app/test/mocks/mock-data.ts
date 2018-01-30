@@ -78,13 +78,13 @@ export class MockData {
         ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
       } else if (p.type == PropertyTypeN.DATETIME) {
         ret[p.name] = new Date();
-      } else if (p.type == PropertyTypeN.SUBENTITY) {
+      } else if (p.type == PropertyTypeN.REFERENCE_ENTITY) {
         let refIdx = Math.round(Math.random() * 4);
-        let refPath = p.referencedEntity.path;
-        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.referencedEntity.copiedProperties || []).concat(['_id', 'mwzType']));
+        let refPath = p.entity.path;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.entity.copiedProperties || []).concat(['_id', 'mwzType']));
       } else if (p.type == PropertyTypeN.TABLE) {
-        if (p.referencedEntity != null) {
-          let ref = this.entitiesMap.get(p.referencedEntity.path);
+        if (p.entity != null) {
+          let ref = this.entitiesMap.get(p.entity.path);
           ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
         } else {
           let table = [];
@@ -109,12 +109,12 @@ export class MockData {
     this.mockEntities(metadata.MockMetadata.General__Currency, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.General__Person, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.General__User, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__Client, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__Product, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__OrderItem, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Inventory__ReceiptItem, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.MockMetadata.General__Client, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__Product, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__OrderItem, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__ReceiptItem, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Forms__Order, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Forms__Receipt, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.MockMetadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
