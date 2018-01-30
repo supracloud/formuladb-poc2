@@ -13,7 +13,9 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class PersistenceService {
 
-    public dataDB: any;
+    protected dataDB: any;
+    protected eventsDB: any;
+    protected notifsDB: any;
 
     constructor() {
     }
@@ -45,19 +47,26 @@ export class PersistenceService {
         return this.dataDB.get(id);
     }
 
-    // private put(id: string, document: BaseObj): Promise<any> {
-    //     document._id = id;
-    //     return this.get(id).then(result => {
-    //         document._rev = result._rev;
-    //         return this.localDB.put(document);
-    //     }, error => {
-    //         if (error.status == "404") {
-    //             return this.localDB.put(document);
-    //         } else {
-    //             return new Promise((resolve, reject) => {
-    //                 reject(error);
-    //             });
-    //         }
-    //     });
-    // }    
+    public putEvent(event: MwzEvents) {
+        this.eventsDB.put(event)
+            .catch(err => console.error(err))
+            .then(() => console.log("%c * Event **##$$",
+                "color: blue; font-size: 115%; font-weight: bold; text-decoration: underline;", event));
+    }
+    
+    public forcePut(id: string, document: BaseObj): Promise<any> {
+        document._id = id;
+        return this.dataDB.get(id).then(result => {
+            document._rev = result._rev;
+            return this.dataDB.put(document);
+        }, error => {
+            if (error.status == "404") {
+                return this.dataDB.put(document);
+            } else {
+                return new Promise((resolve, reject) => {
+                    reject(error);
+                });
+            }
+        });
+    }    
 }

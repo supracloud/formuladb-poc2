@@ -75,6 +75,7 @@ export class AppEffects {
     private listenForNotifsFromServer(event: MwzEvents) {
         console.log("%c * NotifFromServer **##$$",
             "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
+        if (!event) return;
 
         switch (event.type) {
             case appState.UserActionEditedFormDataN:
@@ -136,8 +137,7 @@ export class AppEffects {
             console.log("%c * Event **##$$",
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
 
-            this.backendService.putEvent(action.event)
-                .subscribe(notif => this.listenForNotifsFromServer(notif));
+            this.backendService.putEvent(action.event);
         });
     }
 

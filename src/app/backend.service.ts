@@ -1,4 +1,4 @@
-import PouchDB from 'pouchdb';//use this when running on webpack in za browser
+import PouchDB from 'pouchdb';//use this when running on webpack in the browser
 import PouchFind from 'pouchdb-find';
 PouchDB.plugin(PouchFind);
 PouchDB.debug.enable('*');
@@ -23,17 +23,16 @@ export class BackendService extends PersistenceService {
 
     private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
 
-    constructor(private http: HttpClient) {
+    constructor() {
         super();
-        PouchDB.plugin(PouchFind);
         this.dataDB = new PouchDB("mwz");
+        this.eventsDB = new PouchDB('http://localhost:5984/mwzevents');
+        this.notifsDB = new PouchDB('http://localhost:5984/mwznotifs');
     }
 
     public init(initCallback: () => void,
         notifCallback: (event: MwzEvents) => void,
         dataChangeCallback: (change: { docs: Array<BaseObj> }) => void) {
-
-
 
         console.log("%c ** INITIAL REPLICATION STARTED **##$$",
             "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
@@ -71,13 +70,20 @@ export class BackendService extends PersistenceService {
                         })
                         .on('error', err => console.error(err));
 
+                    //notifs will be handled by the effects service
+                    this.notifsDB.changes({
+                        since: 'now',
+                        include_docs: true,
+                        live: true
+                    })
+                        .on('change', function (change) {
+                            notifCallback(change ? change.doc : null);
+                        })
+                        .on('error', err => console.error(err));
+
                 });
             })
             .on('error', err => console.error(err));
-    }
-
-    public putEvent(event: MwzEvents): Observable<MwzEvents> {
-        return this.http.post<MwzEvents>('/api/event', event);
     }
 
     public getTable(path: string): Promise<Table> {

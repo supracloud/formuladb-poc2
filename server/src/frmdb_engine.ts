@@ -1,6 +1,3 @@
-import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
-// import PouchDB from 'pouchdb';//use this when running on webpack in za browser
-
 /**
  * TODO: move this class on the server, outside the web app
  * In fact not move it completely, some parts could be done on the client too:
@@ -12,27 +9,33 @@ import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
 import { DataObj } from "../../src/app/domain/metadata/data_obj";
 
 import * as events from "../../src/app/domain/event";
+import { StorageService } from "./storage.service";
 
-var dataDB = new PouchDB("http://localhost:5984/mwzdata");
-PouchDB.debug.enable('*');
-
-export class MwzEngine {
+export class FrmdbEngine {
 
     private eventsQueueProcessor: Promise<events.MwzEvents> = null;
+    private storageService: StorageService;
 
-    /**
-     * Events are queued and are processed in the order in which they arrive
-     * @param event the event from client
-     */
-    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
-
-        if (null == this.eventsQueueProcessor) {
-            this.eventsQueueProcessor = this.handleEvent(event);
-        } else {
-            this.eventsQueueProcessor = this.eventsQueueProcessor.then(() => this.handleEvent(event));
-        }
-        return this.eventsQueueProcessor;
+    constructor() {
+        this.storageService = new StorageService();
     }
+
+    public init() {
+        console.log("Starting FormulaDBEngine...");
+        this.storageService.eventsDB.changes({
+            since: 'now',//FIXME: start listening from the last action processed, implement proper queue
+            include_docs: true,
+            live: true
+        }).on('change', change => {
+            console.log(change);
+            if (!change.deleted) {
+                this.handleEvent(change.doc);
+            }
+        }).on('error', err => {
+            console.error(err);
+        });
+    }
+
 
     private handleEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
         let ret: Promise<events.MwzEvents> = null;
@@ -66,28 +69,29 @@ export class MwzEngine {
     }
 
     private async processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
-        let entity = await dataDB.get(event.obj.mwzType);
+        let entity = await this.storageService.dataDB.get(event.obj.mwzType);
         
         //TODO: get entities that depend on this entity
         //TODO: get entities that depend on this entity
 
         //TODO: compute dependencies and formulas
-        return dataDB.put(event.obj)
+        return this.storageService.forcePut(event.obj._id, event.obj)
             .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
+            .then(event => this.storageService.notifsDB.put(event))
             .catch(err => console.error(err));
     }
 
     private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {
-        return dataDB.get(event.form._id)
+        return this.storageService.dataDB.get(event.form._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
                 if (frm) event.form._rev = frm._rev;
 
-                return dataDB.put(event.form).catch(err => console.error(err));
+                return this.storageService.dataDB.put(event.form).catch(err => console.error(err));
             })
             .then(() => {
                 console.log("form save started");
@@ -95,55 +99,62 @@ export class MwzEngine {
                 event.notifMsg = 'OK';
                 delete event._rev;
                 return event;
-            });
+            })
+            .then(event => this.storageService.notifsDB.put(event))
+        ;
     }
 
     private processTable(event: events.UserActionEditedTableEvent): Promise<events.MwzEvents> {
-        return dataDB.get(event.table._id)
+        return this.storageService.dataDB.get(event.table._id)
             .catch(err => { console.log(err); return; })
             .then(tbl => {
                 if (tbl) event.table._rev = tbl._rev;
 
-                return dataDB.put(event.table).catch(err => console.error(err));
+                return this.storageService.dataDB.put(event.table).catch(err => console.error(err));
             })
             .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
-            });
+            })
+            .then(event => this.storageService.notifsDB.put(event))
+        ;
     }
 
     private newEntity(event: events.UserActionNewEntity): Promise<events.MwzEvents> {
         let newEntity = new Entity();
         newEntity._id = event.path;
 
-        return dataDB.put(newEntity)
+        return this.storageService.dataDB.put(newEntity)
             .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
+            .then(() => this.storageService.notifsDB.put(event))
             .catch(err => console.error(err));
     }
 
     private deleteEntity(event: events.UserActionDeleteEntity): Promise<events.MwzEvents> {
         event.entity._deleted = true;
-        return dataDB.put(event.entity)
+        return this.storageService.dataDB.put(event.entity)
             .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
+            .then(event => this.storageService.notifsDB.put(event))
             .catch(err => console.error(err));
     }
 
     private processEntity(event: events.UserActionEditedEntity): Promise<events.MwzEvents> {
-        return dataDB.put(event.entity)
+        return this.storageService.dataDB.put(event.entity)
             .then(() => {
                 event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
+            .then(event => this.storageService.notifsDB.put(event))
             .catch(err => console.error(err));
     }
 }
