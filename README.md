@@ -34,9 +34,9 @@ Then load test data:
 
 ```bash
         # start angular app
-        ng serve
+        ng serve --proxy-config proxy.config.json
         # start backend
-        cd server && npm run dev
+        cd server && npm run serve
 ```
 
 #### traffic shaping (IGNORE, NOT WORKING)
