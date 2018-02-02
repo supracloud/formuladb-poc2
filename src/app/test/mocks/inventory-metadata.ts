@@ -1,12 +1,12 @@
-import { Entity, PropertyTypeN, FormulaTypeN } from '../../../domain/metadata/entity';
+import { Entity, PropertyTypeN, Fnn } from '../../domain/metadata/entity';
 
-export var Inventory: Entity = {
+export const Inventory: Entity = {
     mwzType: "Entity_", _id: "Inventory",
     properties: [],
     module: true
 };
 
-export var Inventory__InventoryProduct: Entity = {
+export const Inventory__InventoryProduct: Entity = {
     mwzType: "Entity_", _id: "Inventory__InventoryProduct",
     properties: [
         { name: "inventory_code", type: PropertyTypeN.STRING, allowNull: false },
@@ -30,26 +30,26 @@ export var Inventory__InventoryProduct: Entity = {
         {
             name: "received_stock", type: PropertyTypeN.FORMULA,
             formula: {
-                type: FormulaTypeN.SUM,
-                arguments: [{ type: FormulaTypeN.VALUE_OF, property: "receiptItems.received_quantity" }]
+                fn: Fnn.SUM,
+                arguments: [{ fn: Fnn.VALUE_OF, property: "receiptItems.received_quantity" }]
             }
         },
         {
             name: "available_stock", type: PropertyTypeN.FORMULA,
             formula: {
-                type: FormulaTypeN.SUBTRACT,
-                minuend: { type: FormulaTypeN.VALUE_OF, property: "received_stock" },
+                fn: Fnn.SUBTRACT,
+                minuend: { fn: Fnn.VALUE_OF, property: "received_stock" },
                 subtrahends: [
-                    { type: FormulaTypeN.VALUE_OF, property: "reserved_stock" },
-                    { type: FormulaTypeN.VALUE_OF, property: "delivered_stock" }
+                    { fn: Fnn.VALUE_OF, property: "reserved_stock" },
+                    { fn: Fnn.VALUE_OF, property: "delivered_stock" }
                 ]
             }
         },
         {
             name: "reserved_stock", type: PropertyTypeN.FORMULA,
             formula: {
-                type: FormulaTypeN.SUM,
-                arguments: [{ type: FormulaTypeN.VALUE_OF, property: "orderItems.reserved_quantity" }]
+                fn: Fnn.SUM,
+                arguments: [{ fn: Fnn.VALUE_OF, property: "orderItems.reserved_quantity" }]
             }
         },
         { name: "delivered_stock", type: PropertyTypeN.NUMBER },
@@ -58,7 +58,7 @@ export var Inventory__InventoryProduct: Entity = {
     ]
 };
 
-export var Inventory__ReceiptItem: Entity = {
+export const Inventory__ReceiptItem: Entity = {
     mwzType: "Entity_", _id: "Inventory__ReceiptItem",
     properties: [
         {
@@ -79,7 +79,7 @@ export var Inventory__ReceiptItem: Entity = {
     ]
 };
 
-export var Inventory__OrderItem: Entity = {
+export const Inventory__OrderItem: Entity = {
     mwzType: "Entity_", _id: "Inventory__OrderItem",
     properties: [
         {
@@ -101,12 +101,12 @@ export var Inventory__OrderItem: Entity = {
             name: "reserved_quantity",
             type: PropertyTypeN.FORMULA,
             formula: {
-                type: FormulaTypeN.CHAIN,
+                fn: Fnn.CHAIN,
                 steps: [
-                    { formula: { type: FormulaTypeN.CURRENT_VALUE_OF, property: "product.available_stock" }, alias: "stock" },
+                    { formula: { fn: Fnn.CURRENT_VALUE_OF, property: "product.available_stock" }, alias: "stock" },
                     {
                         formula: {
-                            type: FormulaTypeN.IF,
+                            fn: Fnn.IF,
                             expression: null,//stock < requested_quantity
                             trueValue: null,//requested_quantity
                             falseValue: null//stock
@@ -119,7 +119,7 @@ export var Inventory__OrderItem: Entity = {
     ]
 };
 
-export var Inventory__ProductListProductUnit: Entity = {
+export const Inventory__ProductListProductUnit: Entity = {
     mwzType: "Entity_", _id: "Inventory__ProductListProductUnit",
     properties: [
         { name: "product_list_product_id", type: PropertyTypeN.NUMBER, allowNull: false },
@@ -132,7 +132,7 @@ export var Inventory__ProductListProductUnit: Entity = {
     ]
 };
 
-export var Inventory__Product: Entity = {
+export const Inventory__Product: Entity = {
     mwzType: "Entity_", _id: "Inventory__Product",
     properties: [
         { name: "code", type: PropertyTypeN.STRING, allowNull: false },
@@ -142,7 +142,7 @@ export var Inventory__Product: Entity = {
     ]
 };
 
-export var Inventory__ProductUnit: Entity = {
+export const Inventory__ProductUnit: Entity = {
     mwzType: "Entity_", _id: "Inventory__ProductUnit",
     properties: [
         { name: "code", type: PropertyTypeN.STRING, allowNull: false },
@@ -162,4 +162,3 @@ export var Inventory__ProductUnit: Entity = {
         { name: "washing_cycles", type: PropertyTypeN.STRING, }
     ]
 };
-

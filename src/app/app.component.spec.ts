@@ -6,8 +6,6 @@ import * as appState from "./app.state";
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './navigation/navigation.component';
 
-import { MockService } from "./test/mock.service";
-
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -19,7 +17,7 @@ describe('AppComponent', () => {
         AppComponent,
         NavigationComponent
       ],
-      providers: [MockService]
+      providers: []
     }).compileComponents();
   }));
   it('should create the app', async(() => {

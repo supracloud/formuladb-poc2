@@ -15,7 +15,7 @@ import { Form, NodeElement } from "./domain/uimetadata/form";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { generateUUID } from "./domain/uuid";
+import { addIdsToForm, addIdsToTable } from "./domain.utils";
 import { PersistenceService } from "./persistence.service";
 
 @Injectable()
@@ -89,35 +89,21 @@ export class BackendService extends PersistenceService {
     public getTable(path: string): Promise<Table> {
         return super.getTable(path).then(ti => {
             return new Promise<Table>((resolve, reject) => {
-                BackendService.addIdsToTable(ti);
+                addIdsToTable(ti);
                 resolve(ti);
             })
         });
     }
 
-    public static addIdsToTable(input: Table): void {
-        if (!input._id) { input._id = generateUUID(); }
-        if (input.columns && input.columns.length > 0) {
-            input.columns.forEach(c => c._id = generateUUID());
-        }
-    }
-
     public getForm(path: string): Promise<Form> {
         return super.getForm(path).then(fi => {
-            BackendService.addIdsToForm(fi);
+            addIdsToForm(fi);
             return fi;
             // return new Promise((resolve, reject) => {
             //     PouchdbService.addIdsToForm(fi);
             //     resolve(fi);
             // })
         });
-    }
-
-    public static addIdsToForm(input: NodeElement): void {
-        if (!input._id) { input._id = generateUUID(); }
-        if (input.childNodes && input.childNodes.length > 0) {
-            input.childNodes.forEach(c => this.addIdsToForm(c));
-        }
     }
 
 }

@@ -5,25 +5,23 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 
 import { NavigationComponent } from './navigation.component';
-import * as state from './navigation.state';
+import * as state from '../entity-state';
 
 import * as mainDemoFlow from '../test/main_demo.flow';
 import { MockMetadata } from '../test/mocks/mock-metadata';
 
-import { MockService } from "../test/mock.service";
-
 interface AppState {
-  nav: state.State;
+  entity: state.EntityState;
 }
 
 const reducers = {
-  nav: state.reducer
+  nav: state.entityReducer
 };
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
   let fixture: ComponentFixture<NavigationComponent>;
-  let store: Store<state.State>;
+  let store: Store<state.EntityState>;
   let mockMeta = new MockMetadata();
 
   beforeEach(async(() => {
@@ -33,7 +31,7 @@ describe('NavigationComponent', () => {
         StoreModule.forRoot(reducers),
       ],      
       declarations: [ NavigationComponent ],
-      providers: [MockService]
+      providers: []
     })
     .compileComponents();
   }));
@@ -51,7 +49,7 @@ describe('NavigationComponent', () => {
   it('main flow', () => {
     expect(component).toBeTruthy();
     
-    store.dispatch(new state.EntitiesChangesAction(mockMeta.entities.map(e => new state.ChangeObj(e))));
+    store.dispatch(new state.EntitiesFromBackendFullLoadAction(mockMeta.entities));
 
     let firstEntity = fixture.debugElement.query(By.css('li'));
   });

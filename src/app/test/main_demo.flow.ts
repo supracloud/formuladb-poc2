@@ -3,10 +3,12 @@ import * as appState from '../app.state';
 import { ChangeObj } from "../domain/change_obj";
 
 import { MockMetadata } from './mocks/mock-metadata';
+import { MockData } from "./mocks/mock-data";
 
-export const SETUP = {
-    initialEntities: new MockMetadata().entities
-};
+import { getDefaultTable } from "../domain.utils";
+
+export var mockMetadata = new MockMetadata();
+export var mockData = new MockData(mockMetadata.entitiesMap)
 
 let SYSTEMNAME = 'Cloudev'; //NEED IDEAS HERE!!! metawiz is not catchy enough, cloudev sounds better by there is a cloudevtech.com, let's open a poll
 
@@ -46,7 +48,7 @@ export const SIMPLE_FLOW = {
     Then_navigation_should_show_all_current_tables: {
     },
     And_default_table_page_with_service_forms_should_be_displayed: {
-        // serviceFormTable: getDefaultTable(MockMetadata.Forms__ServiceForm)
+        serviceFormTable: getDefaultTable(MockMetadata.Forms__ServiceForm)
     },
     When_user_navigates_to_a_service_form: {},
     Then_the_form_page_should_be_displayed: {},

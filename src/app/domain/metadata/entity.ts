@@ -105,7 +105,7 @@ export type EntityProperty =
     | FormulaProperty
 ;
 
-export const enum FormulaTypeN {
+export const enum Fnn {
     CONSTANT = "CONSTANT",
     VALUE_OF = "VALUE_OF",
     CURRENT_VALUE_OF = "CURRENT_VALUE_OF",
@@ -123,65 +123,65 @@ export const enum FormulaTypeN {
 }
 
 export class ConstantFormula {
-    readonly type = FormulaTypeN.CONSTANT;
+    readonly fn = Fnn.CONSTANT;
     value: any;
 }
 
 export class ValueOfFormula {
-    readonly type = FormulaTypeN.VALUE_OF;
+    readonly fn = Fnn.VALUE_OF;
     property: RelativePath;
 }
 
 export class CurrentValueOfFormula {
-    readonly type = FormulaTypeN.CURRENT_VALUE_OF;
+    readonly fn = Fnn.CURRENT_VALUE_OF;
     property: RelativePath;
 }
 
 export class SumFormula {
-    readonly type = FormulaTypeN.SUM;
+    readonly fn = Fnn.SUM;
     arguments: Formula[];
 }
 
 export class SubtractFormula {
-    readonly type = FormulaTypeN.SUBTRACT;
+    readonly fn = Fnn.SUBTRACT;
     minuend: Formula;
     subtrahends: Formula[];
 }
 
 export class MultiplyFormula {
-    readonly type = FormulaTypeN.MULTIPLY;
+    readonly fn = Fnn.MULTIPLY;
 }
 
 export class DivideFormula {
-    readonly type = FormulaTypeN.DIVIDE;
+    readonly fn = Fnn.DIVIDE;
 }
 
 export class ConcatenateFormula {
-    readonly type = FormulaTypeN.CONCATENATE;
+    readonly fn = Fnn.CONCATENATE;
     arguments: Formula[];
 }
 
 export class IfFormula {
-    readonly type = FormulaTypeN.IF;
+    readonly fn = Fnn.IF;
     expression: Formula;
     trueValue: Formula;
     falseValue: Formula;
 }
 
 export class ChainFormula {
-    readonly type = FormulaTypeN.CHAIN;
+    readonly fn = Fnn.CHAIN;
     steps: {formula: Formula, alias?: string}[];
 }
 
 export class FormatFormula {
-    readonly type = FormulaTypeN.FORMAT;
+    readonly fn = Fnn.FORMAT;
     // readonly description = 'Formats "values" according to a "format" specifier';
     format: string;
     values: Formula[];
 }
 
 export class IndexOfFormula {
-    readonly type = FormulaTypeN.INDEX_OF;
+    readonly fn = Fnn.INDEX_OF;
     // readonly description = 'Finds the index of the current object among its siblings sorted by "property" with the search interval bounded by "startRange" and "endRange"'
     property: RelativePath;
     startRange: Formula;
@@ -189,14 +189,14 @@ export class IndexOfFormula {
 }
 
 export class StartOfMonthFormula {
-    readonly type = FormulaTypeN.START_OF_MONTH;
+    readonly fn = Fnn.START_OF_MONTH;
     // readonly description = 'Returns a DATETIME representing the start of month relative to the DATETIME "property" parameter'
     property: RelativePath;
     // readonly propertyType = PropertyTypeN.DATETIME;
 }
 
 export class EndOfMonthFormula {
-    readonly type = FormulaTypeN.END_OF_MONTH;
+    readonly fn = Fnn.END_OF_MONTH;
     // readonly description = 'Returns a DATETIME representing the end of month relative to the DATETIME "property" parameter'
     property: RelativePath;
     // readonly propertyType = PropertyTypeN.DATETIME;
