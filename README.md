@@ -16,8 +16,8 @@ The run the following commands from Git Bash:
         curl -X PUT http://127.0.0.1:5984/_replicator
         curl -X PUT http://127.0.0.1:5984/_global_changes
         curl -X PUT http://127.0.0.1:5984/mwzdata
-        curl -X PUT http://127.0.0.1:5984/mwzevents
-        curl -X PUT http://127.0.0.1:5984/mwznotifs
+        curl -X PUT http://127.0.0.1:5984/mwzhistory
+        curl -X PUT http://127.0.0.1:5984/mwztransactions
 
         npm install -g add-cors-to-couchdb
         add-cors-to-couchdb
@@ -34,7 +34,7 @@ Then load test data:
 
 ```bash
         # start angular app
-        ng serve --proxy-config proxy.config.json
+        ./node_modules/.bin/ng serve --proxy-config proxy.config.json
         # start backend
         cd server && npm run serve
 ```

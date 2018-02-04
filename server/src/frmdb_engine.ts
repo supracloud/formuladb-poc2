@@ -22,25 +22,28 @@ export class FrmdbEngine {
 
     public init() {
         console.log("Starting FormulaDBEngine...");
-        this.storageService.eventsDB.changes({
-            since: 'now',//FIXME: start listening from the last action processed, implement proper queue
-            include_docs: true,
-            live: true
-        }).on('change', change => {
-            console.log(change);
-            if (!change.deleted) {
-                this.handleEvent(change.doc);
-            }
-        }).on('error', err => {
-            console.error(err);
-        });
+        // this.storageService.eventsDB.changes({
+        //     since: 'now',//FIXME: start listening from the last action processed, implement proper queue
+        //     include_docs: true,
+        //     live: true
+        // }).on('change', change => {
+        //     console.log(change);
+        //     if (!change.deleted) {
+        //         this.handleEvent(change.doc);
+        //     }
+        // }).on('error', err => {
+        //     console.error(err);
+        // });
     }
 
 
-    private handleEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
         let ret: Promise<events.MwzEvents> = null;
-        console.log("%c ****** processEvent ***********************************************",
-            "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
+        console.log(`%c 
+###########################################################################################################################################
+#  processEvent
+###########################################################################################################################################`,
+            "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
 
         switch (event.type) {
             case events.UserActionEditedFormDataN:
@@ -70,7 +73,7 @@ export class FrmdbEngine {
 
     private async processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
         let entity = await this.storageService.dataDB.get(event.obj.mwzType);
-        
+
         //TODO: get entities that depend on this entity
         //TODO: get entities that depend on this entity
 
@@ -101,7 +104,7 @@ export class FrmdbEngine {
                 return event;
             })
             .then(event => this.storageService.notifsDB.put(event))
-        ;
+            ;
     }
 
     private processTable(event: events.UserActionEditedTableEvent): Promise<events.MwzEvents> {
@@ -118,7 +121,7 @@ export class FrmdbEngine {
                 return event;
             })
             .then(event => this.storageService.notifsDB.put(event))
-        ;
+            ;
     }
 
     private newEntity(event: events.UserActionNewEntity): Promise<events.MwzEvents> {

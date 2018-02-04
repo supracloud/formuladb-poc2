@@ -55,7 +55,7 @@ export function getDefaultTable(entity: Entity): Table {
 export function addIdsToForm(input: NodeElement): void {
     if (!input._id) { input._id = generateUUID(); }
     if (input.childNodes && input.childNodes.length > 0) {
-        input.childNodes.forEach(c => this.addIdsToForm(c));
+        input.childNodes.forEach(c => addIdsToForm(c));
     }
 }
 

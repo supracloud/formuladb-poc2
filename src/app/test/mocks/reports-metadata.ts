@@ -51,3 +51,23 @@ export const Reports__GenericReport: Entity = {
     ]
 };
 
+export const Reports__ServiceCentralizerReport: Entity = {
+    mwzType: "Entity_", _id: "Forms__ServiceCentralizerReport",
+    properties: [
+        { name: "name", type: PropertyTypeN.STRING, "allowNull": false },
+        { name: "user_code", type: PropertyTypeN.STRING, "allowNull": false },
+        { name: "group", type: PropertyTypeN.STRING },
+        { name: "client_code", type: PropertyTypeN.STRING },
+        { name: "file_name", type: PropertyTypeN.STRING },
+        { name: "start_date", type: PropertyTypeN.DATETIME },
+        { name: "end_date", type: PropertyTypeN.DATETIME },
+        { name: "options", type: PropertyTypeN.STRING },
+        { name: "flags", type: PropertyTypeN.NUMBER },
+        { name: "last_user", type: PropertyTypeN.STRING },
+        { name: "last_error", type: PropertyTypeN.STRING },
+        { name: "state", type: PropertyTypeN.STRING, "allowNull": false },
+        { name: "created_at", type: PropertyTypeN.DATETIME, "allowNull": false },
+        { name: "updated_at", type: PropertyTypeN.DATETIME, "allowNull": false },
+        { name: "exchange_rate", type: PropertyTypeN.NUMBER, }
+    ]
+};

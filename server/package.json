@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "preserve": "tsc --inlineSourceMap -p src",
-    "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"nodemon --inspect dist/server/src/index.js\"",
+    "preserve": "rm -rf dist && tsc --inlineSourceMap -p src",
+    "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"nodemon --inspect dist/server/src/server.js\"",
     "start": "echo TODO run in production",
     "test": "./node_modules/.bin/mocha -r ts-node/register src/formula_engine_poc.spec.ts"
   },

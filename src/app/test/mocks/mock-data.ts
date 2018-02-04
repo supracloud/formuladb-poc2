@@ -105,22 +105,22 @@ export class MockData {
 
   mockData() {
     console.log("mockData called");
-    this.mockEntities(metadata.MockMetadata.General__Actor, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.General__Currency, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.General__Person, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.General__User, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.General__Client, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Actor, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Currency, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Person, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__User, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Client, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__Product, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__OrderItem, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__ReceiptItem, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__Order, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__Receipt, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Reports__DetailedCentralizerReport, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Reports__GenericReport, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.MockMetadata.Reports__ServiceCentralizerReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Forms__Order, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Forms__Receipt, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Reports__DetailedCentralizerReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Reports__GenericReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Reports__ServiceCentralizerReport, [1, 2, 3, 4, 5]);
   }
 
 }

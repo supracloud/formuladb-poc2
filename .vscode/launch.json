@@ -2,17 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "ng serve",
+            "name": "FE",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:4200/#",
-            "webRoot": "${workspaceRoot}/febe"
+            "urlFilter": "http://localhost:4200*",
+            "webRoot": "${workspaceRoot}",
+            "sourceMapPathOverrides": {
+                "webpack:///D:*": "D:/*"
+            }
         },
         {
+            "name": "BE",
             "type": "node",
             "request": "attach",
-            "name": "Attach to running Node",
-            "port": 9229
+            "port": 9229,
+            "protocol": "inspector",
+            "restart": "true"
         },
         {
             "type": "node",

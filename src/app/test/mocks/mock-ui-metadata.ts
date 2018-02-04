@@ -52,6 +52,6 @@ form-grid-row
 `;
 
 export const serializedForms = [
-    {entity: metadata.MockMetadata.Forms__ServiceForm, formText: Forms__ServiceForm},
+    {entity: metadata.Forms__ServiceForm, formText: Forms__ServiceForm},
 ];
 

@@ -83,6 +83,7 @@ const routes: Routes = [
     StoreRouterConnectingModule,
     // !environment.production ? StoreDevtoolsModule.instrument() : [],
     EffectsModule.forRoot([AppEffects]),
+    HttpClientModule
   ],
   exports: [RouterModule],
   providers: [

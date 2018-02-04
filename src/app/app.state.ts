@@ -77,9 +77,9 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
       }
     }
     let newState = reducer(updatedState, action);
-    console.log("%c ** " + action.type + " **##$$", 
+    console.log("%c ***** " + action.type + " ***************************************************************************************************************************", 
       "color: blue; font-size: 135%; font-weight: bold; text-decoration: underline;", 
-      action, state, newState); 
+      new Date(), action, state, newState); 
     
     return newState;
   };

@@ -5,6 +5,9 @@ PouchDB.debug.enable('*');
 
 import { Injectable } from '@angular/core';
 
+import { catchError, map, tap } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
+
 import { BaseObj } from "./domain/base_obj";
 import { ChangeObj } from "./domain/change_obj";
 import { DataObj } from "./domain/metadata/data_obj";
@@ -16,18 +19,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { addIdsToForm, addIdsToTable } from "./domain.utils";
-import { PersistenceService } from "./persistence.service";
 
 @Injectable()
-export class BackendService extends PersistenceService {
+export class BackendService {
+    private dataDB: any;
+    private remoteDataDB: any;
+    private transactionsDB: any;
+    private historyDB: any;
+    private remoteDataDBUrl: string = 'http://localhost:5984/mwzdata';
 
-    private remoteDataDBUrl = 'http://localhost:5984/mwzdata';
-
-    constructor() {
-        super();
+    constructor(private http: HttpClient) {
         this.dataDB = new PouchDB("mwz");
-        this.eventsDB = new PouchDB('http://localhost:5984/mwzevents');
-        this.notifsDB = new PouchDB('http://localhost:5984/mwznotifs');
+        this.remoteDataDB = new PouchDB("http://localhost:5984/mwzdata");
+        this.transactionsDB = new PouchDB("http://localhost:5984/mwztransactions");
+        this.historyDB = new PouchDB("http://localhost:5984/mwzhistory");
     }
 
     public init(initCallback: () => void,
@@ -56,38 +61,45 @@ export class BackendService extends PersistenceService {
                 //         .catch(err => console.error(err));
                 // })
                 Promise.resolve()
-                .then(() => {
-                    //application specific initialization
-                    initCallback();
+                    .then(() => {
+                        //application specific initialization
+                        initCallback();
 
-                    //after initial replication from the server is finished, continue with live replication
-                    this.dataDB.replicate.from(this.remoteDataDBUrl, {
-                        live: true,
-                        retry: true,
-                    })
-                        .on('change', function (change) {
-                            dataChangeCallback(change);
+                        //after initial replication from the server is finished, continue with live replication
+                        this.dataDB.replicate.from(this.remoteDataDBUrl, {
+                            live: true,
+                            retry: true,
                         })
-                        .on('error', err => console.error(err));
+                            .on('change', function (change) {
+                                dataChangeCallback(change);
+                            })
+                            .on('error', err => console.error(err));
 
-                    //notifs will be handled by the effects service
-                    this.notifsDB.changes({
-                        since: 'now',
-                        include_docs: true,
-                        live: true
-                    })
-                        .on('change', function (change) {
-                            notifCallback(change ? change.doc : null);
+                        //notifs will be handled by the effects service
+                        this.transactionsDB.changes({
+                            since: 'now',
+                            include_docs: true,
+                            live: true
                         })
-                        .on('error', err => console.error(err));
+                            .on('change', function (change) {
+                                notifCallback(change ? change.doc : null);
+                            })
+                            .on('error', err => console.error(err));
 
-                });
+                    });
             })
             .on('error', err => console.error(err));
     }
 
+    public putEvent(event: MwzEvents) {
+        return this.http.post<MwzEvents>('/api/event', event)
+            .pipe(
+                catchError(this.handleError<MwzEvents>('putEvent', event))
+            ).subscribe(x => console.log(x));
+    }
+
     public getTable(path: string): Promise<Table> {
-        return super.getTable(path).then(ti => {
+        return this.dataDB.get('Table_:' + path).then(ti => {
             return new Promise<Table>((resolve, reject) => {
                 addIdsToTable(ti);
                 resolve(ti);
@@ -96,7 +108,7 @@ export class BackendService extends PersistenceService {
     }
 
     public getForm(path: string): Promise<Form> {
-        return super.getForm(path).then(fi => {
+        return this.dataDB.get('Form_:' + path).then(fi => {
             addIdsToForm(fi);
             return fi;
             // return new Promise((resolve, reject) => {
@@ -106,4 +118,40 @@ export class BackendService extends PersistenceService {
         });
     }
 
+    /**
+     * Handle Http operation that failed.
+     * Let the app continue.
+     * @param operation - name of the operation that failed
+     * @param result - optional value to return as the observable result
+     */
+    private handleError<T>(operation = 'operation', result?: T) {
+        return (error: any): Observable<T> => {
+
+            // TODO: send the error to remote logging infrastructure
+            console.error(error); // log to console instead
+
+            // Let the app keep running by returning an empty result.
+            return of(result as T);
+        };
+    }
+
+    public findByMwzType<T extends BaseObj>(mwzType: string): Promise<T[]> {
+        return this.dataDB.find({
+            selector: {
+                mwzType: mwzType
+            }
+        }).then((res: { docs: T[] }) => {
+            return res.docs;
+        }).catch(err => console.error(err));
+    }
+
+    public getEntity(path: string): Promise<Entity> {
+        //the Entity's _id is the path
+        return this.dataDB.get(path);
+    }
+
+    public getDataObj(id: string): Promise<DataObj> {
+        return this.dataDB.get(id);
+    }
+    
 }

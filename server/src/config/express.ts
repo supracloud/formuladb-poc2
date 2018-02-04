@@ -5,7 +5,7 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-import { MwzEngine } from "../mwz_engine";
+import { FrmdbEngine } from "../frmdb_engine";
 
 
 export default function (db) {
@@ -17,14 +17,14 @@ export default function (db) {
     app.use(bodyParser.urlencoded({ extended: false }));
 
 
-    var mwzEngine = new MwzEngine();
+    var frmdbEngine = new FrmdbEngine();
     
     app.get('/', function (req, res) {
         res.json({ message: 'test' });
     });
 
     app.post('/api/event', function (req, res) {
-        mwzEngine.processEvent(req.body)
+        frmdbEngine.processEvent(req.body)
             .then(notif => res.json(notif));
     });
 

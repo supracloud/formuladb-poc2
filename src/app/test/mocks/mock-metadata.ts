@@ -48,10 +48,10 @@ export class MockMetadata {
     FormsMetadata.Forms__Receipt,
     FormsMetadata.Forms__Order,
     FormsMetadata.Forms__ServiceForm,
-    FormsMetadata.Forms__ServiceCentralizerReport,
     ReportsMetadata.Reports,
     ReportsMetadata.Reports__DetailedCentralizerReport,
     ReportsMetadata.Reports__GenericReport,
+    ReportsMetadata.Reports__ServiceCentralizerReport,
   ];
 
   public entitiesMap = new Map<string, Entity>();

@@ -74,8 +74,8 @@ export class AppEffects {
     }
 
     private listenForNotifsFromServer(event: MwzEvents) {
-        console.log("%c * NotifFromServer **##$$",
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", event);
+        console.log("%c <----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<----<",
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
         if (!event) return;
 
         switch (event.type) {
@@ -92,8 +92,8 @@ export class AppEffects {
     }
 
     private listenFormDataChangesFromServer(change: { docs: Array<BaseObj> }) {
-        console.log("%c * DataFromServer **##$$",
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", change);
+        console.log("%c <====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<",
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), change);
 
         change.docs.forEach(obj => {
             if (obj.mwzType == 'Entity_') {
@@ -135,7 +135,7 @@ export class AppEffects {
 
     private listenForUserActions() {
         this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
-            console.log("%c * Event **##$$",
+            console.log("%c >---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->---->",
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
 
             this.backendService.putEvent(action.event);

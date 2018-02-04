@@ -37,5 +37,6 @@
         "**/.DS_Store": true,
         "server/**/*.js": true,
         "src/**/*.js": true,
-    }
+    },
+    "zenMode.hideTabs": false
 }
