@@ -9,7 +9,7 @@ import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
 import { DataObj } from "../../src/app/domain/metadata/data_obj";
 
 import * as events from "../../src/app/domain/event";
-import { StorageService } from "./storage.service";
+import { StorageService, TransactionalCallback,StorageSnapshotAtTransaction } from "./storage.service";
 import { TransactionCoordinatorService } from "./transaction_coordinator.service";
 
 import { userActionEditedFormDataHandler } from "./handlers/userActionEditedFormDataHandler";
@@ -45,30 +45,38 @@ export class FrmdbEngine {
     public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
         let ret: Promise<events.MwzEvents> = null;
         console.log(`%c 
-###########################################################################################################################################
-#  processEvent
-###########################################################################################################################################`,
+        ###########################################################################################################################################
+        #  processEvent
+        ###########################################################################################################################################`,
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
 
-        return this.storageService.startTransaction(event)
-            .then(ev => {
-                switch (ev.type_) {
-                    case events.UserActionEditedFormDataN:
-                        return userActionEditedFormDataHandler(this.storageService, ev);
-                    case events.UserActionEditedFormN:
-                        return this.processForm(ev);
-                    case events.UserActionEditedTableN:
-                        return this.processTable(ev);
-                    case events.UserActionNewEntityN:
-                        return this.newEntity(ev)
-                    case events.UserActionDeleteEntityN:
-                        return this.deleteEntity(ev);
-                    case events.UserActionEditedEntityN:
-                        return this.processEntity(ev);
-                    default:
-                        return Promise.reject("n/a event");
-                }
-            });
+        let handler: TransactionalCallback;
+        switch (event.type_) {
+            case events.UserActionEditedFormDataN:
+                handler = userActionEditedFormDataHandler;
+                break;
+            default:
+                handler = ((event, storage, cache) => this.dummyTemporaryHandlerUntillAllLogicIsImplemented(event, storage, cache));
+        }
+        
+        return this.storageService.withTransaction(event, handler);
+    }
+
+    private dummyTemporaryHandlerUntillAllLogicIsImplemented(event: events.MwzEvents, storage: StorageSnapshotAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
+        switch (event.type_) {
+            case events.UserActionEditedFormN:
+                return this.processForm(event);
+            case events.UserActionEditedTableN:
+                return this.processTable(event);
+            case events.UserActionNewEntityN:
+                return this.newEntity(event)
+            case events.UserActionDeleteEntityN:
+                return this.deleteEntity(event);
+            case events.UserActionEditedEntityN:
+                return this.processEntity(event);
+            default:
+                return Promise.reject("n/a event");
+        }
     }
 
     private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {

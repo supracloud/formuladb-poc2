@@ -14,6 +14,7 @@ export class MwzEvent extends KeyValueObj {
     clientId_: string;
     type_: string;
     state_: 'BEGIN' | 'PRECOMMIT' | 'COMMIT' | 'FINALIZED';
+    readObjs_: {id_: string, rev_: string}[];
     updatedIds_: string[];
     notifMsg_: string;
 

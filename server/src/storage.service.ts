@@ -13,6 +13,46 @@ import { MwzEvents } from "../../src/app/domain/event";
 
 import { KeyValueStore } from "../../src/app/keyValueStore";
 
+export class StorageSnapshotAtTransaction {
+    constructor(private event: MwzEvents, private transactionsDB: KeyValueStore, private historyDB: KeyValueStore) { }
+
+    public setTransaction(event: MwzEvents): Promise<MwzEvents> {
+        return this.transactionsDB.put(event);
+    }
+
+    public getEntity(path: string): Promise<Entity> {
+        //the Entity's _id is the path
+        return this.getObj(path);
+    }
+
+    public getTable(path: string): Promise<Table> {
+        return this.getObj('Table_:' + path);
+    }
+
+    public getForm(path: string): Promise<Form> {
+        return this.getObj('Form_:' + path);
+    }
+
+    public getDataObj(id: string): Promise<DataObj> {
+        return this.getObj(id);
+    }
+
+    public getObj<T extends BaseObj>(id: string): Promise<T> {
+        return this.historyDB.get(id);
+    }
+
+    public setObj<T extends BaseObj>(obj: T): Promise<T> {
+        //TODO: implement transaction pre-emptying ,transaction life-cycle, etc
+        return this.historyDB.put(obj);
+    }
+
+    public forPutForTestingPurposes<T extends BaseObj>(obj): Promise<T> {
+        return this.historyDB.forcePut(obj);
+    }
+}
+
+export type TransactionalCallback = (event: MwzEvents, storage: StorageSnapshotAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
+
 /**
  * The storage for the Formula Engine is a king of JSON version control system built on top of a Key Value Store
  * all operations are relative to a transaction id, when a transaction is evaluated the engine "sees" only data as it existed when the transaction started
@@ -27,9 +67,23 @@ export class StorageService {
         this.historyDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwzhistory"));
     }
 
-    public startTransaction(event: MwzEvents): Promise<MwzEvents> {
-        event._id = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss-l') + '-' + uuid() + '=' + event.clientId_;
-        return this.transactionsDB.put(event);
+    public async withTransaction(event: MwzEvents, callback: TransactionalCallback): Promise<MwzEvents> {
+        let keepGoing = false;
+
+        do {
+            try {
+                event._id = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss-l') + '-' + uuid() + '=' + event.clientId_;
+                return this.transactionsDB.put(event)
+                    .then(ev => {
+                        event.readObjs_ = [];
+                        event.updatedIds_ = [];
+                        return callback(ev, new StorageSnapshotAtTransaction(ev, this.transactionsDB, this.historyDB), new Map<string, BaseObj>());
+                    });
+        
+            } catch (ex) {
+                keepGoing = false;
+            }
+        } while (keepGoing);
     }
 
     public setTransaction(event: MwzEvents): Promise<MwzEvents> {
