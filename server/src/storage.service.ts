@@ -2,7 +2,7 @@ import * as PouchDB from 'pouchdb';//this does not work with webpack, use this w
 PouchDB.debug.enable('*');
 
 import { v4 as uuid } from 'uuid';
-import { dateFormat } from 'dateformat';
+import * as dateFormat from 'dateformat';
 
 import { BaseObj } from "../../src/app/domain/base_obj";
 import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
@@ -28,7 +28,7 @@ export class StorageService {
     }
 
     public startTransaction(event: MwzEvents): Promise<MwzEvents> {
-        event._id = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-SS-l') + '-' + uuid() + '=' + event.clientId_;
+        event._id = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss-l') + '-' + uuid() + '=' + event.clientId_;
         return this.transactionsDB.put(event);
     }
 
@@ -60,5 +60,9 @@ export class StorageService {
     public setObjForTr<T extends BaseObj>(obj: T, trId: string): Promise<T> {
         //TODO: implement transaction pre-emptying ,transaction life-cycle, etc
         return this.historyDB.put(obj);
+    }
+
+    public forPutForTestingPurposes<T extends BaseObj>(obj): Promise<T> {
+        return this.historyDB.forcePut(obj);
     }
 }

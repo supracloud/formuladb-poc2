@@ -6,7 +6,7 @@
             "type": "chrome",
             "request": "launch",
             "urlFilter": "http://localhost:4200*",
-            "webRoot": "${workspaceRoot}",
+            "webRoot": "${workspaceRoot}/",
             "sourceMapPathOverrides": {
                 "webpack:///D:*": "D:/*"
             }

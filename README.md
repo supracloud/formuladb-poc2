@@ -15,7 +15,6 @@ The run the following commands from Git Bash:
         curl -X PUT http://127.0.0.1:5984/_users
         curl -X PUT http://127.0.0.1:5984/_replicator
         curl -X PUT http://127.0.0.1:5984/_global_changes
-        curl -X PUT http://127.0.0.1:5984/mwzdata
         curl -X PUT http://127.0.0.1:5984/mwzhistory
         curl -X PUT http://127.0.0.1:5984/mwztransactions
 

@@ -25,7 +25,8 @@ export default function (db) {
 
     app.post('/api/event', function (req, res) {
         frmdbEngine.processEvent(req.body)
-            .then(notif => res.json(notif));
+            .then(notif => res.json(notif))
+            .catch(err => console.error(err));
     });
 
     // catch 404 and forward to error handler

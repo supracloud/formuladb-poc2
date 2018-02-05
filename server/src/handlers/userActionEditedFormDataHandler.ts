@@ -8,7 +8,7 @@ export function userActionEditedFormDataHandler(storageService: StorageService, 
 async function _userActionEditedFormDataHandler(storageService: StorageService, event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
     let keepGoing = false;
     
-    while (keepGoing) {
+    do {
 
         try {
             let entity = await storageService.getEntityForTr(event.obj.mwzType, event._id);
@@ -17,10 +17,11 @@ async function _userActionEditedFormDataHandler(storageService: StorageService, 
             //TODO: get entities that depend on this entity
 
             //TODO: compute dependencies and formulas
-            return storageService.forcePut(event.obj._id, event.obj)
+
+            event.updatedIds_ = [event.obj._id];
+            return storageService.forPutForTestingPurposes(event.obj)
                 .then(() => {
                     event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
-                    delete event._rev;
                     return event;
                 })
                 .then(event => storageService.setTransaction(event))
@@ -29,6 +30,6 @@ async function _userActionEditedFormDataHandler(storageService: StorageService, 
         } catch (ex) {
             keepGoing = false;
         }
-    }
+    } while (keepGoing);
     return Promise.resolve(event);
 }

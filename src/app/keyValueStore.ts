@@ -24,12 +24,16 @@ export class KeyValueStore {
     }
 
     public put<T extends KeyValueObj>(obj: T): Promise<T> {
-        return this.db.put(obj);
+        return this.db.put(obj).then(x => {
+            obj._rev = x.rev; 
+            return obj;
+        })
+        .catch(err => {console.error(err); return Promise.reject(err)});
     }
 
         
-    public forcePut<T extends KeyValueObj>(id: string, document: T): Promise<T> {
-        document._id = id;
+    public forcePut<T extends KeyValueObj>(document: T): Promise<T> {
+        let id = document._id;
         return this.get<T>(id).then(result => {
             document._rev = result._rev;
             return this.put(document);

@@ -5,7 +5,7 @@ import { MockData } from "./mock-data";
 import { serializedForms } from "./mock-ui-metadata";
 import { MwzParser } from "../../mwz-parser";
 
-var db = new PouchDB("http://localhost:5984/mwzdata");
+var db = new PouchDB("http://localhost:5984/mwzhistory");
 PouchDB.debug.enable('*');
 
 var mockMetadata = new MockMetadata();

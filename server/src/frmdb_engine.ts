@@ -51,33 +51,33 @@ export class FrmdbEngine {
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
 
         return this.storageService.startTransaction(event)
-        .then(ev => {
-            switch (ev.type_) {
-                case events.UserActionEditedFormDataN:
-                return  userActionEditedFormDataHandler(this.storageService, ev);
-                case events.UserActionEditedFormN:
-                return  this.processForm(ev);
-                case events.UserActionEditedTableN:
-                return  this.processTable(ev);
-                case events.UserActionNewEntityN:
-                return  this.newEntity(ev)
-                case events.UserActionDeleteEntityN:
-                return  this.deleteEntity(ev);
-                case events.UserActionEditedEntityN:
-                    return this.processEntity(ev);
-                default:
-                    return Promise.reject("n/a event");
-            }
-        });
+            .then(ev => {
+                switch (ev.type_) {
+                    case events.UserActionEditedFormDataN:
+                        return userActionEditedFormDataHandler(this.storageService, ev);
+                    case events.UserActionEditedFormN:
+                        return this.processForm(ev);
+                    case events.UserActionEditedTableN:
+                        return this.processTable(ev);
+                    case events.UserActionNewEntityN:
+                        return this.newEntity(ev)
+                    case events.UserActionDeleteEntityN:
+                        return this.deleteEntity(ev);
+                    case events.UserActionEditedEntityN:
+                        return this.processEntity(ev);
+                    default:
+                        return Promise.reject("n/a event");
+                }
+            });
     }
 
     private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {
-        return this.storageService.getForm(event.form._id)
+        return this.storageService.getFormForTr(event.form._id, event._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
                 if (frm) event.form._rev = frm._rev;
 
-                return this.storageService.dataDB.put(event.form).catch(err => console.error(err));
+                return this.storageService.setObjForTr(event.form, event._id).catch(err => console.error(err));
             })
             .then(() => {
                 console.log("form save started");
@@ -86,24 +86,22 @@ export class FrmdbEngine {
                 delete event._rev;
                 return event;
             })
-            .then(event => this.storageService.notifsDB.put(event))
             ;
     }
 
     private processTable(event: events.UserActionEditedTableEvent): Promise<events.MwzEvents> {
-        return this.storageService.dataDB.get(event.table._id)
+        return this.storageService.getTableForTr(event.table._id, event._id)
             .catch(err => { console.log(err); return; })
             .then(tbl => {
                 if (tbl) event.table._rev = tbl._rev;
 
-                return this.storageService.dataDB.put(event.table).catch(err => console.error(err));
+                return this.storageService.setObjForTr(event.table, event._id).catch(err => console.error(err));
             })
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
-            .then(event => this.storageService.notifsDB.put(event))
             ;
     }
 
@@ -111,36 +109,33 @@ export class FrmdbEngine {
         let newEntity = new Entity();
         newEntity._id = event.path;
 
-        return this.storageService.dataDB.put(newEntity)
+        return this.storageService.setObjForTr(newEntity, event._id)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
-            .then(() => this.storageService.notifsDB.put(event))
-            .catch(err => console.error(err));
+            ;
     }
 
     private deleteEntity(event: events.UserActionDeleteEntity): Promise<events.MwzEvents> {
         event.entity._deleted = true;
-        return this.storageService.dataDB.put(event.entity)
+        return this.storageService.setObjForTr(event.entity, event._id)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
-            .then(event => this.storageService.notifsDB.put(event))
-            .catch(err => console.error(err));
+            ;
     }
 
     private processEntity(event: events.UserActionEditedEntity): Promise<events.MwzEvents> {
-        return this.storageService.dataDB.put(event.entity)
+        return this.storageService.setObjForTr(event.entity, event._id)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
-            .then(event => this.storageService.notifsDB.put(event))
-            .catch(err => console.error(err));
+            ;
     }
 }
