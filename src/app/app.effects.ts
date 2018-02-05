@@ -78,7 +78,7 @@ export class AppEffects {
             "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
         if (!event) return;
 
-        switch (event.type) {
+        switch (event.type_) {
             case appState.UserActionEditedFormDataN:
             case appState.UserActionEditedFormN:
                 this.store.dispatch(new appState.FormNotifFromBackendAction(event));
@@ -91,11 +91,11 @@ export class AppEffects {
         }
     }
 
-    private listenFormDataChangesFromServer(change: { docs: Array<BaseObj> }) {
+    private listenFormDataChangesFromServer(docs: Array<BaseObj>) {
         console.log("%c <====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<====<",
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), change);
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), docs);
 
-        change.docs.forEach(obj => {
+        docs.forEach(obj => {
             if (obj.mwzType == 'Entity_') {
                 console.log("Loading all entities from local DB");
                 this.backendService.findByMwzType<Entity>('Entity_').then(entities => {

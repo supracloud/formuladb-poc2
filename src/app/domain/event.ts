@@ -1,3 +1,4 @@
+import { KeyValueObj } from "./key_value_obj";
 import { BaseObj } from "./base_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity } from "./metadata/entity";
@@ -5,14 +6,21 @@ import { Form } from "./uimetadata/form";
 import { Table } from "./uimetadata/table";
 import { generateUUID } from "./uuid";
 
-export class MwzEvent extends BaseObj {
+/**
+ * The events sent by the clients become transactions on the back-end
+ */
+export class MwzEvent extends KeyValueObj {
     readonly mwzType = 'Event_';
-    _id: string;
-    type: string;
+    clientId_: string;
+    type_: string;
+    state_: 'BEGIN' | 'PRECOMMIT' | 'COMMIT' | 'FINALIZED';
+    updatedIds_: string[];
+    notifMsg_: string;
 
     constructor() {
         super();
-        this._id = generateUUID();
+        this.clientId_ = generateUUID();
+        this.state_ = 'BEGIN';
     }
 }
 
@@ -24,8 +32,7 @@ export const UserActionNewEntityN = "[entity] UserActionNewEntity";
 export const UserActionDeleteEntityN = "[entity] UserActionDeleteEntity";
 
 export class UserActionEditedFormDataEvent extends MwzEvent {
-    readonly type = UserActionEditedFormDataN;
-    public notifMsg: string;
+    readonly type_ = UserActionEditedFormDataN;
 
     constructor(public obj: DataObj) {
         super();
@@ -33,8 +40,7 @@ export class UserActionEditedFormDataEvent extends MwzEvent {
 }
 
 export class UserActionEditedFormEvent extends MwzEvent {
-    readonly type = UserActionEditedFormN;
-    public notifMsg: string;
+    readonly type_ = UserActionEditedFormN;
 
     constructor(public form: Form) {
         super();
@@ -43,8 +49,7 @@ export class UserActionEditedFormEvent extends MwzEvent {
 
 
 export class UserActionEditedTableEvent extends MwzEvent {
-    readonly type = UserActionEditedTableN;
-    public notifMsg: string;
+    readonly type_ = UserActionEditedTableN;
 
     constructor(public table: Table) {
         super();
@@ -52,8 +57,7 @@ export class UserActionEditedTableEvent extends MwzEvent {
 }
 
 export class UserActionEditedEntity extends MwzEvent {
-    readonly type = UserActionEditedEntityN;
-    public notifMsg: string;
+    readonly type_ = UserActionEditedEntityN;
 
     constructor(public entity: Entity) {
         super();
@@ -61,8 +65,7 @@ export class UserActionEditedEntity extends MwzEvent {
 }
 
 export class UserActionNewEntity extends MwzEvent {
-    readonly type = UserActionNewEntityN;
-    public notifMsg: string;
+    readonly type_ = UserActionNewEntityN;
 
     constructor(public path: string) {
         super();
@@ -70,8 +73,7 @@ export class UserActionNewEntity extends MwzEvent {
 }
 
 export class UserActionDeleteEntity extends MwzEvent {
-    readonly type = UserActionDeleteEntityN;
-    public notifMsg: string;
+    readonly type_ = UserActionDeleteEntityN;
 
     constructor(public entity: Entity) {
         super();

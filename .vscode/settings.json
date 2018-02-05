@@ -38,5 +38,6 @@
         "server/**/*.js": true,
         "src/**/*.js": true,
     },
-    "zenMode.hideTabs": false
+    "zenMode.hideTabs": false,
+    "editor.minimap.enabled": false
 }

@@ -10,14 +10,19 @@ import { DataObj } from "../../src/app/domain/metadata/data_obj";
 
 import * as events from "../../src/app/domain/event";
 import { StorageService } from "./storage.service";
+import { TransactionCoordinatorService } from "./transaction_coordinator.service";
+
+import { userActionEditedFormDataHandler } from "./handlers/userActionEditedFormDataHandler";
 
 export class FrmdbEngine {
 
     private eventsQueueProcessor: Promise<events.MwzEvents> = null;
     private storageService: StorageService;
+    private transactionCoordinatorService: TransactionCoordinatorService;
 
     constructor() {
         this.storageService = new StorageService();
+        this.transactionCoordinatorService = new TransactionCoordinatorService(this.storageService);
     }
 
     public init() {
@@ -45,51 +50,29 @@ export class FrmdbEngine {
 ###########################################################################################################################################`,
             "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
 
-        switch (event.type) {
-            case events.UserActionEditedFormDataN:
-                ret = this.processDataObj(event);
-                break;
-            case events.UserActionEditedFormN:
-                ret = this.processForm(event);
-                break;
-            case events.UserActionEditedTableN:
-                ret = this.processTable(event);
-                break;
-            case events.UserActionNewEntityN:
-                ret = this.newEntity(event)
-                break;
-            case events.UserActionDeleteEntityN:
-                ret = this.deleteEntity(event);
-                break;
-            case events.UserActionEditedEntityN:
-                ret = this.processEntity(event);
-                break;
-            default:
-                console.warn("Unknown event", event);
-        }
-
-        return ret;
-    }
-
-    private async processDataObj(event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
-        let entity = await this.storageService.dataDB.get(event.obj.mwzType);
-
-        //TODO: get entities that depend on this entity
-        //TODO: get entities that depend on this entity
-
-        //TODO: compute dependencies and formulas
-        return this.storageService.forcePut(event.obj._id, event.obj)
-            .then(() => {
-                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
-                delete event._rev;
-                return event;
-            })
-            .then(event => this.storageService.notifsDB.put(event))
-            .catch(err => console.error(err));
+        return this.storageService.startTransaction(event)
+        .then(ev => {
+            switch (ev.type_) {
+                case events.UserActionEditedFormDataN:
+                return  userActionEditedFormDataHandler(this.storageService, ev);
+                case events.UserActionEditedFormN:
+                return  this.processForm(ev);
+                case events.UserActionEditedTableN:
+                return  this.processTable(ev);
+                case events.UserActionNewEntityN:
+                return  this.newEntity(ev)
+                case events.UserActionDeleteEntityN:
+                return  this.deleteEntity(ev);
+                case events.UserActionEditedEntityN:
+                    return this.processEntity(ev);
+                default:
+                    return Promise.reject("n/a event");
+            }
+        });
     }
 
     private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {
-        return this.storageService.dataDB.get(event.form._id)
+        return this.storageService.getForm(event.form._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
                 if (frm) event.form._rev = frm._rev;
@@ -99,7 +82,7 @@ export class FrmdbEngine {
             .then(() => {
                 console.log("form save started");
                 //TODO: validations; if there are errors, update the notif accordingly
-                event.notifMsg = 'OK';
+                event.notifMsg_ = 'OK';
                 delete event._rev;
                 return event;
             })
@@ -116,7 +99,7 @@ export class FrmdbEngine {
                 return this.storageService.dataDB.put(event.table).catch(err => console.error(err));
             })
             .then(() => {
-                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
@@ -130,7 +113,7 @@ export class FrmdbEngine {
 
         return this.storageService.dataDB.put(newEntity)
             .then(() => {
-                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
@@ -142,7 +125,7 @@ export class FrmdbEngine {
         event.entity._deleted = true;
         return this.storageService.dataDB.put(event.entity)
             .then(() => {
-                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })
@@ -153,7 +136,7 @@ export class FrmdbEngine {
     private processEntity(event: events.UserActionEditedEntity): Promise<events.MwzEvents> {
         return this.storageService.dataDB.put(event.entity)
             .then(() => {
-                event.notifMsg = 'OK';//TODO; if there are errors, update the notif accordingly
+                event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
                 return event;
             })

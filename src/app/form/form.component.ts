@@ -78,7 +78,7 @@ export class FormComponent implements OnInit {
                 this.theFormGroup.enable();
             }
 
-            if (formState.eventFromBackend && this.lastSaveAction && formState.eventFromBackend._id === this.lastSaveAction.event._id) {
+            if (formState.eventFromBackend && this.lastSaveAction && formState.eventFromBackend.clientId_ === this.lastSaveAction.event.clientId_) {
                 //TODO: show errors
                 this.saveInProgress = false;
             }

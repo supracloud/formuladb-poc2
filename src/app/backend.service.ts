@@ -19,87 +19,50 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { addIdsToForm, addIdsToTable } from "./domain.utils";
+import { KeyValueStore } from "./keyValueStore";
 
 @Injectable()
 export class BackendService {
-    private dataDB: any;
-    private remoteDataDB: any;
-    private transactionsDB: any;
-    private historyDB: any;
-    private remoteDataDBUrl: string = 'http://localhost:5984/mwzdata';
+    private transactionsDB: KeyValueStore;
+    private historyDB: KeyValueStore;
+
+    private notifCallback: (event: MwzEvents) => void;
+    private dataChangeCallback: (docs: Array<BaseObj>) => void;
 
     constructor(private http: HttpClient) {
-        this.dataDB = new PouchDB("mwz");
-        this.remoteDataDB = new PouchDB("http://localhost:5984/mwzdata");
-        this.transactionsDB = new PouchDB("http://localhost:5984/mwztransactions");
-        this.historyDB = new PouchDB("http://localhost:5984/mwzhistory");
+        this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
+        this.historyDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwzhistory"));
     }
 
     public init(initCallback: () => void,
         notifCallback: (event: MwzEvents) => void,
-        dataChangeCallback: (change: { docs: Array<BaseObj> }) => void) {
+        dataChangeCallback: (docs: Array<BaseObj>) => void) {
 
-        console.log("%c ** INITIAL REPLICATION STARTED **##$$",
-            "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
+        this.notifCallback = notifCallback;
+        this.dataChangeCallback = dataChangeCallback;
 
-        //first catchup local PouchDB with what happened on the server while the application was stopped
-        this.dataDB.replicate.from(this.remoteDataDBUrl)
-            .on('complete', info => {
-                console.log("%c ** INITIAL REPLICATION FINISHED **##$$",
-                    "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
-
-                // this.dataDB.createIndex({
-                //     index: { fields: ['mwzType'] }
-                // }).then(() => {
-                //     let appStateS = this;
-
-                //     this.dataDB.explain({
-                //         selector: {
-                //             mwzType: 'Entity_'
-                //         }
-                //     }).then(explanation => console.warn("Check index usage: ", explanation))
-                //         .catch(err => console.error(err));
-                // })
-                Promise.resolve()
-                    .then(() => {
-                        //application specific initialization
-                        initCallback();
-
-                        //after initial replication from the server is finished, continue with live replication
-                        this.dataDB.replicate.from(this.remoteDataDBUrl, {
-                            live: true,
-                            retry: true,
-                        })
-                            .on('change', function (change) {
-                                dataChangeCallback(change);
-                            })
-                            .on('error', err => console.error(err));
-
-                        //notifs will be handled by the effects service
-                        this.transactionsDB.changes({
-                            since: 'now',
-                            include_docs: true,
-                            live: true
-                        })
-                            .on('change', function (change) {
-                                notifCallback(change ? change.doc : null);
-                            })
-                            .on('error', err => console.error(err));
-
-                    });
-            })
-            .on('error', err => console.error(err));
+        initCallback();
     }
 
     public putEvent(event: MwzEvents) {
         return this.http.post<MwzEvents>('/api/event', event)
             .pipe(
                 catchError(this.handleError<MwzEvents>('putEvent', event))
-            ).subscribe(x => console.log(x));
+            ).subscribe(ev => this.handleNotif(ev));
+    }
+
+    private handleNotif(event: MwzEvents) {
+        event.updatedIds_.forEach(id_ => {
+            this.historyDB.get(id_)
+            .then(obj => this.dataChangeCallback([obj]))
+            .catch(err => console.error(err));
+        });
+
+        this.notifCallback(event);
     }
 
     public getTable(path: string): Promise<Table> {
-        return this.dataDB.get('Table_:' + path).then(ti => {
+        return this.historyDB.get<Table>('Table_:' + path).then(ti => {
             return new Promise<Table>((resolve, reject) => {
                 addIdsToTable(ti);
                 resolve(ti);
@@ -108,13 +71,9 @@ export class BackendService {
     }
 
     public getForm(path: string): Promise<Form> {
-        return this.dataDB.get('Form_:' + path).then(fi => {
+        return this.historyDB.get<Form>('Form_:' + path).then(fi => {
             addIdsToForm(fi);
             return fi;
-            // return new Promise((resolve, reject) => {
-            //     PouchdbService.addIdsToForm(fi);
-            //     resolve(fi);
-            // })
         });
     }
 
@@ -136,22 +95,15 @@ export class BackendService {
     }
 
     public findByMwzType<T extends BaseObj>(mwzType: string): Promise<T[]> {
-        return this.dataDB.find({
-            selector: {
-                mwzType: mwzType
-            }
-        }).then((res: { docs: T[] }) => {
-            return res.docs;
-        }).catch(err => console.error(err));
+        return this.historyDB.findByMwzType(mwzType);
     }
 
     public getEntity(path: string): Promise<Entity> {
         //the Entity's _id is the path
-        return this.dataDB.get(path);
+        return this.historyDB.get(path);
     }
 
     public getDataObj(id: string): Promise<DataObj> {
-        return this.dataDB.get(id);
+        return this.historyDB.get(id);
     }
-    
 }
