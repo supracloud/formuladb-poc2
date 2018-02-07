@@ -65,7 +65,7 @@ export class UserActionSelectedRowForEditing implements Action {
 export class UserActionNewRow implements Action {
   readonly type = UserActionNewRowN;
 
-  constructor(mwzType: string) { }
+  constructor(type_: string) { }
 }
 
 export type TableActions =

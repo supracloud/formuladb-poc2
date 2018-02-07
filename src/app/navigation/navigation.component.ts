@@ -26,9 +26,9 @@ export class NavigationComponent implements OnInit {
     this.entities$.subscribe(x => {
       this.metadataCatalog = x.sort((e1, e2) => e1._id < e2._id ? -1 : (e1._id > e2._id ? 1 : 0))
         .map(entity => ({
-          linkName: entity._id.split(/__/).slice(-1)[0],
+          linkName: entity._id.split(/\//).slice(-1)[0],
           path: entity._id,
-          indent: '- '.repeat(entity._id.split(/__/).length - 1)
+          indent: '- '.repeat(entity._id.split(/\//).length - 1)
         }))
       this.cdr.detectChanges();
     });

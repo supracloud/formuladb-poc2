@@ -1,56 +1,53 @@
-import { Entity, PropertyTypeN, Fnn } from '../../domain/metadata/entity';
+import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 export const Financial: Entity = {
-    mwzType: "Entity_", _id: "Financial",
-    properties: [],
+    type_: "Entity_", _id: "Financial",
+    properties: {},
     module: true
 };
 
 
 export const Financial__Account: Entity = {
-    mwzType: "Entity_", _id: "Financial__Account",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "name", type: PropertyTypeN.STRING, "allowNull": false },
-        {
-            name: "actor",
+    type_: "Entity_", _id: "Financial/Account",
+    properties: {
+        code: { type: PropertyTypeN.STRING, "allowNull": false },
+        name: { type: PropertyTypeN.STRING, "allowNull": false },
+        actor: {
             type: PropertyTypeN.REFERENCE_ENTITY,
             entity: {
-                path: "General__Actor",
+                deepPath: "/General/Actor",
                 copiedProperties: [
                     "code",
                     "name",
                 ]
             }
         },
-    ]
+    }
 };
 
 export const Financial__Transaction: Entity = {
-    mwzType: "Entity_", _id: "Financial__Transaction",
-    properties: [
-        {
-            name: "accountDebit",
+    type_: "Entity_", _id: "Financial/Transaction",
+    properties: {
+        accountDebit: {
             type: PropertyTypeN.REFERENCE_ENTITY,
             entity: {
-                path: "Financial__Account",
+                deepPath: "/Financial/Account",
                 copiedProperties: [
                     "code",
                     "name",
                 ]
             }
         },
-        {
-            name: "accountCredit",
+        accountCredit: {
             type: PropertyTypeN.REFERENCE_ENTITY,
             entity: {
-                path: "Financial__Account",
+                deepPath: "/Financial/Account",
                 copiedProperties: [
                     "code",
                     "name",
                 ]
             }
         },
-        { name: "amount", type: PropertyTypeN.NUMBER },
-    ]
+        amount: { type: PropertyTypeN.NUMBER },
+    }
 };

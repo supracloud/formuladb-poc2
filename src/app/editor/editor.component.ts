@@ -61,7 +61,7 @@ export class EditorComponent implements OnInit {
     console.log("EditorComponent: isFom=", this.isForm, this.entity);
     if (this.isForm) {
       let newForm = this.parserService.parseForm(this.entity, this.formText);
-      newForm.mwzType = 'Form_';
+      newForm.type_ = 'Form_';
       newForm._id = 'Form_:' + this.path;
       if (preview) {
         this.store.dispatch(new fromForm.FormFromBackendAction(newForm));
@@ -70,7 +70,7 @@ export class EditorComponent implements OnInit {
       }
     } else {
       let newTable = this.parserService.parseTable(this.entity, this.tableText);
-      newTable.mwzType = 'Table_';
+      newTable.type_ = 'Table_';
       newTable._id = 'Table_:' + this.path;
       if (preview) {
         this.store.dispatch(new fromTable.TableFormBackendAction(newTable));

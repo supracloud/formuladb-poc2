@@ -9,10 +9,10 @@ export class KeyValueStore {
         this.db = db;
     }
 
-    public findByMwzType<T extends KeyValueObj>(mwzType: string): Promise<T[]> {
+    public findByType<T extends KeyValueObj>(type_: string): Promise<T[]> {
         return this.db.find({
             selector: {
-                mwzType: mwzType
+                type_: type_
             }
         }).then((res: { docs: T[] }) => {
             return res.docs;

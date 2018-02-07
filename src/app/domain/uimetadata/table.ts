@@ -6,7 +6,7 @@ export class TableColumn {
 }
 
 export class Table extends BaseObj {
-    mwzType = 'Table_';
+    type_ = 'Table_';
     literal: string;
     columns: TableColumn[];
 }

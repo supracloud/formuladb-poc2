@@ -96,15 +96,15 @@ export class AppEffects {
             "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), docs);
 
         docs.forEach(obj => {
-            if (obj.mwzType == 'Entity_') {
+            if (obj.type_ == 'Entity_') {
                 console.log("Loading all entities from local DB");
-                this.backendService.findByMwzType<Entity>('Entity_').then(entities => {
+                this.backendService.findByType<Entity>('Entity_').then(entities => {
                     console.log("displaying all entities from local DB", entities);
                     this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
                 }).catch(err => console.error(err));
-            } else if (obj.mwzType == 'Table_') {
+            } else if (obj.type_ == 'Table_') {
                 this.store.dispatch(new appState.TableFormBackendAction(obj as Table));
-            } else if (obj.mwzType == 'Form_') {
+            } else if (obj.type_ == 'Form_') {
                 this.store.dispatch(new appState.FormFromBackendAction(obj as Form));
             } else {
                 this.store.dispatch(new appState.FormDataFromBackendAction(obj));
@@ -115,7 +115,7 @@ export class AppEffects {
 
     private init() {
         //load entities and remove readOnly flag
-        this.backendService.findByMwzType<Entity>('Entity_').then(entities => {
+        this.backendService.findByType<Entity>('Entity_').then(entities => {
             this.cachedEntitiesMap.clear();
             entities.map(entity => this.cachedEntitiesMap.set(entity._id, entity));
             this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
@@ -175,7 +175,7 @@ export class AppEffects {
         this.actions$.ofType<appState.UserActionNewRow>(appState.UserActionNewRowN).subscribe(action => {
             this.currentUrl.id = generateUUID();
             this.router.navigate([this.currentUrl.entity._id + '/' + this.currentUrl.id]);
-            this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id, mwzType: this.currentUrl.entity._id }))
+            this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id, type_: this.currentUrl.entity._id }))
         });
     }
 
@@ -196,7 +196,7 @@ export class AppEffects {
             this.store.dispatch(new appState.ResetTableDataFromBackendAction([]));
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let tableData = await this.backendService.findByMwzType<DataObj>(path);
+            let tableData = await this.backendService.findByType<DataObj>(path);
             this.store.dispatch(new appState.TableDataFromBackendAction(tableData.map(obj => new ChangeObj<DataObj>(obj))))
 
             let form: Form = null;
@@ -210,7 +210,7 @@ export class AppEffects {
             this.store.dispatch(new appState.FormFromBackendAction(form));
 
         } catch (err) {
-            console.error(err);
+            console.error(err, err.stack);
         }
     }
 

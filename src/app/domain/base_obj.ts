@@ -2,6 +2,10 @@ import { KeyValueObj } from "./key_value_obj";
 
 
 export class BaseObj extends KeyValueObj{
+    type_?: string;
+    created_?: string;
+    updated_?: string;
+    updated_by_?: string;
     rev_?: string;
 
     //list of transactions for this object
@@ -11,5 +15,4 @@ export class BaseObj extends KeyValueObj{
         diff: any,
         state: 'BEGIN' | 'PRE_COMMIT' | 'COMMIT'
     }>;
-
 }

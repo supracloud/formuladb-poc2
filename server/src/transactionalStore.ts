@@ -13,7 +13,7 @@ import { MwzEvents } from "../../src/app/domain/event";
 
 import { KeyValueStore } from "../../src/app/keyValueStore";
 
-export class StorageSnapshotAtTransaction {
+export class StoreViewAtTransaction {
     constructor(private event: MwzEvents, private transactionsDB: KeyValueStore, private historyDB: KeyValueStore) { }
 
     public setTransaction(event: MwzEvents): Promise<MwzEvents> {
@@ -51,13 +51,13 @@ export class StorageSnapshotAtTransaction {
     }
 }
 
-export type TransactionalCallback = (event: MwzEvents, storage: StorageSnapshotAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
+export type TransactionalCallback = (event: MwzEvents, storage: StoreViewAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
 
 /**
  * The storage for the Formula Engine is a king of JSON version control system built on top of a Key Value Store
  * all operations are relative to a transaction id, when a transaction is evaluated the engine "sees" only data as it existed when the transaction started
  */
-export class StorageService {
+export class TransactionalStore {
 
     private transactionsDB: KeyValueStore;
     private historyDB: KeyValueStore;
@@ -77,7 +77,7 @@ export class StorageService {
                     .then(ev => {
                         event.readObjs_ = [];
                         event.updatedIds_ = [];
-                        return callback(ev, new StorageSnapshotAtTransaction(ev, this.transactionsDB, this.historyDB), new Map<string, BaseObj>());
+                        return callback(ev, new StoreViewAtTransaction(ev, this.transactionsDB, this.historyDB), new Map<string, BaseObj>());
                     });
         
             } catch (ex) {

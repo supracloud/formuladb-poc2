@@ -1,73 +1,73 @@
-import { Entity, PropertyTypeN, Fnn } from '../../domain/metadata/entity';
+import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 
 export const Reports: Entity = {
-    mwzType: "Entity_", _id: "Reports",
-    properties: [],
+    type_: "Entity_", _id: "Reports",
+    properties: {},
     module: true
 };
 
 export const Reports__DetailedCentralizerReport: Entity = {
-    mwzType: "Entity_", _id: "Reports__DetailedCentralizerReport",
-    properties: [
-        { name: "name", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "user_code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "type", type: PropertyTypeN.STRING },
-        { name: "group", type: PropertyTypeN.STRING },
-        { name: "client_code", type: PropertyTypeN.STRING },
-        { name: "file_name", type: PropertyTypeN.STRING },
-        { name: "start_date", type: PropertyTypeN.DATETIME },
-        { name: "end_date", type: PropertyTypeN.DATETIME },
-        { name: "options", type: PropertyTypeN.STRING },
-        { name: "flags", type: PropertyTypeN.NUMBER },
-        { name: "last_user", type: PropertyTypeN.STRING },
-        { name: "last_error", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "created_at", type: PropertyTypeN.DATETIME, "allowNull": false },
-        { name: "updated_at", type: PropertyTypeN.DATETIME, "allowNull": false },
-        { name: "exchange_rate", type: PropertyTypeN.NUMBER, }
-    ]
+    type_: "Entity_", _id: "Reports/DetailedCentralizerReport",
+    properties: {
+        name: { type: PropertyTypeN.STRING, "allowNull": false },
+        user_code: { type: PropertyTypeN.STRING, "allowNull": false },
+        type: { type: PropertyTypeN.STRING },
+        group: { type: PropertyTypeN.STRING },
+        client_code: { type: PropertyTypeN.STRING },
+        file_name: { type: PropertyTypeN.STRING },
+        start_date: { type: PropertyTypeN.DATETIME },
+        end_date: { type: PropertyTypeN.DATETIME },
+        options: { type: PropertyTypeN.STRING },
+        flags: { type: PropertyTypeN.NUMBER },
+        last_user: { type: PropertyTypeN.STRING },
+        last_error: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false },
+        created_at: { type: PropertyTypeN.DATETIME, "allowNull": false },
+        updated_at: { type: PropertyTypeN.DATETIME, "allowNull": false },
+        exchange_rate: { type: PropertyTypeN.NUMBER, }
+    }
 };
 
 export const Reports__GenericReport: Entity = {
-    mwzType: "Entity_", _id: "Reports__GenericReport",
-    properties: [
-        { name: "name", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "user_code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "type", type: PropertyTypeN.STRING },
-        { name: "group", type: PropertyTypeN.STRING },
-        { name: "client_code", type: PropertyTypeN.STRING },
-        { name: "file_name", type: PropertyTypeN.STRING },
-        { name: "start_date", type: PropertyTypeN.DATETIME },
-        { name: "end_date", type: PropertyTypeN.DATETIME },
-        { name: "options", type: PropertyTypeN.STRING },
-        { name: "flags", type: PropertyTypeN.NUMBER },
-        { name: "last_user", type: PropertyTypeN.STRING },
-        { name: "last_error", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "created_at", type: PropertyTypeN.DATETIME, "allowNull": false },
-        { name: "updated_at", type: PropertyTypeN.DATETIME, "allowNull": false },
-        { name: "exchange_rate", type: PropertyTypeN.NUMBER, }
-    ]
+    type_: "Entity_", _id: "Reports/GenericReport",
+    properties: {
+        name: { type: PropertyTypeN.STRING, "allowNull": false },
+        user_code: { type: PropertyTypeN.STRING, "allowNull": false },
+        type: { type: PropertyTypeN.STRING },
+        group: { type: PropertyTypeN.STRING },
+        client_code: { type: PropertyTypeN.STRING },
+        file_name: { type: PropertyTypeN.STRING },
+        start_date: { type: PropertyTypeN.DATETIME },
+        end_date: { type: PropertyTypeN.DATETIME },
+        options: { type: PropertyTypeN.STRING },
+        flags: { type: PropertyTypeN.NUMBER },
+        last_user: { type: PropertyTypeN.STRING },
+        last_error: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false },
+        created_at: { type: PropertyTypeN.DATETIME, "allowNull": false },
+        updated_at: { type: PropertyTypeN.DATETIME, "allowNull": false },
+        exchange_rate: { type: PropertyTypeN.NUMBER, }
+    }
 };
 
 export const Reports__ServiceCentralizerReport: Entity = {
-    mwzType: "Entity_", _id: "Forms__ServiceCentralizerReport",
-    properties: [
-        { name: "name", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "user_code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "group", type: PropertyTypeN.STRING },
-        { name: "client_code", type: PropertyTypeN.STRING },
-        { name: "file_name", type: PropertyTypeN.STRING },
-        { name: "start_date", type: PropertyTypeN.DATETIME },
-        { name: "end_date", type: PropertyTypeN.DATETIME },
-        { name: "options", type: PropertyTypeN.STRING },
-        { name: "flags", type: PropertyTypeN.NUMBER },
-        { name: "last_user", type: PropertyTypeN.STRING },
-        { name: "last_error", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "created_at", type: PropertyTypeN.DATETIME, "allowNull": false },
-        { name: "updated_at", type: PropertyTypeN.DATETIME, "allowNull": false },
-        { name: "exchange_rate", type: PropertyTypeN.NUMBER, }
-    ]
+    type_: "Entity_", _id: "Forms/ServiceCentralizerReport",
+    properties: {
+        name: { type: PropertyTypeN.STRING, "allowNull": false },
+        user_code: { type: PropertyTypeN.STRING, "allowNull": false },
+        group: { type: PropertyTypeN.STRING },
+        client_code: { type: PropertyTypeN.STRING },
+        file_name: { type: PropertyTypeN.STRING },
+        start_date: { type: PropertyTypeN.DATETIME },
+        end_date: { type: PropertyTypeN.DATETIME },
+        options: { type: PropertyTypeN.STRING },
+        flags: { type: PropertyTypeN.NUMBER },
+        last_user: { type: PropertyTypeN.STRING },
+        last_error: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false },
+        created_at: { type: PropertyTypeN.DATETIME, "allowNull": false },
+        updated_at: { type: PropertyTypeN.DATETIME, "allowNull": false },
+        exchange_rate: { type: PropertyTypeN.NUMBER, }
+    }
 };

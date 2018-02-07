@@ -1,164 +1,157 @@
-import { Entity, PropertyTypeN, Fnn } from '../../domain/metadata/entity';
+import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 export const Inventory: Entity = {
-    mwzType: "Entity_", _id: "Inventory",
-    properties: [],
+    type_: "Entity_", _id: "Inventory",
+    properties: {},
     module: true
 };
 
-export const Inventory__InventoryProduct: Entity = {
-    mwzType: "Entity_", _id: "Inventory__InventoryProduct",
-    properties: [
-        { name: "inventory_code", type: PropertyTypeN.STRING, allowNull: false },
-        {
-            name: "product", type: PropertyTypeN.REFERENCE_ENTITY,
-            entity: {
-                path: "Inventory__Product",
-                copiedProperties: ["code", "name"],
+export const Inventory__Receipt: Entity = {
+    type_: "Entity_", _id: "Inventory/Receipt",
+    properties: {
+        items: {
+            type: PropertyTypeN.TABLE,
+            properties: {
+                product: {
+                    type: PropertyTypeN.REFERENCE_ENTITY,
+                    entity: {
+                        deepPath: "/Inventory/Product/location",
+                        copiedProperties: [
+                            "code",
+                            "name",
+                            "location",
+                            "price",
+                            "currency_code",
+                        ]
+                    }
+                },
+                received_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
+                units: {
+                    type: PropertyTypeN.TABLE,
+                    properties: {
+                        unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ["code", "serial"] } }
+                    }
+                },
             }
-        },
-        { name: "category", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "price", type: PropertyTypeN.NUMBER, allowNull: true },
-        {
-            name: "currency", type: PropertyTypeN.REFERENCE_ENTITY,
-            entity: {
-                path: "General__Currency",
-                copiedProperties: ["code", "name"],
-            }
-        },
-        { name: "minimal_stock", type: PropertyTypeN.NUMBER, allowNull: false },
-        {
-            name: "received_stock", type: PropertyTypeN.FORMULA,
-            formula: {
-                fn: Fnn.SUM,
-                arguments: [{ fn: Fnn.VALUE_OF, property: "receiptItems.received_quantity" }]
-            }
-        },
-        {
-            name: "available_stock", type: PropertyTypeN.FORMULA,
-            formula: {
-                fn: Fnn.SUBTRACT,
-                minuend: { fn: Fnn.VALUE_OF, property: "received_stock" },
-                subtrahends: [
-                    { fn: Fnn.VALUE_OF, property: "reserved_stock" },
-                    { fn: Fnn.VALUE_OF, property: "delivered_stock" }
-                ]
-            }
-        },
-        {
-            name: "reserved_stock", type: PropertyTypeN.FORMULA,
-            formula: {
-                fn: Fnn.SUM,
-                arguments: [{ fn: Fnn.VALUE_OF, property: "orderItems.reserved_quantity" }]
-            }
-        },
-        { name: "delivered_stock", type: PropertyTypeN.NUMBER },
-        { name: "moving_stock", type: PropertyTypeN.NUMBER, allowNull: false },
-        { name: "state", type: PropertyTypeN.STRING, allowNull: false }
-    ]
+        }
+    }
 };
 
-export const Inventory__ReceiptItem: Entity = {
-    mwzType: "Entity_", _id: "Inventory__ReceiptItem",
-    properties: [
-        {
-            name: "product",
-            type: PropertyTypeN.REFERENCE_ENTITY,
-            entity: {
-                path: "Inventory__InventoryProduct",
-                copiedProperties: [
-                    "inventory_code",
-                    "product_code",
-                    "price",
-                    "currency_code",
-                    "name"
-                ]
-            }
-        },
-        { name: "received_quantity", type: PropertyTypeN.NUMBER, allowNull: false },
-    ]
-};
-
-export const Inventory__OrderItem: Entity = {
-    mwzType: "Entity_", _id: "Inventory__OrderItem",
-    properties: [
-        {
-            name: "product",
-            type: PropertyTypeN.REFERENCE_ENTITY,
-            entity: {
-                path: "Inventory__InventoryProduct",
-                copiedProperties: [
-                    "inventory_code",
-                    "product_code",
-                    "price",
-                    "currency_code",
-                    "name"
-                ]
-            }
-        },
-        { name: "requested_quantity", type: PropertyTypeN.NUMBER, allowNull: false },
-        {
-            name: "reserved_quantity",
-            type: PropertyTypeN.FORMULA,
-            formula: {
-                fn: Fnn.CHAIN,
-                steps: [
-                    { formula: { fn: Fnn.CURRENT_VALUE_OF, property: "product.available_stock" }, alias: "stock" },
-                    {
-                        formula: {
-                            fn: Fnn.IF,
-                            expression: null,//stock < requested_quantity
-                            trueValue: null,//requested_quantity
-                            falseValue: null//stock
+export const Inventory__Order: Entity = {
+    type_: "Entity_", _id: "Inventory/Order",
+    properties: {
+        items: {
+            type: PropertyTypeN.TABLE, properties: {
+                product: {
+                    type: PropertyTypeN.REFERENCE_ENTITY,
+                    entity: {
+                        deepPath: "/Inventory/Product/locations/",
+                        copiedProperties: [
+                            "code",
+                            "name",
+                            "location",
+                            "price",
+                            "currency_code",
+                        ]
+                    }
+                },
+                requested_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
+                available_stock: { type: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product.available_stock" } },
+                reserved_quantity: {
+                    type: PropertyTypeN.FORMULA,
+                    formula: {
+                        IF: {
+                            expression: { EXPRESSION: 'available_stock > requested_quantity' },
+                            trueValue: { EXPRESSION: 'requested_quantity' },
+                            falseValue: { EXPRESSION: 'available_stock' },
                         }
                     }
-                ]
+                },
+                client_stock: { type: PropertyTypeN.NUMBER },
+                units: {
+                    type: PropertyTypeN.TABLE,
+                    properties: {
+                        unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ["code", "serial"] } }
+                    }
+                },
             }
-        },
-        { name: "client_stock", type: PropertyTypeN.NUMBER },
-    ]
-};
-
-export const Inventory__ProductListProductUnit: Entity = {
-    mwzType: "Entity_", _id: "Inventory__ProductListProductUnit",
-    properties: [
-        { name: "product_list_product_id", type: PropertyTypeN.NUMBER, allowNull: false },
-        { name: "sy5_index", type: PropertyTypeN.NUMBER, allowNull: false },
-        { name: "product_unit_code", type: PropertyTypeN.STRING },
-        { name: "product_code", type: PropertyTypeN.STRING },
-        { name: "manual_product_code", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "manual_product_serial", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "state", type: PropertyTypeN.STRING, allowNull: false, }
-    ]
+        }
+    }
 };
 
 export const Inventory__Product: Entity = {
-    mwzType: "Entity_", _id: "Inventory__Product",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "barcode", type: PropertyTypeN.STRING },
-        { name: "name", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "description", type: PropertyTypeN.STRING },
-    ]
+    type_: "Entity_", _id: "Inventory/Product",
+    properties: {
+        code: { type: PropertyTypeN.STRING, allowNull: false },
+        barcode: { type: PropertyTypeN.STRING },
+        name: { type: PropertyTypeN.STRING, allowNull: false },
+        description: { type: PropertyTypeN.STRING },
+        locations: {
+            type: PropertyTypeN.TABLE, properties: {
+                location: { type: PropertyTypeN.STRING, allowNull: false, defaultValue: "DEFAULT-LOCATION" },
+                category: { type: PropertyTypeN.STRING, allowNull: false },
+                price: { type: PropertyTypeN.NUMBER, allowNull: true },
+                currency: {
+                    type: PropertyTypeN.REFERENCE_ENTITY,
+                    entity: {
+                        deepPath: "/General/Currency",
+                        copiedProperties: ["code", "name"],
+                    }
+                },
+                minimal_stock: { type: PropertyTypeN.NUMBER, allowNull: false },
+                received_stock: {
+                    type: PropertyTypeN.FORMULA,
+                    formula: {
+                        SUM: [{ EXPRESSION: "receiptItems.received_quantity"}]
+                    }
+                },
+                available_stock: {
+                    type: PropertyTypeN.FORMULA,
+                    formula: {
+                        EXPRESSION: 'received_stock - reserved_stock - delivered_stock'
+                    }
+                },
+                reserved_stock: {
+                    type: PropertyTypeN.FORMULA,
+                    formula: {
+                        SUM: [{ EXPRESSION: "orderItems.reserved_quantity" }]
+                    }
+                },
+                delivered_stock: { type: PropertyTypeN.NUMBER },
+                moving_stock: { type: PropertyTypeN.NUMBER, allowNull: false },
+                state: { type: PropertyTypeN.STRING, allowNull: false }
+            }
+        }
+    }
 };
 
 export const Inventory__ProductUnit: Entity = {
-    mwzType: "Entity_", _id: "Inventory__ProductUnit",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "product_code", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "location", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "serial1", type: PropertyTypeN.STRING },
-        { name: "serial2", type: PropertyTypeN.STRING },
-        { name: "serial3", type: PropertyTypeN.STRING },
-        { name: "serial4", type: PropertyTypeN.STRING },
-        { name: "serial5", type: PropertyTypeN.STRING },
-        { name: "serial6", type: PropertyTypeN.STRING },
-        { name: "serial7", type: PropertyTypeN.STRING },
-        { name: "install_date", type: PropertyTypeN.DATETIME },
-        { name: "state", type: PropertyTypeN.STRING, allowNull: false },
-        { name: "nb_piston_cycles", type: PropertyTypeN.STRING },
-        { name: "brita_counter", type: PropertyTypeN.STRING },
-        { name: "washing_cycles", type: PropertyTypeN.STRING, }
-    ]
+    type_: "Entity_", _id: "Inventory/ProductUnit",
+    properties: {
+        code: { type: PropertyTypeN.STRING, allowNull: false },
+        product: {
+            type: PropertyTypeN.REFERENCE_ENTITY, entity: {
+                deepPath: "/Inventory/Product",
+                copiedProperties: [
+                    "code",
+                    "name",
+                    "price",
+                    "currency_code",
+                ]
+            }
+        },
+        location: { type: PropertyTypeN.STRING, allowNull: false },
+        serial1: { type: PropertyTypeN.STRING },
+        serial2: { type: PropertyTypeN.STRING },
+        serial3: { type: PropertyTypeN.STRING },
+        serial4: { type: PropertyTypeN.STRING },
+        serial5: { type: PropertyTypeN.STRING },
+        serial6: { type: PropertyTypeN.STRING },
+        serial7: { type: PropertyTypeN.STRING },
+        install_date: { type: PropertyTypeN.DATETIME },
+        state: { type: PropertyTypeN.STRING, allowNull: false },
+        nb_piston_cycles: { type: PropertyTypeN.STRING },
+        brita_counter: { type: PropertyTypeN.STRING },
+        washing_cycles: { type: PropertyTypeN.STRING, }
+    }
 };

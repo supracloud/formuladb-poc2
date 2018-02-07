@@ -1,87 +1,87 @@
-import { Entity, PropertyTypeN, Fnn } from '../../domain/metadata/entity';
+import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 
 export const General: Entity = {
-    mwzType: "Entity_", _id: "General",
-    properties: [],
+    type_: "Entity_", _id: "General",
+    properties: {},
     module: true
 };
 
 export const General__Actor: Entity = {
-    mwzType: "Entity_", _id: "General__Actor",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "username", type: PropertyTypeN.STRING },
-        { name: "name", type: PropertyTypeN.STRING },
-        { name: "role", type: PropertyTypeN.STRING },
-        { name: "password", type: PropertyTypeN.STRING },
-        { name: "details", type: PropertyTypeN.STRING },
-        { name: "type", type: PropertyTypeN.STRING },
-        { name: "parent_code", type: PropertyTypeN.STRING },
-        { name: "param1", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false, }
-    ]
+    type_: "Entity_", _id: "General/Actor",
+    properties: {
+        code: { type: PropertyTypeN.STRING, "allowNull": false },
+        username: { type: PropertyTypeN.STRING },
+        name: { type: PropertyTypeN.STRING },
+        role: { type: PropertyTypeN.STRING },
+        password: { type: PropertyTypeN.STRING },
+        details: { type: PropertyTypeN.STRING },
+        type: { type: PropertyTypeN.STRING },
+        parent_code: { type: PropertyTypeN.STRING },
+        param1: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false, }
+    }
 };
 
 export const General__Currency: Entity = {
-    mwzType: "Entity_", _id: "General__Currency",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING },
-        { name: "rate1", type: PropertyTypeN.NUMBER },
-        { name: "rate2", type: PropertyTypeN.NUMBER },
-        { name: "rate3", type: PropertyTypeN.NUMBER },
-        { name: "rate4", type: PropertyTypeN.NUMBER },
-        { name: "rate5", type: PropertyTypeN.NUMBER, }
-    ]
+    type_: "Entity_", _id: "General/Currency",
+    properties: {
+        code: { type: PropertyTypeN.STRING },
+        rate1: { type: PropertyTypeN.NUMBER },
+        rate2: { type: PropertyTypeN.NUMBER },
+        rate3: { type: PropertyTypeN.NUMBER },
+        rate4: { type: PropertyTypeN.NUMBER },
+        rate5: { type: PropertyTypeN.NUMBER, }
+    }
 };
 
 export const General__Person: Entity = {
-    mwzType: "Entity_", _id: "General__Person",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "actor_code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "name", type: PropertyTypeN.STRING },
-        { name: "district", type: PropertyTypeN.STRING },
-        { name: "city", type: PropertyTypeN.STRING },
-        { name: "address", type: PropertyTypeN.STRING },
-        { name: "supervisor", type: PropertyTypeN.STRING },
-        { name: "manager", type: PropertyTypeN.STRING },
-        { name: "phone", type: PropertyTypeN.STRING },
-        { name: "fax", type: PropertyTypeN.STRING },
-        { name: "tax_number", type: PropertyTypeN.STRING },
-        { name: "details", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false, }
-    ]
+    type_: "Entity_", _id: "General/Person",
+    properties: {
+        code: { type: PropertyTypeN.STRING, "allowNull": false },
+        actor_code: { type: PropertyTypeN.STRING, "allowNull": false },
+        name: { type: PropertyTypeN.STRING },
+        district: { type: PropertyTypeN.STRING },
+        city: { type: PropertyTypeN.STRING },
+        address: { type: PropertyTypeN.STRING },
+        supervisor: { type: PropertyTypeN.STRING },
+        manager: { type: PropertyTypeN.STRING },
+        phone: { type: PropertyTypeN.STRING },
+        fax: { type: PropertyTypeN.STRING },
+        tax_number: { type: PropertyTypeN.STRING },
+        details: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false, }
+    }
 };
 
 export const General__User: Entity = {
-    mwzType: "Entity_", _id: "General__User",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "username", type: PropertyTypeN.STRING },
-        { name: "name", type: PropertyTypeN.STRING },
-        { name: "role", type: PropertyTypeN.STRING },
-        { name: "password", type: PropertyTypeN.STRING },
-        { name: "details", type: PropertyTypeN.STRING },
-        { name: "type", type: PropertyTypeN.STRING },
-        { name: "parent_code", type: PropertyTypeN.STRING },
-        { name: "param1", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false, }
-    ]
+    type_: "Entity_", _id: "General/User",
+    properties: {
+        code: { type: PropertyTypeN.STRING, "allowNull": false },
+        username: { type: PropertyTypeN.STRING },
+        name: { type: PropertyTypeN.STRING },
+        role: { type: PropertyTypeN.STRING },
+        password: { type: PropertyTypeN.STRING },
+        details: { type: PropertyTypeN.STRING },
+        type: { type: PropertyTypeN.STRING },
+        parent_code: { type: PropertyTypeN.STRING },
+        param1: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false, }
+    }
 };
 
 export const General__Client: Entity = {
-    mwzType: "Entity_", _id: "Inventory__Client",
-    properties: [
-        { name: "code", type: PropertyTypeN.STRING, "allowNull": false },
-        { name: "username", type: PropertyTypeN.STRING },
-        { name: "name", type: PropertyTypeN.STRING },
-        { name: "role", type: PropertyTypeN.STRING },
-        { name: "password", type: PropertyTypeN.STRING },
-        { name: "details", type: PropertyTypeN.STRING },
-        { name: "type", type: PropertyTypeN.STRING },
-        { name: "parent_code", type: PropertyTypeN.STRING },
-        { name: "param1", type: PropertyTypeN.STRING },
-        { name: "state", type: PropertyTypeN.STRING, "allowNull": false, }
-    ]
+    type_: "Entity_", _id: "Inventory/Client",
+    properties: {
+        code: { type: PropertyTypeN.STRING, "allowNull": false },
+        username: { type: PropertyTypeN.STRING },
+        name: { type: PropertyTypeN.STRING },
+        role: { type: PropertyTypeN.STRING },
+        password: { type: PropertyTypeN.STRING },
+        details: { type: PropertyTypeN.STRING },
+        type: { type: PropertyTypeN.STRING },
+        parent_code: { type: PropertyTypeN.STRING },
+        param1: { type: PropertyTypeN.STRING },
+        state: { type: PropertyTypeN.STRING, "allowNull": false, }
+    }
 };

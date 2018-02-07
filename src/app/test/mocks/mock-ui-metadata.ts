@@ -36,7 +36,7 @@ form-grid-row
         form-input=work_description
       form-grid-row
         form-table#product_list
-          form-autocomplete.product: "copiedProperties": ["inventory_code", "price"]
+          form-autocomplete.product: "copiedProperties": ["code", "name", "location", "price"]
           form-input=requested_quantity
           form-input=client_stock
 form-grid-row
@@ -47,7 +47,7 @@ form-grid-row
   form-input=night_hours
   form-input=shipment_cost
 form-grid-row
-  form-input=mwzType
+  form-input=type_
   form-input=_id
 `;
 

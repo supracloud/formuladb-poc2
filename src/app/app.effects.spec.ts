@@ -16,7 +16,7 @@ import * as fromForm from './form/form.state';
 import { AppEffects } from "./app.effects";
 import { ChangeObj } from "./domain/change_obj";
 
-import { MockMetadata } from "./test/mocks/mock-metadata";
+import { MockMetadata, General__Actor, General__Currency } from "./test/mocks/mock-metadata";
 import * as mainDemoFlow from "./test/main_demo.flow";
 import { getDefaultTable, getDefaultForm } from "./domain.utils";
 
@@ -58,7 +58,7 @@ describe('AppEffects', () => {
         effects = TestBed.get(AppEffects);
         actions$ = TestBed.get(Actions);
         // backendReadService = TestBed.get(BackendReadService);
-        actorTestId = mainDemoFlow.mockData.getAllForPath(MockMetadata.General__Actor._id)[0]._id;
+        actorTestId = mainDemoFlow.mockData.getAllForPath(General__Actor._id)[0]._id;
     });
 
     it('a router effect test', () => {
@@ -77,15 +77,15 @@ describe('AppEffects', () => {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {url: '/General__Currency'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
-                m: new fromTable.TableFormBackendAction(getDefaultTable(MockMetadata.General__Actor)),
+                m: new fromTable.TableFormBackendAction(getDefaultTable(General__Actor)),
                 n: new fromTable.TableDataFromBackendAction(
-                    mainDemoFlow.mockData.getAllForPath(MockMetadata.General__Actor._id).map(o => new ChangeObj(o))),
-                o: new fromForm.FormFromBackendAction(getDefaultForm(MockMetadata.General__Actor, mainDemoFlow.mockMetadata.entitiesMap)),
-                p: new fromForm.FormDataFromBackendAction(mainDemoFlow.mockData.get(MockMetadata.General__Actor._id, actorTestId)),
-                q: new fromTable.TableFormBackendAction(getDefaultTable(MockMetadata.General__Currency)),
+                    mainDemoFlow.mockData.getAllForPath(General__Actor._id).map(o => new ChangeObj(o))),
+                o: new fromForm.FormFromBackendAction(getDefaultForm(General__Actor, mainDemoFlow.mockMetadata.entitiesMap)),
+                p: new fromForm.FormDataFromBackendAction(mainDemoFlow.mockData.get(General__Actor._id, actorTestId)),
+                q: new fromTable.TableFormBackendAction(getDefaultTable(General__Currency)),
                 r: new fromTable.TableDataFromBackendAction(
-                    mainDemoFlow.mockData.getAllForPath(MockMetadata.General__Currency._id).map(o => new ChangeObj(o))),
-                s: new fromForm.FormFromBackendAction(getDefaultForm(MockMetadata.General__Currency, mainDemoFlow.mockMetadata.entitiesMap)),
+                    mainDemoFlow.mockData.getAllForPath(General__Currency._id).map(o => new ChangeObj(o))),
+                s: new fromForm.FormFromBackendAction(getDefaultForm(General__Currency, mainDemoFlow.mockMetadata.entitiesMap)),
             }
 
             actions$.stream = hot('--a----bc',values);

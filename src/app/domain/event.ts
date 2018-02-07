@@ -10,7 +10,6 @@ import { generateUUID } from "./uuid";
  * The events sent by the clients become transactions on the back-end
  */
 export class MwzEvent extends KeyValueObj {
-    readonly mwzType = 'Event_';
     clientId_: string;
     type_: string;
     state_: 'BEGIN' | 'PRECOMMIT' | 'COMMIT' | 'FINALIZED';

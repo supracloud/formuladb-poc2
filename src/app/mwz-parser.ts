@@ -24,7 +24,7 @@ export class MwzParser {
 
     let form = new Form();
     form._id = 'Form_:' + entity._id;
-    form.mwzType = 'Form_';
+    form.type_ = 'Form_';
     let elementsPath: NodeElement[] = [form];
 
     text.split(/\n/).map(line => {

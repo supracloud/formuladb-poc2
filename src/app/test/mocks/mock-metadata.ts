@@ -1,4 +1,4 @@
-import { Entity, PropertyTypeN, Fnn } from '../../domain/metadata/entity'
+import { Entity, PropertyTypeN } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
@@ -16,9 +16,9 @@ export class MockMetadata {
 
   public constructor() {
     this.entities.forEach(meta => {
-      meta.properties.push({ name: "mwzType", type: PropertyTypeN.STRING });
-      meta.properties.push({ name: "_id", type: PropertyTypeN.STRING });
-      meta.properties.push(    {name: "_rev",type: PropertyTypeN.STRING});
+      meta.properties.type_ = { type: PropertyTypeN.STRING };
+      meta.properties._id = { type: PropertyTypeN.STRING };
+      meta.properties._rev = {type: PropertyTypeN.STRING};
     });
 
     this.entities.forEach(meta => {
@@ -35,10 +35,8 @@ export class MockMetadata {
     GeneralMetadata.General__User,
     InventoryMetadata.Inventory,
     GeneralMetadata.General__Client,
-    InventoryMetadata.Inventory__InventoryProduct,
-    InventoryMetadata.Inventory__OrderItem,
-    InventoryMetadata.Inventory__ReceiptItem,
-    InventoryMetadata.Inventory__ProductListProductUnit,
+    InventoryMetadata.Inventory__Order,
+    InventoryMetadata.Inventory__Receipt,
     InventoryMetadata.Inventory__Product,
     InventoryMetadata.Inventory__ProductUnit,
     FinancialMetadata.Financial,

@@ -66,7 +66,7 @@ export class FormComponent implements OnInit {
             //set readonly fields
             this.theFormGroup.setControl('_id', new FormControl({ value: (formState.formData || { _id: null })._id, disabled: true }));
             this.theFormGroup.setControl('_rev', new FormControl({ value: (formState.formData || { _rev: null })._rev, disabled: true }));
-            this.theFormGroup.setControl('mwzType', new FormControl({ value: (formState.formData || { mwzType: null }).mwzType, disabled: true }));
+            this.theFormGroup.setControl('type_', new FormControl({ value: (formState.formData || { type_: null }).type_, disabled: true }));
 
 
             if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form, formState.formReadOnly);
@@ -124,7 +124,7 @@ export class FormComponent implements OnInit {
         } else if (null != formEl.propertyName) {
             if (formEl.propertyName === '_id') return;
             if (formEl.propertyName === '_rev') return;
-            if (formEl.propertyName === 'mwzType') return;
+            if (formEl.propertyName === 'type_') return;
             parentFormGroup.setControl(formEl.propertyName, new FormControl({ value: undefined, disabled: formReadOnly }));
         }
 
@@ -140,7 +140,7 @@ export class FormComponent implements OnInit {
         for (var key in objFromServer) {
             if ('_rev' === key) continue;
             if ('_id' === key) continue;
-            if ('mwzType' === key) continue;
+            if ('type_' === key) continue;
 
             let objVal = objFromServer[key];
             let formVal = formGroup.get(key);

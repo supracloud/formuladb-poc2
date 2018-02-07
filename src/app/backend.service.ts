@@ -24,24 +24,85 @@ import { KeyValueStore } from "./keyValueStore";
 @Injectable()
 export class BackendService {
     private transactionsDB: KeyValueStore;
-    private historyDB: KeyValueStore;
+    private dataDB: KeyValueStore;
+    private localPouchDB: any;
+    private remoteDBUrl: string = 'http://localhost:5984/mwzhistory';
 
+    private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
     private dataChangeCallback: (docs: Array<BaseObj>) => void;
 
+    private readonly usePouchDBReplication: boolean = false;
+
     constructor(private http: HttpClient) {
         this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
-        this.historyDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwzhistory"));
+        if (this.usePouchDBReplication) {
+            this.localPouchDB = new PouchDB("dataDB");
+            this.dataDB = new KeyValueStore(this.localPouchDB);
+        } else {
+            this.dataDB = new KeyValueStore(new PouchDB(this.remoteDBUrl));
+        }
     }
 
     public init(initCallback: () => void,
         notifCallback: (event: MwzEvents) => void,
         dataChangeCallback: (docs: Array<BaseObj>) => void) {
 
+        this.initCallback = initCallback;
         this.notifCallback = notifCallback;
         this.dataChangeCallback = dataChangeCallback;
 
-        initCallback();
+        if (this.usePouchDBReplication) {
+            this.setupPouchDBReplication();
+        } else {
+            initCallback();
+        }
+
+    }
+
+    private setupPouchDBReplication() {
+        let self = this;
+
+        console.log("%c ** INITIAL REPLICATION STARTED **##$$",
+        "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
+        
+        //first catchup local PouchDB with what happened on the server while the application was stopped
+        this.localPouchDB.replicate.from(this.remoteDBUrl)
+            .on('complete', info => {
+                console.log("%c ** INITIAL REPLICATION FINISHED **##$$",
+                    "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
+
+                this.localPouchDB.getIndexes().then(res => {
+                    if (!res || !res.indexes || ! (res.indexes instanceof Array) || res.indexes.find(x => x.name == 'index_on_type_') == null ) {
+                        return this.localPouchDB.createIndex({
+                            index: {name: 'index_on_type_', fields: ['type_'] }
+                        });
+                    }
+                })
+                .then(() => {
+                    return this.localPouchDB.explain({
+                        selector: {
+                            type_: 'Entity_'
+                        }
+                    }).then(explanation => console.warn("Check index usage: ", explanation))
+                        .catch(err => console.error(err));
+                })
+                .then(() => {
+                    //application specific initialization
+                    self.initCallback();
+
+                    //after initial replication from the server is finished, continue with live replication
+                    this.localPouchDB.replicate.from(this.remoteDBUrl, {
+                        live: true,
+                        retry: true,
+                    })
+                        .on('change', function (change) {
+                            self.dataChangeCallback(change);
+                        })
+                        .on('error', err => console.error(err));
+                });
+            })
+            .on('error', err => console.error(err));
     }
 
     public putEvent(event: MwzEvents) {
@@ -52,17 +113,19 @@ export class BackendService {
     }
 
     private handleNotif(event: MwzEvents) {
-        event.updatedIds_.forEach(id_ => {
-            this.historyDB.get(id_)
-            .then(obj => this.dataChangeCallback([obj]))
-            .catch(err => console.error(err));
-        });
+        if (!this.usePouchDBReplication) {
+            event.updatedIds_.forEach(id_ => {
+                this.dataDB.get(id_)
+                .then(obj => this.dataChangeCallback([obj]))
+                .catch(err => console.error(err));
+            });
+        }
 
         this.notifCallback(event);
     }
 
     public getTable(path: string): Promise<Table> {
-        return this.historyDB.get<Table>('Table_:' + path).then(ti => {
+        return this.dataDB.get<Table>('Table_:' + path).then(ti => {
             return new Promise<Table>((resolve, reject) => {
                 addIdsToTable(ti);
                 resolve(ti);
@@ -71,7 +134,7 @@ export class BackendService {
     }
 
     public getForm(path: string): Promise<Form> {
-        return this.historyDB.get<Form>('Form_:' + path).then(fi => {
+        return this.dataDB.get<Form>('Form_:' + path).then(fi => {
             addIdsToForm(fi);
             return fi;
         });
@@ -94,16 +157,16 @@ export class BackendService {
         };
     }
 
-    public findByMwzType<T extends BaseObj>(mwzType: string): Promise<T[]> {
-        return this.historyDB.findByMwzType(mwzType);
+    public findByType<T extends BaseObj>(type_: string): Promise<T[]> {
+        return this.dataDB.findByType(type_);
     }
 
     public getEntity(path: string): Promise<Entity> {
         //the Entity's _id is the path
-        return this.historyDB.get(path);
+        return this.dataDB.get(path);
     }
 
     public getDataObj(id: string): Promise<DataObj> {
-        return this.historyDB.get(id);
+        return this.dataDB.get(id);
     }
 }

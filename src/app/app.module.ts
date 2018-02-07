@@ -46,10 +46,13 @@ import { EditOptionsService } from './services/edit.options.service';
 
 const routes: Routes = [
   {
-    path: ':path', component: TableComponent,
+    path: ':module', component: TableComponent,
   },
   {
-    path: ':path/:_id', component: FormComponent,
+    path: ':module/:entity', component: TableComponent,
+  },
+  {
+    path: ':module/:entity/:_id', component: FormComponent,
   },
   { path: '**', component: NotFoundComponent }
 ];

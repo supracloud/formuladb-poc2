@@ -1,10 +1,10 @@
 import * as events from "../../../src/app/domain/event";
-import { StorageSnapshotAtTransaction } from "../storage.service";
+import { StoreViewAtTransaction } from "../transactionalStore";
 import { BaseObj } from "../../../src/app/domain/base_obj";
 
-export async function userActionEditedFormDataHandler(event: events.UserActionEditedFormDataEvent, storage: StorageSnapshotAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
+export async function userActionEditedFormDataHandler(event: events.UserActionEditedFormDataEvent, storage: StoreViewAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
     try {
-        let entity = await storage.getEntity(event.obj.mwzType);
+        let entity = await storage.getEntity(event.obj.type_);
 
         event.readObjs_.push({id_: entity._id, rev_: entity.rev_});
 

@@ -5,13 +5,12 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-import { FrmdbEngine } from "../frmdb_engine";
+import { FrmdbEngine } from "../frmdbEngine";
 
 
 export default function (db) {
     var app: express.Express = express();
 
-    //app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
     app.use(logger("dev"));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));

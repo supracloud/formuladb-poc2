@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
 import { Entity, EntityProperty, PropertyTypeN } from '../../domain/metadata/entity'
-
+import { getEntityIdFromDeepPath } from "../../domain.utils";
 import { DataObj } from "../../domain/metadata/data_obj";
 
 const nouns: string[] = ["Lama", "Basket", "Freckle", "Taco", "Suspect", "Ball", "Moustache", "Semantic", "Charlie", "Bouquet"];
@@ -38,7 +38,7 @@ export class MockData {
   }
 
   getRefDataObj(path: string, refPath: string, refIdx: number): DataObj {
-    let db: Map<string, DataObj> = this.mockDB.get(refPath);
+    let db: Map<string, DataObj> = this.mockDB.get(getEntityIdFromDeepPath(refPath));
     console.log(db);
     if (null == db) throw new Error("Dependent entity " + refPath + " not mocked yet for " + path);
     let values = Array.from(db.values());
@@ -53,7 +53,7 @@ export class MockData {
         this.mockDB.set(entity._id, db);
       }
       this.mockDB.set(entity._id, db);
-      let ret = { mwzType: entity._id, _id: `${entity._id}:123400${entityIdx}` };
+      let ret = { type_: entity._id, _id: `${entity._id}:123400${entityIdx}` };
 
       this.mockObject(entity._id, entity.properties, ret);
 
@@ -68,7 +68,7 @@ export class MockData {
         //already set above
       } else if (p.name == "_rev") {
         //do nothing
-      } else if (p.name == "mwzType") {
+      } else if (p.name == "type_") {
         //do nothing
       } else if (p.type == PropertyTypeN.NUMBER) {
         ret[p.name] = Math.random() * 100;
@@ -80,11 +80,12 @@ export class MockData {
         ret[p.name] = new Date();
       } else if (p.type == PropertyTypeN.REFERENCE_ENTITY) {
         let refIdx = Math.round(Math.random() * 4);
-        let refPath = p.entity.path;
-        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.entity.copiedProperties || []).concat(['_id', 'mwzType']));
+        let refPath = p.entity.deepPath;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.entity.copiedProperties || []).concat(['_id', 'type_']));
       } else if (p.type == PropertyTypeN.TABLE) {
         if (p.entity != null) {
-          let ref = this.entitiesMap.get(p.entity.path);
+          let ref = this.entitiesMap.get(getEntityIdFromDeepPath(p.entity.deepPath));
+          console.log("p.entity.deepPath=" + p.entity.deepPath + "|" + getEntityIdFromDeepPath(p.entity.deepPath));
           ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
         } else {
           let table = [];
@@ -112,9 +113,8 @@ export class MockData {
     this.mockEntities(metadata.General__Client, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__Product, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__InventoryProduct, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__OrderItem, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__ReceiptItem, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__Order, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__Receipt, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Forms__Order, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Forms__Receipt, [1, 2, 3, 4, 5]);
     this.mockEntities(metadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
