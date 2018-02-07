@@ -5,7 +5,7 @@ import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/for
 
 import { NodeType, FormTabs } from "../../domain/uimetadata/form";
 @Component({
-  selector: '[form-tabs]',
+  selector: '[form_tabs]',
   host: { class: "col" },
   templateUrl:'form_tabs.component.html',
   styleUrls:['form_tabs.component.scss']

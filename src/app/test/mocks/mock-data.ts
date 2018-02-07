@@ -54,7 +54,7 @@ export class MockData {
         this.mockDB.set(entity._id, db);
       }
       this.mockDB.set(entity._id, db);
-      let ret = { type_: entity._id, _id: `${entity._id}:123400${entityIdx}` };
+      let ret = { type_: entity._id, _id: `${entity._id.replace(/\//g, '__')}:123400${entityIdx}` };
 
       this.mockObject(entity._id, getEntityPropertiesWithNames(entity.properties), ret);
 

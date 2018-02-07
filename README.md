@@ -32,7 +32,7 @@ node dist/out-tsc/src/app/test/mocks/loadTestData.js
 ```bash
 curl -X DELETE http://127.0.0.1:5984/mwzhistory
 curl -X PUT http://127.0.0.1:5984/mwzhistory
-node dist/out-tsc/src/app/test/mocks/loadTestData.js 2>&1 | tee log
+node dist/out-tsc/src/app/test/mocks/loadTestData.js >log 2>&1
 grep -i error log
 ```
 

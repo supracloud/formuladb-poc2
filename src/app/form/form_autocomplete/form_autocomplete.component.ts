@@ -9,7 +9,7 @@ import { FormGroup } from '@angular/forms';
 import { BaseNodeComponent } from "./../base_node";
 
 @Component({
-    selector: '[form-autocomplete]',
+    selector: '[form_autocomplete]',
     host: { class: 'col', style: "padding-left: 25px" },
     templateUrl: 'form_autocomplete.component.html',
     styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']

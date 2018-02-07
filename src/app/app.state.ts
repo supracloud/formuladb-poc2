@@ -95,12 +95,13 @@ export const reducers = {
 
 
 export function parseUrl(url: string): { path: string, id: string } {
-  let match = url.match(/^\/([\w\/]+)\/?([\w:-]+)?/)
+  let match = url.match(/^\/(\w+)\/?(\w+)\/?([%\w:-]+)?/)
   let path: string = null;
   let id: string = null;
   if (null != match) {
     path = match[1];
-    if (match.length >= 2) id = match[2];
+    if (match.length >=2 && match[2] != null) path = path + '/' + match[2];
+    if (match.length >= 3 && match[3] != null) id = match[3];
   } else {
     return {path: "/General/Actor", id: null};
   }

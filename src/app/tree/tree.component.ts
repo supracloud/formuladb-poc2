@@ -34,7 +34,9 @@ export class TreeComponent implements OnInit {
     @ViewChild('popEditor') public popEditor: NgbPopover;
     @ViewChild('popAdd') public popAdd: NgbPopover;
 
-    ngOnInit() { }
+    ngOnInit() { 
+        // console.error("$$$$$$$$$$$$$$$$$$$$$$$$", this.node);
+    }
 
     private childChange(event: TreeChange) {
         event.reportingNode = this.node;

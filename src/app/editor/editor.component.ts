@@ -102,6 +102,7 @@ export class EditorComponent implements OnInit {
     });
 
     this.store.select(fromTable.getTableState).subscribe(table => {
+      if (table == null) return;
       this.table = _.cloneDeep(table);
       this.tableTree = new TableTreeObject(this.table);
       this.tableTree.canDelete = false;
@@ -110,6 +111,7 @@ export class EditorComponent implements OnInit {
     });
 
     this.store.select(fromForm.getFormState).subscribe(form => {
+      if (form == null) return;
       this.form = _.cloneDeep(form);
       this.formTree = new FormTreeObject(this.form.grid);
       this.formTree.canDelete = false;
@@ -136,10 +138,8 @@ export class EditorComponent implements OnInit {
   }
 
   private formChange(event: TreeChange): void {
-    let form = new Form();
-    form._id = this.form._id;
-    form.grid = event.reportingNode.item as FormGrid;
-    this.store.dispatch(new fromForm.FormFromBackendAction(form));
+    this.form.grid = event.reportingNode.item as FormGrid;
+    this.store.dispatch(new fromForm.FormFromBackendAction(this.form));
   }
 
 

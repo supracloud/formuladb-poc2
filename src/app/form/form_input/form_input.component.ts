@@ -7,7 +7,7 @@ import {
 import { BaseNodeComponent } from "./../base_node";
 
 @Component({
-    selector: '[form-input]',
+    selector: '[form_input]',
     host: { class: "col form_group" },
     templateUrl:'form_input.component.html' ,
     styleUrls:['form_input.component.scss']

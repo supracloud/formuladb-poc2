@@ -5,7 +5,7 @@ import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren }
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 @Component({
-  selector: '[form-table]',
+  selector: '[form_table]',
   host: { class: "col" },
   templateUrl: 'form_table.component.html',
   styleUrls:['form_table.component.scss']

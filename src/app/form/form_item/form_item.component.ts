@@ -9,7 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
-  selector: '[form-item]',
+  selector: '[form_item]',
   templateUrl: 'form_item.component.html',
   host: { '[class]': 'getHostClassForElement()' },
   styleUrls: ['form_item.component.scss']
