@@ -6,7 +6,7 @@ import {
 import { NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 
 import { Entity } from '../domain/metadata/entity';
-import { Form } from '../domain/uimetadata/form';
+import { Form, FormGrid } from '../domain/uimetadata/form';
 import { Table } from '../domain/uimetadata/table';
 import { Subscription } from 'rxjs/Subscription';
 import { MwzParser } from '../mwz-parser';
@@ -61,7 +61,6 @@ export class EditorComponent implements OnInit {
     console.log("EditorComponent: isFom=", this.isForm, this.entity);
     if (this.isForm) {
       let newForm = this.parserService.parseForm(this.entity, this.formText);
-      newForm.type_ = 'Form_';
       newForm._id = 'Form_:' + this.path;
       if (preview) {
         this.store.dispatch(new fromForm.FormFromBackendAction(newForm));
@@ -112,7 +111,7 @@ export class EditorComponent implements OnInit {
 
     this.store.select(fromForm.getFormState).subscribe(form => {
       this.form = _.cloneDeep(form);
-      this.formTree = new FormTreeObject(this.form);
+      this.formTree = new FormTreeObject(this.form.grid);
       this.formTree.canDelete = false;
       this.formTree.canEdit = false;
       this.setText();
@@ -137,7 +136,10 @@ export class EditorComponent implements OnInit {
   }
 
   private formChange(event: TreeChange): void {
-    this.store.dispatch(new fromForm.FormFromBackendAction((event.reportingNode as FormTreeObject).item as Form));
+    let form = new Form();
+    form._id = this.form._id;
+    form.grid = event.reportingNode.item as FormGrid;
+    this.store.dispatch(new fromForm.FormFromBackendAction(form));
   }
 
 

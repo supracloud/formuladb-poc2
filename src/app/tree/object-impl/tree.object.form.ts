@@ -1,13 +1,13 @@
 import { TreeObject } from "../tree.object";
-import { NodeElement, NodeType2Str, NodeType, Str2NodeType } from "../../domain/uimetadata/form";
+import * as form from "../../domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
 import { UUID } from "angular2-uuid";
 import { MetaItemDescriptor } from "../meta.item.descriptor";
 import * as _ from "lodash";
 
-export class FormTreeObject implements TreeObject<NodeElement>{
+export class FormTreeObject implements TreeObject<form.NodeElement>{
 
-    item: NodeElement;
+    item: form.NodeElement;
     id: string = UUID.UUID();
     name: string;
     children?: TreeObject<any>[] = [];
@@ -18,36 +18,44 @@ export class FormTreeObject implements TreeObject<NodeElement>{
     childTypes: string[] = [];
     descriptor: MetaItemDescriptor[];
 
-    constructor(node: NodeElement) {
+    constructor(node: form.NodeElement) {
         this.item = node;
         if (node) {
-            let s = [NodeType2Str.get(node.nodeType)];
-            if (null != node.propertyName) s.push('=', node.propertyName);
-            if (null != node.tableName) s.push('#', node.tableName);
-            if (null != node.entityName) s.push('.', node.entityName);
-            if (node.attributes) {
-                s.push(": ");
-                s.push(JSON.stringify(node.attributes).replace(/^\{/, '').replace(/\}$/, ''));
+            let s: string[] = [node.nodeType];
+
+            let availableTypes: form.NodeType[] = [];
+            switch (node.nodeType) {
+                case form.NodeType.form_input:
+                case form.NodeType.form_datepicker:
+                case form.NodeType.form_timepicker:
+                    s.push('=', node.propertyName);
+                    break;
+                case form.NodeType.form_autocomplete:
+                    s.push('.', node.entityName);
+                    s.push(": ");
+                    s.push(JSON.stringify(node.copiedProperties).replace(/^\{/, '').replace(/\}$/, ''));
+                    break;
+                case form.NodeType.form_grid:
+                case form.NodeType.form_grid_row:
+                case form.NodeType.form_grid_col:
+                case form.NodeType.form_tab:
+                    availableTypes = [form.NodeType.form_grid_row, form.NodeType.form_grid_col, form.NodeType.form_tabs, form.NodeType.form_tab, form.NodeType.form_table, form.NodeType.form_autocomplete, form.NodeType.form_datepicker, form.NodeType.form_timepicker, form.NodeType.form_input]
+                    break;
+                case form.NodeType.form_table:
+                    availableTypes = [form.NodeType.form_grid_row];
+                    s.push('#', node.tableName);
+                    break;
+                case form.NodeType.form_tabs:
+                    availableTypes = [form.NodeType.form_tab];
+                    s.push('#', node.tableName);
+                    s.push(": ");
+                    s.push(JSON.stringify(node.tabNameFormPath).replace(/^\{/, '').replace(/\}$/, ''));
+                    break;
             }
             this.name = s.join('');
 
-            let availableTypes: NodeType[] = [];
-            switch (node.nodeType) {
-                case NodeType.FormGrid:
-                case NodeType.FormGridRow:
-                case NodeType.FormGridCol:
-                case NodeType.FormTab:
-                    availableTypes = [NodeType.FormGridRow, NodeType.FormGridCol, NodeType.FormTabs, NodeType.FormTab, NodeType.FormTable, NodeType.FormAutocomplete, NodeType.FormDatepicker, NodeType.FormTimepicker, NodeType.FormInput]
-                    break;
-                case NodeType.FormTable:
-                    availableTypes = [NodeType.FormGridRow];
-                    break;
-                case NodeType.FormTabs:
-                    availableTypes = [NodeType.FormTab];
-                    break;
-            }
-            this.childTypes = availableTypes.map(t => NodeType2Str.get(t));
-            if (node.childNodes) {
+            this.childTypes = availableTypes;
+            if (form.isNodeElementWithChildren(node)) {
                 for (var i: number = 0; i < node.childNodes.length; i++) {
                     let child: FormTreeObject = new FormTreeObject(node.childNodes[i]);
                     this.children.push(child);
@@ -80,6 +88,8 @@ export class FormTreeObject implements TreeObject<NodeElement>{
     public childChange(event: TreeChange) {
         if (event) {
             this.item = this.updateInternal(this.item, event.originalNode.item);
+            if (!form.isNodeElementWithChildren(this.item)) return;
+
             if (null !== event.drop) {
                 var cpos = this.getIndexById(event.originalNode.id);
                 if (cpos !== null) {
@@ -120,19 +130,22 @@ export class FormTreeObject implements TreeObject<NodeElement>{
         return null;
     }
 
-    public patch(val: any): NodeElement {
-        const ret: NodeElement = _.cloneDeep(this.item);
-        ret.propertyName = val.propertyName;
-        ret.nodeName = val.nodeName;
+    public patch(val: any): form.NodeElement {
+        const ret: form.NodeElement = _.cloneDeep(this.item);
+        if (form.isPropertyNodeElement(ret)) {
+            ret.propertyName = val.propertyName;
+        }
         return ret;
     }
 
 
-    private updateInternal(node: NodeElement, updated: NodeElement): NodeElement {
+    private updateInternal(node: form.NodeElement, updated: form.NodeElement): form.NodeElement {
         if (node._id === updated._id) {
             return updated;
         }
-        node.childNodes = node.childNodes.map(c => this.updateInternal(c, updated));
+        if (form.isNodeElementWithChildren(node)) {
+            node.childNodes = node.childNodes.map(c => this.updateInternal(c, updated));
+        }
         return node;
     }
 

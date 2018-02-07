@@ -23,7 +23,7 @@ import { ChangeObj } from "./domain/change_obj";
 import { MwzEvents } from "./domain/event";
 
 import { Table, TableColumn } from "./domain/uimetadata/table";
-import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/form";
+import { Form, NodeElement, NodeType } from "./domain/uimetadata/form";
 
 import * as appState from './app.state';
 import { generateUUID } from "./domain/uuid";

@@ -3,7 +3,7 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import * as _ from 'lodash';
 
 import { BaseNodeComponent } from "./../base_node";
-import { NodeElement, Str2NodeType } from "./../../domain/uimetadata/form";
+import { NodeElement, NodeType, isKnownNodeElement, isPropertyNodeElement, isNodeElementWithChildren, isTableNodeElement, isEntityNodeElement, getChildPath } from "./../../domain/uimetadata/form";
 import { HighlightService } from './../../services/hightlight.service';
 import { Observable } from 'rxjs/Observable';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
@@ -26,18 +26,19 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
   getChildPath(childEl: NodeElement) {
     let formPath = _.isEmpty(this.parentFormPath) ? [] : [this.parentFormPath]
-    let childPath = childEl.propertyName || childEl.entityName || childEl.tableName;
+    let childPath: string = null;
+    childPath = getChildPath(childEl);
     if (childPath) formPath.push(childPath);
     return formPath.join('.');
   }
 
   isUnknownElement(nodeElement: NodeElement): boolean {
-    return !_.includes(Array.from(Str2NodeType.keys()), nodeElement.nodeName);
+    return !isKnownNodeElement(nodeElement.nodeType);
   }
 
   getHostClassForElement(): string {
     if (null == this.nodeElement) return '';
-    if (null == this.nodeElement.nodeName) return '';
-    return this.nodeElement.nodeName == 'form_grid' ? 'container' : this.nodeElement.nodeName.replace(/^form-grid-/, '');
+    if (null == this.nodeElement.nodeType) return '';
+    return this.nodeElement.nodeType == NodeType.form_grid ? 'container' : this.nodeElement.nodeType.replace(/^form_grid_/, '');
   }
 }

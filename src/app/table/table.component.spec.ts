@@ -6,7 +6,7 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 
 import { TableComponent } from './table.component';
 import { ModalComponent } from "../modal/modal.component";
-import { FormModalService } from "../form_modal.service";
+import { FormModalService } from "../form-modal.service";
 
 import * as state from './table.state';
 

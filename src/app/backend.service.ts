@@ -135,7 +135,7 @@ export class BackendService {
 
     public getForm(path: string): Promise<Form> {
         return this.dataDB.get<Form>('Form_:' + path).then(fi => {
-            addIdsToForm(fi);
+            addIdsToForm(fi.grid);
             return fi;
         });
     }

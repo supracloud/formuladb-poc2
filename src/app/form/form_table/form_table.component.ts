@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnInit } from '@angular/core';
 import { BaseNodeComponent } from "./../base_node";
 
-import { NodeElement, NodeType } from "../../domain/uimetadata/form";
+import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../domain/uimetadata/form";
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 @Component({
@@ -21,7 +21,8 @@ export class FormTableComponent extends BaseNodeComponent implements OnChanges {
   }
 
   getCopiedPropertyName(child: NodeElement, idx: number) {
-    let ret = ((child.attributes || {} as any).copiedProperties || {} as any)[idx];
+    let ret = null;
+    if (isEntityNodeElement(child)) ret = child.copiedProperties[idx];
     if (!ret) {
       console.error("copiedProperties does not have enough elements: ", child, idx);
       ret = 'NOT-FOUND-' + idx;
@@ -30,7 +31,9 @@ export class FormTableComponent extends BaseNodeComponent implements OnChanges {
   }
 
   getChildProperties(child: NodeElement, idx: number): AbstractControl[] {
+    if (!isEntityNodeElement(child)) throw new Error("childProperties are not available for node: " + child);
     let ret: AbstractControl[] = [];
+    
     let subForm: FormGroup = this.topLevelFormGroup.get(this.parentFormPath + '.' + idx + '.' + child.entityName) as FormGroup;
     if (subForm !== null) {
       for (var ck in subForm.controls) {

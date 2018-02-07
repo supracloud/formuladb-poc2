@@ -1,7 +1,7 @@
 import { Injectable, ViewContainerRef, ComponentFactoryResolver, Type } from '@angular/core';
 import { FormControl, FormGroup, ControlValueAccessor } from '@angular/forms';
 
-import { Form, NodeElement, NodeType } from "../domain/uimetadata/form";
+import { Form, NodeElement, NodeType, isNodeElementWithChildren, getChildPath } from "../domain/uimetadata/form";
 import { BaseNodeComponent } from "./base_node";
 
 import * as _ from 'lodash';
@@ -19,6 +19,8 @@ export class NodeChildrenService {
   }
 
   addChildren(viewContainerRef: ViewContainerRef, parentComponent: BaseNodeComponent) {
+    if (!isNodeElementWithChildren(parentComponent.nodeElement)) return;
+
     (parentComponent.nodeElement.childNodes || []).forEach(childEl => {
       let factory = this.cfr.resolveComponentFactory(this.nodeType2ComponentClass.get(childEl.nodeType));
       let componentRef = viewContainerRef.createComponent(factory);
@@ -26,7 +28,7 @@ export class NodeChildrenService {
       instance.nodeElement = childEl;
       instance.topLevelFormGroup = parentComponent.topLevelFormGroup;
       let formPath = _.isEmpty(parentComponent.parentFormPath) ? [] : [parentComponent.parentFormPath]
-      let childPath = childEl.propertyName || childEl.entityName || childEl.tableName;
+      let childPath = getChildPath(childEl);
       if (childPath) formPath.push(childPath);
       instance.parentFormPath = formPath.join('.');
     });

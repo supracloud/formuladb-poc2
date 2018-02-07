@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
 import { FormModalService } from '../form-modal.service';
 import { Entity, EntityProperty } from '../domain/metadata/entity';
 import { DataObj } from '../domain/metadata/data_obj';
-import { Form, NodeElement, NodeType } from '../domain/uimetadata/form';
+import { Form, NodeElement, NodeType, FormTab } from '../domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
@@ -69,7 +69,7 @@ export class FormComponent implements OnInit {
             this.theFormGroup.setControl('type_', new FormControl({ value: (formState.formData || { type_: null }).type_, disabled: true }));
 
 
-            if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form.childNodes, formState.formReadOnly);
+            if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form.grid.childNodes, formState.formReadOnly);
             if (formState.formData) this.updateFormGroupWithData(formState.formData, this.theFormGroup, formState.formReadOnly);
 
             if (formState.formReadOnly && !this.theFormGroup.disabled) {
@@ -118,7 +118,7 @@ export class FormComponent implements OnInit {
         nodeElements.forEach(nodeEl => {
             let childNodes: NodeElement[] = [];
 
-            if (nodeEl.nodeType == NodeType.form_grid || nodeEl.nodeType == NodeType.form_grid_row || nodeEl.nodeType == NodeType.form_grid_col) {
+            if (nodeEl.nodeType == NodeType.form_grid || nodeEl.nodeType == NodeType.form_grid_row || nodeEl.nodeType == NodeType.form_grid_col || nodeEl.nodeType == NodeType.form_tab) {
                 childNodes = nodeEl.childNodes;
             } else if (nodeEl.nodeType == NodeType.form_input || nodeEl.nodeType == NodeType.form_datepicker || nodeEl.nodeType == NodeType.form_timepicker) {
                 if (nodeEl.propertyName === '_id') return;

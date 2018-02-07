@@ -1,5 +1,5 @@
 import { TreeObject } from "../tree.object";
-import { NodeElement, NodeType2Str, NodeType } from "../../domain/uimetadata/form";
+import { NodeElement, NodeType } from "../../domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
 import { BaseObj } from "../../domain/base_obj";
 import { Table, TableColumn } from "../../domain/uimetadata/table";
