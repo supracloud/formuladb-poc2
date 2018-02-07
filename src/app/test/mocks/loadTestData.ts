@@ -2,14 +2,12 @@ import * as PouchDB from 'pouchdb';
 
 import { MockMetadata } from "./mock-metadata";
 import { MockData } from "./mock-data";
-import { serializedForms } from "./mock-ui-metadata";
-import { MwzParser } from "../../mwz-parser";
+import { Forms__ServiceForm_Form_ } from "./mock-ui-metadata";
 
 var db = new PouchDB("http://localhost:5984/mwzhistory");
 PouchDB.debug.enable('*');
 
 var mockMetadata = new MockMetadata();
-var parserService = new MwzParser();
 
 async function loadData() {
     try {
@@ -30,8 +28,8 @@ async function loadData() {
             await db.put(obj);
         });
 
-        serializedForms.forEach(async (formUiMeta) => {
-            await db.put(parserService.parseForm(formUiMeta.entity, formUiMeta.formText));
+        [Forms__ServiceForm_Form_].forEach(async (formUiMeta) => {
+            await db.put(formUiMeta);
         });
     } catch (err) {
         console.error(err);
@@ -39,3 +37,4 @@ async function loadData() {
 }
 
 loadData();
+   

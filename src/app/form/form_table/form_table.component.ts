@@ -7,8 +7,8 @@ import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 @Component({
   selector: '[form-table]',
   host: { class: "col" },
-  templateUrl: 'form-table.component.html',
-  styleUrls:['form-table.component.scss']
+  templateUrl: 'form_table.component.html',
+  styleUrls:['form_table.component.scss']
 })
 export class FormTableComponent extends BaseNodeComponent implements OnChanges {
 

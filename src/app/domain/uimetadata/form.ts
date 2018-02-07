@@ -2,75 +2,90 @@ import { BaseObj } from '../base_obj';
 import { EntityProperty } from "../metadata/entity";
 import { Label } from './label';
 
-export enum NodeType { 
-    FormGrid ,
-    FormGridRow ,
-    FormGridCol ,
-    FormInput ,
-    FormAutocomplete ,
-    FormTabs ,
-    FormTab ,
-    FormTable ,
-    FormDatepicker,
-    FormTimepicker
-}
-
-export const NodeType2Str: Map<NodeType, string> = new Map([
-    [NodeType.FormGrid, "form-grid"],
-    [NodeType.FormGridRow, "form-grid-row"],
-    [NodeType.FormGridCol, "form-grid-col"],
-    [NodeType.FormInput, "form-input"],
-    [NodeType.FormAutocomplete, "form-autocomplete"],
-    [NodeType.FormTabs, "form-tabs"],
-    [NodeType.FormTab, "form-tab"],
-    [NodeType.FormTable, "form-table"],
-    [NodeType.FormDatepicker, "form-datepicker"],
-    [NodeType.FormTimepicker, "form-timepicker"],
-]);
-
-export const Str2NodeType: Map<string, NodeType> = new Map([
-    ["form-grid", NodeType.FormGrid],
-    ["form-grid-row", NodeType.FormGridRow],
-    ["form-grid-col", NodeType.FormGridCol],
-    ["form-input", NodeType.FormInput],
-    ["form-autocomplete", NodeType.FormAutocomplete],
-    ["form-tabs", NodeType.FormTabs],
-    ["form-tab", NodeType.FormTab],
-    ["form-table", NodeType.FormTable],
-    ["form-datepicker", NodeType.FormDatepicker],
-    ["form-timepicker", NodeType.FormTimepicker],
-]);
-
-
 export class NodeElementAttributes {
     copiedProperties?: string[];//this only applies to entities
-    tabNameFormPath?: string;//used for form-tabs to select which field gives the name for the tab
+    tabNameFormPath?: string;//used for form_tabs to select which field gives the name for the tab
     [x: string]: any;
 }
 
-export class NodeElement extends BaseObj {
-    nodeType: NodeType;
-    nodeName: string;
-        
-    //this element is a property (formControl), in case this attribute is not null
-    propertyName?: string;
-
-    //this element is a table (formArray), in case this attribute is not null
-    tableName?: string;
-
-    //this element is an entity (formGroup), in case this attribute is not null
-    entityName?: string;
-    
-    attributes?: NodeElementAttributes;
-    
-    childNodes?: NodeElement[] = [];
+export enum NodeType { 
+    form_grid              = "form_grid"        ,
+    form_grid_row          = "form_grid-row"    ,
+    form_grid_col          = "form_grid-col"    ,
+    form_input             = "form_input"       ,
+    form_autocomplete      = "form_autocomplete",
+    form_tabs              = "form_tabs"        ,
+    form_table             = "form_table"       ,
+    form_datepicker        = "form_datepicker"  ,
+    form_timepicker        = "form_timepicker"  ,
 }
 
-export class Form extends NodeElement {
-    public type_ = 'Form_';
-    constructor() {
-        super();
-        this.nodeType = NodeType.FormGrid;
-        this.nodeName = 'form-grid';
-    }
+// export interface NodeElementBase {
+//     form_grid?: FormGrid;
+//     form_grid_row: FormGridRow;
+//     form_grid_col: FormGridCol;
+//     form_input: FormInput;
+//     form_autocomplete: FormAutocomplete;
+//     form_tabs: FormTabs;
+//     form_table: FormTable;
+//     form_datepicker: FormDatepicker;
+//     form_timepicker: FormTimepicker;
+// }
+
+export class FormGrid {
+    readonly nodeType = NodeType.form_grid;
+    childNodes?: NodeElement[];
 }
+export class FormGridRow {
+    readonly nodeType = NodeType.form_grid_row;
+    childNodes?: NodeElement[];
+}
+export class FormGridCol {
+    readonly nodeType = NodeType.form_grid_col;
+    childNodes?: NodeElement[];
+}
+export class FormInput {
+    readonly nodeType = NodeType.form_input;
+    propertyName: string;
+}
+export class FormAutocomplete {
+    readonly nodeType = NodeType.form_autocomplete;
+    entityName: string;
+    copiedProperties?: string[];
+}
+export class FormTabs {
+    readonly nodeType = NodeType.form_tabs;
+    tableName: string;
+    tabNameFormPath: string;
+    childNodes?: NodeElement[];
+}
+export class FormTable {
+    readonly nodeType = NodeType.form_table;
+    tableName: string;
+    childNodes?: NodeElement[];
+}
+export class FormDatepicker {
+    readonly nodeType = NodeType.form_datepicker;
+    propertyName: string;
+}
+export class FormTimepicker {
+    readonly nodeType = NodeType.form_timepicker;
+    propertyName: string;
+}
+
+export class Form extends BaseObj {
+    readonly type_ = 'Form_';
+    childNodes?: NodeElement[];
+}
+
+export type NodeElement =
+| FormGrid
+| FormGridRow
+| FormGridCol
+| FormInput
+| FormAutocomplete
+| FormTabs
+| FormTable
+| FormDatepicker
+| FormTimepicker
+;

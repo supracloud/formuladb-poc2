@@ -10,9 +10,9 @@ import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: '[form-item]',
-  templateUrl: 'form-item.component.html',
+  templateUrl: 'form_item.component.html',
   host: { '[class]': 'getHostClassForElement()' },
-  styleUrls: ['form-item.component.scss']
+  styleUrls: ['form_item.component.scss']
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
@@ -38,6 +38,6 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
   getHostClassForElement(): string {
     if (null == this.nodeElement) return '';
     if (null == this.nodeElement.nodeName) return '';
-    return this.nodeElement.nodeName == 'form-grid' ? 'container' : this.nodeElement.nodeName.replace(/^form-grid-/, '');
+    return this.nodeElement.nodeName == 'form_grid' ? 'container' : this.nodeElement.nodeName.replace(/^form-grid-/, '');
   }
 }

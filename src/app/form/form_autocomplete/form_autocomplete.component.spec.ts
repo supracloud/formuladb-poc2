@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormTimepickerComponent } from './form-timepicker.component';
+import { FormAutocompleteComponent } from './form_autocomplete.component';
 
-describe('FormTimepickerComponent', () => {
-  let component: FormTimepickerComponent;
-  let fixture: ComponentFixture<FormTimepickerComponent>;
+describe('FormAutocompleteComponent', () => {
+  let component: FormAutocompleteComponent;
+  let fixture: ComponentFixture<FormAutocompleteComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormTimepickerComponent ]
+      declarations: [ FormAutocompleteComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormTimepickerComponent);
+    fixture = TestBed.createComponent(FormAutocompleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

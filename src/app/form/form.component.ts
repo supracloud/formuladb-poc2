@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
 import { FormModalService } from '../form-modal.service';
 import { Entity, EntityProperty } from '../domain/metadata/entity';
 import { DataObj } from '../domain/metadata/data_obj';
-import { Form, NodeElement } from '../domain/uimetadata/form';
+import { Form, NodeElement, NodeType } from '../domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
@@ -69,7 +69,7 @@ export class FormComponent implements OnInit {
             this.theFormGroup.setControl('type_', new FormControl({ value: (formState.formData || { type_: null }).type_, disabled: true }));
 
 
-            if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form, formState.formReadOnly);
+            if (formState.form) this.updateFormGroup(this.theFormGroup, formState.form.childNodes, formState.formReadOnly);
             if (formState.formData) this.updateFormGroupWithData(formState.formData, this.theFormGroup, formState.formReadOnly);
 
             if (formState.formReadOnly && !this.theFormGroup.disabled) {
@@ -113,24 +113,29 @@ export class FormComponent implements OnInit {
         else this.alertType = 'warning';
     }
 
-    private updateFormGroup(parentFormGroup: FormGroup, formEl: NodeElement, formReadOnly: boolean) {
+    private updateFormGroup(parentFormGroup: FormGroup, nodeElements: NodeElement[], formReadOnly: boolean) {
         let newParent = parentFormGroup;
-        if (null != formEl.tableName) {
-            newParent = new FormGroup({});
-            parentFormGroup.setControl(formEl.tableName, new FormArray([newParent]));
-        } else if (null != formEl.entityName) {
-            newParent = new FormGroup({});
-            parentFormGroup.setControl(formEl.entityName, newParent);
-        } else if (null != formEl.propertyName) {
-            if (formEl.propertyName === '_id') return;
-            if (formEl.propertyName === '_rev') return;
-            if (formEl.propertyName === 'type_') return;
-            parentFormGroup.setControl(formEl.propertyName, new FormControl({ value: undefined, disabled: formReadOnly }));
-        }
+        nodeElements.forEach(nodeEl => {
+            let childNodes: NodeElement[] = [];
 
-        if (null != formEl.childNodes) {
-            formEl.childNodes.forEach(child => this.updateFormGroup(newParent, child, formReadOnly));
-        }
+            if (nodeEl.nodeType == NodeType.form_grid || nodeEl.nodeType == NodeType.form_grid_row || nodeEl.nodeType == NodeType.form_grid_col) {
+                childNodes = nodeEl.childNodes;
+            } else if (nodeEl.nodeType == NodeType.form_input || nodeEl.nodeType == NodeType.form_datepicker || nodeEl.nodeType == NodeType.form_timepicker) {
+                if (nodeEl.propertyName === '_id') return;
+                if (nodeEl.propertyName === '_rev') return;
+                if (nodeEl.propertyName === 'type_') return;
+                parentFormGroup.setControl(nodeEl.propertyName, new FormControl({ value: undefined, disabled: formReadOnly }));
+            } else if (nodeEl.nodeType == NodeType.form_autocomplete) {
+                newParent = new FormGroup({});
+                parentFormGroup.setControl(nodeEl.entityName, newParent);
+            } else if (nodeEl.nodeType == NodeType.form_tabs || nodeEl.nodeType == NodeType.form_table) {
+                newParent = new FormGroup({});
+                parentFormGroup.setControl(nodeEl.tableName, new FormArray([newParent]));
+                childNodes = nodeEl.childNodes;   
+            }
+                    
+            this.updateFormGroup(newParent, childNodes, formReadOnly);
+        });
     }
 
     private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, formReadOnly: boolean) {

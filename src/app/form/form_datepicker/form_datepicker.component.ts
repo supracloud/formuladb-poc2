@@ -4,9 +4,9 @@ import { BaseNodeComponent } from "./../base_node";
 
 @Component({
   selector: '[form-datepicker]',
-  host: { class: "col form-group" },
-  templateUrl:'form-datepicker.component.html',
-  styleUrls:['./../form-input/form-input.component.scss']
+  host: { class: "col form_group" },
+  templateUrl:'form_datepicker.component.html',
+  styleUrls:['./../form_input/form_input.component.scss']
 })
 export class FormDatepickerComponent extends BaseNodeComponent {
 }

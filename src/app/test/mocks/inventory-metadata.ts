@@ -15,7 +15,7 @@ export const Inventory__Receipt: Entity = {
                 product: {
                     type: PropertyTypeN.REFERENCE_ENTITY,
                     entity: {
-                        deepPath: "/Inventory/Product/location",
+                        deepPath: "/Inventory/Product/locations",
                         copiedProperties: [
                             "code",
                             "name",
@@ -45,7 +45,7 @@ export const Inventory__Order: Entity = {
                 product: {
                     type: PropertyTypeN.REFERENCE_ENTITY,
                     entity: {
-                        deepPath: "/Inventory/Product/locations/",
+                        deepPath: "/Inventory/Product/locations",
                         copiedProperties: [
                             "code",
                             "name",
@@ -102,7 +102,7 @@ export const Inventory__Product: Entity = {
                 received_stock: {
                     type: PropertyTypeN.FORMULA,
                     formula: {
-                        SUM: [{ EXPRESSION: "receiptItems.received_quantity"}]
+                        SUM: [{ EXPRESSION: "itemsInReceipt.received_quantity"}]
                     }
                 },
                 available_stock: {
@@ -114,7 +114,7 @@ export const Inventory__Product: Entity = {
                 reserved_stock: {
                     type: PropertyTypeN.FORMULA,
                     formula: {
-                        SUM: [{ EXPRESSION: "orderItems.reserved_quantity" }]
+                        SUM: [{ EXPRESSION: "itemsInOrder.reserved_quantity" }]
                     }
                 },
                 delivered_stock: { type: PropertyTypeN.NUMBER },

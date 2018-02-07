@@ -1,57 +1,130 @@
 import * as metadata from './mock-metadata';
 import {Entity} from '../../domain/metadata/entity'
-import {Form} from '../../domain/uimetadata/form'
+import {Form, NodeType} from '../../domain/uimetadata/form'
+import { Forms__ServiceForm } from "./forms-metadata";
 
-export const Forms__ServiceForm = `
-form-grid-row
-  form-input=code
-  form-datepicker=time_of_arrival
-  form-datepicker=time_of_departure
-  form-input=state
-form-grid-row
-  form-autocomplete.client: "copiedProperties": ["code", "username"]
-  form-input=technician_code
-  form-input=client_person
-form-grid-row
-  form-input=nb_installments
-  form-input=technician2_code
-form-grid-row
-  form-input=notes
-form-grid-row
-  form-input=accommodation
-form-grid-row
-  form-tabs#service_form_units: "tabNameFormPath": "equipment.code"
-    form-grid
-      form-grid-row
-        form-input=equipment_group
-        form-autocomplete.equipment
-      form-grid-row
-        form-input=washing_cycles
-        form-input=nb_piston_cycles
-      form-grid-row
-        form-input=reported_problem
-      form-grid-row
-        form-input=found_problem
-      form-grid-row
-        form-input=work_description
-      form-grid-row
-        form-table#product_list
-          form-autocomplete.product: "copiedProperties": ["code", "name", "location", "price"]
-          form-input=requested_quantity
-          form-input=client_stock
-form-grid-row
-  form-timepicker=time_of_arrival
-  form-timepicker=time_of_departure
-  form-input=normal_hours
-  form-input=warranty_hours
-  form-input=night_hours
-  form-input=shipment_cost
-form-grid-row
-  form-input=type_
-  form-input=_id
-`;
-
-export const serializedForms = [
-    {entity: metadata.Forms__ServiceForm, formText: Forms__ServiceForm},
-];
-
+export var Forms__ServiceForm_Form_: Form = {
+  _id: 'Form_:' + Forms__ServiceForm._id,
+  type_: 'Form_',
+  childNodes: [
+    {
+      nodeType: NodeType.form_grid,
+      childNodes: [
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_input, propertyName: "code"},
+            {nodeType: NodeType.form_input, propertyName: "time_of_arrival"},
+            {nodeType: NodeType.form_input, propertyName: "time_of_departure"},
+            {nodeType: NodeType.form_input, propertyName: "state"},
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_autocomplete, entityName: "client", copiedProperties: ["code", "username"]},
+            {nodeType: NodeType.form_input, propertyName: "technician_code"},
+            {nodeType: NodeType.form_input, propertyName: "client_person"},
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_input, propertyName: "nb_installments"},
+            {nodeType: NodeType.form_input, propertyName: "technician2_code"},
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_input, propertyName: "notes"},
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_input, propertyName: "accommodation"},
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {
+              nodeType: NodeType.form_tabs, tableName: "service_form_units", tabNameFormPath: "equipment.code",
+              childNodes: [
+                {
+                  nodeType: NodeType.form_grid,
+                  childNodes: [
+                    {
+                      nodeType: NodeType.form_grid_row,
+                      childNodes: [
+                        {nodeType: NodeType.form_input, propertyName: "equipment_group"},
+                        {nodeType: NodeType.form_autocomplete, entityName: "equipment"},
+                      ]
+                    },
+                    {
+                      nodeType: NodeType.form_grid_row,
+                      childNodes: [
+                        {nodeType: NodeType.form_input, propertyName: "washing_cycles"},
+                        {nodeType: NodeType.form_input, propertyName: "nb_piston_cycles"},
+                      ]
+                    },
+                    {
+                      nodeType: NodeType.form_grid_row,
+                      childNodes: [
+                        {nodeType: NodeType.form_input, propertyName: "reported_problem"},
+                      ]
+                    },
+                    {
+                      nodeType: NodeType.form_grid_row,
+                      childNodes: [
+                        {nodeType: NodeType.form_input, propertyName: "found_problem"},
+                      ]
+                    },
+                    {
+                      nodeType: NodeType.form_grid_row,
+                      childNodes: [
+                        {nodeType: NodeType.form_input, propertyName: "work_description"},
+                      ]
+                    },
+                    {
+                      nodeType: NodeType.form_grid_row,
+                      childNodes: [
+                        {
+                          nodeType: NodeType.form_table, tableName: "product_list",
+                          childNodes: [
+                            {nodeType: NodeType.form_autocomplete, entityName: "product", copiedProperties: ["code", "name", "location", "price"]},
+                            {nodeType: NodeType.form_input, propertyName: "requested_quantity"},
+                            {nodeType: NodeType.form_input, propertyName: "client_stock"},
+                          ]
+                        },
+                      ]
+                    },
+                  ]
+                }
+              ]
+            },
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_timepicker, propertyName: "time_of_arrival"},
+            {nodeType: NodeType.form_timepicker, propertyName: "time_of_departure"},
+            {nodeType: NodeType.form_input, propertyName: "normal_hours"},
+            {nodeType: NodeType.form_input, propertyName: "warranty_hours"},
+            {nodeType: NodeType.form_input, propertyName: "night_hours"},
+            {nodeType: NodeType.form_input, propertyName: "shipment_cost"},
+          ]
+        },
+        {
+          nodeType: NodeType.form_grid_row,
+          childNodes: [
+            {nodeType: NodeType.form_input, propertyName: "type_"},
+            {nodeType: NodeType.form_input, propertyName: "_id"},
+          ]
+        },
+      ]
+    }
+  ]
+};

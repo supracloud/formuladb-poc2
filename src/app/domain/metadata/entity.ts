@@ -2,13 +2,16 @@ import { BaseObj } from '../base_obj';
 import { Formula } from "./formula";
 import { ExecutionPlan } from "./execution_plan";
 
+export class EntityProperties {
+    [x: string]: EntityProperty
+}
 /**
  * the _id of the Entity is the path, e.g. Forms__ServiceForm
  */
 export class Entity extends BaseObj {
     type_ = 'Entity_';
     module?: boolean;
-    properties: {[x: string]: EntityProperty};
+    properties: EntityProperties;
 }
 
 export const enum PropertyTypeN { 
@@ -53,7 +56,7 @@ export class TableProperty {
     //name: string;
     entity?: ReferencedEntity;
     isLargeTable?: boolean;
-    properties?: {[x: string]: EntityProperty};
+    properties?: EntityProperties;
 }
 /**
  * This property represents an embedded entity that is created when the parent entity is created
@@ -66,7 +69,6 @@ export class ReferenceEntityProperty {
      * The possible autocomplete fields are set copiedProperties
      */
     entity?: ReferencedEntity;
-    properties?: {[x: string]: EntityProperty}; 
 }
 /**
  * This property represents an embedded entity that is created when the parent entity is created
@@ -78,7 +80,7 @@ export class ExtendEntityProperty {
      * a new Entity instance is not created with the parent Entity
      */
     entity?: ReferencedEntity;
-    properties?: {[x: string]: EntityProperty};
+    properties?: EntityProperties;
 }
 
 export class ReferencedEntity {

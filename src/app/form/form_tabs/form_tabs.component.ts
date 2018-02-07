@@ -6,8 +6,8 @@ import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/for
 @Component({
   selector: '[form-tabs]',
   host: { class: "col" },
-  templateUrl:'form-tabs.component.html',
-  styleUrls:['form-tabs.component.scss']
+  templateUrl:'form_tabs.component.html',
+  styleUrls:['form_tabs.component.scss']
 })
 export class FormTabsComponent extends BaseNodeComponent implements OnChanges {
   private tabNames: string[] = [];

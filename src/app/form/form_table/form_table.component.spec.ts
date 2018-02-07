@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormDatepickerComponent } from './form-datepicker.component';
+import { FormTableComponent } from './form_table.component';
 
-describe('FormDatepickerComponent', () => {
-  let component: FormDatepickerComponent;
-  let fixture: ComponentFixture<FormDatepickerComponent>;
+describe('FormTableComponent', () => {
+  let component: FormTableComponent;
+  let fixture: ComponentFixture<FormTableComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormDatepickerComponent ]
+      declarations: [ FormTableComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormDatepickerComponent);
+    fixture = TestBed.createComponent(FormTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

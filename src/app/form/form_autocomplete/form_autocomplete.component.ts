@@ -11,8 +11,8 @@ import { BaseNodeComponent } from "./../base_node";
 @Component({
     selector: '[form-autocomplete]',
     host: { class: 'col', style: "padding-left: 25px" },
-    templateUrl: 'form-autocomplete.component.html',
-    styleUrls: ['./../form-input/form-input.component.scss', 'form-autocomplete.component.scss']
+    templateUrl: 'form_autocomplete.component.html',
+    styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']
 })
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit {
     constructor() {

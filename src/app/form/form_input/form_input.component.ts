@@ -8,9 +8,9 @@ import { BaseNodeComponent } from "./../base_node";
 
 @Component({
     selector: '[form-input]',
-    host: { class: "col form-group" },
-    templateUrl:'form-input.component.html' ,
-    styleUrls:['form-input.component.scss']
+    host: { class: "col form_group" },
+    templateUrl:'form_input.component.html' ,
+    styleUrls:['form_input.component.scss']
 })
 export class FormInputComponent extends BaseNodeComponent {
 

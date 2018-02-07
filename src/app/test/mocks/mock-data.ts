@@ -3,6 +3,7 @@ import * as metadata from './mock-metadata';
 import { Entity, EntityProperty, PropertyTypeN } from '../../domain/metadata/entity'
 import { getEntityIdFromDeepPath } from "../../domain.utils";
 import { DataObj } from "../../domain/metadata/data_obj";
+import { getEntityPropertiesWithNames, EntityPropertiesWithNames } from "../../domain.utils";
 
 const nouns: string[] = ["Lama", "Basket", "Freckle", "Taco", "Suspect", "Ball", "Moustache", "Semantic", "Charlie", "Bouquet"];
 const adjectives: string[] = ["Chic", "Cracked", "Tender", "Tourquoise", "Vengeful", "Cranberry", "Shy", "Liquid", "Whining"]
@@ -55,14 +56,14 @@ export class MockData {
       this.mockDB.set(entity._id, db);
       let ret = { type_: entity._id, _id: `${entity._id}:123400${entityIdx}` };
 
-      this.mockObject(entity._id, entity.properties, ret);
+      this.mockObject(entity._id, getEntityPropertiesWithNames(entity.properties), ret);
 
       db.set(ret._id, ret);
       this.allData.push(ret);
       return ret;
   }
 
-  mockObject(path: string, properties: EntityProperty[], ret: {}): {} {
+  mockObject(path: string, properties: EntityPropertiesWithNames, ret: {}): {} {
     properties.forEach((p, index) => {
       if (p.name == "_id") {
         //already set above
@@ -70,27 +71,27 @@ export class MockData {
         //do nothing
       } else if (p.name == "type_") {
         //do nothing
-      } else if (p.type == PropertyTypeN.NUMBER) {
+      } else if (p.prop.type == PropertyTypeN.NUMBER) {
         ret[p.name] = Math.random() * 100;
-      } else if (p.type == PropertyTypeN.STRING) {
+      } else if (p.prop.type == PropertyTypeN.STRING) {
         ret[p.name] = p.name + Math.ceil(Math.random() * 100000);
-      } else if (p.type == PropertyTypeN.TEXT) {
+      } else if (p.prop.type == PropertyTypeN.TEXT) {
         ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
-      } else if (p.type == PropertyTypeN.DATETIME) {
+      } else if (p.prop.type == PropertyTypeN.DATETIME) {
         ret[p.name] = new Date();
-      } else if (p.type == PropertyTypeN.REFERENCE_ENTITY) {
+      } else if (p.prop.type == PropertyTypeN.REFERENCE_ENTITY) {
         let refIdx = Math.round(Math.random() * 4);
-        let refPath = p.entity.deepPath;
-        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.entity.copiedProperties || []).concat(['_id', 'type_']));
-      } else if (p.type == PropertyTypeN.TABLE) {
-        if (p.entity != null) {
-          let ref = this.entitiesMap.get(getEntityIdFromDeepPath(p.entity.deepPath));
-          console.log("p.entity.deepPath=" + p.entity.deepPath + "|" + getEntityIdFromDeepPath(p.entity.deepPath));
+        let refPath = p.prop.entity.deepPath;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.prop.entity.copiedProperties || []).concat(['_id', 'type_']));
+      } else if (p.prop.type == PropertyTypeN.TABLE) {
+        if (p.prop.entity != null) {
+          let ref = this.entitiesMap.get(getEntityIdFromDeepPath(p.prop.entity.deepPath));
+          console.log("p.prop.entity.deepPath=" + p.prop.entity.deepPath + "|" + getEntityIdFromDeepPath(p.prop.entity.deepPath));
           ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
         } else {
           let table = [];
           for (var i = 0; i < 5; i++) {
-            table.push(this.mockObject(path, p.properties, {}));
+            table.push(this.mockObject(path, getEntityPropertiesWithNames(p.prop.properties), {}));
           }
           ret[p.name] = table;
         }

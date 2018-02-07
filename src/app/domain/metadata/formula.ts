@@ -1,4 +1,3 @@
-
 export class Formula {
     EXPRESSION?: SimpleExpression;
     CURRENT_VALUE_OF?: SimpleExpression;

@@ -32,7 +32,7 @@ export class BackendService {
     private notifCallback: (event: MwzEvents) => void;
     private dataChangeCallback: (docs: Array<BaseObj>) => void;
 
-    private readonly usePouchDBReplication: boolean = false;
+    private readonly usePouchDBReplication: boolean = true;
 
     constructor(private http: HttpClient) {
         this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));

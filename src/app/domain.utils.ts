@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { Entity, EntityProperty, PropertyTypeN } from "./domain/metadata/entity";
+import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from "./domain/metadata/entity";
 import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeType, NodeType2Str } from "./domain/uimetadata/form";
 import { generateUUID } from "./domain/uuid";
@@ -14,10 +14,15 @@ export function getEntityIdFromDeepPath(path: string) {
     }
 }
 
+export type EntityPropertiesWithNames = {name: string, prop: EntityProperty}[];
+export function getEntityPropertiesWithNames(entityProperties: EntityProperties): EntityPropertiesWithNames {
+    return _.toPairs(entityProperties).map(([propName, p]) => {return {name: propName, prop: p}});
+}
+
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = {
         nodeType: NodeType.FormGrid,
-        nodeName: 'form-grid',
+        nodeName: 'form_grid',
         type_: "Form_",
         _id: 'Form_:' + entity._id
     } as Form;
@@ -46,7 +51,7 @@ export function setFormElementChildren(parentFormEl: NodeElement, entity: Entity
 
         return {
             nodeType: NodeType.FormGridRow,
-            nodeName: 'form-grid-row',
+            nodeName: 'form_grid_row',
             childNodes: [child]
         };
     });
