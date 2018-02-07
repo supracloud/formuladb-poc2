@@ -33,7 +33,7 @@ export class FormTreeObject implements TreeObject<form.NodeElement>{
                 case form.NodeType.form_autocomplete:
                     s.push('.', node.entityName);
                     s.push(": ");
-                    s.push(JSON.stringify(node.copiedProperties).replace(/^\{/, '').replace(/\}$/, ''));
+                    s.push(JSON.stringify(node.copiedProperties||'').replace(/^\{/, '').replace(/\}$/, ''));
                     break;
                 case form.NodeType.form_grid:
                 case form.NodeType.form_grid_row:
@@ -49,7 +49,7 @@ export class FormTreeObject implements TreeObject<form.NodeElement>{
                     availableTypes = [form.NodeType.form_tab];
                     s.push('#', node.tableName);
                     s.push(": ");
-                    s.push(JSON.stringify(node.tabNameFormPath).replace(/^\{/, '').replace(/\}$/, ''));
+                    s.push(JSON.stringify(node.tabNameFormPath||'').replace(/^\{/, '').replace(/\}$/, ''));
                     break;
             }
             this.name = s.join('');
@@ -71,7 +71,7 @@ export class FormTreeObject implements TreeObject<form.NodeElement>{
             },
             {
                 type: "text",
-                property: "nodeName"
+                property: "nodeType"
             }
             ]
         }

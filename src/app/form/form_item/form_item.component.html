@@ -1,28 +1,28 @@
-<ng-container *ngIf="nodeElement.nodeName == 'form_grid' || nodeElement.nodeName == 'form_grid_row' || nodeElement.nodeName == 'form_grid_col'">
+<ng-container *ngIf="nodeElement.nodeType == 'form_grid' || nodeElement.nodeType == 'form_grid_row' || nodeElement.nodeType == 'form_grid_col'">
   <ng-container *ngFor="let childEl of nodeElement.childNodes">
-    <div form_tabs [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_tabs'" [nodeElement]="childEl"
+    <div form_tabs [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_tabs'" [nodeElement]="childEl"
       [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly" [highlighted]="highlighted"></div>
 
-    <div form_table [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_table'" [nodeElement]="childEl"
+    <div form_table [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_table'" [nodeElement]="childEl"
       [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
 
-    <div form_autocomplete [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_autocomplete'"
+    <div form_autocomplete [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_autocomplete'"
       [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
 
-    <div form_input [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_input'" [nodeElement]="childEl"
+    <div form_input [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_input'" [nodeElement]="childEl"
       [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
-    <div form_datepicker [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_datepicker'"
+    <div form_datepicker [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_datepicker'"
       [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
-    <div form_timepicker [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_timepicker'"
+    <div form_timepicker [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_timepicker'"
       [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
 
-    <div form_item [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeName == 'form_grid' || childEl.nodeName == 'form_grid_row' || childEl.nodeName == 'form_grid_col'"
+    <div form_item [class.form-item-highlight]="highlighted===childEl._id" *ngIf="childEl.nodeType == 'form_grid' || childEl.nodeType == 'form_grid_row' || childEl.nodeType == 'form_grid_col'"
       [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath" [formReadOnly]="formReadOnly"
       [highlighted]="highlighted"></div>
 
-    <div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeName}}' !</div>
+    <div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeType}}' !</div>
 
   </ng-container>
 </ng-container>
 
-<div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Element NOT KNOWN '{{nodeElement.nodeName}}' !</div>
+<div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Element NOT KNOWN '{{nodeElement.nodeType}}' !</div>

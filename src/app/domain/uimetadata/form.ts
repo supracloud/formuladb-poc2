@@ -10,8 +10,8 @@ export class NodeElementAttributes {
 
 export enum NodeType { 
     form_grid              = "form_grid"        ,
-    form_grid_row          = "form_grid-row"    ,
-    form_grid_col          = "form_grid-col"    ,
+    form_grid_row          = "form_grid_row"    ,
+    form_grid_col          = "form_grid_col"    ,
     form_input             = "form_input"       ,
     form_autocomplete      = "form_autocomplete",
     form_tabs              = "form_tabs"        ,
