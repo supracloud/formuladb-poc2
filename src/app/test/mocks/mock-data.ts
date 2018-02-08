@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
-import { Entity, EntityProperty, PropertyTypeN } from '../../domain/metadata/entity'
+import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from '../../domain/metadata/entity'
 import { getEntityIdFromDeepPath } from "../../domain.utils";
 import { DataObj } from "../../domain/metadata/data_obj";
 import { getEntityPropertiesWithNames, EntityPropertiesWithNames } from "../../domain.utils";
@@ -33,7 +33,11 @@ export class MockData {
   private getRandomId(): number {
     return Math.trunc(Math.random() * 10000);
   }
-  
+
+  mockSubEntities(deepPath, entityProperties: EntityProperties, entitiesIndexes: number[]) {
+    return entitiesIndexes.map(i => this.mockEntity(entity, i));
+  }
+
   mockEntities(entity: Entity, entitiesIndexes: number[]) {
     return entitiesIndexes.map(i => this.mockEntity(entity, i));
   }
@@ -79,6 +83,10 @@ export class MockData {
         ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
       } else if (p.prop.type == PropertyTypeN.DATETIME) {
         ret[p.name] = new Date();
+      } else if (p.prop.type == PropertyTypeN.EXTEND_ENTITY) {
+        let refIdx = Math.round(Math.random() * 4);
+        let refPath = p.prop.entity.deepPath;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.prop.entity.copiedProperties || []).concat(['_id', 'type_']));
       } else if (p.prop.type == PropertyTypeN.REFERENCE_ENTITY) {
         let refIdx = Math.round(Math.random() * 4);
         let refPath = p.prop.entity.deepPath;

@@ -11,11 +11,18 @@ import { Form } from "../../src/app/domain/uimetadata/form";
 import { Table } from "../../src/app/domain/uimetadata/table";
 import { MwzEvents } from "../../src/app/domain/event";
 
-import { KeyValueStore } from "../../src/app/keyValueStore";
+import { KeyValueStore } from "../../src/app/key_value_store";
+import { FrmdbStoreI } from "../../src/app/frmdb_store_i";
 
-export class StoreViewAtTransaction {
+export type TransactionalCallback = (event: MwzEvents, store: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
+
+export class StoreIsolatedAtTransaction implements FrmdbStoreI {
     constructor(private event: MwzEvents, private transactionsDB: KeyValueStore, private historyDB: KeyValueStore) { }
 
+    /**
+     * UI Actions are Events, Events get sent to the Backend and become Transactions, the same domain model object is both Action/Event/Transaction
+     * @param event 
+     */
     public setTransaction(event: MwzEvents): Promise<MwzEvents> {
         return this.transactionsDB.put(event);
     }
@@ -51,7 +58,6 @@ export class StoreViewAtTransaction {
     }
 }
 
-export type TransactionalCallback = (event: MwzEvents, storage: StoreViewAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
 
 /**
  * The storage for the Formula Engine is a king of JSON version control system built on top of a Key Value Store
@@ -77,7 +83,7 @@ export class TransactionalStore {
                     .then(ev => {
                         event.readObjs_ = [];
                         event.updatedIds_ = [];
-                        return callback(ev, new StoreViewAtTransaction(ev, this.transactionsDB, this.historyDB), new Map<string, BaseObj>());
+                        return callback(ev, new StoreIsolatedAtTransaction(ev, this.transactionsDB, this.historyDB), new Map<string, BaseObj>());
                     });
         
             } catch (ex) {

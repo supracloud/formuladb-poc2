@@ -19,10 +19,11 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { addIdsToForm, addIdsToTable } from "./domain.utils";
-import { KeyValueStore } from "./keyValueStore";
+import { KeyValueStore } from "./key_value_store";
+import { FrmdbStoreI } from "./frmdb_store_i";
 
 @Injectable()
-export class BackendService {
+export class BackendService implements FrmdbStoreI {
     private transactionsDB: KeyValueStore;
     private dataDB: KeyValueStore;
     private localPouchDB: any;
@@ -168,5 +169,15 @@ export class BackendService {
 
     public getDataObj(id: string): Promise<DataObj> {
         return this.dataDB.get(id);
+    }
+
+    getObj<T extends BaseObj>(id: string): Promise<T> {
+        throw new Error("Method not implemented on the FE.");
+    }
+    setObj<T extends BaseObj>(obj: T): Promise<T> {
+        throw new Error("Method not implemented on the FE.");
+    }
+    forPutForTestingPurposes<T extends BaseObj>(obj: any): Promise<T> {
+        throw new Error("Method not implemented on the FE.");
     }
 }

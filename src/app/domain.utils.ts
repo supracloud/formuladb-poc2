@@ -19,6 +19,12 @@ export function getEntityPropertiesWithNames(entityProperties: EntityProperties)
     return _.toPairs(entityProperties).map(([propName, p]) => {return {name: propName, prop: p}});
 }
 
+export function extendEntity(extendedEntityProperties: EntityProperties, newProperties: EntityProperties) {
+    _.toPairs(extendedEntityProperties).forEach(([propName, p]) => {
+        newProperties[propName] = p;
+    });
+}
+
 export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
     let form = new Form();
     form._id = 'Form_:' + entity._id

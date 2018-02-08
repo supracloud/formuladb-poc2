@@ -18,7 +18,7 @@ export class FormTabsComponent extends BaseNodeComponent implements OnChanges {
   }
 
   ngOnChanges() {
-    if (this.nodeElement.nodeType === NodeType.form_tabs) throw new Error("form_tabs component does not work with nodeElement " + this.nodeElement);
+    if (this.nodeElement.nodeType !== NodeType.form_tabs) throw new Error("form_tabs component does not work with nodeElement " + this.nodeElement);
 
     let formArray = this.topLevelFormGroup.get(this.parentFormPath) as FormArray;
     if (!formArray) return;

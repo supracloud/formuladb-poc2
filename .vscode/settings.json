@@ -4,7 +4,9 @@
     "plantuml.exportSubFolder": true,
 
     "cSpell.words": [
+        "Backend",
         "DATETIME",
+        "Frmdb",
         "Notifs",
         "SUBENTITY"
     ],

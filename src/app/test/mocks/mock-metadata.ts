@@ -24,7 +24,10 @@ export class MockMetadata {
     this.entities.forEach(meta => {
       this.entitiesMap.set(meta._id, meta);
     });
+  }
 
+  private applyInheritance() {
+    
   }
 
   public entities: Entity[] = [
