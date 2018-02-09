@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
 import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from '../../domain/metadata/entity'
-import { getEntityIdFromDeepPath } from "../../domain.utils";
+import { getEntityIdFromDeepPath, queryObjectWithDeepPath } from "../../domain.utils";
 import { DataObj } from "../../domain/metadata/data_obj";
 import { getEntityPropertiesWithNames, EntityPropertiesWithNames } from "../../domain.utils";
 
@@ -34,22 +34,19 @@ export class MockData {
     return Math.trunc(Math.random() * 10000);
   }
 
-  mockSubEntities(deepPath, entityProperties: EntityProperties, entitiesIndexes: number[]) {
-    return entitiesIndexes.map(i => this.mockEntity(entity, i));
-  }
-
   mockEntities(entity: Entity, entitiesIndexes: number[]) {
     return entitiesIndexes.map(i => this.mockEntity(entity, i));
   }
 
-  getRefDataObj(path: string, refPath: string, refIdx: number): DataObj {
-    let db: Map<string, DataObj> = this.mockDB.get(getEntityIdFromDeepPath(refPath));
-    console.log(db);
-    if (null == db) throw new Error("Dependent entity " + refPath + " not mocked yet for " + path);
+  getRefDataObj(path: string, refDeepPath: string, refIdx: number): any {
+    let db: Map<string, DataObj> = this.mockDB.get(getEntityIdFromDeepPath(refDeepPath));
+    if (null == db) throw new Error("Dependent entity " + refDeepPath + " not mocked yet for " + path);
     let values = Array.from(db.values());
-    if (values.length <= refIdx) throw new Error("Dependent entity " + refPath + " for " + path + " has fewer values " + values.length + " than expected " + refIdx);
-    return values[refIdx];
-  }
+    if (values.length <= refIdx) throw new Error("Dependent entity " + refDeepPath + " for " + path + " has fewer values " + values.length + " than expected " + refIdx);
+    let refObj = values[refIdx];
+    let ret = queryObjectWithDeepPath(refObj, refDeepPath);
+    return (ret instanceof Array) ? ret[0] : ret;
+}
 
   mockEntity(entity: Entity, entityIdx: number): DataObj {
       let db: Map<string, DataObj> = this.mockDB.get(entity._id);
@@ -85,12 +82,12 @@ export class MockData {
         ret[p.name] = new Date();
       } else if (p.prop.type == PropertyTypeN.EXTEND_ENTITY) {
         let refIdx = Math.round(Math.random() * 4);
-        let refPath = p.prop.entity.deepPath;
-        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.prop.entity.copiedProperties || []).concat(['_id', 'type_']));
+        let refDeepPath = p.prop.entity.deepPath;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refDeepPath, refIdx), (p.prop.entity.copiedProperties || []).concat(['_id', 'type_']));
       } else if (p.prop.type == PropertyTypeN.REFERENCE_ENTITY) {
         let refIdx = Math.round(Math.random() * 4);
-        let refPath = p.prop.entity.deepPath;
-        ret[p.name] = _.pick(this.getRefDataObj(path, refPath, refIdx), (p.prop.entity.copiedProperties || []).concat(['_id', 'type_']));
+        let refDeepPath = p.prop.entity.deepPath;
+        ret[p.name] = _.pick(this.getRefDataObj(path, refDeepPath, refIdx), (p.prop.entity.copiedProperties || []).concat(['_id', 'type_']));
       } else if (p.prop.type == PropertyTypeN.TABLE) {
         if (p.prop.entity != null) {
           let ref = this.entitiesMap.get(getEntityIdFromDeepPath(p.prop.entity.deepPath));

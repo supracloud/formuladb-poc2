@@ -111,7 +111,9 @@ export const reducers = {
 let getEntityState = createFeatureSelector<EntityState>('entity');
 export const getEntitiesState = createSelector(
     getEntityState,
-    (state: EntityState) => state.entities
+    (state: EntityState) => {
+        return state.entities;
+    }
 );
 export const getSelectedEntityState = createSelector(
     getEntityState,

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormTabsComponent } from './form_tabs.component';
 
-describe('FormTabsComponent', () => {
+xdescribe('FormTabsComponent', () => {
   let component: FormTabsComponent;
   let fixture: ComponentFixture<FormTabsComponent>;
 

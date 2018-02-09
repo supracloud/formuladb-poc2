@@ -1,7 +1,7 @@
 import { cold, hot, getTestScheduler } from 'jasmine-marbles';
 import 'rxjs/add/operator/zip';
 
-fdescribe('Formula Engine PoC', () => {
+xdescribe('Formula Engine PoC', () => {
     beforeEach(() => {
     });
 

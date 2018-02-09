@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormDatepickerComponent } from './form_datepicker.component';
 
-describe('FormDatepickerComponent', () => {
+xdescribe('FormDatepickerComponent', () => {
   let component: FormDatepickerComponent;
   let fixture: ComponentFixture<FormDatepickerComponent>;
 

@@ -20,7 +20,7 @@ const reducers = {
   'table': state.tableReducer
 };
 
-describe('TableComponent', () => {
+xdescribe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
   let store: Store<state.TableState>;

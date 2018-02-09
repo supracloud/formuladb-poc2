@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MetaItemEditorComponent } from './meta-item-editor.component';
 
-describe('MetaItemEditorComponent', () => {
+xdescribe('MetaItemEditorComponent', () => {
   let component: MetaItemEditorComponent;
   let fixture: ComponentFixture<MetaItemEditorComponent>;
 

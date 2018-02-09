@@ -4,6 +4,7 @@ import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from "./domai
 import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeElementWithChildren, NodeType, FormInput, FormAutocomplete, FormTable, FormTabs, FormGridRow, FormGrid, isNodeElementWithChildren } from "./domain/uimetadata/form";
 import { generateUUID } from "./domain/uuid";
+import { BaseObj } from './domain/base_obj';
 
 export function getEntityIdFromDeepPath(path: string) {
     let match = path.match(/^\/(\w+\/\w+)\/?.*/);
@@ -14,12 +15,37 @@ export function getEntityIdFromDeepPath(path: string) {
     }
 }
 
-export type EntityPropertiesWithNames = {name: string, prop: EntityProperty}[];
-export function getEntityPropertiesWithNames(entityProperties: EntityProperties): EntityPropertiesWithNames {
-    return _.toPairs(entityProperties).map(([propName, p]) => {return {name: propName, prop: p}});
+export function queryObjectWithDeepPath(obj: any, deepPath: string): any {
+    let relativePath = getRelativePathFromDeepPath(deepPath);
+    if (null != relativePath) {
+        let pathInsideObj = relativePath.replace(/\//, '.');
+        return eval(`obj.${pathInsideObj}`);
+    }
+    return obj;
 }
 
-export function extendEntity(extendedEntityProperties: EntityProperties, newProperties: EntityProperties) {
+export function queryEntityPropertiesWithDeepPath(entityProperties: EntityProperties, deepPath: string): EntityProperties {
+    let relativePath = getRelativePathFromDeepPath(deepPath);
+    if (null != relativePath) {
+        let pathInsideEntity = relativePath.replace(/\//, '.properties.');
+        return eval(`entityProperties.${pathInsideEntity}.properties`) as EntityProperties;
+    }
+    return entityProperties;
+}
+
+function getRelativePathFromDeepPath(path: string) {
+    let match = path.match(/^\/(\w+\/\w+)\/?(.*)/);
+    if (null != match && match.length >= 3 && match[2] != null && match[2] !== '') {
+        return match[2];
+    } else return null;
+}
+
+export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];
+export function getEntityPropertiesWithNames(entityProperties: EntityProperties): EntityPropertiesWithNames {
+    return _.toPairs(entityProperties).map(([propName, p]) => { return { name: propName, prop: p } });
+}
+
+export function extendEntityProperties(extendedEntityProperties: EntityProperties, newProperties: EntityProperties) {
     _.toPairs(extendedEntityProperties).forEach(([propName, p]) => {
         newProperties[propName] = p;
     });

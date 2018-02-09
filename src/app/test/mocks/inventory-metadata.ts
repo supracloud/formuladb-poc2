@@ -21,7 +21,7 @@ export const Inventory__Receipt: Entity = {
                             "name",
                             "location",
                             "price",
-                            "currency_code",
+                            "currency/code",
                         ]
                     }
                 },
@@ -47,25 +47,19 @@ export const Inventory__Order: Entity = {
                     entity: {
                         deepPath: "/Inventory/Product/locations",
                         copiedProperties: [
-                            "code",
-                            "name",
+                            "../code",
+                            "../name",
                             "location",
                             "price",
-                            "currency_code",
+                            "currency/code",
                         ]
                     }
                 },
                 requested_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
-                available_stock: { type: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product.available_stock" } },
+                available_stock: { type: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product/available_stock" } },
                 reserved_quantity: {
                     type: PropertyTypeN.FORMULA,
-                    formula: {
-                        IF: {
-                            expression: { EXPRESSION: 'available_stock > requested_quantity' },
-                            trueValue: { EXPRESSION: 'requested_quantity' },
-                            falseValue: { EXPRESSION: 'available_stock' },
-                        }
-                    }
+                    formula: { EXPRESSION: 'if(available_stock > requested_quantity, requested_quantity, available_stock)'}
                 },
                 client_stock: { type: PropertyTypeN.NUMBER },
                 units: {

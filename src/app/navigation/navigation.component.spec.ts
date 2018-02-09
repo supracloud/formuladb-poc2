@@ -8,27 +8,21 @@ import { NavigationComponent } from './navigation.component';
 import * as state from '../entity-state';
 
 import * as mainDemoFlow from '../test/main_demo.flow';
-import { MockMetadata } from '../test/mocks/mock-metadata';
 
 interface AppState {
   entity: state.EntityState;
 }
 
-const reducers = {
-  nav: state.entityReducer
-};
-
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
   let fixture: ComponentFixture<NavigationComponent>;
   let store: Store<state.EntityState>;
-  let mockMeta = new MockMetadata();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
-        StoreModule.forRoot(reducers),
+        StoreModule.forRoot(state.reducers),
       ],      
       declarations: [ NavigationComponent ],
       providers: []
@@ -49,7 +43,7 @@ describe('NavigationComponent', () => {
   it('main flow', () => {
     expect(component).toBeTruthy();
     
-    store.dispatch(new state.EntitiesFromBackendFullLoadAction(mockMeta.entities));
+    store.dispatch(new state.EntitiesFromBackendFullLoadAction(mainDemoFlow.mockMetadata.entities));
 
     let firstEntity = fixture.debugElement.query(By.css('li'));
   });

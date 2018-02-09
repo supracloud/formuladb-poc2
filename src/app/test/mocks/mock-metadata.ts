@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
@@ -5,6 +7,8 @@ import * as GeneralMetadata from "./general-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as FinancialMetadata from "./financial-metadata";
+
+import { extendEntityProperties, queryEntityPropertiesWithDeepPath, getEntityIdFromDeepPath } from "../../domain.utils";
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -27,7 +31,14 @@ export class MockMetadata {
   }
 
   private applyInheritance() {
-    
+    this.entities.forEach(entity => {
+      _.toPairs(entity.properties).forEach(([propName, prop]) => {
+        if ((prop.type === PropertyTypeN.EXTEND_ENTITY || prop.type === PropertyTypeN.TABLE) && prop.entity != null) {
+          let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.entity.deepPath));
+          extendEntityProperties(prop.properties, queryEntityPropertiesWithDeepPath(referencedEntity.properties, prop.entity.deepPath));
+        }
+      })
+    });
   }
 
   public entities: Entity[] = [

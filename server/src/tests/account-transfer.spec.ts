@@ -7,7 +7,7 @@ import 'rxjs/add/operator/find';
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
-describe('Hello function', () => {
+xdescribe('Hello function', () => {
 
   it('marbles example',  marbles((m) => {
     const values = { A: 3, a: 9, c: 15, d: 20 };

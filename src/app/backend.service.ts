@@ -3,7 +3,7 @@ import PouchFind from 'pouchdb-find';
 PouchDB.plugin(PouchFind);
 PouchDB.debug.enable('*');
 
-import { Injectable } from '@angular/core';
+import { Injectable, InjectionToken, Inject } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
@@ -20,28 +20,48 @@ import { Observable } from 'rxjs/Observable';
 
 import { addIdsToForm, addIdsToTable } from "./domain.utils";
 import { KeyValueStore } from "./key_value_store";
-import { FrmdbStoreI } from "./frmdb_store_i";
+import { FrmdbStore } from "./frmdb_store";
+
+const USE_POUCHDB_REPLICATION: boolean = true;
+
+export const TRANSACTIONS_KEY_VALUE_STORE = new InjectionToken<KeyValueStore>('TransactionsKeyValueStore');
+export const DATA_KEY_VALUE_STORE = new InjectionToken<KeyValueStore>('DataKeyValueStore');
+
+export function factoryTransactionsKeyValueStore(): KeyValueStore {
+    return new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
+}
+
+var localPouchDB: any = null;
+const remoteDBUrl: string = 'http://localhost:5984/mwzhistory';
+
+export function factoryDataKeyValueStore(): KeyValueStore {
+    if (USE_POUCHDB_REPLICATION) {
+        localPouchDB = new PouchDB("dataDB");
+        return new KeyValueStore(localPouchDB);
+    } else {
+        return new KeyValueStore(new PouchDB(remoteDBUrl));
+    }
+}
 
 @Injectable()
-export class BackendService implements FrmdbStoreI {
-    private transactionsDB: KeyValueStore;
-    private dataDB: KeyValueStore;
-    private localPouchDB: any;
-    private remoteDBUrl: string = 'http://localhost:5984/mwzhistory';
+export class BackendService extends FrmdbStore {
 
     private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
     private dataChangeCallback: (docs: Array<BaseObj>) => void;
 
-    private readonly usePouchDBReplication: boolean = true;
 
-    constructor(private http: HttpClient) {
-        this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
-        if (this.usePouchDBReplication) {
-            this.localPouchDB = new PouchDB("dataDB");
-            this.dataDB = new KeyValueStore(this.localPouchDB);
+    constructor(private http: HttpClient, 
+        @Inject(TRANSACTIONS_KEY_VALUE_STORE) protected transactionsDB: KeyValueStore, 
+        @Inject(DATA_KEY_VALUE_STORE) protected dataDB: KeyValueStore) 
+    {
+        super(transactionsDB, dataDB);
+
+        if (USE_POUCHDB_REPLICATION) {
+            localPouchDB = new PouchDB("dataDB");
+            this.dataDB = new KeyValueStore(localPouchDB);
         } else {
-            this.dataDB = new KeyValueStore(new PouchDB(this.remoteDBUrl));
+            this.dataDB = new KeyValueStore(new PouchDB(remoteDBUrl));
         }
     }
 
@@ -53,7 +73,7 @@ export class BackendService implements FrmdbStoreI {
         this.notifCallback = notifCallback;
         this.dataChangeCallback = dataChangeCallback;
 
-        if (this.usePouchDBReplication) {
+        if (USE_POUCHDB_REPLICATION) {
             this.setupPouchDBReplication();
         } else {
             initCallback();
@@ -68,20 +88,20 @@ export class BackendService implements FrmdbStoreI {
         "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
         
         //first catchup local PouchDB with what happened on the server while the application was stopped
-        this.localPouchDB.replicate.from(this.remoteDBUrl)
+        localPouchDB.replicate.from(remoteDBUrl)
             .on('complete', info => {
                 console.log("%c ** INITIAL REPLICATION FINISHED **##$$",
                     "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
 
-                this.localPouchDB.getIndexes().then(res => {
+                localPouchDB.getIndexes().then(res => {
                     if (!res || !res.indexes || ! (res.indexes instanceof Array) || res.indexes.find(x => x.name == 'index_on_type_') == null ) {
-                        return this.localPouchDB.createIndex({
+                        return localPouchDB.createIndex({
                             index: {name: 'index_on_type_', fields: ['type_'] }
                         });
                     }
                 })
                 .then(() => {
-                    return this.localPouchDB.explain({
+                    return localPouchDB.explain({
                         selector: {
                             type_: 'Entity_'
                         }
@@ -93,7 +113,7 @@ export class BackendService implements FrmdbStoreI {
                     self.initCallback();
 
                     //after initial replication from the server is finished, continue with live replication
-                    this.localPouchDB.replicate.from(this.remoteDBUrl, {
+                    localPouchDB.replicate.from(remoteDBUrl, {
                         live: true,
                         retry: true,
                     })
@@ -114,7 +134,7 @@ export class BackendService implements FrmdbStoreI {
     }
 
     private handleNotif(event: MwzEvents) {
-        if (!this.usePouchDBReplication) {
+        if (!USE_POUCHDB_REPLICATION) {
             event.updatedIds_.forEach(id_ => {
                 this.dataDB.get(id_)
                 .then(obj => this.dataChangeCallback([obj]))

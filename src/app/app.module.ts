@@ -38,7 +38,7 @@ import { AppEffects } from "./app.effects";
 
 import { FormModalService } from "./form-modal.service";
 import { MwzParser } from "./mwz-parser";
-import { BackendService } from "./backend.service";
+import { BackendService, TRANSACTIONS_KEY_VALUE_STORE, factoryTransactionsKeyValueStore, DATA_KEY_VALUE_STORE, factoryDataKeyValueStore } from "./backend.service";
 import { HighlightService } from './services/hightlight.service';
 import { MetaItemEditorComponent } from './tree/meta-item-editor/meta-item-editor.component';
 import { DragService } from './services/drag.service';
@@ -97,6 +97,8 @@ const routes: Routes = [
     DragService,
     EditOptionsService,
     { provide: RouterStateSerializer, useClass: appState.CustomSerializer },
+    { provide: TRANSACTIONS_KEY_VALUE_STORE, useFactory: factoryTransactionsKeyValueStore},
+    { provide: DATA_KEY_VALUE_STORE, useFactory: factoryDataKeyValueStore},
   ],
   bootstrap: [AppComponent]
 })
