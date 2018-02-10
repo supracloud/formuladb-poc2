@@ -6,7 +6,6 @@ before_script:
 - npm install
 - cd server && npm install
 - cd ..
-- tsc --version
 
 test:
   script:
