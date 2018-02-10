@@ -1,4 +1,5 @@
 import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
+PouchDB.plugin(require('pouchdb-adapter-memory'));
 PouchDB.debug.enable('*');
 
 import { v4 as uuid } from 'uuid';
@@ -32,8 +33,10 @@ export class TransactionalStore {
     private historyDB: KeyValueStore;
 
     constructor() {
-        this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
-        this.historyDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwzhistory"));
+        // this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
+        // this.historyDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwzhistory"));
+        this.transactionsDB = new KeyValueStore(new PouchDB("mwztransactions"));
+        this.historyDB = new KeyValueStore(new PouchDB("mwzhistory"));
     }
 
     public async withTransaction(event: MwzEvents, callback: TransactionalCallback): Promise<MwzEvents> {

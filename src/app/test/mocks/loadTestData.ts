@@ -1,15 +1,17 @@
 import * as PouchDB from 'pouchdb';
+PouchDB.plugin(require('pouchdb-adapter-memory'));
+PouchDB.debug.enable('*');
 
 import { MockMetadata } from "./mock-metadata";
 import { MockData } from "./mock-data";
 import { Forms__ServiceForm_Form_ } from "./mock-ui-metadata";
 
-var db = new PouchDB("http://localhost:5984/mwzhistory");
+var db = new PouchDB("mwzhistory", {adapter: 'memory'});
 PouchDB.debug.enable('*');
 
 var mockMetadata = new MockMetadata();
 
-async function loadData() {
+export async function loadData() {
     try {
         var result = await db.allDocs({
             include_docs: true,
@@ -35,6 +37,3 @@ async function loadData() {
         console.error(err);
     }
 }
-
-loadData();
-   
