@@ -7,7 +7,7 @@ fdescribe('febe App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display brand message', () => {
     page.navigateTo();
     expect(page.getBrand()).toEqual('FormulaDB');
   });

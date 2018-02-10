@@ -40,6 +40,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.navbar-brand').textContent).toContain('Metawiz');
+    expect(compiled.querySelector('.navbar-brand').textContent).toContain('FormulaDB');
   }));
 });
