@@ -5,6 +5,7 @@
             "name": "FE",
             "type": "chrome",
             "request": "launch",
+            "port": 9223,
             "urlFilter": "http://localhost:4200*",
             "webRoot": "${workspaceRoot}/",
             "sourceMapPathOverrides": {

@@ -9,6 +9,7 @@ test:
   script:
   # Run npm test in virtual display mode
   - npm test
+  - npm run e2e
   - cd server && npm test
   cache:
     untracked: true

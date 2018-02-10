@@ -79,7 +79,11 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-# 2. Production
+### Test gitlab-ci
+https://docs.gitlab.com/runner/install/windows.html
+TODO
+
+## 2. Production
 
 TODO
 

@@ -22,7 +22,7 @@ import { addIdsToForm, addIdsToTable } from "./domain.utils";
 import { KeyValueStore } from "./key_value_store";
 import { FrmdbStore } from "./frmdb_store";
 
-const USE_POUCHDB_REPLICATION: boolean = true;
+const USE_POUCHDB_REPLICATION: boolean = false;
 
 export const TRANSACTIONS_KEY_VALUE_STORE = new InjectionToken<KeyValueStore>('TransactionsKeyValueStore');
 export const DATA_KEY_VALUE_STORE = new InjectionToken<KeyValueStore>('DataKeyValueStore');

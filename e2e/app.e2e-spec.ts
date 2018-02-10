@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-xdescribe('febe App', () => {
+fdescribe('febe App', () => {
   let page: AppPage;
 
   beforeEach(() => {
@@ -9,6 +9,6 @@ xdescribe('febe App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('Welcome to app!');
+    expect(page.getBrand()).toEqual('FormulaDB');
   });
 });

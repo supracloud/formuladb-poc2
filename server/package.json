@@ -5,7 +5,8 @@
   "scripts": {
     "preserve": "rm -rf dist && tsc --inlineSourceMap -p src",
     "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"nodemon --inspect dist/server/src/server.js\"",
-    "start": "echo TODO run in production",
+    "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
+    "start": "node dist/server/src/server.js",
     "test": "./node_modules/.bin/mocha -r ts-node/register \"src/**/*.spec.ts\""
   },
   "dependencies": {
