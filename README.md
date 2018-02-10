@@ -10,6 +10,8 @@ Install docker toolbox: https://docs.docker.com/toolbox/toolbox_install_windows/
 The run the following commands from Git Bash:
 
 ```bash
+docker-machine.exe create docker1
+eval $(docker-machine.exe env docker1 --shell bash)
 VBoxManage controlvm "docker1" natpf1 "couchdb,tcp,,5984,,5984"
 docker run -d --name cdb -p 5984:5984 couchdb
 curl -X PUT http://127.0.0.1:5984/_users

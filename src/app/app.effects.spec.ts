@@ -10,6 +10,7 @@ import {
 } from '@ngrx/router-store';
 import 'rxjs/add/observable/merge';
 
+import { Entity } from "./domain/metadata/entity";
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
@@ -77,15 +78,15 @@ xdescribe('AppEffects', () => {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {url: '/General__Currency'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
-                m: new fromTable.TableFormBackendAction(getDefaultTable(General__Actor)),
+                m: new fromTable.TableFormBackendAction(getDefaultTable(General__Actor as Entity)),
                 n: new fromTable.TableDataFromBackendAction(
                     mainDemoFlow.mockData.getAllForPath(General__Actor._id).map(o => new ChangeObj(o))),
-                o: new fromForm.FormFromBackendAction(getDefaultForm(General__Actor, mainDemoFlow.mockMetadata.entitiesMap)),
+                o: new fromForm.FormFromBackendAction(getDefaultForm(General__Actor as Entity, mainDemoFlow.mockMetadata.entitiesMap)),
                 p: new fromForm.FormDataFromBackendAction(mainDemoFlow.mockData.get(General__Actor._id, actorTestId)),
-                q: new fromTable.TableFormBackendAction(getDefaultTable(General__Currency)),
+                q: new fromTable.TableFormBackendAction(getDefaultTable(General__Currency as Entity)),
                 r: new fromTable.TableDataFromBackendAction(
                     mainDemoFlow.mockData.getAllForPath(General__Currency._id).map(o => new ChangeObj(o))),
-                s: new fromForm.FormFromBackendAction(getDefaultForm(General__Currency, mainDemoFlow.mockMetadata.entitiesMap)),
+                s: new fromForm.FormFromBackendAction(getDefaultForm(General__Currency as Entity, mainDemoFlow.mockMetadata.entitiesMap)),
             }
 
             actions$.stream = hot('--a----bc',values);

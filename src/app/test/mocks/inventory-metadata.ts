@@ -1,12 +1,12 @@
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
-export const Inventory: Entity = {
+export const Inventory = {
     type_: "Entity_", _id: "Inventory",
     properties: {},
     module: true
 };
 
-export const Inventory__Receipt: Entity = {
+export const Inventory__Receipt = {
     type_: "Entity_", _id: "Inventory/Receipt",
     properties: {
         items: {
@@ -26,18 +26,18 @@ export const Inventory__Receipt: Entity = {
                     }
                 },
                 received_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
-                units: {
-                    type: PropertyTypeN.TABLE,
-                    properties: {
-                        unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ["code", "serial"] } }
-                    }
-                },
+                // units: {
+                //     type: PropertyTypeN.TABLE,
+                //     properties: {
+                //         unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ["code", "serial"] } }
+                //     }
+                // },
             }
         }
     }
 };
 
-export const Inventory__Order: Entity = {
+export const Inventory__Order = {
     type_: "Entity_", _id: "Inventory/Order",
     properties: {
         items: {
@@ -62,18 +62,18 @@ export const Inventory__Order: Entity = {
                     formula: { EXPRESSION: 'if(available_stock > requested_quantity, requested_quantity, available_stock)'}
                 },
                 client_stock: { type: PropertyTypeN.NUMBER },
-                units: {
-                    type: PropertyTypeN.TABLE,
-                    properties: {
-                        unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ["code", "serial"] } }
-                    }
-                },
+                // units: {
+                //     type: PropertyTypeN.TABLE,
+                //     properties: {
+                //         unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ["code", "serial"] } }
+                //     }
+                // },
             }
         }
     }
 };
 
-export const Inventory__Product: Entity = {
+export const Inventory__Product = {
     type_: "Entity_", _id: "Inventory/Product",
     properties: {
         code: { type: PropertyTypeN.STRING, allowNull: false },
@@ -119,7 +119,7 @@ export const Inventory__Product: Entity = {
     }
 };
 
-export const Inventory__ProductUnit: Entity = {
+export const Inventory__ProductUnit = {
     type_: "Entity_", _id: "Inventory/ProductUnit",
     properties: {
         code: { type: PropertyTypeN.STRING, allowNull: false },

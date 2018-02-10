@@ -1,13 +1,13 @@
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 
-export const General: Entity = {
+export const General = {
     type_: "Entity_", _id: "General",
     properties: {},
     module: true
 };
 
-export const General__Actor: Entity = {
+export const General__Actor = {
     type_: "Entity_", _id: "General/Actor",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -23,7 +23,7 @@ export const General__Actor: Entity = {
     }
 };
 
-export const General__Currency: Entity = {
+export const General__Currency = {
     type_: "Entity_", _id: "General/Currency",
     properties: {
         code: { type: PropertyTypeN.STRING },
@@ -35,7 +35,7 @@ export const General__Currency: Entity = {
     }
 };
 
-export const General__Person: Entity = {
+export const General__Person = {
     type_: "Entity_", _id: "General/Person",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -54,7 +54,7 @@ export const General__Person: Entity = {
     }
 };
 
-export const General__User: Entity = {
+export const General__User = {
     type_: "Entity_", _id: "General/User",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -70,7 +70,7 @@ export const General__User: Entity = {
     }
 };
 
-export const General__Client: Entity = {
+export const General__Client = {
     type_: "Entity_", _id: "Inventory/Client",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },

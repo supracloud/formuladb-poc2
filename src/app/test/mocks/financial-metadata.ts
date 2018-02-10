@@ -1,13 +1,13 @@
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
-export const Financial: Entity = {
+export const Financial = {
     type_: "Entity_", _id: "Financial",
     properties: {},
     module: true
 };
 
 
-export const Financial__Account: Entity = {
+export const Financial__Account = {
     type_: "Entity_", _id: "Financial/Account",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -25,7 +25,7 @@ export const Financial__Account: Entity = {
     }
 };
 
-export const Financial__Transaction: Entity = {
+export const Financial__Transaction = {
     type_: "Entity_", _id: "Financial/Transaction",
     properties: {
         accountDebit: {

@@ -4,7 +4,7 @@ import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from "./domai
 import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeElementWithChildren, NodeType, FormInput, FormAutocomplete, FormTable, FormTabs, FormGridRow, FormGrid, isNodeElementWithChildren } from "./domain/uimetadata/form";
 import { generateUUID } from "./domain/uuid";
-import { BaseObj } from './domain/base_obj';
+import { BaseObj, isNonOverridableProperty } from './domain/base_obj';
 
 export function getEntityIdFromDeepPath(path: string) {
     let match = path.match(/^\/(\w+\/\w+)\/?.*/);
@@ -46,8 +46,9 @@ export function getEntityPropertiesWithNames(entityProperties: EntityProperties)
 }
 
 export function extendEntityProperties(extendedEntityProperties: EntityProperties, newProperties: EntityProperties) {
-    _.toPairs(extendedEntityProperties).forEach(([propName, p]) => {
-        newProperties[propName] = p;
+    _.toPairs(newProperties).forEach(([propName, p]) => {
+        if (isNonOverridableProperty(propName)) return;
+        extendedEntityProperties[propName] = p;
     });
 }
 

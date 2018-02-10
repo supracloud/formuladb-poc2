@@ -17,6 +17,10 @@ export class FrmdbStore {
         return this.transactionsDB.put(event);
     }
 
+    public findByType<T extends BaseObj>(type_: string): Promise<T[]> {
+        return this.historyDB.findByType(type_);
+    }
+
     public getEntity(path: string): Promise<Entity> {
         //the Entity's _id is the path
         return this.getObj(path);

@@ -1,12 +1,12 @@
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
-export const Forms: Entity = {
+export const Forms = {
     type_: "Entity_", _id: "Forms",
     properties: {},
     module: true
 };
 
-export const Forms__Order: Entity = {
+export const Forms__Order = {
     type_: "Entity_", _id: "Forms/Order",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -15,7 +15,7 @@ export const Forms__Order: Entity = {
     }
 };
 
-export const Forms__Receipt: Entity = {
+export const Forms__Receipt = {
     type_: "Entity_", _id: "Forms/Acquisition",
     properties: {
         code: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -23,7 +23,7 @@ export const Forms__Receipt: Entity = {
     }
 };
 
-export const Forms__ServiceForm: Entity = {
+export const Forms__ServiceForm = {
     type_: "Entity_", _id: "Forms/ServiceForm",
     properties: {
         code: {

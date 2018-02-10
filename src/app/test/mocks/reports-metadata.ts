@@ -1,13 +1,13 @@
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 
-export const Reports: Entity = {
+export const Reports = {
     type_: "Entity_", _id: "Reports",
     properties: {},
     module: true
 };
 
-export const Reports__DetailedCentralizerReport: Entity = {
+export const Reports__DetailedCentralizerReport = {
     type_: "Entity_", _id: "Reports/DetailedCentralizerReport",
     properties: {
         name: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -29,7 +29,7 @@ export const Reports__DetailedCentralizerReport: Entity = {
     }
 };
 
-export const Reports__GenericReport: Entity = {
+export const Reports__GenericReport = {
     type_: "Entity_", _id: "Reports/GenericReport",
     properties: {
         name: { type: PropertyTypeN.STRING, "allowNull": false },
@@ -51,7 +51,7 @@ export const Reports__GenericReport: Entity = {
     }
 };
 
-export const Reports__ServiceCentralizerReport: Entity = {
+export const Reports__ServiceCentralizerReport = {
     type_: "Entity_", _id: "Forms/ServiceCentralizerReport",
     properties: {
         name: { type: PropertyTypeN.STRING, "allowNull": false },

@@ -146,7 +146,8 @@ export class BackendService extends FrmdbStore {
     }
 
     public getTable(path: string): Promise<Table> {
-        return this.dataDB.get<Table>('Table_:' + path).then(ti => {
+        
+        return super.getTable(path).then(ti => {
             return new Promise<Table>((resolve, reject) => {
                 addIdsToTable(ti);
                 resolve(ti);
@@ -155,7 +156,7 @@ export class BackendService extends FrmdbStore {
     }
 
     public getForm(path: string): Promise<Form> {
-        return this.dataDB.get<Form>('Form_:' + path).then(fi => {
+        return super.getForm(path).then(fi => {
             addIdsToForm(fi.grid);
             return fi;
         });
@@ -176,28 +177,5 @@ export class BackendService extends FrmdbStore {
             // Let the app keep running by returning an empty result.
             return of(result as T);
         };
-    }
-
-    public findByType<T extends BaseObj>(type_: string): Promise<T[]> {
-        return this.dataDB.findByType(type_);
-    }
-
-    public getEntity(path: string): Promise<Entity> {
-        //the Entity's _id is the path
-        return this.dataDB.get(path);
-    }
-
-    public getDataObj(id: string): Promise<DataObj> {
-        return this.dataDB.get(id);
-    }
-
-    getObj<T extends BaseObj>(id: string): Promise<T> {
-        throw new Error("Method not implemented on the FE.");
-    }
-    setObj<T extends BaseObj>(obj: T): Promise<T> {
-        throw new Error("Method not implemented on the FE.");
-    }
-    forPutForTestingPurposes<T extends BaseObj>(obj: any): Promise<T> {
-        throw new Error("Method not implemented on the FE.");
     }
 }

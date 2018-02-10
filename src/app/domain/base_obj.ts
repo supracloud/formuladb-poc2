@@ -16,3 +16,8 @@ export class BaseObj extends KeyValueObj{
         state: 'BEGIN' | 'PRE_COMMIT' | 'COMMIT'
     }>;
 }
+
+export function isNonOverridableProperty(propName: string): boolean {
+    if (propName.length == 0) return false;
+    return propName.slice(-1) === '_' || propName.charAt(0) === '_';
+}

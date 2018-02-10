@@ -6,6 +6,7 @@ import * as meta from './mocks/mock-metadata';
 import { MockData } from "./mocks/mock-data";
 
 import { getDefaultTable } from "../domain.utils";
+import { Entity } from '../entity-state';
 
 export var mockMetadata = new meta.MockMetadata();
 export var mockData = new MockData(mockMetadata.entitiesMap)
@@ -48,7 +49,7 @@ export const SIMPLE_FLOW = {
     Then_navigation_should_show_all_current_tables: {
     },
     And_default_table_page_with_service_forms_should_be_displayed: {
-        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm)
+        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm as Entity)
     },
     When_user_navigates_to_a_service_form: {},
     Then_the_form_page_should_be_displayed: {},

@@ -92,7 +92,7 @@ export class MockData {
         if (p.prop.entity != null) {
           let ref = this.entitiesMap.get(getEntityIdFromDeepPath(p.prop.entity.deepPath));
           console.log("p.prop.entity.deepPath=" + p.prop.entity.deepPath + "|" + getEntityIdFromDeepPath(p.prop.entity.deepPath));
-          ret[p.name] = this.mockEntities(ref, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
+          ret[p.name] = this.mockEntities(ref as Entity, [this.getRandomId(), this.getRandomId(), this.getRandomId(), this.getRandomId()]);
         } else {
           let table = [];
           for (var i = 0; i < 5; i++) {
@@ -112,21 +112,21 @@ export class MockData {
 
   mockData() {
     console.log("mockData called");
-    this.mockEntities(metadata.General__Actor, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.General__Currency, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.General__Person, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.General__User, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.General__Client, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__Product, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__ProductUnit, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__Order, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Inventory__Receipt, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Forms__Order, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Forms__Receipt, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Forms__ServiceForm, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Reports__DetailedCentralizerReport, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Reports__GenericReport, [1, 2, 3, 4, 5]);
-    this.mockEntities(metadata.Reports__ServiceCentralizerReport, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Actor as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Currency as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Person as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__User as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.General__Client as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__Product as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__ProductUnit as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__Order as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Inventory__Receipt as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Forms__Order as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Forms__Receipt as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Forms__ServiceForm as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Reports__DetailedCentralizerReport as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Reports__GenericReport as Entity, [1, 2, 3, 4, 5]);
+    this.mockEntities(metadata.Reports__ServiceCentralizerReport as Entity, [1, 2, 3, 4, 5]);
   }
 
 }
