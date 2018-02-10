@@ -43,8 +43,12 @@ grep -i error log
 ```bash
 # start angular app
 ./node_modules/.bin/ng serve --proxy-config proxy.config.json
+# start unit tests
+./node_modules/.bin/ng test -w
 # start backend
 cd server && npm run serve
+# start unit tests
+cd server && npm test -- -w --watch-extensions ts
 ```
 
 #### traffic shaping (IGNORE, NOT WORKING)

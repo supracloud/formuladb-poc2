@@ -7,7 +7,7 @@ import 'rxjs/add/operator/find';
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
-xdescribe('Hello function', () => {
+describe('Hello function', () => {
   it('should return hello world', () => {
     expect("Hello World!").to.equal('Hello World!');
   });
