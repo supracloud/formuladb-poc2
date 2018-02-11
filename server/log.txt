@@ -1,0 +1,227 @@
+[Sun, 11 Feb 2018 18:09:03 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 18:09:03 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 18:09:03 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.
+[Sun, 11 Feb 2018 18:09:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils 301
+[Sun, 11 Feb 2018 18:09:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518372555397 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518372555398 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518372555399 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518372555400 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 200
+[Sun, 11 Feb 2018 18:09:15 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:09:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518372555401 200
+[Sun, 11 Feb 2018 18:09:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518372555402 200
+[Sun, 11 Feb 2018 18:09:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518372555403 200
+[Sun, 11 Feb 2018 18:09:31 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 404
+[Sun, 11 Feb 2018 18:09:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:09:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:09:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:09:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518372575860 200
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518372575861 200
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518372575862 200
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518372575863 200
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:09:36 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:11:09 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 18:11:10 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 18:11:10 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518372697564 200
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518372697565 200
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518372697566 200
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518372697567 200
+[Sun, 11 Feb 2018 18:11:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518372699737 200
+[Sun, 11 Feb 2018 18:11:39 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518372699738 200
+[Sun, 11 Feb 2018 18:11:40 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518372699739 200
+[Sun, 11 Feb 2018 18:11:40 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518372699740 200
+[Sun, 11 Feb 2018 18:11:40 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:11:40 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:11:52 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory 201
+[Sun, 11 Feb 2018 18:11:57 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwztransactions 201
+[Sun, 11 Feb 2018 18:12:07 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactionsdd 404
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518372732380 200
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518372732381 200
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518372732382 200
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518372732383 200
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory?_=1518372732384 200
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions?_=1518372732385 200
+[Sun, 11 Feb 2018 18:12:12 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:17:03 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 200
+[Sun, 11 Feb 2018 18:17:03 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/General%2FActor? 404
+[Sun, 11 Feb 2018 18:17:03 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/General__Actor%3A1234004? 404
+[Sun, 11 Feb 2018 18:17:03 GMT] [info] [<0.000.0>] 127.0.0.1 - - POST /mwzhistory/_find 200
+[Sun, 11 Feb 2018 18:18:44 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 18:18:44 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 18:18:44 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.
+[Sun, 11 Feb 2018 18:19:22 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:19:22 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:19:22 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518373163059 200
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518373163060 200
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518373163061 200
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518373163062 200
+[Sun, 11 Feb 2018 18:19:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518373665304 200
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518373665305 200
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518373665306 200
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518373665307 200
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:27:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:27:46 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:27:46 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:27:46 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518373666984 200
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518373666985 200
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518373666986 200
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518373666987 200
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:27:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 18:29:00 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 404
+[Sun, 11 Feb 2018 18:51:05 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 18:51:05 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 18:51:05 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.
+[Sun, 11 Feb 2018 18:51:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions/ 404
+[Sun, 11 Feb 2018 18:51:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwztransactions/ 201
+[Sun, 11 Feb 2018 18:51:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions/ 200
+[Sun, 11 Feb 2018 18:51:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 404
+[Sun, 11 Feb 2018 18:51:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/ 201
+[Sun, 11 Feb 2018 18:51:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 200
+[Sun, 11 Feb 2018 18:51:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/ 304
+[Sun, 11 Feb 2018 18:51:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/css/styles-a9623008fc27e79da2388441deeacfab.css 304
+[Sun, 11 Feb 2018 18:51:47 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/js/bundle-34997e32896293a1fa5d71f79eb1b4f7.js 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_session 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET / 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-site.png 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fauxtonicon5.woff 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518375108003 200
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518375108004 200
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518375108005 200
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/fonts/fontawesome-webfont.woff 304
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions?_=1518375108007 200
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518375108006 200
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory?_=1518375108008 200
+[Sun, 11 Feb 2018 18:51:48 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions/ 200
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions/ 200
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 200
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 200
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/General 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/General%2FActor 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/General%2FPerson 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/General%2FUser 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/General%2FCurrency 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Inventory 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Inventory%2FClient 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Inventory%2FOrder 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Inventory%2FReceipt 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Inventory%2FProduct 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Inventory%2FProductUnit 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Financial%2FAccount 201
+[Sun, 11 Feb 2018 19:05:34 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Financial%2FTransaction 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Forms 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Forms%2FAcquisition 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Financial 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Forms%2FOrder 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Forms%2FServiceForm 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Reports 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Reports%2FDetailedCentralizerReport 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Reports%2FGenericReport 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - POST /mwzhistory/_bulk_docs 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Forms%2FServiceCentralizerReport 201
+[Sun, 11 Feb 2018 19:05:35 GMT] [info] [<0.000.0>] 127.0.0.1 - - PUT /mwzhistory/Form_%3AForms%2FServiceForm 201
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 200
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/General%2FActor? 200
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/General__Actor%3A1234004? 200
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/Table_%3AGeneral%2FActor? 404
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - POST /mwzhistory/_find 200
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - POST /mwzhistory/_find 200
+[Sun, 11 Feb 2018 19:05:37 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/Form_%3AGeneral%2FActor? 404
+[Sun, 11 Feb 2018 19:05:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?startkey=%22_design%2F%22&endkey=%22_design0%22&include_docs=true&limit=501 200
+[Sun, 11 Feb 2018 19:05:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?limit=21 200
+[Sun, 11 Feb 2018 19:05:45 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518375108009 200
+[Sun, 11 Feb 2018 19:05:55 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_all_dbs?_=1518375108010 200
+[Sun, 11 Feb 2018 19:05:55 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1518375108011 200
+[Sun, 11 Feb 2018 19:05:55 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1518375108012 200
+[Sun, 11 Feb 2018 19:05:55 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory?_=1518375108014 200
+[Sun, 11 Feb 2018 19:05:55 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwztransactions?_=1518375108013 200
+[Sun, 11 Feb 2018 19:05:57 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-minilogo.png 200
+[Sun, 11 Feb 2018 19:06:00 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?startkey=%22_design%2F%22&endkey=%22_design0%22&include_docs=true&limit=501 304
+[Sun, 11 Feb 2018 19:06:00 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?limit=21 304
+[Sun, 11 Feb 2018 19:06:00 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518375108015 200
+[Sun, 11 Feb 2018 19:06:03 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_index? 200
+[Sun, 11 Feb 2018 19:06:03 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/couch-watermark.png 200
+[Sun, 11 Feb 2018 19:06:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/ 200
+[Sun, 11 Feb 2018 19:06:14 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/%2FGeneral%2FActor? 404
+[Sun, 11 Feb 2018 19:06:17 GMT] [info] [<0.000.0>] 127.0.0.1 - - POST /mwzhistory/_find 200
+[Sun, 11 Feb 2018 19:06:20 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/Financial?conflicts=true 200
+[Sun, 11 Feb 2018 19:06:20 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_uuids?count=1 200
+[Sun, 11 Feb 2018 19:06:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?startkey=%22_design%2F%22&endkey=%22_design0%22&include_docs=true&limit=501 304
+[Sun, 11 Feb 2018 19:06:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?limit=21 304
+[Sun, 11 Feb 2018 19:06:23 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /mwzhistory/_all_docs?startkey=%22%22&endkey=%22%E9%A6%99%22&limit=30&_=1518375108016 200
+[Sun, 11 Feb 2018 19:12:00 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 19:12:00 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 19:12:00 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.
+[Sun, 11 Feb 2018 19:16:18 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 19:16:18 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 19:16:18 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.
+[Sun, 11 Feb 2018 19:18:58 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Sun, 11 Feb 2018 19:18:58 GMT] [info] [<0.000.0>] database is in-memory; no changes will be saved.
+[Sun, 11 Feb 2018 19:18:58 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.

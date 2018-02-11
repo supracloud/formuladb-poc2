@@ -25,13 +25,22 @@ export class KeyValueStore {
 
     public put<T extends KeyValueObj>(obj: T): Promise<T> {
         return this.db.put(obj).then(x => {
-            obj._rev = x.rev; 
+            obj._rev = x.rev;
             return obj;
         })
-        .catch(err => {console.error(err); return Promise.reject(err)});
+            .catch(err => { console.error(err); return Promise.reject(err) });
     }
 
-        
+    public putAll<T extends KeyValueObj>(objs: T[]): Promise<T[]> {
+        return this.db.bulkDocs(objs).then(response => {
+            response.forEach(res => {
+                objs.find(x => x._id === res.id)._rev = res.rev;
+            });
+            return objs;
+        })
+            .catch(err => { console.error(err); return Promise.reject(err) });
+    }
+
     public forcePut<T extends KeyValueObj>(document: T): Promise<T> {
         let id = document._id;
         return this.get<T>(id).then(result => {
@@ -45,6 +54,12 @@ export class KeyValueStore {
                     reject(error);
                 });
             }
+        });
+    }
+
+    public info(): Promise<string> {
+        return this.db.info().then(function (info) {
+            console.log(info);
         });
     }
 }

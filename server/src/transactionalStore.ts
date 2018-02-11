@@ -1,7 +1,4 @@
-import * as PouchDB from 'pouchdb';//this does not work with webpack, use this when running on nodejs
-PouchDB.plugin(require('pouchdb-adapter-memory'));
-PouchDB.debug.enable('*');
-
+import { Container } from "typedi";
 import { v4 as uuid } from 'uuid';
 import * as dateFormat from 'dateformat';
 
@@ -14,6 +11,7 @@ import { MwzEvents } from "../../src/app/domain/event";
 
 import { KeyValueStore } from "../../src/app/key_value_store";
 import { FrmdbStore } from "../../src/app/frmdb_store";
+import { KeyValueStores } from "./keyValueStores";
 
 export type TransactionalCallback = (event: MwzEvents, store: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
 
@@ -29,14 +27,10 @@ export class StoreIsolatedAtTransaction extends FrmdbStore {
  */
 export class TransactionalStore {
 
-    private transactionsDB: KeyValueStore;
-    private historyDB: KeyValueStore;
+    private kvs: KeyValueStores;
 
     constructor() {
-        // this.transactionsDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
-        // this.historyDB = new KeyValueStore(new PouchDB("http://localhost:5984/mwzhistory"));
-        this.transactionsDB = new KeyValueStore(new PouchDB("mwztransactions"));
-        this.historyDB = new KeyValueStore(new PouchDB("mwzhistory"));
+        this.kvs = Container.get(KeyValueStores);
     }
 
     public async withTransaction(event: MwzEvents, callback: TransactionalCallback): Promise<MwzEvents> {
@@ -45,11 +39,11 @@ export class TransactionalStore {
         do {
             try {
                 event._id = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss-l') + '-' + uuid() + '=' + event.clientId_;
-                return this.transactionsDB.put(event)
+                return this.kvs.transactionsDB.put(event)
                     .then(ev => {
                         event.readObjs_ = [];
                         event.updatedIds_ = [];
-                        return callback(ev, new StoreIsolatedAtTransaction(ev, this.transactionsDB, this.historyDB), new Map<string, BaseObj>());
+                        return callback(ev, new StoreIsolatedAtTransaction(ev, this.kvs.transactionsDB, this.kvs.historyDB), new Map<string, BaseObj>());
                     });
         
             } catch (ex) {
@@ -59,7 +53,7 @@ export class TransactionalStore {
     }
 
     public setTransaction(event: MwzEvents): Promise<MwzEvents> {
-        return this.transactionsDB.put(event);
+        return this.kvs.transactionsDB.put(event);
     }
 
     public getEntityForTr(path: string, trId: string): Promise<Entity> {
@@ -80,15 +74,15 @@ export class TransactionalStore {
     }
 
     public getObjForTr<T extends BaseObj>(id: string, trId: string): Promise<T> {
-        return this.historyDB.get(id);
+        return this.kvs.historyDB.get(id);
     }
 
     public setObjForTr<T extends BaseObj>(obj: T, trId: string): Promise<T> {
         //TODO: implement transaction pre-emptying ,transaction life-cycle, etc
-        return this.historyDB.put(obj);
+        return this.kvs.historyDB.put(obj);
     }
 
     public forPutForTestingPurposes<T extends BaseObj>(obj): Promise<T> {
-        return this.historyDB.forcePut(obj);
+        return this.kvs.historyDB.forcePut(obj);
     }
 }

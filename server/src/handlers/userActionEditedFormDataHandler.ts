@@ -23,5 +23,6 @@ export async function userActionEditedFormDataHandler(event: events.UserActionEd
 
     } catch (ex) {
         console.error(ex);
+        throw ex;
     }
 }

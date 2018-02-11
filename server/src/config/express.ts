@@ -22,6 +22,10 @@ export default function (db) {
         res.json({ message: 'test' });
     });
 
+    app.get('/query/:dbname/:id', function (req, res) {
+        res.json({ message: 'test' });
+    });
+
     app.post('/api/event', function (req, res) {
         frmdbEngine.processEvent(req.body)
             .then(notif => res.json(notif))
