@@ -54,3 +54,4 @@ karma.log
 log
 server/mwzhistory
 server/mwztransactions
+server/log.txt
