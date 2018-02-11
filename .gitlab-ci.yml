@@ -4,7 +4,7 @@ before_script:
 - chmod +x ci/install-chrome
 - ci/install-chrome
 - npm install
-- npm install -g pouchdb-server
+- sudo npm install -g pouchdb-server
 - cd server && npm install
 - cd ..
 
