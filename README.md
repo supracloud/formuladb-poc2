@@ -51,6 +51,17 @@ cd server && npm run serve
 cd server && npm test -- -w --watch-extensions ts
 ```
 
+### 1.3 Test gitlab ci locally
+
+```bash
+sync.exe -auv --exclude node_modules --exclude .git febe febe.bak
+cd febe.bak
+MSYS_NO_PATHCONV=1 docker run -it -v $PWD:/febe --name node node:alpine sh
+cd /febe/server
+npm install
+npm run e2e_serve
+```
+
 #### traffic shaping (IGNORE, NOT WORKING)
 
 ```bash

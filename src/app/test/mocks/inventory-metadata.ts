@@ -15,13 +15,13 @@ export const Inventory__Receipt = {
                 product: {
                     type: PropertyTypeN.REFERENCE_ENTITY,
                     entity: {
-                        deepPath: "/Inventory/Product/locations",
+                        deepPath: "/Inventory/Product/inventoryLocations",
                         copiedProperties: [
-                            "code",
-                            "name",
-                            "location",
-                            "price",
-                            "currency/code",
+                            "inventoryLocation.product.code",
+                            "inventoryLocation.product.name",
+                            "inventoryLocation.locationCode",
+                            "inventoryLocation.price",
+                            "inventoryLocation.currency.code",
                         ]
                     }
                 },
@@ -45,18 +45,18 @@ export const Inventory__Order = {
                 product: {
                     type: PropertyTypeN.REFERENCE_ENTITY,
                     entity: {
-                        deepPath: "/Inventory/Product/locations",
+                        deepPath: "/Inventory/Product/inventoryLocations",
                         copiedProperties: [
                             "../code",
                             "../name",
-                            "location",
+                            "inventoryLocation",
                             "price",
                             "currency/code",
                         ]
                     }
                 },
                 requested_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
-                available_stock: { type: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product/available_stock" } },
+                available_stock: { type: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product.available_stock" } },
                 reserved_quantity: {
                     type: PropertyTypeN.FORMULA,
                     formula: { EXPRESSION: 'if(available_stock > requested_quantity, requested_quantity, available_stock)'}
@@ -80,16 +80,16 @@ export const Inventory__Product = {
         barcode: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING, allowNull: false },
         description: { type: PropertyTypeN.STRING },
-        locations: {
+        inventoryLocation: {
             type: PropertyTypeN.TABLE, properties: {
-                location: { type: PropertyTypeN.STRING, allowNull: false, defaultValue: "DEFAULT-LOCATION" },
+                locationCode: { type: PropertyTypeN.STRING, allowNull: false, defaultValue: "DEFAULT-location" },
                 category: { type: PropertyTypeN.STRING, allowNull: false },
                 price: { type: PropertyTypeN.NUMBER, allowNull: true },
                 currency: {
                     type: PropertyTypeN.REFERENCE_ENTITY,
                     entity: {
                         deepPath: "/General/Currency",
-                        copiedProperties: ["code", "name"],
+                        copiedProperties: ["currency/code", "name"],
                     }
                 },
                 minimal_stock: { type: PropertyTypeN.NUMBER, allowNull: false },
@@ -134,7 +134,7 @@ export const Inventory__ProductUnit = {
                 ]
             }
         },
-        location: { type: PropertyTypeN.STRING, allowNull: false },
+        inventoryLocation: { type: PropertyTypeN.STRING, allowNull: false },
         serial1: { type: PropertyTypeN.STRING },
         serial2: { type: PropertyTypeN.STRING },
         serial3: { type: PropertyTypeN.STRING },

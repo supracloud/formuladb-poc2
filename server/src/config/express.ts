@@ -5,6 +5,7 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
+import { ThePouchDB } from "../keyValueStores";
 import { FrmdbEngine } from "../frmdbEngine";
 
 
@@ -12,12 +13,18 @@ export default function (db) {
     var app: express.Express = express();
 
     app.use(logger("dev"));
+    app.use(cookieParser());
+    app.use(require('express-session')({
+        secret: 'blabblabla',
+        resave: false,
+        saveUninitialized: true
+    }))
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-
     var frmdbEngine = new FrmdbEngine();
-    
+
     app.get('/', function (req, res) {
         res.json({ message: 'test' });
     });

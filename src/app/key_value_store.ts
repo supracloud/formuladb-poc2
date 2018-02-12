@@ -41,6 +41,17 @@ export class KeyValueStore {
             .catch(err => { console.error(err); return Promise.reject(err) });
     }
 
+    public async removeAll() {
+        var result = await this.db.allDocs({
+            include_docs: true,
+            attachments: false
+        });
+
+        result.rows.map(async (row) => {
+            await this.db.remove(row.id, row.value.rev);
+        });
+    }
+
     public forcePut<T extends KeyValueObj>(document: T): Promise<T> {
         let id = document._id;
         return this.get<T>(id).then(result => {

@@ -8,7 +8,7 @@
     "build": "ng build",
     "test": "ng test --watch false",
     "lint": "ng lint",
-    "e2e": "concurrently --success first --kill-others \"cd server && npm run serve\" \"sleep 10 && ng e2e --proxy-config proxy.config.json\"",
+    "e2e": "concurrently --success first --kill-others \"cd server && npm run e2e_serve\" \"sleep 10 && ng e2e --proxy-config proxy.config.json\"",
     "e2e:watch": "watch \"ng e2e -s false\" src server e2e --wait=1"
   },
   "private": true,

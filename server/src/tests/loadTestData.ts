@@ -10,15 +10,9 @@ let kvs = Container.get(KeyValueStores);
 
 export async function loadData() {
     try {
-        // var result = await kvs.historyDB.allDocs({
-        //     include_docs: true,
-        //     attachments: false
-        // });
-
-        // result.rows.map(async (row) => {
-        //     await kvs.historyDB.remove(row.id, row.value.rev);
-        // });
-
+        await kvs.historyDB.removeAll();
+        await kvs.transactionsDB.removeAll();
+        
         mockMetadata.entities.forEach(async (entity) => {
             await kvs.historyDB.put(entity);
         });

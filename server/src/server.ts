@@ -1,3 +1,5 @@
+require('source-map-support').install();
+
 import { Container } from "typedi";
 import "reflect-metadata";
 import * as http from "http";
