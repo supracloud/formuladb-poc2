@@ -41,14 +41,16 @@ grep -i error log
 ### 1.2 Running 
 
 ```bash
-# start angular app
+# Terminal 1. start angular app
 ./node_modules/.bin/ng serve --proxy-config proxy.config.json
-# start unit tests
+# Terminal 2. start unit tests
 ./node_modules/.bin/ng test -w
-# start backend
+# Terminal 3. start backend
 cd server && npm run serve
-# start unit tests
+# Terminal 4. start unit tests
 cd server && npm test -- -w --watch-extensions ts
+# Terminal 5. start e2e tests
+npm run e2e:watch
 ```
 
 ### 1.3 Test gitlab ci locally
