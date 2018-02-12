@@ -1,6 +1,6 @@
 import { AppPage } from './app.po';
 
-fdescribe('febe App', () => {
+describe('febe App', () => {
   let page: AppPage;
 
   beforeEach(() => {
@@ -8,7 +8,7 @@ fdescribe('febe App', () => {
   });
 
   it('should display brand message', () => {
-    page.navigateTo();
+    page.rootPage();
     expect(page.getBrand()).toEqual('FormulaDB');
   });
 });

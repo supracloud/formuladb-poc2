@@ -10,8 +10,8 @@ describe('domain.utils', () => {
   });
 
   it('should get entity properties from deep path', () => {
-    let props = queryEntityPropertiesWithDeepPath(Inventory__Product.properties as EntityProperties, '/Inventory/Product/locations');
-    expect(props).toEqual((Inventory__Product.properties['locations'] as TableProperty).properties);
+    let props = queryEntityPropertiesWithDeepPath(Inventory__Product.properties as EntityProperties, '/Inventory/Product/inventoryLocation');
+    expect(props).toEqual((Inventory__Product.properties['inventoryLocation'] as TableProperty).properties);
   });
 
   it('should get object properties from deep path', () => {
