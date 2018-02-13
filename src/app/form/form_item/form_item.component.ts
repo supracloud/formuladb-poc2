@@ -3,7 +3,7 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import * as _ from 'lodash';
 
 import { BaseNodeComponent } from "./../base_node";
-import { NodeElement, NodeType, isKnownNodeElement, isPropertyNodeElement, isNodeElementWithChildren, isTableNodeElement, isEntityNodeElement, getChildPath } from "./../../domain/uimetadata/form";
+import { NodeElement, NodeType, isKnownNodeElement, isPropertyNodeElement, isNodeElementWithChildren, isTableNodeElement, isEntityNodeElement, getChildPath } from "./../../common/domain/uimetadata/form";
 import { HighlightService } from './../../services/hightlight.service';
 import { Observable } from 'rxjs/Observable';
 import { OnDestroy } from '@angular/core/src/metadata/lifecycle_hooks';

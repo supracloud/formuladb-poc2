@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
-import { NodeElement } from '../../domain/uimetadata/form';
+import { NodeElement } from '../../common/domain/uimetadata/form';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TreeObject } from '../tree.object';
 import * as _ from 'lodash';

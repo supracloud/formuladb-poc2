@@ -43,10 +43,10 @@ grep -i error log
 ```bash
 # Terminal 1. start angular app
 ./node_modules/.bin/ng serve --proxy-config proxy.config.json
-# Terminal 2. start unit tests
-./node_modules/.bin/ng test -w
-# Terminal 3. start backend
+# Terminal 2. start backend
 cd server && npm run serve
+# Terminal 3. start unit tests
+./node_modules/.bin/ng test -w
 # Terminal 4. start unit tests
 cd server && npm test -- -w --watch-extensions ts
 # Terminal 5. start e2e tests

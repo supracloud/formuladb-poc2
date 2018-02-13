@@ -1,6 +1,6 @@
-import * as events from "../../../src/app/domain/event";
+import * as events from "../../../src/app/common/domain/event";
 import { StoreIsolatedAtTransaction } from "../transactionalStore";
-import { BaseObj } from "../../../src/app/domain/base_obj";
+import { BaseObj } from "../../../src/app/common/domain/base_obj";
 
 export async function userActionEditedFormDataHandler(event: events.UserActionEditedFormDataEvent, store: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
     try {

@@ -7,11 +7,11 @@ import {
   RouterStateSerializer
 } from '@ngrx/router-store';
 
-import { Form } from './domain/uimetadata/form';
-import { Table } from './domain/uimetadata/table';
-import { DataObj } from './domain/metadata/data_obj';
-import { Entity } from './domain/metadata/entity';
-import { ChangeObj, applyChanges } from './domain/change_obj';
+import { Form } from './common/domain/uimetadata/form';
+import { Table } from './common/domain/uimetadata/table';
+import { DataObj } from './common/domain/metadata/data_obj';
+import { Entity } from './common/domain/metadata/entity';
+import { ChangeObj, applyChanges } from './common/domain/change_obj';
 
 
 export { Form };

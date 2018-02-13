@@ -12,7 +12,7 @@ if (config.env === 'development' || config.env === 'test') {
 }
 
 import {Service} from 'typedi';
-import { KeyValueStore } from '../../src/app/key_value_store';
+import { KeyValueStore } from '../../src/app/common/key_value_store';
 
 @Service()
 export class KeyValueStores {

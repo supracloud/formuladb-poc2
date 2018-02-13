@@ -1,10 +1,10 @@
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from '../domain/metadata/data_obj';
-import { Form } from '../domain/uimetadata/form';
-import { ChangeObj, applyChanges } from '../domain/change_obj';
-import * as events from '../domain/event';
+import { DataObj } from '../common/domain/metadata/data_obj';
+import { Form } from '../common/domain/uimetadata/form';
+import { ChangeObj, applyChanges } from '../common/domain/change_obj';
+import * as events from '../common/domain/event';
 
 export { DataObj };
 export { Form };

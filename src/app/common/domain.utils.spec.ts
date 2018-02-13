@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import * as _ from 'lodash';
-import { queryEntityPropertiesWithDeepPath, queryObjectWithDeepPath, extendEntityProperties } from './common/domain.utils';
-import { Inventory__Product, Inventory__Order } from "./common/test/mocks/inventory-metadata";
-import { Forms__ServiceForm } from "./common/test/mocks/forms-metadata";
-import { TableProperty, EntityProperties } from "./common/domain/metadata/entity";
+import { queryEntityPropertiesWithDeepPath, queryObjectWithDeepPath, extendEntityProperties } from './domain.utils';
+import { Inventory__Product, Inventory__Order } from "./test/mocks/inventory-metadata";
+import { Forms__ServiceForm } from "./test/mocks/forms-metadata";
+import { TableProperty, EntityProperties } from "./domain/metadata/entity";
 
 describe('domain.utils', () => {
   beforeEach(() => {

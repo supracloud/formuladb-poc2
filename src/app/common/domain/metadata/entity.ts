@@ -13,6 +13,7 @@ export class Entity extends BaseObj {
     type_ = 'Entity_';
     module?: boolean;
     properties: EntityProperties;
+    executionPlan?: ExecutionPlan;
 }
 
 export const enum PropertyTypeN { 

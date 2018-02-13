@@ -10,16 +10,16 @@ import {
 } from '@ngrx/router-store';
 import 'rxjs/add/observable/merge';
 
-import { Entity } from "./domain/metadata/entity";
+import { Entity } from "./common/domain/metadata/entity";
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
 import { AppEffects } from "./app.effects";
-import { ChangeObj } from "./domain/change_obj";
+import { ChangeObj } from "./common/domain/change_obj";
 
-import { MockMetadata, General__Actor, General__Currency } from "./test/mocks/mock-metadata";
-import * as mainDemoFlow from "./test/main_demo.flow";
-import { getDefaultTable, getDefaultForm } from "./domain.utils";
+import { MockMetadata, General__Actor, General__Currency } from "./common/test/mocks/mock-metadata";
+import * as mainDemoFlow from "./common/test/main_demo.flow";
+import { getDefaultTable, getDefaultForm } from "./common/domain.utils";
 
 export class TestActions extends Actions {
     constructor() {

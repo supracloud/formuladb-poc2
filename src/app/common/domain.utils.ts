@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 
-import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from "./common/domain/metadata/entity";
-import { Table, TableColumn } from "./common/domain/uimetadata/table";
-import { Form, NodeElement, NodeElementWithChildren, NodeType, FormInput, FormAutocomplete, FormTable, FormTabs, FormGridRow, FormGrid, isNodeElementWithChildren } from "./common/domain/uimetadata/form";
-import { generateUUID } from "./common/domain/uuid";
-import { BaseObj, isNonOverridableProperty } from './common/domain/base_obj';
+import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from "./domain/metadata/entity";
+import { Table, TableColumn } from "./domain/uimetadata/table";
+import { Form, NodeElement, NodeElementWithChildren, NodeType, FormInput, FormAutocomplete, FormTable, FormTabs, FormGridRow, FormGrid, isNodeElementWithChildren } from "./domain/uimetadata/form";
+import { generateUUID } from "./domain/uuid";
+import { BaseObj, isNonOverridableProperty } from './domain/base_obj';
 
 export function getEntityIdFromDeepPath(path: string) {
     let match = path.match(/^\/(\w+\/\w+)\/?.*/);

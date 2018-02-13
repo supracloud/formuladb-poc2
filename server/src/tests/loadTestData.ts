@@ -1,7 +1,7 @@
 import { Container } from "typedi";
-import { MockMetadata } from "../../../src/app/test/mocks/mock-metadata";
-import { MockData } from "../../../src/app/test/mocks/mock-data";
-import { Forms__ServiceForm_Form_ } from "../../../src/app/test/mocks/mock-ui-metadata";
+import { MockMetadata } from "../../../src/app/common/test/mocks/mock-metadata";
+import { MockData } from "../../../src/app/common/test/mocks/mock-data";
+import { Forms__ServiceForm_Form_ } from "../../../src/app/common/test/mocks/mock-ui-metadata";
 import { KeyValueStores } from "../keyValueStores";
 
 var mockMetadata = new MockMetadata();

@@ -1,8 +1,8 @@
-import { BaseObj } from "../../src/app/domain/base_obj";
-import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
-import { DataObj } from "../../src/app/domain/metadata/data_obj";
-import { Form } from "../../src/app/domain/uimetadata/form";
-import { Table } from "../../src/app/domain/uimetadata/table";
+import { BaseObj } from "./domain/base_obj";
+import { Entity, EntityProperty } from "./domain/metadata/entity";
+import { DataObj } from "./domain/metadata/data_obj";
+import { Form } from "./domain/uimetadata/form";
+import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
 import { KeyValueStore } from "./key_value_store";
 

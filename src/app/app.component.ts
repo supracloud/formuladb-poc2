@@ -1,9 +1,9 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { NodeType, NodeElement } from "./domain/uimetadata/form";
+import { NodeType, NodeElement } from "./common/domain/uimetadata/form";
 
-import { BaseObj } from "./domain/base_obj";
+import { BaseObj } from "./common/domain/base_obj";
 
 import { Store } from '@ngrx/store';
 

@@ -9,9 +9,9 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
 import { FormModalService } from '../form-modal.service';
-import { Entity, EntityProperty } from '../domain/metadata/entity';
-import { DataObj } from '../domain/metadata/data_obj';
-import { Form, NodeElement, NodeType, FormTab } from '../domain/uimetadata/form';
+import { Entity, EntityProperty } from '../common/domain/metadata/entity';
+import { DataObj } from '../common/domain/metadata/data_obj';
+import { Form, NodeElement, NodeType, FormTab } from '../common/domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/map';
@@ -24,7 +24,7 @@ import * as _ from "lodash";
 
 import * as fromForm from './form.state';
 
-import { BaseObj } from "../domain/base_obj";
+import { BaseObj } from "../common/domain/base_obj";
 import { HighlightService } from '../services/hightlight.service';
 
 @Component({

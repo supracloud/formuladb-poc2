@@ -16,18 +16,18 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { BaseObj } from "./domain/base_obj";
-import { DataObj } from "./domain/metadata/data_obj";
-import { Entity, EntityProperty, PropertyTypeN } from "./domain/metadata/entity";
-import { ChangeObj } from "./domain/change_obj";
-import { MwzEvents } from "./domain/event";
+import { BaseObj } from "./common/domain/base_obj";
+import { DataObj } from "./common/domain/metadata/data_obj";
+import { Entity, EntityProperty, PropertyTypeN } from "./common/domain/metadata/entity";
+import { ChangeObj } from "./common/domain/change_obj";
+import { MwzEvents } from "./common/domain/event";
 
-import { Table, TableColumn } from "./domain/uimetadata/table";
-import { Form, NodeElement, NodeType } from "./domain/uimetadata/form";
+import { Table, TableColumn } from "./common/domain/uimetadata/table";
+import { Form, NodeElement, NodeType } from "./common/domain/uimetadata/form";
 
 import * as appState from './app.state';
-import { generateUUID } from "./domain/uuid";
-import { getDefaultTable, getDefaultForm } from "./domain.utils";
+import { generateUUID } from "./common/domain/uuid";
+import { getDefaultTable, getDefaultForm } from "./common/domain.utils";
 import { BackendService } from "./backend.service";
 
 

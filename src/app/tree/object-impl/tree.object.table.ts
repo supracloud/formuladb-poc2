@@ -1,8 +1,8 @@
 import { TreeObject } from "../tree.object";
-import { NodeElement, NodeType } from "../../domain/uimetadata/form";
+import { NodeElement, NodeType } from "../../common/domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
-import { BaseObj } from "../../domain/base_obj";
-import { Table, TableColumn } from "../../domain/uimetadata/table";
+import { BaseObj } from "../../common/domain/base_obj";
+import { Table, TableColumn } from "../../common/domain/uimetadata/table";
 import { TableColumnTreeObject } from "./tree.object.table.column";
 import { UUID } from "angular2-uuid";
 import { MetaItemDescriptor } from "../meta.item.descriptor";

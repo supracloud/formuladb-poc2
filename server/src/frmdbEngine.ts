@@ -4,11 +4,11 @@
  *  - the validations on metadata dependencies
  *  - the validations involving test data 
  */
-import { BaseObj } from "../../src/app/domain/base_obj";
-import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
-import { DataObj } from "../../src/app/domain/metadata/data_obj";
+import { BaseObj } from "../../src/app/common/domain/base_obj";
+import { Entity, EntityProperty } from "../../src/app/common/domain/metadata/entity";
+import { DataObj } from "../../src/app/common/domain/metadata/data_obj";
 
-import * as events from "../../src/app/domain/event";
+import * as events from "../../src/app/common/domain/event";
 import { TransactionalStore, TransactionalCallback, StoreIsolatedAtTransaction } from "./transactionalStore";
 
 import { userActionEditedFormDataHandler } from "./handlers/userActionEditedFormDataHandler";

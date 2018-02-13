@@ -2,15 +2,15 @@ import { Container } from "typedi";
 import { v4 as uuid } from 'uuid';
 import * as dateFormat from 'dateformat';
 
-import { BaseObj } from "../../src/app/domain/base_obj";
-import { Entity, EntityProperty } from "../../src/app/domain/metadata/entity";
-import { DataObj } from "../../src/app/domain/metadata/data_obj";
-import { Form } from "../../src/app/domain/uimetadata/form";
-import { Table } from "../../src/app/domain/uimetadata/table";
-import { MwzEvents } from "../../src/app/domain/event";
+import { BaseObj } from "../../src/app/common/domain/base_obj";
+import { Entity, EntityProperty } from "../../src/app/common/domain/metadata/entity";
+import { DataObj } from "../../src/app/common/domain/metadata/data_obj";
+import { Form } from "../../src/app/common/domain/uimetadata/form";
+import { Table } from "../../src/app/common/domain/uimetadata/table";
+import { MwzEvents } from "../../src/app/common/domain/event";
 
-import { KeyValueStore } from "../../src/app/key_value_store";
-import { FrmdbStore } from "../../src/app/frmdb_store";
+import { KeyValueStore } from "../../src/app/common/key_value_store";
+import { FrmdbStore } from "../../src/app/common/frmdb_store";
 import { KeyValueStores } from "./keyValueStores";
 
 export type TransactionalCallback = (event: MwzEvents, store: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;

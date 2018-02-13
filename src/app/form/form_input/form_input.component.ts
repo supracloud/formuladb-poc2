@@ -1,4 +1,4 @@
-import { NodeElement } from './../../domain/uimetadata/form';
+import { NodeElement } from './../../common/domain/uimetadata/form';
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,

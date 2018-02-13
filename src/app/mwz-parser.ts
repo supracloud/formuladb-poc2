@@ -1,6 +1,6 @@
-import { Entity, EntityProperty } from "./domain/metadata/entity";
-import { Form, NodeElement, NodeType } from './domain/uimetadata/form';
-import { Table, TableColumn } from './domain/uimetadata/table';
+import { Entity, EntityProperty } from "./common/domain/metadata/entity";
+import { Form, NodeElement, NodeType } from './common/domain/uimetadata/form';
+import { Table, TableColumn } from './common/domain/uimetadata/table';
 
 export class MwzParser {
   private INDENT: string = "  ";

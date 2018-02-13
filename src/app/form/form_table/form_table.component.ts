@@ -1,7 +1,7 @@
 import { Component, OnChanges, OnInit } from '@angular/core';
 import { BaseNodeComponent } from "./../base_node";
 
-import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../domain/uimetadata/form";
+import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../common/domain/uimetadata/form";
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 @Component({

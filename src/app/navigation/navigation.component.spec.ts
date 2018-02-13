@@ -7,7 +7,7 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { NavigationComponent } from './navigation.component';
 import * as state from '../entity-state';
 
-import * as mainDemoFlow from '../test/main_demo.flow';
+import * as mainDemoFlow from '../common/test/main_demo.flow';
 
 interface AppState {
   entity: state.EntityState;

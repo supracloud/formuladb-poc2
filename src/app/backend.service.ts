@@ -8,19 +8,19 @@ import { Injectable, InjectionToken, Inject } from '@angular/core';
 import { catchError, map, tap } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
-import { BaseObj } from "./domain/base_obj";
-import { ChangeObj } from "./domain/change_obj";
-import { DataObj } from "./domain/metadata/data_obj";
-import { Entity } from "./domain/metadata/entity";
-import { MwzEvents, MwzEvent } from "./domain/event";
-import { Table } from "./domain/uimetadata/table";
-import { Form, NodeElement } from "./domain/uimetadata/form";
+import { BaseObj } from "./common/domain/base_obj";
+import { ChangeObj } from "./common/domain/change_obj";
+import { DataObj } from "./common/domain/metadata/data_obj";
+import { Entity } from "./common/domain/metadata/entity";
+import { MwzEvents, MwzEvent } from "./common/domain/event";
+import { Table } from "./common/domain/uimetadata/table";
+import { Form, NodeElement } from "./common/domain/uimetadata/form";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { addIdsToForm, addIdsToTable } from "./domain.utils";
-import { KeyValueStore } from "./key_value_store";
-import { FrmdbStore } from "./frmdb_store";
+import { addIdsToForm, addIdsToTable } from "./common/domain.utils";
+import { KeyValueStore } from "./common/key_value_store";
+import { FrmdbStore } from "./common/frmdb_store";
 
 const USE_POUCHDB_REPLICATION: boolean = false;
 

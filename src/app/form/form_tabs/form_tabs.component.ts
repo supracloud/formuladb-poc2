@@ -3,7 +3,7 @@ import { BaseNodeComponent } from "./../base_node";
 
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 
-import { NodeType, FormTabs } from "../../domain/uimetadata/form";
+import { NodeType, FormTabs } from "../../common/domain/uimetadata/form";
 @Component({
   selector: '[form_tabs]',
   host: { class: "col" },

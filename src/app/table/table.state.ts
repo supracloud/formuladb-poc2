@@ -1,16 +1,16 @@
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from '../domain/metadata/data_obj';
-import { Table } from '../domain/uimetadata/table';
-import { ChangeObj, applyChanges } from '../domain/change_obj';
+import { DataObj } from '../common/domain/metadata/data_obj';
+import { Table } from '../common/domain/uimetadata/table';
+import { ChangeObj, applyChanges } from '../common/domain/change_obj';
 
 
 export { DataObj };
 export { Table };
 export { ChangeObj, applyChanges };
 
-import * as events from '../domain/event';
+import * as events from '../common/domain/event';
 
 export interface TableState {
   table: Table;

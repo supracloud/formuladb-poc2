@@ -5,9 +5,9 @@ import {
 
 import { NgbTabset } from "@ng-bootstrap/ng-bootstrap";
 
-import { Entity } from '../domain/metadata/entity';
-import { Form, FormGrid } from '../domain/uimetadata/form';
-import { Table } from '../domain/uimetadata/table';
+import { Entity } from '../common/domain/metadata/entity';
+import { Form, FormGrid } from '../common/domain/uimetadata/form';
+import { Table } from '../common/domain/uimetadata/table';
 import { Subscription } from 'rxjs/Subscription';
 import { MwzParser } from '../mwz-parser';
 

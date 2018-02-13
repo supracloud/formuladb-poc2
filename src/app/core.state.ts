@@ -1,7 +1,7 @@
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from './domain/metadata/data_obj';
+import { DataObj } from './common/domain/metadata/data_obj';
 
 export const NotReadonly = '_NotReadonly_';
 

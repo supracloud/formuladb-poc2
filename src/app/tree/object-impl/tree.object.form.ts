@@ -1,5 +1,5 @@
 import { TreeObject } from "../tree.object";
-import * as form from "../../domain/uimetadata/form";
+import * as form from "../../common/domain/uimetadata/form";
 import { TreeChange } from "../tree.change";
 import { UUID } from "angular2-uuid";
 import { MetaItemDescriptor } from "../meta.item.descriptor";
