@@ -32,3 +32,18 @@
 [0212/195737.407:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
 [0212/195747.275:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
 [0212/195806.767:ERROR:prune_crash_reports.cc(34)] PruneCrashReportDatabase: Failed to get pending reports
+[0212/204953.387:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0212/204953.397:ERROR:exception_snapshot_win.cc(88)] thread ID 54764 not found in process
+[0212/204953.397:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0212/205239.253:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0212/205239.253:ERROR:exception_snapshot_win.cc(88)] thread ID 43772 not found in process
+[0212/205239.253:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0212/205308.429:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0212/205308.429:ERROR:exception_snapshot_win.cc(88)] thread ID 58540 not found in process
+[0212/205308.429:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0212/205514.344:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0212/205514.344:ERROR:exception_snapshot_win.cc(88)] thread ID 21348 not found in process
+[0212/205514.344:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed
+[0213/091334.899:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0213/091334.903:ERROR:exception_snapshot_win.cc(88)] thread ID 50008 not found in process
+[0213/091334.904:WARNING:crash_report_exception_handler.cc(62)] ProcessSnapshotWin::Initialize failed

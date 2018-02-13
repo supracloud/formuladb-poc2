@@ -1,17 +1,12 @@
 import { browser, by, element, promise } from 'protractor';
+import { $wait } from "./common";
+import { ElementArrayFinder } from 'protractor/built/element';
 
 export class TablePO {
-  async getTable(_id: string, colName: string): Promise<string[][]> {
-    let tableCells: string[][] = [];
-    let trs = element(by.css('.mwz-data-table')).all(by.tagName('tr'));
-    trs.each(async tr => {
-      let row = [];
-      tableCells.push(row);
-      tr.all(by.tagName('td')).each(async td => {
-        row.push(await td.getText());
-      })
-    });
-
-    return tableCells;
-  }
+    async getTable(): Promise<string[][]> {
+        let firstCellTxt = await (await $wait(element.all(by.css('.mwz-data-table tr td')).first())).getText();
+        return element.all(by.css('.mwz-data-table tr'))
+            .map<string[]>(tr => tr.all(by.css('td,th')).map<string>(td => td.getText()))
+        ;
+    }
 }

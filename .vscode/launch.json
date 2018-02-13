@@ -21,6 +21,14 @@
             "restart": "true"
         },
         {
+            "name": "e2e",
+            "type": "node",
+            "request": "attach",
+            "port": 9239,
+            "protocol": "inspector",
+            "restart": "true"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
