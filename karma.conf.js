@@ -50,7 +50,7 @@ module.exports = function (config) {
           '--remote-debugging-port=9222',
           'http://0.0.0.0:9876/'
         ]
-        : [ "--headless", "--disable-gpu", '--no-sandbox' ]
+        : [ "--headless", "--disable-gpu", '--no-sandbox', '--remote-debugging-port=9222' ]
       }
     }
   });
