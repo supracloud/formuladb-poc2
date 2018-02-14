@@ -3,85 +3,84 @@ import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 export const General = {
     type_: "Entity_", _id: "/General",
-    properties: {},
-    module: true
+    module_: true,
 };
 
 export const General__Actor = {
     type_: "Entity_", _id: "/General/Actor",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING, "allowNull": false },
-        username: { type: PropertyTypeN.STRING },
-        name: { type: PropertyTypeN.STRING },
-        role: { type: PropertyTypeN.STRING },
-        password: { type: PropertyTypeN.STRING },
-        details: { type: PropertyTypeN.STRING },
-        type: { type: PropertyTypeN.STRING },
-        parent_code: { type: PropertyTypeN.STRING },
-        param1: { type: PropertyTypeN.STRING },
-        state: { type: PropertyTypeN.STRING, "allowNull": false, }
-    }
+
+    code: { propType_: PropertyTypeN.STRING, "allowNull": false },
+    username: { propType_: PropertyTypeN.STRING },
+    name: { propType_: PropertyTypeN.STRING },
+    role: { propType_: PropertyTypeN.STRING },
+    password: { propType_: PropertyTypeN.STRING },
+    details: { propType_: PropertyTypeN.STRING },
+    type: { propType_: PropertyTypeN.STRING },
+    parent_code: { propType_: PropertyTypeN.STRING },
+    param1: { propType_: PropertyTypeN.STRING },
+    state: { propType_: PropertyTypeN.STRING, "allowNull": false, }
+
 };
 
 export const General__Currency = {
     type_: "Entity_", _id: "/General/Currency",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING },
-        rate1: { type: PropertyTypeN.NUMBER },
-        rate2: { type: PropertyTypeN.NUMBER },
-        rate3: { type: PropertyTypeN.NUMBER },
-        rate4: { type: PropertyTypeN.NUMBER },
-        rate5: { type: PropertyTypeN.NUMBER, }
-    }
+
+    code: { propType_: PropertyTypeN.STRING },
+    rate1: { propType_: PropertyTypeN.NUMBER },
+    rate2: { propType_: PropertyTypeN.NUMBER },
+    rate3: { propType_: PropertyTypeN.NUMBER },
+    rate4: { propType_: PropertyTypeN.NUMBER },
+    rate5: { propType_: PropertyTypeN.NUMBER, }
+
 };
 
 export const General__Person = {
     type_: "Entity_", _id: "/General/Person",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING, "allowNull": false },
-        actor_code: { type: PropertyTypeN.STRING, "allowNull": false },
-        name: { type: PropertyTypeN.STRING },
-        district: { type: PropertyTypeN.STRING },
-        city: { type: PropertyTypeN.STRING },
-        address: { type: PropertyTypeN.STRING },
-        supervisor: { type: PropertyTypeN.STRING },
-        manager: { type: PropertyTypeN.STRING },
-        phone: { type: PropertyTypeN.STRING },
-        fax: { type: PropertyTypeN.STRING },
-        tax_number: { type: PropertyTypeN.STRING },
-        details: { type: PropertyTypeN.STRING },
-        state: { type: PropertyTypeN.STRING, "allowNull": false, }
-    }
+
+    code: { propType_: PropertyTypeN.STRING, "allowNull": false },
+    actor_code: { propType_: PropertyTypeN.STRING, "allowNull": false },
+    name: { propType_: PropertyTypeN.STRING },
+    district: { propType_: PropertyTypeN.STRING },
+    city: { propType_: PropertyTypeN.STRING },
+    address: { propType_: PropertyTypeN.STRING },
+    supervisor: { propType_: PropertyTypeN.STRING },
+    manager: { propType_: PropertyTypeN.STRING },
+    phone: { propType_: PropertyTypeN.STRING },
+    fax: { propType_: PropertyTypeN.STRING },
+    tax_number: { propType_: PropertyTypeN.STRING },
+    details: { propType_: PropertyTypeN.STRING },
+    state: { propType_: PropertyTypeN.STRING, "allowNull": false, }
+
 };
 
 export const General__User = {
     type_: "Entity_", _id: "/General/User",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING, "allowNull": false },
-        username: { type: PropertyTypeN.STRING },
-        name: { type: PropertyTypeN.STRING },
-        role: { type: PropertyTypeN.STRING },
-        password: { type: PropertyTypeN.STRING },
-        details: { type: PropertyTypeN.STRING },
-        type: { type: PropertyTypeN.STRING },
-        parent_code: { type: PropertyTypeN.STRING },
-        param1: { type: PropertyTypeN.STRING },
-        state: { type: PropertyTypeN.STRING, "allowNull": false, }
-    }
+
+    code: { propType_: PropertyTypeN.STRING, "allowNull": false },
+    username: { propType_: PropertyTypeN.STRING },
+    name: { propType_: PropertyTypeN.STRING },
+    role: { propType_: PropertyTypeN.STRING },
+    password: { propType_: PropertyTypeN.STRING },
+    details: { propType_: PropertyTypeN.STRING },
+    type: { propType_: PropertyTypeN.STRING },
+    parent_code: { propType_: PropertyTypeN.STRING },
+    param1: { propType_: PropertyTypeN.STRING },
+    state: { propType_: PropertyTypeN.STRING, "allowNull": false, }
+
 };
 
 export const General__Client = {
     type_: "Entity_", _id: "/Inventory/Client",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING, "allowNull": false },
-        username: { type: PropertyTypeN.STRING },
-        name: { type: PropertyTypeN.STRING },
-        role: { type: PropertyTypeN.STRING },
-        password: { type: PropertyTypeN.STRING },
-        details: { type: PropertyTypeN.STRING },
-        type: { type: PropertyTypeN.STRING },
-        parent_code: { type: PropertyTypeN.STRING },
-        param1: { type: PropertyTypeN.STRING },
-        state: { type: PropertyTypeN.STRING, "allowNull": false, }
-    }
+
+    code: { propType_: PropertyTypeN.STRING, "allowNull": false },
+    username: { propType_: PropertyTypeN.STRING },
+    name: { propType_: PropertyTypeN.STRING },
+    role: { propType_: PropertyTypeN.STRING },
+    password: { propType_: PropertyTypeN.STRING },
+    details: { propType_: PropertyTypeN.STRING },
+    type: { propType_: PropertyTypeN.STRING },
+    parent_code: { propType_: PropertyTypeN.STRING },
+    param1: { propType_: PropertyTypeN.STRING },
+    state: { propType_: PropertyTypeN.STRING, "allowNull": false, }
+
 };

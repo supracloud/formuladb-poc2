@@ -13,12 +13,11 @@ import { ChangeObj } from "./common/domain/change_obj";
 import { DataObj } from "./common/domain/metadata/data_obj";
 import { Entity } from "./common/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "./common/domain/event";
-import { Table } from "./common/domain/uimetadata/table";
-import { Form, NodeElement } from "./common/domain/uimetadata/form";
+import { Table, addIdsToTable } from "./common/domain/uimetadata/table";
+import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form";
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { addIdsToForm, addIdsToTable } from "./common/domain.utils";
 import { KeyValueStore } from "./common/key_value_store";
 import { FrmdbStore } from "./common/frmdb_store";
 
@@ -137,7 +136,7 @@ export class BackendService extends FrmdbStore {
         if (!USE_POUCHDB_REPLICATION) {
             event.updatedIds_.forEach(id_ => {
                 this.dataDB.get(id_)
-                .then(obj => this.dataChangeCallback([obj]))
+                .then(obj => this.dataChangeCallback([obj as BaseObj]))
                 .catch(err => console.error(err));
             });
         }

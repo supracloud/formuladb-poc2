@@ -1,6 +1,7 @@
-import { BaseObj } from '../base_obj';
-import { EntityProperty } from "../metadata/entity";
+import { BaseObj, SubObj } from '../base_obj';
+import { EntityProperty, propertiesWithNamesOf, PropertyTypeN, Entity } from "../metadata/entity";
 import { Label } from './label';
+import { generateUUID } from '../uuid';
 
 export class NodeElementAttributes {
     copiedProperties?: string[];//this only applies to entities
@@ -21,7 +22,7 @@ export enum NodeType {
     form_timepicker        = "form_timepicker"  ,
 }
 
-export class FormGrid {
+export class FormGrid extends SubObj {
     readonly nodeType = NodeType.form_grid;
     _id?: string;
     childNodes?: NodeElement[];
@@ -132,4 +133,44 @@ export function getChildPath(nodeEl: NodeElement) {
     if (isEntityNodeElement(nodeEl)) return nodeEl.entityName;
     if (isTableNodeElement(nodeEl)) return nodeEl.tableName;
     return 'n/a-childPath-for' + nodeEl.nodeType;
+}
+
+export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>): Form {
+    let form = new Form();
+    form._id = 'Form_:' + entity._id
+    form.grid = new FormGrid();
+
+    setFormElementChildren(form.grid, entity, entitiesMap);
+    console.log('form:', JSON.stringify(form));
+    addIdsToForm(form.grid);
+    return form;
+}
+
+export function setFormElementChildren(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: Map<string, Entity>) {
+    parentFormEl.childNodes = propertiesWithNamesOf(entity).map(pn => {
+        let child = null;
+        if (pn.prop.propType_ === PropertyTypeN.TABLE) {
+            child = pn.prop.isLargeTable ? new FormTable() : new FormTabs();
+            child.tableName = pn.name;
+            setFormElementChildren(child, entitiesMap.get(pn.prop.entity.deepPath), entitiesMap);
+        } else if (pn.prop.propType_ === PropertyTypeN.REFERENCE_ENTITY) {
+            child = new FormAutocomplete();
+            child.entityName = pn.name;
+            child.attributes = { copiedProperties: pn.prop.entity.copiedProperties };
+        } else {
+            child = new FormInput();
+            child.propertyName = pn.name;
+        }
+
+        let ret = new FormGridRow();
+        ret.childNodes = [child];
+        return ret;
+    });
+}
+
+export function addIdsToForm(input: NodeElement): void {
+    if (!input._id) { input._id = generateUUID(); }
+    if (isNodeElementWithChildren(input) && input.childNodes.length > 0) {
+        input.childNodes.forEach(c => addIdsToForm(c));
+    }
 }

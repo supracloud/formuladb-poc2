@@ -8,6 +8,7 @@
         "DATETIME",
         "Frmdb",
         "Notifs",
+        "Overridable",
         "SUBENTITY"
     ],
     "cSpell.enabledLanguageIds": [

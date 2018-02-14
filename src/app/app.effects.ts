@@ -22,12 +22,11 @@ import { Entity, EntityProperty, PropertyTypeN } from "./common/domain/metadata/
 import { ChangeObj } from "./common/domain/change_obj";
 import { MwzEvents } from "./common/domain/event";
 
-import { Table, TableColumn } from "./common/domain/uimetadata/table";
-import { Form, NodeElement, NodeType } from "./common/domain/uimetadata/form";
+import { Table, TableColumn, getDefaultTable } from "./common/domain/uimetadata/table";
+import { Form, NodeElement, NodeType, getDefaultForm } from "./common/domain/uimetadata/form";
 
 import * as appState from './app.state';
 import { generateUUID } from "./common/domain/uuid";
-import { getDefaultTable, getDefaultForm } from "./common/domain.utils";
 import { BackendService } from "./backend.service";
 
 
@@ -107,7 +106,7 @@ export class AppEffects {
             } else if (obj.type_ == 'Form_') {
                 this.store.dispatch(new appState.FormFromBackendAction(obj as Form));
             } else {
-                this.store.dispatch(new appState.FormDataFromBackendAction(obj));
+                this.store.dispatch(new appState.FormDataFromBackendAction(obj as DataObj));
                 this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(obj as DataObj)]));
             }
         });

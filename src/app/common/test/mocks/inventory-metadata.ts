@@ -1,155 +1,150 @@
-import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
-import { typesafeDeepPath } from "../../domain.utils";
+import { Entity, PropertyTypeN, typesafeDeepPath } from '../../domain/metadata/entity';
 
 export const Inventory = {
     type_: "Entity_", _id: "/Inventory",
-    properties: {},
-    module: true
+
+    module_: true
 };
 
 export const Inventory__Product = {
     type_: "Entity_", _id: "/Inventory/Product",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING, allowNull: false },
-        barcode: { type: PropertyTypeN.STRING },
-        name: { type: PropertyTypeN.STRING, allowNull: false },
-        description: { type: PropertyTypeN.STRING },
-        inventoryLocation: {
-            type: PropertyTypeN.TABLE, properties: { 
-                _id: { type: PropertyTypeN.STRING },
-                locationCode: { type: PropertyTypeN.STRING, allowNull: false, defaultValue: "DEFAULT-location" },
-                category: { type: PropertyTypeN.STRING, allowNull: false },
-                price: { type: PropertyTypeN.NUMBER, allowNull: true },
-                currency: {
-                    type: PropertyTypeN.REFERENCE_ENTITY,
-                    entity: {
-                        deepPath: "/General/Currency",
-                        copiedProperties: ["currency/code", "name"],
-                    }
-                },
-                minimal_stock: { type: PropertyTypeN.NUMBER, allowNull: false },
-                received_stock: {
-                    type: PropertyTypeN.FORMULA,
-                    formula: {
-                        SUM: [{ EXPRESSION: "itemsInReceipt.received_quantity"}]
-                    }
-                },
-                available_stock: {
-                    type: PropertyTypeN.FORMULA,
-                    formula: {
-                        EXPRESSION: 'received_stock - reserved_stock - delivered_stock'
-                    }
-                },
-                reserved_stock: {
-                    type: PropertyTypeN.FORMULA,
-                    formula: {
-                        SUM: [{ EXPRESSION: "itemsInOrder.reserved_quantity" }]
-                    }
-                },
-                delivered_stock: { type: PropertyTypeN.NUMBER },
-                moving_stock: { type: PropertyTypeN.NUMBER, allowNull: false },
-                state: { type: PropertyTypeN.STRING, allowNull: false }
+
+    code: { propType_: PropertyTypeN.STRING, allowNull: false },
+    barcode: { propType_: PropertyTypeN.STRING },
+    name: { propType_: PropertyTypeN.STRING, allowNull: false },
+    description: { propType_: PropertyTypeN.STRING },
+    inventoryLocation: {
+        propType_: PropertyTypeN.TABLE,
+        locationCode: { propType_: PropertyTypeN.STRING, allowNull: false, defaultValue: "DEFAULT-location" },
+        category: { propType_: PropertyTypeN.STRING, allowNull: false },
+        price: { propType_: PropertyTypeN.NUMBER, allowNull: true },
+        currency: {
+            propType_: PropertyTypeN.REFERENCE_ENTITY,
+            entity: {
+                deepPath: "/General/Currency",
+                copiedProperties: ["code"],
             }
-        }
+        },
+        minimal_stock: { propType_: PropertyTypeN.NUMBER, allowNull: false },
+        received_stock: {
+            propType_: PropertyTypeN.FORMULA,
+            formula: {
+                SUM: [{ EXPRESSION: "itemsInReceipt.received_quantity" }]
+            }
+        },
+        available_stock: {
+            propType_: PropertyTypeN.FORMULA,
+            formula: {
+                EXPRESSION: 'received_stock - reserved_stock - delivered_stock'
+            }
+        },
+        reserved_stock: {
+            propType_: PropertyTypeN.FORMULA,
+            formula: {
+                SUM: [{ EXPRESSION: "itemsInOrder.reserved_quantity" }]
+            }
+        },
+        delivered_stock: { propType_: PropertyTypeN.NUMBER },
+        moving_stock: { propType_: PropertyTypeN.NUMBER, allowNull: false },
+        state: { propType_: PropertyTypeN.STRING, allowNull: false }
+
     }
+
 };
 
 export const Inventory__ProductUnit = {
     type_: "Entity_", _id: "/Inventory/ProductUnit",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        code: { type: PropertyTypeN.STRING, allowNull: false },
-        product: {
-            type: PropertyTypeN.REFERENCE_ENTITY, entity: {
-                deepPath: "/Inventory/Product",
-                copiedProperties: [
-                    "code",
-                    "name",
-                    "price",
-                    "currency_code",
-                ]
-            }
-        },
-        inventoryLocation: { type: PropertyTypeN.STRING, allowNull: false },
-        serial1: { type: PropertyTypeN.STRING },
-        serial2: { type: PropertyTypeN.STRING },
-        serial3: { type: PropertyTypeN.STRING },
-        serial4: { type: PropertyTypeN.STRING },
-        serial5: { type: PropertyTypeN.STRING },
-        serial6: { type: PropertyTypeN.STRING },
-        serial7: { type: PropertyTypeN.STRING },
-        install_date: { type: PropertyTypeN.DATETIME },
-        state: { type: PropertyTypeN.STRING, allowNull: false },
-        nb_piston_cycles: { type: PropertyTypeN.STRING },
-        brita_counter: { type: PropertyTypeN.STRING },
-        washing_cycles: { type: PropertyTypeN.STRING, }
-    }
+
+    code: { propType_: PropertyTypeN.STRING, allowNull: false },
+    product: {
+        propType_: PropertyTypeN.REFERENCE_ENTITY, entity: {
+            deepPath: "/Inventory/Product",
+            copiedProperties: [
+                "code",
+                "name",
+                "price",
+                "currency_code",
+            ]
+        }
+    },
+    inventoryLocation: { propType_: PropertyTypeN.STRING, allowNull: false },
+    serial1: { propType_: PropertyTypeN.STRING },
+    serial2: { propType_: PropertyTypeN.STRING },
+    serial3: { propType_: PropertyTypeN.STRING },
+    serial4: { propType_: PropertyTypeN.STRING },
+    serial5: { propType_: PropertyTypeN.STRING },
+    serial6: { propType_: PropertyTypeN.STRING },
+    serial7: { propType_: PropertyTypeN.STRING },
+    install_date: { propType_: PropertyTypeN.DATETIME },
+    state: { propType_: PropertyTypeN.STRING, allowNull: false },
+    nb_piston_cycles: { propType_: PropertyTypeN.STRING },
+    brita_counter: { propType_: PropertyTypeN.STRING },
+    washing_cycles: { propType_: PropertyTypeN.STRING, }
+
 };
 
 export const Inventory__Receipt = {
     type_: "Entity_", _id: "/Inventory/Receipt",
-    properties: { _id: { type: PropertyTypeN.STRING },
-        items: {
-            type: PropertyTypeN.TABLE,
-            properties: { _id: { type: PropertyTypeN.STRING },
-                product: {
-                    type: PropertyTypeN.REFERENCE_ENTITY,
-                    entity: {
-                        deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product.properties, 'inventoryLocation'),
-                        copiedProperties: [
-                            "../code",
-                            "../name",
-                            "locationCode",
-                            "price",
-                            "currency/code",
-                        ]
-                    }
-                },
-                received_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
-                // units: {
-                //     type: PropertyTypeN.TABLE,
-                //     properties: { _id: { type: PropertyTypeN.STRING },
-                //         unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ["code", "serial"] } }
-                //     }
-                // },
+
+    items: {
+        propType_: PropertyTypeN.TABLE,
+
+        product: {
+            propType_: PropertyTypeN.REFERENCE_ENTITY,
+            entity: {
+                deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+                copiedProperties: [
+                    "../../code",
+                    "../../name",
+                    "locationCode",
+                    "price",
+                    "currency/code",
+                ]
             }
-        }
+        },
+        received_quantity: { propType_: PropertyTypeN.NUMBER, allowNull: false },
+        // units: {
+        //     propType_: PropertyTypeN.TABLE,
+        // 
+        //         unit: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ["code", "serial"] } }
+        //     }
+        // },
+
     }
+
 };
 
 export const Inventory__Order = {
     type_: "Entity_", _id: "/Inventory/Order",
-    properties: { 
-        _id: { type: PropertyTypeN.STRING },
-        items: {
-            type: PropertyTypeN.TABLE, properties: { 
-                _id: { type: PropertyTypeN.STRING },
-                product: {
-                    type: PropertyTypeN.REFERENCE_ENTITY,
-                    entity: {
-                        deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product.properties, 'inventoryLocation'),
-                        copiedProperties: [
-                            "../code",
-                            "../name",
-                            "locationCode",
-                            "price",
-                            "currency/code",
-                        ]
-                    }
-                },
-                requested_quantity: { type: PropertyTypeN.NUMBER, allowNull: false },
-                available_stock: { type: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product.available_stock" } },
-                reserved_quantity: {
-                    type: PropertyTypeN.FORMULA,
-                    formula: { EXPRESSION: 'if(available_stock > requested_quantity, requested_quantity, available_stock)'}
-                },
-                client_stock: { type: PropertyTypeN.NUMBER },
-                // units: {
-                //     type: PropertyTypeN.TABLE,
-                //     properties: { _id: { type: PropertyTypeN.STRING },
-                //         unit: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ["code", "serial"] } }
-                //     }
-                // },
+    items: {
+        propType_: PropertyTypeN.TABLE,
+        product: {
+            propType_: PropertyTypeN.REFERENCE_ENTITY,
+            entity: {
+                deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+                copiedProperties: [
+                    "../../code",
+                    "../../name",
+                    "locationCode",
+                    "price",
+                    "currency/code",
+                ]
             }
-        }
+        },
+        requested_quantity: { propType_: PropertyTypeN.NUMBER, allowNull: false },
+        available_stock: { propType_: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product.available_stock" } },
+        reserved_quantity: {
+            propType_: PropertyTypeN.FORMULA,
+            formula: { EXPRESSION: 'if(available_stock > requested_quantity, requested_quantity, available_stock)' }
+        },
+        client_stock: { propType_: PropertyTypeN.NUMBER },
+        // units: {
+        //     propType_: PropertyTypeN.TABLE,
+        // 
+        //         unit: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ["code", "serial"] } }
+        //     }
+        // },
+
     }
+
 };

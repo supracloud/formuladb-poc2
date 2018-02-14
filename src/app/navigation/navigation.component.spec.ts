@@ -7,7 +7,7 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { NavigationComponent } from './navigation.component';
 import * as state from '../entity-state';
 
-import * as mainDemoFlow from '../common/test/main_demo.flow';
+import {flow, FlowDataType} from "../common/test/1_application_init_flow";
 
 interface AppState {
   entity: state.EntityState;
@@ -17,6 +17,11 @@ describe('NavigationComponent', () => {
   let component: NavigationComponent;
   let fixture: ComponentFixture<NavigationComponent>;
   let store: Store<state.EntityState>;
+  let flowTestData: FlowDataType;
+
+  beforeAll(() => {
+      flowTestData = flow();
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -43,7 +48,7 @@ describe('NavigationComponent', () => {
   it('main flow', () => {
     expect(component).toBeTruthy();
     
-    store.dispatch(new state.EntitiesFromBackendFullLoadAction(mainDemoFlow.mockMetadata.entities));
+    store.dispatch(new state.EntitiesFromBackendFullLoadAction(flowTestData.mockMetadata.entities));
 
     let firstEntity = fixture.debugElement.query(By.css('li'));
   });

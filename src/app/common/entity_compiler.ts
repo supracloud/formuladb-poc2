@@ -1,5 +1,4 @@
-import { Entity, PropertyTypeN } from "./domain/metadata/entity";
-import { extendEntityProperties, queryEntityPropertiesWithDeepPath, getEntityIdFromDeepPath } from "../domain.utils";
+import { Entity, PropertyTypeN, propertiesWithNamesOf, extendEntityProperties, queryEntityWithDeepPath, getEntityIdFromDeepPath } from "./domain/metadata/entity";
 import * as _ from "lodash";
 import { FrmdbStore } from "./frmdb_store";
 
@@ -21,11 +20,11 @@ export class EntityCompiler {
     }
 
     public async applyInheritanceTo(entity: Entity) {
-        _.toPairs(entity.properties).forEach(async ([propName, prop]) => {
-            if ((prop.type === PropertyTypeN.EXTEND_ENTITY || prop.type === PropertyTypeN.TABLE) && prop.entity != null) {
-                let referencedEntity = await this.frmdbStore.getEntity(getEntityIdFromDeepPath(prop.entity.deepPath));
-                if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.entity.deepPath);
-                extendEntityProperties(prop.properties, queryEntityPropertiesWithDeepPath(referencedEntity.properties, prop.entity.deepPath));
+        propertiesWithNamesOf(entity).forEach(async pn => {
+            if ((pn.prop.propType_ === PropertyTypeN.EXTEND_ENTITY || pn.prop.propType_ === PropertyTypeN.TABLE) && pn.prop.entity != null) {
+                let referencedEntity = await this.frmdbStore.getEntity(getEntityIdFromDeepPath(pn.prop.entity.deepPath));
+                if (referencedEntity == null) throw new Error("Cannot find entity for " + pn.prop.entity.deepPath);
+                extendEntityProperties(pn.prop, queryEntityWithDeepPath(referencedEntity, pn.prop.entity.deepPath));
             }
         });
     }

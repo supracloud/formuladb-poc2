@@ -10,7 +10,7 @@ import { FormModalService } from "../form-modal.service";
 
 import * as state from './table.state';
 
-import * as mainDemoFlow from "../common/test/main_demo.flow";
+import {flow, FlowDataType} from "../common/test/1_application_init_flow";
 
 interface AppState {
   nav: state.TableState;
@@ -24,7 +24,12 @@ xdescribe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
   let store: Store<state.TableState>;
-  
+  let testData: FlowDataType;
+
+  beforeAll(() => {
+    testData = flow();
+  });
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -51,7 +56,7 @@ xdescribe('TableComponent', () => {
     expect(component).toBeTruthy();
 
     store.dispatch(new state.TableFormBackendAction(
-      mainDemoFlow.SIMPLE_FLOW.And_default_table_page_with_service_forms_should_be_displayed.serviceFormTable));
+      testData.serviceFormTable));
     
     let firstEntity = fixture.debugElement.query(By.css('tr'));
         

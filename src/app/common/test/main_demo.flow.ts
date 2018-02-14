@@ -3,13 +3,8 @@ import { ChangeObj } from "../domain/change_obj";
 import * as meta from './mocks/mock-metadata';
 import { MockData } from "./mocks/mock-data";
 
-import { getDefaultTable } from "../domain.utils";
 import { Entity } from '../domain/metadata/entity';
-
-export var mockMetadata = new meta.MockMetadata();
-export var mockData = new MockData(mockMetadata.entitiesMap)
-
-let SYSTEMNAME = 'Cloudev'; //NEED IDEAS HERE!!! metawiz is not catchy enough, cloudev sounds better by there is a cloudevtech.com, let's open a poll
+import { getDefaultTable } from "../domain/uimetadata/table";
 
 class Participant {
     msgTo(dst: Participant, payload: any) {
@@ -34,7 +29,7 @@ export const Client = {participants: [AppCmp, NavCmp, TableCmp, FormCmp, AppEffe
 export const Server = {participants: [Express]} as Box;
 
 export const SIMPLE_FLOW = {
-    comment1: `The 5 min overview of ${SYSTEMNAME}
+    comment1: `The 5 min overview of FormulaDB
         System running off existing metadata and data.
         Nothing really special, just standard looking ERP software`,
     When_user_first_accesses_the_app: {
@@ -58,12 +53,12 @@ export const SIMPLE_FLOW = {
 
 export const METADATA_FLOW = {
     
-    comment2: `What is special about ${SYSTEMNAME}: this standard looking ERP software is implemented using a simple language accesible to busines people`,
+    comment2: `What is special about FormulaDB: this standard looking ERP software is implemented using a simple language accesible to busines people`,
     TODO_use_editor_to_change_order_of_columns_in_table: {},
     TOOD_use_editor_to_change_form_layout: {},
 
     comment3: `So far only simple changes in the ui layout, let's see how easy it is to add new functionality to the system.
-        We argue it is as simple as editing a Spreadsheet/Excel, anybody who has used Excel with a few formulas can use ${SYSTEMNAME}.`,
+        We argue it is as simple as editing a Spreadsheet/Excel, anybody who has used Excel with a few formulas can use FormulaDB.`,
     TODO_create_Revision_Entity: {},
     TOOD_create_Revision_Form: {},
     TODO_create_and_edit_revisions: {},

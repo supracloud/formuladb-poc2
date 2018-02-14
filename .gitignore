@@ -57,3 +57,4 @@ server/mwztransactions
 server/log.txt
 couchdb_data
 $Recycle.Bin
+debug.log

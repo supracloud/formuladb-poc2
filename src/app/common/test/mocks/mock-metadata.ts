@@ -1,14 +1,13 @@
 import * as _ from 'lodash';
 
-import { Entity, PropertyTypeN } from '../../domain/metadata/entity'
+import { NonReservedPropNamesOf, ReservedPropNamesOf } from "../../domain/base_obj";
+import { Entity, PropertyTypeN, isEntityProperty, extendEntityProperties, queryEntityWithDeepPath, EntityProperties, EntityProperty, getEntityIdFromDeepPath } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as FinancialMetadata from "./financial-metadata";
-
-import { extendEntityProperties, queryEntityPropertiesWithDeepPath, getEntityIdFromDeepPath } from "../../domain.utils";
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -19,11 +18,6 @@ export * from "./financial-metadata";
 export class MockMetadata {
 
   public constructor() {
-    this.entities.forEach(meta => {
-      meta.properties.type_ = { type: PropertyTypeN.STRING };
-      meta.properties._id = { type: PropertyTypeN.STRING };
-      meta.properties._rev = {type: PropertyTypeN.STRING};
-    });
 
     this.entities.forEach(meta => {
       this.entitiesMap.set(meta._id, meta);
@@ -34,15 +28,40 @@ export class MockMetadata {
 
   private applyInheritance() {
     this.entities.forEach(entity => {
-      _.toPairs(entity.properties).forEach(([propName, prop]) => {
-        if ((prop.type === PropertyTypeN.EXTEND_ENTITY || prop.type === PropertyTypeN.TABLE) && prop.entity != null) {
+      _.toPairs(entity).forEach(([propName, prop]) => {
+        if (!isEntityProperty(prop)) return;
+        if ((prop.propType_ === PropertyTypeN.EXTEND_ENTITY || prop.propType_ === PropertyTypeN.TABLE) && prop.entity != null) {
           let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.entity.deepPath));
           if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.entity.deepPath);
-          extendEntityProperties(prop.properties, queryEntityPropertiesWithDeepPath(referencedEntity.properties, prop.entity.deepPath));
+          extendEntityProperties(prop, queryEntityWithDeepPath(referencedEntity, prop.entity.deepPath));
         }
       })
     });
   }
+
+  //just for static type checking
+  private checkedEntityProperties = [
+    GeneralMetadata.General as PickEntityProperties<typeof GeneralMetadata.General>,
+    GeneralMetadata.General__Actor as PickEntityProperties<typeof GeneralMetadata.General__Actor>,
+    GeneralMetadata.General__Currency as PickEntityProperties<typeof GeneralMetadata.General__Currency>,
+    GeneralMetadata.General__Person as PickEntityProperties<typeof GeneralMetadata.General__Person>,
+    GeneralMetadata.General__User as PickEntityProperties<typeof GeneralMetadata.General__User>,
+    InventoryMetadata.Inventory as PickEntityProperties<typeof InventoryMetadata.Inventory>,
+    GeneralMetadata.General__Client as PickEntityProperties<typeof GeneralMetadata.General__Client>,
+    InventoryMetadata.Inventory__Order as PickEntityProperties<typeof InventoryMetadata.Inventory__Order>,
+    InventoryMetadata.Inventory__Receipt as PickEntityProperties<typeof InventoryMetadata.Inventory__Receipt>,
+    InventoryMetadata.Inventory__Product as PickEntityProperties<typeof InventoryMetadata.Inventory__Product>,
+    InventoryMetadata.Inventory__ProductUnit as PickEntityProperties<typeof InventoryMetadata.Inventory__ProductUnit>,
+    FinancialMetadata.Financial as PickEntityProperties<typeof FinancialMetadata.Financial>,
+    FinancialMetadata.Financial__Account as PickEntityProperties<typeof FinancialMetadata.Financial__Account>,
+    FinancialMetadata.Financial__Transaction as PickEntityProperties<typeof FinancialMetadata.Financial__Transaction>,
+    FormsMetadata.Forms as PickEntityProperties<typeof FormsMetadata.Forms>,
+    FormsMetadata.Forms__ServiceForm as PickEntityProperties<typeof FormsMetadata.Forms__ServiceForm>,
+    ReportsMetadata.Reports as PickEntityProperties<typeof ReportsMetadata.Reports>,
+    ReportsMetadata.Reports__DetailedCentralizerReport as PickEntityProperties<typeof ReportsMetadata.Reports__DetailedCentralizerReport>,
+    ReportsMetadata.Reports__GenericReport as PickEntityProperties<typeof ReportsMetadata.Reports__GenericReport>,
+    ReportsMetadata.Reports__ServiceCentralizerReport as PickEntityProperties<typeof ReportsMetadata.Reports__ServiceCentralizerReport>,
+  ];
 
   public entities: Entity[] = [
     GeneralMetadata.General as Entity,
@@ -68,4 +87,8 @@ export class MockMetadata {
   ];
 
   public entitiesMap = new Map<string, Entity>();
+}
+
+type PickEntityProperties<T> = {
+  [P in NonReservedPropNamesOf<T>]: EntityProperty;
 }

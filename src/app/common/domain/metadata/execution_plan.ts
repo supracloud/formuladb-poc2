@@ -1,4 +1,6 @@
+import { SubObj } from "../base_obj";
 
-export class ExecutionPlan {
+
+export class ExecutionPlan extends SubObj {
 
 }
