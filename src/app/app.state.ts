@@ -99,7 +99,7 @@ export function parseUrl(url: string): { path: string, id: string } {
   let path: string = null;
   let id: string = null;
   if (null != match) {
-    path = match[1];
+    path = '/' + match[1];
     if (match.length >=3 && match[2] != null) path = path + '/' + match[2];
     if (match.length >= 4 && match[3] != null) id = match[3];
   } else {

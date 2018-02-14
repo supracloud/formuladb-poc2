@@ -2,14 +2,14 @@ import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 
 export const Reports = {
-    type_: "Entity_", _id: "Reports",
+    type_: "Entity_", _id: "/Reports",
     properties: {},
     module: true
 };
 
 export const Reports__DetailedCentralizerReport = {
-    type_: "Entity_", _id: "Reports/DetailedCentralizerReport",
-    properties: {
+    type_: "Entity_", _id: "/Reports/DetailedCentralizerReport",
+    properties: { _id: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING, "allowNull": false },
         user_code: { type: PropertyTypeN.STRING, "allowNull": false },
         type: { type: PropertyTypeN.STRING },
@@ -30,8 +30,8 @@ export const Reports__DetailedCentralizerReport = {
 };
 
 export const Reports__GenericReport = {
-    type_: "Entity_", _id: "Reports/GenericReport",
-    properties: {
+    type_: "Entity_", _id: "/Reports/GenericReport",
+    properties: { _id: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING, "allowNull": false },
         user_code: { type: PropertyTypeN.STRING, "allowNull": false },
         type: { type: PropertyTypeN.STRING },
@@ -52,8 +52,8 @@ export const Reports__GenericReport = {
 };
 
 export const Reports__ServiceCentralizerReport = {
-    type_: "Entity_", _id: "Forms/ServiceCentralizerReport",
-    properties: {
+    type_: "Entity_", _id: "/Forms/ServiceCentralizerReport",
+    properties: { _id: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING, "allowNull": false },
         user_code: { type: PropertyTypeN.STRING, "allowNull": false },
         group: { type: PropertyTypeN.STRING },

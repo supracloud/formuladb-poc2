@@ -28,6 +28,8 @@ export class MockMetadata {
     this.entities.forEach(meta => {
       this.entitiesMap.set(meta._id, meta);
     });
+
+    this.applyInheritance();
   }
 
   private applyInheritance() {
@@ -35,6 +37,7 @@ export class MockMetadata {
       _.toPairs(entity.properties).forEach(([propName, prop]) => {
         if ((prop.type === PropertyTypeN.EXTEND_ENTITY || prop.type === PropertyTypeN.TABLE) && prop.entity != null) {
           let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.entity.deepPath));
+          if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.entity.deepPath);
           extendEntityProperties(prop.properties, queryEntityPropertiesWithDeepPath(referencedEntity.properties, prop.entity.deepPath));
         }
       })
@@ -57,8 +60,6 @@ export class MockMetadata {
     FinancialMetadata.Financial__Account as Entity,
     FinancialMetadata.Financial__Transaction as Entity,
     FormsMetadata.Forms as Entity,
-    FormsMetadata.Forms__Receipt as Entity,
-    FormsMetadata.Forms__Order as Entity,
     FormsMetadata.Forms__ServiceForm as Entity,
     ReportsMetadata.Reports as Entity,
     ReportsMetadata.Reports__DetailedCentralizerReport as Entity,

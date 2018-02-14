@@ -4,7 +4,33 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## 1. Development
 
-### 1.1 Setting up CouchDB and test data
+### 1.2 Running 
+
+```bash
+# Terminal 1. start angular app
+./node_modules/.bin/ng serve --proxy-config proxy.config.json
+# Terminal 2. start backend
+cd server && npm run serve
+# Terminal 3. start unit tests
+./node_modules/.bin/ng test -w
+# Terminal 4. start unit tests
+cd server && npm test -- -w --watch-extensions ts
+# Terminal 5. start e2e tests
+npm run e2e:watch
+```
+
+### 1.3 Test gitlab ci locally
+
+```bash
+sync.exe -auv --exclude node_modules --exclude .git febe febe.bak
+cd febe.bak
+MSYS_NO_PATHCONV=1 docker run -it -v $PWD:/febe --name node node:alpine sh
+cd /febe/server
+npm install
+npm run e2e_serve
+```
+
+### 1.4 Setting up CouchDB and test data (not used anymore, using in-memory pouchdb-server)
 
 Install docker toolbox: https://docs.docker.com/toolbox/toolbox_install_windows/
 The run the following commands from Git Bash:
@@ -38,32 +64,6 @@ node dist/out-tsc/src/app/test/mocks/loadTestData.js >log 2>&1
 grep -i error log
 ```
 
-### 1.2 Running 
-
-```bash
-# Terminal 1. start angular app
-./node_modules/.bin/ng serve --proxy-config proxy.config.json
-# Terminal 2. start backend
-cd server && npm run serve
-# Terminal 3. start unit tests
-./node_modules/.bin/ng test -w
-# Terminal 4. start unit tests
-cd server && npm test -- -w --watch-extensions ts
-# Terminal 5. start e2e tests
-npm run e2e:watch
-```
-
-### 1.3 Test gitlab ci locally
-
-```bash
-sync.exe -auv --exclude node_modules --exclude .git febe febe.bak
-cd febe.bak
-MSYS_NO_PATHCONV=1 docker run -it -v $PWD:/febe --name node node:alpine sh
-cd /febe/server
-npm install
-npm run e2e_serve
-```
-
 #### traffic shaping (IGNORE, NOT WORKING)
 
 ```bash
@@ -81,20 +81,6 @@ RTNETLINK answers: No such file or directory... WTF!!!! ignore for now, but we s
 /wondershaper.sh -a eth0 -d 256 -u 256 #also does not work WTF
 # we should use trickle for user-space traffic shaping
 ```
-
-### Other usual commands
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-Run `ng test -w` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-### Test gitlab-ci
-https://docs.gitlab.com/runner/install/windows.html
-TODO
 
 ## 2. Production
 

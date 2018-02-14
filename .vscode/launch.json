@@ -44,6 +44,7 @@
             "address": "localhost",
             "port": 9222,
             "sourceMaps": true,
+            "restart": "true",
             "pathMapping": {
                 "/": "${workspaceRoot}/febe",
                 "/base/": "${workspaceRoot}/febe"

@@ -3,7 +3,7 @@
         <tr>
             <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
                 <ng-container *ngSwitchCase="'form_autocomplete'">
-                    <th *ngFor="let propName of child.attributes?.copiedProperties">{{propName}}</th>
+                    <th *ngFor="let propName of child.copiedProperties">{{propName}}</th>
                 </ng-container>
                 <th *ngSwitchCase="'form_input'">{{child.propertyName}}</th>
             </ng-container>

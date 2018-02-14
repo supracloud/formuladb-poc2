@@ -2,14 +2,14 @@ import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
 
 
 export const General = {
-    type_: "Entity_", _id: "General",
+    type_: "Entity_", _id: "/General",
     properties: {},
     module: true
 };
 
 export const General__Actor = {
-    type_: "Entity_", _id: "General/Actor",
-    properties: {
+    type_: "Entity_", _id: "/General/Actor",
+    properties: { _id: { type: PropertyTypeN.STRING },
         code: { type: PropertyTypeN.STRING, "allowNull": false },
         username: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING },
@@ -24,8 +24,8 @@ export const General__Actor = {
 };
 
 export const General__Currency = {
-    type_: "Entity_", _id: "General/Currency",
-    properties: {
+    type_: "Entity_", _id: "/General/Currency",
+    properties: { _id: { type: PropertyTypeN.STRING },
         code: { type: PropertyTypeN.STRING },
         rate1: { type: PropertyTypeN.NUMBER },
         rate2: { type: PropertyTypeN.NUMBER },
@@ -36,8 +36,8 @@ export const General__Currency = {
 };
 
 export const General__Person = {
-    type_: "Entity_", _id: "General/Person",
-    properties: {
+    type_: "Entity_", _id: "/General/Person",
+    properties: { _id: { type: PropertyTypeN.STRING },
         code: { type: PropertyTypeN.STRING, "allowNull": false },
         actor_code: { type: PropertyTypeN.STRING, "allowNull": false },
         name: { type: PropertyTypeN.STRING },
@@ -55,8 +55,8 @@ export const General__Person = {
 };
 
 export const General__User = {
-    type_: "Entity_", _id: "General/User",
-    properties: {
+    type_: "Entity_", _id: "/General/User",
+    properties: { _id: { type: PropertyTypeN.STRING },
         code: { type: PropertyTypeN.STRING, "allowNull": false },
         username: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING },
@@ -71,8 +71,8 @@ export const General__User = {
 };
 
 export const General__Client = {
-    type_: "Entity_", _id: "Inventory/Client",
-    properties: {
+    type_: "Entity_", _id: "/Inventory/Client",
+    properties: { _id: { type: PropertyTypeN.STRING },
         code: { type: PropertyTypeN.STRING, "allowNull": false },
         username: { type: PropertyTypeN.STRING },
         name: { type: PropertyTypeN.STRING },

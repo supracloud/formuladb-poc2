@@ -33,7 +33,7 @@ module.exports = function (config) {
       showSpecTiming: false,      // print the time elapsed for each spec
       failFast: false              // test would finish with error when a first fail occurs. 
     },
-    reporters: ['spec'],
+    reporters: process.platform === "win32" ? ['spec', 'kjhtml'] : ['spec'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
@@ -44,14 +44,13 @@ module.exports = function (config) {
     customLaunchers: {
       ChromeHeadless: {
         base: 'Chrome',
-        flags: [
-          '--headless',
-          '--disable-gpu',
-          '--no-sandbox',
+        flags: process.platform === "win32" ? 
+        [
           // Without a remote debugging port, Google Chrome exits immediately.
           '--remote-debugging-port=9222',
           'http://0.0.0.0:9876/'
-        ],
+        ]
+        : [ "--headless", "--disable-gpu", "--window-size=1024x768", '--no-sandbox' ]
       }
     }
   });

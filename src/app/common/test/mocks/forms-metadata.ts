@@ -1,31 +1,16 @@
 import { Entity, PropertyTypeN } from '../../domain/metadata/entity';
+import { Inventory__Product, Inventory__Order, Inventory__ProductUnit } from './inventory-metadata';
+import {  General__Client} from "./general-metadata";
 
 export const Forms = {
-    type_: "Entity_", _id: "Forms",
+    type_: "Entity_", _id: "/Forms",
     properties: {},
     module: true
 };
 
-export const Forms__Order = {
-    type_: "Entity_", _id: "Forms/Order",
-    properties: {
-        code: { type: PropertyTypeN.STRING, "allowNull": false },
-        product_list: { type: PropertyTypeN.TABLE, entity: { deepPath: "/Inventory/Order/item" } },
-        state: { type: PropertyTypeN.STRING, "allowNull": false, }
-    }
-};
-
-export const Forms__Receipt = {
-    type_: "Entity_", _id: "Forms/Acquisition",
-    properties: {
-        code: { type: PropertyTypeN.STRING, "allowNull": false },
-        state: { type: PropertyTypeN.STRING, "allowNull": false, }
-    }
-};
-
 export const Forms__ServiceForm = {
-    type_: "Entity_", _id: "Forms/ServiceForm",
-    properties: {
+    type_: "Entity_", _id: "/Forms/ServiceForm",
+    properties: { _id: { type: PropertyTypeN.STRING },
         code: {
             type: PropertyTypeN.FORMULA,
             formula: {
@@ -43,10 +28,9 @@ export const Forms__ServiceForm = {
                     }}
                 ]
             }
-            // type: "FORMULA:CONCATENATE(client.code;FORMAT(\"0\";\"9\";INDEX_IN_INTERVAL(time_of_arrival,monthly))",
         },
         product_form_id: { type: PropertyTypeN.NUMBER, "allowNull": false },
-        client: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/Client", copiedProperties: ["code", "username"] } },
+        client: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: General__Client._id, copiedProperties: ["code", "username"] } },
         time_of_arrival: { type: PropertyTypeN.DATETIME },
         time_of_departure: { type: PropertyTypeN.DATETIME },
         normal_hours: { type: PropertyTypeN.NUMBER },
@@ -61,8 +45,8 @@ export const Forms__ServiceForm = {
         nb_installments: { type: PropertyTypeN.NUMBER },
         accommodation: { type: PropertyTypeN.NUMBER },
         service_form_units: {
-            type: PropertyTypeN.TABLE, entity: { deepPath: "/Inventory/Order" }, properties: {
-                equipment: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: "/Inventory/ProductUnit", copiedProperties: ['code', 'product_code', 'serial1'] } },
+            type: PropertyTypeN.TABLE, entity: { deepPath: Inventory__Order._id }, properties: { _id: { type: PropertyTypeN.STRING },
+                equipment: { type: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ['code', 'product_code', 'serial1'] } },
                 reported_problem: { type: PropertyTypeN.TEXT },
                 found_problem: { type: PropertyTypeN.TEXT },
                 work_description: { type: PropertyTypeN.TEXT },

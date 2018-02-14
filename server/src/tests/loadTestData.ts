@@ -4,12 +4,13 @@ import { MockData } from "../../../src/app/common/test/mocks/mock-data";
 import { Forms__ServiceForm_Form_ } from "../../../src/app/common/test/mocks/mock-ui-metadata";
 import { KeyValueStores } from "../keyValueStores";
 
-var mockMetadata = new MockMetadata();
-
-let kvs = Container.get(KeyValueStores);
 
 export async function loadData() {
     try {
+        var mockMetadata = new MockMetadata();
+
+        let kvs = Container.get(KeyValueStores);
+        
         await kvs.historyDB.removeAll();
         await kvs.transactionsDB.removeAll();
         

@@ -3,9 +3,10 @@ import { Formula } from "./formula";
 import { ExecutionPlan } from "./execution_plan";
 
 export class EntityProperties {
-    _id?: StringProperty;
+    _id: StringProperty;
     [x: string]: EntityProperty;
 }
+
 /**
  * the _id of the Entity is the path, e.g. Forms__ServiceForm
  */

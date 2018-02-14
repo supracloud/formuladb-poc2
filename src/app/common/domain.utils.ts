@@ -1,31 +1,43 @@
 import * as _ from 'lodash';
 
-import { Entity, EntityProperty, PropertyTypeN, EntityProperties } from "./domain/metadata/entity";
+import { Entity, EntityProperty, PropertyTypeN, EntityProperties, ReferencedEntity } from "./domain/metadata/entity";
 import { Table, TableColumn } from "./domain/uimetadata/table";
 import { Form, NodeElement, NodeElementWithChildren, NodeType, FormInput, FormAutocomplete, FormTable, FormTabs, FormGridRow, FormGrid, isNodeElementWithChildren } from "./domain/uimetadata/form";
 import { generateUUID } from "./domain/uuid";
 import { BaseObj, isNonOverridableProperty } from './domain/base_obj';
+import { KeyValueObj } from './domain/key_value_obj';
 
-export function getEntityIdFromDeepPath(path: string) {
-    let match = path.match(/^\/(\w+\/\w+)\/?.*/);
-    if (null != match) {
-        return match[1];
-    } else {
-        throw new Error("path " + path + " does not contain an Entity _id!");
-    }
+export function getEntityIdFromDeepPath(deepPath: string) {
+    return parseDeepPath(deepPath).path;
 }
 
-export function queryObjectWithDeepPath(obj: any, deepPath: string): any {
-    let relativePath = getRelativePathFromDeepPath(deepPath);
-    if (null != relativePath) {
-        let pathInsideObj = relativePath.replace(/\//, '.');
-        return eval(`obj.${pathInsideObj}`);
+export function getCopiedPropertiesFromReferencedObject<T extends {_id: string}>(obj: T, ref: ReferencedEntity): {ref_: string} {
+    let {path, relativePath} = parseDeepPath(ref.deepPath);
+    if (relativePath == null) return null;
+    let objPath = [{pathSegment: path, obj: obj}];
+    let currentObj = obj;
+
+    relativePath.split(/\//).forEach(propName => {
+        objPath.push({pathSegment: propName, obj: currentObj[propName]});
+        currentObj = currentObj[propName];
+    })
+
+    let ret = {ref_: objPath.map(x => x.pathSegment + '/' + x.obj._id).join('/')};
+    if (ref.copiedProperties != null) {
+        ref.copiedProperties.forEach(propName => {
+            let propPath = propName.split(/..\//);
+            let realPropName = propPath.slice(-1)[0];
+            let targetObj = objPath[objPath.length - propPath.length];
+            ret[realPropName] = targetObj[realPropName];
+        });
     }
-    return obj;
+    else _.extend(ret, obj);
+
+    return ret;
 }
 
 export function queryEntityPropertiesWithDeepPath(entityProperties: EntityProperties, deepPath: string): EntityProperties {
-    let relativePath = getRelativePathFromDeepPath(deepPath);
+    let relativePath = parseDeepPath(deepPath).relativePath;
     if (null != relativePath) {
         let pathInsideEntity = relativePath.replace(/\//, '.properties.');
         return eval(`entityProperties.${pathInsideEntity}.properties`) as EntityProperties;
@@ -33,11 +45,17 @@ export function queryEntityPropertiesWithDeepPath(entityProperties: EntityProper
     return entityProperties;
 }
 
-function getRelativePathFromDeepPath(path: string) {
-    let match = path.match(/^\/(\w+\/\w+)\/?(.*)/);
-    if (null != match && match.length >= 3 && match[2] != null && match[2] !== '') {
-        return match[2];
-    } else return null;
+function parseDeepPath(deepPath: string): {path: string, relativePath: string} {
+    let match = deepPath.match(/^(\/\w+\/\w+)\/?(.*)/);
+    if (null == match || match.length < 2) throw new Error("Not a valid deepPath: " + deepPath);
+
+    if (match.length >= 3 && match[2] != null && match[2] !== '') {
+        return {path: match[1], relativePath: match[2]};
+    } else return {path: match[1], relativePath: match[2]};
+}
+
+export function typesafeDeepPath<E>(rootPath: string, entity: E, propName: keyof E) {
+    return rootPath + '/' + propName;
 }
 
 export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];

@@ -11,7 +11,8 @@ import { KeyValueStores } from "./keyValueStores";
 
 let kvs = Container.get(KeyValueStores);
 
-kvs.init()
+new Promise(resolve => setTimeout(() => resolve(), 5000))
+.then(() => kvs.init())
 .then(() => loadData())
 .then(() => {
   // Init the express application
