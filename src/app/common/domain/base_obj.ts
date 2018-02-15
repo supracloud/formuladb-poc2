@@ -16,7 +16,7 @@ export class RefObj extends SubObj {
     ref_: string;
 }
 
-export type BaseObjPropTypes = string | number | boolean | any[] | SubObj;
+export type BaseObjPropTypes = string | number | boolean | Date | SubObj[] | string[] | SubObj;
 
 /**
  * A Transaction is a modification done by an actor (User/Robot) on a BaseObj
@@ -65,22 +65,41 @@ type Diff<T extends string, U extends string> = ({[P in T]: P } & {[P in U]: nev
 export type ReservedPropNamesOf<T> = keyof T & ReservedPropNames;
 export type NonReservedPropNamesOf<T> = Diff<keyof T, ReservedPropNames>;
 
+function isNumber(s: string): boolean {
+    return parseInt(s) + '' === s;
+}
+
 export function queryObjectWithDeepPath(obj: BaseObj, deepPath: string, pickProperties?: string[]): RefObj {
     let { path, relativePath } = parseDeepPath(deepPath);
-    let objPath: Array<{ pathSegment: string, obj: BaseObj | SubObj }> = [{ pathSegment: path, obj: obj }];
+    let objPath: Array<{ pathSegment: string, obj: BaseObj | SubObj }> = [{ pathSegment: path + '/' + obj._id, obj: obj }];
     let currentObj: BaseObj | BaseObjPropTypes = obj;
 
     if (relativePath != null && relativePath != '') {
         relativePath.split(/\//).forEach(propName => {
-            let o = currentObj[propName];
-            if (isSubObj(o) || o instanceof Array) {
-                objPath.push({ pathSegment: propName, obj: currentObj[propName] });
-                currentObj = o;
-            } else throw new Error('Path ' + deepPath + ' too deep; ' + JSON.stringify(o) + ' is not an SubObj, while looking for property ' + propName + '; root obj is ' + JSON.stringify(obj, null, 2));
+            let subO = null, pathSegment = null;
+            if (isSubObj(currentObj)) {
+                subO = currentObj[propName];
+                pathSegment = propName;
+            } else if (currentObj instanceof Array) {
+                if (isNumber(propName)) {
+                    subO = currentObj[propName];
+                    if (!isSubObj(subO)) throw new Error(JSON.stringify(subO) + ' member of array should be a SubObj; root obj is ' + JSON.stringify(obj, null, 2));
+                    pathSegment = subO._id;
+                } else {
+                    subO = _.find(currentObj, x => {
+                        if (!isSubObj(x)) throw new Error(JSON.stringify(x) + ' should be a SubObj; root obj is ' + JSON.stringify(obj, null, 2));
+                        return x._id === propName;
+                    });
+                    pathSegment = propName;
+                }
+            } else throw new Error(JSON.stringify(currentObj) + ' not SubObj or array; root obj is ' + JSON.stringify(obj, null, 2));
+
+            objPath.push({ pathSegment: pathSegment, obj: subO });
+            currentObj = subO;
         })
     }
 
-    let ret = { ref_: objPath.map(x => x.pathSegment + '/' + x.obj._id).join('/') };
+    let ret = { ref_: objPath.map(x => x.pathSegment).join('/') };
     let copiedProps = pickProperties != null ? pickProperties : _.difference(_.keys(objPath.slice(-1)[0].obj), RESERVED_PROP_NAMES);
     copiedProps.forEach(propName => {
         let idx = objPath.length - 1, targetVal = objPath[idx].obj, realPropName = null;

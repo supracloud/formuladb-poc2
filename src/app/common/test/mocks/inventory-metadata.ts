@@ -83,6 +83,8 @@ export const Inventory__ProductUnit = {
 
 };
 
+console.log("typesafeDeepPath=", typesafeDeepPath);
+
 export const Inventory__Receipt = {
     type_: "Entity_", _id: "/Inventory/Receipt",
 

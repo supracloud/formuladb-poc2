@@ -13,8 +13,8 @@ export var Forms__ServiceForm_Form_: Form = {
         nodeType: NodeType.form_grid_row,
         childNodes: [
           { nodeType: NodeType.form_input, propertyName: "code" },
-          { nodeType: NodeType.form_input, propertyName: "time_of_arrival" },
-          { nodeType: NodeType.form_input, propertyName: "time_of_departure" },
+          { nodeType: NodeType.form_datepicker, propertyName: "time_of_arrival" },
+          { nodeType: NodeType.form_datepicker, propertyName: "time_of_departure" },
           { nodeType: NodeType.form_input, propertyName: "state" },
         ]
       },

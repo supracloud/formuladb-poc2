@@ -28,7 +28,7 @@ export class KeyValueStore {
             obj._rev = x.rev;
             return obj;
         })
-            .catch(err => { console.error(err); return Promise.reject(err) });
+        .catch(err => { console.error(err); return Promise.reject(err) });
     }
 
     public putAll<T extends KeyValueObj>(objs: T[]): Promise<T[]> {

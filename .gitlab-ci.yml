@@ -16,3 +16,4 @@ test:
   - npm run e2e
   cache:
     untracked: true
+  retry: 3

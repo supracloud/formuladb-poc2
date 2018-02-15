@@ -27,51 +27,51 @@ export class FormGrid extends SubObj {
     _id?: string;
     childNodes?: NodeElement[];
 }
-export class FormGridRow {
+export class FormGridRow extends SubObj {
     readonly nodeType = NodeType.form_grid_row;
     _id?: string;
     childNodes?: NodeElement[];
 }
-export class FormGridCol {
+export class FormGridCol extends SubObj {
     readonly nodeType = NodeType.form_grid_col;
     _id?: string;
     childNodes?: NodeElement[];
 }
-export class FormInput {
+export class FormInput extends SubObj {
     readonly nodeType = NodeType.form_input;
     _id?: string;
     propertyName: string;
 }
-export class FormAutocomplete {
+export class FormAutocomplete extends SubObj {
     readonly nodeType = NodeType.form_autocomplete;
     _id?: string;
     entityName: string;
     copiedProperties?: string[];
 }
-export class FormTabs {
+export class FormTabs extends SubObj {
     readonly nodeType = NodeType.form_tabs;
     _id?: string;
     tableName: string;
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export class FormTab {
+export class FormTab extends SubObj {
     readonly nodeType = NodeType.form_tab;
     _id?: string;
     childNodes?: NodeElement[];
 }
-export class FormTable {
+export class FormTable extends SubObj {
     readonly nodeType = NodeType.form_table;
     _id?: string;
     tableName: string;
     childNodes?: NodeElement[];
 }
-export class FormDatepicker {
+export class FormDatepicker extends SubObj {
     readonly nodeType = NodeType.form_datepicker;
     _id?: string;
     propertyName: string;
 }
-export class FormTimepicker {
+export class FormTimepicker extends SubObj {
     readonly nodeType = NodeType.form_timepicker;
     _id?: string;
     propertyName: string;

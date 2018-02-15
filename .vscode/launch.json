@@ -29,15 +29,6 @@
             "restart": "true"
         },
         {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Program",
-            "program": "${file}",
-            "outFiles": [
-                "${workspaceRoot}/dist/out-tsc/**/*.js"
-            ]
-        },
-        {
             "type": "chrome",
             "request": "attach",
             "name": "Attach Karma Chrome",
@@ -49,6 +40,35 @@
                 "/": "${workspaceRoot}/febe",
                 "/base/": "${workspaceRoot}/febe"
             }
-        }
+        },
+        {
+            "name": "Run mocha",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceRoot}/server",
+            "program": "${workspaceRoot}/server/node_modules/mocha/bin/_mocha",
+            "args": [
+                "-u",
+                "tdd",
+                "--timeout",
+                "999999",
+                "--colors",
+                "dist/server/**/*.spec.js"
+            ],
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "sourceMaps": true,
+            "outDir": "${workspaceRoot}/server/dist"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${file}",
+            "outFiles": [
+                "${workspaceRoot}/dist/out-tsc/**/*.js"
+            ]
+        },
     ]
 }

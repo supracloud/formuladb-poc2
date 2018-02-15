@@ -1,10 +1,12 @@
-import { BaseObj } from '../base_obj';
+import { BaseObj, SubObj } from '../base_obj';
 import { Entity, propertiesWithNamesOf } from '../metadata/entity';
 import { generateUUID } from '../uuid';
 
-export class TableColumn {
+export class TableColumn extends SubObj {
     _id?: string;
-    constructor(public name: string, public type: string) { };
+    constructor(public name: string, public type: string) {
+        super();
+    };
 }
 
 export class Table extends BaseObj {

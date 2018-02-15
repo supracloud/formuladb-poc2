@@ -3,7 +3,6 @@ import * as metadata from './mock-metadata';
 import { Entity, EntityProperty, PropertyTypeN, ReferencedEntity, propertiesWithNamesOf, getEntityIdFromDeepPath, EntityPropertiesWithNames } from '../../domain/metadata/entity'
 import { DataObj } from "../../domain/metadata/data_obj";
 import { queryObjectWithDeepPath, SubObj } from '../../domain/base_obj';
-import { generateUUID } from "../../domain/uuid";
 
 const nouns: string[] = ["Lama", "Basket", "Freckle", "Taco", "Suspect", "Ball", "Moustache", "Semantic", "Charlie", "Bouquet"];
 const adjectives: string[] = ["Chic", "Cracked", "Tender", "Tourquoise", "Vengeful", "Cranberry", "Shy", "Liquid", "Whining"]
@@ -22,16 +21,11 @@ export class MockData {
     }
 
     public getAllForPath(path: string): DataObj[] {
-        console.log("########", path, Array.from(this.mockDB.get(path).values()));
         return Array.from(this.mockDB.get(path).values());
     }
 
     public get(path: string, id: string): DataObj {
         return this.mockDB.get(path).get(id);
-    }
-
-    private getRandomId(): number {
-        return Math.trunc(Math.random() * 10000);
     }
 
     mockEntities(entity: Entity, entitiesIndexes: number[]) {
@@ -46,7 +40,7 @@ export class MockData {
         let refObj = values[refIdx];
         let ret = queryObjectWithDeepPath(refObj, ref.deepPath.replace('/@', '/0'), ref.copiedProperties);
         ret = (ret instanceof Array) ? ret[0] : ret;
-        ret._id = generateUUID();
+        ret._id = 'UUID-' + ret.ref_;
         return ret;
     }
 
@@ -57,17 +51,19 @@ export class MockData {
             this.mockDB.set(entity._id, db);
         }
         this.mockDB.set(entity._id, db);
-        let ret = { type_: entity._id, _id: `${entity._id.replace(/\//g, '-')}:123400${entityIdx}` };
+        let ret = { type_: entity._id, _id: `UUID-${entity._id.replace(/^\//,'').replace(/\//g, '-')}:${entityIdx}` };
 
-        this.mockObject(entity._id, propertiesWithNamesOf(entity), ret);
+        this.mockObject(entity._id, propertiesWithNamesOf(entity), ret, entityIdx);
 
         db.set(ret._id, ret);
         this.allData.push(ret);
         return ret;
     }
 
-    mockObject(path: string, properties: EntityPropertiesWithNames, ret: {}): SubObj {
+    mockObject(path: string, properties: EntityPropertiesWithNames, ret: SubObj, entityIdx: number): SubObj {
         properties.forEach((p, index) => {
+            let subId = entityIdx * 100 + index;
+
             if (p.name == "_id") {
                 //already set above
             } else if (p.name == "_rev") {
@@ -75,25 +71,27 @@ export class MockData {
             } else if (p.name == "type_") {
                 //do nothing
             } else if (p.prop.propType_ == PropertyTypeN.NUMBER) {
-                ret[p.name] = Math.random() * 100;
+                ret[p.name] = subId;
             } else if (p.prop.propType_ == PropertyTypeN.STRING) {
-                ret[p.name] = p.name + Math.ceil(Math.random() * 100000);
+                ret[p.name] = p.name + subId;
             } else if (p.prop.propType_ == PropertyTypeN.TEXT) {
-                ret[p.name] = p.name + "_" + p.name + "_" + Math.random() * 10000;
+                ret[p.name] = p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + subId;
             } else if (p.prop.propType_ == PropertyTypeN.DATETIME) {
                 ret[p.name] = new Date();
             } else if (p.prop.propType_ == PropertyTypeN.EXTEND_ENTITY) {
-                let refIdx = Math.round(Math.random() * 4);
-                ret[p.name] = this.getRefDataObj(path, p.prop.entity, refIdx);
+                let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
+                o._id = `UUID-${path.replace(/^\//,'').replace(/\//g, '-')}-t-${subId}`;
+                ret[p.name] = o;
             } else if (p.prop.propType_ == PropertyTypeN.REFERENCE_ENTITY) {
-                let refIdx = Math.round(Math.random() * 4);
+                let refIdx = subId % 3;
                 let refDeepPath = p.prop.entity.deepPath;
                 ret[p.name] = this.getRefDataObj(path, p.prop.entity, refIdx);
             } else if (p.prop.propType_ == PropertyTypeN.TABLE) {
                 let table = [];
-                for (var i = 0; i < 5; i++) {
-                    let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {});
-                    o._id = generateUUID();
+                for (var i = 0; i < 3; i++) {
+                    let j = subId * 10 + i;
+                    let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, j);
+                    o._id = `UUID-${path.replace(/^\//,'').replace(/\//g, '-')}-t-${j}`;
                     table.push(o);
                 }
                 ret[p.name] = table;
@@ -101,10 +99,6 @@ export class MockData {
         });
 
         return ret;
-    }
-
-    mockName(): string {
-        return adjectives[Math.floor(Math.random() * adjectives.length)] + " " + nouns[Math.floor(Math.random() * nouns.length)];
     }
 
     mockData() {
