@@ -3,6 +3,7 @@ import * as metadata from './mock-metadata';
 import { Entity, EntityProperty, PropertyTypeN, ReferencedEntity, propertiesWithNamesOf, getEntityIdFromDeepPath, EntityPropertiesWithNames } from '../../domain/metadata/entity'
 import { DataObj } from "../../domain/metadata/data_obj";
 import { queryObjectWithDeepPath, SubObj } from '../../domain/base_obj';
+import { TEST_DATA } from "./test-data";
 
 const nouns: string[] = ["Lama", "Basket", "Freckle", "Taco", "Suspect", "Ball", "Moustache", "Semantic", "Charlie", "Bouquet"];
 const adjectives: string[] = ["Chic", "Cracked", "Tender", "Tourquoise", "Vengeful", "Cranberry", "Shy", "Liquid", "Whining"]
@@ -11,9 +12,35 @@ export class MockData {
 
     private mockDB: Map<String, Map<string, DataObj>> = new Map();
     private allData: DataObj[] = [];
+    readonly GENERATE_DATA = false;
 
     public constructor(private entitiesMap: Map<string, Entity>) {
-        this.mockData();
+        if (this.GENERATE_DATA) {
+            this.mockData();
+        } else {
+            TEST_DATA.forEach(o => {
+                let subMapId = null;
+                if (o.type_ == 'Entity_') {
+                    // subMapId = o._id;
+                    return; //defined in mock-metadata.ts
+                } else if (o.type_ == 'Form_') {
+                    // subMapId = o._id.replace(/^Form_:/, '');
+                    return; //defined in mock-ui-metadata.ts
+                } else if (o.type_ == 'Table_') {
+                    // subMapId = o._id.replace(/^Table_:/, '');
+                    return; //defined in mock-ui-metadata.ts
+                } else {
+                    subMapId = o.type_;
+                }
+                let db: Map<string, DataObj> = this.mockDB.get(subMapId);
+                if (null == db) {
+                    db = new Map();
+                    this.mockDB.set(subMapId, db);
+                }
+                db.set(o._id, o);
+                this.allData.push(o);
+            });
+        }
     }
 
     public getAll() {
@@ -51,7 +78,7 @@ export class MockData {
             this.mockDB.set(entity._id, db);
         }
         this.mockDB.set(entity._id, db);
-        let ret = { type_: entity._id, _id: `UUID-${entity._id.replace(/^\//,'').replace(/\//g, '-')}:${entityIdx}` };
+        let ret = { type_: entity._id, _id: `UUID-${entity._id.replace(/^\//, '').replace(/\//g, '-')}:${entityIdx}` };
 
         this.mockObject(entity._id, propertiesWithNamesOf(entity), ret, entityIdx);
 
@@ -80,7 +107,7 @@ export class MockData {
                 ret[p.name] = new Date();
             } else if (p.prop.propType_ == PropertyTypeN.EXTEND_ENTITY) {
                 let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
-                o._id = `UUID-${path.replace(/^\//,'').replace(/\//g, '-')}-t-${subId}`;
+                o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
                 ret[p.name] = o;
             } else if (p.prop.propType_ == PropertyTypeN.REFERENCE_ENTITY) {
                 let refIdx = subId % 3;
@@ -91,7 +118,7 @@ export class MockData {
                 for (var i = 0; i < 3; i++) {
                     let j = subId * 10 + i;
                     let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, j);
-                    o._id = `UUID-${path.replace(/^\//,'').replace(/\//g, '-')}-t-${j}`;
+                    o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${j}`;
                     table.push(o);
                 }
                 ret[p.name] = table;
@@ -103,19 +130,19 @@ export class MockData {
 
     mockData() {
         console.log("mockData called");
-        this.mockEntities(metadata.General__Actor as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.General__Currency as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.General__Person as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.General__User as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.General__Client as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Inventory__Product as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Inventory__ProductUnit as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Inventory__Order as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Inventory__Receipt as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Forms__ServiceForm as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Reports__DetailedCentralizerReport as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Reports__GenericReport as Entity, [1, 2, 3, 4, 5]);
-        this.mockEntities(metadata.Reports__ServiceCentralizerReport as Entity, [1, 2, 3, 4, 5]);
+        this.mockEntities(metadata.General__Actor as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.General__Currency as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.General__Person as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.General__User as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.General__Client as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Inventory__Product as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Inventory__ProductUnit as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Inventory__Order as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Inventory__Receipt as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Forms__ServiceForm as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Reports__DetailedCentralizerReport as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Reports__GenericReport as Entity, [1, 2, 3]);
+        this.mockEntities(metadata.Reports__ServiceCentralizerReport as Entity, [1, 2, 3]);
     }
 
 }
