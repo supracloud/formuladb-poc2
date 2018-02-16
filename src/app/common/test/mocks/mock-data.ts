@@ -12,7 +12,7 @@ export class MockData {
 
     private mockDB: Map<String, Map<string, DataObj>> = new Map();
     private allData: DataObj[] = [];
-    readonly GENERATE_DATA = false;
+    readonly GENERATE_DATA = true;
 
     public constructor(private entitiesMap: Map<string, Entity>) {
         if (this.GENERATE_DATA) {

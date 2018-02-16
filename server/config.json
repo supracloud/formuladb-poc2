@@ -13,5 +13,8 @@
     "port": 3000,
     "transactionsDBUrl": "http://localhost:5984/mwztransactions",
     "historyDBUrl": "http://localhost:5984/mwzhistory"
+  },
+  "couchdb": {
+    "uuid": "fab8cb5e-97f8-49af-910c-a0f64c824f16"
   }
 }

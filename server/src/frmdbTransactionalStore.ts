@@ -13,9 +13,9 @@ import { KeyValueStore } from "../../src/app/common/key_value_store";
 import { FrmdbStore } from "../../src/app/common/frmdb_store";
 import { KeyValueStores } from "./keyValueStores";
 
-export type TransactionalCallback = (event: MwzEvents, store: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
+export type TransactionalCallback = (event: MwzEvents, store: FrmdbStoreAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
 
-export class StoreIsolatedAtTransaction extends FrmdbStore {
+export class FrmdbStoreAtTransaction extends FrmdbStore {
     constructor(private event: MwzEvents, protected transactionsDB: KeyValueStore, protected historyDB: KeyValueStore) {
         super(transactionsDB, historyDB);
     }
@@ -25,7 +25,7 @@ export class StoreIsolatedAtTransaction extends FrmdbStore {
  * The storage for the Formula Engine is a king of JSON version control system built on top of a Key Value Store
  * all operations are relative to a transaction id, when a transaction is evaluated the engine "sees" only data as it existed when the transaction started
  */
-export class TransactionalStore {
+export class FrmdbTransactionalStore {
 
     private kvs: KeyValueStores;
 
@@ -43,7 +43,7 @@ export class TransactionalStore {
                     .then(ev => {
                         event.readObjs_ = [];
                         event.updatedIds_ = [];
-                        return callback(ev, new StoreIsolatedAtTransaction(ev, this.kvs.transactionsDB, this.kvs.historyDB), new Map<string, BaseObj>());
+                        return callback(ev, new FrmdbStoreAtTransaction(ev, this.kvs.transactionsDB, this.kvs.historyDB), new Map<string, BaseObj>());
                     });
         
             } catch (ex) {

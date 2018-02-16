@@ -1,8 +1,8 @@
 import * as events from "../../../src/app/common/domain/event";
-import { StoreIsolatedAtTransaction } from "../transactionalStore";
+import { FrmdbStoreAtTransaction } from "../frmdbTransactionalStore";
 import { BaseObj } from "../../../src/app/common/domain/base_obj";
 
-export async function userActionEditedFormDataHandler(event: events.UserActionEditedFormDataEvent, store: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
+export async function userActionEditedFormDataHandler(event: events.UserActionEditedFormDataEvent, store: FrmdbStoreAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
     try {
         let entity = await store.getEntity(event.obj.type_);
 

@@ -1,4 +1,4 @@
-import { BaseObj } from "./domain/base_obj";
+import { BaseObj, SubObj } from "./domain/base_obj";
 import { Entity, EntityProperty, ReferencedEntity } from "./domain/metadata/entity";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
@@ -15,6 +15,10 @@ export class FrmdbStore {
      */
     public setTransaction(event: MwzEvents): Promise<MwzEvents> {
         return this.transactionsDB.put(event);
+    }
+
+    public queryWithDeepPath(deepPath: string): Promise<SubObj[]> {
+        throw new Error('queryWithDeepPath not implemented yet!');
     }
 
     public findByType<T extends BaseObj>(type_: string): Promise<T[]> {

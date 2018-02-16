@@ -119,6 +119,58 @@ export function queryObjectWithDeepPath(obj: BaseObj, deepPath: string, pickProp
     return ret;
 }
 
+/**
+ * Deep diff producing a patch that can be applied in both ways:
+ *  - go from before to after
+ *  - go back from after to before
+ * TODO: optimize! we are doing deep equal then going down the tree => multiple traversals! diff should be done with only one traversal
+ */
+export function diffObj(before: SubObj, after: SubObj) {
+    let o = Symbol('object'), a = Symbol('array'), s = Symbol('scalar');
+    function getTypeOf(x) {
+        return _.isPlainObject(x) ? o : (_.isArray(x) ? a : s); 
+    } 
+    function changes(lhs, rhs) {
+        let lhsType = getTypeOf(lhs), rhsType = getTypeOf(rhs);
+
+        if (lhsType != rhsType) {
+            return {lhs: lhs, rhs: rhs};
+        } else if (lhsType === s && rhsType === s) {
+            throw new Error('At least lhs' + JSON.stringify(lhs) + ' or rhs ' + JSON.stringify(rhs) + ' should be an object or array');
+        } else {
+            let ret = lhsType === a ? [] : {};
+            _.forOwn(lhs, (lhsVal, key) => {
+                let rhsVal = rhs[key];
+                if (lhsVal !== rhsVal) {
+                    if (_.isObject(lhsVal) && _.isObject(rhsVal)) {
+                        ret[key] = changes(lhsVal, rhsVal);
+                    } else {
+                        ret[key] = {lhs: lhsVal || null, rhs: rhsVal || null};
+                    }
+                }
+            });
+            return ret;
+        }
+    }
+    function additions(rhs, lhs, changes) {
+        let rhsType = getTypeOf(rhs);
+        let ret = rhsType === a ? [] : {};
+        _.forOwn(rhs, (rhsVal, key) => {
+            let lhsVal = lhs[key], chgVal = changes[key];
+            if (null == lhsVal && null == chgVal) {
+                ret[key] = {lhs: null, rhs: rhsVal};
+            } else if (_.isObject(lhsVal) && _.isObject(rhsVal)) {
+                ret[key] = additions(rhsVal, lhsVal, chgVal || {});
+            }
+        });
+        return ret;
+    }
+
+    let chg = changes(before, after);
+    let add = additions(after, before, chg);
+    return _.merge(chg, add);
+}
+
 export function parseDeepPath(deepPath: string): { path: string, relativePath: string } {
     let match = deepPath.match(/^(\/\w+\/\w+)\/?(.*)/);
     if (null == match || match.length < 2) throw new Error("Not a valid deepPath: " + deepPath);

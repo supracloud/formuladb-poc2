@@ -12,12 +12,13 @@ if (config.env === 'development' || config.env === 'test') {
 }
 
 import {Service} from 'typedi';
-import { KeyValueStore } from '../../src/app/common/key_value_store';
+import { KeyValueStorePouchDB } from '../../src/app/common/key_value_store_pouchdb';
+import { KeyValueStore } from "../../src/app/common/key_value_store";
 
 @Service()
 export class KeyValueStores {
-    public transactionsDB: KeyValueStore = new KeyValueStore(new ThePouchDB(config.transactionsDBUrl));
-    public historyDB: KeyValueStore = new KeyValueStore(new ThePouchDB(config.historyDBUrl));
+    public transactionsDB: KeyValueStore = new KeyValueStorePouchDB(new ThePouchDB(config.transactionsDBUrl));
+    public historyDB: KeyValueStore = new KeyValueStorePouchDB(new ThePouchDB(config.historyDBUrl));
 
     public init(): Promise<any> {
         return this.transactionsDB.info()

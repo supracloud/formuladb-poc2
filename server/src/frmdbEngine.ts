@@ -9,17 +9,17 @@ import { Entity, EntityProperty } from "../../src/app/common/domain/metadata/ent
 import { DataObj } from "../../src/app/common/domain/metadata/data_obj";
 
 import * as events from "../../src/app/common/domain/event";
-import { TransactionalStore, TransactionalCallback, StoreIsolatedAtTransaction } from "./transactionalStore";
+import { FrmdbTransactionalStore, TransactionalCallback, FrmdbStoreAtTransaction } from "./frmdbTransactionalStore";
 
 import { userActionEditedFormDataHandler } from "./handlers/userActionEditedFormDataHandler";
 
 export class FrmdbEngine {
 
     private eventsQueueProcessor: Promise<events.MwzEvents> = null;
-    private storageService: TransactionalStore;
+    private storageService: FrmdbTransactionalStore;
 
     constructor() {
-        this.storageService = new TransactionalStore();
+        this.storageService = new FrmdbTransactionalStore();
     }
 
     public init() {
@@ -59,7 +59,7 @@ export class FrmdbEngine {
         return this.storageService.withTransaction(event, handler);
     }
 
-    private dummyTemporaryHandlerUntillAllLogicIsImplemented(event: events.MwzEvents, storage: StoreIsolatedAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
+    private dummyTemporaryHandlerUntillAllLogicIsImplemented(event: events.MwzEvents, storage: FrmdbStoreAtTransaction, cache: Map<string, BaseObj>): Promise<events.MwzEvents> {
         switch (event.type_) {
             case events.UserActionEditedFormN:
                 return this.processForm(event);

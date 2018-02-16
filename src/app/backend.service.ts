@@ -18,27 +18,27 @@ import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { KeyValueStore } from "./common/key_value_store";
+import { KeyValueStorePouchDB } from "./common/key_value_store_pouchdb";
 import { FrmdbStore } from "./common/frmdb_store";
 
 const USE_POUCHDB_REPLICATION: boolean = false;
 
-export const TRANSACTIONS_KEY_VALUE_STORE = new InjectionToken<KeyValueStore>('TransactionsKeyValueStore');
-export const DATA_KEY_VALUE_STORE = new InjectionToken<KeyValueStore>('DataKeyValueStore');
+export const TRANSACTIONS_KEY_VALUE_STORE = new InjectionToken<KeyValueStorePouchDB>('TransactionsKeyValueStore');
+export const DATA_KEY_VALUE_STORE = new InjectionToken<KeyValueStorePouchDB>('DataKeyValueStore');
 
-export function factoryTransactionsKeyValueStore(): KeyValueStore {
-    return new KeyValueStore(new PouchDB("http://localhost:5984/mwztransactions"));
+export function factoryTransactionsKeyValueStore(): KeyValueStorePouchDB {
+    return new KeyValueStorePouchDB(new PouchDB("http://localhost:5984/mwztransactions"));
 }
 
 var localPouchDB: any = null;
 const remoteDBUrl: string = 'http://localhost:5984/mwzhistory';
 
-export function factoryDataKeyValueStore(): KeyValueStore {
+export function factoryDataKeyValueStore(): KeyValueStorePouchDB {
     if (USE_POUCHDB_REPLICATION) {
         localPouchDB = new PouchDB("dataDB");
-        return new KeyValueStore(localPouchDB);
+        return new KeyValueStorePouchDB(localPouchDB);
     } else {
-        return new KeyValueStore(new PouchDB(remoteDBUrl));
+        return new KeyValueStorePouchDB(new PouchDB(remoteDBUrl));
     }
 }
 
@@ -51,16 +51,16 @@ export class BackendService extends FrmdbStore {
 
 
     constructor(private http: HttpClient, 
-        @Inject(TRANSACTIONS_KEY_VALUE_STORE) protected transactionsDB: KeyValueStore, 
-        @Inject(DATA_KEY_VALUE_STORE) protected dataDB: KeyValueStore) 
+        @Inject(TRANSACTIONS_KEY_VALUE_STORE) protected transactionsDB: KeyValueStorePouchDB, 
+        @Inject(DATA_KEY_VALUE_STORE) protected dataDB: KeyValueStorePouchDB) 
     {
         super(transactionsDB, dataDB);
 
         if (USE_POUCHDB_REPLICATION) {
             localPouchDB = new PouchDB("dataDB");
-            this.dataDB = new KeyValueStore(localPouchDB);
+            this.dataDB = new KeyValueStorePouchDB(localPouchDB);
         } else {
-            this.dataDB = new KeyValueStore(new PouchDB(remoteDBUrl));
+            this.dataDB = new KeyValueStorePouchDB(new PouchDB(remoteDBUrl));
         }
     }
 
