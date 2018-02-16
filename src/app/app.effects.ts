@@ -97,7 +97,7 @@ export class AppEffects {
         docs.forEach(obj => {
             if (obj.type_ == 'Entity_') {
                 console.log("Loading all entities from local DB");
-                this.backendService.findByType<Entity>('Entity_').then(entities => {
+                this.backendService.getEntities().then(entities => {
                     console.log("displaying all entities from local DB", entities);
                     this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
                 }).catch(err => console.error(err));
@@ -114,7 +114,7 @@ export class AppEffects {
 
     private init() {
         //load entities and remove readOnly flag
-        this.backendService.findByType<Entity>('Entity_').then(entities => {
+        this.backendService.getEntities().then(entities => {
             this.cachedEntitiesMap.clear();
             entities.map(entity => this.cachedEntitiesMap.set(entity._id, entity));
             this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));

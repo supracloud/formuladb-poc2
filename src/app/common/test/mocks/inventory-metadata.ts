@@ -1,4 +1,5 @@
 import { Entity, PropertyTypeN, typesafeDeepPath } from '../../domain/metadata/entity';
+import { ExecutionPlan } from '../../domain/metadata/execution_plan';
 
 export const Inventory = {
     type_: "Entity_", _id: "/Inventory",
@@ -22,7 +23,7 @@ export const Inventory__Product = {
             propType_: PropertyTypeN.REFERENCE_ENTITY,
             entity: {
                 deepPath: "/General/Currency",
-                copiedProperties: ["code"],
+                snapshotCurrentValueOfProperties: ["code"],
             }
         },
         minimal_stock: { propType_: PropertyTypeN.NUMBER, allowNull: false },
@@ -59,7 +60,7 @@ export const Inventory__ProductUnit = {
     product: {
         propType_: PropertyTypeN.REFERENCE_ENTITY, entity: {
             deepPath: "/Inventory/Product",
-            copiedProperties: [
+            snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
                 "price",
@@ -95,7 +96,7 @@ export const Inventory__Receipt = {
             propType_: PropertyTypeN.REFERENCE_ENTITY,
             entity: {
                 deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-                copiedProperties: [
+                snapshotCurrentValueOfProperties: [
                     "../../code",
                     "../../name",
                     "locationCode",
@@ -105,15 +106,21 @@ export const Inventory__Receipt = {
             }
         },
         received_quantity: { propType_: PropertyTypeN.NUMBER, allowNull: false },
-        // units: {
-        //     propType_: PropertyTypeN.TABLE,
-        // 
-        //         unit: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ["code", "serial"] } }
-        //     }
-        // },
-
-    }
-
+        units: {
+            propType_: PropertyTypeN.TABLE,
+            unit: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } }
+        },
+    },
+    executionPlan_: {
+        FOREACH: {
+            relativePath: './items',
+            nested: [
+                { RESOLVE_REFS: '' },
+                { EVAL_EXPRESSIONS: '' },
+            ]
+        },
+        SAVE_DIRTY_OBJECTS: '',
+    } as ExecutionPlan,
 };
 
 export const Inventory__Order = {
@@ -124,29 +131,32 @@ export const Inventory__Order = {
             propType_: PropertyTypeN.REFERENCE_ENTITY,
             entity: {
                 deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-                copiedProperties: [
+                snapshotCurrentValueOfProperties: [
                     "../../code",
                     "../../name",
                     "locationCode",
                     "price",
                     "currency/code",
+                    "available_stock"
                 ]
             }
         },
         requested_quantity: { propType_: PropertyTypeN.NUMBER, allowNull: false },
-        available_stock: { propType_: PropertyTypeN.FORMULA, formula: { CURRENT_VALUE_OF: "product.available_stock" } },
         reserved_quantity: {
             propType_: PropertyTypeN.FORMULA,
-            formula: { EXPRESSION: 'if(available_stock > requested_quantity, requested_quantity, available_stock)' }
+            formula: { EXPRESSION: 'if(./available_stock > ./requested_quantity, ./requested_quantity, ./available_stock)' }
         },
         client_stock: { propType_: PropertyTypeN.NUMBER },
-        // units: {
-        //     propType_: PropertyTypeN.TABLE,
-        // 
-        //         unit: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ["code", "serial"] } }
-        //     }
-        // },
-
-    }
-
+        units: {
+            propType_: PropertyTypeN.TABLE,
+            unit: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } }
+        },
+    },
+    executionPlan_: {
+        items: `
+            item_before, item
+            product,location = STORE.getWithDeepPath(item.product.ref_) ;
+            item.available_stock = location.available_stock - item.reserved_quantity.lhs
+        `,
+    } as ExecutionPlan,
 };

@@ -30,7 +30,7 @@ describe('base_obj', () => {
         expect(props).to.eql({ ref_: '/Inventory/Product/1/c/c1/1.1.3', c1prop: 789 });
     });
 
-    it.only('should correctly diff and patch objects', () => {
+    it('should correctly diff and patch objects', () => {
         let diff = diffObj({
             _id: "1", a: 1, b: 2, c: {
                 _id: '1.1',

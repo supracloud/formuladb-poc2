@@ -25,6 +25,6 @@ describe('1_application_init_flow: ', () => {
     let tableContents = await tablePO.getTable();
 
     expect(tableContents[0][11]).toEqual('_id');
-    expect(tableContents[1][11]).toEqual('-General-Actor:1234001');
+    expect(tableContents[1][11]).toEqual('UUID-General-Actor:1');
   });
 });

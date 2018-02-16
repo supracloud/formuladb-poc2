@@ -21,7 +21,7 @@ export var Forms__ServiceForm_Form_: Form = {
       {
         nodeType: NodeType.form_grid_row,
         childNodes: [
-          { nodeType: NodeType.form_autocomplete, entityName: "client", copiedProperties: ["code", "username"] },
+          { nodeType: NodeType.form_autocomplete, entityName: "client", snapshotCurrentValueOfProperties: ["code", "username"] },
           { nodeType: NodeType.form_input, propertyName: "technician_code" },
           { nodeType: NodeType.form_input, propertyName: "client_person" },
         ]
@@ -92,7 +92,7 @@ export var Forms__ServiceForm_Form_: Form = {
                       {
                         nodeType: NodeType.form_table, tableName: "items",
                         childNodes: [
-                          { nodeType: NodeType.form_autocomplete, entityName: "product", copiedProperties: ["code", "name", "location", "price"] },
+                          { nodeType: NodeType.form_autocomplete, entityName: "product", snapshotCurrentValueOfProperties: ["code", "name", "location", "price"] },
                           { nodeType: NodeType.form_input, propertyName: "requested_quantity" },
                           { nodeType: NodeType.form_input, propertyName: "client_stock" },
                         ]

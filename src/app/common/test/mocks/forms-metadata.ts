@@ -15,7 +15,7 @@ export const Forms__ServiceForm = {
         propType_: PropertyTypeN.FORMULA,
         formula: {
             CONCATENATE: [
-                { EXPRESSION: "client.code" },
+                { EXPRESSION: "./client/code" },
                 {
                     FORMAT: {
                         format: "%09d",
@@ -34,7 +34,7 @@ export const Forms__ServiceForm = {
         }
     },
     product_form_id: { propType_: PropertyTypeN.NUMBER, "allowNull": false },
-    client: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: General__Client._id, copiedProperties: ["code", "username"] } },
+    client: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: General__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } },
     time_of_arrival: { propType_: PropertyTypeN.DATETIME },
     time_of_departure: { propType_: PropertyTypeN.DATETIME },
     normal_hours: { propType_: PropertyTypeN.NUMBER },
@@ -50,7 +50,7 @@ export const Forms__ServiceForm = {
     accommodation: { propType_: PropertyTypeN.NUMBER },
     service_form_units: {
         propType_: PropertyTypeN.TABLE, entity: { deepPath: Inventory__Order._id },
-        equipment: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, copiedProperties: ['code', 'product_code', 'serial1'] } },
+        equipment: { propType_: PropertyTypeN.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } },
         reported_problem: { propType_: PropertyTypeN.TEXT },
         found_problem: { propType_: PropertyTypeN.TEXT },
         work_description: { propType_: PropertyTypeN.TEXT },

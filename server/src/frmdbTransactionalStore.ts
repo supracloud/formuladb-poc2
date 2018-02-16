@@ -33,7 +33,7 @@ export class FrmdbTransactionalStore {
         this.kvs = Container.get(KeyValueStores);
     }
 
-    public async withTransaction(event: MwzEvents, callback: TransactionalCallback): Promise<MwzEvents> {
+    public async withTransaction(event: MwzEvents, handlerCallback: TransactionalCallback): Promise<MwzEvents> {
         let keepGoing = false;
 
         do {
@@ -43,7 +43,7 @@ export class FrmdbTransactionalStore {
                     .then(ev => {
                         event.readObjs_ = [];
                         event.updatedIds_ = [];
-                        return callback(ev, new FrmdbStoreAtTransaction(ev, this.kvs.transactionsDB, this.kvs.historyDB), new Map<string, BaseObj>());
+                        return handlerCallback(ev, new FrmdbStoreAtTransaction(ev, this.kvs.transactionsDB, this.kvs.historyDB), new Map<string, BaseObj>());
                     });
         
             } catch (ex) {

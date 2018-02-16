@@ -4,7 +4,7 @@ import { Label } from './label';
 import { generateUUID } from '../uuid';
 
 export class NodeElementAttributes {
-    copiedProperties?: string[];//this only applies to entities
+    snapshotCurrentValueOfProperties?: string[];//this only applies to entities
     tabNameFormPath?: string;//used for form_tabs to select which field gives the name for the tab
     [x: string]: any;
 }
@@ -46,7 +46,7 @@ export class FormAutocomplete extends SubObj {
     readonly nodeType = NodeType.form_autocomplete;
     _id?: string;
     entityName: string;
-    copiedProperties?: string[];
+    snapshotCurrentValueOfProperties?: string[];
 }
 export class FormTabs extends SubObj {
     readonly nodeType = NodeType.form_tabs;
@@ -156,7 +156,7 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
         } else if (pn.prop.propType_ === PropertyTypeN.REFERENCE_ENTITY) {
             child = new FormAutocomplete();
             child.entityName = pn.name;
-            child.attributes = { copiedProperties: pn.prop.entity.copiedProperties };
+            child.attributes = { snapshotCurrentValueOfProperties: pn.prop.entity.snapshotCurrentValueOfProperties };
         } else {
             child = new FormInput();
             child.propertyName = pn.name;

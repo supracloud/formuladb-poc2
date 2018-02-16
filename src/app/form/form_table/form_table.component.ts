@@ -22,9 +22,9 @@ export class FormTableComponent extends BaseNodeComponent implements OnChanges {
 
   getCopiedPropertyName(child: NodeElement, idx: number) {
     let ret = null;
-    if (isEntityNodeElement(child)) ret = child.copiedProperties[idx];
+    if (isEntityNodeElement(child)) ret = child.snapshotCurrentValueOfProperties[idx];
     if (!ret) {
-      console.error("copiedProperties does not have enough elements: ", child, idx);
+      console.error("snapshotCurrentValueOfProperties does not have enough elements: ", child, idx);
       ret = 'NOT-FOUND-' + idx;
     }
     return ret;

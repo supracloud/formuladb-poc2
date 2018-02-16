@@ -2,7 +2,7 @@ import { SubObj } from "../base_obj";
 
 export class Formula extends SubObj {
     EXPRESSION?: SimpleExpression;
-    CURRENT_VALUE_OF?: SimpleExpression;
+    GET_CURRENT_VALUE_OF?: SimpleExpression;
     SUM?: Formula[];
     CONCATENATE?: Formula[];
     IF?: IfFormula;

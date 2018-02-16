@@ -123,11 +123,11 @@ export function queryObjectWithDeepPath(obj: BaseObj, deepPath: string, pickProp
  * Deep diff producing a patch that can be applied in both ways:
  *  - go from before to after
  *  - go back from after to before
- * TODO: optimize! we are doing deep equal then going down the tree => multiple traversals! diff should be done with only one traversal
  */
 export function diffObj(before: SubObj, after: SubObj) {
     let o = Symbol('object'), a = Symbol('array'), s = Symbol('scalar');
     function getTypeOf(x) {
+        if (typeof x === 'function') throw new Error('functions are not supported, just plain objects! x = ' + JSON.stringify(x) + '; before=' + JSON.stringify(before) + '; after=' + JSON.stringify(after));
         return _.isPlainObject(x) ? o : (_.isArray(x) ? a : s); 
     } 
     function changes(lhs, rhs) {

@@ -17,6 +17,7 @@ export class Entity extends BaseObj {
 export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];
 export type EntityProperties = { [x: string]: EntityProperty };
 export type HasProperties = Entity | TableProperty | ExtendEntityProperty;
+export type Schema = {[x: string]:  Entity};
 
 export function isEntityProperty(prop: EntityPropsType): prop is EntityProperty {
     return typeof prop == 'object' && prop['propType_'] != null;
@@ -113,7 +114,7 @@ export class ReferenceEntityProperty extends SubObj {
     //name: string;
     /**
      * Autocomplete form element must be used to allow the user to reference and existing Entity
-     * The possible autocomplete fields are set copiedProperties
+     * The possible autocomplete fields are set snapshotCurrentValueOfProperties
      */
     entity?: ReferencedEntity;
 }
@@ -132,7 +133,7 @@ export class ExtendEntityProperty extends SubObj {
 
 export class ReferencedEntity extends SubObj {
     deepPath: string;
-    copiedProperties?: string[];
+    snapshotCurrentValueOfProperties?: string[];
 }
 
 /**

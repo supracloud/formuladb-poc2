@@ -17,7 +17,7 @@ export const Financial__Account = {
         propType_: PropertyTypeN.REFERENCE_ENTITY,
         entity: {
             deepPath: General__Actor._id,
-            copiedProperties: [
+            snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
             ]
@@ -33,7 +33,7 @@ export const Financial__Transaction = {
         propType_: PropertyTypeN.REFERENCE_ENTITY,
         entity: {
             deepPath: Financial__Account._id,
-            copiedProperties: [
+            snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
             ]
@@ -43,7 +43,7 @@ export const Financial__Transaction = {
         propType_: PropertyTypeN.REFERENCE_ENTITY,
         entity: {
             deepPath: Financial__Account._id,
-            copiedProperties: [
+            snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
             ]

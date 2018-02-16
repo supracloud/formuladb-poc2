@@ -65,7 +65,7 @@ export class MockData {
         let values = Array.from(db.values());
         if (values.length <= refIdx) throw new Error("Dependent entity " + ref.deepPath + " for " + path + " has fewer values " + values.length + " than expected " + refIdx);
         let refObj = values[refIdx];
-        let ret = queryObjectWithDeepPath(refObj, ref.deepPath.replace('/@', '/0'), ref.copiedProperties);
+        let ret = queryObjectWithDeepPath(refObj, ref.deepPath.replace('/@', '/0'), ref.snapshotCurrentValueOfProperties);
         ret = (ret instanceof Array) ? ret[0] : ret;
         ret._id = 'UUID-' + ret.ref_;
         return ret;
@@ -129,7 +129,6 @@ export class MockData {
     }
 
     mockData() {
-        console.log("mockData called");
         this.mockEntities(metadata.General__Actor as Entity, [1, 2, 3]);
         this.mockEntities(metadata.General__Currency as Entity, [1, 2, 3]);
         this.mockEntities(metadata.General__Person as Entity, [1, 2, 3]);

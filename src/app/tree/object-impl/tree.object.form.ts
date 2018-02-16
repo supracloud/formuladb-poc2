@@ -33,7 +33,7 @@ export class FormTreeObject implements TreeObject<form.NodeElement>{
                 case form.NodeType.form_autocomplete:
                     s.push('.', node.entityName);
                     s.push(": ");
-                    s.push(JSON.stringify(node.copiedProperties||'').replace(/^\{/, '').replace(/\}$/, ''));
+                    s.push(JSON.stringify(node.snapshotCurrentValueOfProperties||'').replace(/^\{/, '').replace(/\}$/, ''));
                     break;
                 case form.NodeType.form_grid:
                 case form.NodeType.form_grid_row:
