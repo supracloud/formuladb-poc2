@@ -2,7 +2,6 @@ import { FrmdbStore } from "./frmdb_store";
 import { BaseObj, SubObj } from "./domain/base_obj";
 import * as _ from "./frmdb_lodash";
 import * as moment from "moment";
-import { DateString } from "./domain/metadata/formula";
 
 import * as  expression_eval from 'expression-eval';
 
@@ -14,6 +13,7 @@ const mapKeysDeep = (obj, cb) =>
     );
 
 export type CompiledExpression = (context: any) => any;
+export type DateString = string;
 
 export class ExpressionEvaluator {
 
