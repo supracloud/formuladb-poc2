@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
-import { Entity, EntityProperty, PropertyTypeN, ReferencedEntity, propertiesWithNamesOf, getEntityIdFromDeepPath, EntityPropertiesWithNames } from '../../domain/metadata/entity'
+import { Entity, EntityProperty, Pn, ReferencedEntity, propertiesWithNamesOf, getEntityIdFromDeepPath, EntityPropertiesWithNames } from '../../domain/metadata/entity'
 import { DataObj } from "../../domain/metadata/data_obj";
 import { queryObjectWithDeepPath, SubObj } from '../../domain/base_obj';
 import { TEST_DATA } from "./test-data";
@@ -97,23 +97,23 @@ export class MockData {
                 //do nothing
             } else if (p.name == "type_") {
                 //do nothing
-            } else if (p.prop.propType_ == PropertyTypeN.NUMBER) {
+            } else if (p.prop.propType_ == Pn.NUMBER) {
                 ret[p.name] = subId;
-            } else if (p.prop.propType_ == PropertyTypeN.STRING) {
+            } else if (p.prop.propType_ == Pn.STRING) {
                 ret[p.name] = p.name + subId;
-            } else if (p.prop.propType_ == PropertyTypeN.TEXT) {
+            } else if (p.prop.propType_ == Pn.TEXT) {
                 ret[p.name] = p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + subId;
-            } else if (p.prop.propType_ == PropertyTypeN.DATETIME) {
+            } else if (p.prop.propType_ == Pn.DATETIME) {
                 ret[p.name] = new Date();
-            } else if (p.prop.propType_ == PropertyTypeN.EXTEND_ENTITY) {
+            } else if (p.prop.propType_ == Pn.EXTEND_ENTITY) {
                 let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
                 o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
                 ret[p.name] = o;
-            } else if (p.prop.propType_ == PropertyTypeN.REFERENCE_ENTITY) {
+            } else if (p.prop.propType_ == Pn.REFERENCE_ENTITY) {
                 let refIdx = subId % 3;
                 let refDeepPath = p.prop.entity.deepPath;
                 ret[p.name] = this.getRefDataObj(path, p.prop.entity, refIdx);
-            } else if (p.prop.propType_ == PropertyTypeN.TABLE) {
+            } else if (p.prop.propType_ == Pn.TABLE) {
                 let table = [];
                 for (var i = 0; i < 3; i++) {
                     let j = subId * 10 + i;

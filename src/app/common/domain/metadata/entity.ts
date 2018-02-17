@@ -28,7 +28,7 @@ export function propertiesOfEntity(entity: HasProperties): EntityProperties {
         if (!isEntityProperty(prop)) return;
         ret[propName] = prop;
     });
-    ret['_id'] = {propType_: PropertyTypeN.STRING};
+    ret['_id'] = {propType_: Pn.STRING};
     return ret;
 }
 export function propertiesWithNamesOf(entity: HasProperties): EntityPropertiesWithNames {
@@ -37,7 +37,7 @@ export function propertiesWithNamesOf(entity: HasProperties): EntityPropertiesWi
         if (!isEntityProperty(prop)) return;
         ret.push({name: propName, prop: prop});
     });
-    return ret.concat({name: '_id', prop: {propType_: PropertyTypeN.STRING}});
+    return ret.concat({name: '_id', prop: {propType_: Pn.STRING}});
 }
 export function extendEntityProperties(extendedEntity: HasProperties, newProperties: EntityProperties) {
     _.toPairs(newProperties).forEach(([propName, p]) => {
@@ -49,7 +49,7 @@ export function queryEntityWithDeepPath(entity: Entity, deepPath: string): Entit
     let relativePath = deepPath.replace(entity._id, '').replace(/^\//, '').replace(/\/@/g, '');
     if (null != relativePath && '' !== relativePath) {  
         let pathInsideEntity = relativePath.replace(/\//, '.');
-        return _(eval(`entity.${pathInsideEntity}`)).omit(RESERVED_PROP_NAMES).extend({_id: {propType_: PropertyTypeN.STRING}}).value() as EntityProperties;
+        return _(eval(`entity.${pathInsideEntity}`)).omit(RESERVED_PROP_NAMES).extend({_id: {propType_: Pn.STRING}}).value() as EntityProperties;
     }
     return propertiesOfEntity(entity);
 }
@@ -62,7 +62,7 @@ export function typesafeDeepPath<E extends HasProperties>(rootPath: string, e: E
     return rootPath + '/' + propName + (arrayMarker ? '/@' : '');
 }
 
-export const enum PropertyTypeN { 
+export const enum Pn { 
     NUMBER = "NUMBER",
     STRING = "STRING",
     TEXT = "TEXT",
@@ -74,24 +74,24 @@ export const enum PropertyTypeN {
 }
 
 export class NumberProperty extends SubObj {
-    readonly propType_: PropertyTypeN.NUMBER;
+    readonly propType_: Pn.NUMBER;
     //name: string;
     defaultValue?: number;
     allowNull?:boolean;
 }
 export class StringProperty extends SubObj {
-    readonly propType_: PropertyTypeN.STRING;
+    readonly propType_: Pn.STRING;
     //name: string;
     defaultValue?: string;
     allowNull?:boolean;
 }
 export class TextProperty extends SubObj {
-    readonly propType_: PropertyTypeN.TEXT;
+    readonly propType_: Pn.TEXT;
     //name: string;
     allowNull?:boolean;
 }
 export class DatetimeProperty extends SubObj {
-    readonly propType_: PropertyTypeN.DATETIME;
+    readonly propType_: Pn.DATETIME;
     //name: string;
     allowNull?:boolean;
 }
@@ -100,7 +100,7 @@ export class DatetimeProperty extends SubObj {
  * Table of existing entities or entities created
  */
 export class TableProperty extends SubObj {
-    readonly propType_: PropertyTypeN.TABLE;
+    readonly propType_: Pn.TABLE;
     //name: string;
     entity?: ReferencedEntity;
     isLargeTable?: boolean;
@@ -110,7 +110,7 @@ export class TableProperty extends SubObj {
  * This property represents an embedded entity that is created when the parent entity is created
  */
 export class ReferenceEntityProperty extends SubObj {
-    readonly propType_: PropertyTypeN.REFERENCE_ENTITY;
+    readonly propType_: Pn.REFERENCE_ENTITY;
     //name: string;
     /**
      * Autocomplete form element must be used to allow the user to reference and existing Entity
@@ -122,7 +122,7 @@ export class ReferenceEntityProperty extends SubObj {
  * This property represents an embedded entity that is created when the parent entity is created
  */
 export class ExtendEntityProperty extends SubObj {
-    readonly propType_: PropertyTypeN.EXTEND_ENTITY;
+    readonly propType_: Pn.EXTEND_ENTITY;
     //name: string;
     /**
      * a new Entity instance is not created with the parent Entity
@@ -140,7 +140,7 @@ export class ReferencedEntity extends SubObj {
  * This property represents a formula definition
  */
 export class FormulaProperty extends SubObj {
-    readonly propType_: PropertyTypeN.FORMULA;
+    readonly propType_: Pn.FORMULA;
     //name: string;
     formula: Formula;
 }

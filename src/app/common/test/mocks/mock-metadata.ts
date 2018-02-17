@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { NonReservedPropNamesOf, ReservedPropNamesOf } from "../../domain/base_obj";
-import { Entity, PropertyTypeN, isEntityProperty, extendEntityProperties, queryEntityWithDeepPath, EntityProperties, EntityProperty, getEntityIdFromDeepPath } from '../../domain/metadata/entity'
+import { Entity, Pn, isEntityProperty, extendEntityProperties, queryEntityWithDeepPath, EntityProperties, EntityProperty, getEntityIdFromDeepPath } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
@@ -30,7 +30,7 @@ export class MockMetadata {
     this.entities.forEach(entity => {
       _.toPairs(entity).forEach(([propName, prop]) => {
         if (!isEntityProperty(prop)) return;
-        if ((prop.propType_ === PropertyTypeN.EXTEND_ENTITY || prop.propType_ === PropertyTypeN.TABLE) && prop.entity != null) {
+        if ((prop.propType_ === Pn.EXTEND_ENTITY || prop.propType_ === Pn.TABLE) && prop.entity != null) {
           let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.entity.deepPath));
           if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.entity.deepPath);
           extendEntityProperties(prop, queryEntityWithDeepPath(referencedEntity, prop.entity.deepPath));

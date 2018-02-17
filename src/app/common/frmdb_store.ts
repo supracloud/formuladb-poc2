@@ -17,7 +17,7 @@ export class FrmdbStore {
         return this.transactionsDB.put(event);
     }
 
-    public getWithDeepPath(deepPath: string): Promise<{rootObj: BaseObj, subObj: SubObj}> {
+    public queryWithDeepPath(deepPath: string): Promise<DataObj[]> {
         throw new Error('queryWithDeepPath not implemented yet!');
     }
 

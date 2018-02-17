@@ -1,6 +1,6 @@
 import { Container } from "typedi";
 import { v4 as uuid } from 'uuid';
-import * as dateFormat from 'dateformat';
+import * as moment from 'moment';
 
 import { BaseObj } from "../../src/app/common/domain/base_obj";
 import { Entity, EntityProperty } from "../../src/app/common/domain/metadata/entity";
@@ -38,7 +38,7 @@ export class FrmdbTransactionalStore {
 
         do {
             try {
-                event._id = dateFormat(new Date(), 'yyyy-mm-dd-HH-MM-ss-l') + '-' + uuid() + '=' + event.clientId_;
+                event._id = moment().format('YYYY-MM-DD-HH-mm-ss-SSS') + '-' + uuid() + '=' + event.clientId_;
                 return this.kvs.transactionsDB.put(event)
                     .then(ev => {
                         event.readObjs_ = [];

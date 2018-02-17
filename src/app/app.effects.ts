@@ -18,7 +18,7 @@ import { Router } from "@angular/router";
 
 import { BaseObj } from "./common/domain/base_obj";
 import { DataObj } from "./common/domain/metadata/data_obj";
-import { Entity, EntityProperty, PropertyTypeN } from "./common/domain/metadata/entity";
+import { Entity, EntityProperty, Pn } from "./common/domain/metadata/entity";
 import { ChangeObj } from "./common/domain/change_obj";
 import { MwzEvents } from "./common/domain/event";
 

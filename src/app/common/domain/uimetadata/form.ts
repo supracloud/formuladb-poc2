@@ -1,5 +1,5 @@
 import { BaseObj, SubObj } from '../base_obj';
-import { EntityProperty, propertiesWithNamesOf, PropertyTypeN, Entity } from "../metadata/entity";
+import { EntityProperty, propertiesWithNamesOf, Pn, Entity } from "../metadata/entity";
 import { Label } from './label';
 import { generateUUID } from '../uuid';
 
@@ -149,11 +149,11 @@ export function getDefaultForm(entity: Entity, entitiesMap: Map<string, Entity>)
 export function setFormElementChildren(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: Map<string, Entity>) {
     parentFormEl.childNodes = propertiesWithNamesOf(entity).map(pn => {
         let child = null;
-        if (pn.prop.propType_ === PropertyTypeN.TABLE) {
+        if (pn.prop.propType_ === Pn.TABLE) {
             child = pn.prop.isLargeTable ? new FormTable() : new FormTabs();
             child.tableName = pn.name;
             setFormElementChildren(child, entitiesMap.get(pn.prop.entity.deepPath), entitiesMap);
-        } else if (pn.prop.propType_ === PropertyTypeN.REFERENCE_ENTITY) {
+        } else if (pn.prop.propType_ === Pn.REFERENCE_ENTITY) {
             child = new FormAutocomplete();
             child.entityName = pn.name;
             child.attributes = { snapshotCurrentValueOfProperties: pn.prop.entity.snapshotCurrentValueOfProperties };

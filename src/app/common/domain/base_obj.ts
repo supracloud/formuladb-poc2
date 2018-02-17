@@ -16,7 +16,8 @@ export class RefObj extends SubObj {
     ref_: string;
 }
 
-export type BaseObjPropTypes = string | number | boolean | Date | SubObj[] | string[] | SubObj;
+export type BaseObjPropTypes = string | number | boolean | Date | SubObj[] | string[] | SubObj | 
+    string[][] | string[][][] | string[][][][] | string [][][][][] | string[][][][][][];
 
 /**
  * A Transaction is a modification done by an actor (User/Robot) on a BaseObj
