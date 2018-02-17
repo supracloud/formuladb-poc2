@@ -20,12 +20,12 @@ export class EntityCompiler {
         //TODO: add [_id, type_] mandatory snapshotCurrentValueOfProperties if they are missing
 
         // create execution plan
-        await this.compileExecutionPlan(entity);
+        await this.compileFormulas(entity);
 
         return entity;
     }
 
-    public async compileExecutionPlan(entity: Entity): Promise<Entity> {
+    public async compileFormulas(entity: Entity): Promise<Entity> {
 
         
 

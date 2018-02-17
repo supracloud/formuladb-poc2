@@ -1,5 +1,4 @@
 import { BaseObj, BaseObjPropTypes, isNonOverridableProperty, SubObj, parseDeepPath, RESERVED_PROP_NAMES } from '../base_obj';
-import { Formula } from "./formula";
 import { ExecutionPlan } from "./execution_plan";
 import * as _ from 'lodash';
 
@@ -136,13 +135,14 @@ export class ReferencedEntity extends SubObj {
     snapshotCurrentValueOfProperties?: string[];
 }
 
+export type FormulaExpression = string;
 /**
  * This property represents a formula definition
  */
 export class FormulaProperty extends SubObj {
     readonly propType_: Pn.FORMULA;
     //name: string;
-    formula: Formula;
+    formula: FormulaExpression;
 }
 
 export type EntityProperty = 

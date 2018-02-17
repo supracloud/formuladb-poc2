@@ -8,10 +8,10 @@ import * as  expression_eval from 'expression-eval';
 
 //TODO: move this to frmdb_lodash
 const mapKeysDeep = (obj, cb) =>
-  _.mapValues(
-    _.mapKeys(obj, cb),
-    val => (_.isPlainObject(val) ? mapKeysDeep(val, cb) : val),
-  );
+    _.mapValues(
+        _.mapKeys(obj, cb),
+        val => (_.isPlainObject(val) ? mapKeysDeep(val, cb) : val),
+    );
 
 export type CompiledExpression = (context: any) => any;
 
@@ -20,25 +20,37 @@ export class ExpressionEvaluator {
     private functions = {
         DATE_UTILS: (date: DateString, oper: 'START_OF_MONTH' | 'END_OF_MONTH'): DateString => {
             let mom = moment(date, 'YYYY-MM-DD-HH-mm-ss-SSS', false);
-            switch(oper) {
+            switch (oper) {
                 case 'START_OF_MONTH':
                     return mom.startOf('month').format('YYYY-MM-DD-HH-mm-ss-SSS');
                 case 'END_OF_MONTH':
-                return mom.endOf('month').format('YYYY-MM-DD-HH-mm-ss-SSS');
+                    return mom.endOf('month').format('YYYY-MM-DD-HH-mm-ss-SSS');
                 default:
                     throw new Error('DATE_UTILS unknown operation ' + oper);
             }
-        }
+        },
+        TEXT: (val: any, format: string) => {
+            //TODO: proper implementation of Excel's TEXT function
+            
+            function pad(n, width, z?: '0') {
+                n = n + '';
+                return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+            }
+
+            if (format.match(/^0+$/)) {
+                return pad(val, format.length);
+            }
+        },
     };
 
     public compile(expression: string): CompiledExpression {
         let expr = expression
             .replace(/_id/g, 'id')
             .replace(/\$/g, 'THE_CURRENT_OBJ')
-            .split(/(\.?\/\w+(?:\/\w+)*)/).map(x => 
+            .split(/(\.?\/\w+(?:\/\w+)*)/).map(x =>
                 x.replace(/^\.\//, 'THE_CURRENT_OBJ.')
-                .replace(/^\//, 'THE_ROOT_OBJ.')
-                .replace(/\//g, '.'))
+                    .replace(/^\//, 'THE_ROOT_OBJ.')
+                    .replace(/\//g, '.'))
             .join('');
         return expression_eval.compile(expr);
     }

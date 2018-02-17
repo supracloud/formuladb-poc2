@@ -1,5 +1,6 @@
 import { Entity, Pn, typesafeDeepPath } from '../../domain/metadata/entity';
 import { ExecutionPlan } from '../../domain/metadata/execution_plan';
+import { Sn } from '../../domain/metadata/stored_procedure';
 
 export const Inventory = {
     type_: "Entity_", _id: "/Inventory",
@@ -148,18 +149,17 @@ export const Inventory__Order = {
         },
     },
     executionPlan_: {
-        items: `
-            trigger(item.OLD, item.NEW) {
-                product = STORE_getDataObj(item.product.ref_)
-                product.OLD.reserved_quantity = product.reserved_quantity - item.OLD.reserved_quantity
-                product.OLD.available_stock = product.OLD.received_stock - product.OLD.reserved_stock - product.OLD.delivered_stock
-                item.NEW.available_stock = product.OLD.available_stock
-                item.NEW.reserved_quantity = if(item.NEW.available_stock > item.NEW.requested_quantity, item.NEW.requested_quantity, item.NEW.available_stock)
-                product.NEW.reserved_quantity = product.NEW.reserved_quantity + item.NEW.reserved_quantity
-                product.NEW.available_stock = product.NEW.received_stock - product.NEW.reserved_stock - product.NEW.delivered_stock
-                SAVE(item.NEW)
-                save(product.NEW)
-            }
-        `,
+        items: [
+            [Sn.PARAMS, 'item'],
+            ['product=', Sn.STORE_getDataObj, 'item.product.ref_'],
+            //NOTE: iF item.OLD is null, it means this is the item is being created OR the Formula has been created or changed and triggers for all items are run for the initial computation of the new Formula
+            ['product.OLD.reserved_stock=', Sn.EVAL, 'product.reserved_quantity - item.OLD.reserved_quantity'],
+            ['product.OLD.available_stock=', Sn.EVAL, 'product.received_stock - product.OLD.reserved_stock - product.delivered_stock'],
+            ['item.available_stock=', Sn.EVAL, 'product.OLD.available_stock'],
+            ['item.reserved_quantity=', Sn.EVAL, 'item.available_stock > item.requested_quantity ? item.requested_quantity : item.available_stock'],
+            ['product.reserved_quantity=', Sn.EVAL, 'product.reserved_quantity + item.reserved_quantity'],
+            ['product.available_stock=', Sn.EVAL, 'product.received_stock - product.reserved_stock - product.delivered_stock'],
+            [Sn.STORE_SAVE_DIRTY_OBJS, 'item', 'product'],
+        ],
     } as ExecutionPlan,
 };

@@ -1,7 +1,7 @@
 import { Entity, Pn } from '../../domain/metadata/entity';
 import { Inventory__Product, Inventory__Order, Inventory__ProductUnit } from './inventory-metadata';
 import { General__Client } from "./general-metadata";
-import { ExecutionPlan, En } from '../../domain/metadata/execution_plan';
+import { Sn } from '../../domain/metadata/stored_procedure';
 
 export const Forms = {
     type_: "Entity_", _id: "/Forms",
@@ -14,17 +14,10 @@ export const Forms__ServiceForm = {
 
     code: {
         propType_: Pn.FORMULA,
-        formula: [
-            "./client/code", '||', 
-            [
-                'TEXT',
-                ['INDEX_OF', './time_of_arrival', 
-                    ['DATE_UTILS', 'time_of_arrival', 'START_OF_MONTH'], 
-                    ['DATE_UTILS', 'time_of_arrival', 'END_OF_MONTH']
-                ],
-                '000000000'
-            ]
-        ]
+        formula: `
+            ./client/code + 
+            TEXT(INDEX_OF(./time_of_arrival, DATE_UTILS(./time_interval, START_OF_MONTH), DATE_UTILS(./time_interval, END_OF_MONTH)), "000000000")
+        `
     },
     product_form_id: { propType_: Pn.NUMBER, "allowNull": false },
     client: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: General__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } },
@@ -57,11 +50,13 @@ export const Forms__ServiceForm = {
         service_form_units: {
             items: null //should be the same as /Inventory/Order after compilation
         },
-        code: [
-            ['val1=', En.STORE_queryWithDeepPath, '/Forms/ServiceForm[./time_of_arrival > startOfMonth && time_of_arrival < endOfMonth]'],
-            ['map1=', En.DEF_MAP_FUN, 'value.code = value.client.code + TEXT(index, "00000000")'],
-            ['val3=', En.EVAL, '_(val1).sortBy(["time_of_arrival"]).map(map1)'],
-            [En.STORE_setObj, 'val2'],
+        time_of_arrival: [
+            [Sn.PARAMS, 'OLD', 'NEW'],
+            ['startRange=', Sn.EVAL, 'DATE_UTILS(NEW.time_interval, START_OF_MONTH)'],
+            ['endRange=', Sn.EVAL, 'DATE_UTILS(NEW.time_interval, END_OF_MONTH'],
+            ['val1=', Sn.STORE_queryWithDeepPath, '/Forms/ServiceForm[startRange <= time_of_arrival and time_of_arrival <= endRange]'],
+            ['val2=', Sn.EVAL, `_(val1).sortBy(["time_of_arrival"]).mapProp("i","index").mapProp("code","'00000000' + index").value()`],
+            [Sn.STORE_SAVE_DIRTY_OBJS, 'val2'],
         ]
-    } as ExecutionPlan,
+    },
 };
