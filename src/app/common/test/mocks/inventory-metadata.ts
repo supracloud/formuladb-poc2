@@ -30,7 +30,7 @@ export const Inventory__Product = {
         minimal_stock: { propType_: Pn.NUMBER, allowNull: false },
         received_stock: {
             propType_: Pn.FORMULA,
-            formula: 'SUM(itemsInReceiptInInventory.received_quantity)'
+            formula: 'SUM(itemsInReceiptInInventory/received_quantity)'
         },
         available_stock: {
             propType_: Pn.FORMULA,
@@ -38,7 +38,7 @@ export const Inventory__Product = {
         },
         reserved_stock: {
             propType_: Pn.FORMULA,
-            formula: 'SUM(itemsInOrderInInventory.reserved_quantity)'
+            formula: 'SUM(itemsInOrderInInventory/reserved_quantity)'
         },
         delivered_stock: { propType_: Pn.NUMBER },
         moving_stock: { propType_: Pn.NUMBER, allowNull: false },
@@ -79,7 +79,6 @@ export const Inventory__ProductUnit = {
 
 };
 
-console.log("typesafeDeepPath=", typesafeDeepPath);
 
 export const Inventory__Receipt = {
     type_: "Entity_", _id: "/Inventory/Receipt",
@@ -148,18 +147,4 @@ export const Inventory__Order = {
             unit: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } }
         },
     },
-    executionPlan_: {
-        items: [
-            [Sn.PARAMS, 'item'],
-            ['product=', Sn.STORE_getDataObj, 'item.product.ref_'],
-            //NOTE: iF item.OLD is null, it means this is the item is being created OR the Formula has been created or changed and triggers for all items are run for the initial computation of the new Formula
-            ['product.OLD.reserved_stock=', Sn.EVAL, 'product.reserved_quantity - item.OLD.reserved_quantity'],
-            ['product.OLD.available_stock=', Sn.EVAL, 'product.received_stock - product.OLD.reserved_stock - product.delivered_stock'],
-            ['item.available_stock=', Sn.EVAL, 'product.OLD.available_stock'],
-            ['item.reserved_quantity=', Sn.EVAL, 'item.available_stock > item.requested_quantity ? item.requested_quantity : item.available_stock'],
-            ['product.reserved_quantity=', Sn.EVAL, 'product.reserved_quantity + item.reserved_quantity'],
-            ['product.available_stock=', Sn.EVAL, 'product.received_stock - product.reserved_stock - product.delivered_stock'],
-            [Sn.STORE_SAVE_DIRTY_OBJS, 'item', 'product'],
-        ],
-    } as ExecutionPlan,
 };

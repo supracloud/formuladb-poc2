@@ -6,6 +6,9 @@ before_script:
 - npm install
 - cd server && npm install
 - cd ..
+- which ng
+- which tsc
+- ng --version
 
 test:
   script:

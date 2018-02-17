@@ -2,7 +2,11 @@ import { BaseObj, BaseObjPropTypes, isNonOverridableProperty, SubObj, parseDeepP
 import { ExecutionPlan } from "./execution_plan";
 import * as _ from 'lodash';
 
+
+//FIXME: find a way to fix this! It should be possible say that an object has a set of properties and the rest can be of type X
+// perhaps when this gets added: https://github.com/Microsoft/TypeScript/issues/4183
 export type EntityPropsType = EntityProperty | BaseObjPropTypes;
+export type SchemaPropsType = Entity | BaseObjPropTypes;
 
 /**
  * the _id of the Entity is the path, e.g. Forms__ServiceForm
@@ -11,12 +15,15 @@ export class Entity extends BaseObj {
     type_ = 'Entity_';
     module_?: boolean;
     [x: string]: EntityPropsType;
-    executionPlan_?: ExecutionPlan;
 }
 export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];
 export type EntityProperties = { [x: string]: EntityProperty };
 export type HasProperties = Entity | TableProperty | ExtendEntityProperty;
-export type Schema = {[x: string]:  Entity};
+
+export class Schema  extends BaseObj {
+    [x: string]:  SchemaPropsType;
+    executionPlan_?: ExecutionPlan;
+}
 
 export function isEntityProperty(prop: EntityPropsType): prop is EntityProperty {
     return typeof prop == 'object' && prop['propType_'] != null;

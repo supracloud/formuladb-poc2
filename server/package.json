@@ -10,6 +10,7 @@
     "serve": "concurrently --kill-others \"pouchdb-server --in-memory --port 5984\" \"tsc --inlineSourceMap -w -p src\" \"wait-port -t 20000 localhost:5984 && sleep 5 && npm run nodemon-inspect\"",
     "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
     "start": "node dist/server/src/server.js",
+    "pretest": "tsc --inlineSourceMap -p src",
     "test": "./node_modules/.bin/mocha \"dist/server/**/*.spec.js\""
   },
   "dependencies": {

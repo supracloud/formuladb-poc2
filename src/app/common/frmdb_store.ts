@@ -25,7 +25,7 @@ export class FrmdbStore {
         return this.findByType<Entity>('Entity_').then(ee => {
             let ret = {};
             ee.forEach(e => {ret[e._id] = e})
-            return ret;
+            return ret as Schema;
         });
     }
     public getEntities(): Promise<Entity[]> {

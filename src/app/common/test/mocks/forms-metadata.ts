@@ -46,17 +46,4 @@ export const Forms__ServiceForm = {
         state: { propType_: Pn.STRING, "allowNull": false },
         equipment_group: { propType_: Pn.STRING, }
     },
-    executionPlan_: {
-        service_form_units: {
-            items: null //should be the same as /Inventory/Order after compilation
-        },
-        time_of_arrival: [
-            [Sn.PARAMS, 'OLD', 'NEW'],
-            ['startRange=', Sn.EVAL, 'DATE_UTILS(NEW.time_interval, START_OF_MONTH)'],
-            ['endRange=', Sn.EVAL, 'DATE_UTILS(NEW.time_interval, END_OF_MONTH'],
-            ['val1=', Sn.STORE_queryWithDeepPath, '/Forms/ServiceForm[startRange <= time_of_arrival and time_of_arrival <= endRange]'],
-            ['val2=', Sn.EVAL, `_(val1).sortBy(["time_of_arrival"]).mapProp("i","index").mapProp("code","'00000000' + index").value()`],
-            [Sn.STORE_SAVE_DIRTY_OBJS, 'val2'],
-        ]
-    },
 };

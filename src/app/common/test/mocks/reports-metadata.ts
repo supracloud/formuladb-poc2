@@ -1,4 +1,5 @@
-import { Entity, Pn } from '../../domain/metadata/entity';
+import { Entity, Pn, typesafeDeepPath } from '../../domain/metadata/entity';
+import { Inventory__Product } from './inventory-metadata';
 
 
 export const Reports = {
@@ -70,4 +71,29 @@ export const Reports__ServiceCentralizerReport = {
     updated_at: { propType_: Pn.DATETIME, "allowNull": false },
     exchange_rate: { propType_: Pn.NUMBER, }
 
+};
+
+export const Reports__TestReport1 = {
+    type_: "Entity_", _id: "/Reports/TestReport1",
+    largeSalesPerProduct: {
+        propType_: Pn.TABLE,
+        product: {
+            propType_: Pn.REFERENCE_ENTITY,
+            entity: {
+                deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+                snapshotCurrentValueOfProperties: [
+                    "../../code",
+                    "../../name",
+                    "locationCode",
+                    "price",
+                    "currency/code",
+                    "available_stock"
+                ]
+            }
+        },
+        largeSalesValue: {
+            propType_: Pn.FORMULA,
+            formula: 'SUM(IF(itemsInOrderInInventory/reserved_quantity > 10, itemsInOrderInInventory/reserved_quantity, 0))'
+        },
+    },
 };
