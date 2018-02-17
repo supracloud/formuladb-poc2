@@ -22,9 +22,9 @@ npm run e2e:watch
 ### 1.3 Test gitlab ci locally
 
 ```bash
-sync.exe -auv --exclude node_modules --exclude .git febe febe.bak
+rsync.exe -auv --exclude node_modules --exclude .git febe febe.bak
 cd febe.bak
-MSYS_NO_PATHCONV=1 docker run -it -v $PWD:/febe --name node node:alpine sh
+MSYS_NO_PATHCONV=1 docker run -it -v $PWD:/febe --name node node:latest sh
 cd /febe/server
 npm install
 npm run e2e_serve
