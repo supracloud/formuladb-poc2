@@ -5,6 +5,7 @@ export const enum En {
     STORE_queryWithDeepPath    = 'STORE_queryWithDeepPath' ,
     STORE_setObj               = 'STORE_setObj'            ,
     EVAL                       = 'EVAL'                    ,
+    DEF_MAP_FUN                = 'DEF_MAP_FUN'             ,
 }
 
 /**

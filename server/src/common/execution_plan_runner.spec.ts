@@ -12,7 +12,7 @@ describe('ExecutionPlanRunner', () => {
     beforeEach(() => {
     });
 
-    it('should evaluate expressions correctly', () => {
+    it.only('should evaluate expressions correctly', () => {
         let exprI = new ExpressionInterpreter();
         expect(exprI.evaluate('$._id', { $: { _id: 123 } })).to.equal(123);
         expect(exprI.evaluate('"a" || "b"', {})).to.eql("ab");
@@ -34,13 +34,28 @@ describe('ExecutionPlanRunner', () => {
             {i: 2, time_of_arrival: '2018-02-12-22-01-59-004'}, 
             {i: 3, time_of_arrival: '2018-02-12-22-01-59-001'}
         ];
+        let mapProp = (propName, expr) => {
+            return (value, index) => _.set(value, propName, expr({value: value, index: index}))
+        };
+        _.mixin({'mapProp': (array, propName, expr) => {
+            let compiledExpr = expression_eval.compile(expr);//TODO: memoize this 
+            let compute = (value, index) => compiledExpr.call(null, {value: value, index: index});
+            return _.map(array, (value, index) => _.set(value, propName, compute(value, index)));
+        }});
+        expect(_([{}, {}, {}])['mapProp']('i', 'index').value()).to.eql([{i:0},{i:1},{i:2}]);
+
         expect(
-            expression_eval.compile('_(val1).sortBy(["time_of_arrival"]).map(setI).value()')
-            .call(null, {val1: val1, _: _, setI: (o, i) => _.set(o, 'i', i)})).to.eql([
-                {i: 0, time_of_arrival: '2018-02-12-22-01-59-001'},
-                {i: 1, time_of_arrival: '2018-02-12-22-01-59-002'}, 
-                {i: 2, time_of_arrival: '2018-02-12-22-01-59-003'}, 
-                {i: 3, time_of_arrival: '2018-02-12-22-01-59-004'}, 
+            expression_eval.compile(
+                `_(val1).sortBy(["time_of_arrival"]).mapProp("i","index").mapProp("code","'00000000' + index").value()`
+            )
+            .call(null, {
+                val1: val1, 
+                _: _, 
+            })).to.eql([
+                {code: "000000000", i: 0, time_of_arrival: '2018-02-12-22-01-59-001'},
+                {code: "000000001", i: 1, time_of_arrival: '2018-02-12-22-01-59-002'}, 
+                {code: "000000002", i: 2, time_of_arrival: '2018-02-12-22-01-59-003'}, 
+                {code: "000000003", i: 3, time_of_arrival: '2018-02-12-22-01-59-004'}, 
             ]);
     });
 });

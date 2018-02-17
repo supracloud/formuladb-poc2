@@ -59,7 +59,8 @@ export const Forms__ServiceForm = {
         },
         code: [
             ['val1=', En.STORE_queryWithDeepPath, '/Forms/ServiceForm[./time_of_arrival > startOfMonth && time_of_arrival < endOfMonth]'],
-            ['val2=', En.EVAL, '_(val1).sortBy(["time_of_arrival"]).map((o, i) => _.set(o, "i", i))'],
+            ['map1=', En.DEF_MAP_FUN, 'value.code = value.client.code + TEXT(index, "00000000")'],
+            ['val3=', En.EVAL, '_(val1).sortBy(["time_of_arrival"]).map(map1)'],
             [En.STORE_setObj, 'val2'],
         ]
     } as ExecutionPlan,
