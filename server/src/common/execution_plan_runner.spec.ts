@@ -12,7 +12,7 @@ describe('ExecutionPlanRunner', () => {
     beforeEach(() => {
     });
 
-    it.only('should evaluate expressions correctly', () => {
+    it('should evaluate expressions correctly', () => {
         let exprI = new ExpressionInterpreter();
         expect(exprI.evaluate('$._id', { $: { _id: 123 } })).to.equal(123);
         expect(exprI.evaluate('"a" || "b"', {})).to.eql("ab");
