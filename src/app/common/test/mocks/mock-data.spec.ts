@@ -1,8 +1,8 @@
 
 
 
-import { MockMetadata, Forms__ServiceForm } from "../../../../../src/app/common/test/mocks/mock-metadata";
-import { MockData } from "../../../../../src/app/common/test/mocks/mock-data";
+import { MockMetadata, Forms__ServiceForm } from "./mock-metadata";
+import { MockData } from "./mock-data";
 
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line

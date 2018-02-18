@@ -21,11 +21,9 @@ export const Inventory__Product = {
         category: { propType_: Pn.STRING, allowNull: false },
         price: { propType_: Pn.NUMBER, allowNull: true },
         currency: {
-            propType_: Pn.REFERENCE_ENTITY,
-            entity: {
-                deepPath: "/General/Currency",
-                snapshotCurrentValueOfProperties: ["code"],
-            }
+            propType_: Pn.SUB_ENTITY,
+            deepPath: "/General/Currency",
+            snapshotCurrentValueOfProperties: ["code"],
         },
         minimal_stock: { propType_: Pn.NUMBER, allowNull: false },
         received_stock: {
@@ -53,15 +51,15 @@ export const Inventory__ProductUnit = {
 
     code: { propType_: Pn.STRING, allowNull: false },
     product: {
-        propType_: Pn.REFERENCE_ENTITY, entity: {
-            deepPath: "/Inventory/Product",
-            snapshotCurrentValueOfProperties: [
-                "code",
-                "name",
-                "price",
-                "currency_code",
-            ]
-        }
+        propType_: Pn.SUB_ENTITY,
+        deepPath: "/Inventory/Product",
+        snapshotCurrentValueOfProperties: [
+            "code",
+            "name",
+            "price",
+            "currency_code",
+        ]
+
     },
     inventoryLocation: { propType_: Pn.STRING, allowNull: false },
     serial1: { propType_: Pn.STRING },
@@ -87,22 +85,20 @@ export const Inventory__Receipt = {
         propType_: Pn.TABLE,
 
         product: {
-            propType_: Pn.REFERENCE_ENTITY,
-            entity: {
-                deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-                snapshotCurrentValueOfProperties: [
-                    "../../code",
-                    "../../name",
-                    "locationCode",
-                    "price",
-                    "currency/code",
-                ]
-            }
+            propType_: Pn.SUB_ENTITY,
+            deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+            snapshotCurrentValueOfProperties: [
+                "../../code",
+                "../../name",
+                "locationCode",
+                "price",
+                "currency/code",
+            ]
         },
         received_quantity: { propType_: Pn.NUMBER, allowNull: false },
         units: {
             propType_: Pn.TABLE,
-            unit: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } }
+            unit: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] }
         },
     },
 };
@@ -112,18 +108,16 @@ export const Inventory__Order = {
     items: {
         propType_: Pn.TABLE,
         product: {
-            propType_: Pn.REFERENCE_ENTITY,
-            entity: {
-                deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-                snapshotCurrentValueOfProperties: [
-                    "../../code",
-                    "../../name",
-                    "locationCode",
-                    "price",
-                    "currency/code",
-                    "available_stock"
-                ]
-            }
+            propType_: Pn.SUB_ENTITY,
+            deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+            snapshotCurrentValueOfProperties: [
+                "../../code",
+                "../../name",
+                "locationCode",
+                "price",
+                "currency/code",
+                "available_stock"
+            ]
         },
         requested_quantity: { propType_: Pn.NUMBER, allowNull: false },
         reserved_quantity: {
@@ -133,7 +127,7 @@ export const Inventory__Order = {
         client_stock: { propType_: Pn.NUMBER },
         units: {
             propType_: Pn.TABLE,
-            unit: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } }
+            unit: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] }
         },
     },
 };

@@ -18,6 +18,7 @@ try {
     j.addReporter(new SpecReporter({  // add jasmine-spec-reporter
         spec: {
             displayPending: true,
+            displayStacktrace: true,
         },
         summary: {
             displayDuration: false,

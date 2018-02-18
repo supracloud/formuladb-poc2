@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as metadata from './mock-metadata';
-import { Entity, EntityProperty, Pn, ReferencedEntity, propertiesWithNamesOf, getEntityIdFromDeepPath, EntityPropertiesWithNames } from '../../domain/metadata/entity'
+import { Entity, EntityProperty, Pn, propertiesWithNamesOf, getEntityIdFromDeepPath, EntityPropertiesWithNames } from '../../domain/metadata/entity'
 import { DataObj } from "../../domain/metadata/data_obj";
 import { queryObjectWithDeepPath, SubObj } from '../../domain/base_obj';
 import { TEST_DATA } from "./test-data";
@@ -59,13 +59,13 @@ export class MockData {
         return entitiesIndexes.map(i => this.mockEntity(entity, i));
     }
 
-    getRefDataObj(path: string, ref: ReferencedEntity, refIdx: number): SubObj {
-        let db: Map<string, DataObj> = this.mockDB.get(getEntityIdFromDeepPath(ref.deepPath));
-        if (null == db) throw new Error("Dependent entity " + ref.deepPath + " not mocked yet for " + path);
+    getRefDataObj(path: string, deepPath: string, snapshotCurrentValueOfProperties: string[], refIdx: number): SubObj {
+        let db: Map<string, DataObj> = this.mockDB.get(getEntityIdFromDeepPath(deepPath));
+        if (null == db) throw new Error("Dependent entity " + deepPath + " not mocked yet for " + path);
         let values = Array.from(db.values());
-        if (values.length <= refIdx) throw new Error("Dependent entity " + ref.deepPath + " for " + path + " has fewer values " + values.length + " than expected " + refIdx);
+        if (values.length <= refIdx) throw new Error("Dependent entity " + deepPath + " for " + path + " has fewer values " + values.length + " than expected " + refIdx);
         let refObj = values[refIdx];
-        let ret = queryObjectWithDeepPath(refObj, ref.deepPath.replace('/@', '/0'), ref.snapshotCurrentValueOfProperties);
+        let ret = queryObjectWithDeepPath(refObj, deepPath.replace('/@', '/0'), snapshotCurrentValueOfProperties);
         ret = (ret instanceof Array) ? ret[0] : ret;
         ret._id = 'UUID-' + ret.ref_;
         return ret;
@@ -105,15 +105,17 @@ export class MockData {
                 ret[p.name] = p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + subId;
             } else if (p.prop.propType_ == Pn.DATETIME) {
                 ret[p.name] = new Date();
-            } else if (p.prop.propType_ == Pn.EXTEND_ENTITY) {
-                let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
-                o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
-                ret[p.name] = o;
-            } else if (p.prop.propType_ == Pn.REFERENCE_ENTITY) {
-                let refIdx = subId % 3;
-                let refDeepPath = p.prop.entity.deepPath;
-                ret[p.name] = this.getRefDataObj(path, p.prop.entity, refIdx);
-            } else if (p.prop.propType_ == Pn.TABLE) {
+            } else if (p.prop.propType_ == Pn.SUB_ENTITY) {
+                if (p.prop.isExtend) {
+                    let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
+                    o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
+                    ret[p.name] = o;
+                } else {
+                    let refIdx = subId % 3;
+                    let refDeepPath = p.prop.deepPath;
+                    ret[p.name] = this.getRefDataObj(path, p.prop.deepPath, p.prop.snapshotCurrentValueOfProperties, refIdx);
+                }
+            } else if (p.prop.propType_ == Pn.TABLE && !p.prop.isRef) {
                 let table = [];
                 for (var i = 0; i < 3; i++) {
                     let j = subId * 10 + i;

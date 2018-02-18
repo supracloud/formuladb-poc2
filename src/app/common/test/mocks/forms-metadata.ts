@@ -20,7 +20,7 @@ export const Forms__ServiceForm = {
         `
     },
     product_form_id: { propType_: Pn.NUMBER, "allowNull": false },
-    client: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: General__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } },
+    client: { propType_: Pn.SUB_ENTITY, deepPath: General__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] },
     time_of_arrival: { propType_: Pn.DATETIME },
     time_of_departure: { propType_: Pn.DATETIME },
     normal_hours: { propType_: Pn.NUMBER },
@@ -35,8 +35,8 @@ export const Forms__ServiceForm = {
     nb_installments: { propType_: Pn.NUMBER },
     accommodation: { propType_: Pn.NUMBER },
     service_form_units: {
-        propType_: Pn.TABLE, entity: { deepPath: Inventory__Order._id },
-        equipment: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } },
+        propType_: Pn.TABLE, deepPath: Inventory__Order._id,
+        equipment: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] },
         reported_problem: { propType_: Pn.TEXT },
         found_problem: { propType_: Pn.TEXT },
         work_description: { propType_: Pn.TEXT },

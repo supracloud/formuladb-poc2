@@ -18,7 +18,7 @@ export class Entity extends BaseObj {
 }
 export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];
 export type EntityProperties = { [x: string]: EntityProperty };
-export type HasProperties = Entity | TableProperty | ExtendEntityProperty;
+export type HasProperties = Entity | TableProperty | EntityProperty;
 
 export class Schema  extends BaseObj {
     readonly _id: 'FRMDB_SCHEMA';
@@ -75,8 +75,7 @@ export const enum Pn {
     TEXT = "TEXT",
     DATETIME = "DATETIME",
     TABLE = "TABLE",
-    REFERENCE_ENTITY = "REFERENCES_ENTITY",
-    EXTEND_ENTITY = "EXTENDS_ENTITY",
+    SUB_ENTITY = "REFERENCES_ENTITY",
     FORMULA = "FORMULA",
 }
 
@@ -109,38 +108,26 @@ export class DatetimeProperty extends SubObj {
 export class TableProperty extends SubObj {
     readonly propType_: Pn.TABLE;
     //name: string;
-    entity?: ReferencedEntity;
+    deepPath?: string;
+    snapshotCurrentValueOfProperties?: string[];
+    isRef?: boolean;
     isLargeTable?: boolean;
     [x: string]: EntityPropsType;
 }
 /**
  * This property represents an embedded entity that is created when the parent entity is created
  */
-export class ReferenceEntityProperty extends SubObj {
-    readonly propType_: Pn.REFERENCE_ENTITY;
+export class SubEntityProperty extends SubObj {
+    readonly propType_: Pn.SUB_ENTITY;
     //name: string;
     /**
      * Autocomplete form element must be used to allow the user to reference and existing Entity
      * The possible autocomplete fields are set snapshotCurrentValueOfProperties
      */
-    entity?: ReferencedEntity;
-}
-/**
- * This property represents an embedded entity that is created when the parent entity is created
- */
-export class ExtendEntityProperty extends SubObj {
-    readonly propType_: Pn.EXTEND_ENTITY;
-    //name: string;
-    /**
-     * a new Entity instance is not created with the parent Entity
-     */
-    entity?: ReferencedEntity;
-    [x: string]: EntityPropsType;
-}
-
-export class ReferencedEntity extends SubObj {
-    deepPath: string;
+    deepPath?: string;
     snapshotCurrentValueOfProperties?: string[];
+
+    isExtend: boolean;
 }
 
 export type FormulaExpression = string;
@@ -176,7 +163,6 @@ export type EntityProperty =
     | TextProperty
     | DatetimeProperty
     | TableProperty
-    | ReferenceEntityProperty
-    | ExtendEntityProperty
+    | SubEntityProperty
     | FormulaProperty
 ;

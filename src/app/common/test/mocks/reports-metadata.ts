@@ -4,7 +4,7 @@ import { Inventory__Product } from './inventory-metadata';
 
 export const Reports = {
     type_: "Entity_", _id: "/Reports",
-    
+
     module_: true
 };
 
@@ -78,18 +78,16 @@ export const Reports__TestReport1 = {
     largeSalesPerProduct: {
         propType_: Pn.TABLE,
         product: {
-            propType_: Pn.REFERENCE_ENTITY,
-            entity: {
-                deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-                snapshotCurrentValueOfProperties: [
-                    "../../code",
-                    "../../name",
-                    "locationCode",
-                    "price",
-                    "currency/code",
-                    "available_stock"
-                ]
-            }
+            propType_: Pn.SUB_ENTITY,
+            deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+            snapshotCurrentValueOfProperties: [
+                "../../code",
+                "../../name",
+                "locationCode",
+                "price",
+                "currency/code",
+                "available_stock"
+            ]
         },
         largeSalesValue: {
             propType_: Pn.FORMULA,

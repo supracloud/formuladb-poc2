@@ -18,8 +18,13 @@ export class SchemaCompiler {
         return this.schema;
     }
 
-    public compileEntity(entity: Entity): Entity {
+    public typeCheck(formula: string) {
+
+    }
+
+    private compileEntity(entity: Entity): Entity {
         this.applyInheritanceTo(entity);
+        this.addReferenceTables(entity);
 
         //TODO: add [_id, type_] mandatory properties if they are missing
         
@@ -35,12 +40,15 @@ export class SchemaCompiler {
         return entity;
     }
 
+    public addReferenceTables(entity: Entity): Entity {
+        throw new Error('addReferenceTables not implemented');
+    }
     public applyInheritanceTo(entity: Entity): Entity {
         propertiesWithNamesOf(entity).forEach(async pn => {
-            if ((pn.prop.propType_ === Pn.EXTEND_ENTITY || pn.prop.propType_ === Pn.TABLE) && pn.prop.entity != null) {
-                let referencedEntity = this.schema[getEntityIdFromDeepPath(pn.prop.entity.deepPath)] as Entity;
-                if (referencedEntity == null) throw new Error("Cannot find entity for " + pn.prop.entity.deepPath);
-                extendEntityProperties(pn.prop, queryEntityWithDeepPath(referencedEntity, pn.prop.entity.deepPath));
+            if (((pn.prop.propType_ === Pn.SUB_ENTITY && pn.prop.isExtend) || pn.prop.propType_ === Pn.TABLE) && pn.prop.entity != null) {
+                let referencedEntity = this.schema[getEntityIdFromDeepPath(pn.prop.deepPath)] as Entity;
+                if (referencedEntity == null) throw new Error("Cannot find entity for " + pn.prop.deepPath);
+                extendEntityProperties(pn.prop, queryEntityWithDeepPath(referencedEntity, pn.prop.deepPath));
             }
         });
         return entity;

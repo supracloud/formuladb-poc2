@@ -152,11 +152,11 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
         if (pn.prop.propType_ === Pn.TABLE) {
             child = pn.prop.isLargeTable ? new FormTable() : new FormTabs();
             child.tableName = pn.name;
-            setFormElementChildren(child, entitiesMap.get(pn.prop.entity.deepPath), entitiesMap);
-        } else if (pn.prop.propType_ === Pn.REFERENCE_ENTITY) {
+            setFormElementChildren(child, entitiesMap.get(pn.prop.deepPath), entitiesMap);
+        } else if (pn.prop.propType_ === Pn.SUB_ENTITY) {
             child = new FormAutocomplete();
             child.entityName = pn.name;
-            child.attributes = { snapshotCurrentValueOfProperties: pn.prop.entity.snapshotCurrentValueOfProperties };
+            child.attributes = { snapshotCurrentValueOfProperties: pn.prop.snapshotCurrentValueOfProperties };
         } else {
             child = new FormInput();
             child.propertyName = pn.name;

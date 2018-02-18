@@ -30,10 +30,10 @@ export class MockMetadata {
     this.entities.forEach(entity => {
       _.toPairs(entity).forEach(([propName, prop]) => {
         if (!isEntityProperty(prop)) return;
-        if ((prop.propType_ === Pn.EXTEND_ENTITY || prop.propType_ === Pn.TABLE) && prop.entity != null) {
-          let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.entity.deepPath));
-          if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.entity.deepPath);
-          extendEntityProperties(prop, queryEntityWithDeepPath(referencedEntity, prop.entity.deepPath));
+        if (((prop.propType_ === Pn.SUB_ENTITY && prop.isExtend) || prop.propType_ === Pn.TABLE) && prop.deepPath != null) {
+          let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.deepPath));
+          if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.deepPath);
+          extendEntityProperties(prop, queryEntityWithDeepPath(referencedEntity, prop.deepPath));
         }
       })
     });

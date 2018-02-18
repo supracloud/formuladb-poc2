@@ -18,8 +18,8 @@ const A = {
     type_: "Entity_", _id: "/R/A",
     bbbs: {
         bbb: {
-            propType_: Pn.REFERENCE_ENTITY,
-            entity: { deepPath: '/R/B/categ/@' },
+            propType_: Pn.SUB_ENTITY,
+            deepPath: '/R/B/categ/@',
         },
         str: { propType_: Pn.STRING },
         num: { propType_: Pn.NUMBER },

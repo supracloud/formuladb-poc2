@@ -1,5 +1,5 @@
 import { BaseObj, SubObj } from "./domain/base_obj";
-import { Entity, EntityProperty, ReferencedEntity, Schema } from "./domain/metadata/entity";
+import { Entity, EntityProperty, Schema } from "./domain/metadata/entity";
 import { DataObj } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";

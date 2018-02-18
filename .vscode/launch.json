@@ -42,24 +42,12 @@
             }
         },
         {
-            "name": "Run mocha",
+            "name": "Run Jasmine",
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceRoot}/server",
-            "program": "${workspaceRoot}/server/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "dist/server/**/*.spec.js"
-            ],
-            "runtimeArgs": [
-                "--nolazy"
-            ],
+            "program": "${workspaceRoot}/server/dist/server/src/tests/jasmine.js",
             "sourceMaps": true,
-            "outDir": "${workspaceRoot}/server/dist"
         },
         {
             "type": "node",

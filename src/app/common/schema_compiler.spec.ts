@@ -30,13 +30,18 @@ describe('SchemaCompiler', () => {
         let schema = makeSchema(
             makeEntity('/R/A', {
                 num: { propType_: Pn.NUMBER },
-                b: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: '/R/B/' } },
+                b: { propType_: Pn.SUB_ENTITY, deepPath: '/R/B' },
             }),
             makeEntity('/R/B', {
                 num: { propType_: Pn.NUMBER },
-                sum: {propType_: Pn.FORMULA, formula: Fn.SUM('')}
+                a: { propType_: Pn.TABLE, deepPath: '/R/A', isRef: true },
+                sum: { propType_: Pn.FORMULA, formula: Fn.SUM('./a/*/num') }
             }),
         );
+        let compiler = new SchemaCompiler(schema);
+        // expect(compiler.compileSchema().executionPlan_).toEqual({
+
+        // });
     });
 
 });
