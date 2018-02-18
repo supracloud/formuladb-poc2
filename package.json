@@ -8,7 +8,8 @@
     "build": "ng build",
     "test": "ng test --watch false",
     "lint": "ng lint",
-    "e2e": "concurrently --success first --kill-others \"cd server && npm run e2e_serve\" \"sleep 10 && ng e2e --proxy-config proxy.config.json\"",
+    "protractor": "ng e2e -s false",
+    "e2e": "concurrently --success first --kill-others \"cd server && npm run e2e_serve\" \"npm start -- --proxy-config proxy.config.json\" \"sleep 25 && npm run protractor\"",
     "e2e:watch": "watch \"kill-port 9239 && node --inspect=0.0.0.0:9239 node_modules/protractor/bin/protractor\" src server/src e2e --wait=2 --interval=1"
   },
   "private": true,
