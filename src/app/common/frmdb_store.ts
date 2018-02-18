@@ -22,12 +22,12 @@ export class FrmdbStore {
     }
 
     public getSchema(): Promise<Schema> {
-        return this.findByType<Entity>('Entity_').then(ee => {
-            let ret = {};
-            ee.forEach(e => {ret[e._id] = e})
-            return ret as Schema;
-        });
+        return this.getObj('FRMDB_SCHEMA');
     }
+    public setSchema(schema: Schema): Promise<Schema> {
+        return this.setObj(schema);
+    }
+
     public getEntities(): Promise<Entity[]> {
         return this.findByType<Entity>('Entity_');
     }

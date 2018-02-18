@@ -1,5 +1,5 @@
-import 'mocha';
-import { expect } from 'chai';
+// import 'mocha';
+// import { expect } from 'chai';
 import { marbles } from "rxjs-marbles";
 
 import { Observable } from 'rxjs/Observable';
@@ -7,9 +7,9 @@ import 'rxjs/add/operator/find';
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line
 // import 'mocha';
-describe('Hello function', () => {
+describe('example specs', () => {
   it('should return hello world', () => {
-    expect("Hello World!").to.equal('Hello World!');
+    expect("Hello World!").toEqual('Hello World!');
   });
 
   it('marbles example',  marbles((m) => {

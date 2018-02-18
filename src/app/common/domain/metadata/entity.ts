@@ -1,4 +1,4 @@
-import { BaseObj, BaseObjPropTypes, isNonOverridableProperty, SubObj, parseDeepPath, RESERVED_PROP_NAMES } from '../base_obj';
+import { BaseObj, BaseObjPropTypes, isReservedPropName, SubObj, parseDeepPath, RESERVED_PROP_NAMES } from '../base_obj';
 import { ExecutionPlan } from "./execution_plan";
 import * as _ from 'lodash';
 
@@ -21,6 +21,7 @@ export type EntityProperties = { [x: string]: EntityProperty };
 export type HasProperties = Entity | TableProperty | ExtendEntityProperty;
 
 export class Schema  extends BaseObj {
+    readonly _id: 'FRMDB_SCHEMA';
     [x: string]:  SchemaPropsType;
     executionPlan_?: ExecutionPlan;
 }
@@ -47,7 +48,7 @@ export function propertiesWithNamesOf(entity: HasProperties): EntityPropertiesWi
 }
 export function extendEntityProperties(extendedEntity: HasProperties, newProperties: EntityProperties) {
     _.toPairs(newProperties).forEach(([propName, p]) => {
-        if (isNonOverridableProperty(propName)) return;
+        if (isReservedPropName(propName)) return;
         extendedEntity[propName] = p;
     });
 }
@@ -143,6 +144,23 @@ export class ReferencedEntity extends SubObj {
 }
 
 export type FormulaExpression = string;
+function sfn(name) {
+    return function(...args) {
+        let argsStr = _.map(args, a => {
+            if (typeof a === 'function') return a();
+            return '' + a;
+        }).join(',');
+        return name + '(' + args + ')';
+    };
+}
+export const Fn = {
+    SUM: sfn('SUM'),
+    FILTER: sfn('FILTER'),
+    GROUP_BY: sfn('GROUP_BY'),
+    UNGROUP: sfn('UNGROUP'),
+    COUNT: sfn('COUNT'),
+    DATE_UTILS: sfn('DATE_UTILS'),
+}
 /**
  * This property represents a formula definition
  */

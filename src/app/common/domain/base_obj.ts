@@ -52,7 +52,7 @@ export class BaseObj extends KeyValueObj {
     [x: string]: BaseObjPropTypes;
 }
 
-export function isNonOverridableProperty(propName: string): boolean {
+export function isReservedPropName(propName: string): boolean {
     if (propName.length == 0) return false;
     return propName.slice(-1) === '_' || propName.charAt(0) === '_';
 }

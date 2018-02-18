@@ -7,6 +7,6 @@
     },
     "include": [
         "./**/*",
-        "../../src/app/domain/**/*"
+        "../../src/app/common/**/*"
     ]
 }

@@ -16,16 +16,4 @@ describe('loadTestData', () => {
     mockData = new MockData(mockMetadata.entitiesMap);
   });
 
-  it('ServiceForm mock data should be correct', () => {
-    let serviceForm = mockData.getAllForPath(Forms__ServiceForm._id)[0];
-    let item = serviceForm.service_form_units[0].items[0].product;
-    // let product
-    expect(item.ref_).to.equal('/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040');
-    // expect(item.code).to.equal()
-    // expect(item.name",
-    // expect(item.locationCode",
-    // expect(item.price",
-    // expect(item.currency/code",
-  });
-
 });

@@ -38,7 +38,7 @@ export const Inventory__Product = {
         },
         reserved_stock: {
             propType_: Pn.FORMULA,
-            formula: 'SUM(itemsInOrderInInventory/reserved_quantity)'
+            formula: 'SUM(/Inventory/Order/items/reserved_quantity)'
         },
         delivered_stock: { propType_: Pn.NUMBER },
         moving_stock: { propType_: Pn.NUMBER, allowNull: false },
@@ -105,17 +105,6 @@ export const Inventory__Receipt = {
             unit: { propType_: Pn.REFERENCE_ENTITY, entity: { deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } }
         },
     },
-    executionPlan_: {
-        items: `
-            trigger(item.OLD, item.NEW) {
-                product = STORE_getDataObj(item.product.ref_)
-                product.NEW.received_stock = product.NEW.received_stock + item.NEW.received_quantity
-                product.NEW.available_stock = product.NEW.received_stock - product.NEW.reserved_stock - product.NEW.delivered_stock
-                SAVE(item.NEW)
-                save(product.NEW)
-            }
-        `,
-    } as ExecutionPlan,
 };
 
 export const Inventory__Order = {
