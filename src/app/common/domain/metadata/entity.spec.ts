@@ -1,6 +1,6 @@
-import 'mocha';
-import { expect } from 'chai';
-import chai = require('chai');
+
+
+
 import * as _ from 'lodash';
 import {  } from "";
 import { Inventory__Product, Inventory__Order } from "../../../../../src/app/common/test/mocks/inventory-metadata";
@@ -12,12 +12,12 @@ describe('entity', () => {
   });
 
   it('should allow type-safe hardcoded formula definitions using Fn', () => {
-    expect(Fn.SUM(Fn.FILTER(`/Inventory/Order`,`"x>10"`))).to.eql(`SUM(FILTER(/Inventory/Order,"x>10"))`);
+    expect(Fn.SUM(Fn.FILTER(`/Inventory/Order`,`"x>10"`))).toEqual(`SUM(FILTER(/Inventory/Order,"x>10"))`);
   });
 
   it('should get entity properties from deep path', () => {
     let props = queryEntityWithDeepPath(Inventory__Product as Entity, '/Inventory/Product/inventoryLocation/@');
-    expect(props).to.eql(propertiesOfEntity(Inventory__Product.inventoryLocation as TableProperty));
+    expect(props).toEqual(propertiesOfEntity(Inventory__Product.inventoryLocation as TableProperty));
   });
 
   it('extendEntityProperties should correctly extend entities', () => {
@@ -27,6 +27,6 @@ describe('entity', () => {
     };
     extendEntityProperties(Forms__ServiceForm.service_form_units as TableProperty, propertiesOfEntity(Inventory__Order));
 
-    expect(Forms__ServiceForm.service_form_units).to.eql(expected);
+    expect(Forms__ServiceForm.service_form_units).toEqual(expected);
   });
 });

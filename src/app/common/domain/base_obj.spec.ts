@@ -1,6 +1,6 @@
-import 'mocha';
-import { expect } from 'chai';
-import chai = require('chai');
+
+
+
 import * as _ from 'lodash';
 import { queryObjectWithDeepPath, diffObj } from '../../../../src/app/common/domain/base_obj';
 
@@ -11,7 +11,7 @@ describe('base_obj', () => {
 
     it('should get object properties from deep path', () => {
         let props = queryObjectWithDeepPath({ _id: "1", a: 1, b: 2, c: { _id: '1.1', c1: { _id: '1.1.1', c1prop: 123 } } }, '/Inventory/Product/c/c1');
-        expect(props).to.eql({ ref_: '/Inventory/Product/1/c/c1', c1prop: 123 });
+        expect(props).toEqual({ ref_: '/Inventory/Product/1/c/c1', c1prop: 123 });
 
         props = queryObjectWithDeepPath({
             _id: "1", a: 1, b: 2, c: {
@@ -19,7 +19,7 @@ describe('base_obj', () => {
                 c1: [{ _id: '1.1.1', c1prop: 123 }, { _id: '1.1.2', c1prop: 456 }]
             }
         }, '/Inventory/Product/c/c1/1');
-        expect(props).to.eql({ ref_: '/Inventory/Product/1/c/c1/1.1.2', c1prop: 456 });
+        expect(props).toEqual({ ref_: '/Inventory/Product/1/c/c1/1.1.2', c1prop: 456 });
 
         props = queryObjectWithDeepPath({
             _id: "1", a: 1, b: 2, c: {
@@ -27,7 +27,7 @@ describe('base_obj', () => {
                 c1: [{ _id: '1.1.1', c1prop: 123 }, { _id: '1.1.2', c1prop: 456 }, { _id: '1.1.3', c1prop: 789 }, { _id: '1.1.4', c1prop: 100 }]
             }
         }, '/Inventory/Product/c/c1/1.1.3');
-        expect(props).to.eql({ ref_: '/Inventory/Product/1/c/c1/1.1.3', c1prop: 789 });
+        expect(props).toEqual({ ref_: '/Inventory/Product/1/c/c1/1.1.3', c1prop: 789 });
     });
 
     it('should correctly diff and patch objects', () => {
@@ -42,7 +42,7 @@ describe('base_obj', () => {
                     c1: [{ _id: '1.1.0'}, { _id: '1.1.1', c1prop: 123 }, { _id: '1.1.2', c1prop: 456, c1prop2: 'rhs only' }, { _id: '1.1.3', c1prop: { x: 1, y: 2 }, c1prop2: 'rhs only' }, { _id: '1.1.4', c1prop: ['x', 'y'] }]
                 }
             });
-        expect(diff).to.eql({
+        expect(diff).toEqual({
             "_id": {
                 "lhs": "1",
                 "rhs": "2"

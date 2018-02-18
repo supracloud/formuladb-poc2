@@ -1,6 +1,6 @@
-import 'mocha';
-import { expect } from 'chai';
-import chai = require('chai');
+
+
+
 import * as moment from "moment";
 import * as _ from "lodash";
 import { StoredProcedureRunner } from '../../../src/app/common/stored_procedure_runner';
@@ -25,6 +25,6 @@ describe('StoredProcedureRunner', () => {
     it('should handle nesting SUM(IF(GROUP_BY(IF)))', async () => {
         await frmdbStore.setSchema(SUM_IF_GROUP_IF_Schema);
         let schema = await frmdbStore.getSchema();
-        expect(schema).to.eql(SUM_IF_GROUP_IF_Schema);
+        expect(schema).toEqual(SUM_IF_GROUP_IF_Schema);
     });
 });

@@ -1,6 +1,6 @@
-import 'mocha';
-import { expect } from 'chai';
-import chai = require('chai');
+
+
+
 import * as moment from "moment";
 import * as _ from "lodash";
 

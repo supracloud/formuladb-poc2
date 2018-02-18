@@ -1,6 +1,6 @@
-import 'mocha';
-import { expect } from 'chai';
-import chai = require('chai');
+
+
+
 import * as _ from 'lodash';
 import { } from "";
 import { Inventory__Product, Inventory__Order } from "../../../src/app/common/test/mocks/inventory-metadata";
@@ -12,13 +12,13 @@ import { KeyValueStoreMem } from "../../../src/app/common/key_value_store_mem";
 import { General__Actor, General__Currency } from '../../../src/app/common/test/mocks/mock-metadata';
 import { SUM_IF_GROUP_IF_Schema, makeSchema, makeEntity } from './test_data';
 
-describe('entity_compiler', () => {
+describe('SchemaCompiler', () => {
     beforeEach(() => {
     });
 
-    it.skip('should handle nesting SUM(IF(GROUP_BY(IF)))', () => {
+    xit('should handle nesting SUM(IF(GROUP_BY(IF)))', () => {
         let compiler = new SchemaCompiler(SUM_IF_GROUP_IF_Schema);
-        expect(compiler.compileSchema().executionPlan_).to.equal({
+        expect(compiler.compileSchema().executionPlan_).toEqual({
 
         });
     });
