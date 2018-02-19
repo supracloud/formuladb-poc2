@@ -12,7 +12,7 @@ export class MockData {
 
     private mockDB: Map<String, Map<string, DataObj>> = new Map();
     private allData: DataObj[] = [];
-    readonly GENERATE_DATA = true;
+    readonly GENERATE_DATA = false;
 
     public constructor(private entitiesMap: Map<string, Entity>) {
         if (this.GENERATE_DATA) {
@@ -106,7 +106,7 @@ export class MockData {
             } else if (p.prop.propType_ == Pn.DATETIME) {
                 ret[p.name] = new Date();
             } else if (p.prop.propType_ == Pn.SUB_ENTITY) {
-                if (p.prop.isExtend) {
+                if (null != p.prop.foreignKey) {
                     let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
                     o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
                     ret[p.name] = o;

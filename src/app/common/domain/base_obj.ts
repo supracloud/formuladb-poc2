@@ -70,6 +70,10 @@ function isNumber(s: string): boolean {
     return parseInt(s) + '' === s;
 }
 
+export function matchDeepPath(obj: BaseObj, deepPath: string) {
+    return queryObjectWithDeepPath(obj, deepPath) != null;
+}
+
 export function queryObjectWithDeepPath(obj: BaseObj, deepPath: string, pickProperties?: string[]): RefObj {
     let { path, relativePath } = parseDeepPath(deepPath);
     let objPath: Array<{ pathSegment: string, obj: BaseObj | SubObj }> = [{ pathSegment: path + '/' + obj._id, obj: obj }];

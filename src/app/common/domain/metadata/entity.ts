@@ -19,6 +19,7 @@ export class Entity extends BaseObj {
 export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];
 export type EntityProperties = { [x: string]: EntityProperty };
 export type HasProperties = Entity | TableProperty | EntityProperty;
+export type EntityDeepPath = string;
 
 export class Schema  extends BaseObj {
     readonly _id: 'FRMDB_SCHEMA';
@@ -52,7 +53,7 @@ export function extendEntityProperties(extendedEntity: HasProperties, newPropert
         extendedEntity[propName] = p;
     });
 }
-export function queryEntityWithDeepPath(entity: Entity, deepPath: string): EntityProperties {
+export function queryEntityWithDeepPath(entity: Entity, deepPath: EntityDeepPath): EntityProperties {
     let relativePath = deepPath.replace(entity._id, '').replace(/^\//, '').replace(/\/@/g, '');
     if (null != relativePath && '' !== relativePath) {  
         let pathInsideEntity = relativePath.replace(/\//, '.');
@@ -61,12 +62,8 @@ export function queryEntityWithDeepPath(entity: Entity, deepPath: string): Entit
     return propertiesOfEntity(entity);
 }
 
-export function getEntityIdFromDeepPath(deepPath: string) {
+export function getEntityIdFromDeepPath(deepPath: EntityDeepPath) {
     return parseDeepPath(deepPath).path;
-}
-
-export function typesafeDeepPath<E extends HasProperties>(rootPath: string, e: E, propName: keyof E, arrayMarker?: '@') {
-    return rootPath + '/' + propName + (arrayMarker ? '/@' : '');
 }
 
 export const enum Pn { 
@@ -110,7 +107,7 @@ export class TableProperty extends SubObj {
     //name: string;
     deepPath?: string;
     snapshotCurrentValueOfProperties?: string[];
-    isRef?: boolean;
+    foreignKey?: string;
     isLargeTable?: boolean;
     [x: string]: EntityPropsType;
 }
@@ -127,7 +124,7 @@ export class SubEntityProperty extends SubObj {
     deepPath?: string;
     snapshotCurrentValueOfProperties?: string[];
 
-    isExtend: boolean;
+    foreignKey: string;
 }
 
 export type FormulaExpression = string;
@@ -148,6 +145,16 @@ export const Fn = {
     COUNT: sfn('COUNT'),
     DATE_UTILS: sfn('DATE_UTILS'),
 }
+
+export const Mn = {
+    MAP_DEEP_PATH: sfn('MAP_DEEP_PATH'),
+    MAP_EXPR: sfn('MAP_EXPR'),
+}
+
+export const Rn = {
+    _sum: '_sum',
+}
+
 /**
  * This property represents a formula definition
  */
@@ -155,6 +162,7 @@ export class FormulaProperty extends SubObj {
     readonly propType_: Pn.FORMULA;
     //name: string;
     formula: FormulaExpression;
+    postConditions: SubObj;
 }
 
 export type EntityProperty = 

@@ -1,5 +1,5 @@
-import { Entity, Pn, typesafeDeepPath } from '../../domain/metadata/entity';
-import { Inventory__Product } from './inventory-metadata';
+import { Entity, Pn } from '../../domain/metadata/entity';
+import { Inventory__Product, Inventory__ProductLocation } from './inventory-metadata';
 
 
 export const Reports = {
@@ -79,7 +79,7 @@ export const Reports__TestReport1 = {
         propType_: Pn.TABLE,
         product: {
             propType_: Pn.SUB_ENTITY,
-            deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
+            deepPath: Inventory__ProductLocation._id,
             snapshotCurrentValueOfProperties: [
                 "../../code",
                 "../../name",

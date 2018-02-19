@@ -16,7 +16,9 @@ export const Forms__ServiceForm = {
         propType_: Pn.FORMULA,
         formula: `
             ./client/code + 
-            TEXT(INDEX_OF(./time_of_arrival, DATE_UTILS(./time_interval, START_OF_MONTH), DATE_UTILS(./time_interval, END_OF_MONTH)), "000000000")
+            TEXT(INDEX_OF(time_of_arrival, 
+                /Forms/ServiceForm[DATE_UTILS(./time_interval, START_OF_MONTH) <= time_of_arrival and time_of_arrival <= DATE_UTILS(./time_interval, END_OF_MONTH)]/time_of_arrival), 
+            "000000000")
         `
     },
     product_form_id: { propType_: Pn.NUMBER, "allowNull": false },

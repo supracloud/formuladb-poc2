@@ -1,11 +1,40 @@
-import { Entity, Pn, typesafeDeepPath } from '../../domain/metadata/entity';
+import { Entity, Pn } from '../../domain/metadata/entity';
 import { ExecutionPlan } from '../../domain/metadata/execution_plan';
 import { Sn } from '../../domain/metadata/stored_procedure';
 
 export const Inventory = {
     type_: "Entity_", _id: "/Inventory",
-
     module_: true
+};
+
+export const Inventory__ProductLocation = {
+    type_: "Entity_", _id: "/Inventory/ProductLocation",
+    locationCode: { propType_: Pn.STRING, allowNull: false, defaultValue: "DEFAULT-location" },
+    category: { propType_: Pn.STRING, allowNull: false },
+    price: { propType_: Pn.NUMBER, allowNull: true },
+    currency: {
+        propType_: Pn.SUB_ENTITY,
+        deepPath: "/General/Currency",
+        snapshotCurrentValueOfProperties: ["code"],
+    },
+    minimal_stock: { propType_: Pn.NUMBER, allowNull: false },
+    received_stock: {
+        propType_: Pn.FORMULA,
+        formula: 'SUM(receiptItems/quantity)'
+    },
+    available_stock: {
+        propType_: Pn.FORMULA,
+        formula: 'received_stock - ordered_stock',
+        postConditions: {
+            positiveStock: { condition: '> 0', errorValue: '0 - available_stock' }
+        },
+    },
+    ordered_stock: {
+        propType_: Pn.FORMULA,
+        formula: 'SUM(orderItems/reserved_quantity)'
+    },
+    moving_stock: { propType_: Pn.NUMBER, allowNull: false },
+    state: { propType_: Pn.STRING, allowNull: false },
 };
 
 export const Inventory__Product = {
@@ -15,35 +44,7 @@ export const Inventory__Product = {
     barcode: { propType_: Pn.STRING },
     name: { propType_: Pn.STRING, allowNull: false },
     description: { propType_: Pn.STRING },
-    inventoryLocation: {
-        propType_: Pn.TABLE,
-        locationCode: { propType_: Pn.STRING, allowNull: false, defaultValue: "DEFAULT-location" },
-        category: { propType_: Pn.STRING, allowNull: false },
-        price: { propType_: Pn.NUMBER, allowNull: true },
-        currency: {
-            propType_: Pn.SUB_ENTITY,
-            deepPath: "/General/Currency",
-            snapshotCurrentValueOfProperties: ["code"],
-        },
-        minimal_stock: { propType_: Pn.NUMBER, allowNull: false },
-        received_stock: {
-            propType_: Pn.FORMULA,
-            formula: 'SUM(itemsInReceiptInInventory/received_quantity)'
-        },
-        available_stock: {
-            propType_: Pn.FORMULA,
-            formula: 'received_stock - reserved_stock - delivered_stock',
-        },
-        reserved_stock: {
-            propType_: Pn.FORMULA,
-            formula: 'SUM(/Inventory/Order/items/reserved_quantity)'
-        },
-        delivered_stock: { propType_: Pn.NUMBER },
-        moving_stock: { propType_: Pn.NUMBER, allowNull: false },
-        state: { propType_: Pn.STRING, allowNull: false }
-
-    }
-
+    inventoryLocation: { propType_: Pn.TABLE, deepPath: Inventory__ProductLocation._id },
 };
 
 export const Inventory__ProductUnit = {
@@ -80,54 +81,67 @@ export const Inventory__ProductUnit = {
 
 export const Inventory__Receipt = {
     type_: "Entity_", _id: "/Inventory/Receipt",
+    items: { propType_: Pn.TABLE, deepPath: 'Inventory/ReceiptItem' },
+};
 
-    items: {
+
+
+export const Inventory__ReceiptItem = {
+    type_: "Entity_", _id: "/Inventory/ReceiptItem",
+
+    product: {
+        propType_: Pn.SUB_ENTITY,
+        deepPath: Inventory__ProductLocation._id,
+        foreignKey: 'receiptItems',
+        snapshotCurrentValueOfProperties: [
+            "../../code",
+            "../../name",
+            "locationCode",
+            "price",
+            "currency/code",
+        ]
+    },
+    quantity: { propType_: Pn.NUMBER, allowNull: false },
+    units: {
         propType_: Pn.TABLE,
-
-        product: {
-            propType_: Pn.SUB_ENTITY,
-            deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-            snapshotCurrentValueOfProperties: [
-                "../../code",
-                "../../name",
-                "locationCode",
-                "price",
-                "currency/code",
-            ]
-        },
-        received_quantity: { propType_: Pn.NUMBER, allowNull: false },
-        units: {
-            propType_: Pn.TABLE,
-            unit: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] }
-        },
+        unit: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] }
     },
 };
+
 
 export const Inventory__Order = {
     type_: "Entity_", _id: "/Inventory/Order",
     items: {
         propType_: Pn.TABLE,
-        product: {
-            propType_: Pn.SUB_ENTITY,
-            deepPath: typesafeDeepPath(Inventory__Product._id, Inventory__Product, 'inventoryLocation', '@'),
-            snapshotCurrentValueOfProperties: [
-                "../../code",
-                "../../name",
-                "locationCode",
-                "price",
-                "currency/code",
-                "available_stock"
-            ]
+        deepPath: '/Inventory/OrderItem',
+    },
+};
+
+export const Inventory__OrderItem = {
+    type_: "Entity_", _id: "/Inventory/OrderItem",
+    product: {
+        propType_: Pn.SUB_ENTITY,
+        deepPath: Inventory__ProductLocation._id,
+        foreignKey: '',
+        snapshotCurrentValueOfProperties: [
+            "../../code",
+            "../../name",
+            "locationCode",
+            "price",
+            "currency/code",
+            "available_stock"
+        ]
+    },
+    quantity: {
+        propType_: Pn.NUMBER, allowNull: false,
+        autoCorrectOnPostConditionFailed: {
+            'product/available_stock!positiveStock': ['quantity -= errorValue', 'error_quantity = errorValue'],
         },
-        requested_quantity: { propType_: Pn.NUMBER, allowNull: false },
-        reserved_quantity: {
-            propType_: Pn.FORMULA,
-            formula: 'if(./available_stock > ./requested_quantity, ./requested_quantity, ./available_stock)',
-        },
-        client_stock: { propType_: Pn.NUMBER },
-        units: {
-            propType_: Pn.TABLE,
-            unit: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] }
-        },
+    },
+    error_quantity: { propType_: Pn.NUMBER },
+    client_stock: { propType_: Pn.NUMBER },
+    units: {
+        propType_: Pn.TABLE,
+        unit: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] }
     },
 };

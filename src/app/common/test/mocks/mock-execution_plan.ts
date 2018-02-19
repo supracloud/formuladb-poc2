@@ -1,29 +1,33 @@
 import { Sn } from "../../domain/metadata/stored_procedure";
-import { Fn } from "../../domain/metadata/entity";
+import { Fn, Mn, Rn } from "../../domain/metadata/entity";
 
 export const MockExecutionPlan = {
-    '/Inventory/Order/items': [
-        [Sn.PARAMS, 'item'],
-        ['product=', Sn.STORE_getDataObj, 'item.product.ref_'],
-        //NOTE: iF item.OLD is null, it means this is the item is being created 
-        //  OR the Formula has been created or changed and triggers for all items are run for the initial computation of the new Formula
-        ['product.OLD.reserved_stock=', Sn.EVAL, 'product.reserved_quantity - item.OLD.reserved_quantity'],
-        ['product.OLD.available_stock=', Sn.EVAL, 'product.received_stock - product.OLD.reserved_stock - product.delivered_stock'],
-        ['item.available_stock=', Sn.EVAL, 'product.OLD.available_stock'],
-        ['item.reserved_quantity=', Sn.EVAL, 'item.available_stock > item.requested_quantity ? item.requested_quantity : item.available_stock'],
-        ['product.reserved_quantity=', Sn.EVAL, 'product.reserved_quantity + item.reserved_quantity'],
-        ['product.available_stock=', Sn.EVAL, 'product.received_stock - product.reserved_stock - product.delivered_stock'],
-        [Sn.STORE_SAVE_DIRTY_OBJS, 'item', 'product'],
+    triggers: [
+        ['/Forms/ServiceForm/time_of_arrival',
+        '/Forms/ServiceForm[EOMONTH({{time_interval}}, -1) < time_of_arrival and time_of_arrival <= EOMONTH({{time_of_arrival}}, 0)]/time_of_arrival'],
+        ['/Inventory/ReceiptItem/quantity', '/Inventory/ProductLocation[_id = {{product/ref_}}]/received_stock'],
+        ['/Inventory/OrderItem/quantity', '/Inventory/ProductLocation[_id = {{product/ref_}}]/ordered_stock'],
+        ['/Inventory/ProductLocation/received_stock', '/Inventory/ProductLocation[_id = {{_id}}]/available_stock'],
+        ['/Inventory/ProductLocation/ordered_stock','/Inventory/ProductLocation[_id = {{_id}}]/available_stock'],
     ],
-    '/Forms/ServiceForm/time_of_arrival': [
-        [Sn.PARAMS, 'OLD', 'NEW'],
-        ['startRange=', Sn.EVAL, Fn.DATE_UTILS('NEW.time_interval', 'START_OF_MONTH')],
-        ['endRange=', Sn.EVAL, Fn.DATE_UTILS('NEW.time_interval', 'END_OF_MONTH')],
-        ['val1=', Sn.STORE_queryWithDeepPath, '/Forms/ServiceForm[startRange <= time_of_arrival and time_of_arrival <= endRange]'],
-        ['val2=', Sn.EVAL, `_(val1).sortBy(["time_of_arrival"]).mapProp("i","index").mapProp("code","'00000000' + index").value()`],
-        [Sn.STORE_SAVE_DIRTY_OBJS, 'val2'],
-    ],
-    '/Forms/ServiceForm/service_form_units/items': [
-        //should be the same as /Inventory/Order/items after complete Schema compilation
-    ]
+    formulas: {
+        '/Inventory/ProductLocation/received_stock': {
+            observables: '/Inventory/ReceiptItem[product/ref_ = {{_id}}]/quantity',
+            map: Mn.MAP_DEEP_PATH('/Inventory/ReceiptItem[product/ref_ = {{_id}}]/quantity'),
+            reduce: Rn._sum,
+        },
+        '/Inventory/ProductLocation/ordered_stock': {
+            observables: '/Inventory/OrderItem[product/ref_ = {{_id}}]/quantity',
+            map: Mn.MAP_DEEP_PATH('/Inventory/OrderItem[product/ref_ = {{_id}}]/quantity'),
+            reduce: Rn._sum,
+        },
+        '/Inventory/ProductLocation/available_stock': {
+            observables: ['/Inventory/ProductLocation[_id = {{_id}}]/received_stock', '/Inventory/ProductLocation[_id = {{_id}}]/ordered_stock'],
+            map: Mn.MAP_EXPR('/Inventory/OrderItem[_id = {{_id}}]/available_stock', 'received_stock - ordered_stock'),
+        },
+        '/Forms/ServiceForm/code': {
+            observables: '/Forms/ServiceForm[EOMONTH({{time_interval}}, -1) < time_of_arrival and time_of_arrival <= EOMONTH({{time_of_arrival}}, 0)]/time_of_arrival',
+            map: Mn.MAP_EXPR('/Inventory/OrderItem[_id = {{_id}}]/available_stock', 'received_stock - ordered_stock'),
+        },
+    }
 };

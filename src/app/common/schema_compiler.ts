@@ -24,7 +24,7 @@ export class SchemaCompiler {
 
     private compileEntity(entity: Entity): Entity {
         this.applyInheritanceTo(entity);
-        this.addReferenceTables(entity);
+        // this.addReferenceTables(entity);
 
         //TODO: add [_id, type_] mandatory properties if they are missing
         
@@ -32,6 +32,9 @@ export class SchemaCompiler {
 
         // create execution plan
         this.compileFormulas(entity);
+
+        //TODO: detect cycles in observables/observers
+        //TODO: sort triggers topologically
 
         return entity;
     }
@@ -45,7 +48,7 @@ export class SchemaCompiler {
     }
     public applyInheritanceTo(entity: Entity): Entity {
         propertiesWithNamesOf(entity).forEach(async pn => {
-            if (((pn.prop.propType_ === Pn.SUB_ENTITY && pn.prop.isExtend) || pn.prop.propType_ === Pn.TABLE) && pn.prop.entity != null) {
+            if (((pn.prop.propType_ === Pn.SUB_ENTITY && null != pn.prop.foreignKey) || pn.prop.propType_ === Pn.TABLE) && pn.prop.deepPath != null) {
                 let referencedEntity = this.schema[getEntityIdFromDeepPath(pn.prop.deepPath)] as Entity;
                 if (referencedEntity == null) throw new Error("Cannot find entity for " + pn.prop.deepPath);
                 extendEntityProperties(pn.prop, queryEntityWithDeepPath(referencedEntity, pn.prop.deepPath));
@@ -56,20 +59,19 @@ export class SchemaCompiler {
 }
 
 
-export const StaticTypeCheckers = {
-    SUM: function () {
+export const FUNCTIONS = {
+    SUM: {
+        staticTypeChecker: function () {
 
-    },
-}
+        },
+        executionPlanTriggerCodeGenerator: function () {
 
-export const ExecutionPlanTriggerGenerators = {
-    SUM: function () {
-        
-    },
-}
+        },
+        observablesQueryCodeGenerator: function() {
 
-export const ObservablesQueryGenerators = {
-    SUM: function () {
-        
-    },
+        },
+        getPreviousValueCodeGenerator: function () {
+
+        }
+    }
 }
