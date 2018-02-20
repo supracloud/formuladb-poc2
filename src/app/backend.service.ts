@@ -1,4 +1,5 @@
-import PouchDB from 'pouchdb';//use this when running on webpack in the browser
+import * as ZaPouchDB from 'pouchdb';//use this when running on webpack in the browser
+const PouchDB = ZaPouchDB['default'];
 import PouchFind from 'pouchdb-find';
 PouchDB.plugin(PouchFind);
 PouchDB.debug.enable('*');

@@ -9,14 +9,14 @@ import { Form } from "../../src/app/common/domain/uimetadata/form";
 import { Table } from "../../src/app/common/domain/uimetadata/table";
 import { MwzEvents } from "../../src/app/common/domain/event";
 
-import { KeyValueStore } from "../../src/app/common/key_value_store";
+import { KeyValueStoreI } from "../../src/app/common/key_value_store_i";
 import { FrmdbStore } from "../../src/app/common/frmdb_store";
 import { KeyValueStores } from "./keyValueStores";
 
 export type TransactionalCallback = (event: MwzEvents, store: FrmdbStoreAtTransaction, cache: Map<string, BaseObj>) => Promise<MwzEvents>;
 
 export class FrmdbStoreAtTransaction extends FrmdbStore {
-    constructor(private event: MwzEvents, protected transactionsDB: KeyValueStore, protected historyDB: KeyValueStore) {
+    constructor(private event: MwzEvents, protected transactionsDB: KeyValueStoreI, protected historyDB: KeyValueStoreI) {
         super(transactionsDB, historyDB);
     }
 }

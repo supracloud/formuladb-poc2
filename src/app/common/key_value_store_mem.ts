@@ -1,22 +1,25 @@
 import { KeyValueObj } from "./domain/key_value_obj";
-import { KeyValueStore } from "./key_value_store";
+import { KeyValueStoreI, MapReduceQueryOptions } from "./key_value_store_i";
 import * as _ from "lodash";
 
 /**
  * Key Value Store with optimistic locking functionality
  */
-export class KeyValueStoreMem implements KeyValueStore {
+export class KeyValueStoreMem implements KeyValueStoreI {
     private db: {[x: string]: KeyValueObj} = {};
 
     constructor() {
     }
 
-    public simpleQuery(query: any) {
-
+    public simpleJSONQuery(query: any) {
+        throw new Error("simpleQuery not implemented.");
     }
 
-    public mapReduceQuery() {
-
+    mapReduceQuery(viewId: string, opts: MapReduceQueryOptions): KeyValueObj[] {
+        throw new Error("Method not implemented.");
+    }
+    putMapReduceQuery(viewId: string, map: (doc: KeyValueObj) => any, reduce?: (keys, values, rereduce) => any) {
+        throw new Error("putMapReduceQuery not implemented.");
     }
 
     public findByType<T extends KeyValueObj>(type_: string): Promise<T[]> {

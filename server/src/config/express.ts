@@ -5,7 +5,6 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-import { ThePouchDB } from "../keyValueStores";
 import { FrmdbEngine } from "../frmdbEngine";
 
 

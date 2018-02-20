@@ -46,8 +46,9 @@
             "type": "node",
             "request": "launch",
             "cwd": "${workspaceRoot}/server",
-            "program": "${workspaceRoot}/server/dist/server/src/tests/jasmine.js",
+            "program": "${workspaceRoot}/server/src/tests/jasmine.ts",
             "sourceMaps": true,
+            "outDir": "${workspaceRoot}/server/dist"
         },
         {
             "type": "node",

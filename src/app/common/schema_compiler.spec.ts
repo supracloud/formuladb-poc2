@@ -50,15 +50,18 @@ describe('SchemaCompiler', () => {
         );
 
         schema.executionPlan_ = {
-            '/R/B/sum': {
-                observables: '/R/A[type = {{type}}]/num',
-                observers: null,
-                map: Mn.MAP_DEEP_PATH('/R/B/sum', '/R/A[type = {{type}}]/num'),
-                reduce: Rn._sum,
-            },
-            '/R/B/type': { observers: 'sum' },
-            '/R/A/type': { observers: '/R/A[type = {{type}}]/sum' },
-            '/R/A/num': { observers: '/R/A[type = {{type}}]/sum' },
+            triggers: [
+                ['/R/B/type', '/R/B[_id = {{_id}}]/type' ],
+                ['/R/A/type', '/R/B[type = {{type}}]/sum' ],
+                ['/R/A/num', '/R/B[type = {{type}}]/sum' ],
+            ],
+            formulas: {
+                '/R/B/sum': {
+                    observables: '/R/A[type = {{type}}]/num',
+                    map: Mn.MAP_DEEP_PATH('/R/B/sum', '/R/A[type = {{type}}]/num'),
+                    reduce: Rn._sum,
+                },
+            }
         };
 
         let compiler = new SchemaCompiler(schema);
@@ -78,13 +81,16 @@ describe('SchemaCompiler', () => {
         let compiler = new SchemaCompiler(schema);
 
         schema.executionPlan_ = {
-            '/R/B/sum': {
-                observables: '/R/A[b/ref_ = {{_id}}]/num',
-                observers: null,
-                map: Mn.MAP_DEEP_PATH('/R/B/sum', '/R/A[b/ref_ = {{_id}}]/num'),
-                reduce: Rn._sum,
-            },
-            '/R/A/num': { observers: '/R/B[_id = {{b.ref_}}]/sum' },
+            triggers: [
+                ['/R/A/num', '/R/B[_id = {{b.ref_}}]/sum' ],
+            ],
+            formulas: {
+                '/R/B/sum': {
+                    observables: '/R/A[b/ref_ = {{_id}}]/num',
+                    map: Mn.MAP_DEEP_PATH('/R/B/sum', '/R/A[b/ref_ = {{_id}}]/num'),
+                    reduce: Rn._sum,
+                },
+            }
         };
     });
 });

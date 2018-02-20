@@ -129,7 +129,7 @@ export function queryObjectWithDeepPath(obj: BaseObj, deepPath: string, pickProp
  *  - go from before to after
  *  - go back from after to before
  */
-export function diffObj(before: SubObj, after: SubObj) {
+export function diffObj(before: any, after: any) {
     let o = Symbol('object'), a = Symbol('array'), s = Symbol('scalar');
     function getTypeOf(x) {
         if (typeof x === 'function') throw new Error('functions are not supported, just plain objects! x = ' + JSON.stringify(x) + '; before=' + JSON.stringify(before) + '; after=' + JSON.stringify(after));

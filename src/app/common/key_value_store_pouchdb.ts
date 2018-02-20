@@ -1,21 +1,37 @@
 import { KeyValueObj } from "./domain/key_value_obj";
-import { KeyValueStore } from "./key_value_store";
+import { KeyValueStoreI, MapReduceQueryOptions } from "./key_value_store_i";
+
+import * as PouchDB from 'pouchdb';
 
 /**
  * Key Value Store with optimistic locking functionality
  */
-export class KeyValueStorePouchDB implements KeyValueStore {
+export class KeyValueStorePouchDB implements KeyValueStoreI {
     private db;
     constructor(db: any) {
         this.db = db;
     }
 
-    public simpleQuery(query: any) {
+    public simpleJSONQuery(query: any) {
 
     }
 
-    public mapReduceQuery() {
-
+    mapReduceQuery(viewId: string, opts?: MapReduceQueryOptions): any {
+        return this.db.query(viewId, opts);
+    }
+    
+    putMapReduceQuery(viewId: string, map: ((doc: KeyValueObj) => any) | string, reduce?: ((keys, values, rereduce) => any) | string) {
+        let designDoc: KeyValueObj = {
+            _id: "_design/" + viewId,
+            views: {
+              [viewId]: {
+                map: map.toString(),
+              }
+            },
+            language: "javascript",
+          };
+        if (reduce) designDoc.views[viewId].reduce = reduce.toString();
+        return this.put(designDoc);
     }
 
     public findByType<T extends KeyValueObj>(type_: string): Promise<T[]> {

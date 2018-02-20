@@ -1,11 +1,14 @@
-import { KeyValueStore } from "../../src/app/common/key_value_store";
+import { KeyValueStoreI, MapReduceQueryOptions } from "../../src/app/common/key_value_store_i";
 import { KeyValueObj } from "../../src/app/common/domain/key_value_obj";
 
-export class KeyValueStoreSQL implements KeyValueStore {
-    simpleQuery(query: any) {
+export class KeyValueStoreSQL implements KeyValueStoreI {
+    mapReduceQuery(viewId: string, opts: MapReduceQueryOptions): KeyValueObj[] {
         throw new Error("Method not implemented.");
     }
-    mapReduceQuery() {
+    putMapReduceQuery(viewId: string, map: (doc: KeyValueObj) => any, reduce?: (keys, values, rereduce) => any) {
+        throw new Error("Method not implemented.");
+    }
+    simpleJSONQuery(query: any) {
         throw new Error("Method not implemented.");
     }
     findByType<T extends KeyValueObj>(type_: string): Promise<T[]> {
