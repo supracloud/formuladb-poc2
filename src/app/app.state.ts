@@ -103,7 +103,7 @@ export function parseUrl(url: string): { path: string, id: string } {
     if (match.length >=3 && match[2] != null) path = path + '/' + match[2];
     if (match.length >= 4 && match[3] != null) id = match[3];
   } else {
-    return {path: "/General/Actor", id: null};
+    return {path: "General_Actor", id: null};
   }
 
   return { path: path, id: id };

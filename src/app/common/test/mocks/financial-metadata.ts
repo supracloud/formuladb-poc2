@@ -14,7 +14,7 @@ export const Financial__Account = {
     code: { propType_: Pn.STRING, "allowNull": false },
     name: { propType_: Pn.STRING, "allowNull": false },
     actor: {
-        propType_: Pn.SUB_ENTITY,
+        propType_: Pn.BELONGS_TO,
         deepPath: General__Actor._id,
         snapshotCurrentValueOfProperties: [
             "code",
@@ -28,7 +28,7 @@ export const Financial__Transaction = {
     type_: "Entity_", _id: "/Financial/Transaction",
 
     accountDebit: {
-        propType_: Pn.SUB_ENTITY,
+        propType_: Pn.BELONGS_TO,
         deepPath: Financial__Account._id,
         snapshotCurrentValueOfProperties: [
             "code",
@@ -36,7 +36,7 @@ export const Financial__Transaction = {
         ]
     },
     accountCredit: {
-        propType_: Pn.SUB_ENTITY,
+        propType_: Pn.BELONGS_TO,
         deepPath: Financial__Account._id,
         snapshotCurrentValueOfProperties: [
             "code",

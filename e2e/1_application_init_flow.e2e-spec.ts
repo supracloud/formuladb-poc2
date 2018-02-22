@@ -16,9 +16,9 @@ describe('1_application_init_flow: ', () => {
     tablePO = new TablePO();
   });
 
-  it('User should be able to navigate to /General/Actor entity', async () => {
+  it('User should be able to navigate to General_Actor entity', async () => {
     await appPage.rootPage();
-    let link = await navPO.navLinkForEntity('/General/Actor')
+    let link = await navPO.navLinkForEntity('General_Actor')
     await expect(link.getText()).toContain('Actor');
     await link.click();
 

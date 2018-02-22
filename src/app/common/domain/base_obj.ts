@@ -1,5 +1,6 @@
 import { KeyValueObj } from "./key_value_obj";
 import * as _ from "lodash";
+import {isNumberES5, parseDeepPathES5, getES5} from './map_reduce_utils';
 
 /**
  * SubObj(s) are nested objects of BaseObj(s)
@@ -43,8 +44,8 @@ export class Transactions extends SubObj {
  * BaseObj(s) are the main data objects that get persisted into KeyValueStore
  */
 export class BaseObj extends KeyValueObj {
-    created_?: string;
-    updated_?: string;
+    created_at_?: string;
+    updated_at_?: string;
     updated_by_?: string;
     rev_?: string;
     trs_?: Transactions;
@@ -60,69 +61,21 @@ export function isReservedPropName(propName: string): boolean {
 export const RESERVED_PROP_NAMES = ['_id', '_rev', 'created_', 'updated_', 'updated_by_', 'rev_', 'trs_', 'id_',
     'type_', 'propType_', 'module_', 'executionPlan_'];
 export type ReservedPropNames = '_id' | '_rev' | 'created_' | 'updated_' | 'updated_by_' | 'rev_' | 'trs_' | 'id_' |
-    'type_' | 'propType_' | 'module_' | 'executionPlan_';
+    'type_' | 'propType_' | 'module_' | 'aliases_' | 'executionPlan_';
 type Diff<T extends string, U extends string> = ({[P in T]: P } & {[P in U]: never } & { [x: string]: never })[T];
 
 export type ReservedPropNamesOf<T> = keyof T & ReservedPropNames;
 export type NonReservedPropNamesOf<T> = Diff<keyof T, ReservedPropNames>;
 
 function isNumber(s: string): boolean {
-    return parseInt(s) + '' === s;
-}
-
-export function matchDeepPath(obj: BaseObj, deepPath: string) {
-    return queryObjectWithDeepPath(obj, deepPath) != null;
+    return isNumberES5(s);
 }
 
 export function queryObjectWithDeepPath(obj: BaseObj, deepPath: string, pickProperties?: string[]): RefObj {
-    let { path, relativePath } = parseDeepPath(deepPath);
-    let objPath: Array<{ pathSegment: string, obj: BaseObj | SubObj }> = [{ pathSegment: path + '/' + obj._id, obj: obj }];
-    let currentObj: BaseObj | BaseObjPropTypes = obj;
-
-    if (relativePath != null && relativePath != '') {
-        relativePath.split(/\//).forEach(propName => {
-            let subO = null, pathSegment = null;
-            if (isSubObj(currentObj)) {
-                subO = currentObj[propName];
-                pathSegment = propName;
-            } else if (currentObj instanceof Array) {
-                if (isNumber(propName)) {
-                    subO = currentObj[propName];
-                    if (!isSubObj(subO)) throw new Error(JSON.stringify(subO) + ' member of array should be a SubObj; root obj is ' + JSON.stringify(obj, null, 2));
-                    pathSegment = subO._id;
-                } else {
-                    subO = _.find(currentObj, x => {
-                        if (!isSubObj(x)) throw new Error(JSON.stringify(x) + ' should be a SubObj; root obj is ' + JSON.stringify(obj, null, 2));
-                        return x._id === propName;
-                    });
-                    pathSegment = propName;
-                }
-            } else throw new Error(JSON.stringify(currentObj) + ' not SubObj or array; root obj is ' + JSON.stringify(obj, null, 2));
-
-            objPath.push({ pathSegment: pathSegment, obj: subO });
-            currentObj = subO;
-        })
-    }
-
-    let ret = { ref_: objPath.map(x => x.pathSegment).join('/') };
-    let copiedProps = pickProperties != null ? pickProperties : _.difference(_.keys(objPath.slice(-1)[0].obj), RESERVED_PROP_NAMES);
-    copiedProps.forEach(propName => {
-        let idx = objPath.length - 1, targetVal = objPath[idx].obj, realPropName = null;
-        propName.split(/\//).forEach(pName => {
-            if ('..' == pName) {
-                idx -= 1;
-                targetVal = objPath[idx].obj;
-            } else {
-                if (typeof targetVal === 'object') {
-                    targetVal = {[pName]: targetVal[pName]};
-                } else throw new Error(propName + ' invalid property path for object path ' + JSON.stringify(objPath, null, 2));
-            }
-        });
-        _.extend(ret, targetVal);
-    });
-
-    return ret;
+    // let copiedProps = pickProperties != null ? pickProperties : _.difference(_.keys(objPath.slice(-1)[0].obj), RESERVED_PROP_NAMES);
+    return getES5(obj, deepPath);
 }
+
 
 /**
  * Deep diff producing a patch that can be applied in both ways:
@@ -177,10 +130,9 @@ export function diffObj(before: any, after: any) {
 }
 
 export function parseDeepPath(deepPath: string): { path: string, relativePath: string } {
-    let match = deepPath.match(/^(\/\w+\/\w+)\/?(.*)/);
-    if (null == match || match.length < 2) throw new Error("Not a valid deepPath: " + deepPath);
+    return parseDeepPathES5(deepPath);
+}
 
-    if (match.length >= 3 && match[2] != null && match[2] !== '') {
-        return { path: match[1], relativePath: match[2] };
-    } else return { path: match[1], relativePath: match[2] };
+export function escPath(deepPath: string) {
+    return deepPath.replace(/\//g, '--');
 }

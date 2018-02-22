@@ -2,27 +2,30 @@ import { Entity, Pn } from '../../domain/metadata/entity';
 import { Inventory__Product, Inventory__Order, Inventory__ProductUnit } from './inventory-metadata';
 import { General__Client } from "./general-metadata";
 import { Sn } from '../../domain/metadata/stored_procedure';
+import { Fn } from '../../schema_compiler';
 
 export const Forms = {
-    type_: "Entity_", _id: "/Forms",
-    
+    type_: "Entity_", _id: "//Forms",
+
     module_: true
 };
 
 export const Forms__ServiceForm = {
-    type_: "Entity_", _id: "/Forms/ServiceForm",
+    type_: "Entity_", _id: "Forms_ServiceForm",
 
     code: {
         propType_: Pn.FORMULA,
-        formula: `
-            ./client/code + 
-            TEXT(INDEX_OF(time_of_arrival, 
-                /Forms/ServiceForm[DATE_UTILS(./time_interval, START_OF_MONTH) <= time_of_arrival and time_of_arrival <= DATE_UTILS(./time_interval, END_OF_MONTH)]/time_of_arrival), 
-            "000000000")
-        `
+        formula:
+            `client.code` + `"-"` +
+            Fn.TEXT(
+                Fn.MATCH(
+                    Fn.GROUP_BY(`Forms_ServiceForm`, Fn.EOMONTH(`time_interval`, -1), `time_of_arrival`),
+                    `time_of_arrival`),
+                `"000000000"`)
+
     },
     product_form_id: { propType_: Pn.NUMBER, "allowNull": false },
-    client: { propType_: Pn.SUB_ENTITY, deepPath: General__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] },
+    client: { propType_: Pn.BELONGS_TO, deepPath: General__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] },
     time_of_arrival: { propType_: Pn.DATETIME },
     time_of_departure: { propType_: Pn.DATETIME },
     normal_hours: { propType_: Pn.NUMBER },
@@ -37,8 +40,8 @@ export const Forms__ServiceForm = {
     nb_installments: { propType_: Pn.NUMBER },
     accommodation: { propType_: Pn.NUMBER },
     service_form_units: {
-        propType_: Pn.TABLE, deepPath: Inventory__Order._id,
-        equipment: { propType_: Pn.SUB_ENTITY, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] },
+        propType_: Pn.SUB_TABLE, deepPath: Inventory__Order._id,
+        equipment: { propType_: Pn.BELONGS_TO, deepPath: Inventory__ProductUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] },
         reported_problem: { propType_: Pn.TEXT },
         found_problem: { propType_: Pn.TEXT },
         work_description: { propType_: Pn.TEXT },

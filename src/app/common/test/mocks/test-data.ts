@@ -1,7 +1,7 @@
 //curl -s -XGET http://127.0.0.1:5984/mwzhistory/_all_docs?include_docs=true | jq '[.rows| .[] | .doc | select(.type_ != "Entity_") | select(.type_ != "Form_") | del(._rev)]' > tmp.json
 export const TEST_DATA = [
     {
-        "type_": "/Forms/ServiceCentralizerReport",
+        "type_": "Forms_ServiceCentralizerReport",
         "name": "name100",
         "user_code": "user_code101",
         "group": "group102",
@@ -20,7 +20,7 @@ export const TEST_DATA = [
         "_id": "UUID-Forms-ServiceCentralizerReport:1"
     },
     {
-        "type_": "/Forms/ServiceCentralizerReport",
+        "type_": "Forms_ServiceCentralizerReport",
         "name": "name200",
         "user_code": "user_code201",
         "group": "group202",
@@ -39,7 +39,7 @@ export const TEST_DATA = [
         "_id": "UUID-Forms-ServiceCentralizerReport:2"
     },
     {
-        "type_": "/Forms/ServiceCentralizerReport",
+        "type_": "Forms_ServiceCentralizerReport",
         "name": "name300",
         "user_code": "user_code301",
         "group": "group302",
@@ -58,13 +58,13 @@ export const TEST_DATA = [
         "_id": "UUID-Forms-ServiceCentralizerReport:3"
     },
     {
-        "type_": "/Forms/ServiceForm",
+        "type_": "Forms_ServiceForm",
         "product_form_id": 101,
         "client": {
-            "ref_": "/Inventory/Client/UUID-Inventory-Client:1",
+            "ref_": "Inventory_Client/UUID-Inventory-Client:1",
             "code": "code100",
             "username": "username101",
-            "_id": "UUID-/Inventory/Client/UUID-Inventory-Client:1"
+            "_id": "UUID-Inventory_Client/UUID-Inventory-Client:1"
         },
         "time_of_arrival": "2018-02-19T14:56:47.963Z",
         "time_of_departure": "2018-02-19T14:56:47.963Z",
@@ -82,10 +82,10 @@ export const TEST_DATA = [
         "service_form_units": [
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                     "code": "code300",
                     "serial1": "serial1303",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_116001",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_116002",
@@ -98,36 +98,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 116009001,
                         "client_stock": 116009003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160090042"
                             }
@@ -136,36 +136,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 116009101,
                         "client_stock": 116009103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160091042"
                             }
@@ -174,36 +174,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 116009201,
                         "client_stock": 116009203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1160092042"
                             }
@@ -215,10 +215,10 @@ export const TEST_DATA = [
             },
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                     "code": "code100",
                     "serial1": "serial1103",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_116101",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_116102",
@@ -231,36 +231,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 116109001,
                         "client_stock": 116109003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161090042"
                             }
@@ -269,36 +269,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 116109101,
                         "client_stock": 116109103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161091042"
                             }
@@ -307,36 +307,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 116109201,
                         "client_stock": 116109203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1161092042"
                             }
@@ -348,10 +348,10 @@ export const TEST_DATA = [
             },
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                     "code": "code200",
                     "serial1": "serial1203",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_116201",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_116202",
@@ -364,36 +364,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 116209001,
                         "client_stock": 116209003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162090042"
                             }
@@ -402,36 +402,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 116209101,
                         "client_stock": 116209103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162091042"
                             }
@@ -440,36 +440,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 116209201,
                         "client_stock": 116209203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-1162092042"
                             }
@@ -483,13 +483,13 @@ export const TEST_DATA = [
         "_id": "UUID-Forms-ServiceForm:1"
     },
     {
-        "type_": "/Forms/ServiceForm",
+        "type_": "Forms_ServiceForm",
         "product_form_id": 201,
         "client": {
-            "ref_": "/Inventory/Client/UUID-Inventory-Client:2",
+            "ref_": "Inventory_Client/UUID-Inventory-Client:2",
             "code": "code200",
             "username": "username201",
-            "_id": "UUID-/Inventory/Client/UUID-Inventory-Client:2"
+            "_id": "UUID-Inventory_Client/UUID-Inventory-Client:2"
         },
         "time_of_arrival": "2018-02-19T14:56:47.965Z",
         "time_of_departure": "2018-02-19T14:56:47.965Z",
@@ -507,10 +507,10 @@ export const TEST_DATA = [
         "service_form_units": [
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                     "code": "code100",
                     "serial1": "serial1103",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_216001",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_216002",
@@ -523,36 +523,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 216009001,
                         "client_stock": 216009003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160090042"
                             }
@@ -561,36 +561,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 216009101,
                         "client_stock": 216009103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160091042"
                             }
@@ -599,36 +599,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 216009201,
                         "client_stock": 216009203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2160092042"
                             }
@@ -640,10 +640,10 @@ export const TEST_DATA = [
             },
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                     "code": "code200",
                     "serial1": "serial1203",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_216101",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_216102",
@@ -656,36 +656,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 216109001,
                         "client_stock": 216109003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161090042"
                             }
@@ -694,36 +694,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 216109101,
                         "client_stock": 216109103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161091042"
                             }
@@ -732,36 +732,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 216109201,
                         "client_stock": 216109203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2161092042"
                             }
@@ -773,10 +773,10 @@ export const TEST_DATA = [
             },
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                     "code": "code300",
                     "serial1": "serial1303",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_216201",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_216202",
@@ -789,36 +789,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 216209001,
                         "client_stock": 216209003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162090042"
                             }
@@ -827,36 +827,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 216209101,
                         "client_stock": 216209103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162091042"
                             }
@@ -865,36 +865,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 216209201,
                         "client_stock": 216209203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-2162092042"
                             }
@@ -908,13 +908,13 @@ export const TEST_DATA = [
         "_id": "UUID-Forms-ServiceForm:2"
     },
     {
-        "type_": "/Forms/ServiceForm",
+        "type_": "Forms_ServiceForm",
         "product_form_id": 301,
         "client": {
-            "ref_": "/Inventory/Client/UUID-Inventory-Client:3",
+            "ref_": "Inventory_Client/UUID-Inventory-Client:3",
             "code": "code300",
             "username": "username301",
-            "_id": "UUID-/Inventory/Client/UUID-Inventory-Client:3"
+            "_id": "UUID-Inventory_Client/UUID-Inventory-Client:3"
         },
         "time_of_arrival": "2018-02-19T14:56:47.968Z",
         "time_of_departure": "2018-02-19T14:56:47.968Z",
@@ -932,10 +932,10 @@ export const TEST_DATA = [
         "service_form_units": [
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                     "code": "code200",
                     "serial1": "serial1203",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_316001",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_316002",
@@ -948,36 +948,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 316009001,
                         "client_stock": 316009003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160090042"
                             }
@@ -986,36 +986,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 316009101,
                         "client_stock": 316009103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160091042"
                             }
@@ -1024,36 +1024,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 316009201,
                         "client_stock": 316009203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3160092042"
                             }
@@ -1065,10 +1065,10 @@ export const TEST_DATA = [
             },
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                     "code": "code300",
                     "serial1": "serial1303",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_316101",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_316102",
@@ -1081,36 +1081,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 316109001,
                         "client_stock": 316109003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161090042"
                             }
@@ -1119,36 +1119,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 316109101,
                         "client_stock": 316109103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161091042"
                             }
@@ -1157,36 +1157,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 316109201,
                         "client_stock": 316109203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3161092042"
                             }
@@ -1198,10 +1198,10 @@ export const TEST_DATA = [
             },
             {
                 "equipment": {
-                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                     "code": "code100",
                     "serial1": "serial1103",
-                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                 },
                 "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_316201",
                 "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_316202",
@@ -1214,36 +1214,36 @@ export const TEST_DATA = [
                 "items": [
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                             "name": "name102",
                             "locationCode": "locationCode104000",
                             "price": 104002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                         },
                         "requested_quantity": 316209001,
                         "client_stock": 316209003,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162090040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162090041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162090042"
                             }
@@ -1252,36 +1252,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                             "name": "name202",
                             "locationCode": "locationCode204000",
                             "price": 204002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                         },
                         "requested_quantity": 316209101,
                         "client_stock": 316209103,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162091040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162091041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162091042"
                             }
@@ -1290,36 +1290,36 @@ export const TEST_DATA = [
                     },
                     {
                         "product": {
-                            "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                            "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                             "name": "name302",
                             "locationCode": "locationCode304000",
                             "price": 304002,
-                            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                         },
                         "requested_quantity": 316209201,
                         "client_stock": 316209203,
                         "units": [
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                                     "code": "code100",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162092040"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                                     "code": "code200",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162092041"
                             },
                             {
                                 "unit": {
-                                    "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                                    "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                                     "code": "code300",
-                                    "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                                    "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                                 },
                                 "_id": "UUID-Forms-ServiceForm-t-3162092042"
                             }
@@ -1333,7 +1333,7 @@ export const TEST_DATA = [
         "_id": "UUID-Forms-ServiceForm:3"
     },
     {
-        "type_": "/General/Actor",
+        "type_": "General_Actor",
         "code": "code100",
         "username": "username101",
         "name": "name102",
@@ -1347,7 +1347,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Actor:1"
     },
     {
-        "type_": "/General/Actor",
+        "type_": "General_Actor",
         "code": "code200",
         "username": "username201",
         "name": "name202",
@@ -1361,7 +1361,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Actor:2"
     },
     {
-        "type_": "/General/Actor",
+        "type_": "General_Actor",
         "code": "code300",
         "username": "username301",
         "name": "name302",
@@ -1375,7 +1375,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Actor:3"
     },
     {
-        "type_": "/General/Currency",
+        "type_": "General_Currency",
         "code": "code100",
         "rate1": 101,
         "rate2": 102,
@@ -1385,7 +1385,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Currency:1"
     },
     {
-        "type_": "/General/Currency",
+        "type_": "General_Currency",
         "code": "code200",
         "rate1": 201,
         "rate2": 202,
@@ -1395,7 +1395,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Currency:2"
     },
     {
-        "type_": "/General/Currency",
+        "type_": "General_Currency",
         "code": "code300",
         "rate1": 301,
         "rate2": 302,
@@ -1405,7 +1405,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Currency:3"
     },
     {
-        "type_": "/General/Person",
+        "type_": "General_Person",
         "code": "code100",
         "actor_code": "actor_code101",
         "name": "name102",
@@ -1422,7 +1422,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Person:1"
     },
     {
-        "type_": "/General/Person",
+        "type_": "General_Person",
         "code": "code200",
         "actor_code": "actor_code201",
         "name": "name202",
@@ -1439,7 +1439,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Person:2"
     },
     {
-        "type_": "/General/Person",
+        "type_": "General_Person",
         "code": "code300",
         "actor_code": "actor_code301",
         "name": "name302",
@@ -1456,7 +1456,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-Person:3"
     },
     {
-        "type_": "/General/User",
+        "type_": "General_User",
         "code": "code100",
         "username": "username101",
         "name": "name102",
@@ -1470,7 +1470,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-User:1"
     },
     {
-        "type_": "/General/User",
+        "type_": "General_User",
         "code": "code200",
         "username": "username201",
         "name": "name202",
@@ -1484,7 +1484,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-User:2"
     },
     {
-        "type_": "/General/User",
+        "type_": "General_User",
         "code": "code300",
         "username": "username301",
         "name": "name302",
@@ -1498,7 +1498,7 @@ export const TEST_DATA = [
         "_id": "UUID-General-User:3"
     },
     {
-        "type_": "/Inventory/Client",
+        "type_": "Inventory_Client",
         "code": "code100",
         "username": "username101",
         "name": "name102",
@@ -1512,7 +1512,7 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Client:1"
     },
     {
-        "type_": "/Inventory/Client",
+        "type_": "Inventory_Client",
         "code": "code200",
         "username": "username201",
         "name": "name202",
@@ -1526,7 +1526,7 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Client:2"
     },
     {
-        "type_": "/Inventory/Client",
+        "type_": "Inventory_Client",
         "code": "code300",
         "username": "username301",
         "name": "name302",
@@ -1540,40 +1540,40 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Client:3"
     },
     {
-        "type_": "/Inventory/Order",
+        "type_": "Inventory_Order",
         "items": [
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                     "name": "name202",
                     "locationCode": "locationCode204000",
                     "price": 204002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                 },
                 "requested_quantity": 100001,
                 "client_stock": 100003,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-1000040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-1000041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-1000042"
                     }
@@ -1582,36 +1582,36 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                     "name": "name302",
                     "locationCode": "locationCode304000",
                     "price": 304002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                 },
                 "requested_quantity": 100101,
                 "client_stock": 100103,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-1001040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-1001041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-1001042"
                     }
@@ -1620,36 +1620,36 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                     "name": "name102",
                     "locationCode": "locationCode104000",
                     "price": 104002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                 },
                 "requested_quantity": 100201,
                 "client_stock": 100203,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-1002040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-1002041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-1002042"
                     }
@@ -1660,40 +1660,40 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Order:1"
     },
     {
-        "type_": "/Inventory/Order",
+        "type_": "Inventory_Order",
         "items": [
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                     "name": "name302",
                     "locationCode": "locationCode304000",
                     "price": 304002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                 },
                 "requested_quantity": 200001,
                 "client_stock": 200003,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-2000040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-2000041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-2000042"
                     }
@@ -1702,36 +1702,36 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                     "name": "name102",
                     "locationCode": "locationCode104000",
                     "price": 104002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                 },
                 "requested_quantity": 200101,
                 "client_stock": 200103,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-2001040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-2001041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-2001042"
                     }
@@ -1740,36 +1740,36 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                     "name": "name202",
                     "locationCode": "locationCode204000",
                     "price": 204002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                 },
                 "requested_quantity": 200201,
                 "client_stock": 200203,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-2002040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-2002041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-2002042"
                     }
@@ -1780,40 +1780,40 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Order:2"
     },
     {
-        "type_": "/Inventory/Order",
+        "type_": "Inventory_Order",
         "items": [
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                     "name": "name102",
                     "locationCode": "locationCode104000",
                     "price": 104002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                 },
                 "requested_quantity": 300001,
                 "client_stock": 300003,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-3000040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-3000041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-3000042"
                     }
@@ -1822,36 +1822,36 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                     "name": "name202",
                     "locationCode": "locationCode204000",
                     "price": 204002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                 },
                 "requested_quantity": 300101,
                 "client_stock": 300103,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-3001040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-3001041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-3001042"
                     }
@@ -1860,36 +1860,36 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                     "name": "name302",
                     "locationCode": "locationCode304000",
                     "price": 304002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                 },
                 "requested_quantity": 300201,
                 "client_stock": 300203,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Order-t-3002040"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Order-t-3002041"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Order-t-3002042"
                     }
@@ -1900,7 +1900,7 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Order:3"
     },
     {
-        "type_": "/Inventory/Product",
+        "type_": "Inventory_Product",
         "code": "code100",
         "barcode": "barcode101",
         "name": "name102",
@@ -1911,9 +1911,9 @@ export const TEST_DATA = [
                 "category": "category104001",
                 "price": 104002,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:3",
+                    "ref_": "General_Currency/UUID-General-Currency:3",
                     "code": "code300",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:3"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:3"
                 },
                 "minimal_stock": 104004,
                 "ordered_stock": 104008,
@@ -1926,9 +1926,9 @@ export const TEST_DATA = [
                 "category": "category104101",
                 "price": 104102,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:1",
+                    "ref_": "General_Currency/UUID-General-Currency:1",
                     "code": "code100",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:1"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:1"
                 },
                 "minimal_stock": 104104,
                 "ordered_stock": 104108,
@@ -1941,9 +1941,9 @@ export const TEST_DATA = [
                 "category": "category104201",
                 "price": 104202,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:2",
+                    "ref_": "General_Currency/UUID-General-Currency:2",
                     "code": "code200",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:2"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:2"
                 },
                 "minimal_stock": 104204,
                 "ordered_stock": 104208,
@@ -1955,7 +1955,7 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Product:1"
     },
     {
-        "type_": "/Inventory/Product",
+        "type_": "Inventory_Product",
         "code": "code200",
         "barcode": "barcode201",
         "name": "name202",
@@ -1966,9 +1966,9 @@ export const TEST_DATA = [
                 "category": "category204001",
                 "price": 204002,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:1",
+                    "ref_": "General_Currency/UUID-General-Currency:1",
                     "code": "code100",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:1"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:1"
                 },
                 "minimal_stock": 204004,
                 "ordered_stock": 204008,
@@ -1981,9 +1981,9 @@ export const TEST_DATA = [
                 "category": "category204101",
                 "price": 204102,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:2",
+                    "ref_": "General_Currency/UUID-General-Currency:2",
                     "code": "code200",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:2"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:2"
                 },
                 "minimal_stock": 204104,
                 "ordered_stock": 204108,
@@ -1996,9 +1996,9 @@ export const TEST_DATA = [
                 "category": "category204201",
                 "price": 204202,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:3",
+                    "ref_": "General_Currency/UUID-General-Currency:3",
                     "code": "code300",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:3"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:3"
                 },
                 "minimal_stock": 204204,
                 "ordered_stock": 204208,
@@ -2010,7 +2010,7 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Product:2"
     },
     {
-        "type_": "/Inventory/Product",
+        "type_": "Inventory_Product",
         "code": "code300",
         "barcode": "barcode301",
         "name": "name302",
@@ -2021,9 +2021,9 @@ export const TEST_DATA = [
                 "category": "category304001",
                 "price": 304002,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:2",
+                    "ref_": "General_Currency/UUID-General-Currency:2",
                     "code": "code200",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:2"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:2"
                 },
                 "minimal_stock": 304004,
                 "ordered_stock": 304008,
@@ -2036,9 +2036,9 @@ export const TEST_DATA = [
                 "category": "category304101",
                 "price": 304102,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:3",
+                    "ref_": "General_Currency/UUID-General-Currency:3",
                     "code": "code300",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:3"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:3"
                 },
                 "minimal_stock": 304104,
                 "ordered_stock": 304108,
@@ -2051,9 +2051,9 @@ export const TEST_DATA = [
                 "category": "category304201",
                 "price": 304202,
                 "currency": {
-                    "ref_": "/General/Currency/UUID-General-Currency:1",
+                    "ref_": "General_Currency/UUID-General-Currency:1",
                     "code": "code100",
-                    "_id": "UUID-/General/Currency/UUID-General-Currency:1"
+                    "_id": "UUID-General_Currency/UUID-General-Currency:1"
                 },
                 "minimal_stock": 304204,
                 "ordered_stock": 304208,
@@ -2065,13 +2065,13 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Product:3"
     },
     {
-        "type_": "/Inventory/ProductUnit",
+        "type_": "Inventory_ProductUnit",
         "code": "code100",
         "product": {
-            "ref_": "/Inventory/Product/UUID-Inventory-Product:3",
+            "ref_": "Inventory_Product/UUID-Inventory-Product:3",
             "code": "code300",
             "name": "name302",
-            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3"
+            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3"
         },
         "inventoryLocation": "inventoryLocation102",
         "serial1": "serial1103",
@@ -2089,13 +2089,13 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-ProductUnit:1"
     },
     {
-        "type_": "/Inventory/ProductUnit",
+        "type_": "Inventory_ProductUnit",
         "code": "code200",
         "product": {
-            "ref_": "/Inventory/Product/UUID-Inventory-Product:1",
+            "ref_": "Inventory_Product/UUID-Inventory-Product:1",
             "code": "code100",
             "name": "name102",
-            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1"
+            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1"
         },
         "inventoryLocation": "inventoryLocation202",
         "serial1": "serial1203",
@@ -2113,13 +2113,13 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-ProductUnit:2"
     },
     {
-        "type_": "/Inventory/ProductUnit",
+        "type_": "Inventory_ProductUnit",
         "code": "code300",
         "product": {
-            "ref_": "/Inventory/Product/UUID-Inventory-Product:2",
+            "ref_": "Inventory_Product/UUID-Inventory-Product:2",
             "code": "code200",
             "name": "name202",
-            "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2"
+            "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2"
         },
         "inventoryLocation": "inventoryLocation302",
         "serial1": "serial1303",
@@ -2137,39 +2137,39 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-ProductUnit:3"
     },
     {
-        "type_": "/Inventory/Receipt",
+        "type_": "Inventory_Receipt",
         "items": [
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                     "name": "name202",
                     "locationCode": "locationCode204000",
                     "price": 204002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                 },
                 "received_quantity": 100001,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1000020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1000021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1000022"
                     }
@@ -2178,35 +2178,35 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                     "name": "name302",
                     "locationCode": "locationCode304000",
                     "price": 304002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                 },
                 "received_quantity": 100101,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1001020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1001021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1001022"
                     }
@@ -2215,35 +2215,35 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                     "name": "name102",
                     "locationCode": "locationCode104000",
                     "price": 104002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                 },
                 "received_quantity": 100201,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1002020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1002021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-1002022"
                     }
@@ -2254,39 +2254,39 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Receipt:1"
     },
     {
-        "type_": "/Inventory/Receipt",
+        "type_": "Inventory_Receipt",
         "items": [
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                     "name": "name302",
                     "locationCode": "locationCode304000",
                     "price": 304002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                 },
                 "received_quantity": 200001,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2000020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2000021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2000022"
                     }
@@ -2295,35 +2295,35 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                     "name": "name102",
                     "locationCode": "locationCode104000",
                     "price": 104002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                 },
                 "received_quantity": 200101,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2001020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2001021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2001022"
                     }
@@ -2332,35 +2332,35 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                     "name": "name202",
                     "locationCode": "locationCode204000",
                     "price": 204002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                 },
                 "received_quantity": 200201,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2002020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2002021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-2002022"
                     }
@@ -2371,39 +2371,39 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Receipt:2"
     },
     {
-        "type_": "/Inventory/Receipt",
+        "type_": "Inventory_Receipt",
         "items": [
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040",
                     "name": "name102",
                     "locationCode": "locationCode104000",
                     "price": 104002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:1/inventoryLocation/UUID-Inventory-Product-t-1040"
                 },
                 "received_quantity": 300001,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3000020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3000021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3000022"
                     }
@@ -2412,35 +2412,35 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040",
                     "name": "name202",
                     "locationCode": "locationCode204000",
                     "price": 204002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:2/inventoryLocation/UUID-Inventory-Product-t-2040"
                 },
                 "received_quantity": 300101,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3001020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3001021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3001022"
                     }
@@ -2449,35 +2449,35 @@ export const TEST_DATA = [
             },
             {
                 "product": {
-                    "ref_": "/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
+                    "ref_": "Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040",
                     "name": "name302",
                     "locationCode": "locationCode304000",
                     "price": 304002,
-                    "_id": "UUID-/Inventory/Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
+                    "_id": "UUID-Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040"
                 },
                 "received_quantity": 300201,
                 "units": [
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:2",
                             "code": "code200",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:2"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:2"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3002020"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:3",
                             "code": "code300",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:3"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:3"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3002021"
                     },
                     {
                         "unit": {
-                            "ref_": "/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1",
+                            "ref_": "Inventory_ProductUnit/UUID-Inventory-ProductUnit:1",
                             "code": "code100",
-                            "_id": "UUID-/Inventory/ProductUnit/UUID-Inventory-ProductUnit:1"
+                            "_id": "UUID-Inventory_ProductUnit/UUID-Inventory-ProductUnit:1"
                         },
                         "_id": "UUID-Inventory-Receipt-t-3002022"
                     }
@@ -2488,7 +2488,7 @@ export const TEST_DATA = [
         "_id": "UUID-Inventory-Receipt:3"
     },
     {
-        "type_": "/Reports/DetailedCentralizerReport",
+        "type_": "Reports_DetailedCentralizerReport",
         "name": "name100",
         "user_code": "user_code101",
         "type": "type102",
@@ -2508,7 +2508,7 @@ export const TEST_DATA = [
         "_id": "UUID-Reports-DetailedCentralizerReport:1"
     },
     {
-        "type_": "/Reports/DetailedCentralizerReport",
+        "type_": "Reports_DetailedCentralizerReport",
         "name": "name200",
         "user_code": "user_code201",
         "type": "type202",
@@ -2528,7 +2528,7 @@ export const TEST_DATA = [
         "_id": "UUID-Reports-DetailedCentralizerReport:2"
     },
     {
-        "type_": "/Reports/DetailedCentralizerReport",
+        "type_": "Reports_DetailedCentralizerReport",
         "name": "name300",
         "user_code": "user_code301",
         "type": "type302",
@@ -2548,7 +2548,7 @@ export const TEST_DATA = [
         "_id": "UUID-Reports-DetailedCentralizerReport:3"
     },
     {
-        "type_": "/Reports/GenericReport",
+        "type_": "Reports_GenericReport",
         "name": "name100",
         "user_code": "user_code101",
         "type": "type102",
@@ -2568,7 +2568,7 @@ export const TEST_DATA = [
         "_id": "UUID-Reports-GenericReport:1"
     },
     {
-        "type_": "/Reports/GenericReport",
+        "type_": "Reports_GenericReport",
         "name": "name200",
         "user_code": "user_code201",
         "type": "type202",
@@ -2588,7 +2588,7 @@ export const TEST_DATA = [
         "_id": "UUID-Reports-GenericReport:2"
     },
     {
-        "type_": "/Reports/GenericReport",
+        "type_": "Reports_GenericReport",
         "name": "name300",
         "user_code": "user_code301",
         "type": "type302",

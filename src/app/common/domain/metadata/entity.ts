@@ -1,6 +1,7 @@
 import { BaseObj, BaseObjPropTypes, isReservedPropName, SubObj, parseDeepPath, RESERVED_PROP_NAMES } from '../base_obj';
 import { ExecutionPlan } from "./execution_plan";
 import * as _ from 'lodash';
+import { getES5, emit } from '../map_reduce_utils';
 
 
 //FIXME: find a way to fix this! It should be possible say that an object has a set of properties and the rest can be of type X
@@ -14,16 +15,17 @@ export type SchemaPropsType = Entity | BaseObjPropTypes;
 export class Entity extends BaseObj {
     type_ = 'Entity_';
     module_?: boolean;
+    aliases_?: {[aliasName: string]: string};
     [x: string]: EntityPropsType;
 }
 export type EntityPropertiesWithNames = { name: string, prop: EntityProperty }[];
 export type EntityProperties = { [x: string]: EntityProperty };
-export type HasProperties = Entity | TableProperty | EntityProperty;
+export type HasProperties = Entity | SubTableProperty | SubEntityProperty;
 export type EntityDeepPath = string;
 
-export class Schema  extends BaseObj {
+export class Schema extends BaseObj {
     readonly _id: 'FRMDB_SCHEMA';
-    [x: string]:  SchemaPropsType;
+    [x: string]: SchemaPropsType;
     executionPlan_?: ExecutionPlan;
 }
 
@@ -36,16 +38,16 @@ export function propertiesOfEntity(entity: HasProperties): EntityProperties {
         if (!isEntityProperty(prop)) return;
         ret[propName] = prop;
     });
-    ret['_id'] = {propType_: Pn.STRING};
+    ret['_id'] = { propType_: Pn.STRING };
     return ret;
 }
 export function propertiesWithNamesOf(entity: HasProperties): EntityPropertiesWithNames {
     let ret = [];
     _.toPairs(entity).forEach(([propName, prop]) => {
         if (!isEntityProperty(prop)) return;
-        ret.push({name: propName, prop: prop});
+        ret.push({ name: propName, prop: prop });
     });
-    return ret.concat({name: '_id', prop: {propType_: Pn.STRING}});
+    return ret.concat({ name: '_id', prop: { propType_: Pn.STRING } });
 }
 export function extendEntityProperties(extendedEntity: HasProperties, newProperties: EntityProperties) {
     _.toPairs(newProperties).forEach(([propName, p]) => {
@@ -55,9 +57,9 @@ export function extendEntityProperties(extendedEntity: HasProperties, newPropert
 }
 export function queryEntityWithDeepPath(entity: Entity, deepPath: EntityDeepPath): EntityProperties {
     let relativePath = deepPath.replace(entity._id, '').replace(/^\//, '').replace(/\/@/g, '');
-    if (null != relativePath && '' !== relativePath) {  
+    if (null != relativePath && '' !== relativePath) {
         let pathInsideEntity = relativePath.replace(/\//, '.');
-        return _(eval(`entity.${pathInsideEntity}`)).omit(RESERVED_PROP_NAMES).extend({_id: {propType_: Pn.STRING}}).value() as EntityProperties;
+        return _(eval(`entity.${pathInsideEntity}`)).omit(RESERVED_PROP_NAMES).extend({ _id: { propType_: Pn.STRING } }).value() as EntityProperties;
     }
     return propertiesOfEntity(entity);
 }
@@ -66,13 +68,14 @@ export function getEntityIdFromDeepPath(deepPath: EntityDeepPath) {
     return parseDeepPath(deepPath).path;
 }
 
-export const enum Pn { 
+export const enum Pn {
     NUMBER = "NUMBER",
     STRING = "STRING",
     TEXT = "TEXT",
     DATETIME = "DATETIME",
-    TABLE = "TABLE",
-    SUB_ENTITY = "REFERENCES_ENTITY",
+    SUB_TABLE = "SUB_TABLE",
+    BELONGS_TO = "BELONGS_TO",
+    SUB_ENTITY = "SUB_ENTITY",
     FORMULA = "FORMULA",
 }
 
@@ -80,30 +83,30 @@ export class NumberProperty extends SubObj {
     readonly propType_: Pn.NUMBER;
     //name: string;
     defaultValue?: number;
-    allowNull?:boolean;
+    allowNull?: boolean;
 }
 export class StringProperty extends SubObj {
     readonly propType_: Pn.STRING;
     //name: string;
     defaultValue?: string;
-    allowNull?:boolean;
+    allowNull?: boolean;
 }
 export class TextProperty extends SubObj {
     readonly propType_: Pn.TEXT;
     //name: string;
-    allowNull?:boolean;
+    allowNull?: boolean;
 }
 export class DatetimeProperty extends SubObj {
     readonly propType_: Pn.DATETIME;
     //name: string;
-    allowNull?:boolean;
+    allowNull?: boolean;
 }
 
 /**
  * Table of existing entities or entities created
  */
-export class TableProperty extends SubObj {
-    readonly propType_: Pn.TABLE;
+export class SubTableProperty extends SubObj {
+    readonly propType_: Pn.SUB_TABLE;
     //name: string;
     deepPath?: string;
     snapshotCurrentValueOfProperties?: string[];
@@ -111,49 +114,26 @@ export class TableProperty extends SubObj {
     isLargeTable?: boolean;
     [x: string]: EntityPropsType;
 }
+
 /**
  * This property represents an embedded entity that is created when the parent entity is created
  */
 export class SubEntityProperty extends SubObj {
     readonly propType_: Pn.SUB_ENTITY;
-    //name: string;
-    /**
-     * Autocomplete form element must be used to allow the user to reference and existing Entity
-     * The possible autocomplete fields are set snapshotCurrentValueOfProperties
-     */
     deepPath?: string;
-    snapshotCurrentValueOfProperties?: string[];
+    [x: string]: EntityPropsType;
+}
 
+export class BelongsToProperty extends SubObj {
+    readonly propType_: Pn.BELONGS_TO;
+    deepPath: string;
+    snapshotCurrentValueOfProperties: string[];
     foreignKey: string;
 }
 
+
+export type SimpleExpression = string;//only simple arithmetic expressions with identifiers
 export type FormulaExpression = string;
-function sfn(name) {
-    return function(...args) {
-        let argsStr = _.map(args, a => {
-            if (typeof a === 'function') return a();
-            return '' + a;
-        }).join(',');
-        return name + '(' + args + ')';
-    };
-}
-export const Fn = {
-    SUM: sfn('SUM'),
-    FILTER: sfn('FILTER'),
-    GROUP_BY: sfn('GROUP_BY'),
-    UNGROUP: sfn('UNGROUP'),
-    COUNT: sfn('COUNT'),
-    DATE_UTILS: sfn('DATE_UTILS'),
-}
-
-export const Mn = {
-    MAP_DEEP_PATH: sfn('MAP_DEEP_PATH'),
-    MAP_EXPR: sfn('MAP_EXPR'),
-}
-
-export const Rn = {
-    _sum: '_sum',
-}
 
 /**
  * This property represents a formula definition
@@ -162,15 +142,16 @@ export class FormulaProperty extends SubObj {
     readonly propType_: Pn.FORMULA;
     //name: string;
     formula: FormulaExpression;
-    postConditions: SubObj;
+    postConditions?: SubObj;
 }
 
-export type EntityProperty = 
+export type EntityProperty =
     | NumberProperty
     | StringProperty
     | TextProperty
     | DatetimeProperty
-    | TableProperty
+    | SubTableProperty
     | SubEntityProperty
+    | BelongsToProperty
     | FormulaProperty
-;
+    ;

@@ -9,8 +9,5 @@ export class ExecutionPlanRunner {
 
     runExecutionPlanOnDataChange(dataObj: BaseObj) {
         //triggers are sorted topologically based on observable/observer dependencies
-        this.executionPlan.triggers.forEach(trigger => {
-            
-        })
     }
 }

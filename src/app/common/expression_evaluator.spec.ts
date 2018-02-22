@@ -5,10 +5,62 @@ import { ExpressionEvaluator } from '../../../src/app/common/expression_evaluato
 import * as moment from "moment";
 import * as _ from "lodash";
 
+import * as jsep from 'jsep';
 import * as  expression_eval from 'expression-eval';
 
 describe('ExecutionPlanRunner', () => {
     beforeEach(() => {
+    });
+
+    it(' should use a good parsing library', () => {
+        jsep.addUnaryOp('@');
+
+        let ast = jsep("SUM(a.x) + @(b + c)");
+        expect(ast as any).toEqual({
+            "type": "BinaryExpression",
+            "operator": "+",
+            "left": {
+                "type": "CallExpression",
+                "arguments": [
+                    {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "Identifier",
+                            "name": "a"
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "x"
+                        }
+                    }
+                ],
+                "callee": {
+                    "type": "Identifier",
+                    "name": "SUM"
+                }
+            },
+            "right": {
+                "type": "UnaryExpression",
+                "operator": "@",
+                "argument": {
+                    "type": "BinaryExpression",
+                    "operator": "+",
+                    "left": {
+                        "type": "Identifier",
+                        "name": "b"
+                    },
+                    "right": {
+                        "type": "Identifier",
+                        "name": "c"
+                    }
+                },
+                "prefix": true
+            }
+        });
+
+        expect(jsep(`SUMIF(a.b.c, d.e == @(f - g + h))`) as any).not.toThrow;
+
     });
 
     it(' should be using a correct expression evaluation library', () => {

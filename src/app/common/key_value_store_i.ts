@@ -5,13 +5,13 @@ import { KeyValueObj } from "./domain/key_value_obj";
  */
 export interface KeyValueStoreI {
     simpleJSONQuery(query: any);
-    mapReduceQuery(viewId: string, opts?: MapReduceQueryOptions): any;
+    mapReduceQuery(viewName: string, opts?: MapReduceQueryOptions): any;
 
     /**
      * Note: map/reduce functions must not have any external dependencies, they must be self contained
      * TODO: use https://github.com/acornjs/acorn parser and/or https://github.com/NeilFraser/JS-Interpreter to validate that map/reduce functions are self contained
      */
-    putMapReduceQuery(viewId: string, map: ((doc: KeyValueObj) => any) | string, reduce?: ((keys, values, rereduce) => any) | string);
+    putMapReduceQuery(viewName: string, map: ((doc: KeyValueObj) => any) | string, reduce?: ((keys, values, rereduce) => any) | string);
 
     findByType<T extends KeyValueObj>(type_: string): Promise<T[]>;
     get<T extends KeyValueObj>(_id: string): Promise<T>;

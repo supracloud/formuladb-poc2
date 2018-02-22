@@ -11,7 +11,7 @@ if (typeof module !== 'undefined' && module.exports) {
     PouchDB = ZaPouchDB['default'];
 }
 
-fdescribe('KeyValueStorePouchDB', () => {
+describe('KeyValueStorePouchDB', () => {
     let context: { kvs: KeyValueStoreI } = { kvs: null };
 
     beforeEach(() => {

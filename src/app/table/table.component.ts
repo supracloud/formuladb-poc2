@@ -25,7 +25,7 @@ export class TableComponent {
         try {
             this.table$ = store.select(tableState.getTableState);
             this.data$ = store.select(tableState.getTableDataState);
-            this.table$.subscribe(x => console.log("TABLE:", x, (x || new tableState.Table()).columns));
+            this.table$.subscribe(x => console.log("Table:", x, (x || new tableState.Table()).columns));
             this.highlightSvc.highlighted$.subscribe(h => this.highlighted = h);
         } catch (ex) {
             console.error(ex);

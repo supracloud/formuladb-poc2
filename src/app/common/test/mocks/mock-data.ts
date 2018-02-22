@@ -105,17 +105,15 @@ export class MockData {
                 ret[p.name] = p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + p.name + "_" + subId;
             } else if (p.prop.propType_ == Pn.DATETIME) {
                 ret[p.name] = new Date();
+            } else if (p.prop.propType_ == Pn.BELONGS_TO) {
+                let refIdx = subId % 3;
+                let refDeepPath = p.prop.deepPath;
+                ret[p.name] = this.getRefDataObj(path, p.prop.deepPath, p.prop.snapshotCurrentValueOfProperties, refIdx);
             } else if (p.prop.propType_ == Pn.SUB_ENTITY) {
-                if (null != p.prop.foreignKey) {
-                    let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
-                    o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
-                    ret[p.name] = o;
-                } else {
-                    let refIdx = subId % 3;
-                    let refDeepPath = p.prop.deepPath;
-                    ret[p.name] = this.getRefDataObj(path, p.prop.deepPath, p.prop.snapshotCurrentValueOfProperties, refIdx);
-                }
-            } else if (p.prop.propType_ == Pn.TABLE && !p.prop.isRef) {
+                let o = this.mockObject(path, propertiesWithNamesOf(p.prop), {}, subId);
+                o._id = `UUID-${path.replace(/^\//, '').replace(/\//g, '-')}-t-${subId}`;
+                ret[p.name] = o;
+            } else if (p.prop.propType_ == Pn.SUB_TABLE && !p.prop.isRef) {
                 let table = [];
                 for (var i = 0; i < 3; i++) {
                     let j = subId * 10 + i;
@@ -142,7 +140,6 @@ export class MockData {
         this.mockEntities(metadata.Inventory__Receipt as Entity, [1, 2, 3]);
         this.mockEntities(metadata.Forms__ServiceForm as Entity, [1, 2, 3]);
         this.mockEntities(metadata.Reports__DetailedCentralizerReport as Entity, [1, 2, 3]);
-        this.mockEntities(metadata.Reports__GenericReport as Entity, [1, 2, 3]);
         this.mockEntities(metadata.Reports__ServiceCentralizerReport as Entity, [1, 2, 3]);
     }
 

@@ -1,96 +1,86 @@
-
-
-
 import * as _ from 'lodash';
 import { } from "";
 import { Inventory__Product, Inventory__Order } from "../../../src/app/common/test/mocks/inventory-metadata";
 import { Forms__ServiceForm } from "../../../src/app/common/test/mocks/forms-metadata";
-import { Entity, Schema, Pn, Fn, Mn, Rn } from "../../../src/app/common/domain/metadata/entity";
-import { SchemaCompiler } from "../../../src/app/common/schema_compiler";
+import { Entity, Schema, Pn } from "../../../src/app/common/domain/metadata/entity";
+import { SchemaCompiler, Fn } from "../../../src/app/common/schema_compiler";
 import { FrmdbStore } from "../../../src/app/common/frmdb_store";
 import { KeyValueStoreMem } from "../../../src/app/common/key_value_store_mem";
 import { General__Actor, General__Currency } from '../../../src/app/common/test/mocks/mock-metadata';
-import { SUM_IF_GROUP_IF_Schema, makeSchema, makeEntity } from './test_data';
-import { StoredProcedureRunner } from './stored_procedure_runner';
 import { Sn } from './domain/metadata/stored_procedure';
+import { CompiledFunction } from './domain/metadata/execution_plan';
+import { matchesTypeES5, emit, evalTemplateES5, getES5, packMapFunction } from './domain/map_reduce_utils';
 
 describe('SchemaCompiler', () => {
-    let transactionsDB: KeyValueStoreMem;
-    let historyDB: KeyValueStoreMem;
-    let frmdbStore: FrmdbStore;
-    let spRunner: StoredProcedureRunner;
-
     beforeEach(() => {
-        transactionsDB = new KeyValueStoreMem();
-        historyDB = new KeyValueStoreMem();
-        frmdbStore = new FrmdbStore(transactionsDB, historyDB);
-        spRunner = new StoredProcedureRunner(frmdbStore);
     });
 
-    it('should handle nesting SUM(IF(GROUP_BY(IF)))', () => {
-        let compiler = new SchemaCompiler(SUM_IF_GROUP_IF_Schema);
-        // expect(compiler.compileSchema().executionPlan_).toEqual({
-
-        // });
+    it('should compile SUM absolute path', () => {
+        let cf = SchemaCompiler.compileFormula('R_B.sum=', Fn.SUMIF(`R_A.num`, `aType == @(bType))`));
+        let expectedCf = {
+            triggers: [{
+                viewName: 'R_B.sum=!1',
+                observableFromObserver: 'R_A.num?aType=@(bType)',
+                observerFromObservable: 'R_B.sum=?bType=@(aType)',
+                map: packMapFunction(
+                    function (doc) {
+                        if (matchesTypeES5(doc, 'R_A.num'))
+                            emit(evalTemplateES5(doc, 'R_B.sum=?bType=@(aType)'), getES5(doc, 'R_A.num'));
+                    }, [matchesTypeES5, evalTemplateES5, getES5], {}),
+                reduce: '_sum',
+                queryOptsFromObserver: { keyTemplate: ['R_B.sum=?bType=@(aType)'] },
+            }],
+            expr: 'R_B.sum=?1',
+        } as CompiledFunction;
     });
 
+    it('should compile SUM translated relative path', () => {
+        let cf = SchemaCompiler.compileFormula('R_B.sum=', Fn.SUMIF(`R_A.num`, `b->=@(_id))`));
+        let expectedCf = {
+            triggers: [{
+                viewName: 'R_B.sum=!1',
+                observableFromObserver: 'R_A.num?b->=@(_id)',
+                observerFromObservable: 'R_B.sum=?_id=@(b->)',
+                map: packMapFunction(
+                    function (doc) {
+                        if (matchesTypeES5(doc, 'R_A.num'))
+                            emit([evalTemplateES5(doc, 'R_B.sum=?_id=@(b->)'), '0'], getES5(doc, 'R_A.num'));
+                    }, [matchesTypeES5, evalTemplateES5, getES5], {}),
+                reduce: '_sum',
+                queryOptsFromObserver: { keyTemplate: ['R_B.sum=?_id=@(b->)', 0] },
+            }],
+            expr: 'R_B.sum=?1',
+        } as CompiledFunction;
+    });
+
+    it('should compile simple expr with INDEX and TEXT translated relative path', () => {
+        let cf = SchemaCompiler.compileFormula('R_B#str2=', `str1` + Fn.TEXT(Fn.MATCH(Fn.GROUP_BY(`R_B`, Fn.EOMONTH(`t`,-1), `t`), `t`), `"0000"`));
+        let expectedCf = {
+            triggers: [
+                {
+                    viewName: 'R_B#str2=?1',
+                    observableFromObserver: 'R_B?(EOMONTH(t,-1)=EOMONTH({{t}},-1)).t',
+                    observerFromObservable: 'R_B?(EOMONTH(t,-1)=EOMONTH({{t}},-1)).str2=',
+                    map: packMapFunction(
+                        function (doc) {
+                            if (matchesTypeES5(doc, 'R_B#t'))
+                                emit([getES5(doc, 'R_B.(EOMONTH(t,-1))'), getES5(doc, 'R_B#t'), '0'], 1);
+                        }, [matchesTypeES5, getES5], {}),
+                    reduce: '_count',
+                    queryOptsFromObserver: { startkeyTemplate: ['EOMONTH({{t}},-1)', ''], endkeyTemplate: ['EOMONTH({{t}},-1)', '{{t}}'], group_level: 2 },
+                },
+                {
+                    viewName: 'R_B#str2=?2',
+                    observableFromObserver: 'R_B?(EOMONTH(t,-1)=EOMONTH({{t}},-1)).str1',
+                    observerFromObservable: 'R_B?(EOMONTH(t,-1)=EOMONTH({{t}},-1)).str2=',
+                    mapExprFromObservable: 'R_B#str1'
+                },
+            ],
+            expr: 'R_B#str2=?2 + TEXT(R_B#str2=?1, "0000")',
+        } as CompiledFunction;
+    });
+    
     it('should compile mock schema correctly', () => {
     });
 
-    it('SUM absolute path', () => {
-        let schema = makeSchema(
-            makeEntity('/R/A', {
-                type: { propType_: Pn.STRING },
-                num: { propType_: Pn.NUMBER },
-            }),
-            makeEntity('/R/B', {
-                type: { propType_: Pn.STRING },
-                sum: { propType_: Pn.FORMULA, formula: Fn.SUM('/R/A[type = {{type}}]/num') }
-            }),
-        );
-
-        schema.executionPlan_ = {
-            triggers: [
-                ['/R/B/type', '/R/B[_id = {{_id}}]/type' ],
-                ['/R/A/type', '/R/B[type = {{type}}]/sum' ],
-                ['/R/A/num', '/R/B[type = {{type}}]/sum' ],
-            ],
-            formulas: {
-                '/R/B/sum': {
-                    observables: '/R/A[type = {{type}}]/num',
-                    map: Mn.MAP_DEEP_PATH('/R/B/sum', '/R/A[type = {{type}}]/num'),
-                    reduce: Rn._sum,
-                },
-            }
-        };
-
-        let compiler = new SchemaCompiler(schema);
-    });
-
-    it('SUM with relative path', () => {
-        let schema = makeSchema(
-            makeEntity('/R/A', {
-                num: { propType_: Pn.NUMBER },
-                b: { propType_: Pn.SUB_ENTITY, deepPath: '/R/B', foreignKey: 'a' },
-            }),
-            makeEntity('/R/B', {
-                a: { propType_: Pn.TABLE, deepPath: '/R/A', foreignKey: 'b' },
-                sum: { propType_: Pn.FORMULA, formula: Fn.SUM('./a/num') }
-            }),
-        );
-        let compiler = new SchemaCompiler(schema);
-
-        schema.executionPlan_ = {
-            triggers: [
-                ['/R/A/num', '/R/B[_id = {{b.ref_}}]/sum' ],
-            ],
-            formulas: {
-                '/R/B/sum': {
-                    observables: '/R/A[b/ref_ = {{_id}}]/num',
-                    map: Mn.MAP_DEEP_PATH('/R/B/sum', '/R/A[b/ref_ = {{_id}}]/num'),
-                    reduce: Rn._sum,
-                },
-            }
-        };
-    });
 });

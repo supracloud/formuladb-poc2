@@ -30,7 +30,7 @@ export class MockMetadata {
     this.entities.forEach(entity => {
       _.toPairs(entity).forEach(([propName, prop]) => {
         if (!isEntityProperty(prop)) return;
-        if (((prop.propType_ === Pn.SUB_ENTITY && null != prop.foreignKey) || prop.propType_ === Pn.TABLE) && prop.deepPath != null) {
+        if ((prop.propType_ === Pn.SUB_ENTITY || prop.propType_ === Pn.SUB_TABLE) && prop.deepPath != null) {
           let referencedEntity = this.entitiesMap.get(getEntityIdFromDeepPath(prop.deepPath));
           if (referencedEntity == null) throw new Error("Cannot find entity for " + prop.deepPath);
           extendEntityProperties(prop, queryEntityWithDeepPath(referencedEntity, prop.deepPath));
@@ -59,7 +59,6 @@ export class MockMetadata {
     FormsMetadata.Forms__ServiceForm as PickEntityProperties<typeof FormsMetadata.Forms__ServiceForm>,
     ReportsMetadata.Reports as PickEntityProperties<typeof ReportsMetadata.Reports>,
     ReportsMetadata.Reports__DetailedCentralizerReport as PickEntityProperties<typeof ReportsMetadata.Reports__DetailedCentralizerReport>,
-    ReportsMetadata.Reports__GenericReport as PickEntityProperties<typeof ReportsMetadata.Reports__GenericReport>,
     ReportsMetadata.Reports__ServiceCentralizerReport as PickEntityProperties<typeof ReportsMetadata.Reports__ServiceCentralizerReport>,
   ];
 
@@ -82,7 +81,6 @@ export class MockMetadata {
     FormsMetadata.Forms__ServiceForm as Entity,
     ReportsMetadata.Reports as Entity,
     ReportsMetadata.Reports__DetailedCentralizerReport as Entity,
-    ReportsMetadata.Reports__GenericReport as Entity,
     ReportsMetadata.Reports__ServiceCentralizerReport as Entity,
   ];
 

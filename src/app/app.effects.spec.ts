@@ -72,17 +72,17 @@ xdescribe('AppEffects', () => {
             let values = {
                 a: {
                     type: ROUTER_NAVIGATION,
-                    payload: {routerState: {url: '/General__Actor'}} as RouterNavigationPayload<appState.RouterState>
+                    payload: {routerState: {url: '//General__Actor'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
                 b: {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {
-                        url: '/General__Actor/' + actorTestId
+                        url: '//General__Actor/' + actorTestId
                     }} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
                 c: {
                     type: ROUTER_NAVIGATION,
-                    payload: {routerState: {url: '/General__Currency'}} as RouterNavigationPayload<appState.RouterState>
+                    payload: {routerState: {url: '//General__Currency'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
                 m: new fromTable.TableFormBackendAction(getDefaultTable(General__Actor as Entity)),
                 n: new fromTable.TableDataFromBackendAction(
