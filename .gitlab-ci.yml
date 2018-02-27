@@ -8,7 +8,7 @@ before_script:
   - cd ..
 
 test:
-stage: test
+  stage: test
   script:
     # Run npm test in virtual display mode
     - npm test
