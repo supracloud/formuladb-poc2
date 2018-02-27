@@ -17,18 +17,18 @@ test:
   artifacts:
     paths:
       - coverage/
-
-  pages:
-    stage: deploy
-    script:
-      - mv coverage/ public/
-    dependencies:
-      - test
-    artifacts:
-      paths:
-        - public
-      expire_in: 30 days
-    only:
-      - master
-  
   retry: 2
+
+pages:
+  script:
+    - mv coverage/ public/
+  dependencies:
+    - test
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - master
+  
+
