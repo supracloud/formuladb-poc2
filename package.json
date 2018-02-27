@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test --watch false",
+    "test": "ng test --watch false --code-coverage",
     "lint": "ng lint",
     "protractor": "ng e2e -s false",
     "e2e": "concurrently --success first --kill-others \"cd server && npm run e2e_serve\" \"npm start -- --proxy-config proxy.config.json\" \"sleep 25 && npm run protractor\"",
