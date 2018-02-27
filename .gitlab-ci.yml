@@ -19,10 +19,11 @@ test:
       - coverage/
 
   pages:
-    dependencies:
-      - test
+    stage: deploy
     script:
       - mv coverage/ public/
+    dependencies:
+      - test
     artifacts:
       paths:
         - public
