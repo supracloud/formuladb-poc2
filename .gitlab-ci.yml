@@ -21,6 +21,7 @@ test:
   retry: 2
 
 pages:
+  stage: deploy
   script:
     - mv coverage/ public/
   dependencies:
