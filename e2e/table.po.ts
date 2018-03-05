@@ -9,4 +9,8 @@ export class TablePO {
             .map<string[]>(tr => tr.all(by.css('td,th')).map<string>(td => td.getText()))
         ;
     }
+
+    async firstCell() {
+        return await $wait(element.all(by.css('.mwz-data-table tr td')).first());
+    }
 }
