@@ -5,7 +5,7 @@ import { browser, by, element, promise, Browser } from 'protractor';
 import { $wait } from "./common";
 import { ElementFinder } from 'protractor/built/element';
 
-describe('2_formdata_flow: ', () => {
+xdescribe('2_formdata_flow: ', () => {
   let appPage: AppPage;
   let navPO: NavigationPO;
   let tablePO: TablePO;
