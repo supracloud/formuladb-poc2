@@ -21,7 +21,7 @@ describe('2_formdata_flow: ', () => {
     browser.ignoreSynchronization = true;
 
     await appPage.rootPage();
-    
+
     // navigate to Actor entity page
     await navPO.navToEntityPage('/General/Actor', 'Actor');
 
@@ -32,16 +32,15 @@ describe('2_formdata_flow: ', () => {
     let actorNameUpdated = actorName + 'New';
 
     let firstCell = await tablePO.firstCell();
-    
+
     // open service form in edit mode by double clicking on the table entry
-    browser.actions().doubleClick(firstCell).perform();
+    await browser.actions().doubleClick(firstCell).perform();
 
     // update the actor name to actorNameUpdated
-    navPO.fieldActorName().clear().then(function() {
-      navPO.fieldActorName().sendKeys(actorNameUpdated);
-    });
-
-    browser.enterRepl();
+    await navPO.fieldActorName().clear()
+      .then(function () {
+        navPO.fieldActorName().sendKeys(actorNameUpdated);
+      });
 
     // navigate back to Actor entity page
     await navPO.navToEntityPage('/General/Actor', 'Actor');
