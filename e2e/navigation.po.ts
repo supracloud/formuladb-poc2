@@ -13,6 +13,6 @@ export class NavigationPO {
   }
 
   fieldActorName(): ElementFinder {
-    return element(by.name('name'));
+    return element(by.css('form.ng-pristine input[name="name"]'));
   }
 } 
