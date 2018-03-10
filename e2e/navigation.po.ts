@@ -6,12 +6,6 @@ export class NavigationPO {
     return $wait(element(by.css(`[href="${entityPath}"]`)));
   }
 
-  async navToEntityPage(entityPath: string, entityName: string) {
-    let link = await this.navLinkForEntity(entityPath);
-    await expect(link.getText()).toContain(entityName);
-    await link.click();
-  }
-
   fieldActorName(): ElementFinder {
     return element(by.css('form.ng-pristine input[name="name"]'));
   }

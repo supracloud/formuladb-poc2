@@ -14,16 +14,16 @@ describe('2_formdata_flow: ', () => {
     appPage = new AppPage();
     navPO = new NavigationPO();
     tablePO = new TablePO();
+
+    appPage.rootPage();
   });
 
   it('User should be able to change the name property for an /General/Actor entity', async () => {
     // hack required in order to locate elements on the page, otherwise we get
-    browser.waitForAngularEnabled(false)
-
-    await appPage.rootPage();
+    //browser.waitForAngularEnabled(false)
 
     // navigate to Actor entity page
-    await navPO.navToEntityPage('/General/Actor', 'Actor');
+    browser.get('/General/Actor');
 
     // save original actor name value
     let tableContents = await tablePO.getTable();
@@ -37,23 +37,22 @@ describe('2_formdata_flow: ', () => {
     await browser.actions().doubleClick(firstCell).perform();
 
     // update the actor name to actorNameUpdated
-    navPO.fieldActorName().clear()
-      .then(function () {
-        navPO.fieldActorName().sendKeys(actorNameUpdated);
-      })
-      .then(function () {
-        browser.sleep(500);
-      });
-
-    // navigate back to Actor entity page
-    await navPO.navToEntityPage('/General/Actor', 'Actor');
-
-    tableContents = await tablePO.getTable();
-
-    console.log(tableContents[1][3]);
-
-    // check that name property changed for the first Actor entity
-    expect(tableContents[1][3]).toEqual(actorNameUpdated);
+    let fieldActorName = navPO.fieldActorName();
+    console.log(fieldActorName.getText());
+    // fieldActorName.clear().then(() => {
+      // fieldActorName.sendKeys(actorNameUpdated);
+    // });
+    //await fieldActorName.sendKeys(actorNameUpdated);
+// 
+//     // navigate back to Actor entity page
+//     await navPO.navToEntityPage('/General/Actor', 'Actor');
+// 
+//     tableContents = await tablePO.getTable();
+// 
+//     console.log(tableContents[1][3]);
+// 
+//     // check that name property changed for the first Actor entity
+//     expect(tableContents[1][3]).toEqual(actorNameUpdated);
   });
 
 });
