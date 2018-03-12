@@ -11,6 +11,9 @@ describe('2_formdata_flow: ', () => {
   let tablePO: TablePO;
 
   beforeEach(() => {
+    // hack required in order to locate elements on the page, otherwise we get
+    browser.waitForAngularEnabled(false);
+
     appPage = new AppPage();
     navPO = new NavigationPO();
     tablePO = new TablePO();
@@ -19,12 +22,6 @@ describe('2_formdata_flow: ', () => {
   });
 
   it('User should be able to change the name property for an /General/Actor entity', async () => {
-    // hack required in order to locate elements on the page, otherwise we get
-    //browser.waitForAngularEnabled(false)
-
-    // navigate to Actor entity page
-    browser.get('/General/Actor');
-
     // save original actor name value
     let tableContents = await tablePO.getTable();
 
@@ -37,22 +34,20 @@ describe('2_formdata_flow: ', () => {
     await browser.actions().doubleClick(firstCell).perform();
 
     // update the actor name to actorNameUpdated
-    let fieldActorName = navPO.fieldActorName();
-    console.log(fieldActorName.getText());
-    // fieldActorName.clear().then(() => {
-      // fieldActorName.sendKeys(actorNameUpdated);
-    // });
-    //await fieldActorName.sendKeys(actorNameUpdated);
-// 
-//     // navigate back to Actor entity page
-//     await navPO.navToEntityPage('/General/Actor', 'Actor');
-// 
-//     tableContents = await tablePO.getTable();
-// 
-//     console.log(tableContents[1][3]);
-// 
-//     // check that name property changed for the first Actor entity
-//     expect(tableContents[1][3]).toEqual(actorNameUpdated);
+    let fieldActorName = await navPO.fieldActorName();
+    
+    await fieldActorName.clear();
+    await fieldActorName.sendKeys(actorNameUpdated);
+    
+    // wait to cover the sample time in rxJS
+    browser.sleep(1000)
+ 
+    await browser.get('/General/Actor');
+
+    tableContents = await tablePO.getTable();
+
+    // check that name property changed for the first Actor entity
+    expect(tableContents[1][3]).toEqual(actorNameUpdated);
   });
 
 });

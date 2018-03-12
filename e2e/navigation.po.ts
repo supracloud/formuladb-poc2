@@ -6,7 +6,7 @@ export class NavigationPO {
     return $wait(element(by.css(`[href="${entityPath}"]`)));
   }
 
-  fieldActorName(): ElementFinder {
-    return element(by.css('form.ng-pristine input[name="name"]'));
+  fieldActorName(): Promise<ElementFinder> {
+    return $wait(element(by.css('form.ng-pristine input[name="name"]')));
   }
 } 
