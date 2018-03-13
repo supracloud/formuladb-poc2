@@ -10,16 +10,17 @@ describe('1_application_init_flow: ', () => {
   let navPO: NavigationPO;
   let tablePO: TablePO;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     appPage = new AppPage();
     navPO = new NavigationPO();
     tablePO = new TablePO();
 
-    appPage.rootPage();
+    await appPage.rootPage();
   });
 
   it('User should be able to navigate to /General/Actor entity', async () => {
-    browser.get('/General/Actor');
+    // navigate to Actor entity
+    await navPO.navToEntityPage('/General/Actor', 'Actor');
 
     let tableContents = await tablePO.getTable();
 

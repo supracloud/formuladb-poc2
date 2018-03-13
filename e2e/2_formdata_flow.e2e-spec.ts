@@ -10,7 +10,7 @@ describe('2_formdata_flow: ', () => {
   let navPO: NavigationPO;
   let tablePO: TablePO;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     // hack required in order to locate elements on the page, otherwise we get
     browser.waitForAngularEnabled(false);
 
@@ -18,10 +18,13 @@ describe('2_formdata_flow: ', () => {
     navPO = new NavigationPO();
     tablePO = new TablePO();
 
-    appPage.rootPage();
+    await appPage.rootPage();
   });
 
   it('User should be able to change the name property for an /General/Actor entity', async () => {
+    // navigate to Actor entity
+    await navPO.navToEntityPage('/General/Actor', 'Actor');
+
     // save original actor name value
     let tableContents = await tablePO.getTable();
 
