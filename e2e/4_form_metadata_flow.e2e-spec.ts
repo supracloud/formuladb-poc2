@@ -4,56 +4,54 @@ import { TablePO } from "./table.po";
 import { browser, by, element, promise, Browser } from 'protractor';
 import { $wait } from "./common";
 import { ElementFinder } from 'protractor/built/element';
+import { FormPO } from './form.po';
 
-xdescribe('2_formdata_flow: ', () => {
+describe('4_form_metadata_flow: ', () => {
   let appPage: AppPage;
   let navPO: NavigationPO;
   let tablePO: TablePO;
+  let formPO: FormPO;
 
   beforeEach(() => {
     appPage = new AppPage();
     navPO = new NavigationPO();
     tablePO = new TablePO();
+    formPO = new FormPO();
   });
 
-  it('User should be able to change the name property for an /General/Actor entity', async () => {
-    // hack required in order to locate elements on the page, otherwise we get
-    browser.waitForAngularEnabled(false)
-
-    await appPage.rootPage();
-
-    // navigate to Actor entity page
+  /**
+   * Verify that use is able to change the form layout using the metadata visual editor
+   * Currently we're testing 2 scenarios:
+   *  - move the 4th column on the 2nd place, right after the 1st column/property (should be 'code')
+   *  - move the 5th column/property on the same row with the 1st column/property (should be 'code')
+   */
+  it('User should be able to change the form layout for /General/Actor entity', async () => {
+    // navigate to Actor entity using the side panel menu
     await navPO.navToEntityPage('/General/Actor', 'Actor');
 
     // save original actor name value
     let tableContents = await tablePO.getTable();
 
-    let actorName = tableContents[1][3];
-    let actorNameUpdated = actorName + 'New';
+    let colName1 = tableContents[0][1];
+    let colName4 = tableContents[0][4];
+    let colName5 = tableContents[0][5];
 
     let firstCell = await tablePO.firstCell();
 
     // open service form in edit mode by double clicking on the table entry
     await browser.actions().doubleClick(firstCell).perform();
 
-    // update the actor name to actorNameUpdated
-    navPO.fieldActorName().clear()
-      .then(function () {
-        navPO.fieldActorName().sendKeys(actorNameUpdated);
-      })
-      .then(function () {
-        browser.sleep(500);
-      });
+    // get html elements for properties 1,4,5 from the editor panel
+    let field1 = await formPO.formGridRow(2);
+    let field4 = await formPO.formGridRow(5);
+    let field5 = await formPO.formGridRow(6);
+    
+    
 
-    // navigate back to Actor entity page
-    await navPO.navToEntityPage('/General/Actor', 'Actor');
-
-    tableContents = await tablePO.getTable();
-
-    console.log(tableContents[1][3]);
-
-    // check that name property changed for the first Actor entity
-    expect(tableContents[1][3]).toEqual(actorNameUpdated);
+    // wait to cover the sample time in rxJS
+    browser.sleep(1000)
+ 
+    await browser.get('/General/Actor');
   });
 
 });

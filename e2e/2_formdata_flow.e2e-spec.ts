@@ -4,11 +4,13 @@ import { TablePO } from "./table.po";
 import { browser, by, element, promise, Browser } from 'protractor';
 import { $wait } from "./common";
 import { ElementFinder } from 'protractor/built/element';
+import { FormPO } from './form.po';
 
 describe('2_formdata_flow: ', () => {
   let appPage: AppPage;
   let navPO: NavigationPO;
   let tablePO: TablePO;
+  let formPO: FormPO;
 
   beforeEach(async () => {
     // hack required in order to locate elements on the page, otherwise we get
@@ -17,12 +19,13 @@ describe('2_formdata_flow: ', () => {
     appPage = new AppPage();
     navPO = new NavigationPO();
     tablePO = new TablePO();
+    formPO = new FormPO();
 
     await appPage.rootPage();
   });
 
   it('User should be able to change the name property for an /General/Actor entity', async () => {
-    // navigate to Actor entity
+    // navigate to Actor entity using the side panel menu
     await navPO.navToEntityPage('/General/Actor', 'Actor');
 
     // save original actor name value
@@ -37,7 +40,7 @@ describe('2_formdata_flow: ', () => {
     await browser.actions().doubleClick(firstCell).perform();
 
     // update the actor name to actorNameUpdated
-    let fieldActorName = await navPO.fieldActorName();
+    let fieldActorName = await formPO.fieldActorName();
     
     await fieldActorName.clear();
     await fieldActorName.sendKeys(actorNameUpdated);

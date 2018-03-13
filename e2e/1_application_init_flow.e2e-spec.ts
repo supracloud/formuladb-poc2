@@ -19,7 +19,7 @@ describe('1_application_init_flow: ', () => {
   });
 
   it('User should be able to navigate to /General/Actor entity', async () => {
-    // navigate to Actor entity
+    // navigate to Actor entity using the side panel menu
     await navPO.navToEntityPage('/General/Actor', 'Actor');
 
     let tableContents = await tablePO.getTable();
