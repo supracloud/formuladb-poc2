@@ -1,10 +1,23 @@
 import { AppPage } from './app.po';
 import { NavigationPO } from './navigation.po';
 import { TablePO } from "./table.po";
-import { browser, by, element, promise, Browser } from 'protractor';
+import { browser, by, element, promise, Browser, protractor } from 'protractor';
 import { $wait } from "./common";
 import { ElementFinder } from 'protractor/built/element';
 import { FormPO } from './form.po';
+
+// var origFn = browser.driver.controlFlow().execute;
+
+// browser.driver.controlFlow().execute = function() {
+//   var args = arguments;
+
+//   // queue 100ms wait
+//   origFn.call(browser.driver.controlFlow(), function() {
+//     return protractor.promise.delayed(100);
+//   });
+
+//   return origFn.apply(browser.driver.controlFlow(), args);
+// };
 
 describe('4_form_metadata_flow: ', () => {
   let appPage: AppPage;
@@ -25,7 +38,7 @@ describe('4_form_metadata_flow: ', () => {
    *  - move the 4th column on the 2nd place, right after the 1st column/property (should be 'code')
    *  - move the 5th column/property on the same row with the 1st column/property (should be 'code')
    */
-  it('User should be able to change the form layout for /General/Actor entity', async () => {
+  it('User should be able to change the form layout and fields order for /General/Actor entity', async () => {
     // navigate to Actor entity using the side panel menu
     await navPO.navToEntityPage('/General/Actor', 'Actor');
 
@@ -46,7 +59,8 @@ describe('4_form_metadata_flow: ', () => {
     let field4 = await formPO.formGridRow(5);
     let field5 = await formPO.formGridRow(6);
     
-    
+    // move the 4th column to the second place, drop it over the 1st element
+    await browser.actions().dragAndDrop(field5, field1).mouseUp().perform();
 
     // wait to cover the sample time in rxJS
     browser.sleep(1000)
