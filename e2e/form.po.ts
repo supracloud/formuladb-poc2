@@ -6,7 +6,7 @@ export class FormPO {
     return element(by.css(`[href="${entityPath}"]`)).click();
   }
 
-  fieldActorName(): Promise<ElementFinder> {
+  getActorNameField(): Promise<ElementFinder> {
     return $wait(element(by.css('form.ng-pristine input[name="name"]')));
   }
 
@@ -16,8 +16,8 @@ export class FormPO {
    * @param index - 1 based
    * 
    */
-  formGridRow(index): Promise<ElementFinder> {
+  getFormGridRow(index): Promise<ElementFinder> {
     // add 1 to index because of an extra div before the form_grid_row(s)
-    return $wait(element(by.css('mwz-tree div.parent-trace-none div:nth-child(' + (index + 1) +')')));
+    return $wait(element.all(by.css('mwz-tree div.parent-trace-none div:nth-child(' + (index + 1) +')')).first());
   }
 }

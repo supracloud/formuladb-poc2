@@ -40,7 +40,7 @@ describe('2_formdata_flow: ', () => {
     await browser.actions().doubleClick(firstCell).perform();
 
     // update the actor name to actorNameUpdated
-    let fieldActorName = await formPO.fieldActorName();
+    let fieldActorName = await formPO.getActorNameField();
     
     await fieldActorName.clear();
     await fieldActorName.sendKeys(actorNameUpdated);

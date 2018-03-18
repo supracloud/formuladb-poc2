@@ -1,35 +1,27 @@
 import { AppPage } from './app.po';
 import { NavigationPO } from './navigation.po';
 import { TablePO } from "./table.po";
-import { browser, by, element, promise, Browser, protractor } from 'protractor';
+import { browser, by, element, promise, Browser } from 'protractor';
 import { $wait } from "./common";
 import { ElementFinder } from 'protractor/built/element';
 import { FormPO } from './form.po';
 
-// var origFn = browser.driver.controlFlow().execute;
-
-// browser.driver.controlFlow().execute = function() {
-//   var args = arguments;
-
-//   // queue 100ms wait
-//   origFn.call(browser.driver.controlFlow(), function() {
-//     return protractor.promise.delayed(100);
-//   });
-
-//   return origFn.apply(browser.driver.controlFlow(), args);
-// };
-
-describe('4_form_metadata_flow: ', () => {
+fdescribe('4_form_metadata_flow: ', () => {
   let appPage: AppPage;
   let navPO: NavigationPO;
   let tablePO: TablePO;
   let formPO: FormPO;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    // hack required in order to locate elements on the page, otherwise we get
+    browser.waitForAngularEnabled(false);
+
     appPage = new AppPage();
     navPO = new NavigationPO();
     tablePO = new TablePO();
     formPO = new FormPO();
+
+    await appPage.rootPage();
   });
 
   /**
@@ -55,13 +47,17 @@ describe('4_form_metadata_flow: ', () => {
     await browser.actions().doubleClick(firstCell).perform();
 
     // get html elements for properties 1,4,5 from the editor panel
-    let field1 = await formPO.formGridRow(2);
-    let field4 = await formPO.formGridRow(5);
-    let field5 = await formPO.formGridRow(6);
+    let field1: ElementFinder = await formPO.getFormGridRow(1);
+    let field4: ElementFinder = await formPO.getFormGridRow(4);
+    let field5: ElementFinder = await formPO.getFormGridRow(5);
     
-    // move the 4th column to the second place, drop it over the 1st element
-    await browser.actions().dragAndDrop(field5, field1).mouseUp().perform();
+    console.log('============XXX============');
 
+    // move the 4th column to the second place, drop it over the 1st element
+    await browser.actions().dragAndDrop(field4, field1).perform();
+
+    console.log('============YYY============');
+    
     // wait to cover the sample time in rxJS
     browser.sleep(1000)
  
