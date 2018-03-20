@@ -6,7 +6,10 @@ import { $wait } from "./common";
 import { ElementFinder } from 'protractor/built/element';
 import { FormPO } from './form.po';
 
-fdescribe('4_form_metadata_flow: ', () => {
+/**
+ * This test is not fully implemented because protractor is not working with HTML 5 drag & drop
+ */
+xdescribe('4_form_metadata_flow: ', () => {
   let appPage: AppPage;
   let navPO: NavigationPO;
   let tablePO: TablePO;
