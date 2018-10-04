@@ -24,7 +24,7 @@ export class TopNavComponent implements OnInit {
   }
 
   protected switchTheme(themeIdx: number) {
-    this.router.navigate([this.router.url.replace(/\/\d+\//, '/' + themeIdx + '/')]);
+    this.router.navigate([this.router.url.replace(/\/\d+\/?/, '/' + themeIdx + '/')]);
   }
 
   protected switchThemeColorPalette(color: string) {
