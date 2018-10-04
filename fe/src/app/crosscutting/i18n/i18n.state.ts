@@ -13,7 +13,8 @@ export interface I18nState {
 
 export const i18nInitialState: I18nState = {
     dictionary: {
-        'Edit mode':'Mod Editare',
+        'Enable-Developer-Mode':'Activare Mod Dezvoltator',
+        'Disable-Developer-Mode':'Dezactivare Mod Dezvoltator',
         'Inventory':'Gestiune',
 
         'Inventory___Order': 'Gestiune/Comenzi',

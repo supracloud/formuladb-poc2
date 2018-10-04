@@ -42,15 +42,32 @@
             <span class="no-icon"><i class="now-ui-icons loader_gear"></i></span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="TopNavSettings">
-            <a class="dropdown-item" disabled href="javascript:void(0)"><i class="now-ui-icons design_palette"></i>
-              Themes</a>
+            <a class="dropdown-item" href="javascript:void(0)">
+                <i class="now-ui-icons design_palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i> 
+                <i class="now-ui-icons design_palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i> 
+                <i class="now-ui-icons design_palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i> 
+                <i class="now-ui-icons design_palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i> 
+                <i class="now-ui-icons design_palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i> 
+                &nbsp;
+            </a>
             <div class="divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="30" width="40" src="/assets/light.jpg" /> Light Theme</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="30" width="40" src="/assets/material.jpg" /> Material Theme</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="30" width="40" src="/assets/nowui.jpg" /> NowUI Theme</a>
+            <a class="dropdown-item" disabled href="javascript:void(0)">
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-4.jpg')" src="/assets/sidebar_images/sidebar-4.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-1.jpg')" src="/assets/sidebar_images/sidebar-1.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-2.jpg')" src="/assets/sidebar_images/sidebar-2.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-3.jpg')" src="/assets/sidebar_images/sidebar-3.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-5.jpg')" src="/assets/sidebar_images/sidebar-5.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-6.jpg')" src="/assets/sidebar_images/sidebar-6.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-7.jpg')" src="/assets/sidebar_images/sidebar-7.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-8.jpg')" src="/assets/sidebar_images/sidebar-8.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-9.jpg')" src="/assets/sidebar_images/sidebar-9.jpg" style="margin-right: 4px" />
+            </a>
             <div class="divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)"><i class="now-ui-icons files_single-copy-04"></i>Edit Tables</a>
-            <a class="dropdown-item" href="javascript:void(0)"><i class="now-ui-icons education_paper"></i>Edit Forms</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="60" width="80" src="/assets/light.jpg" /> Light Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
+            <div class="divider"></div>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="now-ui-icons ui-2_settings-90"></i>{{ ((developerMode$ | async) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
             <div class="divider"></div>
             <a class="dropdown-item" href="javascript:void(0)"><i class="now-ui-icons users_single-02"></i>Account</a>
           </div>

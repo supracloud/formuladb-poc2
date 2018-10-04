@@ -85,7 +85,15 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         form: {
           ...state.form,
-          formReadOnly: action.appReadonly != fromCore.NotReadonly
+          formReadOnly: action.appReadonly != fromCore.NotReadonly,
+        }
+      }
+    } else if (action.type === fromCore.CoreToggleDeveloperModeActionN) {
+      updatedState = {
+        ...state,
+        form: {
+          ...state.form,
+          formEditMode: !state.core.developerMode,
         }
       }
     }

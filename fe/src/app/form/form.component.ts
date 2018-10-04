@@ -262,11 +262,6 @@ export class FormComponent implements OnInit {
         console.error("TODO implement Print!");
     }
 
-    toggleEditMode(e: any) {
-        this.store.dispatch(new fromForm.FormSwitchEditModeAction(e.target.checked));
-    }
-
-
     /**
      * TODO: make this a proper deep compare function
      * @param a 

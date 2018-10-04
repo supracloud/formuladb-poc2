@@ -10,14 +10,16 @@ export const NotReadonly = '_NotReadonly_';
 
 export interface CoreState {
   appReadonly: string;
+  developerMode: boolean;
 }
 
 export const coreInitialState: CoreState = {
   appReadonly: "application initializing...",
+  developerMode: true,
 };
 
 export const CoreAppReadonlyActionN = "[core] CoreAppReadonlyAction";
-
+export const CoreToggleDeveloperModeActionN = "[core] CoreToggleDeveloperModeAction";
 
 export class CoreAppReadonlyAction implements Action {
   readonly type = CoreAppReadonlyActionN;
@@ -25,8 +27,15 @@ export class CoreAppReadonlyAction implements Action {
   constructor(public appReadonly: string) { }
 }
 
+export class CoreToggleDeveloperModeAction implements Action {
+  readonly type = CoreToggleDeveloperModeActionN;
+
+  constructor() { }
+}
+
 export type CoresActions =
   | CoreAppReadonlyAction
+  | CoreToggleDeveloperModeAction
   ;
 
 /**
@@ -44,6 +53,12 @@ export function coreReducer(state = coreInitialState, action: CoresActions): Cor
         appReadonly: action.appReadonly,
       };
       break;
+    case CoreToggleDeveloperModeActionN:
+      ret = {
+        ...state,
+        developerMode: !state.developerMode,
+      };
+      break;
   }
 
   // if (action.type.match(/^\[core\]/)) console.log('[core] reducer:', state, action, ret);
@@ -57,3 +72,7 @@ export const reducers = {
   'core': coreReducer
 };
 export const getCoreState = createFeatureSelector<CoreState>('core');
+export const getDeveloperMode = createSelector(
+  getCoreState,
+  (state: CoreState) => state.developerMode
+);

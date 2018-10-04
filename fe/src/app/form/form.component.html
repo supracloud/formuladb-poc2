@@ -1,10 +1,5 @@
 <form [formGroup]="theFormGroup" novalidate>
         Form status: {{ theFormGroup.status | json }}
-    <div class="btn-group btn-group-toggle">
-        <label class="btn-primary" ngbButtonLabel>
-            <input type="checkbox" ngbButton (change)="toggleEditMode($event)"> {{"Edit mode"|i18n}}
-        </label>
-    </div>
     <div form_item [nodeElement]="(form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="(form$ | async)">
     </div>
