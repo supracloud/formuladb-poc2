@@ -4,7 +4,7 @@ import { TopNavComponent as TopNavComponentBase } from '../../default-theme/top-
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 
-import * as fromEntity from '../../../entity-state';
+import * as appState from '../../../app.state';
 
 @Component({
   selector: 'frmdb-top-nav',
@@ -13,7 +13,7 @@ import * as fromEntity from '../../../entity-state';
 })
 export class TopNavComponent extends TopNavComponentBase {
 
-  constructor(store: Store<fromEntity.EntityState>, router: Router) {
+  constructor(store: Store<appState.AppState>, router: Router) {
     super(store, router);
   }
 
