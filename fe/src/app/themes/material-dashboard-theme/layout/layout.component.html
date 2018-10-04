@@ -1,0 +1,58 @@
+<div class="wrapper frmdb-layout">
+
+  <div class="sidebar" data-color="purple" data-background-color="white" data-image="/assets/material-dashboard-theme/img/sidebar-1.jpg">
+    <!--
+    Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+    Tip 2: you can also add an image using data-image tag
+-->
+    <div class="logo">
+      Logo/Brand TBD
+    </div>
+    <div class="sidebar-wrapper">
+      <ul frmdb-navigation class="nav">
+      </ul>
+    </div>
+    <div class="sidebar-background"></div>
+  </div>
+  <div class="main-panel">
+    <!-- Navbar -->
+    <frmdb-top-nav></frmdb-top-nav>
+
+    <!-- End Navbar -->
+    <div class="content">
+      <div class="container">
+        <div class="card">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title ">Page Title TBD</h4>
+            <p class="card-category">Page Subtitle TBD</p>
+          </div>
+          <div class="card-body">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <nav class="float-left">
+          <ul>
+            <li>
+              <a href="https://blabla">
+                TBD
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div class="copyright float-right">
+            <span style="font-size: 90%; color: grey">
+                Powered by <a href="http://formuladb.io" target="_blank">formuladb.io</a> &copy; 2017 S.C. CRYSTALKEY S.R.L. &nbsp;
+            </span>
+            <span style="font-size: 70%; color: grey">
+              ( webdesign &copy; 2018, made with <i class="material-icons">favorite</i> by <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web )
+            </span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>

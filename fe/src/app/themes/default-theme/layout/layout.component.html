@@ -1,0 +1,49 @@
+<div class="wrapper frmdb-layout">
+  <div class="sidebar" data-image="/assets/default-theme/img/sidebar-5.jpg">
+    <!--
+    Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+
+    Tip 2: you can also add an image using data-image tag
+-->
+    <div class="sidebar-wrapper">
+      <div class="logo">
+        <a href="http://www.creative-tim.com" class="simple-text">
+          BRAND TBD
+        </a>
+      </div>
+      <ul frmdb-navigation class="nav">
+      </ul>
+    </div>
+  </div>
+  <div class="main-panel">
+    <!-- Navbar -->
+    <frmdb-top-nav></frmdb-top-nav>
+
+    <!-- End Navbar -->
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <nav>
+          <p class="copyright text-center">
+            <span style="font-size: 90%; color: grey">
+              Powered by
+              <a href="http://formuladb.io" target="_blank">formuladb.io</a> &copy; 2017 S.C. CRYSTALKEY S.R.L. &nbsp;
+            </span>
+            <span style="font-size: 70%; color: grey">
+              ( webdesign &copy; 2018
+              <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web )
+            </span>
+          </p>
+        </nav>
+      </div>
+    </footer>
+  </div>
+</div>

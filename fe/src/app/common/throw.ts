@@ -1,0 +1,16 @@
+/**
+ * © 2017 S.C. CRYSTALKEY S.R.L.
+ * License TBD
+ */
+
+import { isExpression } from "jsep";
+
+export function _throw<OUT>(msg: string, param1?, param2?): OUT {
+    let p1 = param1 ? (isExpression(param1) ? param1.origExpr : JSON.stringify(param1, null, 4)) : '';
+    let p2 = param2 ? (isExpression(param2) ? param2.origExpr : JSON.stringify(param2, null, 4)) : '';
+    throw new Error(msg + p1 + "; " + p2);
+}
+
+export function _throwEx<OUT>(ex): OUT {
+    throw ex;
+}

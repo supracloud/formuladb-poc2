@@ -1,0 +1,28 @@
+<ng-container *ngIf="nodeElement.nodeType == 'form_grid' || nodeElement.nodeType == 'form_grid_row' || nodeElement.nodeType == 'form_grid_col'">
+  <edit-panel *ngIf="editMode$|async" [node]="nodeElement"></edit-panel>
+  <ng-container *ngFor="let childEl of nodeElement.childNodes">
+    <div form_tabs *ngIf="childEl.nodeType == 'form_tabs'" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"
+      [formReadOnly]="formReadOnly"></div>
+
+    <div form_table *ngIf="childEl.nodeType == 'form_table'" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup"
+      [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
+
+    <div form_autocomplete *ngIf="childEl.nodeType == 'form_autocomplete'" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup"
+      [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
+
+    <div form_input *ngIf="childEl.nodeType == 'form_input'" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup"
+      [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
+    <div form_datepicker *ngIf="childEl.nodeType == 'form_datepicker'" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup"
+      [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
+    <div form_timepicker *ngIf="childEl.nodeType == 'form_timepicker'" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup"
+      [parentFormPath]="getChildPath(childEl)" [formReadOnly]="formReadOnly"></div>
+
+    <div form_item *ngIf="childEl.nodeType == 'form_grid' || childEl.nodeType == 'form_grid_row' || childEl.nodeType == 'form_grid_col'"
+      [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath" [formReadOnly]="formReadOnly"></div>
+
+    <div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeType}}' !</div>
+
+  </ng-container>
+</ng-container>
+
+<div *ngIf="isUnknownElement(nodeElement)" style="border: 1px solid red;">Element NOT KNOWN '{{nodeElement.nodeType}}' !</div>

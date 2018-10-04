@@ -1,0 +1,10 @@
+<edit-panel *ngIf="editMode$|async" [node]="nodeElement"></edit-panel>
+<label [for]="nodeElement.propertyName">{{nodeElement.propertyName}}</label>
+<input class="form-control" [type]="getType()" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)" *ngIf="hasControl(parentFormPath)"
+/>
+
+<div class="form-input-feedback-invalid" *ngIf="ctrl && ctrl.dirty && ctrl.invalid">
+    <div *ngFor="let err of getErrors()">
+        {{err | i18n }}
+    </div>
+</div>

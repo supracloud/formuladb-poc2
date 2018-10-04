@@ -1,0 +1,9 @@
+@import "~bootstrap/scss/_functions";
+@import "~bootstrap/scss/_variables";
+@import "~bootstrap/scss/_mixins";
+:host {
+    border: 2px solid $white;
+    &.form-item-highlight {
+        border: 2px dashed $primary;
+    }
+}

@@ -1,0 +1,45 @@
+/**
+ * © 2017 S.C. CRYSTALKEY S.R.L.
+ * License TBD
+ */
+
+import { Component, OnChanges, OnInit } from '@angular/core';
+import { BaseNodeComponent } from "../base_node";
+import { Store } from '@ngrx/store';
+import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../common/domain/uimetadata/form";
+import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
+
+import * as fromForm from '../form.state';
+import { Pn } from '../../common/domain/metadata/entity';
+@Component({
+  selector: '[form_table]',
+  host: { class: "col" },
+  templateUrl: 'form_table.component.html',
+  styleUrls: ['form_table.component.scss']
+})
+export class FormTableComponent extends BaseNodeComponent implements OnChanges {
+
+  constructor(protected store: Store<fromForm.FormState>) {
+    super(store);
+  }
+
+  ngOnChanges() {
+    console.log(this.nodeElement, this.topLevelFormGroup);
+  }
+
+  getType(child: NodeElement): string {
+    if (child.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + JSON.stringify(this.nodeElement));
+    if (child.propertyType === Pn.NUMBER) return "number";
+    else return "text";
+}
+
+  getCopiedPropertyName(child: NodeElement, idx: number) {
+    let ret;
+    if (isEntityNodeElement(child)) ret = child.snapshotCurrentValueOfProperties![idx];
+    if (!ret) {
+      console.error("copiedProperties does not have enough elements: ", child, idx);
+      ret = 'NOT-FOUND-' + idx;
+    }
+    return ret;
+  }
+}

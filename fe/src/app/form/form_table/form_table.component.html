@@ -1,0 +1,30 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
+                <ng-container *ngSwitchCase="'form_autocomplete'">
+                    <th *ngFor="let propName of child.snapshotCurrentValueOfProperties">{{propName}}</th>
+                </ng-container>
+                <th *ngSwitchCase="'form_input'">{{child.propertyName}}</th>
+            </ng-container>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
+            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
+                <ng-container *ngSwitchCase="'form_autocomplete'">
+                </ng-container>
+                <ng-container *ngSwitchCase="'form_autocomplete'">
+                    <td *ngFor="let propName of child.snapshotCurrentValueOfProperties; let colIdx = index">
+                        <input class="form-control" type="text" [id]="parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx)"
+                            [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx))" />
+                    </td>
+                </ng-container>
+                <td *ngSwitchCase="'form_input'">
+                    <input class="form-control" [type]="getType(child)" [id]="parentFormPath + '.' + idx + '.' + child.propertyName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.propertyName)"
+                    />
+                </td>
+            </ng-container>
+        </tr>
+    </tbody>
+</table>

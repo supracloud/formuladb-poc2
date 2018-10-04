@@ -1,0 +1,13 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../dist",
+        "baseUrl": "./",
+        "module": "commonjs",
+        "strictNullChecks": true
+    },
+    "include": [
+        "./**/*",
+        "../../fe/src/app/common/**/*"
+    ]
+}

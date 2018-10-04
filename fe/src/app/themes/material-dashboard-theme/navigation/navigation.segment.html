@@ -1,0 +1,8 @@
+<li *ngFor="let entity of nav" class="nav-item" [class.active]="entity.active">
+    <i *ngIf="entity.children.length>0 && entity.collapsed" class="material-icons" (click)="expand(entity.id, $event)">chevron_right</i>
+    <i *ngIf="entity.children.length>0 && !entity.collapsed" class="material-icons" (click)="collapse(entity.id, $event)">expand_more</i>
+    <a [routerLink]="[entity.path]" routerLinkActive="active" class="nav-link">
+        <p>{{entity.linkName}}</p>
+    </a>
+    <frmdb-navigation-segment [nav]="entity.children" *ngIf="!entity.collapsed"></frmdb-navigation-segment>
+</li>

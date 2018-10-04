@@ -1,0 +1,5 @@
+node_modules
+dist
+pouch_db_*
+tmp.log
+log
