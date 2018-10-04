@@ -10,7 +10,7 @@ import { Inject } from '@angular/core';
 import { PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import * as fromEntity from '../../../entity-state';
+import * as appState from '../../../app.state';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -19,10 +19,12 @@ import { Observable } from 'rxjs';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit, AfterViewInit {
-  selectedEntity$: Observable<fromEntity.Entity>;
+  selectedEntity$: Observable<appState.Entity>;
+  themeColorPalette$: Observable<string>;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, protected store: Store<fromEntity.EntityState>) {
-    this.selectedEntity$ = this.store.select(fromEntity.getSelectedEntityState)
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, protected store: Store<appState.EntityState>) {
+    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
+    this.themeColorPalette$ = this.store.select(appState.getThemeColorPalette);
   }
 
   ngOnInit() {

@@ -1,5 +1,5 @@
 <div class="wrapper frmdb-layout">
-  <div class="sidebar" data-image="/assets/default-theme/img/sidebar-5.jpg">
+  <div class="sidebar" data-image="/assets/default-theme/img/sidebar-5.jpg" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
     <!--
     Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
 

@@ -251,6 +251,9 @@ body > .navbar-collapse{
     &[data-color="orange"]:after{
         @include icon-gradient($new-orange, $orange-color-bottom);
     }
+    &[data-color="default"]:after{
+        @include icon-gradient($new-red, $red-color-bottom);
+    }
     &[data-color="red"]:after{
         @include icon-gradient($new-red, $red-color-bottom);
     }

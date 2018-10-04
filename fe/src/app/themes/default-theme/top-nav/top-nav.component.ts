@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import * as fromEntity from '../../../entity-state';
+import * as appState from '../../../app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
+import { CoreThemeColorPaletteChangedAction } from '../../../core.state';
 
 @Component({
   selector: 'frmdb-top-nav',
@@ -11,10 +12,10 @@ import { Router } from '@angular/router';
   styleUrls: ['./top-nav.component.scss']
 })
 export class TopNavComponent implements OnInit {
-  selectedEntity$: Observable<fromEntity.Entity>;
+  selectedEntity$: Observable<appState.Entity>;
 
-  constructor(protected store: Store<fromEntity.EntityState>, private router: Router) {
-    this.selectedEntity$ = this.store.select(fromEntity.getSelectedEntityState)    
+  constructor(protected store: Store<appState.AppState>, private router: Router) {
+    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
   }
 
   ngOnInit() {
@@ -22,6 +23,10 @@ export class TopNavComponent implements OnInit {
 
   protected switchTheme(themeIdx: number) {
     this.router.navigate([this.router.url.replace(/\/\d+\//, '/' + themeIdx + '/')]);
-  }  
+  }
+
+  protected switchThemeColorPalette(color: string) {
+    this.store.dispatch(new CoreThemeColorPaletteChangedAction(color));
+  }
 
 }

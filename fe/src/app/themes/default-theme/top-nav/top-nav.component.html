@@ -38,11 +38,16 @@
             <span class="no-icon"><i class="nc-icon nc-settings-gear-64"></i></span>
           </a>
           <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="TopNavSettings">
-            <a class="dropdown-item" disabled href="javascript:void(0)"><i class="nc-icon nc-palette"></i> Themes</a>
-            <div class="divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="30" width="40" src="/assets/light.jpg" /> Light</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="30" width="40" src="/assets/material.jpg" /> Material</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="30" width="40" src="/assets/nowui.jpg" /> NowUI</a>
+            <span class="dropdown-item" disabled href="javascript:void(0)">
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i> 
+            </span>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="30" width="40" src="/assets/light.jpg" /> Light Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="30" width="40" src="/assets/material.jpg" /> Material Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="30" width="40" src="/assets/nowui.jpg" /> NowUI Theme</a>
             <div class="divider"></div>
             <a class="dropdown-item" href="javascript:void(0)"><i class="nc-icon nc-single-copy-04"></i>Edit Tables</a>
             <a class="dropdown-item" href="javascript:void(0)"><i class="nc-icon nc-grid-45"></i>Edit Forms</a>
