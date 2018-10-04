@@ -84,8 +84,8 @@ export function lightBootstrapDashbord() {
             let image_src = $sidebar.data('image');
 
             if (image_src !== undefined) {
-                let sidebar_container = '<div class="sidebar-background" style="background-image: url(' + image_src + ') "/>'
-                $sidebar.append(sidebar_container);
+                // let sidebar_container = '<div class="sidebar-background" style="background-image: url(' + image_src + ') "/>'
+                // $sidebar.append(sidebar_container);
             } else if (mobile_menu_initialized == true) {
                 // reset all the additions that we made for the sidebar wrapper only if the screen is bigger than 991px
                 $sidebar_wrapper.find('.navbar-form').remove();

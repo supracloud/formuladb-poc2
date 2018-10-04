@@ -26,6 +26,7 @@ export { Entity };
 export { ChangeObj, applyChanges };
 
 import * as fromCore from './core.state';
+import * as fromTheme from './theme.state';
 import * as fromEntity from "./entity-state";
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
@@ -35,6 +36,7 @@ export * from "./entity-state";
 export * from "./table/table.state";
 export * from "./form/form.state";
 export * from "./core.state";
+export * from "./theme.state";
 export * from "./crosscutting/i18n/i18n.state";
 
 export interface RouterState {
@@ -46,6 +48,7 @@ export interface RouterState {
 export interface AppState {
   'router': RouterReducerState<RouterState>;
   'core': fromCore.CoreState;
+  'theme': fromTheme.ThemeState;
   'entity': fromEntity.EntityState;
   'table': fromTable.TableState;
   'form': fromForm.FormState;
@@ -54,6 +57,7 @@ export interface AppState {
 
 export type AppActions =
   | fromCore.CoresActions
+  | fromTheme.ThemesActions
   | fromEntity.EntityActions
   | fromTable.TableActions
   | fromForm.FormActions
@@ -97,6 +101,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
 export const reducers = {
   'router': routerReducer,
   ...fromCore.reducers,
+  ...fromTheme.reducers,
   ...fromEntity.reducers,
   ...fromTable.reducers,
   ...fromForm.reducers,

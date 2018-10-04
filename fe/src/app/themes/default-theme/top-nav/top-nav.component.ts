@@ -5,6 +5,7 @@ import * as appState from '../../../app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { CoreThemeColorPaletteChangedAction } from '../../../core.state';
+import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from '../../../theme.state';
 
 @Component({
   selector: 'frmdb-top-nav',
@@ -26,7 +27,11 @@ export class TopNavComponent implements OnInit {
   }
 
   protected switchThemeColorPalette(color: string) {
-    this.store.dispatch(new CoreThemeColorPaletteChangedAction(color));
+    this.store.dispatch(new ThemeColorPaletteChangedAction(color));
+  }
+
+  protected switchSideBarImage(url: string) {
+    this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
   }
 
 }

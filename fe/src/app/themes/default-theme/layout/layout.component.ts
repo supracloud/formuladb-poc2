@@ -21,10 +21,12 @@ import { Observable } from 'rxjs';
 export class LayoutComponent implements OnInit, AfterViewInit {
   selectedEntity$: Observable<appState.Entity>;
   themeColorPalette$: Observable<string>;
+  sidebarImageUrl$: Observable<string>;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, protected store: Store<appState.EntityState>) {
     this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
     this.themeColorPalette$ = this.store.select(appState.getThemeColorPalette);
+    this.sidebarImageUrl$ = this.store.select(appState.getSidebarImageUrl);
   }
 
   ngOnInit() {

@@ -1,11 +1,11 @@
 <div class="wrapper frmdb-layout">
-  <div class="sidebar" data-image="/assets/default-theme/img/sidebar-5.jpg" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
+  <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
     <!--
     Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
 
     Tip 2: you can also add an image using data-image tag
 -->
-    <div class="sidebar-wrapper">
+    <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
       <div class="logo">
         <a href="http://www.creative-tim.com" class="simple-text">
           BRAND TBD
@@ -14,6 +14,7 @@
       <ul frmdb-navigation class="nav">
       </ul>
     </div>
+    <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>      
   </div>
   <div class="main-panel">
     <!-- Navbar -->

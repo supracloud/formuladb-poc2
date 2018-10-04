@@ -10,16 +10,13 @@ export const NotReadonly = '_NotReadonly_';
 
 export interface CoreState {
   appReadonly: string;
-  themeColorPalette: string;
 }
 
 export const coreInitialState: CoreState = {
   appReadonly: "application initializing...",
-  themeColorPalette: "default",
 };
 
 export const CoreAppReadonlyActionN = "[core] CoreAppReadonlyAction";
-export const CoreThemeColorPaletteChangedActionN = "[core] CoreThemeColorPaletteChangedAction";
 
 
 export class CoreAppReadonlyAction implements Action {
@@ -28,16 +25,8 @@ export class CoreAppReadonlyAction implements Action {
   constructor(public appReadonly: string) { }
 }
 
-export class CoreThemeColorPaletteChangedAction implements Action {
-  readonly type = CoreThemeColorPaletteChangedActionN;
-
-  constructor(public themeColorPalette: string) { }
-}
-
-
 export type CoresActions =
   | CoreAppReadonlyAction
-  | CoreThemeColorPaletteChangedAction
   ;
 
 /**
@@ -55,12 +44,6 @@ export function coreReducer(state = coreInitialState, action: CoresActions): Cor
         appReadonly: action.appReadonly,
       };
       break;
-    case CoreThemeColorPaletteChangedActionN:
-      ret = {
-        ...state,
-        themeColorPalette: action.themeColorPalette,
-      };
-      break;
   }
 
   // if (action.type.match(/^\[core\]/)) console.log('[core] reducer:', state, action, ret);
@@ -74,7 +57,3 @@ export const reducers = {
   'core': coreReducer
 };
 export const getCoreState = createFeatureSelector<CoreState>('core');
-export const getThemeColorPalette = createSelector(
-  getCoreState,
-  (state: CoreState) => state.themeColorPalette
-);
