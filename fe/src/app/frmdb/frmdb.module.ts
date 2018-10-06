@@ -23,9 +23,11 @@ import { FormTimepickerComponent } from '../form/form_timepicker/form_timepicker
 import { FormDatepickerComponent } from '../form/form_datepicker/form_datepicker.component';
 import { FormTableComponent } from '../form/form_table/form_table.component';
 import { FormEditingService } from '../form/form-editing.service';
-import { EditPanelComponent } from '../form/edit-panel/edit-panel.component';
 import { CrosscuttingModule } from '../crosscutting/crosscutting.module';
 import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
+import { DropHandleComponent } from '../form/drop-handle/drop-handle.component';
+import { FormHorizontalLayoutComponent } from '../form/form-horizontal-layout/form-horizontal-layout.component';
+import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-vertical-layout.component';
 
 @NgModule({
   imports: [
@@ -48,7 +50,9 @@ import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
     FormDatepickerComponent,
     FormTimepickerComponent,
     FormItemComponent,
-    EditPanelComponent,
+    DropHandleComponent,
+    FormHorizontalLayoutComponent,
+    FormVerticalLayoutComponent
   ],
   providers: [
     FormEditingService

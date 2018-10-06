@@ -15,15 +15,15 @@ import { BaseNodeComponent } from "../base_node";
 import * as fromForm from '../form.state';
 
 @Component({
-    selector: '[form_autocomplete]',
+    selector: 'form-autocomplete',
     host: { class: 'col', style: "padding-left: 25px" },
     templateUrl: 'form_autocomplete.component.html',
     styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']
 })
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit {
 
-    constructor(protected store: Store<fromForm.FormState>) {
-        super(store);
+    constructor(protected fromStore: Store<fromForm.FormState>) {
+        super(fromStore);
     }
 
     ngOnInit(): void {

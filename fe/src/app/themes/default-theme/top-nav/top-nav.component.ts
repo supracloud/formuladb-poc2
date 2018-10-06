@@ -17,7 +17,7 @@ export class TopNavComponent implements OnInit {
 
   constructor(protected store: Store<appState.AppState>, private router: Router) {
     this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
-    this.developerMode$ = this.store.select(appState.getDeveloperMode);
+    this.developerMode$ = this.store.select(appState.isEditMode);
   }
 
   ngOnInit() {

@@ -1,0 +1,19 @@
+:host {
+    border-style: solid;
+    border-width: 1px;
+    border-color:rgba(255,255,255,0.0);
+
+    &.visible {
+        border-color:magenta;
+    }
+    &.vertical {
+        width: .5rem;
+        top: 0;
+        bottom: 0;
+    }
+    &.horizontal {
+        height: .5rem;
+        left: 0;
+        right: 0;
+    }
+}

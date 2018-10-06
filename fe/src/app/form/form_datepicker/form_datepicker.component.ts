@@ -9,15 +9,14 @@ import { Observable } from 'rxjs';
 import { BaseNodeComponent } from "../base_node";
 import * as fromForm from '../form.state';
 
-
 @Component({
-  selector: '[form_datepicker]',
+  selector: 'form-datepicker',
   host: { class: "col form_group" },
   templateUrl: 'form_datepicker.component.html',
   styleUrls: ['./../form_input/form_input.component.scss']
 })
 export class FormDatepickerComponent extends BaseNodeComponent {
-  constructor(protected store: Store<fromForm.FormState>) {
-    super(store);
+  constructor(protected formStore: Store<fromForm.FormState>) {
+    super(formStore);
   }
 }

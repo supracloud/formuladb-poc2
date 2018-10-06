@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditPanelComponent } from './edit-panel.component';
+import { DropHandleComponent } from './drop-handle.component';
 
-xdescribe('EditPanelComponent', () => {
-  let component: EditPanelComponent;
-  let fixture: ComponentFixture<EditPanelComponent>;
+describe('DropHandleComponent', () => {
+  let component: DropHandleComponent;
+  let fixture: ComponentFixture<DropHandleComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EditPanelComponent ]
+      declarations: [ DropHandleComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditPanelComponent);
+    fixture = TestBed.createComponent(DropHandleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

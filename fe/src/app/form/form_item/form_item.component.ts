@@ -23,16 +23,17 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
     // console.log(this.nodeElement);
   }
 
-  constructor(protected store: Store<fromForm.FormState>) {
-    super(store);
+  constructor(protected formStore: Store<fromForm.FormState>) {
+    super(formStore);
   }
 
   getChildPath(childEl: NodeElement) {
-    let formPath = _.isEmpty(this.parentFormPath) ? [] : [this.parentFormPath]
-    let childPath: string | null = null;
-    childPath = getChildPath(childEl);
-    if (childPath) formPath.push(childPath);
-    return formPath.join('.');
+    // let formPath = _.isEmpty(this.parentFormPath) ? [] : [this.parentFormPath]
+    // let childPath: string | null = null;
+    // childPath = getChildPath(childEl);
+    // if (childPath) formPath.push(childPath);
+    // return formPath.join('.');
+    return getChildPath(childEl);
   }
 
   isUnknownElement(nodeElement: NodeElement): boolean {
@@ -43,5 +44,22 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
     if (null == this.nodeElement) return '';
     if (null == this.nodeElement.nodeType) return '';
     return this.nodeElement.nodeType == NodeType.form_grid ? 'container' : this.nodeElement.nodeType.replace(/^form_grid_/, '');
+  }
+
+
+  checkHandle(e: any): void {
+    this.dragTarget = e.target;
+  }
+
+  dragStart(e: any): void {
+    if (this.dragTarget.className === 'drag-handle') {
+      this.formStore.dispatch(new fromForm.FormDragAction(this.nodeElement));
+    } else {
+      e.preventDefault();
+    }
+  }
+
+  dragEnd(e: any): void {
+    this.formStore.dispatch(new fromForm.FormDragAction(null));
   }
 }

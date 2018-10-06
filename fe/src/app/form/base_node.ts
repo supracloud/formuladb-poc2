@@ -29,6 +29,8 @@ export class BaseNodeComponent {
 
     editMode$: Observable<boolean>;
 
+    dragTarget: any;
+
     hasControl(path: string): boolean {
         return this.topLevelFormGroup.get(path) != null;
     }
@@ -40,4 +42,5 @@ export class BaseNodeComponent {
                 this.highlighted = this.nodeElement && this.nodeElement._id === h;
             });
     }
+
 }

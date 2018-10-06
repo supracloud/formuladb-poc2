@@ -1,0 +1,11 @@
+:host {
+    display: flex;
+    flex-direction: row;
+    padding: .5rem;
+    flex-wrap: wrap;
+    border: 1px dashed;
+    border-color: rgba(255, 255, 255, 0);
+    &.outline {
+        border-color: navy;
+    }
+}
