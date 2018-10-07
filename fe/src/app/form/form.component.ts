@@ -5,7 +5,7 @@
 
 import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
-    ChangeDetectionStrategy, Directive
+    ChangeDetectionStrategy, Directive, OnDestroy
 } from '@angular/core';
 
 import { Location } from '@angular/common';
@@ -41,7 +41,7 @@ export class FrmdbFormControl extends FormControl {
     templateUrl: 'form.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormComponent implements OnInit {
+export class FormComponent implements OnInit, OnDestroy {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
     private tickUsed: boolean = false;
@@ -51,6 +51,7 @@ export class FormComponent implements OnInit {
     private formReadOnly: boolean;
     private saveInProgress: boolean = false;
     private alertType: string = 'success';
+    protected subscriptions: Subscription[] = [];
 
     constructor(
         private store: Store<fromForm.FormState>,
@@ -67,14 +68,15 @@ export class FormComponent implements OnInit {
     ngOnInit() {
         let cmp = this;
 
-        this.store.select(fromForm.getFormReadOnly).subscribe(formReadOnly => {
+        
+        this.subscriptions.push(this.store.select(fromForm.getFormReadOnly).subscribe(formReadOnly => {
             this.formReadOnly = formReadOnly;
             if (formReadOnly && !this.theFormGroup.disabled) {
                 this.theFormGroup.disable();
             } else if (!formReadOnly && this.theFormGroup.disabled) {
                 this.theFormGroup.enable();
             }
-        });
+        }));
 
         this.form$ = this.store.select(fromForm.getFormState).pipe(tap(
             form => {
@@ -87,7 +89,7 @@ export class FormComponent implements OnInit {
                 }
             }
         ));
-        this.store.select(fromForm.getFormDataState).subscribe(formData => {
+        this.subscriptions.push(this.store.select(fromForm.getFormDataState).subscribe(formData => {
             try {
                 this.formData = formData;
                 if (formData == null) return;
@@ -96,7 +98,7 @@ export class FormComponent implements OnInit {
             } catch (ex) {
                 console.error(ex);
             }
-        });
+        }));
     }
 
     private formulaFieldValidation(nameRe: RegExp): ValidatorFn {
@@ -256,6 +258,7 @@ export class FormComponent implements OnInit {
 
     ngOnDestroy() {
         // this.formModalService.sendDestroyFormEvent();
+        this.subscriptions.forEach(sub => sub.unsubscribe())
     }
 
     print(): void {

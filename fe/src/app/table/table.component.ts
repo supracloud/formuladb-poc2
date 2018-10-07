@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 
@@ -21,7 +21,7 @@ import * as _ from "lodash";
     styleUrls: ['table.component.scss']
 })
 
-export class TableComponent implements OnInit {
+export class TableComponent implements OnInit, OnDestroy {
 
     private table$: Observable<tableState.Table>;
     private data: tableState.DataObj[] = [];
@@ -32,6 +32,7 @@ export class TableComponent implements OnInit {
     private columns: any[] = [];
     private filters: any = {};
     private sort: any = {};
+    private subscriptions: Subscription[] = [];
 
 
     private tableState: tableState.Table;
@@ -39,7 +40,7 @@ export class TableComponent implements OnInit {
     constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute) {
         try {
             this.table$ = store.select(tableState.getTableState);
-            this.table$.subscribe(t => {
+            this.subscriptions.push(this.table$.subscribe(t => {
                 console.log("new table ", t);
                 if (!t.columns) return;
                 try {
@@ -57,11 +58,11 @@ export class TableComponent implements OnInit {
                 } catch (ex) {
                     console.error(ex);
                 }
-            });
-            store.select(tableState.getTableDataState).subscribe(d => {
+            }));
+            this.subscriptions.push(store.select(tableState.getTableDataState).subscribe(d => {
                 console.log("new table data", d);
                 this.data = d
-            });
+            }));
         } catch (ex) {
             console.error(ex);
         }
@@ -70,7 +71,10 @@ export class TableComponent implements OnInit {
     ngOnInit(): void {
 
     }
-
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe())
+    }
+    
     onGridReady(params: GridReadyEvent) {
         this.gridApi = params.api;
         this.gridApi.setColumnDefs(this.columns);

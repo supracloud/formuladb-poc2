@@ -24,7 +24,7 @@ import { Pn } from '../../common/domain/metadata/entity';
     templateUrl: 'form_input.component.html',
     styleUrls: ['form_input.component.scss']
 })
-export class FormInputComponent extends BaseNodeComponent implements OnInit {
+export class FormInputComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     private ctrl: AbstractControl | null;
 
     constructor(protected formStore: Store<fromForm.FormState>) {
@@ -35,7 +35,9 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit {
         this.ctrl = this.topLevelFormGroup.get(this.parentFormPath);
         // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
     }
-
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe())
+    }
     getType(): string {
         if (this.nodeElement.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + JSON.stringify(this.nodeElement));
         if (this.nodeElement.propertyType === Pn.NUMBER) return "number";

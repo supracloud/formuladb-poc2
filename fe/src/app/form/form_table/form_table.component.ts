@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 import { Store } from '@ngrx/store';
 import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../common/domain/uimetadata/form";
@@ -17,7 +17,7 @@ import { Pn } from '../../common/domain/metadata/entity';
   templateUrl: 'form_table.component.html',
   styleUrls: ['form_table.component.scss']
 })
-export class FormTableComponent extends BaseNodeComponent implements OnChanges {
+export class FormTableComponent extends BaseNodeComponent implements OnChanges, OnDestroy {
 
   constructor(protected store: Store<fromForm.FormState>) {
     super(store);
@@ -26,12 +26,14 @@ export class FormTableComponent extends BaseNodeComponent implements OnChanges {
   ngOnChanges() {
     console.log(this.nodeElement, this.topLevelFormGroup);
   }
-
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
+  }
   getType(child: NodeElement): string {
     if (child.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + JSON.stringify(this.nodeElement));
     if (child.propertyType === Pn.NUMBER) return "number";
     else return "text";
-}
+  }
 
   getCopiedPropertyName(child: NodeElement, idx: number) {
     let ret;

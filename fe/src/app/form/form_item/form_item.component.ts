@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from "../base_node";
@@ -17,14 +17,16 @@ import * as fromForm from '../form.state';
   host: { '[class]': 'getHostClassForElement()' },
   styleUrls: ['form_item.component.scss']
 })
-export class FormItemComponent extends BaseNodeComponent implements OnInit {
+export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;
 
   ngOnInit() {
     // console.log(this.nodeElement);
   }
-
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
+  }
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);
   }

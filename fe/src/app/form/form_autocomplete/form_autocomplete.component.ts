@@ -20,7 +20,7 @@ import * as fromForm from '../form.state';
     templateUrl: 'form_autocomplete.component.html',
     styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']
 })
-export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit {
+export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
     constructor(protected fromStore: Store<fromForm.FormState>) {
         super(fromStore);
@@ -29,5 +29,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     ngOnInit(): void {
         console.log(this.nodeElement, this.topLevelFormGroup);
     }
-
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe())
+    }
 }
