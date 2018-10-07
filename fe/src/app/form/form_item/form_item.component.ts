@@ -19,6 +19,8 @@ import * as fromForm from '../form.state';
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
+  dragHandle: any;
+
   ngOnInit() {
     // console.log(this.nodeElement);
   }
@@ -48,12 +50,13 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit {
 
 
   checkHandle(e: any): void {
-    this.dragTarget = e.target;
+    this.dragHandle = e.target;
   }
 
   dragStart(e: any): void {
-    if (this.dragTarget.className === 'drag-handle') {
+    if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodeElement._id) {
       this.formStore.dispatch(new fromForm.FormDragAction(this.nodeElement));
+      e.stopPropagation();
     } else {
       e.preventDefault();
     }

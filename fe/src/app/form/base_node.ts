@@ -29,8 +29,6 @@ export class BaseNodeComponent {
 
     editMode$: Observable<boolean>;
 
-    dragTarget: any;
-
     hasControl(path: string): boolean {
         return this.topLevelFormGroup.get(path) != null;
     }

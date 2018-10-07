@@ -158,10 +158,13 @@ const addRecursive = (tree: NodeElement, sibling: NodeElement, before: boolean, 
     for (var i: number = 0; i < tree.childNodes.length; i++) {
       if (tree.childNodes[i]._id === sibling._id) {
         tree.childNodes.splice(before ? i : i + 1, 0, what);
+        console.log("found");
         return;
       }
+      else {
+        addRecursive(tree.childNodes[i], sibling, before, what);
+      }
     }
-    tree.childNodes.forEach(c => addRecursive(c, sibling, before, what));
   }
 }
 
