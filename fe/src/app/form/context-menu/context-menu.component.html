@@ -1,0 +1,7 @@
+<a class="context-menu-button" *ngIf="!expanded" (click)="showContext()">+</a>
+
+<ul class="context-menu" *ngIf="expanded">
+  <li>Edit</li>
+  <li>Delete</li>
+</ul>
+<a class="context-menu-button" *ngIf="expanded" (click)="hideContext()">-</a>

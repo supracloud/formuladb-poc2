@@ -28,6 +28,7 @@ import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
 import { DropHandleComponent } from '../form/drop-handle/drop-handle.component';
 import { FormHorizontalLayoutComponent } from '../form/form-horizontal-layout/form-horizontal-layout.component';
 import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-vertical-layout.component';
+import { ContextMenuComponent } from '../form/context-menu/context-menu.component';
 
 @NgModule({
   imports: [
@@ -52,7 +53,8 @@ import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-v
     FormItemComponent,
     DropHandleComponent,
     FormHorizontalLayoutComponent,
-    FormVerticalLayoutComponent
+    FormVerticalLayoutComponent,
+    ContextMenuComponent
   ],
   providers: [
     FormEditingService
