@@ -132,6 +132,8 @@ export const Inventory___Receipt___Item = {
 export const Inventory___Order = {
     _id: "Inventory___Order",
     props: {
+        sales_agent: { name: "sales_agent", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        creation_date: { name: "creation_date", propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
         items$: {
             name: 'items$',
             propType_: Pn.SUB_TABLE,

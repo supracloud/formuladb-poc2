@@ -39,7 +39,7 @@ const mockData_Inventory___ProductUnit = [
     {_id: "Inventory___ProductUnit~~1"},
 ];
 const mockData_Inventory___Order = [
-    {_id: "Inventory___Order~~1"},
+    {_id: "Inventory___Order~~1", sales_agent: "John Doe", creation_date: "2018-09-27"},
 ];
 const mockData_Inventory___Order___Item = [
     { _id: "Inventory___Order___Item~~1___1", Inventory___Product___Location$product: {_id: "Inventory___Product___Location~~1___1"}, quantity: 10},

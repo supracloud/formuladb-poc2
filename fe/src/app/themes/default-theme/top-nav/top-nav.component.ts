@@ -31,6 +31,10 @@ export class TopNavComponent implements OnInit {
     this.store.dispatch(new ThemeColorPaletteChangedAction(color));
   }
 
+  protected switchLanguage(language: string) {
+    
+  }
+
   protected switchSideBarImage(url: string) {
     this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
   }
