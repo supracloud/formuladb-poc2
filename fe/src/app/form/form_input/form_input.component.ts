@@ -33,7 +33,7 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit {
 
     ngOnInit(): void {
         this.ctrl = this.topLevelFormGroup.get(this.parentFormPath);
-        console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
+        // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
     }
 
     getType(): string {

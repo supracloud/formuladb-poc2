@@ -14,6 +14,6 @@ export class I18nPipe implements PipeTransform {
     transform(value: string): string {
         let transalation = this.dictionary ? this.dictionary[value] : null;
         // console.error("I18N " + transalation, value, this.dictionary);
-        return transalation || "?" + value;
+        return transalation || value;
     }
 }

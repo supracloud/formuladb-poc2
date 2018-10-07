@@ -113,7 +113,7 @@ export class FormComponent implements OnInit {
                 this.formEditingService.propertyValidator()
             ],
             asyncValidators: [
-                this.formEditingService.asycValidator()
+                // this.formEditingService.asycValidator()
                 // this.testAsyncValidator.validate.bind(this.testAsyncValidator),
             ]
         });

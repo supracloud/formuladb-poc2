@@ -56,11 +56,11 @@ export class FormEditingService {
   public asycValidator(): AsyncValidatorFn {
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       setTimeout(() => {
-        console.log("finishing async validation for " + control.value);
+        // console.log("finishing async validation for " + control.value);
         this.tst$.next(null);
       }, 1500);
       return this.tst$.pipe(take(1), catchError(err => {
-        console.log(err);
+        // console.log(err);
         return of(null);
       }));
     }
