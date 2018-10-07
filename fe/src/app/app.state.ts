@@ -113,7 +113,7 @@ export const reducers = {
   ...fromEntity.reducers,
   ...fromTable.reducers,
   ...fromForm.reducers,
-  ...fromI18n.reducers
+  ...fromI18n.reducers,
 };
 
 

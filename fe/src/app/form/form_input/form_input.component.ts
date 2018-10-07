@@ -19,7 +19,7 @@ import * as fromForm from '../form.state';
 import { Pn } from '../../common/domain/metadata/entity';
 
 @Component({
-    selector: '[form_input]',
+    selector: 'form-input',
     host: { class: "col form-group" },
     templateUrl: 'form_input.component.html',
     styleUrls: ['form_input.component.scss']
@@ -27,8 +27,8 @@ import { Pn } from '../../common/domain/metadata/entity';
 export class FormInputComponent extends BaseNodeComponent implements OnInit {
     private ctrl: AbstractControl | null;
 
-    constructor(protected store: Store<fromForm.FormState>) {
-        super(store);
+    constructor(protected formStore: Store<fromForm.FormState>) {
+        super(formStore);
     }
 
     ngOnInit(): void {
