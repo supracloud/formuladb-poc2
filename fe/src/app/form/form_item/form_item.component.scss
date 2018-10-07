@@ -1,16 +1,6 @@
 @import "~bootstrap/scss/_functions";
 @import "~bootstrap/scss/_variables";
 @import "~bootstrap/scss/_mixins";
-:host {
+.layout-container {
     position: relative;
-    &.row {
-        border: 2px solid $white;
-        &.form-item-highlight {
-            border: 2px dashed $gray-700;
-        }
-        edit-panel {
-            top: 1rem;
-            left: -1rem;
-        }
-    }
 }

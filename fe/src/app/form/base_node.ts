@@ -40,4 +40,5 @@ export class BaseNodeComponent {
                 this.highlighted = this.nodeElement && this.nodeElement._id === h;
             });
     }
+
 }

@@ -1,0 +1,6 @@
+<ng-container *ngFor="let childEl of nodeElement.childNodes">
+  <drop-handle before="true" [item]="childEl" orientation="horizontal"></drop-handle>
+  <div form_item [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"
+    [formReadOnly]="formReadOnly"></div>
+</ng-container>
+<drop-handle before="false" [item]="nodeElement.childNodes[nodeElement.childNodes.length-1]" orientation="horizontal"></drop-handle>

@@ -10,12 +10,12 @@ import { BaseNodeComponent } from "../base_node";
 import * as fromForm from '../form.state';
 
 @Component({
-  selector: '[form_timepicker]',
+  selector: 'form-timepicker',
   templateUrl: 'form_timepicker.component.html',
   styleUrls: ['./../form_input/form_input.component.scss']
 })
 export class FormTimepickerComponent extends BaseNodeComponent {
-  constructor(protected store: Store<fromForm.FormState>) {
-    super(store);
-}
+  constructor(protected formStore: Store<fromForm.FormState>) {
+    super(formStore);
+  }
 }

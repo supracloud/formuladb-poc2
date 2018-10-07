@@ -6,7 +6,7 @@
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from '../common/domain/metadata/data_obj';
-import { Form } from '../common/domain/uimetadata/form';
+import { Form, NodeElement, isNodeElementWithChildren } from '../common/domain/uimetadata/form';
 import { ChangeObj, applyChanges } from '../common/domain/change_obj';
 import * as events from '../common/domain/event';
 
@@ -21,6 +21,7 @@ export interface FormState {
   formReadOnly: boolean;
   formEditMode: boolean;
   highlighted: any;
+  dragged: NodeElement | null
 }
 
 export const formInitialState: FormState = {
@@ -28,8 +29,9 @@ export const formInitialState: FormState = {
   formData: null,
   eventFromBackend: null,
   formReadOnly: true,
-  formEditMode: false,
-  highlighted: null
+  formEditMode: true,
+  highlighted: null,
+  dragged: null
 };
 
 export const FormDataFromBackendActionN = "[form] FormDataFromBackendAction";
@@ -38,6 +40,8 @@ export const FormNotifFromBackendActionN = "[form] FormNotifFromBackendAction";
 export const FormFromBackendActionN = "[form] FormFromBackendAction";
 export const FormItemHighlightActionN = "[form] FormItemHighlightAction";
 export const FormSwitchEditModeActionN = "[form] FormSwitchEditModeAction";
+export const FormDragActionN = "[form] FormDragAction";
+export const FormDropActionN = "[form] FormDropAction";
 export const UserActionEditedFormDataN = events.UserActionEditedFormDataN;
 export const UserActionEditedFormN = events.UserActionEditedFormN;
 
@@ -96,6 +100,18 @@ export class UserActionEditedFormData implements Action {
   }
 }
 
+export class FormDragAction implements Action {
+  readonly type = FormDragActionN;
+
+  constructor(public payload: NodeElement | null) { }
+}
+
+export class FormDropAction implements Action {
+  readonly type = FormDropActionN;
+
+  constructor(public payload: { drop: NodeElement, before: boolean }) { }
+}
+
 
 export type FormActions =
   | FormDataFromBackendAction
@@ -106,6 +122,8 @@ export type FormActions =
   | UserActionEditedFormData
   | FormItemHighlightAction
   | FormSwitchEditModeAction
+  | FormDragAction
+  | FormDropAction
   ;
 
 function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
@@ -125,6 +143,31 @@ function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
   return false;
 }
 
+
+const removeRecursive = (tree: NodeElement, item: NodeElement) => {
+  if (isNodeElementWithChildren(tree)) {
+    if (tree.childNodes && tree.childNodes.length > 0) {
+      tree.childNodes = tree.childNodes.filter(c => c._id !== item._id);
+      tree.childNodes.forEach(c => removeRecursive(c, item));
+    }
+  }
+}
+
+const addRecursive = (tree: NodeElement, sibling: NodeElement, before: boolean, what: NodeElement) => {
+  if (tree && isNodeElementWithChildren(tree) && tree.childNodes) {
+    for (var i: number = 0; i < tree.childNodes.length; i++) {
+      if (tree.childNodes[i]._id === sibling._id) {
+        tree.childNodes.splice(before ? i : i + 1, 0, what);
+        console.log("found");
+        return;
+      }
+      else {
+        addRecursive(tree.childNodes[i], sibling, before, what);
+      }
+    }
+  }
+}
+
 /**
  * TODO: check if immutable.js is needed, probably only for large data sets
  * 
@@ -135,8 +178,8 @@ export function formReducer(state = formInitialState, action: FormActions): Form
   let ret: FormState = state;
   switch (action.type) {
     case ResetFormDataFromBackendActionN:
-      ret = { 
-        ...state, 
+      ret = {
+        ...state,
         formData: action.obj
       };
       break;
@@ -181,6 +224,16 @@ export function formReducer(state = formInitialState, action: FormActions): Form
         formEditMode: action.editMode,
       };
       break;
+
+    case FormDragActionN:
+      return { ...state, dragged: action.payload }
+
+    case FormDropActionN:
+      if (state.form && state.dragged) {
+        removeRecursive(state.form.grid, state.dragged as NodeElement);
+        addRecursive(state.form.grid, action.payload.drop, action.payload.before, state.dragged as NodeElement);
+      }
+      return { ...state, dragged: null } //TODO check immutable
   }
 
   // if (action.type.match(/^\[form\]/)) console.log('[form] reducer:', state, action, ret);
