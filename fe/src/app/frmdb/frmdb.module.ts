@@ -24,7 +24,6 @@ import { FormDatepickerComponent } from '../form/form_datepicker/form_datepicker
 import { FormTableComponent } from '../form/form_table/form_table.component';
 import { FormEditingService } from '../form/form-editing.service';
 import { CrosscuttingModule } from '../crosscutting/crosscutting.module';
-import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
 import { DropHandleComponent } from '../form/drop-handle/drop-handle.component';
 import { FormHorizontalLayoutComponent } from '../form/form-horizontal-layout/form-horizontal-layout.component';
 import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-vertical-layout.component';

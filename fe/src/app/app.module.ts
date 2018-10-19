@@ -20,10 +20,12 @@ import { BackendService } from './backend.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import * as appState from './app.state';
+import { FormulaEditorComponent } from './formula-editor/formula-editor.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FormulaEditorComponent,
   ],
   imports: [
     BrowserModule,
