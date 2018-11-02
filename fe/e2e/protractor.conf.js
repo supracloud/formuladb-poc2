@@ -3,6 +3,9 @@
 
 const { SpecReporter } = require('jasmine-spec-reporter');
 
+var VideoReporter = require('protractor-video-reporter');
+const Path = require('path');
+
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
@@ -24,5 +27,17 @@ exports.config = {
       project: require('path').join(__dirname, './tsconfig.e2e.json')
     });
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
+
+    jasmine.getEnv().addReporter(new VideoReporter({
+      baseDirectory: Path.join(__dirname, 'reports/videos/'),
+      ffmpegArgs: [
+        '-f', 'gdigrab',
+        '-framerate', '24',
+        '-video_size', 'wsxga',
+        '-i', 'desktop',
+        '-q:v','10',
+      ],
+      ffmpegCmd: Path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
+    }));
   }
 };
