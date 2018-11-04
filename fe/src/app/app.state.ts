@@ -101,7 +101,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         entity: {
           ...state.entity,
-          selectedProperty: state.entity.selectedEntity ? state.entity.selectedEntity.props[action.columnName] : null,
+          selectedProperty: state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : null,
         }
       }
     
