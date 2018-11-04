@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "soica-190717",
+  "private_key_id": "d09d94fbea9e2b6cfe8d7c2b3f9eba38237a1953",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCY6rEDwQO/AN3d\n93fJ3IMpiNqfrkvKJwSSkEg5EpCIV87AsCwjlOJOxDtuUxDEHmqm+5ByKHw9vdWR\nPEa35LwdlYNSwNVwADNfvoocI5v+P7OJR6PWlF6goU7eXsssgm7jnWBfaOJ49zf+\npNiA7Mkq+RGUSG+LR6UeLuZaD3yJpppNWxOJqeJ6Ic62OHM7UBycQjH7o6Nv0Otm\n9K+VArNe5W0Hlt1qMNug7Y85lGnlm7qkOohz5PKUieWOV3lsjg3yV7uU1bkYLwZl\nXgl70ExB8D7/LYqp+Ywz3AGL0Ux36GmCu3jDtHGtS+2QNRdP+Rwcx6xbJmif16sW\nck3FQdLHAgMBAAECggEAQzVDP6chgl1bJieR2oK0kxi3Hd95KAwmElSfqZXjOEl/\ncWj8vVa+cGgGxuJzR/8mWOXQApyQnoJEz2RyoHhDxazk3wYpyOQNsFMKWHu+H+zX\nd8qo07K6NFcxVsLLAXECU7/jj4uFnizpy12gWmm3sM9vToDXpZuDktSCIasUzVpi\nHvP89bMOPwKbUwkNbPmWbH91gppTCaYgzM99jE2uL48QUiSmPi0okNEhHmPHsbVB\ndA+7hoQhKR0PiND/0PWKWHVc13O0/lX9yMgadX7cDuI3iynnxvqKjIcEvefqAobw\nJr/pDJbHEcQ0qmrtW/6qE0fyyXqPt8SJ5/SU3PbtgQKBgQDIrOlWUJJm91dFy45g\nkbc+t9jsiQiAliska65QkwDqSreL4qf/GVWHOxA6NnmBKxPzobCzMMFWScfh8MXx\nJpOdT82J5fxdY2dQt6qubfad+jJTVCnKjLpkZ+aJIBmCcpQKQau2LLZMm8CMCKx/\nrpn6JUfAYlCkpjLQaEHDZeFUVwKBgQDDExyhujYgqSSHOy7iyxg25HcwdFl1pdcH\nVmyRK+2SEi1iASkYzprH63v6L0BBGCBwbrVZxmUiF++w314xDN824gkrWQZlm0yh\n40I0bpJjUvSlnvxUbG7QtLr6dOtx55nQbqwmKaP90NlJS8/oqOh7W/u553BUOAhz\nwcqcECLvEQKBgDj/3Ds3IY57nN9nRSaq3QjEgaoV9kNH5DMxHs8mIjFqTZ4/IAa2\ndHO31BEk3fhRexZNi/op1BClXlAP6rlngrBBNZmAqOEB1hu4P5PSCiWvJlJC6qfs\ntxjD5lh2tKg30VLkeliBdLpn1xYvdIfD2VqS8kFz64II7xABPQS6UHl7AoGBAKGb\n9b5uXGVWe3KlL0SoaNkhETVNTsfOqoPjr3HdaKX49SwaNgfdMhGqHz23Y44KBOXg\ncdF8MVC7b9GiW5BbT5lSTbJhwJDwxd3gPnrdl909XnzPZ9AxPOUetUDFGEF3U9B/\nv5KmMLwYB8tXSVlAhcmc/MCY4lCDU01DIS2FmMthAoGAfzFTTaWdoSP1+ucqs5pL\ndXzFwpH/hSluJSixurykg1Zc8Nt3WRQ7kYscZ2SMb4pjm3hrDdp9PnTT9z3t2fCC\nO8uSc2VS7YvG6SFyiKjAe4ca7QlK4pBh8nZ64ONTSkLhhjJXfmyUE/enZ8lsdJou\n7duJ+H5fqyy69jjUFWzqMEc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "formuladb@soica-190717.iam.gserviceaccount.com",
+  "client_id": "113582387300006669550",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/formuladb%40soica-190717.iam.gserviceaccount.com"
+}
