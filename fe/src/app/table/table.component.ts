@@ -24,7 +24,7 @@ import * as _ from "lodash";
 export class TableComponent implements OnInit, OnDestroy {
 
     private table$: Observable<tableState.Table>;
-    private data: tableState.DataObj[] = [];
+    public data: tableState.DataObj[] = [];
     private selectedRowIdx: number;
     private highlighted: string;
     private agGridOptions: GridOptions = {};

@@ -41,6 +41,22 @@ export const i18nInitialState: I18nState = {
         'Forms': 'Formulare',
         'Forms___ServiceForm': 'Formulare / Formular Service',
 
+
+        'DeliveryRate': 'Rata de livrare',
+        orderNb: 'Nr Comanda',
+        externalOrderNb: 'Nr extern Comanda',
+        orderCreationDate: 'Data Creare Comanda',
+        clientCode: 'Cod Client',
+        client: 'Client',
+        addressCode: 'Cod Adresa',
+        addressName: 'Nume Adresa',
+        location: 'Locatie',
+        productCode: 'Cod Produs',
+        barcode: 'Cod Bare',
+        quantity: 'Cantitate',
+        quantityError: 'Cantitate Eroare',
+        price: 'Pret',
+
         'General___Currency!rate1!max': 'Maximum rate1 exceeded',
         'items$': 'Items',
     },

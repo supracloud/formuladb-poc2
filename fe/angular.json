@@ -32,7 +32,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.min.js"
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/pouchdb-adapter-memory/lib/index.js"
             ]
           },
           "configurations": {
@@ -85,7 +86,8 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.min.js"
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/pouchdb-adapter-memory/lib/index.js"
             ],
             "assets": [
               "src/favicon.ico",

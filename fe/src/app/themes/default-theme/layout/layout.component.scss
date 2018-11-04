@@ -18,5 +18,13 @@
         transform: translate3d(0px, 0px, 0px) !important;
     }
 
+    .main-panel .content .container-fluid {
+        padding: 0;
+
+        .row div {
+            padding: 0;
+        }
+    }
+
 }
 

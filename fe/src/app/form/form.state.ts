@@ -29,7 +29,7 @@ export const formInitialState: FormState = {
   formData: null,
   eventFromBackend: null,
   formReadOnly: true,
-  formEditMode: true,
+  formEditMode: false,
   highlighted: null,
   dragged: null
 };
