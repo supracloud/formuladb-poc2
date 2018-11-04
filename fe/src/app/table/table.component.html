@@ -1,5 +1,5 @@
-<div class="mwz-table-placeholder">&nbsp;</div>
-<div class="mwz-table-wrapper">
+<div class="mwz-table-placeholder" *ngIf="!data">&nbsp;</div>
+<div class="mwz-table-wrapper" *ngIf="data">
     <ag-grid-angular #agGrid class="ag-theme-material" rowHeight="25" [rowData]="data" enableColResize="true" 
         (rowDoubleClicked)="onRowDoubleClicked($event)"
         enableSorting="true" enableFilter="true" floatingFilter="true"
