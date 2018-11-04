@@ -46,11 +46,11 @@ function generateProducts() {
     let ret = [];
     for (let i = 1; i <= 25; i++) {
         ret.push({ _id: "Inventory___Product~~"+i, code: "p" + i, barcode: "400638133393" + i, 
-            name: faker.commerce.product(), 
+            name: faker.commerce.productName(), 
             category: faker.commerce.department(), 
-            subcategory: faker.lorem.word(), 
-            description: faker.lorem.sentence(),
-            longDescription: faker.lorem.paragraphs()
+            // subcategory: faker.lorem.word(), 
+            // description: faker.lorem.sentence(),
+            // longDescription: faker.lorem.paragraphs()
         });
     }
     return ret;
