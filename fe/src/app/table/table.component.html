@@ -2,6 +2,7 @@
 <div class="mwz-table-wrapper">
     <ag-grid-angular #agGrid class="ag-theme-material" rowHeight="25" [rowData]="data" enableColResize="true" 
         (rowDoubleClicked)="onRowDoubleClicked($event)"
+        (cellFocused)="onCellFocused($event)"
         enableSorting="true" enableFilter="true" floatingFilter="true"
         (gridReady)="onGridReady($event)" 
         (columnMoved)="columnMoving($event)" (dragStopped)="columnMoved($event)"

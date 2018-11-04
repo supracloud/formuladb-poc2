@@ -3,8 +3,7 @@
  * License TBD
  */
 
-import { Params, RouterStateSnapshot } from '@angular/router';
-import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from '../common/domain/metadata/data_obj';
 import { Table } from '../common/domain/uimetadata/table';
@@ -20,10 +19,12 @@ import * as events from '../common/domain/event';
 export interface TableState {
   table: Table;
   tableData: DataObj[];
+  selectedColumnName: string | undefined;
 }
 
 export const tableInitialState: TableState = {
   table: {} as Table,
+  selectedColumnName: undefined,
   tableData: [] as DataObj[],
 };
 
@@ -33,6 +34,7 @@ export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const UserActionEditedTableN = events.UserActionEditedTableN;
 export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
 export const UserActionNewRowN = "[table] UserActionNewRow";
+export const UserSelectCellN = "[table] UserSelectCell";
 
 export class TableDataFromBackendAction implements Action {
   readonly type = TableDataFromBackendActionN;
@@ -73,6 +75,12 @@ export class UserActionNewRow implements Action {
   constructor(type_: string) { }
 }
 
+export class UserSelectCell implements Action {
+  readonly type = UserSelectCellN;
+
+  constructor(public columnName: string | undefined) { }
+}
+
 export type TableActions =
   | TableDataFromBackendAction
   | ResetTableDataFromBackendAction
@@ -80,6 +88,7 @@ export type TableActions =
   | UserActionEditedTable
   | UserActionSelectedRowForEditing
   | UserActionNewRow
+  | UserSelectCell
   ;
 
 /**
@@ -109,6 +118,12 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
       ret = {
         ...state,
         table: action.table,
+      };
+      break;
+    case UserSelectCellN:
+      ret = {
+        ...state,
+        selectedColumnName: action.columnName,
       };
       break;
   }

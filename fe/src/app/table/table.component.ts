@@ -10,7 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import * as tableState from './table.state';
-import { GridOptions, GridApi, GridReadyEvent, RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent } from 'ag-grid';
+import { GridOptions, GridApi, GridReadyEvent, RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent, RowClickedEvent, CellClickedEvent, CellFocusedEvent } from 'ag-grid';
 import { TableColumn } from '../common/domain/uimetadata/table';
 import * as fromTable from './table.state';
 import * as _ from "lodash";
@@ -84,8 +84,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
     }
 
-    onRowClicked(rowIdx: number, row: tableState.DataObj) {
-        this.selectedRowIdx = rowIdx;
+    onCellFocused(event: CellFocusedEvent) {
+        if (!event.column) return;
+        this.store.dispatch(new fromTable.UserSelectCell(event.column.getColDef().field));
     }
 
     onEditClicked(row: tableState.DataObj) {
