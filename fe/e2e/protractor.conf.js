@@ -4,7 +4,7 @@
 const { SpecReporter } = require('jasmine-spec-reporter');
 
 var VideoReporter = require('protractor-video-reporter');
-const Path = require('path');
+const path = require('path');
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -23,13 +23,30 @@ exports.config = {
     print: function() {}
   },
   onPrepare() {
+    // https://stackoverflow.com/questions/38860261/recording-videos-of-protractor-e2e-tests/45803583#45803583
+    VideoReporter.prototype.jasmineStarted = function() {
+      var self = this;
+      if (self.options.singleVideo) {
+        var videoPath = path.join(self.options.baseDirectory, 'protractor-specs.avi');
+
+        self._startScreencast(videoPath);
+
+        if (self.options.createSubtitles) {
+          self._subtitles = [];
+          self._jasmineStartTime = new Date();
+        }
+      }
+    }; 
+
     require('ts-node').register({
       project: require('path').join(__dirname, './tsconfig.e2e.json')
     });
+
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
 
     jasmine.getEnv().addReporter(new VideoReporter({
-      baseDirectory: Path.join(__dirname, 'reports/videos/'),
+      baseDirectory: path.join(__dirname, 'reports/videos/'),
+      singleVideo: true,
       ffmpegArgs: [
         '-f', 'gdigrab',
         '-framerate', '24',
@@ -37,7 +54,7 @@ exports.config = {
         '-i', 'desktop',
         '-q:v','10',
       ],
-      ffmpegCmd: Path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
+      ffmpegCmd: path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
     }));
   }
 };
