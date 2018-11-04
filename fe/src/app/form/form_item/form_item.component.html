@@ -20,5 +20,6 @@
   <v-layout *ngSwitchCase="'form_grid'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup"
     [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></v-layout>
   <div *ngSwitchDefault style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeType}}' !</div>
-  <form-context-menu [item]="nodeElement" *ngIf="editMode$|async"></form-context-menu>
+  <form-context-menu [item]="nodeElement" [canDelete]="nodeElement.nodeType!=='form_grid'" [availableChildren]="getAvailableChildren()"
+    [availableTypes]="getAvailableTypes()" *ngIf="editMode$|async"></form-context-menu>
 </div>
