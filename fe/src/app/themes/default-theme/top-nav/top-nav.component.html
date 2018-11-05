@@ -23,7 +23,8 @@
       </ul>
       <form class="navbar-form navbar-right navbar-search-form" role="search">
         <div class="input-group">
-          <input type="text" [value]="getFormula()" class="form-control" [disabled]="!(developerMode$ | async)" placeholder="FORMULA...">
+          <input type="text" [value]="getFormula()" class="form-control" [disabled]="!(developerMode$ | async)"
+            placeholder="FORMULA...">
         </div>
       </form>
       <ul class="navbar-nav ml-auto">
@@ -52,31 +53,44 @@
             </a>
             <div class="divider" *ngIf="developerMode$ | async"></div>
             <a class="dropdown-item" href="javascript:void(0)" *ngIf="developerMode$ | async">
-                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i> 
-                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i> 
-                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i> 
-                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i> 
-                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i> 
-                &nbsp;
+              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i>
+              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i>
+              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i>
+              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i>
+              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i>
+              &nbsp;
             </a>
             <div class="divider" *ngIf="developerMode$ | async"></div>
             <a class="dropdown-item" disabled href="javascript:void(0)" *ngIf="developerMode$ | async">
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-4.jpg')" src="/assets/sidebar_images/sidebar-4.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-1.jpg')" src="/assets/sidebar_images/sidebar-1.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-2.jpg')" src="/assets/sidebar_images/sidebar-2.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-3.jpg')" src="/assets/sidebar_images/sidebar-3.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-5.jpg')" src="/assets/sidebar_images/sidebar-5.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-6.jpg')" src="/assets/sidebar_images/sidebar-6.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-7.jpg')" src="/assets/sidebar_images/sidebar-7.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-8.jpg')" src="/assets/sidebar_images/sidebar-8.jpg" style="margin-right: 4px" />
-                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-9.jpg')" src="/assets/sidebar_images/sidebar-9.jpg" style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-4.jpg')" src="/assets/sidebar_images/sidebar-4.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-1.jpg')" src="/assets/sidebar_images/sidebar-1.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-2.jpg')" src="/assets/sidebar_images/sidebar-2.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-3.jpg')" src="/assets/sidebar_images/sidebar-3.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-5.jpg')" src="/assets/sidebar_images/sidebar-5.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-6.jpg')" src="/assets/sidebar_images/sidebar-6.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-7.jpg')" src="/assets/sidebar_images/sidebar-7.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-8.jpg')" src="/assets/sidebar_images/sidebar-8.jpg"
+                style="margin-right: 4px" />
+              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-9.jpg')" src="/assets/sidebar_images/sidebar-9.jpg"
+                style="margin-right: 4px" />
             </a>
             <div class="divider" *ngIf="developerMode$ | async"></div>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)" *ngIf="developerMode$ | async"><img height="60" width="80" src="/assets/light.jpg" /> Light Theme</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)" *ngIf="developerMode$ | async"><img height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)" *ngIf="developerMode$ | async"><img height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)" *ngIf="developerMode$ | async"><img
+                height="60" width="80" src="/assets/light.jpg" /> Light Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)" *ngIf="developerMode$ | async"><img
+                height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)" *ngIf="developerMode$ | async"><img
+                height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
             <div class="divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{ ((developerMode$ | async) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{
+              ((developerMode$ | async) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
             <div class="divider"></div>
             <a class="dropdown-item" href="javascript:void(0)"><i class="nc-icon nc-circle-09"></i>Account</a>
           </div>
