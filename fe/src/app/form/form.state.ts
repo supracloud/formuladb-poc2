@@ -6,7 +6,7 @@
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from '../common/domain/metadata/data_obj';
-import { Form, NodeElement, isNodeElementWithChildren } from '../common/domain/uimetadata/form';
+import { Form, NodeElement, isNodeElementWithChildren, NodeType } from '../common/domain/uimetadata/form';
 import { ChangeObj, applyChanges } from '../common/domain/change_obj';
 import * as events from '../common/domain/event';
 
@@ -42,6 +42,9 @@ export const FormItemHighlightActionN = "[form] FormItemHighlightAction";
 export const FormSwitchEditModeActionN = "[form] FormSwitchEditModeAction";
 export const FormDragActionN = "[form] FormDragAction";
 export const FormDropActionN = "[form] FormDropAction";
+export const FormDeleteActionN = "[form] FormDeleteAction";
+export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
+export const FormAddActionN = '[form] FormAddAction';
 export const UserActionEditedFormDataN = events.UserActionEditedFormDataN;
 export const UserActionEditedFormN = events.UserActionEditedFormN;
 
@@ -106,11 +109,31 @@ export class FormDragAction implements Action {
   constructor(public payload: NodeElement | null) { }
 }
 
+
 export class FormDropAction implements Action {
   readonly type = FormDropActionN;
 
   constructor(public payload: { drop: NodeElement, before: boolean }) { }
 }
+
+export class FormDeleteAction implements Action {
+  readonly type = FormDeleteActionN;
+
+  constructor(public payload: NodeElement) { }
+}
+
+export class FormAddAction implements Action {
+  readonly type = FormAddActionN;
+
+  constructor(public payload: { what: NodeElement, to: NodeElement }) { }
+}
+
+export class FormSwitchTypeAction implements Action {
+  readonly type = FormSwitchTypeActionN;
+
+  constructor(public payload: { node: NodeElement, toType: NodeType }) { }
+}
+
 
 
 export type FormActions =
@@ -124,6 +147,9 @@ export type FormActions =
   | FormSwitchEditModeAction
   | FormDragAction
   | FormDropAction
+  | FormDeleteAction
+  | FormSwitchTypeAction
+  | FormAddAction
   ;
 
 function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
@@ -234,6 +260,13 @@ export function formReducer(state = formInitialState, action: FormActions): Form
         addRecursive(state.form.grid, action.payload.drop, action.payload.before, state.dragged as NodeElement);
       }
       return { ...state, dragged: null } //TODO check immutable
+
+    case FormDeleteActionN:
+      if (state.form) {
+        removeRecursive(state.form.grid, action.payload);
+      }
+      return state;
+
   }
 
   // if (action.type.match(/^\[form\]/)) console.log('[form] reducer:', state, action, ret);
