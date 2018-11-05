@@ -1,6 +1,6 @@
 <div class="mwz-table-placeholder" *ngIf="!data">&nbsp;</div>
 <div class="mwz-table-wrapper" *ngIf="data">
-    <ag-grid-angular #agGrid class="ag-theme-material" rowHeight="25" [rowData]="data" enableColResize="true" 
+    <ag-grid-angular #agGrid class="ag-theme-balham" rowHeight="25" [rowData]="data" enableColResize="true" 
         (rowDoubleClicked)="onRowDoubleClicked($event)"
         (cellFocused)="onCellFocused($event)"
         enableSorting="true" enableFilter="true" floatingFilter="true"

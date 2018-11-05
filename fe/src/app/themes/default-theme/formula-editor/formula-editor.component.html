@@ -1,0 +1,20 @@
+<ul class="navbar-nav mr-auto">
+  <li class="nav-item dropdown" [class.show]="editorOpened">
+    <a class="nav-link" href="javascript:void(0)" (click)="toggleFormulaEditor()">
+      <img src="/assets/img/formula16.png" width="16" height="16" />
+    </a>
+    <div class="dropdown-menu dropdown-menu" [class.show]="editorOpened">
+      <ul>
+        <li frmdb-formula-editor-item *ngFor="let node of getFormulaPreviewNodes().children" [formulaEditorNode]="node"></li>
+      </ul>
+    </div>
+  </li>
+  <li class="nav-item">
+    <form class="navbar-form" role="search">
+      <div class="input-group">
+        <input type="text" [value]="getFormula()" (focus)="formulaFocused()" class="form-control formula-input"
+          [disabled]="!(developerMode$ | async)" placeholder="FORMULA...">
+      </div>
+    </form>
+  </li>
+</ul>

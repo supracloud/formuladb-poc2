@@ -10,22 +10,7 @@
       <span class="navbar-toggler-bar burger-lines"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navigation">
-      <ul class="navbar-nav">
-        <li class="dropdown nav-item" ngbDropdown>
-          <a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown" id="FormulaEditor"
-            ngbDropdownToggle>
-            <img src="/assets/img/formula16.png" width="16" height="16" />
-          </a>
-          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="FormulaEditor">
-            Options
-          </ul>
-        </li>
-      </ul>
-      <form class="navbar-form navbar-right navbar-search-form" role="search">
-        <div class="input-group">
-          <input type="text" [value]="getFormula()" class="form-control" [disabled]="!(developerMode$ | async)" placeholder="FORMULA...">
-        </div>
-      </form>
+      <frmdb-formula-editor></frmdb-formula-editor>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown" ngbDropdown placement="bottom-right">
           <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="TopNavSettings" ngbDropdownToggle

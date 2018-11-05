@@ -30,6 +30,17 @@ ALTER TABLE ONLY product_list_products_json ADD CONSTRAINT product_list_products
 
 ```
 
+I really like CouchDB's philosophy of immutability, pure functional incremental map-reduce views, multi-master replication with custom conflict management, changes feed, PouchDB-sync. I think it fits well with many things happening in back-end development nowadays: pure functional, reactive, event sourcing, CQRS, stream-processing, etc. I would like to use Couch+Pouch in one of my projects but I need some help with tuning the single node write performance of CouchDB vs Postgresql.
+
+I just did some simple and quick tests that showed that the write performance of Postgres is much higher than CouchDB:
+
+bulk import time for ~4.7mil records: 49sec vs 14min
+insert one record at a time: ~800 records/sec vs ~130 records/sec
+Can anyone with good CouchDB tuning experience advise on what am I doing wrong OR how can I increase the throughput on CouchDB? Please see below the details. The data is exactly the same, just that the Postgres primary key is a number while in CouchDB the _id is the string representation of that number.
+
+It is clear that HTTP has an overhead for CouchDB, but still, the difference seems too big.
+
+
 ```bash
 docker run -v $(pwd)/../ep-data:/data --name ep -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
 
