@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
-
-import * as appState from '../../../app.state';
 import { Store } from '@ngrx/store';
-import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
+
 import { Expression, isIdentifier } from 'jsep';
+
+import { Pn, EntityProperty } from 'src/app/common/domain/metadata/entity';
+import * as appState from 'src/app/app.state';
 
 export interface FormulaEditorPreviewNode {
   level: number;
@@ -13,11 +14,12 @@ export interface FormulaEditorPreviewNode {
 }
 
 @Component({
-  selector: 'frmdb-formula-editor',
-  templateUrl: './formula-editor.component.html',
-  styleUrls: ['./formula-editor.component.scss']
+  selector: 'frmdb-formula-preview',
+  templateUrl: './formula-preview.component.html',
+  styleUrls: ['./formula-preview.component.scss']
 })
-export class FormulaEditorComponent implements OnInit {
+export class FormulaPreviewComponent implements OnInit {
+
   protected subscriptions: Subscription[] = [];
 
   selectedEntity$: Observable<appState.Entity | null>;
@@ -32,23 +34,7 @@ export class FormulaEditorComponent implements OnInit {
     this.developerMode$ = this.store.select(appState.isEditMode);
   }
 
-  formulaFocused() {
-    this.editorOpened = true;
-  }
-
-  toggleFormulaEditor() {
-    this.editorOpened = !this.editorOpened;
-  }
-
   ngOnInit() {
-  }
-
-  public getFormula() {
-    if (this.selectedProperty) {
-      if (this.selectedProperty.propType_ == Pn.FORMULA) {
-        return this.selectedProperty.formula;
-      } else return this.selectedProperty.propType_;
-    } else return null;
   }
 
   private walkExpressionTree(node: Expression, level: number): FormulaEditorPreviewNode {
@@ -140,5 +126,5 @@ export class FormulaEditorComponent implements OnInit {
     // this.formModalService.sendDestroyFormEvent();
     this.subscriptions.forEach(sub => sub.unsubscribe())
   }
-
+  
 }

@@ -18,6 +18,7 @@ export class TopNavComponent implements OnInit, OnDestroy {
   selectedEntity$: Observable<appState.Entity | null>;
   selectedProperty: EntityProperty | null;
   developerMode$: Observable<boolean>;
+  editorOpened: boolean = false;
 
   constructor(protected store: Store<appState.AppState>, private router: Router) {
     this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
@@ -52,6 +53,14 @@ export class TopNavComponent implements OnInit, OnDestroy {
     } else return null;
   }
 
+  formulaFocused() {
+    this.editorOpened = true;
+  }
+
+  toggleFormulaEditor() {
+    this.editorOpened = !this.editorOpened;
+  }
+  
   toggleDeveloperMode() {
     this.store.dispatch(new appState.CoreToggleDeveloperModeAction());
   }

@@ -3,10 +3,7 @@
  * License TBD
  */
 
-export type StringOmit<L1 extends string, L2 extends string> = ({[P in L1]: P } &
-    {[P in L2]: never } & { [key: string]: never })[L1];
-
-export type PickOmit<O, K extends keyof O> = Pick<O, StringOmit<keyof O, K>>;
+export type PickOmit<O, K extends keyof O> = Pick<O, Exclude<keyof O, K>>;
 
 export function obj2MapES5<V>(o: {[x: string]: V}): Map<string, V> {
     return Object.keys(o).reduce((m, k) => m.set(k, o[k]), new Map())

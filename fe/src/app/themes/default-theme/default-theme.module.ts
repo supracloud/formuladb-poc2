@@ -15,8 +15,6 @@ import { NavigationSegment } from './navigation/navigation.segment';
 import { ThemeEditorComponent } from './theme-editor/theme-editor.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
-import { FormulaEditorComponent } from './formula-editor/formula-editor.component';
-import { FormulaEditorItemComponent } from './formula-editor/formula-editor-item.component';
 
 @NgModule({
   imports: [
@@ -31,8 +29,6 @@ import { FormulaEditorItemComponent } from './formula-editor/formula-editor-item
     NavigationSegment,
     ThemeEditorComponent,
     TopNavComponent,
-    FormulaEditorComponent,
-    FormulaEditorItemComponent,
   ]
 })
 export class DefaultThemeModule { }

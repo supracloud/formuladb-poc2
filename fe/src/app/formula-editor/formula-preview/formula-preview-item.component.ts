@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormulaEditorPreviewNode } from './formula-editor.component';
+import { FormulaPreviewNode } from './formula-preview.component';
 
 @Component({
   selector: '[frmdb-formula-editor-item]',
@@ -12,8 +12,8 @@ import { FormulaEditorPreviewNode } from './formula-editor.component';
       </ng-container>
   `
 })
-export class FormulaEditorItemComponent {
+export class FormulaPreviewItemComponent {
 
   @Input()
-  formulaEditorNode: FormulaEditorPreviewNode;  
+  formulaEditorNode: FormulaPreviewNode;  
 }

@@ -42,7 +42,7 @@ It is clear that HTTP has an overhead for CouchDB, but still, the difference see
 
 
 ```bash
-docker run -v $(pwd)/../ep-data:/data --name ep -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+MSYS2_ARG_CONV_EXCL="*" docker run -v $(pwd)/../ep-data:/data --name ep -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d clkao/postgres-plv8
 
 #Dump data from postgres
 docker exec -it ep bash -c 'echo "create database sy5t3m;" | psql -U postgres'
@@ -51,11 +51,11 @@ docker exec -it ep bash -c "echo -e \"\o /data/actors.json\nselect row_to_json(r
 # docker exec -it ep bash -c "echo -e \"\o /data/actors.json\nselect row_to_json(r) from (select 'Inventory___Order___Item~~' || id as _id, * from product_list_products) r;\" | psql -U postgres -d sy5t3m"
 docker exec -it ep bash -c "echo \"COPY (select row_to_json(r) from (select 'Inventory___Order___Item~~' || id as _id, * from product_list_products) r) to '/data/order_items.csv'  With CSV DELIMITER ',';\" | psql -U postgres -d sy5t3m"
 
-time docker exec -it ep bash -c "echo \"COPY product_list_products to '/data/product_list_products.csv'  With CSV DELIMITER ',';\" | psql -U postgres -d sy5t3m"
-COPY 4714978
-real    0m28.764s
-user    0m0.000s
-sys     0m0.078s
+        time docker exec -it ep bash -c "echo \"COPY product_list_products to '/data/product_list_products.csv'  With CSV DELIMITER ',';\" | psql -U postgres -d sy5t3m"
+        COPY 4714978
+        real    0m28.764s
+        user    0m0.000s
+        sys     0m0.078s
 
 #load data into postgres
 docker exec -it ep psql -U postgres -d sy5t3m #then create table product_list_products using the SQL above
@@ -65,10 +65,15 @@ real    0m25.589s
 user    0m0.000s
 sys     0m0.078s
 docker exec -it ep bash -c "echo \"select count(*) from product_list_products;\" | psql -U postgres -d sy5t3m"
+docker exec -it ep bash -c "echo \"select count(*) from product_list_products_json;\" | psql -U postgres -d sy5t3m"
   count
 ---------
  4811899
 (1 row)
+
+time docker exec -it ep bash -c "echo \"select * from product_list_products where product_code = '2084081435509' limit 1;\" | psql -U postgres -d sy5t3m"
+time docker exec -it ep bash -c "echo \"select * from product_list_products where product_code = '2084081435509';\" | psql -U postgres -d sy5t3m"
+time docker exec -it ep bash -c "echo \"select * from product_list_products_json where data ->> 'product_code' = '2084081279058' limit 1;\" | psql -U postgres -d sy5t3m"
 
 docker exec -it ep bash
 
@@ -79,9 +84,10 @@ curl -d @../ep-data/actors.json -H "Content-type: application/json" -X POST http
 
 #4mil rows cannot work with only one curl call
 sed -i 's/_sy5/sy5/' order_items.json
-split -l 100000 -d order_items.json
+split -l 5000 -d order_items.json
+sed -i 's/[}]$/},/; $ s/,$/]}/; 1 s/^/{"docs": [/' x*
 for i in x*; do (echo '{"docs": ['; cat $i ) > _tmp.json && sed -i '$ s/,$/]}/' _tmp.json && mv _tmp.json $i; done
-time for i in x*; do time curl -d @${i} -H "Content-type: application/json" -X POST http://127.0.0.1:5984/evrt/_bulk_docs | grep -v '"ok":true'; done
+time for i in x*; do time curl -T ${i} -H "Content-type: application/json" -X POST http://127.0.0.1:5984/evrt/_bulk_docs | grep -v '"ok":true'; done
 
 curl -H "Content-type: application/json" -X POST http://127.0.0.1:5984/evrt/_find -d '{
    "selector": {
