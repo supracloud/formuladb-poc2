@@ -32,6 +32,7 @@
     "bootstrap": "^4.1.2",
     "core-js": "^2.5.4",
     "expression-eval": "^1.2.3",
+    "fs-extra": "^7.0.1",
     "jquery": "^3.3.1",
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.10",
