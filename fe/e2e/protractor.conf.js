@@ -30,14 +30,8 @@ exports.config = {
       fs.removeSync(self.options.baseDirectory);
       if (self.options.singleVideo) {
         var videoPath = path.join(self.options.baseDirectory, 'protractor-specs.avi');
-
-        self._startScreencast(videoPath);
-
-        if (self.options.createSubtitles) {
-          self._subtitles = [];
-          self._jasmineStartTime = new Date();
-        }
       }
+      self._startScreencast(videoPath);
     }; 
 
     require('ts-node').register({
@@ -49,6 +43,7 @@ exports.config = {
     jasmine.getEnv().addReporter(new VideoReporter({
       baseDirectory: path.join(__dirname, 'reports/videos/'),
       singleVideo: true,
+      createSubtitles: false,
       ffmpegArgs: [
         '-f', 'gdigrab',
         '-framerate', '24',
