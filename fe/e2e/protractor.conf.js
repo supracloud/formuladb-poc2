@@ -5,6 +5,7 @@ const { SpecReporter } = require('jasmine-spec-reporter');
 
 var VideoReporter = require('protractor-video-reporter');
 const path = require('path');
+const fs = require('fs-extra');
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -15,7 +16,7 @@ exports.config = {
     'browserName': 'chrome'
   },
   directConnect: true,
-  baseUrl: 'http://localhost:4200/',
+  baseUrl: 'http://localhost:4200/0/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
@@ -26,6 +27,7 @@ exports.config = {
     // https://stackoverflow.com/questions/38860261/recording-videos-of-protractor-e2e-tests/45803583#45803583
     VideoReporter.prototype.jasmineStarted = function() {
       var self = this;
+      fs.removeSync(self.options.baseDirectory);
       if (self.options.singleVideo) {
         var videoPath = path.join(self.options.baseDirectory, 'protractor-specs.avi');
 
