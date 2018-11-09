@@ -54,5 +54,6 @@
     "zenMode.hideTabs": false,
     "editor.minimap.enabled": true,
     "typescript.tsdk": "fe/node_modules/typescript/lib",
-    "typescript.reportStyleChecksAsWarnings": false
+    "typescript.reportStyleChecksAsWarnings": false,
+    "git.ignoreLimitWarning": true
 }

@@ -4,13 +4,14 @@
  */
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
-var VideoReporter = require('protractor-video-reporter');
 const path = require('path');
 const mp3Duration = require('mp3-duration');
 const textToSpeech = require('@google-cloud/text-to-speech');
 const client = new textToSpeech.TextToSpeechClient();
 const fs = require('fs');
-var ChildProcess = require('child_process');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+var ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 var messages = [ 'Welcome to the FormulaDB main page',
                  'Welcome to the financial page',
@@ -64,6 +65,17 @@ describe('workspace-project App', () => {
     browser.driver.manage().window().maximize();
   });
 
+  var command = ffmpeg()
+  .input('/dev/video0')
+  .addInputOptions('-f' , 'gdigrab')
+  .fps(24)
+  .size('100%')
+  .addInputOptions('-i', 'desktop')
+  .on('start', function() {
+
+  })
+  .save('e2e/reports/videos//protractor.avi');
+
   it('should display main page', () => {
     browser.driver.get('http://localhost:4200/');
     expect(browser.getTitle()).toEqual('Fe');
@@ -102,21 +114,21 @@ describe('workspace-project App', () => {
     browser.wait(until.presenceOf(reports), 50000, 'Element taking too long to appear in the DOM');
     reports.click();
     browser.sleep(2000);
+    command.kill();
+    // var _ffmpeg = ChildProcess.spawn(path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
+    //   [
+    //     '-i', 'concat:e2e/reports/videos/output_1.mp3|e2e/reports/videos/output_2.mp3|e2e/reports/videos/output_3.mp3|e2e/reports/videos/output_4.mp3|e2e/reports/videos/output_5.mp3|e2e/reports/videos/output_6.mp3',
+    //     '-c','copy',
+    //     'e2e/reports/videos/protractor.mp3',
+    //   ]);
 
-    var _ffmpeg = ChildProcess.spawn(path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
-      [
-        '-i', 'concat:e2e/reports/videos/output_1.mp3|e2e/reports/videos/output_2.mp3|e2e/reports/videos/output_3.mp3|e2e/reports/videos/output_4.mp3|e2e/reports/videos/output_5.mp3|e2e/reports/videos/output_6.mp3',
-        '-c','copy',
-        'e2e/reports/videos/protractor.mp3',
-      ]);
-
-    _ffmpeg.on('close', function (code) {
-      var _ffmpeg = ChildProcess.spawn(path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
-        [ '-i', 'e2e/reports/videos/protractor-specs.avi',
-          '-i', 'e2e/reports/videos/protractor.mp3',
-          '-codec', 'copy',
-          '-shortest', 'e2e/reports/videos/protractor-final.avi']);
-    });
+    // _ffmpeg.on('close', function (code) {
+    //   var _ffmpeg = ChildProcess.spawn(path.normalize('./node_modules/ffmpeg-binaries/bin/ffmpeg.exe'),
+    //     [ '-i', 'e2e/reports/videos/protractor-specs.avi',
+    //       '-i', 'e2e/reports/videos/protractor.mp3',
+    //       '-codec', 'copy',
+    //       '-shortest', 'e2e/reports/videos/protractor-final.avi']);
+    // });
   })
 
 });
