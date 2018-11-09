@@ -533,7 +533,7 @@ export function combine2Nodes<T extends Expression>(
                 let scalarExpr = _.cloneDeep(expr);
                 scalarExpr.left = $s2e("$TRG$['" + node1.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
                 scalarExpr.right = $s2e("$TRG$['" + node2.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);//TODO: this is for information purposes only, but it is not tested
+                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr); 
                 return {
                     type_: CompiledFormulaN,
@@ -547,9 +547,9 @@ export function combine2Nodes<T extends Expression>(
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
                 scalarExpr.left = $s2e("$TRG$['" + node1.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);//TODO: this is for information purposes only, but it is not tested
+                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.right = node2.rawExpr;
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);//TODO: this is for information purposes only, but it is not tested
+                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr); 
                 return {
                     ...node2,

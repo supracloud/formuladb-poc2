@@ -31,6 +31,7 @@ import * as fromEntity from "./entity-state";
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
 import * as fromI18n from './crosscutting/i18n/i18n.state';
+import * as fromFormula from './formula.state'
 
 export * from "./entity-state";
 export * from "./table/table.state";
@@ -38,6 +39,7 @@ export * from "./form/form.state";
 export * from "./core.state";
 export * from "./theme.state";
 export * from "./crosscutting/i18n/i18n.state";
+export * from './formula.state'
 
 export interface RouterState {
   url: string;
@@ -53,6 +55,7 @@ export interface AppState {
   'table': fromTable.TableState;
   'form': fromForm.FormState;
   'i18n': fromI18n.I18nState;
+  'formula': fromFormula.FormulaState
 };
 
 export type AppActions =
@@ -62,6 +65,7 @@ export type AppActions =
   | fromTable.TableActions
   | fromForm.FormActions
   | fromI18n.I18nActions
+  | fromFormula.FormulaActions
   ;
 
 export class CustomSerializer implements RouterStateSerializer<RouterState> {
@@ -123,6 +127,7 @@ export const reducers = {
   ...fromTable.reducers,
   ...fromForm.reducers,
   ...fromI18n.reducers,
+  ...fromFormula.reducers,
 };
 
 

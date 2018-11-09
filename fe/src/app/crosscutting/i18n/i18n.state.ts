@@ -78,7 +78,6 @@ export type I18nActions = I18nLoadDictionary
     ;
 
 /**
- * TODO: check if immuform.js is needed, probably only for large data sets
  * 
  * @param state 
  * @param action 

@@ -40,6 +40,7 @@ Can anyone with good CouchDB tuning experience advise on what am I doing wrong O
 
 It is clear that HTTP has an overhead for CouchDB, but still, the difference seems too big.
 
+# Postgresql
 
 ```bash
 MSYS2_ARG_CONV_EXCL="*" docker run -v $(pwd)/../ep-data:/data --name ep -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d clkao/postgres-plv8
@@ -76,6 +77,11 @@ time docker exec -it ep bash -c "echo \"select * from product_list_products wher
 time docker exec -it ep bash -c "echo \"select * from product_list_products_json where data ->> 'product_code' = '2084081279058' limit 1;\" | psql -U postgres -d sy5t3m"
 
 docker exec -it ep bash
+```
+
+# CouchDB
+
+```bash
 
 #docker run -d -v $(pwd)/../ec-data:/opt/couchdb/data -p 5984:5984 --name ec couchdb
 docker run -d -p 5984:5984 --name ec couchdb
@@ -122,5 +128,13 @@ user    0m0.373s
 sys     0m2.293s
 
 # cleanup: curl -XDELETE http://127.0.0.1:5984/evrt
+
+```
+
+
+# Couchbase
+
+```bash
+docker run -d --name ed -p 8091-8094:8091-8094 -p 11210:11210 couchbase
 
 ```
