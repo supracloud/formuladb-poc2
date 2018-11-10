@@ -10,8 +10,14 @@ exports.config = {
   specs: [
     './src/**/*.e2e-spec.ts'
   ],
+//https://peter.sh/experiments/chromium-command-line-switches/
   capabilities: {
-    'browserName': 'chrome'
+    browserName: 'chrome',
+    chromeOptions: {
+        args: [
+            '--start-fullscreen'
+        ]
+    }
   },
   directConnect: true,
   baseUrl: 'http://localhost:4200/0/',
