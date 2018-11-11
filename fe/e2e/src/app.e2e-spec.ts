@@ -5,7 +5,19 @@
  * TODOs:
  * 1. Take into account the time spent in loading page elements and remove it from the browser sleep duration. Could impact timing. 
  * 2. FInd out why do I need that sleep before merging the audio/video files
- * 3. Test and adapt it to run inside a container
+ * 3. Configure a docker image with preinstalled software stack:
+ *   sudo yum install java-1.8.0-openjdk-devel
+ *   sudo vi /etc/yum.repos.d/google-chrome.repo
+ *   sudo yum install google-chrome-stable
+ *   sudo yum install -y chromedriver chromium xorg-x11-server-Xvfb
+ *   sudo npm install -g @angular/cli
+ *   sudo npm install -g protractor
+ *   sudo npm install -g selenium standalone
+ * HOW TO RUN IT:
+ *   export DISPLAY=:99
+ *   Xvfb -ac :99 -screen 0 1920x1080x16 &
+ *   webdriver-manager start /dev/null 2>&1
+ *   ng e2e
  */
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
@@ -17,6 +29,8 @@ const client = new textToSpeech.TextToSpeechClient();
 const fs = require('fs');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 var ffmpeg = require('fluent-ffmpeg');
+var shell = require('shelljs');
+
 ffmpeg.setFfmpegPath(ffmpegPath);
 
 var messages = [ 'Chapter 1, main page: One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.',
@@ -30,6 +44,8 @@ var durations = new Array(messages.length);
 
 async function create_audio_tracks() {
 
+  shell.mkdir('-p', 'e2e/reports/videos/');
+  shell.rm('-rf', 'e2e/reports/videos/');
   if (!fs.existsSync('e2e/reports/videos/')) {
     fs.mkdirSync('e2e/reports/videos/');
   }
@@ -69,7 +85,14 @@ describe('workspace-project App', () => {
     browser.driver.get('http://localhost:4200/');
     var financial = element(by.css('[href="/0/Financial"]'));
     browser.wait(until.presenceOf(financial), 50000, 'Element taking too long to appear in the DOM').then(() => {
-      stream = new ffmpeg().input('desktop').inputOptions([	'-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
+      // this is how you do it on windows. For headless VMs/containers we're using x11grab with Xvfb
+      // stream = new ffmpeg().input('desktop').inputOptions([    '-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
+      stream = new ffmpeg()
+                 .input(process.env.DISPLAY)
+                 .inputOptions([ '-f x11grab', '-s 1920x1080' ])
+                 .fps(24)
+                 .videoBitrate('4096k')
+                 .output('e2e/reports/videos/protractor.avi');
       stream.run();
       browser.sleep(durations[0]);  
     });
@@ -127,6 +150,22 @@ describe('workspace-project App', () => {
             })
             .on('end', function() {
               console.log('Audio/Video Merging finished !');
+
+              // crop
+              var cropped_video = new ffmpeg()
+              .input('e2e/reports/videos/protractor-final.avi')
+              .audioCodec('copy')
+              .on('error', function(err) {
+                  console.log('An error occurred cropping: ' + err.message);
+              })
+              .on('end', function() {
+                  console.log('Video cropping finished !');
+              })
+              .fps(24)
+              .videoBitrate('4096k')
+              .output('e2e/reports/videos/protractor-cropped.avi')
+              .complexFilter([ "crop=1920:950:0:130" ])
+              .run();
             })
             .output('e2e/reports/videos/protractor-final.avi')
             .run();  
