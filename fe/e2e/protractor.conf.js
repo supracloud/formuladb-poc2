@@ -15,7 +15,8 @@ exports.config = {
     browserName: 'chrome',
     chromeOptions: {
         args: [
-            '--start-fullscreen'
+            '--window-size=1920,1080',
+// --start-fullscreen doesn't work right, don't lose your time with it. We'll have to crop the video as a final step of the test.
         ]
     }
   },
