@@ -14,6 +14,7 @@
  *   sudo npm install -g protractor
  *   sudo npm install -g selenium standalone
  * HOW TO RUN IT:
+ *   export GOOGLE_APPLICATION_CREDENTIALS=soica-d09d94fbea9e.json
  *   export DISPLAY=:99
  *   Xvfb -ac :99 -screen 0 1920x1080x16 &
  *   webdriver-manager start /dev/null 2>&1
