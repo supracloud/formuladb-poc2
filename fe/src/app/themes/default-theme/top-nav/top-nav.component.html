@@ -15,15 +15,12 @@
           <a class="nav-link" frmdbToggleFormulaEditor class="formula-button" [class.isDisabled]="!developerMode" href="javascript:void(0)" (click)="toggleFormulaEditor()">
             <img src="/assets/img/formula16.png" width="16" height="16" />
           </a>
-          <div class="dropdown-menu dropdown-menu" [class.show]="editorOpened">
-            <frmdb-formula-code-editor *ngIf="editorOpened"></frmdb-formula-code-editor>
-            <frmdb-formula-editor-info *ngIf="editorOpened"></frmdb-formula-editor-info>
-          </div>
         </li>
         <li class="nav-item">
           <form class="navbar-form" role="search">
             <div class="input-group">
-              <textarea type="text" frmdbCurrentFormula (focus)="formulaFocused()" class="form-control formula-input"
+              <frmdb-formula-code-editor *ngIf="editorOpened"></frmdb-formula-code-editor>
+              <textarea type="text" *ngIf="!editorOpened" frmdbCurrentFormula (focus)="formulaFocused()" class="form-control formula-input"
                 disabled placeholder="FORMULA..." ></textarea>
             </div>
           </form>

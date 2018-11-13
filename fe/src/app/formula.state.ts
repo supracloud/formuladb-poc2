@@ -28,16 +28,16 @@ export const formulaEditorInitialState: FormulaState = {
 };
 
 
-export const FormulaStartN = "[fx] FormulaStart";
+export const FormulaEditorToggleN = "[fx] FormulaEditorToggle";
 
-export class FormulaStart implements Action {
-  readonly type = FormulaStartN;
+export class FormulaEditorToggle implements Action {
+  readonly type = FormulaEditorToggleN;
 
   constructor() { }
 }
 
 export type FormulaActions =
-  | FormulaStart
+  | FormulaEditorToggle
   ;
 
 /**
@@ -49,10 +49,10 @@ export type FormulaActions =
 export function formulaEditorReducer(state = formulaEditorInitialState, action: FormulaActions): FormulaState {
   let ret: FormulaState = state;
   switch (action.type) {
-    case FormulaStartN:
+    case FormulaEditorToggleN:
       ret = {
         ...state,
-        editorExpr: state.selectedFormula
+        editorExpr: state.editorExpr ? undefined : state.selectedFormula
       };
       break;
   }
@@ -69,7 +69,7 @@ export const reducers = {
 };
 export const getFormula = createFeatureSelector<FormulaState>('formula');
 
-export const getFormulaExpr = createSelector(
+export const getEditorExpr = createSelector(
   getFormula,
   (state: FormulaState) => state.editorExpr
 );

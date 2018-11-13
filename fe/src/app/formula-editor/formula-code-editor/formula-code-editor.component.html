@@ -1,1 +1,1 @@
-<div class="formula-code-editor" wiz-editor [ctext]="editorExpr" [suggestion]="setSuggestion.bind(this)" [colorClass]="setClass.bind(this)" [validation]="doValidation.bind(this)"></div>
+<div class="formula-code-editor" wiz-editor [ctext]="editorExpr$ | async" [suggestion]="setSuggestion.bind(this)" [colorClass]="setClass.bind(this)" [validation]="doValidation.bind(this)"></div>

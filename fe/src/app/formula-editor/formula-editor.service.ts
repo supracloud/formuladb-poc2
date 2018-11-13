@@ -13,6 +13,7 @@ export class FormulaEditorService {
 
   public selectedEntity$: Observable<appState.Entity | null>;
   public selectedFormula$: Observable<string | undefined>;
+  public editorExpr$: Observable<string | undefined>;
 
   constructor(protected store: Store<appState.AppState>) {
     this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
@@ -25,10 +26,11 @@ export class FormulaEditorService {
         } else return undefined;
       })
     );
+    this.editorExpr$ = this.store.select(appState.getEditorExpr);
   }
 
-  public startFormulaEditor() {
-    this.store.dispatch(new appState.FormulaStart());
+  public toggleFormulaEditor() {
+    this.store.dispatch(new appState.FormulaEditorToggle());
   }
 
 }

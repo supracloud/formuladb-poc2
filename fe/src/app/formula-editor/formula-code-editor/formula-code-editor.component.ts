@@ -6,6 +6,7 @@ import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
+import { FormulaEditorService } from '../formula-editor.service';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -15,14 +16,10 @@ import { Store } from '@ngrx/store';
 export class FormulaCodeEditorComponent implements OnInit {
   protected subscriptions: Subscription[] = [];
 
-  selectedEntity$: Observable<appState.Entity | null>;
-  selectedProperty: EntityProperty | null;
-  editorExpr: string | undefined;
+  editorExpr$: Observable<string | undefined>;
 
-  constructor(protected store: Store<appState.AppState>) {
-    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
-    this.subscriptions.push(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.selectedProperty = prop));
-    this.subscriptions.push(this.store.select(appState.getFormulaExpr).subscribe(expr => this.editorExpr = expr));
+  constructor(private formulaEditorService: FormulaEditorService) {
+    this.editorExpr$ = formulaEditorService.editorExpr$;
   }
 
   ngOnInit() {
@@ -30,14 +27,6 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   handleChange($event) {
     console.warn('ngModelChange', $event);
-  }
-
-  public getFormula() {
-    if (this.selectedProperty) {
-      if (this.selectedProperty.propType_ == Pn.FORMULA) {
-        return this.selectedProperty.formula;
-      } else return this.selectedProperty.propType_;
-    } else return null;
   }
 
   private keywords: string[] = ["rammstein", "rammbird", "rammspider", "metawiz"];
