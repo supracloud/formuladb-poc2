@@ -135,7 +135,6 @@ describe('workspace-project App', () => {
     browser.sleep(durations[5]).then(() =>{
       stream.kill();
     });
-    browser.sleep(2000); // what's going on here ? need to wait somehow for audio / video processing to finish ?
     stream.on('error', function() {
       console.log('Ffmpeg has been killed');
   
@@ -180,6 +179,7 @@ describe('workspace-project App', () => {
         .output('e2e/reports/videos/protractor.mp3')
         .run();  
     });
+    browser.sleep(10000); // what's going on here ? need to wait somehow for audio / video processing to finish ?
   })
 
 });
