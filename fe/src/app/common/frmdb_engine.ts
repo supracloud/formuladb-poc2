@@ -302,7 +302,7 @@ export class FrmdbEngine {
                 }
                 if (transacDAG.haveFailedValidations) throw new RetryableError("still haveFailedValidations after retries");
 
-                return transacDAG.getAllObjects().map(obj => obj._id);                    
+                return transacDAG.getAllObjects().map(obj => obj._id);
             }
 
             let saveObjects = async () => {

@@ -7,7 +7,7 @@ import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from './common/domain/metadata/data_obj';
-import { Entity } from './common/domain/metadata/entity';
+import { Entity, EntityProperty } from './common/domain/metadata/entity';
 import { ChangeObj, applyChanges } from './common/domain/change_obj';
 
 
@@ -20,13 +20,15 @@ import { unflatten, NavigationItem } from './navigation.item';
 
 export interface EntityState {
     entities: Entity[];
-    selectedEntity: Entity;
+    selectedEntity: Entity | null;
+    selectedProperty: EntityProperty | null;
     expanded: string[];
 }
 
 export const entityInitialState: EntityState = {
     entities: [] as Entity[],
-    selectedEntity: {} as Entity,
+    selectedEntity: null,
+    selectedProperty: null,
     expanded: [] as string[]
 };
 
@@ -146,7 +148,7 @@ export const getEntitiesTree = createSelector(
                     linkName: entity._id.split(/___/).slice(-1)[0],
                     path: entity._id.replace(/^___/, ''),
                     indent: entity._id.split(/___/).length - 1,
-                    active: entity._id === state.selectedEntity._id,
+                    active: state.selectedEntity ? entity._id === state.selectedEntity._id : false,
                     children: [],
                     collapsed: !state.expanded.some(ex => ex === entity._id)
                 })), (n1, n2) => n1.id !== n2.id && n2.id.startsWith(n1.id));
@@ -158,4 +160,8 @@ export const getEntitiesTree = createSelector(
 export const getSelectedEntityState = createSelector(
     getEntityState,
     (state: EntityState) => state.selectedEntity
+);
+export const getSelectedPropertyState = createSelector(
+    getEntityState,
+    (state: EntityState) => state.selectedProperty
 );

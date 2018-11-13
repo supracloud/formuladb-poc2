@@ -96,6 +96,15 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           formEditMode: !state.core.developerMode,
         }
       }
+    } else if (action.type === fromTable.UserSelectCellN) {
+      updatedState = {
+        ...state,
+        entity: {
+          ...state.entity,
+          selectedProperty: state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : null,
+        }
+      }
+    
     }
     let newState = reducer(updatedState, action);
     console.log("%c " + action.type + " ACTION DISPATCHED.", 

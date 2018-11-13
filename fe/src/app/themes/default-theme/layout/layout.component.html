@@ -7,12 +7,11 @@
 -->
     <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text">
+        <a href="http://formuladb.io" class="simple-text">
           BRAND TBD
         </a>
       </div>
-      <ul frmdb-navigation class="nav">
-      </ul>
+      <frmdb-navigation class="nav"></frmdb-navigation>
     </div>
     <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>      
   </div>
@@ -22,13 +21,13 @@
 
     <!-- End Navbar -->
     <div class="content">
-      <div class="container-fluid">
+      <router-outlet></router-outlet>
+      <!-- <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">
-            <router-outlet></router-outlet>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <footer class="footer">
       <div class="container">

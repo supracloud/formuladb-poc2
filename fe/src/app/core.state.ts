@@ -15,7 +15,7 @@ export interface CoreState {
 
 export const coreInitialState: CoreState = {
   appReadonly: "application initializing...",
-  developerMode: true,
+  developerMode: false,
 };
 
 export const CoreAppReadonlyActionN = "[core] CoreAppReadonlyAction";

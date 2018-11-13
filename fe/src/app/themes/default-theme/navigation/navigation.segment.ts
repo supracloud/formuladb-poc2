@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import * as fromEntity from '../../../entity-state';
 
 @Component({
-    selector: 'frmdb-navigation-segment',
+    selector: '[frmdb-navigation-segment]',
     styleUrls: ['navigation.segment.scss'],
     // changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './navigation.segment.html',
@@ -26,12 +26,12 @@ export class NavigationSegment implements OnInit {
     }
 
     expand(id: string, event) {
-        event.stopPropagation();
+        event.preventDefault();
         this.store.dispatch(new fromEntity.UserActionCollapsedEntity(id, false));
     }
 
     collapse(id: string, event) {
-        event.stopPropagation();
+        event.preventDefault();
         this.store.dispatch(new fromEntity.UserActionCollapsedEntity(id, true));
     }
 

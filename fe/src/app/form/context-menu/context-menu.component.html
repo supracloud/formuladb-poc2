@@ -1,7 +1,12 @@
 <a class="context-menu-button" *ngIf="!expanded" (click)="showContext()">+</a>
 
 <ul class="context-menu" *ngIf="expanded">
-  <li>Edit</li>
-  <li>Delete</li>
+  <ng-container *ngIf="availableTypes">
+    <li *ngFor="let p of availableTypes" (click)="switchTo(p)">Switch to: {{p}}</li>
+  </ng-container>
+  <ng-container *ngIf="availableChildren">
+    <li *ngFor="let p of availableChildren" (click)="addChild(p)">Add {{p.nodeType}} {{p.propertyName}}</li>
+  </ng-container>
+  <li *ngIf="canDelete" (click)="delete()">Delete</li>
 </ul>
 <a class="context-menu-button" *ngIf="expanded" (click)="hideContext()">-</a>
