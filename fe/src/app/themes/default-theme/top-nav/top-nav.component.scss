@@ -30,8 +30,9 @@ a.theme-color-pallete-purple {
     text-decoration: none;
 }
 
-.formula-input {
-    min-width: 500px;
+.navbar-form .input-group .form-control.formula-input {
+    min-width: 650px;
+    font-size: 90%;
     resize: none;
     overflow: hidden;
 }

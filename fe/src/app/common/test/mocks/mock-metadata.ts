@@ -5,7 +5,7 @@
 
 import * as _ from 'lodash';
 
-import { Entity, Schema } from '../../domain/metadata/entity'
+import { Entity, Schema, Pn } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
@@ -43,6 +43,7 @@ export class MockMetadata {
         // this.entities.push(ReportsMetadata.Reports___ServiceCentralizerReport);
         
         this.entities.forEach(ent => {
+            ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
             this.schema.entities[ent._id] = ent;
         });
 

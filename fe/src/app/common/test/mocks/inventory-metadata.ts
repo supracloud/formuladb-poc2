@@ -17,6 +17,7 @@ export const Inventory = {
 export const Inventory___Product___Location = {
     _id: "Inventory___Product___Location",
     props: {
+        productId: { name: "productId", propType_: Pn.STRING, allowNull: false, defaultValue: "DEFAULT-location" } as EntityProperty,
         locationCode: { name: "locationCode", propType_: Pn.STRING, allowNull: false, defaultValue: "DEFAULT-location" } as EntityProperty,
         category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         price: { name: "price", propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
@@ -29,7 +30,7 @@ export const Inventory___Product___Location = {
         received_stock__: {
             name: "received_stock__",
             propType_: Pn.FORMULA,
-            formula: 'SUM(Inventory___Receipt___Item__of__product.quantity)',
+            formula: 'SUMIF(Inventory___Receipt___Item.quantity, productLocationId == $ROW$._id)',
         } as FormulaProperty,
         available_stock__: {
             name: "available_stock__",
@@ -39,7 +40,7 @@ export const Inventory___Product___Location = {
         ordered_stock__: {
             name: "ordered_stock__",
             propType_: Pn.FORMULA,
-            formula: 'SUM(Inventory___Order___Item__of__product.quantity)'
+            formula: 'SUMIF(Inventory___Order___Item.quantity, productLocationId == $ROW$._id)'
         } as FormulaProperty,
         moving_stock: { name: "moving_stock", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         state: { name: "state", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -105,8 +106,8 @@ export const Inventory___Receipt___Item = {
     _id: "Inventory___Receipt___Item",
     props: {
 
-        Inventory___Product___Location$product: {
-            name: "Inventory___Product___Location$product",
+        product: {
+            name: "product",
             propType_: Pn.BELONGS_TO,
             referencedEntityName: Inventory___Product___Location._id,
             snapshotCurrentValueOfProperties: [
@@ -147,19 +148,7 @@ export const Inventory___Order = {
 export const Inventory___Order___Item = {
     _id: "Inventory___Order___Item",
     props: {
-        Inventory___Product___Location$product: {
-            name: "Inventory___Product___Location$product",
-            propType_: Pn.BELONGS_TO,
-            referencedEntityName: Inventory___Product___Location._id,
-            snapshotCurrentValueOfProperties: [
-                // "../../code",
-                // "../../name",
-                "locationCode",
-                "price",
-                // "currency/code",
-                "available_stock"
-            ]
-        } as BelongsToProperty,
+        productLocationId: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: "quantity", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         error_quantity: { name: "error_quantity", propType_: Pn.FORMULA, formula: '0' } as EntityProperty,
         client_stock: { name: "client_stock", propType_: Pn.NUMBER } as EntityProperty,

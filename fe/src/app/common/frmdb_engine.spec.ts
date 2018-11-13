@@ -10,7 +10,6 @@ import { KeyValueStorePouchDB, PouchDB } from "./key_value_store_pouchdb";
 import { UserActionEditedFormDataN, UserActionEditedFormDataEvent } from "./domain/event";
 import { Fn } from "./domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "./domain/metadata/execution_plan";
-import { promise } from "protractor";
 import { compileFormula, $s2e } from "./formula_compiler";
 import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "./domain/metadata/entity";

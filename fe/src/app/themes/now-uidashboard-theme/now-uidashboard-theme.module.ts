@@ -14,6 +14,7 @@ import { ThemeEditorComponent } from './theme-editor/theme-editor.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormulaEditorModule } from 'src/app/formula-editor/formula-editor.module';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NowUIDashboardThemeRoutingModule,
     CrosscuttingModule,
     NgbModule,
+    FormulaEditorModule
   ],
   declarations: [
     LayoutComponent,

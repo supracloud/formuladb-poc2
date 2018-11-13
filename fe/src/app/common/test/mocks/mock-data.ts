@@ -65,91 +65,101 @@ const Prd_23 = { _id:"Inventory___Product~~23", code:"p23", barcode:"40063813339
 const Prd_24 = { _id:"Inventory___Product~~24", code:"p24", barcode:"40063813339324", name:"Refined Frozen Table",  category:"Sports", subcategory:"delectus", description:"Cupiditate aperiam aut nisi laudantium.", longDescription:"Cumque accusantium perferendis ut consequuntur quisquam et doloremque blanditiis. Qui odit consequuntur in. Recusandae rerum aut fugit hic doloremque. Voluptatibus qui sit quoet. Aliquam et vel omnis.\n \rEt assumenda est nihil quo qui dolor est et voluptatem. Corrupti tempora aliquam ut veniam in cupiditate. Doloremque et ipsa dignissimos qui. Fugit non expedita mollitia quibusdam doloribus corrupti aspernatur enim corporis. Dolores veritatis enim aut sed incidunt illum.\n \rEst asperiores cum perspiciatis iusto dolorum necessitatibus autem nobis possimus. Commodi voluptates facilis excepturi doloremque quibusdam at libero est. Atque aspernatur aut. Nesciunt quisquam voluptatem itaque similique dolores suscipit a voluptate et. Doloribus neque veritatis quis magni consectetur."};
 const Prd_25 = { _id:"Inventory___Product~~25", code:"p25", barcode:"40063813339325", name:"Tasty Cotton Chips",  category:"Automotive", subcategory:"architecto", description:"Aut hic rerum explicabo ut illo ipsumtempora quisquam pariatur.", longDescription:"A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique."};
 
-let Inventory___Product___Location1 = { _id: "Inventory___Product___Location~~1___1", locationCode: "Warehouse1", category: "C1", price: 12.5, received_stock__: 15, ordered_stock__: 14, available_stock__: 1 };
+let Inventory___Product___Location1 = { _id: "Inventory___Product___Location~~1___1", productId: "Inventory___Product~~1", locationCode: "Warehouse1", category: "C1", price: 12.5, received_stock__: 15, ordered_stock__: 14, available_stock__: 1 };
 let Inventory___ProductUnit1 = { _id: "Inventory___ProductUnit~~1" };
 let Inventory___Order1 = { _id: "Inventory___Order~~1", sales_agent: "John Doe", creation_date: "2018-09-27" };
-let Inventory___Order___Item1_1 = { _id: "Inventory___Order___Item~~1___1", "Inventory___Product___Location$product": { _id: "Inventory___Product___Location~~1___1" }, quantity: 10 };
-let Inventory___Order___Item1_2 = { _id: "Inventory___Order___Item~~1___2", "Inventory___Product___Location$product": { _id: "Inventory___Product___Location~~1___1" }, quantity: 4 };
+let Inventory___Order___Item1_1 = { _id: "Inventory___Order___Item~~1___1", productLocationId: "Inventory___Product___Location~~1___1", quantity: 10 };
+let Inventory___Order___Item1_2 = { _id: "Inventory___Order___Item~~1___2", productLocationId: "Inventory___Product___Location~~1___1", quantity: 4 };
 let Inventory___Receipt1 = { _id: "Inventory___Receipt~~1" };
-let Inventory___Receipt___Item1_1 = { _id: "Inventory___Receipt___Item~~1___1", "Inventory___Product___Location$product": { _id: "Inventory___Product___Location~~1___1" }, quantity: 10 };
-let Inventory___Receipt___Item1_2 = { _id: "Inventory___Receipt___Item~~1___2", "Inventory___Product___Location$product": { _id: "Inventory___Product___Location~~1___1" }, quantity: 5 };
+let Inventory___Receipt___Item1_1 = { _id: "Inventory___Receipt___Item~~1___1", productLocationId: "Inventory___Product___Location~~1___1", quantity: 10 };
+let Inventory___Receipt___Item1_2 = { _id: "Inventory___Receipt___Item~~1___2", productLocationId: "Inventory___Product___Location~~1___1", quantity: 5 };
 let Forms___ServiceForm1 = { _id: "Forms___ServiceForm~~1" };
 let Reports___DetailedCentralizerReport1 = { _id: "Reports___DetailedCentralizerReport~~1" };
 let Reports___ServiceCentralizerReport1 = { _id: "Reports___ServiceCentralizerReport~~1" };
 
 export class MockData {
 
+    allData = [
+        Act_AdminFredrick,
+        Act_OperatorJoannie,
+        Act_OperatorKeenan,
+        Act_AgentCristal,
+        Act_AgentJerrod,
+        Act_Johns,
+        Act_Simonis,
+        Act_Stracke,
+        Act_Wolf,
+        Act_Buckridge,
+        Act_Conn,
+        Act_MacGyver,
+        Act_Ondricka,
+        Act_Collins,
+        Act_Wiza,
+        Cur_RON,
+        Cur_EUR,
+        Cur_USD,
+        Cln_Ratke,
+        Cln_Gibson,
+        Cln_Koelpin,
+        Cln_Crist,
+        Cln_Ledner,
+        Cln_Pagac,
+        Cln_Toy,
+        Cln_Kirlin,
+        Cln_Buckridge,
+        Cln_Cummerata,
+        Prd_1,
+        Prd_1a,
+        Prd_2a,
+        Prd_3a,
+        Prd_4a,
+        Prd_5a,
+        Prd_6a,
+        Prd_7a,
+        Prd_8a,
+        Prd_9a,
+        Prd_10,
+        Prd_11,
+        Prd_12,
+        Prd_13,
+        Prd_14,
+        Prd_15,
+        Prd_16,
+        Prd_17,
+        Prd_18,
+        Prd_19,
+        Prd_20,
+        Prd_21,
+        Prd_22,
+        Prd_23,
+        Prd_24,
+        Prd_25,
+        Inventory___Product___Location1,
+        Inventory___ProductUnit1,
+        Inventory___Order1,
+        Inventory___Order___Item1_1,
+        Inventory___Order___Item1_2,
+        Inventory___Receipt1,
+        Inventory___Receipt___Item1_1,
+        Inventory___Receipt___Item1_2,
+        Forms___ServiceForm1,
+        Reports___DetailedCentralizerReport1,
+        Reports___ServiceCentralizerReport1,
+    ];
+
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }
 
+    public getAllForPath(path: string) {
+        let ret: any[] = [];
+        for (let obj of this.allData) {
+            if (obj._id.indexOf(path) == 0) ret.push(obj);
+        }
+        return ret;
+    }
+
     public getAll() {
-        return [
-            Act_AdminFredrick,
-            Act_OperatorJoannie,
-            Act_OperatorKeenan,
-            Act_AgentCristal,
-            Act_AgentJerrod,
-            Act_Johns,
-            Act_Simonis,
-            Act_Stracke,
-            Act_Wolf,
-            Act_Buckridge,
-            Act_Conn,
-            Act_MacGyver,
-            Act_Ondricka,
-            Act_Collins,
-            Act_Wiza,
-            Cur_RON,
-            Cur_EUR,
-            Cur_USD,
-            Cln_Ratke,
-            Cln_Gibson,
-            Cln_Koelpin,
-            Cln_Crist,
-            Cln_Ledner,
-            Cln_Pagac,
-            Cln_Toy,
-            Cln_Kirlin,
-            Cln_Buckridge,
-            Cln_Cummerata,
-            Prd_1,
-            Prd_1a,
-            Prd_2a,
-            Prd_3a,
-            Prd_4a,
-            Prd_5a,
-            Prd_6a,
-            Prd_7a,
-            Prd_8a,
-            Prd_9a,
-            Prd_10,
-            Prd_11,
-            Prd_12,
-            Prd_13,
-            Prd_14,
-            Prd_15,
-            Prd_16,
-            Prd_17,
-            Prd_18,
-            Prd_19,
-            Prd_20,
-            Prd_21,
-            Prd_22,
-            Prd_23,
-            Prd_24,
-            Prd_25,
-            Inventory___Product___Location1,
-            Inventory___ProductUnit1,
-            Inventory___Order1,
-            Inventory___Order___Item1_1,
-            Inventory___Order___Item1_2,
-            Inventory___Receipt1,
-            Inventory___Receipt___Item1_1,
-            Inventory___Receipt___Item1_2,
-            Forms___ServiceForm1,
-            Reports___DetailedCentralizerReport1,
-            Reports___ServiceCentralizerReport1,
-        ];
+        return this.allData;
     }
 
 }

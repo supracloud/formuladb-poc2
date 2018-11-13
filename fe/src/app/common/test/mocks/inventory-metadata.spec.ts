@@ -67,13 +67,13 @@ describe('Inventory Metadata', () => {
 
         let pl1 = { _id: "Inventory___Product___Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
         await frmdbTStore.kvs().put(pl1);
-        let ri1_1 = { _id: "Inventory___Receipt___Item~~11", Inventory___Product___Location$product: {_id: "Inventory___Product___Location~~1"}, quantity: 10}; 
+        let ri1_1 = { _id: "Inventory___Receipt___Item~~11", productLocationId: "Inventory___Product___Location~~1", quantity: 10}; 
         await frmdbTStore.kvs().put(ri1_1);
-        let ri1_2 = { _id: "Inventory___Receipt___Item~~12", Inventory___Product___Location$product: {_id: "Inventory___Product___Location~~1"}, quantity: 5}; 
+        let ri1_2 = { _id: "Inventory___Receipt___Item~~12", productLocationId: "Inventory___Product___Location~~1", quantity: 5}; 
         await frmdbTStore.kvs().put(ri1_2);
-        let oi1_1 = { _id: "Inventory___Order___Item~~11", Inventory___Product___Location$product: {_id: "Inventory___Product___Location~~1"}, quantity: 10};
+        let oi1_1 = { _id: "Inventory___Order___Item~~11", productLocationId: "Inventory___Product___Location~~1", quantity: 10};
         await frmdbTStore.kvs().put(oi1_1);
-        let oi1_2 = { _id: "Inventory___Order___Item~~12", Inventory___Product___Location$product: {_id: "Inventory___Product___Location~~1"}, quantity: 4};
+        let oi1_2 = { _id: "Inventory___Order___Item~~12", productLocationId: "Inventory___Product___Location~~1", quantity: 4};
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);
