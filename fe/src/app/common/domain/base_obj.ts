@@ -6,7 +6,6 @@
 import { KeyValueObj } from "./key_value_obj";
 import * as _ from "lodash";
 import { isNumberES5 } from '../map_reduce_utils';
-import { StringOmit } from "../ts-utils";
 
 /**
  * SubObj(s) are nested objects of BaseObj(s)
@@ -61,10 +60,6 @@ export type ReservedPropNames = '_id' | '_rev' | 'created_' | 'updated_' | 'upda
     | 'mapObserversImpactedByOneObservable__' | 'mapreduceAggsOfManyObservablesQueryableFromOneObs__';
 
 export type ReservedPropNamesOf<T> = keyof T & ReservedPropNames;
-export type NonReservedPropNamesOf<T> = StringOmit<keyof T, ReservedPropNames>;
-export type PickNonReservedProperties<T> = {
-    [P in NonReservedPropNamesOf<T>]: T[P];
-}
 
 function isNumber(s: string): boolean {
     return isNumberES5(s);

@@ -1,0 +1,3 @@
+[submodule "fe/src/app/wiz-editor"]
+	path = fe/src/app/wiz-editor
+	url = https://gitlab.com/metawiz/wiz-editor.git

@@ -10,23 +10,24 @@
       <span class="navbar-toggler-bar burger-lines"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navigation">
-      <ul class="navbar-nav">
-        <li class="dropdown nav-item" ngbDropdown>
-          <a href="javascript:void(0)" class="dropdown-toggle nav-link" data-toggle="dropdown" id="FormulaEditor"
-            ngbDropdownToggle>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown" [class.show]="editorOpened">
+          <a class="nav-link" frmdbToggleFormulaEditor class="formula-button" [class.isDisabled]="!developerMode" href="javascript:void(0)" (click)="toggleFormulaEditor()">
             <img src="/assets/img/formula16.png" width="16" height="16" />
           </a>
-          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="FormulaEditor">
-            Options
-          </ul>
+          <div class="dropdown-menu dropdown-menu" [class.show]="editorOpened">
+            <frmdb-formula-code-editor *ngIf="editorOpened"></frmdb-formula-code-editor>
+          </div>
+        </li>
+        <li class="nav-item">
+          <form class="navbar-form" role="search">
+            <div class="input-group">
+              <textarea type="text" frmdbCurrentFormula (focus)="formulaFocused()" class="form-control formula-input"
+                disabled placeholder="FORMULA..." ></textarea>
+            </div>
+          </form>
         </li>
       </ul>
-      <form class="navbar-form navbar-right navbar-search-form" role="search">
-        <div class="input-group">
-          <input type="text" [value]="getFormula()" class="form-control" [disabled]="!(developerMode$ | async)"
-            placeholder="FORMULA...">
-        </div>
-      </form>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown" ngbDropdown placement="bottom-right">
           <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="TopNavSettings" ngbDropdownToggle
@@ -37,8 +38,8 @@
           <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="TopNavSettings">
             <a class="dropdown-item" href="javascript:void(0)">Notification 1</a>
             <a class="dropdown-item" href="javascript:void(0)">Notification 2</a>
-            <div class="divider" *ngIf="developerMode$ | async"></div>
-            <a class="dropdown-item" href="javascript:void(0)" *ngIf="developerMode$ | async">
+            <div class="divider" *ngIf="developerMode"></div>
+            <a class="dropdown-item" href="javascript:void(0)" *ngIf="developerMode">
               <img src="/assets/flags/us.png" (click)="switchLanguage('us')" style="margin-right: 5px; cursor: pointer" />
               <img src="/assets/flags/de.png" (click)="switchLanguage('de')" style="margin-right: 5px; cursor: pointer" />
               <img src="/assets/flags/fr.png" (click)="switchLanguage('fr')" style="margin-right: 5px; cursor: pointer" />
@@ -51,46 +52,33 @@
               <img src="/assets/flags/sv.png" (click)="switchLanguage('sv')" style="margin-right: 5px; cursor: pointer" />
               &nbsp;
             </a>
-            <div class="divider" *ngIf="developerMode$ | async"></div>
-            <a class="dropdown-item" href="javascript:void(0)" *ngIf="developerMode$ | async">
-              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i>
-              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i>
-              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i>
-              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i>
-              <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i>
-              &nbsp;
+            <div class="divider" *ngIf="developerMode"></div>
+            <a class="dropdown-item" href="javascript:void(0)" *ngIf="developerMode">
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i> 
+                <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i> 
+                &nbsp;
             </a>
-            <div class="divider" *ngIf="developerMode$ | async"></div>
-            <a class="dropdown-item" disabled href="javascript:void(0)" *ngIf="developerMode$ | async">
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-4.jpg')" src="/assets/sidebar_images/sidebar-4.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-1.jpg')" src="/assets/sidebar_images/sidebar-1.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-2.jpg')" src="/assets/sidebar_images/sidebar-2.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-3.jpg')" src="/assets/sidebar_images/sidebar-3.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-5.jpg')" src="/assets/sidebar_images/sidebar-5.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-6.jpg')" src="/assets/sidebar_images/sidebar-6.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-7.jpg')" src="/assets/sidebar_images/sidebar-7.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-8.jpg')" src="/assets/sidebar_images/sidebar-8.jpg"
-                style="margin-right: 4px" />
-              <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-9.jpg')" src="/assets/sidebar_images/sidebar-9.jpg"
-                style="margin-right: 4px" />
+            <div class="divider" *ngIf="developerMode"></div>
+            <a class="dropdown-item" disabled href="javascript:void(0)" *ngIf="developerMode">
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-4.jpg')" src="/assets/sidebar_images/sidebar-4.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-1.jpg')" src="/assets/sidebar_images/sidebar-1.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-2.jpg')" src="/assets/sidebar_images/sidebar-2.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-3.jpg')" src="/assets/sidebar_images/sidebar-3.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-5.jpg')" src="/assets/sidebar_images/sidebar-5.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-6.jpg')" src="/assets/sidebar_images/sidebar-6.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-7.jpg')" src="/assets/sidebar_images/sidebar-7.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-8.jpg')" src="/assets/sidebar_images/sidebar-8.jpg" style="margin-right: 4px" />
+                <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-9.jpg')" src="/assets/sidebar_images/sidebar-9.jpg" style="margin-right: 4px" />
             </a>
-            <div class="divider" *ngIf="developerMode$ | async"></div>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)" *ngIf="developerMode$ | async"><img
-                height="60" width="80" src="/assets/light.jpg" /> Light Theme</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)" *ngIf="developerMode$ | async"><img
-                height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)" *ngIf="developerMode$ | async"><img
-                height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
+            <div class="divider" *ngIf="developerMode"></div>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)" *ngIf="developerMode"><img height="60" width="80" src="/assets/light.jpg" /> Light Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)" *ngIf="developerMode"><img height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)" *ngIf="developerMode"><img height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
             <div class="divider"></div>
-            <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{
-              ((developerMode$ | async) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{ ((developerMode) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
             <div class="divider"></div>
             <a class="dropdown-item" href="javascript:void(0)"><i class="nc-icon nc-circle-09"></i>Account</a>
           </div>

@@ -195,7 +195,6 @@ const addRecursive = (tree: NodeElement, sibling: NodeElement, before: boolean, 
 }
 
 /**
- * TODO: check if immutable.js is needed, probably only for large data sets
  * 
  * @param state 
  * @param action 

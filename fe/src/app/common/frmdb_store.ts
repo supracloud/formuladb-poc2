@@ -12,7 +12,6 @@ import { MwzEvents } from "./domain/event";
 import { KeyValueStoreI } from "./key_value_store_i";
 import { KeyValueStorePouchDB } from "./key_value_store_pouchdb";
 import { KeyValueError, IdRevObj } from "./domain/key_value_obj";
-import { MIN_TUUID, MAX_TUUID } from "./domain/uuid";
 
 export class FrmdbStore {
     constructor(protected transactionsDB: KeyValueStorePouchDB, protected dataDB: KeyValueStorePouchDB) { }

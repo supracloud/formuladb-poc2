@@ -38,7 +38,6 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "./domain/metadata/execution_plan";
-import { PickNonReservedProperties } from "./domain/base_obj";
 import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName } from "./formula_compiler";
 import { _throw } from "./throw";
 

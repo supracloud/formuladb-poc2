@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
-import * as appState from '../../../app.state';
+import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from '../../../theme.state';
+import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
 import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 
 @Component({
@@ -15,14 +15,11 @@ import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 export class TopNavComponent implements OnInit, OnDestroy {
   protected subscriptions: Subscription[] = [];
 
-  selectedEntity$: Observable<appState.Entity | null>;
-  selectedProperty: EntityProperty | null;
-  developerMode$: Observable<boolean>;
+  developerMode: boolean = false;
+  editorOpened: boolean = false;
 
   constructor(protected store: Store<appState.AppState>, private router: Router) {
-    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
-    this.subscriptions.push(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.selectedProperty = prop));
-    this.developerMode$ = this.store.select(appState.isEditMode);
+    this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(prop => this.developerMode = prop));
   }
 
   ngOnInit() {
@@ -44,14 +41,16 @@ export class TopNavComponent implements OnInit, OnDestroy {
     this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
   }
 
-  public getFormula() {
-    if (this.selectedProperty) {
-      if (this.selectedProperty.propType_ == Pn.FORMULA) {
-        return this.selectedProperty.formula;
-      } else return this.selectedProperty.propType_;
-    } else return null;
+  formulaFocused() {
+    this.editorOpened = true;
   }
 
+  toggleFormulaEditor() {
+    if (!this.developerMode) return;
+
+    this.editorOpened = !this.editorOpened;
+  }
+  
   toggleDeveloperMode() {
     this.store.dispatch(new appState.CoreToggleDeveloperModeAction());
   }

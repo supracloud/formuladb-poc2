@@ -17,3 +17,21 @@ a.theme-color-pallete-purple {
 .navbar-toggler{
     margin-left:auto;
 }
+
+.formula-button {
+    margin-right: 5px;
+    border: 0px;
+}
+
+.formula-button.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+.formula-input {
+    min-width: 500px;
+    resize: none;
+    overflow: hidden;
+}

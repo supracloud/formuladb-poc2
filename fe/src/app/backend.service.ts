@@ -31,8 +31,8 @@ export enum EnvType {
 const remoteDataDBUrl: string = '/frmdbdata';
 const remoteTransactionsDBUrl: string = '/frmdbtransactions';
 
-let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal"/*, {adapter: "memory"}*/));
-let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal"/*, {adapter: "memory"}*/));
+let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal", {revs_limit: 2, auto_compaction: true}));
+let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal", {revs_limit: 2, auto_compaction: true}));
 
 @Injectable()
 export class BackendService extends FrmdbStore {
@@ -59,7 +59,7 @@ export class BackendService extends FrmdbStore {
         this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            this.testLocksDb = new PouchDB("frmdblockstest"/*, {adapter: "memory"}*/);
+            this.testLocksDb = new PouchDB("frmdblockstest", {revs_limit: 2, auto_compaction: true});
             let locksKVS = new KeyValueStorePouchDB(this.testLocksDb);
             let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
             this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(TransactionsDB, DataDB, locksKVS), mockMetadata.schema);

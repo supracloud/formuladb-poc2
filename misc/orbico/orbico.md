@@ -30,8 +30,20 @@ ALTER TABLE ONLY product_list_products_json ADD CONSTRAINT product_list_products
 
 ```
 
+I really like CouchDB's philosophy of immutability, pure functional incremental map-reduce views, multi-master replication with custom conflict management, changes feed, PouchDB-sync. I think it fits well with many things happening in back-end development nowadays: pure functional, reactive, event sourcing, CQRS, stream-processing, etc. I would like to use Couch+Pouch in one of my projects but I need some help with tuning the single node write performance of CouchDB vs Postgresql.
+
+I just did some simple and quick tests that showed that the write performance of Postgres is much higher than CouchDB:
+
+bulk import time for ~4.7mil records: 49sec vs 14min
+insert one record at a time: ~800 records/sec vs ~130 records/sec
+Can anyone with good CouchDB tuning experience advise on what am I doing wrong OR how can I increase the throughput on CouchDB? Please see below the details. The data is exactly the same, just that the Postgres primary key is a number while in CouchDB the _id is the string representation of that number.
+
+It is clear that HTTP has an overhead for CouchDB, but still, the difference seems too big.
+
+# Postgresql
+
 ```bash
-docker run -v $(pwd)/../ep-data:/data --name ep -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+MSYS2_ARG_CONV_EXCL="*" docker run -v $(pwd)/../ep-data:/data --name ep -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d clkao/postgres-plv8
 
 #Dump data from postgres
 docker exec -it ep bash -c 'echo "create database sy5t3m;" | psql -U postgres'
@@ -40,11 +52,11 @@ docker exec -it ep bash -c "echo -e \"\o /data/actors.json\nselect row_to_json(r
 # docker exec -it ep bash -c "echo -e \"\o /data/actors.json\nselect row_to_json(r) from (select 'Inventory___Order___Item~~' || id as _id, * from product_list_products) r;\" | psql -U postgres -d sy5t3m"
 docker exec -it ep bash -c "echo \"COPY (select row_to_json(r) from (select 'Inventory___Order___Item~~' || id as _id, * from product_list_products) r) to '/data/order_items.csv'  With CSV DELIMITER ',';\" | psql -U postgres -d sy5t3m"
 
-time docker exec -it ep bash -c "echo \"COPY product_list_products to '/data/product_list_products.csv'  With CSV DELIMITER ',';\" | psql -U postgres -d sy5t3m"
-COPY 4714978
-real    0m28.764s
-user    0m0.000s
-sys     0m0.078s
+        time docker exec -it ep bash -c "echo \"COPY product_list_products to '/data/product_list_products.csv'  With CSV DELIMITER ',';\" | psql -U postgres -d sy5t3m"
+        COPY 4714978
+        real    0m28.764s
+        user    0m0.000s
+        sys     0m0.078s
 
 #load data into postgres
 docker exec -it ep psql -U postgres -d sy5t3m #then create table product_list_products using the SQL above
@@ -54,12 +66,22 @@ real    0m25.589s
 user    0m0.000s
 sys     0m0.078s
 docker exec -it ep bash -c "echo \"select count(*) from product_list_products;\" | psql -U postgres -d sy5t3m"
+docker exec -it ep bash -c "echo \"select count(*) from product_list_products_json;\" | psql -U postgres -d sy5t3m"
   count
 ---------
  4811899
 (1 row)
 
+time docker exec -it ep bash -c "echo \"select * from product_list_products where product_code = '2084081435509' limit 1;\" | psql -U postgres -d sy5t3m"
+time docker exec -it ep bash -c "echo \"select * from product_list_products where product_code = '2084081435509';\" | psql -U postgres -d sy5t3m"
+time docker exec -it ep bash -c "echo \"select * from product_list_products_json where data ->> 'product_code' = '2084081279058' limit 1;\" | psql -U postgres -d sy5t3m"
+
 docker exec -it ep bash
+```
+
+# CouchDB
+
+```bash
 
 #docker run -d -v $(pwd)/../ec-data:/opt/couchdb/data -p 5984:5984 --name ec couchdb
 docker run -d -p 5984:5984 --name ec couchdb
@@ -68,9 +90,10 @@ curl -d @../ep-data/actors.json -H "Content-type: application/json" -X POST http
 
 #4mil rows cannot work with only one curl call
 sed -i 's/_sy5/sy5/' order_items.json
-split -l 100000 -d order_items.json
+split -l 5000 -d order_items.json
+sed -i 's/[}]$/},/; $ s/,$/]}/; 1 s/^/{"docs": [/' x*
 for i in x*; do (echo '{"docs": ['; cat $i ) > _tmp.json && sed -i '$ s/,$/]}/' _tmp.json && mv _tmp.json $i; done
-time for i in x*; do time curl -d @${i} -H "Content-type: application/json" -X POST http://127.0.0.1:5984/evrt/_bulk_docs | grep -v '"ok":true'; done
+time for i in x*; do time curl -T ${i} -H "Content-type: application/json" -X POST http://127.0.0.1:5984/evrt/_bulk_docs | grep -v '"ok":true'; done
 
 curl -H "Content-type: application/json" -X POST http://127.0.0.1:5984/evrt/_find -d '{
    "selector": {
@@ -105,5 +128,16 @@ user    0m0.373s
 sys     0m2.293s
 
 # cleanup: curl -XDELETE http://127.0.0.1:5984/evrt
+
+# pouchdb-server
+docker run -d --hostname="pouchdb-server" --name="pouchdb-server" -p 0.0.0.0:5984:5984 rstiller/pouchdb-server
+
+```
+
+
+# Couchbase
+
+```bash
+docker run -d --name ed -p 8091-8094:8091-8094 -p 11210:11210 couchbase
 
 ```

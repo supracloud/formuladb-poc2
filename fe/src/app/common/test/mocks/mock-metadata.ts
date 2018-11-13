@@ -5,8 +5,7 @@
 
 import * as _ from 'lodash';
 
-import { NonReservedPropNamesOf, ReservedPropNamesOf } from "../../domain/base_obj";
-import { Entity, Pn, isEntityProperty, extendEntityProperties, queryEntityWithDeepPath, HasEntityProperties, EntityProperty, EntityProperties, Schema } from '../../domain/metadata/entity'
+import { Entity, Schema } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
