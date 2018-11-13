@@ -15,12 +15,24 @@
  *   sudo npm install -g protractor
  *   sudo npm install -g selenium standalone
  *   webdriver-manager update
- * HOW TO RUN IT:
+ * HOW TO RUN IT in VM:
  *   export GOOGLE_APPLICATION_CREDENTIALS=soica-d09d94fbea9e.json
  *   export DISPLAY=:99
  *   Xvfb -ac :99 -screen 0 1920x1080x16 &
  *   webdriver-manager start /dev/null 2>&1
  *   ng e2e
+ * 
+ * HOW TO RUN IT IN CONTAINER:
+ * 
+ * docker login --username <docker hub username> --password <password> 
+ * 
+ * docker run --name ci-with-video --cap-add=SYS_ADMIN --user centos -it cristualexandru/formuladb:ci-with-video bash -c \
+ * 'source ~/.bashrc && cd && git clone https://<gitlab username>:<password>@gitlab.com/metawiz/febe.git && cd febe/ && git checkout \
+ * protractor-video-reporter && cd fe/ && npm install && ng e2e'
+ * 
+ * And get the final video from it:
+ * 
+ * docker cp ci-with-video:/home/centos/febe/fe/e2e/reports/videos/protractor-cropped.avi .
  */
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
