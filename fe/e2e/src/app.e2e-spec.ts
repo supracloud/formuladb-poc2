@@ -6,13 +6,15 @@
  * 1. Take into account the time spent in loading page elements and remove it from the browser sleep duration. Could impact timing. 
  * 2. FInd out why do I need that sleep before merging the audio/video files
  * 3. Configure a docker image with preinstalled software stack:
- *   sudo yum install java-1.8.0-openjdk-devel
- *   sudo vi /etc/yum.repos.d/google-chrome.repo
- *   sudo yum install google-chrome-stable
+ *   sudo yum install -y java-1.8.0-openjdk-devel git
+ *   sudo vi /etc/yum.repos.d/google-chrome.repo -> https://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/
+ *   sudo yum install -y google-chrome-stable
  *   sudo yum install -y chromedriver chromium xorg-x11-server-Xvfb
+ *   sudo yum install -y gcc-c++.x86_64
  *   sudo npm install -g @angular/cli
  *   sudo npm install -g protractor
  *   sudo npm install -g selenium standalone
+ *   webdriver-manager update
  * HOW TO RUN IT:
  *   export GOOGLE_APPLICATION_CREDENTIALS=soica-d09d94fbea9e.json
  *   export DISPLAY=:99
@@ -31,6 +33,7 @@ const fs = require('fs');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 var ffmpeg = require('fluent-ffmpeg');
 var shell = require('shelljs');
+var isWin = process.platform === "win32";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -86,14 +89,17 @@ describe('workspace-project App', () => {
     browser.driver.get('http://localhost:4200/');
     var financial = element(by.css('[href="/0/Financial"]'));
     browser.wait(until.presenceOf(financial), 50000, 'Element taking too long to appear in the DOM').then(() => {
-      // this is how you do it on windows. For headless VMs/containers we're using x11grab with Xvfb
-      // stream = new ffmpeg().input('desktop').inputOptions([    '-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
-      stream = new ffmpeg()
+      if (isWin) {
+        stream = new ffmpeg().input('desktop').inputOptions([    '-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
+      } else {
+        stream = new ffmpeg()
                  .input(process.env.DISPLAY)
                  .inputOptions([ '-f x11grab', '-s 1920x1080' ])
                  .fps(24)
                  .videoBitrate('4096k')
                  .output('e2e/reports/videos/protractor.avi');
+      }
+
       stream.run();
       browser.sleep(durations[0]);  
     });
