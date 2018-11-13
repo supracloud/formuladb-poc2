@@ -4,7 +4,13 @@
  */
 
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import { Dictioary_ro } from './dictionary_ro';
+import { Dictioary_en } from './dictionary_en';
 
+let Dictionaries = {
+    ro: Dictioary_ro,
+    en: Dictioary_en,
+}
 
 export interface I18nState {
     dictionary: { [literal: string]: string }
@@ -12,58 +18,12 @@ export interface I18nState {
 }
 
 export const i18nInitialState: I18nState = {
-    dictionary: {
-        'Enable-Developer-Mode':'Activare Mod Dezvoltator',
-        'Disable-Developer-Mode':'Dezactivare Mod Dezvoltator',
-
-        'Financial': 'Financiar',
-        'Financial___Account': 'Financiar / Conturi',
-        'Financial___Transaction': 'Financiar / Transactii',
-        'General':'General',
-        'General___Settings': 'General / Setari',
-        'General___Actor': 'General / Actori',
-        'General___Currency': 'General / Monezi',
-        'General___Person': 'General / Persoane',
-        'General___User': 'General / Utilizatori',
-        'General___Client': 'General / Clienti',
-        'Inventory':'Gestiune',
-        'Inventory___Product': 'Gestiune / Produse',
-        'Inventory___Product___Location': 'Gestiune / Locatii Produs',
-        'Inventory___ProductUnit': 'Gestiune / Echipamente',
-        'Inventory___Receipt': 'Gestiune / Intrari',
-        'Inventory___Receipt___Item': 'Gestiune / Produse Intrari',
-        'Inventory___Order': 'Gestiune / Comenzi',
-        'Inventory___Order___Item': 'Gestiune / Produse Comenzi',
-        'Reports': 'Rapoarte',
-        'Reports___DetailedCentralizerReport': 'Rapoarte / Centralizator Lunar Detaliat',
-        'Reports___ServiceCentralizerReport': 'Rapoarte / Centralizator Lunar Service',
-        'Reports___TestReport1': 'Rapoarte / Raport de Test 1',
-        'Forms': 'Formulare',
-        'Forms___ServiceForm': 'Formulare / Formular Service',
-
-
-        'DeliveryRate': 'Rata de livrare',
-        orderNb: 'Nr Comanda',
-        externalOrderNb: 'Nr extern Comanda',
-        orderCreationDate: 'Data Creare Comanda',
-        clientCode: 'Cod Client',
-        client: 'Client',
-        addressCode: 'Cod Adresa',
-        addressName: 'Nume Adresa',
-        location: 'Locatie',
-        productCode: 'Cod Produs',
-        barcode: 'Cod Bare',
-        quantity: 'Cantitate',
-        quantityError: 'Cantitate Eroare',
-        price: 'Pret',
-
-        'General___Currency!rate1!max': 'Maximum rate1 exceeded',
-        'items$': 'Items',
-    },
-    locale: 'ro-RO'
+    dictionary: Dictioary_ro,
+    locale: 'ro'
 };
 
 export const I18nLoadDictionaryN = "[i18n] I18nLoadDictionary";
+export const I18nChangeLocaleN = "[i18n] I18nChangeLocale";
 
 
 export class I18nLoadDictionary implements Action {
@@ -72,10 +32,17 @@ export class I18nLoadDictionary implements Action {
     constructor(public dictionary: { [literal: string]: string }) { }
 }
 
+export class I18nChangeLocale implements Action {
+    readonly type = I18nChangeLocaleN;
+
+    constructor(public locale: string) { }
+}
 
 
-export type I18nActions = I18nLoadDictionary
-    ;
+export type I18nActions = 
+    | I18nLoadDictionary
+    | I18nChangeLocale
+;
 
 /**
  * 
@@ -92,6 +59,13 @@ export function i18nReducer(state = i18nInitialState, action: I18nActions): I18n
                 dictionary: action.dictionary,
             };
             break;
+        case I18nChangeLocaleN:
+            ret = {
+                ...state,
+                locale: action.locale,
+                dictionary: Dictionaries[action.locale]
+            };
+        break;
     }
 
     // if (action.type.match(/^\[form\]/)) console.log('[form] reducer:', state, action, ret);

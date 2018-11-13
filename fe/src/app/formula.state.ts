@@ -13,15 +13,18 @@ export { DataObj };
 export { ChangeObj, applyChanges };
 
 import { Expression } from 'jsep';
+import { EntityProperty, Pn } from './common/domain/metadata/entity';
 
 export interface FormulaState {
+  selectedFormula: string | undefined;
   editorExpr: string | undefined;
-  focusedExpr: Expression | undefined;
+  selectedProperty: EntityProperty | null;
 }
 
 export const formulaEditorInitialState: FormulaState = {
+  selectedFormula: undefined,
   editorExpr: undefined,
-  focusedExpr: undefined,
+  selectedProperty: null,
 };
 
 
@@ -30,7 +33,7 @@ export const FormulaStartN = "[fx] FormulaStart";
 export class FormulaStart implements Action {
   readonly type = FormulaStartN;
 
-  constructor(public expr: string | undefined) { }
+  constructor() { }
 }
 
 export type FormulaActions =
@@ -49,7 +52,7 @@ export function formulaEditorReducer(state = formulaEditorInitialState, action: 
     case FormulaStartN:
       ret = {
         ...state,
-        editorExpr: action.expr
+        editorExpr: state.selectedFormula
       };
       break;
   }

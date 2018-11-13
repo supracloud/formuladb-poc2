@@ -12,7 +12,7 @@
     <div class="collapse navbar-collapse justify-content-end" id="navigation">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item dropdown" [class.show]="editorOpened">
-          <a class="nav-link" class="formula-button" [class.isDisabled]="!developerMode" href="javascript:void(0)" (click)="toggleFormulaEditor()">
+          <a class="nav-link" frmdbToggleFormulaEditor class="formula-button" [class.isDisabled]="!developerMode" href="javascript:void(0)" (click)="toggleFormulaEditor()">
             <img src="/assets/img/formula16.png" width="16" height="16" />
           </a>
           <div class="dropdown-menu dropdown-menu" [class.show]="editorOpened">
@@ -22,7 +22,7 @@
         <li class="nav-item">
           <form class="navbar-form" role="search">
             <div class="input-group">
-              <textarea type="text" [value]="getFormula()" (focus)="formulaFocused()" class="form-control formula-input"
+              <textarea type="text" frmdbCurrentFormula (focus)="formulaFocused()" class="form-control formula-input"
                 disabled placeholder="FORMULA..." ></textarea>
             </div>
           </form>

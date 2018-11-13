@@ -129,6 +129,9 @@ sys     0m2.293s
 
 # cleanup: curl -XDELETE http://127.0.0.1:5984/evrt
 
+# pouchdb-server
+docker run -d --hostname="pouchdb-server" --name="pouchdb-server" -p 0.0.0.0:5984:5984 rstiller/pouchdb-server
+
 ```
 
 

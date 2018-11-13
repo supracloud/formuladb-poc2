@@ -15,7 +15,7 @@ import {
 import { Form } from './common/domain/uimetadata/form';
 import { Table } from './common/domain/uimetadata/table';
 import { DataObj } from './common/domain/metadata/data_obj';
-import { Entity } from './common/domain/metadata/entity';
+import { Entity, Pn } from './common/domain/metadata/entity';
 import { ChangeObj, applyChanges } from './common/domain/change_obj';
 
 
@@ -101,11 +101,24 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         }
       }
     } else if (action.type === fromTable.UserSelectCellN) {
+      let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : null;
+      let editorExpr = 'Not Defined';
+      if (selectedProperty) {
+        if (selectedProperty.propType_ == Pn.FORMULA) {
+          editorExpr = selectedProperty.formula;
+        } else editorExpr = selectedProperty.propType_;
+      }
+
       updatedState = {
         ...state,
         entity: {
           ...state.entity,
-          selectedProperty: state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : null,
+          selectedProperty: selectedProperty,
+        },
+        formula: {
+          ...state.formula,
+          selectedFormula: editorExpr,
+          selectedProperty: selectedProperty,
         }
       }
     

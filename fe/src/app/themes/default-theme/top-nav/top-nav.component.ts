@@ -15,14 +15,10 @@ import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 export class TopNavComponent implements OnInit, OnDestroy {
   protected subscriptions: Subscription[] = [];
 
-  selectedEntity$: Observable<appState.Entity | null>;
-  selectedProperty: EntityProperty | null;
   developerMode: boolean = false;
   editorOpened: boolean = false;
 
   constructor(protected store: Store<appState.AppState>, private router: Router) {
-    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
-    this.subscriptions.push(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.selectedProperty = prop));
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(prop => this.developerMode = prop));
   }
 
@@ -45,26 +41,14 @@ export class TopNavComponent implements OnInit, OnDestroy {
     this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
   }
 
-  public getFormula() {
-    if (this.selectedProperty) {
-      if (this.selectedProperty.propType_ == Pn.FORMULA) {
-        return this.selectedProperty.formula;
-      } else return this.selectedProperty.propType_;
-    } else return undefined;
-  }
-
   formulaFocused() {
     this.editorOpened = true;
-    this.store.dispatch(new appState.FormulaStart(this.getFormula()));
   }
 
   toggleFormulaEditor() {
     if (!this.developerMode) return;
 
     this.editorOpened = !this.editorOpened;
-    if (this.editorOpened) {
-      this.store.dispatch(new appState.FormulaStart(this.getFormula()));
-    }
   }
   
   toggleDeveloperMode() {
