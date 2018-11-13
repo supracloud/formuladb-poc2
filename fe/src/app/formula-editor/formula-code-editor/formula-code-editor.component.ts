@@ -7,6 +7,7 @@ import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { FormulaEditorService } from '../formula-editor.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -16,10 +17,11 @@ import { FormulaEditorService } from '../formula-editor.service';
 export class FormulaCodeEditorComponent implements OnInit {
   protected subscriptions: Subscription[] = [];
 
-  editorExpr$: Observable<string | undefined>;
+  editorExpr: string | undefined;
 
-  constructor(private formulaEditorService: FormulaEditorService) {
-    this.editorExpr$ = formulaEditorService.editorExpr$;
+  constructor(private formulaEditorService: FormulaEditorService, private router: Router) {
+    this.subscriptions.push(formulaEditorService.editorExpr$.subscribe(
+      expr => this.editorExpr = expr));
   }
 
   ngOnInit() {
@@ -45,4 +47,8 @@ export class FormulaCodeEditorComponent implements OnInit {
     } else return [];
   }
 
+  cursorMove(cursorPos: number) {
+    //TODO: navigate to entity on cursor and highlight columns
+    this.router.navigate([this.router.url.replace(/(\/\d+).*/, (match, $1) => $1 + '/Inventory___Receipt___Item')]);
+  }
 }

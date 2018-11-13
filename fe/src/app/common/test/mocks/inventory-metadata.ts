@@ -106,18 +106,7 @@ export const Inventory___Receipt___Item = {
     _id: "Inventory___Receipt___Item",
     props: {
 
-        product: {
-            name: "product",
-            propType_: Pn.BELONGS_TO,
-            referencedEntityName: Inventory___Product___Location._id,
-            snapshotCurrentValueOfProperties: [
-                // "../../code",
-                // "../../name",
-                "locationCode",
-                "price",
-                // "currency/code",
-            ]
-        } as EntityProperty,
+        productLocationId: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: "quantity", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         units: {
             name: "units",

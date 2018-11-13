@@ -46,7 +46,12 @@ export class TableComponent implements OnInit, OnDestroy {
                 try {
 
                     this.tableState = _.cloneDeep(t);
-                    this.columns = t.columns.map(c => <GridOptions>{ headerName: c.name, field: c.name, width: c.width ? c.width : 100 });
+                    this.columns = t.columns.map(c => <GridOptions>{ 
+                        headerName: c.name, 
+                        field: c.name, 
+                        width: c.width ? c.width : 100,
+                        cellStyle: params => this.applyCellStyles(params),
+                    });
 
                     if (this.gridApi) {
                         this.gridApi.setColumnDefs(this.columns);
@@ -66,6 +71,10 @@ export class TableComponent implements OnInit, OnDestroy {
         } catch (ex) {
             console.error(ex);
         }
+    }
+
+    applyCellStyles(params) {
+
     }
 
     ngOnInit(): void {
