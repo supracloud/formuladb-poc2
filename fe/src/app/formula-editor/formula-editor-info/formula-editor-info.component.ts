@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormulaEditorService } from '../formula-editor.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'frmdb-formula-editor-info',
@@ -7,7 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FormulaEditorInfoComponent implements OnInit {
 
-  constructor() { }
+  public editorOpened$: Observable<boolean>;
+
+  constructor(private formulaEditorService: FormulaEditorService) {
+    this.editorOpened$ = formulaEditorService.editorExpr$.pipe(map(editorTxt => editorTxt != undefined));
+  }
 
   ngOnInit() {
   }
