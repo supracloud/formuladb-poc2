@@ -13,7 +13,7 @@ import * as fromEntity from '../../../entity-state';
 import { NavigationItem } from '../../../navigation.item';
 
 @Component({
-  selector: '[frmdb-navigation]',
+  selector: 'frmdb-navigation',
   // changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './navigation.component.html',
 })

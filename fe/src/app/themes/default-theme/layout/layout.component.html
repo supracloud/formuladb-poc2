@@ -7,12 +7,11 @@
 -->
     <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text">
+        <a href="http://formuladb.io" class="simple-text">
           BRAND TBD
         </a>
       </div>
-      <ul frmdb-navigation class="nav">
-      </ul>
+      <frmdb-navigation class="nav"></frmdb-navigation>
     </div>
     <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>      
   </div>
