@@ -1,13 +1,13 @@
 <ng-container *ngFor="let entity of nav">
     <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
         <a [routerLink]="[entity.path]" style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link"
-            [class.collapsed]="entity.children.length>0 && entity.collapsed" [attr.data-toggle]="'collapse'">
+            [class.collapsed]="entity.children.length>0 && entity.collapsed && !entity.onPath" [attr.data-toggle]="'collapse'">
             <p>{{entity.linkName | i18n }}
-                <i *ngIf="entity.children.length>0 && entity.collapsed" class="nc-icon nc-stre-right" (click)="expand(entity.id, $event)"></i>
-                <i *ngIf="entity.children.length>0 && !entity.collapsed" class="nc-icon nc-stre-down" (click)="collapse(entity.id, $event)"></i>
+                <i *ngIf="entity.children.length>0 && entity.collapsed && !entity.onPath" class="nc-icon nc-stre-right" (click)="expand(entity.id, $event)"></i>
+                <i *ngIf="entity.children.length>0 && (!entity.collapsed || entity.onPath)" class="nc-icon nc-stre-down" (click)="collapse(entity.id, $event)"></i>
                 <i *ngIf="entity.children.length==0">&nbsp;</i>
             </p>
         </a>
     </li>
-    <ul class="nav" frmdb-navigation-segment [nav]="entity.children" *ngIf="!entity.collapsed"></ul>
+    <ul class="nav" frmdb-navigation-segment [nav]="entity.children" *ngIf="!entity.collapsed || entity.onPath"></ul>
 </ng-container>

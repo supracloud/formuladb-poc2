@@ -4,6 +4,7 @@ export interface NavigationItem extends Node {
     indent: number;
     active: boolean;
     collapsed: boolean;
+    onPath?: boolean;
 }
 
 export interface Node {
