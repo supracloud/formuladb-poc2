@@ -66,10 +66,10 @@ export const Reports___TestReport1 = {
     _id: "Reports___TestReport1",
     props: {
         largeSalesPerProduct: {
-            propType_: Pn.SUB_TABLE,
+            propType_: Pn.CHILD_TABLE,
             props: {
                 product: {
-                    propType_: Pn.BELONGS_TO,
+                    propType_: Pn.REFERENCE_TO,
                     referencedEntityName: Inventory___Product___Location._id,
                     snapshotCurrentValueOfProperties: [
                         "../../code",

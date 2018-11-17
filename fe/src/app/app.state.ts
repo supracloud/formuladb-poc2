@@ -92,7 +92,8 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           formReadOnly: action.appReadonly != fromCore.NotReadonly,
         }
       }
-    } else if (action.type === fromCore.CoreToggleDeveloperModeActionN) {
+    } 
+    else if (action.type === fromCore.CoreToggleDeveloperModeActionN) {
       updatedState = {
         ...state,
         form: {
@@ -100,7 +101,9 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           formEditMode: !state.core.developerMode,
         }
       }
-    } else if (action.type === fromTable.UserSelectCellN) {
+    } 
+    //TODO: this should be an effect
+    else if (action.type === fromTable.UserSelectCellN) {
       let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : null;
       let editorExpr = 'Not Defined';
       if (selectedProperty) {
@@ -121,7 +124,15 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           selectedProperty: selectedProperty,
         }
       }
-    
+    } else if (action.type === fromFormula.FormulaEditorToggleN) {
+      updatedState = {
+        ...state,
+        table: {
+          ...state.table,
+          highlightColumns: !state.table.highlightColumns,
+        }
+      }
+
     }
     let newState = reducer(updatedState, action);
     console.log("%c " + action.type + " ACTION DISPATCHED.", 

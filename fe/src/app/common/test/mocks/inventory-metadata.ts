@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, Pn, FormulaProperty, EntityProperty, BelongsToProperty } from '../../domain/metadata/entity';
+import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty } from '../../domain/metadata/entity';
 import { ExecutionPlan } from '../../domain/metadata/execution_plan';
 import { Sn } from '../../domain/metadata/stored_procedure';
 import { $s2e } from '../../formula_compiler';
@@ -20,13 +20,6 @@ export const Inventory___Product___Location = {
         productId: { name: "productId", propType_: Pn.STRING, allowNull: false, defaultValue: "DEFAULT-location" } as EntityProperty,
         locationCode: { name: "locationCode", propType_: Pn.STRING, allowNull: false, defaultValue: "DEFAULT-location" } as EntityProperty,
         category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        price: { name: "price", propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
-        currency: {
-            propType_: Pn.BELONGS_TO,
-            referencedEntityName: "General_Currency",
-            snapshotCurrentValueOfProperties: ["code"],
-        } as EntityProperty,
-        minimal_stock: { name: "minimal_stock", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         received_stock__: {
             name: "received_stock__",
             propType_: Pn.FORMULA,
@@ -42,6 +35,13 @@ export const Inventory___Product___Location = {
             propType_: Pn.FORMULA,
             formula: 'SUMIF(Inventory___Order___Item.quantity, productLocationId == $ROW$._id)'
         } as FormulaProperty,
+        price: { name: "price", propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
+        currency: {
+            propType_: Pn.REFERENCE_TO,
+            referencedEntityName: "General_Currency",
+            snapshotCurrentValueOfProperties: ["code"],
+        } as EntityProperty,
+        minimal_stock: { name: "minimal_stock", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         moving_stock: { name: "moving_stock", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         state: { name: "state", propType_: Pn.STRING, allowNull: false } as EntityProperty,
     },
@@ -58,7 +58,7 @@ export const Inventory___Product = {
         barcode: { name: "barcode", propType_: Pn.STRING } as EntityProperty,
         name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         description: { name: "description", propType_: Pn.STRING } as EntityProperty,
-        inventoryLocation: { name: "inventoryLocation", propType_: Pn.SUB_TABLE, referencedEntityName: Inventory___Product___Location._id, props: {} } as EntityProperty,
+        inventoryLocation: { name: "inventoryLocation", propType_: Pn.CHILD_TABLE, referencedEntityName: Inventory___Product___Location._id, props: {} } as EntityProperty,
     }
 };
 
@@ -68,7 +68,7 @@ export const Inventory___ProductUnit = {
 
         code: { name: "code", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product: {
-            propType_: Pn.BELONGS_TO,
+            propType_: Pn.REFERENCE_TO,
             name: "product",
             referencedEntityName: Inventory___Product._id,
             snapshotCurrentValueOfProperties: [
@@ -98,7 +98,7 @@ export const Inventory___ProductUnit = {
 export const Inventory___Receipt = {
     _id: "Inventory___Receipt",
     props: {
-        items$: { name: "items$", propType_: Pn.SUB_TABLE, referencedEntityName: 'Inventory___Receipt___Item', props: {}, isLargeTable: true } as EntityProperty,
+        items$: { name: "items$", propType_: Pn.CHILD_TABLE, referencedEntityName: 'Inventory___Receipt___Item', props: {}, isLargeTable: true } as EntityProperty,
     }
 };
 
@@ -110,9 +110,9 @@ export const Inventory___Receipt___Item = {
         quantity: { name: "quantity", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         units: {
             name: "units",
-            propType_: Pn.SUB_TABLE,
+            propType_: Pn.CHILD_TABLE,
             props: {
-                unit: { name: "unit", propType_: Pn.BELONGS_TO, referencedEntityName: Inventory___ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
+                unit: { name: "unit", propType_: Pn.REFERENCE_TO, referencedEntityName: Inventory___ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
             }
         } as EntityProperty,
     }
@@ -126,7 +126,7 @@ export const Inventory___Order = {
         creation_date: { name: "creation_date", propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
         items$: {
             name: 'items$',
-            propType_: Pn.SUB_TABLE,
+            propType_: Pn.CHILD_TABLE,
             referencedEntityName: 'Inventory___Order___Item',
             props: {},
             isLargeTable: true,
@@ -143,9 +143,9 @@ export const Inventory___Order___Item = {
         client_stock: { name: "client_stock", propType_: Pn.NUMBER } as EntityProperty,
         units: {
             name: "units",
-            propType_: Pn.SUB_TABLE,
+            propType_: Pn.CHILD_TABLE,
             props: {
-                unit: { name: "unit", propType_: Pn.BELONGS_TO, referencedEntityName: Inventory___ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
+                unit: { name: "unit", propType_: Pn.REFERENCE_TO, referencedEntityName: Inventory___ProductUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
             }
         } as EntityProperty,
     },

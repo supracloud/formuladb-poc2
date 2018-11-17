@@ -30,7 +30,7 @@ describe('FrmdbEngine', () => {
         entities: {
             A: {
                 _id: 'A', props: {
-                    B$b: { name: "B$b", propType_: Pn.BELONGS_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: [] },
+                    B$b: { name: "B$b", propType_: Pn.REFERENCE_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: [] },
                     val: { name: "val", propType_: Pn.NUMBER },
                     err: { name: "val", propType_: Pn.NUMBER },
                 },
@@ -57,8 +57,8 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
-                    Ac$a1: { name: "Ac$ac1", propType_: Pn.BELONGS_TO, referencedEntityName: 'Ac', snapshotCurrentValueOfProperties: [] },
-                    Ac$a2: { name: "Ac$ac2", propType_: Pn.BELONGS_TO, referencedEntityName: 'Ac', snapshotCurrentValueOfProperties: [] },
+                    Ac$a1: { name: "Ac$ac1", propType_: Pn.REFERENCE_TO, referencedEntityName: 'Ac', snapshotCurrentValueOfProperties: [] },
+                    Ac$a2: { name: "Ac$ac2", propType_: Pn.REFERENCE_TO, referencedEntityName: 'Ac', snapshotCurrentValueOfProperties: [] },
                     val: { name: "val", propType_: Pn.NUMBER },
                 },
                 autoCorrectionsOnValidationFailed: {

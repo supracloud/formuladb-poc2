@@ -33,6 +33,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private filters: any = {};
     private sort: any = {};
     private subscriptions: Subscription[] = [];
+    private highlightColumns: boolean = false;
 
 
     private tableState: tableState.Table;
@@ -68,13 +69,18 @@ export class TableComponent implements OnInit, OnDestroy {
                 console.log("new table data", d);
                 this.data = d
             }));
+            this.subscriptions.push(store.select(tableState.getTableHighlightColumns)
+                .subscribe(h => this.highlightColumns = h));
         } catch (ex) {
             console.error(ex);
         }
     }
 
     applyCellStyles(params) {
-
+        if (this.highlightColumns) {
+            if (params.colDef.field == 'quantity') return { backgroundColor: 'green' };
+        }
+        return null;
     }
 
     ngOnInit(): void {

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { WizEditorModule } from 'src/app/wiz-editor/wiz-editor.module';
+import { FormsModule } from '@angular/forms';
 
 import { FormulaCodeEditorComponent } from './formula-code-editor/formula-code-editor.component';
 import { ToggleFormulaEditorDirective } from './toggle-formula-editor.directive';
@@ -11,7 +10,7 @@ import { FormulaEditorInfoComponent } from './formula-editor-info/formula-editor
 @NgModule({
   imports: [
     CommonModule,
-    WizEditorModule,
+    FormsModule,
   ],
   declarations: [
     FormulaCodeEditorComponent, 

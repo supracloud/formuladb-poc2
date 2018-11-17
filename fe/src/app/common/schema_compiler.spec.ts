@@ -35,7 +35,7 @@ describe('SchemaCompiler', () => {
             entities: {
                 A: {
                     _id: 'A', props: {
-                        B$b: { name: "B$b", propType_: Pn.BELONGS_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: [] },
+                        B$b: { name: "B$b", propType_: Pn.REFERENCE_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: [] },
                         val: { name: "val", propType_: Pn.NUMBER },
                     }
                 } as Entity,

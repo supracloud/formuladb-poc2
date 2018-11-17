@@ -306,8 +306,6 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 }
 
 export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula {
-
-
     let ret = compileExpression(jsep(formula), { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
 
     if (isCompiledScalar(ret)) {

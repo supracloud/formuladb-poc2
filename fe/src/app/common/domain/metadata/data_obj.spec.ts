@@ -6,7 +6,7 @@
 import * as _ from 'lodash';
 import { Inventory___Product, Inventory___Order } from "../../test/mocks/inventory-metadata";
 import { Forms___ServiceForm } from "../../test/mocks/forms-metadata";
-import { Entity, queryEntityWithDeepPath, extendEntityProperties, HasEntityProperties, SubTableProperty, isSubTableProperty } from "./entity";
+import { Entity, queryEntityWithDeepPath, extendEntityProperties, HasEntityProperties, ChildTableProperty, isSubTableProperty } from "./entity";
 import { parseDataObjId } from './data_obj';
 
 describe('DataObj', () => {

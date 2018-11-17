@@ -148,7 +148,7 @@ describe('FrmdbEngineStore', () => {
     });
 
     describe('Table Relationships', () => {
-        it("B.sum__ SUM(A$.num) means A is SUB_TABLE of B or A BELONGS_TO B", async (done) => {
+        it("B.sum__ SUM(A$.num) means A is CHILD_TABLE of B or A REFERENCE_TO B", async (done) => {
             compiledFormula = compileFormula('B', 'sum__', 'SUM(A__of__myB.num)');
             await frmdbTStore.installFormula(compiledFormula);
 

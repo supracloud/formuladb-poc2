@@ -38,7 +38,7 @@ export class FormulaValidation {
     rollback?: boolean;
 }
 
-export type HasEntityProperties = Entity | SubTableProperty | SubEntityProperty;
+export type HasEntityProperties = Entity | ChildTableProperty | ExtendsEntityProperty;
 export type EntityProperties = { [x: string]: EntityProperty };
 export type EntityDeepPath = string;
 export interface Schema extends BaseObj {
@@ -50,8 +50,8 @@ export function isEntityProperty(param): param is EntityProperty {
     return param != null && typeof param === 'object' && param['propType_'] != null;
 }
 
-export function isPropertyWithProperties(param): param is SubTableProperty | SubEntityProperty {
-    return isEntityProperty(param) && (param.propType_ === Pn.SUB_TABLE || param.propType_ === Pn.SUB_ENTITY);
+export function isPropertyWithProperties(param): param is ChildTableProperty | ExtendsEntityProperty {
+    return isEntityProperty(param) && (param.propType_ === Pn.CHILD_TABLE || param.propType_ === Pn.EXTENDS_ENTITY);
 }
 export function extendEntityProperties(extendedEntity: HasEntityProperties, newProperties: EntityProperties) {
     _.toPairs(newProperties).forEach(([propName, p]) => {
@@ -74,9 +74,9 @@ export const enum Pn {
     STRING = "STRING",
     TEXT = "TEXT",
     DATETIME = "DATETIME",
-    SUB_TABLE = "SUB_TABLE",
-    BELONGS_TO = "BELONGS_TO",
-    SUB_ENTITY = "SUB_ENTITY",
+    CHILD_TABLE = "CHILD_TABLE",
+    REFERENCE_TO = "REFERENCE_TO",
+    EXTENDS_ENTITY = "SUB_ENTITY",
     FORMULA = "FORMULA",
 }
 
@@ -106,39 +106,39 @@ export interface DatetimeProperty {
 /**
  * Table of existing entities or entities created
  */
-export interface SubTableProperty {
-    propType_: Pn.SUB_TABLE;
+export interface ChildTableProperty {
+    propType_: Pn.CHILD_TABLE;
     name: string;
     referencedEntityName?: string;
     snapshotCurrentValueOfProperties?: string[];
     isLargeTable?: boolean;
     props: EntityProperties;
 }
-export function isSubTableProperty(param): param is SubTableProperty {
-    return param != null && typeof param === 'object' && param.propType_ === Pn.SUB_TABLE;
+export function isSubTableProperty(param): param is ChildTableProperty {
+    return param != null && typeof param === 'object' && param.propType_ === Pn.CHILD_TABLE;
 }
 
 /**
  * This property represents an embedded entity that is created when the parent entity is created
  */
-export interface SubEntityProperty {
-    propType_: Pn.SUB_ENTITY;
+export interface ExtendsEntityProperty {
+    propType_: Pn.EXTENDS_ENTITY;
     name: string;
     referencedEntityName?: string;
     props: EntityProperties;
 }
-export function isSubEntityProperty(param): param is SubEntityProperty {
-    return param != null && typeof param === 'object' && param.propType_ == Pn.SUB_ENTITY;
+export function isSubEntityProperty(param): param is ExtendsEntityProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.EXTENDS_ENTITY;
 }
 
-export interface BelongsToProperty {
-    propType_: Pn.BELONGS_TO;
+export interface ReferenceToProperty {
+    propType_: Pn.REFERENCE_TO;
     name: string;
     referencedEntityName: string;
     snapshotCurrentValueOfProperties: string[];
 }
-export function isBelongsToProperty(param): param is BelongsToProperty {
-    return param != null && typeof param === 'object' && param.propType_ == Pn.BELONGS_TO;
+export function isBelongsToProperty(param): param is ReferenceToProperty {
+    return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;
 }
 
 
@@ -162,8 +162,8 @@ export type EntityProperty =
     | StringProperty
     | TextProperty
     | DatetimeProperty
-    | SubTableProperty
-    | SubEntityProperty
-    | BelongsToProperty
+    | ChildTableProperty
+    | ExtendsEntityProperty
+    | ReferenceToProperty
     | FormulaProperty
     ;

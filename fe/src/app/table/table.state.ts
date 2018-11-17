@@ -20,12 +20,14 @@ export interface TableState {
   table: Table;
   tableData: DataObj[];
   selectedColumnName: string | undefined;
+  highlightColumns: boolean;
 }
 
 export const tableInitialState: TableState = {
   table: {} as Table,
   selectedColumnName: undefined,
   tableData: [] as DataObj[],
+  highlightColumns: false,
 };
 
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
@@ -146,4 +148,8 @@ export const getTableDataState = createSelector(
 export const getTableState = createSelector(
   getTable,
   (state: TableState) => state.table
+);
+export const getTableHighlightColumns = createSelector(
+  getTable,
+  (state: TableState) => state.highlightColumns
 );

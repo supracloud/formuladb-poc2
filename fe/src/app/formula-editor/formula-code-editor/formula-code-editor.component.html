@@ -1,7 +1,14 @@
-<div class="formula-code-editor" wiz-editor 
-    (cursorMove)="cursorMove($event)"
-    [ctext]="editorExpr" 
-    [suggestion]="setSuggestion.bind(this)" 
-    [colorClass]="setClass.bind(this)" 
-    [validation]="doValidation.bind(this)">
+<div class="formula-code-editor">
+    <textarea class="editor-textarea" 
+      #editor 
+      spellcheck="false" 
+      [(ngModel)]="editorExpr" 
+      (keydown.tab)="onAutoComplete($event)" 
+      (keydown.enter)="onAutoComplete($event)" 
+      (keyup)="keyup(editor, $event)"
+      (click)="click(editor, $event)" 
+      (keydown.arrowdown)="nextSuggestion($event)" 
+      (keydown.arrowup)="prevSuggestion($event)">
+    </textarea>
+    <div class="editor-formatted-overlay" [innerHtml]="ftext"></div>
 </div>

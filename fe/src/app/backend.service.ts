@@ -155,7 +155,7 @@ export class BackendService extends FrmdbStore {
         let parentUUID = parseDataObjId(id).uid;
         let entity = this.getFrmdbEngineTools().schemaDAO.getEntityForDataObj(id);
         for (let prop of Object.values(entity.props)) {
-            if (prop.propType_ == Pn.SUB_TABLE) {
+            if (prop.propType_ == Pn.CHILD_TABLE) {
                 let subtableData = await this.dataDB.findByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
                 dataObj[prop.name] = subtableData;
             }

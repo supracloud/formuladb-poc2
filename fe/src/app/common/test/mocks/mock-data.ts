@@ -66,14 +66,38 @@ const Prd_24 = { _id:"Inventory___Product~~24", code:"p24", barcode:"40063813339
 const Prd_25 = { _id:"Inventory___Product~~25", code:"p25", barcode:"40063813339325", name:"Tasty Cotton Chips",  category:"Automotive", subcategory:"architecto", description:"Aut hic rerum explicabo ut illo ipsumtempora quisquam pariatur.", longDescription:"A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique."};
 
 let Inventory___Product___Location1 = { _id: "Inventory___Product___Location~~1___1", productId: "Inventory___Product~~1", locationCode: "Warehouse1", category: "C1", price: 12.5, received_stock__: 15, ordered_stock__: 10, available_stock__: 5 };
-let Inventory___Product___Location2 = { _id: "Inventory___Product___Location~~1___2", productId: "Inventory___Product~~2a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 5, ordered_stock__: 4, available_stock__: 1 };
+let Inventory___Product___Location1a = { _id: "Inventory___Product___Location~~1___1a", productId: "Inventory___Product~~1a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 5, ordered_stock__: 4, available_stock__: 1 };
+let Inventory___Product___Location2a = { _id: "Inventory___Product___Location~~1___2a", productId: "Inventory___Product~~2a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location3a = { _id: "Inventory___Product___Location~~1___3a", productId: "Inventory___Product~~3a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location4a = { _id: "Inventory___Product___Location~~1___4a", productId: "Inventory___Product~~4a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location5a = { _id: "Inventory___Product___Location~~1___5a", productId: "Inventory___Product~~5a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location6a = { _id: "Inventory___Product___Location~~1___6a", productId: "Inventory___Product~~6a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location7a = { _id: "Inventory___Product___Location~~1___7a", productId: "Inventory___Product~~7a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location8a = { _id: "Inventory___Product___Location~~1___8a", productId: "Inventory___Product~~8a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location9a = { _id: "Inventory___Product___Location~~1___9a", productId: "Inventory___Product~~9a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location10 = { _id: "Inventory___Product___Location~~1___10", productId: "Inventory___Product~~10", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location11 = { _id: "Inventory___Product___Location~~1___11", productId: "Inventory___Product~~11", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location12 = { _id: "Inventory___Product___Location~~1___12", productId: "Inventory___Product~~12", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location13 = { _id: "Inventory___Product___Location~~1___13", productId: "Inventory___Product~~13", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location14 = { _id: "Inventory___Product___Location~~1___14", productId: "Inventory___Product~~14", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location15 = { _id: "Inventory___Product___Location~~1___15", productId: "Inventory___Product~~15", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location16 = { _id: "Inventory___Product___Location~~1___16", productId: "Inventory___Product~~16", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location17 = { _id: "Inventory___Product___Location~~1___17", productId: "Inventory___Product~~17", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location18 = { _id: "Inventory___Product___Location~~1___18", productId: "Inventory___Product~~18", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location19 = { _id: "Inventory___Product___Location~~1___19", productId: "Inventory___Product~~19", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location20 = { _id: "Inventory___Product___Location~~1___20", productId: "Inventory___Product~~20", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location21 = { _id: "Inventory___Product___Location~~1___21", productId: "Inventory___Product~~21", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location22 = { _id: "Inventory___Product___Location~~1___22", productId: "Inventory___Product~~22", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location23 = { _id: "Inventory___Product___Location~~1___23", productId: "Inventory___Product~~23", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location24 = { _id: "Inventory___Product___Location~~1___24", productId: "Inventory___Product~~24", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+let Inventory___Product___Location25 = { _id: "Inventory___Product___Location~~1___25", productId: "Inventory___Product~~25", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 let Inventory___ProductUnit1 = { _id: "Inventory___ProductUnit~~1" };
 let Inventory___Order1 = { _id: "Inventory___Order~~1", sales_agent: "John Doe", creation_date: "2018-09-27" };
 let Inventory___Order___Item1_1 = { _id: "Inventory___Order___Item~~1___1", productLocationId: Inventory___Product___Location1._id, quantity: 10 };
-let Inventory___Order___Item1_2 = { _id: "Inventory___Order___Item~~1___2", productLocationId: Inventory___Product___Location2._id, quantity: 4 };
+let Inventory___Order___Item1_2 = { _id: "Inventory___Order___Item~~1___2", productLocationId: Inventory___Product___Location1a._id, quantity: 4 };
 let Inventory___Receipt1 = { _id: "Inventory___Receipt~~1" };
 let Inventory___Receipt___Item1_1 = { _id: "Inventory___Receipt___Item~~1___1", productLocationId: Inventory___Product___Location1._id, quantity: 15 };
-let Inventory___Receipt___Item1_2 = { _id: "Inventory___Receipt___Item~~1___2", productLocationId: Inventory___Product___Location2._id, quantity: 5 };
+let Inventory___Receipt___Item1_2 = { _id: "Inventory___Receipt___Item~~1___2", productLocationId: Inventory___Product___Location1a._id, quantity: 5 };
 let Forms___ServiceForm1 = { _id: "Forms___ServiceForm~~1" };
 let Reports___DetailedCentralizerReport1 = { _id: "Reports___DetailedCentralizerReport~~1" };
 let Reports___ServiceCentralizerReport1 = { _id: "Reports___ServiceCentralizerReport~~1" };
@@ -136,6 +160,31 @@ export class MockData {
         Prd_24,
         Prd_25,
         Inventory___Product___Location1,
+        Inventory___Product___Location1a,
+        Inventory___Product___Location2a,
+        Inventory___Product___Location3a,
+        Inventory___Product___Location4a,
+        Inventory___Product___Location5a,
+        Inventory___Product___Location6a,
+        Inventory___Product___Location7a,
+        Inventory___Product___Location8a,
+        Inventory___Product___Location9a,
+        Inventory___Product___Location10,
+        Inventory___Product___Location11,
+        Inventory___Product___Location12,
+        Inventory___Product___Location13,
+        Inventory___Product___Location14,
+        Inventory___Product___Location15,
+        Inventory___Product___Location16,
+        Inventory___Product___Location17,
+        Inventory___Product___Location18,
+        Inventory___Product___Location19,
+        Inventory___Product___Location20,
+        Inventory___Product___Location21,
+        Inventory___Product___Location22,
+        Inventory___Product___Location23,
+        Inventory___Product___Location24,
+        Inventory___Product___Location25,
         Inventory___ProductUnit1,
         Inventory___Order1,
         Inventory___Order___Item1_1,
