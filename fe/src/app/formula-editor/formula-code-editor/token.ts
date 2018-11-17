@@ -2,14 +2,11 @@ export enum TokenType {
     NONE = 'NONE',
     SPACE = 'SPACE',
     NLINE = 'NLINE',
-    TEXT = 'TEXT',
-}
-
-export enum TokenTextType {
+    PUNCTUATION = 'PUNCTUATION',
+    LITERAL = 'LITERAL',
     TABLE_NAME = 'TABLE_NAME',
     COLUMN_NAME = 'COLUMN_NAME',
     FUNCTION_NAME = 'FUNCTION_NAME',
-    OTHER = 'OTHER',
 }
 
 export class Token {
@@ -18,19 +15,12 @@ export class Token {
     private pstart: number = 0;
     private pend: number = 0;
     private type: TokenType = TokenType.NONE;
-    private textType: TokenTextType = TokenTextType.OTHER;
     private color: string | undefined;
     private value: string;
     private errors: string[] = [];
 
-
     public withType(type: TokenType): Token {
         this.type = type;
-        return this;
-    }
-
-    public withTextType(type: TokenTextType): Token {
-        this.textType = type;
         return this;
     }
 
@@ -78,9 +68,6 @@ export class Token {
 
     public getType(): TokenType {
         return this.type;
-    }
-    public getTextType(): TokenTextType {
-        return this.textType;
     }
     public getColor(): string | undefined {
         return this.color;

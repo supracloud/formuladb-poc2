@@ -113,7 +113,7 @@ export class FormulaCodeEditorComponent implements OnInit {
           if (this.validation) {
             errors = this.validation(this.editorExpr);
           }
-          let tokens: Token[] = this.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart - 1, errors);
+          let tokens: Token[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
           for (let i: number = 0; i < tokens.length; i++) {
             switch (tokens[i].getType()) {
               case TokenType.NLINE:
@@ -122,7 +122,6 @@ export class FormulaCodeEditorComponent implements OnInit {
               case TokenType.SPACE:
                 this.ftext += "&nbsp;";
                 break;
-              case TokenType.TEXT:
               default:
                 if (tokens[i].isCaret() && tokens[i].getValue() && tokens[i].getValue().length > 2) {
                   if (!nochange) {
@@ -172,40 +171,6 @@ export class FormulaCodeEditorComponent implements OnInit {
       return this.suggestion(stem);
     }
     else return [];
-  }
-
-  private tokenize(txt: string, caret: number, errors: { [key: string]: number[] }): Token[] {
-    let tokens: Token[] = [];
-    let ctoken: Token | null = null;
-    for (let i: number = 0; i < txt.length; i++) {
-      let m = txt[i].match(/[\r\n]+/g);
-      if (m && m.length > 0) {
-        if (ctoken) {
-          tokens.push(ctoken.withEndPos(i - 1).withErrors(errors));
-          ctoken = null;
-        }
-        tokens.push(new Token().withType(TokenType.NLINE).withStartPos(i).withEndPos(i).withCaret(i === caret));
-        continue;
-      }
-      m = txt[i].match(/[\s\t]+/g);
-      if (m && m.length > 0) {
-        if (ctoken) {
-          tokens.push(ctoken.withEndPos(i - 1).withErrors(errors));
-          ctoken = null;
-        }
-        tokens.push(new Token().withType(TokenType.SPACE).withStartPos(i).withEndPos(i).withCaret(i === caret));
-        continue;
-      }
-      if (ctoken) {
-        ctoken.withCaret(i === caret).append(txt[i]);
-      } else {
-        ctoken = new Token().withType(TokenType.TEXT).withStartPos(i).withCaret(i === caret).withValue(txt[i]);
-      }
-    }
-    if (ctoken) {
-      tokens.push(ctoken.withEndPos(txt.length - 1).withErrors(errors));
-    }
-    return tokens;
   }
 
   private setSelectionRange(input: any, selectionStart: number, selectionEnd: number): void {

@@ -6,8 +6,11 @@ import * as jsep from 'jsep';
 
 import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 import * as appState from 'src/app/app.state';
-import { map } from 'rxjs/operators';
+import { map, concat } from 'rxjs/operators';
 import { timingSafeEqual } from 'crypto';
+import { Token, TokenType } from './formula-code-editor/token';
+import { Expression, isIdentifier } from 'jsep';
+import { TableFormBackendAction } from '../table/table.state';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +40,108 @@ export class FormulaEditorService {
 
   public toggleFormulaEditor() {
     if (this.developerMode) this.store.dispatch(new appState.FormulaEditorToggle());
+  }
+
+  public tokenize(editorTxt: string, caretPos: number): Token[] {
+    let expr = jsep(editorTxt, true);
+    return this.parse(expr, caretPos);
+  }
+
+  private expr2token(type: TokenType, node: Expression, caretPos: number): Token {
+    return new Token().withType(type)
+      .withStartPos(node.startIndex)
+      .withEndPos(node.endIndex)
+      .withCaret(node.startIndex <= caretPos && caretPos <= node.endIndex)
+      .withValue(node.origExpr);
+  }
+  private punctuationToken(startPos: number, token: string, caretPos: number): Token {
+    return new Token().withType(TokenType.PUNCTUATION)
+      .withStartPos(startPos)
+      .withEndPos(startPos + token.length)
+      .withCaret(startPos <= caretPos && caretPos <= startPos + token.length)
+      .withValue(token);
+  }
+
+  private parse(node: Expression, caretPos: number): Token[] {
+    let ret: Token[] = [];
+    switch (node.type) {
+
+        case 'ArrayExpression':
+            return [this.punctuationToken(node.startIndex, '[', caretPos)]
+              .concat(node.elements.reduce((arr, e) => arr.concat(this.parse(e, caretPos)), [] as Token[]))
+              .concat(this.punctuationToken(node.endIndex - 1, ']', caretPos));
+
+        case 'BinaryExpression':
+            return this.parse(node.left, caretPos)
+              .concat(this.punctuationToken(node.left.endIndex, node.operator, caretPos))
+              .concat(this.parse(node.right, caretPos));
+
+        case 'CallExpression':
+            ret = [];
+            if (isIdentifier(node.callee)) {
+              ret.push(this.expr2token(TokenType.FUNCTION_NAME, node.callee, caretPos));
+            } else {
+              ret.push.apply(ret, this.parse(node.callee, caretPos));
+            }
+            ret.push(this.punctuationToken(node.callee.endIndex, '(', caretPos));
+            let endParanthesisPos = node.arguments.length > 0 ? node.arguments[node.arguments.length - 1].endIndex : node.callee.endIndex + 1;
+            for (let argNode of node.arguments) {
+              ret.push.apply(ret, this.parse(argNode, caretPos));
+            }
+            ret.push(this.punctuationToken(endParanthesisPos, ')', caretPos));
+            return ret;
+
+        case 'ConditionalExpression':
+            return this.parse(node.test, caretPos)
+                .concat(this.parse(node.consequent, caretPos))
+                .concat(this.parse(node.alternate, caretPos))
+            ;
+
+        case 'Identifier':
+            return [this.expr2token(TokenType.NONE, node, caretPos)];
+
+        case 'NumberLiteral':
+          return [this.expr2token(TokenType.LITERAL, node, caretPos)];
+
+        case 'StringLiteral':
+          return [this.expr2token(TokenType.LITERAL, node, caretPos)];
+
+        case 'Literal':
+          return [this.expr2token(TokenType.LITERAL, node, caretPos)];
+
+        case 'LogicalExpression':
+          return this.parse(node.left, caretPos)
+            .concat(this.punctuationToken(node.left.endIndex, node.operator, caretPos))
+            .concat(this.parse(node.right, caretPos));
+
+        case 'MemberExpression':
+            ret = [];
+            if (isIdentifier(node.object)) {
+              ret.push(this.expr2token(TokenType.TABLE_NAME, node.object, caretPos));
+            } else {
+              ret.push.apply(ret, this.parse(node.object, caretPos));
+            }
+            if (isIdentifier(node.property)) {
+              ret.push(this.expr2token(TokenType.COLUMN_NAME, node.object, caretPos));
+            } else {
+              ret.push.apply(ret, this.parse(node.object, caretPos));
+            }
+
+            return ret;
+
+        case 'ThisExpression':
+            return [];
+
+        case 'UnaryExpression':
+            return [this.punctuationToken(node.argument.startIndex - 1, node.operator, caretPos)]
+              .concat(this.parse(node.argument, caretPos));
+
+        case 'Compound':
+            throw new Error("Compound expr are not supported: " + node.origExpr);
+
+        default:
+            throw new Error("Unknown expression: " + JSON.stringify(node));
+    }
   }
 
 }

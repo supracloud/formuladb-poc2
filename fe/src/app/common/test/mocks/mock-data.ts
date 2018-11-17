@@ -23,9 +23,9 @@ const Act_Ondricka = {  _id: "General___Actor~~8",  firstName: "Brandon",  lastN
 const Act_Collins = {  _id: "General___Actor~~9",  firstName: "Bonita",  lastName: "Collins", code: "act120",  username: "Bonita33",  email: "Bonita_Collins@yahoo.com",  avatar: "https://s3.amazonaws.com/uifaces/faces/twitter/michaelbrooksjr/128.jpg",  name: "Bonita Collins",  role: "USER",  password: "L53a4bvrs1rMU7m",  details: "Central Identity Analyst",  state: "ACTIVE_" };
 const Act_Wiza = {  _id: "General___Actor~~10",  firstName: "Lonie",  lastName: "Wiza", code: "act121",  username: "Lonie_Wiza",  email: "Lonie_Wiza50@gmail.com",  avatar: "https://s3.amazonaws.com/uifaces/faces/twitter/loganjlambert/128.jpg",  name: "Lonie Wiza",  role: "USER",  password: "s_0tPHr0hBUBVLD",  details: "Customer Division Coordinator",  state: "ACTIVE_" };
 
-const Cur_RON = { _id: "General___Currency~~1", name: "RON", rate1: 1, rate2: 1, rate3: 1, rate4: 1, rate5: 1 };
-const Cur_EUR = { _id: "General___Currency~~1", name: "EUR", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
-const Cur_USD = { _id: "General___Currency~~1", name: "USD", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
+const Cur_RON = { _id: "General___Currency~~1", code: "RON", rate1: 1, rate2: 1, rate3: 1, rate4: 1, rate5: 1 };
+const Cur_EUR = { _id: "General___Currency~~2", code: "EUR", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
+const Cur_USD = { _id: "General___Currency~~3", code: "USD", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
 
 const Cln_Ratke = {  _id: "General___Client~~1",  name: "Ratke Inc",  email: "Sheldon.Barton2@yahoo.com",  bs: "world-class benchmark e-business",  catchPhrase: "Virtual high-level function" };
 const Cln_Gibson = {  _id: "General___Client~~2",  name: "Gibson Group",  email: "Laverna.Von21@yahoo.com",  bs: "e-business innovate infomediaries",  catchPhrase: "Switchable fresh-thinking synergy" };
