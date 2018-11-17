@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators'
 import * as fromEntity from '../../../entity-state';
 import { NavigationItem, unflatten } from '../../../navigation.item';
 import { NavigationComponent as NavigationComponentBase} from '../../default-theme/navigation/navigation.component'
+import { AppState } from 'src/app/app.state';
 
 @Component({
   selector: '[frmdb-navigation]',
@@ -21,7 +22,7 @@ import { NavigationComponent as NavigationComponentBase} from '../../default-the
 export class NavigationComponent extends NavigationComponentBase {
   metadataCatalog$: Observable<NavigationItem[]>;
 
-  constructor(store: Store<fromEntity.EntityState>) {
+  constructor(store: Store<AppState>) {
     super(store);
   }
 

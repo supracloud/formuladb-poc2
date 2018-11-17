@@ -45,7 +45,6 @@ export class TableComponent implements OnInit, OnDestroy {
                 console.log("new table ", t);
                 if (!t.columns) return;
                 try {
-
                     this.tableState = _.cloneDeep(t);
                     this.columns = t.columns.map(c => <GridOptions>{ 
                         headerName: c.name, 
