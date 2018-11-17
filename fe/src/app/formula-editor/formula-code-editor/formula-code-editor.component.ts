@@ -30,8 +30,6 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   suggestion?: (string) => string[];
 
-  colorClass?: (string) => string;
-
   validation?: (string) => { [key: string]: number[] };
 
   protected subscriptions: Subscription[] = [];
@@ -208,14 +206,12 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   private renderToken(token: Token): string {
     let cls: string | null = null;
-    if (this.colorClass) {
-      cls = this.colorClass(token.getValue());
-    }
+
     if (token.getErrors() && token.getErrors().length > 0) {
 
-      return "<span class='" + (cls ? cls + " " : "") + "editor-error'>" + token.getValue() + "</span>" + (token.isCaret() ? this.buildErrorBox(token.getErrors()) : "");
+      return "<span style='color:\""+token.getColor()+"\"' class='" + (cls ? cls + " " : "") + "editor-error'>" + token.getValue() + "</span>" + (token.isCaret() ? this.buildErrorBox(token.getErrors()) : "");
     }
-    return cls ? "<span class='" + cls + "'>" + token.getValue() + "</span>" : token.getValue();
+    return cls ? "<span style='color:\""+token.getColor()+"\"' class='" + cls + "'>" + token.getValue() + "</span>" : token.getValue();
   }
 
 }

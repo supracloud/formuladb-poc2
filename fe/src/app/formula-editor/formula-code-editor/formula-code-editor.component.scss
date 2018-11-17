@@ -15,7 +15,7 @@
     font-size: 13px;
     background: transparent;
     white-space: pre-wrap;
-    line-height: 1.5em;
+    line-height: 22px;
     word-wrap: break-word;
 }
 
@@ -25,7 +25,7 @@
     resize: none;
     overflow: hidden;
     opacity: 0.6;
-    margin: 0;
+    margin: -2px 0 0 -2px;
     z-index: 1;
     height: 22px;
     -webkit-overflow-scrolling: touch;
@@ -87,4 +87,12 @@
     text-decoration:underline red dotted;
     background-color: white;
     opacity: 0.7;
+}
+
+:host ::ng-deep .color-red{
+    color:red;
+}
+
+:host ::ng-deep .color-blue{
+    color: blue;
 }

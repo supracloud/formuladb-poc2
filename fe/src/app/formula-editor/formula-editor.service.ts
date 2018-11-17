@@ -12,6 +12,7 @@ import { Token, TokenType } from './formula-code-editor/token';
 import { Expression, isIdentifier } from 'jsep';
 import { TableFormBackendAction } from '../table/table.state';
 
+const colors=['red','blue','green','magenta','cyan','orange','teal'];
 @Injectable({
   providedIn: 'root'
 })
@@ -52,6 +53,7 @@ export class FormulaEditorService {
       .withStartPos(node.startIndex)
       .withEndPos(node.endIndex)
       .withCaret(node.startIndex <= caretPos && caretPos <= node.endIndex)
+      // .withColor(colors[Math.floor(Math.random()*colors.length)])
       .withValue(node.origExpr);
   }
   private punctuationToken(startPos: number, token: string, caretPos: number): Token {
@@ -73,7 +75,7 @@ export class FormulaEditorService {
 
         case 'BinaryExpression':
             return this.parse(node.left, caretPos)
-              .concat(this.punctuationToken(node.left.endIndex, node.operator, caretPos))
+              .concat(this.punctuationToken(node.left.endIndex, ' '+node.operator+' ', caretPos))
               .concat(this.parse(node.right, caretPos));
 
         case 'CallExpression':
@@ -85,8 +87,9 @@ export class FormulaEditorService {
             }
             ret.push(this.punctuationToken(node.callee.endIndex, '(', caretPos));
             let endParanthesisPos = node.arguments.length > 0 ? node.arguments[node.arguments.length - 1].endIndex : node.callee.endIndex + 1;
-            for (let argNode of node.arguments) {
-              ret.push.apply(ret, this.parse(argNode, caretPos));
+            for (var i=0;i<node.arguments.length;i++) {
+              ret=[...ret, ...this.parse(node.arguments[i], caretPos)];
+              if (i<node.arguments.length-1) ret.push(this.punctuationToken(node.endIndex,', ',caretPos));
             }
             ret.push(this.punctuationToken(endParanthesisPos, ')', caretPos));
             return ret;
@@ -122,9 +125,11 @@ export class FormulaEditorService {
               ret.push.apply(ret, this.parse(node.object, caretPos));
             }
             if (isIdentifier(node.property)) {
-              ret.push(this.expr2token(TokenType.COLUMN_NAME, node.object, caretPos));
+              ret.push(this.punctuationToken(node.endIndex,'.',caretPos));
+              ret.push(this.expr2token(TokenType.COLUMN_NAME, node.property, caretPos));
             } else {
-              ret.push.apply(ret, this.parse(node.object, caretPos));
+              ret.push(this.punctuationToken(node.endIndex,'.',caretPos));
+              ret.push.apply(ret, this.parse(node.property, caretPos));
             }
 
             return ret;
