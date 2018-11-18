@@ -20,14 +20,14 @@ export interface TableState {
   table: Table;
   tableData: DataObj[];
   selectedColumnName: string | undefined;
-  highlightColumns: boolean;
+  highlightColumns: {[columnName: string]: string} | undefined;
 }
 
 export const tableInitialState: TableState = {
   table: {} as Table,
   selectedColumnName: undefined,
   tableData: [] as DataObj[],
-  highlightColumns: false,
+  highlightColumns: undefined,
 };
 
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";

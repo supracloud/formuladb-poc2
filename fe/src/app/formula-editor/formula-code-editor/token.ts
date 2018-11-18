@@ -15,7 +15,7 @@ export class Token {
     private pstart: number = 0;
     private pend: number = 0;
     private type: TokenType = TokenType.NONE;
-    private color: string | undefined;
+    private class: string | undefined;
     private value: string;
     private errors: string[] = [];
 
@@ -31,8 +31,8 @@ export class Token {
         return this;
     }
 
-    public withColor(c: string): Token {
-        this.color = c;
+    public withClass(c: string | undefined): Token {
+        this.class = c;
         return this;
     }
 
@@ -69,8 +69,8 @@ export class Token {
     public getType(): TokenType {
         return this.type;
     }
-    public getColor(): string | undefined {
-        return this.color;
+    public getClass(): string | undefined {
+        return this.class;
     }
 
     public append(t: string): void {

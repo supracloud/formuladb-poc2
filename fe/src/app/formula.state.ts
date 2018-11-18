@@ -19,16 +19,19 @@ export interface FormulaState {
   selectedFormula: string | undefined;
   editorExpr: string | undefined;
   selectedProperty: EntityProperty | null;
+  formulaColumns: {[columnName: string]: string};
 }
 
 export const formulaEditorInitialState: FormulaState = {
   selectedFormula: undefined,
   editorExpr: undefined,
   selectedProperty: null,
+  formulaColumns: {},
 };
 
 
 export const FormulaEditorToggleN = "[fx] FormulaEditorToggle";
+export const FormulaEditedN = "[fx] FormulaEdited";
 
 export class FormulaEditorToggle implements Action {
   readonly type = FormulaEditorToggleN;
@@ -36,8 +39,15 @@ export class FormulaEditorToggle implements Action {
   constructor() { }
 }
 
+export class FormulaEdited implements Action {
+  readonly type = FormulaEditedN;
+
+  constructor(public formulaColumns: {[columnName: string]: string}) { }
+}
+
 export type FormulaActions =
   | FormulaEditorToggle
+  | FormulaEdited
   ;
 
 /**
@@ -53,6 +63,12 @@ export function formulaEditorReducer(state = formulaEditorInitialState, action: 
       ret = {
         ...state,
         editorExpr: state.editorExpr ? undefined : state.selectedFormula
+      };
+      break;
+    case FormulaEditedN:
+      ret = {
+        ...state,
+        formulaColumns: action.formulaColumns
       };
       break;
   }

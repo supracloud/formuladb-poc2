@@ -42,6 +42,12 @@
     height:100%;
 }
 
+::ng-deep .c_b6d0f9 { color: #b6d0f9 }
+::ng-deep .c_f9ccf9 { color: #f9ccf9 }
+::ng-deep .c_fcd9e1 { color: #fcd9e1 }
+::ng-deep .c_d9f9e5 { color: #d9f9e5 }
+::ng-deep .c_f5f9d9 { color: #f8f3c5 }
+
 /*https://stackoverflow.com/questions/36265026/angular-2-innerhtml-styling*/
 :host ::ng-deep .suggestion{
     top:.8rem;

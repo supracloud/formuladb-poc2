@@ -129,10 +129,17 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         table: {
           ...state.table,
-          highlightColumns: !state.table.highlightColumns,
+          highlightColumns: undefined,
         }
       }
-
+    } else if (action.type === fromFormula.FormulaEditedN) {
+      updatedState = {
+        ...state,
+        table: {
+          ...state.table,
+          highlightColumns: action.formulaColumns,
+        }
+      }
     }
     let newState = reducer(updatedState, action);
     console.log("%c " + action.type + " ACTION DISPATCHED.", 

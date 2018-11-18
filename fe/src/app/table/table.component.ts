@@ -33,7 +33,8 @@ export class TableComponent implements OnInit, OnDestroy {
     private filters: any = {};
     private sort: any = {};
     private subscriptions: Subscription[] = [];
-    private highlightColumns: boolean = false;
+    private highlightColumns: {[columnName: string]: string} = {};
+
 
 
     private tableState: tableState.Table;
@@ -69,15 +70,15 @@ export class TableComponent implements OnInit, OnDestroy {
                 this.data = d
             }));
             this.subscriptions.push(store.select(tableState.getTableHighlightColumns)
-                .subscribe(h => this.highlightColumns = h));
+                .subscribe(h => this.highlightColumns = h || {}));
         } catch (ex) {
             console.error(ex);
         }
     }
 
     applyCellStyles(params) {
-        if (this.highlightColumns) {
-            if (params.colDef.field == 'quantity') return { backgroundColor: 'green' };
+        if (this.highlightColumns[params.colDef.field]) {
+            return { backgroundColor: this.highlightColumns[params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
     }

@@ -16,15 +16,13 @@ import { Token, TokenType } from './token';
   styleUrls: ['./formula-code-editor.component.scss']
 })
 export class FormulaCodeEditorComponent implements OnInit {
-  ftext: string;
+  private ftext: string;
 
   private suggestions: string[];
   private activeSuggestion: number = 0;
 
   @ViewChild('editor')
   private textarea: ElementRef;
-    
-  change: EventEmitter<string> = new EventEmitter<string>();
 
   editorExpr: string;
 
@@ -135,9 +133,6 @@ export class FormulaCodeEditorComponent implements OnInit {
             }
           }
         }
-        if (!nochange) {
-          this.change.emit(this.editorExpr);
-        }
       }, 10);
     }
   }
@@ -205,13 +200,13 @@ export class FormulaCodeEditorComponent implements OnInit {
   }
 
   private renderToken(token: Token): string {
-    let cls: string | null = null;
+    let cls = token.getClass();
 
     if (token.getErrors() && token.getErrors().length > 0) {
 
-      return "<span style='color:\""+token.getColor()+"\"' class='" + (cls ? cls + " " : "") + "editor-error'>" + token.getValue() + "</span>" + (token.isCaret() ? this.buildErrorBox(token.getErrors()) : "");
+      return "<span class='" + (cls ? cls + " " : "") + "editor-error'>" + token.getValue() + "</span>" + (token.isCaret() ? this.buildErrorBox(token.getErrors()) : "");
     }
-    return cls ? "<span style='color:\""+token.getColor()+"\"' class='" + cls + "'>" + token.getValue() + "</span>" : token.getValue();
+    return "<span class='" + cls + "'>" + token.getValue() + "</span>";
   }
 
 }

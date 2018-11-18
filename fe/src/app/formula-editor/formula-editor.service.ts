@@ -12,7 +12,14 @@ import { Token, TokenType } from './formula-code-editor/token';
 import { Expression, isIdentifier } from 'jsep';
 import { TableFormBackendAction } from '../table/table.state';
 
-const colors=['red','blue','green','magenta','cyan','orange','teal'];
+const STYLES = [
+  { bgColor: '#b6d0f9', tockenClass: 'c_b6d0f9' },
+  { bgColor: '#f9ccf9', tockenClass: 'c_f9ccf9' },
+  { bgColor: '#fcd9e1', tockenClass: 'c_fcd9e1' },
+  { bgColor: '#d9f9e5', tockenClass: 'c_d9f9e5' },
+  { bgColor: '#f5f9d9', tockenClass: 'c_f5f9d9' },
+];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +30,8 @@ export class FormulaEditorService {
   public selectedFormula$: Observable<string | undefined>;
   public editorExpr$: Observable<string | undefined>;
   private developerMode: boolean = false;
+  private highlightColumns: {[columnName: string]: string} = {};
+
 
   constructor(protected store: Store<appState.AppState>) {
     this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
@@ -40,21 +49,33 @@ export class FormulaEditorService {
   }
 
   public toggleFormulaEditor() {
-    if (this.developerMode) this.store.dispatch(new appState.FormulaEditorToggle());
+    if (this.developerMode) {
+      this.store.dispatch(new appState.FormulaEditorToggle());
+      this.highlightColumns = {};
+    }
   }
 
   public tokenize(editorTxt: string, caretPos: number): Token[] {
     let expr = jsep(editorTxt, true);
-    return this.parse(expr, caretPos);
+    let ret = this.parse(expr, caretPos);
+    this.store.dispatch(new appState.FormulaEdited(this.highlightColumns));
+    return ret;
   }
 
   private expr2token(type: TokenType, node: Expression, caretPos: number): Token {
+    let tokenClass: string | undefined = undefined;
+    if (type == TokenType.COLUMN_NAME) {
+      tokenClass = STYLES[Object.keys(this.highlightColumns).length % STYLES.length].tockenClass;
+      let bgColor = STYLES[Object.keys(this.highlightColumns).length % STYLES.length].bgColor;
+      this.highlightColumns[node.origExpr] = bgColor;
+    }
     return new Token().withType(type)
       .withStartPos(node.startIndex)
       .withEndPos(node.endIndex)
       .withCaret(node.startIndex <= caretPos && caretPos <= node.endIndex)
       // .withColor(colors[Math.floor(Math.random()*colors.length)])
-      .withValue(node.origExpr);
+      .withValue(node.origExpr)
+      .withClass(tokenClass);
   }
   private punctuationToken(startPos: number, token: string, caretPos: number): Token {
     return new Token().withType(TokenType.PUNCTUATION)
