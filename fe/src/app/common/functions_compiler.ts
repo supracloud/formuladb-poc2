@@ -120,10 +120,10 @@ function _MAP_KEY(fc: FuncCommon, fullTableRange: Identifier, keyExpr: Expressio
 function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, keyExpr: Expression, valueExpr?: Expression): MapKey | MapFunction {
     let inputRange = compileArgNV(fc, 'basicRange', basicRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
     let cKey = compileArg(fc, 'expr', keyExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
-    if (cKey.has$Identifier) throw new Error("$ROW$ is not allowed in lookup key expressions: " + fc.funcExpr.origExpr);
+    if (cKey.has$Identifier) throw new Error("@[] is not allowed in lookup key expressions: " + fc.funcExpr.origExpr);
     if (valueExpr) {
         let cVal = compileArg(fc, 'expr', valueExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
-        if (cVal.has$Identifier) throw new Error("$ROW$ is not allowed in map value expressions: " + fc.funcExpr.origExpr);
+        if (cVal.has$Identifier) throw new Error("@[] is not allowed in map value expressions: " + fc.funcExpr.origExpr);
     }
 
     if (isIdentifier(basicRange)) {

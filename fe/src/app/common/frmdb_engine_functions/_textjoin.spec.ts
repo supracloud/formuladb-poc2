@@ -38,7 +38,7 @@ describe('FrmdbEngineStore _textjoin', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    const textjoin1 = Fn.TEXTJOIN(Fn.IF(`A._id`, `FLOOR(x/4) == $ROW$.idx`),`';;'`);
+    const textjoin1 = Fn.TEXTJOIN(Fn.IF(`A._id`, `FLOOR(x/4) == @[idx]`),`';;'`);
     it("B.list= " + textjoin1, async (done) => {
 
         let formula = textjoin1;

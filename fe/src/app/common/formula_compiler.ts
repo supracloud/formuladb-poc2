@@ -6,9 +6,10 @@
 import * as _ from "lodash";
 import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
-    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression
+    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression
 } from "jsep";
 import * as jsep from 'jsep';
+jsep.addUnaryOp('@');
 
 import {
     FormulaExpression
@@ -31,6 +32,7 @@ import {
     includesMapFunctionAndQuery,
 } from "./domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
+import { Identifiers } from "@angular/compiler";
 
 
 export class FormulaCompilerContextType {
@@ -87,7 +89,7 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
     let left = compileExpression(logicalOpBinaryExpr.left, context, CompiledScalarN);
     let right = compileExpression(logicalOpBinaryExpr.right, context, CompiledScalarN);
     if (!isCompiledScalar(left) || !isCompiledScalar(right)) throw new Error("operands of logical BinaryExpression must be scalar expressions, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
-    if (left.has$Identifier && right.has$Identifier) throw new Error("$ROW$ (local row) cannot be used in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
+    if (left.has$Identifier && right.has$Identifier) throw new Error("@[] (local row) cannot be used in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
     if (left.hasNon$Identifier && right.hasNon$Identifier) throw new Error("accessing remote rows cannot be done in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
 
     let op = logicalOpBinaryExpr.operator;
@@ -110,7 +112,7 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
 export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
     if (logicalExpr.operator !== '&&') throw new Error(`Only && operator is supported currently. 
             If you need ||, please create 2 different properties and combine them with another formula. 
-            For example SUMIF(..., x < $ROW$.someVal || y > $ROW$.otherVal) can be: p1=SUMIF(..., x < $ROW$.someVal), p2=SUMIF(y > $ROW$.otherVal), p3 = p1 + p2
+            For example SUMIF(..., x < @[someVal] || y > @[otherVal]) can be: p1=SUMIF(..., x < @[someVal]), p2=SUMIF(y > @[otherVal]), p3 = p1 + p2
             At ` + logicalExpr.origExpr);
     if (!isLogicalOpBinaryExpression(logicalExpr.left) || !isLogicalOpBinaryExpression(logicalExpr.right))
         throw new Error("Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
@@ -156,8 +158,8 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     switch (node.type) {
 
         case 'ArrayExpression':
-            let has$Identifier = node.elements.map(x => x.origExpr.indexOf('$ROW$') >= 0).reduce((acc, x) => acc || x), 
-                hasNon$Identifier = node.elements.map(x => x.origExpr.indexOf('$ROW$') < 0).reduce((acc, x) => acc || x);
+            let has$Identifier = node.elements.map(x => x.origExpr.indexOf('@[') >= 0).reduce((acc, x) => acc || x), 
+                hasNon$Identifier = node.elements.map(x => x.origExpr.indexOf('@[') < 0).reduce((acc, x) => acc || x);
 
             return {
                 type_: CompiledScalarN, rawExpr: node,
@@ -211,7 +213,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 };
                 return ret;
             }
-
+        
         case 'NumberLiteral':
             return {
                 type_: CompiledScalarN, rawExpr: node,
@@ -261,8 +263,8 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                     rawExpr: node,
                     entityName: m![1],
                     valueExpr: $s2e(m![2]),
-                    has$Identifier: node.origExpr[0] === '$ROW$',
-                    hasNon$Identifier: node.origExpr[0] !== '$ROW$',
+                    has$Identifier: false,
+                    hasNon$Identifier: true,
                 };
             } else {
                 let combined = combine2Nodes(node, 'object', obj, 'property', prop, context);
@@ -290,12 +292,25 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             throw new Error("'this' expressions are not supported: " + node.origExpr);
 
         case 'UnaryExpression':
-            if (!isNumberLiteral(node.argument)) throw new Error("Unary operators only supported on number literals but found " + node.origExpr);
-            return {
-                type_: CompiledScalarN, rawExpr: node,
-                has$Identifier: false,
-                hasNon$Identifier: false,
-            };
+            if (node.operator === '@') {
+                if (!isArrayExpression(node.argument)) throw new Error("@ found but not [columnName] at " + node.origExpr);
+                if (node.argument.elements.length != 1) throw new Error("Only @[columnName] is supported at " + node.origExpr);
+                let columnIdentifier = node.argument.elements[0];
+                if (columnIdentifier.type != 'Identifier') throw new Error("Only @[columnName] is supported for " + node.origExpr);
+                return {
+                    type_: CompiledScalarN, 
+                    rawExpr: $s2e('$ROW$.' + columnIdentifier.name),
+                    has$Identifier: false,
+                    hasNon$Identifier: false,
+                };
+            } else {
+                if (!isNumberLiteral(node.argument)) throw new Error("Unary operators only supported on number literals but found " + node.origExpr);
+                return {
+                    type_: CompiledScalarN, rawExpr: node,
+                    has$Identifier: false,
+                    hasNon$Identifier: false,
+                };
+            }
 
         case 'Compound':
             throw new Error("Compound are not supported: " + node.origExpr);

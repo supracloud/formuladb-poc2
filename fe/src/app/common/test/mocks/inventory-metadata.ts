@@ -23,7 +23,7 @@ export const Inventory___Product___Location = {
         received_stock__: {
             name: "received_stock__",
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(Inventory___Receipt___Item.quantity, productLocationId == $ROW$._id)',
+            formula: 'SUMIF(Inventory___Receipt___Item.quantity, productLocationId == @[_id])',
         } as FormulaProperty,
         available_stock__: {
             name: "available_stock__",
@@ -33,7 +33,7 @@ export const Inventory___Product___Location = {
         ordered_stock__: {
             name: "ordered_stock__",
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(Inventory___Order___Item.quantity, productLocationId == $ROW$._id)'
+            formula: 'SUMIF(Inventory___Order___Item.quantity, productLocationId == @[_id])'
         } as FormulaProperty,
         price: { name: "price", propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
         currency: {
@@ -151,7 +151,7 @@ export const Inventory___Order___Item = {
     },
     autoCorrectionsOnValidationFailed: {
         'Inventory___Product___Location!positiveStock': [
-            {targetPropertyName: 'quantity', autoCorrectExpr: $s2e('MAX(0, quantity + $ROW$.available_stock__)')},
+            {targetPropertyName: 'quantity', autoCorrectExpr: $s2e('MAX(0, quantity + @[available_stock__])')},
             {targetPropertyName: 'error_quantity', autoCorrectExpr: $s2e('ABS($OLD$.quantity - quantity)')},
         ],
     },

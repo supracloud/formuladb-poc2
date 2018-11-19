@@ -39,7 +39,7 @@ describe('FrmdbEngineStore', () => {
 
     it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
-        $s2e(Fn.SUMIF(`R_A.num`, `aY == $ROW$.bY`) + ` + 1`)
+        $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
         await frmdbTStore.putMapReduceQueryForComputingAggs("sum1", {
             entityName: 'R_A',
             keyExpr: [$s2e(`aY`)],
@@ -113,7 +113,7 @@ describe('FrmdbEngineStore', () => {
     });
 
     it("Should allow to install formulas then query observers and aggregations", async (done) => {
-        compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == $ROW$.bY`));
+        compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await frmdbTStore.kvs().put(a1);

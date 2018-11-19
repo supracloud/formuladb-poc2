@@ -24,7 +24,7 @@ export const Reports___DetailedCentralizerReport = {
 export const Reports___ServiceCentralizerReport = {
     _id: "Reports___ServiceCentralizerReport",
     aliases: {
-        thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`$ROW$.month`, `-1`)),
+        thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`@[month]`, `-1`)),
     },
     props: {
         client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,

@@ -42,7 +42,7 @@ describe('FrmdbEngineStore _count', () => {
         return f.toString().replace(/\w+\.Fn\./, '').replace(/^function\s*\(.*?\)\s*\{\s*return\s*/, '').replace(/;\s*\}$/, '');
     }
 
-    const rank1 = Fn.RANK(`[FLOOR($ROW$.x/4) * 4, $ROW$.x]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
+    const rank1 = Fn.RANK(`[FLOOR(@[x]/4) * 4, @[x]]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
     it("simple one table RANK formula: " + rank1, async (done) => {
         let formula = rank1;
         compiledFormula = compileFormula('A', 'idx=', formula);
@@ -100,8 +100,8 @@ describe('FrmdbEngineStore _count', () => {
     });
 
 
-    const rank2 = Fn.RANK(`[FLOOR($ROW$.idx/4) * 4, $ROW$.idx]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
-    it("two table RANK formula: " + rank2, async (done) => {
+    const rank2 = 'RANK([FLOOR(@[idx]/4) * 4, @[idx]], _MAP(A.x, [FLOOR(x/4) * 4, x]))';
+    fit("two table RANK formula: " + rank2, async (done) => {
 
         let formula = rank2;
         compiledFormula = compileFormula('B', 'rank=', formula);

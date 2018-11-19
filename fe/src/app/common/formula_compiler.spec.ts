@@ -41,8 +41,8 @@ describe('FormulaCompiler', () => {
     });
 
     it('should stringify parsed expressions', () => {
-        let test_e2sExpr = Fn.EOMONTH(`$ROW$.bT`, `-1`) + `< cT`;
-        expect(jsep(test_e2sExpr).origExpr).toEqual(Fn.EOMONTH(`$ROW$.bT`, `-1`) + `< cT`);
+        let test_e2sExpr = Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`;
+        expect(jsep(test_e2sExpr).origExpr).toEqual(Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`);
     });
 
     it('should extract keys from binary expressions operand', () => {
@@ -75,16 +75,16 @@ describe('FormulaCompiler', () => {
     });
 
     it('should extract map reduce keys and queries from binary expressions', () => {
-        let test_logicalBinOpExpr = Fn.EOMONTH(`$ROW$.bT`, `-1`) + `< cT`;
+        let test_logicalBinOpExpr = Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`;
         compiledExpr = $ee2s(extractKeysAndQueriesFromBinaryExpression($s2e(test_logicalBinOpExpr) as BinaryExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "EOMONTH($ROW$.bT,-1)< cT",
+            "rawExpr": "EOMONTH(@[bT],-1)< cT",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cT"],
                     "query": {
-                        "startkeyExpr": ["EOMONTH($ROW$.bT,-1)"],
+                        "startkeyExpr": ["EOMONTH(@[bT],-1)"],
                         "endkeyExpr": ["'ZZZZZ'"],
                         "inclusive_start": false,
                         "inclusive_end": false
@@ -92,7 +92,7 @@ describe('FormulaCompiler', () => {
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["EOMONTH($ROW$.bT,-1)"],
+                "keyExpr": ["EOMONTH(@[bT],-1)"],
                 "query": {
                     "startkeyExpr": ["''"],
                     "endkeyExpr": ["cT"],
@@ -103,24 +103,24 @@ describe('FormulaCompiler', () => {
         }
         expect(expectedCompiledExpr).toEqual(compiledExpr);
 
-        test_logicalBinOpExpr = `cT <= ` + Fn.EOMONTH(`$ROW$.bT`, "0");
+        test_logicalBinOpExpr = `cT <= ` + Fn.EOMONTH(`@[bT]`, "0");
         compiledExpr = $ee2s(extractKeysAndQueriesFromBinaryExpression($s2e(test_logicalBinOpExpr) as BinaryExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "cT <= EOMONTH($ROW$.bT,0)",
+            "rawExpr": "cT <= EOMONTH(@[bT],0)",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cT"],
                     "query": {
                         "startkeyExpr": ["''"],
-                        "endkeyExpr": ["EOMONTH($ROW$.bT,0)"],
+                        "endkeyExpr": ["EOMONTH(@[bT],0)"],
                         "inclusive_start": false,
                         "inclusive_end": true
                     }
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["EOMONTH($ROW$.bT,0)"],
+                "keyExpr": ["EOMONTH(@[bT],0)"],
                 "query": {
                     "startkeyExpr": ["cT"],
                     "endkeyExpr": ["'ZZZZZ'"],
@@ -131,16 +131,16 @@ describe('FormulaCompiler', () => {
         }
         expect(expectedCompiledExpr).toEqual(compiledExpr);
 
-        test_logicalBinOpExpr = `aX >` + Fn.SQRT(`$ROW$.bX`);
+        test_logicalBinOpExpr = `aX >` + Fn.SQRT(`@[bX]`);
         compiledExpr = $ee2s(extractKeysAndQueriesFromBinaryExpression($s2e(test_logicalBinOpExpr) as BinaryExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "aX >SQRT($ROW$.bX)",
+            "rawExpr": "aX >SQRT(@[bX])",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["aX"],
                     "query": {
-                        "startkeyExpr": ["SQRT($ROW$.bX)"],
+                        "startkeyExpr": ["SQRT(@[bX])"],
                         "endkeyExpr": ["'ZZZZZ'"],
                         "inclusive_start": false,
                         "inclusive_end": false
@@ -148,7 +148,7 @@ describe('FormulaCompiler', () => {
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["SQRT($ROW$.bX)"],
+                "keyExpr": ["SQRT(@[bX])"],
                 "query": {
                     "startkeyExpr": ["''"],
                     "endkeyExpr": ["aX"],
@@ -159,16 +159,16 @@ describe('FormulaCompiler', () => {
         }
         expect(expectedCompiledExpr).toEqual(compiledExpr);
 
-        test_logicalBinOpExpr = `aX >=` + Fn.SQRT(`$ROW$.bX`);
+        test_logicalBinOpExpr = `aX >=` + Fn.SQRT(`@[bX]`);
         compiledExpr = $ee2s(extractKeysAndQueriesFromBinaryExpression($s2e(test_logicalBinOpExpr) as BinaryExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "aX >=SQRT($ROW$.bX)",
+            "rawExpr": "aX >=SQRT(@[bX])",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["aX"],
                     "query": {
-                        "startkeyExpr": ["SQRT($ROW$.bX)"],
+                        "startkeyExpr": ["SQRT(@[bX])"],
                         "endkeyExpr": ["'ZZZZZ'"],
                         "inclusive_start": true,
                         "inclusive_end": false
@@ -176,7 +176,7 @@ describe('FormulaCompiler', () => {
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["SQRT($ROW$.bX)"],
+                "keyExpr": ["SQRT(@[bX])"],
                 "query": {
                     "startkeyExpr": ["''"],
                     "endkeyExpr": ["aX"],
@@ -189,26 +189,26 @@ describe('FormulaCompiler', () => {
     })
 
     it('should extract map reduce keys and queries from logical expressions', () => {
-        let test_logicalExpression = Fn.EOMONTH(`$ROW$.bT1`, `-1`) + `< cT && cT <= ` + Fn.EOMONTH(`$ROW$.bT2`, "0");
+        let test_logicalExpression = Fn.EOMONTH(`@[bT1]`, `-1`) + `< cT && cT <= ` + Fn.EOMONTH(`@[bT2]`, "0");
         expect(function () {
             compiledExpr = $ee2s(extractKeysAndQueriesFromLogicalExpression($s2e(test_logicalExpression) as LogicalExpression,
                 { targetEntityName: '', targetPropertyName: '' }));
         }).toThrow();
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "SQRT($ROW$.bX1)==cX && cY <= FACT($ROW$.bY2)",
+            "rawExpr": "SQRT(@[bX1])==cX && cY <= FACT(@[bY2])",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cT"],
                     "query": {
-                        "startkeyExpr": ["EOMONTH($ROW$.bT1,-1)"],
-                        "endkeyExpr": ["EOMONTH($ROW$.bT2,0)"],
+                        "startkeyExpr": ["EOMONTH(@[bT1],-1)"],
+                        "endkeyExpr": ["EOMONTH(@[bT2],0)"],
                         "inclusive_end": true
                     }
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["EOMONTH($ROW$.bT1,-1)"],
+                "keyExpr": ["EOMONTH(@[bT1],-1)"],
                 "query": {
                     "startkeyExpr": ["''"],
                     "endkeyExpr": ["cT"],
@@ -218,24 +218,24 @@ describe('FormulaCompiler', () => {
         }
         // expect(expectedCompiledExpr).toThrow();
 
-        test_logicalExpression = Fn.SQRT(`$ROW$.bX1`) + `== cX && cY <= ` + Fn.FACT(`$ROW$.bY2`);
+        test_logicalExpression = Fn.SQRT(`@[bX1]`) + `== cX && cY <= ` + Fn.FACT(`@[bY2]`);
         compiledExpr = $ee2s(extractKeysAndQueriesFromLogicalExpression($s2e(test_logicalExpression) as LogicalExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "SQRT($ROW$.bX1)== cX && cY <= FACT($ROW$.bY2)",
+            "rawExpr": "SQRT(@[bX1])== cX && cY <= FACT(@[bY2])",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cX", "cY"],
                     "query": {
-                        "startkeyExpr": ["SQRT($ROW$.bX1)", "''"],
-                        "endkeyExpr": ["SQRT($ROW$.bX1)", "FACT($ROW$.bY2)"],
+                        "startkeyExpr": ["SQRT(@[bX1])", "''"],
+                        "endkeyExpr": ["SQRT(@[bX1])", "FACT(@[bY2])"],
                         "inclusive_start": true,
                         "inclusive_end": true
                     }
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["SQRT($ROW$.bX1)", "FACT($ROW$.bY2)"],
+                "keyExpr": ["SQRT(@[bX1])", "FACT(@[bY2])"],
                 "query": {
                     "startkeyExpr": ["cX", "cY"],
                     "endkeyExpr": ["cX", "'ZZZZZ'"],
@@ -249,7 +249,7 @@ describe('FormulaCompiler', () => {
 
     xit('should compile test complex formula', () => {
         let test_subFormula1 =
-            Fn.SUMIF(`R_A.num`, `aY == $ROW$.bY && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`$ROW$.bZ`) + ` + 1`));
+            Fn.SUMIF(`R_A.num`, `aY == @[bY] && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`@[bZ]`) + ` + 1`));
         trigger1 = {
             type_: MapReduceTriggerN,
             rawExpr: $s2e(`'V1'`),
@@ -260,8 +260,8 @@ describe('FormulaCompiler', () => {
                     keyExpr: [$s2e(`aY`), $s2e(Fn.FACT(`aZ`))],
                     valueExpr: $s2e(`num`),
                     query: {
-                        startkeyExpr: [$s2e(`$ROW$.bY`), $s2e(`''`)],
-                        endkeyExpr: [$s2e(`$ROW$.bY`), $s2e(Fn.ROUND(Fn.SQRT(`$ROW$.bZ`)))],
+                        startkeyExpr: [$s2e(`@[bY]`), $s2e(`''`)],
+                        endkeyExpr: [$s2e(`@[bY]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
                         inclusive_start: false,
                         inclusive_end: false,
                     }
@@ -271,7 +271,7 @@ describe('FormulaCompiler', () => {
             mapObserversImpactedByOneObservable: {
                 obsViewName: 'blu',
                 entityName: 'R_B',
-                keyExpr: [$s2e(`$ROW$.bY`), $s2e(Fn.ROUND(Fn.SQRT(`$ROW$.bZ`)))],
+                keyExpr: [$s2e(`@[bY]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
                 valueExpr: $s2e(`_id`),
                 query: {
                     startkeyExpr: [$s2e(`aY`), $s2e(Fn.FACT(`aZ`))],
@@ -285,7 +285,7 @@ describe('FormulaCompiler', () => {
         trigger1.mapObserversImpactedByOneObservable__ = generateMapFunctionAndQuery(trigger1.mapObserversImpactedByOneObservable);
 
         let test_subFormula2 =
-            "FIXME: Fn.RANK(Fn.GROUP_BY(`R_C`, Fn.EOMONTH(`cT`, `-1`)), Fn.EOMONTH(`$ROW$.bT`, `-1`))";
+            "FIXME: Fn.RANK(Fn.GROUP_BY(`R_C`, Fn.EOMONTH(`cT`, `-1`)), Fn.EOMONTH(`@[bT]`, `-1`))";
         trigger2 = {
             type_: MapReduceTriggerN,
             rawExpr: $s2e(`'V2'`),
@@ -297,7 +297,7 @@ describe('FormulaCompiler', () => {
                     valueExpr: $s2e(`1`),
                     query: {
                         startkeyExpr: [$s2e(`''`)],
-                        endkeyExpr: [$s2e(Fn.EOMONTH(`$ROW$.bT`, `-1`))],
+                        endkeyExpr: [$s2e(Fn.EOMONTH(`@[bT]`, `-1`))],
                         inclusive_start: false,
                         inclusive_end: false,
                     }
@@ -307,7 +307,7 @@ describe('FormulaCompiler', () => {
             mapObserversImpactedByOneObservable: {
                 obsViewName: '',
                 entityName: 'R_B',
-                keyExpr: [$s2e(Fn.EOMONTH(`$ROW$.bT`, `-1`))],
+                keyExpr: [$s2e(Fn.EOMONTH(`@[bT]`, `-1`))],
                 valueExpr: $s2e(`_id`),
                 query: {
                     startkeyExpr: [$s2e(Fn.EOMONTH(`cT`, `-1`))],
@@ -320,7 +320,7 @@ describe('FormulaCompiler', () => {
 
         let test_complexFormulaExpr = `bX + ` + test_subFormula1 + ` + ` + Fn.TEXT(test_subFormula2, `"00000"`)
         expect(test_complexFormulaExpr)
-            .toEqual(`bX + SUMIF(R_A.num,aY == $ROW$.bY && FACT(aZ) < ROUND(SQRT($ROW$.bZ) + 1)) + TEXT(RANK(GROUP_BY(R_C,EOMONTH(cT,-1)),$ROW$.bT),"00000")`);
+            .toEqual(`bX + SUMIF(R_A.num,aY == @[bY] && FACT(aZ) < ROUND(SQRT(@[bZ]) + 1)) + TEXT(RANK(GROUP_BY(R_C,EOMONTH(cT,-1)),@[bT]),"00000")`);
 
         compiledFormula = compileFormula('R_B', 'sum__', test_complexFormulaExpr);
 
