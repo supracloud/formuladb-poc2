@@ -101,7 +101,7 @@ describe('FrmdbEngineStore _count', () => {
 
 
     const rank2 = 'RANK([FLOOR(@[idx]/4) * 4, @[idx]], _MAP(A.x, [FLOOR(x/4) * 4, x]))';
-    fit("two table RANK formula: " + rank2, async (done) => {
+    it("two table RANK formula: " + rank2, async (done) => {
 
         let formula = rank2;
         compiledFormula = compileFormula('B', 'rank=', formula);

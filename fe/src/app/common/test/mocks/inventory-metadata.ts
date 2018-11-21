@@ -151,7 +151,7 @@ export const Inventory___Order___Item = {
     },
     autoCorrectionsOnValidationFailed: {
         'Inventory___Product___Location!positiveStock': [
-            {targetPropertyName: 'quantity', autoCorrectExpr: $s2e('MAX(0, quantity + @[available_stock__])')},
+            {targetPropertyName: 'quantity', autoCorrectExpr: $s2e('MAX(0, quantity + $ROW$.available_stock__)')},
             {targetPropertyName: 'error_quantity', autoCorrectExpr: $s2e('ABS($OLD$.quantity - quantity)')},
         ],
     },

@@ -6,10 +6,10 @@
 import * as _ from "lodash";
 import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
-    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression
+    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral
 } from "jsep";
 import * as jsep from 'jsep';
-jsep.addUnaryOp('@');
+jsep.addLiteral('@', '@');
 
 import {
     FormulaExpression
@@ -30,6 +30,7 @@ import {
     MapKeyAndQuery,
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
+    CompiledScalar,
 } from "./domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
 import { Identifiers } from "@angular/compiler";
@@ -231,7 +232,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
         case 'Literal':
             return {
                 type_: CompiledScalarN, rawExpr: node,
-                has$Identifier: false,
+                has$Identifier: node.raw === '@',
                 hasNon$Identifier: false,
             };
 
@@ -244,7 +245,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 
         case 'MemberExpression':
             if (!isIdentifier(node.property)) throw new Error('Calculated MemberExpression property is not allowed at ' + node.origExpr);
-            if (!isIdentifier(node.object) && !isMemberExpression(node.object)) throw new Error('Calculated MemberExpression object is not allowed at ' + node.origExpr);
+            if (!(isLiteral(node.object) && node.object.raw === '@') && !isIdentifier(node.object) && !isMemberExpression(node.object)) throw new Error('Calculated MemberExpression object is not allowed at ' + node.origExpr);
             let obj = compileExpression(node.object, context, requestedRetType);
             let prop = compileExpression(node.property, context, requestedRetType);
             if (CompiledScalarN === requestedRetType) {
@@ -292,25 +293,12 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             throw new Error("'this' expressions are not supported: " + node.origExpr);
 
         case 'UnaryExpression':
-            if (node.operator === '@') {
-                if (!isArrayExpression(node.argument)) throw new Error("@ found but not [columnName] at " + node.origExpr);
-                if (node.argument.elements.length != 1) throw new Error("Only @[columnName] is supported at " + node.origExpr);
-                let columnIdentifier = node.argument.elements[0];
-                if (columnIdentifier.type != 'Identifier') throw new Error("Only @[columnName] is supported for " + node.origExpr);
-                return {
-                    type_: CompiledScalarN, 
-                    rawExpr: $s2e('$ROW$.' + columnIdentifier.name),
-                    has$Identifier: false,
-                    hasNon$Identifier: false,
-                };
-            } else {
-                if (!isNumberLiteral(node.argument)) throw new Error("Unary operators only supported on number literals but found " + node.origExpr);
-                return {
-                    type_: CompiledScalarN, rawExpr: node,
-                    has$Identifier: false,
-                    hasNon$Identifier: false,
-                };
-            }
+            if (!isNumberLiteral(node.argument)) throw new Error("Unary operators only supported on number literals but found " + node.origExpr);
+            return {
+                type_: CompiledScalarN, rawExpr: node,
+                has$Identifier: false,
+                hasNon$Identifier: false,
+            };
 
         case 'Compound':
             throw new Error("Compound are not supported: " + node.origExpr);
