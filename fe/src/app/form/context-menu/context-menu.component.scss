@@ -1,10 +1,10 @@
 :host {
     position: absolute;
-    bottom: 0;
+    top: 0;
     right: 0;
     a.context-menu-button {
         position: absolute;
-        bottom: 0;
+        top: 0;
         right: 0;
         cursor: pointer;
         font-size: large;
@@ -12,7 +12,7 @@
         color: white;
         display: block;
         width: 1rem;
-        height: 1.2rem;
+        height: 1rem;
         text-align: center;
         vertical-align: middle;
         &:hover {
@@ -23,7 +23,7 @@
     ul.context-menu {
         background-color: rgba(255, 255, 255, .6);
         position: absolute;
-        bottom: .2rem;
+        top: .2rem;
         right: 0;
         border: 1px solid darkgray;
         list-style: none;
