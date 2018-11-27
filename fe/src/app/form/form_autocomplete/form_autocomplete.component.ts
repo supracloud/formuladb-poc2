@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from "../base_node";
 
 import * as fromForm from '../form.state';
+import { FormAutocomplete } from 'src/app/common/domain/uimetadata/form';
 
 @Component({
     selector: 'form-autocomplete',
@@ -21,6 +22,8 @@ import * as fromForm from '../form.state';
     styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']
 })
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
+
+    inputElement: FormAutocomplete = this.nodeElement as FormAutocomplete;
 
     constructor(protected fromStore: Store<fromForm.FormState>) {
         super(fromStore);

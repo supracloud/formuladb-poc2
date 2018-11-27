@@ -8,6 +8,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from "../base_node";
 
 import * as fromForm from '../form.state';
+import { FormTimepicker } from 'src/app/common/domain/uimetadata/form';
 
 @Component({
   selector: 'form-timepicker',
@@ -18,6 +19,8 @@ export class FormTimepickerComponent extends BaseNodeComponent implements OnDest
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);
   }
+
+  inputElement: FormTimepicker = this.nodeElement as FormTimepicker;
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())

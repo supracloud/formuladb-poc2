@@ -1,7 +1,7 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
+            <ng-container *ngFor="let child of tableElement.childNodes" [ngSwitch]="child.nodeType">
                 <ng-container *ngSwitchCase="'form_autocomplete'">
                     <th *ngFor="let propName of child.snapshotCurrentValueOfProperties">{{propName}}</th>
                 </ng-container>
@@ -11,7 +11,7 @@
     </thead>
     <tbody>
         <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
-            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
+            <ng-container *ngFor="let child of tableElement.childNodes" [ngSwitch]="child.nodeType">
                 <ng-container *ngSwitchCase="'form_autocomplete'">
                 </ng-container>
                 <ng-container *ngSwitchCase="'form_autocomplete'">

@@ -3,4 +3,4 @@
   <div form_item [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"
     [formReadOnly]="formReadOnly"></div>
 </ng-container>
-<drop-handle before="false" [item]="nodeElement.childNodes[nodeElement.childNodes.length-1]" orientation="vertical"></drop-handle>
+<drop-handle before="false" *ngIf="nodeElement.childNodes" [item]="nodeElement.childNodes[nodeElement.childNodes.length-1]" orientation="vertical"></drop-handle>

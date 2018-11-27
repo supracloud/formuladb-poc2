@@ -16,7 +16,7 @@ import { Token, TokenType } from './token';
   styleUrls: ['./formula-code-editor.component.scss']
 })
 export class FormulaCodeEditorComponent implements OnInit {
-  private ftext: string;
+  ftext: string;
 
   private suggestions: string[];
   private activeSuggestion: number = 0;

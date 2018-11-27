@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg " color-on-scroll="500">
     <div class=" container-fluid  ">
-      <a class="navbar-brand" href="#pablo">
+      <!-- <a class="navbar-brand" href="#pablo">
         {{ (selectedEntity$ | async)?._id | i18n }}
-      </a>
+      </a> -->
       <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index"
         aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-bar burger-lines"></span>
@@ -76,7 +76,7 @@
               <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
               <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
               <div class="divider"></div>
-              <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="material-icons">build</i>{{ ((developerMode$ | async) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
+              <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="material-icons">build</i>{{ ( developerMode? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
               <div class="divider"></div>
               <a class="dropdown-item" href="javascript:void(0)"><i class="material-icons">person</i>Account</a>
             </div>

@@ -25,19 +25,19 @@ export class TopNavComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  protected switchTheme(themeIdx: number) {
+  switchTheme(themeIdx: number) {
     this.router.navigate([this.router.url.replace(/\/\d+\/?/, '/' + themeIdx + '/')]);
   }
 
-  protected switchThemeColorPalette(color: string) {
+  switchThemeColorPalette(color: string) {
     this.store.dispatch(new ThemeColorPaletteChangedAction(color));
   }
 
-  protected switchLanguage(language: string) {
+  switchLanguage(language: string) {
     
   }
 
-  protected switchSideBarImage(url: string) {
+  switchSideBarImage(url: string) {
     this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
   }
 

@@ -6,7 +6,7 @@
 import { Component, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 import { Store } from '@ngrx/store';
-import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../common/domain/uimetadata/form";
+import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren, TableNodeElement } from "../../common/domain/uimetadata/form";
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 import * as fromForm from '../form.state';
@@ -22,6 +22,8 @@ export class FormTableComponent extends BaseNodeComponent implements OnChanges, 
   constructor(protected store: Store<fromForm.FormState>) {
     super(store);
   }
+
+  tableElement: TableNodeElement = this.nodeElement as TableNodeElement;
 
   ngOnChanges() {
     console.log(this.nodeElement, this.topLevelFormGroup);
