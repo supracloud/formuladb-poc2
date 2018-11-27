@@ -189,7 +189,7 @@ describe('FormulaCompiler', () => {
     })
 
     it('should extract map reduce keys and queries from logical expressions', () => {
-        let test_logicalExpression = Fn.EOMONTH(`@[bT1]`, `-1`) + `< cT && cT <= ` + Fn.EOMONTH(`@[bT2]`, "0");
+        let test_logicalExpression = 'EOMONTH(@[bT1], -1) + < cT && cT <= EOMONTH(@[bT2], "0")';
         expect(function () {
             compiledExpr = $ee2s(extractKeysAndQueriesFromLogicalExpression($s2e(test_logicalExpression) as LogicalExpression,
                 { targetEntityName: '', targetPropertyName: '' }));
