@@ -15,10 +15,10 @@ test:
     - cd ..
     # - cd fe && npm test -- --watch=false
     # - cd ..
-  artifacts:
-    paths:
-      - coverage/
-      - karma.log
+  # artifacts:
+  #   paths:
+  #     - coverage/
+  #     - karma.log
   retry: 2
 
 pages:
