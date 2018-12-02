@@ -34,6 +34,7 @@ import {
 } from "./domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
 import { Identifiers } from "@angular/compiler";
+import { logCompileFormula } from "./test/test_utils";
 
 
 export class FormulaCompilerContextType {
@@ -309,28 +310,33 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 }
 
 export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula {
-    let ret = compileExpression(jsep(formula), { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
+    let compiledExpression = compileExpression(jsep(formula), { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
+    let ret = compiledExpression;
 
-    if (isCompiledScalar(ret)) {
-        return {
+    if (isCompiledScalar(compiledExpression)) {
+        ret = {
             type_: CompiledFormulaN,
-            rawExpr: ret.rawExpr,
+            rawExpr: compiledExpression.rawExpr,
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
         };
-    } else if (isMapFunctionAndQuery(ret)) {
-        throw new Error("MAP functions must be reduced: " + JSON.stringify(ret, null, 4));
-    } else if (isMapReduceTrigger(ret)) {
-        return {
+    } else if (isMapFunctionAndQuery(compiledExpression)) {
+        throw new Error("MAP functions must be reduced: " + JSON.stringify(compiledExpression, null, 4));
+    } else if (isMapReduceTrigger(compiledExpression)) {
+        ret = {
             type_: CompiledFormulaN,
-            rawExpr: $s2e("$TRG$['" + ret.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']"),
+            rawExpr: $s2e("$TRG$['" + compiledExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']"),
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
-            triggers: [ret],
+            triggers: [compiledExpression],
         }
-    } else if (isCompiledFormula(ret)) {
-        return ret;
-    } else throw new Error("Unknown compiled formula: " + JSON.stringify(ret, null, 4));
+    } else if (isCompiledFormula(compiledExpression)) {
+        ret = compiledExpression;
+    } else throw new Error("Unknown compiled formula: " + JSON.stringify(compiledExpression, null, 4));
+    
+    logCompileFormula(formula, ret);
+
+    return ret;
 }
 
 

@@ -45,7 +45,7 @@ describe('FrmdbEngineStore _count', () => {
     const rank1 = Fn.RANK(`[FLOOR(@[x]/4) * 4, @[x]]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
     it("simple one table RANK formula: " + rank1, async (done) => {
         let formula = rank1;
-        compiledFormula = compileFormula('A', 'idx=', formula);
+        compiledFormula = compileFormula('A', 'idx', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1 = { "_id": "A~~1", "x": 1 }; await frmdbTStore.kvs().put(a1);
@@ -104,7 +104,7 @@ describe('FrmdbEngineStore _count', () => {
     it("two table RANK formula: " + rank2, async (done) => {
 
         let formula = rank2;
-        compiledFormula = compileFormula('B', 'rank=', formula);
+        compiledFormula = compileFormula('B', 'rank', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1 = { "_id": "A~~1", "x": 1 }; await frmdbTStore.kvs().put(a1);

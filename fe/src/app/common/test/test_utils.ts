@@ -29,8 +29,17 @@ export function toStringCompiledFormula(formula: string, compiledFormula: Compil
 		});
     }
 
-    return compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + formula + "\n" + 
+    return "\n# " + compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + formula + "\n" + 
         compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + compiledFormula.rawExpr.origExpr + "\n" + 
-        JSON.stringify(toString(compiledFormula.triggers), null, 4);;
+        "```json\n" +
+        JSON.stringify(toString(compiledFormula.triggers), null, 4) +
+        "\n```"
     ;
+}
+
+export function logCompileFormula(formula: string, compiledFormula: CompiledFormula) {
+    if (global['FRMDB_TRACE_COMPILE_FORMULA'] === true) {
+        const fs = require('fs');
+        fs.appendFileSync(__dirname + '/' + "compiledFormulaExamples.md", toStringCompiledFormula(formula, compiledFormula));
+    }
 }
