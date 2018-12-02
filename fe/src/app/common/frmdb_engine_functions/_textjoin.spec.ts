@@ -40,11 +40,11 @@ describe('FrmdbEngineStore _textjoin', () => {
     });
 
     const textjoin1 = 'TEXTJOIN(IF(A._id, FLOOR(x/4) == @[idx]),";;")';
-    it("B.list= " + textjoin1, async (done) => {
+    fit("B.list= " + textjoin1, async (done) => {
 
         let formula = textjoin1;
-        compiledFormula = compileFormula('B', 'list=', formula);
-        // let strFormula = toStringCompiledFormula(compiledFormula);
+        compiledFormula = compileFormula('B', 'list', formula);
+        let strFormula = toStringCompiledFormula(formula, compiledFormula);
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1 = { "_id": "A~~1", "x": 3 }; await frmdbTStore.kvs().put(a1);

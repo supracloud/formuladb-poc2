@@ -323,7 +323,7 @@ export function compileFormula(targetEntityName: string, propJsPath: string, for
     } else if (isMapReduceTrigger(ret)) {
         return {
             type_: CompiledFormulaN,
-            rawExpr: ret.rawExpr,
+            rawExpr: $s2e("$TRG$['" + ret.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']"),
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
             triggers: [ret],
@@ -399,15 +399,15 @@ export function _rem_$e2s_(node: Expression, strict: boolean = false): string {
 function encodeViewNameURIComponent(str: string): string {
     return encodeURIComponent(
         str.replace(/ /g, "___")
-            .replace(/\//g, "'div'")
-            .replace(/[%]/g, "'mod'")
-            .replace(/&&/g, "'and'")
-            .replace(/\|\|/g, "'or'")
-            .replace(/[+]/g, "'plus'")
-            .replace(/>/g, "'gt'")
-            .replace(/</g, "'lt'")
-            .replace(/>=/g, "'ge'")
-            .replace(/<=/g, "'le'")
+            .replace(/\//g, "_div_")
+            .replace(/[%]/g, "_mod_")
+            .replace(/&&/g, "_and_")
+            .replace(/\|\|/g, "_or_")
+            .replace(/[+]/g, "_plus_")
+            .replace(/>/g, "_gt_")
+            .replace(/</g, "_lt_")
+            .replace(/>=/g, "_ge_")
+            .replace(/<=/g, "_le_")
     );
 }
 export function getViewName(isAggs: boolean, entityName, rawExpr: Expression) {

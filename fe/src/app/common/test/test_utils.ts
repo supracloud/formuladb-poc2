@@ -1,16 +1,25 @@
-import { CompiledFormula } from "../domain/metadata/execution_plan";
+import { CompiledFormula, MapQuery } from "../domain/metadata/execution_plan";
 import * as _ from "lodash";
-import { isExpression } from "jsep";
+import { isExpression, Expression } from "jsep";
 
-export function toStringCompiledFormula(formula: CompiledFormula) {
+export function toStringCompiledFormula(formula: string, compiledFormula: CompiledFormula) {
+    function toStringArrayExpression(value: Expression[]) {
+        return '[' + value.map(x => x.origExpr).join(', ') + ']';
+    }
 	function toString(object) {
-		return _.transform(object, function(result, value, key) {
+		return _.transform(object, function(result, value, key: string | number) {
             if (isExpression(value)) {
                 result[key] = value.origExpr;
             } 
-            // else if (value instanceof Array && (''+key).match(/.*Expr$/)) {
-            //     result[key] = '[' + value.map() + ']';
-            // } 
+            else if (value instanceof Array && value.reduce((acc, current) => acc && isExpression(current), true)) {
+                result[key] = toStringArrayExpression(value);
+            }
+            else if (key === 'query') {
+                let query: MapQuery = value as MapQuery;
+                result[key] = (query.inclusive_start ? '[  ' : '(  ') +
+                    toStringArrayExpression(query.startkeyExpr) + ' ---> ' + toStringArrayExpression(query.endkeyExpr) +
+                    (query.inclusive_end ? '  ]' : '  )')
+            }
             else if (_.isObject(value)) {
                 result[key] = toString(value);
             } 
@@ -19,19 +28,9 @@ export function toStringCompiledFormula(formula: CompiledFormula) {
             }
 		});
     }
-    return JSON.stringify(toString(formula), null, 4);
-    // return JSON.stringify(
-    //     {
-    //         rawExpr: formula.rawExpr.origExpr,
-    //         targetEntityName: formula.targetEntityName,
-    //         targetPropertyName: formula.targetPropertyName,
-    //         triggers: (formula.triggers||[]).map(trg => {return {
-    //             rawExpr: trg.rawExpr.origExpr,
 
-    //         }})
-    //     }, null, 4
-    // );
-}
-
-function difference(object, base) {
+    return compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + formula + "\n" + 
+        compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + compiledFormula.rawExpr.origExpr + "\n" + 
+        JSON.stringify(toString(compiledFormula.triggers), null, 4);;
+    ;
 }

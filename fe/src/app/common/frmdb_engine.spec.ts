@@ -30,7 +30,7 @@ describe('FrmdbEngine', () => {
         entities: {
             A: {
                 _id: 'A', props: {
-                    B$b: { name: "B$b", propType_: Pn.REFERENCE_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: [] },
+                    b: { name: "b", propType_: Pn.STRING },
                     val: { name: "val", propType_: Pn.NUMBER },
                     err: { name: "val", propType_: Pn.NUMBER },
                 },
@@ -43,7 +43,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             B: {
                 _id: 'B', props: {
-                    sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUM(A__of__b.val)' } as FormulaProperty,
+                    sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val)' } as FormulaProperty,
                     x__: { name: "x__", propType_: Pn.FORMULA, formula: '100 - sum__' } as FormulaProperty,
                 },  
                 validations: {
@@ -57,8 +57,8 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
-                    Ac$a1: { name: "Ac$ac1", propType_: Pn.REFERENCE_TO, referencedEntityName: 'Ac', snapshotCurrentValueOfProperties: [] },
-                    Ac$a2: { name: "Ac$ac2", propType_: Pn.REFERENCE_TO, referencedEntityName: 'Ac', snapshotCurrentValueOfProperties: [] },
+                    a1: { name: "ac1", propType_: Pn.STRING },
+                    a2: { name: "ac2", propType_: Pn.STRING },
                     val: { name: "val", propType_: Pn.NUMBER },
                 },
                 autoCorrectionsOnValidationFailed: {
@@ -68,7 +68,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             Ac: {
                 _id: 'Ac', props: {
-                    balance__: { name: "balance__", propType_: Pn.FORMULA, formula: '50 + SUM(Tr__of__ac2.val) - SUM(Tr__of__ac1.val)' } as FormulaProperty,
+                    balance__: { name: "balance__", propType_: Pn.FORMULA, formula: '50 + SUMIF(Tr.val, ac2 == @[_id]) - SUMIF(Tr.val, ac1 == @[_id])' } as FormulaProperty,
                 },
                 validations: {
                     positiveBalance: { conditionExpr: $s2e('balance__ >= 0') },
@@ -87,7 +87,7 @@ describe('FrmdbEngine', () => {
         frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 55000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 75000;
         done();
     });
 
@@ -101,7 +101,7 @@ describe('FrmdbEngine', () => {
 
     
     async function parallelWorker(workerId, val) {
-        await putObj({ _id: 'A~~', B$b: { _id: 'B~~1' }, val: val } as DataObj);
+        await putObj({ _id: 'A~~', b: 'B~~1', val: val } as DataObj);
     }
 
     it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
@@ -111,16 +111,16 @@ describe('FrmdbEngine', () => {
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};
         await frmdbTStore.kvs().put(b1);
-        let a1 = { _id: "A~~1", B$b: { _id: 'B~~1' }, val: 1};
+        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
         await frmdbTStore.kvs().put(a1);
-        let a2 = { _id: "A~~2", B$b: { _id: 'B~~1' }, val: 2};
+        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
         await frmdbTStore.kvs().put(a2);
 
-        await putObj({ _id: 'A~~', B$b: { _id: 'B~~1' }, val: 2 } as DataObj);
+        await putObj({ _id: 'A~~', b: 'B~~1', val: 2 } as DataObj);
         let b1After: any = await frmdbTStore.kvs().get('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        await putObj({ _id: 'A~~', B$b: { _id: 'B~~1' }, val: 3 } as DataObj);
+        await putObj({ _id: 'A~~', b: 'B~~1', val: 3 } as DataObj);
         b1After = await frmdbTStore.kvs().get('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 8, x__: 92}));
         
@@ -135,7 +135,7 @@ describe('FrmdbEngine', () => {
             endkey: {}
         });
 
-        let ev = await putObj({ _id: 'A~~', B$b: { _id: 'B~~1' }, val: 95 } as DataObj);
+        let ev = await putObj({ _id: 'A~~', b: 'B~~1', val: 95 } as DataObj);
         b1After = await frmdbTStore.kvs().get('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
         expect(ev.obj['val']).toEqual(90);
@@ -150,9 +150,9 @@ describe('FrmdbEngine', () => {
 
             let b1 = { _id: "B~~1", sum__: 1, x__: 7};
             await frmdbTStore.kvs().put(b1);
-            let a1 = { _id: "A~~1", B$b: { _id: 'B~~1' }, val: 1};
+            let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
             await frmdbTStore.kvs().put(a1);
-            let a2 = { _id: "A~~2", B$b: { _id: 'B~~1' }, val: 2};
+            let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
             await frmdbTStore.kvs().put(a2);
 
             let workers: Promise<void>[] = [];
@@ -207,9 +207,9 @@ describe('FrmdbEngine', () => {
 
             let workers: Promise<any>[] = [];
             for (var i = 0; i < 10; i++) {
-                workers.push(putObj({_id: 'Tr~~', Ac$ac1: { _id: 'Ac~~2'}, Ac$ac2: { _id: 'Ac~~3'}, val: 25} as DataObj));
-                workers.push(putObj({_id: 'Tr~~', Ac$ac1: { _id: 'Ac~~1'}, Ac$ac2: { _id: 'Ac~~2'}, val: 25} as DataObj));
-                workers.push(putObj({_id: 'Tr~~', Ac$ac1: { _id: 'Ac~~3'}, Ac$ac2: { _id: 'Ac~~4'}, val: 25} as DataObj));
+                workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~2', ac2: 'Ac~~3', val: 25} as DataObj));
+                workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~1', ac2: 'Ac~~2', val: 25} as DataObj));
+                workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj));
             }
             await Promise.all(workers);
 
