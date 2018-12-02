@@ -9,8 +9,8 @@ test:
   script:
     - cd be && npm install
     - cd ..
-    # - cd fe && npm install
-    # - cd ..
+    - cd fe && npm install
+    - cd ..
     - cd be && npm test
     - cd ..
     # - cd fe && npm test -- --watch=false
