@@ -18,6 +18,7 @@ import { _count_preComputeAggForObserverAndObservable } from './frmdb_engine_fun
 import { _textjoin_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_textjoin';
 import { _throw, _throwEx } from './throw';
 import * as _ from 'lodash';
+import { TransactionManager } from './transaction_manager';
 declare var emit: any;
 
 function ll(eventId: string, retryNb: number | string): string {
@@ -29,6 +30,8 @@ export class RetryableError {
 }
 
 export class FrmdbEngineStore extends FrmdbStore {
+
+    private transactionManager = new TransactionManager();
 
     constructor(protected transactionsDB: KeyValueStorePouchDB, protected dataDB: KeyValueStorePouchDB, protected locksDB: KeyValueStorePouchDB) {
         super(transactionsDB, dataDB);
@@ -200,10 +203,6 @@ export class FrmdbEngineStore extends FrmdbStore {
         return this.withLock(eventId, transacRetry, () => Promise.resolve(ids), lockAcquiredCallback, lockRecoveredCallback, maxRetryNb, sleepFactorMs);
     }
 
-    public sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     public async exponentialSleep(eventId: string, retryNb: number, sleepFactorMs: number, msg: string) {
         let sleepTime = Math.round(Math.pow(2, retryNb) * sleepFactorMs * Math.random());
         console.log(ll(eventId, retryNb) + "|sleeping " + sleepTime + "|" + msg);
@@ -211,6 +210,17 @@ export class FrmdbEngineStore extends FrmdbStore {
     }
 
     public async withLock(
+        eventId: string, 
+        transacRetry: number,
+        getIds: (retryNb: number) => Promise<string[]>, 
+        lockAcquiredCallback: () => Promise<any>, 
+        lockRecoveredCallback: (eventId: string) => Promise<any>, 
+        maxRetryNb: number = 10, 
+        sleepFactorMs: number = 50) 
+    {
+        return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
+    }
+    public async withLockOld(
         eventId: string, 
         transacRetry: number,
         getIds: (retryNb: number) => Promise<string[]>, 

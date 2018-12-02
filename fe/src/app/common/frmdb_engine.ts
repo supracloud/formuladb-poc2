@@ -345,7 +345,7 @@ export class FrmdbEngine {
         } catch (ex) {
             event.state_ = 'ABORT';
             event.reason_ = 'ABORT_ON_ERROR';
-            event.error_ = "" + ex;
+            event.error_ = "" + JSON.stringify(ex);
             this.handleError(new TransactionAbortedError(event));//no await
         }
 

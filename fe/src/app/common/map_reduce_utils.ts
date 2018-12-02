@@ -61,7 +61,7 @@ export function evalExprES5(doc, expr) {
         var object = evaluate(node.object, context);
         if (node.computed) {
             //no computed members allowed by FormulaDB compiler, only column names
-            return [object, object[node.property.name]];
+            return [object, object[node.property.name || node.property.value]];
         } else {
             return [object, object[node.property.name]];
         }

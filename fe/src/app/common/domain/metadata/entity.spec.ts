@@ -15,6 +15,8 @@ describe('Entity', () => {
   it('extendEntityProperties should correctly extend entities', () => {
     let expected = _.cloneDeep(Forms___ServiceForm.props.service_form_units);
     expected.props.items$ = _.cloneDeep(Inventory___Order.props.items$);
+    expected.props.sales_agent = _.cloneDeep(Inventory___Order.props.sales_agent);
+    expected.props.creation_date = _.cloneDeep(Inventory___Order.props.creation_date);
     
     if (isSubTableProperty(Forms___ServiceForm.props.service_form_units)) {
       extendEntityProperties(Forms___ServiceForm.props.service_form_units, Inventory___Order.props);

@@ -43,7 +43,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             B: {
                 _id: 'B', props: {
-                    sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val)' } as FormulaProperty,
+                    sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, b == @[_id])' } as FormulaProperty,
                     x__: { name: "x__", propType_: Pn.FORMULA, formula: '100 - sum__' } as FormulaProperty,
                 },  
                 validations: {
@@ -57,8 +57,8 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
-                    a1: { name: "ac1", propType_: Pn.STRING },
-                    a2: { name: "ac2", propType_: Pn.STRING },
+                    ac1: { name: "ac1", propType_: Pn.STRING },
+                    ac2: { name: "ac2", propType_: Pn.STRING },
                     val: { name: "val", propType_: Pn.NUMBER },
                 },
                 autoCorrectionsOnValidationFailed: {
@@ -87,7 +87,7 @@ describe('FrmdbEngine', () => {
         frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 75000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
         done();
     });
 
@@ -128,12 +128,6 @@ describe('FrmdbEngine', () => {
         await putObj(a2);
         b1After = await frmdbTStore.kvs().get('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 10, x__: 90}));
-
-        let z = await frmdbTStore.kvs().mapReduceQuery('vaggs-A-SUM(A__of__b.val)', {
-            reduce: false, 
-            startkey: false, 
-            endkey: {}
-        });
 
         let ev = await putObj({ _id: 'A~~', b: 'B~~1', val: 95 } as DataObj);
         b1After = await frmdbTStore.kvs().get('B~~1');
@@ -178,17 +172,6 @@ describe('FrmdbEngine', () => {
                 workers.push(parallelWorker(i, 40));
             }
             await Promise.all(workers);
-            
-            let z = await frmdbTStore.kvs().mapReduceQuery('vaggs-A-SUM(A__of__b.val)', {
-                reduce: false, 
-                startkey: false, 
-                endkey: {}
-            });
-            
-            let zAgg = await frmdbTStore.kvs().mapReduceQuery('vaggs-A-SUM(A__of__b.val)', {
-                startkey: false, 
-                endkey: {}
-            });
 
             let b1After: any = await frmdbTStore.kvs().get('B~~1');
             expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
@@ -212,6 +195,17 @@ describe('FrmdbEngine', () => {
                 workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj));
             }
             await Promise.all(workers);
+
+            let z = await frmdbTStore.kvs().mapReduceQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac1___%3D%3D___%40%5B_id%5D)', {
+                reduce: false, 
+                startkey: false, 
+                endkey: {}
+            });
+            let z2 = await frmdbTStore.kvs().mapReduceQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac2___%3D%3D___%40%5B_id%5D)', {
+                reduce: false, 
+                startkey: false, 
+                endkey: {}
+            });
 
             ac1 = await frmdbTStore.kvs().get('Ac~~1');
             ac2 = await frmdbTStore.kvs().get('Ac~~2');
