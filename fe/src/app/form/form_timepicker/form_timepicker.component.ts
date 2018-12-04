@@ -15,12 +15,16 @@ import { FormTimepicker } from 'src/app/common/domain/uimetadata/form';
   templateUrl: 'form_timepicker.component.html',
   styleUrls: ['./../form_input/form_input.component.scss']
 })
-export class FormTimepickerComponent extends BaseNodeComponent implements OnDestroy {
+export class FormTimepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);
   }
 
-  inputElement: FormTimepicker = this.nodeElement as FormTimepicker;
+  inputElement: FormTimepicker ;
+
+  ngOnInit():void{
+    this.inputElement = this.nodeElement as FormTimepicker;
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())

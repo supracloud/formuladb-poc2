@@ -23,14 +23,14 @@ import { FormAutocomplete } from 'src/app/common/domain/uimetadata/form';
 })
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
-    inputElement: FormAutocomplete = this.nodeElement as FormAutocomplete;
+    inputElement: FormAutocomplete;
 
     constructor(protected fromStore: Store<fromForm.FormState>) {
         super(fromStore);
     }
 
     ngOnInit(): void {
-        console.log(this.nodeElement, this.topLevelFormGroup);
+       this.inputElement = this.nodeElement as FormAutocomplete;
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())

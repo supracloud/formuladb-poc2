@@ -16,12 +16,16 @@ import { FormDatepicker } from 'src/app/common/domain/uimetadata/form';
   templateUrl: 'form_datepicker.component.html',
   styleUrls: ['./../form_input/form_input.component.scss']
 })
-export class FormDatepickerComponent extends BaseNodeComponent implements OnDestroy {
+export class FormDatepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);
   }
 
-  inputElement: FormDatepicker = this.nodeElement as FormDatepicker;
+  inputElement: FormDatepicker;
+
+  ngOnInit(): void {
+    this.inputElement = this.nodeElement as FormDatepicker;
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())
