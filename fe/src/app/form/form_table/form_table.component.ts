@@ -17,13 +17,17 @@ import { Pn } from '../../common/domain/metadata/entity';
   templateUrl: 'form_table.component.html',
   styleUrls: ['form_table.component.scss']
 })
-export class FormTableComponent extends BaseNodeComponent implements OnChanges, OnDestroy {
+export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(protected store: Store<fromForm.FormState>) {
     super(store);
   }
 
-  tableElement: TableNodeElement = this.nodeElement as TableNodeElement;
+  tableElement: TableNodeElement;
+
+  ngOnInit() {
+    this.tableElement = this.nodeElement as TableNodeElement;
+  }
 
   ngOnChanges() {
     console.log(this.nodeElement, this.topLevelFormGroup);
