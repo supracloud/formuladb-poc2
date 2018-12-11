@@ -1,7 +1,6 @@
 import * as jsep from 'jsep';
 jsep.addLiteral('@', '@');
 
-import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 import { Expression, isIdentifier } from 'jsep';
 
 

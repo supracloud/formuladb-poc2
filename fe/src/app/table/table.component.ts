@@ -14,6 +14,7 @@ import { GridOptions, GridApi, GridReadyEvent, RowDoubleClickedEvent, ColumnResi
 import { TableColumn } from '../common/domain/uimetadata/table';
 import * as fromTable from './table.state';
 import * as _ from "lodash";
+import { TableHeaderComponent } from './table-header.component';
 
 @Component({
     selector: 'mwz-table',
@@ -35,11 +36,18 @@ export class TableComponent implements OnInit, OnDestroy {
     private subscriptions: Subscription[] = [];
     private highlightColumns: {[columnName: string]: string} = {};
 
-
+    private frameworkComponents;
+    private defaultColDef;
 
     private tableState: tableState.Table;
 
     constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute) {
+        this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
+        this.defaultColDef = {
+          width: 100,
+          headerComponentParams: { menuIcon: "fa-bars" }
+        };
+
         try {
             this.table$ = store.select(tableState.getTableState);
             this.subscriptions.push(this.table$.subscribe(t => {

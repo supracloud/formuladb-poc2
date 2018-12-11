@@ -1,11 +1,15 @@
 <div class="mwz-table-placeholder" *ngIf="!data">&nbsp;</div>
 <div class="mwz-table-wrapper" *ngIf="data">
-    <ag-grid-angular #agGrid class="ag-theme-balham" rowHeight="25" [rowData]="data" enableColResize="true" 
+    <ag-grid-angular #agGrid class="ag-theme-balham" rowHeight="25" 
+        [rowData]="data" enableColResize="true" 
+        [frameworkComponents]="frameworkComponents"
+        [defaultColDef]="defaultColDef"
         (rowDoubleClicked)="onRowDoubleClicked($event)"
         (cellFocused)="onCellFocused($event)"
         enableSorting="true" enableFilter="true" floatingFilter="true"
         (gridReady)="onGridReady($event)" 
         (columnMoved)="columnMoving($event)" (dragStopped)="columnMoved($event)"
         (columnResized)="columnResized($event)" (filterChanged)="filterChanged($event)" 
-        (sortChanged)="sortChanged($event)"></ag-grid-angular>
+        (sortChanged)="sortChanged($event)"
+        ></ag-grid-angular>
 </div>

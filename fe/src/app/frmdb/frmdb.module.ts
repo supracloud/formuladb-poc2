@@ -28,6 +28,7 @@ import { DropHandleComponent } from '../form/drop-handle/drop-handle.component';
 import { FormHorizontalLayoutComponent } from '../form/form-horizontal-layout/form-horizontal-layout.component';
 import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-vertical-layout.component';
 import { ContextMenuComponent } from '../form/context-menu/context-menu.component';
+import { TableHeaderComponent } from '../table/table-header.component';
 
 @NgModule({
   imports: [
@@ -36,12 +37,13 @@ import { ContextMenuComponent } from '../form/context-menu/context-menu.componen
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    AgGridModule.withComponents([TableComponent]),
+    AgGridModule.withComponents([TableComponent, TableHeaderComponent]),
     CrosscuttingModule,
   ],
   declarations: [
     NotFoundComponent,
     TableComponent,
+    TableHeaderComponent,
     FormComponent,
     FormInputComponent,
     FormAutocompleteComponent,
