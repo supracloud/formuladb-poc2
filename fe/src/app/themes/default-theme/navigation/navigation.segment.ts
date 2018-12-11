@@ -6,7 +6,8 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
 import { NavigationItem } from '../../../navigation.item';
 import { Store } from '@ngrx/store';
-import * as fromEntity from '../../../entity-state';
+import * as appState from '../../../app.state';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: '[frmdb-navigation-segment]',
@@ -19,7 +20,11 @@ export class NavigationSegment implements OnInit {
     @Input("nav")
     nav: NavigationItem[];
 
-    constructor(protected store: Store<fromEntity.EntityState>) { }
+    public devMode$: Observable<boolean>;
+
+    constructor(protected store: Store<appState.EntityState>) {
+        this.devMode$ = store.select(appState.getDeveloperMode);
+    }
 
     ngOnInit(): void {
 
@@ -27,12 +32,12 @@ export class NavigationSegment implements OnInit {
 
     expand(id: string, event) {
         event.preventDefault();
-        this.store.dispatch(new fromEntity.UserActionCollapsedEntity(id, false));
+        this.store.dispatch(new appState.UserActionCollapsedEntity(id, false));
     }
 
     collapse(id: string, event) {
         event.preventDefault();
-        this.store.dispatch(new fromEntity.UserActionCollapsedEntity(id, true));
+        this.store.dispatch(new appState.UserActionCollapsedEntity(id, true));
     }
 
 }
