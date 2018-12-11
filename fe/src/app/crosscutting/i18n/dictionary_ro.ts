@@ -25,7 +25,6 @@ export const Dictioary_ro = {
     received_stock__: 'Intrari Total',
     available_stock__: 'Stoc',
     ordered_stock__: 'Iesiri Total',
-    price: 'Pret',
     currency: 'Moneda',
     minimal_stock: 'Stoc Minim',
     moving_stock: 'Stoc in deplasare',
