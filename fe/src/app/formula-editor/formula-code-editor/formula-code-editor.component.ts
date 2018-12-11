@@ -6,9 +6,9 @@ import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
-import { FormulaEditorService } from '../formula-editor.service';
+import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
-import { Token, TokenType } from './token';
+import { TokenType, Token } from 'src/app/common/formula_static_type_checker';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -109,7 +109,7 @@ export class FormulaCodeEditorComponent implements OnInit {
           if (this.validation) {
             errors = this.validation(this.editorExpr);
           }
-          let tokens: Token[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
+          let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
           for (let i: number = 0; i < tokens.length; i++) {
             switch (tokens[i].getType()) {
               case TokenType.NLINE:
@@ -199,7 +199,7 @@ export class FormulaCodeEditorComponent implements OnInit {
     return "<div class='error-note-holder'><div class='error-note'>" + errors.join("</div><div class='error-note'>") + "</div></div>";
   }
 
-  private renderToken(token: Token): string {
+  private renderToken(token: UiToken): string {
     let cls = token.getClass();
 
     if (token.getErrors() && token.getErrors().length > 0) {

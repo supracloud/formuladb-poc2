@@ -65,8 +65,8 @@ const Prd_23 = { _id:"Inventory___Product~~23", code:"p23", barcode:"40063813339
 const Prd_24 = { _id:"Inventory___Product~~24", code:"p24", barcode:"40063813339324", name:"Refined Frozen Table",  category:"Sports", subcategory:"delectus", description:"Cupiditate aperiam aut nisi laudantium.", longDescription:"Cumque accusantium perferendis ut consequuntur quisquam et doloremque blanditiis. Qui odit consequuntur in. Recusandae rerum aut fugit hic doloremque. Voluptatibus qui sit quoet. Aliquam et vel omnis.\n \rEt assumenda est nihil quo qui dolor est et voluptatem. Corrupti tempora aliquam ut veniam in cupiditate. Doloremque et ipsa dignissimos qui. Fugit non expedita mollitia quibusdam doloribus corrupti aspernatur enim corporis. Dolores veritatis enim aut sed incidunt illum.\n \rEst asperiores cum perspiciatis iusto dolorum necessitatibus autem nobis possimus. Commodi voluptates facilis excepturi doloremque quibusdam at libero est. Atque aspernatur aut. Nesciunt quisquam voluptatem itaque similique dolores suscipit a voluptate et. Doloribus neque veritatis quis magni consectetur."};
 const Prd_25 = { _id:"Inventory___Product~~25", code:"p25", barcode:"40063813339325", name:"Tasty Cotton Chips",  category:"Automotive", subcategory:"architecto", description:"Aut hic rerum explicabo ut illo ipsumtempora quisquam pariatur.", longDescription:"A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique."};
 
-let Inventory___Product___Location1 = { _id: "Inventory___Product___Location~~1___1", productId: "Inventory___Product~~1", locationCode: "Warehouse1", category: "C1", price: 12.5, received_stock__: 15, ordered_stock__: 10, available_stock__: 5 };
-let Inventory___Product___Location1a = { _id: "Inventory___Product___Location~~1___1a", productId: "Inventory___Product~~1a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 5, ordered_stock__: 4, available_stock__: 1 };
+let Inventory___Product___Location1 = { _id: "Inventory___Product___Location~~1___1", productId: "Inventory___Product~~1", locationCode: "Warehouse1", category: "C1", price: 12.5, received_stock__: 25, ordered_stock__: 10, available_stock__: 5 };
+let Inventory___Product___Location1a = { _id: "Inventory___Product___Location~~1___1a", productId: "Inventory___Product~~1a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 15, ordered_stock__: 4, available_stock__: 1 };
 let Inventory___Product___Location2a = { _id: "Inventory___Product___Location~~1___2a", productId: "Inventory___Product~~2a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 let Inventory___Product___Location3a = { _id: "Inventory___Product___Location~~1___3a", productId: "Inventory___Product~~3a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 let Inventory___Product___Location4a = { _id: "Inventory___Product___Location~~1___4a", productId: "Inventory___Product~~4a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
@@ -98,6 +98,9 @@ let Inventory___Order___Item1_2 = { _id: "Inventory___Order___Item~~1___2", prod
 let Inventory___Receipt1 = { _id: "Inventory___Receipt~~1" };
 let Inventory___Receipt___Item1_1 = { _id: "Inventory___Receipt___Item~~1___1", productLocationId: Inventory___Product___Location1._id, quantity: 15 };
 let Inventory___Receipt___Item1_2 = { _id: "Inventory___Receipt___Item~~1___2", productLocationId: Inventory___Product___Location1a._id, quantity: 5 };
+let Inventory___Receipt2 = { _id: "Inventory___Receipt~~2" };
+let Inventory___Receipt___Item2_1 = { _id: "Inventory___Receipt___Item~~2___1", productLocationId: Inventory___Product___Location1._id, quantity: 10 };
+let Inventory___Receipt___Item2_2 = { _id: "Inventory___Receipt___Item~~2___2", productLocationId: Inventory___Product___Location1a._id, quantity: 5 };
 let Forms___ServiceForm1 = { _id: "Forms___ServiceForm~~1" };
 let Reports___DetailedCentralizerReport1 = { _id: "Reports___DetailedCentralizerReport~~1" };
 let Reports___ServiceCentralizerReport1 = { _id: "Reports___ServiceCentralizerReport~~1" };
@@ -192,6 +195,9 @@ export class MockData {
         Inventory___Receipt1,
         Inventory___Receipt___Item1_1,
         Inventory___Receipt___Item1_2,
+        Inventory___Receipt2,
+        Inventory___Receipt___Item2_1,
+        Inventory___Receipt___Item2_2,
         Forms___ServiceForm1,
         Reports___DetailedCentralizerReport1,
         Reports___ServiceCentralizerReport1,
