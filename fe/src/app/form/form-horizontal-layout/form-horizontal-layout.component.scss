@@ -3,9 +3,9 @@
     flex-direction: row;
     padding: .3rem;
     flex-wrap: wrap;
-    border: 1px dashed;
+    border: 1px dotted;
     border-color: rgba(255, 255, 255, 0);
     &.outline {
-        border-color: darkgray;
+        border-color: lightgray;
     }
 }

@@ -8,7 +8,9 @@
         right: 0;
         cursor: pointer;
         font-size: large;
-        background-color: darkgray;
+        background-color: lightgray;
+        border-radius: 50%;
+        margin: 1px;
         color: white;
         display: block;
         width: 1rem;
@@ -29,6 +31,7 @@
         list-style: none;
         padding: .3rem;
         text-align: left;
+        z-index: 10002;
         li {
             &:hover{
                 background-color: lightgray;
