@@ -31,8 +31,8 @@ export enum EnvType {
 const remoteDataDBUrl: string = '/frmdbdata';
 const remoteTransactionsDBUrl: string = '/frmdbtransactions';
 
-let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal", {revs_limit: 2, auto_compaction: true}));
-let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal", {revs_limit: 2, auto_compaction: true}));
+let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal", {revs_limit: 2/*, auto_compaction: true*/}));
+let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal", {revs_limit: 2/*, auto_compaction: true*/}));
 
 @Injectable()
 export class BackendService extends FrmdbStore {
@@ -61,9 +61,19 @@ export class BackendService extends FrmdbStore {
         if (this.envType == EnvType.Test) {
             this.testLocksDb = new PouchDB("frmdblockstest", {revs_limit: 2, auto_compaction: true});
             let locksKVS = new KeyValueStorePouchDB(this.testLocksDb);
-            let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
-            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(TransactionsDB, DataDB, locksKVS), mockMetadata.schema);
-            await this.testFrmdbEngine.init();
+            let schema;
+            let installFormulas = true;
+            try {
+                schema = await DataDB.get('FRMDB_SCHEMA');
+            } catch (err) {}
+            if (!schema) {
+                let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
+                schema = mockMetadata.schema;
+            } else {
+                installFormulas = false;
+            }
+            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(TransactionsDB, DataDB, locksKVS), schema);
+            await this.testFrmdbEngine.init(installFormulas);
         }
 
         this.initCallback();

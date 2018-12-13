@@ -48,7 +48,8 @@ form div .form-control.ng-dirty.ng-pending:not(form) {
     position: absolute;
     width: 0;
     height: 0;
-    border-right: .6rem solid transparent;
+    right: 0;
+    border-left: .6rem solid transparent;
     border-top: .6rem solid lightgray;
     cursor: move;
     z-index: 1000;

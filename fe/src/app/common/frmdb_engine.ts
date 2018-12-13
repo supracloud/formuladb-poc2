@@ -106,13 +106,13 @@ export class FrmdbEngine {
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
     }
 
-    public async init() {
+    public async init(installFormulas: boolean = true) {
         console.log("Starting FormulaDBEngine...");
 
         for (let ent of this.schemaDAO.entities()) {
             for (let prop of _.values(ent.props)) {
                 if (isFormulaProperty(prop)) {
-                    if (prop.compiledFormula_) {
+                    if (prop.compiledFormula_ && installFormulas) {
                         await this.frmdbEngineStore.installFormula(prop.compiledFormula_);
                     } else console.warn("Found formula property that is not compiled: ", prop);
                 }
