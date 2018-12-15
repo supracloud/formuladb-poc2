@@ -4,7 +4,9 @@
     padding: .3rem;
     flex-wrap: wrap;
     border: 1px dotted;
-    border-color: rgba(255, 255, 255, 0);
+    min-width: 1rem;
+    min-height: 2rem;
+    border-color: transparent;
     &.outline {
         border-color: lightgray;
     }
