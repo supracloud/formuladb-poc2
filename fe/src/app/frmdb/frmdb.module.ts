@@ -29,6 +29,7 @@ import { FormHorizontalLayoutComponent } from '../form/form-horizontal-layout/fo
 import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-vertical-layout.component';
 import { ContextMenuComponent } from '../form/context-menu/context-menu.component';
 import { TableHeaderComponent } from '../table/table-header.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   imports: [
@@ -39,6 +40,7 @@ import { TableHeaderComponent } from '../table/table-header.component';
     NgbModule,
     AgGridModule.withComponents([TableComponent, TableHeaderComponent]),
     CrosscuttingModule,
+    FontAwesomeModule
   ],
   declarations: [
     NotFoundComponent,

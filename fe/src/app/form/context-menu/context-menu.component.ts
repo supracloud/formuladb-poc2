@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { NodeElement, NodeType } from '../../common/domain/uimetadata/form';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
+import { faWrench } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -10,6 +11,8 @@ import * as fromForm from '../form.state';
   styleUrls: ['./context-menu.component.scss']
 })
 export class ContextMenuComponent implements OnInit {
+
+  faWrench = faWrench;
 
   @Input()
   item: NodeElement;
@@ -24,6 +27,8 @@ export class ContextMenuComponent implements OnInit {
   availableChildren?: NodeElement[];
 
   expanded = false;
+  x = 0;
+  y = 0;
 
   constructor(private formStore: Store<fromForm.FormState>) {
   }
@@ -31,12 +36,10 @@ export class ContextMenuComponent implements OnInit {
   ngOnInit() {
   }
 
-  showContext() {
-    this.expanded = true;
-  }
-
-  hideContext() {
-    this.expanded = false;
+  toggleContext(e: any) {
+    this.expanded = !this.expanded;
+    this.x = e.clientX + 10;
+    this.y = e.clientY;
   }
 
   delete() {

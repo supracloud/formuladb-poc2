@@ -44,7 +44,10 @@
     "rxjs": "~6.2.0",
     "short-uuid": "^3.0.0",
     "tern": "^0.22.3",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "@fortawesome/fontawesome-svg-core": "^1.2.10",
+    "@fortawesome/free-solid-svg-icons": "^5.6.1",
+    "@fortawesome/angular-fontawesome": "^0.3.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.0",

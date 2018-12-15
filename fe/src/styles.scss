@@ -46,11 +46,10 @@ form div .form-control.ng-dirty.ng-pending:not(form) {
 
 .drag-handle {
     position: absolute;
-    width: 0;
-    height: 0;
-    right: 0;
-    border-left: .6rem solid transparent;
-    border-top: .6rem solid lightgray;
-    cursor: move;
+    right: .5rem;
+    top:0;
+    width: .5rem;
+    height: .5rem;
     z-index: 1000;
+    cursor: move;
 }
