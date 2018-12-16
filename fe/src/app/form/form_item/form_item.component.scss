@@ -4,3 +4,14 @@
 .layout-container {
     position: relative;
 }
+
+
+.drag-handle {
+    position: absolute;
+    right: .5rem;
+    top:0;
+    width: .5rem;
+    height: .5rem;
+    z-index: 1000;
+    cursor: move;
+}
