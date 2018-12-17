@@ -196,7 +196,11 @@ function IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpr
 }
 function __IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression): [ExecPlanCompiledExpression, MapReduceKeysAndQueries] {
     let inputRange = compileArgNV(fc, 'basicRange', tableRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
-    let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression, [isLogicalExpression, isBinaryExpression], fc.context, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
+    let logicalExpressionContext = {...fc.context};
+    if (includesMapValue(inputRange)) {
+        logicalExpressionContext.currentEntityName = inputRange.entityName;
+    }
+    let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression, [isLogicalExpression, isBinaryExpression], logicalExpressionContext, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
     return [inputRange, compiledLogicalExpression];
 }
 function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLogicalExpression: MapReduceKeysAndQueries): MapReduceKeysAndQueries | MapReduceKeysQueriesAndValue {
@@ -484,7 +488,7 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
         type_: CompiledScalarN,
         rawExpr: {
             ...fc.funcExpr,
-            arguments: evalledArs.map(a => a.rawExpr) as Expression[],
+            // arguments: evalledArs.map(a => a.rawExpr) as Expression[],
         },
         has$Identifier: evalledArs.reduce((prev, current) => prev || current.has$Identifier, false),
         hasNon$Identifier: evalledArs.reduce((prev, current) => prev || current.hasNon$Identifier, false),

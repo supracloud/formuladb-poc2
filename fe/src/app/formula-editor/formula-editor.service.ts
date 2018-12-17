@@ -10,7 +10,7 @@ import { map, concat } from 'rxjs/operators';
 import { timingSafeEqual } from 'crypto';
 import { Expression, isIdentifier } from 'jsep';
 import { TableFormBackendAction } from '../table/table.state';
-import { Token, TokenType, FormulaStaticTypeChecker } from '../common/formula_static_type_checker';
+import { Token, TokenType, FormulaTokenizer } from '../common/formula_tokenizer';
 
 const STYLES = [
   { bgColor: '#b6d0f9', tockenClass: 'c_b6d0f9' },
@@ -60,15 +60,17 @@ export class UiToken extends Token {
 export class FormulaEditorService {
   private subscriptions: Subscription[] = [];
 
-  public selectedEntity$: Observable<appState.Entity | null>;
+  public editedEntity: appState.Entity | undefined;
+  public editedProperty: EntityProperty | undefined;
   public selectedFormula$: Observable<string | undefined>;
   public editorExpr$: Observable<string | undefined>;
   private developerMode: boolean = false;
-  private highlightColumns: { [columnName: string]: string } = {};
+  private highlightTableColumns: {[tableName: string]: { [columnName: string]: string }} = {};
 
 
   constructor(protected store: Store<appState.AppState>) {
-    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
+    this.subscriptions.push(this.store.select(appState.getEditedEntity).subscribe(x => this.editedEntity = x));
+    this.subscriptions.push(this.store.select(appState.getEditedProperty).subscribe(x => this.editedProperty = x));
     this.selectedFormula$ = this.store.select(appState.getSelectedPropertyState).pipe(
       map(selectedProperty => {
         if (selectedProperty) {
@@ -85,29 +87,37 @@ export class FormulaEditorService {
   public toggleFormulaEditor() {
     if (this.developerMode) {
       this.store.dispatch(new appState.FormulaEditorToggle());
-      this.highlightColumns = {};
+      this.highlightTableColumns = {};
     }
   }
 
   public tokenize(editorTxt: string, caretPos: number): UiToken[] {
     let ret = this.parse(editorTxt, caretPos);
-    this.store.dispatch(new appState.FormulaEdited(this.highlightColumns));
+    this.store.dispatch(new appState.FormulaEdited(this.highlightTableColumns));
     return ret;
   }
 
 
   private parse(editorTxt: string, caretPos: number): UiToken[] {
-    let formulaStaticTypeChecker = new FormulaStaticTypeChecker();
-    let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(editorTxt);
+    if (!this.editedEntity || !this.editedProperty) return [];
+
+    let formulaStaticTypeChecker = new FormulaTokenizer();
+    let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt);
     let ret: UiToken[] = [];
 
     for (let token of parserTokens) {
       let uiToken = new UiToken(token).withCaret(token.getStartPos() <= caretPos && caretPos <= token.getEndPos());
       if (token.getType() == TokenType.COLUMN_NAME) {
-        let tokenClass = STYLES[Object.keys(this.highlightColumns).length % STYLES.length].tockenClass;
-        let bgColor = STYLES[Object.keys(this.highlightColumns).length % STYLES.length].bgColor;
-        this.highlightColumns[token.getValue()] = bgColor;
-        uiToken.withClass(tokenClass);
+        let tableName = token.getTableName();
+        let columnName = token.getColumnName();
+        if (tableName && columnName) {
+          let styleLength = Object.values(this.highlightTableColumns).map(h => Object.keys(h).length).reduce((acc, x) => acc + x, 0);
+          let tokenClass = STYLES[styleLength % STYLES.length].tockenClass;
+          let bgColor = STYLES[styleLength % STYLES.length].bgColor;
+          this.highlightTableColumns[tableName] = this.highlightTableColumns[tableName] || {};
+          this.highlightTableColumns[tableName][columnName] = bgColor;
+          uiToken.withClass(tokenClass);
+        }
       }
       ret.push(uiToken);
     }

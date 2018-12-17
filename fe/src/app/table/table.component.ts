@@ -15,6 +15,7 @@ import { TableColumn } from '../common/domain/uimetadata/table';
 import * as fromTable from './table.state';
 import * as _ from "lodash";
 import { TableHeaderComponent } from './table-header.component';
+import { Entity } from '../common/domain/metadata/entity';
 
 @Component({
     selector: 'mwz-table',
@@ -25,6 +26,7 @@ import { TableHeaderComponent } from './table-header.component';
 export class TableComponent implements OnInit, OnDestroy {
 
     private table$: Observable<tableState.Table>;
+    private currentEntity: Entity | undefined;
     public data: tableState.DataObj[] = [];
     private selectedRowIdx: number;
     private highlighted: string;
@@ -34,7 +36,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private filters: any = {};
     private sort: any = {};
     private subscriptions: Subscription[] = [];
-    private highlightColumns: {[columnName: string]: string} = {};
+    private highlightColumns: {[tableName: string]: {[columnName: string]: string}} = {};
 
     private frameworkComponents;
     private defaultColDef;
@@ -78,15 +80,25 @@ export class TableComponent implements OnInit, OnDestroy {
                 this.data = d
             }));
             this.subscriptions.push(store.select(tableState.getTableHighlightColumns)
-                .subscribe(h => this.highlightColumns = h || {}));
+                .subscribe(h => {
+                    this.highlightColumns = h || {};
+                    if (this.gridApi) {
+                        this.gridApi.refreshCells({force: true});
+                    }
+                })
+            );
+            this.subscriptions.push(store.select(tableState.getTableEntityState)
+                .subscribe(e => this.currentEntity = e));
         } catch (ex) {
             console.error(ex);
         }
     }
 
     applyCellStyles(params) {
-        if (this.highlightColumns[params.colDef.field]) {
-            return { backgroundColor: this.highlightColumns[params.colDef.field].replace(/^c_/, '#') };
+        if (this.currentEntity && this.currentEntity._id && this.highlightColumns[this.currentEntity._id] 
+            && this.highlightColumns[this.currentEntity._id][params.colDef.field]) 
+        {
+            return { backgroundColor: this.highlightColumns[this.currentEntity._id][params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
     }

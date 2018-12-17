@@ -6,7 +6,7 @@
 import * as _ from "lodash";
 import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
-    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral
+    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral, Identifier
 } from "jsep";
 import * as jsep from 'jsep';
 jsep.addLiteral('@', '@');
@@ -40,6 +40,7 @@ import { logCompileFormula } from "./test/test_utils";
 export class FormulaCompilerContextType {
     targetEntityName: string;
     targetPropertyName: string;
+    currentEntityName?: string;
 }
 
 export class FuncCommon {
@@ -193,29 +194,13 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             throw new Error("ConditionalExpression(s) are not supported (yet): " + node.origExpr);
 
         case 'Identifier':
-            let [, entityName, propertyName] = /(\w+)__of__(\w+)/.exec(node.name) || [null, null, null];
-            if (null == entityName || null == propertyName) {
-                return {
-                    type_: CompiledScalarN, rawExpr: node,
-                    has$Identifier: node.name === '$ROW$',
-                    hasNon$Identifier: node.name !== '$ROW$',
-                };
-            } else {
-                let ret: MapKeyAndQuery = {
-                    type_: MapKeyAndQueryN,
-                    entityName: entityName,
-                    rawExpr: node,
-                    keyExpr: [$s2e(context.targetEntityName + '$' + propertyName + '._id')],
-                    query: {
-                        startkeyExpr: [$s2e('$ROW$._id')],
-                        endkeyExpr: [$s2e('$ROW$._id')],
-                        inclusive_start: true,
-                        inclusive_end: true,
-                    }
-                };
-                return ret;
-            }
-        
+            node.parent = context.currentEntityName;
+            return {
+                type_: CompiledScalarN, rawExpr: node,
+                has$Identifier: false,
+                hasNon$Identifier: true,
+            };
+
         case 'NumberLiteral':
             return {
                 type_: CompiledScalarN, rawExpr: node,
@@ -258,38 +243,29 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 };
             } else if (isCompiledScalar(obj) && isCompiledScalar(prop)) {
                 checkIdentifiers(node);
+
                 let m = node.origExpr.match(/^([\w$]+)\.(.*)$/);
+                let referencedTableName = m![1];
+                let referencedColumnName = m![2];
+
+                if (isLiteral(node.object) && node.object.raw === '@') {
+                    //set the table name for this column to the table of the current row
+                    (prop.rawExpr as Identifier).parent = context.targetEntityName;
+                } else {
+                    //set the table name for this column to the referenced table
+                    (prop.rawExpr as Identifier).parent = referencedTableName;
+                }
+
                 if (!m) throw new Error("Expected MemberExpression but found " + JSON.stringify(node));
                 return {
                     type_: MapValueN,
                     rawExpr: node,
-                    entityName: m![1],
-                    valueExpr: $s2e(m![2]),
+                    entityName: referencedTableName,
+                    valueExpr: $s2e(referencedColumnName),
                     has$Identifier: false,
                     hasNon$Identifier: true,
                 };
-            } else {
-                let combined = combine2Nodes(node, 'object', obj, 'property', prop, context);
-                if (includesMapReduceKeysAndQueriesN(requestedRetType) && includesMapFunctionAndQuery(combined) && combined.rawExpr.origExpr.indexOf('__of__') >= 0) {
-                    return {
-                        type_: MapReduceKeysQueriesAndValueN,
-                        rawExpr: combined.rawExpr,
-                        mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-                            map: combined,
-                        },
-                        mapObserversImpactedByOneObservable: {
-                            existingIndex: '_id',
-                            keyExpr: combined.keyExpr,
-                            query: {
-                                startkeyExpr: [$s2e('__existingIndex__')],
-                                endkeyExpr: [$s2e('__existingIndex__')],
-                                inclusive_start: true,
-                                inclusive_end: true,
-                            }
-                        },
-                    };
-                } else return combined;
-            }
+            } else return combine2Nodes(node, 'object', obj, 'property', prop, context);
         case 'ThisExpression':
             throw new Error("'this' expressions are not supported: " + node.origExpr);
 
@@ -309,14 +285,16 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     }
 }
 
-export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula {
-    let compiledExpression = compileExpression(jsep(formula), { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
+export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): CompiledFormula {
+    let formulaAstNode = jsep(formula, forceParseIncompleteExpr);
+    let compiledExpression = compileExpression(formulaAstNode, { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
     let ret = compiledExpression;
 
     if (isCompiledScalar(compiledExpression)) {
         ret = {
             type_: CompiledFormulaN,
-            rawExpr: compiledExpression.rawExpr,
+            rawExpr: formulaAstNode,
+            finalExpression: compiledExpression.rawExpr,
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
         };
@@ -325,7 +303,8 @@ export function compileFormula(targetEntityName: string, propJsPath: string, for
     } else if (isMapReduceTrigger(compiledExpression)) {
         ret = {
             type_: CompiledFormulaN,
-            rawExpr: $s2e("$TRG$['" + compiledExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']"),
+            rawExpr: formulaAstNode,
+            finalExpression: $s2e("$TRG$['" + compiledExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']"),
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
             triggers: [compiledExpression],
@@ -458,7 +437,8 @@ export function combine2Nodes<T extends Expression>(
 
                 return {
                     type_: CompiledFormulaN,
-                    rawExpr: scalarExpr,
+                    finalExpression: scalarExpr,
+                    rawExpr: expr,
                     targetEntityName: context.targetEntityName,
                     targetPropertyName: context.targetPropertyName,
                     triggers: [node2]
@@ -544,7 +524,8 @@ export function combine2Nodes<T extends Expression>(
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr); 
                 return {
                     type_: CompiledFormulaN,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     targetEntityName: context.targetEntityName,
                     targetPropertyName: context.targetPropertyName,
                     triggers: [node1, node2]
@@ -560,7 +541,8 @@ export function combine2Nodes<T extends Expression>(
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr); 
                 return {
                     ...node2,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     triggers: [node1].concat(node2.triggers || [])
                 };
             } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
@@ -571,7 +553,8 @@ export function combine2Nodes<T extends Expression>(
         if (isCompiledScalar(node2)) {
             return {
                 ...node1,
-                rawExpr: Object.assign({}, expr, {
+                rawExpr: expr,
+                finalExpression: Object.assign({}, expr, {
                     [node1Name]: node1.rawExpr,
                     [node2Name]: node2.rawExpr,
                 }) as T,
@@ -581,26 +564,28 @@ export function combine2Nodes<T extends Expression>(
         } else if (isMapReduceTrigger(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
-                scalarExpr.left = node1.rawExpr;
+                scalarExpr.left = node1.finalExpression;
                 scalarExpr.right = $s2e("$TRG$['" + node2.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr);
                 return {
                     ...node1,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     triggers: (node1.triggers || []).concat(node2)
                 };
             } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
-                scalarExpr.left = node1.rawExpr;
-                scalarExpr.right = node2.rawExpr;
+                scalarExpr.left = node1.finalExpression;
+                scalarExpr.right = node2.finalExpression;
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr);
                 return {
                     ...node1,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     triggers: (node1.triggers || []).concat(node2.triggers || [])
                 };
             } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));

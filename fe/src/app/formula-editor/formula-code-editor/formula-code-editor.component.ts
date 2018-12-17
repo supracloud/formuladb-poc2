@@ -8,7 +8,7 @@ import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
-import { TokenType, Token } from 'src/app/common/formula_static_type_checker';
+import { TokenType, Token } from 'src/app/common/formula_tokenizer';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -20,6 +20,8 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   private suggestions: string[];
   private activeSuggestion: number = 0;
+
+  private currentTokens: UiToken[] = [];
 
   @ViewChild('editor')
   private textarea: ElementRef;
@@ -61,8 +63,11 @@ export class FormulaCodeEditorComponent implements OnInit {
   }
 
   cursorMove(cursorPos: number) {
-    //TODO: navigate to entity on cursor and highlight columns
-    this.router.navigate([this.router.url.replace(/(\/\d+).*/, (match, $1) => $1 + '/Inventory___Receipt___Item')]);
+    let tokenAtCursor = this.currentTokens.find(x => x.getStartPos() <= cursorPos && cursorPos <= x.getEndPos())
+    if (tokenAtCursor && tokenAtCursor.getTableName()) {
+      let fragment = tokenAtCursor.getTableName();
+      this.router.navigate([this.router.url.replace(/(\/\d+).*/, (match, $1) => $1 + '/' + fragment)]);
+    }
   }
 
 
@@ -88,14 +93,16 @@ export class FormulaCodeEditorComponent implements OnInit {
   }
 
   keyup(textarea, event) {
-    this.onEdit(event);
-    if (textarea.selectionStart != null) {
+    if (event.key != 'ArrowLeft' && event.key != 'ArrowRight') {
+      this.onEdit(event);
+    } else if (textarea.selectionStart != null) {
       this.cursorMove(textarea.selectionStart);
     }
   }
   click(textarea, event) {
-    this.onEdit(event);
-    if (textarea.selectionStart != null) {
+    if (this.currentTokens.length == 0) {
+      this.onEdit(event);
+    } else if (textarea.selectionStart != null) {
       this.cursorMove(textarea.selectionStart);
     }
   }
@@ -110,6 +117,7 @@ export class FormulaCodeEditorComponent implements OnInit {
             errors = this.validation(this.editorExpr);
           }
           let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
+          this.currentTokens = tokens;
           for (let i: number = 0; i < tokens.length; i++) {
             switch (tokens[i].getType()) {
               case TokenType.NLINE:
@@ -124,6 +132,8 @@ export class FormulaCodeEditorComponent implements OnInit {
                     this.suggestions = this.getSuggestions(tokens[i].getValue());
                     this.activeSuggestion = 0;
                   }
+                  // this.suggestions = ['suggestion1', 'sugestion2'];
+                  // tokens[i].errors = ['err1', 'err2'];
                   if (this.suggestions && this.suggestions.length > 0) {
                     this.ftext += tokens[i].getValue() + this.buildSuggestionBox() + this.buildErrorBox(tokens[i].getErrors());
                     continue;
@@ -132,6 +142,7 @@ export class FormulaCodeEditorComponent implements OnInit {
                 this.ftext += this.renderToken(tokens[i]);
             }
           }
+          this.cursorMove(this.textarea.nativeElement.selectionStart);
         }
       }, 10);
     }

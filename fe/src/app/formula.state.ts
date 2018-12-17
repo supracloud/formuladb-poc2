@@ -13,20 +13,24 @@ export { DataObj };
 export { ChangeObj, applyChanges };
 
 import { Expression } from 'jsep';
-import { EntityProperty, Pn } from './common/domain/metadata/entity';
+import { EntityProperty, Pn, Entity } from './common/domain/metadata/entity';
 
 export interface FormulaState {
   selectedFormula: string | undefined;
   editorExpr: string | undefined;
-  selectedProperty: EntityProperty | null;
-  formulaColumns: {[columnName: string]: string};
+  selectedProperty: EntityProperty | undefined;
+  editedEntity: Entity | undefined;
+  editedProperty: EntityProperty | undefined;
+  formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
 }
 
 export const formulaEditorInitialState: FormulaState = {
   selectedFormula: undefined,
   editorExpr: undefined,
-  selectedProperty: null,
-  formulaColumns: {},
+  selectedProperty: undefined,
+  editedEntity: undefined,
+  editedProperty: undefined,
+  formulaHighlightedColumns: {},
 };
 
 
@@ -42,7 +46,7 @@ export class FormulaEditorToggle implements Action {
 export class FormulaEdited implements Action {
   readonly type = FormulaEditedN;
 
-  constructor(public formulaColumns: {[columnName: string]: string}) { }
+  constructor(public formulaColumns: {[tableName: string]: {[columnName: string]: string}}) { }
 }
 
 export type FormulaActions =
@@ -68,7 +72,7 @@ export function formulaEditorReducer(state = formulaEditorInitialState, action: 
     case FormulaEditedN:
       ret = {
         ...state,
-        formulaColumns: action.formulaColumns
+        formulaHighlightedColumns: action.formulaColumns || {}
       };
       break;
   }
@@ -88,4 +92,16 @@ export const getFormula = createFeatureSelector<FormulaState>('formula');
 export const getEditorExpr = createSelector(
   getFormula,
   (state: FormulaState) => state.editorExpr
+);
+export const getEditedEntity = createSelector(
+  getFormula,
+  (state: FormulaState) => state.editedEntity
+);
+export const getEditedProperty = createSelector(
+  getFormula,
+  (state: FormulaState) => state.editedProperty
+);
+export const getFormulaHighlightedColumns = createSelector(
+  getFormula,
+  (state: FormulaState) => state.formulaHighlightedColumns
 );

@@ -75,16 +75,16 @@ describe('FormulaCompiler', () => {
     });
 
     it('should extract map reduce keys and queries from binary expressions', () => {
-        let test_logicalBinOpExpr = Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`;
+        let test_logicalBinOpExpr = 'EOMONTH(@[bT], -1) < cT';
         compiledExpr = $ee2s(extractKeysAndQueriesFromBinaryExpression($s2e(test_logicalBinOpExpr) as BinaryExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "EOMONTH(@[bT],-1)< cT",
+            "rawExpr": "EOMONTH(@[bT], -1) < cT",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cT"],
                     "query": {
-                        "startkeyExpr": ["EOMONTH(@[bT],-1)"],
+                        "startkeyExpr": ["EOMONTH(@[bT], -1)"],
                         "endkeyExpr": ["'ZZZZZ'"],
                         "inclusive_start": false,
                         "inclusive_end": false
@@ -92,7 +92,7 @@ describe('FormulaCompiler', () => {
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["EOMONTH(@[bT],-1)"],
+                "keyExpr": ["EOMONTH(@[bT], -1)"],
                 "query": {
                     "startkeyExpr": ["''"],
                     "endkeyExpr": ["cT"],
@@ -103,24 +103,24 @@ describe('FormulaCompiler', () => {
         }
         expect(expectedCompiledExpr).toEqual(compiledExpr);
 
-        test_logicalBinOpExpr = `cT <= ` + Fn.EOMONTH(`@[bT]`, "0");
+        test_logicalBinOpExpr = 'cT <= EOMONTH(@[bT], 0)';
         compiledExpr = $ee2s(extractKeysAndQueriesFromBinaryExpression($s2e(test_logicalBinOpExpr) as BinaryExpression, { targetEntityName: '', targetPropertyName: '' }));
         expectedCompiledExpr = {
             "type_": "MapReduceKeysAndQueriesN",
-            "rawExpr": "cT <= EOMONTH(@[bT],0)",
+            "rawExpr": "cT <= EOMONTH(@[bT], 0)",
             "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
                 "map": {
                     "keyExpr": ["cT"],
                     "query": {
                         "startkeyExpr": ["''"],
-                        "endkeyExpr": ["EOMONTH(@[bT],0)"],
+                        "endkeyExpr": ["EOMONTH(@[bT], 0)"],
                         "inclusive_start": false,
                         "inclusive_end": true
                     }
                 }
             },
             "mapObserversImpactedByOneObservable": {
-                "keyExpr": ["EOMONTH(@[bT],0)"],
+                "keyExpr": ["EOMONTH(@[bT], 0)"],
                 "query": {
                     "startkeyExpr": ["cT"],
                     "endkeyExpr": ["'ZZZZZ'"],
@@ -329,7 +329,8 @@ describe('FormulaCompiler', () => {
             targetEntityName: 'R_B',
             targetPropertyName: 'sum__',
             triggers: [trigger1],
-            rawExpr: $s2e(`V1`),
+            rawExpr: jsep(test_complexFormulaExpr),
+            finalExpression: $s2e(`V1`),
         };
 
         expect(compiledFormula).toEqual(expectedcCompiledFormula);

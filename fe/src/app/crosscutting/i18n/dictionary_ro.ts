@@ -47,7 +47,7 @@ export const Dictioary_ro = {
     productCode: 'Cod Produs',
     barcode: 'Cod Bare',
     quantityError: 'Cantitate Eroare',
-    price: 'Pret',
+    price: 'Preţ',
 
     'General___Currency!rate1!max': 'Maximum rate1 exceeded',
     'items$': 'Items',

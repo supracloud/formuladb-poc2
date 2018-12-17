@@ -69,7 +69,7 @@ export class CompiledScalar implements ExecPlanBase {
     readonly type_ = CompiledScalarN;
     rawExpr: Expression;
     has$Identifier: boolean;
-    hasNon$Identifier: boolean;    
+    hasNon$Identifier: boolean;
 }
 export function isCompiledScalar(param): param is CompiledScalar {
     if (null == param || null != param.type) return false;
@@ -79,7 +79,7 @@ export function isCompiledScalar(param): param is CompiledScalar {
 
 
 export const MapKeyN = ExecPlanN.MapKeyN;
-export class MapKey {
+export class MapKey implements ExecPlanBase {
     readonly type_ = MapKeyN;
     rawExpr: Expression;
     entityName: string;
@@ -275,6 +275,7 @@ export function isMapReduceTrigger(param): param is MapReduceTrigger {
 export const CompiledFormulaN = ExecPlanN.CompiledFormulaN;
 export class CompiledFormula implements ExecPlanBase {
     readonly type_ = CompiledFormulaN;
+    finalExpression: Expression;
     rawExpr: Expression;
     targetEntityName: string;
     targetPropertyName: string;

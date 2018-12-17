@@ -112,14 +112,14 @@ describe('Inventory Metadata', () => {
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(10);
         
-        let availStock = evalExprES5(pl1, cf3.rawExpr);
+        let availStock = evalExprES5(pl1, cf3.finalExpression);
         expect(availStock).toEqual(6);
 
         await frmdbTStore.kvs().put(oi1_2);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(14);
         
-        availStock = evalExprES5(pl1, cf3.rawExpr);
+        availStock = evalExprES5(pl1, cf3.finalExpression);
         expect(availStock).toEqual(2);
 
         // check auto-correction
@@ -129,7 +129,7 @@ describe('Inventory Metadata', () => {
         await putObj(oi1_2new);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(16);
-        availStock = evalExprES5(pl1, cf3.rawExpr);
+        availStock = evalExprES5(pl1, cf3.finalExpression);
         expect(availStock).toEqual(0);
         let o: any = await frmdbTStore.kvs().get(oi1_2new._id);
         expect(o.quantity).toEqual(6);

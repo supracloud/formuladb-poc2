@@ -15,19 +15,22 @@ export { Table };
 export { ChangeObj, applyChanges };
 
 import * as events from '../common/domain/event';
+import { Entity } from '../common/domain/metadata/entity';
 
 export interface TableState {
+  entity: Entity | undefined;
   table: Table;
   tableData: DataObj[];
   selectedColumnName: string | undefined;
-  highlightColumns: {[columnName: string]: string} | undefined;
+  formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
 }
 
 export const tableInitialState: TableState = {
+  entity: undefined,
   table: {} as Table,
   selectedColumnName: undefined,
   tableData: [] as DataObj[],
-  highlightColumns: undefined,
+  formulaHighlightedColumns: {},
 };
 
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
@@ -47,7 +50,7 @@ export class TableDataFromBackendAction implements Action {
 export class ResetTableDataFromBackendAction implements Action {
   readonly type = RestTableDataFromBackendActionN;
 
-  constructor(public tableData: DataObj[]) { }
+  constructor(public entity: Entity, public tableData: DataObj[]) { }
 }
 
 export class UserActionEditedTable implements Action {
@@ -112,6 +115,7 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
     case RestTableDataFromBackendActionN:
       ret = {
         ...state,
+        entity: action.entity,
         tableData: action.tableData,
       };
       break;
@@ -141,6 +145,10 @@ export const reducers = {
   'table': tableReducer
 };
 export const getTable = createFeatureSelector<TableState>('table');
+export const getTableEntityState = createSelector(
+  getTable,
+  (state: TableState) => state.entity
+);
 export const getTableDataState = createSelector(
   getTable,
   (state: TableState) => state.tableData
@@ -151,5 +159,5 @@ export const getTableState = createSelector(
 );
 export const getTableHighlightColumns = createSelector(
   getTable,
-  (state: TableState) => state.highlightColumns
+  (state: TableState) => state.formulaHighlightedColumns
 );
