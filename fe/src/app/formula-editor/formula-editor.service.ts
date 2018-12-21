@@ -102,7 +102,7 @@ export class FormulaEditorService {
     if (!this.editedEntity || !this.editedProperty) return [];
 
     let formulaStaticTypeChecker = new FormulaTokenizer();
-    let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt);
+    let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt, caretPos);
     let ret: UiToken[] = [];
 
     for (let token of parserTokens) {

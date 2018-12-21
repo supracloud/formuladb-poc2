@@ -132,8 +132,8 @@ export class FormulaCodeEditorComponent implements OnInit {
                     this.suggestions = this.getSuggestions(tokens[i].getValue());
                     this.activeSuggestion = 0;
                   }
-                  // this.suggestions = ['suggestion1', 'sugestion2'];
-                  // tokens[i].errors = ['err1', 'err2'];
+                  this.suggestions = ['suggestion1', 'sugestion2'];
+                  tokens[i].errors = ['err1'];
                   if (this.suggestions && this.suggestions.length > 0) {
                     this.ftext += tokens[i].getValue() + this.buildSuggestionBox() + this.buildErrorBox(tokens[i].getErrors());
                     continue;
@@ -207,7 +207,7 @@ export class FormulaCodeEditorComponent implements OnInit {
   }
 
   private buildErrorBox(errors: string[]): string {
-    return "<div class='error-note-holder'><div class='error-note'>" + errors.join("</div><div class='error-note'>") + "</div></div>";
+    return "<div class='error-note-holder'><div class='error-note'>" + errors.slice(0, 1).join("</div><div class='error-note'>") + "</div></div>";
   }
 
   private renderToken(token: UiToken): string {

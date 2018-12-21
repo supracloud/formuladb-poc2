@@ -92,6 +92,11 @@ export class Token {
 
 }
 
+export interface TokenizedFormula {
+    tokens: Token[];
+    functionsSignaturesTokens: Token[];
+}
+
 export class FormulaTokenizer {
 
     private expr2token(type: TokenType, node: Expression, context: {}): Token {
@@ -107,14 +112,14 @@ export class FormulaTokenizer {
             .withValue(token);
     }
 
-    public tokenizeAndStaticCheckFormula(targetEntityName: string, propJsPath: string, formulaStr: string): Token[] {
+    public tokenizeAndStaticCheckFormula(targetEntityName: string, propJsPath: string, formulaStr: string, caretPos?: number): Token[] {
         let ast = compileFormula(targetEntityName, propJsPath, formulaStr, true).rawExpr;
         
-        //TODO: cross-check with Schema that tables and colums actually exist
+        //TODO: cross-check with Schema that tables and columns actually exist
 
-        return this.walkAST(ast, {targetEntityName: targetEntityName});
+        return this.walkAST(ast, {targetEntityName: targetEntityName, caretPos: caretPos});
     }
-    private walkAST(node: Expression, context: {targetEntityName: string}): Token[] {
+    private walkAST(node: Expression, context: {targetEntityName: string, caretPos: number | undefined}): Token[] {
         let ret: Token[] = [];
         switch (node.type) {
 

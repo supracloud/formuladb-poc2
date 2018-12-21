@@ -479,7 +479,11 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
     let evalledArs: CompiledScalar[] = args.map(arg => {
         if (!isExpression(arg)) throw new Error("Unexpected function arg " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
         let ret = compileExpression(arg, fc.context, CompiledScalarN);
+
+        //FIXME: this is not true, arguments of scalar functions can be the results of trigger calculations, e.g. MAX(SUMIF(blabla...), 20)
+        //to fix this and implement spec "scalar-functions having table-functions as argument"
         if (!isCompiledScalar(ret)) throw new Error("Arguments of scalar functions must be scalar expressions at " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
+        
         if (!isExpression(ret.rawExpr)) throw new Error("Arguments of scalar functions must be scalar expressions " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
         return ret;
     });
