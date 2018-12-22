@@ -534,3 +534,5 @@ export const ScalarFunctions = {
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
 }
+
+export const FunctionsList = Object.keys(ScalarFunctions).concat(Object.keys(MapFunctions)).concat(Object.keys(MapReduceFunctions));

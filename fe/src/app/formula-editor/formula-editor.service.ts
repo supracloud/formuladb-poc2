@@ -42,6 +42,7 @@ export class FormulaEditorService {
   public editorExpr$: Observable<string | undefined>;
   private developerMode: boolean = false;
   private highlightTableColumns: {[tableName: string]: { [columnName: string]: string }} = {};
+  private formulaStaticTypeChecker: FormulaTokenizer;
 
 
   constructor(protected store: Store<appState.AppState>) {
@@ -58,6 +59,7 @@ export class FormulaEditorService {
     );
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(devMode => this.developerMode = devMode));
     this.editorExpr$ = this.store.select(appState.getEditorExpr);
+    this.formulaStaticTypeChecker = new FormulaTokenizer();
   }
 
   public toggleFormulaEditor() {
@@ -77,8 +79,7 @@ export class FormulaEditorService {
   private parse(editorTxt: string, caretPos: number): UiToken[] {
     if (!this.editedEntity || !this.editedProperty) return [];
 
-    let formulaStaticTypeChecker = new FormulaTokenizer();
-    let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt, caretPos);
+    let parserTokens: Token[] = this.formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt, caretPos);
     let ret: UiToken[] = [];
 
     for (let token of parserTokens) {

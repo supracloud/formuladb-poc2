@@ -15,16 +15,16 @@ export enum TokenType {
 }
 
 export interface Token {
-
+    type: TokenType;
     pstart: number;
     pend: number;
-    type: TokenType;
     value: string;
     errors: string[];
     suggestions: string[];
     callStack: {functionName: string, argumentName: string}[];
     tableName?: string;
     columnName?: string;
+    foundInSchema?: boolean;
 }
 
 export const DEFAULT_TOKEN: Token = {
@@ -44,10 +44,15 @@ export interface TokenizedFormula {
 export class FormulaTokenizer {
 
     private expr2token(type: TokenType, node: Expression, context: {}): Token {
-        return {...DEFAULT_TOKEN, type: type,
+        let ret: Token = {
+            ...DEFAULT_TOKEN, 
+            type: type,
             pstart: node.startIndex,
             pend: node.endIndex,
-            value: node.origExpr};
+            value: node.origExpr
+        };
+        
+        return ret;
     }
     private punctuationToken(pstart: number, token: string, context: {}): Token {
         return {...DEFAULT_TOKEN, type: TokenType.PUNCTUATION,

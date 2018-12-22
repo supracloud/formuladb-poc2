@@ -194,25 +194,24 @@ export class FormulaCodeEditorComponent implements OnInit {
   private renderToken(token: UiToken): string {
     let ret: string[] = [];
     let cls = token.class;
-    
-    
-    //test
-    token.errors = ['err1'];
-    token.suggestions = ['suggestion1', 'sugestion2'];
 
+    token.errors = ['err1'];
     let hasErrors = token.errors && token.errors.length > 0;
 
-    ret.push("<span class='" + cls + " " + (hasErrors? 'editor-error' : '' ) + "'>" + token.value + "</span>");
+    ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
 
-    if (token.caret && token.value && token.value.length > 2 && token.suggestions && token.suggestions.length > 0) {
+    if (token.caret && token.value && token.value.length > 2) {
       this.suggestions = token.suggestions;
-      ret.push(this.buildSuggestionBox());
+      this.suggestions = ['suggestion1', 'sugestion2'];
+      if (this.suggestions && this.suggestions.length > 0) {
+        ret.push(this.buildSuggestionBox());
+      }
     }
 
     if (hasErrors && token.caret) {
       ret.push(this.buildErrorBox(token.errors));
     }
-    
+
     return ret.join('');
   }
 
