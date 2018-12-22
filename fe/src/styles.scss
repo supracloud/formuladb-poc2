@@ -43,13 +43,3 @@ form div .form-control.ng-dirty.ng-pending:not(form) {
 .ng-touched:not(form) {
     // border-left: 5px solid #42A948; /* green */
 }
-
-.drag-handle {
-    position: absolute;
-    right: .5rem;
-    top:0;
-    width: .5rem;
-    height: .5rem;
-    z-index: 1000;
-    cursor: move;
-}
