@@ -4,7 +4,7 @@
  */
 
 import * as _ from 'lodash';
-import { FormulaTokenizer, Token } from './formula_tokenizer';
+import { FormulaTokenizer, Token, TokenType } from './formula_tokenizer';
 
 
 describe('FormulaTokenizer', () => {
@@ -29,8 +29,10 @@ describe('FormulaTokenizer', () => {
             pend: 11,
             pstart: 8,
             tableName: "A",
-            type: "COLUMN_NAME",
+            type: TokenType.COLUMN_NAME,
             value: "num",
+            errors: [],
+            suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "tableRange" }],
         }));
         expect(parserTokens[6]).toEqual(jasmine.objectContaining({
@@ -38,8 +40,10 @@ describe('FormulaTokenizer', () => {
             // pend: 16,
             pstart: 13,
             tableName: "A",
-            type: "COLUMN_NAME",
+            type: TokenType.COLUMN_NAME,
             value: token6ColName,
+            errors: [],
+            suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "logicalExpression" }],
         }));
         expect(parserTokens[8]).toEqual(jasmine.objectContaining({
@@ -47,15 +51,19 @@ describe('FormulaTokenizer', () => {
             pend: 26,
             pstart: 20,
             tableName: "B",
-            type: "COLUMN_NAME",
+            type: TokenType.COLUMN_NAME,
             value: "@[b_x]",
+            errors: [],
+            suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "logicalExpression" }],
         }));
         expect(parserTokens[15]).toEqual(jasmine.objectContaining({
             pend: 47,
             pstart: 42,
-            type: "FUNCTION_NAME",
+            type: TokenType.FUNCTION_NAME,
             value: "ROUND",
+            errors: [],
+            suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "logicalExpression" }],
         }));
         expect(parserTokens[19]).toEqual(jasmine.objectContaining({
@@ -63,8 +71,10 @@ describe('FormulaTokenizer', () => {
             pend: 59,
             pstart: 53,
             tableName: "B",
-            type: "COLUMN_NAME",
+            type: TokenType.COLUMN_NAME,
             value: "@[b_y]",
+            errors: [],
+            suggestions: [],
             callStack: [
                 { functionName: "SQRT", argumentName: "expr" },
                 { functionName: "ROUND", argumentName: "expr" },

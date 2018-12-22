@@ -1,6 +1,7 @@
 import { Expression, isIdentifier, isLiteral } from 'jsep';
 import { compileFormula } from './formula_compiler';
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from './functions_compiler';
+import * as _ from 'lodash';
 
 
 export enum TokenType {
@@ -45,7 +46,7 @@ export class FormulaTokenizer {
 
     private expr2token(type: TokenType, node: Expression, context: {}): Token {
         let ret: Token = {
-            ...DEFAULT_TOKEN, 
+            ..._.cloneDeep(DEFAULT_TOKEN), 
             type: type,
             pstart: node.startIndex,
             pend: node.endIndex,
@@ -55,7 +56,7 @@ export class FormulaTokenizer {
         return ret;
     }
     private punctuationToken(pstart: number, token: string, context: {}): Token {
-        return {...DEFAULT_TOKEN, type: TokenType.PUNCTUATION,
+        return {..._.cloneDeep(DEFAULT_TOKEN), type: TokenType.PUNCTUATION,
             pstart: pstart,
             pend: pstart + token.length,
             value: token};
@@ -202,5 +203,6 @@ export class FormulaTokenizer {
                 token.callStack.push({functionName, argumentName});
             }
         }
+        console.log(tokens);
     }
 }
