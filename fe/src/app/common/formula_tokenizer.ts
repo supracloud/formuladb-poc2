@@ -1,5 +1,6 @@
 import { Expression, isIdentifier, isLiteral } from 'jsep';
 import { compileFormula } from './formula_compiler';
+import { ScalarFunctions, MapFunctions, MapReduceFunctions } from './functions_compiler';
 
 
 export enum TokenType {
@@ -13,85 +14,28 @@ export enum TokenType {
     FUNCTION_NAME = 'FUNCTION_NAME',
 }
 
-export class Token {
+export interface Token {
 
-    private pstart: number = 0;
-    private pend: number = 0;
-    private type: TokenType = TokenType.NONE;
-    private value: string;
-    public errors: string[] = [];
-    private tableName: string | undefined;
-    private columnName: string | undefined;
-
-    public withType(type: TokenType): Token {
-        this.type = type;
-        return this;
-    }
-
-    public withStartPos(p: number): Token {
-        this.pstart = p;
-        return this;
-    }
-
-    public withEndPos(p: number): Token {
-        this.pend = p;
-        return this;
-    }
-
-    public withValue(v: string): Token {
-        this.value = v;
-        return this;
-    }
-
-    public withErrors(errors: { [key: string]: number[] }): Token {
-        if (errors) {
-            for (var k in errors) {
-                if (this.pstart < errors[k][1] && this.pend > errors[k][0] && !this.errors.some(e => e === k)) {
-                    this.errors.push(k);
-                }
-            }
-        }
-        return this;
-    }
-    public withTableName(tableName: string | undefined) {
-        this.tableName = tableName;
-        return this;
-    }
-    public withColumnName(columnName: string) {
-        this.columnName = columnName;
-        return this;
-    }
-
-    public getType(): TokenType {
-        return this.type;
-    }
-
-    public append(t: string): void {
-        if (!this.value) {
-            this.value = t;
-        } else {
-            this.value += t;
-        }
-    }
-
-    public getValue(): string {
-        return this.value;
-    }
-
-    public getErrors(): string[] {
-        return this.errors;
-    }
-    public getStartPos() {
-        return this.pstart;
-    }
-    public getEndPos() {
-        return this.pend;
-    }
-    public getTableName() {return this.tableName;}
-    public getColumnName() {return this.columnName;}
-
+    pstart: number;
+    pend: number;
+    type: TokenType;
+    value: string;
+    errors: string[];
+    suggestions: string[];
+    callStack: {functionName: string, argumentName: string}[];
+    tableName?: string;
+    columnName?: string;
 }
 
+export const DEFAULT_TOKEN: Token = {
+    pstart: 0,
+    pend: 0,
+    type: TokenType.NONE,
+    suggestions: [],
+    errors: [],
+    callStack: [],
+    value: '',
+}
 export interface TokenizedFormula {
     tokens: Token[];
     functionsSignaturesTokens: Token[];
@@ -100,16 +44,16 @@ export interface TokenizedFormula {
 export class FormulaTokenizer {
 
     private expr2token(type: TokenType, node: Expression, context: {}): Token {
-        return new Token().withType(type)
-            .withStartPos(node.startIndex)
-            .withEndPos(node.endIndex)
-            .withValue(node.origExpr);
+        return {...DEFAULT_TOKEN, type: type,
+            pstart: node.startIndex,
+            pend: node.endIndex,
+            value: node.origExpr};
     }
-    private punctuationToken(startPos: number, token: string, context: {}): Token {
-        return new Token().withType(TokenType.PUNCTUATION)
-            .withStartPos(startPos)
-            .withEndPos(startPos + token.length)
-            .withValue(token);
+    private punctuationToken(pstart: number, token: string, context: {}): Token {
+        return {...DEFAULT_TOKEN, type: TokenType.PUNCTUATION,
+            pstart: pstart,
+            pend: pstart + token.length,
+            value: token};
     }
 
     public tokenizeAndStaticCheckFormula(targetEntityName: string, propJsPath: string, formulaStr: string, caretPos?: number): Token[] {
@@ -135,6 +79,7 @@ export class FormulaTokenizer {
 
             case 'CallExpression':
                 ret = [];
+                let functionName = node.callee.origExpr;
                 if (isIdentifier(node.callee)) {
                     ret.push(this.expr2token(TokenType.FUNCTION_NAME, node.callee, context));
                 } else {
@@ -143,7 +88,9 @@ export class FormulaTokenizer {
                 ret.push(this.punctuationToken(node.callee.endIndex, '(', context));
                 let endParanthesisPos = node.arguments.length > 0 ? node.arguments[node.arguments.length - 1].endIndex : node.callee.endIndex + 1;
                 for (var i = 0; i < node.arguments.length; i++) {
-                    ret = [...ret, ...this.walkAST(node.arguments[i], context)];
+                    let tokensForArgument = this.walkAST(node.arguments[i], context);
+                    this.setCallStackFrame(tokensForArgument, functionName, i);
+                    ret = [...ret, ...tokensForArgument];
                     if (i < node.arguments.length - 1) ret.push(this.punctuationToken(node.endIndex, ', ', context));
                 }
                 ret.push(this.punctuationToken(endParanthesisPos, ')', context));
@@ -156,9 +103,11 @@ export class FormulaTokenizer {
                     ;
 
             case 'Identifier':
-                return [this.expr2token(TokenType.COLUMN_NAME, node, context)
-                    .withTableName(node.parent || context.targetEntityName)
-                    .withColumnName(node.name)];
+                return [{
+                    ...this.expr2token(TokenType.COLUMN_NAME, node, context),
+                    tableName: node.parent || context.targetEntityName,
+                    columnName: node.name
+                }];
 
             case 'NumberLiteral':
                 return [this.expr2token(TokenType.LITERAL, node, context)];
@@ -179,23 +128,29 @@ export class FormulaTokenizer {
                 let tableName;
                 if (isLiteral(node.object) && node.object.raw === '@') {
                     if (!isIdentifier(node.property)) throw new Error("Computed MemberExpression is not allowed at " + node.origExpr);
-                    ret.push(this.expr2token(TokenType.COLUMN_NAME, node, context)
-                    .withTableName(context.targetEntityName)
-                    .withColumnName(node.property.name));
+                    ret.push({
+                        ...this.expr2token(TokenType.COLUMN_NAME, node, context),
+                        tableName: context.targetEntityName,
+                        columnName: node.property.name,
+                    });
 
                 } else {
                     if (isIdentifier(node.object)) {
                         tableName = node.object.name;
-                        ret.push(this.expr2token(TokenType.TABLE_NAME, node.object, context)
-                            .withTableName(tableName));
+                        ret.push({
+                            ...this.expr2token(TokenType.TABLE_NAME, node.object, context),
+                            tableName: tableName,
+                        });
                     } else {
                         ret.push.apply(ret, this.walkAST(node.object, context));
                     }
                     if (isIdentifier(node.property)) {
                         ret.push(this.punctuationToken(node.endIndex, '.', context));
-                        ret.push(this.expr2token(TokenType.COLUMN_NAME, node.property, context)
-                            .withTableName(tableName)
-                            .withColumnName(node.property.name));
+                        ret.push({
+                            ...this.expr2token(TokenType.COLUMN_NAME, node.property, context),
+                            tableName: tableName,
+                            columnName: node.property.name
+                        });
                     } else {
                         ret.push(this.punctuationToken(node.endIndex, '.', context));
                         ret.push.apply(ret, this.walkAST(node.property, context));
@@ -218,4 +173,29 @@ export class FormulaTokenizer {
         }
     }
 
+    private setCallStackFrame(tokens: Token[], functionName: string, argumentIdx: number) {
+        let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName];
+        let argumentName: string | undefined = undefined;
+        let m = fn.toString().match(/function (\w+)\(fc, (.*)\)/);
+        let errors: string[] = [];
+        if (m && m.length == 3) {
+            let args: string[] = m[2].split(/\s*,\s*/);
+            if (args.length <= argumentIdx) {
+                errors.push("Function " + functionName + " does not have " + (argumentIdx + 1) + " arguments");
+            } else {
+                argumentName = args[argumentIdx];
+            }
+        } else {
+            errors.push("Unknown function " + functionName);
+            console.error("Cannot parse function signature: ", functionName, fn, m);
+        }
+        for (let token of tokens) {
+            if (errors.length > 0) {
+                token.errors = token.errors.concat(errors);
+            }
+            if (argumentName) {
+                token.callStack.push({functionName, argumentName});
+            }
+        }
+    }
 }

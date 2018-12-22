@@ -10,49 +10,25 @@ import { map, concat } from 'rxjs/operators';
 import { timingSafeEqual } from 'crypto';
 import { Expression, isIdentifier } from 'jsep';
 import { TableFormBackendAction } from '../table/table.state';
-import { Token, TokenType, FormulaTokenizer } from '../common/formula_tokenizer';
+import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from '../common/formula_tokenizer';
 
 const STYLES = [
-  { bgColor: '#b6d0f9', tockenClass: 'c_b6d0f9' },
-  { bgColor: '#f9ccf9', tockenClass: 'c_f9ccf9' },
-  { bgColor: '#fcd9e1', tockenClass: 'c_fcd9e1' },
-  { bgColor: '#d9f9e5', tockenClass: 'c_d9f9e5' },
-  { bgColor: '#f5f9d9', tockenClass: 'c_f5f9d9' },
+  { bgColor: '#b6d0f9', tokenClass: 'c_b6d0f9' },
+  { bgColor: '#f9ccf9', tokenClass: 'c_f9ccf9' },
+  { bgColor: '#fcd9e1', tokenClass: 'c_fcd9e1' },
+  { bgColor: '#d9f9e5', tokenClass: 'c_d9f9e5' },
+  { bgColor: '#f5f9d9', tokenClass: 'c_f5f9d9' },
 ];
 
-export class UiToken extends Token {
-
-  private caret: boolean = false;
-  private class: string | undefined;
-
-  public constructor(token: Token) {
-    super();
-    for (var prop in token) {
-      this[prop] = token[prop];
-    }
-  }
-
-  public withClass(c: string | undefined): UiToken {
-    this.class = c;
-    return this;
-  }
-
-  public getClass(): string | undefined {
-    return this.class;
-  }
-
-
-  public withCaret(c: boolean): UiToken {
-    if (!this.caret) {
-      this.caret = c;
-    }
-    return this;
-  }
-
-  public isCaret(): boolean {
-    return this.caret;
-  }
+export interface UiToken extends Token {
+  caret: boolean;
+  class?: string;
 }
+
+const DEFAULT_UITOKEN: UiToken = {
+  ...DEFAULT_TOKEN,
+  caret: false,
+};
 
 @Injectable({
   providedIn: 'root'
@@ -106,17 +82,17 @@ export class FormulaEditorService {
     let ret: UiToken[] = [];
 
     for (let token of parserTokens) {
-      let uiToken = new UiToken(token).withCaret(token.getStartPos() <= caretPos && caretPos <= token.getEndPos());
-      if (token.getType() == TokenType.COLUMN_NAME) {
-        let tableName = token.getTableName();
-        let columnName = token.getColumnName();
+      let uiToken: UiToken = {...token, caret: token.pstart <= caretPos && caretPos <= token.pend};
+      if (token.type == TokenType.COLUMN_NAME) {
+        let tableName = token.tableName;
+        let columnName = token.columnName;
         if (tableName && columnName) {
           let styleLength = Object.values(this.highlightTableColumns).map(h => Object.keys(h).length).reduce((acc, x) => acc + x, 0);
-          let tokenClass = STYLES[styleLength % STYLES.length].tockenClass;
+          let tokenClass = STYLES[styleLength % STYLES.length].tokenClass;
           let bgColor = STYLES[styleLength % STYLES.length].bgColor;
           this.highlightTableColumns[tableName] = this.highlightTableColumns[tableName] || {};
           this.highlightTableColumns[tableName][columnName] = bgColor;
-          uiToken.withClass(tokenClass);
+          uiToken.class = tokenClass;
         }
       }
       ret.push(uiToken);

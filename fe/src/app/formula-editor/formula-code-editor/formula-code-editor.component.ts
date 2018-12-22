@@ -63,9 +63,9 @@ export class FormulaCodeEditorComponent implements OnInit {
   }
 
   cursorMove(cursorPos: number) {
-    let tokenAtCursor = this.currentTokens.find(x => x.getStartPos() <= cursorPos && cursorPos <= x.getEndPos())
-    if (tokenAtCursor && tokenAtCursor.getTableName()) {
-      let fragment = tokenAtCursor.getTableName();
+    let tokenAtCursor = this.currentTokens.find(x => x.pstart <= cursorPos && cursorPos <= x.pend)
+    if (tokenAtCursor && tokenAtCursor.tableName) {
+      let fragment = tokenAtCursor.tableName;
       this.router.navigate([this.router.url.replace(/(\/\d+).*/, (match, $1) => $1 + '/' + fragment)]);
     }
   }
@@ -119,7 +119,7 @@ export class FormulaCodeEditorComponent implements OnInit {
           let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
           this.currentTokens = tokens;
           for (let i: number = 0; i < tokens.length; i++) {
-            switch (tokens[i].getType()) {
+            switch (tokens[i].type) {
               case TokenType.NLINE:
                 this.ftext += "<br>";
                 break;
@@ -127,18 +127,6 @@ export class FormulaCodeEditorComponent implements OnInit {
                 this.ftext += "&nbsp;";
                 break;
               default:
-                if (tokens[i].isCaret() && tokens[i].getValue() && tokens[i].getValue().length > 2) {
-                  if (!nochange) {
-                    this.suggestions = this.getSuggestions(tokens[i].getValue());
-                    this.activeSuggestion = 0;
-                  }
-                  this.suggestions = ['suggestion1', 'sugestion2'];
-                  tokens[i].errors = ['err1'];
-                  if (this.suggestions && this.suggestions.length > 0) {
-                    this.ftext += tokens[i].getValue() + this.buildSuggestionBox() + this.buildErrorBox(tokens[i].getErrors());
-                    continue;
-                  }
-                }
                 this.ftext += this.renderToken(tokens[i]);
             }
           }
@@ -168,13 +156,6 @@ export class FormulaCodeEditorComponent implements OnInit {
       this.activeSuggestion--;
       this.onEdit(event.currentTarget.selectionStart, true);
     }
-  }
-
-  private getSuggestions(stem: string): string[] {
-    if (this.suggestion) {
-      return this.suggestion(stem);
-    }
-    else return [];
   }
 
   private setSelectionRange(input: any, selectionStart: number, selectionEnd: number): void {
@@ -211,13 +192,28 @@ export class FormulaCodeEditorComponent implements OnInit {
   }
 
   private renderToken(token: UiToken): string {
-    let cls = token.getClass();
+    let ret: string[] = [];
+    let cls = token.class;
+    
+    
+    //test
+    token.errors = ['err1'];
+    token.suggestions = ['suggestion1', 'sugestion2'];
 
-    if (token.getErrors() && token.getErrors().length > 0) {
+    let hasErrors = token.errors && token.errors.length > 0;
 
-      return "<span class='" + (cls ? cls + " " : "") + "editor-error'>" + token.getValue() + "</span>" + (token.isCaret() ? this.buildErrorBox(token.getErrors()) : "");
+    ret.push("<span class='" + cls + " " + (hasErrors? 'editor-error' : '' ) + "'>" + token.value + "</span>");
+
+    if (token.caret && token.value && token.value.length > 2 && token.suggestions && token.suggestions.length > 0) {
+      this.suggestions = token.suggestions;
+      ret.push(this.buildSuggestionBox());
     }
-    return "<span class='" + cls + "'>" + token.getValue() + "</span>";
+
+    if (hasErrors && token.caret) {
+      ret.push(this.buildErrorBox(token.errors));
+    }
+    
+    return ret.join('');
   }
 
 }
