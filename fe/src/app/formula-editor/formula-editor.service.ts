@@ -7,7 +7,6 @@ import * as jsep from 'jsep';
 import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 import * as appState from 'src/app/app.state';
 import { map, concat } from 'rxjs/operators';
-import { timingSafeEqual } from 'crypto';
 import { Expression, isIdentifier } from 'jsep';
 import { TableFormBackendAction } from '../table/table.state';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from '../common/formula_tokenizer';
