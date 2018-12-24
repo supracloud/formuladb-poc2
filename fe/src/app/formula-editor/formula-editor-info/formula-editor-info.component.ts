@@ -15,8 +15,8 @@ export class FormulaEditorInfoComponent implements OnInit {
   constructor(private formulaEditorService: FormulaEditorService) {
     this.editorOpened$ = formulaEditorService.editorExpr$.pipe(map(editorTxt => editorTxt !== undefined));
   }
-  x = 20;
-  y = 20;
+  x = 200;
+  y = 200;
   deltaX = 0;
   deltaY = 0;
   dragged = false;
@@ -25,6 +25,12 @@ export class FormulaEditorInfoComponent implements OnInit {
     document.body.addEventListener('dragover', e => {
       e.preventDefault();
       return false;
+    });
+    document.body.addEventListener("pointermove",e=>{
+      this.dragHandle(e);
+    });
+    document.body.addEventListener("mouseup",e=>{
+      this.dragEndHandle(e);
     });
   }
 
