@@ -221,7 +221,7 @@ export class AppEffects {
                     table = getDefaultTable(entity);
                 } else throw err;
             }
-            this.store.dispatch(new appState.ResetTableDataFromBackendAction([]));
+            this.store.dispatch(new appState.ResetTableDataFromBackendAction(entity, []));
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
             let tableData = await this.backendService.getTableData(path);

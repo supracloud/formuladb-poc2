@@ -104,7 +104,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
     } 
     //TODO: this should be an effect
     else if (action.type === fromTable.UserSelectCellN) {
-      let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : null;
+      let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : undefined;
       let editorExpr = 'Not Defined';
       if (selectedProperty) {
         if (selectedProperty.propType_ == Pn.FORMULA) {
@@ -129,7 +129,12 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         table: {
           ...state.table,
-          highlightColumns: undefined,
+          formulaHighlightedColumns: {},
+        },
+        formula: {
+          ...state.formula,
+          editedEntity: state.entity.selectedEntity,
+          editedProperty: state.formula.selectedProperty,
         }
       }
     } else if (action.type === fromFormula.FormulaEditedN) {
@@ -137,7 +142,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         table: {
           ...state.table,
-          highlightColumns: action.formulaColumns,
+          formulaHighlightedColumns: action.formulaColumns,
         }
       }
     }

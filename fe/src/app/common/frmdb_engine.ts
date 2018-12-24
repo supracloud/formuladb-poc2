@@ -106,13 +106,13 @@ export class FrmdbEngine {
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
     }
 
-    public async init() {
+    public async init(installFormulas: boolean = true) {
         console.log("Starting FormulaDBEngine...");
 
         for (let ent of this.schemaDAO.entities()) {
             for (let prop of _.values(ent.props)) {
                 if (isFormulaProperty(prop)) {
-                    if (prop.compiledFormula_) {
+                    if (prop.compiledFormula_ && installFormulas) {
                         await this.frmdbEngineStore.installFormula(prop.compiledFormula_);
                     } else console.warn("Found formula property that is not compiled: ", prop);
                 }
@@ -270,8 +270,8 @@ export class FrmdbEngine {
             let getObjectIdsToSave = async (retryNb: number) => {
                 Object.assign(event.obj, originalObj, { _rev: event.obj._rev });
                 for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
-                    event.obj[selfFormula.targetPropertyName] = evalExprES5(event.obj, selfFormula.rawExpr);
-                    console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.rawExpr.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
+                    event.obj[selfFormula.targetPropertyName] = evalExprES5(event.obj, selfFormula.finalExpression);
+                    console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
                 }
                 for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
                     transacDAG = new TransactionDAG(event._id, retryNb + "|" + failedValidationRetry);
@@ -392,17 +392,17 @@ export class FrmdbEngine {
         }
 
         if (!compiledFormula.triggers) {
-            obsNew[compiledFormula.targetPropertyName] = evalExprES5(obsNew, compiledFormula.rawExpr);
+            obsNew[compiledFormula.targetPropertyName] = evalExprES5(obsNew, compiledFormula.finalExpression);
         } else if (compiledFormula.triggers.length === 1) {
             obsNew[compiledFormula.targetPropertyName] = triggerValues[compiledFormula.triggers[0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName];
         } else {
-            obsNew[compiledFormula.targetPropertyName] = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.rawExpr);
+            obsNew[compiledFormula.targetPropertyName] = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
-        console.log(ll(transacDAG) + "|preComputeFormula|" + oblNew._id + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = [" + compiledFormula.rawExpr.origExpr + "] = " + obsNew[compiledFormula.targetPropertyName]);
+        console.log(ll(transacDAG) + "|preComputeFormula|" + oblNew._id + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = [" + compiledFormula.finalExpression.origExpr + "] = " + obsNew[compiledFormula.targetPropertyName]);
 
         for (let selfFormula of this.schemaDAO.getSelfFormulas(obsNew._id)) {
-            obsNew[selfFormula.targetPropertyName] = evalExprES5(obsNew, selfFormula.rawExpr);
-            console.log(ll(transacDAG) + "|preComputeFormula| - selfFormula: " + obsNew._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.rawExpr.origExpr + "] = " + obsNew[selfFormula.targetPropertyName]);
+            obsNew[selfFormula.targetPropertyName] = evalExprES5(obsNew, selfFormula.finalExpression);
+            console.log(ll(transacDAG) + "|preComputeFormula| - selfFormula: " + obsNew._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + obsNew[selfFormula.targetPropertyName]);
         }
 
         let failedValidations = this.validateObj(obsNew);

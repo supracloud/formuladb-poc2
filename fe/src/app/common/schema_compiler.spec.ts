@@ -35,13 +35,13 @@ describe('SchemaCompiler', () => {
             entities: {
                 A: {
                     _id: 'A', props: {
-                        B$b: { name: "B$b", propType_: Pn.REFERENCE_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: [] },
+                        B$b: { name: "B$b", propType_: Pn.REFERENCE_TO, referencedEntityName: 'B', snapshotCurrentValueOfProperties: ['_id'] },
                         val: { name: "val", propType_: Pn.NUMBER },
                     }
                 } as Entity,
                 B: {
                     _id: 'B', props: {
-                        sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUM(A__of__b.val)' } as FormulaProperty,
+                        sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, B$b._id == @[_id])' } as FormulaProperty,
                         x__: { name: "x__", propType_: Pn.FORMULA, formula: '10 - sum__' } as FormulaProperty,
                     }
                 } as Entity,

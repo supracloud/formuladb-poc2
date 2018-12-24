@@ -20,15 +20,15 @@ import { unflatten, NavigationItem } from './navigation.item';
 
 export interface EntityState {
     entities: Entity[];
-    selectedEntity: Entity | null;
-    selectedProperty: EntityProperty | null;
+    selectedEntity: Entity | undefined;
+    selectedProperty: EntityProperty | undefined;
     expanded: string[];
 }
 
 export const entityInitialState: EntityState = {
     entities: [] as Entity[],
-    selectedEntity: null,
-    selectedProperty: null,
+    selectedEntity: undefined,
+    selectedProperty: undefined,
     expanded: [] as string[]
 };
 

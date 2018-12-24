@@ -12,27 +12,37 @@ export class FormulaEditorInfoComponent implements OnInit {
 
   public editorOpened$: Observable<boolean>;
 
-  x: number = 50;
-  y: number = 50;
-  deltaX: number = 0;
-  deltaY: number = 0;
-
   constructor(private formulaEditorService: FormulaEditorService) {
-    this.editorOpened$ = formulaEditorService.editorExpr$.pipe(map(editorTxt => editorTxt != undefined));
+    this.editorOpened$ = formulaEditorService.editorExpr$.pipe(map(editorTxt => editorTxt !== undefined));
   }
+  x = 20;
+  y = 20;
+  deltaX = 0;
+  deltaY = 0;
+  dragged = false;
 
   ngOnInit() {
-    window.addEventListener('dragover', e => e.preventDefault());
-  }
-
-  dragHandle(e: any) {
-    console.log(e);
-    this.x = e.clientX - this.deltaX;
-    this.y = e.clientY - this.deltaY;
+    document.body.addEventListener('dragover', e => {
+      e.preventDefault();
+      return false;
+    });
   }
 
   dragStartHandle(e: any) {
     this.deltaX = e.clientX - this.x;
     this.deltaY = e.clientY - this.y;
+    this.dragged = true;
+  }
+
+  dragHandle(e: any) {
+    if (this.dragged) {
+      this.x = e.clientX - this.deltaX;
+      this.y = e.clientY - this.deltaY;
+    }
+  }
+
+  dragEndHandle(e: any) {
+    this.dragged = false;
+
   }
 }

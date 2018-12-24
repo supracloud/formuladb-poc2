@@ -148,8 +148,8 @@ describe('FrmdbEngineStore', () => {
     });
 
     describe('Table Relationships', () => {
-        it("B.sum__ SUM(A$.num) means A is CHILD_TABLE of B or A REFERENCE_TO B", async (done) => {
-            compiledFormula = compileFormula('B', 'sum__', 'SUM(A__of__myB.num)');
+        it("example REFERENCE_TO by _id", async (done) => {
+            compiledFormula = compileFormula('B', 'sum__', 'SUMIF(A.num, B$myB._id == @[_id])');
             await frmdbTStore.installFormula(compiledFormula);
 
             let a1  = { _id: "A~~1", B$myB: {_id: 'B~~1'}, num: 1 }; await frmdbTStore.kvs().put(a1);

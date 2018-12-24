@@ -196,7 +196,11 @@ function IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpr
 }
 function __IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression): [ExecPlanCompiledExpression, MapReduceKeysAndQueries] {
     let inputRange = compileArgNV(fc, 'basicRange', tableRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
-    let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression, [isLogicalExpression, isBinaryExpression], fc.context, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
+    let logicalExpressionContext = {...fc.context};
+    if (includesMapValue(inputRange)) {
+        logicalExpressionContext.currentEntityName = inputRange.entityName;
+    }
+    let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression, [isLogicalExpression, isBinaryExpression], logicalExpressionContext, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
     return [inputRange, compiledLogicalExpression];
 }
 function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLogicalExpression: MapReduceKeysAndQueries): MapReduceKeysAndQueries | MapReduceKeysQueriesAndValue {
@@ -475,7 +479,11 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
     let evalledArs: CompiledScalar[] = args.map(arg => {
         if (!isExpression(arg)) throw new Error("Unexpected function arg " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
         let ret = compileExpression(arg, fc.context, CompiledScalarN);
+
+        //FIXME: this is not true, arguments of scalar functions can be the results of trigger calculations, e.g. MAX(SUMIF(blabla...), 20)
+        //to fix this and implement spec "scalar-functions having table-functions as argument"
         if (!isCompiledScalar(ret)) throw new Error("Arguments of scalar functions must be scalar expressions at " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
+        
         if (!isExpression(ret.rawExpr)) throw new Error("Arguments of scalar functions must be scalar expressions " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
         return ret;
     });
@@ -484,7 +492,7 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
         type_: CompiledScalarN,
         rawExpr: {
             ...fc.funcExpr,
-            arguments: evalledArs.map(a => a.rawExpr) as Expression[],
+            // arguments: evalledArs.map(a => a.rawExpr) as Expression[],
         },
         has$Identifier: evalledArs.reduce((prev, current) => prev || current.has$Identifier, false),
         hasNon$Identifier: evalledArs.reduce((prev, current) => prev || current.hasNon$Identifier, false),
@@ -526,3 +534,5 @@ export const ScalarFunctions = {
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
 }
+
+export const FunctionsList = Object.keys(ScalarFunctions).concat(Object.keys(MapFunctions)).concat(Object.keys(MapReduceFunctions));

@@ -1,5 +1,13 @@
 <form [formGroup]="theFormGroup" novalidate>
-        Form status: {{ theFormGroup.status | json }}
+    <div class="frmdb-form-status">
+        <span class="frmdb-form-status-text badge-pill" 
+            [class.badge-success]="theFormGroup.status == 'VALID'"  
+            [class.badge-danger]="theFormGroup.status == 'INVALID'"
+            [class.badge-warning]="theFormGroup.status == 'PENDING'"
+        >
+            {{ theFormGroup.status }}
+        </span>
+    </div>
     <div form_item [nodeElement]="(form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="(form$ | async)">
     </div>
