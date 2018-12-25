@@ -5,9 +5,30 @@
 
 import * as _ from 'lodash';
 import { FormulaTokenizer, Token, TokenType } from './formula_tokenizer';
+import { Schema, Pn, Entity, FormulaProperty } from './domain/metadata/entity';
+import { FormulaTokenizerSchemaChecker } from './formula_tokenizer_schema_checker';
 
 
 describe('FormulaTokenizer', () => {
+    const schema: Schema = {
+        _id: "FRMDB_SCHEMA",
+        entities: {
+            A: {
+                _id: 'A', props: {
+                    a_x: { name: "a_x", propType_: Pn.NUMBER },
+                    a_y: { name: "a_y", propType_: Pn.NUMBER },
+                    num: { name: "num", propType_: Pn.NUMBER },
+                },
+            } as Entity,
+            B: {
+                _id: 'B', props: {
+                    b_x: { name: "b_x", propType_: Pn.NUMBER },
+                    b_y: { name: "b_y", propType_: Pn.NUMBER },
+                    sum: { name: "sum", propType_: Pn.FORMULA, formula: 'SUM(A.num)' } as FormulaProperty,
+                },
+            } as Entity,
+        }
+    };    
     let test1 = "should tokenize correct formula with function signature helper";
     let formula1 = 'SUMIF(A.num, a_x == @[b_x] && FACT(a_y) < ROUND(SQRT(@[b_y]) + 1))';
     let test2 = "should report non-existent column";
@@ -22,6 +43,7 @@ describe('FormulaTokenizer', () => {
 
     function testFunction(formula: string, token6ColName: string) {
         let formulaStaticTypeChecker = new FormulaTokenizer();
+        let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
         let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', formula);
 
         expect(parserTokens[4]).toEqual(jasmine.objectContaining({
@@ -46,6 +68,13 @@ describe('FormulaTokenizer', () => {
             suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "logicalExpression" }],
         }));
+        if ('a_x' != token6ColName) {
+            let suggestions = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[6]);
+            expect(suggestions[0]).toEqual({
+                suggestion: 'a_x',
+                matchedFragments: [{startPos: 0, endPos: 1}],
+            });
+        }
         expect(parserTokens[8]).toEqual(jasmine.objectContaining({
             columnName: "b_x",
             pend: 26,

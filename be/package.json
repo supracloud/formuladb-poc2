@@ -28,6 +28,7 @@
     "express-pouchdb": "^4.0.0",
     "express-session": "^1.15.6",
     "expression-eval": "git+https://github.com/acristu/expression-eval.git",
+    "fuse.js": "^3.3.0",
     "glob": "^5.0.14",
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.5",
