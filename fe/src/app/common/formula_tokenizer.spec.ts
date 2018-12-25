@@ -83,7 +83,7 @@ describe('FormulaTokenizer', () => {
         }));
     };
 
-    it(test1, testFunction.bind(null, formula1, 'a_x'));
+    fit(test1, testFunction.bind(null, formula1, 'a_x'));
     it(test2, testFunction.bind(null, formula2, 'a_'));
     it(test3, testFunction.bind(null, formula3, 'a_'));
     xit(test4, testFunction.bind(null, formula4, 'a_'));

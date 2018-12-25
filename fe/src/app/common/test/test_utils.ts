@@ -37,7 +37,6 @@ export function toStringCompiledFormula(formula: string, compiledFormula: Compil
     ;
 }
 
-let global: any, require: any, __dirname: any;
 export function logCompileFormula(formula: string, compiledFormula: CompiledFormula) {
     if (typeof global !== 'undefined' && typeof require !== 'undefined' && global['FRMDB_TRACE_COMPILE_FORMULA'] === true) {
         const fs = require('fs');

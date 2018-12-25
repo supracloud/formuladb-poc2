@@ -15,13 +15,17 @@ export enum TokenType {
     FUNCTION_NAME = 'FUNCTION_NAME',
 }
 
+export interface Suggestion {
+    suggestion: string;
+    matchedFragments: {startPos: number, endPos: number}[];
+}
 export interface Token {
     type: TokenType;
     pstart: number;
     pend: number;
     value: string;
     errors: string[];
-    suggestions: string[];
+    suggestions: Suggestion[];
     callStack: {functionName: string, argumentName: string}[];
     tableName?: string;
     columnName?: string;

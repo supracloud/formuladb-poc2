@@ -535,4 +535,7 @@ export const ScalarFunctions = {
     FLOOR: FLOOR,
 }
 
-export const FunctionsList = Object.keys(ScalarFunctions).concat(Object.keys(MapFunctions)).concat(Object.keys(MapReduceFunctions));
+export const FunctionsList = Object.keys(ScalarFunctions)
+    .concat(Object.keys(MapFunctions))
+    .concat(Object.keys(MapReduceFunctions))
+;

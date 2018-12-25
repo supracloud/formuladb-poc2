@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import * as jsep from 'jsep';
-
 import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 import * as appState from 'src/app/app.state';
 import { map, concat } from 'rxjs/operators';
