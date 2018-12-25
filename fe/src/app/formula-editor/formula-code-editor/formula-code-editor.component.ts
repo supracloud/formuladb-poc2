@@ -201,7 +201,7 @@ export class FormulaCodeEditorComponent implements OnInit {
     ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
 
     if (token.caret && token.value && token.value.length > 2) {
-      this.suggestions = token.suggestions;
+      this.suggestions = token.suggestions.map(s => s.suggestion);
       this.suggestions = ['suggestion1', 'sugestion2'];
       if (this.suggestions && this.suggestions.length > 0) {
         ret.push(this.buildSuggestionBox());

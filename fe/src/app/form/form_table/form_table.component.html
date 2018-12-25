@@ -5,11 +5,9 @@
                 <ng-container *ngSwitchCase="'form_autocomplete'">
                     <th *ngFor="let propName of child.snapshotCurrentValueOfProperties">
                         <span class="form-table-header-text">
-                            <span class="frmdb-table-header-dev-mode-identifier" *ngIf="devMode$ | async">{{params.displayName}}</span>
-                            {{params.displayName | i18n}}
+                            <span class="frmdb-table-header-dev-mode-identifier" *ngIf="devMode$ | async">{{propName}}</span>
+                            {{propName | i18n}}
                         </span>
-                    
-                        {{propName | i18n}}
                     </th>
                 </ng-container>
                 <th *ngSwitchCase="'form_input'">

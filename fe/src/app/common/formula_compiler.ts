@@ -234,7 +234,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             if (!(isLiteral(node.object) && node.object.raw === '@') && !isIdentifier(node.object) && !isMemberExpression(node.object)) throw new Error('Calculated MemberExpression object is not allowed at ' + node.origExpr);
             let obj = compileExpression(node.object, context, requestedRetType);
             let prop = compileExpression(node.property, context, requestedRetType);
-            if (CompiledScalarN === requestedRetType) {
+            if (CompiledScalarN === requestedRetType || !isTableName(node.object.origExpr)) {
                 if (!isCompiledScalar(obj) || !isCompiledScalar(prop)) throw new Error("Expected scalar expressions in scalar context but found " + node.property.origExpr + "; " + node.object.origExpr);
                 return {
                     type_: CompiledScalarN, rawExpr: node,
@@ -599,4 +599,12 @@ function checkIdentifiers(mexpr: MemberExpression) {
     if (!isIdentifier(mexpr.property)) throw new Error("computed MemberExpression property is not supported, at " + mexpr.origExpr);
     if (isMemberExpression(mexpr.object)) return checkIdentifiers(mexpr.object);
     else if (!isIdentifier(mexpr.object)) throw new Error("computed MemberExpression object is not supported, at " + mexpr.origExpr);
+}
+
+function isTableName(identifier: string) {
+    if (identifier[0].toUpperCase() === identifier[0]) {
+        return true;
+    } else {
+        return false;
+    }
 }
