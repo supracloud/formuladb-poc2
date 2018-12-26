@@ -1,6 +1,5 @@
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList } from "./functions_compiler";
 import { Token, TokenType, Suggestion } from "./formula_tokenizer";
-import { SchemaDAO } from "./domain/metadata/schema_dao";
 import * as Fuse from 'fuse.js';
 import { Schema } from "./domain/metadata/entity";
 
@@ -125,11 +124,20 @@ export class FormulaTokenizerSchemaChecker {
   private getSuggestionsWithFuse(list: string[], tokenValue: string): Suggestion[] {
     let fuse = new Fuse(list, this.baseFuseOptions);
     let fuseResults = fuse.search(tokenValue);
-    return fuseResults.map((result: any) => {
-      return {
-        suggestion: list[result.item],
-        matchedFragments: result.matches[0].indices.map(fuseIdx => { return { startPos: fuseIdx[0], endPos: fuseIdx[1] } })
-      } as Suggestion
-    });
+    if (fuseResults && fuseResults.length > 0) {
+      return fuseResults.map((result: any) => {
+        return {
+          suggestion: list[result.item],
+          matchedFragments: result.matches[0].indices.map(fuseIdx => { return { startPos: fuseIdx[0], endPos: fuseIdx[1] } })
+        } as Suggestion
+      });
+    } else {
+      return list.map(item => {
+        return {
+          suggestion: item,
+          matchedFragments: [],
+        } as Suggestion
+      });
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Expression, isIdentifier, isLiteral } from 'jsep';
-import { compileFormula } from './formula_compiler';
+import { compileFormula, parseFormula } from './formula_compiler';
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from './functions_compiler';
 import * as _ from 'lodash';
 
@@ -67,11 +67,20 @@ export class FormulaTokenizer {
     }
 
     public tokenizeAndStaticCheckFormula(targetEntityName: string, propJsPath: string, formulaStr: string, caretPos?: number): Token[] {
-        let ast = compileFormula(targetEntityName, propJsPath, formulaStr, true).rawExpr;
-        
-        //TODO: cross-check with Schema that tables and columns actually exist
+        let ast: Expression;
+        let compilerFatalError;
+        try {
+            ast = compileFormula(targetEntityName, propJsPath, formulaStr, true).rawExpr;
+        } catch (err) {
+            compilerFatalError = '' + err;
+            ast = parseFormula(formulaStr, true);
+        }
 
-        return this.walkAST(ast, {targetEntityName: targetEntityName, caretPos: caretPos});
+        let tokens = this.walkAST(ast, {targetEntityName: targetEntityName, caretPos: caretPos});
+        if (compilerFatalError && tokens.length > 0) {
+            tokens[0].errors.push("Cannot compile formula: " + compilerFatalError.split(/\n/)[0]);
+        }
+        return tokens;
     }
     private walkAST(node: Expression, context: {targetEntityName: string, caretPos: number | undefined}): Token[] {
         let ret: Token[] = [];
@@ -185,19 +194,24 @@ export class FormulaTokenizer {
 
     private setCallStackFrame(tokens: Token[], functionName: string, argumentIdx: number) {
         let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName];
-        let argumentName: string | undefined = undefined;
-        let m = fn.toString().match(/function (\w+)\(fc, (.*)\)/);
         let errors: string[] = [];
-        if (m && m.length == 3) {
-            let args: string[] = m[2].split(/\s*,\s*/);
-            if (args.length <= argumentIdx) {
-                errors.push("Function " + functionName + " does not have " + (argumentIdx + 1) + " arguments");
-            } else {
-                argumentName = args[argumentIdx];
-            }
+        let argumentName: string | undefined = undefined;
+
+        if (!fn) {
+            errors.push("Function " + functionName + " does not have " + (argumentIdx + 1) + " arguments");
         } else {
-            errors.push("Unknown function " + functionName);
-            console.error("Cannot parse function signature: ", functionName, fn, m);
+            let m = fn.toString().match(/function (\w+)\(fc, (.*)\)/);
+            if (m && m.length == 3) {
+                let args: string[] = m[2].split(/\s*,\s*/);
+                if (args.length <= argumentIdx) {
+                    errors.push("Function " + functionName + " does not have " + (argumentIdx + 1) + " arguments");
+                } else {
+                    argumentName = args[argumentIdx];
+                }
+            } else {
+                errors.push("Unknown function " + functionName);
+                console.error("Cannot parse function signature: ", functionName, fn, m);
+            }
         }
         for (let token of tokens) {
             if (errors.length > 0) {

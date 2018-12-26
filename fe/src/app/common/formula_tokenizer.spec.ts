@@ -28,7 +28,7 @@ describe('FormulaTokenizer', () => {
                 },
             } as Entity,
         }
-    };    
+    };
     let test1 = "should tokenize correct formula with function signature helper";
     let formula1 = 'SUMIF(A.num, a_x == @[b_x] && FACT(a_y) < ROUND(SQRT(@[b_y]) + 1))';
     let test2 = "should report non-existent column";
@@ -41,16 +41,37 @@ describe('FormulaTokenizer', () => {
     beforeEach(() => {
     });
 
-    function testFunction(formula: string, token6ColName: string) {
+    function testFunction(formula: string, referencedTableName: string = 'A', token6ColName: string = 'a_x') {
         let formulaStaticTypeChecker = new FormulaTokenizer();
         let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
         let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', formula);
 
+        expect(parserTokens[2]).toEqual(jasmine.objectContaining({
+            pend: 7,
+            pstart: 6,
+            tableName: referencedTableName,
+            type: TokenType.TABLE_NAME,
+            value: referencedTableName,
+            errors: [],
+            suggestions: [],
+            callStack: [{ functionName: "SUMIF", argumentName: "tableRange" }],
+        }));
+        if ('A' != referencedTableName) {
+            let suggestions = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[2]);
+            expect(suggestions[0]).toEqual({
+                suggestion: 'A',
+                matchedFragments: [],
+            });
+            expect(suggestions[1]).toEqual({
+                suggestion: 'B',
+                matchedFragments: [],
+            });
+        }
         expect(parserTokens[4]).toEqual(jasmine.objectContaining({
             columnName: "num",
             pend: 11,
             pstart: 8,
-            tableName: "A",
+            tableName: referencedTableName,
             type: TokenType.COLUMN_NAME,
             value: "num",
             errors: [],
@@ -61,18 +82,18 @@ describe('FormulaTokenizer', () => {
             columnName: token6ColName,
             // pend: 16,
             pstart: 13,
-            tableName: "A",
+            tableName: referencedTableName,
             type: TokenType.COLUMN_NAME,
             value: token6ColName,
             errors: [],
             suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "logicalExpression" }],
         }));
-        if ('a_x' != token6ColName) {
+        if ('A' == referencedTableName && 'a_x' != token6ColName) {
             let suggestions = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[6]);
             expect(suggestions[0]).toEqual({
                 suggestion: 'a_x',
-                matchedFragments: [{startPos: 0, endPos: 1}],
+                matchedFragments: [{ startPos: 0, endPos: 1 }],
             });
         }
         expect(parserTokens[8]).toEqual(jasmine.objectContaining({
@@ -112,8 +133,31 @@ describe('FormulaTokenizer', () => {
         }));
     };
 
-    it(test1, testFunction.bind(null, formula1, 'a_x'));
-    it(test2, testFunction.bind(null, formula2, 'a_'));
-    it(test3, testFunction.bind(null, formula3, 'a_'));
-    xit(test4, testFunction.bind(null, formula4, 'a_'));
+    it(test1, testFunction.bind(null, formula1));
+    it(test2, testFunction.bind(null, formula2, 'A', 'a_'));
+    it(test3, testFunction.bind(null, formula3, 'A', 'a_'));
+    it(test4, testFunction.bind(null, formula4, 'C', 'a_'));
+
+    it ("should suggest function names", () => {
+        let formulaStaticTypeChecker = new FormulaTokenizer();
+        let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
+        let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', "suf(A.num");
+        expect(parserTokens[0]).toEqual(jasmine.objectContaining({
+            callStack: [],
+            errors:["Cannot compile formula: Error: Unknown function: suf(A.num)"],
+            pend: 3,
+            pstart: 0,
+            type: TokenType.FUNCTION_NAME,
+            value: "suf",
+        }));
+        let suggestions = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[0]);
+        expect(suggestions[0]).toEqual({
+            suggestion: 'SUM',
+            matchedFragments: [{ startPos: 0, endPos: 1 }],
+        });
+        expect(suggestions[1]).toEqual({
+            suggestion: 'SUMIF',
+            matchedFragments: [{ startPos: 0, endPos: 1 }, { startPos: 4, endPos: 4 }],
+        });
+    })
 });

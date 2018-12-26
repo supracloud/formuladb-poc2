@@ -285,8 +285,11 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     }
 }
 
+export function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
+    return jsep(formula, forceParseIncompleteExpr);
+}
 export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): CompiledFormula {
-    let formulaAstNode = jsep(formula, forceParseIncompleteExpr);
+    let formulaAstNode = parseFormula(formula, forceParseIncompleteExpr);
     let compiledExpression = compileExpression(formulaAstNode, { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
     let ret = compiledExpression;
 
