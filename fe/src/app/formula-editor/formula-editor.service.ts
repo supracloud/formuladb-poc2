@@ -8,6 +8,8 @@ import { map, concat } from 'rxjs/operators';
 import { Expression, isIdentifier } from 'jsep';
 import { TableFormBackendAction } from '../table/table.state';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from '../common/formula_tokenizer';
+import { FormulaTokenizerSchemaChecker } from '../common/formula_tokenizer_schema_checker';
+import { BackendService } from '../backend.service';
 
 const STYLES = [
   { bgColor: '#b6d0f9', tokenClass: 'c_b6d0f9' },
@@ -40,9 +42,10 @@ export class FormulaEditorService {
   private developerMode: boolean = false;
   private highlightTableColumns: {[tableName: string]: { [columnName: string]: string }} = {};
   private formulaStaticTypeChecker: FormulaTokenizer;
+  private formulaTokenizerSchemaChecker: FormulaTokenizerSchemaChecker;
 
 
-  constructor(protected store: Store<appState.AppState>) {
+  constructor(protected store: Store<appState.AppState>, private backendService: BackendService) {
     this.subscriptions.push(this.store.select(appState.getEditedEntity).subscribe(x => this.editedEntity = x));
     this.subscriptions.push(this.store.select(appState.getEditedProperty).subscribe(x => this.editedProperty = x));
     this.selectedFormula$ = this.store.select(appState.getSelectedPropertyState).pipe(
@@ -57,6 +60,8 @@ export class FormulaEditorService {
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(devMode => this.developerMode = devMode));
     this.editorExpr$ = this.store.select(appState.getEditorExpr);
     this.formulaStaticTypeChecker = new FormulaTokenizer();
+    this.formulaTokenizerSchemaChecker = 
+      new FormulaTokenizerSchemaChecker(this.backendService.getFrmdbEngineTools().schemaDAO.schema);
   }
 
   public toggleFormulaEditor() {
@@ -72,6 +77,9 @@ export class FormulaEditorService {
     return ret;
   }
 
+  public getSuggestionsForToken(token: Token) {
+    return this.formulaTokenizerSchemaChecker.getSuggestionsForToken(token);
+  }
 
   private parse(editorTxt: string, caretPos: number): UiToken[] {
     if (!this.editedEntity || !this.editedProperty) return [];

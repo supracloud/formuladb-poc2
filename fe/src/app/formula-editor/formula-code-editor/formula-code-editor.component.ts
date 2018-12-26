@@ -8,7 +8,7 @@ import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
-import { TokenType, Token } from 'src/app/common/formula_tokenizer';
+import { TokenType, Token, Suggestion } from 'src/app/common/formula_tokenizer';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -18,7 +18,7 @@ import { TokenType, Token } from 'src/app/common/formula_tokenizer';
 export class FormulaCodeEditorComponent implements OnInit {
   ftext: string;
 
-  private suggestions: string[];
+  private suggestions: Suggestion[];
   private activeSuggestion: number = 0;
 
   private currentTokens: UiToken[] = [];
@@ -77,7 +77,7 @@ export class FormulaCodeEditorComponent implements OnInit {
       event.preventDefault();
       let caret = event.currentTarget.selectionStart;
       let word = this.editorExpr.substring(this.editorExpr.substring(0, caret).search(/[^\r\n\s\t]+$/), caret).trim();
-      let diff = this.suggestions[this.activeSuggestion].substring(word.length);
+      let diff = this.suggestions[this.activeSuggestion].suggestion.substring(word.length);
       let observer: MutationObserver = new MutationObserver(() => {
         this.setCaretToPos(this.textarea.nativeElement, caret + diff.length + 1);
         observer.disconnect();
@@ -180,7 +180,7 @@ export class FormulaCodeEditorComponent implements OnInit {
     let re: string = "<div class='suggestion'>";
     this.suggestions.forEach((s, i) => {
       re += "<div class='suggestion-element" + (i === this.activeSuggestion ? " suggestion-active" : "") + "'>";
-      re += s;
+      re += s.suggestion;
       re += "</div>";
     });
     re += "</div>";
@@ -195,14 +195,12 @@ export class FormulaCodeEditorComponent implements OnInit {
     let ret: string[] = [];
     let cls = token.class;
 
-    token.errors = ['err1'];
     let hasErrors = token.errors && token.errors.length > 0;
 
     ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
 
     if (token.caret && token.value && token.value.length > 2) {
-      this.suggestions = token.suggestions.map(s => s.suggestion);
-      this.suggestions = ['suggestion1', 'sugestion2'];
+      this.suggestions = this.formulaEditorService.getSuggestionsForToken(token);
       if (this.suggestions && this.suggestions.length > 0) {
         ret.push(this.buildSuggestionBox());
       }
