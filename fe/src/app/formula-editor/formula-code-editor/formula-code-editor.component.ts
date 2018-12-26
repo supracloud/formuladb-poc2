@@ -18,10 +18,12 @@ import { TokenType, Token, Suggestion } from 'src/app/common/formula_tokenizer';
 export class FormulaCodeEditorComponent implements OnInit {
   ftext: string;
 
-  private suggestions: Suggestion[];
+  private currentSuggestions: Suggestion[];
   private activeSuggestion: number = 0;
+  private noEditKeys: string[] = ['Tab', 'ArrowDown', 'ArrowUp', 'Enter', 'ArrowLeft', 'ArrowRight'];
 
   private currentTokens: UiToken[] = [];
+  private currentTokenAtCaret: UiToken | undefined;
 
   @ViewChild('editor')
   private textarea: ElementRef;
@@ -72,89 +74,79 @@ export class FormulaCodeEditorComponent implements OnInit {
 
 
   onAutoComplete(event: any): void {
-    if (this.suggestions && this.suggestions.length > 0) {
+    if (this.currentTokenAtCaret && this.currentSuggestions && this.currentSuggestions.length > 0 && this.activeSuggestion > 0 && this.activeSuggestion < this.currentSuggestions.length) {
       event.stopPropagation();
       event.preventDefault();
-      let caret = event.currentTarget.selectionStart;
-      let word = this.editorExpr.substring(this.editorExpr.substring(0, caret).search(/[^\r\n\s\t]+$/), caret).trim();
-      let diff = this.suggestions[this.activeSuggestion].suggestion.substring(word.length);
-      let observer: MutationObserver = new MutationObserver(() => {
-        this.setCaretToPos(this.textarea.nativeElement, caret + diff.length + 1);
-        observer.disconnect();
-      });
-      observer.observe(this.textarea.nativeElement, { attributes: true, childList: true });
-      this.editorExpr = this.editorExpr.substring(0, caret)
-        + diff + " "
-        + this.editorExpr.substring(caret);
-      this.suggestions = [];
+      this.currentTokenAtCaret.value = this.currentSuggestions[this.activeSuggestion].suggestion;
+      this.editorExpr = this.currentTokens.map(t => t.value).join('');
+      this.currentSuggestions = [];
       this.activeSuggestion = 0;
-      this.onEdit(caret);
+      this.currentTokenAtCaret = undefined;
+      this.onEdit();
     }
   }
 
   keyup(textarea, event) {
-    if (event.key != 'ArrowLeft' && event.key != 'ArrowRight') {
-      this.onEdit(event);
-    } else if (textarea.selectionStart != null) {
+    if (!this.noEditKeys.find(k => k == event.key)) {
+      this.onEdit();
+    }
+    else if (textarea.selectionStart != null) {
       this.cursorMove(textarea.selectionStart);
     }
   }
   click(textarea, event) {
     if (this.currentTokens.length == 0) {
-      this.onEdit(event);
+      this.onEdit();
     } else if (textarea.selectionStart != null) {
       this.cursorMove(textarea.selectionStart);
     }
   }
-  onEdit(event: any, nochange?: boolean): void {
-    let noAction: string[] = ['Tab', 'ArrowDown', 'ArrowUp', 'Enter'];
-    if (!noAction.some(a => a === event.code)) {
-      setTimeout(() => {
-        this.ftext = "";
-        if (this.editorExpr) {
-          let errors;
-          if (this.validation) {
-            errors = this.validation(this.editorExpr);
-          }
-          let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
-          this.currentTokens = tokens;
-          for (let i: number = 0; i < tokens.length; i++) {
-            switch (tokens[i].type) {
-              case TokenType.NLINE:
-                this.ftext += "<br>";
-                break;
-              case TokenType.SPACE:
-                this.ftext += "&nbsp;";
-                break;
-              default:
-                this.ftext += this.renderToken(tokens[i]);
-            }
-          }
-          this.cursorMove(this.textarea.nativeElement.selectionStart);
+  onEdit(): void {
+    setTimeout(() => {
+      this.ftext = "";
+      if (this.editorExpr) {
+        let errors;
+        if (this.validation) {
+          errors = this.validation(this.editorExpr);
         }
-      }, 10);
-    }
+        let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
+        this.currentTokens = tokens;
+        for (let i: number = 0; i < tokens.length; i++) {
+          switch (tokens[i].type) {
+            case TokenType.NLINE:
+              this.ftext += "<br>";
+              break;
+            case TokenType.SPACE:
+              this.ftext += "&nbsp;";
+              break;
+            default:
+              this.ftext += this.renderToken(tokens[i]);
+          }
+        }
+        this.cursorMove(this.textarea.nativeElement.selectionStart);
+      }
+    }, 10);
   }
 
   nextSuggestion(event: any): void {
-    if (this.suggestions && this.suggestions.length > 0) {
+    if (this.currentSuggestions && this.currentSuggestions.length > 0) {
       event.stopPropagation();
       event.preventDefault();
     }
-    if (this.activeSuggestion < this.suggestions.length - 1) {
+    if (this.activeSuggestion < this.currentSuggestions.length - 1) {
       this.activeSuggestion++;
-      this.onEdit(event.currentTarget.selectionStart, true);
+      this.onEdit();
     }
   }
 
   prevSuggestion(event: any): void {
-    if (this.suggestions && this.suggestions.length > 0) {
+    if (this.currentSuggestions && this.currentSuggestions.length > 0) {
       event.stopPropagation();
       event.preventDefault();
     }
     if (this.activeSuggestion > 0) {
       this.activeSuggestion--;
-      this.onEdit(event.currentTarget.selectionStart, true);
+      this.onEdit();
     }
   }
 
@@ -178,7 +170,7 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   private buildSuggestionBox(): string {
     let re: string = "<div class='suggestion'>";
-    this.suggestions.forEach((s, i) => {
+    this.currentSuggestions.forEach((s, i) => {
       re += "<div class='suggestion-element" + (i === this.activeSuggestion ? " suggestion-active" : "") + "'>";
       re += s.suggestion;
       re += "</div>";
@@ -200,8 +192,9 @@ export class FormulaCodeEditorComponent implements OnInit {
     ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
 
     if (token.caret && token.value && token.value.length > 2) {
-      this.suggestions = this.formulaEditorService.getSuggestionsForToken(token);
-      if (this.suggestions && this.suggestions.length > 0) {
+      this.currentSuggestions = this.formulaEditorService.getSuggestionsForToken(token);
+      this.currentTokenAtCaret = token;
+      if (this.currentSuggestions && this.currentSuggestions.length > 0) {
         ret.push(this.buildSuggestionBox());
       }
     }
