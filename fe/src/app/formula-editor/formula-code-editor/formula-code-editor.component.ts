@@ -74,9 +74,9 @@ export class FormulaCodeEditorComponent implements OnInit {
 
 
   onAutoComplete(event: any): void {
-    if (this.currentTokenAtCaret && this.currentSuggestions && this.currentSuggestions.length > 0 && this.activeSuggestion > 0 && this.activeSuggestion < this.currentSuggestions.length) {
-      event.stopPropagation();
-      event.preventDefault();
+    event.stopPropagation();
+    event.preventDefault();
+    if (this.currentTokenAtCaret && this.currentSuggestions && this.currentSuggestions.length > 0 && this.activeSuggestion >= 0 && this.activeSuggestion < this.currentSuggestions.length) {
       this.currentTokenAtCaret.value = this.currentSuggestions[this.activeSuggestion].suggestion;
       this.editorExpr = this.currentTokens.map(t => t.value).join('');
       this.currentSuggestions = [];
@@ -187,6 +187,7 @@ export class FormulaCodeEditorComponent implements OnInit {
     let ret: string[] = [];
     let cls = token.class;
 
+    this.formulaEditorService.checkTokenForErrors(token);
     let hasErrors = token.errors && token.errors.length > 0;
 
     ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");

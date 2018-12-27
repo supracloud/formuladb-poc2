@@ -79,6 +79,10 @@ export class FormulaEditorService {
     return this.formulaTokenizerSchemaChecker.getSuggestionsForToken(token);
   }
 
+  public checkTokenForErrors(token: Token) {
+    this.formulaTokenizerSchemaChecker.checkToken(token);
+  }
+
   private parse(editorTxt: string, caretPos: number): UiToken[] {
     if (!this.editedEntity || !this.editedProperty) return [];
 
@@ -89,7 +93,7 @@ export class FormulaEditorService {
     let existingStyles: Set<string> = new Set();
     let todoStyleForTokens: UiToken[] = [];
     for (let token of parserTokens) {
-      let uiToken: UiToken = { ...token, caret: token.pstart <= caretPos && caretPos <= token.pend };
+      let uiToken: UiToken = { ...token, caret: token.pstart < caretPos && caretPos <= token.pend };
       if (token.type == TokenType.COLUMN_NAME) {
         let tableName = token.tableName;
         let columnName = token.columnName;

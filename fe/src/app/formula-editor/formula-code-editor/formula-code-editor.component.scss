@@ -20,7 +20,7 @@
 }
 
 .editor-textarea {
-    background: rgb(228, 227, 227);
+    background: rgb(253, 252, 252);
     outline: none;
     resize: none;
     overflow: hidden;
@@ -60,14 +60,14 @@
 }
 
 :host ::ng-deep .suggestion-element{
-    background-color:darkgray;
+    background-color:lightgrey;
     color:black;
     padding-left:4px;
     width:25em;
 }
 
 :host ::ng-deep .suggestion-element.suggestion-active{
-    background-color:navy;
+    background-color:rgb(95, 95, 255);
     color:white;
 }
 
@@ -89,10 +89,12 @@
 :host ::ng-deep .error-note{
     color:darkred;
     padding-left:4px;
-    width:6rem;
+    width:25rem;
     text-decoration:underline red dotted;
     background-color: white;
     opacity: 0.7;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 :host ::ng-deep .color-red{
