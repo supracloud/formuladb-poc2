@@ -38,7 +38,7 @@ export class MockMetadata {
         this.entities.push(InventoryMetadata.Inventory___Receipt___Item);
         this.entities.push(InventoryMetadata.Inventory___Product);
         this.entities.push(InventoryMetadata.Inventory___Product___Location);
-        this.entities.push(InventoryMetadata.Inventory___ProductUnit);
+        // this.entities.push(InventoryMetadata.Inventory___ProductUnit);
         
         this.entities.push(FinancialMetadata.Financial);
         this.entities.push(FinancialMetadata.Financial___Account);

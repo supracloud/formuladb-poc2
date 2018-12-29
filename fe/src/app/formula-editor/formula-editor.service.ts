@@ -39,7 +39,7 @@ export class FormulaEditorService {
   public editorExpr$: Observable<string | undefined>;
   private developerMode: boolean = false;
   private highlightTableColumns: { [tableName: string]: { [columnName: string]: string } } = {};
-  private formulaStaticTypeChecker: FormulaTokenizer;
+  private formulaTokenizer: FormulaTokenizer;
   private formulaTokenizerSchemaChecker: FormulaTokenizerSchemaChecker;
 
 
@@ -57,9 +57,7 @@ export class FormulaEditorService {
     );
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(devMode => this.developerMode = devMode));
     this.editorExpr$ = this.store.select(appState.getEditorExpr);
-    this.formulaStaticTypeChecker = new FormulaTokenizer();
-    this.formulaTokenizerSchemaChecker =
-      new FormulaTokenizerSchemaChecker(this.backendService.getFrmdbEngineTools().schemaDAO.schema);
+    this.formulaTokenizer = new FormulaTokenizer();
   }
 
   public toggleFormulaEditor() {
@@ -75,18 +73,25 @@ export class FormulaEditorService {
     return ret;
   }
 
+  private getFormulaTokenizerSchemaChecker() {
+    if (!this.formulaTokenizerSchemaChecker) {
+      this.formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(this.backendService.getFrmdbEngineTools().schemaDAO.schema);
+    }
+    return this.formulaTokenizerSchemaChecker;
+  }
+
   public getSuggestionsForToken(token: Token) {
-    return this.formulaTokenizerSchemaChecker.getSuggestionsForToken(token);
+    return this.getFormulaTokenizerSchemaChecker().getSuggestionsForToken(token);
   }
 
   public checkTokenForErrors(token: Token) {
-    this.formulaTokenizerSchemaChecker.checkToken(token);
+    this.getFormulaTokenizerSchemaChecker().checkToken(token);
   }
 
   private parse(editorTxt: string, caretPos: number): UiToken[] {
     if (!this.editedEntity || !this.editedProperty) return [];
 
-    let parserTokens: Token[] = this.formulaStaticTypeChecker.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt, caretPos);
+    let parserTokens: Token[] = this.formulaTokenizer.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt, caretPos);
     let ret: UiToken[] = [];
 
     let newHighlightTableColumns: { [tableName: string]: { [columnName: string]: string } } = {};

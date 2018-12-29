@@ -19,6 +19,9 @@ const defaultDict_en = {
     TestReport1: 'TestReport1',
     Forms: 'Forms',
     ServiceForm: 'ServiceForm',
+    
+    sales_agent: "Sales Agent",
+    creation_date: "Creation Date",
 
     DeliveryRate: 'Delivery Rate',
     orderNb: 'Nr Comanda',
@@ -31,9 +34,9 @@ const defaultDict_en = {
     location: 'Locatie',
     productCode: 'Cod Produs',
     barcode: 'Cod Bare',
-    quantity: 'Cantitate',
-    quantityError: 'Cantitate Eroare',
-    price: 'Pret',
+    quantity: 'Quantity',
+    quantityError: 'Error Quantity',
+    price: 'Price',
 
     'General___Currency!rate1!max': 'Maximum rate1 exceeded',
     'items$': 'Items',
