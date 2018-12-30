@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { BinaryExpression, LogicalExpression } from 'jsep';
 import * as jsep from "jsep";
 
-import { Inventory___Product, Inventory___Order } from "./test/mocks/inventory-metadata";
+import { INV___PRD, INV___Order } from "./test/mocks/inventory-metadata";
 import { Forms___ServiceForm } from "./test/mocks/forms-metadata";
 import { Entity, Schema, Pn, FormulaProperty } from "./domain/metadata/entity";
 import { SchemaCompiler } from "./schema_compiler";

@@ -32,13 +32,13 @@ export class MockMetadata {
         this.entities.push(GeneralMetadata.General___Client);
 
         this.entities.push(InventoryMetadata.Inventory);
-        this.entities.push(InventoryMetadata.Inventory___Order);
-        this.entities.push(InventoryMetadata.Inventory___Order___Item);
-        this.entities.push(InventoryMetadata.Inventory___Receipt);
-        this.entities.push(InventoryMetadata.Inventory___Receipt___Item);
-        this.entities.push(InventoryMetadata.Inventory___Product);
-        this.entities.push(InventoryMetadata.Inventory___Product___Location);
-        // this.entities.push(InventoryMetadata.Inventory___ProductUnit);
+        this.entities.push(InventoryMetadata.INV___Order);
+        this.entities.push(InventoryMetadata.INV___Order___Item);
+        this.entities.push(InventoryMetadata.INV___Receipt);
+        this.entities.push(InventoryMetadata.INV___Receipt___Item);
+        this.entities.push(InventoryMetadata.INV___PRD);
+        this.entities.push(InventoryMetadata.INV___PRD___Location);
+        // this.entities.push(InventoryMetadata.INV___PRDUnit);
         
         this.entities.push(FinancialMetadata.Financial);
         this.entities.push(FinancialMetadata.Financial___Account);
@@ -52,9 +52,9 @@ export class MockMetadata {
         this.entities.push(ReportsMetadata.Reports___ServiceCentralizerReport);
 
         this.entities.push(MusicBookingMetadata.MusicBooking);
-        this.entities.push(MusicBookingMetadata.MusicBooking___Service);
-        this.entities.push(MusicBookingMetadata.MusicBooking___Estimate);
-        this.entities.push(MusicBookingMetadata.MusicBooking___Estimate___Service);
+        this.entities.push(MusicBookingMetadata.MBK___Service);
+        this.entities.push(MusicBookingMetadata.MBK___Estimate);
+        this.entities.push(MusicBookingMetadata.MBK___Estimate___Service);
 
         this.entities.forEach(ent => {
             ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };

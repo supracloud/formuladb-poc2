@@ -5,7 +5,7 @@
 
 import { MockMetadata } from "./mocks/mock-metadata";
 import { MockData } from "./mocks/mock-data";
-import { Forms___ServiceForm_Form_ } from "./mocks/mock-ui-metadata";
+import { Forms___ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { obj2MapES5 } from "../ts-utils";
 import { KeyValueStorePouchDB } from "../key_value_store_pouchdb";
 

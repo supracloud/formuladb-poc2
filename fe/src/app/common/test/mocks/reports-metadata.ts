@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty } from '../../domain/metadata/entity';
-import { Inventory___Product, Inventory___Product___Location } from './inventory-metadata';
+import { INV___PRD, INV___PRD___Location } from './inventory-metadata';
 import { Fn } from '../../domain/metadata/functions';
 
 
@@ -70,7 +70,7 @@ export const Reports___TestReport1 = {
             props: {
                 product: {
                     propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: Inventory___Product___Location._id,
+                    referencedEntityName: INV___PRD___Location._id,
                     snapshotCurrentValueOfProperties: [
                         "../../code",
                         "../../name",

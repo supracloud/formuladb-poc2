@@ -9,7 +9,7 @@ import { KeyValueStorePouchDB, PouchDB } from "../../key_value_store_pouchdb";
 
 import { compileFormula } from "../../formula_compiler";
 import { evalExprES5 } from "../../map_reduce_utils";
-import { Inventory___Product___Location, Inventory___Receipt___Item, Inventory___Order___Item } from "./mock-metadata";
+import { INV___PRD___Location, INV___Receipt___Item, INV___Order___Item } from "./mock-metadata";
 import { KeyValueObj } from "../../domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
@@ -29,9 +29,9 @@ describe('Inventory Metadata', () => {
     const InventorySchema: Schema = {
         _id: "FRMDB_SCHEMA",
         entities: {
-            Inventory___Product___Location: Inventory___Product___Location,
-            Inventory___Receipt___Item: Inventory___Receipt___Item,
-            Inventory___Order___Item: Inventory___Order___Item,
+            INV___PRD___Location: INV___PRD___Location,
+            INV___Receipt___Item: INV___Receipt___Item,
+            INV___Order___Item: INV___Order___Item,
         }
     };
 
@@ -58,22 +58,22 @@ describe('Inventory Metadata', () => {
 
     it("Basic stock operations", async (done) => {
 
-        let cf1 = compileFormula(Inventory___Product___Location._id, 'received_stock__', Inventory___Product___Location.props.received_stock__.formula);
-        let cf2 = compileFormula(Inventory___Product___Location._id, 'ordered_stock__', Inventory___Product___Location.props.ordered_stock__.formula);
-        let cf3 = compileFormula(Inventory___Product___Location._id, 'available_stock__', Inventory___Product___Location.props.available_stock__.formula);
+        let cf1 = compileFormula(INV___PRD___Location._id, 'received_stock__', INV___PRD___Location.props.received_stock__.formula);
+        let cf2 = compileFormula(INV___PRD___Location._id, 'ordered_stock__', INV___PRD___Location.props.ordered_stock__.formula);
+        let cf3 = compileFormula(INV___PRD___Location._id, 'available_stock__', INV___PRD___Location.props.available_stock__.formula);
         await frmdbTStore.installFormula(cf1);
         await frmdbTStore.installFormula(cf2);
         await frmdbTStore.installFormula(cf3);
 
-        let pl1 = { _id: "Inventory___Product___Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
+        let pl1 = { _id: "INV___PRD___Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
         await frmdbTStore.kvs().put(pl1);
-        let ri1_1 = { _id: "Inventory___Receipt___Item~~11", productLocationId: "Inventory___Product___Location~~1", quantity: 10}; 
+        let ri1_1 = { _id: "INV___Receipt___Item~~11", productLocationId: "INV___PRD___Location~~1", quantity: 10}; 
         await frmdbTStore.kvs().put(ri1_1);
-        let ri1_2 = { _id: "Inventory___Receipt___Item~~12", productLocationId: "Inventory___Product___Location~~1", quantity: 5}; 
+        let ri1_2 = { _id: "INV___Receipt___Item~~12", productLocationId: "INV___PRD___Location~~1", quantity: 5}; 
         await frmdbTStore.kvs().put(ri1_2);
-        let oi1_1 = { _id: "Inventory___Order___Item~~11", productLocationId: "Inventory___Product___Location~~1", quantity: 10};
+        let oi1_1 = { _id: "INV___Order___Item~~11", productLocationId: "INV___PRD___Location~~1", quantity: 10};
         await frmdbTStore.kvs().put(oi1_1);
-        let oi1_2 = { _id: "Inventory___Order___Item~~12", productLocationId: "Inventory___Product___Location~~1", quantity: 4};
+        let oi1_2 = { _id: "INV___Order___Item~~12", productLocationId: "INV___PRD___Location~~1", quantity: 4};
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);
