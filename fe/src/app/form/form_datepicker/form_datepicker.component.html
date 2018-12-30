@@ -1,4 +1,7 @@
-<label [for]="inputElement.propertyName">{{inputElement.propertyName}}</label>
+<label [for]="inputElement.propertyName">
+    {{inputElement.propertyName | i18n}}
+    <sup class="frmdb-input-dev-mode-label" *ngIf="editMode$ | async">{{inputElement.propertyName}}</sup>
+</label>
 <ng-container *ngIf="hasControl(parentFormPath)">
     <div class="input-group">
         <input class="form-control" placeholder="yyyy-mm-dd" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"

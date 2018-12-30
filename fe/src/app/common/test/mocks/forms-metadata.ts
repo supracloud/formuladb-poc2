@@ -50,7 +50,8 @@ export const Forms___ServiceForm = {
             name: "service_form_units",
             propType_: Pn.CHILD_TABLE, referencedEntityName: INV___Order._id,
             props: {
-                equipment: { name: "equipment", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRDUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } as EntityProperty,
+                // equipment: { name: "equipment", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRDUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } as EntityProperty,
+                equipment: { name: "equipment", propType_: Pn.STRING } as EntityProperty,
                 reported_problem: { name: "reported_problem", propType_: Pn.TEXT } as EntityProperty,
                 found_problem: { name: "found_problem", propType_: Pn.TEXT } as EntityProperty,
                 work_description: { name: "work_description", propType_: Pn.TEXT } as EntityProperty,
