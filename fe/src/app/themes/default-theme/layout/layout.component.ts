@@ -19,7 +19,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit, AfterViewInit {
-  selectedEntity$: Observable<appState.Entity>;
+  selectedEntity$: Observable<appState.Entity | undefined>;
   themeColorPalette$: Observable<string>;
   sidebarImageUrl$: Observable<string>;
 

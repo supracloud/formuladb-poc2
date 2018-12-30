@@ -6,7 +6,7 @@
 import * as _ from "lodash";
 import {
     Expression, CallExpression, BinaryExpression, Identifier, isExpression, isIdentifier,
-    ExpressionBase, LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression
+    ExpressionBase, LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLiteral
 } from "jsep";
 import * as jsep from 'jsep';
 
@@ -135,6 +135,8 @@ export class SchemaCompiler {
             case 'MemberExpression':
                 if (isIdentifier(node.object)) {
                     this.extractEntityPropertiesFromExpression(node.object, entity, referencedEntityProperties);
+                } else if (isLiteral(node.object) && node.object.raw === '@') {
+                    //TODO: self dependencies, how to manage them in the DAG?
                 } else {
                     throw new Error("Nested properties '" + node.origExpr + "' are not yet supported in ");
                 }

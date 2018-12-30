@@ -13,6 +13,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from "../base_node";
 
 import * as fromForm from '../form.state';
+import { FormAutocomplete } from 'src/app/common/domain/uimetadata/form';
 
 @Component({
     selector: 'form-autocomplete',
@@ -22,12 +23,14 @@ import * as fromForm from '../form.state';
 })
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
+    inputElement: FormAutocomplete;
+
     constructor(protected fromStore: Store<fromForm.FormState>) {
         super(fromStore);
     }
 
     ngOnInit(): void {
-        console.log(this.nodeElement, this.topLevelFormGroup);
+       this.inputElement = this.nodeElement as FormAutocomplete;
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())

@@ -21,7 +21,7 @@ export const Financial___Account = {
         name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         actor: {
             name: "actor",
-            propType_: Pn.BELONGS_TO,
+            propType_: Pn.REFERENCE_TO,
             referencedEntityName: General___Actor._id,
             snapshotCurrentValueOfProperties: [
                 "code",
@@ -37,7 +37,7 @@ export const Financial___Transaction = {
 
         accountDebit: {
             name: "accountDebit",
-            propType_: Pn.BELONGS_TO,
+            propType_: Pn.REFERENCE_TO,
             referencedEntityName: Financial___Account._id,
             snapshotCurrentValueOfProperties: [
                 "code",
@@ -46,7 +46,7 @@ export const Financial___Transaction = {
         } as EntityProperty,
         accountCredit: {
             name: "accountCredit",
-            propType_: Pn.BELONGS_TO,
+            propType_: Pn.REFERENCE_TO,
             referencedEntityName: Financial___Account._id,
             snapshotCurrentValueOfProperties: [
                 "code",

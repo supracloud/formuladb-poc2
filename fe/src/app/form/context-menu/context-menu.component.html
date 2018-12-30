@@ -1,7 +1,11 @@
-<a class="context-menu-button" *ngIf="!expanded" (click)="showContext()">+</a>
+<fa-icon [icon]="faWrench" [class.expanded]="expanded" class="fa-xs context-menu-button" (click)="toggleContext($event)"></fa-icon>
 
-<ul class="context-menu" *ngIf="expanded">
-  <li>Edit</li>
-  <li>Delete</li>
+<ul class="context-menu" *ngIf="expanded" [style.top.px]="y" [style.left.px]="x">
+  <ng-container *ngIf="availableTypes">
+    <li *ngFor="let p of availableTypes" (click)="switchTo(p)">Switch to: {{p}}</li>
+  </ng-container>
+  <ng-container *ngIf="availableChildren">
+    <li *ngFor="let p of availableChildren" (click)="addChild(p)">Add {{p.nodeType}} {{p.propertyName}}</li>
+  </ng-container>
+  <li *ngIf="canDelete" (click)="delete()">Delete</li>
 </ul>
-<a class="context-menu-button" *ngIf="expanded" (click)="hideContext()">-</a>

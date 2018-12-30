@@ -15,13 +15,15 @@ import { NavigationSegment } from './navigation/navigation.segment';
 import { ThemeEditorComponent } from './theme-editor/theme-editor.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
+import { FormulaEditorModule } from 'src/app/formula-editor/formula-editor.module';
 
 @NgModule({
   imports: [
     CommonModule,
     NgbModule,
     DefaultThemeRoutingModule,
-    CrosscuttingModule
+    CrosscuttingModule,
+    FormulaEditorModule, //TODO: lazy load components from this module, e.g. https://plnkr.co/edit/ZGC82G9u10EQFYFvvRMB?p=preview
   ],
   declarations: [
     LayoutComponent,

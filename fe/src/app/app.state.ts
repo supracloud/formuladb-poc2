@@ -15,7 +15,7 @@ import {
 import { Form } from './common/domain/uimetadata/form';
 import { Table } from './common/domain/uimetadata/table';
 import { DataObj } from './common/domain/metadata/data_obj';
-import { Entity } from './common/domain/metadata/entity';
+import { Entity, Pn } from './common/domain/metadata/entity';
 import { ChangeObj, applyChanges } from './common/domain/change_obj';
 
 
@@ -31,6 +31,7 @@ import * as fromEntity from "./entity-state";
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
 import * as fromI18n from './crosscutting/i18n/i18n.state';
+import * as fromFormula from './formula.state'
 
 export * from "./entity-state";
 export * from "./table/table.state";
@@ -38,6 +39,7 @@ export * from "./form/form.state";
 export * from "./core.state";
 export * from "./theme.state";
 export * from "./crosscutting/i18n/i18n.state";
+export * from './formula.state'
 
 export interface RouterState {
   url: string;
@@ -53,6 +55,7 @@ export interface AppState {
   'table': fromTable.TableState;
   'form': fromForm.FormState;
   'i18n': fromI18n.I18nState;
+  'formula': fromFormula.FormulaState
 };
 
 export type AppActions =
@@ -62,6 +65,7 @@ export type AppActions =
   | fromTable.TableActions
   | fromForm.FormActions
   | fromI18n.I18nActions
+  | fromFormula.FormulaActions
   ;
 
 export class CustomSerializer implements RouterStateSerializer<RouterState> {
@@ -88,12 +92,57 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           formReadOnly: action.appReadonly != fromCore.NotReadonly,
         }
       }
-    } else if (action.type === fromCore.CoreToggleDeveloperModeActionN) {
+    } 
+    else if (action.type === fromCore.CoreToggleDeveloperModeActionN) {
       updatedState = {
         ...state,
         form: {
           ...state.form,
           formEditMode: !state.core.developerMode,
+        }
+      }
+    } 
+    //TODO: this should be an effect
+    else if (action.type === fromTable.UserSelectCellN) {
+      let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : undefined;
+      let editorExpr = 'Not Defined';
+      if (selectedProperty) {
+        if (selectedProperty.propType_ == Pn.FORMULA) {
+          editorExpr = selectedProperty.formula;
+        } else editorExpr = selectedProperty.propType_;
+      }
+
+      updatedState = {
+        ...state,
+        entity: {
+          ...state.entity,
+          selectedProperty: selectedProperty,
+        },
+        formula: {
+          ...state.formula,
+          selectedFormula: editorExpr,
+          selectedProperty: selectedProperty,
+        }
+      }
+    } else if (action.type === fromFormula.FormulaEditorToggleN) {
+      updatedState = {
+        ...state,
+        table: {
+          ...state.table,
+          formulaHighlightedColumns: {},
+        },
+        formula: {
+          ...state.formula,
+          editedEntity: state.entity.selectedEntity,
+          editedProperty: state.formula.selectedProperty,
+        }
+      }
+    } else if (action.type === fromFormula.FormulaEditedN) {
+      updatedState = {
+        ...state,
+        table: {
+          ...state.table,
+          formulaHighlightedColumns: action.formulaColumns,
         }
       }
     }
@@ -114,6 +163,7 @@ export const reducers = {
   ...fromTable.reducers,
   ...fromForm.reducers,
   ...fromI18n.reducers,
+  ...fromFormula.reducers,
 };
 
 

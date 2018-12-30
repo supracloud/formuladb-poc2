@@ -13,3 +13,25 @@ a.theme-color-pallete-purple {
     border-radius: 50%;
     border: 0
 }
+
+.navbar-toggler{
+    margin-left:auto;
+}
+
+.formula-button {
+    margin-right: 5px;
+    border: 0px;
+}
+
+.formula-button.isDisabled {
+    color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+    text-decoration: none;
+}
+
+.navbar-form .input-group .form-control.formula-input {
+    min-width: 650px;
+    resize: none;
+    overflow: hidden;
+}

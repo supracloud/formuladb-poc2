@@ -10,10 +10,12 @@ import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import * as tableState from './table.state';
-import { GridOptions, GridApi, GridReadyEvent, RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent } from 'ag-grid';
+import { GridOptions, GridApi, GridReadyEvent, RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent, RowClickedEvent, CellClickedEvent, CellFocusedEvent } from 'ag-grid';
 import { TableColumn } from '../common/domain/uimetadata/table';
 import * as fromTable from './table.state';
 import * as _ from "lodash";
+import { TableHeaderComponent } from './table-header.component';
+import { Entity } from '../common/domain/metadata/entity';
 
 @Component({
     selector: 'mwz-table',
@@ -24,7 +26,8 @@ import * as _ from "lodash";
 export class TableComponent implements OnInit, OnDestroy {
 
     private table$: Observable<tableState.Table>;
-    private data: tableState.DataObj[] = [];
+    private currentEntity: Entity | undefined;
+    public data: tableState.DataObj[] = [];
     private selectedRowIdx: number;
     private highlighted: string;
     private agGridOptions: GridOptions = {};
@@ -33,20 +36,33 @@ export class TableComponent implements OnInit, OnDestroy {
     private filters: any = {};
     private sort: any = {};
     private subscriptions: Subscription[] = [];
+    private highlightColumns: {[tableName: string]: {[columnName: string]: string}} = {};
 
+    private frameworkComponents;
+    private defaultColDef;
 
     private tableState: tableState.Table;
 
     constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute) {
+        this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
+        this.defaultColDef = {
+          width: 100,
+          headerComponentParams: { menuIcon: "fa-bars" }
+        };
+
         try {
             this.table$ = store.select(tableState.getTableState);
             this.subscriptions.push(this.table$.subscribe(t => {
                 console.log("new table ", t);
                 if (!t.columns) return;
                 try {
-
                     this.tableState = _.cloneDeep(t);
-                    this.columns = t.columns.map(c => <GridOptions>{ headerName: c.name, field: c.name, width: c.width ? c.width : 100 });
+                    this.columns = t.columns.map(c => <GridOptions>{ 
+                        headerName: c.name, 
+                        field: c.name, 
+                        width: c.width ? c.width : 100,
+                        cellStyle: params => this.applyCellStyles(params),
+                    });
 
                     if (this.gridApi) {
                         this.gridApi.setColumnDefs(this.columns);
@@ -63,9 +79,28 @@ export class TableComponent implements OnInit, OnDestroy {
                 console.log("new table data", d);
                 this.data = d
             }));
+            this.subscriptions.push(store.select(tableState.getTableHighlightColumns)
+                .subscribe(h => {
+                    this.highlightColumns = h || {};
+                    if (this.gridApi) {
+                        this.gridApi.refreshCells({force: true});
+                    }
+                })
+            );
+            this.subscriptions.push(store.select(tableState.getTableEntityState)
+                .subscribe(e => this.currentEntity = e));
         } catch (ex) {
             console.error(ex);
         }
+    }
+
+    applyCellStyles(params) {
+        if (this.currentEntity && this.currentEntity._id && this.highlightColumns[this.currentEntity._id] 
+            && this.highlightColumns[this.currentEntity._id][params.colDef.field]) 
+        {
+            return { backgroundColor: this.highlightColumns[this.currentEntity._id][params.colDef.field].replace(/^c_/, '#') };
+        }
+        return null;
     }
 
     ngOnInit(): void {
@@ -84,8 +119,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
     }
 
-    onRowClicked(rowIdx: number, row: tableState.DataObj) {
-        this.selectedRowIdx = rowIdx;
+    onCellFocused(event: CellFocusedEvent) {
+        if (!event.column) return;
+        this.store.dispatch(new fromTable.UserSelectCell(event.column.getColDef().field));
     }
 
     onEditClicked(row: tableState.DataObj) {

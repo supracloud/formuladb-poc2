@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty } from '../../domain/metadata/entity';
-import { Inventory___Product, Inventory___Product___Location } from './inventory-metadata';
+import { INV___PRD, INV___PRD___Location } from './inventory-metadata';
 import { Fn } from '../../domain/metadata/functions';
 
 
@@ -24,7 +24,7 @@ export const Reports___DetailedCentralizerReport = {
 export const Reports___ServiceCentralizerReport = {
     _id: "Reports___ServiceCentralizerReport",
     aliases: {
-        thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`$ROW$.month`, `-1`)),
+        thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`@[month]`, `-1`)),
     },
     props: {
         client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -66,11 +66,11 @@ export const Reports___TestReport1 = {
     _id: "Reports___TestReport1",
     props: {
         largeSalesPerProduct: {
-            propType_: Pn.SUB_TABLE,
+            propType_: Pn.CHILD_TABLE,
             props: {
                 product: {
-                    propType_: Pn.BELONGS_TO,
-                    referencedEntityName: Inventory___Product___Location._id,
+                    propType_: Pn.REFERENCE_TO,
+                    referencedEntityName: INV___PRD___Location._id,
                     snapshotCurrentValueOfProperties: [
                         "../../code",
                         "../../name",

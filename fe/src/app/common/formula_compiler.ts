@@ -6,9 +6,10 @@
 import * as _ from "lodash";
 import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
-    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression
+    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral, Identifier
 } from "jsep";
 import * as jsep from 'jsep';
+jsep.addLiteral('@', '@');
 
 import {
     FormulaExpression
@@ -29,13 +30,17 @@ import {
     MapKeyAndQuery,
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
+    CompiledScalar,
 } from "./domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
+import { Identifiers } from "@angular/compiler";
+import { logCompileFormula } from "./test/test_utils";
 
 
 export class FormulaCompilerContextType {
     targetEntityName: string;
     targetPropertyName: string;
+    currentEntityName?: string;
 }
 
 export class FuncCommon {
@@ -87,7 +92,7 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
     let left = compileExpression(logicalOpBinaryExpr.left, context, CompiledScalarN);
     let right = compileExpression(logicalOpBinaryExpr.right, context, CompiledScalarN);
     if (!isCompiledScalar(left) || !isCompiledScalar(right)) throw new Error("operands of logical BinaryExpression must be scalar expressions, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
-    if (left.has$Identifier && right.has$Identifier) throw new Error("$ROW$ (local row) cannot be used in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
+    if (left.has$Identifier && right.has$Identifier) throw new Error("@[] (local row) cannot be used in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
     if (left.hasNon$Identifier && right.hasNon$Identifier) throw new Error("accessing remote rows cannot be done in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
 
     let op = logicalOpBinaryExpr.operator;
@@ -110,7 +115,7 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
 export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
     if (logicalExpr.operator !== '&&') throw new Error(`Only && operator is supported currently. 
             If you need ||, please create 2 different properties and combine them with another formula. 
-            For example SUMIF(..., x < $ROW$.someVal || y > $ROW$.otherVal) can be: p1=SUMIF(..., x < $ROW$.someVal), p2=SUMIF(y > $ROW$.otherVal), p3 = p1 + p2
+            For example SUMIF(..., x < @[someVal] || y > @[otherVal]) can be: p1=SUMIF(..., x < @[someVal]), p2=SUMIF(y > @[otherVal]), p3 = p1 + p2
             At ` + logicalExpr.origExpr);
     if (!isLogicalOpBinaryExpression(logicalExpr.left) || !isLogicalOpBinaryExpression(logicalExpr.right))
         throw new Error("Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
@@ -156,8 +161,8 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     switch (node.type) {
 
         case 'ArrayExpression':
-            let has$Identifier = node.elements.map(x => x.origExpr.indexOf('$ROW$') >= 0).reduce((acc, x) => acc || x), 
-                hasNon$Identifier = node.elements.map(x => x.origExpr.indexOf('$ROW$') < 0).reduce((acc, x) => acc || x);
+            let has$Identifier = node.elements.map(x => x.origExpr.indexOf('@[') >= 0).reduce((acc, x) => acc || x), 
+                hasNon$Identifier = node.elements.map(x => x.origExpr.indexOf('@[') < 0).reduce((acc, x) => acc || x);
 
             return {
                 type_: CompiledScalarN, rawExpr: node,
@@ -189,28 +194,12 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             throw new Error("ConditionalExpression(s) are not supported (yet): " + node.origExpr);
 
         case 'Identifier':
-            let [, entityName, propertyName] = /(\w+)__of__(\w+)/.exec(node.name) || [null, null, null];
-            if (null == entityName || null == propertyName) {
-                return {
-                    type_: CompiledScalarN, rawExpr: node,
-                    has$Identifier: node.name === '$ROW$',
-                    hasNon$Identifier: node.name !== '$ROW$',
-                };
-            } else {
-                let ret: MapKeyAndQuery = {
-                    type_: MapKeyAndQueryN,
-                    entityName: entityName,
-                    rawExpr: node,
-                    keyExpr: [$s2e(context.targetEntityName + '$' + propertyName + '._id')],
-                    query: {
-                        startkeyExpr: [$s2e('$ROW$._id')],
-                        endkeyExpr: [$s2e('$ROW$._id')],
-                        inclusive_start: true,
-                        inclusive_end: true,
-                    }
-                };
-                return ret;
-            }
+            node.parent = context.currentEntityName;
+            return {
+                type_: CompiledScalarN, rawExpr: node,
+                has$Identifier: false,
+                hasNon$Identifier: true,
+            };
 
         case 'NumberLiteral':
             return {
@@ -229,7 +218,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
         case 'Literal':
             return {
                 type_: CompiledScalarN, rawExpr: node,
-                has$Identifier: false,
+                has$Identifier: node.raw === '@',
                 hasNon$Identifier: false,
             };
 
@@ -242,10 +231,10 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 
         case 'MemberExpression':
             if (!isIdentifier(node.property)) throw new Error('Calculated MemberExpression property is not allowed at ' + node.origExpr);
-            if (!isIdentifier(node.object) && !isMemberExpression(node.object)) throw new Error('Calculated MemberExpression object is not allowed at ' + node.origExpr);
+            if (!(isLiteral(node.object) && node.object.raw === '@') && !isIdentifier(node.object) && !isMemberExpression(node.object)) throw new Error('Calculated MemberExpression object is not allowed at ' + node.origExpr);
             let obj = compileExpression(node.object, context, requestedRetType);
             let prop = compileExpression(node.property, context, requestedRetType);
-            if (CompiledScalarN === requestedRetType) {
+            if (CompiledScalarN === requestedRetType || !isTableName(node.object.origExpr)) {
                 if (!isCompiledScalar(obj) || !isCompiledScalar(prop)) throw new Error("Expected scalar expressions in scalar context but found " + node.property.origExpr + "; " + node.object.origExpr);
                 return {
                     type_: CompiledScalarN, rawExpr: node,
@@ -254,38 +243,29 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 };
             } else if (isCompiledScalar(obj) && isCompiledScalar(prop)) {
                 checkIdentifiers(node);
+
                 let m = node.origExpr.match(/^([\w$]+)\.(.*)$/);
+                let referencedTableName = m![1];
+                let referencedColumnName = m![2];
+
+                if (isLiteral(node.object) && node.object.raw === '@') {
+                    //set the table name for this column to the table of the current row
+                    (prop.rawExpr as Identifier).parent = context.targetEntityName;
+                } else {
+                    //set the table name for this column to the referenced table
+                    (prop.rawExpr as Identifier).parent = referencedTableName;
+                }
+
                 if (!m) throw new Error("Expected MemberExpression but found " + JSON.stringify(node));
                 return {
                     type_: MapValueN,
                     rawExpr: node,
-                    entityName: m![1],
-                    valueExpr: $s2e(m![2]),
-                    has$Identifier: node.origExpr[0] === '$ROW$',
-                    hasNon$Identifier: node.origExpr[0] !== '$ROW$',
+                    entityName: referencedTableName,
+                    valueExpr: $s2e(referencedColumnName),
+                    has$Identifier: false,
+                    hasNon$Identifier: true,
                 };
-            } else {
-                let combined = combine2Nodes(node, 'object', obj, 'property', prop, context);
-                if (includesMapReduceKeysAndQueriesN(requestedRetType) && includesMapFunctionAndQuery(combined) && combined.rawExpr.origExpr.indexOf('__of__') >= 0) {
-                    return {
-                        type_: MapReduceKeysQueriesAndValueN,
-                        rawExpr: combined.rawExpr,
-                        mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-                            map: combined,
-                        },
-                        mapObserversImpactedByOneObservable: {
-                            existingIndex: '_id',
-                            keyExpr: combined.keyExpr,
-                            query: {
-                                startkeyExpr: [$s2e('__existingIndex__')],
-                                endkeyExpr: [$s2e('__existingIndex__')],
-                                inclusive_start: true,
-                                inclusive_end: true,
-                            }
-                        },
-                    };
-                } else return combined;
-            }
+            } else return combine2Nodes(node, 'object', obj, 'property', prop, context);
         case 'ThisExpression':
             throw new Error("'this' expressions are not supported: " + node.origExpr);
 
@@ -305,31 +285,40 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     }
 }
 
-export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula {
+export function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
+    return jsep(formula, forceParseIncompleteExpr);
+}
+export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): CompiledFormula {
+    let formulaAstNode = parseFormula(formula, forceParseIncompleteExpr);
+    let compiledExpression = compileExpression(formulaAstNode, { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
+    let ret = compiledExpression;
 
-
-    let ret = compileExpression(jsep(formula), { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
-
-    if (isCompiledScalar(ret)) {
-        return {
+    if (isCompiledScalar(compiledExpression)) {
+        ret = {
             type_: CompiledFormulaN,
-            rawExpr: ret.rawExpr,
+            rawExpr: formulaAstNode,
+            finalExpression: compiledExpression.rawExpr,
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
         };
-    } else if (isMapFunctionAndQuery(ret)) {
-        throw new Error("MAP functions must be reduced: " + JSON.stringify(ret, null, 4));
-    } else if (isMapReduceTrigger(ret)) {
-        return {
+    } else if (isMapFunctionAndQuery(compiledExpression)) {
+        throw new Error("MAP functions must be reduced: " + JSON.stringify(compiledExpression, null, 4));
+    } else if (isMapReduceTrigger(compiledExpression)) {
+        ret = {
             type_: CompiledFormulaN,
-            rawExpr: ret.rawExpr,
+            rawExpr: formulaAstNode,
+            finalExpression: $s2e("$TRG$['" + compiledExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']"),
             targetEntityName: targetEntityName,
             targetPropertyName: propJsPath,
-            triggers: [ret],
+            triggers: [compiledExpression],
         }
-    } else if (isCompiledFormula(ret)) {
-        return ret;
-    } else throw new Error("Unknown compiled formula: " + JSON.stringify(ret, null, 4));
+    } else if (isCompiledFormula(compiledExpression)) {
+        ret = compiledExpression;
+    } else throw new Error("Unknown compiled formula: " + JSON.stringify(compiledExpression, null, 4));
+    
+    logCompileFormula(formula, ret);
+
+    return ret;
 }
 
 
@@ -398,15 +387,15 @@ export function _rem_$e2s_(node: Expression, strict: boolean = false): string {
 function encodeViewNameURIComponent(str: string): string {
     return encodeURIComponent(
         str.replace(/ /g, "___")
-            .replace(/\//g, "'div'")
-            .replace(/[%]/g, "'mod'")
-            .replace(/&&/g, "'and'")
-            .replace(/\|\|/g, "'or'")
-            .replace(/[+]/g, "'plus'")
-            .replace(/>/g, "'gt'")
-            .replace(/</g, "'lt'")
-            .replace(/>=/g, "'ge'")
-            .replace(/<=/g, "'le'")
+            .replace(/\//g, "_div_")
+            .replace(/[%]/g, "_mod_")
+            .replace(/&&/g, "_and_")
+            .replace(/\|\|/g, "_or_")
+            .replace(/[+]/g, "_plus_")
+            .replace(/>/g, "_gt_")
+            .replace(/</g, "_lt_")
+            .replace(/>=/g, "_ge_")
+            .replace(/<=/g, "_le_")
     );
 }
 export function getViewName(isAggs: boolean, entityName, rawExpr: Expression) {
@@ -451,7 +440,8 @@ export function combine2Nodes<T extends Expression>(
 
                 return {
                     type_: CompiledFormulaN,
-                    rawExpr: scalarExpr,
+                    finalExpression: scalarExpr,
+                    rawExpr: expr,
                     targetEntityName: context.targetEntityName,
                     targetPropertyName: context.targetPropertyName,
                     triggers: [node2]
@@ -533,11 +523,12 @@ export function combine2Nodes<T extends Expression>(
                 let scalarExpr = _.cloneDeep(expr);
                 scalarExpr.left = $s2e("$TRG$['" + node1.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
                 scalarExpr.right = $s2e("$TRG$['" + node2.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);//TODO: this is for information purposes only, but it is not tested
+                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr); 
                 return {
                     type_: CompiledFormulaN,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     targetEntityName: context.targetEntityName,
                     targetPropertyName: context.targetPropertyName,
                     triggers: [node1, node2]
@@ -547,13 +538,14 @@ export function combine2Nodes<T extends Expression>(
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
                 scalarExpr.left = $s2e("$TRG$['" + node1.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);//TODO: this is for information purposes only, but it is not tested
+                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.right = node2.rawExpr;
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);//TODO: this is for information purposes only, but it is not tested
+                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr); 
                 return {
                     ...node2,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     triggers: [node1].concat(node2.triggers || [])
                 };
             } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
@@ -564,7 +556,8 @@ export function combine2Nodes<T extends Expression>(
         if (isCompiledScalar(node2)) {
             return {
                 ...node1,
-                rawExpr: Object.assign({}, expr, {
+                rawExpr: expr,
+                finalExpression: Object.assign({}, expr, {
                     [node1Name]: node1.rawExpr,
                     [node2Name]: node2.rawExpr,
                 }) as T,
@@ -574,26 +567,28 @@ export function combine2Nodes<T extends Expression>(
         } else if (isMapReduceTrigger(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
-                scalarExpr.left = node1.rawExpr;
+                scalarExpr.left = node1.finalExpression;
                 scalarExpr.right = $s2e("$TRG$['" + node2.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr);
                 return {
                     ...node1,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     triggers: (node1.triggers || []).concat(node2)
                 };
             } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
-                scalarExpr.left = node1.rawExpr;
-                scalarExpr.right = node2.rawExpr;
+                scalarExpr.left = node1.finalExpression;
+                scalarExpr.right = node2.finalExpression;
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.left.origExpr, scalarExpr.left.origExpr);
                 scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr);
                 return {
                     ...node1,
-                    rawExpr: scalarExpr,
+                    rawExpr: expr,
+                    finalExpression: scalarExpr,
                     triggers: (node1.triggers || []).concat(node2.triggers || [])
                 };
             } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
@@ -607,4 +602,12 @@ function checkIdentifiers(mexpr: MemberExpression) {
     if (!isIdentifier(mexpr.property)) throw new Error("computed MemberExpression property is not supported, at " + mexpr.origExpr);
     if (isMemberExpression(mexpr.object)) return checkIdentifiers(mexpr.object);
     else if (!isIdentifier(mexpr.object)) throw new Error("computed MemberExpression object is not supported, at " + mexpr.origExpr);
+}
+
+function isTableName(identifier: string) {
+    if (identifier[0].toUpperCase() === identifier[0]) {
+        return true;
+    } else {
+        return false;
+    }
 }

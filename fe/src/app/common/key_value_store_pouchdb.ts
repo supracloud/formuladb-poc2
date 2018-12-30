@@ -19,9 +19,6 @@ if (typeof (window as any) != 'undefined') {
     PouchDB = ZaPouchDB;
 }
 
-
-import { diffObj } from "./domain/base_obj";
-
 import { PickOmit } from "./ts-utils";
 import * as _ from 'lodash';
 
@@ -182,14 +179,13 @@ export class KeyValueStorePouchDB implements KeyValueStoreI {
 
     public async removeAll() {
         var result = await this.db.allDocs({
-            include_docs: true,
+            include_docs: false,
             attachments: false
         });
         if (!result || !result.rows) return;
 
-        result.rows.forEach(async (row) => {
-            await this.db.remove(row.id, row.value.rev);
-        });
+        await Promise.all(result.rows.map(row => this.db.remove(row.id, row.value.rev)));
+        await this.db.compact();
     }
 
     public forcePut<T extends KeyValueObj>(document: T): Promise<T> {

@@ -28,11 +28,14 @@
             ],
             "styles": [
               "./node_modules/ag-grid/dist/styles/ag-grid.css",
-              "./node_modules/ag-grid/dist/styles/ag-theme-material.css",              
+              "./node_modules/ag-grid/dist/styles/ag-theme-balham.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.min.js"
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./node_modules/pouchdb-adapter-memory/lib/index.js"
             ]
           },
           "configurations": {
@@ -52,13 +55,16 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "serve": {
+              "extractCss": true
             }
           }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "fe:build"
+            "browserTarget": "fe:build:serve"
           },
           "configurations": {
             "production": {
@@ -81,11 +87,14 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "./node_modules/ag-grid/dist/styles/ag-grid.css",
-              "./node_modules/ag-grid/dist/styles/ag-theme-material.css",
+              "./node_modules/ag-grid/dist/styles/ag-theme-balham.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.scss"
             ],
             "scripts": [
-              "./node_modules/jquery/dist/jquery.min.js"
+              "./node_modules/jquery/dist/jquery.min.js",
+              "./node_modules/bootstrap/dist/js/bootstrap.min.js",
+              "./node_modules/pouchdb-adapter-memory/lib/index.js"
             ],
             "assets": [
               "src/favicon.ico",

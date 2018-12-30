@@ -155,11 +155,11 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
 export function setFormElementChildren(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
     parentFormEl.childNodes = _.values(entity.props).map(pn => {
         let child;
-        if (pn.propType_ === Pn.SUB_TABLE) {
+        if (pn.propType_ === Pn.CHILD_TABLE) {
             child = pn.isLargeTable ? new FormTable() : new FormTabs();
             child.tableName = pn.name;
             if (pn.referencedEntityName) setFormElementChildren(child, entitiesMap[pn.referencedEntityName]!, entitiesMap);
-        } else if (pn.propType_ === Pn.BELONGS_TO) {
+        } else if (pn.propType_ === Pn.REFERENCE_TO) {
             child = new FormAutocomplete();
             child.entityName = pn.name;
             child.snapshotCurrentValueOfProperties = pn.snapshotCurrentValueOfProperties;

@@ -60,7 +60,8 @@ export function evalExprES5(doc, expr) {
     function evaluateMember(node, context) {
         var object = evaluate(node.object, context);
         if (node.computed) {
-            return [object, object[evaluate(node.property, context)]];
+            //no computed members allowed by FormulaDB compiler, only column names
+            return [object, object[node.property.name || node.property.value]];
         } else {
             return [object, object[node.property.name]];
         }
@@ -133,6 +134,7 @@ export function evalExprES5(doc, expr) {
                 return context[node.name];
 
             case 'Literal':
+                if (node.raw === '@') return context['$ROW$'];
             case 'NumberLiteral':
             case 'StringLiteral':
                 return node.value;

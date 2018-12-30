@@ -55,5 +55,6 @@
     "editor.minimap.enabled": true,
     "typescript.tsdk": "fe/node_modules/typescript/lib",
     "typescript.reportStyleChecksAsWarnings": false,
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
+    "files.eol": "\n"
 }

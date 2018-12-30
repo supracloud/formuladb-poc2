@@ -52,10 +52,10 @@ export const SUM_relative_path = {
     schema: makeSchema(
         makeEntity('/R/A', {
             num: { name: "num", propType_: Pn.NUMBER },
-            $b: { name: "$b", propType_: Pn.BELONGS_TO, referencedEntityName: '/R/B', inverseReferenceName: 'a' },
+            $b: { name: "$b", propType_: Pn.REFERENCE_TO, referencedEntityName: '/R/B', inverseReferenceName: 'a' },
         }),
         makeEntity('/R/B', {
-            '@a': { propType_: Pn.SUB_TABLE, referencedEntityName: '/R/A', inverseReferenceName: 'b' },
+            '@a': { propType_: Pn.CHILD_TABLE, referencedEntityName: '/R/A', inverseReferenceName: 'b' },
             'sum__': { propType_: Pn.FORMULA, formula: `SUM('@a/num')` }
         })
     ),

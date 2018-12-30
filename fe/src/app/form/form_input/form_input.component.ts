@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { NodeElement, NodeType } from '../../common/domain/uimetadata/form';
+import { NodeElement, NodeType, FormInput } from '../../common/domain/uimetadata/form';
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
@@ -25,13 +25,16 @@ import { Pn } from '../../common/domain/metadata/entity';
     styleUrls: ['form_input.component.scss']
 })
 export class FormInputComponent extends BaseNodeComponent implements OnInit, OnDestroy {
-    private ctrl: AbstractControl | null;
+    ctrl: AbstractControl | null;
+
+    inputElement: FormInput;
 
     constructor(protected formStore: Store<fromForm.FormState>) {
         super(formStore);
     }
 
     ngOnInit(): void {
+        this.inputElement=this.nodeElement as FormInput;
         this.ctrl = this.topLevelFormGroup.get(this.parentFormPath);
         // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
     }

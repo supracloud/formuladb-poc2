@@ -6,9 +6,10 @@
 import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
-import { BaseNodeComponent } from "../base_node";
-import { NodeElement, NodeType, isKnownNodeElement, isPropertyNodeElement, isNodeElementWithChildren, isTableNodeElement, isEntityNodeElement, getChildPath } from "../../common/domain/uimetadata/form";
+import { BaseNodeComponent } from '../base_node';
+import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from '../../common/domain/uimetadata/form';
 import * as fromForm from '../form.state';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -20,12 +21,13 @@ import * as fromForm from '../form.state';
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;
+  faBars = faBars;
 
   ngOnInit() {
     // console.log(this.nodeElement);
   }
   ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe())
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);
@@ -50,13 +52,39 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
     return this.nodeElement.nodeType == NodeType.form_grid ? 'container' : this.nodeElement.nodeType.replace(/^form_grid_/, '');
   }
 
+  getAvailableTypes(): NodeType[] | null {
+    switch (this.nodeElement.nodeType) {
+      case NodeType.form_autocomplete:
+      case NodeType.form_datepicker:
+      case NodeType.form_input:
+      case NodeType.form_timepicker:
+        return [NodeType.form_autocomplete, NodeType.form_datepicker, NodeType.form_input, NodeType.form_timepicker];
+      default:
+        return null;
+    }
+  }
+
+
+  getAvailableChildren(): NodeElement[] | null {
+    switch (this.nodeElement.nodeType) {
+      case NodeType.form_grid:
+        return [new FormGridRow()];
+      case NodeType.form_grid_row:
+        return [new FormGridCol()];
+      default:
+        return null;
+    }
+  }
 
   checkHandle(e: any): void {
-    this.dragHandle = e.target;
+    console.log(e);
+    this.dragHandle = e.currentTarget;
   }
 
   dragStart(e: any): void {
+    console.log(this.dragHandle.id, this.nodeElement._id);
     if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodeElement._id) {
+      console.log("GOTCHA");
       this.formStore.dispatch(new fromForm.FormDragAction(this.nodeElement));
       e.stopPropagation();
     } else {

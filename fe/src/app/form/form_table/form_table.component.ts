@@ -6,7 +6,7 @@
 import { Component, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 import { Store } from '@ngrx/store';
-import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren } from "../../common/domain/uimetadata/form";
+import { NodeElement, NodeType, isEntityNodeElement, isNodeElementWithChildren, TableNodeElement } from "../../common/domain/uimetadata/form";
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 import * as fromForm from '../form.state';
@@ -17,10 +17,16 @@ import { Pn } from '../../common/domain/metadata/entity';
   templateUrl: 'form_table.component.html',
   styleUrls: ['form_table.component.scss']
 })
-export class FormTableComponent extends BaseNodeComponent implements OnChanges, OnDestroy {
+export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(protected store: Store<fromForm.FormState>) {
     super(store);
+  }
+
+  tableElement: TableNodeElement;
+
+  ngOnInit() {
+    this.tableElement = this.nodeElement as TableNodeElement;
   }
 
   ngOnChanges() {

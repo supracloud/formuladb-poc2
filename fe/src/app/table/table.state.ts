@@ -3,8 +3,7 @@
  * License TBD
  */
 
-import { Params, RouterStateSnapshot } from '@angular/router';
-import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from '../common/domain/metadata/data_obj';
 import { Table } from '../common/domain/uimetadata/table';
@@ -16,15 +15,22 @@ export { Table };
 export { ChangeObj, applyChanges };
 
 import * as events from '../common/domain/event';
+import { Entity } from '../common/domain/metadata/entity';
 
 export interface TableState {
+  entity: Entity | undefined;
   table: Table;
   tableData: DataObj[];
+  selectedColumnName: string | undefined;
+  formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
 }
 
 export const tableInitialState: TableState = {
+  entity: undefined,
   table: {} as Table,
+  selectedColumnName: undefined,
   tableData: [] as DataObj[],
+  formulaHighlightedColumns: {},
 };
 
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
@@ -33,6 +39,7 @@ export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const UserActionEditedTableN = events.UserActionEditedTableN;
 export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
 export const UserActionNewRowN = "[table] UserActionNewRow";
+export const UserSelectCellN = "[table] UserSelectCell";
 
 export class TableDataFromBackendAction implements Action {
   readonly type = TableDataFromBackendActionN;
@@ -43,7 +50,7 @@ export class TableDataFromBackendAction implements Action {
 export class ResetTableDataFromBackendAction implements Action {
   readonly type = RestTableDataFromBackendActionN;
 
-  constructor(public tableData: DataObj[]) { }
+  constructor(public entity: Entity, public tableData: DataObj[]) { }
 }
 
 export class UserActionEditedTable implements Action {
@@ -73,6 +80,12 @@ export class UserActionNewRow implements Action {
   constructor(type_: string) { }
 }
 
+export class UserSelectCell implements Action {
+  readonly type = UserSelectCellN;
+
+  constructor(public columnName: string | undefined) { }
+}
+
 export type TableActions =
   | TableDataFromBackendAction
   | ResetTableDataFromBackendAction
@@ -80,6 +93,7 @@ export type TableActions =
   | UserActionEditedTable
   | UserActionSelectedRowForEditing
   | UserActionNewRow
+  | UserSelectCell
   ;
 
 /**
@@ -101,6 +115,7 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
     case RestTableDataFromBackendActionN:
       ret = {
         ...state,
+        entity: action.entity,
         tableData: action.tableData,
       };
       break;
@@ -109,6 +124,12 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
       ret = {
         ...state,
         table: action.table,
+      };
+      break;
+    case UserSelectCellN:
+      ret = {
+        ...state,
+        selectedColumnName: action.columnName,
       };
       break;
   }
@@ -124,6 +145,10 @@ export const reducers = {
   'table': tableReducer
 };
 export const getTable = createFeatureSelector<TableState>('table');
+export const getTableEntityState = createSelector(
+  getTable,
+  (state: TableState) => state.entity
+);
 export const getTableDataState = createSelector(
   getTable,
   (state: TableState) => state.tableData
@@ -131,4 +156,8 @@ export const getTableDataState = createSelector(
 export const getTableState = createSelector(
   getTable,
   (state: TableState) => state.table
+);
+export const getTableHighlightColumns = createSelector(
+  getTable,
+  (state: TableState) => state.formulaHighlightedColumns
 );

@@ -1,6 +1,9 @@
 <!-- <edit-panel *ngIf="editMode$|async" [node]="nodeElement"></edit-panel> -->
-<label [for]="nodeElement.propertyName">{{nodeElement.propertyName}}</label>
-<input class="form-control" [type]="getType()" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"
+<label [for]="inputElement._id">
+    {{inputElement.propertyName | i18n}}
+    <sup class="frmdb-input-dev-mode-label" *ngIf="editMode$ | async">{{inputElement.propertyName}}</sup>
+</label>
+<input [id]="inputElement._id" class="form-control" [type]="getType()" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"
     *ngIf="hasControl(parentFormPath)" />
 
 <div class="form-input-feedback-invalid" *ngIf="ctrl && ctrl.dirty && ctrl.invalid">

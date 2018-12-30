@@ -13,23 +13,23 @@ test:
     - cd ..
     - cd be && npm test
     - cd ..
-    - cd fe && npm test -- --watch=false
-    - cd ..
-  artifacts:
-    paths:
-      - coverage/
-      - karma.log
+    # - cd fe && npm test -- --watch=false
+    # - cd ..
+  # artifacts:
+  #   paths:
+  #     - coverage/
+  #     - karma.log
   retry: 2
 
-pages:
-  stage: deploy
-  script:
-    - mv coverage/ public/
-  dependencies:
-    - test
-  artifacts:
-    paths:
-      - public
-    expire_in: 30 days
-  only:
-    - master
+# pages:
+#   stage: deploy
+#   script:
+#     - mv coverage/ public/
+#   dependencies:
+#     - test
+#   artifacts:
+#     paths:
+#       - public
+#     expire_in: 30 days
+#   only:
+#     - master

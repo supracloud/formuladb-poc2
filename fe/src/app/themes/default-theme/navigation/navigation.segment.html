@@ -1,9 +1,17 @@
-<li *ngFor="let entity of nav" class="nav-item" [class.active]="entity.active">
-    <i *ngIf="entity.children.length>0 && entity.collapsed" style="cursor: pointer; font-size: 50%; margin-top: 1em" class="nc-icon nc-stre-right" (click)="expand(entity.id, $event)"></i>
-    <i *ngIf="entity.children.length>0 && !entity.collapsed" style="cursor: pointer; font-size: 50%; margin-top: 1em" class="nc-icon nc-stre-down" (click)="collapse(entity.id, $event)"></i>
-    <i *ngIf="entity.children.length==0" style="font-size: 50%; margin-top: 1em">&nbsp;</i>
-    <a [routerLink]="[entity.path]" routerLinkActive="active" style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link">
-        <p>{{entity.linkName | i18n }}</p>
-    </a>
-    <frmdb-navigation-segment [nav]="entity.children" *ngIf="!entity.collapsed"></frmdb-navigation-segment>
-</li>
+<ng-container *ngFor="let entity of nav">
+    <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <a [routerLink]="[entity.path]" style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link"
+            [class.collapsed]="entity.children.length>0 && entity.collapsed && !entity.onPath" [attr.data-toggle]="'collapse'">
+            <p>
+                <span class="frmdb-nav-segment-text">
+                    <span class="frmdb-nav-segment-dev-mode-identifier" *ngIf="devMode$ | async">{{entity.id}}</span>
+                    {{entity.linkName | i18n }}
+                </span>
+                <i *ngIf="entity.children.length>0 && entity.collapsed && !entity.onPath" class="nc-icon nc-stre-right" (click)="expand(entity.id, $event)"></i>
+                <i *ngIf="entity.children.length>0 && (!entity.collapsed || entity.onPath)" class="nc-icon nc-stre-down" (click)="collapse(entity.id, $event)"></i>
+                <i *ngIf="entity.children.length==0">&nbsp;</i>
+            </p>
+        </a>
+    </li>
+    <ul class="nav" frmdb-navigation-segment [nav]="entity.children" *ngIf="!entity.collapsed || entity.onPath"></ul>
+</ng-container>

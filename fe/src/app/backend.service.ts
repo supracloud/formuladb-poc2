@@ -8,13 +8,12 @@ import { Injectable, InjectionToken, Inject } from '@angular/core';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { BaseObj } from "./common/domain/base_obj";
-import { ChangeObj } from "./common/domain/change_obj";
 import { DataObj, parseDataObjId } from "./common/domain/metadata/data_obj";
 import { Entity, Pn } from "./common/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "./common/domain/event";
 import { Table, addIdsToTable } from "./common/domain/uimetadata/table";
 import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form";
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { KeyValueStorePouchDB, PouchDB } from './common/key_value_store_pouchdb';
@@ -32,8 +31,8 @@ export enum EnvType {
 const remoteDataDBUrl: string = '/frmdbdata';
 const remoteTransactionsDBUrl: string = '/frmdbtransactions';
 
-let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal"));
-let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal"));
+let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal", {revs_limit: 2/*, auto_compaction: true*/}));
+let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal", {revs_limit: 2/*, auto_compaction: true*/}));
 
 @Injectable()
 export class BackendService extends FrmdbStore {
@@ -41,8 +40,6 @@ export class BackendService extends FrmdbStore {
     private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
     private dataChangeCallback: (docs: Array<BaseObj>) => void;
-    private testRemoteDataDb: string | PouchDB.Database;
-    private testRemoteTransactionsDb: string | PouchDB.Database;
     private testLocksDb: PouchDB.Database;
     private testFrmdbEngine: FrmdbEngine;
     private envType: EnvType;
@@ -62,22 +59,37 @@ export class BackendService extends FrmdbStore {
         this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            this.testRemoteDataDb = new PouchDB("frmdbdatatest", {revs_limit: 5});
-            this.testRemoteTransactionsDb = new PouchDB("frmdbtransactionstest", {revs_limit: 5});
-            this.testLocksDb = new PouchDB("frmdblockstest", {revs_limit: 5});
-            let dataKVS = new KeyValueStorePouchDB(this.testRemoteDataDb);
-            let trKVS = new KeyValueStorePouchDB(this.testRemoteTransactionsDb);
+            this.testLocksDb = new PouchDB("frmdblockstest", {revs_limit: 2, auto_compaction: true});
             let locksKVS = new KeyValueStorePouchDB(this.testLocksDb);
-            let {mockMetadata, mockData} = await loadData(dataKVS, trKVS, locksKVS);
-            let allData = await (this.testRemoteDataDb as PouchDB.Database).allDocs({include_docs: true});
-            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(trKVS, dataKVS, locksKVS), mockMetadata.schema);
-            await this.testFrmdbEngine.init();
-        } else {
-            this.testRemoteDataDb = remoteDataDBUrl;
-            this.testRemoteTransactionsDb = remoteTransactionsDBUrl;
+            let schema;
+            let installFormulas = true;
+            try {
+                schema = await DataDB.get('FRMDB_SCHEMA');
+            } catch (err) {}
+            if (!schema) {
+                let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
+                schema = mockMetadata.schema;
+            } else {
+                installFormulas = false;
+            }
+            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(TransactionsDB, DataDB, locksKVS), schema);
+            await this.testFrmdbEngine.init(installFormulas);
         }
 
-        this.setupPouchDBReplication();
+        this.initCallback();
+
+        DataDB.db.changes({
+            since: 'now',//FIXME: start listening from the last action processed, implement proper queue
+            include_docs: true,
+            live: true
+        }).on('change', change => {
+            console.log(change);
+            if (!change.deleted && change.doc) {
+                this.dataChangeCallback([change.doc]);
+            }
+        }).on('error', err => {
+            console.error(err);
+        });
     }
 
     public getFrmdbEngineTools(): FrmdbEngineTools {
@@ -87,41 +99,45 @@ export class BackendService extends FrmdbStore {
             throw new Error("getFrmdbEngineTools not implemented yet");
         }
     }
-    
-    private setupPouchDBReplication() {
-        let self = this;
 
-        console.log("%c ** INITIAL REPLICATION STARTED **##$$",
-            "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
+    private syncId = '0';
+    private syncWithOrbico() {
+        this.http.get<Array<any>>(`/model_api/ProductReservation?query=grid_columns&sync_id=${this.syncId}`, {observe: 'response'})
+        .pipe(
+            catchError(this.handleError('sync ProductReservation'))
+        ).subscribe((data: HttpResponse<any[]>) => {
+            this.syncId = data.headers.get('last_sync_id') || '0';
+            let dataObjs: any[] = [];
+            for (let obj of (data.body || [])) {
 
-        //first catchup local PouchDB with what happened on the server while the application was stopped
-        this.dataDB.db.replicate.from(this.testRemoteDataDb)
-            .on('complete', info => {
-                console.log("%c ** INITIAL REPLICATION FINISHED **##$$",
-                    "color: green; font-size: 150%; font-weight: bold; text-decoration: underline;");
+                let dataObj: any = {_id: 'Reports___DeliveryRate~~' + obj.id};
 
-                //application specific initialization
-                self.initCallback();
+                dataObj.orderNb = obj.order_id;
+                dataObj.externalOrderNb = 
+                dataObj.orderCreationDate = 
+                dataObj.clientCode = obj.client_code;
+                dataObj.client = 'tbd';
+                dataObj.addressCode = 'tbd';
+                dataObj.addressName = 'tbd';
+                dataObj.location = obj.inventory_code;
+                dataObj.productCode = obj.product_code;
+                dataObj.barcode = obj.barcode;
+                dataObj.quantity = obj.quantity;
+                dataObj.quantityError = obj.quantity_error;
+                dataObj.price = 'tbd';
 
-                //after initial replication from the server is finished, continue with live replication
-                this.dataDB.db.replicate.from(this.testRemoteDataDb, {
-                    live: true,
-                    retry: true,
-                })
-                    .on('change', function (change) {
-                        self.dataChangeCallback(change.docs);
-                    })
-                    .on('error', err => console.error(err));
+                dataObj.actor_code = obj.actor_code;
+                dataObj.product_list_id = obj.product_list_id;
+                dataObj.stock = obj.stock;
+                dataObj.reserved_stock = obj.reserved_stock;
+                dataObj.imported_stock = obj.imported_stock;
+                dataObj.updated_at = obj.updated_at;
+                dataObj.created_at = obj.created_at;
 
-                this.transactionsDB.db.replicate.from(this.testRemoteTransactionsDb, {
-                    live: true,
-                    retry: true,
-                })
-                    .on('change', function (change) {
-                    })
-                    .on('error', err => console.error(err));
-            })
-            .on('error', err => console.error(err));
+                dataObjs.push(dataObj);
+            }
+            this.dataDB.putAll(dataObjs);
+        });
     }
 
     public putEvent(event: MwzEvents) {
@@ -149,7 +165,7 @@ export class BackendService extends FrmdbStore {
         let parentUUID = parseDataObjId(id).uid;
         let entity = this.getFrmdbEngineTools().schemaDAO.getEntityForDataObj(id);
         for (let prop of Object.values(entity.props)) {
-            if (prop.propType_ == Pn.SUB_TABLE) {
+            if (prop.propType_ == Pn.CHILD_TABLE) {
                 let subtableData = await this.dataDB.findByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
                 dataObj[prop.name] = subtableData;
             }

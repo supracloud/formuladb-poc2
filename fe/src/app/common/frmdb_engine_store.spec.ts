@@ -10,7 +10,6 @@ import { KeyValueStorePouchDB, PouchDB } from "./key_value_store_pouchdb";
 import { UserActionEditedFormDataN } from "./domain/event";
 import { Fn } from "./domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "./domain/metadata/execution_plan";
-import { promise } from "protractor";
 import { compileFormula, $s2e } from "./formula_compiler";
 
 describe('FrmdbEngineStore', () => {
@@ -40,7 +39,7 @@ describe('FrmdbEngineStore', () => {
 
     it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
-        $s2e(Fn.SUMIF(`R_A.num`, `aY == $ROW$.bY`) + ` + 1`)
+        $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
         await frmdbTStore.putMapReduceQueryForComputingAggs("sum1", {
             entityName: 'R_A',
             keyExpr: [$s2e(`aY`)],
@@ -114,7 +113,7 @@ describe('FrmdbEngineStore', () => {
     });
 
     it("Should allow to install formulas then query observers and aggregations", async (done) => {
-        compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == $ROW$.bY`));
+        compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await frmdbTStore.kvs().put(a1);
@@ -149,8 +148,8 @@ describe('FrmdbEngineStore', () => {
     });
 
     describe('Table Relationships', () => {
-        it("B.sum__ SUM(A$.num) means A is SUB_TABLE of B or A BELONGS_TO B", async (done) => {
-            compiledFormula = compileFormula('B', 'sum__', 'SUM(A__of__myB.num)');
+        it("example REFERENCE_TO by _id", async (done) => {
+            compiledFormula = compileFormula('B', 'sum__', 'SUMIF(A.num, B$myB._id == @[_id])');
             await frmdbTStore.installFormula(compiledFormula);
 
             let a1  = { _id: "A~~1", B$myB: {_id: 'B~~1'}, num: 1 }; await frmdbTStore.kvs().put(a1);

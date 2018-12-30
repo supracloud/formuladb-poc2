@@ -15,7 +15,7 @@ xdescribe('functions', () => {
 
   //== define ranges, simple ranges are Entity.property ==============================================================================
   it("MAP", () => {
-    expect(Fn._MAP(`R_A`,`$ROW$.x + ` + Fn.TEXT(`"$ROW$.y"`, `"000000"`))).toEqual(`MAP(R_A,$ROW$.x + TEXT($ROW$.y,"000000"))`);
+    expect(Fn._MAP(`R_A`,`@[x] + ` + Fn.TEXT(`"@[y]"`, `"000000"`))).toEqual(`MAP(R_A,@[x] + TEXT(@[y],"000000"))`);
   });
 
   //== aggregate/reduce functions ====================================================================================================
@@ -24,7 +24,7 @@ xdescribe('functions', () => {
   });
 
   it("SUMIF", () => {
-    expect(Fn.SUMIF(`R_A.num`, `$ROW$.aType == $ROW$.bType`)).toEqual(`SUMIF(R_A.num,$ROW$.aType == $ROW$.bType)`);
+    expect(Fn.SUMIF(`R_A.num`, `@[aType] == @[bType]`)).toEqual(`SUMIF(R_A.num,@[aType] == @[bType])`);
   });
 
   //== Lookup functions ==============================================================================================================

@@ -1,28 +1,36 @@
-# Fe
+Install docker toolbox: https://docs.docker.com/toolbox/toolbox_install_windows/
+The run the following commands from Git Bash:
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.8.
+```bash
+docker-machine.exe create docker1
+eval $(docker-machine.exe env docker1 --shell bash)
+VBoxManage controlvm "docker1" natpf1 "couchdb,tcp,,5984,,5984"
+VBoxManage controlvm "docker1" natpf1 "couchdb,tcp,,8989,,8989"
+docker run -d --name cdb -p 5984:5984 couchdb
+curl -X PUT http://127.0.0.1:5984/_users
+curl -X PUT http://127.0.0.1:5984/_replicator
+curl -X PUT http://127.0.0.1:5984/_global_changes
+curl -X PUT http://127.0.0.1:5984/mwzhistory
+curl -X PUT http://127.0.0.1:5984/mwztransactions
 
-## Development server
+npm install -g add-cors-to-couchdb
+add-cors-to-couchdb
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Then load test data:
 
-## Code scaffolding
+```bash
+./node_modules/.bin/tsc # compile the test data loader
+node dist/out-tsc/src/app/test/mocks/loadTestData.js
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+curl -X DELETE http://127.0.0.1:5984/mwzhistory
+curl -X PUT http://127.0.0.1:5984/mwzhistory
+node dist/out-tsc/src/app/test/mocks/loadTestData.js >log 2>&1
+grep -i error log
+```
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
+```plantuml
+A->B: asdasd
+```

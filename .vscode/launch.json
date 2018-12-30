@@ -41,7 +41,7 @@
             "restart": "true"
         },
         {
-            "name": "BE Jasmine",
+            "name": "BE specs Jasmine",
             "type": "node",
             "runtimeArgs": [
                 "--trace-warnings",

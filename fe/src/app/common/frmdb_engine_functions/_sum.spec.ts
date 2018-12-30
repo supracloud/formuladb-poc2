@@ -10,7 +10,6 @@ import { KeyValueStorePouchDB, PouchDB } from "../key_value_store_pouchdb";
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
-import { promise } from "protractor";
 import { compileFormula } from "../formula_compiler";
 
 describe('FrmdbEngineStore _sum', () => {

@@ -2,6 +2,7 @@
 
 body {
     margin: 0;
+    line-height: 1rem!important;
 }
 
 .form-input-feedback-valid {
@@ -41,14 +42,4 @@ form div .form-control.ng-dirty.ng-pending:not(form) {
 
 .ng-touched:not(form) {
     // border-left: 5px solid #42A948; /* green */
-}
-
-.drag-handle {
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-right: .6rem solid transparent;
-    border-top: .6rem solid gray;
-    cursor: move;
-    z-index: 1000;
 }

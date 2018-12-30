@@ -39,6 +39,7 @@ export class FrmdbFormControl extends FormControl {
 @Component({
     selector: 'mwz-form',
     templateUrl: 'form.component.html',
+    styleUrls: ['./form.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormComponent implements OnInit, OnDestroy {
@@ -46,7 +47,7 @@ export class FormComponent implements OnInit, OnDestroy {
     public changes: any[] = [];
     private tickUsed: boolean = false;
     private lastSaveAction: fromForm.UserActionEditedFormData;
-    private form$: Observable<Form | null>;
+    public form$: Observable<Form | null>;
     private formData: DataObj | null;
     private formReadOnly: boolean;
     private saveInProgress: boolean = false;

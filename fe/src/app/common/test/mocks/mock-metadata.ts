@@ -5,16 +5,15 @@
 
 import * as _ from 'lodash';
 
-import { NonReservedPropNamesOf, ReservedPropNamesOf } from "../../domain/base_obj";
-import { Entity, Pn, isEntityProperty, extendEntityProperties, queryEntityWithDeepPath, HasEntityProperties, EntityProperty, EntityProperties, Schema } from '../../domain/metadata/entity'
+import { Entity, Schema, Pn } from '../../domain/metadata/entity'
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
+import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
-import * as FinancialMetadata from "./financial-metadata";
-import { SchemaCompiler } from '../../schema_compiler';
-import { SchemaDAO } from '../../domain/metadata/schema_dao';
+import * as OrbicoMetadata from "./orbico-metadata";
+import * as MusicBookingMetadata from "./musicbooking-metadata";
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -29,29 +28,36 @@ export class MockMetadata {
     public constructor() {
         this.entities.push(GeneralMetadata.General);
         this.entities.push(GeneralMetadata.General___Actor);
-        this.entities.push(GeneralMetadata.General___Settings);
         this.entities.push(GeneralMetadata.General___Currency);
-        this.entities.push(GeneralMetadata.General___Person);
-        this.entities.push(GeneralMetadata.General___User);
         this.entities.push(GeneralMetadata.General___Client);
+
         this.entities.push(InventoryMetadata.Inventory);
-        this.entities.push(InventoryMetadata.Inventory___Order);
-        this.entities.push(InventoryMetadata.Inventory___Order___Item);
-        this.entities.push(InventoryMetadata.Inventory___Receipt);
-        this.entities.push(InventoryMetadata.Inventory___Receipt___Item);
-        this.entities.push(InventoryMetadata.Inventory___Product);
-        this.entities.push(InventoryMetadata.Inventory___Product___Location);
-        this.entities.push(InventoryMetadata.Inventory___ProductUnit);
+        this.entities.push(InventoryMetadata.INV___Order);
+        this.entities.push(InventoryMetadata.INV___Order___Item);
+        this.entities.push(InventoryMetadata.INV___Receipt);
+        this.entities.push(InventoryMetadata.INV___Receipt___Item);
+        this.entities.push(InventoryMetadata.INV___PRD);
+        this.entities.push(InventoryMetadata.INV___PRD___Location);
+        // this.entities.push(InventoryMetadata.INV___PRDUnit);
+        
         this.entities.push(FinancialMetadata.Financial);
         this.entities.push(FinancialMetadata.Financial___Account);
         this.entities.push(FinancialMetadata.Financial___Transaction);
+
         this.entities.push(FormsMetadata.Forms);
         this.entities.push(FormsMetadata.Forms___ServiceForm);
+
         this.entities.push(ReportsMetadata.Reports);
         this.entities.push(ReportsMetadata.Reports___DetailedCentralizerReport);
         this.entities.push(ReportsMetadata.Reports___ServiceCentralizerReport);
-        
+
+        this.entities.push(MusicBookingMetadata.MusicBooking);
+        this.entities.push(MusicBookingMetadata.MBK___Service);
+        this.entities.push(MusicBookingMetadata.MBK___Estimate);
+        this.entities.push(MusicBookingMetadata.MBK___Estimate___Service);
+
         this.entities.forEach(ent => {
+            ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
             this.schema.entities[ent._id] = ent;
         });
 

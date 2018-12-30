@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Component, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
@@ -16,12 +16,14 @@ import { NodeType, FormTabs } from "../../common/domain/uimetadata/form";
   templateUrl: 'form_tabs.component.html',
   styleUrls: ['form_tabs.component.scss']
 })
-export class FormTabsComponent extends BaseNodeComponent implements OnChanges, OnDestroy {
+export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];
 
   constructor(protected store: Store<fromForm.FormState>) {
     super(store);
   }
+
+  ngOnInit(){}
 
   ngOnChanges() {
     if (this.nodeElement.nodeType !== NodeType.form_tabs) throw new Error("form_tabs component does not work with nodeElement " + this.nodeElement);

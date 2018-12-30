@@ -1,4 +1,4 @@
-<label [for]="nodeElement.propertyName">{{nodeElement.propertyName}}</label>
+<label [for]="inputElement.propertyName">{{inputElement.propertyName}}</label>
 <ng-container *ngIf="hasControl(parentFormPath)">
     <div class="input-group">
         <input class="form-control" placeholder="yyyy-mm-dd" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"

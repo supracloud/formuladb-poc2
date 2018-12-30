@@ -9,6 +9,7 @@ const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const Jasmine = require("jasmine");
 
 try {
+    global['FRMDB_TRACE_COMPILE_FORMULA'] = true;
 
     let j = new Jasmine();
 

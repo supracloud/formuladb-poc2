@@ -1,17 +1,24 @@
-<table class="table table-striped">
+<table class="table table-striped table-sm">
     <thead>
         <tr>
-            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
+            <ng-container *ngFor="let child of tableElement.childNodes" [ngSwitch]="child.nodeType">
                 <ng-container *ngSwitchCase="'form_autocomplete'">
-                    <th *ngFor="let propName of child.snapshotCurrentValueOfProperties">{{propName}}</th>
+                    <th *ngFor="let propName of child.snapshotCurrentValueOfProperties">
+                        <span class="form-table-header-text">
+                            <span class="frmdb-table-header-dev-mode-identifier" *ngIf="devMode$ | async">{{propName}}</span>
+                            {{propName | i18n}}
+                        </span>
+                    </th>
                 </ng-container>
-                <th *ngSwitchCase="'form_input'">{{child.propertyName}}</th>
+                <th *ngSwitchCase="'form_input'">
+                    {{child.propertyName | i18n}}
+                </th>
             </ng-container>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
-            <ng-container *ngFor="let child of nodeElement.childNodes" [ngSwitch]="child.nodeType">
+            <ng-container *ngFor="let child of tableElement.childNodes" [ngSwitch]="child.nodeType">
                 <ng-container *ngSwitchCase="'form_autocomplete'">
                 </ng-container>
                 <ng-container *ngSwitchCase="'form_autocomplete'">

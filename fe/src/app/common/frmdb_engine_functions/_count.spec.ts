@@ -10,7 +10,6 @@ import { PouchDB, KeyValueStorePouchDB } from "../key_value_store_pouchdb";
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
-import { promise } from "protractor";
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
 
@@ -43,10 +42,10 @@ describe('FrmdbEngineStore _count', () => {
         return f.toString().replace(/\w+\.Fn\./, '').replace(/^function\s*\(.*?\)\s*\{\s*return\s*/, '').replace(/;\s*\}$/, '');
     }
 
-    const rank1 = Fn.RANK(`[FLOOR($ROW$.x/4) * 4, $ROW$.x]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
+    const rank1 = Fn.RANK(`[FLOOR(@[x]/4) * 4, @[x]]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
     it("simple one table RANK formula: " + rank1, async (done) => {
         let formula = rank1;
-        compiledFormula = compileFormula('A', 'idx=', formula);
+        compiledFormula = compileFormula('A', 'idx', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1 = { "_id": "A~~1", "x": 1 }; await frmdbTStore.kvs().put(a1);
@@ -101,11 +100,11 @@ describe('FrmdbEngineStore _count', () => {
     });
 
 
-    const rank2 = Fn.RANK(`[FLOOR($ROW$.idx/4) * 4, $ROW$.idx]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
+    const rank2 = 'RANK([FLOOR(@[idx]/4) * 4, @[idx]], _MAP(A.x, [FLOOR(x/4) * 4, x]))';
     it("two table RANK formula: " + rank2, async (done) => {
 
         let formula = rank2;
-        compiledFormula = compileFormula('B', 'rank=', formula);
+        compiledFormula = compileFormula('B', 'rank', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
         let a1 = { "_id": "A~~1", "x": 1 }; await frmdbTStore.kvs().put(a1);

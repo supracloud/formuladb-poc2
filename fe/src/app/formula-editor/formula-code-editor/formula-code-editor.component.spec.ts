@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormulaEditorComponent } from './formula-editor.component';
+import { FormulaCodeEditorComponent } from './formula-code-editor.component';
 
-describe('FormulaEditorComponent', () => {
-  let component: FormulaEditorComponent;
-  let fixture: ComponentFixture<FormulaEditorComponent>;
+describe('FormulaCodeEditorComponent', () => {
+  let component: FormulaCodeEditorComponent;
+  let fixture: ComponentFixture<FormulaCodeEditorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormulaEditorComponent ]
+      declarations: [ FormulaCodeEditorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormulaEditorComponent);
+    fixture = TestBed.createComponent(FormulaCodeEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
