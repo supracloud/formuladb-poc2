@@ -1,7 +1,4 @@
 export const Inventory_en = {
-    'Enable-Developer-Mode': 'Enable Developer Mode',
-    'Disable-Developer-Mode': 'Disable Developer Mode',
-
     Financial: 'Financial',
     General:'General',
     INV:'Inventory',
@@ -11,12 +8,6 @@ export const Inventory_en = {
     Receipt: 'Receipt',
     Item: 'Item',
     Order: 'Order',
-    Reports: 'Reports',
-    DetailedCentralizerReport: 'DetailedCentralizerReport',
-    ServiceCentralizerReport: 'ServiceCentralizerReport',
-    TestReport1: 'TestReport1',
-    Forms: 'Forms',
-    ServiceForm: 'ServiceForm',
     
     sales_agent: "Sales Agent",
     creation_date: "Creation Date",
@@ -35,7 +26,4 @@ export const Inventory_en = {
     quantity: 'Quantity',
     quantityError: 'Error Quantity',
     price: 'Price',
-
-    'General___Currency!rate1!max': 'Maximum rate1 exceeded',
-    'items$': 'Items',
 };

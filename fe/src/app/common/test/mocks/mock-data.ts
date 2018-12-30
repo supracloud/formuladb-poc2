@@ -8,12 +8,14 @@ import { Entity } from '../../domain/metadata/entity';
 import { InventoryData } from './inventory-data';
 import { MusicBookingData } from './musicbooking-data';
 import { DataObj } from '../../domain/metadata/data_obj';
+import { FormsData } from './forms-data';
 
 
 export class MockData {
 
     allData: DataObj[] = InventoryData
-        .concat(MusicBookingData);
+        .concat(MusicBookingData)
+        .concat(FormsData);
 
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }
