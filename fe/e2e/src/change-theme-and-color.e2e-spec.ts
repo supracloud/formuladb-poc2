@@ -9,6 +9,7 @@
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
 var robot = require("robotjs");
+var e2e_utils = require("./utils");
 
 const path = require('path');
 const mp3Duration = require('mp3-duration');
@@ -23,7 +24,9 @@ var isWin = process.platform === "win32";
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
-var messages = [ 'Go to setting menu',
+let test_name = 'change-theme-and-color';
+
+var messages = [ 'Go to setting menu on the top right corner of the screen',
                  'Click on Enable Developer Mode',
                  'Go back to the setting menu',
                  'Change the theme color from the color scheme',
@@ -38,35 +41,6 @@ var messages = [ 'Go to setting menu',
 
 var durations = new Array(messages.length);
 
-async function create_audio_tracks() {
-
-  shell.mkdir('-p', 'e2e/reports/videos/');
-  shell.rm('-rf', 'e2e/reports/videos/');
-  if (!fs.existsSync('e2e/reports/videos/')) {
-    fs.mkdirSync('e2e/reports/videos/');
-  }
-
-  for (var i = 0; i < messages.length; i++) {
-    const request = {
-      id: i,
-      input: {text: messages[i]},
-      // Select the language and SSML Voice Gender (optional)
-      voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
-      // Select the type of audio encoding
-      audioConfig: {audioEncoding: 'MP3'},
-    };
-
-    let response = await client.synthesizeSpeech(request);
-    // Write the binary audio content to a local file
-    fs.writeFileSync('e2e/reports/videos/output_' + request.id + '.mp3', response[0].audioContent);
-    console.log('Audio content written to file: e2e/reports/videos/output_' + request.id + '.mp3');
-
-    let duration = await mp3Duration('e2e/reports/videos/output_' + request.id + '.mp3');
-
-    console.log('Your file is ' + duration + ' seconds long');
-    durations[request.id] = duration * 1000;
-  };
-}
 
 fdescribe('Switch themes colors and images', () => {
   var until = ExpectedConditions;
@@ -74,202 +48,93 @@ fdescribe('Switch themes colors and images', () => {
     browser.ignoreSynchronization = true;
     browser.driver.manage().window().maximize();
 
-    await create_audio_tracks();
+    await e2e_utils.create_audio_tracks(messages, durations);
   });
 
   var stream;
 
-  it('should display main page and go to settings', () => {
+  it('should display main page and go to settings', async () => {
     browser.driver.get('http://localhost:4200/');
-    var settings = element(by.css('a#TopNavSettings'));
+    var button = element(by.css('a#TopNavSettings'));
 
-    settings.getLocation().then(function (location) {
+    await browser.wait(until.presenceOf(button), 50000, 'Element taking too long to appear in the DOM');
 
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
+    if (isWin) {
+      stream = new ffmpeg().input('desktop').inputOptions(['-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
+    } else {
+      stream = new ffmpeg()
+                .input(process.env.DISPLAY)
+                .inputOptions([ '-f x11grab', '-s 1920x1080' ])
+                .fps(24)
+                .videoBitrate('4096k')
+                .output('e2e/reports/videos/protractor.avi');
+    }
 
-    browser.wait(until.presenceOf(settings), 50000, 'Element taking too long to appear in the DOM').then(() => {
-      if (isWin) {
-        stream = new ffmpeg().input('desktop').inputOptions([    '-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
-      } else {
-        stream = new ffmpeg()
-                 .input(process.env.DISPLAY)
-                 .inputOptions([ '-f x11grab', '-s 1920x1080' ])
-                 .fps(24)
-                 .videoBitrate('4096k')
-                 .output('e2e/reports/videos/protractor.avi');
-      }
+    stream.run();
 
-      stream.run();
-      settings.click();
-      browser.sleep(durations[0]);
-      console.log("slept ", durations[0]);
-    });
+    await e2e_utils.handle_element_click(button, durations[0]);
   });
 
-  it('Step 2', () => {
-    let devMode = element(by.css('div#navigation > ul:nth-of-type(2) > li > div > a:nth-of-type(3)'));
-    devMode.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    devMode.click();
-    browser.sleep(durations[1]);
+  it('Step 2', async () => {
+    let button = element(by.css('div#navigation > ul:nth-of-type(2) > li > div > a:nth-of-type(3)'));
+    await e2e_utils.handle_element_click(button, durations[1]);
   });
 
-  it('Step 3', () => {
+  it('Step 3', async () => {
     let button = element(by.css('ul:nth-of-type(2)>li>a:nth-of-type(1)>span:nth-of-type(2)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[2]);
+    await e2e_utils.handle_element_click(button, durations[2]);
   });
 
-  it('Step 4', () => {
+  it('Step 4', async () => {
     let button = element(by.css('i:nth-of-type(5)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[3]);
+    await e2e_utils.handle_element_click(button, durations[3]);
   });
 
-  it('Step 5', () => {
+  it('Step 5', async () => {
     let button = element(by.css('ul:nth-of-type(2)>li>a:nth-of-type(1)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[4]);
+    await e2e_utils.handle_element_click(button, durations[4]);
   });
 
-  it('Step 6', () => {
+  it('Step 6', async () => {
     let button = element(by.css('a:nth-of-type(5)>img:nth-of-type(2)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[5]);
+    await e2e_utils.handle_element_click(button, durations[5]);
   });
 
-  it('Step 7', () => {
+  it('Step 7', async () => {
     let button = element(by.css('ul:nth-of-type(2)>li>a:nth-of-type(1)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[6]);
+    await e2e_utils.handle_element_click(button, durations[6]);
   });
 
-  it('Step 8', () => {
+  it('Step 8', async () => {
     let button = element(by.css('a:nth-of-type(7)>img'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[7]);
+    await e2e_utils.handle_element_click(button, durations[7]);
   });
 
-  it('Step 9', () => {
+  it('Step 9', async () => {
     let button = element(by.css('frmdb-top-nav>nav>div:nth-of-type(1)>div:nth-of-type(1)>ul:nth-of-type(1)>li:nth-of-type(2)>a:nth-of-type(1)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[8]);
+    await e2e_utils.handle_element_click(button, durations[8]);
   });
 
-  it('Step 10', () => {
+  it('Step 10', async () => {
     let button = element(by.css('a:nth-of-type(6)>img'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[9]);
+    await e2e_utils.handle_element_click(button, durations[9]);
   });
 
-  it('Step 11', () => {
+  it('Step 11', async () => {
     let button = element(by.css('frmdb-top-nav>nav>div:nth-of-type(1)>div:nth-of-type(1)>ul:nth-of-type(1)>li:nth-of-type(2)>a:nth-of-type(1)'));
-    button.getLocation().then(function (location) {
-
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-    browser.sleep(durations[10]);
+    await e2e_utils.handle_element_click(button, durations[10]);
   });
 
-  it('Step 12', () => {
+  it('Step 12', async () => {
     let button = element(by.css('a:nth-of-type(7)'));
-    button.getLocation().then(function (location) {
+    await e2e_utils.handle_element_click(button, durations[11]);
+    stream.kill();
 
-      browser.executeScript('return window.outerHeight - window.innerHeight;').then(extra_height => {
-        console.log(Number(extra_height));
-        robot.moveMouseSmooth(location.x+10,location.y+10+Number(extra_height));
-      });
-    });
-    button.click();
-
-    browser.sleep(durations[11]).then(() =>{
-      stream.kill();
-    });
     stream.on('error', function() {
       console.log('Ffmpeg has been killed');
   
       var concat_audio = new ffmpeg()
-        .input('concat:e2e/reports/videos/output_0.mp3|'+
-                      'e2e/reports/videos/output_1.mp3|'+
-                      'e2e/reports/videos/output_2.mp3|'+
-                      'e2e/reports/videos/output_3.mp3|'+
-                      'e2e/reports/videos/output_4.mp3|'+
-                      'e2e/reports/videos/output_5.mp3|'+
-                      'e2e/reports/videos/output_6.mp3|'+
-                      'e2e/reports/videos/output_7.mp3|'+
-                      'e2e/reports/videos/output_8.mp3|'+
-                      'e2e/reports/videos/output_9.mp3|'+
-                      'e2e/reports/videos/output_10.mp3|'+
-                      'e2e/reports/videos/output_11.mp3|')
+        .input(e2e_utils.get_input_audio_string(messages.length))
         .audioCodec('copy')
         .on('error', function(err) {
           console.log('An error occurred merging audio: ' + err.message);
@@ -303,9 +168,19 @@ fdescribe('Switch themes colors and images', () => {
               .complexFilter([ "crop=1920:950:0:130" ])
               .run();
 
+              // GIF palette
+              var gif_video = new ffmpeg()
+              .input('e2e/reports/videos/protractor-final.avi')
+              .filterGraph('palettegen')
+              .on('error', function(err) {
+                console.log('An error occurred during gif palette: ' + err.message);
+            })
+            .on('end', function() {
+              console.log('GIF palette setup finished !');
               // GIF
               var gif_video = new ffmpeg()
               .input('e2e/reports/videos/protractor-final.avi')
+              .input('e2e/reports/videos/palette.png')
               .on('error', function(err) {
                   console.log('An error occurred during gif conversion: ' + err.message);
               })
@@ -313,8 +188,11 @@ fdescribe('Switch themes colors and images', () => {
                   console.log('GIF conversion finished !');
               })
               .output('e2e/reports/videos/protractor-cropped.gif')
-              .complexFilter([ "crop=1920:950:0:130" ])
+              .complexFilter([ "crop=1920:950:0:130,fps=10,scale=1280:-1:flags=lanczos[x];[x][1:v]paletteuse" ])
               .run();
+            })
+            .output('e2e/reports/videos/palette.png')
+            .run();
 
             })
             .output('e2e/reports/videos/protractor-final.avi')
@@ -323,7 +201,9 @@ fdescribe('Switch themes colors and images', () => {
         .output('e2e/reports/videos/protractor.mp3')
         .run();  
     });
-    browser.sleep(10000); // what's going on here ? need to wait somehow for audio / video processing to finish ?
+    browser.sleep(20000).then(() =>{// what's going on here ? need to wait somehow for audio / video processing to finish ?
+      e2e_utils.cleanup(test_name);
+    }); 
   })
 
 });

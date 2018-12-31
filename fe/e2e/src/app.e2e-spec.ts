@@ -15,6 +15,10 @@
  *   sudo npm install -g protractor
  *   sudo npm install -g selenium standalone
  *   webdriver-manager update
+ * HOW TO RUN IT on Windows in Chrome: (Note! not for final video, only for development. The browser is not maximized and cropping is not tweaked)
+ *   export GOOGLE_APPLICATION_CREDENTIALS=soica-d09d94fbea9e.json
+ *   npm install
+ *   ./node_modules/@angular/cli/bin/ng e2e
  * HOW TO RUN IT in VM:
  *   export GOOGLE_APPLICATION_CREDENTIALS=soica-d09d94fbea9e.json
  *   export DISPLAY=:99
