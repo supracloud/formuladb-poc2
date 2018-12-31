@@ -8,10 +8,11 @@
 
 .drag-handle {
     position: absolute;
-    right: .5rem;
-    top:0;
-    width: .5rem;
-    height: .5rem;
+    right: 0;
+    top: 0;
+    color: lightgrey;
+    // width: .5rem;
+    // height: .5rem;
     z-index: 1000;
     cursor: move;
 }

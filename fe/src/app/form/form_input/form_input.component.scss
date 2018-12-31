@@ -11,7 +11,10 @@
 
     .frmdb-input-dev-mode-label {
         color: lightgrey;
-        text-decoration: underline;
+        position: absolute;
+        bottom: -0.7em;
+        right: 0;
+        font-size: .7em;
     }
     // edit-panel {
     //     top: 2rem;

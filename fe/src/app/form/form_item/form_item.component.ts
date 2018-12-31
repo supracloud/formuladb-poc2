@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from '../../common/domain/uimetadata/form';
 import * as fromForm from '../form.state';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -21,7 +21,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;
-  faBars = faBars;
+  icon = faArrowsAltH;
 
   ngOnInit() {
     // console.log(this.nodeElement);
