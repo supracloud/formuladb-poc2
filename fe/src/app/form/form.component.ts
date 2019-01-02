@@ -29,13 +29,23 @@ import { FormEditingService } from './form-editing.service';
 import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms';
+import { j2str } from '../crosscutting/utils/j2str';
 
 export class FrmdbFormControl extends FormControl {
     constructor(public name: string, formState?: any, validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null, asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null) {
         super(formState, validatorOrOpts);
     }
 }
+export class FrmdbFormGroup extends FormGroup {
+    constructor(public name: string) {
+        super({});
+    }
 
+    setControl(name: string, control: AbstractControl): void {
+        super.setControl(name, control);
+    }
+
+}
 @Component({
     selector: 'mwz-form',
     templateUrl: 'form.component.html',
@@ -60,7 +70,7 @@ export class FormComponent implements OnInit, OnDestroy {
         private _location: Location
     ) {
         try {
-            this.theFormGroup = new FormGroup({}, {});
+            this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');
         } catch (ex) {
             console.error(ex);
         }
@@ -126,7 +136,7 @@ export class FormComponent implements OnInit, OnDestroy {
             debounceTime(500)
         )
             .forEach(valueChange => {
-                console.log("CHANGEEEEES:", JSON.stringify(valueChange), this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
+                console.log("CHANGEEEEES:", j2str(valueChange), this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
                 let obj = this.formEditingService.getParentObj(ctrl);
                 if (obj == null) {
                     console.warn("Cound not find parent for " + valueChange);
@@ -158,9 +168,9 @@ export class FormComponent implements OnInit, OnDestroy {
                 let madeChanges = false;
                 if (autocompleteNode == null) {
                     madeChanges = true;
-                    autocompleteNode = new FormGroup({});
+                    autocompleteNode = new FrmdbFormGroup(nodeEl.entityName);
                 }
-                if (autocompleteNode instanceof FormGroup) {                
+                if (autocompleteNode instanceof FormGroup) {
                     for (let copiedProp of nodeEl.snapshotCurrentValueOfProperties || []) {
                         if (null == autocompleteNode.get(copiedProp)) {
                             autocompleteNode.setControl(copiedProp, this.makeFormControl(copiedProp, { value: undefined, disabled }));
@@ -170,21 +180,21 @@ export class FormComponent implements OnInit, OnDestroy {
                     if (madeChanges) {
                         parentFormGroup.setControl(nodeEl.entityName, autocompleteNode);
                     }
-                } else throw new Error("Expected FormGroup for autocomplete but found " + JSON.stringify(autocompleteNode));
+                } else throw new Error("Expected FormGroup for autocomplete but found " + j2str(autocompleteNode));
             } else if (nodeEl.nodeType == NodeType.form_tabs || nodeEl.nodeType == NodeType.form_table) {
                 let childNodes = nodeEl.childNodes || [];
                 let arrayCtrl = parentFormGroup.get(nodeEl.tableName);
                 if (arrayCtrl == null) {
-                    let newParent = new FormGroup({});
+                    let newParent = new FrmdbFormGroup(nodeEl.tableName);
                     parentFormGroup.setControl(nodeEl.tableName, new FormArray([newParent]));
                     this.updateFormGroup(newParent, childNodes, formReadOnly);
                 } else if (arrayCtrl instanceof FormArray) {
                     for (let arrayElemCtrl of arrayCtrl.controls) {
                         if (arrayElemCtrl instanceof FormGroup) {
                             this.updateFormGroup(arrayElemCtrl, childNodes, formReadOnly);
-                        } else throw new Error("Expected FormGroup as part of FormArray but found " + JSON.stringify(arrayElemCtrl));
+                        } else throw new Error("Expected FormGroup as part of FormArray but found " + j2str(arrayElemCtrl));
                     }
-                } else throw new Error("Expected FormArray for autocomplete but found " + JSON.stringify(arrayCtrl));
+                } else throw new Error("Expected FormArray for autocomplete but found " + j2str(arrayCtrl));
 
             }
         };
