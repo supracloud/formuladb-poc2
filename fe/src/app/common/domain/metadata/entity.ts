@@ -19,6 +19,7 @@ export interface Entity extends KeyValueObj {
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
+    stateGraph?: EntityStateGraph;
 
     // fromObjLiteral<T extends Pick<Entity, Exclude<keyof Entity, 'type_' | 'props' | 'fromObjLiteral'>> & {props: any}>(
     //     obj: T & {props: {readonly [x in keyof T['props']]: EntityProperty}}): Entity 
@@ -28,6 +29,10 @@ export interface Entity extends KeyValueObj {
     // }
 }
 
+export interface EntityStateGraph {
+    nodes: string[];
+    transitions: {source: string, target: string}[];
+};
 
 export interface AutoCorrectionOnValidationFailed {
     targetPropertyName: string;

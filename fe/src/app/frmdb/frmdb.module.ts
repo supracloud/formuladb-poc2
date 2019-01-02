@@ -11,6 +11,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AgGridModule } from "ag-grid-angular";
 
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
+
 import { FrmdbRoutingModule } from './frmdb-routing.module';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { TableComponent } from '../table/table.component';
@@ -31,6 +34,7 @@ import { FormVerticalLayoutComponent } from '../form/form-vertical-layout/form-v
 import { ContextMenuComponent } from '../form/context-menu/context-menu.component';
 import { TableHeaderComponent } from '../table/table-header.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormStateComponent } from '../form/form-state/form-state.component';
 
 @NgModule({
   imports: [
@@ -41,7 +45,9 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     NgbModule,
     AgGridModule.withComponents([TableComponent, TableHeaderComponent]),
     CrosscuttingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgxChartsModule,
+    NgxGraphModule,
   ],
   declarations: [
     NotFoundComponent,
@@ -49,6 +55,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     TableHeaderComponent,
     FormComponent,
     FormInputComponent,
+    FormStateComponent,
     FormAutocompleteComponent,
     FormTabsComponent,
     FormTableComponent,

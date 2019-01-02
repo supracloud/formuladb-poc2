@@ -9,6 +9,9 @@ const defaultDict_en = {
 
     Financial: 'Financial',
     General:'General',
+    client: 'Client',
+    code: 'Code',
+    username: 'Username',
 
     'General___Currency!rate1!max': 'Maximum rate1 exceeded',
     'items$': 'Items',

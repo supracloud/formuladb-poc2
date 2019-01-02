@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty } from '../../domain/metadata/entity';
+import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph } from '../../domain/metadata/entity';
 import { ExecutionPlan } from '../../domain/metadata/execution_plan';
 import { Sn } from '../../domain/metadata/stored_procedure';
 import { $s2e } from '../../formula_compiler';
@@ -119,6 +119,17 @@ export const INV___Receipt___Item = {
 
 export const INV___Order = {
     _id: "INV___Order",
+    stateGraph: {
+        nodes: ['PENDING', 'COMPLETE', 'APPROVED', 'PROCESSED', 'CANCELLED'],
+        transitions: [
+            {source: 'PENDING', target: 'COMPLETE'},
+            {source: 'COMPLETE', target: 'APPROVED'},
+            {source: 'APPROVED', target: 'PROCESSED'},
+            {source: 'PENDING', target: 'CANCELLED'},
+            {source: 'COMPLETE', target: 'CANCELLED'},
+            {source: 'APPROVED', target: 'CANCELLED'},
+        ]
+    } as EntityStateGraph,
     props: {
         sales_agent: { name: "sales_agent", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         creation_date: { name: "creation_date", propType_: Pn.DATETIME, allowNull: false } as EntityProperty,

@@ -8,6 +8,7 @@
             {{ theFormGroup.status }}
         </span>
     </div>
+    <form-state [stateGraph]="(form$ | async)?.stateGraph" *ngIf="(form$ | async)?.stateGraph"></form-state>
     <form_item [nodeElement]="(form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="(form$ | async)">
     </form_item>

@@ -14,6 +14,7 @@ import { environment } from '../environments/environment';
 
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
+
 import { AppEffects } from './app.effects';
 import { BackendService } from './backend.service';
 
@@ -36,7 +37,7 @@ import * as appState from './app.state';
     StoreRouterConnectingModule,
     EffectsModule.forRoot([AppEffects]),
     NgbModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     BackendService,

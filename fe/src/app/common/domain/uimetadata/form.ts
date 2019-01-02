@@ -4,7 +4,7 @@
  */
 
 import { BaseObj, SubObj } from '../base_obj';
-import { EntityProperty, Pn, Entity } from "../metadata/entity";
+import { EntityProperty, Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { Label } from './label';
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
@@ -83,6 +83,7 @@ export class Form implements BaseObj {
     _id: string;
     _rev?: string;
     grid: FormGrid;
+    stateGraph?: EntityStateGraph;
 }
 export function isForm(param: IdRevObj): param is Form {
     return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;
@@ -143,7 +144,8 @@ export function getChildPath(nodeEl: NodeElement) {
 
 export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>): Form {
     let form = new Form();
-    form._id = 'Form_:' + entity._id
+    form._id = 'Form_:' + entity._id;
+    form.stateGraph = entity.stateGraph;
     form.grid = new FormGrid();
 
     setFormElementChildren(form.grid, entity, entitiesMap);
