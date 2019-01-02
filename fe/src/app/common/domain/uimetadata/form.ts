@@ -7,20 +7,20 @@ import { BaseObj, SubObj } from '../base_obj';
 import { EntityProperty, Pn, Entity } from "../metadata/entity";
 import { Label } from './label';
 import { generateUUID } from '../uuid';
-import * as _  from 'lodash';
+import * as _ from 'lodash';
 import { IdRevObj } from '../key_value_obj';
 
-export enum NodeType { 
-    form_grid              = "form_grid"        ,
-    form_grid_row          = "form_grid_row"    ,
-    form_grid_col          = "form_grid_col"    ,
-    form_input             = "form_input"       ,
-    form_autocomplete      = "form_autocomplete",
-    form_tabs              = "form_tabs"        ,
-    form_tab               = "form_tab"         ,
-    form_table             = "form_table"       ,
-    form_datepicker        = "form_datepicker"  ,
-    form_timepicker        = "form_timepicker"  ,
+export enum NodeType {
+    form_grid = "form_grid",
+    form_grid_row = "form_grid_row",
+    form_grid_col = "form_grid_col",
+    form_input = "form_input",
+    form_autocomplete = "form_autocomplete",
+    form_tabs = "form_tabs",
+    form_tab = "form_tab",
+    form_table = "form_table",
+    form_datepicker = "form_datepicker",
+    form_timepicker = "form_timepicker",
 }
 
 export class FormGrid implements SubObj {
@@ -85,49 +85,49 @@ export class Form implements BaseObj {
     grid: FormGrid;
 }
 export function isForm(param: IdRevObj): param is Form {
-    return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;    
+    return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;
 }
 
 export type NodeElement =
-| FormGrid
-| FormGridRow
-| FormGridCol
-| FormInput
-| FormAutocomplete
-| FormTabs
-| FormTab
-| FormTable
-| FormDatepicker
-| FormTimepicker
-;
+    | FormGrid
+    | FormGridRow
+    | FormGridCol
+    | FormInput
+    | FormAutocomplete
+    | FormTabs
+    | FormTab
+    | FormTable
+    | FormDatepicker
+    | FormTimepicker
+    ;
 
 export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.form_grid
-    || nodeEl.nodeType === NodeType.form_grid_row
-    || nodeEl.nodeType === NodeType.form_grid_col
-    || nodeEl.nodeType === NodeType.form_table
-    || nodeEl.nodeType === NodeType.form_tabs
-    || nodeEl.nodeType === NodeType.form_tab
-    ;
+        || nodeEl.nodeType === NodeType.form_grid_row
+        || nodeEl.nodeType === NodeType.form_grid_col
+        || nodeEl.nodeType === NodeType.form_table
+        || nodeEl.nodeType === NodeType.form_tabs
+        || nodeEl.nodeType === NodeType.form_tab
+        ;
 }
 
 export type EntityNodeElement = FormAutocomplete;
 export function isEntityNodeElement(nodeEl: NodeElement): nodeEl is EntityNodeElement {
-    return nodeEl.nodeType  === NodeType.form_autocomplete;
+    return nodeEl.nodeType === NodeType.form_autocomplete;
 }
 
 export type TableNodeElement = FormTable | FormTabs;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
-    return nodeEl.nodeType === NodeType.form_table 
-    || nodeEl.nodeType === NodeType.form_tabs;
+    return nodeEl.nodeType === NodeType.form_table
+        || nodeEl.nodeType === NodeType.form_tabs;
 }
 
 export type PropertyNodeElement = FormInput | FormTimepicker | FormDatepicker;
 export function isPropertyNodeElement(nodeEl: NodeElement): nodeEl is PropertyNodeElement {
     return nodeEl.nodeType === NodeType.form_input
-    || nodeEl.nodeType === NodeType.form_timepicker
-    || nodeEl.nodeType === NodeType.form_datepicker;
+        || nodeEl.nodeType === NodeType.form_timepicker
+        || nodeEl.nodeType === NodeType.form_datepicker;
 }
 
 export function isKnownNodeElement(nodeType: string) {
@@ -155,7 +155,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
 export function setFormElementChildren(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
     parentFormEl.childNodes = _.values(entity.props).map(pn => {
         let child;
-        if (pn.propType_ === Pn.CHILD_TABLE) {
+        if (pn.propType_ === Pn.CHILD_TABLE || pn.propType_ === Pn.SUB_TABLE) {
             child = pn.isLargeTable ? new FormTable() : new FormTabs();
             child.tableName = pn.name;
             if (pn.referencedEntityName) setFormElementChildren(child, entitiesMap[pn.referencedEntityName]!, entitiesMap);
@@ -163,6 +163,10 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             child = new FormAutocomplete();
             child.entityName = pn.name;
             child.snapshotCurrentValueOfProperties = pn.snapshotCurrentValueOfProperties;
+        } else if (pn.propType_ === Pn.DATETIME) {
+            child = new FormDatepicker();
+            child.propertyName = pn.name;
+            child.propertyType = pn.propType_;
         } else {
             child = new FormInput();
             child.propertyName = pn.name;
@@ -176,7 +180,7 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             ret = new FormGridRow();
             ret.childNodes = [child];
         }
-        
+
         return ret;
     });
 }

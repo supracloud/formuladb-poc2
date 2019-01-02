@@ -43,3 +43,9 @@ form div .form-control.ng-dirty.ng-pending:not(form) {
 .ng-touched:not(form) {
     // border-left: 5px solid #42A948; /* green */
 }
+
+.flex-fill{
+    flex-basis: 0;
+    flex-grow: 1;
+    max-width: 100%;
+}

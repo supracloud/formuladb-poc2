@@ -38,7 +38,11 @@ export class ContextMenuComponent implements OnInit {
 
   toggleContext(e: any) {
     this.expanded = !this.expanded;
-    this.x = e.clientX + 10;
+    if (window.innerWidth-e.clientX < 200) {
+      this.x = e.clientX - 180;
+    }else{
+      this.x = e.clientX + 10;
+    }
     this.y = e.clientY;
   }
 
