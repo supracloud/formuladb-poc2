@@ -8,7 +8,6 @@
  */
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
-var robot = require("robotjs");
 var e2e_utils = require("./utils");
 
 const path = require('path');
@@ -17,12 +16,7 @@ const mp3Duration = require('mp3-duration');
 const textToSpeech = require('@google-cloud/text-to-speech');
 const client = new textToSpeech.TextToSpeechClient();
 const fs = require('fs');
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
-var ffmpeg = require('fluent-ffmpeg');
 var shell = require('shelljs');
-var isWin = process.platform === "win32";
-
-ffmpeg.setFfmpegPath(ffmpegPath);
 
 let test_name = 'change-theme-and-color';
 
@@ -40,9 +34,9 @@ var messages = [ 'Go to setting menu on the top right corner of the screen',
                  'Click on Disable Developer Mode' ];
 
 var durations = new Array(messages.length);
+var stream;
 
-
-fdescribe('Switch themes colors and images', () => {
+describe('Switch themes colors and images', () => {
   var until = ExpectedConditions;
   beforeAll(async () => {
     browser.ignoreSynchronization = true;
@@ -51,27 +45,13 @@ fdescribe('Switch themes colors and images', () => {
     await e2e_utils.create_audio_tracks(messages, durations);
   });
 
-  var stream;
 
   it('should display main page and go to settings', async () => {
     browser.driver.get('http://localhost:4200/');
-    var button = element(by.css('a#TopNavSettings'));
+    let button = element(by.css('a#TopNavSettings'));
 
     await browser.wait(until.presenceOf(button), 50000, 'Element taking too long to appear in the DOM');
-
-    if (isWin) {
-      stream = new ffmpeg().input('desktop').inputOptions(['-f gdigrab' ]).fps(24).size('100%').videoBitrate('4096k').output('e2e/reports/videos/protractor.avi');
-    } else {
-      stream = new ffmpeg()
-                .input(process.env.DISPLAY)
-                .inputOptions([ '-f x11grab', '-s 1920x1080' ])
-                .fps(24)
-                .videoBitrate('4096k')
-                .output('e2e/reports/videos/protractor.avi');
-    }
-
-    stream.run();
-
+    stream = e2e_utils.create_stream_and_run();
     await e2e_utils.handle_element_click(button, durations[0]);
   });
 
@@ -81,129 +61,65 @@ fdescribe('Switch themes colors and images', () => {
   });
 
   it('Step 3', async () => {
-    let button = element(by.css('ul:nth-of-type(2)>li>a:nth-of-type(1)>span:nth-of-type(2)'));
+    let button = element(by.css('a#TopNavSettings'));
     await e2e_utils.handle_element_click(button, durations[2]);
   });
 
   it('Step 4', async () => {
-    let button = element(by.css('i:nth-of-type(5)'));
+    let button = element(by.css('div#navigation > ul:nth-of-type(2) > li > div > a:nth-of-type(4) > i:nth-of-type(5)'));
     await e2e_utils.handle_element_click(button, durations[3]);
   });
 
   it('Step 5', async () => {
-    let button = element(by.css('ul:nth-of-type(2)>li>a:nth-of-type(1)'));
+    let button = element(by.css('a#TopNavSettings'));
     await e2e_utils.handle_element_click(button, durations[4]);
   });
 
   it('Step 6', async () => {
-    let button = element(by.css('a:nth-of-type(5)>img:nth-of-type(2)'));
+    let button = element(by.css('div#navigation > ul:nth-of-type(2) > li > div > a:nth-of-type(5) > img:nth-of-type(2)'));
     await e2e_utils.handle_element_click(button, durations[5]);
   });
 
   it('Step 7', async () => {
-    let button = element(by.css('ul:nth-of-type(2)>li>a:nth-of-type(1)'));
+    let button = element(by.css('a#TopNavSettings'));
     await e2e_utils.handle_element_click(button, durations[6]);
   });
 
   it('Step 8', async () => {
-    let button = element(by.css('a:nth-of-type(7)>img'));
+    let button = element(by.css('div#navigation > ul:nth-of-type(2) > li > div > a:nth-of-type(7)'));
     await e2e_utils.handle_element_click(button, durations[7]);
   });
 
   it('Step 9', async () => {
-    let button = element(by.css('frmdb-top-nav>nav>div:nth-of-type(1)>div:nth-of-type(1)>ul:nth-of-type(1)>li:nth-of-type(2)>a:nth-of-type(1)'));
+    let button = element(by.css('a#TopNavSettings'));
     await e2e_utils.handle_element_click(button, durations[8]);
   });
 
   it('Step 10', async () => {
-    let button = element(by.css('a:nth-of-type(6)>img'));
+    let button = element(by.css('div#navigation > ul > li:nth-of-type(2) > div > a:nth-of-type(6)'));
     await e2e_utils.handle_element_click(button, durations[9]);
   });
 
   it('Step 11', async () => {
-    let button = element(by.css('frmdb-top-nav>nav>div:nth-of-type(1)>div:nth-of-type(1)>ul:nth-of-type(1)>li:nth-of-type(2)>a:nth-of-type(1)'));
+    let button = element(by.css('a#TopNavSettings'));
     await e2e_utils.handle_element_click(button, durations[10]);
   });
 
   it('Step 12', async () => {
-    let button = element(by.css('a:nth-of-type(7)'));
+    let button = element(by.css('div#navigation > ul > li:nth-of-type(2) > div > a:nth-of-type(7)'));
     await e2e_utils.handle_element_click(button, durations[11]);
-    stream.kill();
 
-    stream.on('error', function() {
-      console.log('Ffmpeg has been killed');
-  
-      var concat_audio = new ffmpeg()
-        .input(e2e_utils.get_input_audio_string(messages.length))
-        .audioCodec('copy')
-        .on('error', function(err) {
-          console.log('An error occurred merging audio: ' + err.message);
-        })
-        .on('end', function() {
-          console.log('Audio Merging finished !');
-          var merge_video_and_audio = new ffmpeg()
-            .input('e2e/reports/videos/protractor.avi')
-            .input('e2e/reports/videos/protractor.mp3')
-            .audioCodec('copy')
-            .videoCodec('copy')
-            .on('error', function(err) {
-              console.log('An error occurred merging audio and video: ' + err.message);
-            })
-            .on('end', function() {
-              console.log('Audio/Video Merging finished !');
+    await e2e_utils.wait_for_ffmpeg_stream_to_finish(stream);
 
-              // crop
-              var cropped_video = new ffmpeg()
-              .input('e2e/reports/videos/protractor-final.avi')
-              .audioCodec('copy')
-              .on('error', function(err) {
-                  console.log('An error occurred cropping: ' + err.message);
-              })
-              .on('end', function() {
-                  console.log('Video cropping finished !');
-              })
-              .fps(24)
-              .videoBitrate('4096k')
-              .output('e2e/reports/videos/protractor-cropped.avi')
-              .complexFilter([ "crop=1920:950:0:130" ])
-              .run();
+    await e2e_utils.concat_audio(messages);
 
-              // GIF palette
-              var gif_video = new ffmpeg()
-              .input('e2e/reports/videos/protractor-final.avi')
-              .filterGraph('palettegen')
-              .on('error', function(err) {
-                console.log('An error occurred during gif palette: ' + err.message);
-            })
-            .on('end', function() {
-              console.log('GIF palette setup finished !');
-              // GIF
-              var gif_video = new ffmpeg()
-              .input('e2e/reports/videos/protractor-final.avi')
-              .input('e2e/reports/videos/palette.png')
-              .on('error', function(err) {
-                  console.log('An error occurred during gif conversion: ' + err.message);
-              })
-              .on('end', function() {
-                  console.log('GIF conversion finished !');
-              })
-              .output('e2e/reports/videos/protractor-cropped.gif')
-              .complexFilter([ "crop=1920:950:0:130,fps=10,scale=1280:-1:flags=lanczos[x];[x][1:v]paletteuse" ])
-              .run();
-            })
-            .output('e2e/reports/videos/palette.png')
-            .run();
+    await e2e_utils.merge_video_and_audio();
 
-            })
-            .output('e2e/reports/videos/protractor-final.avi')
-            .run();  
-          })
-        .output('e2e/reports/videos/protractor.mp3')
-        .run();  
-    });
-    browser.sleep(20000).then(() =>{// what's going on here ? need to wait somehow for audio / video processing to finish ?
-      e2e_utils.cleanup(test_name);
-    }); 
+    await e2e_utils.crop_video();
+
+    await e2e_utils.create_gif_palette_and_video();
+
+    e2e_utils.cleanup(test_name);
   })
 
 });

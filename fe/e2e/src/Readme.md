@@ -4,6 +4,7 @@
  * 2. FInd out why do I need that sleep before merging the audio/video files
  * 3. Configure a docker image with preinstalled software stack:
  *   sudo yum install -y java-1.8.0-openjdk-devel git
+ *   sudo yum install libX11-devel libpng-devel libXtst-devel
  *   sudo vi /etc/yum.repos.d/google-chrome.repo -> https://www.tecmint.com/install-google-chrome-on-redhat-centos-fedora-linux/
  *   sudo yum install -y google-chrome-stable
  *   sudo yum install -y chromedriver chromium xorg-x11-server-Xvfb
