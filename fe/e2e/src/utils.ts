@@ -13,6 +13,8 @@ ffmpeg.setFfmpegPath(ffmpegPath);
 const client = new textToSpeech.TextToSpeechClient();
 var isWin = process.platform === "win32";
 var base_videos_path = 'e2e/protractor_videos/';
+var starttime_for_recording;
+var duration_until_now;
 
 export async function highlightElement(element: ElementFinder) :Promise<any> {
     const previous = await browser.driver.executeScript("arguments[0].getAttribute('style');", element.getWebElement());
@@ -35,7 +37,7 @@ export async function create_audio_tracks(messages: string[], durations: number[
     for (var i = 0; i < messages.length; i++) {
       const request = {
         id: i,
-        input: {text: messages[i]},
+        input: {ssml: messages[i]},
         // Select the language and SSML Voice Gender (optional)
         voice: {languageCode: 'en-US', ssmlGender: 'NEUTRAL'},
         // Select the type of audio encoding
@@ -63,7 +65,10 @@ export async function handle_element_click(button: ElementFinder, duration: numb
 
     await highlightElement(button);
 
-    await browser.sleep(duration - (endTime-startTime) - 100);
+    duration_until_now += duration;
+    let current_time = new Date().getTime();
+
+    await browser.sleep(duration_until_now - (current_time - starttime_for_recording));
     await removeHighlighting(button, previousStyle);
 
     button.click();
@@ -113,7 +118,7 @@ export function create_gif_palette_and_video() {
                 return resolve();
             })
             .output(path.join(base_videos_path, 'tmp/') + 'protractor-cropped.gif')
-            .complexFilter([ "crop=1920:950:0:130,fps=5,scale=1920:-1:flags=lanczos[x];[x][1:v]paletteuse" ])
+            .complexFilter([ "crop=1920:960:0:120,fps=5,scale=1920:-1:flags=lanczos[x];[x][1:v]paletteuse" ])
             .run();
         })
         .output(path.join(base_videos_path, 'tmp/') + 'palette.png')
@@ -190,7 +195,7 @@ export function crop_video() {
         .fps(24)
         .videoBitrate('4096k')
         .output(path.join(base_videos_path, 'tmp/') + 'protractor-cropped.avi')
-        .complexFilter([ "crop=1920:950:0:130" ])
+        .complexFilter([ "crop=1920:960:0:120" ])
         .run();
     })
 }
@@ -210,6 +215,7 @@ export function create_stream_and_run() {
     }
 
     stream.run();
-
+    starttime_for_recording = new Date().getTime();
+    duration_until_now = 0;
     return stream;
 }

@@ -19,19 +19,19 @@ const fs = require('fs');
 var shell = require('shelljs');
 
 let test_name = 'change-theme-and-color';
-
-var messages = [ 'Go to setting menu on the top right corner of the screen',
-                 'Click on Enable Developer Mode',
-                 'Go back to the setting menu',
-                 'Change the theme color from the color scheme',
-                 'Go back to the setting menu',
-                 'Change the theme background image from the predefined list of images',
-                 'Go back to the setting menu',
-                 'Change the theme to material',
-                 'Go back to the setting menu',
-                 'Change the theme to NowUI theme',
-                 'Go back to the setting menu',
-                 'Click on Disable Developer Mode' ];
+//https://cloud.google.com/text-to-speech/docs/ssml
+var messages = [ '<speak>Go to setting menu on the top right corner of the screen<break time="1s"/></speak>',
+                 '<speak>Click on Enable Developer Mode<break time="1s"/></speak>',
+                 '<speak>Go back to the setting menu<break time="1s"/></speak>',
+                 '<speak>Change the theme color from the color scheme<break time="1s"/></speak>',
+                 '<speak>Go back to the setting menu<break time="1s"/></speak>',
+                 '<speak>Change the theme background image from the predefined list of images<break time="1s"/></speak>',
+                 '<speak>Go back to the setting menu<break time="1s"/></speak>',
+                 '<speak>Change the theme to material<break time="1s"/></speak>',
+                 '<speak>Go back to the setting menu<break time="1s"/></speak>',
+                 '<speak>Change the theme to NowUI theme<break time="1s"/></speak>',
+                 '<speak>Go back to the setting menu<break time="1s"/></speak>',
+                 '<speak>Click on Disable Developer Mode<break time="1s"/></speak>' ];
 
 var durations = new Array(messages.length);
 var stream;

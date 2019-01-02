@@ -15,18 +15,18 @@ var shell = require('shelljs');
 var e2e_utils = require("./utils");
 
 let test_name = 'app';
-
-var messages = [ 'Chapter 1, Forms: One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.',
-                 'Chapter 2, Financial: He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.',
-                 'Chapter 3, General: The bedding was hardly able to cover it and seemed ready to slide off any moment.',
-                 'Chapter 4, Inventory: His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked. ',
-                 'Chapter 5, Music Booking: "What\'s happened to me?" he thought.'];
+//https://cloud.google.com/text-to-speech/docs/ssml
+var messages = [ '<speak>Chapter 1, Forms: One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin.<break time="1s"/></speak>',
+                 '<speak>Chapter 2, Financial: He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.<break time="1s"/></speak>',
+                 '<speak>Chapter 3, General: The bedding was hardly able to cover it and seemed ready to slide off any moment.<break time="1s"/></speak>',
+                 '<speak>Chapter 4, Inventory: His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.<break time="1s"/></speak>',
+                 '<speak>Chapter 5, Music Booking: "What\'s happened to me?" he thought.<break time="1s"/></speak>'];
 
 var durations = new Array(messages.length);
 var stream;
 
 
-fdescribe('workspace-project App', () => {
+describe('workspace-project App', () => {
   var until = ExpectedConditions;
   beforeAll(async () => {
     browser.ignoreSynchronization = true;
