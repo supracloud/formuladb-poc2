@@ -28,6 +28,7 @@ var stream;
 
 describe('workspace-project App', () => {
   var until = ExpectedConditions;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
   beforeAll(async () => {
     browser.ignoreSynchronization = true;
     browser.driver.manage().window().maximize();

@@ -39,6 +39,7 @@ var stream;
 describe('Switch themes colors and images', () => {
   var until = ExpectedConditions;
   beforeAll(async () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
     browser.ignoreSynchronization = true;
     browser.driver.manage().window().maximize();
 
