@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { NodeElement, NodeType } from '../../common/domain/uimetadata/form';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
-import { faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,7 +12,7 @@ import { faWrench } from '@fortawesome/free-solid-svg-icons';
 })
 export class ContextMenuComponent implements OnInit {
 
-  faWrench = faWrench;
+  icon = faEllipsisH;
 
   @Input()
   item: NodeElement;

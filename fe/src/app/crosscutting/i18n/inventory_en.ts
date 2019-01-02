@@ -3,6 +3,7 @@ export const Inventory_en = {
     General:'General',
     INV:'Inventory',
     PRD: 'Product',
+    PRDUnit: 'Product Unit',
     Location: 'Location',
     ProductUnit: 'ProductUnit',
     Receipt: 'Receipt',

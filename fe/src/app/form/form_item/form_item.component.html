@@ -1,6 +1,6 @@
 <div [ngSwitch]="nodeElement.nodeType" draggable="true" class="layout-container flex-fill" (dragstart)="dragStart($event)"
   (dragend)="dragEnd($event)">
-  <fa-icon [icon]="faBars" *ngIf="editMode$|async" class="drag-handle fa-xs" #dragHandle [id]="'drag_'+nodeElement._id"
+  <fa-icon [icon]="icon" *ngIf="editMode$|async" class="drag-handle fa-xs" #dragHandle [id]="'drag_'+nodeElement._id"
     (mousedown)="checkHandle($event)"></fa-icon>
   <form-context-menu [item]="nodeElement" [canDelete]="nodeElement.nodeType!=='form_grid'" [availableChildren]="getAvailableChildren()"
     [availableTypes]="getAvailableTypes()" *ngIf="editMode$|async"></form-context-menu>
