@@ -113,7 +113,7 @@ export class FormDragAction implements Action {
 export class FormDropAction implements Action {
   readonly type = FormDropActionN;
 
-  constructor(public payload: { drop: NodeElement, before: boolean }) { }
+  constructor(public payload: { drop: NodeElement, position: string }) { }
 }
 
 export class FormDeleteAction implements Action {
@@ -179,16 +179,36 @@ const removeRecursive = (tree: NodeElement, item: NodeElement) => {
   }
 }
 
-const addRecursive = (tree: NodeElement, sibling: NodeElement, before: boolean, what: NodeElement) => {
+const modifyRecursive = (tree: NodeElement, filter: (each: NodeElement) => boolean, action: (found: NodeElement) => void) => {
+  if (filter(tree)) action(tree);
+  if (isNodeElementWithChildren(tree)) {
+    if (tree.childNodes && tree.childNodes.length > 0) {
+      tree.childNodes.forEach(c => modifyRecursive(c, filter, action));
+    }
+  }
+}
+
+const addRecursive = (tree: NodeElement, sibling: NodeElement, position: string, what: NodeElement) => {
+  console.log(tree, position, sibling, what)
   if (tree && isNodeElementWithChildren(tree) && tree.childNodes) {
     for (var i: number = 0; i < tree.childNodes.length; i++) {
       if (tree.childNodes[i]._id === sibling._id) {
-        tree.childNodes.splice(before ? i : i + 1, 0, what);
-        console.log("found");
-        return;
+        switch (position) {
+          case 'before':
+            tree.childNodes.splice(i, 0, what);
+            return;
+          case 'after':
+            tree.childNodes.splice(i + 1, 0, what);
+            return;
+          case 'append':
+            const p = tree.childNodes[i];
+            if (isNodeElementWithChildren(p) && p.childNodes)
+              p.childNodes.push(what);
+            return;
+        }
       }
       else {
-        addRecursive(tree.childNodes[i], sibling, before, what);
+        addRecursive(tree.childNodes[i], sibling, position, what);
       }
     }
   }
@@ -256,7 +276,7 @@ export function formReducer(state = formInitialState, action: FormActions): Form
     case FormDropActionN:
       if (state.form && state.dragged) {
         removeRecursive(state.form.grid, state.dragged as NodeElement);
-        addRecursive(state.form.grid, action.payload.drop, action.payload.before, state.dragged as NodeElement);
+        addRecursive(state.form.grid, action.payload.drop, action.payload.position, state.dragged as NodeElement);
       }
       return { ...state, dragged: null } //TODO check immutable
 
@@ -265,7 +285,11 @@ export function formReducer(state = formInitialState, action: FormActions): Form
         removeRecursive(state.form.grid, action.payload);
       }
       return state;
-
+    case FormSwitchTypeActionN:
+      if (state.form) {
+        modifyRecursive(state.form.grid, n => n._id === action.payload.node._id, n => console.log(n))//TODO implement conversion
+      }
+      return state;
   }
 
   // if (action.type.match(/^\[form\]/)) console.log('[form] reducer:', state, action, ret);

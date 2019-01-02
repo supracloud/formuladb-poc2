@@ -4,9 +4,8 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from '../../domain/metadata/entity';
-import { INV___PRD, INV___Order, INV___PRDUnit } from './inventory-metadata';
+import { INV___PRD, INV___Order, INV___PRD___Unit } from './inventory-metadata';
 import { General___Client } from "./general-metadata";
-import { Sn } from '../../domain/metadata/stored_procedure';
 import { Fn } from '../../domain/metadata/functions';
 
 export const Forms = {
@@ -50,7 +49,7 @@ export const Forms___ServiceForm = {
             name: "service_form_units",
             propType_: Pn.CHILD_TABLE, referencedEntityName: INV___Order._id,
             props: {
-                equipment: { name: "equipment", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRDUnit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } as EntityProperty,
+                equipment: { name: "equipment", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRD___Unit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } as EntityProperty,
                 reported_problem: { name: "reported_problem", propType_: Pn.TEXT } as EntityProperty,
                 found_problem: { name: "found_problem", propType_: Pn.TEXT } as EntityProperty,
                 work_description: { name: "work_description", propType_: Pn.TEXT } as EntityProperty,

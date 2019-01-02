@@ -1,4 +1,4 @@
-<form [formGroup]="theFormGroup" novalidate>
+<form [formGroup]="theFormGroup" novalidate class="flex-fill">
     <div class="frmdb-form-status">
         <span class="frmdb-form-status-text badge-pill" 
             [class.badge-success]="theFormGroup.status == 'VALID'"  
@@ -8,7 +8,7 @@
             {{ theFormGroup.status }}
         </span>
     </div>
-    <div form_item [nodeElement]="(form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
+    <form_item [nodeElement]="(form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="(form$ | async)">
-    </div>
+    </form_item>
 </form>

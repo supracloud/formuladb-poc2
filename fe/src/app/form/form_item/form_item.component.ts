@@ -9,19 +9,19 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from '../../common/domain/uimetadata/form';
 import * as fromForm from '../form.state';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
-  selector: '[form_item]',
+  selector: 'form_item',
   templateUrl: 'form_item.component.html',
-  host: { '[class]': 'getHostClassForElement()' },
+  // host: { '[class]': 'getHostClassForElement()' },
   styleUrls: ['form_item.component.scss']
 })
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;
-  faBars = faBars;
+  icon = faArrowsAltH;
 
   ngOnInit() {
     // console.log(this.nodeElement);
@@ -77,18 +77,17 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   }
 
   checkHandle(e: any): void {
-    console.log(e);
     this.dragHandle = e.currentTarget;
   }
 
-  dragStart(e: any): void {
-    console.log(this.dragHandle.id, this.nodeElement._id);
+  dragStart(e: any): boolean {
     if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodeElement._id) {
-      console.log("GOTCHA");
       this.formStore.dispatch(new fromForm.FormDragAction(this.nodeElement));
       e.stopPropagation();
+      return true;
     } else {
-      e.preventDefault();
+      e.stopPropagation();
+      return false;
     }
   }
 

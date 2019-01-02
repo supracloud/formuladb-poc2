@@ -1,10 +1,9 @@
-<label [for]="inputElement.propertyName">{{inputElement.propertyName}}</label>
+<label [for]="inputElement.propertyName">
+    {{inputElement.propertyName | i18n}}
+    <div class="frmdb-input-dev-mode-label" *ngIf="editMode$ | async">{{inputElement.propertyName}}</div>
+</label>
 <ng-container *ngIf="hasControl(parentFormPath)">
     <div class="input-group">
-        <input class="form-control" placeholder="yyyy-mm-dd" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"
-            ngbDatepicker #d="ngbDatepicker" />
-        <button class="input-group-addon" (click)="d.toggle()" type="button">
-            <i class="fa fa-calendar"></i>
-        </button>
+        <input type="date" class="form-control" placeholder="yyyy-mm-dd" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)" />
     </div>
 </ng-container>

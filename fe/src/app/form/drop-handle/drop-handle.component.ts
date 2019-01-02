@@ -16,7 +16,7 @@ export class DropHandleComponent implements OnInit {
   item: NodeElement;
 
   @Input()
-  before: boolean = true;
+  position: string = 'append';
 
   @Input()
   orientation: string;
@@ -47,7 +47,7 @@ export class DropHandleComponent implements OnInit {
   @HostListener('drop', ['$event'])
   onDrop(e) {
     this.visible = false;
-    this.store.dispatch(new fromForm.FormDropAction({ drop: this.item, before: this.before }));
+    this.store.dispatch(new fromForm.FormDropAction({ drop: this.item, position: this.position }));
     // e.preventDefault();
   }
 

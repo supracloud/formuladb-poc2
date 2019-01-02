@@ -15,7 +15,7 @@ import { Expression } from 'jsep';
 export interface Entity extends KeyValueObj {
     _id: string;
     module_?: boolean;
-    aliases?: {[aliasName: string]: string};
+    aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
@@ -43,7 +43,7 @@ export type EntityProperties = { [x: string]: EntityProperty };
 export type EntityDeepPath = string;
 export interface Schema extends BaseObj {
     readonly _id: 'FRMDB_SCHEMA';
-    entities: {[x: string]: Entity};
+    entities: { [x: string]: Entity };
 }
 
 export function isEntityProperty(param): param is EntityProperty {
@@ -78,6 +78,7 @@ export const enum Pn {
     REFERENCE_TO = "REFERENCE_TO",
     EXTENDS_ENTITY = "SUB_ENTITY",
     FORMULA = "FORMULA",
+    SUB_TABLE = "SUB_TABLE"
 }
 
 export interface NumberProperty {
@@ -116,6 +117,16 @@ export interface ChildTableProperty {
 }
 export function isSubTableProperty(param): param is ChildTableProperty {
     return param != null && typeof param === 'object' && param.propType_ === Pn.CHILD_TABLE;
+}
+
+
+export interface SubTableProperty {
+    propType_: Pn.SUB_TABLE;
+    name: string;
+    referencedEntityName?: string;
+    snapshotCurrentValueOfProperties?: string[];
+    isLargeTable?: boolean;
+    props: EntityProperties;
 }
 
 /**
@@ -163,6 +174,7 @@ export type EntityProperty =
     | TextProperty
     | DatetimeProperty
     | ChildTableProperty
+    | SubTableProperty
     | ExtendsEntityProperty
     | ReferenceToProperty
     | FormulaProperty

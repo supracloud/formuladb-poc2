@@ -22,6 +22,7 @@ import { FormItemComponent } from '../form/form_item/form_item.component';
 import { FormTimepickerComponent } from '../form/form_timepicker/form_timepicker.component';
 import { FormDatepickerComponent } from '../form/form_datepicker/form_datepicker.component';
 import { FormTableComponent } from '../form/form_table/form_table.component';
+import { FormDataGridComponent } from '../form/form_data_grid/form_data_grid.component';
 import { FormEditingService } from '../form/form-editing.service';
 import { CrosscuttingModule } from '../crosscutting/crosscutting.module';
 import { DropHandleComponent } from '../form/drop-handle/drop-handle.component';
@@ -51,6 +52,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     FormAutocompleteComponent,
     FormTabsComponent,
     FormTableComponent,
+    FormDataGridComponent,
     FormDatepickerComponent,
     FormTimepickerComponent,
     FormItemComponent,

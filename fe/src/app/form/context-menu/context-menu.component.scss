@@ -1,8 +1,10 @@
 :host {
     position: absolute;
-    bottom: .1rem;
+    top: .5rem;
     right: 0;
+    cursor: context-menu;
     .context-menu-button {
+        color: lightgrey;
         padding: .1rem;
         border-bottom: 1px solid transparent;
         &:hover {

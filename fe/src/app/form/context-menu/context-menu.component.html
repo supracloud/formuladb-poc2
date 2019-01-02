@@ -1,4 +1,4 @@
-<fa-icon [icon]="faWrench" [class.expanded]="expanded" class="fa-xs context-menu-button" (click)="toggleContext($event)"></fa-icon>
+<fa-icon [icon]="icon" [class.expanded]="expanded" class="fa-xs context-menu-button" (click)="toggleContext($event)"></fa-icon>
 
 <ul class="context-menu" *ngIf="expanded" [style.top.px]="y" [style.left.px]="x">
   <ng-container *ngIf="availableTypes">

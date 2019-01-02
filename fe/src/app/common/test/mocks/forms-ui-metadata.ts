@@ -32,11 +32,6 @@ export var Forms___ServiceForm_Form_: Form = {
           { _id: getTestUUID(), nodeType: NodeType.form_autocomplete, entityName: "client", snapshotCurrentValueOfProperties: ["code", "username"] },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: "technician_code" },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: "client_person" },
-        ]
-      },
-      {
-        _id: getTestUUID(), nodeType: NodeType.form_grid_row,
-        childNodes: [
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: "nb_installments" },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: "technician2_code" },
         ]

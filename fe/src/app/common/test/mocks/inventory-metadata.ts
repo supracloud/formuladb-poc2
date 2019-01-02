@@ -62,8 +62,8 @@ export const INV___PRD = {
     }
 };
 
-export const INV___PRDUnit = {
-    _id: "INV___PRDUnit",
+export const INV___PRD___Unit = {
+    _id: "INV___PRD___Unit",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -74,8 +74,6 @@ export const INV___PRDUnit = {
             snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
-                "price",
-                "currency_code",
             ]
         } as EntityProperty,
         inventoryLocation: { name: "inventoryLocation", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -112,7 +110,7 @@ export const INV___Receipt___Item = {
             name: "units",
             propType_: Pn.CHILD_TABLE,
             props: {
-                unit: { name: "unit", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRDUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
+                unit: { name: "unit", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRD___Unit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
             }
         } as EntityProperty,
     }
@@ -145,7 +143,7 @@ export const INV___Order___Item = {
             name: "units",
             propType_: Pn.CHILD_TABLE,
             props: {
-                unit: { name: "unit", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRDUnit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
+                unit: { name: "unit", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRD___Unit._id, snapshotCurrentValueOfProperties: ["code", "serial"] } as EntityProperty,
             }
         } as EntityProperty,
     },
