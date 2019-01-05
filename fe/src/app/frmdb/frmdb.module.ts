@@ -35,6 +35,8 @@ import { ContextMenuComponent } from '../form/context-menu/context-menu.componen
 import { TableHeaderComponent } from '../table/table-header.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormStateComponent } from '../form/form-state/form-state.component';
+import { FormChartComponent } from '../form/form-chart/form-chart.component';
+import { FrmdbOnfocusDirective } from '../form/frmdb-onfocus.directive';
 
 @NgModule({
   imports: [
@@ -63,10 +65,12 @@ import { FormStateComponent } from '../form/form-state/form-state.component';
     FormDatepickerComponent,
     FormTimepickerComponent,
     FormItemComponent,
+    FormChartComponent,
     DropHandleComponent,
     FormHorizontalLayoutComponent,
     FormVerticalLayoutComponent,
-    ContextMenuComponent
+    ContextMenuComponent,
+    FrmdbOnfocusDirective,
   ],
   providers: [
     FormEditingService

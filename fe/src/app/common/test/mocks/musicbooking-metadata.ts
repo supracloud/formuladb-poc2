@@ -53,3 +53,27 @@ export const MBK___Estimate___Service = {
         total: { name: "total", propType_: Pn.FORMULA, formula: 'musicians * quantity * service.unitPrice + doubling + cartage' } as EntityProperty,
     },
 };
+
+export const MBK___Session = {
+    _id: "MBK___Session",
+    props: {
+        estimateId: { name: 'estimateId', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        date: { name: 'date', propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
+    },
+};
+
+export const MBK___Booking = {
+    _id: "MBK___Booking",
+    props: {
+        sessionId: { name: 'sessionId', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+    },
+};
+
+export const MBK___Booking___Musician = {
+    _id: "MBK___Booking___Musician",
+    props: {
+        bookingId: { name: 'bookingId', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        musicianName: { name: 'musicianName', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        musicianEmail: { name: 'musicianEmail', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+    },
+};

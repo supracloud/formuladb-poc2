@@ -10,6 +10,10 @@ export const Inventory_en = {
     Item: 'Item',
     Order: 'Order',
     
+    received_stock__: 'Received Stock',
+    available_stock__: 'Available Stock',
+    ordered_stock__: 'Ordered Stock',
+
     sales_agent: "Sales Agent",
     creation_date: "Creation Date",
 

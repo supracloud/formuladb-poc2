@@ -25,7 +25,7 @@ const Srv_19 = {_id: "MBK___Service~~19", category: "Brass", name: "Tuba", unitT
 const Srv_20 = {_id: "MBK___Service~~20", category: "Brass", name: "Solo Brass", unitType: 'Hours', unitPrice: '75'};
 const Srv_21 = {_id: "MBK___Service~~21", category: "Brass", name: "Other", unitType: 'Hours', unitPrice: '75'};
 
-const Estimate1 = { _id: "MBK___Estimate~~1", client: "John Doe", date: "2018-12-29" };
+const Estimate1 = { _id: "MBK___Estimate~~1", client: "John Doe", totalPlayers: 14, date: "2018-12-29" };
 const Estimate1___Srv1 = { _id: "MBK___Estimate___Service~~1___1", service: Srv_01, musicians: 2, quantity: 10, doubles: 2, cartage: 20, estimateId: Estimate1._id };
 const Estimate1___Srv2 = { _id: "MBK___Estimate___Service~~1___2", service: Srv_03, musicians: 2, quantity: 10, doubles: 2, cartage: 20, estimateId: Estimate1._id };
 const Estimate1___Srv3 = { _id: "MBK___Estimate___Service~~1___3", service: Srv_05, musicians: 1, quantity: 10, doubles: 1, cartage: 20, estimateId: Estimate1._id };

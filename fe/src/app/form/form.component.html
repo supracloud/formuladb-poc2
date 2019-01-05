@@ -8,8 +8,30 @@
             {{ theFormGroup.status }}
         </span>
     </div>
+
     <form-state [stateGraph]="(form$ | async)?.stateGraph" *ngIf="(form$ | async)?.stateGraph"></form-state>
     <form_item [nodeElement]="(form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="(form$ | async)">
     </form_item>
+
+    <div style="width: 1000px; height: 450px">
+        <form-chart chartType="bar-horizontal" yAxisLabel="$ Sales" [view]="[800, 400]" [showXAxisLabel]="false"></form-chart>
+    </div>
+    <div style="width: 1000px; height: 450px">
+        <form-chart chartType="bar-horizontal-2d" yAxisLabel="Unit Sales" [view]="[800, 400]" [showXAxisLabel]="false"></form-chart>
+    </div>
+    
+    <div style="width: 1000px; height: 450px">
+        <form-chart chartType="bar-vertical-2d" yAxisLabel="Unit Sales" [view]="[800, 400]" [showXAxisLabel]="false"></form-chart>
+    </div>
+    <div style="width: 1000px; height: 450px">
+        <form-chart chartType="pie-chart" [view]="[800, 400]"></form-chart>
+    </div>
+    <div style="width: 1000px; height: 450px">
+        <form-chart chartType="bar-vertical" yAxisLabel="$ Sales" [view]="[800, 400]" [showXAxisLabel]="false"></form-chart>
+    </div>
+    <div style="width: 1000px; height: 450px">
+        <form-chart chartType="line-chart" yAxisLabel="Unit Sales" [view]="[800, 400]" [showXAxisLabel]="false"></form-chart>
+    </div>
+    
 </form>
