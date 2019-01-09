@@ -19,6 +19,8 @@
     [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></form-datepicker>
   <form-timepicker *ngSwitchCase="'form_timepicker'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup"
     [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></form-timepicker>
+  <form-chart *ngSwitchCase="'form_chart'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup"
+    [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></form-chart>
   <h-layout *ngSwitchCase="'form_grid_row'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup"
     [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></h-layout>
   <v-layout *ngSwitchCase="'form_grid_col'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup"

@@ -48,13 +48,19 @@ export class MockMetadata {
         this.entities.push(FormsMetadata.Forms___ServiceForm);
 
         this.entities.push(ReportsMetadata.Reports);
-        this.entities.push(ReportsMetadata.Reports___DetailedCentralizerReport);
-        this.entities.push(ReportsMetadata.Reports___ServiceCentralizerReport);
+        this.entities.push(ReportsMetadata.REP___DetailedCentralizerReport);
+        this.entities.push(ReportsMetadata.REP___ServiceCentralizerReport);
+        this.entities.push(ReportsMetadata.REP___LargeSales);
+        this.entities.push(ReportsMetadata.REP___LargeSales___Product);
 
         this.entities.push(MusicBookingMetadata.MusicBooking);
         this.entities.push(MusicBookingMetadata.MBK___Service);
         this.entities.push(MusicBookingMetadata.MBK___Estimate);
         this.entities.push(MusicBookingMetadata.MBK___Estimate___Service);
+        this.entities.push(MusicBookingMetadata.MBK___Session);
+        this.entities.push(MusicBookingMetadata.MBK___Booking);
+        this.entities.push(MusicBookingMetadata.MBK___Booking___Musician);
+        this.entities.push(MusicBookingMetadata.MBK___Email);
 
         this.entities.forEach(ent => {
             ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };

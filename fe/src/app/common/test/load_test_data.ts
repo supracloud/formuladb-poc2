@@ -8,6 +8,7 @@ import { MockData } from "./mocks/mock-data";
 import { Forms___ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { obj2MapES5 } from "../ts-utils";
 import { KeyValueStorePouchDB } from "../key_value_store_pouchdb";
+import { REP___LargeSales_Form } from "./mocks/reports-ui-metadata";
 
 
 export async function loadData(dataDB: KeyValueStorePouchDB, transactionsDB: KeyValueStorePouchDB, locksDB: KeyValueStorePouchDB): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
@@ -23,7 +24,7 @@ export async function loadData(dataDB: KeyValueStorePouchDB, transactionsDB: Key
         let mockData = new MockData(mockMetadata.schema.entities);
         await dataDB.putAll(mockData.getAll());
 
-        [Forms___ServiceForm_Form_].forEach(async (formUiMeta) => {
+        [Forms___ServiceForm_Form_, REP___LargeSales_Form].forEach(async (formUiMeta) => {
             await dataDB.put(formUiMeta);
         });
 

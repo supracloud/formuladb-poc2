@@ -1,14 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import * as shape from 'd3-shape';
+import { BaseNodeComponent } from '../base_node';
+import { Store } from '@ngrx/store';
+
+import * as fromForm from '../form.state';
+import { FormChart } from 'src/app/common/domain/uimetadata/form';
+import { AbstractControl, FormArray, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'form-chart',
   templateUrl: './form-chart.component.html',
   styleUrls: ['./form-chart.component.scss']
 })
-export class FormChartComponent implements OnInit {
+export class FormChartComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
-  @Input()
   chartType: string;
 
   chartGroups: any[];
@@ -27,7 +32,6 @@ export class FormChartComponent implements OnInit {
   linearScale: boolean = false;
   range: boolean = false;
 
-  @Input()
   view: any[];
   fitContainer: boolean = false;
 
@@ -38,14 +42,10 @@ export class FormChartComponent implements OnInit {
   showLegend = true;
   legendTitle = 'Legend';
   legendPosition = 'right';
-  @Input()
   showXAxisLabel = true;
   tooltipDisabled = false;
-  @Input()
   xAxisLabel = 'Country';
-  @Input()
   showYAxisLabel = true;
-  @Input()
   yAxisLabel = 'GDP Per Capita';
   showGridLines = true;
   innerPadding = '10%';
@@ -192,7 +192,7 @@ export class FormChartComponent implements OnInit {
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
 
-  single = [
+  single: {name: string, value: number}[] = [
     {
       "name": "Product 1",
       "value": 8940000
@@ -344,10 +344,47 @@ export class FormChartComponent implements OnInit {
   ];
   multi = this.lineData;
   
-  constructor() { }
 
+  formChart: FormChart;
+  formArray: FormArray;
+
+  constructor(protected store: Store<fromForm.FormState>) {
+    super(store);
+  }
+
+  setSingleData() {
+    this.single = [];
+
+    for (let rowControl of this.formArray.controls) {
+      let nameCtrl = rowControl.get(this.formChart.xPropertyName);
+      let valueCtrl = rowControl.get(this.formChart.yPropertyName);
+      if (nameCtrl instanceof FormControl && valueCtrl instanceof FormControl) {
+        this.single.push({
+          name: nameCtrl.value,
+          value: valueCtrl.value,
+        });
+      }
+    }
+  }
 
   ngOnInit() {
+    this.formChart = this.nodeElement as FormChart;
+    this.view = [this.formChart.width, this.formChart.height];
+    this.chartType = this.formChart.chartType;
+    this.xAxisLabel = this.formChart.xPropertyName;//TODO: add i18n HERE
+    this.yAxisLabel = this.formChart.yPropertyName;
+    let tmpCtrl = this.topLevelFormGroup.get(this.formChart.tableName);
+    if (tmpCtrl instanceof FormArray) {
+      this.formArray = tmpCtrl;
+      this.setSingleData();
+      this.subscriptions.push(this.formArray.valueChanges.subscribe(() => {
+        this.setSingleData();
+      }));
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
 
 }

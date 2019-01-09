@@ -19,6 +19,7 @@ export enum NodeType {
     form_tabs = "form_tabs",
     form_tab = "form_tab",
     form_table = "form_table",
+    form_chart = "form_chart",
     form_datepicker = "form_datepicker",
     form_timepicker = "form_timepicker",
 }
@@ -68,6 +69,7 @@ export class FormTable implements SubObj {
     tableName: string;
     childNodes?: NodeElement[];
 }
+
 export class FormDatepicker implements SubObj {
     readonly nodeType = NodeType.form_datepicker;
     _id: string;
@@ -77,6 +79,18 @@ export class FormTimepicker implements SubObj {
     readonly nodeType = NodeType.form_timepicker;
     _id: string;
     propertyName: string;
+}
+
+export class FormChart implements SubObj {
+    readonly nodeType = NodeType.form_chart;
+    _id: string;
+    tableName: string;
+    chartType: string;
+    width: number;
+    height: number;
+    xPropertyName: string;
+    yPropertyName: string;
+    groupByPropertyName?: string;
 }
 
 export class Form implements BaseObj {
@@ -100,6 +114,7 @@ export type NodeElement =
     | FormTable
     | FormDatepicker
     | FormTimepicker
+    | FormChart
     ;
 
 export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;
@@ -118,7 +133,7 @@ export function isEntityNodeElement(nodeEl: NodeElement): nodeEl is EntityNodeEl
     return nodeEl.nodeType === NodeType.form_autocomplete;
 }
 
-export type TableNodeElement = FormTable | FormTabs;
+export type TableNodeElement = FormTable | FormTabs | FormChart;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
     return nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs;

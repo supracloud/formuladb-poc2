@@ -110,7 +110,7 @@ export class BackendService extends FrmdbStore {
             let dataObjs: any[] = [];
             for (let obj of (data.body || [])) {
 
-                let dataObj: any = {_id: 'Reports___DeliveryRate~~' + obj.id};
+                let dataObj: any = {_id: 'REP___DeliveryRate~~' + obj.id};
 
                 dataObj.orderNb = obj.order_id;
                 dataObj.externalOrderNb = 

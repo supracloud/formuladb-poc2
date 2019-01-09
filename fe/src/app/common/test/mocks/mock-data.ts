@@ -9,13 +9,15 @@ import { InventoryData } from './inventory-data';
 import { MusicBookingData } from './musicbooking-data';
 import { DataObj } from '../../domain/metadata/data_obj';
 import { FormsData } from './forms-data';
+import { ReportsData } from './reports-data';
 
 
 export class MockData {
 
     allData: DataObj[] = InventoryData
         .concat(MusicBookingData)
-        .concat(FormsData);
+        .concat(FormsData)
+        .concat(ReportsData);
 
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }

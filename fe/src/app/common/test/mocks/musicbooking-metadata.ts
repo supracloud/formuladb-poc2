@@ -77,3 +77,11 @@ export const MBK___Booking___Musician = {
         musicianEmail: { name: 'musicianEmail', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
     },
 };
+
+export const MBK___Email = {
+    _id: "MBK___Email",
+    props: {
+        date: { name: 'date', propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
+        template: { name: 'template', propType_: Pn.STRING, "allowNull": false } as EntityProperty,//should be reference to General___Client
+    },
+};

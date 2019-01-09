@@ -10,7 +10,7 @@ export class CurrentFormulaDirective implements OnDestroy {
 
   constructor(private el: ElementRef, private formulaEditorService: FormulaEditorService) {
     this.subscriptions.push(this.formulaEditorService.selectedFormula$.subscribe(selectedFormula => {
-      this.el.nativeElement.value = selectedFormula;
+      this.el.nativeElement.value = selectedFormula || 'COLUMN';
     }));
   }
 

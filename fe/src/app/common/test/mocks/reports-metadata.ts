@@ -3,26 +3,26 @@
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty } from '../../domain/metadata/entity';
+import { Entity, Pn, EntityProperty, FormulaProperty } from '../../domain/metadata/entity';
 import { INV___PRD, INV___PRD___Location } from './inventory-metadata';
 import { Fn } from '../../domain/metadata/functions';
 
 
 export const Reports = {
-    _id: "Reports",
+    _id: "REP",
     module_: true,
     props: {},
 };
 
-export const Reports___DetailedCentralizerReport = {
-    _id: "Reports___DetailedCentralizerReport",
+export const REP___DetailedCentralizerReport = {
+    _id: "REP___DetailedCentralizerReport",
     props: {
         //TODO
     }
 };
 
-export const Reports___ServiceCentralizerReport = {
-    _id: "Reports___ServiceCentralizerReport",
+export const REP___ServiceCentralizerReport = {
+    _id: "REP___ServiceCentralizerReport",
     aliases: {
         thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`@[month]`, `-1`)),
     },
@@ -62,29 +62,30 @@ export const Reports___ServiceCentralizerReport = {
     }
 };
 
-export const Reports___TestReport1 = {
-    _id: "Reports___TestReport1",
+export const REP___LargeSales = {
+    _id: "REP___LargeSales",
     props: {
-        largeSalesPerProduct: {
+        client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
+        largeSales: {
+            name: "largeSales",
             propType_: Pn.CHILD_TABLE,
-            props: {
-                product: {
-                    propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Location._id,
-                    snapshotCurrentValueOfProperties: [
-                        "../../code",
-                        "../../name",
-                        "locationCode",
-                        "price",
-                        "currency/code",
-                        "available_stock"
-                    ]
-                },
-                largeSalesValue: {
-                    propType_: Pn.FORMULA,
-                    formula: Fn.SUM(`itemsInOrderInInventory/reserved_quantity > 10 ? itemsInOrderInInventory/reserved_quantity : 0`)
-                },
-            },
-        },
+            referencedEntityName: "REP___LargeSales___Product",
+            isLargeTable: true,
+            props: {},
+        } as EntityProperty,
     }
 };
+
+export const REP___LargeSales___Product = {
+    _id: "REP___LargeSales___Product",
+    props: {
+        productLocationId: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        productName: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        largeSalesValue: {
+            name: "largeSalesValue",
+            propType_: Pn.FORMULA,
+            formula: `SUMIF(INV___Order___Item.quantity, quantity > 100 && productLocationId = @[productLocationId])`,
+        } as FormulaProperty,
+    }
+}
