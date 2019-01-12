@@ -77,6 +77,9 @@
             <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)" *ngIf="developerMode"><img height="60" width="80" src="/assets/light.jpg" /> Light Theme</a>
             <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)" *ngIf="developerMode"><img height="60" width="80" src="/assets/material.jpg" /> Material Theme</a>
             <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)" *ngIf="developerMode"><img height="60" width="80" src="/assets/nowui.jpg" /> NowUI Theme</a>
+            <div class="divider" *ngIf="developerMode"></div>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="addTable()" *ngIf="developerMode"><i class="nc-icon nc-settings-90"></i>{{ 'add table' | i18n}} <input type="text" /></a>
+            <a class="dropdown-item" href="javascript:void(0)" (click)="addColumnToCurrentTable()" *ngIf="developerMode"><i class="nc-icon nc-settings-90"></i>{{ 'add column' | i18n}} <input type="text" /></a>
             <div class="divider"></div>
             <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{ ((developerMode) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>
             <div class="divider"></div>

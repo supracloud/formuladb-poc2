@@ -7,6 +7,9 @@ const defaultDict_en = {
     'Enable-Developer-Mode': 'Enable Developer Mode',
     'Disable-Developer-Mode': 'Disable Developer Mode',
 
+    'add table': "Add Table",
+    'add column': "Add Column",
+
     Financial: 'Financial',
     General:'General',
     client: 'Client',
