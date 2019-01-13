@@ -5,7 +5,7 @@
 
 import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "./key_value_store_pouchdb";
+import { KeyValueStoreBase } from "./key_value_store_i";
 
 import { UserActionEditedFormDataN, UserActionEditedFormDataEvent } from "./domain/event";
 import { Fn } from "./domain/metadata/functions";
@@ -16,11 +16,12 @@ import { Pn, Entity, FormulaProperty, Schema } from "./domain/metadata/entity";
 import { SchemaDAO } from "./domain/metadata/schema_dao";
 import { DataObj } from "./domain/metadata/data_obj";
 import { KeyValueObj } from "./domain/key_value_obj";
+import { KeyValueStoreMem } from "./key_value_store_mem";
 
 describe('FrmdbEngine', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
+    let dataKVS: KeyValueStoreBase;
+    let locksKVS: KeyValueStoreBase;
+    let transactionsKVS: KeyValueStoreBase;
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
@@ -79,11 +80,11 @@ describe('FrmdbEngine', () => {
     };
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
+        transactionsKVS = new KeyValueStoreMem();
+        dataKVS = new KeyValueStoreMem();
+        locksKVS = new KeyValueStoreMem();
+        await dataKVS.clearDB();
+        await locksKVS.clearDB();
         frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -106,8 +107,6 @@ describe('FrmdbEngine', () => {
 
     it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
         await frmdbEngine.init();
-
-        let designDocs = await frmdbTStore.kvs().range('_design/', '_design0', false);
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};
         await frmdbTStore.kvs().put(b1);

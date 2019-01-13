@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../../frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "../../key_value_store_pouchdb";
+import { KeyValueStoreBase } from "../../key_value_store_i";
 
 import { compileFormula } from "../../formula_compiler";
 import { evalExprES5 } from "../../map_reduce_utils";
@@ -14,14 +14,16 @@ import { KeyValueObj } from "../../domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
+import { KeyValueStoreMem } from "../../key_value_store_mem";
 
 
 
 
 describe('Inventory Metadata', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
+    let dataKVS: KeyValueStoreBase;
+    let locksKVS: KeyValueStoreBase;
+    let mapReduceKVS: KeyValueStoreBase;
+    let transactionsKVS: KeyValueStoreBase;
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
@@ -36,12 +38,13 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+        transactionsKVS = new KeyValueStoreMem();
+        dataKVS = new KeyValueStoreMem();
+        mapReduceKVS = new KeyValueStoreMem();
+        locksKVS = new KeyValueStoreMem();
+        await dataKVS.clearDB();
+        await locksKVS.clearDB();
+        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, mapReduceKVS, locksKVS);
         frmdbEngine = new FrmdbEngine(frmdbTStore, InventorySchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
@@ -61,9 +64,6 @@ describe('Inventory Metadata', () => {
         let cf1 = compileFormula(INV___PRD___Location._id, 'received_stock__', INV___PRD___Location.props.received_stock__.formula);
         let cf2 = compileFormula(INV___PRD___Location._id, 'ordered_stock__', INV___PRD___Location.props.ordered_stock__.formula);
         let cf3 = compileFormula(INV___PRD___Location._id, 'available_stock__', INV___PRD___Location.props.available_stock__.formula);
-        await frmdbTStore.installFormula(cf1);
-        await frmdbTStore.installFormula(cf2);
-        await frmdbTStore.installFormula(cf3);
 
         let pl1 = { _id: "INV___PRD___Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
         await frmdbTStore.kvs().put(pl1);
@@ -90,14 +90,13 @@ describe('Inventory Metadata', () => {
         expect(obs.length).toEqual(1);
 
         let aggsViewName = cf2.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-        let tmp = await frmdbTStore.mapReduceQuery(aggsViewName, {
+        let tmp = await frmdbTStore.reduceQuery(aggsViewName, {
             startkey: [null],
             endkey: ["\ufff0"],
             inclusive_start: false,
             inclusive_end: false,
             reduce: false,
         });
-        let designDocs = await frmdbTStore.kvs().range('_design/', '_design0', false);
 
         let sum = await frmdbTStore.getAggValueForObserver(pl1, cf1.triggers![0]);
         expect(sum).toEqual(15);

@@ -7,17 +7,17 @@ import { MockMetadata } from "./mocks/mock-metadata";
 import { MockData } from "./mocks/mock-data";
 import { Forms___ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { obj2MapES5 } from "../ts-utils";
-import { KeyValueStorePouchDB } from "../key_value_store_pouchdb";
+import { KeyValueStoreBase } from "../key_value_store_i";
 import { REP___LargeSales_Form } from "./mocks/reports-ui-metadata";
 
 
-export async function loadData(dataDB: KeyValueStorePouchDB, transactionsDB: KeyValueStorePouchDB, locksDB: KeyValueStorePouchDB): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
+export async function loadData(dataDB: KeyValueStoreBase, transactionsDB: KeyValueStoreBase, locksDB: KeyValueStoreBase): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
     try {
         var mockMetadata = new MockMetadata();
 
-        await dataDB.removeAll();
-        await transactionsDB.removeAll();
-        await locksDB.removeAll();
+        await dataDB.clearDB();
+        await transactionsDB.clearDB();
+        await locksDB.clearDB();
 
         await dataDB.put(mockMetadata.schema);
 

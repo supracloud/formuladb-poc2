@@ -5,28 +5,28 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "./key_value_store_pouchdb";
+import { KeyValueStoreBase } from "./key_value_store_i";
 
-import { UserActionEditedFormDataN } from "./domain/event";
 import { Fn } from "./domain/metadata/functions";
-import { MapFunctionN, CompiledFormula } from "./domain/metadata/execution_plan";
+import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
+import { KeyValueStoreMem } from "./key_value_store_mem";
 
 describe('FrmdbEngineStore', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
+    let dataKVS: KeyValueStoreBase;
+    let locksKVS: KeyValueStoreBase;
+    let transactionsKVS: KeyValueStoreBase;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
+        transactionsKVS = new KeyValueStoreMem();
+        dataKVS = new KeyValueStoreMem();
+        locksKVS = new KeyValueStoreMem();
+        await dataKVS.clearDB();
+        await locksKVS.clearDB();
         frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
@@ -35,7 +35,7 @@ describe('FrmdbEngineStore', () => {
 
     afterEach(function() {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-    });    
+    });
 
     it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
@@ -123,8 +123,6 @@ describe('FrmdbEngineStore', () => {
         let b1  = { "_id": "B~~1", "sum__": -1, "bY": "a1" }; await frmdbTStore.kvs().put(b1);
         let b2  = { "_id": "B~~2", "sum__": -2, "bY": "a2" }; await frmdbTStore.kvs().put(b2);
         
-        let designDocs = await frmdbTStore.kvs().range('_design', '_design', false);
-
         let obs1 = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
         expect(obs1[0]).toEqual(b1);
 
@@ -159,8 +157,6 @@ describe('FrmdbEngineStore', () => {
             let b1  = { _id: "B~~1", 'sum__': -123 }; await frmdbTStore.kvs().put(b1);
             let b2  = { _id: "B~~2", 'sum__': -123 }; await frmdbTStore.kvs().put(b2);
             
-            let designDocs = await frmdbTStore.kvs().range('_design/', '_design0', false);
-
             let obs1 = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
             expect(obs1[0]).toEqual(b1);
 
@@ -169,7 +165,7 @@ describe('FrmdbEngineStore', () => {
             expect(obss[1]).toEqual(b2);
 
             let aggsViewName = compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-            let tmp = await frmdbTStore.mapReduceQuery(aggsViewName, {
+            let tmp = await frmdbTStore.reduceQuery(aggsViewName, {
                 startkey: [null],
                 endkey: ['ZZZZZ'],
                 inclusive_start: false,

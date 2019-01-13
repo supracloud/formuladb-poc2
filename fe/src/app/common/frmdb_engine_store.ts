@@ -5,21 +5,18 @@
 
 import * as moment from 'moment';
 
-import { KeyValueStoreI, MapReduceI, MapReduceQueryOptions, MapReduceResponseI } from "./key_value_store_i";
+import { KeyValueStoreBase, RangeQueryOpts } from "./key_value_store_i";
 import { KeyValueObj, isKeyValueError, KeyValueError } from "./domain/key_value_obj";
-import { MapFunction, MapQuery, CompiledFormula, MapFunctionAndQueryT, MapReduceTrigger, MapFunctionT } from "./domain/metadata/execution_plan";
-import { evalExprES5, packFunction, parseDataObjIdES5, makeDataObjId, PackedMapFunctions } from "./map_reduce_utils";
+import { MapReduceTrigger } from "./domain/metadata/execution_plan";
+import { evalExprES5 } from "./map_reduce_utils";
 import { ObjLock } from "./domain/transaction";
-import { MwzEvent } from "./domain/event";
 import { FrmdbStore } from './frmdb_store';
-import { KeyValueStorePouchDB } from './key_value_store_pouchdb';
 import { _sum_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_sum';
 import { _count_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_count';
 import { _textjoin_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_textjoin';
 import { _throw, _throwEx } from './throw';
 import * as _ from 'lodash';
 import { TransactionManager } from './transaction_manager';
-declare var emit: any;
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -33,18 +30,13 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     private transactionManager = new TransactionManager();
 
-    constructor(protected transactionsDB: KeyValueStorePouchDB, protected dataDB: KeyValueStorePouchDB, protected locksDB: KeyValueStorePouchDB) {
+    constructor(
+        protected transactionsDB: KeyValueStoreBase, 
+        protected dataDB: KeyValueStoreBase, 
+        protected mapReduceDB: KeyValueStoreBase,
+        protected locksDB: KeyValueStoreBase) 
+    {
         super(transactionsDB, dataDB);
-    }
-
-    public async installFormula(formula: CompiledFormula): Promise<any> {
-        for (let trigger of (formula.triggers||[])) {
-            let obs = trigger.mapObserversImpactedByOneObservable.obsViewName, 
-                aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-            await this.putMapQueryForGettingObservers(obs, trigger.mapObserversImpactedByOneObservable);
-            await this.putMapReduceQueryForComputingAggs(aggs, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map, 
-                trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
-        }
     }
 
     public async getObserversOfObservable(observableObj, trigger: MapReduceTrigger): Promise<KeyValueObj[]> {
@@ -52,17 +44,22 @@ export class FrmdbEngineStore extends FrmdbStore {
         if (trigger.mapObserversImpactedByOneObservable.existingIndex === '_id') {
             let observerId = evalExprES5(observableObj, trigger.mapObserversImpactedByOneObservable.keyExpr)[0];
             if (null == observerId) throw new Error("obs not found for " + JSON.stringify(observableObj) + " with " + trigger.mapObserversImpactedByOneObservable.keyExpr[0].origExpr);
-            ret = await this.dataDB.get(observerId)
+            ret = await this.dataDB.get<KeyValueObj>(observerId)
                 .then(o => [o])
                 .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
         } else {
-            await this.mapReduceQueryForObj(observableObj, trigger.mapObserversImpactedByOneObservable.obsViewName, 
-                trigger.mapObserversImpactedByOneObservable.query, { reduce: false, include_docs: true })
-                .then(resp => {
-                    (resp.rows || []).forEach(row => {
-                        if (null == row || null == row.doc) return;
-                        ret.push(row.doc);
-                    })
+            let mapQuery = trigger.mapObserversImpactedByOneObservable.query;
+            await this.mapReduceDB.rangeQuery<KeyValueObj>(
+                trigger.mapObserversImpactedByOneObservable.obsViewName, 
+                Object.assign({}, {
+                    startkey: evalExprES5(observableObj, mapQuery.startkeyExpr),
+                    endkey: evalExprES5(observableObj, mapQuery.endkeyExpr),
+                    inclusive_start: mapQuery.inclusive_start,
+                    inclusive_end: mapQuery.inclusive_end,
+                })).then(rows => {
+                    for (let row of rows) {
+                        ret.push(row);
+                    }
                 });
         }
         return ret;
@@ -80,13 +77,17 @@ export class FrmdbEngineStore extends FrmdbStore {
     
     public async getAggValueForObserver(observerObj, trigger: MapReduceTrigger): Promise<number | string> {
         let defaultValue = this.getAggDefaultValue(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
-
-        return this.mapReduceQueryForObj({ $ROW$: observerObj }, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, 
-            trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query, { reduce: true, include_docs: false })
-            .then(resp => {
-                if (resp.rows && resp.rows[0]) return resp.rows[0].value;
-                else return defaultValue;
-            });
+        let mapQuery = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query;
+        return this.reduceQuery(
+            trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, 
+            trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun,
+            Object.assign({}, {
+                startkey: evalExprES5(observerObj, mapQuery.startkeyExpr),
+                endkey: evalExprES5(observerObj, mapQuery.endkeyExpr),
+                inclusive_start: mapQuery.inclusive_start,
+                inclusive_end: mapQuery.inclusive_end,
+            }
+        ));
     }
 
     public async preComputeAggForObserverAndObservable(
@@ -109,22 +110,10 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
 
-    public  async debugGetAll(viewName: string): Promise<MapReduceResponseI> {
-        return this.dataDB.mapReduceQuery(viewName, {reduce: false});
+    public  async debugGetAll(viewName: string): Promise<(string | number)[]> {
+        return this.mapReduceDB.rangeQuery(viewName, {});
     }
 
-    public async mapReduceQueryForObj(obj, viewName: string, opts: MapQuery, maprOpts?: MapReduceQueryOptions): Promise<MapReduceResponseI> {
-        let { map, reduceFun } = await this.dataDB.getMapReduceQueryMetadata(viewName);
-        return this.dataDB.mapReduceQuery(viewName, Object.assign({}, {
-            startkey: evalExprES5(obj, opts.startkeyExpr),
-            endkey: evalExprES5(obj, opts.endkeyExpr),
-            inclusive_end: opts.inclusive_end,
-        }, maprOpts));
-    }
-
-    public async mapReduceQuery(viewName: string, maprOpts?: MapReduceQueryOptions): Promise<MapReduceResponseI> {
-        return this.dataDB.mapReduceQuery(viewName, maprOpts);
-    }
     private getAggDefaultValue(reduceFun: string) {
         if ('_sum' === reduceFun) {
             return 0;
@@ -136,36 +125,26 @@ export class FrmdbEngineStore extends FrmdbStore {
             throw new Error('Unknown reduce function ' + reduceFun);
         }
     }
-    public async mapReduceQueryAggValue(viewName: string, reduceFun: string, maprOpts: MapReduceQueryOptions): Promise<string | number> {
+    public async reduceQuery(viewName: string, reduceFun: string, queryOpts: RangeQueryOpts): Promise<string | number> {
         let defaultValue = this.getAggDefaultValue(reduceFun);
 
-        return this.dataDB.mapReduceQuery(viewName, maprOpts)
-            .then(resp => {
-                if (resp.rows && resp.rows[0]) return resp.rows[0].value;
-                else return defaultValue;
+        return this.mapReduceDB.rangeQuery<string | number>(viewName, queryOpts)
+            .then(rows => {
+                return rows.reduce((acc, current) => {
+                    if ('_sum' === reduceFun) {
+                        if (typeof acc !== 'number' || typeof current !== 'number' ) throw new Error ('View ' + viewName + ' _sum accepts only numbers but found (' + acc + ', ' + current + ')');
+                        return acc + current;
+                    } else if ('_count' === reduceFun) {
+                        if (typeof acc !== 'number' || typeof current !== 'number' ) throw new Error ('View ' + viewName + ' _count accepts only numbers but found (' + acc + ', ' + current + ')');
+                        return acc + 1;
+                    } else if (reduceFun.indexOf('_textjoin') >= 0) {
+                        return acc + 'TBDDelimiter' + current;
+                    } else {
+                        throw new Error('Unknown reduce function ' + reduceFun);
+                    }
+            
+                }, defaultValue);
             });
-    }
-    
-
-    public putMapQueryForGettingObservers(viewName: string, map: MapFunctionT, reduceFun?: string): Promise<any> {
-        if (map.existingIndex != null) return Promise.resolve("existing index");
-
-        return this.dataDB.putMapReduceQueryWithMetadata(viewName, 
-            { map: map, reduceFun: reduceFun }, 
-            PackedMapFunctions.mapByKeyArrayExpression1(map), 
-            reduceFun);
-    }
-
-    public putMapReduceQueryForComputingAggs(viewName: string, map: MapFunctionT, reduceFun?: string): Promise<any> {
-
-        return this.dataDB.putMapReduceQueryWithMetadata(viewName, 
-            { map: map, reduceFun: reduceFun }, 
-            PackedMapFunctions.mapByKeyArrayExpression2(map), 
-            reduceFun);
-    }
-
-    public async startTransaction<T extends MwzEvent>(obj: T): Promise<MwzEvent> {
-        return this.dataDB.post<MwzEvent>(obj);
     }
 
     private async unlockObjs(locks: (KeyValueError | ObjLock)[]): Promise<void> {
@@ -270,7 +249,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
 
-    public kvs(): KeyValueStorePouchDB {
+    public kvs(): KeyValueStoreBase {
         return this.dataDB;
     }
 

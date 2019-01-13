@@ -9,12 +9,11 @@ import { DataObj, DataObjDeepPath } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyValueStoreI } from "./key_value_store_i";
-import { KeyValueStorePouchDB } from "./key_value_store_pouchdb";
+import { KeyValueStoreBase } from "./key_value_store_i";
 import { KeyValueError, IdRevObj } from "./domain/key_value_obj";
 
 export class FrmdbStore {
-    constructor(protected transactionsDB: KeyValueStorePouchDB, protected dataDB: KeyValueStorePouchDB) { }
+    constructor(protected transactionsDB: KeyValueStoreBase, protected dataDB: KeyValueStoreBase) { }
 
     /**
      * UI Actions are Events, Events get sent to the Backend and become Transactions, the same domain model object is both Action/Event/Transaction
@@ -22,10 +21,6 @@ export class FrmdbStore {
      */
     public putTransaction(event: MwzEvents): Promise<MwzEvents> {
         return this.transactionsDB.put(event);
-    }
-
-    public queryDataWithDeepPath(referencedEntityName: DataObjDeepPath): Promise<DataObj[]> {
-        throw new Error('queryWithDeepPath not implemented yet!');
     }
 
     public getSchema(): Promise<Schema> {
@@ -57,7 +52,7 @@ export class FrmdbStore {
         return this.getObj(id);
     }
 
-    public getObj<T extends BaseObj>(id: string): Promise<T> {
+    protected getObj<T extends BaseObj>(id: string): Promise<T> {
         return this.dataDB.get(id);
     }
 
@@ -67,10 +62,6 @@ export class FrmdbStore {
     
     public putAllObj<T extends BaseObj>(objs: T[]): Promise<(T | KeyValueError)[]> {
         return this.dataDB.putAll(objs);
-    }
-    
-    public getAllObjRevs(objIds: string[]): Promise<IdRevObj[]> {
-        return this.dataDB.listRevs(objIds);
     }
 
     public forcePutForTestingPurposes<T extends BaseObj>(obj): Promise<T> {

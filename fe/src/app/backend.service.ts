@@ -16,23 +16,21 @@ import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { KeyValueStorePouchDB, PouchDB } from './common/key_value_store_pouchdb';
+import { KeyValueStoreBase } from './common/key_value_store_i';
 import { FrmdbStore } from './common/frmdb_store';
 import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
+import { KeyValueStoreMem } from './common/key_value_store_mem';
 
 export enum EnvType {
     Test = "Test",
     Live = "Live",
 }
 
-const remoteDataDBUrl: string = '/frmdbdata';
-const remoteTransactionsDBUrl: string = '/frmdbtransactions';
-
-let TransactionsDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbtransactionslocal", {revs_limit: 2/*, auto_compaction: true*/}));
-let DataDB: KeyValueStorePouchDB = new KeyValueStorePouchDB(new PouchDB("frmdbdatalocal", {revs_limit: 2/*, auto_compaction: true*/}));
+let TransactionsDB: KeyValueStoreBase = new KeyValueStoreMem();
+let DataDB: KeyValueStoreBase = new KeyValueStoreMem();
 
 @Injectable()
 export class BackendService extends FrmdbStore {
@@ -40,7 +38,6 @@ export class BackendService extends FrmdbStore {
     private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
     private dataChangeCallback: (docs: Array<BaseObj>) => void;
-    private testLocksDb: PouchDB.Database;
     private testFrmdbEngine: FrmdbEngine;
     private envType: EnvType;
 
@@ -59,37 +56,16 @@ export class BackendService extends FrmdbStore {
         this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            this.testLocksDb = new PouchDB("frmdblockstest", {revs_limit: 2, auto_compaction: true});
-            let locksKVS = new KeyValueStorePouchDB(this.testLocksDb);
-            let schema;
-            let installFormulas = true;
-            try {
-                schema = await DataDB.get('FRMDB_SCHEMA');
-            } catch (err) {}
-            if (!schema) {
-                let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
-                schema = mockMetadata.schema;
-            } else {
-                installFormulas = false;
-            }
+            let locksKVS = new KeyValueStoreMem();
+            let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
+            let schema = mockMetadata.schema;
             this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(TransactionsDB, DataDB, locksKVS), schema);
-            await this.testFrmdbEngine.init(installFormulas);
+            await this.testFrmdbEngine.init(true);
         }
 
         this.initCallback();
 
-        DataDB.db.changes({
-            since: 'now',//FIXME: start listening from the last action processed, implement proper queue
-            include_docs: true,
-            live: true
-        }).on('change', change => {
-            console.log(change);
-            if (!change.deleted && change.doc) {
-                this.dataChangeCallback([change.doc]);
-            }
-        }).on('error', err => {
-            console.error(err);
-        });
+        //TODO: replicate transactions via lon gpolling from all users that modify objects with ids from current table
     }
 
     public getFrmdbEngineTools(): FrmdbEngineTools {

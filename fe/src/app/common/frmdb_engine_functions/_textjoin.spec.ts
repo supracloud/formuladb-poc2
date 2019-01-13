@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "../key_value_store_pouchdb";
+import { KeyValueStoreBase } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
@@ -13,23 +13,24 @@ import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
 import { toStringCompiledFormula } from "../test/test_utils";
+import { KeyValueStoreMem } from "../key_value_store_mem";
 
 
 describe('FrmdbEngineStore _textjoin', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
+    let dataKVS: KeyValueStoreBase;
+    let locksKVS: KeyValueStoreBase;
+    let transactionsKVS: KeyValueStoreBase;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
+        transactionsKVS = new KeyValueStoreMem();
+        dataKVS = new KeyValueStoreMem();
+        locksKVS = new KeyValueStoreMem();
+        await dataKVS.clearDB();
+        await locksKVS.clearDB();
         frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;

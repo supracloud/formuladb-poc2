@@ -5,29 +5,30 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { PouchDB, KeyValueStorePouchDB } from "../key_value_store_pouchdb";
+import { KeyValueStoreBase } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
+import { KeyValueStoreMem } from "../key_value_store_mem";
 
 describe('FrmdbEngineStore _count', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
+    let dataKVS: KeyValueStoreBase;
+    let transactionsKVS: KeyValueStoreBase;
+    let locksKVS: KeyValueStoreBase;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
+        transactionsKVS = new KeyValueStoreMem();
+        dataKVS = new KeyValueStoreMem();
+        locksKVS = new KeyValueStoreMem();
+        await dataKVS.clearDB();
+        await locksKVS.clearDB();
         frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
@@ -53,8 +54,6 @@ describe('FrmdbEngineStore _count', () => {
         let a3 = { "_id": "A~~3", "x": 5 }; await frmdbTStore.kvs().put(a3);
         let a4 = { "_id": "A~~4", "x": 7 }; await frmdbTStore.kvs().put(a4);
 
-        let designDocs = await frmdbTStore.kvs().range('_design', '_design', false);
-        
         let f = Fn.FLOOR(`x/4`, `1`) + ` * 4`;
         let x = evalExprES5(a3, $s2e(f));
 

@@ -3,47 +3,88 @@
  * License TBD
  */
 
-import { KeyValueObj, KeyValueError } from "./domain/key_value_obj";
-import { PickOmit } from "./ts-utils";
-
-export interface MapReduceResponseI {
-    total_rows?: number;
-    offset?: number;
-    rows: Array<{
-        key: any;
-        value: any;
-        id?: any;
-        doc?: any;
-    }>;
-}
-
-export interface MapReduceI {
-    mapReduceQuery(viewName: string, opts?: MapReduceQueryOptions): Promise<MapReduceResponseI>;
-    getMapReduceQueryMetadata(viewName: string): Promise<any>;
-
-    /**
-     * Note: map/reduce functions must not have any external dependencies, they must be self contained
-     * TODO: use https://github.com/acornjs/acorn parser and/or https://github.com/NeilFraser/JS-Interpreter to validate that map/reduce functions are self contained
-     */
-    putMapReduceQuery(viewName: string, map: ((doc: KeyValueObj) => any) | string, reduce?: ((keys, values, rereduce) => any) | string): Promise<any>;
-    putMapReduceQueryWithMetadata(viewId: string, metadata, map: ((doc: KeyValueObj) => any) | string, reduce?: ((keys, values, rereduce) => any) | string): Promise<any>;
-}
+import { KeyValueError } from "./domain/key_value_obj";
+import * as Collate from 'pouchdb-collate';
 
 /**
  * Key Value Store with optimistic locking functionality
  */
-export interface KeyValueStoreI extends MapReduceI {
-    simpleJSONQuery(query: any);
+abstract class KeyValueStoreBaseA<IDType> {
+    public abstract get<T>(_id: IDType): Promise<T>;
+    public abstract rangeQuery<T>(opts: RangeQueryOptsI<IDType>): Promise<T[]>;
+    public abstract set<T>(_id: IDType, obj: T): Promise<T>;
+    public abstract del<T>(_id: IDType): Promise<T>;
+    public put<T extends {_id: IDType}>(obj: T): Promise<T> {
+        return this.set(obj._id, obj);
+    }
+    public putBulk<T extends {_id: IDType}>(objs: T[]): Promise<(T|KeyValueError)[]> {
+        //dummy implementation
+        objs.forEach(o => this.set(o._id, o));
+        return Promise.resolve(objs);
+    }
+    public delBulk<T extends {_id: IDType}>(objs: T[]): Promise<(T|KeyValueError)[]> {
+        //dummy implementation
+        objs.forEach(o => this.del(o._id));
+        return Promise.resolve(objs);
+    }
+    public abstract clearDB(): Promise<any>;
+}
 
-    findByPrefix<T extends KeyValueObj>(type_: string): Promise<T[]>;
-    get<T extends KeyValueObj>(_id: string): Promise<T>;
-    range<T extends KeyValueObj>(startkey: string, endkey: string, inclusive_end: boolean): Promise<T[]>;
-    put<T extends KeyValueObj>(obj: T): Promise<T>;
-    post<T extends KeyValueObj>(obj: PickOmit<T, '_id'>): Promise<T>;
-    putAll<T extends KeyValueObj>(objs: T[]): Promise<(T|KeyValueError)[]>;
-    removeAll(): Promise<any>;
-    forcePut<T extends KeyValueObj>(document: T): Promise<T>;
-    info(): Promise<string>;
+export abstract class KeyValueStoreBase extends KeyValueStoreBaseA<string> {
+    public findByPrefix<T>(prefix: string): Promise<T[]> {
+        return this.rangeQuery({startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false});
+    }
+    
+}
+
+export type KVSArrayKeyType = (string | number | boolean)[];
+export class KeyValueStoreArrayKeys<KVS extends KeyValueStoreBase> extends KeyValueStoreBaseA<KVSArrayKeyType> {
+    constructor(private kvs: KVS) {
+        super();
+    }
+
+    protected id2str(_id: KVSArrayKeyType): string {
+        return Collate.toIndexableString(_id);
+    }
+
+    public get<T>(_id: KVSArrayKeyType): Promise<T> {
+        return this.kvs.get(this.id2str(_id));
+    }
+    public rangeQuery<T>(opts: RangeQueryOptsI<(string | number | boolean)[]>): Promise<T[]> {
+        return this.kvs.rangeQuery({
+            ...opts,
+            startkey: this.id2str(opts.startkey),
+            endkey: this.id2str(opts.endkey),
+        });
+    }
+    public set<T>(_id: KVSArrayKeyType, obj: T): Promise<T> {
+        return this.kvs.set(this.id2str(_id), obj);
+    }
+    public del<T>(_id: KVSArrayKeyType): Promise<T> {
+        return this.kvs.del(this.id2str(_id));
+    }
+    public clearDB(): Promise<any> {
+        return this.kvs.clearDB();
+    }
+
+}
+
+export interface RangeQueryOptsI<IDType> {
+    /** Get rows with keys in a certain range (inclusive/inclusive). */
+    startkey: IDType;
+    /** Get rows with keys in a certain range (inclusive/inclusive). */
+    endkey: IDType;
+    /** Include rows having a key equal to the given options.endkey. */
+    inclusive_start?: boolean;
+    inclusive_end?: boolean;
+    // /** Maximum number of rows to return. */
+    // limit?: number;
+    // /** Number of rows to skip before returning (warning: poor performance on IndexedDB/LevelDB!). */
+    // skip?: number;
+    // /** Reverse the order of the output rows. */
+    // descending?: boolean;
+    // /** Array of keys to fetch in a single shot. */
+    // keys?: any[];
 }
 
 export interface MapReduceQueryOptions {
