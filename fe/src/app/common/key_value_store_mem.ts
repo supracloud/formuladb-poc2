@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueStoreBase, RangeQueryOptsI } from "./key_value_store_i";
+import { KeyValueStoreBase, RangeQueryOptsI, KeyValueStoreFactoryI } from "./key_value_store_i";
 import * as _ from "lodash";
 import { id } from "@swimlane/ngx-charts/release/utils";
 
@@ -22,7 +22,7 @@ export class KeyValueStoreMem extends KeyValueStoreBase {
         return Promise.resolve(this.db[_id] as T);
     }
 
-    public rangeQuery<T>(opts: RangeQueryOptsI<string>): Promise<T[]> {
+    public rangeQuery<T>(opts: RangeQueryOptsI): Promise<T[]> {
         let ret = _.entries(this.db).filter(([_id, val]) => 
             (opts.startkey < _id && _id < opts.endkey)
             || (opts.inclusive_start && _id === opts.startkey)
@@ -50,3 +50,8 @@ export class KeyValueStoreMem extends KeyValueStoreBase {
         return Promise.resolve("in memory test KVS");
     }
 }
+ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
+     createKVS(): KeyValueStoreBase {
+         return new KeyValueStoreMem();
+     }
+ }

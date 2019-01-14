@@ -5,29 +5,23 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyValueStoreBase } from "./key_value_store_i";
+import { KeyValueStoreBase, KeyValueStoreFactoryI } from "./key_value_store_i";
 
 import { Fn } from "./domain/metadata/functions";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
-import { KeyValueStoreMem } from "./key_value_store_mem";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
 
 describe('FrmdbEngineStore', () => {
-    let dataKVS: KeyValueStoreBase;
-    let locksKVS: KeyValueStoreBase;
-    let transactionsKVS: KeyValueStoreBase;
-    let frmdbTStore: FrmdbEngineStore;
+    let kvsFactory: KeyValueStoreFactoryI;
+    let frmdbEngineStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStoreMem();
-        dataKVS = new KeyValueStoreMem();
-        locksKVS = new KeyValueStoreMem();
-        await dataKVS.clearDB();
-        await locksKVS.clearDB();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+        kvsFactory = new KeyValueStoreFactoryMem();
+        frmdbEngineStore = new FrmdbEngineStore(kvsFactory);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();
@@ -37,51 +31,41 @@ describe('FrmdbEngineStore', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
+    fit("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
         $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
-        await frmdbTStore.putMapReduceQueryForComputingAggs("sum1", {
+        await frmdbEngineStore.createMapReduceView("sum1", {
             entityName: 'R_A',
             keyExpr: [$s2e(`aY`)],
             valueExpr: $s2e(`num`),
-        }, '_sum');
+        }, false, '_sum');
 
-        await frmdbTStore.kvs().put({ "_id": "R_A~~1", "num": 1, "aY": "a1" });
-        await frmdbTStore.kvs().put({ "_id": "R_A~~2", "num": 5, "aY": "a1" });
-        await frmdbTStore.kvs().put({ "_id": "R_A~~3", "num": 2, "aY": "a2" });
-        await frmdbTStore.kvs().put({ "_id": "R_A~~4", "num": 3, "aY": "a2" });
+        let obj1 = { "_id": "R_A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.updateViewForObj('sum1', obj1);
+        let obj2 = { "_id": "R_A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.updateViewForObj('sum1', obj2);
+        let obj3 = { "_id": "R_A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.updateViewForObj('sum1', obj3);
+        let obj4 = { "_id": "R_A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.updateViewForObj('sum1', obj4);
 
-        let qRes = await frmdbTStore.kvs().mapReduceQuery('sum1', { reduce: false });
+        let qRes = await frmdbEngineStore.mapQuery('sum1');
         let expQRes = [
             { "key": ["a1"], "id": "R_A~~1", "value": 1 },
             { "key": ["a1"], "id": "R_A~~2", "value": 5 },
             { "key": ["a2"], "id": "R_A~~3", "value": 2 },
             { "key": ["a2"], "id": "R_A~~4", "value": 3 },
         ];
-        expect(qRes.rows).toEqual(expQRes);
+        expect(qRes).toEqual(expQRes);
 
-        qRes = await frmdbTStore.kvs().mapReduceQuery('sum1', { reduce: false, include_docs: true });
-        let expQRes2 = [
-            {"key":["a1"],"id":"R_A~~1","value":1,"doc":{"num":1,"aY":"a1","_id":"R_A~~1"}},
-            {"key":["a1"],"id":"R_A~~2","value":5,"doc":{"num":5,"aY":"a1","_id":"R_A~~2"}},
-            {"key":["a2"],"id":"R_A~~3","value":2,"doc":{"num":2,"aY":"a2","_id":"R_A~~3"}},
-            {"key":["a2"],"id":"R_A~~4","value":3,"doc":{"num":3,"aY":"a2","_id":"R_A~~4"}}
-        ];
-        expect(qRes.rows.map(_.partialRight(_.omit, 'doc._rev'))).toEqual(expQRes2);
-
-        let ret = await frmdbTStore.mapReduceQueryForObj({ $ROW$: { bY: 'a1' } }, "sum1", {
-            startkeyExpr: [$s2e(`$ROW$.bY`)],
-            endkeyExpr: [$s2e(`$ROW$.bY`)],
-            inclusive_start: true,
-            inclusive_end: true,
-        })
-        expect(ret.rows).toEqual([{ "value": 6, "key": null }]);
+        let rRes = await frmdbEngineStore.reduceQuery('sum1');
+        expect(rRes).toEqual(11);
+        rRes = await frmdbEngineStore.reduceQuery('sum1', {startkey: ['a1'], inclusive_start: true, endkey: ['a1'], inclusive_end: true});
+        expect(rRes).toEqual(6);
+        rRes = await frmdbEngineStore.reduceQuery('sum1', {startkey: ['a2'], inclusive_start: true, endkey: ['a2'], inclusive_end: true});
+        expect(rRes).toEqual(5);
 
         done();
     });
 
-    it("Should allow CAS transactions (super-duper-basic test)", async (done) => {
-        await frmdbTStore.kvs().put({ "_id": "obj1", "idx": 1});
+    xit("Should allow CAS transactions (super-duper-basic test)", async (done) => {
+        await frmdbEngineStore.putDataObj({ "_id": "obj1", "idx": 1});
 
         let counter = 1;
 
@@ -89,11 +73,11 @@ describe('FrmdbEngineStore', () => {
             // let obj1 = await frmdbTStore.kvs().get<{_id: string, idx: number}>("obj1");
             // obj1.idx = obj1.idx + 1;
             counter = counter + 1;
-            // await frmdbTStore.kvs().put(obj1);
+            // await frmdbTStore.putDataObj(obj1);
         }
 
         async function parallelWorker(eventId) {
-            await frmdbTStore.lockObjs("event" + eventId, ["obj1"], incrementCounter, () => Promise.resolve(), 20);
+            // await frmdbTStore.lockObjs("event" + eventId, ["obj1"], incrementCounter, () => Promise.resolve(), 20);
         }
         let workers: Promise<void>[] = [];
         for (var i = 0; i < 20; i++) {
@@ -114,32 +98,32 @@ describe('FrmdbEngineStore', () => {
 
     it("Should allow to install formulas then query observers and aggregations", async (done) => {
         compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
-        await frmdbTStore.installFormula(compiledFormula);
+        await frmdbEngineStore.installFormula(compiledFormula);
 
-        let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await frmdbTStore.kvs().put(a1);
-        let a1b = { "_id": "A~~2", "num": 5, "aY": "a1" }; await frmdbTStore.kvs().put(a1b);
-        let a2  = { "_id": "A~~3", "num": 2, "aY": "a2" }; await frmdbTStore.kvs().put(a2);
-        let a2b = { "_id": "A~~4", "num": 3, "aY": "a2" }; await frmdbTStore.kvs().put(a1b);
-        let b1  = { "_id": "B~~1", "sum__": -1, "bY": "a1" }; await frmdbTStore.kvs().put(b1);
-        let b2  = { "_id": "B~~2", "sum__": -2, "bY": "a2" }; await frmdbTStore.kvs().put(b2);
+        let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(a1);
+        let a1b = { "_id": "A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(a1b);
+        let a2  = { "_id": "A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(a2);
+        let a2b = { "_id": "A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(a1b);
+        let b1  = { "_id": "B~~1", "sum__": -1, "bY": "a1" }; await frmdbEngineStore.putDataObj(b1);
+        let b2  = { "_id": "B~~2", "sum__": -2, "bY": "a2" }; await frmdbEngineStore.putDataObj(b2);
         
-        let obs1 = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
+        let obs1 = await frmdbEngineStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
         expect(obs1[0]).toEqual(b1);
 
-        let obss = await frmdbTStore.getObserversOfObservableOldAndNew(a1, a2, compiledFormula.triggers![0])
+        let obss = await frmdbEngineStore.getObserversOfObservableOldAndNew(a1, a2, compiledFormula.triggers![0])
         expect(obss[0]).toEqual(b1);
         expect(obss[1]).toEqual(b2);
 
-        let sum = await frmdbTStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
+        let sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(sum).toEqual(6);
 
         let a1new = _.cloneDeep(a1);
         a1new.num = 2;
-        sum = await frmdbTStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
+        sum = await frmdbEngineStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
         expect(sum).toEqual(7);
         
-        await frmdbTStore.kvs().put(a1new);
-        sum = await frmdbTStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
+        await frmdbEngineStore.putDataObj(a1new);
+        sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(sum).toEqual(7);
         
         done();
@@ -148,41 +132,32 @@ describe('FrmdbEngineStore', () => {
     describe('Table Relationships', () => {
         it("example REFERENCE_TO by _id", async (done) => {
             compiledFormula = compileFormula('B', 'sum__', 'SUMIF(A.num, B$myB._id == @[_id])');
-            await frmdbTStore.installFormula(compiledFormula);
+            await frmdbEngineStore.installFormula(compiledFormula);
 
-            let a1  = { _id: "A~~1", B$myB: {_id: 'B~~1'}, num: 1 }; await frmdbTStore.kvs().put(a1);
-            let a1b = { _id: "A~~2", B$myB: {_id: 'B~~1'}, num: 5 }; await frmdbTStore.kvs().put(a1b);
-            let a2  = { _id: "A~~3", B$myB: {_id: 'B~~2'}, num: 2 }; await frmdbTStore.kvs().put(a2);
-            let a2b = { _id: "A~~4", B$myB: {_id: 'B~~2'}, num: 3 }; await frmdbTStore.kvs().put(a2b);
-            let b1  = { _id: "B~~1", 'sum__': -123 }; await frmdbTStore.kvs().put(b1);
-            let b2  = { _id: "B~~2", 'sum__': -123 }; await frmdbTStore.kvs().put(b2);
+            let a1  = { _id: "A~~1", B$myB: {_id: 'B~~1'}, num: 1 }; await frmdbEngineStore.putDataObj(a1);
+            let a1b = { _id: "A~~2", B$myB: {_id: 'B~~1'}, num: 5 }; await frmdbEngineStore.putDataObj(a1b);
+            let a2  = { _id: "A~~3", B$myB: {_id: 'B~~2'}, num: 2 }; await frmdbEngineStore.putDataObj(a2);
+            let a2b = { _id: "A~~4", B$myB: {_id: 'B~~2'}, num: 3 }; await frmdbEngineStore.putDataObj(a2b);
+            let b1  = { _id: "B~~1", 'sum__': -123 }; await frmdbEngineStore.putDataObj(b1);
+            let b2  = { _id: "B~~2", 'sum__': -123 }; await frmdbEngineStore.putDataObj(b2);
             
-            let obs1 = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
+            let obs1 = await frmdbEngineStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
             expect(obs1[0]).toEqual(b1);
 
-            let obss = await frmdbTStore.getObserversOfObservableOldAndNew(a1, a2, compiledFormula.triggers![0])
+            let obss = await frmdbEngineStore.getObserversOfObservableOldAndNew(a1, a2, compiledFormula.triggers![0])
             expect(obss[0]).toEqual(b1);
             expect(obss[1]).toEqual(b2);
-
-            let aggsViewName = compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-            let tmp = await frmdbTStore.reduceQuery(aggsViewName, {
-                startkey: [null],
-                endkey: ['ZZZZZ'],
-                inclusive_start: false,
-                inclusive_end: false,
-                reduce: false,
-            });
                 
-            let sum = await frmdbTStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
+            let sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
             expect(sum).toEqual(6);
 
             let a1new = _.cloneDeep(a1);
             a1new.num = 2;
-            sum = await frmdbTStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
+            sum = await frmdbEngineStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
             expect(sum).toEqual(7);
             
-            await frmdbTStore.kvs().put(a1new);
-            sum = await frmdbTStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
+            await frmdbEngineStore.putDataObj(a1new);
+            sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
             expect(sum).toEqual(7);
             
             done();

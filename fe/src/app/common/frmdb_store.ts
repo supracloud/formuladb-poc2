@@ -27,7 +27,7 @@ export class FrmdbStore {
         return this.getObj('FRMDB_SCHEMA');
     }
     public setSchema(schema: Schema): Promise<Schema> {
-        return this.setObj(schema);
+        return this.dataDB.put(schema);
     }
 
     public getEntities(): Promise<Entity[]> {
@@ -52,19 +52,15 @@ export class FrmdbStore {
         return this.getObj(id);
     }
 
+    public putDataObj<T extends {_id: string}>(obj: T): Promise<DataObj> {
+        return this.dataDB.put(obj);
+    }
+
     protected getObj<T extends BaseObj>(id: string): Promise<T> {
         return this.dataDB.get(id);
     }
-
-    public setObj<T extends BaseObj>(obj: T): Promise<T> {
-        return this.dataDB.put(obj);
-    }
     
     public putAllObj<T extends BaseObj>(objs: T[]): Promise<(T | KeyValueError)[]> {
-        return this.dataDB.putAll(objs);
-    }
-
-    public forcePutForTestingPurposes<T extends BaseObj>(obj): Promise<T> {
-        return this.dataDB.forcePut(obj);
+        return this.dataDB.putBulk(objs);
     }
 }

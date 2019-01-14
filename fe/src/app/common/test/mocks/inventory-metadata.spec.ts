@@ -90,7 +90,7 @@ describe('Inventory Metadata', () => {
         expect(obs.length).toEqual(1);
 
         let aggsViewName = cf2.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-        let tmp = await frmdbTStore.reduceQuery(aggsViewName, {
+        let tmp = await frmdbTStore.mapReduceQuery(aggsViewName, {
             startkey: [null],
             endkey: ["\ufff0"],
             inclusive_start: false,

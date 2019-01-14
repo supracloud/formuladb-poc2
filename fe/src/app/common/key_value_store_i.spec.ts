@@ -8,17 +8,17 @@ declare var emit: any;
 
 export function keyValueStoreSpecs<KVSType extends KeyValueStoreBase>(context: { kvs: KVSType }) {
     let kvs: KVSType;
-    let kvsa: KeyValueStoreArrayKeys<KVSType>;
+    let kvsa: KeyValueStoreArrayKeys;
 
     describe('KeyValueStoreBase', () => {
         beforeEach(async (done) => {
             kvs = context.kvs;
-            kvsa = new KeyValueStoreArrayKeys<KVSType>(kvs);
+            kvsa = new KeyValueStoreArrayKeys(kvs);
             await kvs.clearDB();
             done();
         });
 
-        fit('rangeQuery for views', async (done) => {
+        it('rangeQuery for views', async (done) => {
             kvsa.put({_id: ["a"], val: 2});
             kvsa.put({_id: ["b","c"], val: 3});
             kvsa.put({_id: ["b","d"], val: 4});

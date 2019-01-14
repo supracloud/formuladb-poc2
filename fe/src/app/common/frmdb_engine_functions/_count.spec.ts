@@ -114,8 +114,8 @@ describe('FrmdbEngineStore _count', () => {
         let b1 = { "_id": "B~~1", "idx": 2 }; await frmdbTStore.kvs().put(b1);
         let b2 = { "_id": "B~~2", "idx": 7 }; await frmdbTStore.kvs().put(b2);
 
-        let obsIndex = await frmdbTStore.debugGetAll(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName);
-        let aggsIndex = await frmdbTStore.debugGetAll(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+        let obsIndex = await frmdbTStore.mapQuery(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName);
+        let aggsIndex = await frmdbTStore.mapQuery(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
 
         let obs = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
         expect(obs.length).toEqual(1);
