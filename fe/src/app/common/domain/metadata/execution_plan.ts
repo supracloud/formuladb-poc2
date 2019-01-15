@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { SubObj } from "../base_obj";
+import { SubObj } from "../key_value_obj";
 import { DataObjDeepPath, QueryDeepPath, QueryDeepPathTemplate } from "./data_obj";
 import {
     Expression
@@ -27,6 +27,7 @@ import {
 import *  as jsep from 'jsep';
 import { PickOmit } from "../../ts-utils";
 import { ScalarFunctionsN } from "./functions";
+import { ReduceFun } from "./reduce_functions";
 
 export type ScalarCallExpression = CallExpression;
 export function isScalarCallExpression(param: CallExpression): param is ScalarCallExpression {
@@ -256,8 +257,7 @@ export class MapReduceTrigger implements ExecPlanBase {
     mapreduceAggsOfManyObservablesQueryableFromOneObs: {
         aggsViewName: string;
         map: MapFunctionAndQueryT;
-        reduceFun: string;
-        reduceMetadata?: any;
+        reduceFun: ReduceFun;
     };
     mapObserversImpactedByOneObservable: MapFunctionAndQueryT & {obsViewName: string};
 

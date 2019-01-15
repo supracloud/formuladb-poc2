@@ -3,14 +3,14 @@
  * License TBD
  */
 
-import { BaseObj, SubObj } from "./domain/base_obj";
+import { KeyValueObj, SubObj } from "./domain/key_value_obj";
 import { Entity, EntityProperty, Schema } from "./domain/metadata/entity";
 import { DataObj, DataObjDeepPath } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
 import { KeyValueStoreBase } from "./key_value_store_i";
-import { KeyValueError, IdRevObj } from "./domain/key_value_obj";
+import { KeyValueError } from "./domain/key_value_obj";
 
 export class FrmdbStore {
     constructor(protected transactionsDB: KeyValueStoreBase, protected dataDB: KeyValueStoreBase) { }
@@ -23,7 +23,7 @@ export class FrmdbStore {
         return this.transactionsDB.put(event);
     }
 
-    public getSchema(): Promise<Schema> {
+    public getSchema(): Promise<Schema | null> {
         return this.getObj('FRMDB_SCHEMA');
     }
     public setSchema(schema: Schema): Promise<Schema> {
@@ -31,24 +31,24 @@ export class FrmdbStore {
     }
 
     public getEntities(): Promise<Entity[]> {
-        return this.getSchema().then(s => Object.values(s.entities));
+        return this.getSchema().then(s => s ? Object.values(s.entities) : []);
     }
 
-    public async getEntity(path: string): Promise<Entity> {
+    public async getEntity(path: string): Promise<Entity | null> {
         let schema = await this.getSchema();
         //the Entity's _id is the path
-        return schema.entities[path];
+        return schema ? schema.entities[path] : null;
     }
 
-    public getTable(path: string): Promise<Table> {
+    public getTable(path: string): Promise<Table | null> {
         return this.getObj('Table_:' + path);
     }
 
-    public getForm(path: string): Promise<Form> {
+    public getForm(path: string): Promise<Form | null> {
         return this.getObj('Form_:' + path);
     }
 
-    public getDataObj(id: string): Promise<DataObj> {
+    public getDataObj(id: string): Promise<DataObj | null> {
         return this.getObj(id);
     }
 
@@ -56,11 +56,11 @@ export class FrmdbStore {
         return this.dataDB.put(obj);
     }
 
-    protected getObj<T extends BaseObj>(id: string): Promise<T> {
+    protected getObj<T extends KeyValueObj>(id: string): Promise<T | null> {
         return this.dataDB.get(id);
     }
     
-    public putAllObj<T extends BaseObj>(objs: T[]): Promise<(T | KeyValueError)[]> {
+    public putAllObj<T extends KeyValueObj>(objs: T[]): Promise<(T | KeyValueError)[]> {
         return this.dataDB.putBulk(objs);
     }
 }

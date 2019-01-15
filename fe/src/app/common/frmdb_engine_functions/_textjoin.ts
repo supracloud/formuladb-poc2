@@ -8,6 +8,7 @@ import { KeyValueObj } from "../domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { evalExprES5, compareKeys } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";
+import { TextjoinReduceFunN } from "../domain/metadata/reduce_functions";
 
 function prepareReturnValue(ret: any[], delimiter: string): string {
     return ret.map(x => {
@@ -21,93 +22,95 @@ export async function _textjoin_preComputeAggForObserverAndObservable(
     observerObj: KeyValueObj, 
     observableOld: KeyValueObj | null, 
     observableNew: KeyValueObj, 
-    trigger: MapReduceTrigger): Promise<string | number> {
+    trigger: MapReduceTrigger): Promise<string | number> 
+{
+
+    if (trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun.name !== TextjoinReduceFunN) throw new Error("textjoin aggregation attempt for a non-textjoin trigger " + JSON.stringify(trigger));;
+    let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
 
     // console.debug("WARNING: this reduce precomputation works only for unique keys...needs enhancement to allow non-unique keys");
 
-    let aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;    
-    let args = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map;
-    let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
+    let aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
 
     return preComputeAggForObserverAndObservableBase(store, observerObj, observableOld, observableNew, trigger, {
         newKeyMatches_oldKeyMatches: async (oldKey, newKey, newValue, startkey, endkey) => {
             let keyCompare = compareKeys(oldKey, newKey);
             if (keyCompare < 0) {
-                let startkey_to_oldKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+                let startkey_to_oldKey = await store.reduceQuery(aggs, {
                     startkey: startkey,
                     endkey: oldKey,
                     inclusive_start: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_start,
                     inclusive_end: false,
                 });
-                let oldKey_to_newKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+                let oldKey_to_newKey = await store.reduceQuery(aggs, {
                     startkey: oldKey,
                     endkey: newKey,
                     inclusive_start: false,
                     inclusive_end: false,
                 });
-                let newKey_to_endKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+                let newKey_to_endKey = await store.reduceQuery(aggs, {
                     startkey: newKey,
                     endkey: endkey,
                     inclusive_start: false,
                     inclusive_end: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
                 })
 
-                return prepareReturnValue([startkey_to_oldKey, oldKey_to_newKey, newValue, newKey_to_endKey], trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceMetadata.delimiter);
+                return prepareReturnValue([startkey_to_oldKey, oldKey_to_newKey, newValue, newKey_to_endKey], reduceFun.delimiter);
             } else if (keyCompare === 0) {
                 return store.getAggValueForObserver(observerObj, trigger);
             } else {
-                let startkey_to_newKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+                let startkey_to_newKey = await store.reduceQuery(aggs, {
                     startkey: startkey,
                     endkey: newKey,
                     inclusive_start: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_start,
                     inclusive_end: false,
                 });
-                let newKey_to_oldKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+                let newKey_to_oldKey = await store.reduceQuery(aggs, {
                     startkey: newKey,
                     endkey: oldKey,
                     inclusive_start: false,
                     inclusive_end: false,
                 });
-                let oldKey_to_endKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+                let oldKey_to_endKey = await store.reduceQuery(aggs, {
                     startkey: oldKey,
                     endkey: endkey,
                     inclusive_start: false,
                     inclusive_end: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
                 })
 
-                return prepareReturnValue([startkey_to_newKey, newValue, newKey_to_oldKey, oldKey_to_endKey], trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceMetadata.delimiter);
+                return prepareReturnValue([startkey_to_newKey, newValue, newKey_to_oldKey, oldKey_to_endKey], reduceFun.delimiter);
             }
         },
         newKeyMatches_oldKeyDoesNotMatch: async (oldKey, newKey, newValue, startkey, endkey) => {
-            let startkey_to_newKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+            let startkey_to_newKey = await store.reduceQuery(aggs, {
                 startkey: startkey,
                 endkey: newKey,
                 inclusive_start: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_start,
                 inclusive_end: false,
             });
-            let newKey_to_endKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+            let newKey_to_endKey = await store.reduceQuery(aggs, {
                 startkey: newKey,
                 endkey: endkey,
                 inclusive_start: false,
                 inclusive_end: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
             })
 
-            return prepareReturnValue([startkey_to_newKey, newValue, newKey_to_endKey], trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceMetadata.delimiter);
+            return prepareReturnValue([startkey_to_newKey, newValue, newKey_to_endKey], reduceFun.delimiter);
         },
         newKeyDoesNotMatch_oldKeyMatches: async (oldKey, newKey, newValue, startkey, endkey) => {
-            let startkey_to_oldKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+            let startkey_to_oldKey = await store.reduceQuery(aggs, {
                 startkey: startkey,
                 endkey: oldKey,
                 inclusive_start: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_start,
                 inclusive_end: false,
             });
-            let oldKey_to_endKey = await store.mapReduceQueryAggValue(aggs, reduceFun, {
+            let oldKey_to_endKey = await store.reduceQuery(aggs, {
                 startkey: oldKey,
                 endkey: endkey,
                 inclusive_start: false,
                 inclusive_end: trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
             })
-            return prepareReturnValue([startkey_to_oldKey, oldKey_to_endKey], trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceMetadata.delimiter);
+            return prepareReturnValue([startkey_to_oldKey, oldKey_to_endKey], reduceFun.delimiter);
         },
         newKeyDoesNotMatch_oldKeyDoesNotMatch: async (oldKey, newKey, newValue, startkey, endkey) => {
             return store.getAggValueForObserver(observerObj, trigger);

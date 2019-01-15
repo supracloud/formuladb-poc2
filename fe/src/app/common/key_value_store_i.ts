@@ -10,7 +10,7 @@ import * as Collate from 'pouchdb-collate';
  * Key Value Store with optimistic locking functionality
  */
 abstract class KeyValueStoreBaseA<IDType> {
-    public abstract get<T>(_id: IDType): Promise<T>;
+    public abstract get<T>(_id: IDType): Promise<T | null>;
     public abstract rangeQuery<T>(opts: RangeQueryOptsBaseI<IDType>): Promise<T[]>;
     public abstract set<T>(_id: IDType, obj: T): Promise<T>;
     public abstract del<T>(_id: IDType): Promise<T>;
@@ -51,7 +51,7 @@ export class KeyValueStoreArrayKeys extends KeyValueStoreBaseA<KVSArrayKeyType> 
         return Collate.toIndexableString(_id);
     }
 
-    public get<T>(_id: KVSArrayKeyType): Promise<T> {
+    public get<T>(_id: KVSArrayKeyType): Promise<T | null> {
         return this.kvs.get(this.id2str(_id));
     }
     public rangeQuery<T>(opts: RangeQueryOptsArrayKeysI): Promise<T[]> {

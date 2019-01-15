@@ -3,10 +3,9 @@
  * License TBD
  */
 
-import { BaseObj, SubObj, isReservedPropName, RESERVED_PROP_NAMES } from '../base_obj';
+import { KeyValueObj, SubObj, isReservedPropName, RESERVED_PROP_NAMES } from '../key_value_obj';
 import { CompiledFormula } from "./execution_plan";
 import * as _ from 'lodash';
-import { KeyValueObj, IdRevObj } from '../key_value_obj';
 import { Expression } from 'jsep';
 
 /**
@@ -46,7 +45,7 @@ export class FormulaValidation {
 export type HasEntityProperties = Entity | ChildTableProperty | ExtendsEntityProperty;
 export type EntityProperties = { [x: string]: EntityProperty };
 export type EntityDeepPath = string;
-export interface Schema extends BaseObj {
+export interface Schema extends KeyValueObj {
     readonly _id: 'FRMDB_SCHEMA';
     entities: { [x: string]: Entity };
 }

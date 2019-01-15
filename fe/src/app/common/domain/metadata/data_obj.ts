@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { BaseObj } from "../base_obj";
+import { KeyValueObj } from "../key_value_obj";
 import { parseDataObjIdES5 } from "../../map_reduce_utils";
-export interface DataObj extends BaseObj {
+export interface DataObj extends KeyValueObj {
     _id: string;
 }
 export interface DataObjId {

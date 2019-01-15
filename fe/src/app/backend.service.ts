@@ -7,7 +7,7 @@ import { Injectable, InjectionToken, Inject } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { BaseObj } from "./common/domain/base_obj";
+import { KeyValueObj } from "./common/domain/key_value_obj";
 import { DataObj, parseDataObjId } from "./common/domain/metadata/data_obj";
 import { Entity, Pn } from "./common/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "./common/domain/event";
@@ -37,7 +37,7 @@ export class BackendService extends FrmdbStore {
 
     private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
-    private dataChangeCallback: (docs: Array<BaseObj>) => void;
+    private dataChangeCallback: (docs: Array<KeyValueObj>) => void;
     private testFrmdbEngine: FrmdbEngine;
     private envType: EnvType;
 
@@ -47,7 +47,7 @@ export class BackendService extends FrmdbStore {
 
     public async init(initCallback: () => void,
         notifCallback: (event: MwzEvents) => void,
-        dataChangeCallback: (docs: Array<BaseObj>) => void) {
+        dataChangeCallback: (docs: Array<KeyValueObj>) => void) {
 
         this.envType = window.location.href.indexOf("http://localhost:4200/") == 0 ? EnvType.Test : EnvType.Live;
 

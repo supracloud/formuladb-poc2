@@ -40,6 +40,7 @@ import {
 } from "./domain/metadata/execution_plan";
 import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName } from "./formula_compiler";
 import { _throw } from "./throw";
+import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "./domain/metadata/reduce_functions";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     fc: FuncCommon,
@@ -308,7 +309,7 @@ export const MapFunctions = {
 // reduce functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctionAndQuery | MapReduceKeysQueriesAndValue, reduceFun: string): MapReduceTrigger {
+function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctionAndQuery | MapReduceKeysQueriesAndValue, reduceFun: ReduceFun): MapReduceTrigger {
     if (isMapReduceKeysQueriesAndValue(inputRange)) {
         return {
             type_: MapReduceTriggerN,
@@ -364,14 +365,14 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
 
 function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): MapReduceTrigger {
     let inputRange = compileArg(fc, 'basicRange', tableRange, [isMemberExpression, isCallExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
-    return _REDUCE(fc, inputRange, '_sum');
+    return _REDUCE(fc, inputRange, {name: SumReduceFunN});
 }
 
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
     if (!isMapReduceKeysQueriesAndValue(range)) throw new Error("SUMIF expects a value to sum at " + fc.funcExpr.origExpr);
-    return _REDUCE(fc, range, '_sum');
+    return _REDUCE(fc, range, {name: SumReduceFunN});
 }
 function COUNT(fc: FuncCommon, entityRange) {
 }
@@ -405,11 +406,7 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
                     inclusive_end: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
                 }
             },
-            reduceFun: function _textjoin(keys, values, rereduce) {
-                var delim = '__DELIMITER__';
-                return values.join(delim);
-            }.toString().replace(/__DELIMITER__/, delimiter.value),
-            reduceMetadata: {delimiter: delimiter.value},
+            reduceFun: {name: TextjoinReduceFunN , delimiter: delimiter.value},
         },
     }
 }
@@ -441,7 +438,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
                     inclusive_end: true,
                 }
             },
-            reduceFun: '_count',
+            reduceFun: {name: CountReduceFunN},
         },
         mapObserversImpactedByOneObservable: {
             obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),

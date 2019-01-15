@@ -19,6 +19,7 @@ import * as _ from 'lodash';
 import { TransactionManager } from './transaction_manager';
 import { Expression } from 'jsep';
 import { MapReduceView } from './map_reduce_view';
+import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from './domain/metadata/reduce_functions';
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -52,7 +53,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
 
-    public createMapReduceView(viewName: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: string) {
+    public createMapReduceView(viewName: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
         if (map.existingIndex != null) return Promise.resolve("existing index");
 
         this.mapReduceViews.set(viewName, new MapReduceView(
@@ -87,7 +88,7 @@ export class FrmdbEngineStore extends FrmdbStore {
             let observerId = evalExprES5(observableObj, trigger.mapObserversImpactedByOneObservable.keyExpr)[0];
             if (null == observerId) throw new Error("obs not found for " + JSON.stringify(observableObj) + " with " + trigger.mapObserversImpactedByOneObservable.keyExpr[0].origExpr);
             ret = await this.dataDB.get<KeyValueObj>(observerId)
-                .then(o => [o])
+                .then(o => o ? [o] : [])
                 .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
         } else {
             let mapQuery = trigger.mapObserversImpactedByOneObservable.query;
@@ -139,11 +140,11 @@ export class FrmdbEngineStore extends FrmdbStore {
         let ret: number | string = 'ERRNOTFOUND2';
 
         let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
-        if ('_sum' === reduceFun) {
+        if (SumReduceFunN === reduceFun.name) {
             return _sum_preComputeAggForObserverAndObservable(this, observerObj, observableOld, observableNew, trigger);
-        } else if ('_count' === reduceFun) {
+        } else if (CountReduceFunN === reduceFun.name) {
             return _count_preComputeAggForObserverAndObservable(this, observerObj, observableOld, observableNew, trigger);
-        } else if (reduceFun.indexOf('_textjoin') >= 0) {
+        } else if (TextjoinReduceFunN == reduceFun.name) {
             return _textjoin_preComputeAggForObserverAndObservable(this, observerObj, observableOld, observableNew, trigger);
         } else {
             throw new Error('Unknown reduce function ' + trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);

@@ -4,7 +4,6 @@
  */
 
 import { KeyValueObj } from "./key_value_obj";
-import { BaseObj } from "./base_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity } from "./metadata/entity";
 import { Form } from "./uimetadata/form";
