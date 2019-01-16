@@ -61,11 +61,17 @@ export class MapReduceView {
         } else {
             switch (reduceFun.name) {
                 case SumReduceFunN:
-                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(0))); break;
+                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(this.reduceFunction.defaultValue));
+                    break;
                 case CountReduceFunN:
-                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(0))); break;
+                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(this.reduceFunction.defaultValue));
+                    break;
                 case TextjoinReduceFunN:
-                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<string>(''))); break;
+                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<string>('')));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<string>(this.reduceFunction.defaultValue));
+                    break;
             }
 
         }
@@ -138,7 +144,7 @@ export class MapReduceView {
     /**
      * @returns List of keys updated
      */
-    public async preComputeViewUpdateForObj(oldObj: KeyValueObj | null, newObj: KeyValueObj): Promise<MapReduceViewUpdates<string|number>> {
+    public async preComputeViewUpdateForObj(oldObj: KeyValueObj | null, newObj: KeyValueObj): Promise<MapReduceViewUpdates<string | number>> {
         let rFun = this.reduceFunction;
         if (!rFun) {
             let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = this.preComputeMap(oldObj, newObj, null);
@@ -187,7 +193,7 @@ export class MapReduceView {
         }
     }
 
-    public async updateViewForObj(updates: MapReduceViewUpdates<string|number>) {
+    public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
         for (let upd of updates.map) {
             await this.mapKVS.set(upd.key, upd.value);
         }
@@ -196,9 +202,9 @@ export class MapReduceView {
         }
         if (this.reduceFunction) {
             for (let upd of updates.reduce) {
-                if (   (SumReduceFunN === this.reduceFunction.name && typeof upd.value === 'number')
+                if ((SumReduceFunN === this.reduceFunction.name && typeof upd.value === 'number')
                     || (CountReduceFunN === this.reduceFunction.name && typeof upd.value === 'number')
-                ){
+                ) {
                     await this.reduceFunction.kvs.set(upd.key, upd.value);
                 } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof upd.value === 'string') {
                     await (this.reduceFunction.kvs as any /*wtf*/).set(upd.key, upd.value);
