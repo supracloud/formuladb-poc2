@@ -3,14 +3,14 @@
  * License TBD
  */
 
-import { KeyValueStoreBase, KeyValueStoreArrayKeys } from "./key_value_store_i";
+import { KeyValueObjStore, KeyValueStoreArrayKeys } from "./key_value_store_i";
 declare var emit: any;
 
-export function keyValueStoreSpecs<KVSType extends KeyValueStoreBase>(context: { kvs: KVSType }) {
+export function keyValueStoreSpecs<KVSType extends KeyValueObjStore>(context: { kvs: KVSType }) {
     let kvs: KVSType;
     let kvsa: KeyValueStoreArrayKeys;
 
-    describe('KeyValueStoreBase', () => {
+    describe('KeyValueObjStore', () => {
         beforeEach(async (done) => {
             kvs = context.kvs;
             kvsa = new KeyValueStoreArrayKeys(kvs);

@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyValueStoreBase, KeyValueStoreFactoryI } from "./key_value_store_i";
+import { KeyValueObjStore, KeyValueStoreFactoryI } from "./key_value_store_i";
 
 import { Fn } from "./domain/metadata/functions";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
@@ -31,7 +31,7 @@ describe('FrmdbEngineStore', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    fit("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
+    it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
         $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
         await frmdbEngineStore.createMapReduceView("sum1", {

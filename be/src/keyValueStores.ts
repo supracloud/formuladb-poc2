@@ -6,14 +6,14 @@
 import config from "./config/config";
 
 import { Service } from 'typedi';
-import { KeyValueStoreBase } from '../../fe/src/app/common/key_value_store_i';
+import { KeyValueObjStore } from '../../fe/src/app/common/key_value_store_i';
 import { KeyValueStoreMem } from "../../fe/src/app/common/key_value_store_mem";
 
 @Service()
 export class KeyValueStores {
-    public transactionsDB: KeyValueStoreBase = new KeyValueStoreMem();
-    public dataDB: KeyValueStoreBase = new KeyValueStoreMem();
-    public locksDB: KeyValueStoreBase = new KeyValueStoreMem();
+    public transactionsDB: KeyValueObjStore = new KeyValueStoreMem();
+    public dataDB: KeyValueObjStore = new KeyValueStoreMem();
+    public locksDB: KeyValueObjStore = new KeyValueStoreMem();
 
     public init(): Promise<any> {
         return this.transactionsDB.info()

@@ -5,7 +5,7 @@
 
 import * as moment from 'moment';
 
-import { KeyValueStoreBase, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
+import { KeyValueObjStore, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
 import { KeyValueObj, isKeyValueError, KeyValueError } from "./domain/key_value_obj";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
@@ -35,7 +35,7 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     protected transactionManager = new TransactionManager();
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
-    protected locksDB: KeyValueStoreBase;
+    protected locksDB: KeyValueObjStore;
 
     constructor(private kvsFactory: KeyValueStoreFactoryI) {
         super(kvsFactory.createKVS(), kvsFactory.createKVS());

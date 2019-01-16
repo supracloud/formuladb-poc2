@@ -3,41 +3,39 @@
  * License TBD
  */
 
-import { KeyValueStoreBase, RangeQueryOptsI, KeyValueStoreFactoryI } from "./key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI } from "./key_value_store_i";
 import * as _ from "lodash";
-import { id } from "@swimlane/ngx-charts/release/utils";
 
 /**
  * Key Value Store with optimistic locking functionality
  */
-export class KeyValueStoreMem extends KeyValueStoreBase {
+export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
 
-    private db: {[x: string]: any} = {};
+    private db: {[x: string]: VALUET} = {};
 
     constructor() {
-        super();
     }
 
-    public get<T>(_id: string): Promise<T> {
-        return Promise.resolve(this.db[_id] as T);
+    public get(_id: string): Promise<VALUET> {
+        return Promise.resolve(this.db[_id]);
     }
 
-    public rangeQuery<T>(opts: RangeQueryOptsI): Promise<T[]> {
+    public rangeQuery(opts: RangeQueryOptsI): Promise<VALUET[]> {
         let ret = _.entries(this.db).filter(([_id, val]) => 
             (opts.startkey < _id && _id < opts.endkey)
             || (opts.inclusive_start && _id === opts.startkey)
             || (opts.inclusive_end && _id === opts.endkey)
         ).map(([_id, val]) => val);
-        return Promise.resolve(ret as T[]);
+        return Promise.resolve(ret);
     }
 
-    public set<T>(_id: string, obj: T): Promise<T> {
+    public set(_id: string, obj: VALUET): Promise<VALUET> {
         this.db[_id] = obj;
         return this.get(_id);
     }
 
-    public async del<T>(_id: string): Promise<T> {
-        let ret = await this.get<T>(_id);
+    public async del(_id: string): Promise<VALUET> {
+        let ret = await this.get(_id);
         delete this.db[_id];
         return Promise.resolve(ret);
     }
@@ -51,7 +49,7 @@ export class KeyValueStoreMem extends KeyValueStoreBase {
     }
 }
  export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
-     createKVS(): KeyValueStoreBase {
-         return new KeyValueStoreMem();
+     createKVS<VALUET>(valueExample: VALUET): KeyValueStoreI<VALUET> {
+         return new KeyValueStoreMem<VALUET>();
      }
  }

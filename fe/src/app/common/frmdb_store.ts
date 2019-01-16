@@ -9,11 +9,11 @@ import { DataObj, DataObjDeepPath } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyValueStoreBase } from "./key_value_store_i";
+import { KeyValueObjStore } from "./key_value_store_i";
 import { KeyValueError } from "./domain/key_value_obj";
 
 export class FrmdbStore {
-    constructor(protected transactionsDB: KeyValueStoreBase, protected dataDB: KeyValueStoreBase) { }
+    constructor(protected transactionsDB: KeyValueObjStore, protected dataDB: KeyValueObjStore) { }
 
     /**
      * UI Actions are Events, Events get sent to the Backend and become Transactions, the same domain model object is both Action/Event/Transaction
