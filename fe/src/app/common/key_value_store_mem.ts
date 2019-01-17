@@ -7,6 +7,10 @@ import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI } 
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "./domain/key_value_obj";
 
+function simulateIO<T>(x: T): Promise<T> {
+    return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 50));
+}
+
 /**
  * Key Value Store with optimistic locking functionality
  */
@@ -18,7 +22,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     public get(_id: string): Promise<VALUET> {
-        return Promise.resolve(this.db[_id]);
+        return simulateIO(this.db[_id]);
     }
 
     public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{key: string, val: VALUET}[]> {
@@ -27,7 +31,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
             || (opts.inclusive_start && _id === opts.startkey)
             || (opts.inclusive_end && _id === opts.endkey)
         ).map(([_id, val]) => ({key: _id, val: val}));
-        return Promise.resolve(ret);
+        return simulateIO(ret);
     }
 
     public rangeQuery(opts: RangeQueryOptsI): Promise<VALUET[]> {
@@ -43,7 +47,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
     public async del(_id: string): Promise<VALUET> {
         let ret = await this.get(_id);
         delete this.db[_id];
-        return Promise.resolve(ret);
+        return simulateIO(ret);
     }
 
     public async clearDB() {
@@ -51,7 +55,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     public info(): Promise<string> {
-        return Promise.resolve("in memory test KVS");
+        return simulateIO("in memory test KVS");
     }
 }
 
@@ -65,12 +69,12 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
     public putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk insert
         objs.forEach(o => this.set(o._id, o));
-        return Promise.resolve(objs);
+        return simulateIO(objs);
     }
     public delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk delete
         objs.forEach(o => this.del(o._id));
-        return Promise.resolve(objs);
+        return simulateIO(objs);
     }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {

@@ -41,10 +41,10 @@ describe('frmdb_engine_store', () => {
             valueExpr: $s2e(`num`),
         }, false, {name: SumReduceFunN});
 
-        let obj1 = { "_id": "R_A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.updateViewForObj('sum1', null, obj1);
-        let obj2 = { "_id": "R_A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.updateViewForObj('sum1', null, obj2);
-        let obj3 = { "_id": "R_A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.updateViewForObj('sum1', null, obj3);
-        let obj4 = { "_id": "R_A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.updateViewForObj('sum1', null, obj4);
+        let obj1 = { "_id": "R_A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj1);
+        let obj2 = { "_id": "R_A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj2);
+        let obj3 = { "_id": "R_A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj3);
+        let obj4 = { "_id": "R_A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj4);
 
         let qRes = await frmdbEngineStore.mapQueryWithKeys('sum1');
         let expQRes = [
@@ -69,16 +69,25 @@ describe('frmdb_engine_store', () => {
         //TODO: only one worker should get the lock and finish processing the crashed transaction
     });
 
+    async function putAndForceUpdateView(objOld, objNew, isAggs: boolean) {
+        await frmdbEngineStore.putDataObj(objNew); 
+        if (isAggs) {
+            await frmdbEngineStore.forceUpdateViewForObj(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, objOld, objNew);
+        } else {
+            await frmdbEngineStore.forceUpdateViewForObj(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName, objOld, objNew);
+        }
+    }
+    
     fit("Should allow to install formulas then query observers and aggregations", async (done) => {
         compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
         await frmdbEngineStore.installFormula(compiledFormula);
 
-        let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(a1);
-        let a1b = { "_id": "A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(a1b);
-        let a2  = { "_id": "A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(a2);
-        let a2b = { "_id": "A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(a1b);
-        let b1  = { "_id": "B~~1", "sum__": -1, "bY": "a1" }; await frmdbEngineStore.putDataObj(b1);
-        let b2  = { "_id": "B~~2", "sum__": -2, "bY": "a2" }; await frmdbEngineStore.putDataObj(b2);
+        let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await putAndForceUpdateView(null, a1, true);
+        let a1b = { "_id": "A~~2", "num": 5, "aY": "a1" }; await putAndForceUpdateView(null, a1b, true);
+        let a2  = { "_id": "A~~3", "num": 2, "aY": "a2" }; await putAndForceUpdateView(null, a2, true);
+        let a2b = { "_id": "A~~4", "num": 3, "aY": "a2" }; await putAndForceUpdateView(null, a2b, true);
+        let b1  = { "_id": "B~~1", "sum__": -1, "bY": "a1" }; await putAndForceUpdateView(null, b1, false);
+        let b2  = { "_id": "B~~2", "sum__": -2, "bY": "a2" }; await putAndForceUpdateView(null, b2, false);
         
         let obs1 = await frmdbEngineStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
         expect(obs1[0]).toEqual(b1);
@@ -95,7 +104,7 @@ describe('frmdb_engine_store', () => {
         sum = await frmdbEngineStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
         expect(sum).toEqual(7);
         
-        await frmdbEngineStore.putDataObj(a1new);
+        await putAndForceUpdateView(a1, a1new, true);
         sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(sum).toEqual(7);
         
@@ -103,16 +112,16 @@ describe('frmdb_engine_store', () => {
     });
 
     describe('Table Relationships', () => {
-        it("example REFERENCE_TO by _id", async (done) => {
+        fit("example REFERENCE_TO by _id", async (done) => {
             compiledFormula = compileFormula('B', 'sum__', 'SUMIF(A.num, B$myB._id == @[_id])');
             await frmdbEngineStore.installFormula(compiledFormula);
 
-            let a1  = { _id: "A~~1", B$myB: {_id: 'B~~1'}, num: 1 }; await frmdbEngineStore.putDataObj(a1);
-            let a1b = { _id: "A~~2", B$myB: {_id: 'B~~1'}, num: 5 }; await frmdbEngineStore.putDataObj(a1b);
-            let a2  = { _id: "A~~3", B$myB: {_id: 'B~~2'}, num: 2 }; await frmdbEngineStore.putDataObj(a2);
-            let a2b = { _id: "A~~4", B$myB: {_id: 'B~~2'}, num: 3 }; await frmdbEngineStore.putDataObj(a2b);
-            let b1  = { _id: "B~~1", 'sum__': -123 }; await frmdbEngineStore.putDataObj(b1);
-            let b2  = { _id: "B~~2", 'sum__': -123 }; await frmdbEngineStore.putDataObj(b2);
+            let a1  = { _id: "A~~1", B$myB: {_id: 'B~~1'}, num: 1 }; await putAndForceUpdateView(null, a1, true);
+            let a1b = { _id: "A~~2", B$myB: {_id: 'B~~1'}, num: 5 }; await putAndForceUpdateView(null, a1b, true);
+            let a2  = { _id: "A~~3", B$myB: {_id: 'B~~2'}, num: 2 }; await putAndForceUpdateView(null, a2, true);
+            let a2b = { _id: "A~~4", B$myB: {_id: 'B~~2'}, num: 3 }; await putAndForceUpdateView(null, a2b, true);
+            let b1  = { _id: "B~~1", 'sum__': -123 }; await putAndForceUpdateView(null, b1, false);
+            let b2  = { _id: "B~~2", 'sum__': -123 }; await putAndForceUpdateView(null, b2, false);
             
             let obs1 = await frmdbEngineStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
             expect(obs1[0]).toEqual(b1);
@@ -129,7 +138,7 @@ describe('frmdb_engine_store', () => {
             sum = await frmdbEngineStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
             expect(sum).toEqual(7);
             
-            await frmdbEngineStore.putDataObj(a1new);
+            await putAndForceUpdateView(a1, a1new, true);
             sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
             expect(sum).toEqual(7);
             

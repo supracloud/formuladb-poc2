@@ -77,7 +77,7 @@ export class MapReduceView {
         }
     }
 
-    private _mapQuery<T>(kvs: KeyValueStoreArrayKeys<T>, queryOpts: Partial<RangeQueryOptsArrayKeysI>) {
+    private _rangeQuery<T>(kvs: KeyValueStoreArrayKeys<T>, queryOpts: Partial<RangeQueryOptsArrayKeysI>) {
         return kvs.rangeQuery({
             ...queryOpts,
             startkey: queryOpts.startkey || [],
@@ -89,12 +89,30 @@ export class MapReduceView {
         return this.mapKVS.rangeQueryWithKeys({
             ...queryOpts,
             startkey: queryOpts.startkey || [],
-            endkey: queryOpts.endkey || ["\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0"],
+            endkey: queryOpts.endkey ? queryOpts.endkey.concat('\ufff0') : ["\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0"],
+        }).then(res => {
+            if (queryOpts.inclusive_start && queryOpts.inclusive_end) {
+                return res;
+            } else {
+                //When we store the map values in the KVS we append the objectId to the key 
+                //  so we can have multiple values for the same key
+                //  when inclusive_start=false or inclusive_end=false we need to pop this objectId and make the comparison with the input keys
+                return res.filter(x => {
+                    let isStart = _.isEqual(MapReduceView.extractOriginalMapKey(x.key), queryOpts.startkey);
+                    let isEnd = _.isEqual(MapReduceView.extractOriginalMapKey(x.key), queryOpts.endkey);
+                    return (!isStart && !isEnd) || (isStart && queryOpts.inclusive_start) || (isEnd && queryOpts.inclusive_end);
+                });
+            }
         });
     }
 
+    public mapRangeQuery<T>(queryOpts: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
+        return this._rangeQuery<T>(this.mapKVS, queryOpts);
+    }
+
     public mapQuery<T>(queryOpts: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
-        return this._mapQuery<T>(this.mapKVS, queryOpts);
+        return this.mapQueryWithKeys<T>(queryOpts)
+        .then(res => res.map(x => x.val));
     }
 
     public reduceQuery(queryOpts: Partial<RangeQueryOptsArrayKeysI>): Promise<string | number> {
@@ -102,7 +120,7 @@ export class MapReduceView {
         let reduceFunction = this.reduceFunction;
         let viewName = this.viewName;
 
-        return this._mapQuery<string | number>(reduceFunction.kvs, queryOpts)
+        return this._rangeQuery<string | number>(reduceFunction.kvs, queryOpts)
             .then(rows => {
                 return rows.reduce((acc, current) => {
                     if (SumReduceFunN === reduceFunction.name) {
@@ -121,6 +139,18 @@ export class MapReduceView {
             });
     }
 
+    /** We need to allow multiple map values for the same key */
+    public static makeUniqueMapKey(key: KVSArrayKeyType, obj: KeyValueObj) {
+        return key.concat(obj._id);
+    }
+    /** we need to pop the objectId to get the original map key */
+    public static extractOriginalMapKey(key: KVSArrayKeyType) {
+        return key.slice(0, -1);
+    }
+    public static extractObjIdFromMapKey(key: KVSArrayKeyType): string {
+        return key.pop() + '';
+    }
+
     private preComputeMap<T extends (string | number)>(oldObj: KeyValueObj | null, newObj: KeyValueObj, valueExample: T | null): { ret: MapReduceViewUpdates<T>, newMapKey: KVSArrayKeyType, newMapValue: T, oldMapKey: KVSArrayKeyType | null, oldMapValue: T | null } {
         let viewName = this.viewName;
         if (oldObj && oldObj._id !== newObj._id) throw new Error("Unexpected view update for different objects " + oldObj._id + " !==  " + newObj._id);
@@ -132,17 +162,18 @@ export class MapReduceView {
         let newMapValue: T = this.use$ROW$ ? evalExprES5({ $ROW$: newObj }, this.map.valueExpr) : evalExprES5(newObj, this.map.valueExpr);
         if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + JSON.stringify({ viewName, newMapKey, newMapValue }));
 
-        ret.map.push({ key: newMapKey.concat([newObj._id]), value: newMapValue });
+        //In order to allow multiple map values for the same key we need to append the objectId to the key
+        ret.map.push({ key: MapReduceView.makeUniqueMapKey(newMapKey, newObj), value: newMapValue });
 
-        let oldMapKey = null;
-        let oldMapValue = null;
+        let oldMapKey: KVSArrayKeyType | null = null;
+        let oldMapValue: T | null = null;
 
         if (oldObj) {
 
-            let oldMapKey = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.keyExpr) : evalExprES5(oldObj, this.map.keyExpr);
+            oldMapKey = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.keyExpr) : evalExprES5(oldObj, this.map.keyExpr);
             if (!(oldMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewName, oldMapKey }));
 
-            let oldMapValue = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.valueExpr) : evalExprES5(oldObj, this.map.valueExpr);
+            oldMapValue = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.valueExpr) : evalExprES5(oldObj, this.map.valueExpr);
             if (typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewName, newMapKey, newMapValue, oldMapKey, oldMapValue }));
         }
 
@@ -205,7 +236,7 @@ export class MapReduceView {
         return updates.map.map(upd => 'MAP:' + kvsKey2Str(upd.key))
             .concat(updates.mapDelete.map(k => 'MAPDELETE:' + kvsKey2Str(k)))
             .concat(updates.reduce.map(upd => 'REDUCE:' + kvsKey2Str(upd.key)))
-        ;
+            ;
     }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
         for (let upd of updates.map) {

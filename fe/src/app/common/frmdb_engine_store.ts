@@ -78,7 +78,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     public reduceQuery(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
         return this.view(viewName, queryOpts).reduceQuery(queryOpts || {});
     }
-    public async forcePpdateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
+    public async forceUpdateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
         let view = this.view(viewName, newObj);
         let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
         return view.updateViewForObj(updates);
@@ -103,16 +103,17 @@ export class FrmdbEngineStore extends FrmdbStore {
         } else {
             let mapQuery = trigger.mapObserversImpactedByOneObservable.query;
             let viewName = trigger.mapObserversImpactedByOneObservable.obsViewName;
-            await this.mapQuery<DataObj>(viewName, {
+            ret = await this.mapQueryWithKeys<DataObj>(viewName, {
                 startkey: evalExprES5(observableObj, mapQuery.startkeyExpr),
                 endkey: evalExprES5(observableObj, mapQuery.endkeyExpr),
                 inclusive_start: mapQuery.inclusive_start,
                 inclusive_end: mapQuery.inclusive_end,
-            }).then(rows => {
-                for (let row of rows) {
-                    ret.push(row);
-                }
-            });
+            }).then(rows => Promise.all(
+                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row.key))))
+            ).then(objs => objs.filter(o => {
+                if (o == null) console.error("map query returned null object", JSON.stringify({observableObj, trigger}));
+                return o != null;
+            })) as DataObj[];
         }
         return ret;
     }
