@@ -69,7 +69,7 @@ export class FrmdbEngine {
             .then(frm => {
                 if (frm) event.form._rev = frm._rev;
 
-                return this.frmdbEngineStore.setObj(event.form).catch(err => console.error(err));
+                return this.frmdbEngineStore.putForm(event.form).catch(err => console.error(err));
             })
             .then(() => {
                 console.log("form save started");
@@ -87,7 +87,7 @@ export class FrmdbEngine {
             .then(tbl => {
                 if (tbl) event.table._rev = tbl._rev;
 
-                return this.frmdbEngineStore.setObj(event.table).catch(err => console.error(err));
+                return this.frmdbEngineStore.putTable(event.table).catch(err => console.error(err));
             })
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
@@ -100,7 +100,7 @@ export class FrmdbEngine {
     private newEntity(event: events.UserActionNewEntity): Promise<events.MwzEvents> {
         let newEntity: Entity = { _id: event.path, props: {} };
 
-        return this.frmdbEngineStore.setObj(newEntity)
+        return this.frmdbEngineStore.putEntity(newEntity)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
@@ -110,8 +110,7 @@ export class FrmdbEngine {
     }
 
     private deleteEntity(event: events.UserActionDeleteEntity): Promise<events.MwzEvents> {
-        event.entity._deleted = true;
-        return this.frmdbEngineStore.setObj(event.entity)
+        return this.frmdbEngineStore.delObj(event.entity._id)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
@@ -121,7 +120,7 @@ export class FrmdbEngine {
     }
 
     private processEntity(event: events.UserActionEditedEntity): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.setObj(event.entity)
+        return this.frmdbEngineStore.putEntity(event.entity)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;

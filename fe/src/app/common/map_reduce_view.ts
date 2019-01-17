@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, KeyValueStoreI } from "./key_value_store_i";
+import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, KeyValueStoreI, kvsKey2Str } from "./key_value_store_i";
 import { MapFunctionT } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { KeyValueObj } from './domain/key_value_obj';
@@ -201,6 +201,12 @@ export class MapReduceView {
         }
     }
 
+    public static strigifyViewUpdatesKeys(updates: MapReduceViewUpdates<string | number>): string[] {
+        return updates.map.map(upd => 'MAP:' + kvsKey2Str(upd.key))
+            .concat(updates.mapDelete.map(k => 'MAPDELETE:' + kvsKey2Str(k)))
+            .concat(updates.reduce.map(upd => 'REDUCE:' + kvsKey2Str(upd.key)))
+        ;
+    }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
         for (let upd of updates.map) {
             await this.mapKVS.set(upd.key, upd.value);

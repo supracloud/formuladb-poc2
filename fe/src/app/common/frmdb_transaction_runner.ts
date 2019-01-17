@@ -15,6 +15,8 @@ import { generateUUID } from "./domain/uuid";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
+import { KVSArrayKeyType } from "./key_value_store_i";
+import { MapReduceViewUpdates, MapReduceView } from "./map_reduce_view";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -31,6 +33,7 @@ class TransactionDAG {
             PREV?: DataObj | null,
             OLD: DataObj | null,
             NEW: DataObj,
+            viewUpdates: MapReduceViewUpdates<string | number>,
         },
     } = {};
     currentLevel: number = 0;
@@ -40,8 +43,11 @@ class TransactionDAG {
     constructor(public eventId: string, public retry: string) {
     }
 
-    public addObj(newObj: DataObj, oldObj: DataObj | null) {
-        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + newObj._rev + "/" + stringifyObj(newObj) + " in " + JSON.stringify(this.levels));
+    public addObj(newObj: DataObj, 
+        oldObj: DataObj | null,
+        viewUpdates: MapReduceViewUpdates<string | number>) 
+    {
+        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + stringifyObj(newObj) + " in " + JSON.stringify(this.levels));
 
         if (oldObj && newObj._id !== oldObj._id) throw new Error("expected OLD id to equal NEW id " + JSON.stringify(newObj) + " // " + JSON.stringify(oldObj));
         if (this.objs[newObj._id]) {
@@ -51,6 +57,7 @@ class TransactionDAG {
         this.objs[newObj._id] = {
             OLD: oldObj,
             NEW: newObj,
+            viewUpdates,
         };
         while (this.levels.length - 1 < this.currentLevel) {
             this.levels.push([]);
@@ -82,6 +89,10 @@ class TransactionDAG {
     }
     public getAllObjects(): DataObj[] {
         return _.values(this.objs).map(trObj => trObj.NEW);
+    }
+    public getAllImpactedObjectIdsAndViewKeys(): string[] {
+        return _.flatMap(_.values(this.objs), 
+            trObj => [trObj.NEW._id].concat(MapReduceView.strigifyViewUpdatesKeys(trObj.viewUpdates)));
     }
     public getLevels() { return this.levels }
 }
@@ -136,7 +147,7 @@ export class FrmdbTransactionRunner {
             let originalObj = _.cloneDeep(event.obj);
 
             let getObjectIdsToSave = async (retryNb: number) => {
-                Object.assign(event.obj, originalObj, { _rev: event.obj._rev });
+                Object.assign(event.obj, originalObj);
                 for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
                     event.obj[selfFormula.targetPropertyName] = evalExprES5(event.obj, selfFormula.finalExpression);
                     console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
@@ -146,14 +157,14 @@ export class FrmdbTransactionRunner {
                     let oldObj: DataObj | null = null;
                     if (!newObj) {
                         oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
-                        if (oldObj._rev != event.obj._rev) {
+                        if (false/* TODO: with CouchDB it would be possible to detect conflicts based on _rev, we could implement _rev(s) in the generic storage layer since we already read the old version of objects before writing them */) {
                             //Someone has updated the object before us, we need to do auto-merging and overwrite only fields changed by us
                             //Currently we don't have this in our use-cases, the contention is on the computed formulas not on the observable objects (like OrderItem or FinancialTransaction)
                             //TODO
-                            throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
+                            // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                         }
                     }
-                    transacDAG.addObj(event.obj, oldObj);
+                    transacDAG.addObj(event.obj, oldObj, {map: [], mapDelete: [], reduce: []});
 
                     try {
                         await this.preComputeNextTransactionDAGLevel(transacDAG);
@@ -170,7 +181,7 @@ export class FrmdbTransactionRunner {
                 }
                 if (transacDAG.haveFailedValidations) throw new RetryableError("still haveFailedValidations after retries");
 
-                return transacDAG.getAllObjects().map(obj => obj._id);
+                return transacDAG.getAllImpactedObjectIdsAndViewKeys();
             }
 
             let saveObjects = async () => {
@@ -243,10 +254,14 @@ export class FrmdbTransactionRunner {
 
     private async preComputeFormula(transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
         let oblEntityName = parseDataObjId(oblNew._id).entityName;
+        let viewUpdates: MapReduceViewUpdates<string | number> = {map: [], mapDelete: [], reduce: []};
 
         let triggerValues: _.Dictionary<number | string> = {};
         for (let triggerOfFormula of compiledFormula.triggers || []) {
             if (triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName === oblEntityName) {
+                viewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oblOld, oblNew);
+                _.merge(viewUpdates, await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapObserversImpactedByOneObservable.obsViewName, obsOld, obsNew));
+
                 triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
                     await this.frmdbEngineStore.preComputeAggForObserverAndObservable(obsOld, oblOld, oblNew, triggerOfFormula);
             } else {
@@ -275,7 +290,7 @@ export class FrmdbTransactionRunner {
             throw new FailedValidationsError(failedValidations);
         }
 
-        transacDAG.addObj(obsNew, obsOld);
+        transacDAG.addObj(obsNew, obsOld, viewUpdates);
     }
 
     private async preComputeNextTransactionDAGLevel(transactionDAG: TransactionDAG) {

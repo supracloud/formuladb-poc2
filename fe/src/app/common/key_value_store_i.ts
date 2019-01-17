@@ -22,16 +22,23 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
 }
 
+export function kvsKey2Str(key: any): string {
+    return Collate.toIndexableString(key);
+}
+export function kvsStr2Key(key: string): any {
+    return Collate.parseIndexableString(key);
+}
+
 class KeyValueStoreBase<KEYT, VALUET> {
     constructor(protected kvs: KeyValueStoreI<VALUET>) {
     }
 
     public id2str(key: KEYT): string {
-        return Collate.toIndexableString(key);
+        return kvsKey2Str(key);
     }
 
     public str2id(key: string): KEYT {
-        return Collate.parseIndexableString(key);
+        return kvsStr2Key(key);
     }
 
     public get(key: KEYT): Promise<VALUET | null> {

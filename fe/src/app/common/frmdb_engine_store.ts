@@ -17,7 +17,7 @@ import { _throw, _throwEx } from './throw';
 import * as _ from 'lodash';
 import { TransactionManager } from './transaction_manager';
 import { Expression } from 'jsep';
-import { MapReduceView } from './map_reduce_view';
+import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
 import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from './domain/metadata/reduce_functions';
 import { DataObj } from './domain/metadata/data_obj';
 
@@ -33,7 +33,7 @@ export class RetryableError {
 
 export class FrmdbEngineStore extends FrmdbStore {
 
-    protected transactionManager;
+    protected transactionManager: TransactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
     constructor(private kvsFactory: KeyValueStoreFactoryI) {
@@ -78,10 +78,18 @@ export class FrmdbEngineStore extends FrmdbStore {
     public reduceQuery(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
         return this.view(viewName, queryOpts).reduceQuery(queryOpts || {});
     }
-    public async updateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
+    public async forcePpdateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
         let view = this.view(viewName, newObj);
         let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
         return view.updateViewForObj(updates);
+    }
+    public async updateViewForObj(viewName: string, updates: MapReduceViewUpdates<string | number>) {
+        let view = this.view(viewName, undefined);
+        return view.updateViewForObj(updates);
+    }
+    public async preComputeViewUpdateForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj): Promise<MapReduceViewUpdates<string | number>> {
+        let view = this.view(viewName, undefined);
+        return view.preComputeViewUpdateForObj(oldObj, newObj);
     }
 
     public async getObserversOfObservable(observableObj, trigger: MapReduceTrigger): Promise<DataObj[]> {
@@ -125,12 +133,12 @@ export class FrmdbEngineStore extends FrmdbStore {
         return this.reduceQuery(
             trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
             Object.assign({}, {
-                startkey: evalExprES5(observerObj, mapQuery.startkeyExpr),
-                endkey: evalExprES5(observerObj, mapQuery.endkeyExpr),
+                startkey: evalExprES5({ $ROW$: observerObj }, mapQuery.startkeyExpr),
+                endkey: evalExprES5({ $ROW$: observerObj }, mapQuery.endkeyExpr),
                 inclusive_start: mapQuery.inclusive_start,
                 inclusive_end: mapQuery.inclusive_end,
             }
-            ));
+        ));
     }
 
     public async preComputeAggForObserverAndObservable(
@@ -140,6 +148,8 @@ export class FrmdbEngineStore extends FrmdbStore {
         trigger: MapReduceTrigger): Promise<string | number> {
 
         let ret: number | string = 'ERRNOTFOUND2';
+
+        this.updateViewForObj
 
         let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
         if (SumReduceFunN === reduceFun.name) {

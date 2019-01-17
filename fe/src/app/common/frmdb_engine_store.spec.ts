@@ -65,39 +65,11 @@ describe('frmdb_engine_store', () => {
         done();
     });
 
-    xit("Should allow CAS transactions (super-duper-basic test)", async (done) => {
-        await frmdbEngineStore.putDataObj({ "_id": "obj1", "idx": 1});
-
-        let counter = 1;
-
-        async function incrementCounter() {
-            // let obj1 = await frmdbTStore.kvs().get<{_id: string, idx: number}>("obj1");
-            // obj1.idx = obj1.idx + 1;
-            counter = counter + 1;
-            // await frmdbTStore.putDataObj(obj1);
-        }
-
-        async function parallelWorker(eventId) {
-            // await frmdbTStore.lockObjs("event" + eventId, ["obj1"], incrementCounter, () => Promise.resolve(), 20);
-        }
-        let workers: Promise<void>[] = [];
-        for (var i = 0; i < 20; i++) {
-            workers.push(parallelWorker(i));
-        }
-        await Promise.all(workers);
-
-        // let obj1 = await frmdbTStore.kvs().get<{_id: string, idx: number}>("obj1");
-        // expect(obj1.idx).toEqual(21);
-        expect(counter).toEqual(21);
-
-        done();
-    });
-
     xit("Should replay crashed CAS transactions correctly", async (done) => {
         //TODO: only one worker should get the lock and finish processing the crashed transaction
     });
 
-    it("Should allow to install formulas then query observers and aggregations", async (done) => {
+    fit("Should allow to install formulas then query observers and aggregations", async (done) => {
         compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
         await frmdbEngineStore.installFormula(compiledFormula);
 

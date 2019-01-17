@@ -26,7 +26,7 @@ export class FrmdbStore {
     public getSchema(): Promise<Schema | null> {
         return this.dataDB.get('FRMDB_SCHEMA') as Promise<Schema | null>;
     }
-    public setSchema(schema: Schema): Promise<Schema> {
+    public putSchema(schema: Schema): Promise<Schema> {
         return this.dataDB.put(schema) as Promise<Schema>;
     }
 
@@ -40,12 +40,29 @@ export class FrmdbStore {
         return schema ? schema.entities[path] : null;
     }
 
+    public async putEntity(entity: Entity): Promise<Entity | null> {
+        let schema = await this.getSchema();
+        if (!schema) throw new Error("Attempt to put entity in an empty schema " + JSON.stringify(entity));
+        schema.entities[entity._id] = entity;
+        //the Entity's _id is the path
+        return this.putSchema(schema)
+            .then(x => x ? entity : null);
+    }
+
     public getTable(path: string): Promise<Table | null> {
         return this.dataDB.get('Table_:' + path) as Promise<Table | null>;
     }
 
+    public putTable(table: Table): Promise<Table | null> {
+        return this.dataDB.put(table) as Promise<Table | null>;
+    }
+
     public getForm(path: string): Promise<Form | null> {
         return this.dataDB.get('Form_:' + path) as Promise<Form | null>;
+    }
+
+    public putForm(form: Form): Promise<Form | null> {
+        return this.dataDB.put(form) as Promise<Form | null>;
     }
 
     public getDataObj(id: string): Promise<DataObj | null> {
@@ -58,5 +75,9 @@ export class FrmdbStore {
 
     public putAllObj(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
         return this.dataDB.putBulk(objs);
+    }
+
+    public delObj(id: string) {
+        return this.dataDB.del(id);
     }
 }
