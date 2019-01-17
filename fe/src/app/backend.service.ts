@@ -16,7 +16,7 @@ import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { KeyValueObjStore } from './common/key_value_store_i';
+import { KeyObjStoreI } from './common/key_value_store_i';
 import { FrmdbStore } from './common/frmdb_store';
 import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
@@ -29,8 +29,8 @@ export enum EnvType {
     Live = "Live",
 }
 
-let TransactionsDB: KeyValueObjStore = new KeyValueStoreMem();
-let DataDB: KeyValueObjStore = new KeyValueStoreMem();
+let TransactionsDB: KeyObjStoreI = new KeyValueStoreMem();
+let DataDB: KeyObjStoreI = new KeyValueStoreMem();
 
 @Injectable()
 export class BackendService extends FrmdbStore {

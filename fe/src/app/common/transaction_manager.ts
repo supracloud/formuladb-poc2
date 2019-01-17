@@ -1,3 +1,5 @@
+import { KeyValueStoreFactoryI } from "./key_value_store_i";
+
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
 }
@@ -9,6 +11,8 @@ class Transaction {
 
 export class TransactionManager {
     private currentTransactions: Map<string, Transaction> = new Map();
+
+    constructor(private kvsFactory: KeyValueStoreFactoryI) {}
 
     private sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));

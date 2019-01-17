@@ -5,8 +5,7 @@
 
 import * as moment from 'moment';
 
-import { KeyValueObjStore, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
-import { KeyValueObj, isKeyValueError, KeyValueError } from "./domain/key_value_obj";
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { ObjLock } from "./domain/transaction";
@@ -20,6 +19,7 @@ import { TransactionManager } from './transaction_manager';
 import { Expression } from 'jsep';
 import { MapReduceView } from './map_reduce_view';
 import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from './domain/metadata/reduce_functions';
+import { DataObj } from './domain/metadata/data_obj';
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -33,13 +33,12 @@ export class RetryableError {
 
 export class FrmdbEngineStore extends FrmdbStore {
 
-    protected transactionManager = new TransactionManager();
+    protected transactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
-    protected locksDB: KeyValueObjStore;
 
     constructor(private kvsFactory: KeyValueStoreFactoryI) {
-        super(kvsFactory.createKVS(), kvsFactory.createKVS());
-        this.locksDB = kvsFactory.createKVS();
+        super(kvsFactory.createKeyObjS(), kvsFactory.createKeyObjS());
+        this.transactionManager = new TransactionManager(kvsFactory);
     }
 
     public async installFormula(formula: CompiledFormula): Promise<any> {
@@ -73,27 +72,30 @@ export class FrmdbEngineStore extends FrmdbStore {
     public mapQuery<T>(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
         return this.view(viewName, queryOpts).mapQuery(queryOpts || {});
     }
+    public mapQueryWithKeys<T>(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
+        return this.view(viewName, queryOpts).mapQueryWithKeys(queryOpts || {});
+    }
     public reduceQuery(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
         return this.view(viewName, queryOpts).reduceQuery(queryOpts || {});
     }
-    public async updateViewForObj(viewName: string, obj: KeyValueObj) {
-        let view = this.view(viewName, obj);
-        let updates = await view.preComputeViewUpdateForObj(obj);
+    public async updateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
+        let view = this.view(viewName, newObj);
+        let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
         return view.updateViewForObj(updates);
     }
 
-    public async getObserversOfObservable(observableObj, trigger: MapReduceTrigger): Promise<KeyValueObj[]> {
-        let ret: KeyValueObj[] = [];
+    public async getObserversOfObservable(observableObj, trigger: MapReduceTrigger): Promise<DataObj[]> {
+        let ret: DataObj[] = [];
         if (trigger.mapObserversImpactedByOneObservable.existingIndex === '_id') {
             let observerId = evalExprES5(observableObj, trigger.mapObserversImpactedByOneObservable.keyExpr)[0];
             if (null == observerId) throw new Error("obs not found for " + JSON.stringify(observableObj) + " with " + trigger.mapObserversImpactedByOneObservable.keyExpr[0].origExpr);
-            ret = await this.dataDB.get<KeyValueObj>(observerId)
+            ret = await this.dataDB.get(observerId)
                 .then(o => o ? [o] : [])
                 .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
         } else {
             let mapQuery = trigger.mapObserversImpactedByOneObservable.query;
             let viewName = trigger.mapObserversImpactedByOneObservable.obsViewName;
-            await this.mapQuery<KeyValueObj>(viewName, {
+            await this.mapQuery<DataObj>(viewName, {
                 startkey: evalExprES5(observableObj, mapQuery.startkeyExpr),
                 endkey: evalExprES5(observableObj, mapQuery.endkeyExpr),
                 inclusive_start: mapQuery.inclusive_start,
@@ -108,9 +110,9 @@ export class FrmdbEngineStore extends FrmdbStore {
     }
 
     public async getObserversOfObservableOldAndNew(
-        observableOld: KeyValueObj | null,
-        observableNew: KeyValueObj,
-        trigger: MapReduceTrigger): Promise<KeyValueObj[]> {
+        observableOld: DataObj | null,
+        observableNew: DataObj,
+        trigger: MapReduceTrigger): Promise<DataObj[]> {
 
         let oldObs = observableOld ? await this.getObserversOfObservable(observableOld, trigger) : [];
         let newObs = await this.getObserversOfObservable(observableNew, trigger);
@@ -132,9 +134,9 @@ export class FrmdbEngineStore extends FrmdbStore {
     }
 
     public async preComputeAggForObserverAndObservable(
-        observerObj: KeyValueObj,
-        observableOld: KeyValueObj | null,
-        observableNew: KeyValueObj,
+        observerObj: DataObj,
+        observableOld: DataObj | null,
+        observableNew: DataObj,
         trigger: MapReduceTrigger): Promise<string | number> {
 
         let ret: number | string = 'ERRNOTFOUND2';

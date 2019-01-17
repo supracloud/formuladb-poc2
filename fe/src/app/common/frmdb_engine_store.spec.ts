@@ -5,14 +5,15 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyValueObjStore, KeyValueStoreFactoryI } from "./key_value_store_i";
+import { KeyObjStoreI, KeyValueStoreFactoryI } from "./key_value_store_i";
 
 import { Fn } from "./domain/metadata/functions";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
 import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
+import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
-describe('FrmdbEngineStore', () => {
+describe('frmdb_engine_store', () => {
     let kvsFactory: KeyValueStoreFactoryI;
     let frmdbEngineStore: FrmdbEngineStore;
     let originalTimeout;
@@ -31,26 +32,26 @@ describe('FrmdbEngineStore', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
+    fit("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
         $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
         await frmdbEngineStore.createMapReduceView("sum1", {
             entityName: 'R_A',
             keyExpr: [$s2e(`aY`)],
             valueExpr: $s2e(`num`),
-        }, false, '_sum');
+        }, false, {name: SumReduceFunN});
 
-        let obj1 = { "_id": "R_A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.updateViewForObj('sum1', obj1);
-        let obj2 = { "_id": "R_A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.updateViewForObj('sum1', obj2);
-        let obj3 = { "_id": "R_A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.updateViewForObj('sum1', obj3);
-        let obj4 = { "_id": "R_A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.updateViewForObj('sum1', obj4);
+        let obj1 = { "_id": "R_A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.updateViewForObj('sum1', null, obj1);
+        let obj2 = { "_id": "R_A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.updateViewForObj('sum1', null, obj2);
+        let obj3 = { "_id": "R_A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.updateViewForObj('sum1', null, obj3);
+        let obj4 = { "_id": "R_A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.updateViewForObj('sum1', null, obj4);
 
-        let qRes = await frmdbEngineStore.mapQuery('sum1');
+        let qRes = await frmdbEngineStore.mapQueryWithKeys('sum1');
         let expQRes = [
-            { "key": ["a1"], "id": "R_A~~1", "value": 1 },
-            { "key": ["a1"], "id": "R_A~~2", "value": 5 },
-            { "key": ["a2"], "id": "R_A~~3", "value": 2 },
-            { "key": ["a2"], "id": "R_A~~4", "value": 3 },
+            { key: ["a1", "R_A~~1"], val: 1 },
+            { key: ["a1", "R_A~~2"], val: 5 },
+            { key: ["a2", "R_A~~3"], val: 2 },
+            { key: ["a2", "R_A~~4"], val: 3 },
         ];
         expect(qRes).toEqual(expQRes);
 

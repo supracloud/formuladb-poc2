@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { KeyValueObjStore } from "../key_value_store_i";
+import { KeyObjStoreI } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
@@ -15,9 +15,9 @@ import { evalExprES5 } from "../map_reduce_utils";
 import { KeyValueStoreMem } from "../key_value_store_mem";
 
 describe('FrmdbEngineStore _count', () => {
-    let dataKVS: KeyValueObjStore;
-    let transactionsKVS: KeyValueObjStore;
-    let locksKVS: KeyValueObjStore;
+    let dataKVS: KeyObjStoreI;
+    let transactionsKVS: KeyObjStoreI;
+    let locksKVS: KeyObjStoreI;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;

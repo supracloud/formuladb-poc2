@@ -9,17 +9,29 @@ import * as Collate from 'pouchdb-collate';
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
     rangeQuery(opts: RangeQueryOptsBaseI<string>): Promise<VALUET[]>;
+    rangeQueryWithKeys(opts: RangeQueryOptsBaseI<string>): Promise<{key: string, val: VALUET}[]>;
     set(key: string, val: VALUET): Promise<VALUET>;
     del(key: string): Promise<VALUET>;
     clearDB(): Promise<any>;
 }
 
+export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<OBJT> {
+    findByPrefix(prefix: string): Promise<OBJT[]>;
+    put(obj: OBJT): Promise<OBJT>;
+    putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
+    delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
+}
+
 class KeyValueStoreBase<KEYT, VALUET> {
-    constructor(private kvs: KeyValueStoreI<VALUET>) {
+    constructor(protected kvs: KeyValueStoreI<VALUET>) {
     }
 
     public id2str(key: KEYT): string {
         return Collate.toIndexableString(key);
+    }
+
+    public str2id(key: string): KEYT {
+        return Collate.parseIndexableString(key);
     }
 
     public get(key: KEYT): Promise<VALUET | null> {
@@ -30,7 +42,17 @@ class KeyValueStoreBase<KEYT, VALUET> {
             ...opts,
             startkey: this.id2str(opts.startkey),
             endkey: this.id2str(opts.endkey),
-        });
+        })
+    }
+    public rangeQueryWithKeys(opts: RangeQueryOptsBaseI<KEYT>): Promise<{key: KEYT, val: VALUET}[]> {
+        return this.kvs.rangeQueryWithKeys({
+            ...opts,
+            startkey: this.id2str(opts.startkey),
+            endkey: this.id2str(opts.endkey),
+        })
+        .then(res => {
+            return res.map(({key, val}) => ({key: this.str2id(key), val: val}));
+        });;
     }
     public set(key: KEYT, val: VALUET): Promise<VALUET> {
         return this.kvs.set(this.id2str(key), val);
@@ -43,27 +65,9 @@ class KeyValueStoreBase<KEYT, VALUET> {
     }
 }
 
-export class KeyValueObjStore extends KeyValueStoreBase<string, KeyValueObj> {
-    public findByPrefix(prefix: string): Promise<KeyValueObj[]> {
-        return this.rangeQuery({ startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false });
-    }
-    public put(obj: KeyValueObj): Promise<KeyValueObj> {
-        return this.set(obj._id, obj);
-    }
-    public putBulk(objs: KeyValueObj[]): Promise<(KeyValueObj | KeyValueError)[]> {
-        //naive implementation, some databases have specific efficient ways to to bulk insert
-        objs.forEach(o => this.set(o._id, o));
-        return Promise.resolve(objs);
-    }
-    public delBulk(objs: KeyValueObj[]): Promise<(KeyValueObj | KeyValueError)[]> {
-        //naive implementation, some databases have specific efficient ways to to bulk delete
-        objs.forEach(o => this.del(o._id));
-        return Promise.resolve(objs);
-    }
-}
-
 export interface KeyValueStoreFactoryI {
-    createKVS<VALUET>(valueExample: VALUET): KeyValueStoreI<VALUET>;
+    createKeyValS<VALUET>(valueExample: VALUET): KeyValueStoreI<VALUET>;
+    createKeyObjS<OBJT extends KeyValueObj>(): KeyObjStoreI<OBJT>;
 }
 
 export type KVSArrayKeyType = (string | number | boolean)[];

@@ -5,7 +5,7 @@
 
 import * as _ from "../frmdb_lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { KeyValueObjStore } from "../key_value_store_i";
+import { KeyObjStoreI } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
@@ -14,9 +14,9 @@ import { compileFormula } from "../formula_compiler";
 import { KeyValueStoreMem } from "../key_value_store_mem";
 
 describe('FrmdbEngineStore _sum', () => {
-    let dataKVS: KeyValueObjStore;
-    let locksKVS: KeyValueObjStore;
-    let transactionsKVS: KeyValueObjStore;
+    let dataKVS: KeyObjStoreI;
+    let locksKVS: KeyObjStoreI;
+    let transactionsKVS: KeyObjStoreI;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;

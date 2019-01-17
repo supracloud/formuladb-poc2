@@ -56,21 +56,21 @@ export class MapReduceView {
         reduceFun?: ReduceFun
     ) {
         if (!reduceFun) {
-            this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<any>(null));
+            this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<any>(null));
             this.reduceFunction = null;
         } else {
             switch (reduceFun.name) {
                 case SumReduceFunN:
-                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(this.reduceFunction.defaultValue));
+                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(this.reduceFunction.defaultValue));
                     break;
                 case CountReduceFunN:
-                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<number>(this.reduceFunction.defaultValue));
+                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(this.reduceFunction.defaultValue));
                     break;
                 case TextjoinReduceFunN:
-                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<string>('')));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKVS<string>(this.reduceFunction.defaultValue));
+                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>('')));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(this.reduceFunction.defaultValue));
                     break;
             }
 
@@ -79,6 +79,14 @@ export class MapReduceView {
 
     private _mapQuery<T>(kvs: KeyValueStoreArrayKeys<T>, queryOpts: Partial<RangeQueryOptsArrayKeysI>) {
         return kvs.rangeQuery({
+            ...queryOpts,
+            startkey: queryOpts.startkey || [],
+            endkey: queryOpts.endkey || ["\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0"],
+        });
+    }
+
+    public mapQueryWithKeys<T>(queryOpts: Partial<RangeQueryOptsArrayKeysI>) {
+        return this.mapKVS.rangeQueryWithKeys({
             ...queryOpts,
             startkey: queryOpts.startkey || [],
             endkey: queryOpts.endkey || ["\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0"],

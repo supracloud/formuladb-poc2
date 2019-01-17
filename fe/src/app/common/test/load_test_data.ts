@@ -7,11 +7,11 @@ import { MockMetadata } from "./mocks/mock-metadata";
 import { MockData } from "./mocks/mock-data";
 import { Forms___ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { obj2MapES5 } from "../ts-utils";
-import { KeyValueObjStore } from "../key_value_store_i";
+import { KeyObjStoreI } from "../key_value_store_i";
 import { REP___LargeSales_Form } from "./mocks/reports-ui-metadata";
 
 
-export async function loadData(dataDB: KeyValueObjStore, transactionsDB: KeyValueObjStore, locksDB: KeyValueObjStore): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
+export async function loadData(dataDB: KeyObjStoreI, transactionsDB: KeyObjStoreI, locksDB: KeyObjStoreI): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
     try {
         var mockMetadata = new MockMetadata();
 

@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../../frmdb_engine_store";
-import { KeyValueObjStore } from "../../key_value_store_i";
+import { KeyObjStoreI } from "../../key_value_store_i";
 
 import { compileFormula } from "../../formula_compiler";
 import { evalExprES5 } from "../../map_reduce_utils";
@@ -20,10 +20,10 @@ import { KeyValueStoreMem } from "../../key_value_store_mem";
 
 
 describe('Inventory Metadata', () => {
-    let dataKVS: KeyValueObjStore;
-    let locksKVS: KeyValueObjStore;
-    let mapReduceKVS: KeyValueObjStore;
-    let transactionsKVS: KeyValueObjStore;
+    let dataKVS: KeyObjStoreI;
+    let locksKVS: KeyObjStoreI;
+    let mapReduceKVS: KeyObjStoreI;
+    let transactionsKVS: KeyObjStoreI;
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
