@@ -80,7 +80,7 @@ describe('FrmdbEngine', () => {
         frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 55000;
         done();
     });
 
@@ -186,9 +186,6 @@ describe('FrmdbEngine', () => {
                 workers.push(putObj({_id: 'Tr~~', ac1: 'Ac~~3', ac2: 'Ac~~4', val: 25} as DataObj));
             }
             await Promise.all(workers);
-
-            let z = await frmdbTStore.mapQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac1___%3D%3D___%40%5B_id%5D)');
-            let z2 = await frmdbTStore.mapQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac2___%3D%3D___%40%5B_id%5D)');
 
             ac1 = await frmdbTStore.getDataObj('Ac~~1');
             ac2 = await frmdbTStore.getDataObj('Ac~~2');

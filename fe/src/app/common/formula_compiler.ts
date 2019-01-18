@@ -398,8 +398,10 @@ function encodeViewNameURIComponent(str: string): string {
             .replace(/<=/g, "_le_")
     );
 }
-export function getViewName(isAggs: boolean, entityName, rawExpr: Expression) {
-    return (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
+export function getViewName(isAggs: boolean, entityName, rawExpr: Expression): string {
+    let ret = (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
+    ret = (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + rawExpr.origExpr;
+    return ret;
 }
 
 export function $ee2s(obj) {

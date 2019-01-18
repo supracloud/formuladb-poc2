@@ -33,8 +33,8 @@ class TransactionDAG {
             PREV?: DataObj | null,
             OLD: DataObj | null,
             NEW: DataObj,
-            aggsViewUpdates: MapReduceViewUpdates<string | number> | null,
-            obsViewUpdates: MapViewUpdates<string | number> | null,
+            aggsViewsUpdates: MapReduceViewUpdates<string | number>[],
+            obsViewsUpdates: MapViewUpdates<string | number>[],
         },
     } = {};
     currentLevel: number = 0;
@@ -47,11 +47,11 @@ class TransactionDAG {
     public addObj(
         newObj: DataObj, 
         oldObj: DataObj | null,
-        aggsViewUpdates: MapReduceViewUpdates<string | number> | null,
-        obsViewUpdates: MapViewUpdates<string | number> | null,
+        aggsViewsUpdates: MapReduceViewUpdates<string | number>[],
+        obsViewsUpdates: MapViewUpdates<string | number>[],
         ) 
     {
-        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + JSON.stringify({newObj, oldObj, aggsViewUpdates, obsViewUpdates}) + " in " + JSON.stringify(this.levels));
+        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + JSON.stringify({newObj, oldObj, aggsViewsUpdates, obsViewsUpdates}) + " in " + JSON.stringify(this.levels));
 
         if (oldObj && newObj._id !== oldObj._id) throw new Error("expected OLD id to equal NEW id " + JSON.stringify(newObj) + " // " + JSON.stringify(oldObj));
         if (this.objs[newObj._id]) {
@@ -61,8 +61,8 @@ class TransactionDAG {
         this.objs[newObj._id] = {
             OLD: oldObj,
             NEW: newObj,
-            aggsViewUpdates,
-            obsViewUpdates,
+            aggsViewsUpdates,
+            obsViewsUpdates,
         };
         while (this.levels.length - 1 < this.currentLevel) {
             this.levels.push([]);
@@ -96,15 +96,16 @@ class TransactionDAG {
         return _.values(this.objs).map(trObj => trObj.NEW);
     }
     public getAllViewUpdates(): MapReduceViewUpdates<string | number>[] {
-        let ret = _.values(this.objs).map(trObj => trObj.aggsViewUpdates);
-        let ret2 = ret.filter(x => x != null);
-        return ret2 as MapReduceViewUpdates<string | number>[];
+        let aggs = _.flatMap(_.values(this.objs), trObj => trObj.aggsViewsUpdates);
+        let obs = _.flatMap(_.values(this.objs), trObj => trObj.obsViewsUpdates);
+        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => ({...o, reduce: []})));
+        return ret as MapReduceViewUpdates<string | number>[];
     }
     public getAllImpactedObjectIdsAndViewKeys(): string[] {
         return _.flatMap(_.values(this.objs), 
-            trObj => [trObj.NEW._id].concat(
-                trObj.aggsViewUpdates ? MapReduceView.strigifyViewUpdatesKeys(trObj.aggsViewUpdates) : []
-                )
+            trObj => [trObj.NEW._id]
+            .concat(_.flatMap(trObj.aggsViewsUpdates, vupd => MapReduceView.strigifyViewUpdatesKeys(vupd)))
+            .concat(_.flatMap(trObj.obsViewsUpdates, vupd => MapReduceView.strigifyViewUpdatesKeys(vupd)))
             );
     }
     public getLevels() { return this.levels }
@@ -177,7 +178,7 @@ export class FrmdbTransactionRunner {
                             // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                         }
                     }
-                    transacDAG.addObj(event.obj, oldObj, null, null);
+                    transacDAG.addObj(event.obj, oldObj, [], []);
 
                     try {
                         await this.preComputeNextTransactionDAGLevel(transacDAG);
@@ -271,14 +272,14 @@ export class FrmdbTransactionRunner {
 
     private async preComputeFormula(transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
         let oblEntityName = parseDataObjId(oblNew._id).entityName;
-        let aggsViewUpdates: MapReduceViewUpdates<string | number> | null = null;
-        let obsViewUpdates: MapViewUpdates<string | number> | null = null;
+        let aggsViewUpdates: MapReduceViewUpdates<string | number>[] = [];
+        let obsViewUpdates: MapViewUpdates<string | number>[] = [];
 
         let triggerValues: _.Dictionary<number | string> = {};
         for (let triggerOfFormula of compiledFormula.triggers || []) {
             if (triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName === oblEntityName) {
-                aggsViewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oblOld, oblNew);
-                obsViewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapObserversImpactedByOneObservable.obsViewName, obsOld, obsNew);
+                aggsViewUpdates.push(await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oblOld, oblNew));
+                obsViewUpdates.push(await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapObserversImpactedByOneObservable.obsViewName, obsOld, obsNew));
 
                 triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
                     await this.frmdbEngineStore.preComputeAggForObserverAndObservable(obsOld, oblOld, oblNew, triggerOfFormula);
@@ -295,7 +296,7 @@ export class FrmdbTransactionRunner {
         } else {
             obsNew[compiledFormula.targetPropertyName] = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
-        console.log(ll(transacDAG) + "|preComputeFormula|" + oblNew._id + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = [" + compiledFormula.finalExpression.origExpr + "] = " + obsNew[compiledFormula.targetPropertyName]);
+        console.log(ll(transacDAG) + "|preComputeFormula|" + oblNew._id + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
 
         for (let selfFormula of this.schemaDAO.getSelfFormulas(obsNew._id)) {
             obsNew[selfFormula.targetPropertyName] = evalExprES5(obsNew, selfFormula.finalExpression);

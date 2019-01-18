@@ -16,6 +16,10 @@ export interface MapReduceViewUpdates<VALUET> extends MapViewUpdates<VALUET> {
     reduce: { key: KVSArrayKeyType, value: VALUET }[];
 }
 
+export function isReduce<VALUET>(v: MapViewUpdates<VALUET> | MapReduceViewUpdates<VALUET>): v is MapReduceViewUpdates<VALUET> {
+    return 'reduce' in v;
+}
+
 type ReduceFunction =
     | SumReduceFunction
     | CountReduceFunction
@@ -235,11 +239,11 @@ export class MapReduceView {
         }
     }
 
-    public static strigifyViewUpdatesKeys(updates: MapReduceViewUpdates<string | number>): string[] {
+    public static strigifyViewUpdatesKeys(updates: MapReduceViewUpdates<string | number> | MapViewUpdates<string | number>): string[] {
         return updates.map.map(upd => 'MAP:' + kvsKey2Str(upd.key))
             .concat(updates.mapDelete.map(k => 'MAPDELETE:' + kvsKey2Str(k)))
-            .concat(updates.reduce.map(upd => 'REDUCE:' + kvsKey2Str(upd.key)))
-            ;
+            .concat(isReduce(updates) ? updates.reduce.map(upd => 'REDUCE:' + kvsKey2Str(upd.key)) : [])
+        ;
     }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
         for (let upd of updates.map) {

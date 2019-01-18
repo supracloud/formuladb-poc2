@@ -14,16 +14,12 @@ import { KeyValueObj } from "../../domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
-import { KeyValueStoreMem } from "../../key_value_store_mem";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../../key_value_store_mem";
 
 
 
 
 describe('Inventory Metadata', () => {
-    let dataKVS: KeyObjStoreI;
-    let locksKVS: KeyObjStoreI;
-    let mapReduceKVS: KeyObjStoreI;
-    let transactionsKVS: KeyObjStoreI;
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
@@ -38,13 +34,7 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStoreMem();
-        dataKVS = new KeyValueStoreMem();
-        mapReduceKVS = new KeyValueStoreMem();
-        locksKVS = new KeyValueStoreMem();
-        await dataKVS.clearDB();
-        await locksKVS.clearDB();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, mapReduceKVS, locksKVS);
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         frmdbEngine = new FrmdbEngine(frmdbTStore, InventorySchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
