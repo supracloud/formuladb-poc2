@@ -126,6 +126,26 @@ export class FrmdbEngine {
                 delete event._rev;
                 return event;
             })
-            ;
+        ;
     }
+
+
+    public async putDataObjAndUpdateViews(oldObj: DataObj | null, newObj: DataObj) {
+        if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + JSON.stringify({oldObj, newObj}));
+
+        await this.frmdbEngineStore.putDataObj(newObj);
+        for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(newObj._id)) {
+
+            for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {
+                let viewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oldObj, newObj);
+                await this.frmdbEngineStore.updateViewForObj(viewUpdates);
+            }
+        }
+
+        for (let obsViewName of this.schemaDAO.getObsViewNamesUpdatedByObj(newObj._id)) {
+            let viewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(obsViewName, oldObj, newObj);
+            await this.frmdbEngineStore.updateViewForObj(viewUpdates);
+        }
+    }
+
 }

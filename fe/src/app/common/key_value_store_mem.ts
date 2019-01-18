@@ -40,7 +40,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     public set(_id: string, obj: VALUET): Promise<VALUET> {
-        this.db[_id] = obj;
+        this.db[_id] = _.cloneDeep(obj);
         return this.get(_id);
     }
 

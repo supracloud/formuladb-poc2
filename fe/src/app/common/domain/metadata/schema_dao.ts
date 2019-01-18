@@ -84,4 +84,22 @@ export class SchemaDAO {
         });
         return ret;
     }
+    public getObsViewNamesUpdatedByObj(objId: string): string[] {
+        let entityName = parseDataObjId(objId).entityName;
+        let ret: string[] = [];
+        this.entities().forEach(en => {
+            _.values(en.props).forEach(pr => {
+                if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                    let compiledFormula: CompiledFormula = pr.compiledFormula_;
+                    
+                    for (let t of (pr.compiledFormula_.triggers ||[])) {
+                        if (t.mapObserversImpactedByOneObservable.entityName === entityName) {
+                            ret.push(t.mapObserversImpactedByOneObservable.obsViewName);
+                        }
+                    }
+                }
+            })
+        });
+        return ret;
+    }    
 }

@@ -83,8 +83,8 @@ export class FrmdbEngineStore extends FrmdbStore {
         let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
         return view.updateViewForObj(updates);
     }
-    public async updateViewForObj(viewName: string, updates: MapReduceViewUpdates<string | number>) {
-        let view = this.view(viewName, undefined);
+    public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
+        let view = this.view(updates.viewName, undefined);
         return view.updateViewForObj(updates);
     }
     public async preComputeViewUpdateForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj): Promise<MapReduceViewUpdates<string | number>> {
@@ -147,10 +147,6 @@ export class FrmdbEngineStore extends FrmdbStore {
         observableOld: DataObj | null,
         observableNew: DataObj,
         trigger: MapReduceTrigger): Promise<string | number> {
-
-        let ret: number | string = 'ERRNOTFOUND2';
-
-        this.updateViewForObj
 
         let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
         if (SumReduceFunN === reduceFun.name) {

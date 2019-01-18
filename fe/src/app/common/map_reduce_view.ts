@@ -7,9 +7,12 @@ import { KeyValueObj } from './domain/key_value_obj';
 import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun } from './domain/metadata/reduce_functions';
 
 
-export interface MapReduceViewUpdates<VALUET> {
+export interface MapViewUpdates<VALUET> {
+    viewName: string,
     map: { key: KVSArrayKeyType, value: VALUET }[],
     mapDelete: KVSArrayKeyType[],
+}
+export interface MapReduceViewUpdates<VALUET> extends MapViewUpdates<VALUET> {
     reduce: { key: KVSArrayKeyType, value: VALUET }[];
 }
 
@@ -155,7 +158,7 @@ export class MapReduceView {
         let viewName = this.viewName;
         if (oldObj && oldObj._id !== newObj._id) throw new Error("Unexpected view update for different objects " + oldObj._id + " !==  " + newObj._id);
 
-        let ret: MapReduceViewUpdates<T> = { map: [], mapDelete: [], reduce: [] };
+        let ret: MapReduceViewUpdates<T> = { viewName: viewName, map: [], mapDelete: [], reduce: [] };
         let newMapKey = this.use$ROW$ ? evalExprES5({ $ROW$: newObj }, this.map.keyExpr) : evalExprES5(newObj, this.map.keyExpr);
         if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewName, newMapKey }));
 
@@ -174,7 +177,7 @@ export class MapReduceView {
             if (!(oldMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewName, oldMapKey }));
 
             oldMapValue = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.valueExpr) : evalExprES5(oldObj, this.map.valueExpr);
-            if (typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewName, newMapKey, newMapValue, oldMapKey, oldMapValue }));
+            if (valueExample != null && typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewName, newMapKey, newMapValue, oldMapKey, oldMapValue }));
         }
 
         return { ret, newMapKey, newMapValue, oldMapKey, oldMapValue };

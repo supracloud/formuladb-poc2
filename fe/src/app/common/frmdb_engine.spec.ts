@@ -16,12 +16,9 @@ import { Pn, Entity, FormulaProperty, Schema } from "./domain/metadata/entity";
 import { SchemaDAO } from "./domain/metadata/schema_dao";
 import { DataObj } from "./domain/metadata/data_obj";
 import { KeyValueObj } from "./domain/key_value_obj";
-import { KeyValueStoreMem } from "./key_value_store_mem";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
 
 describe('FrmdbEngine', () => {
-    let dataKVS: KeyObjStoreI;
-    let locksKVS: KeyObjStoreI;
-    let transactionsKVS: KeyObjStoreI;
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
@@ -80,12 +77,7 @@ describe('FrmdbEngine', () => {
     };
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStoreMem();
-        dataKVS = new KeyValueStoreMem();
-        locksKVS = new KeyValueStoreMem();
-        await dataKVS.clearDB();
-        await locksKVS.clearDB();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
@@ -105,31 +97,31 @@ describe('FrmdbEngine', () => {
         await putObj({ _id: 'A~~', b: 'B~~1', val: val } as DataObj);
     }
 
-    it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
+    fit("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
         await frmdbEngine.init();
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-        await frmdbTStore.kvs().put(b1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
         let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-        await frmdbTStore.kvs().put(a1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
         let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-        await frmdbTStore.kvs().put(a2);
+        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
 
         await putObj({ _id: 'A~~', b: 'B~~1', val: 2 } as DataObj);
-        let b1After: any = await frmdbTStore.kvs().get('B~~1');
+        let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
         await putObj({ _id: 'A~~', b: 'B~~1', val: 3 } as DataObj);
-        b1After = await frmdbTStore.kvs().get('B~~1');
+        b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 8, x__: 92}));
         
         a2.val = 4;
         await putObj(a2);
-        b1After = await frmdbTStore.kvs().get('B~~1');
+        b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 10, x__: 90}));
 
         let ev = await putObj({ _id: 'A~~', b: 'B~~1', val: 95 } as DataObj);
-        b1After = await frmdbTStore.kvs().get('B~~1');
+        b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
         expect(ev.obj['val']).toEqual(90);
 
@@ -138,15 +130,15 @@ describe('FrmdbEngine', () => {
 
     for (let TestRun = 1; TestRun <= 1; TestRun++) {
 
-        it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
+        fit("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
 
             let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-            await frmdbTStore.kvs().put(b1);
+            await frmdbEngine.putDataObjAndUpdateViews(null, b1);
             let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-            await frmdbTStore.kvs().put(a1);
+            await frmdbEngine.putDataObjAndUpdateViews(null, a1);
             let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-            await frmdbTStore.kvs().put(a2);
+            await frmdbEngine.putDataObjAndUpdateViews(null, a2);
 
             let workers: Promise<void>[] = [];
             for (var i = 0; i < 10; i++) {
@@ -154,17 +146,17 @@ describe('FrmdbEngine', () => {
             }
             await Promise.all(workers);
 
-            let b1After: any = await frmdbTStore.kvs().get('B~~1');
+            let b1After: any = await frmdbTStore.getDataObj('B~~1');
             expect(b1After).toEqual(jasmine.objectContaining({sum__: 23, x__: 77}));
             
             done();
         });
 
-        it("Should allow consistent concurrent transactions with auto-correct (stock reservation) " + TestRun, async (done) => {
+        fit("Should allow consistent concurrent transactions with auto-correct (stock reservation) " + TestRun, async (done) => {
             await frmdbEngine.init();
 
             let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-            await frmdbTStore.kvs().put(b1);
+            await frmdbEngine.putDataObjAndUpdateViews(null, b1);
 
             let workers: Promise<void>[] = [];
             for (var i = 0; i < 10; i++) {
@@ -172,20 +164,20 @@ describe('FrmdbEngine', () => {
             }
             await Promise.all(workers);
 
-            let b1After: any = await frmdbTStore.kvs().get('B~~1');
+            let b1After: any = await frmdbTStore.getDataObj('B~~1');
             expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
             
             done();
         });
 
-        it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
+        fit("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
             frmdbEngine = new FrmdbEngine(frmdbTStore, accountTransferSchema);
             await frmdbEngine.init();
 
-            let ac1: any = { _id: "Ac~~1", balance__: 123}; await frmdbTStore.kvs().put(ac1);
-            let ac2: any = { _id: "Ac~~2", balance__: 123}; await frmdbTStore.kvs().put(ac2);
-            let ac3: any = { _id: "Ac~~3", balance__: 123}; await frmdbTStore.kvs().put(ac3);
-            let ac4: any = { _id: "Ac~~4", balance__: 123}; await frmdbTStore.kvs().put(ac4);
+            let ac1: any = { _id: "Ac~~1", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac1);
+            let ac2: any = { _id: "Ac~~2", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac2);
+            let ac3: any = { _id: "Ac~~3", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac3);
+            let ac4: any = { _id: "Ac~~4", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac4);
 
             let workers: Promise<any>[] = [];
             for (var i = 0; i < 10; i++) {
@@ -195,21 +187,13 @@ describe('FrmdbEngine', () => {
             }
             await Promise.all(workers);
 
-            let z = await frmdbTStore.kvs().mapReduceQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac1___%3D%3D___%40%5B_id%5D)', {
-                reduce: false, 
-                startkey: false, 
-                endkey: {}
-            });
-            let z2 = await frmdbTStore.kvs().mapReduceQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac2___%3D%3D___%40%5B_id%5D)', {
-                reduce: false, 
-                startkey: false, 
-                endkey: {}
-            });
+            let z = await frmdbTStore.mapQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac1___%3D%3D___%40%5B_id%5D)');
+            let z2 = await frmdbTStore.mapQuery('vaggs-Tr-SUMIF(Tr.val%2C___ac2___%3D%3D___%40%5B_id%5D)');
 
-            ac1 = await frmdbTStore.kvs().get('Ac~~1');
-            ac2 = await frmdbTStore.kvs().get('Ac~~2');
-            ac3 = await frmdbTStore.kvs().get('Ac~~3');
-            ac4 = await frmdbTStore.kvs().get('Ac~~4');
+            ac1 = await frmdbTStore.getDataObj('Ac~~1');
+            ac2 = await frmdbTStore.getDataObj('Ac~~2');
+            ac3 = await frmdbTStore.getDataObj('Ac~~3');
+            ac4 = await frmdbTStore.getDataObj('Ac~~4');
             expect(ac1).toEqual(jasmine.objectContaining({balance__: 0}));
             expect(ac2).toEqual(jasmine.objectContaining({balance__: 0}));
             expect(ac3).toEqual(jasmine.objectContaining({balance__: 0}));

@@ -16,7 +16,7 @@ import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { KVSArrayKeyType } from "./key_value_store_i";
-import { MapReduceViewUpdates, MapReduceView } from "./map_reduce_view";
+import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -33,7 +33,8 @@ class TransactionDAG {
             PREV?: DataObj | null,
             OLD: DataObj | null,
             NEW: DataObj,
-            viewUpdates: MapReduceViewUpdates<string | number>,
+            aggsViewUpdates: MapReduceViewUpdates<string | number> | null,
+            obsViewUpdates: MapViewUpdates<string | number> | null,
         },
     } = {};
     currentLevel: number = 0;
@@ -43,11 +44,14 @@ class TransactionDAG {
     constructor(public eventId: string, public retry: string) {
     }
 
-    public addObj(newObj: DataObj, 
+    public addObj(
+        newObj: DataObj, 
         oldObj: DataObj | null,
-        viewUpdates: MapReduceViewUpdates<string | number>) 
+        aggsViewUpdates: MapReduceViewUpdates<string | number> | null,
+        obsViewUpdates: MapViewUpdates<string | number> | null,
+        ) 
     {
-        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + stringifyObj(newObj) + " in " + JSON.stringify(this.levels));
+        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + JSON.stringify({newObj, oldObj, aggsViewUpdates, obsViewUpdates}) + " in " + JSON.stringify(this.levels));
 
         if (oldObj && newObj._id !== oldObj._id) throw new Error("expected OLD id to equal NEW id " + JSON.stringify(newObj) + " // " + JSON.stringify(oldObj));
         if (this.objs[newObj._id]) {
@@ -57,7 +61,8 @@ class TransactionDAG {
         this.objs[newObj._id] = {
             OLD: oldObj,
             NEW: newObj,
-            viewUpdates,
+            aggsViewUpdates,
+            obsViewUpdates,
         };
         while (this.levels.length - 1 < this.currentLevel) {
             this.levels.push([]);
@@ -90,9 +95,17 @@ class TransactionDAG {
     public getAllObjects(): DataObj[] {
         return _.values(this.objs).map(trObj => trObj.NEW);
     }
+    public getAllViewUpdates(): MapReduceViewUpdates<string | number>[] {
+        let ret = _.values(this.objs).map(trObj => trObj.aggsViewUpdates);
+        let ret2 = ret.filter(x => x != null);
+        return ret2 as MapReduceViewUpdates<string | number>[];
+    }
     public getAllImpactedObjectIdsAndViewKeys(): string[] {
         return _.flatMap(_.values(this.objs), 
-            trObj => [trObj.NEW._id].concat(MapReduceView.strigifyViewUpdatesKeys(trObj.viewUpdates)));
+            trObj => [trObj.NEW._id].concat(
+                trObj.aggsViewUpdates ? MapReduceView.strigifyViewUpdatesKeys(trObj.aggsViewUpdates) : []
+                )
+            );
     }
     public getLevels() { return this.levels }
 }
@@ -164,7 +177,7 @@ export class FrmdbTransactionRunner {
                             // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                         }
                     }
-                    transacDAG.addObj(event.obj, oldObj, {map: [], mapDelete: [], reduce: []});
+                    transacDAG.addObj(event.obj, oldObj, null, null);
 
                     try {
                         await this.preComputeNextTransactionDAGLevel(transacDAG);
@@ -190,6 +203,10 @@ export class FrmdbTransactionRunner {
                 let results = await this.frmdbEngineStore.putAllObj(objsToSave);
                 for (let res of results) {
                     if (isKeyValueError(res)) throw new Error("Unexpected error in saveObjects " + JSON.stringify(res) + "; full results: " + JSON.stringify(results));                        
+                }
+                let allViewsUpdates = transacDAG.getAllViewUpdates();
+                for (let viewUpdate of allViewsUpdates) {
+                    await this.frmdbEngineStore.updateViewForObj(viewUpdate);
                 }
                 transacDAG.finished = true;
             }
@@ -254,13 +271,14 @@ export class FrmdbTransactionRunner {
 
     private async preComputeFormula(transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
         let oblEntityName = parseDataObjId(oblNew._id).entityName;
-        let viewUpdates: MapReduceViewUpdates<string | number> = {map: [], mapDelete: [], reduce: []};
+        let aggsViewUpdates: MapReduceViewUpdates<string | number> | null = null;
+        let obsViewUpdates: MapViewUpdates<string | number> | null = null;
 
         let triggerValues: _.Dictionary<number | string> = {};
         for (let triggerOfFormula of compiledFormula.triggers || []) {
             if (triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName === oblEntityName) {
-                viewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oblOld, oblNew);
-                _.merge(viewUpdates, await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapObserversImpactedByOneObservable.obsViewName, obsOld, obsNew));
+                aggsViewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oblOld, oblNew);
+                obsViewUpdates = await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapObserversImpactedByOneObservable.obsViewName, obsOld, obsNew);
 
                 triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
                     await this.frmdbEngineStore.preComputeAggForObserverAndObservable(obsOld, oblOld, oblNew, triggerOfFormula);
@@ -290,7 +308,7 @@ export class FrmdbTransactionRunner {
             throw new FailedValidationsError(failedValidations);
         }
 
-        transacDAG.addObj(obsNew, obsOld, viewUpdates);
+        transacDAG.addObj(obsNew, obsOld, aggsViewUpdates, obsViewUpdates);
     }
 
     private async preComputeNextTransactionDAGLevel(transactionDAG: TransactionDAG) {
@@ -312,5 +330,4 @@ export class FrmdbTransactionRunner {
             await this.preComputeNextTransactionDAGLevel(transactionDAG);
         }
     }
-
 }
