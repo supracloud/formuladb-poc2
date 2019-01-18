@@ -68,6 +68,10 @@ export class FrmdbStore {
     public getDataObj(id: string): Promise<DataObj | null> {
         return this.dataDB.get(id);
     }
+    
+    public getDataListByPrefix(prefix: string): Promise<DataObj[]> {
+        return this.dataDB.findByPrefix(prefix);
+    }
 
     public putDataObj(obj: DataObj): Promise<DataObj> {
         return this.dataDB.put(obj);

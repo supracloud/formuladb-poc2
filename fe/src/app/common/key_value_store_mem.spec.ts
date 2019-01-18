@@ -7,6 +7,6 @@ import { KeyValueStoreMem, KeyObjStoreMem } from "./key_value_store_mem";
  */
 
 
-fdescribe('KeyValueStoreMem', () => {
+describe('KeyValueStoreMem', () => {
     keyValueStoreSpecs({kvs: new KeyObjStoreMem<KeyValueStoreSpecObjType>()});
 });

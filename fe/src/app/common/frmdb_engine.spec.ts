@@ -97,7 +97,7 @@ describe('FrmdbEngine', () => {
         await putObj({ _id: 'A~~', b: 'B~~1', val: val } as DataObj);
     }
 
-    fit("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
+    it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
         await frmdbEngine.init();
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};
@@ -130,7 +130,7 @@ describe('FrmdbEngine', () => {
 
     for (let TestRun = 1; TestRun <= 1; TestRun++) {
 
-        fit("Should allow consistent concurrent transactions " + TestRun, async (done) => {
+        it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
 
             let b1 = { _id: "B~~1", sum__: 1, x__: 7};
@@ -152,7 +152,7 @@ describe('FrmdbEngine', () => {
             done();
         });
 
-        fit("Should allow consistent concurrent transactions with auto-correct (stock reservation) " + TestRun, async (done) => {
+        it("Should allow consistent concurrent transactions with auto-correct (stock reservation) " + TestRun, async (done) => {
             await frmdbEngine.init();
 
             let b1 = { _id: "B~~1", sum__: 1, x__: 7};
@@ -170,7 +170,7 @@ describe('FrmdbEngine', () => {
             done();
         });
 
-        fit("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
+        it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
             frmdbEngine = new FrmdbEngine(frmdbTStore, accountTransferSchema);
             await frmdbEngine.init();
 

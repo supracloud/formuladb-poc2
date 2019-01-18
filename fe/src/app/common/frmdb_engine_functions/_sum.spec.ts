@@ -11,24 +11,16 @@ import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula } from "../formula_compiler";
-import { KeyValueStoreMem } from "../key_value_store_mem";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
 
 describe('FrmdbEngineStore _sum', () => {
-    let dataKVS: KeyObjStoreI;
-    let locksKVS: KeyObjStoreI;
-    let transactionsKVS: KeyObjStoreI;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
-
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStoreMem();
-        dataKVS = new KeyValueStoreMem();
-        locksKVS = new KeyValueStoreMem();
-        await dataKVS.clearDB();
-        await locksKVS.clearDB();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

@@ -20,7 +20,7 @@ export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
     private schemaDAO: SchemaDAO;
     public frmdbEngineTools: FrmdbEngineTools;
-    constructor(private frmdbEngineStore: FrmdbEngineStore, schema: Schema) {
+    constructor(public frmdbEngineStore: FrmdbEngineStore, schema: Schema) {
         this.schemaDAO = new SchemaCompiler(schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
         this.transactionRunner = new FrmdbTransactionRunner(frmdbEngineStore, this.frmdbEngineTools);

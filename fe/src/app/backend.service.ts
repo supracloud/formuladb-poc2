@@ -22,27 +22,26 @@ import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
-import { KeyValueStoreMem } from './common/key_value_store_mem';
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from './common/key_value_store_mem';
+import { MockMetadata } from './common/test/mocks/mock-metadata';
 
 export enum EnvType {
     Test = "Test",
     Live = "Live",
 }
 
-let TransactionsDB: KeyObjStoreI = new KeyValueStoreMem();
-let DataDB: KeyObjStoreI = new KeyValueStoreMem();
 
 @Injectable()
-export class BackendService extends FrmdbStore {
+export class BackendService {
 
     private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
     private dataChangeCallback: (docs: Array<KeyValueObj>) => void;
     private testFrmdbEngine: FrmdbEngine;
+    private frmdbStore: FrmdbStore;
     private envType: EnvType;
 
     constructor(private http: HttpClient) {
-        super(TransactionsDB, DataDB);
     }
 
     public async init(initCallback: () => void,
@@ -56,11 +55,11 @@ export class BackendService extends FrmdbStore {
         this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            let locksKVS = new KeyValueStoreMem();
-            let {mockMetadata, mockData} = await loadData(DataDB, TransactionsDB, locksKVS);
-            let schema = mockMetadata.schema;
-            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(TransactionsDB, DataDB, locksKVS), schema);
+            let mockMetadata = new MockMetadata();
+            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
+            this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
             await this.testFrmdbEngine.init(true);
+            await loadData(this.testFrmdbEngine, mockMetadata);
         }
 
         this.initCallback();
@@ -112,7 +111,7 @@ export class BackendService extends FrmdbStore {
 
                 dataObjs.push(dataObj);
             }
-            this.dataDB.putAll(dataObjs);
+            // this.frm.putAll(dataObjs);
         });
     }
 
@@ -132,17 +131,19 @@ export class BackendService extends FrmdbStore {
         this.notifCallback(event);
     }
 
-    public getTableData<T extends DataObj>(path: string): Promise<T[]> {
-        return this.dataDB.findByPrefix(path + '~~');
+    public getTableData(path: string): Promise<DataObj[]> {
+        return this.frmdbStore.getDataListByPrefix(path + '~~');
     }
 
     public async getDataObj(id: string): Promise<DataObj> {
-        let dataObj = await this.getObj(id);
+        let dataObj = await this.frmdbStore.getDataObj(id);
+        if (null == dataObj) throw new Error("Asked for non-existent object " + id + ".");
+
         let parentUUID = parseDataObjId(id).uid;
         let entity = this.getFrmdbEngineTools().schemaDAO.getEntityForDataObj(id);
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ == Pn.CHILD_TABLE) {
-                let subtableData = await this.dataDB.findByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
+                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
                 dataObj[prop.name] = subtableData;
             }
         }
@@ -151,7 +152,8 @@ export class BackendService extends FrmdbStore {
 
     public getTable(path: string): Promise<Table> {
 
-        return super.getTable(path).then(ti => {
+        return this.frmdbStore.getTable(path).then(ti => {
+            if (ti == null ) throw new Error("Asked for non existent table " + path + ".");
             return new Promise<Table>((resolve, reject) => {
                 addIdsToTable(ti);
                 resolve(ti);
@@ -159,15 +161,28 @@ export class BackendService extends FrmdbStore {
         });
     }
 
-    public setTable(t: Table): Promise<Table> {
-        return this.dataDB.put(t);
+    public async setTable(t: Table): Promise<Table> {
+        let ret = await this.frmdbStore.putTable(t);
+        if (null == ret ) throw new Error("Internal error saving table " + JSON.stringify(t) + ".");
+        return ret;
     }
 
     public getForm(path: string): Promise<Form> {
-        return super.getForm(path).then(fi => {
+        return this.frmdbStore.getForm(path).then(fi => {
+            if (fi == null ) throw new Error("Asked for non existent table " + path + ".");
             addIdsToForm(fi.grid);
             return fi;
         });
+    }
+
+    public getEntities(): Promise<Entity[]> {
+        return this.frmdbStore.getEntities();
+    }
+
+    public async getEntity(path: string): Promise<Entity> {
+        let ret = await this.frmdbStore.getEntity(path);
+        if (ret == null ) throw new Error("Asked for non existent table " + path + ".");
+        return ret;
     }
 
     /**

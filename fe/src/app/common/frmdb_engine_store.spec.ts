@@ -32,7 +32,7 @@ describe('frmdb_engine_store', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    fit("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
+    it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
         $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
         await frmdbEngineStore.createMapReduceView("sum1", {
@@ -78,7 +78,7 @@ describe('frmdb_engine_store', () => {
         }
     }
     
-    fit("Should allow to install formulas then query observers and aggregations", async (done) => {
+    it("Should allow to install formulas then query observers and aggregations", async (done) => {
         compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
         await frmdbEngineStore.installFormula(compiledFormula);
 
@@ -112,7 +112,7 @@ describe('frmdb_engine_store', () => {
     });
 
     describe('Table Relationships', () => {
-        fit("example REFERENCE_TO by _id", async (done) => {
+        it("example REFERENCE_TO by _id", async (done) => {
             compiledFormula = compileFormula('B', 'sum__', 'SUMIF(A.num, B$myB._id == @[_id])');
             await frmdbEngineStore.installFormula(compiledFormula);
 

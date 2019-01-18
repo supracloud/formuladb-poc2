@@ -8,12 +8,13 @@ import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduce
 
 
 export interface MapViewUpdates<VALUET> {
-    viewName: string,
-    map: { key: KVSArrayKeyType, value: VALUET }[],
-    mapDelete: KVSArrayKeyType[],
+    viewName: string;
+    map: { key: KVSArrayKeyType, value: VALUET }[];
+    mapDelete: KVSArrayKeyType[];
 }
 export interface MapReduceViewUpdates<VALUET> extends MapViewUpdates<VALUET> {
     reduce: { key: KVSArrayKeyType, value: VALUET }[];
+    reduceDelete: KVSArrayKeyType[];
 }
 
 export function isReduce<VALUET>(v: MapViewUpdates<VALUET> | MapReduceViewUpdates<VALUET>): v is MapReduceViewUpdates<VALUET> {
@@ -129,14 +130,15 @@ export class MapReduceView {
 
         return this._rangeQuery<string | number>(reduceFunction.kvs, queryOpts)
             .then(rows => {
-                return rows.reduce((acc, current) => {
+                return rows.reduce((acc, current, idx) => {
                     if (SumReduceFunN === reduceFunction.name) {
                         if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewName + ' _sum accepts only numbers but found (' + acc + ', ' + current + ')');
                         return acc + current;
                     } else if (CountReduceFunN === reduceFunction.name) {
                         if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewName + ' _count accepts only numbers but found (' + acc + ', ' + current + ')');
-                        return acc + 1;
+                        return acc + current;//this is "re-reduce" we must sum the counts from the reduce values per each key
                     } else if (TextjoinReduceFunN === reduceFunction.name) {
+                        if (0 == idx && acc == '') return current;
                         return acc + reduceFunction.delimiter + current;
                     } else {
                         throw new Error('Unknown reduce function ' + reduceFunction);
@@ -158,11 +160,11 @@ export class MapReduceView {
         return key.pop() + '';
     }
 
-    private preComputeMap<T extends (string | number)>(oldObj: KeyValueObj | null, newObj: KeyValueObj, valueExample: T | null): { ret: MapReduceViewUpdates<T>, newMapKey: KVSArrayKeyType, newMapValue: T, oldMapKey: KVSArrayKeyType | null, oldMapValue: T | null } {
+    private async preComputeMap<T extends (string | number)>(oldObj: KeyValueObj | null, newObj: KeyValueObj, valueExample: T | null): Promise<{ ret: MapReduceViewUpdates<T>, newMapKey: KVSArrayKeyType, newMapValue: T, oldMapKey: KVSArrayKeyType | null, oldMapValue: T | null, otherMapValueWithOldKeyExist: boolean | null }> {
         let viewName = this.viewName;
         if (oldObj && oldObj._id !== newObj._id) throw new Error("Unexpected view update for different objects " + oldObj._id + " !==  " + newObj._id);
 
-        let ret: MapReduceViewUpdates<T> = { viewName: viewName, map: [], mapDelete: [], reduce: [] };
+        let ret: MapReduceViewUpdates<T> = { viewName: viewName, map: [], mapDelete: [], reduce: [], reduceDelete: [] };
         let newMapKey = this.use$ROW$ ? evalExprES5({ $ROW$: newObj }, this.map.keyExpr) : evalExprES5(newObj, this.map.keyExpr);
         if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewName, newMapKey }));
 
@@ -174,6 +176,7 @@ export class MapReduceView {
 
         let oldMapKey: KVSArrayKeyType | null = null;
         let oldMapValue: T | null = null;
+        let otherMapValueWithOldKeyExist = true;
 
         if (oldObj) {
 
@@ -182,9 +185,17 @@ export class MapReduceView {
 
             oldMapValue = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.valueExpr) : evalExprES5(oldObj, this.map.valueExpr);
             if (valueExample != null && typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewName, newMapKey, newMapValue, oldMapKey, oldMapValue }));
+
+            let otherMapValuesWithOldKey = await this.mapKVS.rangeQuery({
+                startkey: oldMapKey,
+                endkey: oldMapKey.concat('\ufff0')
+            });
+            otherMapValueWithOldKeyExist = otherMapValuesWithOldKey.length > 0;
+
+            ret.mapDelete.push(MapReduceView.makeUniqueMapKey(oldMapKey, oldObj));
         }
 
-        return { ret, newMapKey, newMapValue, oldMapKey, oldMapValue };
+        return { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist };
     }
 
     /**
@@ -193,19 +204,24 @@ export class MapReduceView {
     public async preComputeViewUpdateForObj(oldObj: KeyValueObj | null, newObj: KeyValueObj): Promise<MapReduceViewUpdates<string | number>> {
         let rFun = this.reduceFunction;
         if (!rFun) {
-            let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = this.preComputeMap(oldObj, newObj, null);
+            let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = await this.preComputeMap(oldObj, newObj, null);
             return ret;
         } else {
 
             if (SumReduceFunN === rFun.name) {
-                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = this.preComputeMap<number>(oldObj, newObj, rFun.defaultValue);
+                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
+                    await this.preComputeMap<number>(oldObj, newObj, rFun.defaultValue);
                 let newReduceValue = await rFun.kvs.get(newMapKey) || rFun.defaultValue;
                 if (null != oldMapKey && null != oldMapValue) {
                     let oldReduceValue = await rFun.kvs.get(oldMapKey) || rFun.defaultValue;
                     if (_.isEqual(oldMapKey, newMapKey)) {
                         ret.reduce.push({ key: newMapKey, value: oldReduceValue - oldMapValue + newMapValue });
                     } else {
-                        ret.reduce.push({ key: newMapKey, value: oldReduceValue - oldMapValue });
+                        if (otherMapValueWithOldKeyExist) {
+                            ret.reduce.push({ key: oldMapKey, value: oldReduceValue - oldMapValue });
+                        } else {
+                            ret.reduceDelete.push(oldMapKey);
+                        }
                         ret.reduce.push({ key: newMapKey, value: newReduceValue + newMapValue });
                     }
                 } else {
@@ -213,14 +229,19 @@ export class MapReduceView {
                 }
                 return ret;
             } else if (CountReduceFunN === rFun.name) {
-                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = this.preComputeMap<number>(oldObj, newObj, rFun.defaultValue);
+                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
+                    await this.preComputeMap<number>(oldObj, newObj, rFun.defaultValue);
                 let newReduceValue = await rFun.kvs.get(newMapKey) || rFun.defaultValue;
                 if (null != oldMapKey && null != oldMapValue) {
                     let oldReduceValue = await rFun.kvs.get(oldMapKey) || rFun.defaultValue;
                     if (_.isEqual(oldMapKey, newMapKey)) {
                         ret.reduce.push({ key: newMapKey, value: oldReduceValue - 1 + 1 });
                     } else {
-                        ret.reduce.push({ key: newMapKey, value: oldReduceValue - 1 });
+                        if (otherMapValueWithOldKeyExist) {
+                            ret.reduce.push({ key: oldMapKey, value: oldReduceValue - 1 });
+                        } else {
+                            ret.reduceDelete.push(oldMapKey);
+                        }
                         ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
                     }
                 } else {
@@ -228,10 +249,15 @@ export class MapReduceView {
                 }
                 return ret;
             } else if (TextjoinReduceFunN === rFun.name) {
-                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = this.preComputeMap(oldObj, newObj, rFun.defaultValue);
-                let newReduceValue = await rFun.kvs.get(newMapKey) || rFun.defaultValue;
+                let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
+                    await this.preComputeMap(oldObj, newObj, rFun.defaultValue);
+
                 //WARNING: this reduce precomputation works only for unique keys
-                ret.reduce.push({ key: newMapKey, value: newMapValue });
+                if (null != oldMapKey && null != oldMapValue && !_.isEqual(oldMapKey, newMapKey) && !otherMapValueWithOldKeyExist) {
+                    ret.reduceDelete.push(oldMapKey);
+                } else {
+                    ret.reduce.push({ key: newMapKey, value: newMapValue });
+                }
                 return ret;
             } else {
                 throw new Error('Unknown reduce function ' + this.reduceFunction);
@@ -261,6 +287,9 @@ export class MapReduceView {
                 } else if (TextjoinReduceFunN === this.reduceFunction.name && typeof upd.value === 'string') {
                     await (this.reduceFunction.kvs as any /*wtf*/).set(upd.key, upd.value);
                 }
+            }
+            for (let key of updates.reduceDelete) {
+                await this.reduceFunction.kvs.del(key);
             }
         }
     }

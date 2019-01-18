@@ -98,7 +98,7 @@ class TransactionDAG {
     public getAllViewUpdates(): MapReduceViewUpdates<string | number>[] {
         let aggs = _.flatMap(_.values(this.objs), trObj => trObj.aggsViewsUpdates);
         let obs = _.flatMap(_.values(this.objs), trObj => trObj.obsViewsUpdates);
-        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => ({...o, reduce: []})));
+        let ret = aggs.concat(obs.map((o: MapViewUpdates<string | number>) => ({...o, reduce: [], reduceDelete: []})));
         return ret as MapReduceViewUpdates<string | number>[];
     }
     public getAllImpactedObjectIdsAndViewKeys(): string[] {

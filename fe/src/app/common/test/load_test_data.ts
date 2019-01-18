@@ -6,26 +6,26 @@
 import { MockMetadata } from "./mocks/mock-metadata";
 import { MockData } from "./mocks/mock-data";
 import { Forms___ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
-import { obj2MapES5 } from "../ts-utils";
-import { KeyObjStoreI } from "../key_value_store_i";
 import { REP___LargeSales_Form } from "./mocks/reports-ui-metadata";
+import { FrmdbEngine } from "../frmdb_engine";
+import { KeyValueObj } from "../domain/key_value_obj";
+import { UserActionEditedFormDataEvent } from "../domain/event";
 
+async function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj): Promise<UserActionEditedFormDataEvent> {
+    return await frmdbEngine.processEvent(new UserActionEditedFormDataEvent(obj)) as UserActionEditedFormDataEvent;
+}
 
-export async function loadData(dataDB: KeyObjStoreI, transactionsDB: KeyObjStoreI, locksDB: KeyObjStoreI): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
+export async function loadData(frmdbEngine: FrmdbEngine, mockMetadata: MockMetadata): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
     try {
-        var mockMetadata = new MockMetadata();
-
-        await dataDB.clearDB();
-        await transactionsDB.clearDB();
-        await locksDB.clearDB();
-
-        await dataDB.put(mockMetadata.schema);
+        await frmdbEngine.frmdbEngineStore.putSchema(mockMetadata.schema);
 
         let mockData = new MockData(mockMetadata.schema.entities);
-        await dataDB.putAll(mockData.getAll());
+        for (let obj of mockData.getAll()) {
+            await putObj(frmdbEngine, obj);
+        }
 
         [Forms___ServiceForm_Form_, REP___LargeSales_Form].forEach(async (formUiMeta) => {
-            await dataDB.put(formUiMeta);
+            await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
         });
 
         return {mockMetadata, mockData};

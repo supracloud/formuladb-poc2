@@ -11,7 +11,7 @@ import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
 
 describe('MapReduceView', () => {
-    fit('should precompute and compute basic SUM', async (done) => {
+    it('should precompute and compute basic SUM', async (done) => {
         let mapReduceView = new MapReduceView(new KeyValueStoreFactoryMem(), "tst", {
             entityName: 'A',
             keyExpr: [$s2e(`aY`)],

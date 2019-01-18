@@ -340,7 +340,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
                     valueExpr: inputRange.valueExpr,
                     query: includesMapFunctionAndQuery(inputRange) ? inputRange.query : {
                         startkeyExpr: [$s2e(`''`)],
-                        endkeyExpr: [$s2e(`'ZZZZZ'`)],
+                        endkeyExpr: [$s2e(`'\ufff0'`)],
                         inclusive_start: false,
                         inclusive_end: false,
                     }
@@ -354,7 +354,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
                 valueExpr: $s2e(`_id`),
                 query: {
                     startkeyExpr: [$s2e(`''`)],
-                    endkeyExpr: [$s2e(`'ZZZZZ'`)],
+                    endkeyExpr: [$s2e(`'\ufff0'`)],
                     inclusive_start: false,
                     inclusive_end: false,
                 }
@@ -401,7 +401,7 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
                     startkeyExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr
                         .concat($s2e(`null`)),
                     endkeyExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr
-                        .concat($s2e(`"ZZZZZ"`)),
+                        .concat($s2e(`"\ufff0"`)),
                     inclusive_start: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_start,
                     inclusive_end: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
                 }
@@ -447,7 +447,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
             valueExpr: $s2e(`_id`),
             query: {
                 startkeyExpr: inputRange.keyExpr.slice(0, -1),
-                endkeyExpr: inputRange.keyExpr.slice(0, -1).concat($s2e(`"ZZZZZ"`)),
+                endkeyExpr: inputRange.keyExpr.slice(0, -1).concat($s2e(`"\ufff0"`)),
                 inclusive_start: true,
                 inclusive_end: true,
             }
