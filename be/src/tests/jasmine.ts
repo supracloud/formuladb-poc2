@@ -17,7 +17,7 @@ try {
         "spec_dir": "dist",
         "spec_files": [
             "**/*.spec.js",
-            // "fe/src/app/common/key_value_store_pouchdb.spec.js"
+            // "fe/src/app/common/key_value_store_i.spec.js"
         ],
     });
 

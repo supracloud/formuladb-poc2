@@ -3,18 +3,17 @@
  * License TBD
  */
 
-import { BaseObj, SubObj } from "./domain/base_obj";
+import { KeyValueObj, SubObj } from "./domain/key_value_obj";
 import { Entity, EntityProperty, Schema } from "./domain/metadata/entity";
 import { DataObj, DataObjDeepPath } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyValueStoreI } from "./key_value_store_i";
-import { KeyValueStorePouchDB } from "./key_value_store_pouchdb";
-import { KeyValueError, IdRevObj } from "./domain/key_value_obj";
+import { KeyObjStoreI } from "./key_value_store_i";
+import { KeyValueError } from "./domain/key_value_obj";
 
 export class FrmdbStore {
-    constructor(protected transactionsDB: KeyValueStorePouchDB, protected dataDB: KeyValueStorePouchDB) { }
+    constructor(protected transactionsDB: KeyObjStoreI<MwzEvents>, protected dataDB: KeyObjStoreI<DataObj | Schema | Form | Table>) { }
 
     /**
      * UI Actions are Events, Events get sent to the Backend and become Transactions, the same domain model object is both Action/Event/Transaction
@@ -24,56 +23,65 @@ export class FrmdbStore {
         return this.transactionsDB.put(event);
     }
 
-    public queryDataWithDeepPath(referencedEntityName: DataObjDeepPath): Promise<DataObj[]> {
-        throw new Error('queryWithDeepPath not implemented yet!');
+    public getSchema(): Promise<Schema | null> {
+        return this.dataDB.get('FRMDB_SCHEMA') as Promise<Schema | null>;
     }
-
-    public getSchema(): Promise<Schema> {
-        return this.getObj('FRMDB_SCHEMA');
-    }
-    public setSchema(schema: Schema): Promise<Schema> {
-        return this.setObj(schema);
+    public putSchema(schema: Schema): Promise<Schema> {
+        return this.dataDB.put(schema) as Promise<Schema>;
     }
 
     public getEntities(): Promise<Entity[]> {
-        return this.getSchema().then(s => Object.values(s.entities));
+        return this.getSchema().then(s => s ? Object.values(s.entities) : []);
     }
 
-    public async getEntity(path: string): Promise<Entity> {
+    public async getEntity(path: string): Promise<Entity | null> {
         let schema = await this.getSchema();
         //the Entity's _id is the path
-        return schema.entities[path];
+        return schema ? schema.entities[path] : null;
     }
 
-    public getTable(path: string): Promise<Table> {
-        return this.getObj('Table_:' + path);
+    public async putEntity(entity: Entity): Promise<Entity | null> {
+        let schema = await this.getSchema();
+        if (!schema) throw new Error("Attempt to put entity in an empty schema " + JSON.stringify(entity));
+        schema.entities[entity._id] = entity;
+        //the Entity's _id is the path
+        return this.putSchema(schema)
+            .then(x => x ? entity : null);
     }
 
-    public getForm(path: string): Promise<Form> {
-        return this.getObj('Form_:' + path);
+    public getTable(path: string): Promise<Table | null> {
+        return this.dataDB.get('Table_:' + path) as Promise<Table | null>;
     }
 
-    public getDataObj(id: string): Promise<DataObj> {
-        return this.getObj(id);
+    public putTable(table: Table): Promise<Table | null> {
+        return this.dataDB.put(table) as Promise<Table | null>;
     }
 
-    public getObj<T extends BaseObj>(id: string): Promise<T> {
+    public getForm(path: string): Promise<Form | null> {
+        return this.dataDB.get('Form_:' + path) as Promise<Form | null>;
+    }
+
+    public putForm(form: Form): Promise<Form | null> {
+        return this.dataDB.put(form) as Promise<Form | null>;
+    }
+
+    public getDataObj(id: string): Promise<DataObj | null> {
         return this.dataDB.get(id);
     }
+    
+    public getDataListByPrefix(prefix: string): Promise<DataObj[]> {
+        return this.dataDB.findByPrefix(prefix);
+    }
 
-    public setObj<T extends BaseObj>(obj: T): Promise<T> {
+    public putDataObj(obj: DataObj): Promise<DataObj> {
         return this.dataDB.put(obj);
     }
-    
-    public putAllObj<T extends BaseObj>(objs: T[]): Promise<(T | KeyValueError)[]> {
-        return this.dataDB.putAll(objs);
-    }
-    
-    public getAllObjRevs(objIds: string[]): Promise<IdRevObj[]> {
-        return this.dataDB.listRevs(objIds);
+
+    public putAllObj(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
+        return this.dataDB.putBulk(objs);
     }
 
-    public forcePutForTestingPurposes<T extends BaseObj>(obj): Promise<T> {
-        return this.dataDB.forcePut(obj);
+    public delObj(id: string) {
+        return this.dataDB.del(id);
     }
 }

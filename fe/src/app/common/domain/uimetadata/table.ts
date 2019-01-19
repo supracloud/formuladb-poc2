@@ -3,11 +3,10 @@
  * License TBD
  */
 
-import { BaseObj, SubObj } from '../base_obj';
+import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Entity } from '../metadata/entity';
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { IdRevObj } from '../key_value_obj';
 
 export class TableColumn implements SubObj {
     _id: string;
@@ -23,13 +22,13 @@ export class ColumnFilter {
     value: string;
 }
 
-export class Table implements BaseObj {
+export class Table implements KeyValueObj {
     _id: string;
     _rev?: string;
     literal: string;
     columns: TableColumn[];
 }
-export function isTable(param: IdRevObj): param is Table {
+export function isTable(param: SubObj): param is Table {
     return param != null && typeof param === 'object' && param._id.indexOf('Table_:') == 0;    
 }
 

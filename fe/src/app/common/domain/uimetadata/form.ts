@@ -3,12 +3,11 @@
  * License TBD
  */
 
-import { BaseObj, SubObj } from '../base_obj';
+import { KeyValueObj, SubObj } from '../key_value_obj';
 import { EntityProperty, Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { Label } from './label';
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { IdRevObj } from '../key_value_obj';
 
 export enum NodeType {
     form_grid = "form_grid",
@@ -93,13 +92,13 @@ export class FormChart implements SubObj {
     groupByPropertyName?: string;
 }
 
-export class Form implements BaseObj {
+export class Form implements KeyValueObj {
     _id: string;
     _rev?: string;
     grid: FormGrid;
     stateGraph?: EntityStateGraph;
 }
-export function isForm(param: IdRevObj): param is Form {
+export function isForm(param: KeyValueObj): param is Form {
     return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;
 }
 

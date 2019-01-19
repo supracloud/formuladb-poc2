@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "../key_value_store_pouchdb";
+import { KeyObjStoreI } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
@@ -13,24 +13,27 @@ import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
 import { toStringCompiledFormula } from "../test/test_utils";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
 
 
 describe('FrmdbEngineStore _textjoin', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
+
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
 
+    async function putAndForceUpdateView(objOld, objNew, isAggs: boolean) {
+        await frmdbTStore.putDataObj(objNew); 
+        if (isAggs) {
+            await frmdbTStore.forceUpdateViewForObj(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, objOld, objNew);
+        } else {
+            await frmdbTStore.forceUpdateViewForObj(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName, objOld, objNew);
+        }
+    }
+    
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();
@@ -47,18 +50,18 @@ describe('FrmdbEngineStore _textjoin', () => {
         compiledFormula = compileFormula('B', 'list', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
-        let a1 = { "_id": "A~~1", "x": 3 }; await frmdbTStore.kvs().put(a1);
-        let a2 = { "_id": "A~~2", "x": 2 }; await frmdbTStore.kvs().put(a2);
-        let a3 = { "_id": "A~~3", "x": 5 }; await frmdbTStore.kvs().put(a3);
-        let a4 = { "_id": "A~~4", "x": 6 }; await frmdbTStore.kvs().put(a4);
-        let a5 = { "_id": "A~~5", "x": 7 }; await frmdbTStore.kvs().put(a5);
+        let a1 = { "_id": "A~~1", "x": 3 }; await putAndForceUpdateView(null, a1, true);
+        let a2 = { "_id": "A~~2", "x": 2 }; await putAndForceUpdateView(null, a2, true);
+        let a3 = { "_id": "A~~3", "x": 5 }; await putAndForceUpdateView(null, a3, true);
+        let a4 = { "_id": "A~~4", "x": 6 }; await putAndForceUpdateView(null, a4, true);
+        let a5 = { "_id": "A~~5", "x": 7 }; await putAndForceUpdateView(null, a5, true);
 
-        let b1 = { "_id": "B~~1", "idx": 0 }; await frmdbTStore.kvs().put(b1);
-        let b2 = { "_id": "B~~2", "idx": 1 }; await frmdbTStore.kvs().put(b2);
-        let b3 = { "_id": "B~~3", "idx": 0 }; await frmdbTStore.kvs().put(b3);
+        let b1 = { "_id": "B~~1", "idx": 0 }; await putAndForceUpdateView(null, b1, false);
+        let b2 = { "_id": "B~~2", "idx": 1 }; await putAndForceUpdateView(null, b2, false);
+        let b3 = { "_id": "B~~3", "idx": 0 }; await putAndForceUpdateView(null, b3, false);
 
-        let obsIndex = await frmdbTStore.debugGetAll(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName);
-        let aggsIndex = await frmdbTStore.debugGetAll(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+        let obsIndex = await frmdbTStore.mapQuery(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName);
+        let aggsIndex = await frmdbTStore.mapQuery(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
 
         let obs = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
         expect(obs.length).toEqual(2);
@@ -100,7 +103,7 @@ describe('FrmdbEngineStore _textjoin', () => {
         txt = await frmdbTStore.preComputeAggForObserverAndObservable(b2, a2, a2new, compiledFormula.triggers![0]);
         expect(txt).toEqual('A~~2;;A~~3;;A~~4;;A~~5');
 
-        await frmdbTStore.kvs().put(a2new);
+        await putAndForceUpdateView(a2, a2new, true);
         txt = await frmdbTStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(txt).toEqual('A~~1');
         txt = await frmdbTStore.getAggValueForObserver(b3, compiledFormula.triggers![0]);

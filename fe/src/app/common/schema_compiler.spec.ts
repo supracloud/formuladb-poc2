@@ -4,28 +4,8 @@
  */
 
 import * as _ from 'lodash';
-import { BinaryExpression, LogicalExpression } from 'jsep';
-import * as jsep from "jsep";
-
-import { INV___PRD, INV___Order } from "./test/mocks/inventory-metadata";
-import { Forms___ServiceForm } from "./test/mocks/forms-metadata";
 import { Entity, Schema, Pn, FormulaProperty } from "./domain/metadata/entity";
 import { SchemaCompiler } from "./schema_compiler";
-import { General___Actor, General___Currency } from './test/mocks/mock-metadata';
-import { Sn } from './domain/metadata/stored_procedure';
-import { CompiledFormula, MapReduceTrigger, ExecPlanN, 
-    CompiledScalarN,
-    MapKeyN,
-    MapFunctionN,
-    MapFunctionAndQueryN,
-    MapReduceKeysAndQueriesN,
-    MapReduceKeysQueriesAndValueN,
-    MapReduceTriggerN,
-    CompiledFormulaN,
-} from './domain/metadata/execution_plan';
-import { matchesTypeES5, evalExprES5, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from './map_reduce_utils';
-import { Fn } from './domain/metadata/functions';
-import { MapReduceQueryOptions } from './key_value_store_i';
 
 describe('SchemaCompiler', () => {
 

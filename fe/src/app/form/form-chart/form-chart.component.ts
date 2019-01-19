@@ -33,7 +33,7 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
   range: boolean = false;
 
   view: any[];
-  fitContainer: boolean = false;
+  itContainer: boolean = false;
 
   // options
   showXAxis = true;
