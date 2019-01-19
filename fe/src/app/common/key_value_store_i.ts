@@ -8,7 +8,9 @@ import * as Collate from 'pouchdb-collate';
 
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
+    /** The resulting rows are sorted by key */
     rangeQuery(opts: RangeQueryOptsBaseI<string>): Promise<VALUET[]>;
+    /** The resulting rows are sorted by key */
     rangeQueryWithKeys(opts: RangeQueryOptsBaseI<string>): Promise<{key: string, val: VALUET}[]>;
     set(key: string, val: VALUET): Promise<VALUET>;
     del(key: string): Promise<VALUET>;

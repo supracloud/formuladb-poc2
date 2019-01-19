@@ -44,7 +44,7 @@ describe('FrmdbEngineStore _textjoin', () => {
     });
 
     const textjoin1 = 'TEXTJOIN(IF(A._id, FLOOR(x/4) == @[idx]),";;")';
-    fit("B.list= " + textjoin1, async (done) => {
+    it("B.list= " + textjoin1, async (done) => {
 
         let formula = textjoin1;
         compiledFormula = compileFormula('B', 'list', formula);

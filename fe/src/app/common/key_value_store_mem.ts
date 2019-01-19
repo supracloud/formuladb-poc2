@@ -25,12 +25,19 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
         return simulateIO(this.db[_id]);
     }
 
+    /** querying a map-reduce view must return the results ordered by key */
     public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{key: string, val: VALUET}[]> {
         let ret = _.entries(this.db).filter(([_id, val]) =>
             (opts.startkey < _id && _id < opts.endkey)
             || (opts.inclusive_start && _id === opts.startkey)
             || (opts.inclusive_end && _id === opts.endkey)
-        ).map(([_id, val]) => ({key: _id, val: val}));
+        )
+        .sort(([keyA, valA], [keyB, valB]) => {
+            if (keyA < keyB) return -1;
+            if (keyA > keyB) return 1;
+            return 0;
+        })
+        .map(([_id, val]) => ({key: _id, val: val}));
         return simulateIO(ret);
     }
 

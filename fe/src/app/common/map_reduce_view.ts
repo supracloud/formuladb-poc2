@@ -186,13 +186,15 @@ export class MapReduceView {
             oldMapValue = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.valueExpr) : evalExprES5(oldObj, this.map.valueExpr);
             if (valueExample != null && typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewName, newMapKey, newMapValue, oldMapKey, oldMapValue }));
 
-            let otherMapValuesWithOldKey = await this.mapKVS.rangeQuery({
+            let otherMapValuesWithOldKey = await this.mapKVS.rangeQueryWithKeys({
                 startkey: oldMapKey,
                 endkey: oldMapKey.concat('\ufff0')
             });
-            otherMapValueWithOldKeyExist = otherMapValuesWithOldKey.length > 0;
+            otherMapValueWithOldKeyExist = otherMapValuesWithOldKey.length > 1;
 
-            ret.mapDelete.push(MapReduceView.makeUniqueMapKey(oldMapKey, oldObj));
+            if (!_.isEqual(oldMapKey, newMapKey)) {
+                ret.mapDelete.push(MapReduceView.makeUniqueMapKey(oldMapKey, oldObj));
+            }
         }
 
         return { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist };
@@ -255,9 +257,9 @@ export class MapReduceView {
                 //WARNING: this reduce precomputation works only for unique keys
                 if (null != oldMapKey && null != oldMapValue && !_.isEqual(oldMapKey, newMapKey) && !otherMapValueWithOldKeyExist) {
                     ret.reduceDelete.push(oldMapKey);
-                } else {
-                    ret.reduce.push({ key: newMapKey, value: newMapValue });
                 }
+                ret.reduce.push({ key: newMapKey, value: newMapValue });
+                
                 return ret;
             } else {
                 throw new Error('Unknown reduce function ' + this.reduceFunction);
@@ -297,5 +299,4 @@ export class MapReduceView {
     public getStringKeysForUpdates(updates: { key: any[], value: any }[]): string[] {
         return updates.map(u => this.mapKVS.id2str(u.key));
     }
-
 }
