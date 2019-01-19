@@ -38,7 +38,7 @@ export class FrmdbEngineTools {
     }
 
     public cleanupPropertyTypes(obj: DataObj): DataObj {
-        if (!obj._rev) return obj;
+        // if (!obj._rev) return obj;
 
         let entityName = parseDataObjId(obj._id).entityName;
         for (let key of Object.keys(obj)) {

@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { BaseObj } from './base_obj';
+import { KeyValueObj } from './key_value_obj';
 
-export class ChangeObj<T extends BaseObj> {
+export class ChangeObj<T extends KeyValueObj> {
     deleted?: boolean;
     synced?: boolean;
     obj: T;
@@ -20,7 +20,7 @@ export class ChangeObj<T extends BaseObj> {
  * @param existing 
  * @param changes 
  */
-export function applyChanges<T extends BaseObj>(existing: T[], changes: ChangeObj<T>[]): T[] {
+export function applyChanges<T extends KeyValueObj>(existing: T[], changes: ChangeObj<T>[]): T[] {
     let ret = [] as T[];
 
     //sync existing objects

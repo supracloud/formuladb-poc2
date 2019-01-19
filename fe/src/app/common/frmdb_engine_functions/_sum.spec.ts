@@ -5,29 +5,22 @@
 
 import * as _ from "../frmdb_lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "../key_value_store_pouchdb";
+import { KeyObjStoreI } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula } from "../formula_compiler";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
 
 describe('FrmdbEngineStore _sum', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
-
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

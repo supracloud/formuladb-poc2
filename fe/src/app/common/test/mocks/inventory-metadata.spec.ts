@@ -5,7 +5,7 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../../frmdb_engine_store";
-import { KeyValueStorePouchDB, PouchDB } from "../../key_value_store_pouchdb";
+import { KeyObjStoreI } from "../../key_value_store_i";
 
 import { compileFormula } from "../../formula_compiler";
 import { evalExprES5 } from "../../map_reduce_utils";
@@ -14,14 +14,12 @@ import { KeyValueObj } from "../../domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../../key_value_store_mem";
 
 
 
 
 describe('Inventory Metadata', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
@@ -36,13 +34,9 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         frmdbEngine = new FrmdbEngine(frmdbTStore, InventorySchema);
+        await frmdbEngine.init();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();
@@ -61,19 +55,16 @@ describe('Inventory Metadata', () => {
         let cf1 = compileFormula(INV___PRD___Location._id, 'received_stock__', INV___PRD___Location.props.received_stock__.formula);
         let cf2 = compileFormula(INV___PRD___Location._id, 'ordered_stock__', INV___PRD___Location.props.ordered_stock__.formula);
         let cf3 = compileFormula(INV___PRD___Location._id, 'available_stock__', INV___PRD___Location.props.available_stock__.formula);
-        await frmdbTStore.installFormula(cf1);
-        await frmdbTStore.installFormula(cf2);
-        await frmdbTStore.installFormula(cf3);
 
         let pl1 = { _id: "INV___PRD___Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
-        await frmdbTStore.kvs().put(pl1);
-        let ri1_1 = { _id: "INV___Receipt___Item~~11", productLocationId: "INV___PRD___Location~~1", quantity: 10}; 
-        await frmdbTStore.kvs().put(ri1_1);
-        let ri1_2 = { _id: "INV___Receipt___Item~~12", productLocationId: "INV___PRD___Location~~1", quantity: 5}; 
-        await frmdbTStore.kvs().put(ri1_2);
-        let oi1_1 = { _id: "INV___Order___Item~~11", productLocationId: "INV___PRD___Location~~1", quantity: 10};
-        await frmdbTStore.kvs().put(oi1_1);
-        let oi1_2 = { _id: "INV___Order___Item~~12", productLocationId: "INV___PRD___Location~~1", quantity: 4};
+        await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
+        let ri1_1 = { _id: "INV___Receipt___Item~~1___1", productLocationId: "INV___PRD___Location~~1", quantity: 10}; 
+        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
+        let ri1_2 = { _id: "INV___Receipt___Item~~1___2", productLocationId: "INV___PRD___Location~~1", quantity: 5}; 
+        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
+        let oi1_1 = { _id: "INV___Order___Item~~1___1", productLocationId: "INV___PRD___Location~~1", quantity: 10};
+        await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
+        let oi1_2 = { _id: "INV___Order___Item~~1___2", productLocationId: "INV___PRD___Location~~1", quantity: 4};
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);
@@ -90,14 +81,6 @@ describe('Inventory Metadata', () => {
         expect(obs.length).toEqual(1);
 
         let aggsViewName = cf2.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-        let tmp = await frmdbTStore.mapReduceQuery(aggsViewName, {
-            startkey: [null],
-            endkey: ["\ufff0"],
-            inclusive_start: false,
-            inclusive_end: false,
-            reduce: false,
-        });
-        let designDocs = await frmdbTStore.kvs().range('_design/', '_design0', false);
 
         let sum = await frmdbTStore.getAggValueForObserver(pl1, cf1.triggers![0]);
         expect(sum).toEqual(15);
@@ -105,7 +88,7 @@ describe('Inventory Metadata', () => {
         sum = await frmdbTStore.preComputeAggForObserverAndObservable(pl1, ri1_1, ri1_1new, cf1.triggers![0]);
         expect(sum).toEqual(16);
     
-        await frmdbTStore.kvs().put(ri1_1new);
+        await frmdbEngine.putDataObjAndUpdateViews(ri1_1, ri1_1new);
         pl1.received_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf1.triggers![0])) as number;
         expect(pl1.received_stock__).toEqual(16);
 
@@ -115,7 +98,7 @@ describe('Inventory Metadata', () => {
         let availStock = evalExprES5(pl1, cf3.finalExpression);
         expect(availStock).toEqual(6);
 
-        await frmdbTStore.kvs().put(oi1_2);
+        await frmdbEngine.putDataObjAndUpdateViews(null, oi1_2);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(14);
         
@@ -131,12 +114,10 @@ describe('Inventory Metadata', () => {
         expect(pl1.ordered_stock__).toEqual(16);
         availStock = evalExprES5(pl1, cf3.finalExpression);
         expect(availStock).toEqual(0);
-        let o: any = await frmdbTStore.kvs().get(oi1_2new._id);
+        let o: any = await frmdbTStore.getDataObj(oi1_2new._id);
         expect(o.quantity).toEqual(6);
         expect(o.error_quantity).toEqual(4);
         
         done();
-
     });
-    
 });

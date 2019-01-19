@@ -5,6 +5,7 @@
 
 import * as _ from "./frmdb_lodash";
 import { TransactionManager } from "./transaction_manager";
+import { KeyValueStoreFactoryMem } from "./key_value_store_mem";
 
 describe('TransactionManager', () => {
     beforeEach(async (done) => {
@@ -14,7 +15,7 @@ describe('TransactionManager', () => {
 
     it("Should serialize concurrent conflicting transactions", async (done) => {
         let counter = 1;
-        let transactionManager = new TransactionManager();
+        let transactionManager = new TransactionManager(new KeyValueStoreFactoryMem());
 
         async function incrementCounter() {
             return new Promise(resolve => setTimeout(() => {

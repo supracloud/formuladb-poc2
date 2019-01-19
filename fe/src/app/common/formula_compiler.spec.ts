@@ -26,7 +26,7 @@ import { CompiledFormula, MapReduceTrigger, ExecPlanN,
 } from './domain/metadata/execution_plan';
 import { matchesTypeES5, evalExprES5, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from './map_reduce_utils';
 import { Fn } from './domain/metadata/functions';
-import { MapReduceQueryOptions } from './key_value_store_i';
+import { SumReduceFunN, CountReduceFunN } from './domain/metadata/reduce_functions';
 
 describe('FormulaCompiler', () => {
     let compiledExpr;
@@ -55,20 +55,20 @@ describe('FormulaCompiler', () => {
         expect($ee2s(getQueryKeys('<', $s2e(`X`), false)))
             .toEqual({ startkeyExpr: [`''`], endkeyExpr: [`X`], inclusive_start: false, inclusive_end: false });
         expect($ee2s(getQueryKeys('<', $s2e(`X`), true)))
-            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'ZZZZZ'`], inclusive_start: false, inclusive_end: false });
+            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'\ufff0'`], inclusive_start: false, inclusive_end: false });
 
         expect($ee2s(getQueryKeys('<=', $s2e(`X`), false)))
             .toEqual({ startkeyExpr: [`''`], endkeyExpr: [`X`], inclusive_start: false, inclusive_end: true });
         expect($ee2s(getQueryKeys('<=', $s2e(`X`), true)))
-            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'ZZZZZ'`], inclusive_start: true, inclusive_end: false });
+            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'\ufff0'`], inclusive_start: true, inclusive_end: false });
 
         expect($ee2s(getQueryKeys('>', $s2e(`X`), false)))
-            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'ZZZZZ'`], inclusive_start: false, inclusive_end: false });
+            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'\ufff0'`], inclusive_start: false, inclusive_end: false });
         expect($ee2s(getQueryKeys('>', $s2e(`X`), true)))
             .toEqual({ startkeyExpr: [`''`], endkeyExpr: [`X`], inclusive_start: false, inclusive_end: false });
 
         expect($ee2s(getQueryKeys('>=', $s2e(`X`), false)))
-            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'ZZZZZ'`], inclusive_start: true, inclusive_end: false });
+            .toEqual({ startkeyExpr: [`X`], endkeyExpr: [`'\ufff0'`], inclusive_start: true, inclusive_end: false });
         expect($ee2s(getQueryKeys('>=', $s2e(`X`), true)))
             .toEqual({ startkeyExpr: [`''`], endkeyExpr: [`X`], inclusive_start: false, inclusive_end: true });
 
@@ -85,7 +85,7 @@ describe('FormulaCompiler', () => {
                     "keyExpr": ["cT"],
                     "query": {
                         "startkeyExpr": ["EOMONTH(@[bT], -1)"],
-                        "endkeyExpr": ["'ZZZZZ'"],
+                        "endkeyExpr": ["'\ufff0'"],
                         "inclusive_start": false,
                         "inclusive_end": false
                     }
@@ -123,7 +123,7 @@ describe('FormulaCompiler', () => {
                 "keyExpr": ["EOMONTH(@[bT], 0)"],
                 "query": {
                     "startkeyExpr": ["cT"],
-                    "endkeyExpr": ["'ZZZZZ'"],
+                    "endkeyExpr": ["'\ufff0'"],
                     "inclusive_start": true,
                     "inclusive_end": false
                 }
@@ -141,7 +141,7 @@ describe('FormulaCompiler', () => {
                     "keyExpr": ["aX"],
                     "query": {
                         "startkeyExpr": ["SQRT(@[bX])"],
-                        "endkeyExpr": ["'ZZZZZ'"],
+                        "endkeyExpr": ["'\ufff0'"],
                         "inclusive_start": false,
                         "inclusive_end": false
                     }
@@ -169,7 +169,7 @@ describe('FormulaCompiler', () => {
                     "keyExpr": ["aX"],
                     "query": {
                         "startkeyExpr": ["SQRT(@[bX])"],
-                        "endkeyExpr": ["'ZZZZZ'"],
+                        "endkeyExpr": ["'\ufff0'"],
                         "inclusive_start": true,
                         "inclusive_end": false
                     }
@@ -238,7 +238,7 @@ describe('FormulaCompiler', () => {
                 "keyExpr": ["SQRT(@[bX1])", "FACT(@[bY2])"],
                 "query": {
                     "startkeyExpr": ["cX", "cY"],
-                    "endkeyExpr": ["cX", "'ZZZZZ'"],
+                    "endkeyExpr": ["cX", "'\ufff0'"],
                     "inclusive_start": true,
                     "inclusive_end": false
                 }
@@ -266,7 +266,7 @@ describe('FormulaCompiler', () => {
                         inclusive_end: false,
                     }
                 },
-                reduceFun: '_sum',
+                reduceFun: {name: SumReduceFunN},
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: 'blu',
@@ -302,7 +302,7 @@ describe('FormulaCompiler', () => {
                         inclusive_end: false,
                     }
                 },
-                reduceFun: '_count',
+                reduceFun: {name: CountReduceFunN},
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: '',

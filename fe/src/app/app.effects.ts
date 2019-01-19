@@ -12,7 +12,7 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { BaseObj } from "./common/domain/base_obj";
+import { KeyValueObj } from "./common/domain/key_value_obj";
 import { DataObj } from "./common/domain/metadata/data_obj";
 import { Entity } from "./common/domain/metadata/entity";
 import { ChangeObj } from "./common/domain/change_obj";
@@ -93,7 +93,7 @@ export class AppEffects {
         }
     }
 
-    private listenFormDataChangesFromServer(docs: Array<BaseObj>) {
+    private listenFormDataChangesFromServer(docs: Array<KeyValueObj>) {
         console.log("%c <==== " + docs.map(x => x._id).join(','),
             "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), docs);
 

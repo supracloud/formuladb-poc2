@@ -7,10 +7,10 @@
 
 
 import * as _ from 'lodash';
-import { diffObj } from './base_obj';
+import { diffObj } from './key_value_obj';
 
 
-describe('base_obj', () => {
+describe('key_value_obj', () => {
     beforeEach(() => {
     });
 

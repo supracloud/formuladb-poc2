@@ -70,18 +70,18 @@ export function getQueryKeys(op: string, node: Expression, reverse?: boolean): M
         case '<':
             return !reverse ?
                 { startkeyExpr: [$s2e(`''`)], endkeyExpr: [node], inclusive_start: false, inclusive_end: false }
-                : { startkeyExpr: [node], endkeyExpr: [$s2e(`'ZZZZZ'`)], inclusive_start: false, inclusive_end: false };
+                : { startkeyExpr: [node], endkeyExpr: [$s2e(`'\ufff0'`)], inclusive_start: false, inclusive_end: false };
         case '<=':
             return !reverse ?
                 { startkeyExpr: [$s2e(`''`)], endkeyExpr: [node], inclusive_start: false, inclusive_end: true }
-                : { startkeyExpr: [node], endkeyExpr: [$s2e(`'ZZZZZ'`)], inclusive_start: true, inclusive_end: false };
+                : { startkeyExpr: [node], endkeyExpr: [$s2e(`'\ufff0'`)], inclusive_start: true, inclusive_end: false };
         case '>':
             return !reverse ?
-                { startkeyExpr: [node], endkeyExpr: [$s2e(`'ZZZZZ'`)], inclusive_start: false, inclusive_end: false }
+                { startkeyExpr: [node], endkeyExpr: [$s2e(`'\ufff0'`)], inclusive_start: false, inclusive_end: false }
                 : { startkeyExpr: [$s2e(`''`)], endkeyExpr: [node], inclusive_start: false, inclusive_end: false };
         case '>=':
             return !reverse ?
-                { startkeyExpr: [node], endkeyExpr: [$s2e(`'ZZZZZ'`)], inclusive_start: true, inclusive_end: false }
+                { startkeyExpr: [node], endkeyExpr: [$s2e(`'\ufff0'`)], inclusive_start: true, inclusive_end: false }
                 : { startkeyExpr: [$s2e(`''`)], endkeyExpr: [node], inclusive_start: false, inclusive_end: true };
         default: throw new Error("Expected logical binary operator but found " + op + '; ' + JSON.stringify([op, node], null, 4));
     }
@@ -398,8 +398,10 @@ function encodeViewNameURIComponent(str: string): string {
             .replace(/<=/g, "_le_")
     );
 }
-export function getViewName(isAggs: boolean, entityName, rawExpr: Expression) {
-    return (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
+export function getViewName(isAggs: boolean, entityName, rawExpr: Expression): string {
+    let ret = (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
+    ret = (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + rawExpr.origExpr;
+    return ret;
 }
 
 export function $ee2s(obj) {

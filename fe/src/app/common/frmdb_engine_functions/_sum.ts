@@ -23,12 +23,7 @@ export async function _sum_preComputeAggForObserverAndObservable(
         let current: number = getSumValue;
         let oldVal = observableOld ? evalExprES5(observableOld, args.valueExpr) : 0;
         let newVal: number;
-        if (null == observableOld && null != observableNew._rev) {
-            //new object already saved at a previous retry
-            newVal = 0;
-        } else {
-            newVal = evalExprES5(observableNew, args.valueExpr);
-        }
+        newVal = evalExprES5(observableNew, args.valueExpr);
     
         return preComputeAggForObserverAndObservableBase(store, observerObj, observableOld, observableNew, trigger, {
             newKeyMatches_oldKeyMatches: async (oldKey, newKey, newValue, startkey, endkey) => {

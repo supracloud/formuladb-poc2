@@ -1,3 +1,5 @@
+import { KeyValueStoreFactoryI } from "./key_value_store_i";
+
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
 }
@@ -10,16 +12,18 @@ class Transaction {
 export class TransactionManager {
     private currentTransactions: Map<string, Transaction> = new Map();
 
+    constructor(private kvsFactory: KeyValueStoreFactoryI) {}
+
     private sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     public async runTransaction(
         transactionId: string, 
-        transactionPrepareCallback: (retryNb: number) => Promise<string[]>, 
-        lockAcquiredCallback: () => Promise<any>,
+        prepareCallback: (retryNb: number) => Promise<string[]>, 
+        commitCallback: () => Promise<any>,
     ) {
-        let objIds = await transactionPrepareCallback(0);
+        let objIds = await prepareCallback(0);
         let newTrans = new Transaction(transactionId, new Set(objIds));
         
         this.currentTransactions.forEach(trans => {
@@ -40,8 +44,8 @@ export class TransactionManager {
         }
 
         console.log(ll(transactionId, 0) + "|executing transaction");
-        await transactionPrepareCallback(1);//re-prepare the transaction after conflicts have been resolved
-        await lockAcquiredCallback();
+        await prepareCallback(1);//re-prepare the transaction after conflicts have been resolved
+        await commitCallback();
 
         this.currentTransactions.forEach(trans => {
             if (trans.conflictingTransactions.has(newTrans.transactionId)) {

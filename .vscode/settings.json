@@ -19,6 +19,7 @@
         "VLOOKUP",
         "endkey",
         "jsep",
+        "objs",
         "startkey"
     ],
     "cSpell.enabledLanguageIds": [

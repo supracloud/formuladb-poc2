@@ -170,7 +170,7 @@ export function evalExprES5(doc, expr) {
 }
 
 /**
- * TODO: make sure this function uses the same string comparison as CouchDB/PouchDB (see: http://docs.couchdb.org/en/2.1.1/ddocs/views/collation.html)
+ * TODO: make sure this function uses the same string comparison as CouchDB (see: http://docs.couchdb.org/en/2.1.1/ddocs/views/collation.html)
  * @param k1 string[]
  * @param k2 string[]
  */

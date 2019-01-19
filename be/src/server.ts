@@ -12,13 +12,17 @@ import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
 import { loadData } from "../../fe/src/app/common/test/load_test_data";
-import { KeyValueStores } from "./keyValueStores";
+import { MockMetadata } from "../../fe/src/app/common/test/mocks/mock-metadata";
+import { FrmdbEngine } from "../../fe/src/app/common/frmdb_engine";
+import { FrmdbEngineStore } from "../../fe/src/app/common/frmdb_engine_store";
+import { KeyValueStoreFactoryMem } from "../../fe/src/app/common/key_value_store_mem";
 
-let kvs = Container.get(KeyValueStores);
+let mockMetadata = new MockMetadata();
+let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
-.then(() => kvs.init())
-.then(() => loadData(kvs.dataDB, kvs.transactionsDB, kvs.locksDB))
+.then(() => this.testFrmdbEngine.init(true))
+.then(() => loadData(testFrmdbEngine, mockMetadata))
 .then(() => {
   // Init the express application
   const app = require("./config/express").default();

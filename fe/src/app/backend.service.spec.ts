@@ -7,7 +7,7 @@ import { TestBed, inject } from '@angular/core/testing';
 
 import { BackendService } from './backend.service';
 
-xdescribe('PouchdbService', () => {
+xdescribe('BackendService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [BackendService]

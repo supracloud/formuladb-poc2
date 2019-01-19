@@ -5,30 +5,31 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { PouchDB, KeyValueStorePouchDB } from "../key_value_store_pouchdb";
+import { KeyObjStoreI } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
 
 describe('FrmdbEngineStore _count', () => {
-    let dataKVS: KeyValueStorePouchDB;
-    let transactionsKVS: KeyValueStorePouchDB;
-    let locksKVS: KeyValueStorePouchDB;
     let frmdbTStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
+    async function putAndForceUpdateView(objOld, objNew, isAggs: boolean) {
+        await frmdbTStore.putDataObj(objNew); 
+        if (isAggs) {
+            await frmdbTStore.forceUpdateViewForObj(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, objOld, objNew);
+        } else {
+            await frmdbTStore.forceUpdateViewForObj(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName, objOld, objNew);
+        }
+    }
 
     beforeEach(async (done) => {
-        transactionsKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_tr'));
-        dataKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs'));
-        locksKVS = new KeyValueStorePouchDB(new PouchDB('pouch_db_specs_lk'));
-        await dataKVS.removeAll();
-        await locksKVS.removeAll();
-        frmdbTStore = new FrmdbEngineStore(transactionsKVS, dataKVS, locksKVS);
+        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();
@@ -48,13 +49,11 @@ describe('FrmdbEngineStore _count', () => {
         compiledFormula = compileFormula('A', 'idx', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
-        let a1 = { "_id": "A~~1", "x": 1 }; await frmdbTStore.kvs().put(a1);
-        let a2 = { "_id": "A~~2", "x": 3 }; await frmdbTStore.kvs().put(a2);
-        let a3 = { "_id": "A~~3", "x": 5 }; await frmdbTStore.kvs().put(a3);
-        let a4 = { "_id": "A~~4", "x": 7 }; await frmdbTStore.kvs().put(a4);
+        let a1 = { "_id": "A~~1", "x": 1 }; await putAndForceUpdateView(null, a1, true); await putAndForceUpdateView(null, a1, false);
+        let a2 = { "_id": "A~~2", "x": 3 }; await putAndForceUpdateView(null, a2, true); await putAndForceUpdateView(null, a2, false);
+        let a3 = { "_id": "A~~3", "x": 5 }; await putAndForceUpdateView(null, a3, true); await putAndForceUpdateView(null, a3, false);
+        let a4 = { "_id": "A~~4", "x": 7 }; await putAndForceUpdateView(null, a4, true); await putAndForceUpdateView(null, a4, false);
 
-        let designDocs = await frmdbTStore.kvs().range('_design', '_design', false);
-        
         let f = Fn.FLOOR(`x/4`, `1`) + ` * 4`;
         let x = evalExprES5(a3, $s2e(f));
 
@@ -107,16 +106,16 @@ describe('FrmdbEngineStore _count', () => {
         compiledFormula = compileFormula('B', 'rank', formula);
         await frmdbTStore.installFormula(compiledFormula);
 
-        let a1 = { "_id": "A~~1", "x": 1 }; await frmdbTStore.kvs().put(a1);
-        let a2 = { "_id": "A~~2", "x": 3 }; await frmdbTStore.kvs().put(a2);
-        let a3 = { "_id": "A~~3", "x": 5 }; await frmdbTStore.kvs().put(a3);
-        let a4 = { "_id": "A~~4", "x": 6 }; await frmdbTStore.kvs().put(a4);
+        let a1 = { "_id": "A~~1", "x": 1 }; await putAndForceUpdateView(null, a1, true);
+        let a2 = { "_id": "A~~2", "x": 3 }; await putAndForceUpdateView(null, a2, true);
+        let a3 = { "_id": "A~~3", "x": 5 }; await putAndForceUpdateView(null, a3, true);
+        let a4 = { "_id": "A~~4", "x": 6 }; await putAndForceUpdateView(null, a4, true);
 
-        let b1 = { "_id": "B~~1", "idx": 2 }; await frmdbTStore.kvs().put(b1);
-        let b2 = { "_id": "B~~2", "idx": 7 }; await frmdbTStore.kvs().put(b2);
+        let b1 = { "_id": "B~~1", "idx": 2 }; await putAndForceUpdateView(null, b1, false);
+        let b2 = { "_id": "B~~2", "idx": 7 }; await putAndForceUpdateView(null, b2, false);
 
-        let obsIndex = await frmdbTStore.debugGetAll(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName);
-        let aggsIndex = await frmdbTStore.debugGetAll(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+        let obsIndex = await frmdbTStore.mapQuery(compiledFormula.triggers![0].mapObserversImpactedByOneObservable.obsViewName);
+        let aggsIndex = await frmdbTStore.mapQuery(compiledFormula.triggers![0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
 
         let obs = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
         expect(obs.length).toEqual(1);
@@ -148,7 +147,7 @@ describe('FrmdbEngineStore _count', () => {
         count = await frmdbTStore.preComputeAggForObserverAndObservable(b2, a2, a2new, compiledFormula.triggers![0]);
         expect(count).toEqual(3);
 
-        await frmdbTStore.kvs().put(a2new);
+        await putAndForceUpdateView(a2, a2new, true);
         count = await frmdbTStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(count).toEqual(1);
         count = await frmdbTStore.getAggValueForObserver(b2, compiledFormula.triggers![0]);
