@@ -7,7 +7,6 @@
 test:
   stage: test
   script:
-    - npm install
     - cd be && npm install
     - cd ..
     - cd fe && npm install
