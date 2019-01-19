@@ -21,10 +21,12 @@ import { BackendService } from './backend.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import * as appState from './app.state';
+import { FrmdbPopupDirective } from './dev-mode-common/frmdb-popup.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
+    FrmdbPopupDirective,
   ],
   imports: [
     BrowserModule,

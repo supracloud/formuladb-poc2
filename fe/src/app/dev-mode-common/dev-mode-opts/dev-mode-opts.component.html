@@ -1,0 +1,74 @@
+<ng-container *ngIf="developerMode">
+  <div class="divider"></div>
+  <a class="dropdown-item" href="javascript:void(0)">
+    <img src="/assets/flags/us.png" (click)="switchLanguage('us')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/de.png" (click)="switchLanguage('de')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/fr.png" (click)="switchLanguage('fr')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/es.png" (click)="switchLanguage('es')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/gr.png" (click)="switchLanguage('gr')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/it.png" (click)="switchLanguage('it')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/pl.png" (click)="switchLanguage('pl')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/pt.png" (click)="switchLanguage('pt')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/ro.png" (click)="switchLanguage('ro')" style="margin-right: 5px; cursor: pointer" />
+    <img src="/assets/flags/sv.png" (click)="switchLanguage('sv')" style="margin-right: 5px; cursor: pointer" />
+    &nbsp;
+  </a>
+  <div class="divider"></div>
+  <a class="dropdown-item" href="javascript:void(0)">
+    <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></i>
+    <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></i>
+    <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></i>
+    <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></i>
+    <i class="nc-icon nc-palette" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></i>
+    &nbsp;
+  </a>
+  <div class="divider"></div>
+  <a class="dropdown-item" disabled href="javascript:void(0)">
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-4.jpg')" src="/assets/sidebar_images/sidebar-4.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-1.jpg')" src="/assets/sidebar_images/sidebar-1.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-2.jpg')" src="/assets/sidebar_images/sidebar-2.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-3.jpg')" src="/assets/sidebar_images/sidebar-3.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-5.jpg')" src="/assets/sidebar_images/sidebar-5.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-6.jpg')" src="/assets/sidebar_images/sidebar-6.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-7.jpg')" src="/assets/sidebar_images/sidebar-7.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-8.jpg')" src="/assets/sidebar_images/sidebar-8.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-9.jpg')" src="/assets/sidebar_images/sidebar-9.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-10.jpg')" src="/assets/sidebar_images/sidebar-10.jpg"
+      style="margin-right: 4px" />
+    <img height="50" width="30" (click)="switchSideBarImage('/assets/sidebar_images/sidebar-11.jpg')" src="/assets/sidebar_images/sidebar-11.jpg"
+      style="margin-right: 4px" />
+  </a>
+  <div class="divider"></div>
+  <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="60" width="80" src="/assets/light.jpg" />
+    Light Theme</a>
+  <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="60" width="80" src="/assets/material.jpg" />
+    Material Theme</a>
+  <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="60" width="80" src="/assets/nowui.jpg" />
+    NowUI Theme</a>
+  <div class="divider"></div>
+  <a class="dropdown-item" href="javascript:void(0)">
+    <span title="{{'add table' | i18n}}" class="add-del-things" (click)="addTable()">
+      <fa-icon [icon]="tableIcon" class="fa-sm"></fa-icon><sup>
+        <fa-icon [icon]="addIcon" class="fa-xs"></fa-icon>
+      </sup>
+    </span>
+    <span title="{{'add table' | i18n}}" class="add-del-things" (click)="addColumnToCurrentTable()">
+      <fa-icon [icon]="columnIcon" class="fa-sm"></fa-icon><sup>
+        <fa-icon [icon]="addIcon" class="fa-xs"></fa-icon>
+      </sup>
+    </span>
+    <input type="text" />
+  </a>
+</ng-container>
+<div class="divider"></div>
+<a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{
+  ((developerMode) ? 'Disable-Developer-Mode' : 'Enable-Developer-Mode' ) | i18n}}</a>

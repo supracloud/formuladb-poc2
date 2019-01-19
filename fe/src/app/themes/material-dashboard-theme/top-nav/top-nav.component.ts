@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TopNavComponent as TopNavComponentBase } from '../../default-theme/top-nav/top-nav.component'
 import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
 
 import * as appState from '../../../app.state';
 
@@ -11,10 +9,9 @@ import * as appState from '../../../app.state';
   templateUrl: './top-nav.component.html',
   styleUrls: ['./top-nav.component.scss']
 })
-export class TopNavComponent extends TopNavComponentBase {
+export class TopNavComponent {
 
-  constructor(store: Store<appState.AppState>, router: Router) {
-    super(store, router);
+  constructor(store: Store<appState.AppState>) {
   }
 
   ngOnInit() {

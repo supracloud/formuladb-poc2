@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormulaEditorInfoComponent } from './formula-editor-info.component';
+import { DevModeOptsComponent } from './dev-mode-opts.component';
 
-describe('FormulaEditorInfoComponent', () => {
-  let component: FormulaEditorInfoComponent;
-  let fixture: ComponentFixture<FormulaEditorInfoComponent>;
+describe('DevModeOptsComponent', () => {
+  let component: DevModeOptsComponent;
+  let fixture: ComponentFixture<DevModeOptsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormulaEditorInfoComponent ]
+      declarations: [ DevModeOptsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormulaEditorInfoComponent);
+    fixture = TestBed.createComponent(DevModeOptsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

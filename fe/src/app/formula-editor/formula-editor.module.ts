@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { FormulaCodeEditorComponent } from './formula-code-editor/formula-code-editor.component';
 import { ToggleFormulaEditorDirective } from './toggle-formula-editor.directive';
 import { CurrentFormulaDirective } from './current-formula.directive';
-import { FormulaEditorInfoComponent } from './formula-editor-info/formula-editor-info.component';
 
 @NgModule({
   imports: [
@@ -14,13 +13,11 @@ import { FormulaEditorInfoComponent } from './formula-editor-info/formula-editor
   ],
   declarations: [
     FormulaCodeEditorComponent, 
-    FormulaEditorInfoComponent, 
     ToggleFormulaEditorDirective, 
-    CurrentFormulaDirective, 
-    FormulaEditorInfoComponent],
+    CurrentFormulaDirective
+    ],
   exports: [
     FormulaCodeEditorComponent, 
-    FormulaEditorInfoComponent, 
     ToggleFormulaEditorDirective, 
     CurrentFormulaDirective]
 })

@@ -68,7 +68,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
 
 export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<OBJT> implements KeyObjStoreI<OBJT> {
     public findByPrefix(prefix: string): Promise<OBJT[]> {
-        return this.rangeQuery({ startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false });
+        return this.rangeQuery({ startkey: prefix, endkey: prefix + "\ufff0", inclusive_start: true, inclusive_end: false });
     }
     public put(obj: OBJT): Promise<OBJT> {
         return this.set(obj._id, obj);

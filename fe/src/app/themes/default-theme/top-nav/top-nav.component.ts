@@ -5,7 +5,6 @@ import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
-import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 
 @Component({
   selector: 'frmdb-top-nav',
@@ -13,46 +12,16 @@ import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
   styleUrls: ['./top-nav.component.scss']
 })
 export class TopNavComponent implements OnInit, OnDestroy {
+
   protected subscriptions: Subscription[] = [];
 
   developerMode: boolean = false;
-  editorOpened: boolean = false;
 
-  constructor(protected store: Store<appState.AppState>, private router: Router) {
+  constructor(protected store: Store<appState.AppState>) {
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(prop => this.developerMode = prop));
   }
 
   ngOnInit() {
-  }
-
-  switchTheme(themeIdx: number) {
-    this.router.navigate([this.router.url.replace(/\/\d+\/?/, '/' + themeIdx + '/')]);
-  }
-
-  switchThemeColorPalette(color: string) {
-    this.store.dispatch(new ThemeColorPaletteChangedAction(color));
-  }
-
-  switchLanguage(language: string) {
-    
-  }
-
-  switchSideBarImage(url: string) {
-    this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
-  }
-
-  formulaFocused() {
-    this.editorOpened = true;
-  }
-
-  toggleFormulaEditor() {
-    if (!this.developerMode) return;
-
-    this.editorOpened = !this.editorOpened;
-  }
-  
-  toggleDeveloperMode() {
-    this.store.dispatch(new appState.CoreToggleDeveloperModeAction());
   }
 
   ngOnDestroy() {

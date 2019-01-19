@@ -213,28 +213,14 @@ export class AppEffects {
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.UserActionSelectedEntity(entity));
 
-            let table: Table;
-            try {
-                table = await this.backendService.getTable(path);
-            } catch (err) {
-                if (err.status == 404) {
-                    table = getDefaultTable(entity);
-                } else throw err;
-            }
+            let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
             this.store.dispatch(new appState.ResetTableDataFromBackendAction(entity, []));
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
             let tableData = await this.backendService.getTableData(path);
             this.store.dispatch(new appState.TableDataFromBackendAction(tableData.map(obj => new ChangeObj<DataObj>(obj))))
 
-            let form: Form;
-            try {
-                form = await this.backendService.getForm(path);
-            } catch (err) {
-                if (err.status == 404) {
-                    form = getDefaultForm(entity, this.cachedEntitiesMap);
-                } else throw err;
-            }
+            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
             this.store.dispatch(new appState.FormFromBackendAction(form));
 
         } catch (err) {
