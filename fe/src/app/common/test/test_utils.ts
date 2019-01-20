@@ -38,8 +38,8 @@ export function toStringCompiledFormula(formula: string, compiledFormula: Compil
 }
 
 export function logCompileFormula(formula: string, compiledFormula: CompiledFormula) {
-    if (typeof global !== 'undefined' && typeof require !== 'undefined' && global['FRMDB_TRACE_COMPILE_FORMULA'] === true) {
+/*     if (typeof global !== 'undefined' && typeof require !== 'undefined' && global['FRMDB_TRACE_COMPILE_FORMULA'] === true) {
         const fs = require('fs');
         fs.appendFileSync(__dirname + '/' + "compiledFormulaExamples.md", toStringCompiledFormula(formula, compiledFormula));
-    }
+    } */
 }

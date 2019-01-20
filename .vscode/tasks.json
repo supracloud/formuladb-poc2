@@ -75,5 +75,31 @@
                 "base": "$tsc-watch",
             }
         }
+        {
+            "label": "Storage Build",
+            "command": "npm",
+            "type": "shell",
+            "options": {
+                "cwd": "./storage",
+            },
+            "args": [
+                "run",
+                "compile:watch"
+            ],
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "isBackground": true,
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": {
+                "base": "$tsc-watch",
+            }
+        }
     ]
 }

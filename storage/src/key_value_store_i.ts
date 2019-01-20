@@ -4,7 +4,7 @@
  */
 
 import { KeyValueError, KeyValueObj } from "./domain/key_value_obj";
-import * as Collate from 'pouchdb-collate';
+import * as FormuladbCollate from './utils/collator';
 
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
@@ -25,10 +25,10 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
 }
 
 export function kvsKey2Str(key: any): string {
-    return Collate.toIndexableString(key);
+    return FormuladbCollate.toIndexableString(key);
 }
 export function kvsStr2Key(key: string): any {
-    return Collate.parseIndexableString(key);
+    return FormuladbCollate.parseIndexableString(key);
 }
 
 class KeyValueStoreBase<KEYT, VALUET> {

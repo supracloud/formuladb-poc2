@@ -57,6 +57,24 @@
             "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
             "sourceMaps": true,
             "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
+        },
+        {
+            "name": "Storage specs Jasmine",
+            "type": "node",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect"
+            ],
+            "env": {
+                "DEBUG": "pouchdb:*"
+            },
+            "protocol": "inspector",
+            "request": "launch",
+            "cwd": "${workspaceRoot}/storage",
+            "program": "${workspaceRoot}/storage/src/tests/jasmine.ts",
+            "sourceMaps": true,
+            "outFiles": ["${workspaceRoot}/storage/dist/**/*.js"]
         }
     ]
 }
