@@ -4,17 +4,17 @@
  */
 
 import { Entity, Pn, EntityProperty } from '../../domain/metadata/entity';
-import { General___Actor } from './general-metadata';
+import { GEN___Actor } from './general-metadata';
 
 export const Financial = {
-    _id: "Financial",
+    _id: "FIN",
     module_: true,
     props: {},
 };
 
 
-export const Financial___Account = {
-    _id: "Financial___Account",
+export const FIN___Account = {
+    _id: "FIN___Account",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -22,7 +22,7 @@ export const Financial___Account = {
         actor: {
             name: "actor",
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: General___Actor._id,
+            referencedEntityName: GEN___Actor._id,
             snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
@@ -31,14 +31,14 @@ export const Financial___Account = {
     }
 };
 
-export const Financial___Transaction = {
-    _id: "Financial___Transaction",
+export const FIN___Transaction = {
+    _id: "FIN___Transaction",
     props: {
 
         accountDebit: {
             name: "accountDebit",
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: Financial___Account._id,
+            referencedEntityName: FIN___Account._id,
             snapshotCurrentValueOfProperties: [
                 "code",
                 "name",
@@ -47,7 +47,7 @@ export const Financial___Transaction = {
         accountCredit: {
             name: "accountCredit",
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: Financial___Account._id,
+            referencedEntityName: FIN___Account._id,
             snapshotCurrentValueOfProperties: [
                 "code",
                 "name",

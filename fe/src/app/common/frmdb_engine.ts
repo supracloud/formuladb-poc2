@@ -46,24 +46,24 @@ export class FrmdbEngine {
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + JSON.stringify(event));
 
         switch (event.type_) {
-            case events.UserActionEditedFormDataN:
+            case events.ServerEventModifiedFormDataN:
                 return this.transactionRunner.computeFormulasAndSave(event);
-            case events.UserActionEditedFormN:
+            case events.ServerEventModifiedFormN:
                 return this.processForm(event);
-            case events.UserActionEditedTableN:
+            case events.ServerEventModifiedTableN:
                 return this.processTable(event);
-            case events.UserActionNewEntityN:
+            case events.ServerEventNewEntityN:
                 return this.newEntity(event)
-            case events.UserActionDeleteEntityN:
+            case events.ServerEventDeleteEntityN:
                 return this.deleteEntity(event);
-            case events.UserActionEditedEntityN:
+            case events.ServerEventModifiedEntityN:
                 return this.processEntity(event);
             default:
                 return Promise.reject("n/a event");
         }
     }
 
-    private processForm(event: events.UserActionEditedFormEvent): Promise<events.MwzEvents> {
+    private processForm(event: events.ServerEventModifiedFormEvent): Promise<events.MwzEvents> {
         return this.frmdbEngineStore.getForm(event.form._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
@@ -81,7 +81,7 @@ export class FrmdbEngine {
             ;
     }
 
-    private processTable(event: events.UserActionEditedTableEvent): Promise<events.MwzEvents> {
+    private processTable(event: events.ServerEventModifiedTableEvent): Promise<events.MwzEvents> {
         return this.frmdbEngineStore.getTable(event.table._id)
             .catch(err => { console.log(err); return; })
             .then(tbl => {
@@ -97,7 +97,7 @@ export class FrmdbEngine {
             ;
     }
 
-    private newEntity(event: events.UserActionNewEntity): Promise<events.MwzEvents> {
+    private newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         let newEntity: Entity = { _id: event.path, props: {} };
 
         return this.frmdbEngineStore.putEntity(newEntity)
@@ -109,8 +109,8 @@ export class FrmdbEngine {
             ;
     }
 
-    private deleteEntity(event: events.UserActionDeleteEntity): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.delObj(event.entity._id)
+    private deleteEntity(event: events.ServerEventDeleteEntity): Promise<events.MwzEvents> {
+        return this.frmdbEngineStore.delObj(event.entityId)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
@@ -119,7 +119,7 @@ export class FrmdbEngine {
             ;
     }
 
-    private processEntity(event: events.UserActionEditedEntity): Promise<events.MwzEvents> {
+    private processEntity(event: events.ServerEventModifiedEntity): Promise<events.MwzEvents> {
         return this.frmdbEngineStore.putEntity(event.entity)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly

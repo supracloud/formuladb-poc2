@@ -185,6 +185,15 @@ export class BackendService {
         return ret;
     }
 
+
+    public async newEntity(path: string): Promise<Entity> {
+        let newEntity: Entity = {
+            _id: path,
+            props: {},
+        };
+        return this.frmdbStore.putEntity(newEntity);
+    }
+    
     /**
      * Handle Http operation that failed.
      * Let the app continue.

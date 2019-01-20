@@ -27,7 +27,7 @@ export const MBK___Estimate = {
     _id: "MBK___Estimate",
     props: {
         date: { name: 'date', propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
-        client: { name: 'client', propType_: Pn.STRING, "allowNull": false } as EntityProperty,//should be reference to General___Client
+        client: { name: 'client', propType_: Pn.STRING, "allowNull": false } as EntityProperty,//should be reference to GEN___Client
         //etc...
         totalPlayers: { name: "totalPlayers", propType_: Pn.FORMULA, formula: 'SUMIF(MBK___Estimate___Service.musicians, estimateId == @[_id])' } as EntityProperty,
         services$: {
@@ -82,6 +82,6 @@ export const MBK___Email = {
     _id: "MBK___Email",
     props: {
         date: { name: 'date', propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
-        template: { name: 'template', propType_: Pn.STRING, "allowNull": false } as EntityProperty,//should be reference to General___Client
+        template: { name: 'template', propType_: Pn.STRING, "allowNull": false } as EntityProperty,//should be reference to GEN___Client
     },
 };

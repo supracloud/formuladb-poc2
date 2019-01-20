@@ -12,7 +12,7 @@ import { Forms___ServiceForm } from "./test/mocks/forms-metadata";
 import { Entity, Schema, Pn } from "./domain/metadata/entity";
 import { compileFormula, $ee2s, getQueryKeys, extractKeysAndQueriesFromBinaryExpression, extractKeysAndQueriesFromLogicalExpression, $s2e } from "./formula_compiler";
 import { KeyValueStoreMem } from "./key_value_store_mem";
-import { General___Actor, General___Currency } from './test/mocks/mock-metadata';
+import { GEN___Actor, GEN___Currency } from './test/mocks/mock-metadata';
 import { Sn } from './domain/metadata/stored_procedure';
 import { CompiledFormula, MapReduceTrigger, ExecPlanN, 
     CompiledScalarN,

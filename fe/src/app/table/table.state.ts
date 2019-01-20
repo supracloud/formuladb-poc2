@@ -36,9 +36,9 @@ export const tableInitialState: TableState = {
 export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
 export const RestTableDataFromBackendActionN = "[table] ResetTableDataFromBackendAction";
 export const TableFromBackendActionN = "[table] TableFromBackendAction";
-export const UserActionEditedTableN = events.UserActionEditedTableN;
-export const UserActionSelectedRowForEditingN = "[table] UserActionSelectedRowForEditing";
-export const UserActionNewRowN = "[table] UserActionNewRow";
+export const ServerEventModifiedTableN = events.ServerEventModifiedTableN;
+export const ServerEventSelectedRowForEditingN = "[table] ServerEventSelectedRowForEditing";
+export const ServerEventNewRowN = "[table] ServerEventNewRow";
 export const UserSelectCellN = "[table] UserSelectCell";
 
 export class TableDataFromBackendAction implements Action {
@@ -53,12 +53,12 @@ export class ResetTableDataFromBackendAction implements Action {
   constructor(public entity: Entity, public tableData: DataObj[]) { }
 }
 
-export class UserActionEditedTable implements Action {
-  readonly type = UserActionEditedTableN;
-  public event: events.UserActionEditedTableEvent;
+export class ServerEventModifiedTable implements Action {
+  readonly type = ServerEventModifiedTableN;
+  public event: events.ServerEventModifiedTableEvent;
 
   constructor(public table: Table) {
-    this.event = new events.UserActionEditedTableEvent(table);
+    this.event = new events.ServerEventModifiedTableEvent(table);
   }
 }
 
@@ -68,14 +68,14 @@ export class TableFormBackendAction implements Action {
   constructor(public table: Table) { }
 }
 
-export class UserActionSelectedRowForEditing implements Action {
-  readonly type = UserActionSelectedRowForEditingN;
+export class ServerEventSelectedRowForEditing implements Action {
+  readonly type = ServerEventSelectedRowForEditingN;
 
   constructor(public row: DataObj) { }
 }
 
-export class UserActionNewRow implements Action {
-  readonly type = UserActionNewRowN;
+export class ServerEventNewRow implements Action {
+  readonly type = ServerEventNewRowN;
 
   constructor(type_: string) { }
 }
@@ -90,9 +90,9 @@ export type TableActions =
   | TableDataFromBackendAction
   | ResetTableDataFromBackendAction
   | TableFormBackendAction
-  | UserActionEditedTable
-  | UserActionSelectedRowForEditing
-  | UserActionNewRow
+  | ServerEventModifiedTable
+  | ServerEventSelectedRowForEditing
+  | ServerEventNewRow
   | UserSelectCell
   ;
 

@@ -11,7 +11,7 @@ import { compileFormula } from "../../formula_compiler";
 import { evalExprES5 } from "../../map_reduce_utils";
 import { INV___PRD___Location, INV___Receipt___Item, INV___Order___Item } from "./mock-metadata";
 import { KeyValueObj } from "../../domain/key_value_obj";
-import { UserActionEditedFormDataEvent } from "../../domain/event";
+import { ServerEventModifiedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
 import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../../key_value_store_mem";
@@ -42,8 +42,8 @@ describe('Inventory Metadata', () => {
         done();
     });
 
-    async function putObj(obj: KeyValueObj): Promise<UserActionEditedFormDataEvent> {
-        return await frmdbEngine.processEvent(new UserActionEditedFormDataEvent(obj)) as UserActionEditedFormDataEvent;
+    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
+        return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
 
     afterEach(function() {
