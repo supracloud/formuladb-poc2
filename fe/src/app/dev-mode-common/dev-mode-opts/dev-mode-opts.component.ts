@@ -1,24 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty } from 'src/app/common/domain/metadata/entity';
+import { debounceTime, tap } from 'rxjs/operators';
 
 @Component({
   selector: '[frmdb-dev-mode-opts]',
   templateUrl: './dev-mode-opts.component.html',
   styleUrls: ['./dev-mode-opts.component.scss']
 })
-export class DevModeOptsComponent implements OnInit {
+export class DevModeOptsComponent implements OnInit, OnDestroy {
   tableIcon = faTable;
   columnIcon = faColumns;
   addIcon = faPlusCircle;
   delIcon = faMinusCircle;
+
+  keepPrefixSubject$: Subject<{ input: HTMLInputElement, prefix: string }> = new Subject();
 
   editorOpened: boolean = false;
   developerMode: boolean = false;
@@ -37,8 +40,19 @@ export class DevModeOptsComponent implements OnInit {
   }
 
   ngOnInit() {
-  }
 
+    this.subscriptions.push(this.keepPrefixSubject$.pipe(
+      debounceTime(250),
+    ).subscribe(({ input, prefix }) => {
+      if (input.value.indexOf(prefix) !== 0) {
+        input.value = input.value.replace(/^\s+/, '').replace(new RegExp('^[' + prefix[0] + ']+'), '');
+        input.value = prefix + input.value;
+      }
+    }));
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
+  }
 
   switchTheme(themeIdx: number) {
     this.router.navigate([this.router.url.replace(/\/\d+\/?/, '/' + themeIdx + '/')]);
@@ -79,7 +93,7 @@ export class DevModeOptsComponent implements OnInit {
       alert("Please select an entity for adding a column");//TODO: add i18n
       return;
     }
-    let newPropName = input.value;
+    let newPropName = input.value.replace(/^\./, '');
     this.currentEntity.props[newPropName] = {
       name: newPropName,
       propType_: Pn.STRING,
@@ -89,7 +103,9 @@ export class DevModeOptsComponent implements OnInit {
 
   addTable(input: HTMLInputElement) {
     let newTableName = input.value;
-    this.store.dispatch(new appState.ServerEventNewEntity(newTableName));
+    let prefix = this.currentEntity ? this.currentEntity._id : '';
+    if (prefix === '') newTableName = newTableName.replace(/^___/, '');
+    this.store.dispatch(new appState.ServerEventNewEntity(prefix + newTableName));
   }
 
   delTable() {
@@ -97,7 +113,7 @@ export class DevModeOptsComponent implements OnInit {
       alert("Select entity to be deleted");
       return;
     }
-    if (confirm("Are you sure you want to delete table " + this.currentEntity._id + " ?")){
+    if (confirm("Are you sure you want to delete table " + this.currentEntity._id + " ?")) {
       this.store.dispatch(new appState.ServerEventDeleteEntity(this.currentEntity._id));
     }
   }
@@ -107,9 +123,9 @@ export class DevModeOptsComponent implements OnInit {
       alert("Please select a column to be deleted");//TODO: add i18n
       return;
     }
-    if (confirm("Are you sure you want to delete " + this.currentProperty.name + " column of " + this.currentEntity._id + " ?")){
+    if (confirm("Are you sure you want to delete " + this.currentProperty.name + " column of " + this.currentEntity._id + " ?")) {
       delete this.currentEntity.props[this.currentProperty.name];
-      this.store.dispatch(new appState.ServerEventModifiedEntity(this.currentEntity));  
+      this.store.dispatch(new appState.ServerEventModifiedEntity(this.currentEntity));
     }
   }
 
@@ -118,6 +134,10 @@ export class DevModeOptsComponent implements OnInit {
     if (tableNameInput.value) ret += '___' + tableNameInput.value;
     if (colNameInput.value) ret += '.' + tableNameInput.value;
     return ret;
+  }
+
+  keepPrefix(input: HTMLInputElement, prefix: string) {
+    this.keepPrefixSubject$.next({ input, prefix });
   }
 
 }
