@@ -16,6 +16,7 @@ import { ThemeEditorComponent } from './theme-editor/theme-editor.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
 import { FormulaEditorModule } from 'src/app/formula-editor/formula-editor.module';
+import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.module';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { FormulaEditorModule } from 'src/app/formula-editor/formula-editor.modul
     DefaultThemeRoutingModule,
     CrosscuttingModule,
     FormulaEditorModule, //TODO: lazy load components from this module, e.g. https://plnkr.co/edit/ZGC82G9u10EQFYFvvRMB?p=preview
+    DevModeCommonModule,
   ],
   declarations: [
     LayoutComponent,

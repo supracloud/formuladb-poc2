@@ -150,10 +150,10 @@ export class BackendService {
         return dataObj;
     }
 
-    public getTable(path: string): Promise<Table> {
+    public getTable(path: string): Promise<Table | null> {
 
         return this.frmdbStore.getTable(path).then(ti => {
-            if (ti == null ) throw new Error("Asked for non existent table " + path + ".");
+            if (ti == null ) return Promise.resolve(ti);
             return new Promise<Table>((resolve, reject) => {
                 addIdsToTable(ti);
                 resolve(ti);
@@ -167,9 +167,9 @@ export class BackendService {
         return ret;
     }
 
-    public getForm(path: string): Promise<Form> {
+    public getForm(path: string): Promise<Form | null> {
         return this.frmdbStore.getForm(path).then(fi => {
-            if (fi == null ) throw new Error("Asked for non existent table " + path + ".");
+            if (fi == null ) return fi;
             addIdsToForm(fi.grid);
             return fi;
         });

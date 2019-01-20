@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "concurrently --kill-others \"ng serve --progress=false\" \"ng test --progress=false\" | perl -pe 's!^\\[\\d+\\] !!; s!ERROR in !!; s!^src/app/!fe/src/app/!'",
-    "start": "ng serve --proxy-config proxy.conf.json --source-map | perl -pe 's!ERROR in !!; s!^src/app/!fe/src/app/!'",
+    "start": "ng serve --proxy-config proxy.conf.json --source-map",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",

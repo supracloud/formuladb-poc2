@@ -17,6 +17,7 @@ import { ThemeEditorComponent } from './theme-editor/theme-editor.component';
 import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
 import { FormulaEditorModule } from 'src/app/formula-editor/formula-editor.module';
+import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.module';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { FormulaEditorModule } from 'src/app/formula-editor/formula-editor.modul
     NgbModule,
     FrmdbModule,
     CrosscuttingModule,
-    FormulaEditorModule
+    FormulaEditorModule,
+    DevModeCommonModule,
   ],
   declarations: [
     LayoutComponent,
