@@ -16,7 +16,7 @@ export async function loadData(frmdbEngine: FrmdbEngine, mockMetadata: MockMetad
         let mockData = new MockData(mockMetadata.schema.entities);
         await frmdbEngine.frmdbEngineStore.putAllObj(mockData.getAll());
         for (let obj of mockData.getAll()) {
-            /*await */frmdbEngine.updateViewsForObj(null, obj);
+            // /*await */frmdbEngine.updateViewsForObj(null, obj);
         }
 
         [Forms___ServiceForm_Form_, REP___LargeSales_Form].forEach(async (formUiMeta) => {
