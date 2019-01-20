@@ -50,8 +50,8 @@ export class FrmdbStore {
 
     public async delEntity(entityId: string): Promise<Entity> {
         let schema = await this.getSchema();
-        let ret = schema.entities[entityId];
         if (!schema) throw new Error("Attempt to del entity " + entityId +  " from empty schema");
+        let ret = schema.entities[entityId];
         if (!ret) throw new Error("Attempt to del non existent entity " + entityId);
         delete schema.entities[entityId];
         //the Entity's _id is the path
