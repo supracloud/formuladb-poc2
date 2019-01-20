@@ -32,12 +32,12 @@ export class NavigationSegment implements OnInit {
 
     expand(id: string, event) {
         event.preventDefault();
-        this.store.dispatch(new appState.ServerEventCollapsedEntity(id, false));
+        this.store.dispatch(new appState.CollapsedEntityAction(id, false));
     }
 
     collapse(id: string, event) {
         event.preventDefault();
-        this.store.dispatch(new appState.ServerEventCollapsedEntity(id, true));
+        this.store.dispatch(new appState.CollapsedEntityAction(id, true));
     }
 
 }

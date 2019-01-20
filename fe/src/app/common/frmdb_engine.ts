@@ -110,7 +110,7 @@ export class FrmdbEngine {
     }
 
     private deleteEntity(event: events.ServerEventDeleteEntity): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.delObj(event.entityId)
+        return this.frmdbEngineStore.delEntity(event.entityId)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;

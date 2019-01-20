@@ -33,8 +33,8 @@ export const entityInitialState: EntityState = {
 };
 
 export const EntitiesFromBackendFullLoadActionN = "[entity] EntitiesFromBackendFullLoadAction";
-export const ServerEventSelectedEntityN = "[entity] ServerEventSelectedEntity";
-export const ServerEventCollapsedEntityN = "[entity] ServerEventCollapsedEntity";
+export const SelectedEntityActionN = "[entity] SelectedEntityAction";
+export const CollapsedEntityActionN = "[entity] CollapsedEntityAction";
 export const ServerEventModifiedEntityN = events.ServerEventModifiedEntityN;
 export const ServerEventNewEntityN = events.ServerEventNewEntityN;
 export const ServerEventDeleteEntityN = events.ServerEventDeleteEntityN;
@@ -45,14 +45,14 @@ export class EntitiesFromBackendFullLoadAction implements Action {
     constructor(public entities: Entity[]) { }
 }
 
-export class ServerEventSelectedEntity implements Action {
-    readonly type = ServerEventSelectedEntityN;
+export class SelectedEntityAction implements Action {
+    readonly type = SelectedEntityActionN;
 
     constructor(public entity: Entity) { }
 }
 
-export class ServerEventCollapsedEntity implements Action {
-    readonly type = ServerEventCollapsedEntityN;
+export class CollapsedEntityAction implements Action {
+    readonly type = CollapsedEntityActionN;
 
     constructor(public id: string, public collapsed: boolean) { }
 }
@@ -86,8 +86,8 @@ export class ServerEventDeleteEntity implements Action {
 
 export type EntityActions =
     | EntitiesFromBackendFullLoadAction
-    | ServerEventSelectedEntity
-    | ServerEventCollapsedEntity
+    | SelectedEntityAction
+    | CollapsedEntityAction
     | ServerEventNewEntity
     | ServerEventModifiedEntity
     | ServerEventDeleteEntity;
@@ -107,13 +107,13 @@ export function entityReducer(state = entityInitialState, action: EntityActions)
             };
             break;
         //user navigates to different tables
-        case ServerEventSelectedEntityN:
+        case SelectedEntityActionN:
             ret = {
                 ...state,
                 selectedEntity: action.entity
             };
             break;
-        case ServerEventCollapsedEntityN:
+        case CollapsedEntityActionN:
             ret = {
                 ...state,
                 expanded: action.collapsed ? state.expanded.filter(e => e !== action.id) : [...state.expanded, action.id]

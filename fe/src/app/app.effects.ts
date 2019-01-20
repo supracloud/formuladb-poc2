@@ -106,16 +106,17 @@ export class AppEffects {
             case events.ServerEventNewEntityN: {
                 let entities = await this.backendService.getEntities();
                 this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
+                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.path)]);
                 break;
             }
             case events.ServerEventDeleteEntityN: {
                 let entities = await this.backendService.getEntities();
                 this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
+                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/___\w+$/, ''))]);
                 break;
             }
             case events.ServerEventModifiedEntityN: {
-                let entities = await this.backendService.getEntities();
-                this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
+                this.changeEntity(eventFromBe.entity._id);
                 break;
             }
             default:
@@ -223,7 +224,7 @@ export class AppEffects {
             if (null == entity) throw new Error("Cannot find entity " + path);
 
             this.currentUrl.entity = entity;
-            this.store.dispatch(new appState.ServerEventSelectedEntity(entity));
+            this.store.dispatch(new appState.SelectedEntityAction(entity));
 
             let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
             this.store.dispatch(new appState.ResetTableDataFromBackendAction(entity, []));

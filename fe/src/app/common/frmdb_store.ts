@@ -48,6 +48,17 @@ export class FrmdbStore {
             .then(x => entity);
     }
 
+    public async delEntity(entityId: string): Promise<Entity> {
+        let schema = await this.getSchema();
+        let ret = schema.entities[entityId];
+        if (!schema) throw new Error("Attempt to del entity " + entityId +  " from empty schema");
+        if (!ret) throw new Error("Attempt to del non existent entity " + entityId);
+        delete schema.entities[entityId];
+        //the Entity's _id is the path
+        return this.putSchema(schema)
+            .then(x => ret);
+    }
+
     public getTable(path: string): Promise<Table | null> {
         return this.dataDB.get('Table_:' + path) as Promise<Table | null>;
     }
@@ -80,7 +91,7 @@ export class FrmdbStore {
         return this.dataDB.putBulk(objs);
     }
 
-    public delObj(id: string) {
+    public delDataObj(id: string) {
         return this.dataDB.del(id);
     }
 }
