@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueObj, SubObj, isReservedPropName, RESERVED_PROP_NAMES } from '../key_value_obj';
+import { KeyValueObj, isReservedPropName, RESERVED_PROP_NAMES } from '@storage/domain/key_value_obj';
 import { CompiledFormula } from "./execution_plan";
 import * as _ from 'lodash';
 import { Expression } from 'jsep';

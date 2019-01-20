@@ -10,12 +10,11 @@ import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
 import * as events from "./domain/event";
 import * as _ from 'lodash';
-import { isKeyValueError, KeyValueObj } from "./domain/key_value_obj";
+import { isKeyValueError } from "@storage/domain/key_value_obj";
 import { generateUUID } from "./domain/uuid";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
-import { KVSArrayKeyType } from "./key_value_store_i";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 
 function ll(transacDAG: TransactionDAG): string {

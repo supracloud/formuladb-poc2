@@ -4,7 +4,10 @@
         "outDir": "../dist",
         "baseUrl": "./",
         "module": "commonjs",
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "paths": {
+            "@storage/*": ["../../storage/src/*"]
+        }
     },
     "include": [
         "./**/*",

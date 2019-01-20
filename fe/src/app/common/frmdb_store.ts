@@ -3,14 +3,13 @@
  * License TBD
  */
 
-import { KeyValueObj, SubObj } from "./domain/key_value_obj";
 import { Entity, EntityProperty, Schema } from "./domain/metadata/entity";
 import { DataObj, DataObjDeepPath } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyObjStoreI } from "./key_value_store_i";
-import { KeyValueError } from "./domain/key_value_obj";
+import { KeyObjStoreI } from "@storage/key_value_store_i";
+import { KeyValueError } from "@storage/domain/key_value_obj";
 
 export class FrmdbStore {
     constructor(protected transactionsDB: KeyObjStoreI<MwzEvents>, protected dataDB: KeyObjStoreI<DataObj | Schema | Form | Table>) { }

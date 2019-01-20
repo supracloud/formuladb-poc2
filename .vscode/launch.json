@@ -75,6 +75,19 @@
             "program": "${workspaceRoot}/storage/src/tests/jasmine.ts",
             "sourceMaps": true,
             "outFiles": ["${workspaceRoot}/storage/dist/**/*.js"]
+        },
+        {
+            "name": "ng serve 4300 master",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:4300/#",
+            "webRoot": "${workspaceFolder}/fe",
+            "sourceMapPathOverrides": {
+                "webpack:/./*": "${webRoot}/*",
+                "webpack:///./src/*": "${webRoot}/src/*",
+                "webpack:/*": "*",
+                "webpack:/./~/*": "${webRoot}/node_modules/*"
+            }
         }
     ]
 }

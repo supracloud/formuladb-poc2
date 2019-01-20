@@ -5,7 +5,7 @@
 
 import * as _ from "./frmdb_lodash";
 import { TransactionManager } from "./transaction_manager";
-import { KeyValueStoreFactoryMem } from "./key_value_store_mem";
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 
 describe('TransactionManager', () => {
     beforeEach(async (done) => {

@@ -3,8 +3,6 @@
  * License TBD
  */
 
-import { SubObj } from "../key_value_obj";
-import { DataObjDeepPath, QueryDeepPath, QueryDeepPathTemplate } from "./data_obj";
 import {
     Expression
     , LogicalExpression

@@ -5,10 +5,9 @@
 
 import * as moment from 'moment';
 
-import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
+import { KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI } from "@storage/key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
-import { ObjLock } from "./domain/transaction";
 import { FrmdbStore } from './frmdb_store';
 import { _sum_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_sum';
 import { _count_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_count';

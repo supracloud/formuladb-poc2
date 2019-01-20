@@ -1,4 +1,4 @@
-var SEP = '_'; // set to '_' for easier debugging 
+var SEP = '?'; // set to '_' for easier debugging 
 
 function toIndexableString(key: Array<any>) {
     let result: string = "";
@@ -25,7 +25,8 @@ function toIndexableString(key: Array<any>) {
 };
 
 function parseIndexableString(str: String) {
-    return JSON.parse("[" + str.replace(SEP, ',') + "]");
+    console.log(str);
+    return str.split(SEP);
 };
 
 export {

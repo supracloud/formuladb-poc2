@@ -5,14 +5,13 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { KeyObjStoreI } from "../key_value_store_i";
 
 import { UserActionEditedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 
 describe('FrmdbEngineStore _count', () => {
     let frmdbTStore: FrmdbEngineStore;

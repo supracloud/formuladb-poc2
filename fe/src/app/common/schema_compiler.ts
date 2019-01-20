@@ -14,7 +14,6 @@ import {
     Entity, Schema, Pn, extendEntityProperties, queryEntityWithDeepPath,
     FormulaProperty, FormulaExpression, isPropertyWithProperties, isFormulaProperty, EntityProperty, 
 } from "./domain/metadata/entity";
-import { isReservedPropName } from "./domain/key_value_obj";
 import {
     CompiledFormula, MapReduceTrigger, MapFunctionAndQuery,
     isMapFunctionAndQuery,

@@ -5,16 +5,15 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../../frmdb_engine_store";
-import { KeyObjStoreI } from "../../key_value_store_i";
 
 import { compileFormula } from "../../formula_compiler";
 import { evalExprES5 } from "../../map_reduce_utils";
 import { INV___PRD___Location, INV___Receipt___Item, INV___Order___Item } from "./mock-metadata";
-import { KeyValueObj } from "../../domain/key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../../key_value_store_mem";
+import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 
 
 

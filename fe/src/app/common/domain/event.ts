@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueObj } from "./key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity } from "./metadata/entity";
 import { Form } from "./uimetadata/form";

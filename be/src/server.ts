@@ -4,6 +4,7 @@
  */
 
 require('source-map-support').install();
+require('module-alias/register')
 
 import { Container } from "typedi";
 import "reflect-metadata";
@@ -15,7 +16,7 @@ import { loadData } from "../../fe/src/app/common/test/load_test_data";
 import { MockMetadata } from "../../fe/src/app/common/test/mocks/mock-metadata";
 import { FrmdbEngine } from "../../fe/src/app/common/frmdb_engine";
 import { FrmdbEngineStore } from "../../fe/src/app/common/frmdb_engine_store";
-import { KeyValueStoreFactoryMem } from "../../fe/src/app/common/key_value_store_mem";
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 
 let mockMetadata = new MockMetadata();
 let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);

@@ -29,17 +29,18 @@
     "expression-eval": "git+https://github.com/acristu/expression-eval.git",
     "fuse.js": "^3.3.0",
     "glob": "^5.0.14",
+    "jsep": "git+https://github.com/acristu/jsep.git",
+    "lodash": "^4.17.5",
+    "module-alias": "^2.1.0",
+    "moment": "^2.22.2",
     "morgan": "^1.6.1",
+    "pg": "^7.8.0",
+    "pouchdb-collate": "^7.0.0",
     "reflect-metadata": "^0.1.12",
     "rxjs": "^5.5.6",
     "serve-favicon": "~2.3.0",
     "short-uuid": "^3.0.0",
     "source-map-support": "^0.5.3",
-    "jsep": "git+https://github.com/acristu/jsep.git",
-    "lodash": "^4.17.5",
-    "moment": "^2.22.2",
-    "pg": "^7.8.0",
-    "pouchdb-collate": "^7.0.0",
     "typedi": "^0.6.1"
   },
   "devDependencies": {
@@ -62,5 +63,8 @@
     "typescript": "^2.8.3",
     "uuid": "^3.2.1",
     "watch": "^1.0.2"
+  },
+  "_moduleAliases": {
+    "@storage": "../storage/dist"
   }
 }

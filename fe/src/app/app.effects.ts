@@ -12,7 +12,7 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { KeyValueObj } from "./common/domain/key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { DataObj } from "./common/domain/metadata/data_obj";
 import { Entity } from "./common/domain/metadata/entity";
 import { ChangeObj } from "./common/domain/change_obj";

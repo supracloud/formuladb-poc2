@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueObj } from "./key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 
 export interface ObjLock extends KeyValueObj {
     eventId: string; 

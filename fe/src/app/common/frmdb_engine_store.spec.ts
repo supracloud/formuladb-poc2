@@ -5,12 +5,12 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyObjStoreI, KeyValueStoreFactoryI } from "./key_value_store_i";
+import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 
 import { Fn } from "./domain/metadata/functions";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
 describe('frmdb_engine_store', () => {

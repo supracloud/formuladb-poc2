@@ -47,7 +47,8 @@ export class BackendService {
         notifCallback: (event: MwzEvents) => void,
         dataChangeCallback: (docs: Array<KeyValueObj>) => void) {
 
-        this.envType = window.location.href.indexOf("http://localhost:4200/") == 0 ? EnvType.Test : EnvType.Live;
+        this.envType = window.location.href.indexOf("http://localhost:4200/") == 0 || window.location.href.indexOf("http://localhost:4300/") == 0 ? 
+            EnvType.Test : EnvType.Live;
 
         this.initCallback = initCallback;
         this.notifCallback = notifCallback;
@@ -174,12 +175,28 @@ export class BackendService {
         });
     }
 
-    public getEntities(): Promise<Entity[]> {
-        return this.frmdbStore.getEntities();
+    public async getEntities(): Promise<Entity[]> {
+        let frmdbStore = await this.wait<FrmdbStore>(() => this.frmdbStore);
+        return frmdbStore.getEntities();
     }
 
+    private wait<T>(callback: () => T): Promise<T> {
+        let ret: T = callback();
+        if (ret) return Promise.resolve(ret);
+        return new Promise(resolve => {
+            let interval = setInterval(() => {
+                let x: T = callback();
+                if (x) {
+                    resolve(x);
+                    clearInterval(interval);
+                }
+            }, 250)
+        });
+    }
+    
     public async getEntity(path: string): Promise<Entity> {
-        let ret = await this.frmdbStore.getEntity(path);
+        let frmdbStore = await this.wait<FrmdbStore>(() => this.frmdbStore);
+        let ret = await frmdbStore.getEntity(path);
         if (ret == null ) throw new Error("Asked for non existent table " + path + ".");
         return ret;
     }

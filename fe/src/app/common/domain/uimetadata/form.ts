@@ -3,8 +3,8 @@
  * License TBD
  */
 
-import { KeyValueObj, SubObj } from '../key_value_obj';
-import { EntityProperty, Pn, Entity, EntityStateGraph } from "../metadata/entity";
+import { KeyValueObj, SubObj } from '@storage/domain/key_value_obj';
+import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { Label } from './label';
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';

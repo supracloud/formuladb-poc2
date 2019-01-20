@@ -4,7 +4,7 @@
  */
 
 import { MapReduceTrigger } from "../domain/metadata/execution_plan";
-import { KeyValueObj } from "../domain/key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { evalExprES5 } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";

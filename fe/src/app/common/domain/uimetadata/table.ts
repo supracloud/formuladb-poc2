@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueObj, SubObj } from '../key_value_obj';
+import { KeyValueObj, SubObj } from '@storage/domain/key_value_obj';
 import { Entity } from '../metadata/entity';
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';

@@ -5,7 +5,6 @@
 
 import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyObjStoreI } from "./key_value_store_i";
 
 import { UserActionEditedFormDataN, UserActionEditedFormDataEvent } from "./domain/event";
 import { Fn } from "./domain/metadata/functions";
@@ -15,8 +14,8 @@ import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "./domain/metadata/entity";
 import { SchemaDAO } from "./domain/metadata/schema_dao";
 import { DataObj } from "./domain/metadata/data_obj";
-import { KeyValueObj } from "./domain/key_value_obj";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 
 describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;

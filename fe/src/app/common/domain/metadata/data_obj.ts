@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { KeyValueObj } from "../key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { parseDataObjIdES5 } from "../../map_reduce_utils";
 export interface DataObj extends KeyValueObj {
     _id: string;

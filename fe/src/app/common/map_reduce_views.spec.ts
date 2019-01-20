@@ -1,5 +1,4 @@
-import { keyValueStoreSpecs } from "./key_value_store_i.spec";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 import { MapReduceView, MapReduceViewUpdates } from "./map_reduce_view";
 import { $s2e } from "./formula_compiler";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";

@@ -12,7 +12,7 @@ import * as path from "path";
 
 import { FrmdbEngine } from "../../../fe/src/app/common/frmdb_engine";
 import { FrmdbEngineStore } from "../../../fe/src/app/common/frmdb_engine_store";
-import { KeyValueStoreFactoryMem } from "../../../fe/src/app/common/key_value_store_mem";
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 
 
 export default function (db) {
