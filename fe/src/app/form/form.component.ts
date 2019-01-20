@@ -20,7 +20,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { sampleTime, filter, debounceTime, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 import * as fromForm from './form.state';
 import { ValidatorFn } from '@angular/forms';
@@ -32,7 +32,10 @@ import { ValidationErrors } from '@angular/forms';
 import { j2str } from '../crosscutting/utils/j2str';
 
 export class FrmdbFormControl extends FormControl {
-    constructor(public name: string, formState?: any, validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null, asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null) {
+    constructor(public name: string,
+        formState?: any,
+        validatorOrOpts?: ValidatorFn | ValidatorFn[] | AbstractControlOptions | null,
+        asyncValidator?: AsyncValidatorFn | AsyncValidatorFn[] | null) {
         super(formState, validatorOrOpts);
     }
 }
@@ -55,13 +58,13 @@ export class FrmdbFormGroup extends FormGroup {
 export class FormComponent implements OnInit, OnDestroy {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
-    private tickUsed: boolean = false;
+    private tickUsed = false;
     private lastSaveAction: fromForm.UserActionEditedFormData;
     public form$: Observable<Form | null>;
     private formData: DataObj | null;
     private formReadOnly: boolean;
-    private saveInProgress: boolean = false;
-    private alertType: string = 'success';
+    private saveInProgress = false;
+    private alertType = 'success';
     protected subscriptions: Subscription[] = [];
 
     constructor(
@@ -77,9 +80,8 @@ export class FormComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        let cmp = this;
+        const cmp = this;
 
-        
         this.subscriptions.push(this.store.select(fromForm.getFormReadOnly).subscribe(formReadOnly => {
             this.formReadOnly = formReadOnly;
             if (formReadOnly && !this.theFormGroup.disabled) {
@@ -92,8 +94,8 @@ export class FormComponent implements OnInit, OnDestroy {
         this.form$ = this.store.select(fromForm.getFormState).pipe(tap(
             form => {
                 try {
-                    if (null == form) return;
-                    //set readonly fields
+                    if (null === form) { return; }
+                    // set readonly fields
                     this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
                 } catch (ex) {
                     console.error(ex);
@@ -103,7 +105,7 @@ export class FormComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.store.select(fromForm.getFormDataState).subscribe(formData => {
             try {
                 this.formData = formData;
-                if (formData == null) return;
+                if (formData == null) { return; }
 
                 this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
             } catch (ex) {
@@ -120,7 +122,7 @@ export class FormComponent implements OnInit, OnDestroy {
     }
 
     private makeFormControl(name: string, formState?: any): FormControl {
-        let ctrl = new FrmdbFormControl(name, formState, {
+        const ctrl = new FrmdbFormControl(name, formState, {
             updateOn: 'blur',
             validators: [
                 this.formEditingService.propertyValidator()
@@ -136,10 +138,11 @@ export class FormComponent implements OnInit, OnDestroy {
             debounceTime(500)
         )
             .forEach(valueChange => {
-                console.log("CHANGEEEEES:", j2str(valueChange), this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
-                let obj = this.formEditingService.getParentObj(ctrl);
+                console.log('CHANGEEEEES:', j2str(valueChange),
+                    this.theFormGroup.errors, this.theFormGroup.dirty, this.theFormGroup.status);
+                const obj = this.formEditingService.getParentObj(ctrl);
                 if (obj == null) {
-                    console.warn("Cound not find parent for " + valueChange);
+                    console.warn('Cound not find parent for ' + valueChange);
                     return;
                 }
                 this.lastSaveAction = new fromForm.UserActionEditedFormData(_.cloneDeep(obj));
@@ -152,66 +155,73 @@ export class FormComponent implements OnInit, OnDestroy {
     private updateFormGroup(parentFormGroup: FormGroup, nodeElements: NodeElement[], formReadOnly: boolean) {
         let newParent = parentFormGroup;
         let disabled = formReadOnly;
-        for (let nodeEl of nodeElements) {
+        for (const nodeEl of nodeElements) {
 
-            if (nodeEl.nodeType == NodeType.form_grid || nodeEl.nodeType == NodeType.form_grid_row || nodeEl.nodeType == NodeType.form_grid_col || nodeEl.nodeType == NodeType.form_tab) {
-                let childNodes = nodeEl.childNodes || [];
+            if (nodeEl.nodeType === NodeType.form_grid
+                || nodeEl.nodeType === NodeType.form_grid_row
+                || nodeEl.nodeType === NodeType.form_grid_col
+                || nodeEl.nodeType === NodeType.form_tab) {
+                const childNodes = nodeEl.childNodes || [];
                 this.updateFormGroup(newParent, childNodes, formReadOnly);
-            } else if (nodeEl.nodeType == NodeType.form_input || nodeEl.nodeType == NodeType.form_datepicker || nodeEl.nodeType == NodeType.form_timepicker) {
-                if (nodeEl.propertyName === 'type_') return;
-                if (nodeEl.propertyName === '_id' || nodeEl.propertyName === '_rev') disabled = true;
+            } else if (nodeEl.nodeType === NodeType.form_input
+                || nodeEl.nodeType === NodeType.form_autocomplete
+                || nodeEl.nodeType === NodeType.form_datepicker
+                || nodeEl.nodeType === NodeType.form_timepicker) {
+                if (nodeEl.propertyName === 'type_') { return; }
+                if (nodeEl.propertyName === '_id' || nodeEl.propertyName === '_rev') { disabled = true; }
                 if (parentFormGroup.get(nodeEl.propertyName) == null) {
-                    parentFormGroup.setControl(nodeEl.propertyName, this.makeFormControl(nodeEl.propertyName, { value: undefined, disabled }));
+                    parentFormGroup.setControl(nodeEl.propertyName,
+                        this.makeFormControl(nodeEl.propertyName, { value: undefined, disabled }));
                 }
-            } else if (nodeEl.nodeType == NodeType.form_autocomplete) {
-                let autocompleteNode = parentFormGroup.get(nodeEl.entityName);
-                let madeChanges = false;
-                if (autocompleteNode == null) {
-                    madeChanges = true;
-                    autocompleteNode = new FrmdbFormGroup(nodeEl.entityName);
-                }
-                if (autocompleteNode instanceof FormGroup) {
-                    for (let copiedProp of nodeEl.snapshotCurrentValueOfProperties || []) {
-                        if (null == autocompleteNode.get(copiedProp)) {
-                            autocompleteNode.setControl(copiedProp, this.makeFormControl(copiedProp, { value: undefined, disabled }));
-                            madeChanges = true;
-                        }
-                    }
-                    if (madeChanges) {
-                        parentFormGroup.setControl(nodeEl.entityName, autocompleteNode);
-                    }
-                } else throw new Error("Expected FormGroup for autocomplete but found " + j2str(autocompleteNode));
-            } else if (nodeEl.nodeType == NodeType.form_tabs || nodeEl.nodeType == NodeType.form_table) {
-                let childNodes = nodeEl.childNodes || [];
-                let arrayCtrl = parentFormGroup.get(nodeEl.tableName);
+                // } else if (nodeEl.nodeType === NodeType.form_autocomplete) {
+                // let autocompleteNode = parentFormGroup.get(nodeEl.refEntityName);
+                // let madeChanges = false;
+                // if (autocompleteNode == null) {
+                //     madeChanges = true;
+                //     autocompleteNode = new FrmdbFormGroup(nodeEl.refEntityName);
+                // }
+                // if (autocompleteNode instanceof FormGroup) {
+                //     for (let copiedProp of nodeEl.snapshotCurrentValueOfProperties || []) {
+                //         if (null == autocompleteNode.get(copiedProp)) {
+                //             autocompleteNode.setControl(copiedProp, this.makeFormControl(copiedProp, { value: undefined, disabled }));
+                //             madeChanges = true;
+                //         }
+                //     }
+                //     if (madeChanges) {
+                //         parentFormGroup.setControl(nodeEl.entityName, autocompleteNode);
+                //     }
+                // } else throw new Error('Expected FormGroup for autocomplete but found ' + j2str(autocompleteNode));
+            } else if (nodeEl.nodeType === NodeType.form_tabs || nodeEl.nodeType === NodeType.form_table) {
+                const childNodes = nodeEl.childNodes || [];
+                const arrayCtrl = parentFormGroup.get(nodeEl.tableName);
                 if (arrayCtrl == null) {
-                    let newParent = new FrmdbFormGroup(nodeEl.tableName);
+                    newParent = new FrmdbFormGroup(nodeEl.tableName);
                     parentFormGroup.setControl(nodeEl.tableName, new FormArray([newParent]));
                     this.updateFormGroup(newParent, childNodes, formReadOnly);
                 } else if (arrayCtrl instanceof FormArray) {
-                    for (let arrayElemCtrl of arrayCtrl.controls) {
+                    for (const arrayElemCtrl of arrayCtrl.controls) {
                         if (arrayElemCtrl instanceof FormGroup) {
                             this.updateFormGroup(arrayElemCtrl, childNodes, formReadOnly);
-                        } else throw new Error("Expected FormGroup as part of FormArray but found " + j2str(arrayElemCtrl));
+                        } else { throw new Error('Expected FormGroup as part of FormArray but found ' + j2str(arrayElemCtrl)); }
                     }
-                } else throw new Error("Expected FormArray for autocomplete but found " + j2str(arrayCtrl));
+                } else { throw new Error('Expected FormArray for autocomplete but found ' + j2str(arrayCtrl)); }
 
             }
-        };
+        }
     }
 
     private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, formReadOnly: boolean) {
 
-        //TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
+        // TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
 
-        for (var key in objFromServer) {
-            if ('type_' === key) continue;
+        for (const key in objFromServer) {
+            if ('type_' === key) { continue; }
             // if ('_rev' === key) continue;
             // if ('_id' === key) continue;
 
-            let objVal = objFromServer[key];
+            const objVal = objFromServer[key];
             let formVal = formGroup.get(key);
-            if (null == objVal) continue;
+            if (null === objVal) { continue; }
 
             if (objVal instanceof Array) {
                 if (null == formVal) {
@@ -219,15 +229,15 @@ export class FormComponent implements OnInit, OnDestroy {
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormArray)) {
-                    throw new Error("key " + key + ", objVal Array '" + objVal + "', but formVal not FormArray: '" + formVal + "'");
+                    throw new Error('key ' + key + ', objVal Array \'' + objVal + '\', but formVal not FormArray: \'' + formVal + '\'');
                 }
 
                 objVal.forEach((o, i) => {
-                    let formArray = formVal as FormArray;
+                    const formArray = formVal as FormArray;
                     if (formArray.length <= i) {
                         formArray.push(new FormGroup({}));
                     }
-                    this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly)
+                    this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly);
                 });
 
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
@@ -236,7 +246,7 @@ export class FormComponent implements OnInit, OnDestroy {
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormControl)) {
-                    throw new Error("key " + key + ", objVal scalar '" + objVal + "', but formVal not FormControl: '" + formVal + "'");
+                    throw new Error('key ' + key + ', objVal scalar \'' + objVal + '\', but formVal not FormControl: \'' + formVal + '\'');
                 }
 
                 formVal.reset(objVal);
@@ -246,22 +256,22 @@ export class FormComponent implements OnInit, OnDestroy {
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormGroup)) {
-                    throw new Error("key " + key + ", objVal object '" + objVal + "', but formVal not FormGroup: '" + formVal + "'");
+                    throw new Error('key ' + key + ', objVal object \'' + objVal + '\', but formVal not FormGroup: \'' + formVal + '\'');
                 }
 
                 this.updateFormGroupWithData(objVal, formVal, formReadOnly);
             } else {
-                throw new Error("unkown objVal type: '" + objVal + "'");
+                throw new Error('unkown objVal type: \'' + objVal + '\'');
             }
 
         }
     }
 
-    ngAfterViewInit() {
-        setTimeout(x => {
-            // this.formModalService.sendGridsterFormFinishedRenderingEvent();
-        })
-    }
+    // ngAfterViewInit() {
+    //     setTimeout(x => {
+    //         // this.formModalService.sendGridsterFormFinishedRenderingEvent();
+    //     });
+    // }
 
     close() {
         // this.formModalService.sendDestroyFormEvent();
@@ -269,25 +279,25 @@ export class FormComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         // this.formModalService.sendDestroyFormEvent();
-        this.subscriptions.forEach(sub => sub.unsubscribe())
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     print(): void {
-        console.error("TODO implement Print!");
+        console.error('TODO implement Print!');
     }
 
     /**
      * TODO: make this a proper deep compare function
-     * @param a 
-     * @param b 
+     * @param a
+     * @param b
      */
     private areEqual(a, form: FormGroup): boolean {
-        for (var key in a) {
-            if ('_rev' === key) continue;
+        for (const key in a) {
+            if ('_rev' === key) { continue; }
 
-            let formVal = (form.get(key) || { value: null }).value;
-            if (a[key] != formVal) {
-                console.log("DIFFERENCE FOUND ON KEY ", key, a[key], formVal);
+            const formVal = (form.get(key) || { value: null }).value;
+            if (a[key] !== formVal) {
+                console.log('DIFFERENCE FOUND ON KEY ', key, a[key], formVal);
                 return false;
             }
         }

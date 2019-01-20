@@ -21,7 +21,7 @@ export interface FormState {
   formReadOnly: boolean;
   formEditMode: boolean;
   highlighted: any;
-  dragged: NodeElement | null
+  dragged: NodeElement | null;
 }
 
 export const formInitialState: FormState = {
