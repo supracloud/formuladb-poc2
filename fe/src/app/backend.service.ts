@@ -7,7 +7,7 @@ import { Injectable, InjectionToken, Inject } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { KeyValueObj } from "./common/domain/key_value_obj";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { DataObj, parseDataObjId } from "./common/domain/metadata/data_obj";
 import { Entity, Pn } from "./common/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "./common/domain/event";
@@ -16,13 +16,12 @@ import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { KeyObjStoreI } from './common/key_value_store_i';
 import { FrmdbStore } from './common/frmdb_store';
 import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from './common/key_value_store_mem';
+import { KeyValueStoreFactoryMem } from '@storage/mem/key_value_store_mem';
 import { MockMetadata } from './common/test/mocks/mock-metadata';
 
 export enum EnvType {
