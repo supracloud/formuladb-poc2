@@ -49,6 +49,6 @@ export const Dictioary_ro = {
     quantityError: 'Cantitate Eroare',
     price: 'Preţ',
 
-    'General___Currency!rate1!max': 'Maximum rate1 exceeded',
+    'GEN___Currency!rate1!max': 'Maximum rate1 exceeded',
     'items$': 'Items',
 };

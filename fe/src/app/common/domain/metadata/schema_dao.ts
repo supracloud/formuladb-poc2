@@ -101,5 +101,5 @@ export class SchemaDAO {
             })
         });
         return ret;
-    }    
+    }
 }

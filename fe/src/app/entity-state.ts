@@ -33,11 +33,11 @@ export const entityInitialState: EntityState = {
 };
 
 export const EntitiesFromBackendFullLoadActionN = "[entity] EntitiesFromBackendFullLoadAction";
-export const UserActionSelectedEntityN = "[entity] UserActionSelectedEntity";
-export const UserActionCollapsedEntityN = "[entity] UserActionCollapsedEntity";
-export const UserActionEditedEntityN = events.UserActionEditedEntityN;
-export const UserActionNewEntityN = events.UserActionNewEntityN;
-export const UserActionDeleteEntityN = events.UserActionDeleteEntityN;
+export const SelectedEntityActionN = "[entity] SelectedEntityAction";
+export const CollapsedEntityActionN = "[entity] CollapsedEntityAction";
+export const ServerEventModifiedEntityN = events.ServerEventModifiedEntityN;
+export const ServerEventNewEntityN = events.ServerEventNewEntityN;
+export const ServerEventDeleteEntityN = events.ServerEventDeleteEntityN;
 
 export class EntitiesFromBackendFullLoadAction implements Action {
     readonly type = EntitiesFromBackendFullLoadActionN;
@@ -45,52 +45,52 @@ export class EntitiesFromBackendFullLoadAction implements Action {
     constructor(public entities: Entity[]) { }
 }
 
-export class UserActionSelectedEntity implements Action {
-    readonly type = UserActionSelectedEntityN;
+export class SelectedEntityAction implements Action {
+    readonly type = SelectedEntityActionN;
 
     constructor(public entity: Entity) { }
 }
 
-export class UserActionCollapsedEntity implements Action {
-    readonly type = UserActionCollapsedEntityN;
+export class CollapsedEntityAction implements Action {
+    readonly type = CollapsedEntityActionN;
 
     constructor(public id: string, public collapsed: boolean) { }
 }
 
-export class UserActionEditedEntity implements Action {
-    readonly type = UserActionEditedEntityN;
-    public event: events.UserActionEditedEntity;
+export class ServerEventModifiedEntity implements Action {
+    readonly type = ServerEventModifiedEntityN;
+    public event: events.ServerEventModifiedEntity;
 
     constructor(public entity: Entity) {
-        this.event = new events.UserActionEditedEntity(entity);
+        this.event = new events.ServerEventModifiedEntity(entity);
     }
 }
 
-export class UserActionNewEntity implements Action {
-    readonly type = UserActionNewEntityN;
-    public event: events.UserActionNewEntity;
+export class ServerEventNewEntity implements Action {
+    readonly type = ServerEventNewEntityN;
+    public event: events.ServerEventNewEntity;
 
     constructor(path: string) {
-        this.event = new events.UserActionNewEntity(path);
+        this.event = new events.ServerEventNewEntity(path);
     }
 }
 
-export class UserActionDeleteEntity implements Action {
-    readonly type = UserActionDeleteEntityN;
-    public event: events.UserActionDeleteEntity;
+export class ServerEventDeleteEntity implements Action {
+    readonly type = ServerEventDeleteEntityN;
+    public event: events.ServerEventDeleteEntity;
 
-    constructor(entity: Entity) {
-        this.event = new events.UserActionDeleteEntity(entity);
+    constructor(entityId: string) {
+        this.event = new events.ServerEventDeleteEntity(entityId);
     }
 }
 
 export type EntityActions =
     | EntitiesFromBackendFullLoadAction
-    | UserActionSelectedEntity
-    | UserActionCollapsedEntity
-    | UserActionNewEntity
-    | UserActionEditedEntity
-    | UserActionDeleteEntity;
+    | SelectedEntityAction
+    | CollapsedEntityAction
+    | ServerEventNewEntity
+    | ServerEventModifiedEntity
+    | ServerEventDeleteEntity;
 
 /**
  * 
@@ -107,13 +107,13 @@ export function entityReducer(state = entityInitialState, action: EntityActions)
             };
             break;
         //user navigates to different tables
-        case UserActionSelectedEntityN:
+        case SelectedEntityActionN:
             ret = {
                 ...state,
                 selectedEntity: action.entity
             };
             break;
-        case UserActionCollapsedEntityN:
+        case CollapsedEntityActionN:
             ret = {
                 ...state,
                 expanded: action.collapsed ? state.expanded.filter(e => e !== action.id) : [...state.expanded, action.id]

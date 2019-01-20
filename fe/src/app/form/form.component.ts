@@ -56,7 +56,7 @@ export class FormComponent implements OnInit, OnDestroy {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
     private tickUsed: boolean = false;
-    private lastSaveAction: fromForm.UserActionEditedFormData;
+    private lastSaveAction: fromForm.ServerEventModifiedFormData;
     public form$: Observable<Form | null>;
     private formData: DataObj | null;
     private formReadOnly: boolean;
@@ -142,7 +142,7 @@ export class FormComponent implements OnInit, OnDestroy {
                     console.warn("Cound not find parent for " + valueChange);
                     return;
                 }
-                this.lastSaveAction = new fromForm.UserActionEditedFormData(_.cloneDeep(obj));
+                this.lastSaveAction = new fromForm.ServerEventModifiedFormData(_.cloneDeep(obj));
                 this.store.dispatch(this.lastSaveAction);
             });
 
