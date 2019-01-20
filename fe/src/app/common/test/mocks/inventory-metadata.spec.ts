@@ -13,7 +13,7 @@ import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 
 
 
@@ -33,7 +33,7 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
-        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
+        frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
         frmdbEngine = new FrmdbEngine(frmdbTStore, InventorySchema);
         await frmdbEngine.init();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;

@@ -5,24 +5,21 @@
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
-import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 
 import { Fn } from "./domain/metadata/functions";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
-import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
 describe('frmdb_engine_store', () => {
-    let kvsFactory: KeyValueStoreFactoryI;
     let frmdbEngineStore: FrmdbEngineStore;
     let originalTimeout;
     let compiledFormula: CompiledFormula;
 
 
     beforeEach(async (done) => {
-        kvsFactory = new KeyValueStoreFactoryMem();
-        frmdbEngineStore = new FrmdbEngineStore(kvsFactory);
+        frmdbEngineStore = new FrmdbEngineStore(KeyValueStoreFactory);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

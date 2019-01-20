@@ -1,4 +1,4 @@
-import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 import { MapReduceView, MapReduceViewUpdates } from "./map_reduce_view";
 import { $s2e } from "./formula_compiler";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
@@ -11,7 +11,7 @@ import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
 describe('MapReduceView', () => {
     it('should precompute and compute basic SUM', async (done) => {
-        let mapReduceView = new MapReduceView(new KeyValueStoreFactoryMem(), "tst", {
+        let mapReduceView = new MapReduceView(KeyValueStoreFactory, "tst", {
             entityName: 'A',
             keyExpr: [$s2e(`aY`)],
             valueExpr: $s2e(`num`),

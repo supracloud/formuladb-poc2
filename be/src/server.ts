@@ -16,10 +16,10 @@ import { loadData } from "../../fe/src/app/common/test/load_test_data";
 import { MockMetadata } from "../../fe/src/app/common/test/mocks/mock-metadata";
 import { FrmdbEngine } from "../../fe/src/app/common/frmdb_engine";
 import { FrmdbEngineStore } from "../../fe/src/app/common/frmdb_engine_store";
-import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 
 let mockMetadata = new MockMetadata();
-let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
+let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(() => this.testFrmdbEngine.init(true))

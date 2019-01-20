@@ -6,16 +6,13 @@
 import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { UserActionEditedFormDataN, UserActionEditedFormDataEvent } from "./domain/event";
-import { Fn } from "./domain/metadata/functions";
-import { MapFunctionN, CompiledFormula } from "./domain/metadata/execution_plan";
-import { compileFormula, $s2e } from "./formula_compiler";
+import { UserActionEditedFormDataEvent } from "./domain/event";
+import { $s2e } from "./formula_compiler";
 import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "./domain/metadata/entity";
-import { SchemaDAO } from "./domain/metadata/schema_dao";
 import { DataObj } from "./domain/metadata/data_obj";
 import { KeyValueObj } from "@storage/domain/key_value_obj";
-import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 
 describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;
@@ -76,7 +73,7 @@ describe('FrmdbEngine', () => {
     };
 
     beforeEach(async (done) => {
-        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
+        frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 55000;

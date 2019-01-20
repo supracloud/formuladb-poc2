@@ -21,7 +21,7 @@ import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
-import { KeyValueStoreFactoryMem } from '@storage/mem/key_value_store_mem';
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 import { MockMetadata } from './common/test/mocks/mock-metadata';
 
 export enum EnvType {
@@ -56,7 +56,7 @@ export class BackendService {
 
         if (this.envType == EnvType.Test) {
             let mockMetadata = new MockMetadata();
-            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
+            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
             this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
             await this.testFrmdbEngine.init(true);
             await loadData(this.testFrmdbEngine, mockMetadata);

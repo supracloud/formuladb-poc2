@@ -11,7 +11,7 @@ import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 
 describe('FrmdbEngineStore _count', () => {
     let frmdbTStore: FrmdbEngineStore;
@@ -28,7 +28,7 @@ describe('FrmdbEngineStore _count', () => {
     }
 
     beforeEach(async (done) => {
-        frmdbTStore = new FrmdbEngineStore(new KeyValueStoreFactoryMem());
+        frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

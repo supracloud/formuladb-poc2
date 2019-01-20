@@ -12,7 +12,7 @@ import * as path from "path";
 
 import { FrmdbEngine } from "../../../fe/src/app/common/frmdb_engine";
 import { FrmdbEngineStore } from "../../../fe/src/app/common/frmdb_engine_store";
-import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
 
 
 export default function (db) {
@@ -29,7 +29,7 @@ export default function (db) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    var frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), {_id: 'FRMDB_SCHEMA', entities: {}});
+    var frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), {_id: 'FRMDB_SCHEMA', entities: {}});
 
     app.get('/', function (req, res) {
         res.json({ message: 'test' });
