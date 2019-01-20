@@ -176,6 +176,7 @@ export class BackendService {
     }
 
     public getEntities(): Promise<Entity[]> {
+        if(!this.frmdbStore) return Promise.resolve([]);
         return this.frmdbStore.getEntities();
     }
 
