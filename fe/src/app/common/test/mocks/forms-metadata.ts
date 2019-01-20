@@ -5,7 +5,7 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from '../../domain/metadata/entity';
 import { INV___PRD, INV___Order, INV___PRD___Unit } from './inventory-metadata';
-import { General___Client } from "./general-metadata";
+import { GEN___Client } from "./general-metadata";
 import { Sn } from '../../domain/metadata/stored_procedure';
 import { Fn } from '../../domain/metadata/functions';
 
@@ -32,7 +32,7 @@ export const Forms___ServiceForm = {
 
         } as FormulaProperty,
         product_form_id: { name: "product_form_id", propType_: Pn.NUMBER, "allowNull": false } as EntityProperty,
-        client: { name: "client", propType_: Pn.REFERENCE_TO, referencedEntityName: General___Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } as EntityProperty,
+        client: { name: "client", propType_: Pn.REFERENCE_TO, referencedEntityName: GEN___Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } as EntityProperty,
         time_of_arrival: { name: "time_of_arrival", propType_: Pn.DATETIME } as EntityProperty,
         time_of_departure: { name: "time_of_departure", propType_: Pn.DATETIME } as EntityProperty,
         normal_hours: { name: "normal_hours", propType_: Pn.NUMBER } as EntityProperty,

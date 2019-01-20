@@ -27,9 +27,9 @@ export class MockMetadata {
 
     public constructor() {
         this.entities.push(GeneralMetadata.General);
-        this.entities.push(GeneralMetadata.General___Actor);
-        this.entities.push(GeneralMetadata.General___Currency);
-        this.entities.push(GeneralMetadata.General___Client);
+        this.entities.push(GeneralMetadata.GEN___Actor);
+        this.entities.push(GeneralMetadata.GEN___Currency);
+        this.entities.push(GeneralMetadata.GEN___Client);
 
         this.entities.push(InventoryMetadata.Inventory);
         this.entities.push(InventoryMetadata.INV___Order);
@@ -41,8 +41,8 @@ export class MockMetadata {
         this.entities.push(InventoryMetadata.INV___PRD___Unit);
         
         this.entities.push(FinancialMetadata.Financial);
-        this.entities.push(FinancialMetadata.Financial___Account);
-        this.entities.push(FinancialMetadata.Financial___Transaction);
+        this.entities.push(FinancialMetadata.FIN___Account);
+        this.entities.push(FinancialMetadata.FIN___Transaction);
 
         this.entities.push(FormsMetadata.Forms);
         this.entities.push(FormsMetadata.Forms___ServiceForm);

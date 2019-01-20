@@ -7,7 +7,7 @@ import * as _ from "../frmdb_lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { KeyObjStoreI } from "../key_value_store_i";
 
-import { UserActionEditedFormDataN } from "../domain/event";
+import { ServerEventModifiedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula } from "../formula_compiler";

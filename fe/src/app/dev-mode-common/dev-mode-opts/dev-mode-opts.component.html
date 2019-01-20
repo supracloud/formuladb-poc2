@@ -56,17 +56,36 @@
     NowUI Theme</a>
   <div class="divider"></div>
   <a class="dropdown-item" href="javascript:void(0)">
-    <span title="{{'add table' | i18n}}" class="add-del-things" (click)="addTable()">
+    <span title="{{'add table' | i18n}}" class="add-del-things" (click)="addTable(tableName)">
       <fa-icon [icon]="tableIcon" class="fa-sm"></fa-icon><sup>
         <fa-icon [icon]="addIcon" class="fa-xs"></fa-icon>
       </sup>
     </span>
-    <span title="{{'add table' | i18n}}" class="add-del-things" (click)="addColumnToCurrentTable()">
+    <span style="font-size: 75%">{{currentEntity?._id}}</span>
+    <input style="width: 5em" #tableName type="text" (click)="stopPropagation($event)" (keydown)="keepPrefix(tableName, '___')" value="___" />
+    &nbsp;/&nbsp;
+    <span title="{{'add column' | i18n}}" class="add-del-things" (click)="addColumnToCurrentTable(columnName)">
       <fa-icon [icon]="columnIcon" class="fa-sm"></fa-icon><sup>
         <fa-icon [icon]="addIcon" class="fa-xs"></fa-icon>
       </sup>
     </span>
-    <input type="text" />
+    <span style="font-size: 75%">{{currentEntity?._id}}</span>
+    <input style="width: 5em" #columnName type="text" (click)="stopPropagation($event)" (keydown)="keepPrefix(columnName, '.')" value="." />
+  </a>
+  <a class="dropdown-item" href="javascript:void(0)">
+    <span title="{{'add table' | i18n}}" class="add-del-things" (click)="delTable()">
+      <fa-icon [icon]="tableIcon" class="fa-sm"></fa-icon><sup>
+        <fa-icon [icon]="delIcon" class="fa-xs"></fa-icon>
+      </sup>
+    </span>
+    <span style="font-size: 75%">{{currentEntity?._id}}</span>
+    &nbsp;/&nbsp;
+    <span title="{{'add column' | i18n}}" class="add-del-things" (click)="delColumnFromCurrentTable()">
+      <fa-icon [icon]="columnIcon" class="fa-sm"></fa-icon><sup>
+        <fa-icon [icon]="delIcon" class="fa-xs"></fa-icon>
+      </sup>
+    </span>
+    <span style="font-size: 75%">{{currentProperty?.name}}</span>
   </a>
 </ng-container>
 <div class="divider"></div>

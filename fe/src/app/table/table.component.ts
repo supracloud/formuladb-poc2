@@ -144,14 +144,14 @@ export class TableComponent implements OnInit, OnDestroy {
 
     columnMoved(event: ColumnMovedEvent) {
         if (this.tableState) {
-            this.store.dispatch(new fromTable.UserActionEditedTable(this.tableState));
+            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
         }
     }
 
     columnResized(event: ColumnResizedEvent) {
         if (event.finished && this.tableState != null) {
             (this.tableState.columns || []).find(c => c.name != null && c.name === event.column.getId())!.width = event.column.getActualWidth();
-            this.store.dispatch(new fromTable.UserActionEditedTable(this.tableState));
+            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
         }
     }
 
@@ -165,7 +165,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     c.filter = undefined;
                 }
             });
-            this.store.dispatch(new fromTable.UserActionEditedTable(this.tableState));
+            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
         }
         this.filters = this.gridApi.getFilterModel();
     }
@@ -181,7 +181,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     c.sort = undefined;
                 }
             });
-            this.store.dispatch(new fromTable.UserActionEditedTable(this.tableState));
+            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
         }
         this.sort = this.gridApi.getSortModel();
     }
