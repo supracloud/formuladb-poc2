@@ -13,8 +13,8 @@ export const General: Entity = {
     props: {},
 };
 
-export const GEN___Settings: Entity = {
-    _id: "GEN___Settings",
+export const GEN__Settings: Entity = {
+    _id: "GEN__Settings",
     props: {
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         valueNumber: { name: "valueNumber", propType_: Pn.NUMBER } as EntityProperty,
@@ -23,8 +23,8 @@ export const GEN___Settings: Entity = {
     }
 }
 
-export const GEN___Actor: Entity = {
-    _id: "GEN___Actor",
+export const GEN__Actor: Entity = {
+    _id: "GEN__Actor",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -41,8 +41,8 @@ export const GEN___Actor: Entity = {
 
 };
 
-export const GEN___Currency: Entity = {
-    _id: "GEN___Currency",
+export const GEN__Currency: Entity = {
+    _id: "GEN__Currency",
     props: {
 
         code: { name: "code", propType_: Pn.STRING } as EntityProperty,
@@ -57,8 +57,8 @@ export const GEN___Currency: Entity = {
     }
 };
 
-export const GEN___Person: Entity = {
-    _id: "GEN___Person",
+export const GEN__Person: Entity = {
+    _id: "GEN__Person",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -77,8 +77,8 @@ export const GEN___Person: Entity = {
     }
 };
 
-export const GEN___User: Entity = {
-    _id: "GEN___User",
+export const GEN__User: Entity = {
+    _id: "GEN__User",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -94,8 +94,8 @@ export const GEN___User: Entity = {
     }
 };
 
-export const GEN___Client: Entity = {
-    _id: "GEN___Client",
+export const GEN__Client: Entity = {
+    _id: "GEN__Client",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,

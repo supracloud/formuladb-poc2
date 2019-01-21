@@ -104,7 +104,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   addTable(input: HTMLInputElement) {
     let newTableName = input.value;
     let prefix = this.currentEntity ? this.currentEntity._id : '';
-    if (prefix === '') newTableName = newTableName.replace(/^___/, '');
+    if (prefix === '') newTableName = newTableName.replace(/^__/, '');
     this.store.dispatch(new appState.ServerEventNewEntity(prefix + newTableName));
   }
 
@@ -131,7 +131,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
   getNameOfAddedTableOrColumn(tableNameInput: HTMLInputElement, colNameInput: HTMLInputElement) {
     let ret = this.currentEntity ? this.currentEntity._id : '';
-    if (tableNameInput.value) ret += '___' + tableNameInput.value;
+    if (tableNameInput.value) ret += '__' + tableNameInput.value;
     if (colNameInput.value) ret += '.' + tableNameInput.value;
     return ret;
   }

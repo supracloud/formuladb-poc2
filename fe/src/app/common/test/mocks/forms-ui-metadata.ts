@@ -6,14 +6,14 @@
 import * as metadata from './mock-metadata';
 import { Entity, Pn } from '../../domain/metadata/entity';
 import { Form, NodeType } from '../../domain/uimetadata/form';
-import { Forms___ServiceForm } from './forms-metadata';
+import { Forms__ServiceForm } from './forms-metadata';
 
 let testUUID = 1;
 function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
-export const Forms___ServiceForm_Form_: Form = {
-  _id: 'Form_:' + Forms___ServiceForm._id,
+export const Forms__ServiceForm_Form_: Form = {
+  _id: 'Form_:' + Forms__ServiceForm._id,
   grid: {
     _id: getTestUUID(), nodeType: NodeType.form_grid,
     childNodes: [
@@ -31,11 +31,11 @@ export const Forms___ServiceForm_Form_: Form = {
         childNodes: [
           {
             _id: getTestUUID(), nodeType: NodeType.form_autocomplete,
-            refEntityName: 'GEN___Client', refPropertyName: 'name', propertyName: 'client_name'
+            refEntityName: 'GEN__Client', refPropertyName: 'name', propertyName: 'client_name'
           },
           {
             _id: getTestUUID(), nodeType: NodeType.form_autocomplete,
-            refEntityName: 'GEN___Client', refPropertyName: 'email', propertyName: 'client_email'
+            refEntityName: 'GEN__Client', refPropertyName: 'email', propertyName: 'client_email'
           },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'technician_code' },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'client_person' },

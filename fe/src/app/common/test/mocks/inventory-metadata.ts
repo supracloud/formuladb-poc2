@@ -14,8 +14,8 @@ export const Inventory = {
     props: {},
 };
 
-export const INV___PRD___Location = {
-    _id: 'INV___PRD___Location',
+export const INV__PRD__Location = {
+    _id: 'INV__PRD__Location',
     props: {
         productId: { name: 'productId', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
         locationCode: { name: 'locationCode', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
@@ -23,7 +23,7 @@ export const INV___PRD___Location = {
         received_stock__: {
             name: 'received_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV___Receipt___Item.quantity, productLocationId == @[_id])',
+            formula: 'SUMIF(INV__Receipt__Item.quantity, productLocationId == @[_id])',
         } as FormulaProperty,
         available_stock__: {
             name: 'available_stock__',
@@ -33,7 +33,7 @@ export const INV___PRD___Location = {
         ordered_stock__: {
             name: 'ordered_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV___Order___Item.quantity, productLocationId == @[_id])'
+            formula: 'SUMIF(INV__Order__Item.quantity, productLocationId == @[_id])'
         } as FormulaProperty,
         price: { name: 'price', propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
         currency: {
@@ -50,10 +50,10 @@ export const INV___PRD___Location = {
         positiveStock: { conditionExpr: $s2e('available_stock__ >= 0') }
     },
 };
-const eeee: Entity = INV___PRD___Location as Entity;
+const eeee: Entity = INV__PRD__Location as Entity;
 
-export const INV___PRD = {
-    _id: 'INV___PRD',
+export const INV__PRD = {
+    _id: 'INV__PRD',
     props: {
         code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         barcode: { name: 'barcode', propType_: Pn.STRING } as EntityProperty,
@@ -61,26 +61,26 @@ export const INV___PRD = {
         description: { name: 'description', propType_: Pn.STRING } as EntityProperty,
         inventoryLocation: {
             name: 'inventoryLocation',
-            propType_: Pn.CHILD_TABLE, referencedEntityName: INV___PRD___Location._id, props: {}
+            propType_: Pn.CHILD_TABLE, referencedEntityName: INV__PRD__Location._id, props: {}
         } as EntityProperty,
     }
 };
 
-export const INV___PRD___Unit = {
-    _id: 'INV___PRD___Unit',
+export const INV__PRD__Unit = {
+    _id: 'INV__PRD__Unit',
     props: {
 
         code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         productCode: {
             propType_: Pn.REFERENCE_TO,
             name: 'product_code',
-            referencedEntityName: INV___PRD._id,
+            referencedEntityName: INV__PRD._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
         productName: {
             propType_: Pn.REFERENCE_TO,
             name: 'product_name',
-            referencedEntityName: INV___PRD._id,
+            referencedEntityName: INV__PRD._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
         inventoryLocation: { name: 'inventoryLocation', propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -100,18 +100,18 @@ export const INV___PRD___Unit = {
 };
 
 
-export const INV___Receipt = {
-    _id: 'INV___Receipt',
+export const INV__Receipt = {
+    _id: 'INV__Receipt',
     props: {
         items$: {
             name: 'items$', propType_: Pn.CHILD_TABLE,
-            referencedEntityName: 'INV___Receipt___Item', props: {}, isLargeTable: true
+            referencedEntityName: 'INV__Receipt__Item', props: {}, isLargeTable: true
         } as EntityProperty,
     }
 };
 
-export const INV___Receipt___Item = {
-    _id: 'INV___Receipt___Item',
+export const INV__Receipt__Item = {
+    _id: 'INV__Receipt__Item',
     props: {
 
         productLocationId: { name: 'productLocationId', propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -122,12 +122,12 @@ export const INV___Receipt___Item = {
             props: {
                 unitCode: {
                     name: 'unit_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id,
+                    referencedEntityName: INV__PRD__Unit._id,
                     referencedPropertyName: 'code'
                 } as EntityProperty,
                 unitSerial: {
                     name: 'unit_serial', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id,
+                    referencedEntityName: INV__PRD__Unit._id,
                     referencedPropertyName: 'serial'
                 } as EntityProperty,
             }
@@ -136,8 +136,8 @@ export const INV___Receipt___Item = {
 };
 
 
-export const INV___Order = {
-    _id: 'INV___Order',
+export const INV__Order = {
+    _id: 'INV__Order',
     stateGraph: {
         nodes: ['PENDING', 'COMPLETE', 'APPROVED', 'PROCESSED', 'CANCELLED'],
         transitions: [
@@ -155,15 +155,15 @@ export const INV___Order = {
         items$: {
             name: 'items$',
             propType_: Pn.CHILD_TABLE,
-            referencedEntityName: 'INV___Order___Item',
+            referencedEntityName: 'INV__Order__Item',
             props: {},
             isLargeTable: true,
         } as EntityProperty,
     }
 };
 
-export const INV___Order___Item = {
-    _id: 'INV___Order___Item',
+export const INV__Order__Item = {
+    _id: 'INV__Order__Item',
     props: {
         productLocationId: { name: 'productLocationId', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
@@ -175,19 +175,19 @@ export const INV___Order___Item = {
             props: {
                 unitCode: {
                     name: 'unit_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id,
+                    referencedEntityName: INV__PRD__Unit._id,
                     referencedPropertyName: 'code'
                 } as EntityProperty,
                 unitSerial: {
                     name: 'unit_serial', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id,
+                    referencedEntityName: INV__PRD__Unit._id,
                     referencedPropertyName: 'serial'
                 } as EntityProperty,
             }
         } as EntityProperty,
     },
     autoCorrectionsOnValidationFailed: {
-        'INV___PRD___Location!positiveStock': [
+        'INV__PRD__Location!positiveStock': [
             { targetPropertyName: 'quantity', autoCorrectExpr: $s2e('MAX(0, quantity + $ROW$.available_stock__)') },
             { targetPropertyName: 'error_quantity', autoCorrectExpr: $s2e('ABS($OLD$.quantity - quantity)') },
         ],

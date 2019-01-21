@@ -4,8 +4,8 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from '../../domain/metadata/entity';
-import { INV___PRD, INV___Order, INV___PRD___Unit } from './inventory-metadata';
-import { GEN___Client } from "./general-metadata";
+import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
+import { GEN__Client } from "./general-metadata";
 import { Sn } from '../../domain/metadata/stored_procedure';
 import { Fn } from '../../domain/metadata/functions';
 
@@ -15,8 +15,8 @@ export const Forms = {
     props: {},
 };
 
-export const Forms___ServiceForm = {
-    _id: 'FRM___ServiceForm',
+export const Forms__ServiceForm = {
+    _id: 'FRM__ServiceForm',
     props: {
 
         code: {
@@ -35,13 +35,13 @@ export const Forms___ServiceForm = {
         client_name: {
             name: 'client_name',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: GEN___Client._id,
+            referencedEntityName: GEN__Client._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
         client_email: {
             name: 'client_email',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: GEN___Client._id,
+            referencedEntityName: GEN__Client._id,
             referencedPropertyName: 'email'
         } as EntityProperty,
         time_of_arrival: { name: 'time_of_arrival', propType_: Pn.DATETIME } as EntityProperty,
@@ -59,19 +59,19 @@ export const Forms___ServiceForm = {
         accommodation: { name: 'accommodation', propType_: Pn.NUMBER } as EntityProperty,
         service_form_units: {
             name: 'service_form_units',
-            propType_: Pn.CHILD_TABLE, referencedEntityName: INV___Order._id,
+            propType_: Pn.CHILD_TABLE, referencedEntityName: INV__Order._id,
             props: {
                 equipmentCode: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id, referencedPropertyName: 'code'
+                    referencedEntityName: INV__PRD__Unit._id, referencedPropertyName: 'code'
                 } as EntityProperty,
                 equipmentProductCode: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id, referencedPropertyName: 'product_code'
+                    referencedEntityName: INV__PRD__Unit._id, referencedPropertyName: 'product_code'
                 } as EntityProperty,
                 equipmentSerial1: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV___PRD___Unit._id, referencedPropertyName: 'serial1'
+                    referencedEntityName: INV__PRD__Unit._id, referencedPropertyName: 'serial1'
                 } as EntityProperty,
                 reported_problem: { name: 'reported_problem', propType_: Pn.TEXT } as EntityProperty,
                 found_problem: { name: 'found_problem', propType_: Pn.TEXT } as EntityProperty,

@@ -50,7 +50,7 @@ export const SIMPLE_FLOW = {
     Then_navigation_should_show_all_current_tables: {
     },
     And_default_table_page_with_service_forms_should_be_displayed: {
-        serviceFormTable: getDefaultTable(meta.Forms___ServiceForm)
+        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm)
     },
     When_user_navigates_to_a_service_form: {},
     Then_the_form_page_should_be_displayed: {},

@@ -112,7 +112,7 @@ export class AppEffects {
             case events.ServerEventDeleteEntityN: {
                 let entities = await this.backendService.getEntities();
                 this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
-                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/___\w+$/, ''))]);
+                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/__\w+$/, ''))]);
                 break;
             }
             case events.ServerEventModifiedEntityN: {

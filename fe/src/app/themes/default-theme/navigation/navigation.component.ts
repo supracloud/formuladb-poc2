@@ -27,7 +27,7 @@ export class NavigationComponent implements OnInit {
         withLatestFrom(this.store.select(state => state.router.state.url)),
         map(([entities, route]) => {
           const rp = parseUrl(route);
-          const path = rp === null || rp.path === null ? [] : rp.path.split("___");
+          const path = rp === null || rp.path === null ? [] : rp.path.split("__");
           const re = this.setCollapsed(entities, path);
           return re;
         }

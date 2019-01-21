@@ -20,7 +20,7 @@ export function flow() {
     return {
         mockMetadata: mockMetadata,
         mockData: mockData,
-        serviceFormTable: getDefaultTable(meta.Forms___ServiceForm),
+        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm),
     };
 }
 

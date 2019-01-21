@@ -86,7 +86,7 @@ export class BackendService {
             let dataObjs: any[] = [];
             for (let obj of (data.body || [])) {
 
-                let dataObj: any = {_id: 'REP___DeliveryRate~~' + obj.id};
+                let dataObj: any = {_id: 'REP__DeliveryRate~~' + obj.id};
 
                 dataObj.orderNb = obj.order_id;
                 dataObj.externalOrderNb = 
@@ -144,7 +144,7 @@ export class BackendService {
         let entity = this.getFrmdbEngineTools().schemaDAO.getEntityForDataObj(id);
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ == Pn.CHILD_TABLE) {
-                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
+                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '__');
                 dataObj[prop.name] = subtableData;
             }
         }
