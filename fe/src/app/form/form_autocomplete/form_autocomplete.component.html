@@ -3,7 +3,7 @@
 </label>
 <input class="form-control" [attr.list]="parentFormPath + '.' + inputElement.propertyName+'.list'" [id]="parentFormPath + '.' + inputElement.propertyName"
     [formControl]="topLevelFormGroup.get(inputElement.propertyName)" *ngIf="hasControl(inputElement.propertyName)"
-    (input)="inputChange($event.target.value)" (blur)="inputLeave($event.target.value)" [value]="selection$|async"/>
+    (input)="inputChange($event.target.value)" (blur)="inputLeave($event.target.value)" [value]="value$|async" />
 <datalist [id]="parentFormPath + '.' + inputElement.propertyName+'.list'">
     <option *ngFor="let option of options$|async">{{option}}</option>
 </datalist>

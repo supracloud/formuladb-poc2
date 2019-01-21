@@ -15,7 +15,7 @@ export class FormEditingService {
 
   private tst$: Subject<ValidationErrors | null> = new Subject();
 
-  private autoComplete$: { [entity: string]: BehaviorSubject<any> };
+  private autoComplete$: { [entity: string]: BehaviorSubject<any> } = {};
 
   public getParentObj(control: AbstractControl): DataObj | null {
     let ctrl = control;
