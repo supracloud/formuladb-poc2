@@ -23,7 +23,8 @@ import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
 import { KeyValueStoreMem, KeyValueStoreFactoryMem } from './common/key_value_store_mem';
-import { MockMetadata } from './common/test/mocks/mock-metadata';
+import { MockMetadata, ExampleApps } from './common/test/mocks/mock-metadata';
+import { waitUntilNotNull } from './common/ts-utils';
 
 export enum EnvType {
     Test = "Test",
@@ -44,9 +45,12 @@ export class BackendService {
     constructor(private http: HttpClient) {
     }
 
-    public async init(initCallback: () => void,
+    public async init(
+        app: ExampleApps,
+        initCallback: () => void,
         notifCallback: (event: MwzEvents) => void,
-        dataChangeCallback: (docs: Array<KeyValueObj>) => void) {
+        dataChangeCallback: (docs: Array<KeyValueObj>) => void)
+    {
 
         this.envType = window.location.href.indexOf("http://localhost:4200/") == 0 || window.location.href.indexOf("http://localhost:4300/") == 0 ? 
             EnvType.Test : EnvType.Live;
@@ -56,7 +60,10 @@ export class BackendService {
         this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            let mockMetadata = new MockMetadata();
+            if (this.testFrmdbEngine) {
+                //TODO: cleanup
+            }
+            let mockMetadata = new MockMetadata(app);
             this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
             this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
             await this.testFrmdbEngine.init(true);
@@ -86,7 +93,7 @@ export class BackendService {
             let dataObjs: any[] = [];
             for (let obj of (data.body || [])) {
 
-                let dataObj: any = {_id: 'REP___DeliveryRate~~' + obj.id};
+                let dataObj: any = {_id: 'REP__DeliveryRate~~' + obj.id};
 
                 dataObj.orderNb = obj.order_id;
                 dataObj.externalOrderNb = 
@@ -144,7 +151,7 @@ export class BackendService {
         let entity = this.getFrmdbEngineTools().schemaDAO.getEntityForDataObj(id);
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ == Pn.CHILD_TABLE) {
-                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
+                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '__');
                 dataObj[prop.name] = subtableData;
             }
         }
@@ -177,26 +184,12 @@ export class BackendService {
     }
 
     public async getEntities(): Promise<Entity[]> {
-        let frmdbStore = await this.wait<FrmdbStore>(() => this.frmdbStore);
+        let frmdbStore = await waitUntilNotNull<FrmdbStore>(() => this.frmdbStore);
         return frmdbStore.getEntities();
-    }
-
-    private wait<T>(callback: () => T): Promise<T> {
-        let ret: T = callback();
-        if (ret) return Promise.resolve(ret);
-        return new Promise(resolve => {
-            let interval = setInterval(() => {
-                let x: T = callback();
-                if (x) {
-                    resolve(x);
-                    clearInterval(interval);
-                }
-            }, 250)
-        });
     }
     
     public async getEntity(path: string): Promise<Entity> {
-        let frmdbStore = await this.wait<FrmdbStore>(() => this.frmdbStore);
+        let frmdbStore = await waitUntilNotNull<FrmdbStore>(() => this.frmdbStore);
         let ret = await frmdbStore.getEntity(path);
         if (ret == null ) throw new Error("Asked for non existent table " + path + ".");
         return ret;

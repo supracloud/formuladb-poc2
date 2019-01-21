@@ -23,12 +23,15 @@ import { AppComponent } from './app.component';
 import * as appState from './app.state';
 import { FrmdbPopupDirective } from './dev-mode-common/frmdb-popup.directive';
 import { ApplicationsComponent } from './applications/applications.component';
+import { ApplicationComponent } from './applications/application/application.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
     AppComponent,
     FrmdbPopupDirective,
     ApplicationsComponent,
+    ApplicationComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ import { ApplicationsComponent } from './applications/applications.component';
     EffectsModule.forRoot([AppEffects]),
     NgbModule.forRoot(),
     HttpClientModule,
+    FontAwesomeModule,
   ],
   providers: [
     BackendService,

@@ -6,14 +6,14 @@
 import * as metadata from './mock-metadata';
 import { Entity, Pn } from '../../domain/metadata/entity'
 import { Form, NodeType } from '../../domain/uimetadata/form'
-import { Forms___ServiceForm } from "./forms-metadata";
+import { Forms__ServiceForm } from "./forms-metadata";
 
 let testUUID = 1;
 function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
-export var Forms___ServiceForm_Form_: Form = {
-  _id: 'Form_:' + Forms___ServiceForm._id,
+export var Forms__ServiceForm_Form_: Form = {
+  _id: 'Form_:' + Forms__ServiceForm._id,
   grid: {
     _id: getTestUUID(), nodeType: NodeType.form_grid,
     childNodes: [

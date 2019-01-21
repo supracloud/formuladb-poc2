@@ -62,7 +62,7 @@
       </sup>
     </span>
     <span style="font-size: 75%">{{currentEntity?._id}}</span>
-    <input style="width: 5em" #tableName type="text" (click)="stopPropagation($event)" (keydown)="keepPrefix(tableName, '___')" value="___" />
+    <input style="width: 5em" #tableName type="text" (click)="stopPropagation($event)" (keydown)="keepPrefix(tableName, '__')" value="__" />
     &nbsp;/&nbsp;
     <span title="{{'add column' | i18n}}" class="add-del-things" (click)="addColumnToCurrentTable(columnName)">
       <fa-icon [icon]="columnIcon" class="fa-sm"></fa-icon><sup>
@@ -87,6 +87,8 @@
     </span>
     <span style="font-size: 75%">{{currentProperty?.name}}</span>
   </a>
+  <div class="divider"></div>
+  <a class="dropdown-item" href="javascript:void(0)" (click)="goToAppList()">Leave this app</a>
 </ng-container>
 <div class="divider"></div>
 <a class="dropdown-item" href="javascript:void(0)" (click)="toggleDeveloperMode()"><i class="nc-icon nc-settings-90"></i>{{

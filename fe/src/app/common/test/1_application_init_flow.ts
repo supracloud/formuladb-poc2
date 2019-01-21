@@ -14,13 +14,13 @@ import { obj2MapES5 } from "../ts-utils";
 import { _throw } from "../throw";
 
 export function flow() {
-    let mockMetadata = new meta.MockMetadata();
+    let mockMetadata = new meta.MockMetadata(meta.ExampleApps.service);
     let mockData = new MockData(mockMetadata.schema.entities);
 
     return {
         mockMetadata: mockMetadata,
         mockData: mockData,
-        serviceFormTable: getDefaultTable(meta.Forms___ServiceForm),
+        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm),
     };
 }
 

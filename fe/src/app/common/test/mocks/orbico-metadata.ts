@@ -12,8 +12,8 @@ export const Reports = {
     props: {},
 };
 
-export const REP___DeliveryRate = {
-    _id: "REP___DeliveryRate",
+export const REP__DeliveryRate = {
+    _id: "REP__DeliveryRate",
     props: {
         orderNb: { name: 'orderNb', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         externalOrderNb: { name: 'externalOrderNb', propType_: Pn.STRING, "allowNull": false } as EntityProperty,
