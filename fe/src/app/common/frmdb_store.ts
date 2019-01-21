@@ -3,9 +3,8 @@
  * License TBD
  */
 
-import { KeyValueObj, SubObj } from "./domain/key_value_obj";
-import { Entity, EntityProperty, Schema } from "./domain/metadata/entity";
-import { DataObj, DataObjDeepPath } from "./domain/metadata/data_obj";
+import { Entity, Schema } from "./domain/metadata/entity";
+import { DataObj } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
@@ -40,13 +39,24 @@ export class FrmdbStore {
         return schema ? schema.entities[path] : null;
     }
 
-    public async putEntity(entity: Entity): Promise<Entity | null> {
+    public async putEntity(entity: Entity): Promise<Entity> {
         let schema = await this.getSchema();
         if (!schema) throw new Error("Attempt to put entity in an empty schema " + JSON.stringify(entity));
         schema.entities[entity._id] = entity;
         //the Entity's _id is the path
         return this.putSchema(schema)
-            .then(x => x ? entity : null);
+            .then(x => entity);
+    }
+
+    public async delEntity(entityId: string): Promise<Entity> {
+        let schema = await this.getSchema();
+        if (!schema) throw new Error("Attempt to del entity " + entityId +  " from empty schema");
+        let ret = schema.entities[entityId];
+        if (!ret) throw new Error("Attempt to del non existent entity " + entityId);
+        delete schema.entities[entityId];
+        //the Entity's _id is the path
+        return this.putSchema(schema)
+            .then(x => ret);
     }
 
     public getTable(path: string): Promise<Table | null> {
@@ -81,7 +91,7 @@ export class FrmdbStore {
         return this.dataDB.putBulk(objs);
     }
 
-    public delObj(id: string) {
+    public delDataObj(id: string) {
         return this.dataDB.del(id);
     }
 }

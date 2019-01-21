@@ -175,7 +175,7 @@ export function parseUrl(url: string): { path: string | null, id: string | null 
     path = match[1];
     if (match.length >= 3 && match[2] != null) id = match[2];
   } else {
-    return { path: "General___Actor", id: null };//FIXME: remove hardcode, altough actors will always be available in a FormulaDB app
+    return { path: "GEN___Actor", id: null };//FIXME: remove hardcode, altough actors will always be available in a FormulaDB app
   }
 
   return { path: path, id: id };

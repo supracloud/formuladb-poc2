@@ -7,7 +7,7 @@ import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 import { KeyObjStoreI } from "./key_value_store_i";
 
-import { UserActionEditedFormDataN, UserActionEditedFormDataEvent } from "./domain/event";
+import { ServerEventModifiedFormDataN, ServerEventModifiedFormDataEvent } from "./domain/event";
 import { Fn } from "./domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
@@ -84,8 +84,8 @@ describe('FrmdbEngine', () => {
         done();
     });
 
-    async function putObj(obj: KeyValueObj): Promise<UserActionEditedFormDataEvent> {
-        return await frmdbEngine.processEvent(new UserActionEditedFormDataEvent(obj)) as UserActionEditedFormDataEvent;
+    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
+        return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
 
     afterEach(function () {

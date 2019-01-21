@@ -4,17 +4,17 @@
  */
 
 import { Entity, Pn, EntityProperty } from '../../domain/metadata/entity';
-import { General___Actor } from './general-metadata';
+import { GEN___Actor } from './general-metadata';
 
 export const Financial = {
-    _id: 'Financial',
+    _id: "FIN",
     module_: true,
     props: {},
 };
 
 
-export const Financial___Account = {
-    _id: 'Financial___Account',
+export const FIN___Account = {
+    _id: "FIN___Account",
     props: {
 
         code: { name: 'code', propType_: Pn.STRING, 'allowNull': false } as EntityProperty,
@@ -22,44 +22,44 @@ export const Financial___Account = {
         actor_code: {
             name: 'actor_code',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: General___Actor._id,
+            referencedEntityName: GEN___Actor._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
         actor_name: {
             name: 'actor_name',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: General___Actor._id,
+            referencedEntityName: GEN___Actor._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
     }
 };
 
-export const Financial___Transaction = {
-    _id: 'Financial___Transaction',
+export const FIN___Transaction = {
+    _id: "FIN___Transaction",
     props: {
 
         accountDebitCode: {
             name: 'accountDebitCode',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: Financial___Account._id,
+            referencedEntityName: FIN___Account._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
         accountDebitName: {
             name: 'accountDebitName',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: Financial___Account._id,
+            referencedEntityName: FIN___Account._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
         accountCreditCode: {
             name: 'accountCreditCode',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: Financial___Account._id,
+            referencedEntityName: FIN___Account._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
         accountCreditName: {
             name: 'accountCreditName',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: Financial___Account._id,
+            referencedEntityName: FIN___Account._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
         amount: { name: 'amount', propType_: Pn.NUMBER } as EntityProperty,

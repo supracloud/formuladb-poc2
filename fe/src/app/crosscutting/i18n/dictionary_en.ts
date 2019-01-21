@@ -2,6 +2,8 @@ import { MusicBooking_en } from "./musicbooking_en";
 import { Inventory_en } from "./inventory_en";
 import { Reports_en } from "./reports_en";
 import { Forms_en } from "./forms_en";
+import { General_en } from "./general_en";
+import { Financial_en } from "./financial_en";
 
 const defaultDict_en = {
     'Enable-Developer-Mode': 'Enable Developer Mode',
@@ -16,7 +18,7 @@ const defaultDict_en = {
     code: 'Code',
     username: 'Username',
 
-    'General___Currency!rate1!max': 'Maximum rate1 exceeded',
+    'GEN___Currency!rate1!max': 'Maximum rate1 exceeded',
     'items$': 'Items',
 };
 
@@ -26,4 +28,6 @@ export const Dictioary_en = {
     ...Inventory_en,
     ...Reports_en,
     ...Forms_en,
+    ...General_en,
+    ...Financial_en,
 };

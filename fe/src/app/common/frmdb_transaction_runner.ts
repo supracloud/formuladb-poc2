@@ -118,7 +118,7 @@ class FailedValidationsError {
 }
 
 class TransactionAbortedError {
-    constructor(public event: events.UserActionEditedFormDataEvent) {}
+    constructor(public event: events.ServerEventModifiedFormDataEvent) {}
 }
 
 export class FrmdbTransactionRunner {
@@ -148,7 +148,7 @@ export class FrmdbTransactionRunner {
     }
 
     public async computeFormulasAndSave(
-        event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
+        event: events.ServerEventModifiedFormDataEvent): Promise<events.MwzEvents> {
 
         let transacDAG: TransactionDAG;
         try {

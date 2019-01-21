@@ -20,7 +20,7 @@ import * as fromForm from './form/form.state';
 import { AppEffects } from "./app.effects";
 import { ChangeObj } from "./common/domain/change_obj";
 
-import { MockMetadata, General___Actor, General___Currency } from "./common/test/mocks/mock-metadata";
+import { MockMetadata, GEN___Actor, GEN___Currency } from "./common/test/mocks/mock-metadata";
 import * as mainDemoFlow from "./common/test/main_demo.flow";
 import { getDefaultTable } from './common/domain/uimetadata/table';
 import { getDefaultForm } from './common/domain/uimetadata/form';
@@ -63,34 +63,34 @@ xdescribe('AppEffects', () => {
         effects = TestBed.get(AppEffects);
         actions$ = TestBed.get(Actions);
         // backendReadService = TestBed.get(BackendReadService);
-        actorTestId = mainDemoFlow.mockData.getAllForPath(General___Actor._id)[0]._id;
+        actorTestId = mainDemoFlow.mockData.getAllForPath(GEN___Actor._id)[0]._id;
     });
 
     it('a router effect test', () => {
             let values = {
                 a: {
                     type: ROUTER_NAVIGATION,
-                    payload: {routerState: {url: '/General___Actor'}} as RouterNavigationPayload<appState.RouterState>
+                    payload: {routerState: {url: '/GEN___Actor'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
                 b: {
                     type: ROUTER_NAVIGATION,
                     payload: {routerState: {
-                        url: '/General___Actor/' + actorTestId
+                        url: '/GEN___Actor/' + actorTestId
                     }} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
                 c: {
                     type: ROUTER_NAVIGATION,
-                    payload: {routerState: {url: '/General___Currency'}} as RouterNavigationPayload<appState.RouterState>
+                    payload: {routerState: {url: '/GEN___Currency'}} as RouterNavigationPayload<appState.RouterState>
                 } as RouterNavigationAction<appState.RouterState>,
-                m: new fromTable.TableFormBackendAction(getDefaultTable(General___Actor as Entity)),
+                m: new fromTable.TableFormBackendAction(getDefaultTable(GEN___Actor as Entity)),
                 n: new fromTable.TableDataFromBackendAction(
-                    mainDemoFlow.mockData.getAllForPath(General___Actor._id).map(o => new ChangeObj(o))),
-                o: new fromForm.FormFromBackendAction(getDefaultForm(General___Actor as Entity, mainDemoFlow.mockMetadata.schema.entities)),
-                p: new fromForm.FormDataFromBackendAction(mainDemoFlow.mockData.get(General___Actor._id, actorTestId)),
-                q: new fromTable.TableFormBackendAction(getDefaultTable(General___Currency as Entity)),
+                    mainDemoFlow.mockData.getAllForPath(GEN___Actor._id).map(o => new ChangeObj(o))),
+                o: new fromForm.FormFromBackendAction(getDefaultForm(GEN___Actor as Entity, mainDemoFlow.mockMetadata.schema.entities)),
+                p: new fromForm.FormDataFromBackendAction(mainDemoFlow.mockData.get(GEN___Actor._id, actorTestId)),
+                q: new fromTable.TableFormBackendAction(getDefaultTable(GEN___Currency as Entity)),
                 r: new fromTable.TableDataFromBackendAction(
-                    mainDemoFlow.mockData.getAllForPath(General___Currency._id).map(o => new ChangeObj(o))),
-                s: new fromForm.FormFromBackendAction(getDefaultForm(General___Currency as Entity, mainDemoFlow.mockMetadata.schema.entities)),
+                    mainDemoFlow.mockData.getAllForPath(GEN___Currency._id).map(o => new ChangeObj(o))),
+                s: new fromForm.FormFromBackendAction(getDefaultForm(GEN___Currency as Entity, mainDemoFlow.mockMetadata.schema.entities)),
             }
 
             actions$.stream = hot('--a----bc',values);
