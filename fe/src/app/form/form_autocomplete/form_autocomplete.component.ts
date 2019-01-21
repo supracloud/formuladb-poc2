@@ -14,13 +14,12 @@ import { BaseNodeComponent } from '../base_node';
 
 import * as fromForm from '../form.state';
 import { FormAutocomplete } from 'src/app/common/domain/uimetadata/form';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, map } from 'rxjs/operators';
 
 @Component({
     selector: 'form-autocomplete',
-    // host: { class: 'col', style: "padding-left: 25px" },
     templateUrl: 'form_autocomplete.component.html',
     styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']
 })
@@ -30,7 +29,19 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
     src = new BehaviorSubject('');
 
+    optionsFn$: (search: string) => Observable<any[]>;
+
+    @Input()
+    entityName: string;
+
+    @Input()
+    fieldName: string;
+
     options$: Observable<string[]>;
+
+    selection$: Subject<any>;
+
+    spotOptions: any[];
 
     constructor(protected fromStore: Store<fromForm.FormState>, protected formEditingService: FormEditingService) {
         super(fromStore);
@@ -39,15 +50,17 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     ngOnInit(): void {
         this.inputElement = this.nodeElement as FormAutocomplete;
         this.options$ = this.src.pipe(
-            switchMap(v => this.formEditingService
-                .getOptions(this.inputElement.refEntityName, this.inputElement.refPropertyName, v))
+            switchMap(v => this.formEditingService.getOptions(this.entityName, this.fieldName, v)
+                .pipe(
+                    map(optionList => {
+                        this.spotOptions = optionList;
+                        return optionList
+                            .map(opt => opt[this.fieldName]);
+                    })
+                )
+            )
         );
-        this.subscriptions.push(this.formEditingService
-            .getAutoComplete(this.inputElement.refEntityName).subscribe(ac => {
-                if (ac !== null) {
-
-                }
-            }));
+        this.selection$=this.formEditingService.getAutoComplete(this.entityName);
     }
 
     ngOnDestroy(): void {
@@ -61,6 +74,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     inputLeave(val: string) {
-        this.formEditingService.setAutoComplete(this.inputElement.refEntityName)
+        const option = this.spotOptions.find(opt => opt[this.fieldName] === val);
+        if (option) this.selection$.next(option);
     }
 }

@@ -69,18 +69,10 @@ export class FormEditingService {
     };
   }
 
-  public getOptions(entity: string, property: string, startWith: string): Observable<string[]> {
+  public getOptions(entity: string, property: string, startWith: string): Observable<any[]> {
     return from(this.backendService.getTableData(entity)).pipe(
-      map(d => d.filter(dx => dx[property].startsWith(startWith)).map(dx => dx[property]))
+      map(d => d.filter(dx => dx[property].startsWith(startWith)))
     );
-  }
-
-  public setAutoComplete(entity: string, value: any): void {
-    if (this.autoComplete$[entity]) {
-      this.autoComplete$[entity].next(value);
-    } else {
-      this.autoComplete$[entity] = new BehaviorSubject(value);
-    }
   }
 
   public getAutoComplete(entity: string): BehaviorSubject<any> {
