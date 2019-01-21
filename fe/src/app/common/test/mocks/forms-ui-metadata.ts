@@ -31,11 +31,11 @@ export const Forms___ServiceForm_Form_: Form = {
         childNodes: [
           {
             _id: getTestUUID(), nodeType: NodeType.form_autocomplete,
-            refEntityName: 'General___Client', refPropertyName: 'name', propertyName: 'client_name'
+            refEntityName: 'GEN___Client', refPropertyName: 'name', propertyName: 'client_name'
           },
           {
             _id: getTestUUID(), nodeType: NodeType.form_autocomplete,
-            refEntityName: 'General___Client', refPropertyName: 'email', propertyName: 'client_email'
+            refEntityName: 'GEN___Client', refPropertyName: 'email', propertyName: 'client_email'
           },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'technician_code' },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'client_person' },
