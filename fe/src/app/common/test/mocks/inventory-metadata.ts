@@ -116,33 +116,6 @@ export const INV___Receipt___Item = {
     }
 };
 
-
-export const INV___Order = {
-    _id: "INV___Order",
-    stateGraph: {
-        nodes: ['PENDING', 'COMPLETE', 'APPROVED', 'PROCESSED', 'CANCELLED'],
-        transitions: [
-            {source: 'PENDING', target: 'COMPLETE'},
-            {source: 'COMPLETE', target: 'APPROVED'},
-            {source: 'APPROVED', target: 'PROCESSED'},
-            {source: 'PENDING', target: 'CANCELLED'},
-            {source: 'COMPLETE', target: 'CANCELLED'},
-            {source: 'APPROVED', target: 'CANCELLED'},
-        ]
-    } as EntityStateGraph,
-    props: {
-        sales_agent: { name: "sales_agent", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        creation_date: { name: "creation_date", propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
-        items$: {
-            name: 'items$',
-            propType_: Pn.CHILD_TABLE,
-            referencedEntityName: "INV___Order___Item",
-            props: {},
-            isLargeTable: true,
-        } as EntityProperty,
-    }
-};
-
 export const INV___Order___Item = {
     _id: "INV___Order___Item",
     props: {
@@ -164,4 +137,30 @@ export const INV___Order___Item = {
             {targetPropertyName: 'error_quantity', autoCorrectExpr: $s2e('ABS($OLD$.quantity - quantity)')},
         ],
     },
+};
+
+export const INV___Order = {
+    _id: "INV___Order",
+    stateGraph: {
+        nodes: ['PENDING', 'COMPLETE', 'APPROVED', 'PROCESSED', 'CANCELLED'],
+        transitions: [
+            {source: 'PENDING', target: 'COMPLETE'},
+            {source: 'COMPLETE', target: 'APPROVED'},
+            {source: 'APPROVED', target: 'PROCESSED'},
+            {source: 'PENDING', target: 'CANCELLED'},
+            {source: 'COMPLETE', target: 'CANCELLED'},
+            {source: 'APPROVED', target: 'CANCELLED'},
+        ]
+    } as EntityStateGraph,
+    props: {
+        sales_agent: { name: "sales_agent", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        creation_date: { name: "creation_date", propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
+        items$: {
+            name: 'items$',
+            propType_: Pn.CHILD_TABLE,
+            referencedEntityName: INV___Order___Item._id,
+            props: {},
+            isLargeTable: true,
+        } as EntityProperty,
+    }
 };

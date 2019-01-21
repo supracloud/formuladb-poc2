@@ -22,6 +22,10 @@ export class MockData {
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }
 
+    public get(path: string, id: string): DataObj {
+        return this.allData[id];
+    }
+
     public getAllForPath(path: string) {
         let ret: any[] = [];
         for (let obj of this.allData) {
