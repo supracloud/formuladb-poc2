@@ -16,7 +16,7 @@ import * as dotenv from "dotenv";
  */
 export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
-    private db:pgPromise.IDatabase<any>;
+    static db:pgPromise.IDatabase<any>|undefined = undefined;
 
     constructor() {
         dotenv.config();
@@ -26,14 +26,16 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             port: 5432,
             user: "postgres"
         };
-        this.db = pgPromise()( config );
+        if (KeyValueStorePostgres.db == null) {
+            KeyValueStorePostgres.db = pgPromise()( config );
+        }
     }
 
     public get(_id: string): Promise<VALUET> {
         return new Promise(async (resolve) => {
             try {
-                const res = await this.db.one<VALUET>('SELECT key, val FROM kvtable WHERE key = $1', [_id] );            
-                resolve(res);
+                const res = await KeyValueStorePostgres.db!.oneOrNone<VALUET>('SELECT val FROM kvtable WHERE key = $1', [_id] );            
+                resolve(res != null ? res : undefined);
             } catch ( err ) {
                 console.log( err );
                 throw err;
@@ -49,8 +51,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             let start: string = opts.startkey;
             let end: string = opts.endkey;
             try {
-                let query: string = 'SELECT key, val FROM kvtable WHERE key ' + sign1 + ' $1 and key ' + sign2 + ' $2';
-                const res = await this.db.any<{key: string, val: VALUET}>(query, [ start, end ] );            
+                let query: string = 'SELECT key, val FROM kvtable WHERE key ' + sign1 + ' $1 and key ' + sign2 + ' $2' + ' ORDER BY key';
+                const res = await KeyValueStorePostgres.db!.any<{key: string, val: VALUET}>(query, [ start, end ] );            
                 resolve(res);
             } catch ( err ) {
                 console.log( err );
@@ -69,7 +71,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             try {
 
                 let object_as_json = JSON.stringify(obj);
-                await this.db.none("INSERT INTO kvtable VALUES($1, $2)", [_id, object_as_json]);
+                await KeyValueStorePostgres.db!.none("INSERT INTO kvtable VALUES($1, $2) ON CONFLICT (key) DO UPDATE SET key=$1, val=$2", [_id, object_as_json]);
                 resolve(obj);
             } catch ( err ) {
                 console.log( err );
@@ -82,7 +84,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
         try {
             let ret = await this.get(_id);
-            await this.db.one('DELETE FROM kvtable WHERE  key = $1', [ _id ]);
+            await KeyValueStorePostgres.db!.none('DELETE FROM kvtable WHERE  key = $1', [ _id ]);
             return ret;
         } catch ( err ) {
             console.log( err );
@@ -92,7 +94,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     public async clearDB() {
-        await this.db.any(`TRUNCATE TABLE kvtable`);
+        await KeyValueStorePostgres.db!.any(`TRUNCATE TABLE kvtable`);
     }
 
     public info(): Promise<string> {
