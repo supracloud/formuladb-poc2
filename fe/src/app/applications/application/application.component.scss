@@ -20,7 +20,12 @@
     font-size: 16px;
     // border: 1px solid grey;
     border-radius: 10px 10px 10px 10px;
-    background-color: #eaebed99;
+    background-color: #a1fdc066;
+    height: 35px;
+}
+:host .app .appName div:hover {
+    background-color: #a1fdc0;
+    text-decoration: none;
 }
 
 :host .app {

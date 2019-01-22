@@ -6,7 +6,7 @@
 
 
 
-import { MockMetadata, Forms__ServiceForm } from "./mock-metadata";
+import { MockMetadata, Forms__ServiceForm, ExampleApps } from "./mock-metadata";
 import { MockData } from "./mock-data";
 import { obj2MapES5 } from "../../ts-utils";
 
@@ -18,7 +18,7 @@ xdescribe('mock-data', () => {
   let mockData: MockData;
 
   beforeAll(() => {
-    mockMetadata = new MockMetadata();
+    mockMetadata = new MockMetadata(ExampleApps.service);
     mockData = new MockData(mockMetadata.schema.entities);
   });
 
