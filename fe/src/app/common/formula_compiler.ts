@@ -386,7 +386,7 @@ export function _rem_$e2s_(node: Expression, strict: boolean = false): string {
 
 function encodeViewNameURIComponent(str: string): string {
     return encodeURIComponent(
-        str.replace(/ /g, "___")
+        str.replace(/ /g, "__")
             .replace(/\//g, "_div_")
             .replace(/[%]/g, "_mod_")
             .replace(/&&/g, "_and_")

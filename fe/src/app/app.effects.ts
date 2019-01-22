@@ -27,6 +27,8 @@ import { BackendService, EnvType } from "./backend.service";
 import { TableFormBackendAction } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
+import { waitUntilNotNull } from './common/ts-utils';
+import { ExampleApps } from './common/test/mocks/mock-metadata';
 
 
 export type ActionsToBeSentToServer =
@@ -46,11 +48,9 @@ export const ActionsToBeSentToServerNames = [
     appState.ServerEventDeleteEntityN
 ];
 
-let LOADED = false;
-
 @Injectable()
 export class AppEffects {
-    private currentUrl: { path: string | null, id: string | null, entity: Entity | null } = { path: null, id: null, entity: null };
+    private currentUrl: { appName: string | null, path: string | null, id: string | null, entity: Entity | null } = { appName: null, path: null, id: null, entity: null };
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
 
     constructor(
@@ -59,22 +59,26 @@ export class AppEffects {
         private backendService: BackendService,
         private router: Router
     ) {
-        this.load();
+
+        //change app state based on router actions
+        this.listenForRouterChanges();
+
     }
 
-    public load() {
-        if (LOADED) return;
-
+    public async load() {
         try {
+            
+            await waitUntilNotNull(() => this.getAppName());
+
             //we first initialize the DB (sync with remote DB)
             this.backendService.init(
+                this.getAppName()!,
                 () => this.init(),
                 change => this.listenForNotifsFromServer(change),
                 change => this.listenFormDataChangesFromServer(change));
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
-        LOADED = true;
     }
 
     private async listenForNotifsFromServer(eventFromBe: events.MwzEvents) {
@@ -112,7 +116,7 @@ export class AppEffects {
             case events.ServerEventDeleteEntityN: {
                 let entities = await this.backendService.getEntities();
                 this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
-                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/___\w+$/, ''))]);
+                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/__\w+$/, ''))]);
                 break;
             }
             case events.ServerEventModifiedEntityN: {
@@ -146,7 +150,13 @@ export class AppEffects {
         });
     }
 
-    private init() {
+    private getAppName(): ExampleApps | null {
+        let { appName, path, id } = appState.parseUrl(this.router.url);
+        return appName ? ExampleApps[appName] : null;
+    }
+
+    private async init() {
+
         //load entities and remove readOnly flag
         this.backendService.getEntities().then(entities => {
             this.cachedEntitiesMap = {};
@@ -155,9 +165,6 @@ export class AppEffects {
             this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
             this.processRouterUrlChange(this.router.url);
         }).catch(err => console.error(err));
-
-        //change app state based on router actions
-        this.listenForRouterChanges();
 
         //send actions to server so that the engine can process them, compute all formulas and update the data
         this.listenForServerEvents();
@@ -184,9 +191,14 @@ export class AppEffects {
     }
 
     private processRouterUrlChange(url: string) {
-        let { path, id } = appState.parseUrl(url);
+        let { appName, path, id } = appState.parseUrl(url);
 
-        if (path === this.currentUrl.path && id === this.currentUrl.id) return;
+        if (appName === this.currentUrl.appName && path === this.currentUrl.path && id === this.currentUrl.id) return;
+
+        if (appName !== this.currentUrl.appName) {
+            this.currentUrl.appName = appName;
+            this.load();
+        }
 
         if (path !== this.currentUrl.path) {
             this.currentUrl.path = path;

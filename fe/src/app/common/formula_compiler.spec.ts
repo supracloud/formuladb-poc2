@@ -7,12 +7,12 @@ import * as _ from 'lodash';
 import { BinaryExpression, LogicalExpression } from 'jsep';
 import * as jsep from "jsep";
 
-import { INV___PRD, INV___Order } from "./test/mocks/inventory-metadata";
-import { Forms___ServiceForm } from "./test/mocks/forms-metadata";
+import { INV__PRD, INV__Order } from "./test/mocks/inventory-metadata";
+import { Forms__ServiceForm } from "./test/mocks/forms-metadata";
 import { Entity, Schema, Pn } from "./domain/metadata/entity";
 import { compileFormula, $ee2s, getQueryKeys, extractKeysAndQueriesFromBinaryExpression, extractKeysAndQueriesFromLogicalExpression, $s2e } from "./formula_compiler";
 import { KeyValueStoreMem } from "./key_value_store_mem";
-import { GEN___Actor, GEN___Currency } from './test/mocks/mock-metadata';
+import { GEN__Actor, GEN__Currency } from './test/mocks/mock-metadata';
 import { Sn } from './domain/metadata/stored_procedure';
 import { CompiledFormula, MapReduceTrigger, ExecPlanN, 
     CompiledScalarN,
@@ -337,7 +337,7 @@ describe('FormulaCompiler', () => {
     });
 
     it('should compile mock schema correctly', () => {
-        // Forms___ServiceForm.code.formula
+        // Forms__ServiceForm.code.formula
     });
 
 });

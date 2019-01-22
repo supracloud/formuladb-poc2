@@ -18,7 +18,7 @@ const defaultDict_en = {
     code: 'Code',
     username: 'Username',
 
-    'GEN___Currency!rate1!max': 'Maximum rate1 exceeded',
+    'GEN__Currency!rate1!max': 'Maximum rate1 exceeded',
     'items$': 'Items',
 };
 

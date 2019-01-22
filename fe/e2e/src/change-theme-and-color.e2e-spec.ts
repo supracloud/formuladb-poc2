@@ -8,7 +8,7 @@
  */
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
-var e2e_utils = require("./utils");
+import * as e2e_utils from "./utils";
 
 const path = require('path');
 const mp3Duration = require('mp3-duration');

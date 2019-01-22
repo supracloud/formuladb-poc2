@@ -4,8 +4,8 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from '../../domain/metadata/entity';
-import { INV___PRD, INV___Order, INV___PRD___Unit } from './inventory-metadata';
-import { GEN___Client } from "./general-metadata";
+import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
+import { GEN__Client } from "./general-metadata";
 import { Fn } from '../../domain/metadata/functions';
 
 export const Forms = {
@@ -14,8 +14,8 @@ export const Forms = {
     props: {},
 };
 
-export const Forms___ServiceForm = {
-    _id: "FRM___ServiceForm",
+export const Forms__ServiceForm = {
+    _id: "FRM__ServiceForm",
     props: {
 
         code: {
@@ -31,7 +31,7 @@ export const Forms___ServiceForm = {
 
         } as FormulaProperty,
         product_form_id: { name: "product_form_id", propType_: Pn.NUMBER, "allowNull": false } as EntityProperty,
-        client: { name: "client", propType_: Pn.REFERENCE_TO, referencedEntityName: GEN___Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } as EntityProperty,
+        client: { name: "client", propType_: Pn.REFERENCE_TO, referencedEntityName: GEN__Client._id, snapshotCurrentValueOfProperties: ["code", "username"] } as EntityProperty,
         time_of_arrival: { name: "time_of_arrival", propType_: Pn.DATETIME } as EntityProperty,
         time_of_departure: { name: "time_of_departure", propType_: Pn.DATETIME } as EntityProperty,
         normal_hours: { name: "normal_hours", propType_: Pn.NUMBER } as EntityProperty,
@@ -47,9 +47,9 @@ export const Forms___ServiceForm = {
         accommodation: { name: "accommodation", propType_: Pn.NUMBER } as EntityProperty,
         service_form_units: {
             name: "service_form_units",
-            propType_: Pn.CHILD_TABLE, referencedEntityName: INV___Order._id,
+            propType_: Pn.CHILD_TABLE, referencedEntityName: INV__Order._id,
             props: {
-                equipment: { name: "equipment", propType_: Pn.REFERENCE_TO, referencedEntityName: INV___PRD___Unit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } as EntityProperty,
+                equipment: { name: "equipment", propType_: Pn.REFERENCE_TO, referencedEntityName: INV__PRD__Unit._id, snapshotCurrentValueOfProperties: ['code', 'product_code', 'serial1'] } as EntityProperty,
                 reported_problem: { name: "reported_problem", propType_: Pn.TEXT } as EntityProperty,
                 found_problem: { name: "found_problem", propType_: Pn.TEXT } as EntityProperty,
                 work_description: { name: "work_description", propType_: Pn.TEXT } as EntityProperty,
