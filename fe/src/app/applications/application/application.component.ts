@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IconDefinition, faCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'frmdb-application',
@@ -8,10 +8,7 @@ import { IconDefinition, faCircle, faCheckCircle } from '@fortawesome/free-solid
 })
 export class ApplicationComponent implements OnInit {
   @Input()
-  icon1: IconDefinition;
-
-  @Input()
-  icon2: IconDefinition;
+  imgSrc: string;
 
   @Input()
   appName: string;
@@ -21,7 +18,6 @@ export class ApplicationComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log("ICONSSS", this.appName, this.icon1, this.icon2);
   }
 
 }

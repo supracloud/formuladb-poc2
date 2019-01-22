@@ -1,10 +1,33 @@
 :host {
     display: block;
     color: grey;
-    border: 1px solid grey;
-    margin: 20px;
-    width: 200px;
-    text-align: center;
-    border-radius: 4px 4px 4px 4px;
     padding: 10px;
+}
+
+:host .app .appName {
+    padding: 5px;
+    position: relative;
+    top: -80px;
+    margin: auto;
+    text-align: center;
+    height: 100px;
+    margin-bottom: -100px;
+}
+
+:host .app .appName div {
+    color: green;
+    font-weight: bold;
+    font-size: 16px;
+    // border: 1px solid grey;
+    border-radius: 10px 10px 10px 10px;
+    background-color: #eaebed99;
+}
+
+:host .app {
+    text-align: center;
+    width: 204px;
+}
+:host .app > img {
+    border: 2px solid grey;
+    border-radius: 10px 10px 10px 10px;
 }

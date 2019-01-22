@@ -42,6 +42,12 @@ export class MockMetadata {
         this.entities.push(GeneralMetadata.GEN__Client);
 
         switch (app) {
+            case ExampleApps.service:
+                this.entities.push(FormsMetadata.Forms);
+                this.entities.push(FormsMetadata.Forms__ServiceForm);
+                this.entities.push(ReportsMetadata.REP__DetailedCentralizerReport);
+                this.entities.push(ReportsMetadata.REP__ServiceCentralizerReport);
+                //also need the inventory
             case ExampleApps.inventory:
                 this.entities.push(InventoryMetadata.Inventory);
                 this.entities.push(InventoryMetadata.INV__Order);
@@ -54,11 +60,6 @@ export class MockMetadata {
                 this.entities.push(ReportsMetadata.Reports);
                 this.entities.push(ReportsMetadata.REP__LargeSales);
                 this.entities.push(ReportsMetadata.REP__LargeSales__Product);
-            case ExampleApps.service:
-                this.entities.push(FormsMetadata.Forms);
-                this.entities.push(FormsMetadata.Forms__ServiceForm);
-                this.entities.push(ReportsMetadata.REP__DetailedCentralizerReport);
-                this.entities.push(ReportsMetadata.REP__ServiceCentralizerReport);
                 break;
             case ExampleApps.booking:
                 this.entities.push(MusicBookingMetadata.MusicBooking);
