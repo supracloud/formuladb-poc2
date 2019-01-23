@@ -55,7 +55,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
                 KeyValueStorePostgres.db!.oneOrNone<VALUET>(query, [_id] ).then((res) => {
                     // Another issue here: res comes as JSON/object
-                    resolve(res != null ? res : undefined);
+                    resolve(res != null ? res['val'] : undefined);
                 })
             })
         });
@@ -71,11 +71,13 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 let end: string = opts.endkey;
                 // ISSUE here: cannot handle unicode in select
                 end = end.replace(/[\ufff0]/g,'\xff');
+                start = start.replace(/[\u00000]/g,'\x01');
+
                 let query: string = 'SELECT key, val FROM ' + this.table_id + ' WHERE key ' + sign1 + ' $1 AND key ' + sign2 + ' $2 ' + ' ORDER BY key';
                 KeyValueStorePostgres.db!.any<{key: string, val: VALUET}>(query, [start, end]).then((res) => {
                     resolve(res);
                 }).catch((err) => {
-                    console.log(err.message);
+                    console.log(err);
                 })
             })
         })
