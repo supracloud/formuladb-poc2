@@ -7,7 +7,7 @@
     "compile": "tsc --inlineSourceMap",
     "compile:watch": "tsc --inlineSourceMap -w 2>&1",
     "test": "node dist/tests/jasmine.js",
-    "initpgdb": "ts-node tools/initdb"
+    "initpgdb": "node bin/start_postgres.js"
   },
   "keywords": [],
   "author": "",
