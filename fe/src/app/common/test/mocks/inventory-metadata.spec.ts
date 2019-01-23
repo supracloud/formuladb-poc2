@@ -13,7 +13,7 @@ import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { UserActionEditedFormDataEvent } from "../../domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "../../domain/metadata/entity";
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 
 

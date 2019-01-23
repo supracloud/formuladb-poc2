@@ -16,7 +16,7 @@ import { loadData } from "../../fe/src/app/common/test/load_test_data";
 import { MockMetadata } from "../../fe/src/app/common/test/mocks/mock-metadata";
 import { FrmdbEngine } from "../../fe/src/app/common/frmdb_engine";
 import { FrmdbEngineStore } from "../../fe/src/app/common/frmdb_engine_store";
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 let mockMetadata = new MockMetadata();
 let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);

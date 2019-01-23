@@ -11,7 +11,7 @@ import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 describe('FrmdbEngineStore _count', () => {
     let frmdbTStore: FrmdbEngineStore;

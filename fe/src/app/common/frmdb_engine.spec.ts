@@ -12,7 +12,7 @@ import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "./domain/metadata/entity";
 import { DataObj } from "./domain/metadata/data_obj";
 import { KeyValueObj } from "@storage/domain/key_value_obj";
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;

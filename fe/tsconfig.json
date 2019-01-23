@@ -20,7 +20,9 @@
       "dom"
     ],
     "paths": {
-      "@storage/*": ["../storage/src/*"]
+      "@storage/*": ["../storage/src/*"],
+      "@kv_selector_base/*": ["./src/*"]
+
     }
   }
 }

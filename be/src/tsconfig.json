@@ -6,7 +6,8 @@
         "module": "commonjs",
         "strictNullChecks": true,
         "paths": {
-            "@storage/*": ["../../storage/src/*"]
+            "@storage/*": ["../../storage/src/*"],
+	    "@kv_selector_base/*": ["./*"]
         }
     },
     "include": [

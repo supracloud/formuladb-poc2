@@ -1,4 +1,4 @@
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 import { MapReduceView, MapReduceViewUpdates } from "./map_reduce_view";
 import { $s2e } from "./formula_compiler";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";

@@ -21,7 +21,7 @@ import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 import { MockMetadata } from './common/test/mocks/mock-metadata';
 
 export enum EnvType {

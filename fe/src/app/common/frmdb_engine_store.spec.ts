@@ -9,7 +9,7 @@ import { FrmdbEngineStore } from "./frmdb_engine_store";
 import { Fn } from "./domain/metadata/functions";
 import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
-import KeyValueStoreFactory from '@storage/key_value_store_impl_selector';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
 describe('frmdb_engine_store', () => {

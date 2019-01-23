@@ -65,6 +65,7 @@
     "watch": "^1.0.2"
   },
   "_moduleAliases": {
-    "@storage": "../storage/dist"
+    "@storage": "../storage/dist",
+    "@kv_selector_base": "./dist/be/src"
   }
 }
