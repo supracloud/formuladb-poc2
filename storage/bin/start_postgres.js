@@ -8,12 +8,19 @@ if (!shell.which('docker')) {
     shell.echo('Docker found. Starting postgres container ...')
 }
 
-if (shell.exec('docker inspect --format="{{ .State.Status }}" formuladb-pg').code == 0) {
+// Linux with sudo , Windows without ...
+var sudo = '';
+
+if (shell.which('sudo')) {
+    sudo = 'sudo ';
+}
+
+if (shell.exec(sudo + 'docker inspect --format="{{ .State.Status }}" formuladb-pg').code == 0) {
 
     shell.echo('formuladb-pg container already present. Starting it, just in case ...');
-    shell.exec('docker start formuladb-pg');
+    shell.exec(sudo + 'docker start formuladb-pg');
 
-} else if (shell.exec('docker run -d --name formuladb-pg -p 5432:5432 -e \'POSTGRES_PASSWORD=p@ssw0rd42\' postgres:latest').code !== 0) {
+} else if (shell.exec(sudo + 'docker run -d --name formuladb-pg -p 5432:5432 -e \'POSTGRES_PASSWORD=p@ssw0rd42\' postgres:latest').code !== 0) {
 
         shell.echo('Error: Failed to start Postgres container');
         shell.exit(1);
