@@ -16,7 +16,8 @@
     "dotenv": "^6.2.0",
     "lodash": "^4.17.11",
     "pg": "^7.8.0",
-    "pg-promise": "^8.5.5"
+    "pg-promise": "^8.5.5",
+    "unique-names-generator": "^2.0.1"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.0",
