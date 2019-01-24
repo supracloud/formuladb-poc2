@@ -40,10 +40,13 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     private async initialize() {
         if (this.initialized == false) {
-            let query:string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id +' (key VARCHAR NOT NULL PRIMARY KEY, val json)';
             try {
+                let query:string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id +' (key VARCHAR NOT NULL PRIMARY KEY, val json)';
                 await KeyValueStorePostgres.db!.any(query);
-            } catch (err) {
+                // This is for UT. It shouldn't be here. UTs must clean their data before 
+                query = 'TRUNCATE TABLE ' + this.table_id;
+                await KeyValueStorePostgres.db!.any(query);
+                    } catch (err) {
                 console.log(err);
             }
             this.initialized = true;
