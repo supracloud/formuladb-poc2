@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Injectable, InjectionToken, Inject } from '@angular/core';
+import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -42,14 +42,13 @@ export class BackendService {
     private frmdbStore: FrmdbStore;
     private envType: EnvType;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,private _ngZone: NgZone) {
     }
 
     public async init(
         app: ExampleApps,
         initCallback: () => void,
-        notifCallback: (event: MwzEvents) => void,
-        dataChangeCallback: (docs: Array<KeyValueObj>) => void)
+        notifCallback: (event: MwzEvents) => void)
     {
 
         this.envType = window.location.href.indexOf("http://localhost:4200/") == 0 || window.location.href.indexOf("http://localhost:4300/") == 0 ? 
@@ -57,17 +56,19 @@ export class BackendService {
 
         this.initCallback = initCallback;
         this.notifCallback = notifCallback;
-        this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            if (this.testFrmdbEngine) {
-                //TODO: cleanup
-            }
-            let mockMetadata = new MockMetadata(app);
-            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
-            this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
-            await this.testFrmdbEngine.init(true);
-            await loadData(this.testFrmdbEngine, mockMetadata);
+            await this._ngZone.runOutsideAngular(async () => {
+
+                if (this.testFrmdbEngine) {
+                    //TODO: cleanup
+                }
+                let mockMetadata = new MockMetadata(app);
+                this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
+                this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
+                await this.testFrmdbEngine.init(true);
+                await loadData(this.testFrmdbEngine, mockMetadata);
+            });
         }
 
         this.initCallback();
@@ -125,8 +126,29 @@ export class BackendService {
 
     public putEvent(event: MwzEvents) {
         if (this.envType === EnvType.Test) {
-            this.testFrmdbEngine.processEvent(event)
-                .then(ev => this.handleNotif(ev));
+            this._ngZone.runOutsideAngular(async () => {
+                this.testFrmdbEngine.processEvent(event)
+                    .then(ev => 
+                        // this._ngZone.run(() => this.handleNotif(ev))
+                        this.handleNotif(ev)
+                    );
+            });
+            // this.handleNotif({
+            //     "clientId_": "9ymYNtsMnKcBRuz89e7FKH",
+            //     "state_": "BEGIN",
+            //     "obj": {
+            //         "_id": "INV__Order__Item~~1__1",
+            //         "productLocationId": "INV__PRD__Location~~1__1",
+            //         "quantity": 25,
+            //         "error_quantity": 975,
+            //         "client_stock": null,
+            //         "units": [
+            //             {}
+            //         ]
+            //     } as DataObj,
+            //     "type_": "[form] ServerEventModifiedFormData",
+            //     "_id": "1548323727283_ePq8DMgwnmKpiyDuR9zsse"
+            // });
         } else {
             this.http.post<MwzEvents>('/api/event', event)
                 .pipe(

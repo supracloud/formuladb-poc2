@@ -71,11 +71,10 @@ export class AppEffects {
             await waitUntilNotNull(() => this.getAppName());
 
             //we first initialize the DB (sync with remote DB)
-            this.backendService.init(
+            return this.backendService.init(
                 this.getAppName()!,
                 () => this.init(),
-                change => this.listenForNotifsFromServer(change),
-                change => this.listenFormDataChangesFromServer(change));
+                change => this.listenForNotifsFromServer(change));
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
@@ -87,7 +86,6 @@ export class AppEffects {
         if (!eventFromBe) return;
 
         switch (eventFromBe.type_) {
-            case appState.ServerEventModifiedFormDataN:
             case appState.ServerEventModifiedFormN:
                 this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                 break;
@@ -97,7 +95,9 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventModifiedFormDataN: {
+                this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                 this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(eventFromBe.obj)]));
                 break;
             }
             case events.ServerEventModifiedFormN: {
@@ -128,27 +128,6 @@ export class AppEffects {
         }
     }
 
-    private listenFormDataChangesFromServer(docs: Array<KeyValueObj>) {
-        console.log("%c <==== " + docs.map(x => x._id).join(','),
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), docs);
-
-        docs.forEach(obj => {
-            if (obj._id.indexOf('Entity_') == 0) {
-                console.log("Loading all entities from local DB");
-                this.backendService.getEntities().then(entities => {
-                    console.log("displaying all entities from local DB", entities);
-                    this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
-                }).catch(err => console.error(err));
-            } else if (obj._id.indexOf('Table_') == 0) {
-                this.store.dispatch(new appState.TableFormBackendAction(obj as Table));
-            } else if (obj._id.indexOf('Form_') == 0) {
-                this.store.dispatch(new appState.FormFromBackendAction(obj as Form));
-            } else {
-                this.store.dispatch(new appState.FormDataFromBackendAction(obj));
-                this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(obj as DataObj)]));
-            }
-        });
-    }
 
     private getAppName(): ExampleApps | null {
         let { appName, path, id } = appState.parseUrl(this.router.url);
@@ -190,19 +169,19 @@ export class AppEffects {
             });
     }
 
-    private processRouterUrlChange(url: string) {
+    private async processRouterUrlChange(url: string) {
         let { appName, path, id } = appState.parseUrl(url);
 
         if (appName === this.currentUrl.appName && path === this.currentUrl.path && id === this.currentUrl.id) return;
 
         if (appName !== this.currentUrl.appName) {
             this.currentUrl.appName = appName;
-            this.load();
+            await this.load();
         }
 
         if (path !== this.currentUrl.path) {
             this.currentUrl.path = path;
-            this.changeEntity(path!);
+            await this.changeEntity(path!);
         }
 
         if (id && id != this.currentUrl.id) {
