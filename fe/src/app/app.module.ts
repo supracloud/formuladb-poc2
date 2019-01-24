@@ -25,6 +25,7 @@ import { FrmdbPopupDirective } from './dev-mode-common/frmdb-popup.directive';
 import { ApplicationsComponent } from './applications/applications.component';
 import { ApplicationComponent } from './applications/application/application.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
     StoreDevtoolsModule.instrument({

@@ -200,7 +200,7 @@ export class BackendService {
 
     public getForm(path: string): Promise<Form | null> {
         return this.frmdbStore.getForm(path).then(fi => {
-            if (fi === null) { return fi; }
+            if (!fi) { return fi; }
             addIdsToForm(fi.grid);
             return fi;
         });
