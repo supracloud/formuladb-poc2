@@ -32,6 +32,15 @@ import { TableService } from './table.service';
 
 export class TableComponent implements OnInit, OnDestroy {
 
+    statusBar = {
+        statusPanels: [
+            { statusPanel: 'agTotalRowCountComponent', align: 'left' },
+            { statusPanel: 'agFilteredRowCountComponent' },
+            { statusPanel: 'agSelectedRowCountComponent' },
+            { statusPanel: 'agAggregationComponent' }
+        ]
+    };
+
     private table$: Observable<tableState.Table>;
     private currentEntity: Entity | undefined;
     public data: tableState.DataObj[] = [];
