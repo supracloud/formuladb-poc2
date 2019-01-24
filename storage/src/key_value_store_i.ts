@@ -75,8 +75,8 @@ class KeyValueStoreBase<KEYT, VALUET> {
 }
 
 export interface KeyValueStoreFactoryI {
-    createKeyValS<VALUET>(valueExample: VALUET): KeyValueStoreI<VALUET>;
-    createKeyObjS<OBJT extends KeyValueObj>(): KeyObjStoreI<OBJT>;
+    createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
+    createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
 }
 
 export type KVSArrayKeyType = (string | number | boolean)[];

@@ -8,5 +8,5 @@ import { KeyValueStorePostgres, KeyObjStorePostgres } from "./key_value_store_po
 
 
 describe('KeyValueStorePostgres', () => {
-    keyValueStoreSpecs({kvs: new KeyObjStorePostgres<KeyValueStoreSpecObjType>()});
+    keyValueStoreSpecs({kvs: new KeyObjStorePostgres<KeyValueStoreSpecObjType>('unit-test')});
 });

@@ -10,8 +10,7 @@ import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "../domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
-// TO BE UPDATED: tables must be reused not recreated on each app restart
-const { uniqueNamesGenerator } = require('unique-names-generator');
+const calculateSlot = require('cluster-key-slot');
 
 /**
  * Key Value Store with optimistic locking functionality
@@ -19,9 +18,10 @@ const { uniqueNamesGenerator } = require('unique-names-generator');
 export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     static db:pgPromise.IDatabase<any>|undefined = undefined;
+    private initialized:boolean = false;
     private table_id:string|undefined = undefined;
 
-    constructor() {
+    constructor(name: string) {
         dotenv.config();
         let config = {
             database: "postgres",
@@ -32,18 +32,21 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         if (KeyValueStorePostgres.db == null) {
             KeyValueStorePostgres.db = pgPromise()( config );
         }
+
+        this.table_id = `f_${calculateSlot(name)}`;
+        console.log(`KVStore with original name ${name} and table name ${this.table_id}`);
+
     }
 
     private async initialize() {
-        if (this.table_id == undefined) {
-            this.table_id = uniqueNamesGenerator();
-
-            let query: string = 'DROP TABLE ' + this.table_id;
+        if (this.initialized == false) {
+            let query:string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id +' (key VARCHAR NOT NULL PRIMARY KEY, val json)';
             try {
                 await KeyValueStorePostgres.db!.any(query);
-            } catch(err) { }
-            query = 'CREATE TABLE ' + this.table_id +' (key VARCHAR NOT NULL PRIMARY KEY, val json)';
-            await KeyValueStorePostgres.db!.any(query);
+            } catch (err) {
+                console.log(err);
+            }
+            this.initialized = true;
         }
     }
 
@@ -56,7 +59,10 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 KeyValueStorePostgres.db!.oneOrNone<VALUET>(query, [_id] ).then((res) => {
                     // Another issue here: res comes as JSON/object
                     resolve(res != null ? res['val'] : undefined);
+                }).catch((err) => {
+                    console.log(err);
                 })
+
             })
         });
     }
@@ -92,6 +98,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
                 let object_as_json = JSON.stringify(obj);
+                console.log('set ', _id, obj);
                 let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (key) DO UPDATE SET key=$1, val=$2' ;
                 KeyValueStorePostgres.db!.none(query, [_id, object_as_json]).then((res) => {
                     resolve(obj);
@@ -137,25 +144,19 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
     }
     public putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk insert
-        objs.forEach(o => this.set(o._id, o));
-        return new Promise(async (resolve) => {
-            resolve(objs);
-        })
+        return Promise.all(objs.map(o => this.set(o._id, o)));
     }
     public delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk delete
-        objs.forEach(o => this.del(o._id));
-        return new Promise(async (resolve) => {
-            resolve(objs);
-        })
+        return Promise.all(objs.map(o => this.del(o._id)));
     }
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
-    createKeyValS<VALUET>(valueExample: VALUET): KeyValueStoreI<VALUET> {
-        return new KeyValueStorePostgres<VALUET>();
+    createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
+        return new KeyValueStorePostgres<VALUET>(name);
     }
 
-    createKeyObjS<OBJT extends KeyValueObj>(): KeyObjStoreI<OBJT> {
-        return new KeyObjStorePostgres<OBJT>();
+    createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT> {
+        return new KeyObjStorePostgres<OBJT>(name);
     }
 }

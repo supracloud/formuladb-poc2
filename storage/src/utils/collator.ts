@@ -1,4 +1,4 @@
-var SEP = '?'; // set to '_' for easier debugging 
+let SEP:string = '```'; // set to '_' for easier debugging 
 
 function toIndexableString(key: Array<any>) {
     let result: string = "";

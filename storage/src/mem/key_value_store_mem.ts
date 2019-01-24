@@ -75,21 +75,19 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
     }
     public putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk insert
-        objs.forEach(o => this.set(o._id, o));
-        return simulateIO(objs);
+        return Promise.all(objs.map(o => this.set(o._id, o)));
     }
     public delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk delete
-        objs.forEach(o => this.del(o._id));
-        return simulateIO(objs);
+        return Promise.all(objs.map(o => this.del(o._id)));
     }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
-    createKeyValS<VALUET>(valueExample: VALUET): KeyValueStoreI<VALUET> {
+    createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();
     }
 
-    createKeyObjS<OBJT extends KeyValueObj>(): KeyObjStoreI<OBJT> {
+    createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT> {
         return new KeyObjStoreMem<OBJT>();
     }
 }

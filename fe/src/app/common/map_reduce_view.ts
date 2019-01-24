@@ -64,21 +64,21 @@ export class MapReduceView {
         reduceFun?: ReduceFun
     ) {
         if (!reduceFun) {
-            this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<any>(null));
+            this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<any>(viewName + '-map', null));
             this.reduceFunction = null;
         } else {
             switch (reduceFun.name) {
                 case SumReduceFunN:
-                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(this.reduceFunction.defaultValue));
+                    this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-reduce', 0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-map', this.reduceFunction.defaultValue));
                     break;
                 case CountReduceFunN:
-                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(this.reduceFunction.defaultValue));
+                    this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-reduce', 0)));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-map', this.reduceFunction.defaultValue));
                     break;
                 case TextjoinReduceFunN:
-                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>('')));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(this.reduceFunction.defaultValue));
+                    this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewName + '-reduce', '')));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewName + '-map', this.reduceFunction.defaultValue));
                     break;
             }
 

@@ -36,7 +36,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
     constructor(private kvsFactory: KeyValueStoreFactoryI) {
-        super(kvsFactory.createKeyObjS(), kvsFactory.createKeyObjS());
+        super(kvsFactory.createKeyObjS("transactions"), kvsFactory.createKeyObjS("data"));
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 
