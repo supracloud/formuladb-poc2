@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { AgGridModule } from "ag-grid-angular";
+import { AgGridModule } from 'ag-grid-angular';
 
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
@@ -37,6 +37,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormStateComponent } from '../form/form-state/form-state.component';
 import { FormChartComponent } from '../form/form-chart/form-chart.component';
 import { FrmdbOnfocusDirective } from '../form/frmdb-onfocus.directive';
+import { TableService } from '../table/table.service';
 
 @NgModule({
   imports: [
@@ -73,7 +74,8 @@ import { FrmdbOnfocusDirective } from '../form/frmdb-onfocus.directive';
     FrmdbOnfocusDirective,
   ],
   providers: [
-    FormEditingService
+    FormEditingService,
+    TableService
   ]
 })
 export class FrmdbModule { }
