@@ -125,8 +125,8 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
             for (let col of query.columns) {
                 if (typeof col !== 'string') {
                     let val = await this.adHocQuery(col.subquery);
-                    //TODO: this should be a scalar value: string | number | boolean
-                    filteredObj[col.alias] = val;
+                    //TODO: check that the return of the subquery is a scalar value: string | number | boolean
+                    filteredObj[col.alias] = val[0][col.subquery.columns[0] + ''];
                 }
             }
 
@@ -140,43 +140,45 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
             if (matchesFilter) filteredObjs.push(Object.assign(filteredObj, obj));
         }
 
-        //Then we group them
-        let grouped: any = {};
-        for (let obj of filteredObjs) {
-            let groupKey: string[] = [];
-            let groupObj: any = {};
-            for (let group of query.groupColumns) {
-                groupKey.push(obj[group]);
-                groupObj[group] = obj[group];
-            }
+        if (query.groupColumns && query.groupColumns.length > 0) {
+            //Then we group them
+            let grouped: any = {};
+            for (let obj of filteredObjs) {
+                let groupKey: string[] = [];
+                let groupObj: any = {};
+                for (let group of query.groupColumns) {
+                    groupKey.push(obj[group]);
+                    groupObj[group] = obj[group];
+                }
 
-            let key = kvsKey2Str(groupKey);
-            if (grouped[key]) {
-                groupObj = grouped[key];
-            } else {
-                grouped[key] = groupObj;
-            }
+                let key = kvsKey2Str(groupKey);
+                if (grouped[key]) {
+                    groupObj = grouped[key];
+                } else {
+                    grouped[key] = groupObj;
+                }
 
-            for (let groupAgg of query.groupAggs) {
-                groupObj[groupAgg.alias] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun, 
-                    groupObj[groupAgg.alias] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
-            }
-        }
-
-        //Then we filter the groups
-        let groupedFiltered: any[] = [];
-        for (let obj of Object.values(grouped)) {
-            let matchesFilter: boolean = true;
-            for (let filter of query.groupFilters) {
-                if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
-                    matchesFilter = false;
-                    break;
+                for (let groupAgg of query.groupAggs) {
+                    groupObj[groupAgg.alias] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun,
+                        groupObj[groupAgg.alias] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
                 }
             }
-            if (matchesFilter) groupedFiltered.push(obj);
-        }
 
-        return simulateIO(groupedFiltered);
+            //Then we filter the groups
+            let groupedFiltered: any[] = [];
+            for (let obj of Object.values(grouped)) {
+                let matchesFilter: boolean = true;
+                for (let filter of query.groupFilters) {
+                    if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
+                        matchesFilter = false;
+                        break;
+                    }
+                }
+                if (matchesFilter) groupedFiltered.push(obj);
+            }
+            return simulateIO(groupedFiltered);
+        } else return simulateIO(filteredObjs);
+
     }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {

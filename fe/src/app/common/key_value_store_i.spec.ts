@@ -3,8 +3,11 @@
  * License TBD
  */
 
-import { KeyObjStoreI, KeyValueStoreArrayKeys } from "./key_value_store_i";
+ import * as _ from 'lodash';
+
+import { KeyObjStoreI, KeyValueStoreArrayKeys, AddHocQuery } from "./key_value_store_i";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
+import { query } from "@angular/core/src/render3/query";
 declare var emit: any;
 
 export interface KeyValueStoreSpecObjType {
@@ -44,22 +47,45 @@ export function keyValueStoreSpecs<KVSType extends KeyObjStoreI<KeyValueStoreSpe
         });
 
         fit('run adHocQueries', async (done) => {
-            kvs.put({_id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1});
-            kvs.put({_id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2});
-            kvs.put({_id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3});
-            kvs.put({_id: 'o4', categ: 'C2', subcateg: 'sc2', val: 4});
+            await kvs.put({_id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1});
+            await kvs.put({_id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2});
+            await kvs.put({_id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3});
+            await kvs.put({_id: 'o4', categ: 'C2', subcateg: 'sc2', val: 4});
 
-            let objs = await kvs.adHocQuery({
+            let query1: AddHocQuery = {
                 filters: [{colName: 'val', op: '>', value: 0}],
                 groupColumns: ['categ'],
                 groupAggs: [{alias: 'sumVal', reduceFun: {name: SumReduceFunN}, colName: 'val'}],
                 groupFilters: [{colName: 'categ', op: '==', value: 'C1'}],
                 columns: ['categ', 'sumVal'],
                 sortColumns: [],
-            });
+            };
+            let objs = await kvs.adHocQuery(query1);
             expect(objs).toEqual([{
                 categ: 'C1',
                 sumVal: 3
+            }]);
+
+            await kvs.put({_id: 'o5', categ: 'xx', subcateg: 'Hello', val: 120});
+
+            query1.columns.push({
+                alias: 'xx',
+                subquery: {
+                    filters: [{colName: 'categ', op: '==', value: "xx"}],
+                    groupColumns: [],
+                    groupAggs: [],
+                    groupFilters: [],
+                    columns: ['subcateg'],
+                    sortColumns: [],
+                },
+            });
+            query1.groupColumns.push('xx');
+
+            objs = await kvs.adHocQuery(query1);
+            expect(objs).toEqual([{
+                categ: 'C1',
+                sumVal: 3,
+                xx: 'Hello',
             }]);
 
             done();
