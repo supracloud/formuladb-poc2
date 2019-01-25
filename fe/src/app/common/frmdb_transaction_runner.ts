@@ -50,7 +50,7 @@ class TransactionDAG {
         obsViewsUpdates: MapViewUpdates<string | number>[],
         ) 
     {
-        console.log(ll(this) + "|addObj|level=" + this.currentLevel + "|" + newObj._id + "/" + JSON.stringify({newObj, oldObj, aggsViewsUpdates, obsViewsUpdates}) + " in " + JSON.stringify(this.levels));
+        let start = Date.now();
 
         if (oldObj && newObj._id !== oldObj._id) throw new Error("expected OLD id to equal NEW id " + JSON.stringify(newObj) + " // " + JSON.stringify(oldObj));
         if (this.objs[newObj._id]) {
@@ -67,6 +67,7 @@ class TransactionDAG {
             this.levels.push([]);
         }
         this.levels[this.currentLevel].push(newObj._id);
+        console.log(ll(this) + "|addObj|" + (Date.now() - start) + "ms; level=" + this.currentLevel + "|" + newObj._id + "/" + JSON.stringify({newObj, oldObj, aggsViewsUpdates, obsViewsUpdates}) + " in " + JSON.stringify(this.levels));
     }
     public getTrObj(id: string) {
         let ret = this.objs[id];
@@ -117,7 +118,7 @@ class FailedValidationsError {
 }
 
 class TransactionAbortedError {
-    constructor(public event: events.UserActionEditedFormDataEvent) {}
+    constructor(public event: events.ServerEventModifiedFormDataEvent) {}
 }
 
 export class FrmdbTransactionRunner {
@@ -147,7 +148,7 @@ export class FrmdbTransactionRunner {
     }
 
     public async computeFormulasAndSave(
-        event: events.UserActionEditedFormDataEvent): Promise<events.MwzEvents> {
+        event: events.ServerEventModifiedFormDataEvent): Promise<events.MwzEvents> {
 
         let transacDAG: TransactionDAG;
         try {

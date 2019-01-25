@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Injectable, InjectionToken, Inject } from '@angular/core';
+import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
 
@@ -22,7 +22,8 @@ import { FrmdbEngine } from './common/frmdb_engine';
 import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
 import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
-import { MockMetadata } from './common/test/mocks/mock-metadata';
+import { MockMetadata, ExampleApps } from './common/test/mocks/mock-metadata';
+import { waitUntilNotNull } from './common/ts-utils';
 
 export enum EnvType {
     Test = "Test",
@@ -40,26 +41,33 @@ export class BackendService {
     private frmdbStore: FrmdbStore;
     private envType: EnvType;
 
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient,private _ngZone: NgZone) {
     }
 
-    public async init(initCallback: () => void,
-        notifCallback: (event: MwzEvents) => void,
-        dataChangeCallback: (docs: Array<KeyValueObj>) => void) {
+    public async init(
+        app: ExampleApps,
+        initCallback: () => void,
+        notifCallback: (event: MwzEvents) => void)
+    {
 
         this.envType = window.location.href.indexOf("http://localhost:4200/") == 0 || window.location.href.indexOf("http://localhost:4300/") == 0 ? 
             EnvType.Test : EnvType.Live;
 
         this.initCallback = initCallback;
         this.notifCallback = notifCallback;
-        this.dataChangeCallback = dataChangeCallback;
 
         if (this.envType == EnvType.Test) {
-            let mockMetadata = new MockMetadata();
-            this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
-            this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
-            await this.testFrmdbEngine.init(true);
-            await loadData(this.testFrmdbEngine, mockMetadata);
+            await this._ngZone.runOutsideAngular(async () => {
+
+                if (this.testFrmdbEngine) {
+                    //TODO: cleanup
+                }
+                let mockMetadata = new MockMetadata(app);
+                this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
+                this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
+                await this.testFrmdbEngine.init(true);
+                await loadData(this.testFrmdbEngine, mockMetadata);
+            });
         }
 
         this.initCallback();
@@ -85,7 +93,7 @@ export class BackendService {
             let dataObjs: any[] = [];
             for (let obj of (data.body || [])) {
 
-                let dataObj: any = {_id: 'REP___DeliveryRate~~' + obj.id};
+                let dataObj: any = {_id: 'REP__DeliveryRate~~' + obj.id};
 
                 dataObj.orderNb = obj.order_id;
                 dataObj.externalOrderNb = 
@@ -117,8 +125,29 @@ export class BackendService {
 
     public putEvent(event: MwzEvents) {
         if (this.envType === EnvType.Test) {
-            this.testFrmdbEngine.processEvent(event)
-                .then(ev => this.handleNotif(ev));
+            this._ngZone.runOutsideAngular(async () => {
+                this.testFrmdbEngine.processEvent(event)
+                    .then(ev => 
+                        // this._ngZone.run(() => this.handleNotif(ev))
+                        this.handleNotif(ev)
+                    );
+            });
+            // this.handleNotif({
+            //     "clientId_": "9ymYNtsMnKcBRuz89e7FKH",
+            //     "state_": "BEGIN",
+            //     "obj": {
+            //         "_id": "INV__Order__Item~~1__1",
+            //         "productLocationId": "INV__PRD__Location~~1__1",
+            //         "quantity": 25,
+            //         "error_quantity": 975,
+            //         "client_stock": null,
+            //         "units": [
+            //             {}
+            //         ]
+            //     } as DataObj,
+            //     "type_": "[form] ServerEventModifiedFormData",
+            //     "_id": "1548323727283_ePq8DMgwnmKpiyDuR9zsse"
+            // });
         } else {
             this.http.post<MwzEvents>('/api/event', event)
                 .pipe(
@@ -143,7 +172,7 @@ export class BackendService {
         let entity = this.getFrmdbEngineTools().schemaDAO.getEntityForDataObj(id);
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ == Pn.CHILD_TABLE) {
-                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '___');
+                let subtableData = await this.frmdbStore.getDataListByPrefix(prop.referencedEntityName + '~~' + parentUUID + '__');
                 dataObj[prop.name] = subtableData;
             }
         }
@@ -176,31 +205,26 @@ export class BackendService {
     }
 
     public async getEntities(): Promise<Entity[]> {
-        let frmdbStore = await this.wait<FrmdbStore>(() => this.frmdbStore);
+        let frmdbStore = await waitUntilNotNull<FrmdbStore>(() => this.frmdbStore);
         return frmdbStore.getEntities();
-    }
-
-    private wait<T>(callback: () => T): Promise<T> {
-        let ret: T = callback();
-        if (ret) return Promise.resolve(ret);
-        return new Promise(resolve => {
-            let interval = setInterval(() => {
-                let x: T = callback();
-                if (x) {
-                    resolve(x);
-                    clearInterval(interval);
-                }
-            }, 250)
-        });
     }
     
     public async getEntity(path: string): Promise<Entity> {
-        let frmdbStore = await this.wait<FrmdbStore>(() => this.frmdbStore);
+        let frmdbStore = await waitUntilNotNull<FrmdbStore>(() => this.frmdbStore);
         let ret = await frmdbStore.getEntity(path);
         if (ret == null ) throw new Error("Asked for non existent table " + path + ".");
         return ret;
     }
 
+
+    public async newEntity(path: string): Promise<Entity> {
+        let newEntity: Entity = {
+            _id: path,
+            props: {},
+        };
+        return this.frmdbStore.putEntity(newEntity);
+    }
+    
     /**
      * Handle Http operation that failed.
      * Let the app continue.

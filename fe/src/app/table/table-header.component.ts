@@ -34,6 +34,10 @@ export class TableHeaderComponent {
         this.params.showColumnMenu(this.menuButton.nativeElement);
     };
 
+    selectColumn(colName: string) {
+        this.store.dispatch(new appState.UserSelectCell(colName));
+    }
+
     onSortChanged() {
         this.ascSort = this.descSort = this.noSort = 'inactive';
         if (this.params.column.isSortAscending()) {

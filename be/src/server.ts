@@ -13,12 +13,12 @@ import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
 import { loadData } from "../../fe/src/app/common/test/load_test_data";
-import { MockMetadata } from "../../fe/src/app/common/test/mocks/mock-metadata";
+import { MockMetadata, ExampleApps } from "../../fe/src/app/common/test/mocks/mock-metadata";
 import { FrmdbEngine } from "../../fe/src/app/common/frmdb_engine";
 import { FrmdbEngineStore } from "../../fe/src/app/common/frmdb_engine_store";
 import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
-let mockMetadata = new MockMetadata();
+let mockMetadata = new MockMetadata(ExampleApps.inventory);
 let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))

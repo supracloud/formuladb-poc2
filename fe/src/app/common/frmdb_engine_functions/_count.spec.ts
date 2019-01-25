@@ -6,7 +6,7 @@
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 
-import { UserActionEditedFormDataN } from "../domain/event";
+import { ServerEventModifiedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";

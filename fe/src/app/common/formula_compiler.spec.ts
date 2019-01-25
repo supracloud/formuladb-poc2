@@ -331,7 +331,7 @@ describe('FormulaCompiler', () => {
     });
 
     it('should compile mock schema correctly', () => {
-        // Forms___ServiceForm.code.formula
+        // Forms__ServiceForm.code.formula
     });
 
 });

@@ -28,4 +28,13 @@ export class TopNavComponent implements OnInit, OnDestroy {
     // this.formModalService.sendDestroyFormEvent();
     this.subscriptions.forEach(sub => sub.unsubscribe())
   }
+
+
+  editorOpened: boolean = false;
+  toggleFormulaEditor() {
+    if (!this.developerMode) return;
+
+    this.editorOpened = !this.editorOpened;
+  }
+
 }

@@ -167,17 +167,17 @@ export const reducers = {
 };
 
 
-export function parseUrl(url: string): { path: string | null, id: string | null } {
-  let match = url.match(/^\/\d+\/([\w_]+)\/?([-_%\w\d~]+)?/)
+export function parseUrl(url: string): { appName: string | null, path: string | null, id: string | null } {
+  let match = url.match(/^\/([\w_]+)\/\d+\/?([\w_]+)?\/?([-_%\w\d~]+)?/)
+  let appName: string | null = null;
   let path: string | null = null;
   let id: string | null = null;
   if (null != match) {
-    path = match[1];
-    if (match.length >= 3 && match[2] != null) id = match[2];
-  } else {
-    return { path: "General___Actor", id: null };//FIXME: remove hardcode, altough actors will always be available in a FormulaDB app
+    appName = match[1];
+    if (match.length >= 3 && match[2] != null) path = match[2];
+    if (match.length >= 4 && match[3] != null) id = match[3];
   }
 
-  return { path: path, id: id };
+  return { appName, path, id };
 
 }

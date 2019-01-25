@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty } from '../../domain/metadata/entity';
-import { INV___PRD, INV___PRD___Location } from './inventory-metadata';
+import { INV__PRD, INV__PRD__Location } from './inventory-metadata';
 import { Fn } from '../../domain/metadata/functions';
 
 
@@ -14,15 +14,15 @@ export const Reports = {
     props: {},
 };
 
-export const REP___DetailedCentralizerReport = {
-    _id: "REP___DetailedCentralizerReport",
+export const REP__DetailedCentralizerReport = {
+    _id: "REP__DetailedCentralizerReport",
     props: {
         //TODO
     }
 };
 
-export const REP___ServiceCentralizerReport = {
-    _id: "REP___ServiceCentralizerReport",
+export const REP__ServiceCentralizerReport = {
+    _id: "REP__ServiceCentralizerReport",
     aliases: {
         thisMonthServiceForms: Fn.IF(`Forms_ServiceForm`, Fn.EOMONTH(`time_of_arrival`, `-1`) + ` == ` + Fn.EOMONTH(`@[month]`, `-1`)),
     },
@@ -62,30 +62,30 @@ export const REP___ServiceCentralizerReport = {
     }
 };
 
-export const REP___LargeSales = {
-    _id: "REP___LargeSales",
+export const REP__LargeSales = {
+    _id: "REP__LargeSales",
     props: {
         client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
         largeSales: {
             name: "largeSales",
             propType_: Pn.CHILD_TABLE,
-            referencedEntityName: "REP___LargeSales___Product",
+            referencedEntityName: "REP__LargeSales__Product",
             isLargeTable: true,
             props: {},
         } as EntityProperty,
     }
 };
 
-export const REP___LargeSales___Product = {
-    _id: "REP___LargeSales___Product",
+export const REP__LargeSales__Product = {
+    _id: "REP__LargeSales__Product",
     props: {
         productLocationId: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         productName: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         largeSalesValue: {
             name: "largeSalesValue",
             propType_: Pn.FORMULA,
-            formula: `SUMIF(INV___Order___Item.quantity, quantity > 100 && productLocationId = @[productLocationId])`,
+            formula: `SUMIF(INV__Order__Item.quantity, quantity > 100 && productLocationId = @[productLocationId])`,
         } as FormulaProperty,
     }
 }

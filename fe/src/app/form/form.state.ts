@@ -21,7 +21,7 @@ export interface FormState {
   formReadOnly: boolean;
   formEditMode: boolean;
   highlighted: any;
-  dragged: NodeElement | null
+  dragged: NodeElement | null;
 }
 
 export const formInitialState: FormState = {
@@ -45,8 +45,8 @@ export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
 export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
 export const FormAddActionN = '[form] FormAddAction';
-export const UserActionEditedFormDataN = events.UserActionEditedFormDataN;
-export const UserActionEditedFormN = events.UserActionEditedFormN;
+export const ServerEventModifiedFormDataN = events.ServerEventModifiedFormDataN;
+export const ServerEventModifiedFormN = events.ServerEventModifiedFormN;
 
 
 export class FormDataFromBackendAction implements Action {
@@ -76,7 +76,7 @@ export class FormItemHighlightAction implements Action {
 export class FormNotifFromBackendAction implements Action {
   readonly type = FormNotifFromBackendActionN;
 
-  constructor(public event: events.UserActionEditedFormEvent | events.UserActionEditedFormDataEvent) { }
+  constructor(public event: events.ServerEventModifiedFormEvent | events.ServerEventModifiedFormDataEvent) { }
 }
 
 export class FormFromBackendAction implements Action {
@@ -85,21 +85,21 @@ export class FormFromBackendAction implements Action {
   constructor(public form: Form) { }
 }
 
-export class UserActionEditedForm implements Action {
-  readonly type = UserActionEditedFormN;
-  public event: events.UserActionEditedFormEvent;
+export class ServerEventModifiedForm implements Action {
+  readonly type = ServerEventModifiedFormN;
+  public event: events.ServerEventModifiedFormEvent;
 
   constructor(public form: Form) {
-    this.event = new events.UserActionEditedFormEvent(form);
+    this.event = new events.ServerEventModifiedFormEvent(form);
   }
 }
 
-export class UserActionEditedFormData implements Action {
-  readonly type = UserActionEditedFormDataN;
-  public event: events.UserActionEditedFormDataEvent;
+export class ServerEventModifiedFormData implements Action {
+  readonly type = ServerEventModifiedFormDataN;
+  public event: events.ServerEventModifiedFormDataEvent;
 
   constructor(obj: DataObj) {
-    this.event = new events.UserActionEditedFormDataEvent(obj);
+    this.event = new events.ServerEventModifiedFormDataEvent(obj);
   }
 }
 
@@ -141,8 +141,8 @@ export type FormActions =
   | ResetFormDataFromBackendAction
   | FormFromBackendAction
   | FormNotifFromBackendAction
-  | UserActionEditedForm
-  | UserActionEditedFormData
+  | ServerEventModifiedForm
+  | ServerEventModifiedFormData
   | FormItemHighlightAction
   | FormSwitchEditModeAction
   | FormDragAction

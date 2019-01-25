@@ -9,7 +9,7 @@ import * as _ from 'lodash';
 import { Expression } from 'jsep';
 
 /**
- * the _id of the Entity is the path, e.g. Forms___ServiceForm
+ * the _id of the Entity is the path, e.g. Forms__ServiceForm
  */
 export interface Entity extends KeyValueObj {
     _id: string;
@@ -150,7 +150,7 @@ export interface ReferenceToProperty {
     propType_: Pn.REFERENCE_TO;
     name: string;
     referencedEntityName: string;
-    snapshotCurrentValueOfProperties: string[];
+    referencedPropertyName: string;
 }
 export function isBelongsToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;

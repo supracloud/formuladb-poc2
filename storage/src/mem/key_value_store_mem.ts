@@ -8,7 +8,7 @@ import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "../domain/key_value_obj";
 
 function simulateIO<T>(x: T): Promise<T> {
-    return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 20));
+    return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
 }
 
 /**

@@ -25,30 +25,32 @@ import * as appState from './app.state';
 import { generateUUID } from "./common/domain/uuid";
 import { BackendService, EnvType } from "./backend.service";
 import { TableFormBackendAction } from './app.state';
+import { FormDataFromBackendAction } from './form/form.state';
+import { EntitiesFromBackendFullLoadAction } from './entity-state';
+import { waitUntilNotNull } from './common/ts-utils';
+import { ExampleApps } from './common/test/mocks/mock-metadata';
 
 
 export type ActionsToBeSentToServer =
-    | appState.UserActionEditedFormData
-    | appState.UserActionEditedForm
-    | appState.UserActionEditedTable
-    | appState.UserActionEditedEntity
-    | appState.UserActionNewEntity
-    | appState.UserActionDeleteEntity
+    | appState.ServerEventModifiedFormData
+    | appState.ServerEventModifiedForm
+    | appState.ServerEventModifiedTable
+    | appState.ServerEventModifiedEntity
+    | appState.ServerEventNewEntity
+    | appState.ServerEventDeleteEntity
     ;
 export const ActionsToBeSentToServerNames = [
-    appState.UserActionEditedFormDataN,
-    appState.UserActionEditedFormN,
-    appState.UserActionEditedTableN,
-    appState.UserActionEditedEntityN,
-    appState.UserActionNewEntityN,
-    appState.UserActionDeleteEntityN
+    appState.ServerEventModifiedFormDataN,
+    appState.ServerEventModifiedFormN,
+    appState.ServerEventModifiedTableN,
+    appState.ServerEventModifiedEntityN,
+    appState.ServerEventNewEntityN,
+    appState.ServerEventDeleteEntityN
 ];
-
-let LOADED = false;
 
 @Injectable()
 export class AppEffects {
-    private currentUrl: { path: string | null, id: string | null, entity: Entity | null } = { path: null, id: null, entity: null };
+    private currentUrl: { appName: string | null, path: string | null, id: string | null, entity: Entity | null } = { appName: null, path: null, id: null, entity: null };
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
 
     constructor(
@@ -57,65 +59,83 @@ export class AppEffects {
         private backendService: BackendService,
         private router: Router
     ) {
-        this.load();
+
+        //change app state based on router actions
+        this.listenForRouterChanges();
+
     }
 
-    public load() {
-        if (LOADED) return;
-
+    public async load() {
         try {
+            
+            await waitUntilNotNull(() => this.getAppName());
+
             //we first initialize the DB (sync with remote DB)
-            this.backendService.init(
+            return this.backendService.init(
+                this.getAppName()!,
                 () => this.init(),
-                change => this.listenForNotifsFromServer(change),
-                change => this.listenFormDataChangesFromServer(change));
+                change => this.listenForNotifsFromServer(change));
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
-        LOADED = true;
     }
 
-    private listenForNotifsFromServer(event: events.MwzEvents) {
-        console.log("%c <---- " + event.type_ + " " + event._id,
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), event);
-        if (!event) return;
+    private async listenForNotifsFromServer(eventFromBe: events.MwzEvents) {
+        console.log("%c <---- " + eventFromBe.type_ + " " + eventFromBe._id,
+            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), eventFromBe);
+        if (!eventFromBe) return;
 
-        switch (event.type_) {
-            case appState.UserActionEditedFormDataN:
-            case appState.UserActionEditedFormN:
-                this.store.dispatch(new appState.FormNotifFromBackendAction(event));
+        switch (eventFromBe.type_) {
+            case appState.ServerEventModifiedFormN:
+                this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                 break;
-            case appState.UserActionEditedTableN:
+            case appState.ServerEventModifiedTableN: {
                 // this.store.dispatch(new appState.FormNotifFromBackendAction(event));
                 //TODO: display loading indicator, not currently used
                 break;
-
+            }
+            case events.ServerEventModifiedFormDataN: {
+                this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
+                this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(eventFromBe.obj)]));
+                break;
+            }
+            case events.ServerEventModifiedFormN: {
+                break;
+            }
+            case events.ServerEventModifiedTableN: {
+                this.store.dispatch(new TableFormBackendAction(eventFromBe.table));
+                break;
+            }
+            case events.ServerEventNewEntityN: {
+                let entities = await this.backendService.getEntities();
+                this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
+                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.path)]);
+                break;
+            }
+            case events.ServerEventDeleteEntityN: {
+                let entities = await this.backendService.getEntities();
+                this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
+                this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/__\w+$/, ''))]);
+                break;
+            }
+            case events.ServerEventModifiedEntityN: {
+                this.changeEntity(eventFromBe.entity._id);
+                break;
+            }
+            default:
+                return Promise.reject("n/a event");
         }
     }
 
-    private listenFormDataChangesFromServer(docs: Array<KeyValueObj>) {
-        console.log("%c <==== " + docs.map(x => x._id).join(','),
-            "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", new Date(), docs);
 
-        docs.forEach(obj => {
-            if (obj._id.indexOf('Entity_') == 0) {
-                console.log("Loading all entities from local DB");
-                this.backendService.getEntities().then(entities => {
-                    console.log("displaying all entities from local DB", entities);
-                    this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
-                }).catch(err => console.error(err));
-            } else if (obj._id.indexOf('Table_') == 0) {
-                this.store.dispatch(new appState.TableFormBackendAction(obj as Table));
-            } else if (obj._id.indexOf('Form_') == 0) {
-                this.store.dispatch(new appState.FormFromBackendAction(obj as Form));
-            } else {
-                this.store.dispatch(new appState.FormDataFromBackendAction(obj));
-                this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(obj as DataObj)]));
-            }
-        });
+    private getAppName(): ExampleApps | null {
+        let { appName, path, id } = appState.parseUrl(this.router.url);
+        return appName ? ExampleApps[appName] : null;
     }
 
-    private init() {
+    private async init() {
+
         //load entities and remove readOnly flag
         this.backendService.getEntities().then(entities => {
             this.cachedEntitiesMap = {};
@@ -125,39 +145,18 @@ export class AppEffects {
             this.processRouterUrlChange(this.router.url);
         }).catch(err => console.error(err));
 
-        //change app state based on router actions
-        this.listenForRouterChanges();
-
         //send actions to server so that the engine can process them, compute all formulas and update the data
-        this.listenForUserActions();
+        this.listenForServerEvents();
 
         //listen for new object creations
         this.listenForNewDataObjActions();
     }
 
-    private listenForUserActions() {
+    private listenForServerEvents() {
         this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
             console.log("%c ----> " + action.event.type_ + " " + action.event._id,
                 "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
-
-            switch (action.event.type_) {
-                case events.UserActionEditedFormDataN:
-                    this.backendService.putEvent(action.event);
-                    break;
-                case events.UserActionEditedFormN:
-                    break;
-                case events.UserActionEditedTableN:
-                    this.store.dispatch(new TableFormBackendAction(action.event.table));
-                    break;
-                case events.UserActionNewEntityN:
-                    break;
-                case events.UserActionDeleteEntityN:
-                    break;
-                case events.UserActionEditedEntityN:
-                    break;
-                default:
-                    return Promise.reject("n/a event");
-            }
+            this.backendService.putEvent(action.event);
         });
     }
 
@@ -170,14 +169,19 @@ export class AppEffects {
             });
     }
 
-    private processRouterUrlChange(url: string) {
-        let { path, id } = appState.parseUrl(url);
+    private async processRouterUrlChange(url: string) {
+        let { appName, path, id } = appState.parseUrl(url);
 
-        if (path === this.currentUrl.path && id === this.currentUrl.id) return;
+        if (appName === this.currentUrl.appName && path === this.currentUrl.path && id === this.currentUrl.id) return;
+
+        if (appName !== this.currentUrl.appName) {
+            this.currentUrl.appName = appName;
+            await this.load();
+        }
 
         if (path !== this.currentUrl.path) {
             this.currentUrl.path = path;
-            this.changeEntity(path!);
+            await this.changeEntity(path!);
         }
 
         if (id && id != this.currentUrl.id) {
@@ -191,7 +195,7 @@ export class AppEffects {
     }
 
     private listenForNewDataObjActions() {
-        this.actions$.ofType<appState.UserActionNewRow>(appState.UserActionNewRowN).subscribe(action => {
+        this.actions$.ofType<appState.ServerEventNewRow>(appState.ServerEventNewRowN).subscribe(action => {
             this.currentUrl.id = generateUUID();
             this.router.navigate([this.currentUrl.entity!._id + '/' + this.currentUrl.id]);
             this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id }))
@@ -209,9 +213,9 @@ export class AppEffects {
                 } else throw err;
             }
             if (null == entity) throw new Error("Cannot find entity " + path);
-            
+
             this.currentUrl.entity = entity;
-            this.store.dispatch(new appState.UserActionSelectedEntity(entity));
+            this.store.dispatch(new appState.SelectedEntityAction(entity));
 
             let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
             this.store.dispatch(new appState.ResetTableDataFromBackendAction(entity, []));
@@ -228,6 +232,6 @@ export class AppEffects {
         }
     }
 
-    // @Effect() newDataObj$: Observable<appState.UserActionNewRow> = null;//TODO
+    // @Effect() newDataObj$: Observable<appState.ServerEventNewRow> = null;//TODO
 
 }

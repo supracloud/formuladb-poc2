@@ -47,8 +47,9 @@ export class FormInput implements SubObj {
 export class FormAutocomplete implements SubObj {
     readonly nodeType = NodeType.form_autocomplete;
     _id: string;
-    entityName: string;
-    snapshotCurrentValueOfProperties?: string[];
+    refEntityName: string;
+    refPropertyName: string;
+    propertyName: string;
 }
 export class FormTabs implements SubObj {
     readonly nodeType = NodeType.form_tabs;
@@ -151,7 +152,7 @@ export function isKnownNodeElement(nodeType: string) {
 
 export function getChildPath(nodeEl: NodeElement) {
     if (isPropertyNodeElement(nodeEl)) return nodeEl.propertyName;
-    if (isEntityNodeElement(nodeEl)) return nodeEl.entityName;
+    if (isEntityNodeElement(nodeEl)) return nodeEl.refEntityName;
     if (isTableNodeElement(nodeEl)) return nodeEl.tableName;
     return 'n/a-childPath-for' + nodeEl.nodeType;
 }
@@ -177,8 +178,9 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             if (pn.referencedEntityName) setFormElementChildren(child, entitiesMap[pn.referencedEntityName]!, entitiesMap);
         } else if (pn.propType_ === Pn.REFERENCE_TO) {
             child = new FormAutocomplete();
-            child.entityName = pn.name;
-            child.snapshotCurrentValueOfProperties = pn.snapshotCurrentValueOfProperties;
+            child.refEntityName = pn.referencedEntityName;
+            child.refPropertyName = pn.referencedPropertyName;
+            child.propertyName = pn.name;
         } else if (pn.propType_ === Pn.DATETIME) {
             child = new FormDatepicker();
             child.propertyName = pn.name;

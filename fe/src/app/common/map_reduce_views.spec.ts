@@ -10,6 +10,11 @@ import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 
 
 describe('MapReduceView', () => {
+    beforeEach(async (done) => {
+        await KeyValueStoreFactory.clearAll();
+        done();
+    });
+
     it('should precompute and compute basic SUM', async (done) => {
         let mapReduceView = new MapReduceView(KeyValueStoreFactory, "tst", {
             entityName: 'A',

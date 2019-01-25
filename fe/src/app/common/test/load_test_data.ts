@@ -5,8 +5,8 @@
 
 import { MockMetadata } from "./mocks/mock-metadata";
 import { MockData } from "./mocks/mock-data";
-import { Forms___ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
-import { REP___LargeSales_Form } from "./mocks/reports-ui-metadata";
+import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
+import { REP__LargeSales_Form } from "./mocks/reports-ui-metadata";
 import { FrmdbEngine } from "../frmdb_engine";
 
 export async function loadData(frmdbEngine: FrmdbEngine, mockMetadata: MockMetadata): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
@@ -16,10 +16,10 @@ export async function loadData(frmdbEngine: FrmdbEngine, mockMetadata: MockMetad
         let mockData = new MockData(mockMetadata.schema.entities);
         await frmdbEngine.frmdbEngineStore.putAllObj(mockData.getAll());
         for (let obj of mockData.getAll()) {
-            // /*await */frmdbEngine.updateViewsForObj(null, obj);
+            await frmdbEngine.updateViewsForObj(null, obj);
         }
 
-        [Forms___ServiceForm_Form_, REP___LargeSales_Form].forEach(async (formUiMeta) => {
+        [Forms__ServiceForm_Form_, REP__LargeSales_Form].forEach(async (formUiMeta) => {
             await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
         });
 

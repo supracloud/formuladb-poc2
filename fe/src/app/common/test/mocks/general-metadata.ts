@@ -8,13 +8,13 @@ import { $s2e } from '../../formula_compiler';
 
 
 export const General: Entity = {
-    _id: "General",
+    _id: "GEN",
     module_: true,
     props: {},
 };
 
-export const General___Settings: Entity = {
-    _id: "General___Settings",
+export const GEN__Settings: Entity = {
+    _id: "GEN__Settings",
     props: {
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         valueNumber: { name: "valueNumber", propType_: Pn.NUMBER } as EntityProperty,
@@ -23,8 +23,8 @@ export const General___Settings: Entity = {
     }
 }
 
-export const General___Actor: Entity = {
-    _id: "General___Actor",
+export const GEN__Actor: Entity = {
+    _id: "GEN__Actor",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -41,8 +41,8 @@ export const General___Actor: Entity = {
 
 };
 
-export const General___Currency: Entity = {
-    _id: "General___Currency",
+export const GEN__Currency: Entity = {
+    _id: "GEN__Currency",
     props: {
 
         code: { name: "code", propType_: Pn.STRING } as EntityProperty,
@@ -57,8 +57,8 @@ export const General___Currency: Entity = {
     }
 };
 
-export const General___Person: Entity = {
-    _id: "General___Person",
+export const GEN__Person: Entity = {
+    _id: "GEN__Person",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -77,8 +77,8 @@ export const General___Person: Entity = {
     }
 };
 
-export const General___User: Entity = {
-    _id: "General___User",
+export const GEN__User: Entity = {
+    _id: "GEN__User",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
@@ -94,8 +94,8 @@ export const General___User: Entity = {
     }
 };
 
-export const General___Client: Entity = {
-    _id: "General___Client",
+export const GEN__Client: Entity = {
+    _id: "GEN__Client",
     props: {
 
         code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,

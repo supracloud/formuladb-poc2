@@ -30,23 +30,23 @@ export class MwzEvent implements KeyValueObj {
     }
 }
 
-export const UserActionEditedFormDataN = "[form] UserActionEditedFormData";
-export const UserActionEditedFormN = "[form] UserActionEditedForm";
-export const UserActionEditedTableN = "[table] UserActionEditedTable";
-export const UserActionEditedEntityN = "[entity] UserActionEditedEntity";
-export const UserActionNewEntityN = "[entity] UserActionNewEntity";
-export const UserActionDeleteEntityN = "[entity] UserActionDeleteEntity";
+export const ServerEventModifiedFormDataN = "[form] ServerEventModifiedFormData";
+export const ServerEventModifiedFormN = "[form] ServerEventModifiedForm";
+export const ServerEventModifiedTableN = "[table] ServerEventModifiedTable";
+export const ServerEventModifiedEntityN = "[entity] ServerEventModifiedEntity";
+export const ServerEventNewEntityN = "[entity] ServerEventNewEntity";
+export const ServerEventDeleteEntityN = "[entity] ServerEventDeleteEntity";
 
-export class UserActionEditedFormDataEvent extends MwzEvent {
-    readonly type_ = UserActionEditedFormDataN;
+export class ServerEventModifiedFormDataEvent extends MwzEvent {
+    readonly type_ = ServerEventModifiedFormDataN;
 
     constructor(public obj: DataObj) {
         super();
     }
 }
 
-export class UserActionEditedFormEvent extends MwzEvent {
-    readonly type_ = UserActionEditedFormN;
+export class ServerEventModifiedFormEvent extends MwzEvent {
+    readonly type_ = ServerEventModifiedFormN;
 
     constructor(public form: Form) {
         super();
@@ -54,43 +54,43 @@ export class UserActionEditedFormEvent extends MwzEvent {
 }
 
 
-export class UserActionEditedTableEvent extends MwzEvent {
-    readonly type_ = UserActionEditedTableN;
+export class ServerEventModifiedTableEvent extends MwzEvent {
+    readonly type_ = ServerEventModifiedTableN;
 
     constructor(public table: Table) {
         super();
     }
 }
 
-export class UserActionEditedEntity extends MwzEvent {
-    readonly type_ = UserActionEditedEntityN;
+export class ServerEventModifiedEntity extends MwzEvent {
+    readonly type_ = ServerEventModifiedEntityN;
 
     constructor(public entity: Entity) {
         super();
     }
 }
 
-export class UserActionNewEntity extends MwzEvent {
-    readonly type_ = UserActionNewEntityN;
+export class ServerEventNewEntity extends MwzEvent {
+    readonly type_ = ServerEventNewEntityN;
 
     constructor(public path: string) {
         super();
     }
 }
 
-export class UserActionDeleteEntity extends MwzEvent {
-    readonly type_ = UserActionDeleteEntityN;
+export class ServerEventDeleteEntity extends MwzEvent {
+    readonly type_ = ServerEventDeleteEntityN;
 
-    constructor(public entity: Entity) {
+    constructor(public entityId: string) {
         super();
     }
 }
 
 export type MwzEvents = 
-    | UserActionEditedFormDataEvent
-    | UserActionEditedFormEvent
-    | UserActionEditedTableEvent
-    | UserActionEditedEntity
-    | UserActionNewEntity
-    | UserActionDeleteEntity
+    | ServerEventModifiedFormDataEvent
+    | ServerEventModifiedFormEvent
+    | ServerEventModifiedTableEvent
+    | ServerEventModifiedEntity
+    | ServerEventNewEntity
+    | ServerEventDeleteEntity
     ;

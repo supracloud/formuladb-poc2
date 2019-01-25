@@ -14,7 +14,7 @@ export function getLayoutRoutes(LayoutComponentClass: any): Routes {
       component: LayoutComponentClass,
       children: [
         {
-          path: ':module___entity',
+          path: ':module__entity',
           loadChildren: '../../frmdb/frmdb.module#FrmdbModule'
         },
       ]
