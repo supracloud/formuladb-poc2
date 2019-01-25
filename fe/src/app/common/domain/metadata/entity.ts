@@ -150,7 +150,7 @@ export interface ReferenceToProperty {
     propType_: Pn.REFERENCE_TO;
     name: string;
     referencedEntityName: string;
-    snapshotCurrentValueOfProperties: string[];
+    referencedPropertyName: string;
 }
 export function isBelongsToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;

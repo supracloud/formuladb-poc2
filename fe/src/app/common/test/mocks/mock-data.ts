@@ -10,6 +10,7 @@ import { MusicBookingData } from './musicbooking-data';
 import { DataObj } from '../../domain/metadata/data_obj';
 import { FormsData } from './forms-data';
 import { ReportsData } from './reports-data';
+import { GeneralData } from './general-data';
 
 
 export class MockData {
@@ -17,7 +18,8 @@ export class MockData {
     allData: DataObj[] = InventoryData
         .concat(MusicBookingData)
         .concat(FormsData)
-        .concat(ReportsData);
+        .concat(ReportsData)
+        .concat(GeneralData);
 
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }
@@ -27,9 +29,9 @@ export class MockData {
     }
 
     public getAllForPath(path: string) {
-        let ret: any[] = [];
-        for (let obj of this.allData) {
-            if (obj._id.indexOf(path) == 0) ret.push(obj);
+        const ret: any[] = [];
+        for (const obj of this.allData) {
+            if (obj._id.indexOf(path) === 0) { ret.push(obj); }
         }
         return ret;
     }

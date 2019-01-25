@@ -6,8 +6,9 @@ import { INV__PRD__Location1, INV__PRD__Location1a, INV__Order1 } from "./invent
  */
 
 export const FRM__ServiceForm1 = {
-    _id: "FRM__ServiceForm~~1",
-    client: { code: 'JDO', username: 'John Doe' },
+    _id: 'FRM__ServiceForm~~1',
+    client_name: 'Koelpin, Zulauf and Kerluke',
+    client_email: 'Kory_Bruen85@gmail.com',
     time_of_arrival: '2018-12-31 18:00',
     time_of_departure: '2018-12-31 19:00',
     normal_hours: 1,
@@ -23,9 +24,17 @@ export const FRM__ServiceForm1 = {
     accommodation: 0,
 };
 
-const Equip1 = { _id: "INV__PRD~~26", code: "EQUIP1", barcode: "40063813339326", name: "Equipment 1", category: "Automotive", subcategory: "architecto", description: "Aut hic rerum explicabo ut illo ipsumtempora quisquam pariatur.", longDescription: "A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique." };
+const Equip1 = {
+    _id: 'INV__PRD~~26',
+    code: 'EQUIP1', barcode: '40063813339326',
+    name: 'Equipment 1',
+    category: 'Automotive',
+    subcategory: 'architecto',
+    description: 'Aut hic rerum explicabo ut illo ipsumtempora quisquam pariatur.',
+    longDescription: 'A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique.'
+};
 const Equip1Unit1 = {
-    _id: "INV__PRD__Unit~~26__1", code: "EQPT-12354",
+    _id: 'INV__PRD__Unit~~26__1', code: 'EQPT-12354',
     product: {
         _id: Equip1._id,
         code: Equip1.code,
@@ -34,7 +43,7 @@ const Equip1Unit1 = {
     serial1: '12343626245',
 };
 const Equip1Unit2 = {
-    _id: "INV__PRD__Unit~~26__2", code: "EQPT-12354",
+    _id: 'INV__PRD__Unit~~26__2', code: 'EQPT-12354',
     product: {
         _id: Equip1._id,
         code: Equip1.code,
@@ -43,9 +52,9 @@ const Equip1Unit2 = {
     serial1: '12343626246',
 };
 
-let SFU1 = {
+const SFU1 = {
     ...INV__Order1,
-    _id: "INV__Order~~1__1",
+    _id: 'INV__Order~~1__1',
     equipment: {
         _id: Equip1Unit1._id,
         code: Equip1Unit1.code,
@@ -62,9 +71,9 @@ let SFU1 = {
     equipment_group: 'Group1',
 };
 
-let SFU2 = {
+const SFU2 = {
     ...INV__Order1,
-    _id: "INV__Order~~1__2",
+    _id: 'INV__Order~~1__2',
     equipment: {
         _id: Equip1Unit2._id,
         code: Equip1Unit2.code,

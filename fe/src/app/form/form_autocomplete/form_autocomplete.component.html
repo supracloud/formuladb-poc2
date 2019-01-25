@@ -1,8 +1,9 @@
-<label>{{inputElement.entityName}}</label>
-<div class="form_group mwz-form-autocomplete" [formGroup]="topLevelFormGroup" *ngFor="let propName of inputElement.snapshotCurrentValueOfProperties">
-    <label [for]="parentFormPath + '/' + propName">
-        {{inputElement.entityName | i18n}}/{{propName | i18n}}
-    </label>
-    <input class="form-control" type="text" [id]="parentFormPath + '.' + propName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + propName)"
-        *ngIf="hasControl(parentFormPath + '.' + propName)" />
-</div>
+<label [for]="parentFormPath + '.' + inputElement.propertyName">
+    {{inputElement.refEntityName | i18n}}/{{inputElement.refPropertyName | i18n}}
+</label>
+<input class="form-control" [attr.list]="parentFormPath + '.' + inputElement.propertyName+'.list'" [id]="parentFormPath + '.' + inputElement.propertyName"
+    [formControl]="topLevelFormGroup.get(inputElement.propertyName)" *ngIf="hasControl(inputElement.propertyName)"
+    (input)="inputChange($event.target.value)" (blur)="inputLeave($event.target.value)" [value]="value$|async" />
+<datalist [id]="parentFormPath + '.' + inputElement.propertyName+'.list'">
+    <option *ngFor="let option of options$|async">{{option}}</option>
+</datalist>
