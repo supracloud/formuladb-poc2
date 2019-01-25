@@ -19,3 +19,9 @@ export interface TextjoinReduceFun {
     name: "TextjoinReduceFunN";
     delimiter: string;
 }
+
+export const ReduceFunDefaultValue = {
+    [SumReduceFunN]: 0,
+    [CountReduceFunN]: 0,
+    [TextjoinReduceFunN]: '',
+};

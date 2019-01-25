@@ -5,6 +5,16 @@
 
 import { KeyValueError, KeyValueObj } from "./domain/key_value_obj";
 import * as Collate from 'pouchdb-collate';
+import { ReduceFun } from "./domain/metadata/reduce_functions";
+
+export interface AddHocQuery {
+    columns: (string | {alias: string, subquery: AddHocQuery})[];
+    filters: {colName: string, op: string, value: string | number | boolean}[];
+    groupColumns: string[],
+    groupAggs: {alias: string, reduceFun: ReduceFun, colName: string}[],
+    groupFilters: {colName: string, op: string, value: string | number | boolean}[];
+    sortColumns: string[],
+}
 
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
@@ -22,6 +32,8 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     put(obj: OBJT): Promise<OBJT>;
     putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
+    /** filtering and grouping by any key */
+    adHocQuery(params: AddHocQuery): Promise<any[]>;
 }
 
 export function kvsKey2Str(key: any): string {
