@@ -25,7 +25,6 @@ function toIndexableString(key: Array<any>) {
 };
 
 function parseIndexableString(str: String) {
-    console.log(str);
     return str.split(SEP);
 };
 

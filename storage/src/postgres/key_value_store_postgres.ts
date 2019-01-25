@@ -34,8 +34,6 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         }
 
         this.table_id = `f_${calculateSlot(name)}`;
-        console.log(`KVStore with original name ${name} and table name ${this.table_id}`);
-
     }
 
     private async initialize() {
@@ -43,10 +41,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             try {
                 let query:string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id +' (key VARCHAR NOT NULL PRIMARY KEY, val json)';
                 await KeyValueStorePostgres.db!.any(query);
-                // This is for UT. It shouldn't be here. UTs must clean their data before 
-                query = 'TRUNCATE TABLE ' + this.table_id;
-                await KeyValueStorePostgres.db!.any(query);
-                    } catch (err) {
+            } catch (err) {
+                // When 2 or more workers are trying to create table on the same session
                 console.log(err);
             }
             this.initialized = true;
@@ -56,11 +52,9 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     public get(_id: string): Promise<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
-                console.log("get ", _id);
                 let query: string = 'SELECT val FROM ' + this.table_id + ' WHERE key = $1' ;
 
                 KeyValueStorePostgres.db!.oneOrNone<VALUET>(query, [_id] ).then((res) => {
-                    // Another issue here: res comes as JSON/object
                     resolve(res != null ? res['val'] : undefined);
                 }).catch((err) => {
                     console.log(err);
@@ -101,7 +95,6 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
                 let object_as_json = JSON.stringify(obj);
-                console.log('set ', _id, obj);
                 let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (key) DO UPDATE SET key=$1, val=$2' ;
                 KeyValueStorePostgres.db!.none(query, [_id, object_as_json]).then((res) => {
                     resolve(obj);
@@ -136,6 +129,13 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             resolve("Postgres based KVS");
         })
     }
+
+    public async clearAll() {
+        console.log("Droping all tables");
+        let query: string = 'DROP SCHEMA public CASCADE;CREATE SCHEMA public;';
+        await KeyValueStorePostgres.db!.any(query);
+        console.log("Tables droped");
+    }
 }
 
 export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStorePostgres<OBJT> implements KeyObjStoreI<OBJT> {
@@ -162,4 +162,11 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT> {
         return new KeyObjStorePostgres<OBJT>(name);
     }
+
+    async clearAll() {
+        let forCleanup:KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
+        await forCleanup.clearAll();
+    }
+
+
 }

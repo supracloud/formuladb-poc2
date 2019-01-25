@@ -90,4 +90,8 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT> {
         return new KeyObjStoreMem<OBJT>();
     }
+
+    async clearAll() {
+        // Mem KV store is ephemeral so nothing to clear
+    };
 }

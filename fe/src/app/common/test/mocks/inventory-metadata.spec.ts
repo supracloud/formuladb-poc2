@@ -33,6 +33,7 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
+        await KeyValueStoreFactory.clearAll();
         frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
         frmdbEngine = new FrmdbEngine(frmdbTStore, InventorySchema);
         await frmdbEngine.init();

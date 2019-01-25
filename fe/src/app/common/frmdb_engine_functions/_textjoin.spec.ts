@@ -32,6 +32,7 @@ describe('FrmdbEngineStore _textjoin', () => {
     }
     
     beforeEach(async (done) => {
+        await KeyValueStoreFactory.clearAll();
         frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
@@ -111,7 +112,6 @@ describe('FrmdbEngineStore _textjoin', () => {
         expect(txt).toEqual('A~~2;;A~~3;;A~~4;;A~~5');
 
         done();
-
     });
     
 });

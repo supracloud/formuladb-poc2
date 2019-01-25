@@ -73,6 +73,7 @@ describe('FrmdbEngine', () => {
     };
 
     beforeEach(async (done) => {
+        await KeyValueStoreFactory.clearAll();
         frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
         frmdbEngine = new FrmdbEngine(frmdbTStore, stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
