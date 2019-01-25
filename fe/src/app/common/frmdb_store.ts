@@ -8,7 +8,7 @@ import { DataObj } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyObjStoreI } from "./key_value_store_i";
+import { KeyObjStoreI, AddHocQuery } from "./key_value_store_i";
 import { KeyValueError } from "./domain/key_value_obj";
 
 export class FrmdbStore {
@@ -94,4 +94,9 @@ export class FrmdbStore {
     public delDataObj(id: string) {
         return this.dataDB.del(id);
     }
+
+    public adHocQuery(params: AddHocQuery): Promise<any[]> {
+        return this.dataDB.adHocQuery(params);
+    }
+
 }
