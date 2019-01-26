@@ -12,6 +12,7 @@ import { CompiledFormula } from "./domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
 import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "./key_value_store_mem";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
+import { Pn, Entity } from "./domain/metadata/entity";
 
 describe('frmdb_engine_store', () => {
     let kvsFactory: KeyValueStoreFactoryI;
@@ -79,7 +80,8 @@ describe('frmdb_engine_store', () => {
     }
     
     it("Should allow to install formulas then query observers and aggregations", async (done) => {
-        compiledFormula = compileFormula('B', 'sum__', Fn.SUMIF(`A.num`,`aY == @[bY]`));
+        let formula = 'SUMIF(A.num, aY == @[bY])';
+        compiledFormula = compileFormula('B', 'sum__', formula);
         await frmdbEngineStore.installFormula(compiledFormula);
 
         let a1  = { "_id": "A~~1", "num": 1, "aY": "a1" }; await putAndForceUpdateView(null, a1, true);
@@ -99,6 +101,21 @@ describe('frmdb_engine_store', () => {
         let sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(sum).toEqual(6);
 
+        sum = await frmdbEngineStore.adHocFormulaQuery(b1, compiledFormula);
+        expect(sum).toEqual(6);
+        sum = await frmdbEngineStore.adHocFormulaQuery(b2, compiledFormula);
+        expect(sum).toEqual(5);
+
+        let bEntity: Entity = {
+            _id: 'B',
+            props: {
+                sum__: { name: 'sum__', propType_: Pn.FORMULA, formula: formula, compiledFormula_: compiledFormula}
+            }
+        };
+        let bTable = await frmdbEngineStore.adHocTableQuery(bEntity);
+        expect(bTable[0]).toEqual(jasmine.objectContaining({_id: 'B~~1', sum__: 6, bY: 'a1'}));
+        expect(bTable[1]).toEqual(jasmine.objectContaining({_id: 'B~~2', sum__: 5, bY: 'a2'}));
+
         let a1new = _.cloneDeep(a1);
         a1new.num = 2;
         sum = await frmdbEngineStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
@@ -107,6 +124,12 @@ describe('frmdb_engine_store', () => {
         await putAndForceUpdateView(a1, a1new, true);
         sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(sum).toEqual(7);
+        sum = await frmdbEngineStore.adHocFormulaQuery(b1, compiledFormula);
+        expect(sum).toEqual(7);
+
+        bTable = await frmdbEngineStore.adHocTableQuery(bEntity);
+        expect(bTable[0]).toEqual(jasmine.objectContaining({_id: 'B~~1', sum__: 7, bY: 'a1'}));
+        expect(bTable[1]).toEqual(jasmine.objectContaining({_id: 'B~~2', sum__: 5, bY: 'a2'}));
         
         done();
     });
