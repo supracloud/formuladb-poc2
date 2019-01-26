@@ -16,6 +16,7 @@ export interface KeyValueStoreI<VALUET> {
     set(key: string, val: VALUET): Promise<VALUET>;
     del(key: string): Promise<VALUET>;
     clearDB(): Promise<any>;
+    all(): Promise<VALUET[]>;
 }
 
 export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<OBJT> {
