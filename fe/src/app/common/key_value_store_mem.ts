@@ -66,6 +66,11 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
         this.db = {};
     }
 
+    all(): Promise<VALUET[]> {
+        return simulateIO(Object.values(this.db));
+    }
+
+
     public info(): Promise<string> {
         return simulateIO("in memory test KVS");
     }
@@ -116,7 +121,8 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
 
             for (let col of query.extraColsBeforeGroup) {
                 if (isExpressionColumn(col)) {
-                    filteredObj[col.alias] = evalExprES5(filteredObj, col.expr);
+                    let x = evalExprES5(filteredObj, col.expr);
+                    filteredObj[col.alias] = col.expr instanceof Array ? kvsKey2Str(x) : x;
                 }
             }
 

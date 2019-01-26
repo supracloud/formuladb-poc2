@@ -5,7 +5,7 @@
 
 import * as moment from 'moment';
 
-import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "./domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { ObjLock } from "./domain/transaction";
@@ -22,6 +22,7 @@ import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from '.
 import { DataObj } from './domain/metadata/data_obj';
 import { Entity } from '../app.state';
 import { $s2e } from './formula_compiler';
+import { Pn } from './domain/metadata/entity';
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -54,16 +55,39 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
 
-    public async adHocTableQuery(entity: Entity): Promise<any[]> {
-        throw new Error("Not implemented yet");
+    public async adHocTableQuery(entity: Entity): Promise<DataObj[]> {
+        //super-duper-extra-naive implementation
+        let ret: DataObj[] = [];
+        let allObjs = await this.dataDB.all();
+        let formulas: CompiledFormula[] = [];
+        for (let prop of Object.values(entity.props)) {
+            if (prop.propType_ === Pn.FORMULA) {
+                formulas.push(prop.compiledFormula_!);
+            }
+        }
+        for (let obj of allObjs) {
+            if (obj._id.indexOf(entity._id) === 0) {
+                let retObj = _.cloneDeep(obj);
+                for (let formula of formulas) {
+                    retObj[formula.targetPropertyName] = await this.adHocFormulaQuery(obj, formula);
+                }
+                ret.push(retObj);
+            }
+        }
+        return Promise.resolve(ret);
     }
     public async adHocFormulaQuery(observerObj: DataObj, compiledFormula: CompiledFormula): Promise<any> {
         let triggerValues: _.Dictionary<number | string> = {};
         let obsNew = _.cloneDeep(observerObj);
         for (let triggerOfFormula of compiledFormula.triggers || []) {
             let aggsTrg = triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs;
+            let startkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.startkeyExpr));
+            let endkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.endkeyExpr));
+            let op1 = aggsTrg.map.query.inclusive_start ? '<=' : '<';
+            let op2 = aggsTrg.map.query.inclusive_end ? '<=' : '<';
+        
             let triggerValue: any = await this.adHocQuery({
-                columns: [
+                extraColsBeforeGroup: [
                     {alias: 'KEY', expr: aggsTrg.map.keyExpr},
                     {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
                     'AGG',
@@ -71,25 +95,29 @@ export class FrmdbEngineStore extends FrmdbStore {
                 filters: [
                     $s2e('_id.indexOf("' + aggsTrg.map.entityName + '") == 0'),
                 ],
-                groupColumns: ['categ'],
+                groupColumns: ['KEY'],
                 groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
-                groupFilters: [ $s2e('categ == "C1"')],
+                groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
+                returnedColumns: ['AGG'],
                 sortColumns: [],
             });
-            triggerValues[aggsTrg.aggsViewName] = triggerValue;
+            triggerValues[aggsTrg.aggsViewName] = triggerValue[0]['AGG'];
         }
 
+        let ret;
         if (!compiledFormula.triggers) {
-            obsNew[compiledFormula.targetPropertyName] = evalExprES5(obsNew, compiledFormula.finalExpression);
+            ret = evalExprES5(obsNew, compiledFormula.finalExpression);
         } else if (compiledFormula.triggers.length === 1) {
-            obsNew[compiledFormula.targetPropertyName] = triggerValues[compiledFormula.triggers[0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName];
+            ret = triggerValues[compiledFormula.triggers[0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName];
         } else {
-            obsNew[compiledFormula.targetPropertyName] = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
+            ret = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
+        // obsNew[compiledFormula.targetPropertyName]
         console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
 
         //TODO: validations are important for Formula Preview, not necessarily for Reports
 
+        return ret;
     }
 
     public createMapReduceView(viewName: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
