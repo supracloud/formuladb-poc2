@@ -14,6 +14,7 @@ import { compileFormula, $s2e } from "../formula_compiler";
 import { evalExprES5 } from "../map_reduce_utils";
 import { toStringCompiledFormula } from "../test/test_utils";
 import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
+import { Entity, Pn } from "../domain/metadata/entity";
 
 
 describe('FrmdbEngineStore _textjoin', () => {
@@ -44,7 +45,7 @@ describe('FrmdbEngineStore _textjoin', () => {
     });
 
     const textjoin1 = 'TEXTJOIN(IF(A._id, FLOOR(x/4) == @[idx]),";;")';
-    it("B.list= " + textjoin1, async (done) => {
+    fit("B.list= " + textjoin1, async (done) => {
 
         let formula = textjoin1;
         compiledFormula = compileFormula('B', 'list', formula);
@@ -87,6 +88,17 @@ describe('FrmdbEngineStore _textjoin', () => {
         expect(txt).toEqual('A~~3;;A~~4;;A~~5');
         txt = await frmdbTStore.getAggValueForObserver(b3, compiledFormula.triggers![0]);
         expect(txt).toEqual('A~~1;;A~~2');
+
+        let bEntity: Entity = {
+            _id: 'B',
+            props: {
+                list: { name: 'list', propType_: Pn.FORMULA, formula: formula, compiledFormula_: compiledFormula}
+            }
+        };
+        let bTable = await frmdbTStore.adHocTableQuery(bEntity);
+        expect(bTable[0]).toEqual(jasmine.objectContaining({"_id":"B~~1","idx":0,"list":";;A~~1"}));
+        expect(bTable[1]).toEqual(jasmine.objectContaining({"_id":"B~~2","idx":1,"list":";;A~~3"}));
+        expect(bTable[2]).toEqual(jasmine.objectContaining({"_id":"B~~3","idx":0,"list":";;A~~1"}));
 
         let a2new = _.cloneDeep(a2);
         a2new.x = 4;
