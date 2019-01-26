@@ -79,7 +79,7 @@ describe('frmdb_engine_store', () => {
         }
     }
     
-    fit("Should allow to install formulas then query observers and aggregations", async (done) => {
+    it("Should allow to install formulas then query observers and aggregations", async (done) => {
         let formula = 'SUMIF(A.num, aY == @[bY])';
         compiledFormula = compileFormula('B', 'sum__', formula);
         await frmdbEngineStore.installFormula(compiledFormula);
@@ -113,8 +113,8 @@ describe('frmdb_engine_store', () => {
             }
         };
         let bTable = await frmdbEngineStore.adHocTableQuery(bEntity);
-        expect(bTable[0]).toEqual({_id: 'B~~1', sum__: 6, bY: 'a1'});
-        expect(bTable[1]).toEqual({_id: 'B~~2', sum__: 5, bY: 'a2'});
+        expect(bTable[0]).toEqual(jasmine.objectContaining({_id: 'B~~1', sum__: 6, bY: 'a1'}));
+        expect(bTable[1]).toEqual(jasmine.objectContaining({_id: 'B~~2', sum__: 5, bY: 'a2'}));
 
         let a1new = _.cloneDeep(a1);
         a1new.num = 2;
@@ -128,8 +128,8 @@ describe('frmdb_engine_store', () => {
         expect(sum).toEqual(7);
 
         bTable = await frmdbEngineStore.adHocTableQuery(bEntity);
-        expect(bTable[0]).toEqual({_id: 'B~~1', sum__: 7, bY: 'a1'});
-        expect(bTable[1]).toEqual({_id: 'B~~2', sum__: 5, bY: 'a2'});
+        expect(bTable[0]).toEqual(jasmine.objectContaining({_id: 'B~~1', sum__: 7, bY: 'a1'}));
+        expect(bTable[1]).toEqual(jasmine.objectContaining({_id: 'B~~2', sum__: 5, bY: 'a2'}));
         
         done();
     });
