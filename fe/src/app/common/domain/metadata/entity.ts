@@ -19,6 +19,7 @@ export interface Entity extends KeyValueObj {
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
     stateGraph?: EntityStateGraph;
+    isView?: boolean;
 
     // fromObjLiteral<T extends Pick<Entity, Exclude<keyof Entity, 'type_' | 'props' | 'fromObjLiteral'>> & {props: any}>(
     //     obj: T & {props: {readonly [x in keyof T['props']]: EntityProperty}}): Entity 
