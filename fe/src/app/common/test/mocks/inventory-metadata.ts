@@ -4,8 +4,6 @@
  */
 
 import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph } from '../../domain/metadata/entity';
-import { ExecutionPlan } from '../../domain/metadata/execution_plan';
-import { Sn } from '../../domain/metadata/stored_procedure';
 import { $s2e } from '../../formula_compiler';
 
 export const Inventory = {

@@ -1,4 +1,4 @@
-import { CompiledFormula, MapQuery } from "../domain/metadata/execution_plan";
+import { CompiledFormula, MapQuery } from "@storage/domain/metadata/execution_plan";
 import * as _ from "lodash";
 import { isExpression, Expression } from "jsep";
 

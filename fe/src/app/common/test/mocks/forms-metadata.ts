@@ -7,7 +7,7 @@ import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from 
 import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
 import { GEN__Client } from "./general-metadata";
 import { Sn } from '../../domain/metadata/stored_procedure';
-import { Fn } from '../../domain/metadata/functions';
+import { Fn } from "@storage/domain/metadata/functions";
 
 export const Forms = {
     _id: 'FRM',

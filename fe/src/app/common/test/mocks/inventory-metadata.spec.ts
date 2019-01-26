@@ -7,7 +7,7 @@ import * as _ from "lodash";
 import { FrmdbEngineStore } from "../../frmdb_engine_store";
 
 import { compileFormula } from "../../formula_compiler";
-import { evalExprES5 } from "../../map_reduce_utils";
+import { evalExprES5 } from "@storage/map_reduce_utils";
 import { INV__PRD__Location, INV__Receipt__Item, INV__Order__Item } from "./mock-metadata";
 import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "../../domain/event";

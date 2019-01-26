@@ -8,7 +8,6 @@
 
 import { MockMetadata, Forms__ServiceForm, ExampleApps } from "./mock-metadata";
 import { MockData } from "./mock-data";
-import { obj2MapES5 } from "../../ts-utils";
 
 
 // if you used the '@types/mocha' method to install mocha type definitions, uncomment the following line

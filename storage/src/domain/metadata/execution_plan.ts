@@ -25,7 +25,7 @@ import {
 import *  as jsep from 'jsep';
 import { PickOmit } from "../../ts-utils";
 import { ScalarFunctionsN } from "./functions";
-import { ReduceFun } from "./reduce_functions";
+import { ReduceFun } from "@storage/domain/metadata/reduce_functions";
 
 export type ScalarCallExpression = CallExpression;
 export function isScalarCallExpression(param: CallExpression): param is ScalarCallExpression {

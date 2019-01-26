@@ -10,34 +10,6 @@ import {
     Identifier, isIdentifier, ArrayExpression, isLogicalExpression, isBinaryExpression, Literal
 } from "jsep";
 
-import {
-    MapFunctionAndQuery, MapReduceTrigger,
-    isMapFunctionAndQuery, KeyExpression, CompiledFormula,
-    MapReduceKeysAndQueries, ExecPlanN, isMapReduceKeysAndQueries,
-    MapFunction, isMapFunction, ExecPlanBase, isCompiledScalar,
-    CompiledScalarN,
-    MapKeyN,
-    MapFunctionN,
-    MapFunctionAndQueryN,
-    MapReduceKeysAndQueriesN,
-    MapReduceKeysQueriesAndValueN,
-    MapReduceTriggerN,
-    CompiledFormulaN,
-    MapValue,
-    MapValueN,
-    isMapValue,
-    MapKey,
-    MapReduceKeysQueriesAndValue,
-    isMapKey,
-    includesMapKey,
-    includesMapReduceKeysAndQueries,
-    includesMapValue,
-    isMapReduceKeysQueriesAndValue,
-    ExecPlanCompiledExpression,
-    CompiledScalar,
-    MapKeyQuery,
-    includesMapFunctionAndQuery,
-} from "./execution_plan";
 
 
 function f2s(f: (...args) => any, ...args): string {

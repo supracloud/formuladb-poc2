@@ -3,12 +3,12 @@
  * License TBD
  */
 
-import { MapReduceTrigger } from "../domain/metadata/execution_plan";
+import { MapReduceTrigger } from "@storage/domain/metadata/execution_plan";
 import { KeyValueObj } from "@storage/domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { evalExprES5, compareKeys } from "../map_reduce_utils";
+import { compareKeys } from "@storage/map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";
-import { TextjoinReduceFunN } from "../domain/metadata/reduce_functions";
+import { TextjoinReduceFunN } from "@storage/domain/metadata/reduce_functions";
 
 function prepareReturnValue(ret: any[], delimiter: string): string {
     return ret.map(x => {

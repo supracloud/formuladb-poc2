@@ -10,7 +10,6 @@ import { MockData } from "./mocks/mock-data";
 
 import { Entity} from '../domain/metadata/entity';
 import { getDefaultTable } from "../domain/uimetadata/table";
-import { obj2MapES5 } from "../ts-utils";
 import { _throw } from "../throw";
 
 export function flow() {

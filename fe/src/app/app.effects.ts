@@ -27,7 +27,7 @@ import { BackendService, EnvType } from "./backend.service";
 import { TableFormBackendAction } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
-import { waitUntilNotNull } from './common/ts-utils';
+import { waitUntilNotNull } from '@storage/ts-utils';
 import { ExampleApps } from './common/test/mocks/mock-metadata';
 
 

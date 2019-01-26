@@ -4,7 +4,7 @@
  */
 
 import { KeyValueObj, isReservedPropName, RESERVED_PROP_NAMES } from '@storage/domain/key_value_obj';
-import { CompiledFormula } from "./execution_plan";
+import { CompiledFormula } from "@storage/domain/metadata/execution_plan";
 import * as _ from 'lodash';
 import { Expression } from 'jsep';
 
@@ -19,6 +19,7 @@ export interface Entity extends KeyValueObj {
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
     stateGraph?: EntityStateGraph;
+    isView?: boolean;
 
     // fromObjLiteral<T extends Pick<Entity, Exclude<keyof Entity, 'type_' | 'props' | 'fromObjLiteral'>> & {props: any}>(
     //     obj: T & {props: {readonly [x in keyof T['props']]: EntityProperty}}): Entity 

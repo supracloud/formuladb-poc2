@@ -31,7 +31,7 @@ import {
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
     CompiledScalar,
-} from "./domain/metadata/execution_plan";
+} from "@storage/domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
 import { Identifiers } from "@angular/compiler";
 import { logCompileFormula } from "./test/test_utils";

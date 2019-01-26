@@ -6,7 +6,7 @@
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from '../../domain/metadata/entity';
 import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
 import { GEN__Client } from "./general-metadata";
-import { Fn } from '../../domain/metadata/functions';
+import { Fn } from "@storage/domain/metadata/functions";
 
 export const Forms = {
     _id: 'Forms',

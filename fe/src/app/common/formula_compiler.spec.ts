@@ -17,10 +17,10 @@ import { CompiledFormula, MapReduceTrigger, ExecPlanN,
     MapReduceKeysQueriesAndValueN,
     MapReduceTriggerN,
     CompiledFormulaN,
-} from './domain/metadata/execution_plan';
-import { matchesTypeES5, evalExprES5, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from './map_reduce_utils';
-import { Fn } from './domain/metadata/functions';
-import { SumReduceFunN, CountReduceFunN } from './domain/metadata/reduce_functions';
+} from "@storage/domain/metadata/execution_plan";
+import { matchesTypeES5, evalExprES5, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from "@storage/map_reduce_utils";
+import { Fn } from "@storage/domain/metadata/functions";
+import { SumReduceFunN, CountReduceFunN } from "@storage/domain/metadata/reduce_functions";
 
 describe('FormulaCompiler', () => {
     let compiledExpr;

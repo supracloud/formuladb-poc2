@@ -4,7 +4,7 @@
  */
 
 import { KeyValueObj } from "@storage/domain/key_value_obj";
-import { parseDataObjIdES5 } from "../../map_reduce_utils";
+import { parseDataObjIdES5 } from "@storage/map_reduce_utils";
 export interface DataObj extends KeyValueObj {
     _id: string;
 }

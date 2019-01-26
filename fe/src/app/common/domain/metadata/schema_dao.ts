@@ -5,7 +5,7 @@
 
 import { Schema, Pn, Entity, EntityProperty, FormulaValidation, AutoCorrectionOnValidationFailed } from "./entity";
 import { parseDataObjId } from "./data_obj";
-import { CompiledFormula } from "./execution_plan";
+import { CompiledFormula } from "@storage/domain/metadata/execution_plan";
 import * as _ from "lodash";
 import { DAG } from "./dag";
 

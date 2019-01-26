@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Fn } from './functions';
+import { Fn } from "@storage/domain/metadata/functions";
 
 xdescribe('functions', () => {
   beforeEach(() => {

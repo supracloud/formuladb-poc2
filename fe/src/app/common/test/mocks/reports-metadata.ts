@@ -5,7 +5,7 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty } from '../../domain/metadata/entity';
 import { INV__PRD, INV__PRD__Location } from './inventory-metadata';
-import { Fn } from '../../domain/metadata/functions';
+import { Fn } from "@storage/domain/metadata/functions";
 
 
 export const Reports = {

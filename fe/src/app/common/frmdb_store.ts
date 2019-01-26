@@ -10,6 +10,7 @@ import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
 import { KeyObjStoreI } from "@storage/key_value_store_i";
 import { KeyValueError } from "@storage/domain/key_value_obj";
+import { AddHocQuery } from "@storage/domain/metadata/ad_hoc_query";
 
 export class FrmdbStore {
     constructor(protected transactionsDB: KeyObjStoreI<MwzEvents>, protected dataDB: KeyObjStoreI<DataObj | Schema | Form | Table>) { }
@@ -94,4 +95,9 @@ export class FrmdbStore {
     public delDataObj(id: string) {
         return this.dataDB.del(id);
     }
+
+    public adHocQuery(params: AddHocQuery): Promise<any[]> {
+        return this.dataDB.adHocQuery(params);
+    }
+
 }

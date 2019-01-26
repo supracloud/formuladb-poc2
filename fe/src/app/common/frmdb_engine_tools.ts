@@ -8,7 +8,7 @@ import { SchemaDAO } from "./domain/metadata/schema_dao";
 import { DataObj, parseDataObjId } from "./domain/metadata/data_obj";
 
 import * as _ from 'lodash';
-import { evalExprES5 } from "./map_reduce_utils";
+import { evalExprES5 } from "@storage/map_reduce_utils";
 
 
 export interface FailedValidation {

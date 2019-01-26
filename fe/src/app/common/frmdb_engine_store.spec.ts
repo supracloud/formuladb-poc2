@@ -6,11 +6,11 @@
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { Fn } from "./domain/metadata/functions";
-import { CompiledFormula } from "./domain/metadata/execution_plan";
+import { Fn } from "@storage/domain/metadata/functions";
+import { CompiledFormula } from "@storage/domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "./formula_compiler";
 import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
-import { SumReduceFunN } from "./domain/metadata/reduce_functions";
+import { SumReduceFunN } from "@storage/domain/metadata/reduce_functions";
 
 describe('frmdb_engine_store', () => {
     let frmdbEngineStore: FrmdbEngineStore;
@@ -95,6 +95,9 @@ describe('frmdb_engine_store', () => {
         expect(obss[1]).toEqual(b2);
 
         let sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
+        expect(sum).toEqual(6);
+
+        sum = await frmdbEngineStore.adHocFormulaQuery(b1, compiledFormula);
         expect(sum).toEqual(6);
 
         let a1new = _.cloneDeep(a1);

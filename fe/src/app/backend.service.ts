@@ -16,6 +16,7 @@ import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
+import { AddHocQuery } from '@storage/domain/metadata/ad_hoc_query';
 import { FrmdbStore } from './common/frmdb_store';
 import { loadData } from './common/test/load_test_data';
 import { FrmdbEngine } from './common/frmdb_engine';
@@ -23,7 +24,7 @@ import { FrmdbEngineStore } from './common/frmdb_engine_store';
 import { FrmdbEngineTools } from './common/frmdb_engine_tools';
 import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 import { MockMetadata, ExampleApps } from './common/test/mocks/mock-metadata';
-import { waitUntilNotNull } from './common/ts-utils';
+import { waitUntilNotNull } from '@storage/ts-utils';
 
 export enum EnvType {
     Test = "Test",
@@ -224,6 +225,11 @@ export class BackendService {
         };
         return this.frmdbStore.putEntity(newEntity);
     }
+
+
+    public adHocQuery(params: AddHocQuery): Promise<any[]> {
+        return this.frmdbStore.adHocQuery(params);
+    }    
     
     /**
      * Handle Http operation that failed.

@@ -12,8 +12,8 @@ import * as events from "./domain/event";
 import * as _ from 'lodash';
 import { isKeyValueError } from "@storage/domain/key_value_obj";
 import { generateUUID } from "./domain/uuid";
-import { CompiledFormula } from "./domain/metadata/execution_plan";
-import { evalExprES5 } from "./map_reduce_utils";
+import { CompiledFormula } from "@storage/domain/metadata/execution_plan";
+import { evalExprES5 } from "@storage/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 

@@ -5,6 +5,7 @@
 
 import { KeyValueError, KeyValueObj } from "./domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
+import { AddHocQuery } from "./domain/metadata/ad_hoc_query";
 
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
@@ -22,6 +23,8 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     put(obj: OBJT): Promise<OBJT>;
     putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
+    /** filtering and grouping by any key */
+    adHocQuery(params: AddHocQuery): Promise<any[]>;
 }
 
 export function kvsKey2Str(key: any): string {
