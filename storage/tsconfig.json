@@ -17,8 +17,9 @@
         ],
         "paths": {
             "*": [
-                "node_modules/*"
-            ]
+                "node_modules/*",
+            ],
+            "@kv_selector_base/*": ["./src/*"]
         },
         "lib": [
             "es2018",

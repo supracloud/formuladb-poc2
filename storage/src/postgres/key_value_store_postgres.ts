@@ -5,11 +5,14 @@
  * https://github.com/vitaly-t/pg-promise/wiki/Common-Mistakes
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI } from "../key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str } from "../key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "../domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
+import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "../domain/metadata/ad_hoc_query";
+import { evalExprES5 } from "../map_reduce_utils";
+import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "../domain/metadata/reduce_functions";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -152,6 +155,94 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
     public delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk delete
         return Promise.all(objs.map(o => this.del(o._id)));
+    }
+    private evaluateAggregation(value: any, reduceFun: ReduceFun, aggValue: any) {
+        switch (reduceFun.name) {
+            case SumReduceFunN:
+                return aggValue + value;
+            case CountReduceFunN:
+                return aggValue + 1;
+            case TextjoinReduceFunN:
+                return aggValue + reduceFun.delimiter + value;
+        }
+
+    }
+    public async adHocQuery(query: AddHocQuery): Promise<any[]> {
+        //First we filter the rows
+        let filteredObjs: any[] = [];
+        for (let obj of Object.values(this.db)) {
+            let filteredObj: any = _.cloneDeep(obj);
+            for (let col of query.extraColsBeforeGroup) {
+                if (isSubqueryColumn(col)) {
+                    let val = await this.adHocQuery(col.subquery);
+                    //TODO: check that the return of the subquery is a scalar value: string | number | boolean
+                    filteredObj[col.alias] = val[0][col.subquery.returnedColumns[0] + ''];
+                }
+            }
+
+            for (let col of query.extraColsBeforeGroup) {
+                if (isExpressionColumn(col)) {
+                    filteredObj[col.alias] = evalExprES5(filteredObj, col.expr);
+                }
+            }
+
+            let matchesFilter: boolean = true;
+            for (let filter of query.filters) {
+                if (!evalExprES5(filteredObj, filter)) {
+                    matchesFilter = false;
+                    break;
+                }
+            }
+            if (matchesFilter) filteredObjs.push(filteredObj);
+        }
+
+        if (query.groupColumns && query.groupColumns.length > 0) {
+            //Then we group them
+            let grouped: any = {};
+            for (let obj of filteredObjs) {
+                let groupKey: string[] = [];
+                let groupObj: any = {};
+                for (let group of query.groupColumns) {
+                    groupKey.push(obj[group]);
+                    groupObj[group] = obj[group];
+                }
+
+                let key = kvsKey2Str(groupKey);
+                if (grouped[key]) {
+                    groupObj = grouped[key];
+                } else {
+                    grouped[key] = groupObj;
+                }
+
+                for (let groupAgg of query.groupAggs) {
+                    groupObj[groupAgg.alias] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun,
+                        groupObj[groupAgg.alias] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
+                }
+            }
+
+            //Then we filter the groups
+            let groupedFiltered: any[] = [];
+            for (let obj of Object.values(grouped)) {
+
+                for (let col of query.returnedColumns) {
+                    if (isExpressionColumn(col)) {
+                        obj[col.alias] = evalExprES5(obj, col.expr);
+                    }
+                }
+
+                let matchesFilter: boolean = true;
+                for (let filter of query.groupFilters) {
+                    if (!evalExprES5(obj, filter)) {
+                        matchesFilter = false;
+                        break;
+                    }
+                }
+                if (matchesFilter) groupedFiltered.push(obj);
+            }
+
+            return simulateIO(groupedFiltered);
+        } else return simulateIO(filteredObjs);
+
     }
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {

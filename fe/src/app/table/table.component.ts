@@ -11,11 +11,11 @@ import { Store } from '@ngrx/store';
 
 import * as tableState from './table.state';
 import { GridOptions, GridApi, GridReadyEvent, RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent, RowClickedEvent, CellClickedEvent, CellFocusedEvent } from 'ag-grid';
-import { TableColumn } from '../common/domain/uimetadata/table';
+import { TableColumn } from '@storage/domain/uimetadata/table';
 import * as fromTable from './table.state';
 import * as _ from "lodash";
 import { TableHeaderComponent } from './table-header.component';
-import { Entity } from '../common/domain/metadata/entity';
+import { Entity } from "@storage/domain/metadata/entity";
 
 @Component({
     selector: 'mwz-table',

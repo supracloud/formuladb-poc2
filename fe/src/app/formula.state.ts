@@ -5,15 +5,15 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from './common/domain/metadata/data_obj';
-import { ChangeObj, applyChanges } from './common/domain/change_obj';
+import { DataObj } from '@storage/domain/metadata/data_obj';
+import { ChangeObj, applyChanges } from '@storage/domain/change_obj';
 
 
 export { DataObj };
 export { ChangeObj, applyChanges };
 
 import { Expression } from 'jsep';
-import { EntityProperty, Pn, Entity } from './common/domain/metadata/entity';
+import { EntityProperty, Pn, Entity } from "@storage/domain/metadata/entity";
 
 export interface FormulaState {
   selectedFormula: string | undefined;

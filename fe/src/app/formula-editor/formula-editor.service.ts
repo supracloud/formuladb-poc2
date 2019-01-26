@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
+import { EntityProperty, Pn } from "@storage/domain/metadata/entity";
 import * as appState from 'src/app/app.state';
 import { map } from 'rxjs/operators';
-import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from '../common/formula_tokenizer';
-import { FormulaTokenizerSchemaChecker } from '../common/formula_tokenizer_schema_checker';
+import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from '@storage/formula_tokenizer';
+import { FormulaTokenizerSchemaChecker } from '@storage/formula_tokenizer_schema_checker';
 import { BackendService } from '../backend.service';
 
 const STYLES = [

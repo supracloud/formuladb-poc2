@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import * as fromForm from '../form.state';
 
-import { NodeType, FormTabs } from "../../common/domain/uimetadata/form";
+import { NodeType, FormTabs } from "@storage/domain/uimetadata/form";
 @Component({
   selector: '[form_tabs]',
   host: { class: "col" },

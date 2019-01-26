@@ -7,7 +7,6 @@
 
 import { KeyObjStoreI, KeyValueStoreArrayKeys } from "./key_value_store_i";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
-import { query } from "@angular/core/src/render3/query";
 import { AddHocQuery } from './domain/metadata/ad_hoc_query';
 import { $s2e } from './formula_compiler';
 

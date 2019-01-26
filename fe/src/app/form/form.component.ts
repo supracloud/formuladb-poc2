@@ -13,9 +13,8 @@ import { Location } from '@angular/common';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 
-import { Entity, EntityProperty } from '../common/domain/metadata/entity';
-import { DataObj } from '../common/domain/metadata/data_obj';
-import { Form, NodeElement, NodeType, FormTab } from '../common/domain/uimetadata/form';
+import { DataObj } from '@storage/domain/metadata/data_obj';
+import { Form, NodeElement, NodeType, FormTab } from '@storage/domain/uimetadata/form';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, combineLatest } from 'rxjs';
 import { sampleTime, filter, debounceTime, tap } from 'rxjs/operators';

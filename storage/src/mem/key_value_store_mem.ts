@@ -8,7 +8,6 @@ import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "../domain/key_value_obj";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "../domain/metadata/reduce_functions";
 import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "../domain/metadata/ad_hoc_query";
-import { isExpression } from "jsep";
 import { evalExprES5 } from "../map_reduce_utils";
 
 function simulateIO<T>(x: T): Promise<T> {

@@ -7,11 +7,11 @@
         "strictNullChecks": true,
         "paths": {
             "@storage/*": ["../../storage/src/*"],
-	    "@kv_selector_base/*": ["./*"]
+	        "@kv_selector_base/*": ["./*"]
         }
     },
     "include": [
         "./**/*",
-        "../../fe/src/app/common/**/*"
+        "../../storage/src/**/*"
     ]
 }

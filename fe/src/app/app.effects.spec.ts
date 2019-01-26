@@ -13,7 +13,7 @@ import {
     RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
 } from '@ngrx/router-store';
 
-import { Entity } from "./common/domain/metadata/entity";
+import { Entity } from "@storage/domain/metadata/entity";
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';

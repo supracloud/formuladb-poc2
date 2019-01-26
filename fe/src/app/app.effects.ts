@@ -13,22 +13,22 @@ import {
 import { Router } from "@angular/router";
 
 import { KeyValueObj } from "@storage/domain/key_value_obj";
-import { DataObj } from "./common/domain/metadata/data_obj";
-import { Entity } from "./common/domain/metadata/entity";
-import { ChangeObj } from "./common/domain/change_obj";
-import * as events from "./common/domain/event";
+import { DataObj } from "@storage/domain/metadata/data_obj";
+import { Entity } from "@storage/domain/metadata/entity";
+import { ChangeObj } from "@storage/domain/change_obj";
+import * as events from "@storage/domain/event";
 
-import { Table, TableColumn, getDefaultTable } from "./common/domain/uimetadata/table";
-import { Form, NodeElement, NodeType, getDefaultForm } from "./common/domain/uimetadata/form";
+import { Table, TableColumn, getDefaultTable } from "@storage/domain/uimetadata/table";
+import { Form, NodeElement, NodeType, getDefaultForm } from "@storage/domain/uimetadata/form";
 
 import * as appState from './app.state';
-import { generateUUID } from "./common/domain/uuid";
+import { generateUUID } from "@storage/domain/uuid";
 import { BackendService, EnvType } from "./backend.service";
 import { TableFormBackendAction } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from '@storage/ts-utils';
-import { ExampleApps } from './common/test/mocks/mock-metadata';
+import { ExampleApps } from '@storage/test/mocks/mock-metadata';
 
 
 export type ActionsToBeSentToServer =

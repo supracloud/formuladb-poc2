@@ -10,8 +10,8 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-import { FrmdbEngine } from "../../../fe/src/app/common/frmdb_engine";
-import { FrmdbEngineStore } from "../../../fe/src/app/common/frmdb_engine_store";
+import { FrmdbEngine } from "@storage/frmdb_engine";
+import { FrmdbEngineStore } from "@storage/frmdb_engine_store";
 import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 

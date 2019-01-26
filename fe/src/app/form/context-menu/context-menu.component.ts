@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NodeElement, NodeType } from '../../common/domain/uimetadata/form';
+import { NodeElement, NodeType } from '@storage/domain/uimetadata/form';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';

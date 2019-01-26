@@ -6,11 +6,11 @@
 import { Component, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { Store } from '@ngrx/store';
-import { NodeElement, NodeType, TableNodeElement } from '../../common/domain/uimetadata/form';
+import { NodeElement, NodeType, TableNodeElement } from '@storage/domain/uimetadata/form';
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 import * as fromForm from '../form.state';
-import { Pn } from '../../common/domain/metadata/entity';
+import { Pn } from "@storage/domain/metadata/entity";
 @Component({
   selector: '[form_data_grid]',
   host: { class: 'col' },

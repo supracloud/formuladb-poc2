@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { BaseNodeComponent } from "../base_node";
 import * as fromForm from '../form.state';
-import { FormDatepicker } from 'src/app/common/domain/uimetadata/form';
+import { FormDatepicker } from '@storage/domain/uimetadata/form';
 
 @Component({
   selector: 'form-datepicker',

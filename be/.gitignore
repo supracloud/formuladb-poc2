@@ -1,4 +1,5 @@
 node_modules
+node
 dist
 pouch_db_*
 tmp.log
