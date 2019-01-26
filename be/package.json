@@ -11,7 +11,7 @@
     "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
     "start": "node dist/be/src/server.js",
     "compile": "tsc --inlineSourceMap -p src",
-    "compile:watch": "tsc --inlineSourceMap -p src -w 2>&1 | perl -pe 's!^../src/app/common!\\n./src/app/common!; s!^src/(?\\!app/common)!./be/src/!'",
+    "compile:watch": "tsc --inlineSourceMap -p src -w 2>&1 | perl -pe 's!^../src/app/common!\\n./fe/src/app/common!; s!^src/(?\\!app/common)!./be/src/!'",
     "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",

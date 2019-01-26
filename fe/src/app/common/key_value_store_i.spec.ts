@@ -5,10 +5,11 @@
 
  import * as _ from 'lodash';
 
-import { KeyObjStoreI, KeyValueStoreArrayKeys, AddHocQuery } from "./key_value_store_i";
+import { KeyObjStoreI, KeyValueStoreArrayKeys } from "./key_value_store_i";
 import { SumReduceFunN } from "./domain/metadata/reduce_functions";
 import { query } from "@angular/core/src/render3/query";
-declare var emit: any;
+import { AddHocQuery } from './domain/metadata/ad_hoc_query';
+import { $s2e } from './formula_compiler';
 
 export interface KeyValueStoreSpecObjType {
     _id: string;
@@ -53,38 +54,43 @@ export function keyValueStoreSpecs<KVSType extends KeyObjStoreI<KeyValueStoreSpe
             await kvs.put({_id: 'o4', categ: 'C2', subcateg: 'sc2', val: 4});
 
             let query1: AddHocQuery = {
-                filters: [{colName: 'val', op: '>', value: 0}],
+                extraColsBeforeGroup: [{alias: 'computedVal', expr: $s2e('100 + val') }],
+                filters: [$s2e('val > 0')],
                 groupColumns: ['categ'],
-                groupAggs: [{alias: 'sumVal', reduceFun: {name: SumReduceFunN}, colName: 'val'}],
-                groupFilters: [{colName: 'categ', op: '==', value: 'C1'}],
-                columns: ['categ', 'sumVal'],
+                groupAggs: [{alias: 'sumVal', reduceFun: {name: SumReduceFunN}, colName: 'computedVal'}],
+                groupFilters: [ $s2e('categ == "C1"') ],
+                returnedColumns: ['categ', 'sumVal', {alias: 'RET', expr: $s2e('10000 + sumVal')}],
                 sortColumns: [],
             };
             let objs = await kvs.adHocQuery(query1);
             expect(objs).toEqual([{
                 categ: 'C1',
-                sumVal: 3
+                sumVal: 203,
+                RET: 10203,
             }]);
 
             await kvs.put({_id: 'o5', categ: 'xx', subcateg: 'Hello', val: 120});
 
-            query1.columns.push({
+            query1.extraColsBeforeGroup.push({
                 alias: 'xx',
                 subquery: {
-                    filters: [{colName: 'categ', op: '==', value: "xx"}],
+                    extraColsBeforeGroup: [],
+                    filters: [$s2e('categ == "xx"')],
                     groupColumns: [],
                     groupAggs: [],
                     groupFilters: [],
-                    columns: ['subcateg'],
+                    returnedColumns: ['subcateg'],
                     sortColumns: [],
                 },
             });
             query1.groupColumns.push('xx');
+            query1.returnedColumns.push('xx');
 
             objs = await kvs.adHocQuery(query1);
             expect(objs).toEqual([{
                 categ: 'C1',
-                sumVal: 3,
+                sumVal: 203,
+                RET: 10203,
                 xx: 'Hello',
             }]);
 

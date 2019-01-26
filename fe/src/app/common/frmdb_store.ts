@@ -8,8 +8,9 @@ import { DataObj } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyObjStoreI, AddHocQuery } from "./key_value_store_i";
+import { KeyObjStoreI } from "./key_value_store_i";
 import { KeyValueError } from "./domain/key_value_obj";
+import { AddHocQuery } from "./domain/metadata/ad_hoc_query";
 
 export class FrmdbStore {
     constructor(protected transactionsDB: KeyObjStoreI<MwzEvents>, protected dataDB: KeyObjStoreI<DataObj | Schema | Form | Table>) { }

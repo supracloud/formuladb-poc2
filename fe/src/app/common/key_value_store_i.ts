@@ -6,15 +6,7 @@
 import { KeyValueError, KeyValueObj } from "./domain/key_value_obj";
 import * as Collate from 'pouchdb-collate';
 import { ReduceFun } from "./domain/metadata/reduce_functions";
-
-export interface AddHocQuery {
-    columns: (string | {alias: string, subquery: AddHocQuery})[];
-    filters: {colName: string, op: string, value: string | number | boolean}[];
-    groupColumns: string[],
-    groupAggs: {alias: string, reduceFun: ReduceFun, colName: string}[],
-    groupFilters: {colName: string, op: string, value: string | number | boolean}[];
-    sortColumns: string[],
-}
+import { AddHocQuery } from "./domain/metadata/ad_hoc_query";
 
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;

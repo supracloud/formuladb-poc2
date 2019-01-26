@@ -3,11 +3,14 @@
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, AddHocQuery, kvsKey2Str } from "./key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str } from "./key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "./domain/key_value_obj";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "./domain/metadata/reduce_functions";
 import { filter } from "rxjs/operators";
+import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "./domain/metadata/ad_hoc_query";
+import { isExpression } from "jsep";
+import { evalExprES5 } from "./map_reduce_utils";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -86,25 +89,6 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
         return simulateIO(objs);
     }
 
-    private evaluateFilter(left: any, op: string, right: any): boolean {
-        switch (op) {
-            case '<':
-                return left < right;
-            case '<=':
-                return left <= right;
-            case '>':
-                return left > right;
-            case '>=':
-                return left >= right;
-            case '==':
-                return left === right;
-            case '~':
-                return ('' + left).match('' + right) != null;
-            default:
-                throw new Error("Unknown filter operator " + op);
-        }
-    }
-
     private evaluateAggregation(value: any, reduceFun: ReduceFun, aggValue: any) {
         switch (reduceFun.name) {
             case SumReduceFunN:
@@ -121,23 +105,29 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
         //First we filter the rows
         let filteredObjs: any[] = [];
         for (let obj of Object.values(this.db)) {
-            let filteredObj: any = {};
-            for (let col of query.columns) {
-                if (typeof col !== 'string') {
+            let filteredObj: any = _.cloneDeep(obj);
+            for (let col of query.extraColsBeforeGroup) {
+                if (isSubqueryColumn(col)) {
                     let val = await this.adHocQuery(col.subquery);
                     //TODO: check that the return of the subquery is a scalar value: string | number | boolean
-                    filteredObj[col.alias] = val[0][col.subquery.columns[0] + ''];
+                    filteredObj[col.alias] = val[0][col.subquery.returnedColumns[0] + ''];
+                }
+            }
+
+            for (let col of query.extraColsBeforeGroup) {
+                if (isExpressionColumn(col)) {
+                    filteredObj[col.alias] = evalExprES5(filteredObj, col.expr);
                 }
             }
 
             let matchesFilter: boolean = true;
             for (let filter of query.filters) {
-                if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
+                if (!evalExprES5(filteredObj, filter)) {
                     matchesFilter = false;
                     break;
                 }
             }
-            if (matchesFilter) filteredObjs.push(Object.assign(filteredObj, obj));
+            if (matchesFilter) filteredObjs.push(filteredObj);
         }
 
         if (query.groupColumns && query.groupColumns.length > 0) {
@@ -167,15 +157,23 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
             //Then we filter the groups
             let groupedFiltered: any[] = [];
             for (let obj of Object.values(grouped)) {
+
+                for (let col of query.returnedColumns) {
+                    if (isExpressionColumn(col)) {
+                        obj[col.alias] = evalExprES5(obj, col.expr);
+                    }
+                }
+
                 let matchesFilter: boolean = true;
                 for (let filter of query.groupFilters) {
-                    if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
+                    if (!evalExprES5(obj, filter)) {
                         matchesFilter = false;
                         break;
                     }
                 }
                 if (matchesFilter) groupedFiltered.push(obj);
             }
+
             return simulateIO(groupedFiltered);
         } else return simulateIO(filteredObjs);
 

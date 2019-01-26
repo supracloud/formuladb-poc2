@@ -99,6 +99,9 @@ describe('frmdb_engine_store', () => {
         let sum = await frmdbEngineStore.getAggValueForObserver(b1, compiledFormula.triggers![0]);
         expect(sum).toEqual(6);
 
+        sum = await frmdbEngineStore.adHocFormulaQuery(b1, compiledFormula);
+        expect(sum).toEqual(6);
+
         let a1new = _.cloneDeep(a1);
         a1new.num = 2;
         sum = await frmdbEngineStore.preComputeAggForObserverAndObservable(b1, a1, a1new, compiledFormula.triggers![0]);
