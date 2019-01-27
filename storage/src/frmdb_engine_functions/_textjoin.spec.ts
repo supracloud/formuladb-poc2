@@ -6,7 +6,6 @@
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 
-<<<<<<< HEAD:fe/src/app/common/frmdb_engine_functions/_textjoin.spec.ts
 import { ServerEventModifiedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
@@ -15,11 +14,6 @@ import { evalExprES5 } from "../map_reduce_utils";
 import { toStringCompiledFormula } from "../test/test_utils";
 import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
 import { Entity, Pn } from "../domain/metadata/entity";
-=======
-import { CompiledFormula } from "../domain/metadata/execution_plan";
-import { compileFormula, $s2e } from '../formula_compiler';
-import KeyValueStoreFactory from '../key_value_store_impl_selector';
->>>>>>> 90-add-postgres-kv-store:storage/src/frmdb_engine_functions/_textjoin.spec.ts
 
 
 describe('FrmdbEngineStore _textjoin', () => {
