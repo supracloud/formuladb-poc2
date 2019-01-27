@@ -1,10 +1,10 @@
 import { createInterface } from 'readline';
 import { createReadStream } from 'fs';
 
-import { KeyValueStoreFactoryMem } from "../../fe/src/app/common/key_value_store_mem";
-import { $s2e } from '../../fe/src/app/common/formula_compiler';
-import { evalExprES5 } from '../../fe/src/app/common/map_reduce_utils';
-import { filter } from 'lodash-es';
+import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
+import { $s2e } from '@storage/formula_compiler';
+import { evalExprES5 } from '@storage/map_reduce_utils';
+
 
 interface Prlp {
     _id: string;
@@ -28,7 +28,7 @@ interface Prlp {
 };
 
 let kvsFactory = new KeyValueStoreFactoryMem();
-let kvs = kvsFactory.createKeyObjS<Prlp>();
+let kvs = kvsFactory.createKeyObjS<Prlp>('test');
 
 var lineReader = createInterface({
     input: createReadStream('../ep-data/product_list_products.json')

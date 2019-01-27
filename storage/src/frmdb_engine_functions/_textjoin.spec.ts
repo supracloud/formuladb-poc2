@@ -10,10 +10,8 @@ import { ServerEventModifiedFormDataN } from "../domain/event";
 import { Fn } from "../domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
 import { compileFormula, $s2e } from "../formula_compiler";
-import { evalExprES5 } from "../map_reduce_utils";
-import { toStringCompiledFormula } from "../test/test_utils";
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from "../key_value_store_mem";
 import { Entity, Pn } from "../domain/metadata/entity";
+import KeyValueStoreFactory from "@kv_selector_base/key_value_store_impl_selector";
 
 
 describe('FrmdbEngineStore _textjoin', () => {
