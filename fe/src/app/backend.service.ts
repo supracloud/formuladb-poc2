@@ -226,11 +226,6 @@ export class BackendService {
         };
         return this.frmdbStore.putEntity(newEntity);
     }
-
-
-    public adHocQuery(params: AddHocQuery): Promise<any[]> {
-        return this.frmdbStore.adHocQuery(params);
-    }    
     
     /**
      * Handle Http operation that failed.

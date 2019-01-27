@@ -24,8 +24,6 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     put(obj: OBJT): Promise<OBJT>;
     putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
-    /** filtering and grouping by any key */
-    adHocQuery(params: AddHocQuery): Promise<any[]>;
 }
 
 export function kvsKey2Str(key: any): string {

@@ -8,9 +8,12 @@ import { DataObj } from "./domain/metadata/data_obj";
 import { Form } from "./domain/uimetadata/form";
 import { Table } from "./domain/uimetadata/table";
 import { MwzEvents } from "./domain/event";
-import { KeyObjStoreI } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str } from "./key_value_store_i";
 import { KeyValueError } from "./domain/key_value_obj";
-import { AddHocQuery } from "./domain/metadata/ad_hoc_query";
+import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "./domain/metadata/ad_hoc_query";
+import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "./domain/metadata/reduce_functions";
+import { evalExprES5 } from "./map_reduce_utils";
+import * as _ from "lodash";
 
 export class FrmdbStore {
     constructor(protected transactionsDB: KeyObjStoreI<MwzEvents>, protected dataDB: KeyObjStoreI<DataObj | Schema | Form | Table>) { }
@@ -96,8 +99,95 @@ export class FrmdbStore {
         return this.dataDB.del(id);
     }
 
-    public adHocQuery(params: AddHocQuery): Promise<any[]> {
-        return this.dataDB.adHocQuery(params);
-    }
 
+    private evaluateAggregation(value: any, reduceFun: ReduceFun, aggValue: any) {
+        switch (reduceFun.name) {
+            case SumReduceFunN:
+                return aggValue + value;
+            case CountReduceFunN:
+                return aggValue + 1;
+            case TextjoinReduceFunN:
+                return aggValue + reduceFun.delimiter + value;
+        }
+
+    }
+        
+    public async adHocQuery(query: AddHocQuery): Promise<any[]> {
+        //First we filter the rows
+        let filteredObjs: any[] = [];
+        let all = await this.dataDB.all();
+        for (let obj of all) {
+            let filteredObj: any = _.cloneDeep(obj);
+            for (let col of query.extraColsBeforeGroup) {
+                if (isSubqueryColumn(col)) {
+                    let val = await this.adHocQuery(col.subquery);
+                    //TODO: check that the return of the subquery is a scalar value: string | number | boolean
+                    filteredObj[col.alias] = val[0][col.subquery.returnedColumns[0] + ''];
+                }
+            }
+
+            for (let col of query.extraColsBeforeGroup) {
+                if (isExpressionColumn(col)) {
+                    let x = evalExprES5(filteredObj, col.expr);
+                    filteredObj[col.alias] = col.expr instanceof Array ? kvsKey2Str(x) : x;
+                }
+            }
+
+            let matchesFilter: boolean = true;
+            for (let filter of query.filters) {
+                if (!evalExprES5(filteredObj, filter)) {
+                    matchesFilter = false;
+                    break;
+                }
+            }
+            if (matchesFilter) filteredObjs.push(filteredObj);
+        }
+
+        if (query.groupColumns && query.groupColumns.length > 0) {
+            //Then we group them
+            let grouped: any = {};
+            for (let obj of filteredObjs) {
+                let groupKey: string[] = [];
+                let groupObj: any = {};
+                for (let group of query.groupColumns) {
+                    groupKey.push(obj[group]);
+                    groupObj[group] = obj[group];
+                }
+
+                let key = kvsKey2Str(groupKey);
+                if (grouped[key]) {
+                    groupObj = grouped[key];
+                } else {
+                    grouped[key] = groupObj;
+                }
+
+                for (let groupAgg of query.groupAggs) {
+                    groupObj[groupAgg.alias] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun,
+                        groupObj[groupAgg.alias] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
+                }
+            }
+
+            //Then we filter the groups
+            let groupedFiltered: any[] = [];
+            for (let obj of Object.values(grouped)) {
+
+                for (let col of query.returnedColumns) {
+                    if (isExpressionColumn(col)) {
+                        obj[col.alias] = evalExprES5(obj, col.expr);
+                    }
+                }
+
+                let matchesFilter: boolean = true;
+                for (let filter of query.groupFilters) {
+                    if (!evalExprES5(obj, filter)) {
+                        matchesFilter = false;
+                        break;
+                    }
+                }
+                if (matchesFilter) groupedFiltered.push(obj);
+            }
+
+            return Promise.resolve(groupedFiltered);
+        } else return Promise.resolve(filteredObjs);
+    }
 }
