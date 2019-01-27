@@ -38,6 +38,8 @@ import { FormStateComponent } from '../form/form-state/form-state.component';
 import { FormChartComponent } from '../form/form-chart/form-chart.component';
 import { FrmdbOnfocusDirective } from '../form/frmdb-onfocus.directive';
 import { TableService } from '../table/table.service';
+import { FormItemEditorComponent } from '../form/form-item-editor/form-item-editor.component';
+import { FormInputEditorComponent } from '../form/form-item-editor/form-input-editor/form-input-editor.component';
 
 @NgModule({
   imports: [
@@ -72,6 +74,8 @@ import { TableService } from '../table/table.service';
     FormVerticalLayoutComponent,
     ContextMenuComponent,
     FrmdbOnfocusDirective,
+    FormItemEditorComponent,
+    FormInputEditorComponent
   ],
   providers: [
     FormEditingService,

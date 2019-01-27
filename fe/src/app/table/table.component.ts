@@ -38,8 +38,27 @@ export class TableComponent implements OnInit, OnDestroy {
             { statusPanel: 'agFilteredRowCountComponent' },
             { statusPanel: 'agSelectedRowCountComponent' },
             { statusPanel: 'agAggregationComponent' }
-        ]
+        ],
     };
+    autoGroupColumnDef = { width: 150 };
+
+    sideBar = {
+        toolPanels: [
+            {
+                id: 'columns',
+                labelDefault: 'Columns',
+                labelKey: 'columns',
+                iconKey: 'columns',
+                toolPanel: 'agColumnsToolPanel',
+                // toolPanelParams: {
+                //     suppressPivots: true,
+                //     suppressPivotMode: true
+                // }
+            }
+        ],
+        defaultToolPanel: 'columns'
+    };
+
 
     private table$: Observable<tableState.Table>;
     private currentEntity: Entity | undefined;
@@ -205,5 +224,9 @@ export class TableComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
         }
         this.sort = this.gridApi.getSortModel();
+    }
+
+    excel() {
+        this.gridApi.exportDataAsExcel();
     }
 }

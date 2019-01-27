@@ -1,0 +1,22 @@
+<div class="overlay" *ngIf="!closed" (click)="close()">
+  <div class="popup" (click)="ignoreClick($event)">
+    <header>
+      Editing form item: {{item.nodeType}}
+    </header>
+    <div class="popup-content">
+      <section>
+        <label>Type</label>
+        <select [(ngModel)]="type">
+          <option *ngFor="let t of types" [value]=t>{{t}}</option>
+        </select>
+      </section>
+      <ng-container [ngSwitch]="type">
+        <frmdb-form-input-editor *ngSwitchCase="'form_input'" [item]="item" [properties]="properties" ></frmdb-form-input-editor>
+      </ng-container>
+    </div>
+    <footer>
+      <button (click)="onSave()">Save</button>
+      <button (click)="close()">Cancel</button>
+    </footer>
+  </div>
+</div>
