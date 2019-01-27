@@ -13,17 +13,23 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "acorn": "^6.0.5",
     "cluster-key-slot": "^1.0.12",
     "dotenv": "^6.2.0",
+    "expression-eval": "git+https://github.com/acristu/expression-eval.git",
+    "fuse.js": "^3.3.0",
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.11",
     "module-alias": "^2.1.0",
     "pg": "^7.8.0",
-    "pg-promise": "^8.5.5"
+    "pg-promise": "^8.5.5",
+    "short-uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@types/acorn": "^4.0.4",
     "@types/dotenv": "^6.1.0",
     "@types/jasmine": "^3.3.7",
+    "@types/lodash": "^4.14.120",
     "@types/node": "^10.12.18",
     "@types/pg": "^7.4.11",
     "fs-extra": "^7.0.1",
