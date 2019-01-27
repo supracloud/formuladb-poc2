@@ -41,16 +41,16 @@
     "expression-eval": "^1.2.3",
     "fuse.js": "^3.3.0",
     "jquery": "^3.3.1",
-    "popper.js": "^1.14.3",
-    "rxjs": "~6.2.0",
-    "short-uuid": "^3.0.0",
-    "tern": "^0.22.3",
-    "zone.js": "~0.8.26",
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.5",
     "moment": "^2.22.2",
     "pg": "^7.8.0",
-    "pouchdb-collate": "^7.0.0"
+    "popper.js": "^1.14.3",
+    "pouchdb-collate": "^7.0.0",
+    "rxjs": "~6.2.0",
+    "short-uuid": "^3.0.0",
+    "tern": "^0.22.3",
+    "zone.js": "~0.8.26"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.0",

@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from "../base_node";
 
 import * as fromForm from '../form.state';
-import { FormTimepicker } from 'src/app/common/domain/uimetadata/form';
+import { FormTimepicker } from '@storage/domain/uimetadata/form';
 
 @Component({
   selector: 'form-timepicker',

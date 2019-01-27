@@ -13,7 +13,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
 
 import * as fromForm from '../form.state';
-import { FormAutocomplete } from 'src/app/common/domain/uimetadata/form';
+import { FormAutocomplete } from '@storage/domain/uimetadata/form';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
 import { switchMap, map, filter } from 'rxjs/operators';

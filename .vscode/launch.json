@@ -58,7 +58,24 @@
             "sourceMaps": true,
             "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
         },
-
+        {
+            "name": "Storage specs Jasmine",
+            "type": "node",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect"
+            ],
+            "env": {
+                "DEBUG": "pouchdb:*"
+            },
+            "protocol": "inspector",
+            "request": "launch",
+            "cwd": "${workspaceRoot}/storage",
+            "program": "${workspaceRoot}/storage/src/test/jasmine.ts",
+            "sourceMaps": true,
+            "outFiles": ["${workspaceRoot}/storage/dist/**/*.js"]
+        },
         {
             "name": "ng serve 4300 master",
             "type": "chrome",
@@ -71,6 +88,6 @@
                 "webpack:/*": "*",
                 "webpack:/./~/*": "${webRoot}/node_modules/*"
             }
-        },        
+        }
     ]
 }

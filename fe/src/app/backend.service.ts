@@ -7,24 +7,24 @@ import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { KeyValueObj } from "./common/domain/key_value_obj";
-import { DataObj, parseDataObjId } from "./common/domain/metadata/data_obj";
-import { Entity, Pn } from "./common/domain/metadata/entity";
-import { MwzEvents, MwzEvent } from "./common/domain/event";
-import { Table, addIdsToTable } from "./common/domain/uimetadata/table";
-import { Form, NodeElement, addIdsToForm } from "./common/domain/uimetadata/form";
+import { KeyValueObj } from "@storage/domain/key_value_obj";
+import { DataObj, parseDataObjId } from "@storage/domain/metadata/data_obj";
+import { Entity, Pn } from "@storage/domain/metadata/entity";
+import { MwzEvents, MwzEvent } from "@storage/domain/event";
+import { Table, addIdsToTable } from "@storage/domain/uimetadata/table";
+import { Form, NodeElement, addIdsToForm } from "@storage/domain/uimetadata/form";
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { KeyObjStoreI, AddHocQuery } from './common/key_value_store_i';
-import { FrmdbStore } from './common/frmdb_store';
-import { loadData } from './common/test/load_test_data';
-import { FrmdbEngine } from './common/frmdb_engine';
-import { FrmdbEngineStore } from './common/frmdb_engine_store';
-import { FrmdbEngineTools } from './common/frmdb_engine_tools';
-import { KeyValueStoreMem, KeyValueStoreFactoryMem } from './common/key_value_store_mem';
-import { MockMetadata, ExampleApps } from './common/test/mocks/mock-metadata';
-import { waitUntilNotNull } from './common/ts-utils';
+import { AddHocQuery } from '@storage/domain/metadata/ad_hoc_query';
+import { FrmdbStore } from '@storage/frmdb_store';
+import { loadData } from '@storage/test/load_test_data';
+import { FrmdbEngine } from '@storage/frmdb_engine';
+import { FrmdbEngineStore } from '@storage/frmdb_engine_store';
+import { FrmdbEngineTools } from '@storage/frmdb_engine_tools';
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
+import { MockMetadata, ExampleApps } from '@storage/test/mocks/mock-metadata';
+import { waitUntilNotNull } from '@storage/ts-utils';
 
 export enum EnvType {
     Test = "Test",
@@ -64,7 +64,7 @@ export class BackendService {
                     //TODO: cleanup
                 }
                 let mockMetadata = new MockMetadata(app);
-                this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
+                this.testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
                 this.frmdbStore = this.testFrmdbEngine.frmdbEngineStore;
                 await this.testFrmdbEngine.init(true);
                 await loadData(this.testFrmdbEngine, mockMetadata);

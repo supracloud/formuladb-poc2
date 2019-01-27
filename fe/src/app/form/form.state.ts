@@ -5,10 +5,10 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from '../common/domain/metadata/data_obj';
-import { Form, NodeElement, isNodeElementWithChildren, NodeType } from '../common/domain/uimetadata/form';
-import { ChangeObj, applyChanges } from '../common/domain/change_obj';
-import * as events from '../common/domain/event';
+import { DataObj } from '@storage/domain/metadata/data_obj';
+import { Form, NodeElement, isNodeElementWithChildren, NodeType } from '@storage/domain/uimetadata/form';
+import { ChangeObj, applyChanges } from '@storage/domain/change_obj';
+import * as events from '@storage/domain/event';
 
 export { DataObj };
 export { Form };

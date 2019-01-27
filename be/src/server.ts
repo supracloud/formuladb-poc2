@@ -4,6 +4,7 @@
  */
 
 require('source-map-support').install();
+require('module-alias/register')
 
 import { Container } from "typedi";
 import "reflect-metadata";
@@ -11,14 +12,14 @@ import * as http from "http";
 import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
-import { loadData } from "../../fe/src/app/common/test/load_test_data";
-import { MockMetadata, ExampleApps } from "../../fe/src/app/common/test/mocks/mock-metadata";
-import { FrmdbEngine } from "../../fe/src/app/common/frmdb_engine";
-import { FrmdbEngineStore } from "../../fe/src/app/common/frmdb_engine_store";
-import { KeyValueStoreFactoryMem } from "../../fe/src/app/common/key_value_store_mem";
+import { loadData } from "@storage/test/load_test_data";
+import { MockMetadata, ExampleApps } from "@storage/test/mocks/mock-metadata";
+import { FrmdbEngine } from "@storage/frmdb_engine";
+import { FrmdbEngineStore } from "@storage/frmdb_engine_store";
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 let mockMetadata = new MockMetadata(ExampleApps.inventory);
-let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), mockMetadata.schema);
+let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(() => this.testFrmdbEngine.init(true))

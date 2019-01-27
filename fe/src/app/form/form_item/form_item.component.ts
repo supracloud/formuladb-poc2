@@ -7,7 +7,7 @@ import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from '../../common/domain/uimetadata/form';
+import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from '@storage/domain/uimetadata/form';
 import * as fromForm from '../form.state';
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 

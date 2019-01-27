@@ -2,13 +2,12 @@ import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular
 
 
 import { Observable, Subscription } from 'rxjs';
-import { EntityProperty, Pn } from 'src/app/common/domain/metadata/entity';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
-import { TokenType, Token, Suggestion } from 'src/app/common/formula_tokenizer';
+import { TokenType, Token, Suggestion } from '@storage/formula_tokenizer';
 
 @Component({
   selector: 'frmdb-formula-code-editor',

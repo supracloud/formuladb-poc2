@@ -10,9 +10,9 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 
-import { FrmdbEngine } from "../../../fe/src/app/common/frmdb_engine";
-import { FrmdbEngineStore } from "../../../fe/src/app/common/frmdb_engine_store";
-import { KeyValueStoreFactoryMem } from "../../../fe/src/app/common/key_value_store_mem";
+import { FrmdbEngine } from "@storage/frmdb_engine";
+import { FrmdbEngineStore } from "@storage/frmdb_engine_store";
+import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
 
 
 export default function (db) {
@@ -29,7 +29,7 @@ export default function (db) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    var frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(new KeyValueStoreFactoryMem()), {_id: 'FRMDB_SCHEMA', entities: {}});
+    var frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), {_id: 'FRMDB_SCHEMA', entities: {}});
 
     app.get('/', function (req, res) {
         res.json({ message: 'test' });

@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import * as fromForm from './form.state';
 
-import { NodeElement, NodeType } from "../common/domain/uimetadata/form";
+import { NodeElement, NodeType } from "@storage/domain/uimetadata/form";
 
 export class BaseNodeComponent {
 

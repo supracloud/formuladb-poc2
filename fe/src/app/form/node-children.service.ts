@@ -6,7 +6,7 @@
 import { Injectable, ViewContainerRef, ComponentFactoryResolver, Type } from '@angular/core';
 import { FormControl, FormGroup, ControlValueAccessor } from '@angular/forms';
 
-import { Form, NodeElement, NodeType, isNodeElementWithChildren, getChildPath } from "../common/domain/uimetadata/form";
+import { Form, NodeElement, NodeType, isNodeElementWithChildren, getChildPath } from "@storage/domain/uimetadata/form";
 import { BaseNodeComponent } from "./base_node";
 
 import * as _ from 'lodash';

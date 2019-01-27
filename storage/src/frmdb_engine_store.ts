@@ -1,0 +1,241 @@
+/**
+ * © 2017 S.C. CRYSTALKEY S.R.L.
+ * License TBD
+ */
+
+import * as moment from 'moment';
+
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str } from "./key_value_store_i";
+import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "./domain/metadata/execution_plan";
+import { evalExprES5 } from "./map_reduce_utils";
+import { FrmdbStore } from './frmdb_store';
+import { _sum_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_sum';
+import { _count_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_count';
+import { _textjoin_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_textjoin';
+import { _throw, _throwEx } from './throw';
+import * as _ from 'lodash';
+import { TransactionManager } from './transaction_manager';
+import { Expression } from 'jsep';
+import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
+import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "./domain/metadata/reduce_functions";
+import { DataObj } from './domain/metadata/data_obj';
+import { Entity } from './domain/metadata/entity';
+import { $s2e } from './formula_compiler';
+import { Pn } from './domain/metadata/entity';
+
+function ll(eventId: string, retryNb: number | string): string {
+    return new Date().toISOString() + "|" + eventId + "|" + retryNb;
+}
+
+export class RetryableError {
+    constructor(public message: string) { }
+}
+
+
+
+export class FrmdbEngineStore extends FrmdbStore {
+
+    protected transactionManager: TransactionManager;
+    protected mapReduceViews: Map<string, MapReduceView> = new Map();
+
+    constructor(private kvsFactory: KeyValueStoreFactoryI) {
+        super(kvsFactory.createKeyObjS("transactions"), kvsFactory.createKeyObjS("data"));
+        this.transactionManager = new TransactionManager(kvsFactory);
+    }
+
+    public async installFormula(formula: CompiledFormula): Promise<any> {
+        for (let trigger of (formula.triggers || [])) {
+            let obs = trigger.mapObserversImpactedByOneObservable.obsViewName,
+                aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
+            await this.createMapReduceView(obs, trigger.mapObserversImpactedByOneObservable, true);
+            await this.createMapReduceView(aggs, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
+                false,
+                trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+        }
+    }
+
+    public async adHocTableQuery(entity: Entity): Promise<DataObj[]> {
+        //super-duper-extra-naive implementation
+        let ret: DataObj[] = [];
+        let allObjs = await this.dataDB.all();
+        let formulas: CompiledFormula[] = [];
+        for (let prop of Object.values(entity.props)) {
+            if (prop.propType_ === Pn.FORMULA) {
+                formulas.push(prop.compiledFormula_!);
+            }
+        }
+        for (let obj of allObjs) {
+            if (obj._id.indexOf(entity._id) === 0) {
+                let retObj = _.cloneDeep(obj);
+                for (let formula of formulas) {
+                    retObj[formula.targetPropertyName] = await this.adHocFormulaQuery(obj, formula);
+                }
+                ret.push(retObj);
+            }
+        }
+        return Promise.resolve(ret);
+    }
+    public async adHocFormulaQuery(observerObj: DataObj, compiledFormula: CompiledFormula): Promise<any> {
+        let triggerValues: _.Dictionary<number | string> = {};
+        let obsNew = _.cloneDeep(observerObj);
+        for (let triggerOfFormula of compiledFormula.triggers || []) {
+            let aggsTrg = triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs;
+            let startkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.startkeyExpr));
+            let endkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.endkeyExpr));
+            let op1 = aggsTrg.map.query.inclusive_start ? '<=' : '<';
+            let op2 = aggsTrg.map.query.inclusive_end ? '<=' : '<';
+        
+            let triggerValue: any = await this.adHocQuery({
+                extraColsBeforeGroup: [
+                    {alias: 'KEY', expr: aggsTrg.map.keyExpr},
+                    {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
+                    'AGG',
+                ],
+                filters: [
+                    $s2e('_id.indexOf("' + aggsTrg.map.entityName + '") == 0'),
+                ],
+                groupColumns: ['KEY'],
+                groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
+                groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
+                returnedColumns: ['AGG'],
+                sortColumns: [],
+            });
+            triggerValues[aggsTrg.aggsViewName] = triggerValue[0]['AGG'];
+        }
+
+        let ret;
+        if (!compiledFormula.triggers) {
+            ret = evalExprES5(obsNew, compiledFormula.finalExpression);
+        } else if (compiledFormula.triggers.length === 1) {
+            ret = triggerValues[compiledFormula.triggers[0].mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName];
+        } else {
+            ret = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
+        }
+        // obsNew[compiledFormula.targetPropertyName]
+        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
+
+        //TODO: validations are important for Formula Preview, not necessarily for Reports
+
+        return ret;
+    }
+
+    public createMapReduceView(viewName: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
+        if (map.existingIndex != null) return Promise.resolve("existing index");
+
+        this.mapReduceViews.set(viewName, new MapReduceView(
+            this.kvsFactory,
+            viewName,
+            map,
+            use$ROW$,
+            reduceFun,
+        ));
+    }
+
+    private view(viewName: string, opts: any): MapReduceView {
+        let mrView = this.mapReduceViews.get(viewName);
+        if (!mrView) throw new Error("mapQuery called on non-existent view " + viewName + "; with opts " + JSON.stringify(opts));
+        return mrView;
+    }
+    public mapQuery<T>(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
+        return this.view(viewName, queryOpts).mapQuery(queryOpts || {});
+    }
+    public mapQueryWithKeys<T>(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
+        return this.view(viewName, queryOpts).mapQueryWithKeys(queryOpts || {});
+    }
+    public reduceQuery(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
+        return this.view(viewName, queryOpts).reduceQuery(queryOpts || {});
+    }
+    public async forceUpdateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
+        let view = this.view(viewName, newObj);
+        let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
+        return view.updateViewForObj(updates);
+    }
+    public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
+        let view = this.view(updates.viewName, undefined);
+        return view.updateViewForObj(updates);
+    }
+    public async preComputeViewUpdateForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj): Promise<MapReduceViewUpdates<string | number>> {
+        let view = this.view(viewName, undefined);
+        return view.preComputeViewUpdateForObj(oldObj, newObj);
+    }
+
+    public async getObserversOfObservable(observableObj, trigger: MapReduceTrigger): Promise<DataObj[]> {
+        let ret: DataObj[] = [];
+        if (trigger.mapObserversImpactedByOneObservable.existingIndex === '_id') {
+            let observerId = evalExprES5(observableObj, trigger.mapObserversImpactedByOneObservable.keyExpr)[0];
+            if (null == observerId) throw new Error("obs not found for " + JSON.stringify(observableObj) + " with " + trigger.mapObserversImpactedByOneObservable.keyExpr[0].origExpr);
+            ret = await this.dataDB.get(observerId)
+                .then(o => o ? [o] : [])
+                .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
+        } else {
+            let mapQuery = trigger.mapObserversImpactedByOneObservable.query;
+            let viewName = trigger.mapObserversImpactedByOneObservable.obsViewName;
+            ret = await this.mapQueryWithKeys<DataObj>(viewName, {
+                startkey: evalExprES5(observableObj, mapQuery.startkeyExpr),
+                endkey: evalExprES5(observableObj, mapQuery.endkeyExpr),
+                inclusive_start: mapQuery.inclusive_start,
+                inclusive_end: mapQuery.inclusive_end,
+            }).then(rows => Promise.all(
+                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row.key))))
+            ).then(objs => objs.filter(o => {
+                if (o == null) console.error("map query returned null object", JSON.stringify({observableObj, trigger}));
+                return o != null;
+            })) as DataObj[];
+        }
+        return ret;
+    }
+
+    public async getObserversOfObservableOldAndNew(
+        observableOld: DataObj | null,
+        observableNew: DataObj,
+        trigger: MapReduceTrigger): Promise<DataObj[]> {
+
+        let oldObs = observableOld ? await this.getObserversOfObservable(observableOld, trigger) : [];
+        let newObs = await this.getObserversOfObservable(observableNew, trigger);
+        return _.unionBy(oldObs, newObs, '_id');
+    }
+
+    public async getAggValueForObserver(observerObj, trigger: MapReduceTrigger): Promise<number | string> {
+        // let defaultValue = this.getAggDefaultValue(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+        let mapQuery = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query;
+        return this.reduceQuery(
+            trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
+            Object.assign({}, {
+                startkey: evalExprES5({ $ROW$: observerObj }, mapQuery.startkeyExpr),
+                endkey: evalExprES5({ $ROW$: observerObj }, mapQuery.endkeyExpr),
+                inclusive_start: mapQuery.inclusive_start,
+                inclusive_end: mapQuery.inclusive_end,
+            }
+        ));
+    }
+
+    public async preComputeAggForObserverAndObservable(
+        observerObj: DataObj,
+        observableOld: DataObj | null,
+        observableNew: DataObj,
+        trigger: MapReduceTrigger): Promise<string | number> {
+
+        let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
+        if (SumReduceFunN === reduceFun.name) {
+            return _sum_preComputeAggForObserverAndObservable(this, observerObj, observableOld, observableNew, trigger);
+        } else if (CountReduceFunN === reduceFun.name) {
+            return _count_preComputeAggForObserverAndObservable(this, observerObj, observableOld, observableNew, trigger);
+        } else if (TextjoinReduceFunN == reduceFun.name) {
+            return _textjoin_preComputeAggForObserverAndObservable(this, observerObj, observableOld, observableNew, trigger);
+        } else {
+            throw new Error('Unknown reduce function ' + trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+        }
+    }
+
+    public async withLock(
+        eventId: string,
+        transacRetry: number,
+        getIds: (retryNb: number) => Promise<string[]>,
+        lockAcquiredCallback: () => Promise<any>,
+        lockRecoveredCallback: (eventId: string) => Promise<any>,
+        maxRetryNb: number = 10,
+        sleepFactorMs: number = 50) {
+        return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
+    }
+
+}

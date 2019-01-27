@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
-import { NodeElementWithChildren, NodeElement, getChildPath } from '../../common/domain/uimetadata/form';
+import { NodeElementWithChildren, NodeElement, getChildPath } from '@storage/domain/uimetadata/form';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
