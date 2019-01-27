@@ -40,18 +40,29 @@ let filterFunc = new Function('obj', 'return ("2012-07-07T12:24:34.649196" == ob
 
 let time = Date.now();
 let i = 0;
+let rawData: string[] = [];
 let DB: Prlp[] = [];
 lineReader.on('line', function (line) {
     if (line[1] !== '{') return;
-    i++;
-    let obj = JSON.parse(line);
+    rawData.push(line);
     // obj._id = 'Prlp~~' + obj.id;
     // kvs.put(obj);
-    DB.push(obj);
-    if (i%100000 == 0) console.log(i);
+    i++;
+    if (i%500000 == 0) console.log(i);
 })
 .on('close', () => {
     console.log(new Date(), "finished loading data in " + (Date.now() - time) + " ms");
+    time = Date.now();
+
+    i = 0;
+    for (let line of rawData) {
+        let obj = JSON.parse(line);
+        DB.push(obj);
+        i++;
+        if (i%500000 == 0) console.log(i);
+    }
+
+    console.log(new Date(), "finished JSON parsing in " + (Date.now() - time) + " ms");
     time = Date.now();
     
     let values = [
