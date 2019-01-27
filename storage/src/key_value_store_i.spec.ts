@@ -26,6 +26,19 @@ export function keyValueStoreSpecs<KVSType extends KeyObjStoreI<KeyValueStoreSpe
             done();
         });
 
+        it('testGetAll', async (done) => {
+            await kvs.put({_id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1});
+            await kvs.put({_id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2});
+            await kvs.put({_id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3});
+            await kvs.put({_id: 'o4', categ: 'C2', subcateg: 'sc2', val: 4});
+
+            let res = await kvs.all();
+            expect(res.length).toEqual(4);
+            expect(res[0]['_id']).toEqual('o1');
+
+            done();
+        });
+
         it('rangeQuery for views', async (done) => {
             let kvsa = new KeyValueStoreArrayKeys(kvs);
             await kvsa.set(["a"], {_id: "a", val: 2});

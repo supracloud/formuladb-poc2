@@ -4,6 +4,7 @@
  */
 
 require('source-map-support').install();
+require('module-alias/register')
 
 const SpecReporterStorage = require('jasmine-spec-reporter').SpecReporter;
 const JasmineStorage = require("jasmine");

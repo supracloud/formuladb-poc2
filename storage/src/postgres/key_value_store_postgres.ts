@@ -139,6 +139,21 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         await KeyValueStorePostgres.db!.any(query);
         console.log("Tables droped");
     }
+
+    all(): Promise<VALUET[]> {
+        return new Promise((resolve) => {
+            this.initialize().then(() => {
+                let query: string = 'SELECT val FROM ' + this.table_id;
+
+                KeyValueStorePostgres.db!.any<VALUET>(query).then((res) => {
+                    resolve(res.map(o => o['val']));
+                }).catch((err) => {
+                    console.log(err);
+                })
+
+            })
+        });
+    }
 }
 
 export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStorePostgres<OBJT> implements KeyObjStoreI<OBJT> {
@@ -170,7 +185,9 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
     public async adHocQuery(query: AddHocQuery): Promise<any[]> {
         //First we filter the rows
         let filteredObjs: any[] = [];
-        for (let obj of Object.values(this.db)) {
+        // TODO - translate it in SQL
+        let resAll = await this.all();
+        for (let obj of resAll) {
             let filteredObj: any = _.cloneDeep(obj);
             for (let col of query.extraColsBeforeGroup) {
                 if (isSubqueryColumn(col)) {
@@ -182,7 +199,8 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
 
             for (let col of query.extraColsBeforeGroup) {
                 if (isExpressionColumn(col)) {
-                    filteredObj[col.alias] = evalExprES5(filteredObj, col.expr);
+                    let x = evalExprES5(filteredObj, col.expr);
+                    filteredObj[col.alias] = col.expr instanceof Array ? kvsKey2Str(x) : x;
                 }
             }
 
@@ -240,8 +258,8 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
                 if (matchesFilter) groupedFiltered.push(obj);
             }
 
-            return simulateIO(groupedFiltered);
-        } else return simulateIO(filteredObjs);
+            return groupedFiltered;
+        } else return filteredObjs;
 
     }
 }

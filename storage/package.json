@@ -17,6 +17,7 @@
     "dotenv": "^6.2.0",
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.11",
+    "module-alias": "^2.1.0",
     "pg": "^7.8.0",
     "pg-promise": "^8.5.5"
   },
@@ -34,5 +35,6 @@
     "typescript": "^3.2.4"
   },
   "_moduleAliases": {
-    "@kv_selector_base": "./dist/src"
-  }}
+    "@kv_selector_base": "./dist"
+  }
+}

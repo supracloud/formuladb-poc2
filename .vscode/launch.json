@@ -72,7 +72,7 @@
             "protocol": "inspector",
             "request": "launch",
             "cwd": "${workspaceRoot}/storage",
-            "program": "${workspaceRoot}/storage/src/tests/jasmine.ts",
+            "program": "${workspaceRoot}/storage/src/test/jasmine.ts",
             "sourceMaps": true,
             "outFiles": ["${workspaceRoot}/storage/dist/**/*.js"]
         },
