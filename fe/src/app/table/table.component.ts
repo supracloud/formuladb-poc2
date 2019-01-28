@@ -164,13 +164,15 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     onEditClicked(row: tableState.DataObj) {
-        this.router.navigate(['./' + row._id], { relativeTo: this.route });
+        console.log('DISABLE EDITING FOR REPORTING USE CASE .....');
+        // this.router.navigate(['./' + row._id], { relativeTo: this.route });
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
-        if (event.data._id) {
-            this.router.navigate(['./' + event.data._id], { relativeTo: this.route });
-        }
+        console.log('DISABLE EDITING FOR REPORTING USE CASE .....');
+        // if (event.data._id) {
+        //     this.router.navigate(['./' + event.data._id], { relativeTo: this.route });
+        // }
     }
 
     columnMoving(event: any) {

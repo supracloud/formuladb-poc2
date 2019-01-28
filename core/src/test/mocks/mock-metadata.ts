@@ -85,6 +85,11 @@ export class MockMetadata {
                 break;
         }
 
+        this.entities = [];
+        this.entities.push(OrbicoMetadata.Reports);
+        this.entities.push(OrbicoMetadata.REP__Orders);
+        this.entities.push(OrbicoMetadata.REP__DeliveryRate);
+
         this.entities.forEach(ent => {
             ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
             this.schema.entities[ent._id] = ent;

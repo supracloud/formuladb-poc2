@@ -20,7 +20,7 @@
                 "node_modules/*",
             ],
             "@core/*": ["../core/src/*"],
-            "@kv_selector_base/*": ["./src/*"]
+            "@storage/*": ["./src/*"],
         },
         "lib": [
             "es2018",

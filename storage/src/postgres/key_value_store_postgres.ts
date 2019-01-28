@@ -257,6 +257,14 @@ FROM ${this.table_id}`;
 
         }
 
+        if (null != squery.limit) {
+            sql = sql + `\nLIMIT ${squery.limit}`;
+        }
+
+        if (null != squery.offset) {
+            sql = sql + `\nOFFSET ${squery.offset}`;
+        }
+
         return sql;
     }
 

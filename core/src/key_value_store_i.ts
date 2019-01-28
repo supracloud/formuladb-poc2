@@ -14,6 +14,8 @@ export interface SimpleAddHocQuery {
     groupAggs: {alias: string, reduceFun: ReduceFun, colName: string}[],
     groupFilters: {colName: string, op: string, value: string | number | boolean}[];
     sortColumns: string[],
+    offset?: number,
+    limit?: number
 }
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
