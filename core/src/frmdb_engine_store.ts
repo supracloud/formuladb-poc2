@@ -39,7 +39,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
     constructor(public kvsFactory: KeyValueStoreFactoryI) {
-        super(kvsFactory.createKeyObjS("transactions"), kvsFactory.createKeyObjS("data"));
+        super(kvsFactory);
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 
@@ -57,7 +57,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async adHocTableQuery(entity: Entity): Promise<DataObj[]> {
         //super-duper-extra-naive implementation
         let ret: DataObj[] = [];
-        let allObjs = await this.dataDB.all();
+        let allObjs = await this.all(entity._id);
         let formulas: CompiledFormula[] = [];
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ === Pn.FORMULA) {
@@ -85,15 +85,13 @@ export class FrmdbEngineStore extends FrmdbStore {
             let op1 = aggsTrg.map.query.inclusive_start ? '<=' : '<';
             let op2 = aggsTrg.map.query.inclusive_end ? '<=' : '<';
         
-            let triggerValue: any = await this.adHocQuery({
+            let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityName, {
                 extraColsBeforeGroup: [
                     {alias: 'KEY', expr: aggsTrg.map.keyExpr},
                     {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
                     'AGG',
                 ],
-                filters: [
-                    $s2e('_id.indexOf("' + aggsTrg.map.entityName + '") == 0'),
-                ],
+                filters: [],
                 groupColumns: ['KEY'],
                 groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
                 groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
@@ -164,7 +162,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         if (trigger.mapObserversImpactedByOneObservable.existingIndex === '_id') {
             let observerId = evalExprES5(observableObj, trigger.mapObserversImpactedByOneObservable.keyExpr)[0];
             if (null == observerId) throw new Error("obs not found for " + JSON.stringify(observableObj) + " with " + trigger.mapObserversImpactedByOneObservable.keyExpr[0].origExpr);
-            ret = await this.dataDB.get(observerId)
+            ret = await this.getDataObj(observerId)
                 .then(o => o ? [o] : [])
                 .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
         } else {

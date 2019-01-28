@@ -3,12 +3,12 @@
  * License TBD
  */
 
-import { Entity, Schema } from "@core/domain/metadata/entity";
-import { DataObj } from "@core/domain/metadata/data_obj";
+import { Entity, Schema, isEntity } from "@core/domain/metadata/entity";
+import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data_obj";
 import { Form } from "@core/domain/uimetadata/form";
 import { Table } from "@core/domain/uimetadata/table";
 import { MwzEvents } from "@core/domain/event";
-import { KeyObjStoreI, kvsKey2Str } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI } from "./key_value_store_i";
 import { KeyValueError } from "@core/domain/key_value_obj";
 import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "@core/domain/metadata/ad_hoc_query";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
@@ -16,21 +16,50 @@ import { evalExprES5 } from "./map_reduce_utils";
 import * as _ from "lodash";
 
 export class FrmdbStore {
-    constructor(protected transactionsDB: KeyObjStoreI<MwzEvents>, protected dataDB: KeyObjStoreI<DataObj | Schema | Form | Table>) { }
+    private transactionsDB: KeyObjStoreI<MwzEvents>;
+    protected dataKVSMap: Map<string, KeyObjStoreI<DataObj>> = new Map();
+    protected metadataKvs: KeyObjStoreI<Schema | Form | Table>;
+
+    constructor(public kvsFactory: KeyValueStoreFactoryI) {
+
+    }
+
+    private async getTransactionsDB() {
+        if (!this.transactionsDB) {
+            this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');
+        }
+        return this.transactionsDB;
+    }
+
+    private async getMetadataKvs() {
+        if (!this.metadataKvs) {
+            this.metadataKvs = await this.kvsFactory.createKeyObjS<Schema | Form | Table>('metadata');
+        }
+        return this.metadataKvs;
+    }
+
+    private async getDataKvs(entityName: string) {
+        let ret = this.dataKVSMap.get(entityName);
+        if (!ret) {
+            ret = await this.kvsFactory.createKeyObjS<DataObj>(entityName);
+            this.dataKVSMap.set(entityName, ret);
+        }
+        return ret;
+    }
 
     /**
      * UI Actions are Events, Events get sent to the Backend and become Transactions, the same domain model object is both Action/Event/Transaction
      * @param event 
      */
-    public putTransaction(event: MwzEvents): Promise<MwzEvents> {
-        return this.transactionsDB.put(event);
+    public async putTransaction(event: MwzEvents): Promise<MwzEvents> {
+        return (await this.getTransactionsDB()).put(event);
     }
 
-    public getSchema(): Promise<Schema | null> {
-        return this.dataDB.get('FRMDB_SCHEMA') as Promise<Schema | null>;
+    public async getSchema(): Promise<Schema | null> {
+        return (await this.getMetadataKvs()).get('FRMDB_SCHEMA') as Promise<Schema | null>;
     }
-    public putSchema(schema: Schema): Promise<Schema> {
-        return this.dataDB.put(schema) as Promise<Schema>;
+    public async putSchema(schema: Schema): Promise<Schema> {
+        return (await this.getMetadataKvs()).put(schema) as Promise<Schema>;
     }
 
     public getEntities(): Promise<Entity[]> {
@@ -54,7 +83,7 @@ export class FrmdbStore {
 
     public async delEntity(entityId: string): Promise<Entity> {
         let schema = await this.getSchema();
-        if (!schema) throw new Error("Attempt to del entity " + entityId +  " from empty schema");
+        if (!schema) throw new Error("Attempt to del entity " + entityId + " from empty schema");
         let ret = schema.entities[entityId];
         if (!ret) throw new Error("Attempt to del non existent entity " + entityId);
         delete schema.entities[entityId];
@@ -63,40 +92,50 @@ export class FrmdbStore {
             .then(x => ret);
     }
 
-    public getTable(path: string): Promise<Table | null> {
-        return this.dataDB.get('Table_:' + path) as Promise<Table | null>;
+    public async getTable(path: string): Promise<Table | null> {
+        return (await this.getMetadataKvs()).get('Table_:' + path) as Promise<Table | null>;
     }
 
-    public putTable(table: Table): Promise<Table | null> {
-        return this.dataDB.put(table) as Promise<Table | null>;
+    public async putTable(table: Table): Promise<Table | null> {
+        return (await this.getMetadataKvs()).put(table) as Promise<Table | null>;
     }
 
-    public getForm(path: string): Promise<Form | null> {
-        return this.dataDB.get('Form_:' + path) as Promise<Form | null>;
+    public async getForm(path: string): Promise<Form | null> {
+        return (await this.getMetadataKvs()).get('Form_:' + path) as Promise<Form | null>;
     }
 
-    public putForm(form: Form): Promise<Form | null> {
-        return this.dataDB.put(form) as Promise<Form | null>;
+    public async putForm(form: Form): Promise<Form | null> {
+        return (await this.getMetadataKvs()).put(form) as Promise<Form | null>;
     }
 
-    public getDataObj(id: string): Promise<DataObj | null> {
-        return this.dataDB.get(id);
-    }
-    
-    public getDataListByPrefix(prefix: string): Promise<DataObj[]> {
-        return this.dataDB.findByPrefix(prefix);
+    public async getDataObj(id: string): Promise<DataObj | null> {
+        let entityName = parseDataObjId(id).entityName;
+        return (await this.getDataKvs(entityName)).get(id);
     }
 
-    public putDataObj(obj: DataObj): Promise<DataObj> {
-        return this.dataDB.put(obj);
+    public async getDataListByPrefix(prefix: string): Promise<DataObj[]> {
+        let entityName = parsePrefix(prefix);
+        return (await this.getDataKvs(entityName)).findByPrefix(prefix);
     }
 
-    public putAllObj(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
-        return this.dataDB.putBulk(objs);
+    public async putDataObj(obj: DataObj): Promise<DataObj> {
+        let entityName = parseDataObjId(obj._id).entityName;
+        return (await this.getDataKvs(entityName)).put(obj);
     }
 
-    public delDataObj(id: string) {
-        return this.dataDB.del(id);
+    public async putAllObj(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
+        let objsGroupedByEntity = _.groupBy(objs, (o) => parseDataObjId(o._id).entityName);
+        let promises = Object.entries(objsGroupedByEntity).map(async ([entityName, objs]) => {
+                let dataKvs = await this.getDataKvs(entityName);
+                return dataKvs.putBulk(objs);
+            })
+        return Promise.all(promises)
+            .then(results => _.flatMap(results));
+    }
+
+    public async delDataObj(id: string) {
+        let entityName = parseDataObjId(id).entityName;
+        return (await this.getDataKvs(entityName)).del(id);
     }
 
 
@@ -111,16 +150,20 @@ export class FrmdbStore {
         }
 
     }
-        
-    public async adHocQuery(query: AddHocQuery): Promise<any[]> {
+
+    public async all(entityName: string): Promise<any[]> {
+        return (await this.getDataKvs(entityName)).all();
+    }
+
+    public async adHocQuery(entityName: string, query: AddHocQuery): Promise<any[]> {
         //First we filter the rows
         let filteredObjs: any[] = [];
-        let all = await this.dataDB.all();
+        let all = await this.all(entityName);
         for (let obj of all) {
             let filteredObj: any = _.cloneDeep(obj);
             for (let col of query.extraColsBeforeGroup) {
                 if (isSubqueryColumn(col)) {
-                    let val = await this.adHocQuery(col.subquery);
+                    let val = await this.adHocQuery(entityName, col.subquery);
                     //TODO: check that the return of the subquery is a scalar value: string | number | boolean
                     filteredObj[col.alias] = val[0][col.subquery.returnedColumns[0] + ''];
                 }

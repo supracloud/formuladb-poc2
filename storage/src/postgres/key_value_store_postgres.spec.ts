@@ -11,7 +11,7 @@ import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
 describe('KeyValueStorePostgres', () => {
     keyValueStoreSpecs({kvs: new KeyObjStorePostgres<KeyValueStoreSpecObjType>('unit-test')});
 
-    fit('simpleAdHocQuery2SQL should work correctly', async (done) => {
+    it('simpleAdHocQuery2SQL should work correctly', async (done) => {
         let kvs = new KeyObjStorePostgres<KeyValueStoreSpecObjType>('unit-test');
         let sql = kvs.simpleAdHocQuery2SQL({
             whereFilters: [{colName: 'val', op: '>', value: 0}],
