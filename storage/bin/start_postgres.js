@@ -2,7 +2,7 @@
 var shell = require('shelljs');
 
 if (!shell.which('docker')) {
-    shell.echo('Sorry, this script requires git');
+    shell.echo('Sorry, this script requires docker');
     shell.exit(1);
 } else {
     shell.echo('Docker found. Starting postgres container ...')
@@ -18,7 +18,7 @@ if (shell.exec('docker inspect --format="{{ .State.Status }}" formuladb-pg').cod
     shell.echo('Error: Failed to start Postgres container');
     shell.exit(1);
 } else {
-    shell.echo('Successfuly started FormulaDB potgres container');
+    shell.echo('Successfuly started FormulaDB postgres container');
 }
 
 shell.exit(0);
