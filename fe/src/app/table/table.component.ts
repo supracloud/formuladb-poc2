@@ -111,7 +111,7 @@ export class TableComponent implements OnInit, OnDestroy {
             .subscribe(e => {
                 if (e) {
                     this.currentEntity = e;
-                    this.gridApi.setServerSideDatasource(this.tableService.getDataSource(e._id));
+                    this.gridApi.setServerSideDatasource(this.tableService.getDataSource(e));
                 }
             }));
         this.subscriptions.push(this.table$.subscribe(t => {

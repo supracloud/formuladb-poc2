@@ -10,6 +10,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { DataObj, parseDataObjId, isDataObj } from "@core/domain/metadata/data_obj";
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@core/domain/event";
+import { SimpleAddHocQuery } from "@core/key_value_store_i";
 import { Table, addIdsToTable, isTable } from "@core/domain/uimetadata/table";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
 import { Form, NodeElement, addIdsToForm, isForm } from "@core/domain/uimetadata/form";
@@ -122,6 +123,11 @@ export class BackendService {
         });
     }
 
+    public simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {
+        return this.http.post<DataObj[]>('/api/' + this.appName + '/' + entityName + '/simpleadhocquery',
+            query).toPromise();
+    }
+
     public async getDataObj(id: string): Promise<DataObj> {
         let http = await this.get<DataObj | null>('/api/' + this.appName + '/obj/' + encodeURIComponent(id), (data: HttpResponse<any[]>) => {
             return data.body as any as DataObj;
@@ -130,7 +136,7 @@ export class BackendService {
         let dataObj = http;
         if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + JSON.stringify(dataObj));
 
-        let {entityName: referencedEntityName, id: objId, uid: parentUUID} = parseDataObjId(id);
+        let { entityName: referencedEntityName, id: objId, uid: parentUUID } = parseDataObjId(id);
         let entity = await this.getEntity(referencedEntityName);
         if (!entity) throw new Error("CHILD_TABLE references a non existent entity: " + referencedEntityName);
         for (const prop of Object.values(entity.props)) {
@@ -183,10 +189,10 @@ export class BackendService {
             return data.body as any as Entity;
         });
         if (!http) throw new Error("missing Entity " + path);
-        if (!isEntity(http))  throw new Error("response is not Entity " + JSON.stringify(http));
+        if (!isEntity(http)) throw new Error("response is not Entity " + JSON.stringify(http));
         return http;
     }
-    
+
     /**
      * Handle Http operation that failed.
      * Let the app continue.

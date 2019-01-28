@@ -14,6 +14,7 @@ import { FrmdbEngine } from "@core/frmdb_engine";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 import { identity } from "lodash-es";
+import { SimpleAddHocQuery } from "@core/key_value_store_i";
 
 
 export default function (frmdbEngine: FrmdbEngine) {
@@ -37,6 +38,12 @@ export default function (frmdbEngine: FrmdbEngine) {
 
     app.get('/query/:dbname/:id', function (req, res) {
         res.json({ message: 'test' });
+    });
+
+    app.post('/api/:dbname/:entityName/simpleadhocquery', async function(req, res) {
+        let query = req.body as SimpleAddHocQuery;
+        let ret = await frmdbEngine.frmdbEngineStore.simpleAdHocQuery(req.params.entityName, query);
+        res.json(ret);
     });
 
     app.get('/api/:dbname/byprefix/:prefix', async function(req, res) {

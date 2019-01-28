@@ -237,8 +237,11 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
         let simpleCols = _.difference(squery.columns, squery.groupAggs.map(agg => agg.alias)).map(c => this.col2sql(c) + ' as ' + c);
         let sql = `
 SELECT ${simpleCols.concat(squery.groupAggs.map(agg => this.agg2sql(agg))).join(', ')} 
-FROM ${this.table_id}
-WHERE ${squery.whereFilters.map(f => this.filter2sql(f)).join("\n    AND ")}`;
+FROM ${this.table_id}`;
+        
+        if (squery.whereFilters.length > 0) {
+            sql = sql + `\bWHERE ${squery.whereFilters.map(f => this.filter2sql(f)).join("\n    AND ")}`;
+        }
 
         if (squery.groupColumns.length > 0) {
             sql = sql + `\nGROUP BY ${squery.groupColumns.map(c => this.col2sql(c)).join(", ")}`;

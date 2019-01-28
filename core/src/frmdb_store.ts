@@ -8,7 +8,7 @@ import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data
 import { Form } from "@core/domain/uimetadata/form";
 import { Table } from "@core/domain/uimetadata/table";
 import { MwzEvents } from "@core/domain/event";
-import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery } from "./key_value_store_i";
 import { KeyValueError } from "@core/domain/key_value_obj";
 import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "@core/domain/metadata/ad_hoc_query";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
@@ -153,6 +153,10 @@ export class FrmdbStore {
 
     public async all(entityName: string): Promise<any[]> {
         return (await this.getDataKvs(entityName)).all();
+    }
+
+    public async simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {
+        return (await this.getDataKvs(entityName)).simpleAdHocQuery(query);
     }
 
     public async adHocQuery(entityName: string, query: AddHocQuery): Promise<any[]> {

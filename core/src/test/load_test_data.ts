@@ -11,6 +11,7 @@ import { FrmdbEngine } from "../frmdb_engine";
 
 export async function loadData(frmdbEngine: FrmdbEngine, mockMetadata: MockMetadata): Promise<{mockMetadata: MockMetadata, mockData: MockData}> {
     try {
+        await frmdbEngine.frmdbEngineStore.kvsFactory.clearAll();
         await frmdbEngine.frmdbEngineStore.putSchema(mockMetadata.schema);
 
         let mockData = new MockData(mockMetadata.schema.entities);

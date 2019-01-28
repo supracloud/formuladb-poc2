@@ -19,7 +19,7 @@
             "name": "BE serve",
             "type": "node",
             "request": "attach",
-            "port": 9229,
+            "port": 9231,
             "protocol": "inspector",
             "restart": "true"
         },
