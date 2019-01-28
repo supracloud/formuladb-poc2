@@ -8,6 +8,7 @@ import * as FormuladbCollate from './utils/collator';
 import { ReduceFun } from "./domain/metadata/reduce_functions";
 
 export interface SimpleAddHocQuery {
+    specificQueryParams?: any;
     columns: string[];
     whereFilters: {colName: string, op: string, value: string | number | boolean}[];
     groupColumns: string[],

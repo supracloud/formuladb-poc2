@@ -11,6 +11,7 @@ import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, MinReduceFunN, MaxReduceFunN, AvgReduceFunN, FirstReduceFunN, LastReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { CreateSqlQuery, QueryRequest } from "./create_sql_query";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -155,6 +156,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 }
 
 export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStorePostgres<OBJT> implements KeyObjStoreI<OBJT> {
+    private sqlQueryCreator = new CreateSqlQuery();
+
     public findByPrefix(prefix: string): Promise<OBJT[]> {
         return this.rangeQuery({ startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false });
     }
@@ -269,7 +272,8 @@ FROM ${this.table_id}`;
     }
 
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {
-        let query: string = this.simpleAdHocQuery2SQL(squery);
+        // let query: string = this.simpleAdHocQuery2SQL(squery);
+        let query = this.sqlQueryCreator.createSqlQuery(this.table_id!, squery.specificQueryParams as any as QueryRequest);
         let res = await KeyValueStorePostgres.db!.any(query);
         return res;
     }

@@ -47,3 +47,7 @@ CREATE TABLE IF NOT EXISTS f_2735 (key VARCHAR NOT NULL PRIMARY KEY, val json);
 
 INSERT INTO f_4320 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM delivery_report_input) r;
 INSERT INTO f_2735 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM orders_input) r;
+
+--hack
+create table f_4320_cold as select * from delivery_report_input ;
+create table f_2735_cold as select * from orders_input ;
