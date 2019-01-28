@@ -85,7 +85,7 @@ export const REP__LargeSales__Product = {
         largeSalesValue: {
             name: "largeSalesValue",
             propType_: Pn.FORMULA,
-            formula: `SUMIF(INV__Order__Item.quantity, quantity > 100 && productLocationId = @[productLocationId])`,
+            formula: `SUMIF(INV__Order__Item.quantity, productLocationId == @[productLocationId] && quantity > 100)`,
         } as FormulaProperty,
     }
 }

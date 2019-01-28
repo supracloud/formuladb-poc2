@@ -5,8 +5,16 @@
 
 import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
-import { AddHocQuery } from "@core/domain/metadata/ad_hoc_query";
+import { ReduceFun } from "./domain/metadata/reduce_functions";
 
+export interface SimpleAddHocQuery {
+    columns: string[];
+    whereFilters: {colName: string, op: string, value: string | number | boolean}[];
+    groupColumns: string[],
+    groupAggs: {alias: string, reduceFun: ReduceFun, colName: string}[],
+    groupFilters: {colName: string, op: string, value: string | number | boolean}[];
+    sortColumns: string[],
+}
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
     /** The resulting rows are sorted by key */
@@ -24,6 +32,8 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     put(obj: OBJT): Promise<OBJT>;
     putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
+    /** filtering and grouping by any key */
+    simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
 }
 
 export function kvsKey2Str(key: any): string {

@@ -50,7 +50,7 @@
             }
         },
         {
-            "label": "BE Build",
+            "label": "BE serve",
             "command": "npm",
             "type": "shell",
             "options": {
@@ -58,7 +58,7 @@
             },
             "args": [
                 "run",
-                "compile:watch"
+                "serve"
             ],
             "presentation": {
                 "echo": true,

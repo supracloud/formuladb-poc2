@@ -51,6 +51,14 @@ export interface Schema extends KeyValueObj {
     entities: { [x: string]: Entity };
 }
 
+export function isSchema(param): param is Schema {
+    return param != null && typeof param === 'object' && param['_id'] == 'FRMDB_SCHEMA' && param['entities'] != null;
+}
+
+export function isEntity(param): param is Entity {
+    return param != null && typeof param === 'object' && param['_id'] != null && param['props'] != null;
+}
+
 export function isEntityProperty(param): param is EntityProperty {
     return param != null && typeof param === 'object' && param['propType_'] != null;
 }

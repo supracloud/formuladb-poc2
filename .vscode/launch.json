@@ -3,7 +3,7 @@
     "configurations": [
 
         {
-            "name": "ng serve",
+            "name": "FE serve",
             "type": "chrome",
             "request": "launch",
             "url": "http://localhost:4200/#",
@@ -16,24 +16,7 @@
             }
         },
         {
-            "name": "ng test",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:9876/debug.html",
-            "webRoot": "${workspaceFolder}/fe"
-        },
-        {
-            "name": "ng e2e",
-            "type": "node",
-            "request": "launch",
-            "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
-            "protocol": "inspector",
-            "args": [
-                "${workspaceFolder}/protractor.conf.js"
-            ]
-        },
-        {
-            "name": "BE run",
+            "name": "BE serve",
             "type": "node",
             "request": "attach",
             "port": 9229,
@@ -76,17 +59,14 @@
             "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
         },
         {
-            "name": "ng serve 4300 master",
-            "type": "chrome",
+            "name": "ng e2e",
+            "type": "node",
             "request": "launch",
-            "url": "http://localhost:4300/#",
-            "webRoot": "${workspaceFolder}/fe",
-            "sourceMapPathOverrides": {
-                "webpack:/./*": "${webRoot}/*",
-                "webpack:///./src/*": "${webRoot}/src/*",
-                "webpack:/*": "*",
-                "webpack:/./~/*": "${webRoot}/node_modules/*"
-            }
+            "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
+            "protocol": "inspector",
+            "args": [
+                "${workspaceFolder}/protractor.conf.js"
+            ]
         }
     ]
 }

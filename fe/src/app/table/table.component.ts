@@ -123,6 +123,8 @@ export class TableComponent implements OnInit, OnDestroy {
                     headerName: c.name,
                     field: c.name,
                     width: c.width ? c.width : 100,
+                    enableRowGroup: true,
+                    enableValue: true,
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
                 });
 

@@ -8,12 +8,13 @@ export class TableService {
   constructor(private backendService: BackendService) { }
 
   public getDataSource(entity: string): IServerSideDatasource {
-    return ((bs: BackendService) => ({
+    let backendService = this.backendService;
+    return {
       getRows(params: IServerSideGetRowsParams): void {
-        bs.getTableData(entity)
+        backendService.getTableData(entity)
           .then((data: any[]) => params.successCallback(data, data.length))
           .catch(() => params.failCallback());
       }
-    }))(this.backendService);
+    };
   }
 }

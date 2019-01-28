@@ -13,9 +13,10 @@ import * as path from "path";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
+import { identity } from "lodash-es";
 
 
-export default function (db) {
+export default function (frmdbEngine: FrmdbEngine) {
     var app: express.Express = express();
 
     app.use(logger("dev"));
@@ -38,7 +39,32 @@ export default function (db) {
         res.json({ message: 'test' });
     });
 
-    app.post('/api/event', async function (req, res) {
+    app.get('/api/:dbname/byprefix/:prefix', async function(req, res) {
+        let ret = await frmdbEngine.frmdbEngineStore.getDataListByPrefix(req.params.prefix);
+        res.json(ret);
+    });
+    app.get('/api/:dbname/obj/:id', async function(req, res) {
+        let obj = await frmdbEngine.frmdbEngineStore.getDataObj(req.params.id);
+        res.json(obj);
+    });
+    app.get('/api/:dbname/table/:id', async function(req, res) {
+        let table = await frmdbEngine.frmdbEngineStore.getTable(req.params.id);
+        res.json(table);
+    });
+    app.get('/api/:dbname/form/:id', async function(req, res) {
+        let form = await frmdbEngine.frmdbEngineStore.getForm(req.params.id);
+        res.json(form);
+    });
+    app.get('/api/:dbname/schema', async function(req, res) {
+        let schema = await frmdbEngine.frmdbEngineStore.getSchema();
+        res.json(schema);
+    });
+    app.get('/api/:dbname/entity/:id', async function(req, res) {
+        let entity = await frmdbEngine.frmdbEngineStore.getEntity(req.params.id);
+        res.json(entity);
+    });
+
+    app.post('/api/:dbname/event', async function (req, res) {
         let frmdbEngine = await getFrmdbEngine({_id: 'FRMDB_SCHEMA', entities: {}});
         return frmdbEngine.processEvent(req.body)
             .then(notif => res.json(notif))

@@ -3,9 +3,10 @@
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
+import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -85,6 +86,95 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
     public delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]> {
         //naive implementation, some databases have specific efficient ways to to bulk delete
         return Promise.all(objs.map(o => this.del(o._id)));
+    }
+
+    private evaluateFilter(left: any, op: string, right: any): boolean {
+        switch (op) {
+            case '<':
+                return left < right;
+            case '<=':
+                return left <= right;
+            case '>':
+                return left > right;
+            case '>=':
+                return left >= right;
+            case '==':
+                return left === right;
+            case '=':
+                return left === right;
+            case '~':
+                return ('' + left).match('' + right) != null;
+            default:
+                throw new Error("Unknown filter operator " + op);
+        }
+    }
+
+    private evaluateAggregation(value: any, reduceFun: ReduceFun, aggValue: any) {
+        switch (reduceFun.name) {
+            case SumReduceFunN:
+                return aggValue + value;
+            case CountReduceFunN:
+                return aggValue + 1;
+            case TextjoinReduceFunN:
+                return aggValue + reduceFun.delimiter + value;
+        }
+
+    }
+
+    public async simpleAdHocQuery(query: SimpleAddHocQuery): Promise<any[]> {
+        //First we filter the rows
+        let filteredObjs: any[] = [];
+        for (let obj of Object.values(this.db)) {
+            let filteredObj: any = {};
+
+            let matchesFilter: boolean = true;
+            for (let filter of query.whereFilters) {
+                if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
+                    matchesFilter = false;
+                    break;
+                }
+            }
+            if (matchesFilter) filteredObjs.push(Object.assign(filteredObj, obj));
+        }
+
+        //Then we group them
+        let grouped: any = {};
+        for (let obj of filteredObjs) {
+            let groupKey: string[] = [];
+            let groupObj: any = {};
+            for (let group of query.groupColumns) {
+                groupKey.push(obj[group]);
+                groupObj[group] = obj[group];
+            }
+
+            let key = kvsKey2Str(groupKey);
+            if (grouped[key]) {
+                groupObj = grouped[key];
+            } else {
+                grouped[key] = groupObj;
+            }
+
+            for (let groupAgg of query.groupAggs) {
+                //compatibility with SQL which is case insensitive
+                groupObj[groupAgg.alias.toLowerCase()] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun,
+                    groupObj[groupAgg.alias.toLowerCase()] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
+            }
+        }
+
+        //Then we filter the groups
+        let groupedFiltered: any[] = [];
+        for (let obj of Object.values(grouped)) {
+            let matchesFilter: boolean = true;
+            for (let filter of query.groupFilters) {
+                if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
+                    matchesFilter = false;
+                    break;
+                }
+            }
+            if (matchesFilter) groupedFiltered.push(obj);
+        }
+
+        return simulateIO(groupedFiltered);
     }
 
 }

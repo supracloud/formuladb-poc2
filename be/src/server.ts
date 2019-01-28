@@ -19,16 +19,17 @@ import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 let mockMetadata = new MockMetadata(ExampleApps.inventory);
+let testFrmdbEngine: FrmdbEngine;
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
-.then(() => this.testFrmdbEngine.init(true))
 .then(async () => {
-  let testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
-  loadData(testFrmdbEngine, mockMetadata)
+  testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
+  await testFrmdbEngine.init(true);
+  await loadData(testFrmdbEngine, mockMetadata)
 })
 .then(() => {
   // Init the express application
-  const app = require("./config/express").default();
+  const app = require("./config/express").default(testFrmdbEngine);
 
   const server: http.Server = http.createServer(app);
 

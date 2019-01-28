@@ -23,7 +23,7 @@ import { Form, NodeElement, NodeType, getDefaultForm } from "@core/domain/uimeta
 
 import * as appState from './app.state';
 import { generateUUID } from "@core/domain/uuid";
-import { BackendService, EnvType } from "./backend.service";
+import { BackendService } from "./backend.service";
 import { TableFormBackendAction } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
@@ -97,7 +97,7 @@ export class AppEffects {
             case events.ServerEventModifiedFormDataN: {
                 this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                 this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
-                this.store.dispatch(new appState.TableDataFromBackendAction([new ChangeObj(eventFromBe.obj)]));
+                console.error("FIXME, replicate cheanges from the server");
                 break;
             }
             case events.ServerEventModifiedFormN: {
@@ -218,11 +218,9 @@ export class AppEffects {
             this.store.dispatch(new appState.SelectedEntityAction(entity));
 
             let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
-            this.store.dispatch(new appState.ResetTableDataFromBackendAction(entity, []));
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
             let tableData = await this.backendService.getTableData(path);
-            this.store.dispatch(new appState.TableDataFromBackendAction(tableData.map(obj => new ChangeObj<DataObj>(obj))))
 
             let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
             this.store.dispatch(new appState.FormFromBackendAction(form));
