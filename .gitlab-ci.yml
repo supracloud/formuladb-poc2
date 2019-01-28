@@ -12,7 +12,6 @@ test:
     - cd core && npm install 
     - cd ..
     - npm run initpgdb
-    - cd ..
     - cd be && npm install
     - cd ..
     - cd fe && npm install
