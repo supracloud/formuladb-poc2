@@ -19,6 +19,7 @@
             "*": [
                 "node_modules/*",
             ],
+            "@core/*": ["../core/src/*"],
             "@kv_selector_base/*": ["./src/*"]
         },
         "lib": [
@@ -27,6 +28,7 @@
         ]
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "../core/src/**/*"
     ]
 }

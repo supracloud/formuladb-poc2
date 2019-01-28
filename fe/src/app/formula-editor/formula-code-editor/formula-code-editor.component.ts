@@ -7,7 +7,7 @@ import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
-import { TokenType, Token, Suggestion } from '@storage/formula_tokenizer';
+import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
 
 @Component({
   selector: 'frmdb-formula-code-editor',

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, HostBinding, HostListener } from '@angular/core';
-import { NodeElement } from '@storage/domain/uimetadata/form';
+import { NodeElement } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../form/form.state';
 

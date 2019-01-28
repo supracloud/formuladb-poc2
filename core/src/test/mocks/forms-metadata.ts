@@ -1,13 +1,13 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "../../domain/metadata/entity";
+import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "@core/domain/metadata/entity";
 import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
 import { GEN__Client } from "./general-metadata";
-import { Sn } from '../../domain/metadata/stored_procedure';
-import { Fn } from "../../domain/metadata/functions";
+import { Sn } from '@core/domain/metadata/stored_procedure';
+import { Fn } from "@core/domain/metadata/functions";
 
 export const Forms = {
     _id: 'FRM',

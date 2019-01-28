@@ -1,11 +1,11 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { KeyValueError, KeyValueObj } from "./domain/key_value_obj";
+import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
-import { AddHocQuery } from "./domain/metadata/ad_hoc_query";
+import { AddHocQuery } from "@core/domain/metadata/ad_hoc_query";
 
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;

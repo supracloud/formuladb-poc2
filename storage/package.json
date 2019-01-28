@@ -3,18 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "compile": "tsc --inlineSourceMap",
-    "compile:watch": "tsc --inlineSourceMap -w 2>&1",
-    "test": "node dist/tests/jasmine.js",
-    "initpgdb": "node bin/start_postgres.js"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "acorn": "^6.0.5",
     "cluster-key-slot": "^1.0.12",
+    "detect-node": "^2.0.4",
     "dotenv": "^6.2.0",
     "expression-eval": "git+https://github.com/acristu/expression-eval.git",
     "fuse.js": "^3.3.0",
@@ -27,6 +23,7 @@
   },
   "devDependencies": {
     "@types/acorn": "^4.0.4",
+    "@types/detect-node": "^2.0.0",
     "@types/dotenv": "^6.1.0",
     "@types/jasmine": "^3.3.7",
     "@types/lodash": "^4.14.120",

@@ -1,17 +1,17 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { Fn } from "./domain/metadata/functions";
-import { CompiledFormula } from "./domain/metadata/execution_plan";
+import { Fn } from "@core/domain/metadata/functions";
+import { CompiledFormula } from "@core/domain/metadata/execution_plan";
 import { compileFormula, $s2e } from './formula_compiler';
-import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
-import { SumReduceFunN } from "./domain/metadata/reduce_functions";
-import { Pn, Entity } from "./domain/metadata/entity";
+import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { Pn, Entity } from "@core/domain/metadata/entity";
 
 describe('frmdb_engine_store', () => {
     let frmdbEngineStore: FrmdbEngineStore;
@@ -20,8 +20,8 @@ describe('frmdb_engine_store', () => {
 
 
     beforeEach(async (done) => {
-        await KeyValueStoreFactory.clearAll();
-        frmdbEngineStore = new FrmdbEngineStore(KeyValueStoreFactory);
+        frmdbEngineStore = await getFrmdbEngineStore();
+        await frmdbEngineStore.kvsFactory.clearAll();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

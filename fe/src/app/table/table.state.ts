@@ -1,21 +1,21 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from '@storage/domain/metadata/data_obj';
-import { Table } from '@storage/domain/uimetadata/table';
-import { ChangeObj, applyChanges } from '@storage/domain/change_obj';
+import { DataObj } from "@core/domain/metadata/data_obj";
+import { Table } from "@core/domain/uimetadata/table";
+import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 
 
 export { DataObj };
 export { Table };
 export { ChangeObj, applyChanges };
 
-import * as events from '@storage/domain/event';
-import { Entity } from "@storage/domain/metadata/entity";
+import * as events from "@core/domain/event";
+import { Entity } from "@core/domain/metadata/entity";
 
 export interface TableState {
   entity: Entity | undefined;

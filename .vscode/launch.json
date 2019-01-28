@@ -41,7 +41,7 @@
             "restart": "true"
         },
         {
-            "name": "BE specs Jasmine",
+            "name": "BE specs mem",
             "type": "node",
             "runtimeArgs": [
                 "--trace-warnings",
@@ -49,7 +49,6 @@
                 "--inspect"
             ],
             "env": {
-                "DEBUG": "pouchdb:*"
             },
             "protocol": "inspector",
             "request": "launch",
@@ -59,7 +58,7 @@
             "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
         },
         {
-            "name": "Storage specs Jasmine",
+            "name": "BE specs postgres",
             "type": "node",
             "runtimeArgs": [
                 "--trace-warnings",
@@ -67,14 +66,14 @@
                 "--inspect"
             ],
             "env": {
-                "DEBUG": "pouchdb:*"
+                "FRMDB_STORAGE": "postgres"
             },
             "protocol": "inspector",
             "request": "launch",
-            "cwd": "${workspaceRoot}/storage",
-            "program": "${workspaceRoot}/storage/src/test/jasmine.ts",
+            "cwd": "${workspaceRoot}/be",
+            "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
             "sourceMaps": true,
-            "outFiles": ["${workspaceRoot}/storage/dist/**/*.js"]
+            "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
         },
         {
             "name": "ng serve 4300 master",

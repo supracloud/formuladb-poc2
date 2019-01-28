@@ -1,11 +1,11 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty, FormulaProperty } from "../../domain/metadata/entity";
+import { Entity, Pn, EntityProperty, FormulaProperty } from "@core/domain/metadata/entity";
 import { INV__PRD, INV__PRD__Location } from './inventory-metadata';
-import { Fn } from "../../domain/metadata/functions";
+import { Fn } from "@core/domain/metadata/functions";
 
 
 export const Reports = {

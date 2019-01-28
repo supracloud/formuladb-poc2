@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -9,11 +9,11 @@ import { FrmdbEngineStore } from "../../frmdb_engine_store";
 import { compileFormula } from '../../formula_compiler';
 import { evalExprES5 } from "../../map_reduce_utils";
 import { INV__PRD__Location, INV__Receipt__Item, INV__Order__Item } from "./mock-metadata";
-import { KeyValueObj } from "../../domain/key_value_obj";
-import { ServerEventModifiedFormDataEvent } from "../../domain/event";
+import { KeyValueObj } from "@core/domain/key_value_obj";
+import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
-import { Schema } from "../../domain/metadata/entity";
-import KeyValueStoreFactory from '../../key_value_store_impl_selector';
+import { Schema } from "@core/domain/metadata/entity";
+import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 
 
@@ -33,9 +33,9 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
-        await KeyValueStoreFactory.clearAll();
-        frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
-        frmdbEngine = new FrmdbEngine(frmdbTStore, InventorySchema);
+        frmdbEngine = await getFrmdbEngine(InventorySchema);
+        frmdbTStore = frmdbEngine.frmdbEngineStore;
+        await frmdbTStore.kvsFactory.clearAll();
         await frmdbEngine.init();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;

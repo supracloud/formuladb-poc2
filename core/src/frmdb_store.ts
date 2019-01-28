@@ -1,17 +1,17 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { Entity, Schema } from "./domain/metadata/entity";
-import { DataObj } from "./domain/metadata/data_obj";
-import { Form } from "./domain/uimetadata/form";
-import { Table } from "./domain/uimetadata/table";
-import { MwzEvents } from "./domain/event";
+import { Entity, Schema } from "@core/domain/metadata/entity";
+import { DataObj } from "@core/domain/metadata/data_obj";
+import { Form } from "@core/domain/uimetadata/form";
+import { Table } from "@core/domain/uimetadata/table";
+import { MwzEvents } from "@core/domain/event";
 import { KeyObjStoreI, kvsKey2Str } from "./key_value_store_i";
-import { KeyValueError } from "./domain/key_value_obj";
-import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "./domain/metadata/ad_hoc_query";
-import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "./domain/metadata/reduce_functions";
+import { KeyValueError } from "@core/domain/key_value_obj";
+import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "@core/domain/metadata/ad_hoc_query";
+import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
 import { evalExprES5 } from "./map_reduce_utils";
 import * as _ from "lodash";
 

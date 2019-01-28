@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -13,7 +13,7 @@ jsep.addLiteral('@', '@');
 
 import {
     FormulaExpression
-} from "./domain/metadata/entity";
+} from "@core/domain/metadata/entity";
 import {
     CompiledFormula, MapReduceTrigger, isMapFunctionAndQuery,
     isMapReduceTrigger, isCompiledFormula, MapReduceKeysAndQueries, ExecPlanN,
@@ -31,7 +31,7 @@ import {
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
     CompiledScalar,
-} from "./domain/metadata/execution_plan";
+} from "@core/domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
 import { logCompileFormula } from "./test/test_utils";
 

@@ -1,11 +1,11 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as metadata from './mock-metadata';
-import { Entity, Pn } from "../../domain/metadata/entity";
-import { Form, NodeType } from '../../domain/uimetadata/form';
+import { Entity, Pn } from "@core/domain/metadata/entity";
+import { Form, NodeType } from '@core/domain/uimetadata/form';
 import { Forms__ServiceForm } from './forms-metadata';
 
 let testUUID = 1;

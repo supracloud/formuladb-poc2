@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import * as fromForm from '../form.state';
 
-import { NodeType, FormTabs } from "@storage/domain/uimetadata/form";
+import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
 @Component({
   selector: '[form_tabs]',
   host: { class: "col" },

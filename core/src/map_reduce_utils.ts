@@ -1,10 +1,10 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from "lodash";
-import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "./domain/metadata/execution_plan";
+import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { Expression, StringLiteral, NumberLiteral } from "jsep";
 declare var emit: any;
 

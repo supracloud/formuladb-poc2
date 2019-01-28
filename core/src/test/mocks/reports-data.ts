@@ -1,7 +1,7 @@
 import { INV__PRD__Location9a, INV__PRD__Location10, Prd_9a, Prd_10, INV__PRD__Location11, INV__PRD__Location12, Prd_11, Prd_12 } from "./inventory-data";
 
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 

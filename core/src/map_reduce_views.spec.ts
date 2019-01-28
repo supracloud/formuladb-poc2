@@ -1,22 +1,26 @@
-import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
+import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { MapReduceView, MapReduceViewUpdates } from "./map_reduce_view";
 import { $s2e } from './formula_compiler';
-import { SumReduceFunN } from "./domain/metadata/reduce_functions";
+import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { KeyValueStoreFactoryI } from './key_value_store_i';
 
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 
 describe('MapReduceView', () => {
+    let kvsFactory: KeyValueStoreFactoryI;
+    
     beforeEach(async (done) => {
-        await KeyValueStoreFactory.clearAll();
+        kvsFactory = await getKeyValueStoreFactory();
+        await kvsFactory.clearAll();
         done();
     });
 
     it('should precompute and compute basic SUM', async (done) => {
-        let mapReduceView = new MapReduceView(KeyValueStoreFactory, "tst", {
+        let mapReduceView = new MapReduceView(kvsFactory, "tst", {
             entityName: 'A',
             keyExpr: [$s2e(`aY`)],
             valueExpr: $s2e(`num`),

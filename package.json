@@ -1,0 +1,14 @@
+{
+  "name": "formuladb",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
+    "start": "node dist/be/src/server.js",
+    "initpgdb": "node storage/bin/start_postgres.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+  }
+}

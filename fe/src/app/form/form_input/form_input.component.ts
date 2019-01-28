@@ -1,9 +1,9 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { NodeElement, NodeType, FormInput } from '@storage/domain/uimetadata/form';
+import { NodeElement, NodeType, FormInput } from "@core/domain/uimetadata/form";
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
@@ -16,7 +16,7 @@ import { AbstractControl } from '@angular/forms';
 import * as _ from "lodash";
 
 import * as fromForm from '../form.state';
-import { Pn } from "@storage/domain/metadata/entity";
+import { Pn } from "@core/domain/metadata/entity";
 
 @Component({
     selector: 'form-input',

@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -13,12 +13,12 @@ import * as jsep from 'jsep';
 import {
     Entity, Schema, Pn, extendEntityProperties, queryEntityWithDeepPath,
     FormulaProperty, FormulaExpression, isPropertyWithProperties, isFormulaProperty, EntityProperty, 
-} from "./domain/metadata/entity";
-import { CompiledFormula } from "./domain/metadata/execution_plan";
-import { DataObjRelativePath } from "./domain/metadata/data_obj";
+} from "@core/domain/metadata/entity";
+import { CompiledFormula } from "@core/domain/metadata/execution_plan";
+import { DataObjRelativePath } from "@core/domain/metadata/data_obj";
 import { compileFormula } from './formula_compiler';
-import { SchemaDAO } from "./domain/metadata/schema_dao";
-import { DAG } from "./domain/metadata/dag";
+import { SchemaDAO } from "@core/domain/metadata/schema_dao";
+import { DAG } from "@core/domain/metadata/dag";
 
 
 export class FormulaCompilerContextType {

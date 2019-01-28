@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as shape from 'd3-shape';
-import { EntityStateGraph } from "@storage/domain/metadata/entity";
+import { EntityStateGraph } from "@core/domain/metadata/entity";
 
 @Component({
   selector: 'form-state',

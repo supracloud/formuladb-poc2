@@ -1,13 +1,13 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from 'lodash';
-import { Entity } from "../../domain/metadata/entity";
+import { Entity } from "@core/domain/metadata/entity";
 import { InventoryData } from './inventory-data';
 import { MusicBookingData } from './musicbooking-data';
-import { DataObj } from '../../domain/metadata/data_obj';
+import { DataObj } from '@core/domain/metadata/data_obj';
 import { FormsData } from './forms-data';
 import { ReportsData } from './reports-data';
 import { GeneralData } from './general-data';

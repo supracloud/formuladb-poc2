@@ -1,9 +1,9 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph } from "../../domain/metadata/entity";
+import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
 
 export const Inventory = {

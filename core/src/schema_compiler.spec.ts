@@ -1,10 +1,10 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from 'lodash';
-import { Entity, Schema, Pn, FormulaProperty } from "./domain/metadata/entity";
+import { Entity, Schema, Pn, FormulaProperty } from "@core/domain/metadata/entity";
 import { SchemaCompiler } from "./schema_compiler";
 
 describe('SchemaCompiler', () => {

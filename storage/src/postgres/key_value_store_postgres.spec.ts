@@ -1,8 +1,8 @@
-import { keyValueStoreSpecs, KeyValueStoreSpecObjType } from "../key_value_store_i.spec";
+import { keyValueStoreSpecs, KeyValueStoreSpecObjType } from "@core/key_value_store_i.spec";
 import { KeyValueStorePostgres, KeyObjStorePostgres } from "./key_value_store_postgres";
 
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 

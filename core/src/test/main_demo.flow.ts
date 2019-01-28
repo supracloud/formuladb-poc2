@@ -1,14 +1,14 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { ChangeObj } from "../domain/change_obj";
+import { ChangeObj } from "@core/domain/change_obj";
 
 import * as meta from './mocks/mock-metadata';
 import { MockData } from "./mocks/mock-data";
 
-import { getDefaultTable } from "../domain/uimetadata/table";
+import { getDefaultTable } from "@core/domain/uimetadata/table";
 
 export var mockMetadata = new meta.MockMetadata(meta.ExampleApps.inventory);
 export var mockData = new MockData(mockMetadata.schema.entities);

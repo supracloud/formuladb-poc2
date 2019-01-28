@@ -1,13 +1,13 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from "../frmdb_lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 
-import { MapFunctionN, CompiledFormula } from "../domain/metadata/execution_plan";
-import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
+import { MapFunctionN, CompiledFormula } from "@core/domain/metadata/execution_plan";
+import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 
 describe('FrmdbEngineStore _sum', () => {
     let frmdbTStore: FrmdbEngineStore;
@@ -16,7 +16,7 @@ describe('FrmdbEngineStore _sum', () => {
 
     beforeEach(async (done) => {
 
-        frmdbTStore = new FrmdbEngineStore(KeyValueStoreFactory);
+        frmdbTStore = await getFrmdbEngineStore();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

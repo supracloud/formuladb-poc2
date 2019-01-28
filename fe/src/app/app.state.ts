@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -12,11 +12,11 @@ import {
   RouterStateSerializer
 } from '@ngrx/router-store';
 
-import { Form } from '@storage/domain/uimetadata/form';
-import { Table } from '@storage/domain/uimetadata/table';
-import { DataObj } from '@storage/domain/metadata/data_obj';
-import { Entity, Pn } from "@storage/domain/metadata/entity";
-import { ChangeObj, applyChanges } from '@storage/domain/change_obj';
+import { Form } from "@core/domain/uimetadata/form";
+import { Table } from "@core/domain/uimetadata/table";
+import { DataObj } from "@core/domain/metadata/data_obj";
+import { Entity, Pn } from "@core/domain/metadata/entity";
+import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 
 
 export { Form };

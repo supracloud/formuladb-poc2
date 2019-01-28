@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { NodeElement, NodeType } from '@storage/domain/uimetadata/form';
+import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
 import * as fromEntity from '../../entity-state';

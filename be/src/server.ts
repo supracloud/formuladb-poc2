@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -12,18 +12,20 @@ import * as http from "http";
 import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
-import { loadData } from "@storage/test/load_test_data";
-import { MockMetadata, ExampleApps } from "@storage/test/mocks/mock-metadata";
-import { FrmdbEngine } from "@storage/frmdb_engine";
-import { FrmdbEngineStore } from "@storage/frmdb_engine_store";
-import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
+import { loadData } from "@core/test/load_test_data";
+import { MockMetadata, ExampleApps } from "@core/test/mocks/mock-metadata";
+import { FrmdbEngine } from "@core/frmdb_engine";
+import { FrmdbEngineStore } from "@core/frmdb_engine_store";
+import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 let mockMetadata = new MockMetadata(ExampleApps.inventory);
-let testFrmdbEngine = new FrmdbEngine(new FrmdbEngineStore(KeyValueStoreFactory), mockMetadata.schema);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(() => this.testFrmdbEngine.init(true))
-.then(() => loadData(testFrmdbEngine, mockMetadata))
+.then(async () => {
+  let testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
+  loadData(testFrmdbEngine, mockMetadata)
+})
 .then(() => {
   // Init the express application
   const app = require("./config/express").default();

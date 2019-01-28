@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -13,17 +13,17 @@ import {
     RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
 } from '@ngrx/router-store';
 
-import { Entity } from "@storage/domain/metadata/entity";
+import { Entity } from "@core/domain/metadata/entity";
 import * as appState from './app.state';
 import * as fromTable from './table/table.state';
 import * as fromForm from './form/form.state';
 import { AppEffects } from "./app.effects";
-import { ChangeObj } from "./common/domain/change_obj";
+import { ChangeObj } from "./comm@core/domain/change_obj";
 
 import { MockMetadata, GEN__Actor, GEN__Currency } from "./common/test/mocks/mock-metadata";
 import * as mainDemoFlow from "./common/test/main_demo.flow";
-import { getDefaultTable } from './common/domain/uimetadata/table';
-import { getDefaultForm } from './common/domain/uimetadata/form';
+import { getDefaultTable } from './comm@core/domain/uimetadata/table';
+import { getDefaultForm } from './comm@core/domain/uimetadata/form';
 
 export class TestActions extends Actions {
     constructor() {

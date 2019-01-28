@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -12,23 +12,23 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { KeyValueObj } from "@storage/domain/key_value_obj";
-import { DataObj } from "@storage/domain/metadata/data_obj";
-import { Entity } from "@storage/domain/metadata/entity";
-import { ChangeObj } from "@storage/domain/change_obj";
-import * as events from "@storage/domain/event";
+import { KeyValueObj } from "@core/domain/key_value_obj";
+import { DataObj } from "@core/domain/metadata/data_obj";
+import { Entity } from "@core/domain/metadata/entity";
+import { ChangeObj } from "@core/domain/change_obj";
+import * as events from "@core/domain/event";
 
-import { Table, TableColumn, getDefaultTable } from "@storage/domain/uimetadata/table";
-import { Form, NodeElement, NodeType, getDefaultForm } from "@storage/domain/uimetadata/form";
+import { Table, TableColumn, getDefaultTable } from "@core/domain/uimetadata/table";
+import { Form, NodeElement, NodeType, getDefaultForm } from "@core/domain/uimetadata/form";
 
 import * as appState from './app.state';
-import { generateUUID } from "@storage/domain/uuid";
+import { generateUUID } from "@core/domain/uuid";
 import { BackendService, EnvType } from "./backend.service";
 import { TableFormBackendAction } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
-import { waitUntilNotNull } from '@storage/ts-utils';
-import { ExampleApps } from '@storage/test/mocks/mock-metadata';
+import { waitUntilNotNull } from "@core/ts-utils";
+import { ExampleApps } from "@core/test/mocks/mock-metadata";
 
 
 export type ActionsToBeSentToServer =

@@ -2,8 +2,8 @@ import { createInterface } from 'readline';
 import { createReadStream } from 'fs';
 
 import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
-import { $s2e } from '@storage/formula_compiler';
-import { evalExprES5 } from '@storage/map_reduce_utils';
+import { $s2e } from "@core/formula_compiler";
+import { evalExprES5 } from "@core/map_reduce_utils";
 
 
 interface Prlp {

@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -17,10 +17,10 @@ import { CompiledFormula, MapReduceTrigger, ExecPlanN,
     MapReduceKeysQueriesAndValueN,
     MapReduceTriggerN,
     CompiledFormulaN,
-} from "./domain/metadata/execution_plan";
+} from "@core/domain/metadata/execution_plan";
 import { matchesTypeES5, evalExprES5, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from "./map_reduce_utils";
-import { Fn } from "./domain/metadata/functions";
-import { SumReduceFunN, CountReduceFunN } from "./domain/metadata/reduce_functions";
+import { Fn } from "@core/domain/metadata/functions";
+import { SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 
 describe('FormulaCompiler', () => {
     let compiledExpr;

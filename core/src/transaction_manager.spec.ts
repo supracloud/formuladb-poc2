@@ -1,11 +1,11 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from "./frmdb_lodash";
 import { TransactionManager } from "./transaction_manager";
-import KeyValueStoreFactory from '@kv_selector_base/key_value_store_impl_selector';
+import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 
 describe('TransactionManager', () => {
     beforeEach(async (done) => {
@@ -15,7 +15,7 @@ describe('TransactionManager', () => {
 
     it("Should serialize concurrent conflicting transactions", async (done) => {
         let counter = 1;
-        let transactionManager = new TransactionManager(KeyValueStoreFactory);
+        let transactionManager = new TransactionManager(await getKeyValueStoreFactory());
 
         async function incrementCounter() {
             return new Promise(resolve => setTimeout(() => {

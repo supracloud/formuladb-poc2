@@ -6,12 +6,14 @@
         "module": "commonjs",
         "strictNullChecks": true,
         "paths": {
+            "@core/*": ["../../core/src/*"],
             "@storage/*": ["../../storage/src/*"],
 	        "@kv_selector_base/*": ["./*"]
         }
     },
     "include": [
         "./**/*",
-        "../../storage/src/**/*"
+        "../../core/src/**/*",
+        "../../storage/src/**/*",
     ]
 }

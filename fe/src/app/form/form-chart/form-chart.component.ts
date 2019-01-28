@@ -4,7 +4,7 @@ import { BaseNodeComponent } from '../base_node';
 import { Store } from '@ngrx/store';
 
 import * as fromForm from '../form.state';
-import { FormChart } from '@storage/domain/uimetadata/form';
+import { FormChart } from "@core/domain/uimetadata/form";
 import { AbstractControl, FormArray, FormControl } from '@angular/forms';
 
 @Component({

@@ -12,7 +12,7 @@
     "start": "node dist/be/src/server.js",
     "compile": "tsc --inlineSourceMap -p src",
     "compile:watch": "tsc --inlineSourceMap -p src -w 2>&1 | perl -pe 's!^../src/app/common!\\n./fe/src/app/common!; s!^src/(?\\!app/common)!./be/src/!'",
-    "pretest": "cd ../storage && npm run compile && cd - && npm run compile",
+    "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",
     "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"sleep 2 && npm run jasmine:watch\" "
@@ -25,6 +25,7 @@
     "concurrently": "^3.5.0",
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
+    "detect-node": "^2.0.4",
     "dotenv": "^6.2.0",
     "express": "~4.13.1",
     "express-session": "^1.15.6",
@@ -68,7 +69,8 @@
     "watch": "^1.0.2"
   },
   "_moduleAliases": {
-    "@storage": "../storage/dist",
+    "@storage": "./dist/storage/src",
+    "@core": "./dist/core/src",
     "@kv_selector_base": "./dist/be/src"
   }
 }

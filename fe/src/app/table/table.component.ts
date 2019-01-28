@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -10,7 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import * as tableState from './table.state';
-import { TableColumn } from '@storage/domain/uimetadata/table';
+import { TableColumn } from "@core/domain/uimetadata/table";
 import {
     GridOptions, GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
@@ -20,7 +20,7 @@ import { LicenseManager } from 'ag-grid-enterprise';
 import * as fromTable from './table.state';
 import * as _ from 'lodash';
 import { TableHeaderComponent } from './table-header.component';
-import { Entity } from "@storage/domain/metadata/entity";
+import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from './table.service';
 
 @Component({

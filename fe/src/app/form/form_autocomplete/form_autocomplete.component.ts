@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -13,7 +13,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
 
 import * as fromForm from '../form.state';
-import { FormAutocomplete } from '@storage/domain/uimetadata/form';
+import { FormAutocomplete } from "@core/domain/uimetadata/form";
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
 import { switchMap, map, filter } from 'rxjs/operators';

@@ -1,11 +1,11 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import * as _ from 'lodash';
 
-import { Entity, Schema, Pn } from "../../domain/metadata/entity";
+import { Entity, Schema, Pn } from "@core/domain/metadata/entity";
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";

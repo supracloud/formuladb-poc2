@@ -7,13 +7,19 @@
 test:
   stage: test
   script:
-    - cd storage && npm install && npm run compile && npm run initpgdb
+    - cd storage && npm install 
+    - cd ..
+    - cd core && npm install 
+    - cd ..
+    - npm run initpgdb
     - cd ..
     - cd be && npm install
     - cd ..
     - cd fe && npm install
     - cd ..
-    - cd be && npm test
+    - cd be
+    - npm test
+    - FRMDB_STORAGE=postgres npm test
     - cd ..
     # - cd fe && npm test -- --watch=false
     # - cd ..

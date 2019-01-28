@@ -7,7 +7,7 @@ import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } fro
 import { Subscription, Subject } from 'rxjs';
 
 import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Pn, EntityProperty } from "@storage/domain/metadata/entity";
+import { Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { debounceTime, tap } from 'rxjs/operators';
 
 @Component({

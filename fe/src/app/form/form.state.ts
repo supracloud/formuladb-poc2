@@ -1,14 +1,14 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from '@storage/domain/metadata/data_obj';
-import { Form, NodeElement, isNodeElementWithChildren, NodeType } from '@storage/domain/uimetadata/form';
-import { ChangeObj, applyChanges } from '@storage/domain/change_obj';
-import * as events from '@storage/domain/event';
+import { DataObj } from "@core/domain/metadata/data_obj";
+import { Form, NodeElement, isNodeElementWithChildren, NodeType } from "@core/domain/uimetadata/form";
+import { ChangeObj, applyChanges } from "@core/domain/change_obj";
+import * as events from "@core/domain/event";
 
 export { DataObj };
 export { Form };

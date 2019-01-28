@@ -1,10 +1,10 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { MapReduceTrigger } from "../domain/metadata/execution_plan";
-import { KeyValueObj } from "../domain/key_value_obj";
+import { MapReduceTrigger } from "@core/domain/metadata/execution_plan";
+import { KeyValueObj } from "@core/domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { evalExprES5 } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";

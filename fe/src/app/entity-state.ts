@@ -1,21 +1,21 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from '@storage/domain/metadata/data_obj';
-import { Entity, EntityProperty } from "@storage/domain/metadata/entity";
-import { ChangeObj, applyChanges } from '@storage/domain/change_obj';
+import { DataObj } from "@core/domain/metadata/data_obj";
+import { Entity, EntityProperty } from "@core/domain/metadata/entity";
+import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 
 
 export { DataObj };
 export { Entity };
 export { ChangeObj, applyChanges };
 
-import * as events from '@storage/domain/event';
+import * as events from "@core/domain/event";
 import { unflatten, NavigationItem } from './navigation.item';
 
 export interface EntityState {

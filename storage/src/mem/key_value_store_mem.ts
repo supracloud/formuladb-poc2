@@ -1,14 +1,11 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str } from "../key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str } from "@core/key_value_store_i";
 import * as _ from "lodash";
-import { KeyValueObj, KeyValueError } from "../domain/key_value_obj";
-import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "../domain/metadata/reduce_functions";
-import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "../domain/metadata/ad_hoc_query";
-import { evalExprES5 } from "../map_reduce_utils";
+import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));

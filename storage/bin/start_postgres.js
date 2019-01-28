@@ -13,10 +13,10 @@ if (shell.exec('docker inspect --format="{{ .State.Status }}" formuladb-pg').cod
     shell.echo('formuladb-pg container already present. Starting it, just in case ...');
     shell.exec('docker start formuladb-pg');
 
-} else if (shell.exec('docker run -d --name formuladb-pg -p 5432:5432 -v ./postgres-data:/var/lib/postgresql/data -e \'POSTGRES_PASSWORD=p@ssw0rd42\' postgres:latest').code !== 0) {
+} else if (shell.exec('docker run -d --name formuladb-pg -p 5432:5432 -e \'POSTGRES_PASSWORD=p@ssw0rd42\' postgres:latest').code !== 0) {
 
-        shell.echo('Error: Failed to start Postgres container');
-        shell.exit(1);
+    shell.echo('Error: Failed to start Postgres container');
+    shell.exit(1);
 } else {
     shell.echo('Successfuly started FormulaDB potgres container');
 }

@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import * as fromForm from './form.state';
 
-import { NodeElement, NodeType } from "@storage/domain/uimetadata/form";
+import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
 
 export class BaseNodeComponent {
 

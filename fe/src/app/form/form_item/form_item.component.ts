@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -7,7 +7,7 @@ import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from '@storage/domain/uimetadata/form';
+import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from "@core/domain/uimetadata/form";
 import * as fromForm from '../form.state';
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 

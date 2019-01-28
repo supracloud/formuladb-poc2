@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -37,10 +37,10 @@ import {
     CompiledScalar,
     MapKeyQuery,
     includesMapFunctionAndQuery,
-} from "./domain/metadata/execution_plan";
+} from "@core/domain/metadata/execution_plan";
 import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName } from './formula_compiler';
 import { _throw } from "./throw";
-import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "./domain/metadata/reduce_functions";
+import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     fc: FuncCommon,

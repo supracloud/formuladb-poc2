@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 
 import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str } from "./key_value_store_i";
-import { MapFunctionT } from "./domain/metadata/execution_plan";
+import { MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
-import { KeyValueObj } from './domain/key_value_obj';
-import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun } from "./domain/metadata/reduce_functions";
+import { KeyValueObj } from '@core/domain/key_value_obj';
+import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun } from "@core/domain/metadata/reduce_functions";
 
 
 export interface MapViewUpdates<VALUET> {

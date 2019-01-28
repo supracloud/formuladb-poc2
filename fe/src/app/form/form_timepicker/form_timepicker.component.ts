@@ -1,5 +1,5 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from "../base_node";
 
 import * as fromForm from '../form.state';
-import { FormTimepicker } from '@storage/domain/uimetadata/form';
+import { FormTimepicker } from "@core/domain/uimetadata/form";
 
 @Component({
   selector: 'form-timepicker',

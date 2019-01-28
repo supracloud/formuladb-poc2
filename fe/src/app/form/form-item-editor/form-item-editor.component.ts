@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { NodeElement, NodeType } from 'src/app/common/domain/uimetadata/form';
+import { NodeElement, NodeType } from 'src/app/comm@core/domain/uimetadata/form';
 
 @Component({
   selector: 'frmdb-form-item-editor',

@@ -1,18 +1,18 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { SchemaDAO } from "./domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId } from "./domain/metadata/data_obj";
+import { SchemaDAO } from "@core/domain/metadata/schema_dao";
+import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
-import * as events from "./domain/event";
+import * as events from "@core/domain/event";
 import * as _ from 'lodash';
-import { isKeyValueError } from "./domain/key_value_obj";
-import { generateUUID } from "./domain/uuid";
-import { CompiledFormula } from "./domain/metadata/execution_plan";
+import { isKeyValueError } from "@core/domain/key_value_obj";
+import { generateUUID } from "@core/domain/uuid";
+import { CompiledFormula } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";

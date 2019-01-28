@@ -1,9 +1,9 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty } from "../../domain/metadata/entity";
+import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
 
 

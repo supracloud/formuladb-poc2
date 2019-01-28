@@ -1,13 +1,13 @@
 /**
- * © 2017 S.C. CRYSTALKEY S.R.L.
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
 
  import * as _ from 'lodash';
 
 import { KeyObjStoreI, KeyValueStoreArrayKeys } from "./key_value_store_i";
-import { SumReduceFunN } from "./domain/metadata/reduce_functions";
-import { AddHocQuery } from './domain/metadata/ad_hoc_query';
+import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { AddHocQuery } from '@core/domain/metadata/ad_hoc_query';
 import { $s2e } from './formula_compiler';
 
 export interface KeyValueStoreSpecObjType {
