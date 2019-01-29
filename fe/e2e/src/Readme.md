@@ -28,9 +28,9 @@
  * 
  * docker login --username <docker hub username> --password <password> 
  * 
- * docker run --name ci-with-video --cap-add=SYS_ADMIN --user centos -it cristualexandru/formuladb:ci-with-video bash -c \
- * 'source ~/.bashrc && cd && git clone https://<gitlab username>:<password>@gitlab.com/metawiz/febe.git && cd febe/ && git checkout \
- * protractor-video-reporter && cd fe/ && npm install && ng e2e'
+ * docker run --name ci-with-video --cap-add=SYS_ADMIN --user centos -it registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c \
+ * 'source ~/.bashrc && cd && git clone https://lsoica:greudespart2@gitlab.com/metawiz/febe.git && cd febe/ && cd storage && npm install && \
+ * cd .. && cd core && npm install && cd .. && cd fe/ && npm install && ng e2e'
  * 
  * And get the final video from it:
  * 
