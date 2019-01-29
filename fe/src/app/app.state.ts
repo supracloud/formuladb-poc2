@@ -145,6 +145,14 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           formulaHighlightedColumns: action.formulaColumns,
         }
       }
+    } else if (action.type == fromEntity.SelectedEntityActionN) {
+      updatedState = {
+        ...state,
+        table: {
+          ...state.table,
+          entity: action.entity,
+        }
+      }
     }
     let newState = reducer(updatedState, action);
     console.log("%c " + action.type + " ACTION DISPATCHED.", 

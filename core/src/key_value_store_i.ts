@@ -5,16 +5,60 @@
 
 import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
-import { AddHocQuery } from "@core/domain/metadata/ad_hoc_query";
+import { Entity } from "./domain/metadata/entity";
+
+type NumberFilterT = 'equals' | 'notEqual' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual' | 'inRange';
+type TextFilterT = 'equals' | 'notEqual' | 'contains' | 'notContains' | 'startsWith' | 'endsWith';
+
+export interface FilterItem {
+    filterType: 'text' | 'number';
+    type: NumberFilterT | TextFilterT;
+    filter: string;
+    filterTo?: string;
+}
+
+export interface SimpleAddHocQuery {
+    startRow: number;
+    endRow: number;
+    rowGroupCols: {field: string}[];
+    valueCols: ColumnParams[];
+    pivotCols: ColumnParams[];
+    pivotMode: boolean;
+    groupKeys: string[];
+    filterModel: {[x: string]: FilterItem};
+    sortModel: any;
+}
+export type AggFunc = 'sum' | 'count' | 'avg' | 'min' | 'max' | 'first' | 'last';
+export interface ColumnParams {
+    field: string;
+    aggFunc: AggFunc;
+}
+
+export interface QueryRequest {
+    startRow: number;
+    endRow: number;
+    rowGroupCols: ColumnParams[];
+    valueCols: ColumnParams[];
+    pivotCols: ColumnParams[];
+    pivotMode: boolean;
+    groupKeys: string[];
+    filterModel: any;
+    sortModel: SortModel[];
+}
+
+export interface SortModel {
+    colId: string,
+    sort: 'asc' | 'desc',
+}
 
 export interface KeyValueStoreI<VALUET> {
-    get(key: string): Promise<VALUET | null>;
-    /** The resulting rows are sorted by key */
+    get(_id: string): Promise<VALUET | null>;
+    /** The resulting rows are sorted by _id */
     rangeQuery(opts: RangeQueryOptsBaseI<string>): Promise<VALUET[]>;
-    /** The resulting rows are sorted by key */
-    rangeQueryWithKeys(opts: RangeQueryOptsBaseI<string>): Promise<{key: string, val: VALUET}[]>;
-    set(key: string, val: VALUET): Promise<VALUET>;
-    del(key: string): Promise<VALUET>;
+    /** The resulting rows are sorted by _id */
+    rangeQueryWithKeys(opts: RangeQueryOptsBaseI<string>): Promise<{_id: string, val: VALUET}[]>;
+    set(_id: string, val: VALUET): Promise<VALUET>;
+    del(_id: string): Promise<VALUET>;
     clearDB(): Promise<any>;
     all(): Promise<VALUET[]>;
 }
@@ -25,28 +69,33 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
 }
-
-export function kvsKey2Str(key: any): string {
-    return FormuladbCollate.toIndexableString(key);
+export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<OBJT> {
+    entity: Entity;
+    /** filtering and grouping by any _id */
+    simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
 }
-export function kvsStr2Key(key: string): any {
-    return FormuladbCollate.parseIndexableString(key);
+
+export function kvsKey2Str(_id: any): string {
+    return FormuladbCollate.toIndexableString(_id);
+}
+export function kvsStr2Key(_id: string): any {
+    return FormuladbCollate.parseIndexableString(_id);
 }
 
 class KeyValueStoreBase<KEYT, VALUET> {
     constructor(protected kvs: KeyValueStoreI<VALUET>) {
     }
 
-    public id2str(key: KEYT): string {
-        return kvsKey2Str(key);
+    public id2str(_id: KEYT): string {
+        return kvsKey2Str(_id);
     }
 
-    public str2id(key: string): KEYT {
-        return kvsStr2Key(key);
+    public str2id(_id: string): KEYT {
+        return kvsStr2Key(_id);
     }
 
-    public get(key: KEYT): Promise<VALUET | null> {
-        return this.kvs.get(this.id2str(key));
+    public get(_id: KEYT): Promise<VALUET | null> {
+        return this.kvs.get(this.id2str(_id));
     }
     public rangeQuery(opts: RangeQueryOptsBaseI<KEYT>): Promise<VALUET[]> {
         return this.kvs.rangeQuery({
@@ -55,21 +104,21 @@ class KeyValueStoreBase<KEYT, VALUET> {
             endkey: this.id2str(opts.endkey),
         })
     }
-    public rangeQueryWithKeys(opts: RangeQueryOptsBaseI<KEYT>): Promise<{key: KEYT, val: VALUET}[]> {
+    public rangeQueryWithKeys(opts: RangeQueryOptsBaseI<KEYT>): Promise<{_id: KEYT, val: VALUET}[]> {
         return this.kvs.rangeQueryWithKeys({
             ...opts,
             startkey: this.id2str(opts.startkey),
             endkey: this.id2str(opts.endkey),
         })
         .then(res => {
-            return res.map(({key, val}) => ({key: this.str2id(key), val: val}));
+            return res.map(({_id, val}) => ({_id: this.str2id(_id), val: val}));
         });;
     }
-    public set(key: KEYT, val: VALUET): Promise<VALUET> {
-        return this.kvs.set(this.id2str(key), val);
+    public set(_id: KEYT, val: VALUET): Promise<VALUET> {
+        return this.kvs.set(this.id2str(_id), val);
     }
-    public del(key: KEYT): Promise<VALUET> {
-        return this.kvs.del(this.id2str(key));
+    public del(_id: KEYT): Promise<VALUET> {
+        return this.kvs.del(this.id2str(_id));
     }
     public clearDB(): Promise<any> {
         return this.kvs.clearDB();
@@ -79,6 +128,7 @@ class KeyValueStoreBase<KEYT, VALUET> {
 export interface KeyValueStoreFactoryI {
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
+    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
     clearAll(): Promise<void>;
 }
 
@@ -92,7 +142,7 @@ interface RangeQueryOptsBaseI<IDType> {
     startkey: IDType;
     /** Get rows with keys in a certain range (inclusive/inclusive). */
     endkey: IDType;
-    /** Include rows having a key equal to the given options.endkey. */
+    /** Include rows having a _id equal to the given options.endkey. */
     inclusive_start?: boolean;
     inclusive_end?: boolean;
     // /** Maximum number of rows to return. */
@@ -119,7 +169,7 @@ export interface RangeQueryOptsArrayKeysI extends RangeQueryOptsBaseI<KVSArrayKe
 //     startkey?: any;
 //     /** Get rows with keys in a certain range (inclusive/inclusive). */
 //     endkey?: any;
-//     /** Include rows having a key equal to the given options.endkey. */
+//     /** Include rows having a _id equal to the given options.endkey. */
 //     inclusive_start?: boolean;
 //     inclusive_end?: boolean;
 //     /** Maximum number of rows to return. */
@@ -128,14 +178,14 @@ export interface RangeQueryOptsArrayKeysI extends RangeQueryOptsBaseI<KVSArrayKe
 //     skip?: number;
 //     /** Reverse the order of the output rows. */
 //     descending?: boolean;
-//     /** Only return rows matching this key. */
-//     key?: any;
+//     /** Only return rows matching this _id. */
+//     _id?: any;
 //     /** Array of keys to fetch in a single shot. */
 //     keys?: any[];
 //     /** True if you want the reduce function to group results by keys, rather than returning a single result. */
 //     group?: boolean;
 //     /**
-//      * Number of elements in a key to group by, assuming the keys are arrays.
+//      * Number of elements in a _id to group by, assuming the keys are arrays.
 //      * Defaults to the full length of the array.
 //      */
 //     group_level?: number;

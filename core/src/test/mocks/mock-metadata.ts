@@ -12,7 +12,6 @@ import * as GeneralMetadata from "./general-metadata";
 import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
-import * as OrbicoMetadata from "./orbico-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
 
 export * from "./inventory-metadata";
@@ -86,6 +85,7 @@ export class MockMetadata {
 
         this.entities.forEach(ent => {
             ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
+            ent.isEditable = true;
             this.schema.entities[ent._id] = ent;
         });
 

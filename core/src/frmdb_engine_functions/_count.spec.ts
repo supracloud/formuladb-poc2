@@ -12,6 +12,25 @@ import { MapFunctionN, CompiledFormula } from "@core/domain/metadata/execution_p
 import { compileFormula, $s2e } from '../formula_compiler';
 import { evalExprES5 } from "../map_reduce_utils";
 import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { Schema, Pn, Entity } from "@core/domain/metadata/entity";
+
+const TestSchema: Schema = {
+    _id: "FRMDB_SCHEMA",
+    entities: {
+        A: {
+            _id: 'A', props: {
+                _id: { name: "_id", propType_: Pn.STRING },
+                x: { name: "x", propType_: Pn.NUMBER },
+            },
+        } as Entity,
+        B: {
+            _id: 'B', props: {
+                _id: { name: "_id", propType_: Pn.STRING },
+                idx: { name: "idx", propType_: Pn.NUMBER },
+            },
+        } as Entity,
+    }
+};
 
 describe('FrmdbEngineStore _count', () => {
     let frmdbTStore: FrmdbEngineStore;
@@ -28,7 +47,7 @@ describe('FrmdbEngineStore _count', () => {
     }
 
     beforeEach(async (done) => {
-        frmdbTStore = await getFrmdbEngineStore();
+        frmdbTStore = await getFrmdbEngineStore(TestSchema);
         await frmdbTStore.kvsFactory.clearAll();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;

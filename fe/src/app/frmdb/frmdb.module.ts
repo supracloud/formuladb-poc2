@@ -40,6 +40,7 @@ import { FrmdbOnfocusDirective } from '../form/frmdb-onfocus.directive';
 import { TableService } from '../table/table.service';
 import { FormItemEditorComponent } from '../form/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '../form/form-item-editor/form-input-editor/form-input-editor.component';
+import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
 
 @NgModule({
   imports: [
@@ -79,7 +80,8 @@ import { FormInputEditorComponent } from '../form/form-item-editor/form-input-ed
   ],
   providers: [
     FormEditingService,
-    TableService
+    TableService,
+    I18nPipe
   ]
 })
 export class FrmdbModule { }
