@@ -12,6 +12,7 @@ import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
 import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
+import { waitUntilNotNull } from "@core/ts-utils";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -21,6 +22,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     static db: pgPromise.IDatabase<any> | undefined = undefined;
     private initialized: boolean = false;
+    private tableCreated: boolean | null = null
     protected table_id: string | undefined = undefined;
     protected isJSONTable: boolean = true;
 
@@ -58,8 +60,11 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     }
     protected async initialize() {
         if (this.initialized == false) {
-            await this.createTable();
             this.initialized = true;
+            await this.createTable();
+            this.tableCreated = true;
+        } else {
+            await waitUntilNotNull(() => this.tableCreated, 50);
         }
     }
 
@@ -218,16 +223,20 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 
     private values2sql(obj: OBJT): string[] {
         return Object.values(this.entity.props).map(prop => {
-            let value: string = obj[prop.name] != null ? obj[prop.name] : 'null';
-            switch (prop.propType_) {
-                case Pn.STRING:
-                    value = `'${value}'`;
-                    break;
-                case Pn.NUMBER:
-                    break;
-                default: 
-                    value = `'${value}'`;
-            }
+            let value: string;
+            if (obj[prop.name] != null) {
+                value = obj[prop.name];
+                switch (prop.propType_) {
+                    case Pn.STRING:
+                        if (typeof value !== 'string') throw new Error("value " + value + "is not a string");
+                        value = `'${value.replace(/'/g, "''")}'`;
+                        break;
+                    case Pn.NUMBER:
+                        break;
+                    default: 
+                        value = `'${(value + '').replace(/'/g, "''")}'`;
+                }
+            } else value = 'null';
 
             return value;
         });
@@ -235,16 +244,20 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 
     private values2sqlSET(obj: OBJT): string[] {
         return this.propsNoId().map(prop => {
-            let value: string = obj[prop.name] != null ? obj[prop.name] : 'null';
-            switch (prop.propType_) {
-                case Pn.STRING:
-                    value = `'${value}'`;
-                    break;
-                case Pn.NUMBER:
-                    break;
-                default: 
-                    value = `'${value}'`;
-            }
+            let value: string;
+            if (obj[prop.name] != null) {
+                value =  obj[prop.name];
+                switch (prop.propType_) {
+                    case Pn.STRING:
+                        if (typeof value !== 'string') throw new Error("value " + value + "is not a string");
+                        value = `'${value.replace(/'/g, "''")}'`;
+                        break;
+                    case Pn.NUMBER:
+                        break;
+                    default: 
+                        value = `'${(''+value).replace(/'/g, "''")}'`;
+                }
+            } else value = 'null';
             return prop.name + '=' + value;
         });
     }
@@ -290,7 +303,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             default: 
                 type = "varchar";
         }
-        if (prop.name === '_id') type = type + ' PRIMARY KEY';
+        if (prop.name === '_id') type = type + ' NOT NULL PRIMARY KEY';
         return prop.name + ' ' + type;
     }
 

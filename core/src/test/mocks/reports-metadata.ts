@@ -17,7 +17,7 @@ export const Reports = {
 export const REP__DetailedCentralizerReport = {
     _id: "REP__DetailedCentralizerReport",
     props: {
-        //TODO
+        dummy: { name: "dummy", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
     }
 };
 
@@ -81,7 +81,7 @@ export const REP__LargeSales__Product = {
     _id: "REP__LargeSales__Product",
     props: {
         productLocationId: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        productName: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        productName: { name: "productName", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         largeSalesValue: {
             name: "largeSalesValue",
             propType_: Pn.FORMULA,

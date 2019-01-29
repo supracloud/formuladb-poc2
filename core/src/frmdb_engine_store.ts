@@ -94,20 +94,20 @@ export class FrmdbEngineStore extends FrmdbStore {
                 }
             }
 
-            let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityName, {
-                extraColsBeforeGroup: [
-                    {alias: 'KEY', expr: aggsTrg.map.keyExpr},
-                    {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
-                    'AGG',
-                ],
-                filters: [],
-                groupColumns: ['KEY'],
-                groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
-                groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
-                returnedColumns: ['AGG'],
-                sortColumns: [],
-            });
-            triggerValues[aggsTrg.aggsViewName] = triggerValue[0]['AGG'];
+            // let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityName, {
+            //     extraColsBeforeGroup: [
+            //         {alias: 'KEY', expr: aggsTrg.map.keyExpr},
+            //         {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
+            //         'AGG',
+            //     ],
+            //     filters: [],
+            //     groupColumns: ['KEY'],
+            //     groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
+            //     groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
+            //     returnedColumns: ['AGG'],
+            //     sortColumns: [],
+            // });
+            // triggerValues[aggsTrg.aggsViewName] = triggerValue[0]['AGG'];
         }
 
         let ret;

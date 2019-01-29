@@ -12,7 +12,7 @@ import * as http from "http";
 import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
-import { loadData } from "@core/test/load_test_data";
+import { loadTestData } from "@core/test/load_test_data";
 import { MockMetadata, ExampleApps } from "@core/test/mocks/mock-metadata";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
@@ -25,7 +25,7 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
   testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
   await testFrmdbEngine.init(true);
-  await loadData(testFrmdbEngine, mockMetadata)
+  await loadTestData(testFrmdbEngine, mockMetadata)
 })
 .then(() => {
   // Init the express application

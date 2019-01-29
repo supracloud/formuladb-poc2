@@ -56,7 +56,7 @@ export const INV__PRD__Location22 = { _id: "INV__PRD__Location~~1__22", productI
 export const INV__PRD__Location23 = { _id: "INV__PRD__Location~~1__23", productId: "INV__PRD~~23", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 export const INV__PRD__Location24 = { _id: "INV__PRD__Location~~1__24", productId: "INV__PRD~~24", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 export const INV__PRD__Location25 = { _id: "INV__PRD__Location~~1__25", productId: "INV__PRD~~25", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRDUnit1 = { _id: "INV__PRDUnit~~1" };
+export const INV__PRDUnit1 = { _id: "INV__PRD__Unit~~1" };
 export const INV__Order1 = { _id: "INV__Order~~1", sales_agent: "John Doe", creation_date: "2018-09-27" };
 export const INV__Order__Item1_1 = { _id: "INV__Order__Item~~1__1", productLocationId: INV__PRD__Location1._id, quantity: 10 };
 export const INV__Order__Item1_2 = { _id: "INV__Order__Item~~1__2", productLocationId: INV__PRD__Location1a._id, quantity: 4 };
@@ -66,8 +66,8 @@ export const INV__Receipt__Item1_2 = { _id: "INV__Receipt__Item~~1__2", productL
 export const INV__Receipt2 = { _id: "INV__Receipt~~2" };
 export const INV__Receipt__Item2_1 = { _id: "INV__Receipt__Item~~2__1", productLocationId: INV__PRD__Location1._id, quantity: 10 };
 export const INV__Receipt__Item2_2 = { _id: "INV__Receipt__Item~~2__2", productLocationId: INV__PRD__Location1a._id, quantity: 5 };
-export const REP__DetailedCentralizerReport1 = { _id: "REP__DetailedCentralizerReport~~1" };
-export const REP__ServiceCentralizerReport1 = { _id: "REP__ServiceCentralizerReport~~1" };
+// export const REP__DetailedCentralizerReport1 = { _id: "REP__DetailedCentralizerReport~~1", dummy: 'bla' };
+// export const REP__ServiceCentralizerReport1 = { _id: "REP__ServiceCentralizerReport~~1", dummy: 'bla' };
 
 export const InventoryData = [
     Prd_1,
@@ -132,6 +132,6 @@ export const InventoryData = [
     INV__Receipt2,
     INV__Receipt__Item2_1,
     INV__Receipt__Item2_2,
-    REP__DetailedCentralizerReport1,
-    REP__ServiceCentralizerReport1,
+    // REP__DetailedCentralizerReport1,
+    // REP__ServiceCentralizerReport1,
 ];

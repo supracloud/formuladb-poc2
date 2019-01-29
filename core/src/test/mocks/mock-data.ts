@@ -15,11 +15,11 @@ import { GeneralData } from './general-data';
 
 export class MockData {
 
-    allData: DataObj[] = InventoryData
-        .concat(MusicBookingData)
-        .concat(FormsData)
-        .concat(ReportsData)
-        .concat(GeneralData);
+    allData: DataObj[] = InventoryData;
+        // .concat(MusicBookingData)
+        // .concat(FormsData)
+        // .concat(ReportsData)
+        // .concat(GeneralData);
 
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }

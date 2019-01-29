@@ -14,17 +14,7 @@ export class TableService {
     let self = this;
     return {
       getRows(params: IServerSideGetRowsParams): void {
-        let req = params.request;
-
-        self.backendService.simpleAdHocQuery(entity._id, {
-          whereFilters: [],
-          groupColumns: [],
-          groupAggs: [],
-          groupFilters: [],
-          columns: [],
-          sortColumns: [],
-          specificQueryParams: params.request
-        })
+        self.backendService.simpleAdHocQuery(entity._id, params.request as SimpleAddHocQuery)
           .then((data: any[]) => params.successCallback(data, data.length))
           .catch(() => params.failCallback());
       }
