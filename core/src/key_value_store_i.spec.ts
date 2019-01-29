@@ -5,8 +5,9 @@
 
 import * as _ from 'lodash';
 
-import { KeyObjStoreI, KeyValueStoreArrayKeys, SimpleAddHocQuery } from "./key_value_store_i";
+import { KeyObjStoreI, KeyValueStoreArrayKeys, SimpleAddHocQuery, KeyTableStoreI } from "./key_value_store_i";
 import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { Entity, EntityProperty, Pn } from './domain/metadata/entity';
 
 export interface KeyValueStoreSpecObjType {
     _id: string;
@@ -14,7 +15,16 @@ export interface KeyValueStoreSpecObjType {
     subcateg?: string;
     val: number;
 }
-export function keyValueStoreSpecs<KVSType extends KeyObjStoreI<KeyValueStoreSpecObjType>>(context: { kvs: KVSType }) {
+export const KeyValueStoreSpecEntity: Entity = {
+    _id: "KeyValueStoreSpecEntity",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING} as EntityProperty,
+        categ: { name: "categ", propType_: Pn.STRING} as EntityProperty,
+        subcateg: { name: "subcateg", propType_: Pn.STRING} as EntityProperty,
+        val: { name: "val", propType_: Pn.NUMBER} as EntityProperty,
+    }
+};
+export function keyValueStoreSpecs<KVSType extends KeyTableStoreI<KeyValueStoreSpecObjType>>(context: { kvs: KVSType }) {
     let kvs: KVSType;
 
     describe('KeyObjStoreI', () => {
@@ -57,24 +67,30 @@ export function keyValueStoreSpecs<KVSType extends KeyObjStoreI<KeyValueStoreSpe
             done();
         });
 
-        it('run adHocQueries', async (done) => {
+        fit('run adHocQueries', async (done) => {
             await kvs.put({ _id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1 });
             await kvs.put({ _id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2 });
             await kvs.put({ _id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3 });
             await kvs.put({ _id: 'o4', categ: 'C2', subcateg: 'sc2', val: 4 });
 
             let query1: SimpleAddHocQuery = {
-                whereFilters: [{ colName: 'val', op: '>', value: 0 }],
-                groupColumns: ['categ'],
-                groupAggs: [{ alias: 'sumVal', reduceFun: { name: SumReduceFunN }, colName: 'val' }],
-                groupFilters: [{ colName: 'categ', op: '==', value: 'C1' }],
-                columns: ['categ', 'sumVal'],
-                sortColumns: [],
+                startRow: 0,
+                endRow: 10,
+                rowGroupCols: [{field: 'categ'}],
+                valueCols: [{field: 'val', aggFunc: "sum"}],
+                pivotCols: [],
+                pivotMode: false,
+                groupKeys: ['categ'],
+                filterModel: {
+                    val: { filterType: "number", type: "greaterThan", filter: "0" },
+                    categ: { filterType: "text", type: "equals", filter: "C1" },
+                },
+                sortModel: []
             };
             let objs = await kvs.simpleAdHocQuery(query1);
             expect(objs).toEqual([{
                 categ: 'C1',
-                sumval: 3
+                val: 3
             }]);
 
             done();

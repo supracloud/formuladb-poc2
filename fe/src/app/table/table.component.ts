@@ -22,6 +22,7 @@ import * as _ from 'lodash';
 import { TableHeaderComponent } from './table-header.component';
 import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from './table.service';
+import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -78,8 +79,11 @@ export class TableComponent implements OnInit, OnDestroy {
 
     private tableState: tableState.Table;
 
-    constructor(private store: Store<tableState.TableState>, private router: Router, private route: ActivatedRoute,
-        private tableService: TableService) {
+    constructor(private store: Store<tableState.TableState>, 
+        private router: Router, 
+        private route: ActivatedRoute,
+        private tableService: TableService,
+        private i18npipe: I18nPipe) {
         // tslint:disable-next-line:max-line-length
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
         this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
@@ -120,7 +124,7 @@ export class TableComponent implements OnInit, OnDestroy {
             try {
                 this.tableState = _.cloneDeep(t);
                 this.columns = t.columns.map(c => <GridOptions>{
-                    headerName: c.name,
+                    headerName: this.i18npipe.transform(c.name),
                     field: c.name,
                     width: c.width ? c.width : 100,
                     enableRowGroup: true,

@@ -5,19 +5,52 @@
 
 import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
-import { ReduceFun } from "./domain/metadata/reduce_functions";
+import { Entity } from "./domain/metadata/entity";
+
+type NumberFilterT = 'equals' | 'notEqual' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual' | 'inRange';
+type TextFilterT = 'equals' | 'notEqual' | 'contains' | 'notContains' | 'startsWith' | 'endsWith';
+
+export interface FilterItem {
+    filterType: 'text' | 'number';
+    type: NumberFilterT | TextFilterT;
+    filter: string;
+    filterTo?: string;
+}
 
 export interface SimpleAddHocQuery {
-    specificQueryParams?: any;
-    columns: string[];
-    whereFilters: {colName: string, op: string, value: string | number | boolean}[];
-    groupColumns: string[],
-    groupAggs: {alias: string, reduceFun: ReduceFun, colName: string}[],
-    groupFilters: {colName: string, op: string, value: string | number | boolean}[];
-    sortColumns: string[],
-    offset?: number,
-    limit?: number
+    startRow: number;
+    endRow: number;
+    rowGroupCols: {field: string}[];
+    valueCols: ColumnParams[];
+    pivotCols: ColumnParams[];
+    pivotMode: boolean;
+    groupKeys: string[];
+    filterModel: {[x: string]: FilterItem};
+    sortModel: any;
 }
+export type AggFunc = 'sum' | 'count' | 'avg' | 'min' | 'max' | 'first' | 'last';
+export interface ColumnParams {
+    field: string;
+    aggFunc: AggFunc;
+}
+
+export interface QueryRequest {
+    startRow: number;
+    endRow: number;
+    rowGroupCols: ColumnParams[];
+    valueCols: ColumnParams[];
+    pivotCols: ColumnParams[];
+    pivotMode: boolean;
+    groupKeys: string[];
+    filterModel: any;
+    sortModel: SortModel[];
+}
+
+export interface SortModel {
+    colId: string,
+    sort: 'asc' | 'desc',
+}
+
 export interface KeyValueStoreI<VALUET> {
     get(key: string): Promise<VALUET | null>;
     /** The resulting rows are sorted by key */
@@ -35,6 +68,9 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
     put(obj: OBJT): Promise<OBJT>;
     putBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
     delBulk(objs: OBJT[]): Promise<(OBJT | KeyValueError)[]>;
+}
+export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<OBJT> {
+    entity: Entity;
     /** filtering and grouping by any key */
     simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
 }
@@ -92,6 +128,7 @@ class KeyValueStoreBase<KEYT, VALUET> {
 export interface KeyValueStoreFactoryI {
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
+    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
     clearAll(): Promise<void>;
 }
 

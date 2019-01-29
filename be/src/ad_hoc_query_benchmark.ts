@@ -28,7 +28,7 @@ interface Prlp {
 };
 
 let kvsFactory = new KeyValueStoreFactoryMem();
-let kvs = kvsFactory.createKeyObjS<Prlp>('test');
+// let kvs = kvsFactory.createKeyTableS<Prlp>('test');
 
 var lineReader = createInterface({
     input: createReadStream('../ep-data/product_list_products.json')

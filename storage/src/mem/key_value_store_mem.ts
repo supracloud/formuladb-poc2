@@ -3,10 +3,11 @@
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, FilterItem, AggFunc, KeyTableStoreI } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
+import { Entity } from "@core/domain/metadata/entity";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -73,6 +74,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
 }
 
 export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<OBJT> implements KeyObjStoreI<OBJT> {
+
     public findByPrefix(prefix: string): Promise<OBJT[]> {
         return this.rangeQuery({ startkey: prefix, endkey: prefix + "\ufff0", inclusive_start: true, inclusive_end: false });
     }
@@ -87,86 +89,101 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
         //naive implementation, some databases have specific efficient ways to to bulk delete
         return Promise.all(objs.map(o => this.del(o._id)));
     }
+}
 
-    private evaluateFilter(left: any, op: string, right: any): boolean {
-        switch (op) {
-            case '<':
-                return left < right;
-            case '<=':
-                return left <= right;
-            case '>':
-                return left > right;
-            case '>=':
-                return left >= right;
-            case '==':
-                return left === right;
-            case '=':
-                return left === right;
-            case '~':
-                return ('' + left).match('' + right) != null;
+export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<OBJT> implements KeyTableStoreI<OBJT> {
+    constructor(public entity: Entity) {
+        super();
+    }
+
+    public evalNumberFilter(val, item: FilterItem): boolean {
+        switch (item.type) {
+            case 'equals':
+                return val == item.filter;
+            case 'notEqual':
+                return val != item.filter;
+            case 'greaterThan':
+                return val > item.filter;
+            case 'greaterThanOrEqual':
+                return val >= item.filter;
+            case 'lessThan':
+                return val < item.filter;
+            case 'lessThanOrEqual':
+                return val <= item.filter;
+            case 'inRange':
+                return val >= item.filter && val <= item.filterTo!;
             default:
-                throw new Error("Unknown filter operator " + op);
+                throw new Error('unknown number filter type: ' + item.type);
         }
     }
 
-    private evaluateAggregation(value: any, reduceFun: ReduceFun, aggValue: any) {
-        switch (reduceFun.name) {
-            case SumReduceFunN:
-                return aggValue + value;
-            case CountReduceFunN:
-                return aggValue + 1;
-            case TextjoinReduceFunN:
-                return aggValue + reduceFun.delimiter + value;
+    public evalTextFilter(val: string, item: FilterItem): boolean {
+        switch (item.type) {
+            case 'equals':
+                return val == item.filter;
+            case 'notEqual':
+                return val != item.filter;
+            case 'contains':
+                return val.indexOf(item.filter) >= 0;
+            case 'notContains':
+                return val.indexOf(item.filter) < 0;
+            case 'startsWith':
+                return val.startsWith(item.filter);
+            case 'endsWith':
+                return val.endsWith(item.filter);
+            default:
+                throw new Error('unknown text filter type: ' + item.type);
         }
+    }
+    private evaluateFilter(value: any, filter: FilterItem): boolean {
+        switch (filter.filterType) {
+            case 'text': return this.evalTextFilter(value, filter);
+            case 'number': return this.evalNumberFilter(value, filter);
+            default: throw new Error('unknown filter type: ' + filter.filterType);
+        }
+    }
 
+    private evaluateAggregation(value: any, aggFunc: AggFunc, aggValue: any) {
+        switch (aggFunc) {
+            case "sum":
+                return aggValue + value;
+            case "count":
+                return aggValue + 1;
+            default: throw new Error('unknown agg func: ' + aggFunc);
+        }
     }
 
     public async simpleAdHocQuery(query: SimpleAddHocQuery): Promise<any[]> {
+        let {rowGroupCols, groupKeys} = query;
         //First we filter the rows
-        let filteredObjs: any[] = [];
-        for (let obj of Object.values(this.db)) {
-            let filteredObj: any = {};
-
-            let matchesFilter: boolean = true;
-            for (let filter of query.whereFilters) {
-                if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
-                    matchesFilter = false;
-                    break;
-                }
-            }
-            if (matchesFilter) filteredObjs.push(Object.assign(filteredObj, obj));
-        }
+        let objects: any[] = Object.values(this.db);
+        if (objects.length == 0) return [];
 
         //Then we group them
-        let grouped: any = {};
-        for (let obj of filteredObjs) {
-            let groupKey: string[] = [];
-            let groupObj: any = {};
-            for (let group of query.groupColumns) {
-                groupKey.push(obj[group]);
-                groupObj[group] = obj[group];
-            }
+        if (rowGroupCols.length > groupKeys.length) {
+            let rowGroupCol = rowGroupCols[groupKeys.length];
+            let grouped = _.groupBy(objects, rowGroupCol.field);
 
-            let key = kvsKey2Str(groupKey);
-            if (grouped[key]) {
-                groupObj = grouped[key];
-            } else {
-                grouped[key] = groupObj;
-            }
-
-            for (let groupAgg of query.groupAggs) {
-                //compatibility with SQL which is case insensitive
-                groupObj[groupAgg.alias.toLowerCase()] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun,
-                    groupObj[groupAgg.alias.toLowerCase()] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
+            objects = [];
+            for (let [key, objs] of Object.entries(grouped)) {
+                let obj: any = {[rowGroupCol.field]: key};
+                for (let groupAgg of query.valueCols) {
+                    obj[groupAgg.field.toLowerCase()] = objs.reduce((agg, currentObj) => 
+                        ({
+                            [groupAgg.field]: this.evaluateAggregation(currentObj[groupAgg.field], groupAgg.aggFunc, agg[groupAgg.field])
+                        })
+                    );
+                }
+                objects.push(obj);
             }
         }
 
         //Then we filter the groups
         let groupedFiltered: any[] = [];
-        for (let obj of Object.values(grouped)) {
+        for (let obj of objects) {
             let matchesFilter: boolean = true;
-            for (let filter of query.groupFilters) {
-                if (!this.evaluateFilter(obj[filter.colName], filter.op, filter.value)) {
+            for (let [key, filter] of Object.entries(query.filterModel)) {
+                if (!this.evaluateFilter(obj[key], filter)) {
                     matchesFilter = false;
                     break;
                 }
@@ -185,6 +202,10 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
 
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT> {
         return new KeyObjStoreMem<OBJT>();
+    }
+
+    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT> {
+        return new KeyTableStoreMem<OBJT>(entity);
     }
 
     async clearAll() {

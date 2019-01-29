@@ -5,14 +5,14 @@
  * https://github.com/vitaly-t/pg-promise/wiki/Common-Mistakes
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, KeyTableStoreI } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
-import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, MinReduceFunN, MaxReduceFunN, AvgReduceFunN, FirstReduceFunN, LastReduceFunN } from "@core/domain/metadata/reduce_functions";
-import { CreateSqlQuery, QueryRequest } from "./create_sql_query";
-const calculateSlot = require('cluster-key-slot');
+import { CreateSqlQuery } from "./create_sql_query";
+import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
+const calculateSlot = require('cluster-_id-slot');
 
 /**
  * Key Value Store with optimistic locking functionality
@@ -22,6 +22,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     static db: pgPromise.IDatabase<any> | undefined = undefined;
     private initialized: boolean = false;
     protected table_id: string | undefined = undefined;
+    protected isJSONTable: boolean = true;
 
     constructor(name: string) {
         dotenv.config();
@@ -35,18 +36,29 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             KeyValueStorePostgres.db = pgPromise()(config);
         }
 
-        this.table_id = `f_${calculateSlot(name)}`;
+        this.table_id = this.getTableName(name);
     }
 
-    private async initialize() {
+    private getTableName(inputName: string) {
+        if (inputName.length >= 62) {
+            return `f_${calculateSlot(inputName)}`;
+        } else {
+            return 't' + inputName.replace(/[^a-bA-B0-9_]/, '_').toLowerCase();
+        }
+    }
+
+    protected async createTable() {
+        try {
+            let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR NOT NULL PRIMARY KEY, val json)';
+            await KeyValueStorePostgres.db!.any(query);
+        } catch (err) {
+            // When 2 or more workers are trying to create table on the same session
+            console.log(err);
+        }
+    }
+    protected async initialize() {
         if (this.initialized == false) {
-            try {
-                let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (key VARCHAR NOT NULL PRIMARY KEY, val json)';
-                await KeyValueStorePostgres.db!.any(query);
-            } catch (err) {
-                // When 2 or more workers are trying to create table on the same session
-                console.log(err);
-            }
+            await this.createTable();
             this.initialized = true;
         }
     }
@@ -54,7 +66,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     public get(_id: string): Promise<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
-                let query: string = 'SELECT val FROM ' + this.table_id + ' WHERE key = $1';
+                let query: string = 'SELECT val FROM ' + this.table_id + ' WHERE _id = $1';
 
                 KeyValueStorePostgres.db!.oneOrNone<VALUET>(query, [_id]).then((res) => {
                     resolve(res != null ? res['val'] : undefined);
@@ -66,7 +78,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         });
     }
 
-    /** querying a map-reduce view must return the results ordered by key */
+    /** querying a map-reduce view must return the results ordered by _id */
     public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ key: string, val: VALUET }[]> {
         return new Promise((resolve, reject) => {
             this.initialize().then(() => {
@@ -78,9 +90,9 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 end = end.replace(/[\ufff0]/g, '\xff');
                 start = start.replace(/[\u00000]/g, '\x01');
 
-                let query: string = 'SELECT key, val FROM ' + this.table_id + ' WHERE key ' + sign1 + ' $1 AND key ' + sign2 + ' $2 ' + ' ORDER BY key';
-                KeyValueStorePostgres.db!.any<{ key: string, val: VALUET }>(query, [start, end]).then((res) => {
-                    resolve(res);
+                let query: string = 'SELECT _id, val FROM ' + this.table_id + ' WHERE _id ' + sign1 + ' $1 AND _id ' + sign2 + ' $2 ' + ' ORDER BY _id';
+                KeyValueStorePostgres.db!.any<{ _id: string, val: VALUET }>(query, [start, end]).then((res) => {
+                    resolve(res.map);
                 }).catch((err) => {
                     console.log(err);
                 })
@@ -90,14 +102,14 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     public rangeQuery(opts: RangeQueryOptsI): Promise<VALUET[]> {
         return this.rangeQueryWithKeys(opts)
-            .then(res => res.map(({ key, val }) => val));
+            .then(res => res.map(({ _id, val }) => val));
     }
 
     public set(_id: string, obj: VALUET): Promise<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
                 let object_as_json = JSON.stringify(obj);
-                let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (key) DO UPDATE SET key=$1, val=$2';
+                let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (_id) DO UPDATE SET _id=$1, val=$2';
                 KeyValueStorePostgres.db!.none(query, [_id, object_as_json]).then((res) => {
                     resolve(obj);
                 })
@@ -110,7 +122,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         await this.initialize();
         try {
             let ret = await this.get(_id);
-            let query: string = 'DELETE FROM ' + this.table_id + ' WHERE  key = $1';
+            let query: string = 'DELETE FROM ' + this.table_id + ' WHERE  _id = $1';
             await KeyValueStorePostgres.db!.none(query, [_id]);
             return ret;
         } catch (err) {
@@ -156,7 +168,6 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 }
 
 export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStorePostgres<OBJT> implements KeyObjStoreI<OBJT> {
-    private sqlQueryCreator = new CreateSqlQuery();
 
     public findByPrefix(prefix: string): Promise<OBJT[]> {
         return this.rangeQuery({ startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false });
@@ -172,113 +183,46 @@ export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStore
         //naive implementation, some databases have specific efficient ways to to bulk delete
         return Promise.all(objs.map(o => this.del(o._id)));
     }
+}
 
-    private filter2sql(filter: { colName: string, op: string, value: string | number | boolean }): string {
-        let colName = this.col2sql(filter.colName);
-        let op = filter.op;
-        switch (filter.op) {
-            case '<':
-                colName = '(' + colName + ')::int';
-                break;
-            case '<=':
-                colName = '(' + colName + ')::int';
-                break;
-            case '>':
-                colName = '(' + colName + ')::int';
-                break;
-            case '>=':
-                colName = '(' + colName + ')::int';
-                break;
-            case '==':
-                op = '=';
-                break;
-        }
-        return '(' + colName + " " + op + " "
-            + (typeof filter.value === 'string' ? `'${filter.value}'` : '' + filter.value) + ')'
-            ;
+export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStorePostgres<OBJT> implements KeyTableStoreI<OBJT> {
+    private sqlQueryCreator = new CreateSqlQuery();
+
+    constructor(public entity: Entity) {
+        super(entity._id);
     }
 
-    private agg2sql(agg: { alias: string, reduceFun: ReduceFun, colName: string }): string {
-        let col: string;
-        switch (agg.reduceFun.name) {
-            case SumReduceFunN:
-                col = `SUM((${this.col2sql(agg.colName)})::int)::int`;
+    private prop2sqlCol(prop: EntityProperty): string {
+        let type: string;
+        switch (prop.propType_) {
+            case Pn.STRING:
+                type = "varchar";
                 break;
-            case CountReduceFunN:
-                col = `COUNT((${this.col2sql(agg.colName)})::int)::int`;
+            case Pn.NUMBER:
+                type = "integer";
                 break;
-            case TextjoinReduceFunN:
-                col = `COUNT((${this.col2sql(agg.colName)})::int)::int`;
-                break;
-            case MinReduceFunN:
-                col = `Min((${this.col2sql(agg.colName)})::int)::int`;
-                break;
-            case MaxReduceFunN:
-                col = `Max((${this.col2sql(agg.colName)})::int)::int`;
-                break;
-            case AvgReduceFunN:
-                col = `Avg((${this.col2sql(agg.colName)})::int)::int`;
-                break;
-            case FirstReduceFunN:
-                col = `First((${this.col2sql(agg.colName)})::int)`;
-                break;
-            case LastReduceFunN:
-                col = `Last((${this.col2sql(agg.colName)})::int)`;
-                break;
-            default:
-                throw new Error('Unknown reduce func in agg2sql ' + JSON.stringify(agg.reduceFun));
+            default: throw new Error("unknown prop type " + prop.propType_);
         }
-
-        return col + ` as ${agg.alias}`;
+        if (prop.name === '_id') type = type + ' PRIMARY KEY';
+        return prop.name + ' ' + type;
     }
 
-    private col2sql(propName: string) {
-        return `val->>'${propName}'`;
-    }
-
-    public simpleAdHocQuery2SQL(squery: SimpleAddHocQuery): string {
-        let simpleCols = _.difference(squery.columns, squery.groupAggs.map(agg => agg.alias)).map(c => this.col2sql(c) + ' as ' + c);
-        let sql = `
-SELECT ${simpleCols.concat(squery.groupAggs.map(agg => this.agg2sql(agg))).join(', ')} 
-FROM ${this.table_id}`;
-        
-        if (squery.whereFilters.length > 0) {
-            sql = sql + `\bWHERE ${squery.whereFilters.map(f => this.filter2sql(f)).join("\n    AND ")}`;
-        }
-
-        if (squery.groupColumns.length > 0) {
-            sql = sql + `\nGROUP BY ${squery.groupColumns.map(c => this.col2sql(c)).join(", ")}`;
-        }
-
-        if (squery.groupFilters.length > 0) {
-            sql = sql + `\nHAVING ${squery.groupFilters.map(f => this.filter2sql(f)).join("\n    AND ")}`;
-            //FIXME: column aliases cannot be used in HAVING
-        }
-
-        if (squery.sortColumns.length > 0) {
-            sql = sql + `\nORDER BY ${squery.sortColumns.map(c => this.col2sql(c)).join(", ")}`;
-
-        }
-
-        if (null != squery.limit) {
-            sql = sql + `\nLIMIT ${squery.limit}`;
-        }
-
-        if (null != squery.offset) {
-            sql = sql + `\nOFFSET ${squery.offset}`;
-        }
-
-        return sql;
+    protected async createTable() {
+        let entity = this.entity;
+        let query: string = `
+            CREATE TABLE IF NOT EXISTS ${this.table_id} (
+                ${Object.values(entity.props).map(p => this.prop2sqlCol(p)).join(",\n")}
+            )`;
+        await KeyValueStorePostgres.db!.any(query);
     }
 
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {
-        // let query: string = this.simpleAdHocQuery2SQL(squery);
-        let query = this.sqlQueryCreator.createSqlQuery(this.table_id!, squery.specificQueryParams as any as QueryRequest);
+        await this.initialize();
+        let query = this.sqlQueryCreator.createSqlQuery(this.table_id!, squery);
         let res = await KeyValueStorePostgres.db!.any(query);
         return res;
     }
 }
-
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
@@ -288,10 +232,13 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
         return new KeyObjStorePostgres<OBJT>(name);
     }
 
+    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT> {
+        return new KeyTableStorePostgres<OBJT>(entity);
+    }
+
     async clearAll() {
         let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
         await forCleanup.clearAll();
     }
-
 
 }

@@ -5,6 +5,8 @@ export const Dictioary_ro = {
     'Enable-Developer-Mode':'Activare Mod Dezvoltator',
     'Disable-Developer-Mode':'Dezactivare Mod Dezvoltator',
 
+    REP: 'Rapoarte',
+
     'Financial': 'Financial',
     'General':'General',
     'Inventory':'Gestiune',

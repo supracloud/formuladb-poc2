@@ -1,24 +1,8 @@
-export interface QueryRequest {
-    startRow: number;
-    endRow: number;
-    rowGroupCols: ColumnParams[];
-    valueCols: ColumnParams[];
-    pivotCols: ColumnParams[];
-    pivotMode: boolean;
-    groupKeys: string[];
-    filterModel: any;
-    sortModel: any;
-}
-export interface ColumnParams {
-    id: string;
-    displayName: string;
-    field: string;
-    aggFunc: string;
-}
+import { SimpleAddHocQuery, ColumnParams, FilterItem } from "@core/key_value_store_i";
 
 export class CreateSqlQuery {
 
-    public createSelectSql(req: QueryRequest) {
+    public createSelectSql(req: SimpleAddHocQuery) {
         let {rowGroupCols, valueCols, groupKeys} = req;
         if (this.isDoingGrouping(rowGroupCols, groupKeys)) {
             let colsToSelect: string[] = [];
@@ -41,11 +25,11 @@ export class CreateSqlQuery {
         switch (item.filterType) {
             case 'text': return this.createTextFilterSql(key, item);
             case 'number': return this.createNumberFilterSql(key, item);
-            default: throw new Error('unkonwn filter type: ' + item.filterType);
+            default: throw new Error('unknown filter type: ' + item.filterType);
         }
     }
 
-    public createNumberFilterSql(key, item) {
+    public createNumberFilterSql(key, item: FilterItem) {
         switch (item.type) {
             case 'equals':
                 return key + ' = ' + item.filter;
@@ -70,17 +54,17 @@ export class CreateSqlQuery {
     public createTextFilterSql(key, item) {
         switch (item.type) {
             case 'equals':
-                return key + ' = "' + item.filter + '"';
+                return key + " = '" + item.filter + "'";
             case 'notEqual':
-                return key + ' != "' + item.filter + '"';
+                return key + " != '" + item.filter + "'";
             case 'contains':
-                return key + ' like "%' + item.filter + '%"';
+                return key + " like '%" + item.filter + "%'";
             case 'notContains':
-                return key + ' not like "%' + item.filter + '%"';
+                return key + " not like '%" + item.filter + "%'";
             case 'startsWith':
-                return key + ' like "' + item.filter + '%"';
+                return key + " like '" + item.filter + "%'";
             case 'endsWith':
-                return key + ' like "%' + item.filter + '"';
+                return key + " like '%" + item.filter + "'";
             default:
                 console.log('unknown text filter type: ' + item.type);
                 return 'true';
@@ -94,7 +78,7 @@ export class CreateSqlQuery {
         if (groupKeys.length > 0) {
             groupKeys.forEach(function (key, index) {
                 let colName = rowGroupCols[index].field;
-                whereParts.push(colName + ' = "' + key + '"')
+                whereParts.push(colName + " = '" + key + "'")
             });
         }
 
@@ -113,7 +97,7 @@ export class CreateSqlQuery {
         }
     }
 
-    public createGroupBySql(rowGroupCols, groupKeys) {
+    public createGroupBySql(rowGroupCols: {field: string}[], groupKeys: string[]) {
         if (this.isDoingGrouping(rowGroupCols, groupKeys)) {
             let colsToGroupBy: string[] = [];
 
@@ -185,7 +169,7 @@ export class CreateSqlQuery {
         }
     }
 
-    public createSqlQuery(tableName: string, request: QueryRequest): string {
+    public createSqlQuery(tableName: string, request: SimpleAddHocQuery): string {
 
         let rowGroupCols = request.rowGroupCols;
         let groupKeys = request.groupKeys;
@@ -203,7 +187,7 @@ export class CreateSqlQuery {
         let orderBySql = this.createOrderBySql(sortModel);
         let limitSql = this.createLimitSql(startRow, pageSize);
 
-        let sql = selectSql + ' ' + tableName + '_cols ' + whereSql + groupBySql + orderBySql + limitSql;
+        let sql = selectSql + ' FROM ' + tableName + ' ' + whereSql + groupBySql + orderBySql + limitSql;
         return sql;
     }
 }

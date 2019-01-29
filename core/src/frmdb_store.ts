@@ -26,14 +26,14 @@ export class FrmdbStore {
 
     private async getTransactionsDB() {
         if (!this.transactionsDB) {
-            this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');
+            this.transactionsDB = await this.kvsFactory.createKeyValS<MwzEvents>('transaction');
         }
         return this.transactionsDB;
     }
 
     private async getMetadataKvs() {
         if (!this.metadataKvs) {
-            this.metadataKvs = await this.kvsFactory.createKeyObjS<Schema | Form | Table>('metadata');
+            this.metadataKvs = await this.kvsFactory.createKeyTableS<Schema | Form | Table>('metadata');
         }
         return this.metadataKvs;
     }
@@ -41,7 +41,7 @@ export class FrmdbStore {
     private async getDataKvs(entityName: string) {
         let ret = this.dataKVSMap.get(entityName);
         if (!ret) {
-            ret = await this.kvsFactory.createKeyObjS<DataObj>(entityName);
+            ret = await this.kvsFactory.createKeyTableS<DataObj>(entityName);
             this.dataKVSMap.set(entityName, ret);
         }
         return ret;

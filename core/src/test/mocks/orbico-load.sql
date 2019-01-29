@@ -1,4 +1,4 @@
-CREATE table delivery_report_input (
+CREATE table f_4320_cols (
     _id varchar,
     ordernb varchar,
     externalordernb varchar,
@@ -14,8 +14,8 @@ CREATE table delivery_report_input (
     location varchar,
     productcode varchar,
     barcode varchar,
-    quantity varchar,
-    quantityerror varchar,
+    quantity integer,
+    quantityerror integer,
     price varchar,
     ordstate varchar,
     agentcode varchar
@@ -39,7 +39,7 @@ CREATE TABLE orders_input (
 );
 
 COPY orders_input FROM '/orders.csv';
-COPY delivery_report_input FROM '/delivery_report.csv';
+COPY f_4320_cols FROM '/delivery_report.csv';
 
 CREATE TABLE IF NOT EXISTS f_4320 (key VARCHAR NOT NULL PRIMARY KEY, val json);
 CREATE TABLE IF NOT EXISTS f_2735 (key VARCHAR NOT NULL PRIMARY KEY, val json);
@@ -49,5 +49,4 @@ INSERT INTO f_4320 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FRO
 INSERT INTO f_2735 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM orders_input) r;
 
 --hack
-create table f_4320_cold as select * from delivery_report_input ;
-create table f_2735_cold as select * from orders_input ;
+create table f_2735_cols as select * from orders_input ;
