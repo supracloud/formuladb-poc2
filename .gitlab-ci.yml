@@ -20,7 +20,7 @@ test:
     - npm test
     - FRMDB_STORAGE=postgres npm test
     - cd ..
-    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -it registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c "source ~/.bashrc && cd && git clone https://gitlab-ci-token:$CI_BUILD_TOKEN@gitlab.com/metawiz/febe.git && cd febe/ && cd storage && npm install && cd .. && cd core && npm install && cd .. && cd fe/ && npm install && ng e2e"
+    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c "source ~/.bashrc && cd && git clone https://gitlab-ci-token:$CI_BUILD_TOKEN@gitlab.com/metawiz/febe.git && cd febe/ && cd storage && npm install && cd .. && cd core && npm install && cd .. && cd fe/ && npm install && ng e2e"
     # - cd fe && npm test -- --watch=false
     # - cd ..
   # artifacts:
