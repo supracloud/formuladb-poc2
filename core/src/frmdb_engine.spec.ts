@@ -12,7 +12,7 @@ import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "@core/domain/metadata/entity";
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { KeyValueObj } from "@core/domain/key_value_obj";
-import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
+import { getFrmdbEngine, getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 
 describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;
@@ -24,9 +24,10 @@ describe('FrmdbEngine', () => {
         entities: {
             A: {
                 _id: 'A', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
                     b: { name: "b", propType_: Pn.STRING },
                     val: { name: "val", propType_: Pn.NUMBER },
-                    err: { name: "val", propType_: Pn.NUMBER },
+                    err: { name: "err", propType_: Pn.NUMBER },
                 },
                 autoCorrectionsOnValidationFailed: {
                     'B!positiveX': [
@@ -37,6 +38,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             B: {
                 _id: 'B', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
                     sum__: { name: "sum__", propType_: Pn.FORMULA, formula: 'SUMIF(A.val, b == @[_id])' } as FormulaProperty,
                     x__: { name: "x__", propType_: Pn.FORMULA, formula: '100 - sum__' } as FormulaProperty,
                 },  
@@ -51,6 +53,7 @@ describe('FrmdbEngine', () => {
         entities: {
             Tr: {
                 _id: 'Tr', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
                     ac1: { name: "ac1", propType_: Pn.STRING },
                     ac2: { name: "ac2", propType_: Pn.STRING },
                     val: { name: "val", propType_: Pn.NUMBER },
@@ -62,6 +65,7 @@ describe('FrmdbEngine', () => {
             } as Entity,
             Ac: {
                 _id: 'Ac', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
                     balance__: { name: "balance__", propType_: Pn.FORMULA, formula: '50 + SUMIF(Tr.val, ac2 == @[_id]) - SUMIF(Tr.val, ac1 == @[_id])' } as FormulaProperty,
                 },
                 validations: {
@@ -168,7 +172,8 @@ describe('FrmdbEngine', () => {
         });
 
         it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
-            frmdbEngine = new FrmdbEngine(frmdbTStore, accountTransferSchema);
+            frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
+            frmdbEngine = new FrmdbEngine(frmdbTStore, );
             await frmdbEngine.init();
 
             let ac1: any = { _id: "Ac~~1", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac1);

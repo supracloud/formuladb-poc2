@@ -16,7 +16,7 @@ describe('FrmdbEngineStore _sum', () => {
 
     beforeEach(async (done) => {
 
-        frmdbTStore = await getFrmdbEngineStore();
+        frmdbTStore = await getFrmdbEngineStore({_id: "FRMDB_SCHEMA", entities: {}});
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

@@ -8,7 +8,7 @@ import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data
 import { Form } from "@core/domain/uimetadata/form";
 import { Table } from "@core/domain/uimetadata/table";
 import { MwzEvents } from "@core/domain/event";
-import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI } from "./key_value_store_i";
 import { KeyValueError } from "@core/domain/key_value_obj";
 import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "@core/domain/metadata/ad_hoc_query";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
@@ -17,23 +17,23 @@ import * as _ from "lodash";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
-    protected dataKVSMap: Map<string, KeyObjStoreI<DataObj>> = new Map();
     protected metadataKvs: KeyObjStoreI<Schema | Form | Table>;
+    protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
 
-    constructor(public kvsFactory: KeyValueStoreFactoryI) {
+    constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
 
     }
 
     private async getTransactionsDB() {
         if (!this.transactionsDB) {
-            this.transactionsDB = await this.kvsFactory.createKeyValS<MwzEvents>('transaction');
+            this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');
         }
         return this.transactionsDB;
     }
 
     private async getMetadataKvs() {
         if (!this.metadataKvs) {
-            this.metadataKvs = await this.kvsFactory.createKeyTableS<Schema | Form | Table>('metadata');
+            this.metadataKvs = await this.kvsFactory.createKeyObjS<Schema | Form | Table>('metadata');
         }
         return this.metadataKvs;
     }
@@ -41,7 +41,10 @@ export class FrmdbStore {
     private async getDataKvs(entityName: string) {
         let ret = this.dataKVSMap.get(entityName);
         if (!ret) {
-            ret = await this.kvsFactory.createKeyTableS<DataObj>(entityName);
+            let entity = this.schema.entities[entityName];
+            if (!entity) throw new Error("getDataKvs unknown entity " + entityName);
+
+            ret = await this.kvsFactory.createKeyTableS<DataObj>(entity);
             this.dataKVSMap.set(entityName, ret);
         }
         return ret;
@@ -59,7 +62,9 @@ export class FrmdbStore {
         return (await this.getMetadataKvs()).get('FRMDB_SCHEMA') as Promise<Schema | null>;
     }
     public async putSchema(schema: Schema): Promise<Schema> {
-        return (await this.getMetadataKvs()).put(schema) as Promise<Schema>;
+        let ret: Schema = await (await this.getMetadataKvs()).put(schema) as Schema;
+        this.schema = ret;
+        return ret;
     }
 
     public getEntities(): Promise<Entity[]> {

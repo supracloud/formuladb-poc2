@@ -15,6 +15,7 @@ describe('FormulaTokenizer', () => {
         entities: {
             A: {
                 _id: 'A', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
                     a_x: { name: "a_x", propType_: Pn.NUMBER },
                     a_y: { name: "a_y", propType_: Pn.NUMBER },
                     num: { name: "num", propType_: Pn.NUMBER },
@@ -22,6 +23,7 @@ describe('FormulaTokenizer', () => {
             } as Entity,
             B: {
                 _id: 'B', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
                     b_x: { name: "b_x", propType_: Pn.NUMBER },
                     b_y: { name: "b_y", propType_: Pn.NUMBER },
                     sum: { name: "sum", propType_: Pn.FORMULA, formula: 'SUM(A.num)' } as FormulaProperty,

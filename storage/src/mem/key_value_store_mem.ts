@@ -27,8 +27,8 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
         return simulateIO(this.db[_id]);
     }
 
-    /** querying a map-reduce view must return the results ordered by key */
-    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ key: string, val: VALUET }[]> {
+    /** querying a map-reduce view must return the results ordered by _id */
+    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ _id: string, val: VALUET }[]> {
         let ret = _.entries(this.db).filter(([_id, val]) =>
             (opts.startkey < _id && _id < opts.endkey)
             || (opts.inclusive_start && _id === opts.startkey)
@@ -39,13 +39,13 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
                 if (keyA > keyB) return 1;
                 return 0;
             })
-            .map(([_id, val]) => ({ key: _id, val: val }));
+            .map(([_id, val]) => ({ _id: _id, val: val }));
         return simulateIO(ret);
     }
 
     public rangeQuery(opts: RangeQueryOptsI): Promise<VALUET[]> {
         return this.rangeQueryWithKeys(opts)
-            .then(res => res.map(({ key, val }) => val));
+            .then(res => res.map(({ _id, val }) => val));
     }
 
     public set(_id: string, obj: VALUET): Promise<VALUET> {
@@ -165,14 +165,14 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
             let grouped = _.groupBy(objects, rowGroupCol.field);
 
             objects = [];
-            for (let [key, objs] of Object.entries(grouped)) {
-                let obj: any = {[rowGroupCol.field]: key};
+            for (let [_id, objs] of Object.entries(grouped)) {
+                let obj: any = {[rowGroupCol.field]: _id};
                 for (let groupAgg of query.valueCols) {
                     obj[groupAgg.field.toLowerCase()] = objs.reduce((agg, currentObj) => 
                         ({
                             [groupAgg.field]: this.evaluateAggregation(currentObj[groupAgg.field], groupAgg.aggFunc, agg[groupAgg.field])
                         })
-                    );
+                    )[groupAgg.field];
                 }
                 objects.push(obj);
             }
@@ -182,8 +182,8 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
         let groupedFiltered: any[] = [];
         for (let obj of objects) {
             let matchesFilter: boolean = true;
-            for (let [key, filter] of Object.entries(query.filterModel)) {
-                if (!this.evaluateFilter(obj[key], filter)) {
+            for (let [_id, filter] of Object.entries(query.filterModel)) {
+                if (!this.evaluateFilter(obj[_id], filter)) {
                     matchesFilter = false;
                     break;
                 }

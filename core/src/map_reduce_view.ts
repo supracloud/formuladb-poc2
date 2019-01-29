@@ -106,8 +106,8 @@ export class MapReduceView {
                 //  so we can have multiple values for the same key
                 //  when inclusive_start=false or inclusive_end=false we need to pop this objectId and make the comparison with the input keys
                 return res.filter(x => {
-                    let isStart = _.isEqual(MapReduceView.extractOriginalMapKey(x.key), queryOpts.startkey);
-                    let isEnd = _.isEqual(MapReduceView.extractOriginalMapKey(x.key), queryOpts.endkey);
+                    let isStart = _.isEqual(MapReduceView.extractOriginalMapKey(x._id), queryOpts.startkey);
+                    let isEnd = _.isEqual(MapReduceView.extractOriginalMapKey(x._id), queryOpts.endkey);
                     return (!isStart && !isEnd) || (isStart && queryOpts.inclusive_start) || (isEnd && queryOpts.inclusive_end);
                 });
             }

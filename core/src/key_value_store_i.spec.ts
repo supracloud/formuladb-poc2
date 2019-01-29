@@ -67,7 +67,7 @@ export function keyValueStoreSpecs<KVSType extends KeyTableStoreI<KeyValueStoreS
             done();
         });
 
-        fit('run adHocQueries', async (done) => {
+        it('run adHocQueries', async (done) => {
             await kvs.put({ _id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1 });
             await kvs.put({ _id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2 });
             await kvs.put({ _id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3 });
@@ -80,7 +80,7 @@ export function keyValueStoreSpecs<KVSType extends KeyTableStoreI<KeyValueStoreS
                 valueCols: [{field: 'val', aggFunc: "sum"}],
                 pivotCols: [],
                 pivotMode: false,
-                groupKeys: ['categ'],
+                groupKeys: [],
                 filterModel: {
                     val: { filterType: "number", type: "greaterThan", filter: "0" },
                     categ: { filterType: "text", type: "equals", filter: "C1" },

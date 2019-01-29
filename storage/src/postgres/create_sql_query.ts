@@ -1,7 +1,17 @@
-import { SimpleAddHocQuery, ColumnParams, FilterItem } from "@core/key_value_store_i";
+import { SimpleAddHocQuery, ColumnParams, FilterItem, AggFunc } from "@core/key_value_store_i";
 
 export class CreateSqlQuery {
 
+    private getCast(aggFunc: AggFunc): string {
+        switch (aggFunc) {
+            case "sum":
+                return '::int';
+            case "count":
+                return '::int';
+            default: return '';
+        }
+        
+    }
     public createSelectSql(req: SimpleAddHocQuery) {
         let {rowGroupCols, valueCols, groupKeys} = req;
         if (this.isDoingGrouping(rowGroupCols, groupKeys)) {
@@ -10,8 +20,8 @@ export class CreateSqlQuery {
             let rowGroupCol = rowGroupCols[groupKeys.length];
             colsToSelect.push(rowGroupCol.field);
 
-            valueCols.forEach(function (valueCol) {
-                colsToSelect.push(valueCol.aggFunc + '(' + valueCol.field + ') as ' + valueCol.field);
+            valueCols.forEach((valueCol) => {
+                colsToSelect.push(valueCol.aggFunc + '(' + valueCol.field + ')' + this.getCast(valueCol.aggFunc) + ' as ' + valueCol.field);
             });
 
             return ' select ' + colsToSelect.join(', ');

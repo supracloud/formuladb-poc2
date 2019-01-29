@@ -5,7 +5,7 @@
 
 import * as moment from 'moment';
 
-import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str } from "./key_value_store_i";
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FrmdbStore } from './frmdb_store';
@@ -19,7 +19,7 @@ import { Expression } from 'jsep';
 import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
 import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 import { DataObj } from '@core/domain/metadata/data_obj';
-import { Entity } from '@core/domain/metadata/entity';
+import { Entity, Schema } from '@core/domain/metadata/entity';
 import { $s2e } from './formula_compiler';
 import { Pn } from '@core/domain/metadata/entity';
 
@@ -38,8 +38,8 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected transactionManager: TransactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
-    constructor(public kvsFactory: KeyValueStoreFactoryI) {
-        super(kvsFactory);
+    constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
+        super(kvsFactory, schema);
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 
@@ -82,9 +82,18 @@ export class FrmdbEngineStore extends FrmdbStore {
             let aggsTrg = triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs;
             let startkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.startkeyExpr));
             let endkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.endkeyExpr));
-            let op1 = aggsTrg.map.query.inclusive_start ? '<=' : '<';
-            let op2 = aggsTrg.map.query.inclusive_end ? '<=' : '<';
+            let inclusive_start = aggsTrg.map.query.inclusive_start;
+            let inclusive_end = aggsTrg.map.query.inclusive_end;
         
+            let all = await this.all(aggsTrg.map.entityName);
+            let filteredObjs: any[] = [];
+            for (let obj of all) {
+                let key = kvsKey2Str(evalExprES5(obj, aggsTrg.map.keyExpr));
+                if ((startkey < key && key < endkey) || (startkey == key && inclusive_start) || (endkey == key && inclusive_end)) {
+                    filteredObjs.push(obj);
+                }
+            }
+
             let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityName, {
                 extraColsBeforeGroup: [
                     {alias: 'KEY', expr: aggsTrg.map.keyExpr},
@@ -174,7 +183,7 @@ export class FrmdbEngineStore extends FrmdbStore {
                 inclusive_start: mapQuery.inclusive_start,
                 inclusive_end: mapQuery.inclusive_end,
             }).then(rows => Promise.all(
-                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row.key))))
+                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row._id))))
             ).then(objs => objs.filter(o => {
                 if (o == null) console.error("map query returned null object", JSON.stringify({observableObj, trigger}));
                 return o != null;

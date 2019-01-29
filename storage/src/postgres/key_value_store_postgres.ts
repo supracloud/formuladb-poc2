@@ -12,7 +12,7 @@ import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
 import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
-const calculateSlot = require('cluster-_id-slot');
+const calculateSlot = require('cluster-key-slot');
 
 /**
  * Key Value Store with optimistic locking functionality
@@ -43,7 +43,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         if (inputName.length >= 62) {
             return `f_${calculateSlot(inputName)}`;
         } else {
-            return 't' + inputName.replace(/[^a-bA-B0-9_]/, '_').toLowerCase();
+            return 't' + inputName.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
         }
     }
 
@@ -63,10 +63,14 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         }
     }
 
+    protected getSQL() {
+        return 'SELECT val FROM ' + this.table_id + ' WHERE _id = $1';
+    }
+
     public get(_id: string): Promise<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
-                let query: string = 'SELECT val FROM ' + this.table_id + ' WHERE _id = $1';
+                let query: string = this.getSQL();
 
                 KeyValueStorePostgres.db!.oneOrNone<VALUET>(query, [_id]).then((res) => {
                     resolve(res != null ? res['val'] : undefined);
@@ -78,8 +82,12 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         });
     }
 
+    protected rangeSQL(sign1: string, sign2: string) {
+        return 'SELECT _id, val FROM ' + this.table_id + ' WHERE _id ' + sign1 + ' $1 AND _id ' + sign2 + ' $2 ' + ' ORDER BY _id';
+    }
+
     /** querying a map-reduce view must return the results ordered by _id */
-    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ key: string, val: VALUET }[]> {
+    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ _id: string, val: VALUET }[]> {
         return new Promise((resolve, reject) => {
             this.initialize().then(() => {
                 let sign1: string = opts.inclusive_start ? ">=" : ">";
@@ -90,9 +98,9 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 end = end.replace(/[\ufff0]/g, '\xff');
                 start = start.replace(/[\u00000]/g, '\x01');
 
-                let query: string = 'SELECT _id, val FROM ' + this.table_id + ' WHERE _id ' + sign1 + ' $1 AND _id ' + sign2 + ' $2 ' + ' ORDER BY _id';
+                let query: string = this.rangeSQL(sign1, sign2);
                 KeyValueStorePostgres.db!.any<{ _id: string, val: VALUET }>(query, [start, end]).then((res) => {
-                    resolve(res.map);
+                    resolve(res);
                 }).catch((err) => {
                     console.log(err);
                 })
@@ -151,10 +159,14 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         console.log("Tables droped");
     }
 
+    protected allSQL() {
+        return 'SELECT val FROM ' + this.table_id;
+    }
+
     all(): Promise<VALUET[]> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
-                let query: string = 'SELECT val FROM ' + this.table_id;
+                let query: string = this.allSQL();
 
                 KeyValueStorePostgres.db!.any<VALUET>(query).then((res) => {
                     resolve(res.map(o => o['val']));
@@ -192,6 +204,72 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         super(entity._id);
     }
 
+    protected getSQL() {
+        return `SELECT row_to_json(t) as val FROM (SELECT * FROM ${this.table_id} WHERE _id = $1) t`;
+    }
+
+    protected allSQL() {
+        return `SELECT row_to_json(t) as val FROM (SELECT * FROM ${this.table_id} ) t`;
+    }
+
+    protected rangeSQL(sign1: string, sign2: string) {
+        return 'SELECT t._id as _id, row_to_json(t) as val FROM (SELECT * FROM ' + this.table_id + ' WHERE _id ' + sign1 + ' $1 AND _id ' + sign2 + ' $2 ' + ') t ORDER BY _id';
+    }
+
+    private values2sql(obj: OBJT): string[] {
+        return Object.values(this.entity.props).map(prop => {
+            let value: string = obj[prop.name] != null ? obj[prop.name] : 'null';
+            switch (prop.propType_) {
+                case Pn.STRING:
+                    value = `'${value}'`;
+                    break;
+                case Pn.NUMBER:
+                    break;
+                default: 
+                    value = `'${value}'`;
+            }
+
+            return value;
+        });
+    }
+
+    private values2sqlSET(obj: OBJT): string[] {
+        return this.propsNoId().map(prop => {
+            let value: string = obj[prop.name] != null ? obj[prop.name] : 'null';
+            switch (prop.propType_) {
+                case Pn.STRING:
+                    value = `'${value}'`;
+                    break;
+                case Pn.NUMBER:
+                    break;
+                default: 
+                    value = `'${value}'`;
+            }
+            return prop.name + '=' + value;
+        });
+    }
+
+    propsNoId(): EntityProperty[] {
+        return Object.values(this.entity.props).filter(p => p.name !== '_id');
+    }
+
+    public set(_id: string, obj: OBJT): Promise<OBJT> {
+        return new Promise((resolve) => {
+            this.initialize().then(() => {
+                let query: string = `INSERT INTO ${this.table_id} (
+                    ${Object.values(this.entity.props).map(p => p.name).join(", ")}
+                ) VALUES (
+                    ${this.values2sql(obj).join(', ')}
+                ) ON CONFLICT (_id) DO UPDATE SET 
+                    ${this.values2sqlSET(obj).join(', ')}
+                `;
+                KeyValueStorePostgres.db!.none(query).then((res) => {
+                    resolve(obj);
+                })
+            })
+        })
+    }
+
     private prop2sqlCol(prop: EntityProperty): string {
         let type: string;
         switch (prop.propType_) {
@@ -201,7 +279,16 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             case Pn.NUMBER:
                 type = "integer";
                 break;
-            default: throw new Error("unknown prop type " + prop.propType_);
+            case Pn.FORMULA:
+                //FIXME: implement proper type system
+                if (prop.formula.match(/SUM|COUNT|[-]|[+]/) != null) {
+                    type = "integer";
+                } else {
+                    type = "varchar";
+                }
+                break;
+            default: 
+                type = "varchar";
         }
         if (prop.name === '_id') type = type + ' PRIMARY KEY';
         return prop.name + ' ' + type;
