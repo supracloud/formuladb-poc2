@@ -24,11 +24,11 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
     }
 }
 
-export async function getFrmdbEngineStore(): Promise<FrmdbEngineStore> {
+export async function getFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
-    return new FrmdbEngineStore(kvsFactory);
+    return new FrmdbEngineStore(kvsFactory, schema);
 }
 
 export async function getFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
-    return new FrmdbEngine(await getFrmdbEngineStore(), schema);
+    return new FrmdbEngine(await getFrmdbEngineStore(schema));
 }

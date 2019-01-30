@@ -19,6 +19,8 @@
             "*": [
                 "node_modules/*",
             ],
+            "@core/*": ["src/*"],
+            "@storage/*": ["../storage/src/*"],
         },
         "lib": [
             "es2018",
@@ -26,6 +28,7 @@
         ]
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "../storage/src/**/*"
     ]
 }

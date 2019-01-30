@@ -1,5 +1,5 @@
-import { keyValueStoreSpecs, KeyValueStoreSpecObjType } from "@core/key_value_store_i.spec";
-import { KeyValueStorePostgres, KeyObjStorePostgres } from "./key_value_store_postgres";
+import { keyValueStoreSpecs, KeyValueStoreSpecObjType, KeyValueStoreSpecEntity } from "@core/key_value_store_i.spec";
+import { KeyObjStorePostgres, KeyTableStorePostgres } from "./key_value_store_postgres";
 
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -8,5 +8,5 @@ import { KeyValueStorePostgres, KeyObjStorePostgres } from "./key_value_store_po
 
 
 describe('KeyValueStorePostgres', () => {
-    keyValueStoreSpecs({kvs: new KeyObjStorePostgres<KeyValueStoreSpecObjType>('unit-test')});
+    keyValueStoreSpecs({kvs: new KeyTableStorePostgres<KeyValueStoreSpecObjType>(KeyValueStoreSpecEntity)});
 });

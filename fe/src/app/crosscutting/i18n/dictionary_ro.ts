@@ -1,6 +1,11 @@
+import { Orbico_ro } from "./orbico_ro";
+
 export const Dictioary_ro = {
+    ...Orbico_ro,
     'Enable-Developer-Mode':'Activare Mod Dezvoltator',
     'Disable-Developer-Mode':'Dezactivare Mod Dezvoltator',
+
+    REP: 'Rapoarte',
 
     'Financial': 'Financial',
     'General':'General',

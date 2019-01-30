@@ -11,6 +11,10 @@
         "typeRoots": [
             "node_modules/@types"
         ],
+        "paths": {
+            "@core/*": ["core/src/*"],
+            "@storage/*": ["storage/src/*"],
+        },
         "lib": [
             "es2018",
             "dom"

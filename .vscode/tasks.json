@@ -50,15 +50,18 @@
             }
         },
         {
-            "label": "BE Build",
+            "label": "BE serve",
             "command": "npm",
             "type": "shell",
             "options": {
                 "cwd": "./be",
+                "env": {
+                    "FRMDB_STORAGE": "postgres",
+                }
             },
             "args": [
                 "run",
-                "compile:watch"
+                "serve"
             ],
             "presentation": {
                 "echo": true,

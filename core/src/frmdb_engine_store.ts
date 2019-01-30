@@ -5,7 +5,7 @@
 
 import * as moment from 'moment';
 
-import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str } from "./key_value_store_i";
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FrmdbStore } from './frmdb_store';
@@ -19,7 +19,7 @@ import { Expression } from 'jsep';
 import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
 import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 import { DataObj } from '@core/domain/metadata/data_obj';
-import { Entity } from '@core/domain/metadata/entity';
+import { Entity, Schema } from '@core/domain/metadata/entity';
 import { $s2e } from './formula_compiler';
 import { Pn } from '@core/domain/metadata/entity';
 
@@ -38,8 +38,8 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected transactionManager: TransactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
-    constructor(public kvsFactory: KeyValueStoreFactoryI) {
-        super(kvsFactory.createKeyObjS("transactions"), kvsFactory.createKeyObjS("data"));
+    constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
+        super(kvsFactory, schema);
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 
@@ -57,7 +57,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async adHocTableQuery(entity: Entity): Promise<DataObj[]> {
         //super-duper-extra-naive implementation
         let ret: DataObj[] = [];
-        let allObjs = await this.dataDB.all();
+        let allObjs = await this.all(entity._id);
         let formulas: CompiledFormula[] = [];
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ === Pn.FORMULA) {
@@ -82,25 +82,32 @@ export class FrmdbEngineStore extends FrmdbStore {
             let aggsTrg = triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs;
             let startkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.startkeyExpr));
             let endkey = kvsKey2Str(evalExprES5({$ROW$: observerObj}, aggsTrg.map.query.endkeyExpr));
-            let op1 = aggsTrg.map.query.inclusive_start ? '<=' : '<';
-            let op2 = aggsTrg.map.query.inclusive_end ? '<=' : '<';
+            let inclusive_start = aggsTrg.map.query.inclusive_start;
+            let inclusive_end = aggsTrg.map.query.inclusive_end;
         
-            let triggerValue: any = await this.adHocQuery({
-                extraColsBeforeGroup: [
-                    {alias: 'KEY', expr: aggsTrg.map.keyExpr},
-                    {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
-                    'AGG',
-                ],
-                filters: [
-                    $s2e('_id.indexOf("' + aggsTrg.map.entityName + '") == 0'),
-                ],
-                groupColumns: ['KEY'],
-                groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
-                groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
-                returnedColumns: ['AGG'],
-                sortColumns: [],
-            });
-            triggerValues[aggsTrg.aggsViewName] = triggerValue[0]['AGG'];
+            let all = await this.all(aggsTrg.map.entityName);
+            let filteredObjs: any[] = [];
+            for (let obj of all) {
+                let key = kvsKey2Str(evalExprES5(obj, aggsTrg.map.keyExpr));
+                if ((startkey < key && key < endkey) || (startkey == key && inclusive_start) || (endkey == key && inclusive_end)) {
+                    filteredObjs.push(obj);
+                }
+            }
+
+            // let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityName, {
+            //     extraColsBeforeGroup: [
+            //         {alias: 'KEY', expr: aggsTrg.map.keyExpr},
+            //         {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 
+            //         'AGG',
+            //     ],
+            //     filters: [],
+            //     groupColumns: ['KEY'],
+            //     groupAggs: [{alias: 'AGG', reduceFun: aggsTrg.reduceFun, colName: 'VALUE'}],
+            //     groupFilters: [ $s2e(`'${startkey}' ${op1} KEY && KEY ${op2} '${endkey}'`)],
+            //     returnedColumns: ['AGG'],
+            //     sortColumns: [],
+            // });
+            // triggerValues[aggsTrg.aggsViewName] = triggerValue[0]['AGG'];
         }
 
         let ret;
@@ -164,7 +171,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         if (trigger.mapObserversImpactedByOneObservable.existingIndex === '_id') {
             let observerId = evalExprES5(observableObj, trigger.mapObserversImpactedByOneObservable.keyExpr)[0];
             if (null == observerId) throw new Error("obs not found for " + JSON.stringify(observableObj) + " with " + trigger.mapObserversImpactedByOneObservable.keyExpr[0].origExpr);
-            ret = await this.dataDB.get(observerId)
+            ret = await this.getDataObj(observerId)
                 .then(o => o ? [o] : [])
                 .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
         } else {
@@ -176,7 +183,7 @@ export class FrmdbEngineStore extends FrmdbStore {
                 inclusive_start: mapQuery.inclusive_start,
                 inclusive_end: mapQuery.inclusive_end,
             }).then(rows => Promise.all(
-                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row.key))))
+                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row._id))))
             ).then(objs => objs.filter(o => {
                 if (o == null) console.error("map query returned null object", JSON.stringify({observableObj, trigger}));
                 return o != null;

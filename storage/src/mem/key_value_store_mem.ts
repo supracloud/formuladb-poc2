@@ -3,9 +3,11 @@
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, FilterItem, AggFunc, KeyTableStoreI } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
+import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
+import { Entity } from "@core/domain/metadata/entity";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -25,8 +27,8 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
         return simulateIO(this.db[_id]);
     }
 
-    /** querying a map-reduce view must return the results ordered by key */
-    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ key: string, val: VALUET }[]> {
+    /** querying a map-reduce view must return the results ordered by _id */
+    public rangeQueryWithKeys(opts: RangeQueryOptsI): Promise<{ _id: string, val: VALUET }[]> {
         let ret = _.entries(this.db).filter(([_id, val]) =>
             (opts.startkey < _id && _id < opts.endkey)
             || (opts.inclusive_start && _id === opts.startkey)
@@ -37,13 +39,13 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
                 if (keyA > keyB) return 1;
                 return 0;
             })
-            .map(([_id, val]) => ({ key: _id, val: val }));
+            .map(([_id, val]) => ({ _id: _id, val: val }));
         return simulateIO(ret);
     }
 
     public rangeQuery(opts: RangeQueryOptsI): Promise<VALUET[]> {
         return this.rangeQueryWithKeys(opts)
-            .then(res => res.map(({ key, val }) => val));
+            .then(res => res.map(({ _id, val }) => val));
     }
 
     public set(_id: string, obj: VALUET): Promise<VALUET> {
@@ -72,6 +74,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
 }
 
 export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<OBJT> implements KeyObjStoreI<OBJT> {
+
     public findByPrefix(prefix: string): Promise<OBJT[]> {
         return this.rangeQuery({ startkey: prefix, endkey: prefix + "\ufff0", inclusive_start: true, inclusive_end: false });
     }
@@ -86,6 +89,110 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
         //naive implementation, some databases have specific efficient ways to to bulk delete
         return Promise.all(objs.map(o => this.del(o._id)));
     }
+}
+
+export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<OBJT> implements KeyTableStoreI<OBJT> {
+    constructor(public entity: Entity) {
+        super();
+    }
+
+    public evalNumberFilter(val, item: FilterItem): boolean {
+        switch (item.type) {
+            case 'equals':
+                return val == item.filter;
+            case 'notEqual':
+                return val != item.filter;
+            case 'greaterThan':
+                return val > item.filter;
+            case 'greaterThanOrEqual':
+                return val >= item.filter;
+            case 'lessThan':
+                return val < item.filter;
+            case 'lessThanOrEqual':
+                return val <= item.filter;
+            case 'inRange':
+                return val >= item.filter && val <= item.filterTo!;
+            default:
+                throw new Error('unknown number filter type: ' + item.type);
+        }
+    }
+
+    public evalTextFilter(val: string, item: FilterItem): boolean {
+        switch (item.type) {
+            case 'equals':
+                return val == item.filter;
+            case 'notEqual':
+                return val != item.filter;
+            case 'contains':
+                return val.indexOf(item.filter) >= 0;
+            case 'notContains':
+                return val.indexOf(item.filter) < 0;
+            case 'startsWith':
+                return val.startsWith(item.filter);
+            case 'endsWith':
+                return val.endsWith(item.filter);
+            default:
+                throw new Error('unknown text filter type: ' + item.type);
+        }
+    }
+    private evaluateFilter(value: any, filter: FilterItem): boolean {
+        switch (filter.filterType) {
+            case 'text': return this.evalTextFilter(value, filter);
+            case 'number': return this.evalNumberFilter(value, filter);
+            default: throw new Error('unknown filter type: ' + filter.filterType);
+        }
+    }
+
+    private evaluateAggregation(value: any, aggFunc: AggFunc, aggValue: any) {
+        switch (aggFunc) {
+            case "sum":
+                return aggValue + value;
+            case "count":
+                return aggValue + 1;
+            default: throw new Error('unknown agg func: ' + aggFunc);
+        }
+    }
+
+    public async simpleAdHocQuery(query: SimpleAddHocQuery): Promise<any[]> {
+        let {rowGroupCols, groupKeys} = query;
+        //First we filter the rows
+        let objects: any[] = Object.values(this.db);
+        if (objects.length == 0) return [];
+
+        //Then we group them
+        if (rowGroupCols.length > groupKeys.length) {
+            let rowGroupCol = rowGroupCols[groupKeys.length];
+            let grouped = _.groupBy(objects, rowGroupCol.field);
+
+            objects = [];
+            for (let [_id, objs] of Object.entries(grouped)) {
+                let obj: any = {[rowGroupCol.field]: _id};
+                for (let groupAgg of query.valueCols) {
+                    obj[groupAgg.field.toLowerCase()] = objs.reduce((agg, currentObj) => 
+                        ({
+                            [groupAgg.field]: this.evaluateAggregation(currentObj[groupAgg.field], groupAgg.aggFunc, agg[groupAgg.field])
+                        })
+                    )[groupAgg.field];
+                }
+                objects.push(obj);
+            }
+        }
+
+        //Then we filter the groups
+        let groupedFiltered: any[] = [];
+        for (let obj of objects) {
+            let matchesFilter: boolean = true;
+            for (let [_id, filter] of Object.entries(query.filterModel)) {
+                if (!this.evaluateFilter(obj[_id], filter)) {
+                    matchesFilter = false;
+                    break;
+                }
+            }
+            if (matchesFilter) groupedFiltered.push(obj);
+        }
+
+        return simulateIO(groupedFiltered);
+    }
 
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
@@ -95,6 +202,10 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
 
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT> {
         return new KeyObjStoreMem<OBJT>();
+    }
+
+    createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT> {
+        return new KeyTableStoreMem<OBJT>(entity);
     }
 
     async clearAll() {

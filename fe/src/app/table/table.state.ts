@@ -20,7 +20,6 @@ import { Entity } from "@core/domain/metadata/entity";
 export interface TableState {
   entity: Entity | undefined;
   table: Table;
-  tableData: DataObj[];
   selectedColumnName: string | undefined;
   formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
 }
@@ -29,29 +28,14 @@ export const tableInitialState: TableState = {
   entity: undefined,
   table: {} as Table,
   selectedColumnName: undefined,
-  tableData: [] as DataObj[],
   formulaHighlightedColumns: {},
 };
 
-export const TableDataFromBackendActionN = "[table] TableDataFromBackendAction";
-export const RestTableDataFromBackendActionN = "[table] ResetTableDataFromBackendAction";
 export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const ServerEventModifiedTableN = events.ServerEventModifiedTableN;
 export const ServerEventSelectedRowForEditingN = "[table] ServerEventSelectedRowForEditing";
 export const ServerEventNewRowN = "[table] ServerEventNewRow";
 export const UserSelectCellN = "[table] UserSelectCell";
-
-export class TableDataFromBackendAction implements Action {
-  readonly type = TableDataFromBackendActionN;
-
-  constructor(public changes: ChangeObj<DataObj>[]) { }
-}
-
-export class ResetTableDataFromBackendAction implements Action {
-  readonly type = RestTableDataFromBackendActionN;
-
-  constructor(public entity: Entity, public tableData: DataObj[]) { }
-}
 
 export class ServerEventModifiedTable implements Action {
   readonly type = ServerEventModifiedTableN;
@@ -87,8 +71,6 @@ export class UserSelectCell implements Action {
 }
 
 export type TableActions =
-  | TableDataFromBackendAction
-  | ResetTableDataFromBackendAction
   | TableFormBackendAction
   | ServerEventModifiedTable
   | ServerEventSelectedRowForEditing
@@ -105,20 +87,6 @@ export type TableActions =
 export function tableReducer(state = tableInitialState, action: TableActions): TableState {
   let ret: TableState = state;
   switch (action.type) {
-    //changes from the server are comning: added/removed entities
-    case TableDataFromBackendActionN:
-      ret = {
-        ...state,
-        tableData: applyChanges<DataObj>(state.tableData, action.changes),
-      };
-      break;
-    case RestTableDataFromBackendActionN:
-      ret = {
-        ...state,
-        entity: action.entity,
-        tableData: action.tableData,
-      };
-      break;
     //user navigates to different tables
     case TableFromBackendActionN:
       ret = {
@@ -149,10 +117,7 @@ export const getTableEntityState = createSelector(
   getTable,
   (state: TableState) => state.entity
 );
-export const getTableDataState = createSelector(
-  getTable,
-  (state: TableState) => state.tableData
-);
+
 export const getTableState = createSelector(
   getTable,
   (state: TableState) => state.table

@@ -18,7 +18,7 @@ export function isType<K extends keyof typeof NN, T>(t: K, p: any): p is T {
 }
 
 
-export function waitUntilNotNull<T>(callback: () => T): Promise<T> {
+export function waitUntilNotNull<T>(callback: () => T, sleepTime = 250): Promise<T> {
     let ret: T = callback();
     if (ret) return Promise.resolve(ret);
     return new Promise(resolve => {
@@ -28,6 +28,6 @@ export function waitUntilNotNull<T>(callback: () => T): Promise<T> {
                 resolve(x);
                 clearInterval(interval);
             }
-        }, 250)
+        }, sleepTime)
     });
 }

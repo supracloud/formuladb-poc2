@@ -11,7 +11,27 @@ import { CompiledFormula } from "@core/domain/metadata/execution_plan";
 import { compileFormula, $s2e } from './formula_compiler';
 import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
-import { Pn, Entity } from "@core/domain/metadata/entity";
+import { Pn, Entity, Schema } from "@core/domain/metadata/entity";
+
+const TestSchema: Schema = {
+    _id: "FRMDB_SCHEMA",
+    entities: {
+        A: {
+            _id: 'A', props: {
+                _id: { name: "_id", propType_: Pn.STRING },
+                num: { name: "num", propType_: Pn.NUMBER },
+                aY: { name: "aY", propType_: Pn.STRING },
+            },
+        } as Entity,
+        B: {
+            _id: 'B', props: {
+                _id: { name: "_id", propType_: Pn.STRING },
+                num: { name: "sum__", propType_: Pn.NUMBER },
+                aY: { name: "bY", propType_: Pn.STRING },
+            },
+        } as Entity,
+    }
+};
 
 describe('frmdb_engine_store', () => {
     let frmdbEngineStore: FrmdbEngineStore;
@@ -20,7 +40,7 @@ describe('frmdb_engine_store', () => {
 
 
     beforeEach(async (done) => {
-        frmdbEngineStore = await getFrmdbEngineStore();
+        frmdbEngineStore = await getFrmdbEngineStore(TestSchema);
         await frmdbEngineStore.kvsFactory.clearAll();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
@@ -33,24 +53,24 @@ describe('frmdb_engine_store', () => {
 
     it("Should allow working with MapReduce queries produced by the FormulaCompiler", async (done) => {
 
-        $s2e(Fn.SUMIF(`R_A.num`, `aY == @[bY]`) + ` + 1`)
+        $s2e(Fn.SUMIF(`A.num`, `aY == @[bY]`) + ` + 1`)
         await frmdbEngineStore.createMapReduceView("sum1", {
-            entityName: 'R_A',
+            entityName: 'A',
             keyExpr: [$s2e(`aY`)],
             valueExpr: $s2e(`num`),
         }, false, {name: SumReduceFunN});
 
-        let obj1 = { "_id": "R_A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj1);
-        let obj2 = { "_id": "R_A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj2);
-        let obj3 = { "_id": "R_A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj3);
-        let obj4 = { "_id": "R_A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj4);
+        let obj1 = { "_id": "A~~1", "num": 1, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj1); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj1);
+        let obj2 = { "_id": "A~~2", "num": 5, "aY": "a1" }; await frmdbEngineStore.putDataObj(obj2); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj2);
+        let obj3 = { "_id": "A~~3", "num": 2, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj3); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj3);
+        let obj4 = { "_id": "A~~4", "num": 3, "aY": "a2" }; await frmdbEngineStore.putDataObj(obj4); await frmdbEngineStore.forceUpdateViewForObj('sum1', null, obj4);
 
         let qRes = await frmdbEngineStore.mapQueryWithKeys('sum1');
         let expQRes = [
-            { key: ["a1", "R_A~~1"], val: 1 },
-            { key: ["a1", "R_A~~2"], val: 5 },
-            { key: ["a2", "R_A~~3"], val: 2 },
-            { key: ["a2", "R_A~~4"], val: 3 },
+            { _id: ["a1", "A~~1"], val: 1 },
+            { _id: ["a1", "A~~2"], val: 5 },
+            { _id: ["a2", "A~~3"], val: 2 },
+            { _id: ["a2", "A~~4"], val: 3 },
         ];
         expect(qRes).toEqual(expQRes);
 
