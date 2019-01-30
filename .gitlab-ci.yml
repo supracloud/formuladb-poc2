@@ -18,8 +18,11 @@ test:
           && cd core
           && npm install
           && cd ..
-          && cd fe/
-          && npm run build
+          && cd be
           && npm install
+          && cd ..
+          && cd fe/
+          && npm install
+          && npm run build
           && ng e2e
         "
