@@ -28,7 +28,7 @@
  * 
  * docker login --username <docker hub username> --password <password> 
  * 
- * docker run --name ci-with-video --cap-add=SYS_ADMIN --user centos -it registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c \
+ * docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -it registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c \
  * 'source ~/.bashrc && cd && git clone https://lsoica:greudespart2@gitlab.com/metawiz/febe.git && cd febe/ && cd storage && npm install && \
  * cd .. && cd core && npm install && cd .. && cd fe/ && npm install && ng e2e'
  * 
