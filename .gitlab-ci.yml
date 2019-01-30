@@ -11,6 +11,7 @@ test:
         source ~/.bashrc
           && cd
           && git clone https://gitlab-ci-token:$CI_BUILD_TOKEN@gitlab.com/metawiz/febe.git
+          && git checkout $CI_COMMIT_REF_NAME
           && cd febe/
           && cd storage
           && npm install
