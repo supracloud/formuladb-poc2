@@ -8,7 +8,7 @@ const path = require('path');
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
-    './src/**/*.e2e-spec.ts'
+    './src/**/inventory-base.e2e-spec.ts'
     // './src/**/change-theme-and-color.e2e-spec.ts'
   ],
 //https://peter.sh/experiments/chromium-command-line-switches/
@@ -22,7 +22,7 @@ exports.config = {
     }
   },
   directConnect: true,
-  baseUrl: 'http://localhost:4200/0/',
+  baseUrl: 'http://localhost:4300/0/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
