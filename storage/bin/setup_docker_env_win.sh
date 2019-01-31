@@ -57,3 +57,16 @@ create-docker-env() {
     export DOCKER_CERT_PATH=""
     export COMPOSE_CONVERT_WINDOWS_PATHS=1
 }
+
+psql() {
+    docker exec -it formuladb-pg psql -U postgres
+}
+pglogs() {
+    docker logs -f formuladb-pg
+}
+pg() {
+    docker exec -it formuladb-pg bash
+}
+copy2pg() {
+    docker cp $1 formuladb-pg:/`basename $1`
+}

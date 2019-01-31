@@ -30,44 +30,48 @@ export const Prd_23 = { _id: "INV__PRD~~23", code: "p23", barcode: "400638133393
 export const Prd_24 = { _id: "INV__PRD~~24", code: "p24", barcode: "40063813339324", name: "Refined Frozen Table", category: "Sports", subcategory: "delectus", description: "Cupiditate aperiam aut nisi laudantium.", longDescription: "Cumque accusantium perferendis ut consequuntur quisquam et doloremque blanditiis. Qui odit consequuntur in. Recusandae rerum aut fugit hic doloremque. Voluptatibus qui sit quoet. Aliquam et vel omnis.\n \rEt assumenda est nihil quo qui dolor est et voluptatem. Corrupti tempora aliquam ut veniam in cupiditate. Doloremque et ipsa dignissimos qui. Fugit non expedita mollitia quibusdam doloribus corrupti aspernatur enim corporis. Dolores veritatis enim aut sed incidunt illum.\n \rEst asperiores cum perspiciatis iusto dolorum necessitatibus autem nobis possimus. Commodi voluptates facilis excepturi doloremque quibusdam at libero est. Atque aspernatur aut. Nesciunt quisquam voluptatem itaque similique dolores suscipit a voluptate et. Doloribus neque veritatis quis magni consectetur." };
 export const Prd_25 = { _id: "INV__PRD~~25", code: "p25", barcode: "40063813339325", name: "Tasty Cotton Chips", category: "Automotive", subcategory: "architecto", description: "Aut hic rerum explicabo ut illo ipsumtempora quisquam pariatur.", longDescription: "A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique." };
 
-export const INV__PRD__Location1 = { _id: "INV__PRD__Location~~1__1", productId: "INV__PRD~~1", locationCode: "Warehouse1", category: "C1", price: 12.5, received_stock__: 25, ordered_stock__: 10, available_stock__: 5 };
-export const INV__PRD__Location1a = { _id: "INV__PRD__Location~~1__1a", productId: "INV__PRD~~1a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 15, ordered_stock__: 4, available_stock__: 1 };
-export const INV__PRD__Location2a = { _id: "INV__PRD__Location~~1__2a", productId: "INV__PRD~~2a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location3a = { _id: "INV__PRD__Location~~1__3a", productId: "INV__PRD~~3a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location4a = { _id: "INV__PRD__Location~~1__4a", productId: "INV__PRD~~4a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location5a = { _id: "INV__PRD__Location~~1__5a", productId: "INV__PRD~~5a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location6a = { _id: "INV__PRD__Location~~1__6a", productId: "INV__PRD~~6a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location7a = { _id: "INV__PRD__Location~~1__7a", productId: "INV__PRD~~7a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location8a = { _id: "INV__PRD__Location~~1__8a", productId: "INV__PRD~~8a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location9a = { _id: "INV__PRD__Location~~1__9a", productId: "INV__PRD~~9a", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location10 = { _id: "INV__PRD__Location~~1__10", productId: "INV__PRD~~10", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location11 = { _id: "INV__PRD__Location~~1__11", productId: "INV__PRD~~11", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location12 = { _id: "INV__PRD__Location~~1__12", productId: "INV__PRD~~12", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location13 = { _id: "INV__PRD__Location~~1__13", productId: "INV__PRD~~13", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location14 = { _id: "INV__PRD__Location~~1__14", productId: "INV__PRD~~14", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location15 = { _id: "INV__PRD__Location~~1__15", productId: "INV__PRD~~15", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location16 = { _id: "INV__PRD__Location~~1__16", productId: "INV__PRD~~16", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location17 = { _id: "INV__PRD__Location~~1__17", productId: "INV__PRD~~17", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location18 = { _id: "INV__PRD__Location~~1__18", productId: "INV__PRD~~18", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location19 = { _id: "INV__PRD__Location~~1__19", productId: "INV__PRD~~19", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location20 = { _id: "INV__PRD__Location~~1__20", productId: "INV__PRD~~20", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location21 = { _id: "INV__PRD__Location~~1__21", productId: "INV__PRD~~21", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location22 = { _id: "INV__PRD__Location~~1__22", productId: "INV__PRD~~22", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location23 = { _id: "INV__PRD__Location~~1__23", productId: "INV__PRD~~23", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location24 = { _id: "INV__PRD__Location~~1__24", productId: "INV__PRD~~24", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
-export const INV__PRD__Location25 = { _id: "INV__PRD__Location~~1__25", productId: "INV__PRD~~25", locationCode: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location1 = { _id: "INV__PRD__Location~~1__1", product_id: "INV__PRD~~1", location_code: "Warehouse1", category: "C1", price: 12.5, received_stock__: 25, ordered_stock__: 10, available_stock__: 5 };
+export const INV__PRD__Location1a = { _id: "INV__PRD__Location~~1__1a", product_id: "INV__PRD~~1a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 15, ordered_stock__: 4, available_stock__: 1 };
+export const INV__PRD__Location2a = { _id: "INV__PRD__Location~~1__2a", product_id: "INV__PRD~~2a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location3a = { _id: "INV__PRD__Location~~1__3a", product_id: "INV__PRD~~3a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location4a = { _id: "INV__PRD__Location~~1__4a", product_id: "INV__PRD~~4a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location5a = { _id: "INV__PRD__Location~~1__5a", product_id: "INV__PRD~~5a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location6a = { _id: "INV__PRD__Location~~1__6a", product_id: "INV__PRD~~6a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location7a = { _id: "INV__PRD__Location~~1__7a", product_id: "INV__PRD~~7a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location8a = { _id: "INV__PRD__Location~~1__8a", product_id: "INV__PRD~~8a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location9a = { _id: "INV__PRD__Location~~1__9a", product_id: "INV__PRD~~9a", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location10 = { _id: "INV__PRD__Location~~1__10", product_id: "INV__PRD~~10", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location11 = { _id: "INV__PRD__Location~~1__11", product_id: "INV__PRD~~11", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location12 = { _id: "INV__PRD__Location~~1__12", product_id: "INV__PRD~~12", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location13 = { _id: "INV__PRD__Location~~1__13", product_id: "INV__PRD~~13", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location14 = { _id: "INV__PRD__Location~~1__14", product_id: "INV__PRD~~14", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location15 = { _id: "INV__PRD__Location~~1__15", product_id: "INV__PRD~~15", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location16 = { _id: "INV__PRD__Location~~1__16", product_id: "INV__PRD~~16", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location17 = { _id: "INV__PRD__Location~~1__17", product_id: "INV__PRD~~17", location_code: "Warehouse1", category: "C1", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location18 = { _id: "INV__PRD__Location~~1__18", product_id: "INV__PRD~~18", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location19 = { _id: "INV__PRD__Location~~1__19", product_id: "INV__PRD~~19", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location20 = { _id: "INV__PRD__Location~~1__20", product_id: "INV__PRD~~20", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location21 = { _id: "INV__PRD__Location~~1__21", product_id: "INV__PRD~~21", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location22 = { _id: "INV__PRD__Location~~1__22", product_id: "INV__PRD~~22", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location23 = { _id: "INV__PRD__Location~~1__23", product_id: "INV__PRD~~23", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location24 = { _id: "INV__PRD__Location~~1__24", product_id: "INV__PRD~~24", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
+export const INV__PRD__Location25 = { _id: "INV__PRD__Location~~1__25", product_id: "INV__PRD~~25", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 export const INV__PRDUnit1 = { _id: "INV__PRD__Unit~~1" };
 export const INV__Order1 = { _id: "INV__Order~~1", sales_agent: "John Doe", creation_date: "2018-09-27" };
-export const INV__Order__Item1_1 = { _id: "INV__Order__Item~~1__1", productLocationId: INV__PRD__Location1._id, quantity: 10 };
-export const INV__Order__Item1_2 = { _id: "INV__Order__Item~~1__2", productLocationId: INV__PRD__Location1a._id, quantity: 4 };
+export const INV__Order__Item1_1 = { _id: "INV__Order__Item~~1__1", product_location_id: INV__PRD__Location1._id, quantity: 10 };
+export const INV__Order__Item1_2 = { _id: "INV__Order__Item~~1__2", product_location_id: INV__PRD__Location1a._id, quantity: 4 };
 export const INV__Receipt1 = { _id: "INV__Receipt~~1" };
-export const INV__Receipt__Item1_1 = { _id: "INV__Receipt__Item~~1__1", productLocationId: INV__PRD__Location1._id, quantity: 15 };
-export const INV__Receipt__Item1_2 = { _id: "INV__Receipt__Item~~1__2", productLocationId: INV__PRD__Location1a._id, quantity: 5 };
+export const INV__Receipt__Item1_1 = { _id: "INV__Receipt__Item~~1__1", product_location_id: INV__PRD__Location1._id, quantity: 15 };
+export const INV__Receipt__Item1_2 = { _id: "INV__Receipt__Item~~1__2", product_location_id: INV__PRD__Location1a._id, quantity: 5 };
 export const INV__Receipt2 = { _id: "INV__Receipt~~2" };
-export const INV__Receipt__Item2_1 = { _id: "INV__Receipt__Item~~2__1", productLocationId: INV__PRD__Location1._id, quantity: 10 };
-export const INV__Receipt__Item2_2 = { _id: "INV__Receipt__Item~~2__2", productLocationId: INV__PRD__Location1a._id, quantity: 5 };
-// export const REP__DetailedCentralizerReport1 = { _id: "REP__DetailedCentralizerReport~~1", dummy: 'bla' };
-// export const REP__ServiceCentralizerReport1 = { _id: "REP__ServiceCentralizerReport~~1", dummy: 'bla' };
+export const INV__Receipt__Item2_1 = { _id: "INV__Receipt__Item~~2__1", product_location_id: INV__PRD__Location1._id, quantity: 10 };
+export const INV__Receipt__Item2_2 = { _id: "INV__Receipt__Item~~2__2", product_location_id: INV__PRD__Location1a._id, quantity: 5 };
+
+export const largeSalesReport1 = { _id: 'REP__LargeSales~~1', client: "John Doe", month: "2018-09-01"};
+export const largeSalesReport1p1 = { _id: 'REP__LargeSales__Product~~1__1', product_location_id: INV__PRD__Location9a._id, product_name: Prd_9a.name, large_sales_value: 120};
+export const largeSalesReport1p2 = { _id: 'REP__LargeSales__Product~~1__2', product_location_id: INV__PRD__Location10._id, product_name: Prd_10.name, large_sales_value: 140};
+export const largeSalesReport1p3 = { _id: 'REP__LargeSales__Product~~1__3', product_location_id: INV__PRD__Location11._id, product_name: Prd_11.name, large_sales_value: 160};
+export const largeSalesReport1p4 = { _id: 'REP__LargeSales__Product~~1__4', product_location_id: INV__PRD__Location12._id, product_name: Prd_12.name, large_sales_value: 180};
 
 export const InventoryData = [
     Prd_1,
@@ -132,6 +136,9 @@ export const InventoryData = [
     INV__Receipt2,
     INV__Receipt__Item2_1,
     INV__Receipt__Item2_2,
-    // REP__DetailedCentralizerReport1,
-    // REP__ServiceCentralizerReport1,
+    largeSalesReport1,
+    largeSalesReport1p1,
+    largeSalesReport1p2,
+    largeSalesReport1p3,
+    largeSalesReport1p4,
 ];

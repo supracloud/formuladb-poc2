@@ -2,7 +2,7 @@
     <div *ngIf="params.enableMenu" #menuButton class="customHeaderMenuButton" (click)="onMenuClicked($event)"><i class="fa {{params.menuIcon}}"></i></div>
     <div class="customHeaderLabel">
         <span class="frmdb-table-header-text">
-            <span (click)="selectColumn(params.displayName)" class="frmdb-table-header-dev-mode-identifier" *ngIf="devMode$ | async">{{params.displayName}}</span>
+            <span (click)="selectColumn(params.displayName)" class="frmdb-table-header-dev-mode-identifier" *ngIf="devMode$ | async">{{params.column.colId}}</span>
             {{params.displayName | i18n}}
         </span>
 

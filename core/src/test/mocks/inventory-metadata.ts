@@ -15,13 +15,14 @@ export const Inventory = {
 export const INV__PRD__Location = {
     _id: 'INV__PRD__Location',
     props: {
-        productId: { name: 'productId', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
-        locationCode: { name: 'locationCode', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
+        location_code: { name: 'location_code', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
         category: { name: 'category', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         received_stock__: {
             name: 'received_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV__Receipt__Item.quantity, productLocationId == @[_id])',
+            formula: 'SUMIF(INV__Receipt__Item.quantity, product_location_id == @[_id])',
         } as FormulaProperty,
         available_stock__: {
             name: 'available_stock__',
@@ -31,7 +32,7 @@ export const INV__PRD__Location = {
         ordered_stock__: {
             name: 'ordered_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV__Order__Item.quantity, productLocationId == @[_id])'
+            formula: 'SUMIF(INV__Order__Item.quantity, product_location_id == @[_id])'
         } as FormulaProperty,
         price: { name: 'price', propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
         currency: {
@@ -57,8 +58,8 @@ export const INV__PRD = {
         barcode: { name: 'barcode', propType_: Pn.STRING } as EntityProperty,
         name: { name: 'name', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         description: { name: 'description', propType_: Pn.STRING } as EntityProperty,
-        inventoryLocation: {
-            name: 'inventoryLocation',
+        inventory_location: {
+            name: 'inventory_location',
             propType_: Pn.CHILD_TABLE, referencedEntityName: INV__PRD__Location._id, props: {}
         } as EntityProperty,
     }
@@ -75,13 +76,13 @@ export const INV__PRD__Unit = {
             referencedEntityName: INV__PRD._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
-        productName: {
+        product_name: {
             propType_: Pn.REFERENCE_TO,
             name: 'product_name',
             referencedEntityName: INV__PRD._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
-        inventoryLocation: { name: 'inventoryLocation', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        inventory_location: { name: 'inventory_location', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         serial1: { name: 'serial1', propType_: Pn.STRING } as EntityProperty,
         serial2: { name: 'serial2', propType_: Pn.STRING } as EntityProperty,
         serial3: { name: 'serial3', propType_: Pn.STRING } as EntityProperty,
@@ -101,8 +102,8 @@ export const INV__PRD__Unit = {
 export const INV__Receipt = {
     _id: 'INV__Receipt',
     props: {
-        items$: {
-            name: 'items$', propType_: Pn.CHILD_TABLE,
+        items: {
+            name: 'items', propType_: Pn.CHILD_TABLE,
             referencedEntityName: 'INV__Receipt__Item', props: {}, isLargeTable: true
         } as EntityProperty,
     }
@@ -111,8 +112,8 @@ export const INV__Receipt = {
 export const INV__Receipt__Item = {
     _id: 'INV__Receipt__Item',
     props: {
-
-        productLocationId: { name: 'productLocationId', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_location_id: { name: 'product_location_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         units: {
             name: 'units',
@@ -137,9 +138,10 @@ export const INV__Receipt__Item = {
 export const INV__Order__Item = {
     _id: 'INV__Order__Item',
     props: {
-        productLocationId: { name: 'productLocationId', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_location_id: { name: 'product_location_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
-        error_quantity: { name: 'error_quantity', propType_: Pn.FORMULA, formula: '0' } as EntityProperty,
+        error_quantity: { name: 'error_quantity', propType_: Pn.FORMULA, formula: '0 - 0' } as EntityProperty,
         client_stock: { name: 'client_stock', propType_: Pn.NUMBER } as EntityProperty,
         units: {
             name: 'units',
@@ -183,8 +185,8 @@ export const INV__Order = {
     props: {
         sales_agent: { name: 'sales_agent', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         creation_date: { name: 'creation_date', propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
-        items$: {
-            name: 'items$',
+        items: {
+            name: 'items',
             propType_: Pn.CHILD_TABLE,
             referencedEntityName: INV__Order__Item._id,
             props: {},
@@ -192,3 +194,33 @@ export const INV__Order = {
         } as EntityProperty,
     }
 };
+
+export { Reports } from './reports-metadata';
+
+export const REP__LargeSales = {
+    _id: "REP__LargeSales",
+    props: {
+        client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
+        large_sales: {
+            name: "large_sales",
+            propType_: Pn.CHILD_TABLE,
+            referencedEntityName: "REP__LargeSales__Product",
+            isLargeTable: true,
+            props: {},
+        } as EntityProperty,
+    }
+};
+
+export const REP__LargeSales__Product = {
+    _id: "REP__LargeSales__Product",
+    props: {
+        product_location_id: { name: "product_location_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_name: { name: "product_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        large_sales_value: {
+            name: "large_sales_value",
+            propType_: Pn.FORMULA,
+            formula: `SUMIF(INV__Order__Item.quantity, product_location_id == @[product_location_id] && quantity > 100)`,
+        } as FormulaProperty,
+    }
+}

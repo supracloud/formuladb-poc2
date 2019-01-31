@@ -100,8 +100,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 let start: string = opts.startkey;
                 let end: string = opts.endkey;
                 // ISSUE here: cannot handle unicode in select
-                end = end.replace(/[\ufff0]/g, '\xff');
-                start = start.replace(/[\u00000]/g, '\x01');
+                end = end.replace(/[\ufff0]/g, '\\ufff0');
+                start = start.replace(/[\u0000]/g, '\\u0000');
 
                 let query: string = this.rangeSQL(sign1, sign2);
                 KeyValueStorePostgres.db!.any<{ _id: string, val: VALUET }>(query, [start, end]).then((res) => {
@@ -210,15 +210,15 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     }
 
     protected getSQL() {
-        return `SELECT row_to_json(t) as val FROM (SELECT * FROM ${this.table_id} WHERE _id = $1) t`;
+        return `SELECT json_strip_nulls(row_to_json(t)) as val FROM (SELECT * FROM ${this.table_id} WHERE _id = $1) t`;
     }
 
     protected allSQL() {
-        return `SELECT row_to_json(t) as val FROM (SELECT * FROM ${this.table_id} ) t`;
+        return `SELECT json_strip_nulls(row_to_json(t)) as val FROM (SELECT * FROM ${this.table_id} ) t`;
     }
 
     protected rangeSQL(sign1: string, sign2: string) {
-        return 'SELECT t._id as _id, row_to_json(t) as val FROM (SELECT * FROM ' + this.table_id + ' WHERE _id ' + sign1 + ' $1 AND _id ' + sign2 + ' $2 ' + ') t ORDER BY _id';
+        return 'SELECT t._id as _id, json_strip_nulls(row_to_json(t)) as val FROM (SELECT * FROM ' + this.table_id + ' WHERE _id ' + sign1 + ' $1 AND _id ' + sign2 + ' $2 ' + ') t ORDER BY _id';
     }
 
     private values2sql(obj: OBJT): string[] {
@@ -324,6 +324,8 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     }
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
+    readonly name = "KeyValueStoreFactoryPostgres";
+    
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
     }

@@ -25,10 +25,10 @@ xdescribe('mock-data', () => {
     let serviceForm: any = mockData.getAllForPath(Forms__ServiceForm._id)[0];
     let item = serviceForm.service_form_units[0].items[0].product;
     
-    expect(item.ref_).toEqual('Inventory_Product/UUID-Inventory-Product:3/inventoryLocation/UUID-Inventory-Product-t-3040');
+    expect(item.ref_).toEqual('Inventory_Product/UUID-Inventory-Product:3/inventory_location/UUID-Inventory-Product-t-3040');
     // expect(item.code).toEqual()
     // expect(item.name",
-    // expect(item.locationCode",
+    // expect(item.location_code",
     // expect(item.price",
     // expect(item.currency/code",
   });

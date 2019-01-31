@@ -164,7 +164,7 @@ export class BackendService {
             return data.body as any as Form;
         });
         if (!http) return null;
-        let fi = http[0];
+        let fi = http;
         if (!isForm(fi)) throw new Error("response is not Form " + JSON.stringify(fi));
         addIdsToForm(fi.grid);
         return fi;

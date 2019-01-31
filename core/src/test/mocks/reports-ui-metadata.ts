@@ -7,7 +7,7 @@ import * as metadata from './mock-metadata';
 import { Entity, Pn } from "@core/domain/metadata/entity";
 import { Form, NodeType } from '@core/domain/uimetadata/form'
 import { Forms__ServiceForm } from "./forms-metadata";
-import { REP__LargeSales } from './reports-metadata';
+import { REP__LargeSales } from './inventory-metadata';
 
 let testUUID = 1;
 function getTestUUID() {
@@ -41,12 +41,12 @@ export var REP__LargeSales_Form: Form = {
         childNodes: [
           {
             nodeType: NodeType.form_chart,
-            tableName: "largeSales",
+            tableName: "large_sales",
             chartType: "bar-vertical",
             width: 850,
             height: 450,
-            xPropertyName: "productName",
-            yPropertyName: "largeSalesValue",
+            xPropertyName: "product_name",
+            yPropertyName: "large_sales_value",
             groupByPropertyName: undefined,
             _id: "7x8JM1B39JihWrCoX6B64z"
           },
@@ -58,23 +58,23 @@ export var REP__LargeSales_Form: Form = {
         childNodes: [
           {
             nodeType: NodeType.form_table,
-            "tableName": "largeSales",
+            "tableName": "large_sales",
             childNodes: [
               {
                 nodeType: NodeType.form_input,
-                propertyName: "productLocationId",
+                propertyName: "product_location_id",
                 "propertyType": Pn.STRING,
                 _id: "9fGmxqFEtxP9ypQYzJ9Uoe"
               },
               {
                 nodeType: NodeType.form_input,
-                propertyName: "productLocationId",
+                propertyName: "product_location_id",
                 "propertyType": Pn.STRING,
                 _id: "4x12CPz2SRTasvTpEgA37G"
               },
               {
                 nodeType: NodeType.form_input,
-                propertyName: "largeSalesValue",
+                propertyName: "large_sales_value",
                 "propertyType": Pn.NUMBER,
                 _id: "hy94dLU9CNYrKnJxyhAvGa"
               },

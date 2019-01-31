@@ -1,19 +1,24 @@
 import { Orbico_ro } from "./orbico_ro";
+import { Inventory_ro } from "./inventory_ro";
 
 export const Dictioary_ro = {
     ...Orbico_ro,
+    ...Inventory_ro,
     'Enable-Developer-Mode':'Activare Mod Dezvoltator',
     'Disable-Developer-Mode':'Dezactivare Mod Dezvoltator',
+    'Change app': 'Schimbare aplicatie',
 
     REP: 'Rapoarte',
 
-    'Financial': 'Financial',
-    'General':'General',
+    Financial: 'Financiar',
+    General:'General',
+    INV:'Gestiune',
+    PRD: 'Produs',
+    PRDUnit: 'Echipamente',
     'Inventory':'Gestiune',
     'Currency': 'Moneda',
     'Product': 'Produse',
     'Location': 'Locaţii Produs',
-    'ProductUnit': 'Echipamente',
     'Receipt': 'Intrări',
     'Item': 'Produse Intrări',
     'Order': 'Comenzi',
@@ -24,36 +29,6 @@ export const Dictioary_ro = {
     'Forms': 'Formulare',
     'ServiceForm': 'Formular Service',
 
-    productId: 'Id Produs',
-    locationCode: 'Cod Locaţie',
-    category: 'Categorie',
-    received_stock__: 'Intrări Total',
-    available_stock__: 'Stoc',
-    ordered_stock__: 'Ieşiri Total',
-    currency: 'Monedă',
-    minimal_stock: 'Stoc Minim',
-    moving_stock: 'Stoc în deplasare',
-    state: 'Stare',
-
-    productLocationId: 'Produs (Locatie)',
-    quantity: 'Cantitate',
-    error_quantity: 'Cantitate Eroare',
-    client_stock: 'Stoc la Client',
-
-    'DeliveryRate': 'Rata de livrare',
-    orderNb: 'Nr Comanda',
-    externalOrderNb: 'Nr extern Comanda',
-    orderCreationDate: 'Data Creare Comanda',
-    clientCode: 'Cod Client',
-    client: 'Client',
-    addressCode: 'Cod Adresa',
-    addressName: 'Nume Adresa',
-    location: 'Locatie',
-    productCode: 'Cod Produs',
-    barcode: 'Cod Bare',
-    quantityError: 'Cantitate Eroare',
-    price: 'Preţ',
-
     'GEN__Currency!rate1!max': 'Maximum rate1 exceeded',
-    'items$': 'Items',
+    'items': 'Items',
 };

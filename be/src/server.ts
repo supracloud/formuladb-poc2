@@ -25,7 +25,7 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
   testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
   await testFrmdbEngine.init(true);
-  await loadTestData(testFrmdbEngine, mockMetadata)
+  await loadTestData(testFrmdbEngine);
 })
 .then(() => {
   // Init the express application

@@ -19,7 +19,7 @@ const defaultDict_en = {
     username: 'Username',
 
     'GEN__Currency!rate1!max': 'Maximum rate1 exceeded',
-    'items$': 'Items',
+    'items': 'Items',
 };
 
 export const Dictioary_en = {

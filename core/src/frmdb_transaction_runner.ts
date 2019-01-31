@@ -238,7 +238,7 @@ export class FrmdbTransactionRunner {
         } catch (ex) {
             event.state_ = 'ABORT';
             event.reason_ = 'ABORT_ON_ERROR';
-            event.error_ = "" + JSON.stringify(ex);
+            event.error_ = "" + ex + '. Stack:' + ex.stack;
             this.handleError(new TransactionAbortedError(event));//no await
         }
 
