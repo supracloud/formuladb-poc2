@@ -72,7 +72,6 @@ export default function (frmdbEngine: FrmdbEngine) {
     });
 
     app.post('/api/:dbname/event', async function (req, res) {
-        let frmdbEngine = await getFrmdbEngine({_id: 'FRMDB_SCHEMA', entities: {}});
         return frmdbEngine.processEvent(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
