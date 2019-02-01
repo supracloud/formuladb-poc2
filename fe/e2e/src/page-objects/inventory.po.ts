@@ -1,9 +1,9 @@
 import {browser, element, by} from 'protractor';
 
 export class InventoryPage {
-  general = element(by.xpath('body/frmdb-root[1]/frmdb-layout[1]/div[1]/div[1]/div[1]/frmdb-navigation[1]/ul[1]/li[1]/a[1]'));
-  inventory = element(by.xpath('body/frmdb-root[1]/frmdb-layout[1]/div[1]/div[1]/div[1]/frmdb-navigation[1]/ul[1]/li[2]/a[1]'));
-  reports = element(by.xpath('body/frmdb-root[1]/frmdb-layout[1]/div[1]/div[1]/div[1]/frmdb-navigation[1]/ul[1]/li[3]/a[1]'));
+  general = element.all(by.tagName('li')).all(by.className("nav-item")).first();
+  inventory = element.all(by.tagName('li')).all(by.className("nav-item")).get(1)
+  reports = element.all(by.tagName('li')).all(by.className("nav-item")).get(2);
   
   async navigateToHome() {
     await browser.get('/inventory/0');
@@ -26,6 +26,8 @@ export class InventoryPage {
   }
 
   async checkEntities() {
+    let c = await element.all(by.tagName('li')).count();
+    expect(c).toEqual(3);
     await this.general.getText();
     await this.inventory.getText();
     await this.reports.getText();
