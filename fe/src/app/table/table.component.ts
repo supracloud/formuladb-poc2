@@ -79,8 +79,8 @@ export class TableComponent implements OnInit, OnDestroy {
 
     private tableState: tableState.Table;
 
-    constructor(private store: Store<tableState.TableState>, 
-        private router: Router, 
+    constructor(private store: Store<tableState.TableState>,
+        private router: Router,
         private route: ActivatedRoute,
         private tableService: TableService,
         private i18npipe: I18nPipe) {
@@ -100,6 +100,19 @@ export class TableComponent implements OnInit, OnDestroy {
             return { backgroundColor: this.highlightColumns[this.currentEntity._id][params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
+    }
+
+    agFilter(ctype: string) {
+        switch (ctype) {
+            case 'STRING':
+                return 'agTextColumnFilter';
+            case 'NUMBER':
+                return 'agNumberColumnFilter';
+            case 'DATE':
+                return 'agDateColumnFilter';
+            default:
+                return null;
+        }
     }
 
     ngOnInit(): void {
@@ -127,8 +140,10 @@ export class TableComponent implements OnInit, OnDestroy {
                     headerName: this.i18npipe.transform(c.name),
                     field: c.name,
                     width: c.width ? c.width : 100,
+                    filter: this.agFilter(c.type),
                     enableRowGroup: true,
                     enableValue: true,
+
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
                 });
 
