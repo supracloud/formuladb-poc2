@@ -1,9 +1,9 @@
-import {browser, element, by} from 'protractor';
+import {browser, element, by, ElementFinder} from 'protractor';
 
 export class InventoryPage {
-  general = element.all(by.tagName('li')).all(by.className("nav-item")).first();
-  inventory = element.all(by.tagName('li')).all(by.className("nav-item")).get(1)
-  reports = element.all(by.tagName('li')).all(by.className("nav-item")).get(2);
+  general = element(by.css('a[ng-reflect-router-link*="GEN"]'));
+  inventory = element(by.css('a[ng-reflect-router-link*="INV"]'));
+  reports = element(by.css('a[ng-reflect-router-link*="REP"]'));
   
   async navigateToHome() {
     await browser.get('/inventory/0');
@@ -26,10 +26,9 @@ export class InventoryPage {
   }
 
   async checkEntities() {
-    let c = await element.all(by.tagName('li')).count();
-    expect(c).toEqual(3);
+    await browser.sleep(10);
     await this.general.getText();
     await this.inventory.getText();
-    await this.reports.getText();
+    await this.reports.getText();    
   }
 }

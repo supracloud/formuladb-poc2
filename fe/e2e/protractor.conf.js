@@ -17,6 +17,7 @@ exports.config = {
     chromeOptions: {
         args: [
             '--window-size=1920,1080',
+            '--headless'
 // --start-fullscreen doesn't work right, don't lose your time with it. We'll have to crop the video as a final step of the test.
         ]
     }

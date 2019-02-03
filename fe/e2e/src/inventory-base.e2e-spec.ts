@@ -35,9 +35,16 @@ describe('Inventory App Base E2E', () => {
 
   it('Should navigate to general', async () => {
     await inventory!.navigateToGeneral();
+    await browser.sleep(1000);
   });
 
-  it('Wait for inspection', async () => {
-    await browser.sleep(100000);
+  it('Should navigate to inventory', async () => {
+    await inventory!.navigateToInventory();
+    await browser.sleep(1000);
+  });
+
+  it('Should navigate to reports', async () => {
+    await inventory!.navigateToReports();
+    await browser.sleep(1000);
   });
 });
