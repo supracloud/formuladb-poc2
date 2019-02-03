@@ -70,7 +70,6 @@
   },
   "_moduleAliases": {
     "@storage": "./dist/storage/src",
-    "@core": "./dist/core/src",
-    "@kv_selector_base": "./dist/be/src"
+    "@core": "./dist/core/src"
   }
 }

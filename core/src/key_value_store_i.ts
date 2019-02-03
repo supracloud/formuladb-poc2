@@ -73,6 +73,7 @@ export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<O
     entity: Entity;
     /** filtering and grouping by any _id */
     simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
+    init(): Promise<any>;
 }
 
 export function kvsKey2Str(_id: any): string {

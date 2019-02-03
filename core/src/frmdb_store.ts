@@ -24,6 +24,11 @@ export class FrmdbStore {
 
     }
 
+    public async init() {
+        let kvsList = await Promise.all(Object.keys(this.schema.entities).map(entityName => this.getDataKvs(entityName)));
+        return Promise.all(kvsList.map(kvs => kvs.init()));
+    }
+
     private async getTransactionsDB() {
         if (!this.transactionsDB) {
             this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');

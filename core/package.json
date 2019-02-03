@@ -37,6 +37,7 @@
     "typescript": "^3.2.4"
   },
   "_moduleAliases": {
-    "@kv_selector_base": "./dist"
+    "@storage": "./dist/storage/src",
+    "@core": "./dist/core/src"
   }
 }

@@ -216,6 +216,10 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         super(entity._id);
     }
 
+    init(): Promise<any> {
+        return this.initialize();
+    }
+
     protected getSQL() {
         return `SELECT json_strip_nulls(row_to_json(t)) as val FROM (SELECT * FROM ${this.table_id} WHERE _id = $1) t`;
     }
