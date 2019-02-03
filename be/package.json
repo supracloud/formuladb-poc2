@@ -11,6 +11,7 @@
     "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
     "start": "node dist/be/src/server.js",
     "compile": "tsc --inlineSourceMap -p src",
+    "compile:watch": "tsc --inlineSourceMap -w -p src",
     "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",

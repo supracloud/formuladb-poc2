@@ -211,18 +211,10 @@ export class FrmdbTransactionRunner {
                 }
                 transacDAG.finished = true;
             }
-
-            let recoveredDeadTransaction = async (eventId: string) => {
-                //TODO
-            };
-
             await this.frmdbEngineStore.withLock(event._id, 
                 0,
                 getObjectIdsToSave, 
-                saveObjects, 
-                recoveredDeadTransaction, 
-                20, 
-                50
+                saveObjects
             );
 
             if (transacDAG!.haveFailedValidations) {

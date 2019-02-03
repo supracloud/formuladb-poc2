@@ -1,6 +1,11 @@
-let SEP:string = '```'; // set to '_' for easier debugging 
+import * as Collate from 'pouchdb-collate';
 
-function toIndexableString(key: Array<any>) {
+// export const SEP:string = '\u0000';
+export const SEP :string = '\x01';
+export const MINCHAR: string = '\x01';//postgres does not support \u0000
+export const MAXCHAR: string = '\x7f';
+
+function toIndexableStringInHouse(key: Array<any>) {
     let result: string = "";
     key.forEach(element => {
         if (result.length > 0) {
@@ -24,12 +29,23 @@ function toIndexableString(key: Array<any>) {
     return result;
 };
 
-function parseIndexableString(str: String) {
+function parseIndexableStringInHouse(str: String) {
     return str.split(SEP);
 };
 
-export {
-    toIndexableString,
-    parseIndexableString,
-    SEP
+const usePouchdbCollate = false;
+
+export function toIndexableString(key: Array<any>) {
+    if (usePouchdbCollate) {
+        return Collate.toIndexableString(key);
+    } else {
+        return toIndexableStringInHouse(key);
+    }
+}
+export function parseIndexableString(str: String) {
+    if (usePouchdbCollate) {
+        return Collate.parseIndexableString(str);
+    } else {
+        return parseIndexableStringInHouse(str);
+    }
 }

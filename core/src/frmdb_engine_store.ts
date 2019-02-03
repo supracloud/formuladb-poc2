@@ -238,10 +238,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         eventId: string,
         transacRetry: number,
         getIds: (retryNb: number) => Promise<string[]>,
-        lockAcquiredCallback: () => Promise<any>,
-        lockRecoveredCallback: (eventId: string) => Promise<any>,
-        maxRetryNb: number = 10,
-        sleepFactorMs: number = 50) {
+        lockAcquiredCallback: () => Promise<any>) {
         return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
     }
 }

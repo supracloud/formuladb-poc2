@@ -5,13 +5,13 @@
 
 import * as _ from 'lodash';
 
-import * as  expression_eval from 'expression-eval';
+// import * as  expression_eval from 'expression-eval';
 
-_.mixin({'mapProp': (array, propName, expr) => {
-    let compiledExpr = expression_eval.compile(expr);//TODO: memoize this 
-    let compute = (value, index) => compiledExpr.call(null, {value: value, index: index});
-    return _.map(array, (value, index) => _.set(value, propName, compute(value, index)));
-}});
+// _.mixin({'mapProp': (array, propName, expr) => {
+//     let compiledExpr = expression_eval.compile(expr);//TODO: memoize this 
+//     let compute = (value, index) => compiledExpr.call(null, {value: value, index: index});
+//     return _.map(array, (value, index) => _.set(value, propName, compute(value, index)));
+// }});
 
 declare module 'lodash' {
     interface LoDashStatic {
