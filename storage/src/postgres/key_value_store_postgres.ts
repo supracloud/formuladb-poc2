@@ -229,47 +229,6 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             ' WHERE _id COLLATE "C" ' + sign1 + ' $1 COLLATE "C" AND _id COLLATE "C" ' + sign2 + ' $2 COLLATE "C" ' + ') t ORDER BY _id COLLATE "C"';
     }
 
-    private values2sql(obj: OBJT): string[] {
-        return Object.values(this.entity.props).map(prop => {
-            let value: string;
-            if (obj[prop.name] != null) {
-                value = obj[prop.name];
-                switch (prop.propType_) {
-                    case Pn.STRING:
-                        if (typeof value !== 'string') throw new Error("value " + value + "is not a string");
-                        value = `'${value.replace(/'/g, "''")}'`;
-                        break;
-                    case Pn.NUMBER:
-                        break;
-                    default: 
-                        value = `'${(value + '').replace(/'/g, "''")}'`;
-                }
-            } else value = 'null';
-
-            return value;
-        });
-    }
-
-    private values2sqlSET(obj: OBJT): string[] {
-        return this.propsNoId().map(prop => {
-            let value: string;
-            if (obj[prop.name] != null) {
-                value =  obj[prop.name];
-                switch (prop.propType_) {
-                    case Pn.STRING:
-                        if (typeof value !== 'string') throw new Error("value " + value + "is not a string");
-                        value = `'${value.replace(/'/g, "''")}'`;
-                        break;
-                    case Pn.NUMBER:
-                        break;
-                    default: 
-                        value = `'${(''+value).replace(/'/g, "''")}'`;
-                }
-            } else value = 'null';
-            return prop.name + '=' + value;
-        });
-    }
-
     propsNoId(): EntityProperty[] {
         return Object.values(this.entity.props).filter(p => p.name !== '_id');
     }
@@ -281,15 +240,14 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                 let query: string = `INSERT INTO ${this.table_id} (
                     ${props.map(p => p.name).join(", ")}
                 ) VALUES (
-                    ${props.map((p, i) => '$' + i)}
+                    ${props.map((p, i) => '$' + (1+i))}
                 ) ON CONFLICT (_id) DO UPDATE SET 
-                    ${this.propsNoId().map((p, i) => '$' + (props.length + i))}
+                    ${this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i))}
                 `;
                 let values = Object.values(this.entity.props)
                     .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])
-                    .concat(
-                        Object.values(this.entity.props).map(p => obj[p.name])
-                    )
+                    .concat(this.propsNoId().map(p => obj[p.name]))
+                ;
                 this.getDB().none(query, values).then((res) => {
                     resolve(obj);
                 })
