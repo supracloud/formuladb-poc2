@@ -1,3 +1,4 @@
+require('module-alias/register');
 const fs = require('fs'),
     process = require('process');
 
@@ -10,4 +11,5 @@ async function syncSchemaToKVS(schema: Schema) {
     return frmdbEngine.frmdbEngineStore.init();
 }
 
-syncSchemaToKVS(JSON.parse(fs.readFileSync(process.argv[1], 'utf8')));
+console.log(process.argv[1]);
+syncSchemaToKVS(JSON.parse(fs.readFileSync(process.argv[2], 'utf8')));
