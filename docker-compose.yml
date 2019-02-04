@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: "postgres"
     ports:
       - "5433:5432"
+    volumes:
+      $PWD/data:/var/lib/postgresql/data
   be:
     # image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     image: formuladb-be

@@ -73,5 +73,5 @@ copy2pg() {
     docker cp $1 febe_db_1:/`basename $1`
 }
 putSchema() {
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@../customers/orbico/orbico-metadata.json localhost:8084/api/bla/schema
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@orbico-metadata.json localhost:8084/api/bla/schema
 }
