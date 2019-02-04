@@ -4,7 +4,6 @@
  */
 
 import * as bodyParser from "body-parser";
-import config from "./config";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";

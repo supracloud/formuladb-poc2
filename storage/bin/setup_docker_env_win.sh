@@ -31,6 +31,8 @@ create-docker-env() {
         echo '{ "insecure-registries":["nexus.computaris.net:4436"] }' | docker-machine ssh "docker1" sudo tee /etc/docker/daemon.json
         
         VBoxManage controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
+        VBoxManage controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
+        VBoxManage controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
 
         docker-machine stop docker1
         VBoxManage sharedfolder add "docker1" --name "d" --hostpath "d:/" --automount

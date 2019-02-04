@@ -7,7 +7,7 @@ import { Schema } from '@core/domain/metadata/entity';
 
 async function syncSchemaToKVS(schema: Schema) {
     let frmdbEngine = await getFrmdbEngine(schema);
-    //TODO if table already exists, do just delta
+    console.info("sync schema", Object.keys(schema.entities));
     return frmdbEngine.frmdbEngineStore.init();
 }
 

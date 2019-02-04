@@ -9,7 +9,7 @@
         "REP__Orders": {
             "_id": "REP__Orders",
             "props": {
-                "id": { "name": "id", "propType_": "STRING"},
+                "_id": { "name": "_id", "propType_": "STRING"},
                 "state": { "name": "state", "propType_": "STRING"},
                 "client_code": { "name": "client_code", "propType_": "STRING"},
                 "actor_code": { "name": "actor_code", "propType_": "STRING"},
@@ -20,12 +20,22 @@
                 "details": { "name": "details", "propType_": "STRING"},
                 "created_at": { "name": "created_at", "propType_": "STRING"},
                 "updated_at": { "name": "updated_at", "propType_": "STRING"},
-                "client": { "name": "client", "propType_": "STRING"}
+                "client": { "name": "client", "propType_": "STRING"},
+                "wms_id": { "name": "wms_id", "propType_": "STRING"},
+                "wms_aviz": { "name": "wms_aviz", "propType_": "STRING"},
+                "wms_awb": { "name": "wms_awb", "propType_": "STRING"},
+                "wms_statusorderwms": { "name": "wms_statusorderwms", "propType_": "STRING"},
+                "wms_statusawb": { "name": "wms_statusawb", "propType_": "STRING"},
+                "wms_deliveryaddress": { "name": "wms_deliveryaddress", "propType_": "STRING"},
+                "wms_insertdate": { "name": "wms_insertdate", "propType_": "STRING"},
+                "wms_imported": { "name": "wms_imported", "propType_": "STRING"},
+                "wms_importdate": { "name": "wms_importdate", "propType_": "STRING"}
             }
         },
         "REP__DeliveryRate": {
             "_id": "REP__DeliveryRate",
             "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
                 "ordernb": { "name": "ordernb", "propType_": "STRING", "allowNull": false },
                 "externalordernb": { "name": "externalordernb", "propType_": "STRING", "allowNull": false },
                 "ordercreationdate": { "name": "ordercreationdate", "propType_": "STRING", "allowNull": false },

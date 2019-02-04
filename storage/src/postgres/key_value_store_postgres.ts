@@ -29,12 +29,14 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     constructor(name: string) {
         dotenv.config();
         let config = {
-            database: "postgres",
-            host: "localhost",
-            port: 5432,
-            user: "postgres"
+            database: process.env.PGDATABASE || "postgres",
+            host: process.env.PGHOST || "localhost",
+            port: parseInt(process.env.PGPORT || "5432"),
+            user: process.env.PGUSER || "postgres",
+            password: process.env.PGPASSWORD || "postgres"
         };
         if (KeyValueStorePostgres.db == null) {
+            console.info("Connecting to", config);
             KeyValueStorePostgres.db = pgPromise()(config);
         }
 
@@ -246,7 +248,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                 ) VALUES (
                     ${props.map((p, i) => '$' + (1+i))}
                 ) ON CONFLICT (_id) DO UPDATE SET 
-                    ${this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i))}
+                    ${this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")}
                 `;
                 let values = Object.values(this.entity.props)
                     .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])

@@ -19,7 +19,8 @@
     "pg": "^7.8.0",
     "pg-promise": "^8.5.5",
     "pouchdb-collate": "^7.0.0",
-    "short-uuid": "^3.1.0"
+    "short-uuid": "^3.1.0",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
     "@types/acorn": "^4.0.4",

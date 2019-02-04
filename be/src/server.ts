@@ -9,7 +9,6 @@ require('module-alias/register')
 import { Container } from "typedi";
 import "reflect-metadata";
 import * as http from "http";
-import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
 import { loadTestData } from "@core/test/load_test_data";
@@ -25,7 +24,6 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
   testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
   await testFrmdbEngine.init(true);
-  await loadTestData(testFrmdbEngine);
 })
 .then(() => {
   // Init the express application
@@ -33,14 +31,14 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
 
   const server: http.Server = http.createServer(app);
 
-  server.listen(config.port);
+  server.listen(3000);
 
   server.on("error", (e: Error) => {
     console.log("Error starting server" + e);
   });
 
   server.on("listening", () => {
-    console.log("Server started on port " + config.port);
+    console.log("Server started on port " + 3000);
   });
 })
 .catch(ex => {console.error('cannot load test data', ex), process.exit(1);})

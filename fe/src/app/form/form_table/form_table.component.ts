@@ -6,7 +6,7 @@
 import { Component, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { Store } from '@ngrx/store';
-import { NodeElement, NodeType, TableNodeElement } from "@core/domain/uimetadata/form";
+import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@core/domain/uimetadata/form";
 import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 import * as fromForm from '../form.state';
@@ -23,10 +23,10 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
     super(store);
   }
 
-  tableElement: TableNodeElement;
+  tableElement: FormTable | FormTabs;
 
   ngOnInit() {
-    this.tableElement = this.nodeElement as TableNodeElement;
+    this.tableElement = this.nodeElement as FormTable | FormTabs;
   }
 
   ngOnChanges() {

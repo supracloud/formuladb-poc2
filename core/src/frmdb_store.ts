@@ -26,6 +26,7 @@ export class FrmdbStore {
 
     public async init() {
         let kvsList = await Promise.all(Object.keys(this.schema.entities).map(entityName => this.getDataKvs(entityName)));
+        await this.putSchema(this.schema);
         return Promise.all(kvsList.map(kvs => kvs.init()));
     }
 

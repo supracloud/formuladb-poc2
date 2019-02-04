@@ -28,6 +28,27 @@ test:
   #     - karma.log
   retry: 2
 
+# TODO 
+# TODO THIS should be done only on release branches and get the image version from the name of the branch
+# TODO 
+build:
+  stage: build
+  script:
+    - cd be
+    - npm run compile
+    - docker build -t formuladb-be .
+    - echo "TODO push to registry"
+    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - cd ..
+    - cd fe
+    - npm run build -- --prod --deploy-url=/formuladb/ --base-href=/formuladb/ --source-map
+    - docker build -t formuladb-fe .
+    - cd ..
+    - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
+
+
 # pages:
 #   stage: deploy
 #   script:

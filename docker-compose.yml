@@ -1,0 +1,20 @@
+version: "3.0"
+
+services:
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5433:5432"
+  be:
+    # image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    image: formuladb-be
+    environment:
+      FRMDB_STORAGE: "postgres"
+  fe:
+    image: registry.gitlab.com/metawiz/febe/formuladb-fe:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    ports:
+      - "8084:8084"
+    volumes:
+      - $PWD/auth.htpasswd:/etc/nginx/auth.htpasswd
