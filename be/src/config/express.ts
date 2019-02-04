@@ -10,9 +10,6 @@ import * as logger from "morgan";
 import * as path from "path";
 
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
-import { identity } from "lodash-es";
 import { SimpleAddHocQuery } from "@core/key_value_store_i";
 
 
@@ -64,6 +61,11 @@ export default function (frmdbEngine: FrmdbEngine) {
     app.get('/api/:dbname/schema', async function(req, res) {
         let schema = await frmdbEngine.frmdbEngineStore.getSchema();
         res.json(schema);
+    });
+    app.put('/api/:dbname/schema', async function(req, res) {
+        return frmdbEngine.frmdbEngineStore.init(req.body)
+            .then(ret => res.json(ret))
+            .catch(err => console.error(err));
     });
     app.get('/api/:dbname/entity/:id', async function(req, res) {
         let entity = await frmdbEngine.frmdbEngineStore.getEntity(req.params.id);

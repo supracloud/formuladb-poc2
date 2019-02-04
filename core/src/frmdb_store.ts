@@ -24,9 +24,9 @@ export class FrmdbStore {
 
     }
 
-    public async init() {
+    public async init(schema: Schema) {
+        await this.putSchema(schema);
         let kvsList = await Promise.all(Object.keys(this.schema.entities).map(entityName => this.getDataKvs(entityName)));
-        await this.putSchema(this.schema);
         return Promise.all(kvsList.map(kvs => kvs.init()));
     }
 
@@ -71,6 +71,9 @@ export class FrmdbStore {
         let ret: Schema = await (await this.getMetadataKvs()).put(schema) as Schema;
         this.schema = ret;
         return ret;
+    }
+    public setSchema(schema: Schema) {
+        this.schema = schema;
     }
 
     public getEntities(): Promise<Entity[]> {

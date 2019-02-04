@@ -39,14 +39,15 @@ CREATE TABLE orders_input (
 );
 
 COPY orders_input FROM '/orders.csv';
-COPY f_4320_cols FROM '/delivery_report.csv';
+insert into trep__orders select * from orders_input ;
+COPY trep__deliveryrate FROM '/delivery_report.csv';
 
-CREATE TABLE IF NOT EXISTS f_4320 (key VARCHAR NOT NULL PRIMARY KEY, val json);
-CREATE TABLE IF NOT EXISTS f_2735 (key VARCHAR NOT NULL PRIMARY KEY, val json);
+-- CREATE TABLE IF NOT EXISTS f_4320 (key VARCHAR NOT NULL PRIMARY KEY, val json);
+-- CREATE TABLE IF NOT EXISTS f_2735 (key VARCHAR NOT NULL PRIMARY KEY, val json);
 
 
-INSERT INTO f_4320 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM delivery_report_input) r;
-INSERT INTO f_2735 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM orders_input) r;
+-- INSERT INTO f_4320 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM delivery_report_input) r;
+-- INSERT INTO f_2735 SELECT r._id as key, row_to_json(r) as val FROM (SELECT * FROM orders_input) r;
 
---hack
-create table f_2735_cols as select * from orders_input ;
+-- --hack
+-- create table f_2735_cols as select * from orders_input ;

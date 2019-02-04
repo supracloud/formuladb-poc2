@@ -61,14 +61,17 @@ create-docker-env() {
 }
 
 psql() {
-    docker exec -it formuladb-pg psql -U postgres
+    docker exec -it febe_db_1 psql -U postgres
 }
 pglogs() {
-    docker logs -f formuladb-pg
+    docker logs -f febe_db_1
 }
 pg() {
-    docker exec -it formuladb-pg bash
+    docker exec -it febe_db_1 bash
 }
 copy2pg() {
-    docker cp $1 formuladb-pg:/`basename $1`
+    docker cp $1 febe_db_1:/`basename $1`
+}
+putSchema() {
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@../customers/orbico/orbico-metadata.json localhost:8084/api/bla/schema
 }
