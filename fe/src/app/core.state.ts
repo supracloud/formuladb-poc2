@@ -74,5 +74,5 @@ export const reducers = {
 export const getCoreState = createFeatureSelector<CoreState>('core');
 export const getDeveloperMode = createSelector(
   getCoreState,
-  (state: CoreState) => state.developerMode
+  (state: CoreState) => state ? state.developerMode : false
 );

@@ -58,6 +58,16 @@ export interface AppState {
   'formula': fromFormula.FormulaState
 };
 
+export const appInitialState = {
+  core: fromCore.coreInitialState,
+  theme: fromTheme.themeInitialState,
+  entity: fromEntity.entityInitialState,
+  table: fromTable.tableInitialState,
+  form: fromForm.formInitialState,
+  i18n: fromI18n.i18nInitialState,
+  formula: fromFormula.formulaEditorInitialState,
+};
+
 export type AppActions =
   | fromCore.CoresActions
   | fromTheme.ThemesActions
@@ -155,9 +165,12 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
       }
     }
     let newState = reducer(updatedState, action);
+    if (!newState) {
+      Object.assign(newState, appInitialState);
+    }
     console.log("%c " + action.type + " ACTION DISPATCHED.", 
       "color: blue; font-size: 135%; font-weight: bold; text-decoration: underline;", 
-      new Date(), action, state, newState); 
+      new Date(), action, state, newState, reducer); 
     
     return newState;
   };
