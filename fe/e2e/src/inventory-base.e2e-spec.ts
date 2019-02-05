@@ -33,18 +33,18 @@ describe('Inventory App Base E2E', () => {
     await inventory.checkEntities();
   });
 
-  it('Should navigate to general', async () => {
-    await inventory!.navigateToGeneral();
-    await browser.sleep(1000);
-  });
-
   it('Should navigate to inventory', async () => {
     await inventory!.navigateToInventory();
-    await browser.sleep(1000);
   });
 
-  it('Should navigate to reports', async () => {
-    await inventory!.navigateToReports();
-    await browser.sleep(1000);
+  it('Should navigate to product locations', async () => {
+    await inventory!.openProductLocations();
   });
+
+  it('Should display correct data', async () => {
+    expect(await inventory!.getRowsCount()).toEqual(27);
+    await browser.sleep(2000);
+  });
+
+
 });

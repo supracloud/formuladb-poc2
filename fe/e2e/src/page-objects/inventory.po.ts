@@ -1,4 +1,5 @@
-import {browser, element, by, ElementFinder} from 'protractor';
+import {browser, element, by, ElementFinder, ExpectedConditions} from 'protractor';
+import { NoRowsOverlayComponent } from 'ag-grid-community/dist/lib/rendering/overlays/noRowsOverlayComponent';
 
 export class InventoryPage {
   general = element(by.css('a[ng-reflect-router-link*="GEN"]'));
@@ -26,9 +27,25 @@ export class InventoryPage {
   }
 
   async checkEntities() {
-    await browser.sleep(10);
-    await this.general.getText();
-    await this.inventory.getText();
-    await this.reports.getText();    
+    await browser.wait(ExpectedConditions.visibilityOf(this.general), 10000);
+    await browser.wait(ExpectedConditions.visibilityOf(this.inventory), 10000);
+    await browser.wait(ExpectedConditions.visibilityOf(this.reports), 10000);
+  }
+
+  async openProductLocations() {
+    let prod = element(by.css('a[ng-reflect-router-link*="INV__PRD"]'));
+    let prodLoc = element(by.css('a[ng-reflect-router-link*="INV__PRD__Location"]'));
+    await browser.wait(ExpectedConditions.visibilityOf(prod), 10000);
+    await prod.click();
+    await browser.wait(ExpectedConditions.visibilityOf(prodLoc), 10000);
+    await prodLoc.click();
+    
+  }
+
+  async getRowsCount() {
+    let rows = element.all(by.css('div[role*="row"]'));
+    await browser.wait(ExpectedConditions.visibilityOf(rows.get(0)), 10000);
+    await browser.wait(ExpectedConditions.visibilityOf(rows.get(25)), 10000);
+    return await rows.count();    
   }
 }
