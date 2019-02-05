@@ -28,6 +28,7 @@ export enum ExampleApps {
     planning = "planning",
     ecommerce = "ecommerce",
     service = "service",
+    reporting = "reporting",
 }
 
 export class MockMetadata {

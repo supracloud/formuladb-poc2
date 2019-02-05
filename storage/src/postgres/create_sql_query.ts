@@ -68,13 +68,13 @@ export class CreateSqlQuery {
             case 'notEqual':
                 return key + " != '" + item.filter + "'";
             case 'contains':
-                return key + " like '%" + item.filter + "%'";
+                return key + " ILIKE '%" + item.filter + "%'";
             case 'notContains':
-                return key + " not like '%" + item.filter + "%'";
+                return key + " NOT ILIKE '%" + item.filter + "%'";
             case 'startsWith':
-                return key + " like '" + item.filter + "%'";
+                return key + " ILIKE '" + item.filter + "%'";
             case 'endsWith':
-                return key + " like '%" + item.filter + "'";
+                return key + " ILIKE '%" + item.filter + "'";
             default:
                 console.log('unknown text filter type: ' + item.type);
                 return 'true';

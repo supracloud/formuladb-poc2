@@ -110,6 +110,8 @@ export class TableComponent implements OnInit, OnDestroy {
                 return 'agNumberColumnFilter';
             case 'DATE':
                 return 'agDateColumnFilter';
+            case 'FORMULA':
+                return 'agTextColumnFilter';
             default:
                 return null;
         }
@@ -141,6 +143,9 @@ export class TableComponent implements OnInit, OnDestroy {
                     field: c.name,
                     width: c.width ? c.width : 100,
                     filter: this.agFilter(c.type),
+                    filterParams: {
+                        newRowsAction: 'keep',
+                    },
                     enableRowGroup: true,
                     enableValue: true,
 

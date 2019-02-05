@@ -8,10 +8,9 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      $PWD/data:/var/lib/postgresql/data
+      - $PWD/data:/var/lib/postgresql/data
   be:
-    # image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
-    image: formuladb-be
+    image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     environment:
       FRMDB_STORAGE: "postgres"
   fe:
