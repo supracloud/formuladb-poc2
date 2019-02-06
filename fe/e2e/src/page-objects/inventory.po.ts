@@ -43,9 +43,30 @@ export class InventoryPage {
   }
 
   async getRowsCount() {
-    let rows = element.all(by.css('div[role*="row"]'));
-    await browser.wait(ExpectedConditions.visibilityOf(rows.get(0)), 10000);
-    await browser.wait(ExpectedConditions.visibilityOf(rows.get(25)), 10000);
-    return await rows.count();    
+    let count = 0;
+    try {
+      while (true) {
+        let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-id="${count++}"]`));
+        await browser.wait(ExpectedConditions.visibilityOf(row), 5000);
+      }
+    } catch (e) {
+      return count - 1;    
+    }
+  }
+
+  async groupByCategory() {
+    // try to get the filter by category row
+    let count = 0;
+    let elem : ElementFinder | undefined = undefined;
+    while (true) {
+      elem = element.all(by.css('span[class="ag-column-drag"]')).get(count++);
+      let sibling = elem.element(by.xpath('..')).element(by.css('span[class="ag-column-tool-panel-column-label"]'));
+      if ((await sibling.getText()) == "Categorie")
+        break;
+      console.log(await sibling.getText());  
+    }
+    let target = element(by.css('div[class="ag-column-drop ag-font-style ag-column-drop-vertical ag-column-drop-row-group"]'));
+    // This shit is still not working ... elements look good
+    browser.driver.actions().dragAndDrop(elem,target).perform();
   }
 }

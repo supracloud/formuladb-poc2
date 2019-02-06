@@ -42,9 +42,12 @@ describe('Inventory App Base E2E', () => {
   });
 
   it('Should display correct data', async () => {
-    expect(await inventory!.getRowsCount()).toEqual(27);
-    await browser.sleep(2000);
+    expect(await inventory!.getRowsCount()).toEqual(26);
   });
 
+  it('Should group table by category', async () => {
+    expect(await inventory!.groupByCategory());
+    browser.sleep(10000);
+  });
 
 });
