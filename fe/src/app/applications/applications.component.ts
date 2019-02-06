@@ -50,4 +50,8 @@ export class ApplicationsComponent implements OnInit {
   ngOnInit() {
   }
 
+  addApp(name) {
+    
+  }
+
 }

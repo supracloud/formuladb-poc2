@@ -3,19 +3,38 @@
 # before_script:
   # - chmod +x ci/install-chrome
   # - ci/install-chrome
-
-test:
-  stage: test
+# TODO 
+# TODO THIS should be done only on release branches and get the image version from the name of the branch
+# TODO 
+build:
+  stage: build
   script:
     - cd storage && npm install 
     - cd ..
     - cd core && npm install 
     - cd ..
-    - npm run initpgdb
     - cd be && npm install
     - cd ..
     - cd fe && npm install
     - cd ..
+    - cd be
+    - npm run compile
+    - docker build -t formuladb-be .
+    - echo "TODO push to registry"
+    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - cd ..
+    - cd fe
+    - npm run build -- --prod --deploy-url=/formuladb/ --base-href=/formuladb/ --source-map
+    - docker build -t formuladb-fe .
+    - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
+    - cd ..
+
+test:
+  stage: test
+  script:
+    - docker-compose up -d
     - cd be
     - npm test
     - FRMDB_STORAGE=postgres npm test
@@ -27,6 +46,7 @@ test:
   #     - coverage/
   #     - karma.log
   retry: 2
+
 
 # pages:
 #   stage: deploy

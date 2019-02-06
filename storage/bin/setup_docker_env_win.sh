@@ -31,6 +31,8 @@ create-docker-env() {
         echo '{ "insecure-registries":["nexus.computaris.net:4436"] }' | docker-machine ssh "docker1" sudo tee /etc/docker/daemon.json
         
         VBoxManage controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
+        VBoxManage controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
+        VBoxManage controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
 
         docker-machine stop docker1
         VBoxManage sharedfolder add "docker1" --name "d" --hostpath "d:/" --automount
@@ -59,14 +61,17 @@ create-docker-env() {
 }
 
 psql() {
-    docker exec -it formuladb-pg psql -U postgres
+    docker exec -it febe_db_1 psql -U postgres
 }
 pglogs() {
-    docker logs -f formuladb-pg
+    docker logs -f febe_db_1
 }
 pg() {
-    docker exec -it formuladb-pg bash
+    docker exec -it febe_db_1 bash
 }
 copy2pg() {
-    docker cp $1 formuladb-pg:/`basename $1`
+    docker cp $1 febe_db_1:/`basename $1`
+}
+putSchema() {
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@orbico-metadata.json localhost:8084/api/bla/schema
 }

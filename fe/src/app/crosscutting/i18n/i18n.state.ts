@@ -81,5 +81,5 @@ export const reducers = {
 export const getI18n = createFeatureSelector<I18nState>('i18n');
 export const getDictionary = createSelector(
     getI18n,
-    (state: I18nState) => state.dictionary
+    (state: I18nState) => state ? state.dictionary : i18nInitialState.dictionary
 );

@@ -9,7 +9,6 @@ require('module-alias/register')
 import { Container } from "typedi";
 import "reflect-metadata";
 import * as http from "http";
-import config from "./config/config";
 
 //FIXME: use this only for dev/test environment
 import { loadTestData } from "@core/test/load_test_data";
@@ -18,29 +17,31 @@ import { FrmdbEngine } from "@core/frmdb_engine";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
-let mockMetadata = new MockMetadata(ExampleApps.inventory);
-let testFrmdbEngine: FrmdbEngine;
+let frmdbEngine: FrmdbEngine;
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
-  testFrmdbEngine = await getFrmdbEngine(mockMetadata.schema);
-  await testFrmdbEngine.init(true);
-  await loadTestData(testFrmdbEngine);
+  frmdbEngine = await getFrmdbEngine({_id: "FRMDB_SCHEMA", entities: {}});
+  let schema = await frmdbEngine.frmdbEngineStore.getSchema();
+  if (schema) {
+    frmdbEngine.frmdbEngineStore.setSchema(schema);
+  }
+  await frmdbEngine.init(true);
 })
 .then(() => {
   // Init the express application
-  const app = require("./config/express").default(testFrmdbEngine);
+  const app = require("./config/express").default(frmdbEngine);
 
   const server: http.Server = http.createServer(app);
 
-  server.listen(config.port);
+  server.listen(3000);
 
   server.on("error", (e: Error) => {
     console.log("Error starting server" + e);
   });
 
   server.on("listening", () => {
-    console.log("Server started on port " + config.port);
+    console.log("Server started on port " + 3000);
   });
 })
 .catch(ex => {console.error('cannot load test data', ex), process.exit(1);})
