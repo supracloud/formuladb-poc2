@@ -113,9 +113,9 @@ describe('FrmdbEngineStore _textjoin', () => {
             }
         };
         let bTable = await frmdbTStore.adHocTableQuery(bEntity);
-        expect(bTable[0]).toEqual(jasmine.objectContaining({"_id":"B~~1","idx":0,"list":";;A~~1"}));
-        expect(bTable[1]).toEqual(jasmine.objectContaining({"_id":"B~~2","idx":1,"list":";;A~~3"}));
-        expect(bTable[2]).toEqual(jasmine.objectContaining({"_id":"B~~3","idx":0,"list":";;A~~1"}));
+        expect(bTable[0]).toEqual(jasmine.objectContaining({"_id":"B~~1","idx":0,"list":";;A~~1"}), 'adHocTableQuery');
+        expect(bTable[1]).toEqual(jasmine.objectContaining({"_id":"B~~2","idx":1,"list":";;A~~3"}), 'adHocTableQuery');
+        expect(bTable[2]).toEqual(jasmine.objectContaining({"_id":"B~~3","idx":0,"list":";;A~~1"}), 'adHocTableQuery');
 
         let a2new = _.cloneDeep(a2);
         a2new.x = 4;

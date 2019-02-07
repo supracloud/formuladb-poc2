@@ -61,31 +61,3 @@ export const REP__ServiceCentralizerReport = {
         totalCost: { name: "totalCost", propType_: Pn.STRING } as EntityProperty,
     }
 };
-
-export const REP__LargeSales = {
-    _id: "REP__LargeSales",
-    props: {
-        client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-        month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
-        largeSales: {
-            name: "largeSales",
-            propType_: Pn.CHILD_TABLE,
-            referencedEntityName: "REP__LargeSales__Product",
-            isLargeTable: true,
-            props: {},
-        } as EntityProperty,
-    }
-};
-
-export const REP__LargeSales__Product = {
-    _id: "REP__LargeSales__Product",
-    props: {
-        productLocationId: { name: "productLocationId", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        productName: { name: "productName", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        largeSalesValue: {
-            name: "largeSalesValue",
-            propType_: Pn.FORMULA,
-            formula: `SUMIF(INV__Order__Item.quantity, productLocationId == @[productLocationId] && quantity > 100)`,
-        } as FormulaProperty,
-    }
-}

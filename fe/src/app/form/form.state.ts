@@ -305,21 +305,21 @@ export const reducers = {
 export const getForm = createFeatureSelector<FormState>('form');
 export const getFormDataState = createSelector(
   getForm,
-  (state: FormState) => state.formData
+  (state: FormState) => state ? state.formData : formInitialState.formData
 );
 export const getFormState = createSelector(
   getForm,
-  (state: FormState) => state.form
+  (state: FormState) => state ? state.form : formInitialState.form
 );
 export const getFormReadOnly = createSelector(
   getForm,
-  (state: FormState) => state.formReadOnly
+  (state: FormState) => state ? state.formReadOnly : formInitialState.formReadOnly
 );
 export const getHighlightedId = createSelector(
   getForm,
-  (state: FormState) => state.highlighted
+  (state: FormState) => state ? state.highlighted : formInitialState.highlighted
 );
 export const isEditMode = createSelector(
   getForm,
-  (state: FormState) => state.formEditMode
+  (state: FormState) => state ? state.formEditMode : formInitialState.formEditMode
 );

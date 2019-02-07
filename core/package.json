@@ -18,7 +18,9 @@
     "module-alias": "^2.1.0",
     "pg": "^7.8.0",
     "pg-promise": "^8.5.5",
-    "short-uuid": "^3.1.0"
+    "pouchdb-collate": "^7.0.0",
+    "short-uuid": "^3.1.0",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
     "@types/acorn": "^4.0.4",
@@ -36,6 +38,7 @@
     "typescript": "^3.2.4"
   },
   "_moduleAliases": {
-    "@kv_selector_base": "./dist"
+    "@storage": "./dist/storage/src",
+    "@core": "./dist/core/src"
   }
 }

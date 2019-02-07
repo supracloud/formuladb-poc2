@@ -47,7 +47,19 @@ describe('Inventory App Base E2E', () => {
 
   it('Should group table by category', async () => {
     expect(await inventory!.groupByCategory());
-    browser.sleep(10000);
   });
 
+  it('Should open first group', async () => {
+    expect(await inventory!.openFirstGroup());
+  });
+
+  it('Should have the right number of rows', async () => {
+    // category + childs
+    expect(await inventory!.getRowsCount()).toEqual(27);
+  });
+
+  it('Should select first inventory order', async () => {
+    expect(await inventory!.selectFirstInventoryOrder());
+    browser.sleep(10000);
+  });
 });

@@ -73,9 +73,9 @@ export const reducers = {
 export const getThemeState = createFeatureSelector<ThemeState>('theme');
 export const getThemeColorPalette = createSelector(
   getThemeState,
-  (state: ThemeState) => state.themeColorPalette
+  (state: ThemeState) => state ? state.themeColorPalette : themeInitialState.themeColorPalette
 );
 export const getSidebarImageUrl = createSelector(
   getThemeState,
-  (state: ThemeState) => state.sidebarImageUrl
+  (state: ThemeState) => state ? state.sidebarImageUrl : themeInitialState.sidebarImageUrl
 );

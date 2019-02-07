@@ -22,6 +22,17 @@ export class InventoryPage {
     await this.inventory.click();
   }
 
+  async navigateToInventoryOrders() {
+    await browser.get('/inventory/0/INV__Order');
+  }
+
+  async selectFirstInventoryOrder() {
+    await this.navigateToInventoryOrders();
+    let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css('div[row-id="0"]')).element(by.css('div[col-id="sales_agent"]'));
+    await browser.wait(ExpectedConditions.visibilityOf(row), 5000);
+    await browser.actions().doubleClick(row).perform();
+  }
+
   async navigateToReports() {
     await this.reports.click();
   }
@@ -46,7 +57,7 @@ export class InventoryPage {
     let count = 0;
     try {
       while (true) {
-        let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-id="${count++}"]`));
+        let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-index="${count++}"]`));
         await browser.wait(ExpectedConditions.visibilityOf(row), 5000);
       }
     } catch (e) {
@@ -68,5 +79,13 @@ export class InventoryPage {
     let target = element(by.css('div[class="ag-column-drop ag-font-style ag-column-drop-vertical ag-column-drop-row-group"]'));
     // This shit is still not working ... elements look good
     browser.driver.actions().dragAndDrop(elem,target).perform();
+  }
+
+  async openFirstGroup() {
+    // try to get the filter by category row
+    let count = 0;
+    let elem = element.all(by.css('span[class="ag-group-contracted"]')).first();
+    await browser.wait(ExpectedConditions.visibilityOf(elem), 5000);
+    await elem.click();
   }
 }

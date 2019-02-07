@@ -19,6 +19,10 @@ import { Pn } from "@core/domain/metadata/entity";
 })
 export class FormDataGridComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
+  data: any;
+  frameworkComponents: any;
+  defaultColDef: any;
+  
   constructor(protected store: Store<fromForm.FormState>) {
     super(store);
   }

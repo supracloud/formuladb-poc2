@@ -211,18 +211,10 @@ export class FrmdbTransactionRunner {
                 }
                 transacDAG.finished = true;
             }
-
-            let recoveredDeadTransaction = async (eventId: string) => {
-                //TODO
-            };
-
             await this.frmdbEngineStore.withLock(event._id, 
                 0,
                 getObjectIdsToSave, 
-                saveObjects, 
-                recoveredDeadTransaction, 
-                20, 
-                50
+                saveObjects
             );
 
             if (transacDAG!.haveFailedValidations) {
@@ -238,7 +230,7 @@ export class FrmdbTransactionRunner {
         } catch (ex) {
             event.state_ = 'ABORT';
             event.reason_ = 'ABORT_ON_ERROR';
-            event.error_ = "" + JSON.stringify(ex);
+            event.error_ = "" + ex + '. Stack:' + ex.stack;
             this.handleError(new TransactionAbortedError(event));//no await
         }
 

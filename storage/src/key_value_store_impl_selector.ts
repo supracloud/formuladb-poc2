@@ -8,6 +8,8 @@ import { Schema } from '@core/domain/metadata/entity';
 import { FrmdbEngine } from '@core/frmdb_engine';
 import { FrmdbEngineStore } from '@core/frmdb_engine_store';
 
+export const KvsImplementation = process.env.FRMDB_STORAGE || "mem";
+
 export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> {
     if (isNode) {
         const process = await import('process');

@@ -28,6 +28,7 @@ export enum ExampleApps {
     planning = "planning",
     ecommerce = "ecommerce",
     service = "service",
+    reporting = "reporting",
 }
 
 export class MockMetadata {
@@ -56,9 +57,9 @@ export class MockMetadata {
                 this.entities.push(InventoryMetadata.INV__PRD);
                 this.entities.push(InventoryMetadata.INV__PRD__Location);
                 this.entities.push(InventoryMetadata.INV__PRD__Unit);
-                this.entities.push(ReportsMetadata.Reports);
-                this.entities.push(ReportsMetadata.REP__LargeSales);
-                this.entities.push(ReportsMetadata.REP__LargeSales__Product);
+                this.entities.push(InventoryMetadata.Reports);
+                this.entities.push(InventoryMetadata.REP__LargeSales);
+                this.entities.push(InventoryMetadata.REP__LargeSales__Product);
                 break;
             case ExampleApps.booking:
                 this.entities.push(MusicBookingMetadata.MusicBooking);

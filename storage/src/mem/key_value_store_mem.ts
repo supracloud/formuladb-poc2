@@ -96,6 +96,10 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
         super();
     }
 
+    init(): Promise<any> {
+        return Promise.resolve(); //no-op
+    }
+
     public evalNumberFilter(val, item: FilterItem): boolean {
         switch (item.type) {
             case 'equals':
@@ -196,6 +200,8 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
 
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
+    readonly name = "KeyValueStoreFactoryMem";
+    
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();
     }

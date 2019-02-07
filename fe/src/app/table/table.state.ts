@@ -115,14 +115,14 @@ export const reducers = {
 export const getTable = createFeatureSelector<TableState>('table');
 export const getTableEntityState = createSelector(
   getTable,
-  (state: TableState) => state.entity
+  (state: TableState) => state ? state.entity : tableInitialState.entity
 );
 
 export const getTableState = createSelector(
   getTable,
-  (state: TableState) => state.table
+  (state: TableState) => state ? state.table : tableInitialState.table
 );
 export const getTableHighlightColumns = createSelector(
   getTable,
-  (state: TableState) => state.formulaHighlightedColumns
+  (state: TableState) => state ? state.formulaHighlightedColumns : tableInitialState.formulaHighlightedColumns
 );
