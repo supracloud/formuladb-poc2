@@ -20,10 +20,10 @@ const routes: Routes = [
   //   path: ':appName/1',
   //   loadChildren: '../app/themes/material-dashboard-theme/material-dashboard-theme.module#MaterialDashboardThemeModule'
   // },
-  // {
-  //   path: ':appName/2',
-  //   loadChildren: '../app/themes/now-uidashboard-theme/now-uidashboard-theme.module#NowUIDashboardThemeModule'
-  // }
+  {
+    path: ':appName/2',
+    loadChildren: '../app/themes/now-uidashboard-theme/now-uidashboard-theme.module#NowUIDashboardThemeModule'
+  }
 ];
 
 @NgModule({

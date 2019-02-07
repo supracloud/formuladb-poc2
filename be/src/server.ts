@@ -18,15 +18,23 @@ import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 let frmdbEngine: FrmdbEngine;
+const devMode = true;
+let mockMetadata = new MockMetadata(ExampleApps.inventory);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
-  frmdbEngine = await getFrmdbEngine({_id: "FRMDB_SCHEMA", entities: {}});
-  let schema = await frmdbEngine.frmdbEngineStore.getSchema();
-  if (schema) {
-    frmdbEngine.frmdbEngineStore.setSchema(schema);
+  if (devMode) {
+    frmdbEngine = await getFrmdbEngine(mockMetadata.schema);
+    await frmdbEngine.init(true);
+    await loadTestData(frmdbEngine);    
+  } else {
+    frmdbEngine = await getFrmdbEngine({_id: "FRMDB_SCHEMA", entities: {}});
+    let schema = await frmdbEngine.frmdbEngineStore.getSchema();
+    if (schema) {
+      frmdbEngine.frmdbEngineStore.setSchema(schema);
+    }
+    await frmdbEngine.init(true);
   }
-  await frmdbEngine.init(true);
 })
 .then(() => {
   // Init the express application

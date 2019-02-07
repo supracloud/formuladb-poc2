@@ -201,7 +201,7 @@ export class FrmdbTransactionRunner {
             let saveObjects = async () => {
                 let objsToSave = transacDAG.getAllObjects();
                 console.log(ll(transacDAG) + "|computeFormulasAndSave|saveObjects: " + stringifyObj(objsToSave));
-                let results = await this.frmdbEngineStore.putAllObj(objsToSave);
+                let results = await this.frmdbEngineStore.putBulk(objsToSave);
                 for (let res of results) {
                     if (isKeyValueError(res)) throw new Error("Unexpected error in saveObjects " + JSON.stringify(res) + "; full results: " + JSON.stringify(results));                        
                 }
