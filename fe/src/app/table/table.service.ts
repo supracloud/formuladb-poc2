@@ -14,10 +14,40 @@ export class TableService {
     let self = this;
     return {
       getRows(params: IServerSideGetRowsParams): void {
-        self.backendService.simpleAdHocQuery(entity._id, params.request as SimpleAddHocQuery)
-          .then((data: any[]) => params.successCallback(data, data.length))
+        let req = params.request;
+        self.backendService.simpleAdHocQuery(entity._id, req as SimpleAddHocQuery)
+          .then((data: any[]) => {
+            return params.successCallback(data, 
+              self.getRowCount(req.startRow, req.endRow - req.startRow, data.length))
+          })
           .catch(() => params.failCallback());
       }
     };
   }
+
+  private getRowCount(startRow: number, pageSize: number, resultsLength: number) {
+    // if no results (maybe an error, or user is seeking for a block well past
+    // the possible blocks), then return null, which means we don't know what the
+    // last row is. the user should never ask for a block that is past the last block,
+    // but they could, for example, purge the cache, and since loading last time rows
+    // have been removed from the server.
+    if (resultsLength === 0) {
+        return -1;
+    }
+
+    // see how many rows we got back
+    let rowCount = resultsLength;
+
+    // if we got back more than the page size, then that means there are more rows
+    // after this page, so we return null, as we can't work out the row count
+    if (rowCount > pageSize) {
+        return -1;
+    } else {
+        // otherwise we have reached the end of the list, ie the last row is in
+        // this block, so we can work out the exact row count
+        let totalRowCount = startRow + rowCount;
+        return totalRowCount;
+    }
+}
+  
 }

@@ -73,6 +73,7 @@ export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<O
     entity: Entity;
     /** filtering and grouping by any _id */
     simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
+    init(): Promise<any>;
 }
 
 export function kvsKey2Str(_id: any): string {
@@ -126,6 +127,7 @@ class KeyValueStoreBase<KEYT, VALUET> {
 }
 
 export interface KeyValueStoreFactoryI {
+    name: "KeyValueStoreFactoryMem" | "KeyValueStoreFactoryPostgres";
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;

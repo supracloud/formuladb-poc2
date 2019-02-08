@@ -8,8 +8,6 @@
 
 import * as _ from "./frmdb_lodash";
 
-import * as  expression_eval from 'expression-eval';
-
 xdescribe('frmdb_lodash', () => {
     beforeEach(() => {
     });

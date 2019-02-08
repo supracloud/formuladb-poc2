@@ -1,9 +1,10 @@
-import {browser, element, by} from 'protractor';
+import {browser, element, by, ElementFinder, ExpectedConditions} from 'protractor';
+import { NoRowsOverlayComponent } from 'ag-grid-community/dist/lib/rendering/overlays/noRowsOverlayComponent';
 
 export class InventoryPage {
-  general = element.all(by.tagName('li')).all(by.className("nav-item")).first();
-  inventory = element.all(by.tagName('li')).all(by.className("nav-item")).get(1)
-  reports = element.all(by.tagName('li')).all(by.className("nav-item")).get(2);
+  general = element(by.css('a[ng-reflect-router-link*="GEN"]'));
+  inventory = element(by.css('a[ng-reflect-router-link*="INV"]'));
+  reports = element(by.css('a[ng-reflect-router-link*="REP"]'));
   
   async navigateToHome() {
     await browser.get('/inventory/0');
@@ -21,15 +22,70 @@ export class InventoryPage {
     await this.inventory.click();
   }
 
+  async navigateToInventoryOrders() {
+    await browser.get('/inventory/0/INV__Order');
+  }
+
+  async selectFirstInventoryOrder() {
+    await this.navigateToInventoryOrders();
+    let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css('div[row-id="0"]')).element(by.css('div[col-id="sales_agent"]'));
+    await browser.wait(ExpectedConditions.visibilityOf(row), 5000);
+    await browser.actions().doubleClick(row).perform();
+  }
+
   async navigateToReports() {
     await this.reports.click();
   }
 
   async checkEntities() {
-    let c = await element.all(by.tagName('li')).count();
-    expect(c).toEqual(3);
-    await this.general.getText();
-    await this.inventory.getText();
-    await this.reports.getText();
+    await browser.wait(ExpectedConditions.visibilityOf(this.general), 10000);
+    await browser.wait(ExpectedConditions.visibilityOf(this.inventory), 10000);
+    await browser.wait(ExpectedConditions.visibilityOf(this.reports), 10000);
+  }
+
+  async openProductLocations() {
+    let prod = element(by.css('a[ng-reflect-router-link*="INV__PRD"]'));
+    let prodLoc = element(by.css('a[ng-reflect-router-link*="INV__PRD__Location"]'));
+    await browser.wait(ExpectedConditions.visibilityOf(prod), 10000);
+    await prod.click();
+    await browser.wait(ExpectedConditions.visibilityOf(prodLoc), 10000);
+    await prodLoc.click();
+    
+  }
+
+  async getRowsCount() {
+    let count = 0;
+    try {
+      while (true) {
+        let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-index="${count++}"]`));
+        await browser.wait(ExpectedConditions.visibilityOf(row), 5000);
+      }
+    } catch (e) {
+      return count - 1;    
+    }
+  }
+
+  async groupByCategory() {
+    // try to get the filter by category row
+    let count = 0;
+    let elem : ElementFinder | undefined = undefined;
+    while (true) {
+      elem = element.all(by.css('span[class="ag-column-drag"]')).get(count++);
+      let sibling = elem.element(by.xpath('..')).element(by.css('span[class="ag-column-tool-panel-column-label"]'));
+      if ((await sibling.getText()) == "Categorie")
+        break;
+      console.log(await sibling.getText());  
+    }
+    let target = element(by.css('div[class="ag-column-drop ag-font-style ag-column-drop-vertical ag-column-drop-row-group"]'));
+    // This shit is still not working ... elements look good
+    browser.driver.actions().dragAndDrop(elem,target).perform();
+  }
+
+  async openFirstGroup() {
+    // try to get the filter by category row
+    let count = 0;
+    let elem = element.all(by.css('span[class="ag-group-contracted"]')).first();
+    await browser.wait(ExpectedConditions.visibilityOf(elem), 5000);
+    await elem.click();
   }
 }

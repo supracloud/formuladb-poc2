@@ -1,4 +1,4 @@
-import {browser, element, by} from 'protractor';
+import {browser, element, by, ExpectedConditions} from 'protractor';
 
 export class HomePage {
   inventory = element(by.linkText('Basic Inventory, Single Warehouse'));
@@ -13,5 +13,6 @@ export class HomePage {
 
   async navigateToInventory() {
     await this.inventory.click();
+    await browser.wait(ExpectedConditions.urlContains('inventory'), 5000);
   }
 }

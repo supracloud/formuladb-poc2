@@ -220,8 +220,6 @@ export class AppEffects {
             let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let tableData = await this.backendService.getTableData(path);
-
             let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
             this.store.dispatch(new appState.FormFromBackendAction(form));
 

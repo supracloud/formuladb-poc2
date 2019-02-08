@@ -10,7 +10,7 @@ import * as appState from '../app.state';
     styleUrls: ['table-header.component.scss']
 })
 export class TableHeaderComponent {
-    private params: any;
+    public params: any;
 
     private ascSort: string;
     private descSort: string;

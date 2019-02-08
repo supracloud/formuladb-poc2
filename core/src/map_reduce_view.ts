@@ -5,6 +5,7 @@ import { MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { KeyValueObj } from '@core/domain/key_value_obj';
 import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun } from "@core/domain/metadata/reduce_functions";
+import { MINCHAR, MAXCHAR } from './utils/collator';
 
 
 export interface MapViewUpdates<VALUET> {
@@ -89,7 +90,7 @@ export class MapReduceView {
         return kvs.rangeQuery({
             ...queryOpts,
             startkey: queryOpts.startkey || [],
-            endkey: queryOpts.endkey || ["\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0"],
+            endkey: queryOpts.endkey || [MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR],
         });
     }
 
@@ -97,7 +98,8 @@ export class MapReduceView {
         return this.mapKVS.rangeQueryWithKeys({
             ...queryOpts,
             startkey: queryOpts.startkey || [],
-            endkey: queryOpts.endkey ? queryOpts.endkey.concat('\ufff0') : ["\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0", "\ufff0"],
+            endkey: queryOpts.endkey ? queryOpts.endkey.concat(queryOpts.inclusive_end ? MAXCHAR : MINCHAR) 
+                : [MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR, MAXCHAR],
         }).then(res => {
             if (queryOpts.inclusive_start && queryOpts.inclusive_end) {
                 return res;

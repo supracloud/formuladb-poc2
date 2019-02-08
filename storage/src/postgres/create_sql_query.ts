@@ -68,13 +68,13 @@ export class CreateSqlQuery {
             case 'notEqual':
                 return key + " != '" + item.filter + "'";
             case 'contains':
-                return key + " like '%" + item.filter + "%'";
+                return key + " ILIKE '%" + item.filter + "%'";
             case 'notContains':
-                return key + " not like '%" + item.filter + "%'";
+                return key + " NOT ILIKE '%" + item.filter + "%'";
             case 'startsWith':
-                return key + " like '" + item.filter + "%'";
+                return key + " ILIKE '" + item.filter + "%'";
             case 'endsWith':
-                return key + " like '%" + item.filter + "'";
+                return key + " ILIKE '%" + item.filter + "'";
             default:
                 console.log('unknown text filter type: ' + item.type);
                 return 'true';
@@ -144,31 +144,6 @@ export class CreateSqlQuery {
 
     public createLimitSql(startRow, pageSize) {
         return ' limit ' + (pageSize + 1) + ' offset ' + startRow;
-    }
-
-    public getRowCount(startRow, pageSize, results) {
-        // if no results (maybe an error, or user is seeking for a block well past
-        // the possible blocks), then return null, which means we don't know what the
-        // last row is. the user should never ask for a block that is past the last block,
-        // but they could, for example, purge the cache, and since loading last time rows
-        // have been removed from the server.
-        if (results === null || results === undefined || results.length === 0) {
-            return null;
-        }
-
-        // see how many rows we got back
-        let rowCount = results.length;
-
-        // if we got back more than the page size, then that means there are more rows
-        // after this page, so we return null, as we can't work out the row count
-        if (rowCount > pageSize) {
-            return null;
-        } else {
-            // otherwise we have reached the end of the list, ie the last row is in
-            // this block, so we can work out the exact row count
-            let totalRowCount = startRow + rowCount;
-            return totalRowCount;
-        }
     }
 
     public cutResultsToPageSize(pageSize, results) {

@@ -58,13 +58,13 @@ describe('Inventory Metadata', () => {
 
         let pl1 = { _id: "INV__PRD__Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
         await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
-        let ri1_1 = { _id: "INV__Receipt__Item~~1__1", productLocationId: "INV__PRD__Location~~1", quantity: 10}; 
+        let ri1_1 = { _id: "INV__Receipt__Item~~1__1", product_location_id: "INV__PRD__Location~~1", quantity: 10}; 
         await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
-        let ri1_2 = { _id: "INV__Receipt__Item~~1__2", productLocationId: "INV__PRD__Location~~1", quantity: 5}; 
+        let ri1_2 = { _id: "INV__Receipt__Item~~1__2", product_location_id: "INV__PRD__Location~~1", quantity: 5}; 
         await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
-        let oi1_1 = { _id: "INV__Order__Item~~1__1", productLocationId: "INV__PRD__Location~~1", quantity: 10};
+        let oi1_1 = { _id: "INV__Order__Item~~1__1", product_location_id: "INV__PRD__Location~~1", quantity: 10};
         await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
-        let oi1_2 = { _id: "INV__Order__Item~~1__2", productLocationId: "INV__PRD__Location~~1", quantity: 4};
+        let oi1_2 = { _id: "INV__Order__Item~~1__2", product_location_id: "INV__PRD__Location~~1", quantity: 4};
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);

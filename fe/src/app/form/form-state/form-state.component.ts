@@ -36,4 +36,10 @@ export class FormStateComponent implements OnInit {
     this.links = this.stateGraph.transitions.map(tr => ({source: tr.source, target: tr.target, label: ""}));
   }
 
+  onLegendLabelClick($event) {
+    //TODO
+  }
+  select($event) {
+    //TODO
+  }
 }

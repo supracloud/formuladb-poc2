@@ -91,17 +91,17 @@ export const getFormula = createFeatureSelector<FormulaState>('formula');
 
 export const getEditorExpr = createSelector(
   getFormula,
-  (state: FormulaState) => state.editorExpr
+  (state: FormulaState) => state ? state.editorExpr : formulaEditorInitialState.editorExpr
 );
 export const getEditedEntity = createSelector(
   getFormula,
-  (state: FormulaState) => state.editedEntity
+  (state: FormulaState) => state ? state.editedEntity : formulaEditorInitialState.editedEntity
 );
 export const getEditedProperty = createSelector(
   getFormula,
-  (state: FormulaState) => state.editedProperty
+  (state: FormulaState) => state ? state.editedProperty : formulaEditorInitialState.editedProperty
 );
 export const getFormulaHighlightedColumns = createSelector(
   getFormula,
-  (state: FormulaState) => state.formulaHighlightedColumns
+  (state: FormulaState) => state ? state.formulaHighlightedColumns : formulaEditorInitialState.formulaHighlightedColumns
 );

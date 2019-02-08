@@ -158,9 +158,9 @@ export const getEntitiesTree = createSelector(
     });
 export const getSelectedEntityState = createSelector(
     getEntityState,
-    (state: EntityState) => state.selectedEntity
+    (state: EntityState) => state ? state.selectedEntity : entityInitialState.selectedEntity
 );
 export const getSelectedPropertyState = createSelector(
     getEntityState,
-    (state: EntityState) => state.selectedProperty
+    (state: EntityState) => state ? state.selectedProperty : entityInitialState.selectedProperty
 );

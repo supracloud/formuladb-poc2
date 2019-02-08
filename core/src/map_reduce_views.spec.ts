@@ -3,6 +3,7 @@ import { MapReduceView, MapReduceViewUpdates } from "./map_reduce_view";
 import { $s2e } from './formula_compiler';
 import { SumReduceFunN } from "@core/domain/metadata/reduce_functions";
 import { KeyValueStoreFactoryI } from './key_value_store_i';
+import { MINCHAR, MAXCHAR } from './utils/collator';
 
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -19,7 +20,7 @@ describe('MapReduceView', () => {
         done();
     });
 
-    it('should precompute and compute basic SUM', async (done) => {
+    fit('should precompute and compute basic SUM', async (done) => {
         let mapReduceView = new MapReduceView(kvsFactory, "tst", {
             entityName: 'A',
             keyExpr: [$s2e(`aY`)],
@@ -51,11 +52,18 @@ describe('MapReduceView', () => {
             mapDelete: [],
             reduce: [{key: ["a2"], value: obj3.num + obj4.num}],
         }));
+        //we need to check that a21 is not taken into account when we only want [a1, a2]
+        let obj5 = { "_id": "R_A~~5", "num": 123, "aY": "a21" }; updates = await mapReduceView.preComputeViewUpdateForObj(null, obj5); await mapReduceView.updateViewForObj(updates);
+        expect(updates).toEqual(jasmine.objectContaining({
+            map: [{key: ["a21", "R_A~~5"], value: obj5.num}],
+            mapDelete: [],
+            reduce: [{key: ["a21"], value: obj5.num}],
+        }));
 
         let red = await mapReduceView.reduceQuery({startkey: ['a1'], endkey: ['a2'], inclusive_start: true, inclusive_end: true});
         expect(red).toEqual(obj1.num + obj2.num + obj3.num + obj4.num);
-        red = await mapReduceView.reduceQuery({startkey: ['0'], endkey: ['\ufff0'], inclusive_start: true, inclusive_end: true});
-        expect(red).toEqual(obj1.num + obj2.num + obj3.num + obj4.num);
+        red = await mapReduceView.reduceQuery({startkey: ['0'], endkey: [MAXCHAR], inclusive_start: true, inclusive_end: true});
+        expect(red).toEqual(obj1.num + obj2.num + obj3.num + obj4.num + obj5.num);
         red = await mapReduceView.reduceQuery({startkey: ['a1'], endkey: ['a2'], inclusive_start: false, inclusive_end: true});
         expect(red).toEqual(obj3.num + obj4.num);
         red = await mapReduceView.reduceQuery({startkey: ['a1'], endkey: ['a2'], inclusive_start: false, inclusive_end: false});
@@ -63,27 +71,27 @@ describe('MapReduceView', () => {
 
         let map = await mapReduceView.mapRangeQuery({startkey: ['a1'], endkey: ['a2'], inclusive_start: true, inclusive_end: true});
         expect(map).toEqual([obj1.num, obj2.num]);
-        map = await mapReduceView.mapRangeQuery({startkey: ['a1'], endkey: ['a2', '\ufff0'], inclusive_start: true, inclusive_end: true});
+        map = await mapReduceView.mapRangeQuery({startkey: ['a1'], endkey: ['a2', MAXCHAR], inclusive_start: true, inclusive_end: true});
         expect(map).toEqual([obj1.num, obj2.num, obj3.num, obj4.num]);
-        map = await mapReduceView.mapRangeQuery({startkey: ['\u00000'], endkey: ['\ufff0', '\ufff0'], inclusive_start: true, inclusive_end: true});
-        expect(map).toEqual([obj1.num, obj2.num, obj3.num, obj4.num]);
+        map = await mapReduceView.mapRangeQuery({startkey: [MINCHAR], endkey: [MAXCHAR, MAXCHAR], inclusive_start: true, inclusive_end: true});
+        expect(map).toEqual([obj1.num, obj2.num, obj3.num, obj4.num, obj5.num]);
         map = await mapReduceView.mapRangeQuery({startkey: ['a1', 'R_A~~1'], endkey: ['a2', 'R_A~~3'], inclusive_start: true, inclusive_end: true});
         expect(map).toEqual([obj1.num, obj2.num, obj3.num]);
         map = await mapReduceView.mapRangeQuery({startkey: ['a1', 'R_A~~1'], endkey: ['a2', 'R_A~~3'], inclusive_start: false, inclusive_end: true});
         expect(map).toEqual([obj2.num, obj3.num]);
-        map = await mapReduceView.mapRangeQuery({startkey: ['a1', 'R_A~~1'], endkey: ['a2', 'R_A~~3'], inclusive_start: true, inclusive_end: false});
-        expect(map).toEqual([obj1.num, obj2.num]);
+        map = await mapReduceView.mapRangeQuery({startkey: ['a1', 'R_A~~2'], endkey: ['a2', 'R_A~~3'], inclusive_start: true, inclusive_end: false});
+        expect(map).toEqual([obj2.num]);
         map = await mapReduceView.mapRangeQuery({startkey: ['a1', 'R_A~~1'], endkey: ['a2', 'R_A~~3'], inclusive_start: false, inclusive_end: false});
         expect(map).toEqual([obj2.num]);
 
-        map = await mapReduceView.mapQuery({startkey: ['a1'], endkey: ['a2'], inclusive_start: true, inclusive_end: true});
-        expect(map).toEqual([obj1.num, obj2.num, obj3.num, obj4.num]);
+        map = await mapReduceView.mapQuery({startkey: ['a1'], endkey: ['a2'], inclusive_start: true, inclusive_end: false});
+        expect(map).toEqual([obj1.num, obj2.num]);
         map = await mapReduceView.mapQuery({startkey: ['a1'], endkey: ['a1'], inclusive_start: true, inclusive_end: true});
         expect(map).toEqual([obj1.num, obj2.num]);
         map = await mapReduceView.mapQuery({startkey: ['a1'], endkey: ['a1'], inclusive_start: false, inclusive_end: true});
         expect(map).toEqual([obj1.num, obj2.num]);
         map = await mapReduceView.mapQuery({startkey: ['a1'], endkey: ['a1'], inclusive_start: true, inclusive_end: false});
-        expect(map).toEqual([obj1.num, obj2.num]);
+        expect(map).toEqual([]);//this is because start and end are the same but inclusive_end == false
         map = await mapReduceView.mapQuery({startkey: ['a1'], endkey: ['a1'], inclusive_start: false, inclusive_end: false});
         expect(map).toEqual([]);
         map = await mapReduceView.mapQuery({startkey: ['a2'], endkey: ['a2'], inclusive_start: true, inclusive_end: true});

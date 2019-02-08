@@ -1,7 +1,6 @@
 {
     "version": "0.2.0",
     "configurations": [
-
         {
             "name": "FE serve",
             "type": "chrome",
@@ -31,14 +30,15 @@
                 "--debug-brk",
                 "--inspect"
             ],
-            "env": {
-            },
+            "env": {},
             "protocol": "inspector",
             "request": "launch",
             "cwd": "${workspaceRoot}/be",
             "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
             "sourceMaps": true,
-            "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
+            "outFiles": [
+                "${workspaceRoot}/be/dist/**/*.js"
+            ]
         },
         {
             "name": "BE specs postgres",
@@ -56,7 +56,9 @@
             "cwd": "${workspaceRoot}/be",
             "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
             "sourceMaps": true,
-            "outFiles": ["${workspaceRoot}/be/dist/**/*.js"]
+            "outFiles": [
+                "${workspaceRoot}/be/dist/**/*.js"
+            ]
         },
         {
             "name": "ng e2e",
@@ -67,6 +69,21 @@
             "args": [
                 "${workspaceFolder}/fe/e2e/protractor.conf.js"
             ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "node-current-file",
+            "protocol": "inspector",
+            "args": [
+                "${relativeFile}"
+            ],
+            "cwd": "${workspaceRoot}",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

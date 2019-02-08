@@ -4,7 +4,7 @@
  */
 
 import { KeyValueObj, SubObj } from '../key_value_obj';
-import { Entity } from "../metadata/entity";
+import { Entity, Pn } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
 
@@ -13,7 +13,7 @@ export class TableColumn implements SubObj {
     width?: number;
     sort?: string;
     filter?: ColumnFilter;
-    constructor(public name: string, public type: string) {
+    constructor(public name: string, public type: Pn) {
     }
 }
 

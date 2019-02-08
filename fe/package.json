@@ -8,7 +8,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e --port 4300"
+    "e2e": "cross-env TARGET=headless ng e2e --port 4300",
+    "e2e-with-gui": "cross-env TARGET=gui ng e2e --port 4300",
+    "e2e-with-recordings": "cross-env TARGET=recordings ng e2e --port 4300"
   },
   "private": true,
   "dependencies": {
@@ -63,10 +65,10 @@
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/lodash": "^4.14.120",
-    "@types/moment": "^2.13.0",
     "@types/node": "~8.9.4",
     "codelyzer": "~4.3.0",
     "concurrently": "^3.6.1",
+    "cross-env": "^5.2.0",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^7.0.1",
     "jasmine-core": "~2.99.1",

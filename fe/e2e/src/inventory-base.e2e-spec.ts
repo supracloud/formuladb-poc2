@@ -33,11 +33,33 @@ describe('Inventory App Base E2E', () => {
     await inventory.checkEntities();
   });
 
-  it('Should navigate to general', async () => {
-    await inventory!.navigateToGeneral();
+  it('Should navigate to inventory', async () => {
+    await inventory!.navigateToInventory();
   });
 
-  it('Wait for inspection', async () => {
-    await browser.sleep(100000);
+  it('Should navigate to product locations', async () => {
+    await inventory!.openProductLocations();
+  });
+
+  it('Should display correct data', async () => {
+    expect(await inventory!.getRowsCount()).toEqual(26);
+  });
+
+  it('Should group table by category', async () => {
+    expect(await inventory!.groupByCategory());
+  });
+
+  it('Should open first group', async () => {
+    expect(await inventory!.openFirstGroup());
+  });
+
+  it('Should have the right number of rows', async () => {
+    // category + childs
+    expect(await inventory!.getRowsCount()).toEqual(27);
+  });
+
+  it('Should select first inventory order', async () => {
+    expect(await inventory!.selectFirstInventoryOrder());
+    browser.sleep(10000);
   });
 });

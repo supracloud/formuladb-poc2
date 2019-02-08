@@ -24,6 +24,12 @@ export class FrmdbStore {
 
     }
 
+    public async init(schema: Schema) {
+        await this.putSchema(schema);
+        let kvsList = await Promise.all(Object.keys(this.schema.entities).map(entityName => this.getDataKvs(entityName)));
+        return Promise.all(kvsList.map(kvs => kvs.init()));
+    }
+
     private async getTransactionsDB() {
         if (!this.transactionsDB) {
             this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');
@@ -65,6 +71,9 @@ export class FrmdbStore {
         let ret: Schema = await (await this.getMetadataKvs()).put(schema) as Schema;
         this.schema = ret;
         return ret;
+    }
+    public setSchema(schema: Schema) {
+        this.schema = schema;
     }
 
     public getEntities(): Promise<Entity[]> {

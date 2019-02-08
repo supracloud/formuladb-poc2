@@ -8,9 +8,9 @@
     "inspect": "kill-port 9231 && node --inspect=0.0.0.0:9231 dist/be/src/server.js",
     "nodemon-inspect": "nodemon --delay 100ms --watch dist --exec \"npm run inspect\"",
     "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"sleep 40 && npm run nodemon-inspect\"",
-    "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
     "start": "node dist/be/src/server.js",
     "compile": "tsc --inlineSourceMap -p src",
+    "compile:watch": "tsc --inlineSourceMap -w -p src",
     "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",
@@ -44,6 +44,7 @@
     "serve-favicon": "~2.3.0",
     "short-uuid": "^3.0.0",
     "source-map-support": "^0.5.3",
+    "tslib": "^1.9.3",
     "typedi": "^0.6.1"
   },
   "devDependencies": {
@@ -51,7 +52,6 @@
     "@types/express": "^4.0.36",
     "@types/jasmine": "^2.8.6",
     "@types/lodash": "^4.14.120",
-    "@types/moment": "^2.13.0",
     "@types/node": "^8.0.9",
     "@types/passport": "^0.3.3",
     "cross-port-killer": "^1.0.1",
@@ -69,7 +69,6 @@
   },
   "_moduleAliases": {
     "@storage": "./dist/storage/src",
-    "@core": "./dist/core/src",
-    "@kv_selector_base": "./dist/be/src"
+    "@core": "./dist/core/src"
   }
 }

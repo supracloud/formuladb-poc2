@@ -31,4 +31,5 @@ export const Inventory_en = {
     quantity: 'Quantity',
     quantityError: 'Error Quantity',
     price: 'Price',
+    product_location_id: 'Location ID',
 };

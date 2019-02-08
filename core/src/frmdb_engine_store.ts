@@ -38,7 +38,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected transactionManager: TransactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
-    constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
+    constructor(public kvsFactory: KeyValueStoreFactoryI, schema: Schema) {
         super(kvsFactory, schema);
         this.transactionManager = new TransactionManager(kvsFactory);
     }
@@ -238,10 +238,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         eventId: string,
         transacRetry: number,
         getIds: (retryNb: number) => Promise<string[]>,
-        lockAcquiredCallback: () => Promise<any>,
-        lockRecoveredCallback: (eventId: string) => Promise<any>,
-        maxRetryNb: number = 10,
-        sleepFactorMs: number = 50) {
+        lockAcquiredCallback: () => Promise<any>) {
         return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
     }
 }
