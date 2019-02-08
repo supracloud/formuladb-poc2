@@ -48,7 +48,7 @@ describe('Inventory App Base E2E', () => {
 
   it('Should display correct data', async () => {
     inventoryPL = new InventoryProductLocationPage();
-    expect(await inventoryPL!.getRowsCount()).toEqual(26);
+    await inventoryPL!.waitForRowsCount(26);
   });
 
   it('Should group table by category', async () => {
@@ -61,7 +61,7 @@ describe('Inventory App Base E2E', () => {
 
   it('Should have the right number of rows', async () => {
     // categories + childs
-    expect(await inventoryPL!.getRowsCount()).toEqual(20);
+    await inventoryPL!.waitForRowsCount(20);
   });
 
   it('Should select first inventory order', async () => {
@@ -77,11 +77,17 @@ describe('Inventory App Base E2E', () => {
 
   it('Should edit item quantity and be auto-corrected', async () => {
     await inventoryOrder!.updateItemQuantity(1, '1000');
-    
-    console.log(inventoryOrder!.getItemQuantity(1));
-    expect(inventoryOrder!.getItemQuantity(1)).toEqual(15);
 
-    browser.sleep(10000);
+    expect(inventoryOrder!.waitForItemQuantity(1, '15', 5000)).toEqual('15');
+    expect(inventoryOrder!.waitForErrorQuantity(1, '985', 5000)).toEqual('985');
+  });
+
+  it('Should navigate to product locations', async () => {
+    await sideBar!.openProductLocations();
+  });
+
+  it('Should have zero stock', async () => {
+    expect(Number(await inventoryPL!.getStockInRowById('INV__PRD__Location~~1__1a'))).toEqual(Number('0.0'));
   });
 
 });

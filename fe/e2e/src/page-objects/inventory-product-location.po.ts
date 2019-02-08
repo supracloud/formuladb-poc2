@@ -6,16 +6,9 @@ export class InventoryProductLocationPage {
     return browser.getTitle();
   }
 
-  async getRowsCount() {
-    let count = 0;
-    try {
-      while (true) {
-        let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-index="${count++}"]`));
-        await browser.wait(ExpectedConditions.visibilityOf(row), 5000);
-      }
-    } catch (e) {
-      return count - 1;    
-    }
+  async waitForRowsCount(count: number) {
+    let row = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-index="${count-1}"]`));
+    await browser.wait(ExpectedConditions.presenceOf(row), 5000);
   }
 
   async groupByCategoryName(categoryName: string) {
@@ -40,6 +33,13 @@ export class InventoryProductLocationPage {
     let elem = element(by.css('div[class="ag-center-cols-container"]')).element(by.css(`div[row-id="${index}"]`)).element(by.css('span[class="ag-group-contracted"]'));
     await browser.wait(ExpectedConditions.visibilityOf(elem), 5000);
     await elem.click();
+  }
+
+  async getStockInRowById(id: string) { /* e.g. INV__PRD__Location~~1__1a */
+    let count = 0;
+    let elem = element(by.cssContainingText('.ag-cell', id)).element(by.xpath('..')).element(by.css('div[col-id="available_stock__"]'));
+    await browser.wait(ExpectedConditions.visibilityOf(elem), 5000);
+    return await elem.getText();
   }
 
 }
