@@ -5,13 +5,18 @@
  */
 
 import { HomePage } from './page-objects/home-page.po';
-import { InventoryPage } from './page-objects/inventory.po';
+import { SideBarPage } from './page-objects/side-bar.po';
+import { InventoryProductLocationPage } from './page-objects/inventory-product-location.po';
+import { InventoryOrdersPage } from './page-objects/inventory-orders.po';
+import { InventoryOrderPage } from './page-objects/inventory-order.po';
 import { browser } from 'protractor';
 
 describe('Inventory App Base E2E', () => {
   const homePage = new HomePage();
-  let inventory: InventoryPage|undefined = undefined;
-
+  let sideBar: SideBarPage|undefined = undefined;
+  let inventoryPL: InventoryProductLocationPage|undefined = undefined;
+  let inventoryOrders: InventoryOrdersPage|undefined = undefined;
+  let inventoryOrder: InventoryOrderPage|undefined = undefined;
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
   beforeAll(async () => {
     browser.ignoreSynchronization = true;
@@ -29,37 +34,54 @@ describe('Inventory App Base E2E', () => {
   });
 
   it('Should have the inventory entities', async () => {
-    inventory = new InventoryPage();
-    await inventory.checkEntities();
+    sideBar = new SideBarPage();
+    await sideBar.checkEntities();
   });
 
   it('Should navigate to inventory', async () => {
-    await inventory!.navigateToInventory();
+    await sideBar!.navigateToInventory();
   });
 
   it('Should navigate to product locations', async () => {
-    await inventory!.openProductLocations();
+    await sideBar!.openProductLocations();
   });
 
   it('Should display correct data', async () => {
-    expect(await inventory!.getRowsCount()).toEqual(26);
+    inventoryPL = new InventoryProductLocationPage();
+    expect(await inventoryPL!.getRowsCount()).toEqual(26);
   });
 
   it('Should group table by category', async () => {
-    expect(await inventory!.groupByCategory());
+    expect(await inventoryPL!.groupByCategoryName("Categorie"));
   });
 
   it('Should open first group', async () => {
-    expect(await inventory!.openFirstGroup());
+    expect(await inventoryPL!.openGroupByIndex(0));
   });
 
   it('Should have the right number of rows', async () => {
-    // category + childs
-    expect(await inventory!.getRowsCount()).toEqual(27);
+    // categories + childs
+    expect(await inventoryPL!.getRowsCount()).toEqual(20);
   });
 
   it('Should select first inventory order', async () => {
-    expect(await inventory!.selectFirstInventoryOrder());
+    inventoryOrders = new InventoryOrdersPage();
+    await sideBar!.openInventoryOrders();
+    await inventoryOrders!.selectInventoryOrderByIndex(0);
+  });
+
+  it('Should display correct data in order page', async () => {
+    inventoryOrder = new InventoryOrderPage();
+    await inventoryOrder.checkData();
+  });
+
+  it('Should edit item quantity and be auto-corrected', async () => {
+    await inventoryOrder!.updateItemQuantity(1, '1000');
+    
+    console.log(inventoryOrder!.getItemQuantity(1));
+    expect(inventoryOrder!.getItemQuantity(1)).toEqual(15);
+
     browser.sleep(10000);
   });
+
 });
