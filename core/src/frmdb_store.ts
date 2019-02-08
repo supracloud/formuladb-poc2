@@ -137,7 +137,7 @@ export class FrmdbStore {
         return (await this.getDataKvs(entityName)).put(obj);
     }
 
-    public async putAllObj(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
+    public async putBulk(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
         let objsGroupedByEntity = _.groupBy(objs, (o) => parseDataObjId(o._id).entityName);
         let promises = Object.entries(objsGroupedByEntity).map(async ([entityName, objs]) => {
                 let dataKvs = await this.getDataKvs(entityName);

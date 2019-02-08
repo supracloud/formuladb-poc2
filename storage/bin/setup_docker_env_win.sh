@@ -73,5 +73,17 @@ copy2pg() {
     docker cp $1 febe_db_1:/`basename $1`
 }
 putSchema() {
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@orbico-metadata.json localhost:8084/api/bla/schema
+    SCHEMA_FILE=$1
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} localhost:8084/api/bla/schema
+}
+#putSchema customers/orbico/orbico-metadata.json
+putBulk() {
+    DATA_FILE=$1
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} localhost:8084/api/bla/bulk
+}
+
+startFrmdb() {
+    FRMDB_RELEASE=`git branch|grep '^\*'|sed -e 's/[*] //g'`
+    # TODO: if release is not "master" or x.y.z replace tags for formuladb-fe and formuladb-be with "stopped"
+    FRMDB_RELEASE=${FRMDB_RELEASE} docker-compose.exe up --remove-orphans --abort-on-container-exit
 }

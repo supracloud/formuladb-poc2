@@ -72,6 +72,12 @@ export default function (frmdbEngine: FrmdbEngine) {
         res.json(entity);
     });
 
+    app.put('/api/:dbname/bulk', async function(req, res) {
+        return frmdbEngine.frmdbEngineStore.putBulk(req.body)
+            .then(ret => res.json(ret))
+            .catch(err => console.error(err));
+    });
+
     app.post('/api/:dbname/event', async function (req, res) {
         return frmdbEngine.processEvent(req.body)
             .then(notif => res.json(notif))

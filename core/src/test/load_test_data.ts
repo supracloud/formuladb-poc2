@@ -15,7 +15,7 @@ export async function loadTestData(frmdbEngine: FrmdbEngine): Promise<MockData> 
         await frmdbEngine.frmdbEngineStore.putSchema(schema);
 
         let mockData = new MockData(schema.entities);
-        await frmdbEngine.frmdbEngineStore.putAllObj(mockData.getAll());
+        await frmdbEngine.frmdbEngineStore.putBulk(mockData.getAll());
         for (let obj of mockData.getAll()) {
             await frmdbEngine.updateViewsForObj(null, obj);
         }
