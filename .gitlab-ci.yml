@@ -34,7 +34,7 @@ build:
 test:
   stage: test
   script:
-    - docker-compose up -d
+    - docker-compose up -d db
     - cd be
     - npm test
     - FRMDB_STORAGE=postgres npm test
