@@ -15,6 +15,8 @@ import { SchemaCompiler } from "./schema_compiler";
 import { generateUUID } from "@core/domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
+import { compileFormula } from "./formula_compiler";
+import { ScalarType } from "./key_value_store_i";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
@@ -41,7 +43,7 @@ export class FrmdbEngine {
     }
 
 
-    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+    public processEvent(event: events.MwzEvents): Promise<events.MwzEvent> {
         event._id = Date.now() + '_' + generateUUID();
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + JSON.stringify(event));
 
@@ -58,9 +60,34 @@ export class FrmdbEngine {
                 return this.deleteEntity(event);
             case events.ServerEventModifiedEntityN:
                 return this.processEntity(event);
+            case events.ServerEventPreviewFormulaN:
+                return this.previewFormula(event);
             default:
                 return Promise.reject("n/a event");
         }
+    }
+
+    public async previewFormula(event: events.ServerEventPreviewFormula) {
+        try {
+            let compiledFormula = compileFormula(event.targetEntity._id, event.targetPropertyName, event.formula);
+            let triggerValues: _.Dictionary<ScalarType> = {};
+            for (let triggerOfFormula of compiledFormula.triggers || []) {
+                triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
+                    await this.frmdbEngineStore.mapReduceAdHocQuery(event.currentDataObj, 
+                        triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map, 
+                        triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+            }
+
+        } catch (ex) {
+            event.state_ = 'ABORT';
+            event.notifMsg_ = '' + ex;
+            try {
+                await this.frmdbEngineStore.putTransaction(event);
+            } catch (ex2) {
+                console.warn("Error during event save on failure", ex2, event);
+            }
+        }
+        return Promise.resolve(event);
     }
 
     private processForm(event: events.ServerEventModifiedFormEvent): Promise<events.MwzEvents> {

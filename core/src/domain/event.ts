@@ -36,6 +36,7 @@ export const ServerEventModifiedTableN = "[table] ServerEventModifiedTable";
 export const ServerEventModifiedEntityN = "[entity] ServerEventModifiedEntity";
 export const ServerEventNewEntityN = "[entity] ServerEventNewEntity";
 export const ServerEventDeleteEntityN = "[entity] ServerEventDeleteEntity";
+export const ServerEventPreviewFormulaN = "[entity] ServerEventPreviewFormula";
 
 export class ServerEventModifiedFormDataEvent extends MwzEvent {
     readonly type_ = ServerEventModifiedFormDataN;
@@ -86,6 +87,14 @@ export class ServerEventDeleteEntity extends MwzEvent {
     }
 }
 
+export class ServerEventPreviewFormula extends MwzEvent {
+    readonly type_ = ServerEventPreviewFormulaN;
+
+    constructor(public targetEntity: Entity, public targetPropertyName: string, public currentDataObj: DataObj, public formula: string) {
+        super();
+    }
+}
+
 export type MwzEvents = 
     | ServerEventModifiedFormDataEvent
     | ServerEventModifiedFormEvent
@@ -93,4 +102,5 @@ export type MwzEvents =
     | ServerEventModifiedEntity
     | ServerEventNewEntity
     | ServerEventDeleteEntity
+    | ServerEventPreviewFormula
     ;

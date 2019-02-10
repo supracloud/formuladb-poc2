@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 
-import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str } from "./key_value_store_i";
+import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, reduceValues as kvsReduceValues } from "./key_value_store_i";
 import { MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { KeyValueObj } from '@core/domain/key_value_obj';
-import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun } from "@core/domain/metadata/reduce_functions";
+import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
 import { MINCHAR, MAXCHAR } from './utils/collator';
 
 
@@ -30,7 +30,6 @@ type ReduceFunction =
 
 class SumReduceFunction implements SumReduceFun {
     readonly name = "SumReduceFunN";
-    readonly defaultValue = 0;
     constructor(reduceFun: SumReduceFun, public kvs: KeyValueStoreArrayKeys<number>) {
 
     }
@@ -38,7 +37,6 @@ class SumReduceFunction implements SumReduceFun {
 
 class CountReduceFunction implements CountReduceFun {
     readonly name = "CountReduceFunN";
-    readonly defaultValue = 0;
     constructor(reduceFun: CountReduceFun, public kvs: KeyValueStoreArrayKeys<number>) {
 
     }
@@ -46,7 +44,6 @@ class CountReduceFunction implements CountReduceFun {
 
 class TextjoinReduceFunction implements TextjoinReduceFun {
     readonly name = "TextjoinReduceFunN";
-    readonly defaultValue = '';
     delimiter: string;
     constructor(reduceFun: TextjoinReduceFun, public kvs: KeyValueStoreArrayKeys<string>) {
         this.delimiter = reduceFun.delimiter;
@@ -71,15 +68,15 @@ export class MapReduceView {
             switch (reduceFun.name) {
                 case SumReduceFunN:
                     this.reduceFunction = new SumReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-reduce', 0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-map', this.reduceFunction.defaultValue));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-map', ReduceFunDefaultValue[this.reduceFunction.name]));
                     break;
                 case CountReduceFunN:
                     this.reduceFunction = new CountReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-reduce', 0)));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-map', this.reduceFunction.defaultValue));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<number>(viewName + '-map', ReduceFunDefaultValue[this.reduceFunction.name]));
                     break;
                 case TextjoinReduceFunN:
                     this.reduceFunction = new TextjoinReduceFunction(reduceFun, new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewName + '-reduce', '')));
-                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewName + '-map', this.reduceFunction.defaultValue));
+                    this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<string>(viewName + '-map', ReduceFunDefaultValue[this.reduceFunction.name]));
                     break;
             }
 
@@ -131,23 +128,7 @@ export class MapReduceView {
         let viewName = this.viewName;
 
         return this._rangeQuery<string | number>(reduceFunction.kvs, queryOpts)
-            .then(rows => {
-                return rows.reduce((acc, current, idx) => {
-                    if (SumReduceFunN === reduceFunction.name) {
-                        if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewName + ' _sum accepts only numbers but found (' + acc + ', ' + current + ')');
-                        return acc + current;
-                    } else if (CountReduceFunN === reduceFunction.name) {
-                        if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewName + ' _count accepts only numbers but found (' + acc + ', ' + current + ')');
-                        return acc + current;//this is "re-reduce" we must sum the counts from the reduce values per each key
-                    } else if (TextjoinReduceFunN === reduceFunction.name) {
-                        if (0 == idx && acc == '') return current;
-                        return acc + reduceFunction.delimiter + current;
-                    } else {
-                        throw new Error('Unknown reduce function ' + reduceFunction);
-                    }
-
-                }, reduceFunction.defaultValue);
-            });
+            .then(rows => kvsReduceValues(rows, reduceFunction, this.viewName));
     }
 
     /** We need to allow multiple map values for the same key */

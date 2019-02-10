@@ -23,6 +23,18 @@ export class SchemaDAO {
         return _.values(this.schema.entities);
     }
 
+    public getFormulas(objId: string): CompiledFormula[] {
+        let entityName = parseDataObjId(objId).entityName;
+        let ret: CompiledFormula[] = [];
+        let entity = this.entities[entityName];
+        _.values(entity.props).forEach(pr => {
+            if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                ret.push(pr.compiledFormula_);
+            }
+        })
+        return ret;
+    }
+
     public getSelfFormulas(objId: string): CompiledFormula[] {
         let entityName = parseDataObjId(objId).entityName;
         let ret: CompiledFormula[] = [];

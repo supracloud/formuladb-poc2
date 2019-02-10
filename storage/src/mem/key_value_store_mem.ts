@@ -3,11 +3,13 @@
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, FilterItem, AggFunc, KeyTableStoreI } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, FilterItem, AggFunc, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Entity } from "@core/domain/metadata/entity";
+import { Expression } from "jsep";
+import { evalExprES5 } from "@core/map_reduce_utils";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -198,6 +200,11 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
         return simulateIO(groupedFiltered);
     }
 
+    reduceQuery(opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
+        return this.rangeQuery(opts)
+            .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
+            .then(values => kvsReduceValues(values, reduceFun, this.entity._id));
+    }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     readonly name = "KeyValueStoreFactoryMem";
