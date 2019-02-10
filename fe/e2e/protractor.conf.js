@@ -3,8 +3,14 @@
 
 const { SpecReporter } = require('jasmine-spec-reporter');
 
+var target = process.env.TARGET;
+
 exports.config = {
   allScriptsTimeout: 11000,
+  params: {
+    recordings: false,
+    audio: false
+  },  
   specs: [
     './src/**/inventory-base.e2e-spec.ts'
     // './src/**/change-theme-and-color.e2e-spec.ts'
@@ -12,11 +18,13 @@ exports.config = {
   //https://peter.sh/experiments/chromium-command-line-switches/
   // --start-fullscreen doesn't work right, don't lose your time with it. We'll have to crop the video as a final step of the test.
   getMultiCapabilities: function () {
-    var target = process.env.TARGET;
+
     var extra_args = [];
+
     if (target == 'headless') {
       extra_args.push("--headless")
     }
+
     var multiCapabilities =
       [{
           name: 'Chrome headless',
@@ -44,5 +52,15 @@ exports.config = {
     });
 
     jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
+
+    if (target == 'recordings') {
+      browser.params.recordings = true;
+    }
+    if (target == 'recordings-with-audio') {
+      browser.params.recordings = true;
+      browser.params.audio = true;
+    }    
   }
 };
+
+
