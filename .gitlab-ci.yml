@@ -1,13 +1,9 @@
-# image: node:8.9.4
+stages:
+  - build_and_test
+  - cleanup_build
 
-# before_script:
-  # - chmod +x ci/install-chrome
-  # - ci/install-chrome
-# TODO 
-# TODO THIS should be done only on release branches and get the image version from the name of the branch
-# TODO 
 build:
-  stage: build
+  stage: build_and_test
   script:
     - cd storage && npm install 
     - cd ..
@@ -32,7 +28,7 @@ build:
     - cd ..
 
 test:
-  stage: test
+  stage: build_and_test
   script:
     - docker-compose down
     - FRMDB_RELEASE=0.0.1 docker-compose up -d
@@ -52,15 +48,9 @@ test:
   retry: 2
 
 
-# pages:
-#   stage: deploy
-#   script:
-#     - mv coverage/ public/
-#   dependencies:
-#     - test
-#   artifacts:
-#     paths:
-#       - public
-#     expire_in: 30 days
-#   only:
-#     - master
+cleanup_build_job:
+  stage: cleanup_build
+  script:
+    - docker-compose down
+    - docker image prune --all -f
+  when: on_failure
