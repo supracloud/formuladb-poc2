@@ -87,3 +87,7 @@ startFrmdb() {
     # TODO: if release is not "master" or x.y.z replace tags for formuladb-fe and formuladb-be with "stopped"
     FRMDB_RELEASE=${FRMDB_RELEASE} docker-compose.exe up --remove-orphans --abort-on-container-exit
 }
+
+ssh-ci() {
+    ssh -i ./ssh/frmdb.id_rsa root@46.101.228.142
+}
