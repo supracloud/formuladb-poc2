@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, reduceValues as kvsReduceValues } from "./key_value_store_i";
+import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "./key_value_store_i";
 import { MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { KeyValueObj } from '@core/domain/key_value_obj';
@@ -195,10 +195,10 @@ export class MapReduceView {
 
             if (SumReduceFunN === rFun.name) {
                 let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
-                    await this.preComputeMap<number>(oldObj, newObj, rFun.defaultValue);
-                let newReduceValue = await rFun.kvs.get(newMapKey) || rFun.defaultValue;
+                    await this.preComputeMap<number>(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
+                let newReduceValue = await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name];
                 if (null != oldMapKey && null != oldMapValue) {
-                    let oldReduceValue = await rFun.kvs.get(oldMapKey) || rFun.defaultValue;
+                    let oldReduceValue = await rFun.kvs.get(oldMapKey) || ReduceFunDefaultValue[rFun.name];
                     if (_.isEqual(oldMapKey, newMapKey)) {
                         ret.reduce.push({ key: newMapKey, value: oldReduceValue - oldMapValue + newMapValue });
                     } else {
@@ -215,10 +215,10 @@ export class MapReduceView {
                 return ret;
             } else if (CountReduceFunN === rFun.name) {
                 let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
-                    await this.preComputeMap<number>(oldObj, newObj, rFun.defaultValue);
-                let newReduceValue = await rFun.kvs.get(newMapKey) || rFun.defaultValue;
+                    await this.preComputeMap<number>(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
+                let newReduceValue = await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name];
                 if (null != oldMapKey && null != oldMapValue) {
-                    let oldReduceValue = await rFun.kvs.get(oldMapKey) || rFun.defaultValue;
+                    let oldReduceValue = await rFun.kvs.get(oldMapKey) || ReduceFunDefaultValue[rFun.name];
                     if (_.isEqual(oldMapKey, newMapKey)) {
                         ret.reduce.push({ key: newMapKey, value: oldReduceValue - 1 + 1 });
                     } else {
@@ -235,7 +235,7 @@ export class MapReduceView {
                 return ret;
             } else if (TextjoinReduceFunN === rFun.name) {
                 let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
-                    await this.preComputeMap(oldObj, newObj, rFun.defaultValue);
+                    await this.preComputeMap(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
 
                 //WARNING: this reduce precomputation works only for unique keys
                 if (null != oldMapKey && null != oldMapValue && !_.isEqual(oldMapKey, newMapKey) && !otherMapValueWithOldKeyExist) {

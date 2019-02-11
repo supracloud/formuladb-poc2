@@ -119,7 +119,7 @@ export class FrmdbEngineStore extends FrmdbStore {
             ret = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
         // obsNew[compiledFormula.targetPropertyName]
-        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
+        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + ret + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
 
         //TODO: validations are important for Formula Preview, not necessarily for Reports
 

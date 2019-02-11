@@ -61,33 +61,10 @@ export class FrmdbEngine {
             case events.ServerEventModifiedEntityN:
                 return this.processEntity(event);
             case events.ServerEventPreviewFormulaN:
-                return this.previewFormula(event);
+                return this.transactionRunner.previewFormula(event);
             default:
                 return Promise.reject("n/a event");
         }
-    }
-
-    public async previewFormula(event: events.ServerEventPreviewFormula) {
-        try {
-            let compiledFormula = compileFormula(event.targetEntity._id, event.targetPropertyName, event.formula);
-            let triggerValues: _.Dictionary<ScalarType> = {};
-            for (let triggerOfFormula of compiledFormula.triggers || []) {
-                triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
-                    await this.frmdbEngineStore.mapReduceAdHocQuery(event.currentDataObj, 
-                        triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map, 
-                        triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
-            }
-
-        } catch (ex) {
-            event.state_ = 'ABORT';
-            event.notifMsg_ = '' + ex;
-            try {
-                await this.frmdbEngineStore.putTransaction(event);
-            } catch (ex2) {
-                console.warn("Error during event save on failure", ex2, event);
-            }
-        }
-        return Promise.resolve(event);
     }
 
     private processForm(event: events.ServerEventModifiedFormEvent): Promise<events.MwzEvents> {

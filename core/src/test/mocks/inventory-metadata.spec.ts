@@ -107,7 +107,8 @@ describe('Inventory Metadata', () => {
 
         // check auto-correction
         let oi1_2new = _.cloneDeep(oi1_2);
-        oi1_2new.quantity = 10;
+        let oi1_2newQuantity = 10;
+        oi1_2new.quantity = oi1_2newQuantity;
         await putObj(ri1_1new);
         await putObj(oi1_2new);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
@@ -116,7 +117,7 @@ describe('Inventory Metadata', () => {
         expect(availStock).toEqual(0);
         let o: any = await frmdbTStore.getDataObj(oi1_2new._id);
         expect(o.quantity).toEqual(6);
-        expect(o.error_quantity).toEqual(4);
+        expect(o.error_quantity).toEqual(oi1_1.quantity + oi1_2newQuantity - ri1_1new.quantity - ri1_2.quantity);
         
         done();
     });

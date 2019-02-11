@@ -16,6 +16,8 @@ import { CompiledFormula } from "@core/domain/metadata/execution_plan";
 import { evalExprES5 } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
+import { compileFormula } from "./formula_compiler";
+import { ScalarType } from "./key_value_store_i";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -147,6 +149,32 @@ export class FrmdbTransactionRunner {
         return saveObj;
     }
 
+
+    public async previewFormula(event: events.ServerEventPreviewFormula) {
+        try {
+            let compiledFormula = compileFormula(event.targetEntity._id, event.targetPropertyName, event.formula);
+            let triggerValues: _.Dictionary<ScalarType> = {};
+            for (let triggerOfFormula of compiledFormula.triggers || []) {
+                triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
+                    await this.frmdbEngineStore.mapReduceAdHocQuery(event.currentDataObj, 
+                        triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map, 
+                        triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+            }
+
+            this.computeFormulaExprWithValidations(triggerValues, compiledFormula, event.currentDataObj);
+
+        } catch (ex) {
+            event.state_ = 'ABORT';
+            event.notifMsg_ = '' + ex;
+            try {
+                await this.frmdbEngineStore.putTransaction(event);
+            } catch (ex2) {
+                console.warn("Error during event save on failure", ex2, event);
+            }
+        }
+        return Promise.resolve(event);
+    }
+    
     public async computeFormulasAndSave(
         event: events.ServerEventModifiedFormDataEvent): Promise<events.MwzEvents> {
 
@@ -162,10 +190,15 @@ export class FrmdbTransactionRunner {
 
             let getObjectIdsToSave = async (retryNb: number) => {
                 Object.assign(event.obj, originalObj);
+
+                for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
+                    await this.preComputeNonSelfFormulaOfObj(event.obj, compiledFormula);
+                }
                 for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
                     event.obj[selfFormula.targetPropertyName] = evalExprES5(event.obj, selfFormula.finalExpression);
                     console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
                 }
+                
                 for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
                     transacDAG = new TransactionDAG(event._id, retryNb + "|" + failedValidationRetry);
                     let oldObj: DataObj | null = null;
@@ -262,8 +295,9 @@ export class FrmdbTransactionRunner {
         return failedValidations;
     }
 
-    public async preComputeFormulasOfObj(obsNew: DataObj, compiledFormula: CompiledFormula) {
-        let triggerValues: _.Dictionary<number | string> = {};
+    public async preComputeNonSelfFormulaOfObj(obsNew: DataObj, compiledFormula: CompiledFormula) {
+        if (!compiledFormula.triggers || compiledFormula.triggers.length == 0) return;
+        let triggerValues: _.Dictionary<ScalarType> = {};
         for (let triggerOfFormula of compiledFormula.triggers || []) {
             triggerValues[triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName] =
                 await this.frmdbEngineStore.getAggValueForObserver(obsNew, triggerOfFormula);
@@ -271,7 +305,7 @@ export class FrmdbTransactionRunner {
         this.computeFormulaExprWithValidations(triggerValues, compiledFormula, obsNew);
     }
 
-    private computeFormulaExprWithValidations(triggerValues: _.Dictionary<number | string>, compiledFormula: CompiledFormula, obsNew: DataObj): CompiledFormula[] {
+    private computeFormulaExprWithValidations(triggerValues: _.Dictionary<ScalarType>, compiledFormula: CompiledFormula, obsNew: DataObj): CompiledFormula[] {
         if (!compiledFormula.triggers) {
             obsNew[compiledFormula.targetPropertyName] = evalExprES5(obsNew, compiledFormula.finalExpression);
         } else if (compiledFormula.triggers.length === 1) {
@@ -326,10 +360,6 @@ export class FrmdbTransactionRunner {
         let currentLevel = transactionDAG.getCurrentLevelObjs();
         transactionDAG.incrementLevel();
         for (let trObj of currentLevel) {
-            for (let compiledFormula of this.schemaDAO.getFormulas(trObj.NEW._id)) {
-                await this.preComputeFormulasOfObj(trObj.NEW, compiledFormula);
-            }
-
             for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(trObj.NEW._id)) {
                 for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {
                     let observers = await this.frmdbEngineStore.getObserversOfObservableOldAndNew(trObj.OLD, trObj.NEW, triggerOfFormula);
