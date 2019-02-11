@@ -35,11 +35,14 @@ test:
   stage: test
   script:
     - docker-compose down
-    - docker-compose up
+    - FRMDB_RELEASE=0.0.1 docker-compose up -d
     - cd be
     - npm test
     - FRMDB_STORAGE=postgres npm test
     - cd ..
+    - docker-compose down
+    - docker image prune --all -f
+
     # - cd fe && npm test -- --watch=false
     # - cd ..
   # artifacts:
