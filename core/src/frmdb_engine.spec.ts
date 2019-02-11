@@ -6,7 +6,7 @@
 import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
+import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula } from "@core/domain/event";
 import { $s2e } from './formula_compiler';
 import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "@core/domain/metadata/entity";
@@ -125,6 +125,52 @@ describe('FrmdbEngine', () => {
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
         expect(ev.obj['val']).toEqual(90);
+
+        done();
+    });
+
+    it("Should allow preview formulas", async (done) => {
+        await frmdbEngine.init();
+
+        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
+        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
+        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
+        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
+        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
+        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+
+        let a3 = { _id: 'A~~', b: 'B~~1', val: 2 };
+        await putObj(a3 as DataObj);
+        let b1After: any = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
+
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventPreviewFormulaN,
+            targetEntity: stockReservationSchema.entities['B'],
+            targetPropertyName: 'x__',
+            formula: '200 - sum__',
+            currentDataObj: b1After,
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        expect((ev.currentDataObj as any).x__).toEqual(195);
+
+        let b1Get: any = await frmdbTStore.getDataObj('B~~1');
+        expect(b1Get).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
+
+        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventPreviewFormulaN,
+            targetEntity: stockReservationSchema.entities['B'],
+            targetPropertyName: 'sum__',
+            formula: 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])',
+            currentDataObj: b1Get,
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        expect((ev2.currentDataObj as any).sum__).toEqual(a1.val + a2.val + a3.val + 3);
+        expect((ev2.currentDataObj as any).x__).toEqual(100 - (a1.val + a2.val + a3.val + 3));
 
         done();
     });

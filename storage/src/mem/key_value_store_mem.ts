@@ -26,7 +26,7 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     public get(_id: string): Promise<VALUET> {
-        return simulateIO(this.db[_id]);
+        return simulateIO(_.cloneDeep(this.db[_id]));
     }
 
     /** querying a map-reduce view must return the results ordered by _id */
@@ -160,7 +160,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
     }
 
     public async simpleAdHocQuery(query: SimpleAddHocQuery): Promise<any[]> {
-        let {rowGroupCols, groupKeys} = query;
+        let { rowGroupCols, groupKeys } = query;
         //First we filter the rows
         let objects: any[] = Object.values(this.db);
         if (objects.length == 0) return [];
@@ -172,9 +172,9 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
 
             objects = [];
             for (let [_id, objs] of Object.entries(grouped)) {
-                let obj: any = {[rowGroupCol.field]: _id};
+                let obj: any = { [rowGroupCol.field]: _id };
                 for (let groupAgg of query.valueCols) {
-                    obj[groupAgg.field.toLowerCase()] = objs.reduce((agg, currentObj) => 
+                    obj[groupAgg.field.toLowerCase()] = objs.reduce((agg, currentObj) =>
                         ({
                             [groupAgg.field]: this.evaluateAggregation(currentObj[groupAgg.field], groupAgg.aggFunc, agg[groupAgg.field])
                         })
@@ -200,15 +200,33 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
         return simulateIO(groupedFiltered);
     }
 
-    reduceQuery(opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
-        return this.rangeQuery(opts)
+    mapQuery(keyExpr: Expression[], opts: RangeQueryOptsI): Promise<OBJT[]> {
+        let ret = _.entries(this.db).map(([_id, x]) => {
+            return [kvsKey2Str(evalExprES5(x, keyExpr)), x];
+        }).filter(([key, val]) =>
+            (opts.startkey < key && key < opts.endkey)
+            || (opts.inclusive_start && key === opts.startkey)
+            || (opts.inclusive_end && key === opts.endkey)
+        )
+            .sort(([keyA, valA], [keyB, valB]) => {
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
+                return 0;
+            })
+            .map(([_id, val]) => val as OBJT);
+
+        return simulateIO(ret);
+    }
+
+    reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
+        return this.mapQuery(keyExpr, opts)
             .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
-            .then(values => kvsReduceValues(values, reduceFun, this.entity._id));
+            .then(values => kvsReduceValues(values, reduceFun, this.entity._id, false));
     }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     readonly name = "KeyValueStoreFactoryMem";
-    
+
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();
     }

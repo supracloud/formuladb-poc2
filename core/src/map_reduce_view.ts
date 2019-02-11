@@ -128,7 +128,7 @@ export class MapReduceView {
         let viewName = this.viewName;
 
         return this._rangeQuery<string | number>(reduceFunction.kvs, queryOpts)
-            .then(rows => kvsReduceValues(rows, reduceFunction, this.viewName));
+            .then(rows => kvsReduceValues(rows, reduceFunction, this.viewName, true));
     }
 
     /** We need to allow multiple map values for the same key */

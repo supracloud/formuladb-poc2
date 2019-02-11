@@ -174,11 +174,10 @@ export class FrmdbStore {
     }
 
     public async mapReduceAdHocQuery(obs: DataObj, map: MapFunctionAndQueryT, reduceFun: ReduceFun) {
-        let all = await this.all(map.entityName);
-        let start = kvsKey2Str(evalExprES5(obs, map.query.startkeyExpr));
-        let end = kvsKey2Str(evalExprES5(obs, map.query.startkeyExpr));
+        let start = kvsKey2Str(evalExprES5({ $ROW$: obs }, map.query.startkeyExpr));
+        let end = kvsKey2Str(evalExprES5({ $ROW$: obs }, map.query.startkeyExpr));
         let kvs = await this.getDataKvs(map.entityName);
-        return kvs.reduceQuery({
+        return kvs.reduceQuery(map.keyExpr, {
             startkey: start,
             endkey: end,
             inclusive_start: map.query.inclusive_start,

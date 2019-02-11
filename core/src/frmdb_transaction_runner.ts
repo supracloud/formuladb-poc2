@@ -316,6 +316,7 @@ export class FrmdbTransactionRunner {
 
         let selfFormulas = this.schemaDAO.getSelfFormulas(obsNew._id);
         for (let selfFormula of selfFormulas) {
+            if (selfFormula.targetPropertyName === compiledFormula.targetPropertyName) continue;
             obsNew[selfFormula.targetPropertyName] = evalExprES5(obsNew, selfFormula.finalExpression);
         }
 

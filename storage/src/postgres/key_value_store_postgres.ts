@@ -305,10 +305,30 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     }
 
     //TODO: implement using SQL and plv8
-    reduceQuery(opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
-        return this.rangeQuery(opts)
+    async mapQuery(keyExpr: Expression[], opts: RangeQueryOptsI): Promise<OBJT[]> {
+        let all = await this.all();
+        let ret = all.map(x => {
+            return [kvsKey2Str(evalExprES5(x, keyExpr)), x];
+        }).filter(([key, val]) =>
+            (opts.startkey < key && key < opts.endkey)
+            || (opts.inclusive_start && key === opts.startkey)
+            || (opts.inclusive_end && key === opts.endkey)
+        )
+            .sort(([keyA, valA], [keyB, valB]) => {
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
+                return 0;
+            })
+            .map(([_id, val]) => val as OBJT);
+
+        return Promise.resolve(ret);
+    }
+
+    //TODO: implement using SQL and plv8
+    reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
+        return this.mapQuery(keyExpr, opts)
             .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
-            .then(values => kvsReduceValues(values, reduceFun, this.entity._id));
+            .then(values => kvsReduceValues(values, reduceFun, this.entity._id, false));
     }
 
 }
