@@ -130,7 +130,7 @@ describe('FrmdbEngine', () => {
         done();
     });
 
-    it("Should allow preview formulas", async (done) => {
+    fit("Should allow preview formulas", async (done) => {
         await frmdbEngine.init();
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};

@@ -186,7 +186,7 @@ export class FrmdbTransactionRunner {
                 if (Pn.FORMULA === oldProp.propType_) {
                     oldCompiledFormula = compileFormula(event.targetEntity._id, oldProp.name, oldProp.formula);
                 }
-                await this.frmdbEngineStore.installFormula(compiledFormula);
+                await this.frmdbEngineStore.installFormula(compiledFormula, true);
 
                 event.property.compiledFormula_ = compiledFormula;
                 modifiedEntity.props[event.property.name] = event.property;
@@ -198,7 +198,7 @@ export class FrmdbTransactionRunner {
                 }
 
                 //FIXME re-compute data asynchronously, not wait for all objects to be re-computed and then reply to the server
-                await this.frmdbEngineStore.initViewsForFormula(compiledFormula);
+                await this.frmdbEngineStore.initViewsForNewFormula(oldCompiledFormula, compiledFormula);
                 let affectedObjs = await this.frmdbEngineStore.getDataListByPrefix(event.targetEntity._id + '~~');
                 let i = 0;
                 for (let obj of affectedObjs) {

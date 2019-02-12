@@ -91,13 +91,13 @@ export function kvsStr2Key(_id: string): any {
     return FormuladbCollate.parseIndexableString(_id);
 }
 
-export function kvsReduceValues(values: ScalarType[], reduceFun: ReduceFun, viewName: string, reReduce: boolean) {
+export function kvsReduceValues(values: ScalarType[], reduceFun: ReduceFun, viewHashCode: string, reReduce: boolean) {
     return values.reduce((acc, current, idx) => {
         if (SumReduceFunN === reduceFun.name) {
-            if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewName + ' _sum accepts only numbers but found (' + acc + ', ' + current + ')');
+            if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewHashCode + ' _sum accepts only numbers but found (' + acc + ', ' + current + ')');
             return acc + current;
         } else if (CountReduceFunN === reduceFun.name) {
-            if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewName + ' _count accepts only numbers but found (' + acc + ', ' + current + ')');
+            if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewHashCode + ' _count accepts only numbers but found (' + acc + ', ' + current + ')');
             return acc + (reReduce ? current : 1);//this is "re-reduce" we must sum the counts from the reduce values per each key
         } else if (TextjoinReduceFunN === reduceFun.name) {
             if (0 == idx && acc == '') return current;
