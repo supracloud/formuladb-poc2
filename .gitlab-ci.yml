@@ -48,6 +48,7 @@ test:
     - cd ..
     - cd fe
     - npm run e2e
+    - killall node --quiet || true
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
