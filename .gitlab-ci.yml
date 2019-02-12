@@ -31,10 +31,7 @@ build:
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - storage/node_modules/
-      - core/node_modules/
-      - be/node_modules/
-      - fe/node_modules/
+      - .
 
 test:
   stage: test
@@ -50,15 +47,12 @@ test:
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - storage/node_modules/
-      - core/node_modules/
-      - be/node_modules/
-      - fe/node_modules/
+      - .
   retry: 2
 
 
-cleanup_build_job:
-  stage: cleanup_build
+cleanup:
+  stage: cleanup
   script:
     - docker-compose down
     - docker image prune --all -f
