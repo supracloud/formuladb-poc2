@@ -63,7 +63,7 @@ test:
 videos:
   stage: videos
   script:
-    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe -it registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
+    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
   artifacts:
     paths:
       - fe/e2e/protractor_videos/
