@@ -20,5 +20,5 @@ services:
     volumes:
       - $PWD/auth.htpasswd:/etc/nginx/auth.htpasswd
 
-  volumes:
-    pg-persistence:
+volumes:
+  pg-persistence:
