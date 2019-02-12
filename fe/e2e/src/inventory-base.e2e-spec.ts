@@ -132,8 +132,8 @@ describe('Inventory App Base E2E', () => {
 
     await inventoryOrder!.updateItemQuantity(1, '1000');
 
-    expect(inventoryOrder!.waitForItemQuantity(1, '15', 5000)).toEqual('15');
-    expect(inventoryOrder!.waitForErrorQuantity(1, '985', 5000)).toEqual('985');
+    expect(inventoryOrder!.waitForItemQuantity(1, '15', 20000)).toEqual('15');
+    expect(inventoryOrder!.waitForErrorQuantity(1, '985', 20000)).toEqual('985');
   });
 
   it('Should navigate to product locations', async () => {

@@ -52,7 +52,13 @@ export class InventoryOrderPage {
   }
 
   async waitForErrorQuantity(itemId: number, quantity: string, timeout: number) {
+
     let errorQuantityElem = element(by.css(`input[id="items.${itemId}.error_quantity"]`));
+
+    // Workaround to get the list of items updated
+    await browser.actions().mouseMove(errorQuantityElem, {x: 51, y: 51}).perform();
+    await browser.sleep(1000);
+    await browser.actions().mouseMove(errorQuantityElem, {x: 52, y: 52}).perform();
 
     await browser.wait(ExpectedConditions.presenceOf(errorQuantityElem), 50000);
 
