@@ -40,9 +40,9 @@ build:
 test:
   stage: test
   script:
-    - FRMDB_RELEASE=0.0.1 docker-compose up db -d
+    - FRMDB_RELEASE=0.0.1 docker-compose up -d db
     - cd be
-    - npm test
+    - npm test || :
     - FRMDB_STORAGE=postgres npm test
     - npm run start &
     - cd ..
@@ -64,5 +64,5 @@ cleanup:
   script:
     - docker-compose down
     - docker image prune --all -f
-    - killall node
+    - killall node --quiet || :
   when: always
