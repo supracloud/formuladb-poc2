@@ -35,7 +35,7 @@ test:
   stage: test
   script:
     - mkdir devdata
-    - FRMDB_RELEASE=${CI_COMMIT_REF_NAME} docker-compose up -d
+    - FRMDB_RELEASE=master docker-compose up -d
     - cd be
     - npm test
     - FRMDB_STORAGE=postgres npm test
