@@ -36,7 +36,7 @@ describe('FormulaCompiler', () => {
 
     it('should stringify parsed expressions', () => {
         let test_e2sExpr = Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`;
-        expect(jsep(test_e2sExpr).origExpr).toEqual(Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`);
+        expect(jsep.parse(test_e2sExpr).origExpr).toEqual(Fn.EOMONTH(`@[bT]`, `-1`) + `< cT`);
     });
 
     it('should extract keys from binary expressions operand', () => {
@@ -323,7 +323,7 @@ describe('FormulaCompiler', () => {
             targetEntityName: 'R_B',
             targetPropertyName: 'sum__',
             triggers: [trigger1],
-            rawExpr: jsep(test_complexFormulaExpr),
+            rawExpr: jsep.parse(test_complexFormulaExpr),
             finalExpression: $s2e(`V1`),
         };
 
