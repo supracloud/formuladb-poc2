@@ -8,7 +8,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - $PWD/devdata:/var/lib/postgresql/data
+      - devdata:/var/lib/postgresql/data
   be:
     image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     environment:
