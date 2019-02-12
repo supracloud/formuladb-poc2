@@ -285,7 +285,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 }
 
 export function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
-    return jsep(formula, forceParseIncompleteExpr);
+    return jsep.parse(formula, forceParseIncompleteExpr);
 }
 export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): CompiledFormula {
     let formulaAstNode = parseFormula(formula, forceParseIncompleteExpr);
@@ -322,7 +322,7 @@ export function compileFormula(targetEntityName: string, propJsPath: string, for
 
 
 export function $s2e(expr: string | Expression): Expression {
-    let parsedExpr = typeof expr === 'string' ? jsep(expr) : expr;
+    let parsedExpr = typeof expr === 'string' ? jsep.parse(expr) : expr;
     return parsedExpr;
 }
 
