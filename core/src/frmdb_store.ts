@@ -69,11 +69,11 @@ export class FrmdbStore {
     }
     public async putSchema(schema: Schema): Promise<Schema> {
         let ret: Schema = await (await this.getMetadataKvs()).put(schema) as Schema;
-        this.schema = ret;
+        Object.assign(this.schema, ret);
         return ret;
     }
     public setSchema(schema: Schema) {
-        this.schema = schema;
+        Object.assign(this.schema, schema);
     }
 
     public getEntities(): Promise<Entity[]> {

@@ -35,17 +35,19 @@ export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedFormData
     | appState.ServerEventModifiedForm
     | appState.ServerEventModifiedTable
-    | appState.ServerEventModifiedEntity
     | appState.ServerEventNewEntity
     | appState.ServerEventDeleteEntity
+    | appState.ServerEventSetProperty
+    | appState.ServerEventDeleteProperty
     ;
 export const ActionsToBeSentToServerNames = [
-    appState.ServerEventModifiedFormDataN,
-    appState.ServerEventModifiedFormN,
-    appState.ServerEventModifiedTableN,
-    appState.ServerEventModifiedEntityN,
-    appState.ServerEventNewEntityN,
-    appState.ServerEventDeleteEntityN
+    events.ServerEventModifiedFormDataN,
+    events.ServerEventModifiedFormN,
+    events.ServerEventModifiedTableN,
+    events.ServerEventNewEntityN,
+    events.ServerEventDeleteEntityN,
+    events.ServerEventSetPropertyN,
+    events.ServerEventDeletePropertyN,
 ];
 
 @Injectable()
@@ -119,8 +121,12 @@ export class AppEffects {
                 this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/__\w+$/, ''))]);
                 break;
             }
-            case events.ServerEventModifiedEntityN: {
-                this.changeEntity(eventFromBe.entity._id);
+            case events.ServerEventSetPropertyN: {
+                this.changeEntity(eventFromBe.targetEntity._id);
+                break;
+            }
+            case events.ServerEventDeletePropertyN: {
+                this.changeEntity(eventFromBe.targetEntity._id);
                 break;
             }
             default:

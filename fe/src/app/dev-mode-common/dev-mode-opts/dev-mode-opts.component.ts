@@ -96,11 +96,10 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
       return;
     }
     let newPropName = input.value.replace(/^\./, '');
-    this.currentEntity.props[newPropName] = {
+    this.store.dispatch(new appState.ServerEventSetProperty(this.currentEntity, {
       name: newPropName,
       propType_: Pn.STRING,
-    };
-    this.store.dispatch(new appState.ServerEventModifiedEntity(this.currentEntity));
+    }));
   }
 
   addTable(input: HTMLInputElement) {
@@ -126,8 +125,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
       return;
     }
     if (confirm("Are you sure you want to delete " + this.currentProperty.name + " column of " + this.currentEntity._id + " ?")) {
-      delete this.currentEntity.props[this.currentProperty.name];
-      this.store.dispatch(new appState.ServerEventModifiedEntity(this.currentEntity));
+      this.store.dispatch(new appState.ServerEventDeleteProperty(this.currentEntity, this.currentProperty.name));
     }
   }
 

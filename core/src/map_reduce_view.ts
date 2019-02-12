@@ -57,7 +57,7 @@ export class MapReduceView {
     constructor(
         private kvsFactory: KeyValueStoreFactoryI,
         private viewName: string,
-        private map: MapFunctionT,
+        public map: MapFunctionT,
         private use$ROW$?: boolean,
         reduceFun?: ReduceFun
     ) {

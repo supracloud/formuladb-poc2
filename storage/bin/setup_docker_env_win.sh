@@ -32,6 +32,7 @@ create-docker-env() {
         
         VBoxManage controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
         VBoxManage controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
+        VBoxManage controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
         VBoxManage controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
 
         docker-machine stop docker1

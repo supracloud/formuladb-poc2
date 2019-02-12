@@ -5,7 +5,7 @@
 
 import { KeyValueObj } from "./key_value_obj";
 import { DataObj } from "./metadata/data_obj";
-import { Entity } from "./metadata/entity";
+import { Entity, EntityProperty } from "./metadata/entity";
 import { Form } from "./uimetadata/form";
 import { Table } from "./uimetadata/table";
 import { generateUUID } from "./uuid";
@@ -33,10 +33,11 @@ export class MwzEvent implements KeyValueObj {
 export const ServerEventModifiedFormDataN = "[form] ServerEventModifiedFormData";
 export const ServerEventModifiedFormN = "[form] ServerEventModifiedForm";
 export const ServerEventModifiedTableN = "[table] ServerEventModifiedTable";
-export const ServerEventModifiedEntityN = "[entity] ServerEventModifiedEntity";
 export const ServerEventNewEntityN = "[entity] ServerEventNewEntity";
 export const ServerEventDeleteEntityN = "[entity] ServerEventDeleteEntity";
 export const ServerEventPreviewFormulaN = "[entity] ServerEventPreviewFormula";
+export const ServerEventSetPropertyN = "[entity] ServerEventSetProperty";
+export const ServerEventDeletePropertyN = "[entity] ServerEventDeleteProperty";
 
 export class ServerEventModifiedFormDataEvent extends MwzEvent {
     readonly type_ = ServerEventModifiedFormDataN;
@@ -59,14 +60,6 @@ export class ServerEventModifiedTableEvent extends MwzEvent {
     readonly type_ = ServerEventModifiedTableN;
 
     constructor(public table: Table) {
-        super();
-    }
-}
-
-export class ServerEventModifiedEntity extends MwzEvent {
-    readonly type_ = ServerEventModifiedEntityN;
-
-    constructor(public entity: Entity) {
         super();
     }
 }
@@ -95,12 +88,29 @@ export class ServerEventPreviewFormula extends MwzEvent {
     }
 }
 
+export class ServerEventSetProperty extends MwzEvent {
+    readonly type_ = ServerEventSetPropertyN;
+
+    constructor(public targetEntity: Entity, public property: EntityProperty) {
+        super();
+    }
+}
+
+export class ServerEventDeleteProperty extends MwzEvent {
+    readonly type_ = ServerEventDeletePropertyN;
+
+    constructor(public targetEntity: Entity, public propertyName: string) {
+        super();
+    }
+}
+
 export type MwzEvents = 
     | ServerEventModifiedFormDataEvent
     | ServerEventModifiedFormEvent
     | ServerEventModifiedTableEvent
-    | ServerEventModifiedEntity
     | ServerEventNewEntity
     | ServerEventDeleteEntity
     | ServerEventPreviewFormula
+    | ServerEventSetProperty
+    | ServerEventDeleteProperty
     ;

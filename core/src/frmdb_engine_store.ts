@@ -54,6 +54,27 @@ export class FrmdbEngineStore extends FrmdbStore {
         }
     }
 
+    public async uninstallFormula(formula: CompiledFormula): Promise<any> {
+        for (let trigger of (formula.triggers || [])) {
+            await this.removeMapReduceView(trigger.mapObserversImpactedByOneObservable.obsViewName);
+            await this.removeMapReduceView(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+        }
+    }
+
+    private async initView(viewName: string) {
+        let view = this.view(viewName, "forceUpdate");
+        let allObjs = await this.getDataListByPrefix(view.map.entityName + '~~');
+        for (let obj of allObjs) {
+            await this.forceUpdateViewForObj(viewName, null, obj);
+        }
+    }
+    public async initViewsForFormula(compiledFormula: CompiledFormula): Promise<any> {
+        for (let trigger of (compiledFormula.triggers || [])) {
+            await this.initView(trigger.mapObserversImpactedByOneObservable.obsViewName);
+            await this.initView(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+        }
+    }
+
     public async adHocTableQuery(entity: Entity): Promise<DataObj[]> {
         //super-duper-extra-naive implementation
         let ret: DataObj[] = [];
@@ -126,6 +147,9 @@ export class FrmdbEngineStore extends FrmdbStore {
         return ret;
     }
 
+    public removeMapReduceView(viewName: string) {
+        this.mapReduceViews.delete(viewName);
+    }
     public createMapReduceView(viewName: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
         if (map.existingIndex != null) return Promise.resolve("existing index");
 
