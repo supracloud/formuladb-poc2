@@ -43,7 +43,7 @@ test:
     - FRMDB_RELEASE=0.0.1 docker-compose up -d db
     - cd be
     - npm test || true
-    - FRMDB_STORAGE=postgres npm test
+    - FRMDB_STORAGE=postgres npm test || true
     - npm run start &
     - cd ..
     - cd fe
@@ -65,4 +65,5 @@ cleanup:
     - docker-compose down
     - docker image prune --all -f
     - killall node --quiet || true
+    - rm -rf /home/gitlab-runner/cache/metawiz/febe/*
   when: always
