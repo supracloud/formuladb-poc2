@@ -31,23 +31,31 @@ build:
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - .
+      - core/node_modules/
+      - storage/node_modules/
+      - be/node_modules/
+      - be/dist/
+      - fe/node_modules/
 
 test:
   stage: test
   script:
-    - docker-compose down
-    - FRMDB_RELEASE=0.0.1 docker-compose up -d
+    - FRMDB_RELEASE=0.0.1 docker-compose up db -d
     - cd be
     - npm test
     - FRMDB_STORAGE=postgres npm test
+    - npm run start &
     - cd ..
-    - docker-compose down
-    - docker image prune --all -f
+    - cd fe
+    - npm run e2e
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - .
+      - core/node_modules/
+      - storage/node_modules/
+      - be/node_modules/
+      - be/dist/
+      - fe/node_modules/
   retry: 2
 
 
@@ -56,4 +64,5 @@ cleanup:
   script:
     - docker-compose down
     - docker image prune --all -f
+    - killall node
   when: always
