@@ -1,9 +1,10 @@
 stages:
-  - build_and_test
-  - cleanup_build
+  - build
+  - test
+  - cleanup
 
 build:
-  stage: build_and_test
+  stage: build
   script:
     - cd storage && npm install 
     - cd ..
@@ -25,10 +26,18 @@ build:
     - docker build -t formuladb-fe .
     - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
     - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
-    - cd ..
+  # Keep the cache to be reused in the test stage.
+  # use commit id as key, we don't want to reuse cache between succesive pipelines. Or ... ?
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - storage/node_modules/
+      - core/node_modules/
+      - be/node_modules/
+      - fe/node_modules/
 
 test:
-  stage: build_and_test
+  stage: test
   script:
     - docker-compose down
     - FRMDB_RELEASE=0.0.1 docker-compose up -d
@@ -38,13 +47,13 @@ test:
     - cd ..
     - docker-compose down
     - docker image prune --all -f
-
-    # - cd fe && npm test -- --watch=false
-    # - cd ..
-  # artifacts:
-  #   paths:
-  #     - coverage/
-  #     - karma.log
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - storage/node_modules/
+      - core/node_modules/
+      - be/node_modules/
+      - fe/node_modules/
   retry: 2
 
 
@@ -53,4 +62,4 @@ cleanup_build_job:
   script:
     - docker-compose down
     - docker image prune --all -f
-  when: on_failure
+  when: always
