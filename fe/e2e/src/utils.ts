@@ -2,9 +2,7 @@ const shell = require('shelljs');
 const textToSpeech = require('@google-cloud/text-to-speech');
 const fs = require('fs');
 const mp3Duration = require('mp3-duration');
-import { browser, element, ExpectedConditions, by, ElementFinder } from 'protractor';
-import { strictEqual } from 'assert';
-import { stringify } from '@angular/core/src/render3/util';
+import { browser, ElementFinder } from 'protractor';
 var path = require('path');
 var ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -26,14 +24,16 @@ export async function removeHighlighting(element: ElementFinder, previousStyle: 
     await browser.driver.executeScript("arguments[0].setAttribute('style', arguments[1]);",element.getWebElement(), previousStyle);
 }
 
-export async function create_audio_tracks(messages: string[], durations: number[]) {
-
+export function setup_directories() {
     shell.mkdir('-p', path.join(base_videos_path, 'tmp'));
     shell.rm('-rf', path.join(base_videos_path, 'tmp'));
     if (!fs.existsSync(path.join(base_videos_path, 'tmp'))) {
       fs.mkdirSync(path.join(base_videos_path, 'tmp'));
-    }
-  
+    }  
+}
+
+export async function create_audio_tracks(messages: string[], durations: number[]) {
+
     for (var i = 0; i < messages.length; i++) {
       const request = {
         id: i,
@@ -74,6 +74,16 @@ export async function handle_element_click(button: ElementFinder, duration: numb
     button.click();
 
     console.log("time spent in action", (endTime-startTime));
+}
+
+
+export async function handle_generic_action(duration: number) {
+    if (browser.params.audio) {
+        duration_until_now += duration;
+        let current_time = new Date().getTime();
+        console.log('handle_generic_action ', duration_until_now - (current_time - starttime_for_recording));
+        await browser.sleep(duration_until_now - (current_time - starttime_for_recording));
+    }
 }
 
 export function get_input_audio_string(number_of_audios: number): string {
@@ -177,6 +187,10 @@ export function merge_video_and_audio() {
         .output(path.join(base_videos_path, 'tmp/') + 'protractor-final.avi')
         .run();  
      })
+}
+
+export function create_final_video() {
+    shell.mv(path.join(base_videos_path, 'tmp/') + 'protractor.avi', path.join(base_videos_path, 'tmp/') + 'protractor-final.avi');
 }
 
 export function crop_video() {

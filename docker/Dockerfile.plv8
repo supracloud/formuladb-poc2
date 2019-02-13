@@ -1,0 +1,50 @@
+FROM postgres:9
+
+MAINTAINER Laurentiu Soica <laurentiu.soica@formuladb.io>
+
+# Note: there are no postgresql-<ver>-plv8 packages available for postgres10 or 11. Actually there is 
+# one for 10 but doesn't work. So manual build is required. Something to be improved in the future.
+# check Dockerfile.readme for using this image
+
+ENV PLV8XDB=postgres://postgres@127.0.0.1:5432/formuladb
+
+RUN apt-get update \
+  && apt-get install -y curl git postgresql-server-dev-9.6 make g++ wget pkg-config libc++-dev \
+  && apt-get clean \
+  && apt-get autoremove -y \
+  && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
+  && apt-get install -y nodejs \
+  && git config --global url.https://github.com/.insteadOf git://github.com/
+
+RUN wget https://github.com/plv8/plv8/archive/v2.3.9.tar.gz \
+  && tar -xvzf v2.3.9.tar.gz \
+  && cd plv8-2.3.9 \
+  && make \
+  && make install; \
+  rm -rf /plv8-2.3.9 v2.3.9*
+
+RUN git clone https://github.com/clkao/plv8x.git; cd plv8x \
+  && npm i --unsafe-perm . \
+  && npm i --unsafe-perm -g . \
+  && npm i lodash \
+  && npm i -g LiveScript \
+  && npm i qs
+
+# This is to overwrite PGDATA from original dockerfile https://github.com/docker-library/postgres/blob/040949af1595f49f2242f6d1f9c42fb042b3eaed/9.6/Dockerfile
+# The original dockerfile sets a volume on /var/lib/postgresql/data that causes all the subsequent changes under PGDATA to be discarded
+# and we want to add some data into postgres that should be preserved
+ENV PGDATA /var/lib/formuladb/postgresql/data
+RUN mkdir -p "$PGDATA" && chown -R postgres:postgres "$PGDATA" && chmod 777 "$PGDATA" # this 777 will be replaced by 700 at runtime (allows semi-arbitrary "--user" values)
+
+RUN nohup bash -c "docker-entrypoint.sh postgres &" \
+  && sleep 10 \
+  && ps -ef \
+  && createdb -U postgres -h 127.0.0.1 -p 5432 formuladb \
+  && psql $PLV8XDB -c 'CREATE EXTENSION plv8;' \
+  && plv8x --list \
+  && plv8x -i LiveScript \
+  && plv8x -i lodash \
+  && plv8x -i qs \
+  && plv8x --list \
+  && killall postgres \
+  && sleep 10

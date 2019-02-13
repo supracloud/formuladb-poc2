@@ -1,11 +1,9 @@
-# image: node:8.9.4
+stages:
+  - build
+  - test
+  - cleanup
+  - videos
 
-# before_script:
-  # - chmod +x ci/install-chrome
-  # - ci/install-chrome
-# TODO 
-# TODO THIS should be done only on release branches and get the image version from the name of the branch
-# TODO 
 build:
   stage: build
   script:
@@ -29,34 +27,56 @@ build:
     - docker build -t formuladb-fe .
     - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
     - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
-    - cd ..
+  # Keep the cache to be reused in the test stage.
+  # use commit id as key, we don't want to reuse cache between succesive pipelines. Or ... ?
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - core/node_modules/
+      - storage/node_modules/
+      - be/node_modules/
+      - be/dist/
+      - fe/node_modules/
 
 test:
   stage: test
   script:
-    - docker-compose up -d
+    - FRMDB_RELEASE=0.0.1 docker-compose up -d db
     - cd be
-    - npm test
-    - FRMDB_STORAGE=postgres npm test
+    - npm test || true
+    - FRMDB_STORAGE=postgres npm test || true
+    - npm run start &
     - cd ..
-    # - cd fe && npm test -- --watch=false
-    # - cd ..
-  # artifacts:
-  #   paths:
-  #     - coverage/
-  #     - karma.log
+    - cd fe
+    - npm run e2e
+    - killall node --quiet || true
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - core/node_modules/
+      - storage/node_modules/
+      - be/node_modules/
+      - be/dist/
+      - fe/node_modules/
   retry: 2
 
+videos:
+  stage: videos
+  script:
+    - chmod ugo+w -R .
+    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.0 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
+  artifacts:
+    paths:
+      - fe/e2e/protractor_videos/
+#  only:
+#    - web
 
-# pages:
-#   stage: deploy
-#   script:
-#     - mv coverage/ public/
-#   dependencies:
-#     - test
-#   artifacts:
-#     paths:
-#       - public
-#     expire_in: 30 days
-#   only:
-#     - master
+cleanup:
+  stage: cleanup
+  script:
+    - chmod ugo+w -R .
+    - docker-compose down
+    - docker image prune --all -f
+    - killall node --quiet || true
+    - rm -rf /home/gitlab-runner/cache/metawiz/febe/*
+  when: always
