@@ -28,10 +28,11 @@
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
-                "--inspect"
+                "--inspect=0.0.0.0:9232"
             ],
             "env": {},
             "protocol": "inspector",
+            "port": 9232,
             "request": "launch",
             "cwd": "${workspaceRoot}/be",
             "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
@@ -46,12 +47,13 @@
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
-                "--inspect"
+                "--inspect=0.0.0.0:9232"
             ],
             "env": {
                 "FRMDB_STORAGE": "postgres"
             },
             "protocol": "inspector",
+            "port": 9232,
             "request": "launch",
             "cwd": "${workspaceRoot}/be",
             "program": "${workspaceRoot}/be/src/tests/jasmine.ts",

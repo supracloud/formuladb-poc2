@@ -39,7 +39,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
     constructor(public kvsFactory: KeyValueStoreFactoryI, schema: Schema) {
-        super(kvsFactory, schema);
+        super(kvsFactory, _.cloneDeep(schema));
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 

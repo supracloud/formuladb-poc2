@@ -80,9 +80,12 @@ describe('FrmdbEngine', () => {
         frmdbEngine = await getFrmdbEngine(stockReservationSchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.kvsFactory.clearAll();
-        await frmdbEngine.frmdbEngineStore.putSchema(stockReservationSchema);
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 55000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 123000;
+        console.log("frmdbEngine.frmdbEngineStore.mapReduceViews.size=", (frmdbEngine.frmdbEngineStore as any).mapReduceViews.size);
+        console.log("stockReservationSchema.entities.B.props.sum__.formula=", (stockReservationSchema as any).entities.B.props.sum__.formula);
+        console.log("stockReservationSchema.entities.B.props.sum__.compiledFormula_=", (stockReservationSchema as any).entities.B.props.sum__.compiledFormula_);
+        console.log("stockReservationSchema.entities.B.props.x__.formula=", (stockReservationSchema as any).entities.B.props.x__.formula);
         done();
     });
 
@@ -177,7 +180,7 @@ describe('FrmdbEngine', () => {
     });
 
 
-    fit("Should allow adding/modifying formulas", async (done) => {
+    it("Should allow adding/modifying formulas", async (done) => {
         await frmdbEngine.init();
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};
@@ -195,7 +198,7 @@ describe('FrmdbEngine', () => {
         let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
             _id: 'ABC123',
             type_: ServerEventSetPropertyN,
-            targetEntity: stockReservationSchema.entities['B'],
+            targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
             property: {
                 name: 'x__',
                 propType_: Pn.FORMULA,
@@ -210,7 +213,7 @@ describe('FrmdbEngine', () => {
         let ev2: ServerEventPreviewFormula = await frmdbEngine.processEvent({
             _id: 'ABC123',
             type_: ServerEventSetPropertyN,
-            targetEntity: stockReservationSchema.entities['B'],
+            targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
             property: {
                 name: 'sum__',
                 propType_: Pn.FORMULA,
@@ -236,7 +239,7 @@ describe('FrmdbEngine', () => {
         done();
     });
     
-    for (let TestRun = 1; TestRun <= 4; TestRun++) {
+    for (let TestRun = 1; TestRun <= 2; TestRun++) {
 
         it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
@@ -280,7 +283,7 @@ describe('FrmdbEngine', () => {
 
         it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
             frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
-            frmdbEngine = new FrmdbEngine(frmdbTStore, );
+            frmdbEngine = new FrmdbEngine(frmdbTStore);
             await frmdbEngine.init();
 
             let ac1: any = { _id: "Ac~~1", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac1);

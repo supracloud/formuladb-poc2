@@ -30,6 +30,13 @@ export class FrmdbStore {
         return Promise.all(kvsList.map(kvs => kvs.init()));
     }
 
+    public async syncSchema() {
+        let savedSchema = await this.getSchema();
+        if (! _.isEqual(savedSchema, this.schema)) {
+            await this.putSchema(this.schema);
+        }
+    }
+
     private async getTransactionsDB() {
         if (!this.transactionsDB) {
             this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');

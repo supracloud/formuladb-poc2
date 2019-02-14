@@ -23,9 +23,9 @@ export class FrmdbEngine {
     private schemaDAO: SchemaDAO;
     public frmdbEngineTools: FrmdbEngineTools;
     constructor(public frmdbEngineStore: FrmdbEngineStore) {
-        this.schemaDAO = new SchemaCompiler(frmdbEngineStore.schema).compileSchema();
+        this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
-        this.transactionRunner = new FrmdbTransactionRunner(frmdbEngineStore, this.frmdbEngineTools);
+        this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
     }
 
     public async init(installFormulas: boolean = true) {
@@ -40,6 +40,8 @@ export class FrmdbEngine {
                 }
             }
         };
+
+        await this.frmdbEngineStore.syncSchema();
     }
 
 
