@@ -14,9 +14,8 @@ export async function loadTestData(schema: Schema): Promise<FrmdbEngine> {
     try {
         let frmdbEngine = await getFrmdbEngine(schema);
         await frmdbEngine.frmdbEngineStore.kvsFactory.clearAll();
-
+        await frmdbEngine.putSchema(schema);
         await frmdbEngine.init(true);
-        await frmdbEngine.frmdbEngineStore.putSchema(schema);
 
         let mockData = new MockData(schema.entities);
         await frmdbEngine.frmdbEngineStore.putBulk(mockData.getAll());

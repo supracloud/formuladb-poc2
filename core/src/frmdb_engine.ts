@@ -44,6 +44,13 @@ export class FrmdbEngine {
         await this.frmdbEngineStore.syncSchema();
     }
 
+    public async putSchema(schema: Schema): Promise<Schema> {
+        await this.frmdbEngineStore.putSchema(schema);
+        this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
+        this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
+        this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
+        return Promise.resolve(schema);
+    }
 
     public processEvent(event: events.MwzEvents): Promise<events.MwzEvent> {
         event._id = Date.now() + '_' + generateUUID();
