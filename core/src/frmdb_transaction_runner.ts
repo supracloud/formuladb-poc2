@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { SchemaDAO } from "@core/domain/metadata/schema_dao";
+import { SchemaDAO, FormulaTriggeredByObj } from "@core/domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
@@ -438,15 +438,17 @@ export class FrmdbTransactionRunner {
         let currentLevel = transactionDAG.getCurrentLevelObjs();
         transactionDAG.incrementLevel();
         for (let trObj of currentLevel) {
+            let observersTriggeredByObj: Map<string, {obs: DataObj, formulaTriggeredByObj: FormulaTriggeredByObj}> = new Map();
             for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(trObj.NEW._id)) {
                 for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {
-                    let observers = await this.frmdbEngineStore.getObserversOfObservableOldAndNew(trObj.OLD, trObj.NEW, triggerOfFormula);
-                    for (let obs of observers) {
-                        let obsNew = _.cloneDeep(obs);
-                        await this.preComputeFormula(transactionDAG, trObj.OLD, trObj.NEW, formulaTriggeredByObj.formula, obs, obsNew);
-                    }
+                    let obss = await this.frmdbEngineStore.getObserversOfObservableOldAndNew(trObj.OLD, trObj.NEW, triggerOfFormula);
+                    for (let obs of obss) {observersTriggeredByObj.set(obs._id, {obs, formulaTriggeredByObj})}
                 }
             }
+            for (let obsTrgByObj of observersTriggeredByObj.values()) {
+                let obsNew = _.cloneDeep(obsTrgByObj.obs);
+                await this.preComputeFormula(transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
+            }            
         };
         if (transactionDAG.currentLevelSize() > 0) {
             await this.preComputeNextTransactionDAGLevel(transactionDAG);

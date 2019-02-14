@@ -130,7 +130,7 @@ describe('FrmdbEngine', () => {
         done();
     });
 
-    fit("Should allow preview formulas", async (done) => {
+    it("Should allow preview formulas", async (done) => {
         await frmdbEngine.init();
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};
@@ -225,10 +225,18 @@ describe('FrmdbEngine', () => {
             x__: 200 - (a1.val + a2.val + a3.val + 3)
         }));
 
+        let a4 = { _id: 'A~~', b: 'B~~1', val: 10 };
+        await putObj(a4 as DataObj);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({
+            sum__: a1.val + a2.val + a3.val + 3 + a4.val + 1, 
+            x__: 200 - (a1.val + a2.val + a3.val + 3 + a4.val + 1)
+        }));
+
         done();
     });
     
-    for (let TestRun = 1; TestRun <= 1; TestRun++) {
+    for (let TestRun = 1; TestRun <= 4; TestRun++) {
 
         it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
