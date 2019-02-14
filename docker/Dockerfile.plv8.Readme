@@ -1,0 +1,60 @@
+docker build -t postgresql-frmdb:latest - < Dockerfile
+docker run --name postgresql-frmdb -d postgresql-frmdb:latest
+winpty docker exec -it postgresql-frmdb bash
+
+psql $PLV8XDB
+
+# For some reason I need this call before getting access to plv8x functionality .. to be investigated
+select plv8x.boot();
+
+SELECT extversion FROM pg_extension WHERE extname = 'plv8';
+
+# Example of a trigger that requires lodash and gets its version
+CREATE TABLE account(
+ user_id serial PRIMARY KEY,
+ username VARCHAR (50) UNIQUE NOT NULL,
+ password VARCHAR (50) NOT NULL,
+ email VARCHAR (355) UNIQUE NOT NULL,
+ created_on TIMESTAMP NOT NULL,
+ last_login TIMESTAMP
+);
+
+CREATE FUNCTION test_trigger() RETURNS trigger AS
+$$
+
+    const jsep = require("jsep");
+    
+    plv8.elog(NOTICE, JSON.stringify(jsep("1+1")))
+$$
+LANGUAGE "plv8";
+
+CREATE TRIGGER test_trigger
+    AFTER INSERT OR UPDATE OR DELETE
+    ON account FOR EACH ROW
+    EXECUTE PROCEDURE test_trigger('foo', 'bar');
+
+INSERT INTO account VALUES(1, 'username', 'password', 'laurentiu@soica.ro', TIMESTAMP '2011-05-16 15:36:38', TIMESTAMP '2011-05-16 15:36:38');
+
+UPDATE account SET email='laurentiu@soica.ro' WHERE user_id=1;
+
+
+CREATE FUNCTION runTestEngineFromPlv8() RETURNS int AS
+$$
+    plv8.elog(NOTICE, "Entry")
+
+    const common = require("common");
+    
+    common.runTestEngine()
+        .then(() => {
+            plv8.elog(NOTICE, "Done")
+        })
+        .catch(err => {
+            plv8.elog(NOTICE, err)
+            plv8.elog(NOTICE, err.stack)
+        })
+
+    plv8.elog(NOTICE, "Exit")
+
+    return 0
+$$
+LANGUAGE "plv8";

@@ -7,11 +7,15 @@ import { MockData } from "./mocks/mock-data";
 import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { REP__LargeSales_Form } from "./mocks/reports-ui-metadata";
 import { FrmdbEngine } from "../frmdb_engine";
+import { Schema } from "@core/domain/metadata/entity";
+import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
 
-export async function loadTestData(frmdbEngine: FrmdbEngine): Promise<MockData> {
+export async function loadTestData(schema: Schema): Promise<FrmdbEngine> {
     try {
+        let frmdbEngine = await getFrmdbEngine(schema);
         await frmdbEngine.frmdbEngineStore.kvsFactory.clearAll();
-        let schema = frmdbEngine.frmdbEngineStore.schema;
+
+        await frmdbEngine.init(true);
         await frmdbEngine.frmdbEngineStore.putSchema(schema);
 
         let mockData = new MockData(schema.entities);
@@ -24,7 +28,7 @@ export async function loadTestData(frmdbEngine: FrmdbEngine): Promise<MockData> 
             await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
         });
 
-        return mockData;
+        return frmdbEngine;
     } catch (err) {
         console.error(err);
         throw err;

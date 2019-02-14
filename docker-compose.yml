@@ -8,7 +8,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - $PWD/devdata:/var/lib/postgresql/data
+      - pg-persistence:/var/lib/postgresql/data
   be:
     image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     environment:
@@ -19,3 +19,6 @@ services:
       - "8084:8084"
     volumes:
       - $PWD/auth.htpasswd:/etc/nginx/auth.htpasswd
+
+volumes:
+  pg-persistence:

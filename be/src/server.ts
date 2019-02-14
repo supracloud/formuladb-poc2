@@ -6,7 +6,6 @@
 require('source-map-support').install();
 require('module-alias/register')
 
-import { Container } from "typedi";
 import "reflect-metadata";
 import * as http from "http";
 
@@ -14,7 +13,6 @@ import * as http from "http";
 import { loadTestData } from "@core/test/load_test_data";
 import { MockMetadata, ExampleApps } from "@core/test/mocks/mock-metadata";
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 let frmdbEngine: FrmdbEngine;
@@ -24,9 +22,7 @@ let mockMetadata = new MockMetadata(ExampleApps.inventory);
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
   if (devMode) {
-    frmdbEngine = await getFrmdbEngine(mockMetadata.schema);
-    await frmdbEngine.init(true);
-    await loadTestData(frmdbEngine);    
+    frmdbEngine = await loadTestData(mockMetadata.schema)
   } else {
     frmdbEngine = await getFrmdbEngine({_id: "FRMDB_SCHEMA", entities: {}});
     let schema = await frmdbEngine.frmdbEngineStore.getSchema();

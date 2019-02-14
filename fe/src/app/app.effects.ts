@@ -5,7 +5,7 @@
 
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 
 import {
     RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
@@ -69,7 +69,7 @@ export class AppEffects {
 
     public async load() {
         try {
-            
+
             await waitUntilNotNull(() => this.getAppName());
 
             //we first initialize the DB (sync with remote DB)
@@ -159,7 +159,7 @@ export class AppEffects {
     }
 
     private listenForServerEvents() {
-        this.actions$.ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames).subscribe(action => {
+        this.actions$.pipe(ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames)).subscribe(action => {
             console.log("%c ----> " + action.event.type_ + " " + action.event._id,
                 "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
             this.backendService.putEvent(action.event);
@@ -167,7 +167,7 @@ export class AppEffects {
     }
 
     public listenForRouterChanges() {
-        this.actions$.ofType<RouterNavigationAction<appState.RouterState>>(ROUTER_NAVIGATION)
+        this.actions$.pipe(ofType<RouterNavigationAction<appState.RouterState>>(ROUTER_NAVIGATION))
             .subscribe(routerNav => {
                 //FIXME: why is queryParams empty ?!?!
                 console.log("AppEffects:", routerNav.payload.routerState);
@@ -201,7 +201,7 @@ export class AppEffects {
     }
 
     private listenForNewDataObjActions() {
-        this.actions$.ofType<appState.ServerEventNewRow>(appState.ServerEventNewRowN).subscribe(action => {
+        this.actions$.pipe(ofType<appState.ServerEventNewRow>(appState.ServerEventNewRowN)).subscribe(action => {
             this.currentUrl.id = generateUUID();
             this.router.navigate([this.currentUrl.entity!._id + '/' + this.currentUrl.id]);
             this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id }))

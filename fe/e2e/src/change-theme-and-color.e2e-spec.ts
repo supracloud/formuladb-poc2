@@ -43,6 +43,7 @@ describe('Switch themes colors and images', () => {
     browser.ignoreSynchronization = true;
     browser.driver.manage().window().maximize();
 
+    e2e_utils.setup_directories();
     await e2e_utils.create_audio_tracks(messages, durations);
   });
 
