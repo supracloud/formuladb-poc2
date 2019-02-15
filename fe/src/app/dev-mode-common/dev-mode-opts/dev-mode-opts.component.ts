@@ -6,12 +6,12 @@ import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
 import { Subscription, Subject } from 'rxjs';
 
-import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages } from '@fortawesome/free-solid-svg-icons';
+import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { debounceTime, tap } from 'rxjs/operators';
 
 @Component({
-  selector: '[frmdb-dev-mode-opts]',
+  selector: 'frmdb-dev-mode-opts',
   templateUrl: './dev-mode-opts.component.html',
   styleUrls: ['./dev-mode-opts.component.scss']
 })
@@ -22,6 +22,8 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   delIcon = faMinusCircle;
   devModeIcon = faTools;
   changeAppIcon = faImages;
+  settingsIcon = faCogs;
+  collorPaletteIcon = faPalette;
 
   keepPrefixSubject$: Subject<{ input: HTMLInputElement, prefix: string }> = new Subject();
 

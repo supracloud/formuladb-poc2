@@ -14,7 +14,7 @@ export const Inventory_ro = {
     moving_stock: 'Stoc în deplasare',
     state: 'Stare',
 
-    product_location_id: 'Produs (Locatie)',
+    product_id: 'Produs (Locatie)',
     quantity: 'Cantitate',
     error_quantity: 'Cantitate Eroare',
     client_stock: 'Stoc la Client',

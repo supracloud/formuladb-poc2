@@ -20,8 +20,7 @@
         <li class="nav-item">
           <form class="navbar-form" role="search">
             <div class="input-group">
-              <frmdb-formula-code-editor *ngIf="editorOpened"></frmdb-formula-code-editor>
-              <textarea type="text" *ngIf="!editorOpened" frmdbCurrentFormula (focus)="formulaFocused()" class="form-control formula-input"
+              <textarea type="text" frmdbCurrentFormula (focus)="formulaFocused()" class="form-control formula-input"
                 disabled placeholder="FORMULA..."></textarea>
             </div>
           </form>
@@ -37,7 +36,6 @@
           <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="TopNavSettings">
             <a class="dropdown-item" href="javascript:void(0)">Notification 1</a>
             <a class="dropdown-item" href="javascript:void(0)">Notification 2</a>
-            <div frmdb-dev-mode-opts></div>
             <div class="divider"></div>
             <a class="dropdown-item" href="javascript:void(0)"><i class="nc-icon nc-circle-09"></i>Account</a>
           </div>
