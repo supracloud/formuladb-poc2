@@ -41,7 +41,7 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   protected subscriptions: Subscription[] = [];
 
-  constructor(private formulaEditorService: FormulaEditorService, private router: Router) {
+  constructor(public formulaEditorService: FormulaEditorService, private router: Router) {
     this.subscriptions.push(formulaEditorService.editorOn$.subscribe(x => {
       if (this.editorOn && !x) {
         this.ftext = '';

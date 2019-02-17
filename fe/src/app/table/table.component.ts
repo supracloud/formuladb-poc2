@@ -74,8 +74,8 @@ export class TableComponent implements OnInit, OnDestroy {
     private subscriptions: Subscription[] = [];
     private highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
 
-    private frameworkComponents;
-    private defaultColDef;
+    public frameworkComponents;
+    public defaultColDef;
 
     private tableState: tableState.Table;
 
