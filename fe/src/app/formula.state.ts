@@ -8,34 +8,42 @@ import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 
+import * as events from "@core/domain/event";
 
 export { DataObj };
 export { ChangeObj, applyChanges };
 
-import { Expression } from 'jsep';
 import { EntityProperty, Pn, Entity } from "@core/domain/metadata/entity";
+import { FormFromBackendActionN } from './form/form.state';
 
 export interface FormulaState {
+  editorOn: boolean;
   selectedFormula: string | undefined;
   editorExpr: string | undefined;
   selectedProperty: EntityProperty | undefined;
   editedEntity: Entity | undefined;
+  editedDataObj: DataObj | undefined;
   editedProperty: EntityProperty | undefined;
+  previewEditedDataObj: DataObj | undefined;
   formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
 }
 
 export const formulaEditorInitialState: FormulaState = {
+  editorOn: false,
   selectedFormula: undefined,
   editorExpr: undefined,
   selectedProperty: undefined,
   editedEntity: undefined,
+  editedDataObj: undefined,
   editedProperty: undefined,
+  previewEditedDataObj: undefined,
   formulaHighlightedColumns: {},
 };
 
 
 export const FormulaEditorToggleN = "[fx] FormulaEditorToggle";
 export const FormulaEditedN = "[fx] FormulaEdited";
+export const FormulaPreviewFromBackendN = "[fx] FormulaPreviewFromBackend";
 
 export class FormulaEditorToggle implements Action {
   readonly type = FormulaEditorToggleN;
@@ -49,9 +57,16 @@ export class FormulaEdited implements Action {
   constructor(public formulaColumns: {[tableName: string]: {[columnName: string]: string}}) { }
 }
 
+export class FormulaPreviewFromBackend implements Action {
+  readonly type = FormulaPreviewFromBackendN;
+
+  constructor(public event: events.ServerEventPreviewFormula) {}
+}
+
 export type FormulaActions =
   | FormulaEditorToggle
   | FormulaEdited
+  | FormulaPreviewFromBackend
   ;
 
 /**
@@ -66,6 +81,7 @@ export function formulaEditorReducer(state = formulaEditorInitialState, action: 
     case FormulaEditorToggleN:
       ret = {
         ...state,
+        editorOn: !state.editorOn,
         editorExpr: state.editorExpr ? undefined : state.selectedFormula
       };
       break;
@@ -73,6 +89,12 @@ export function formulaEditorReducer(state = formulaEditorInitialState, action: 
       ret = {
         ...state,
         formulaHighlightedColumns: action.formulaColumns || {}
+      };
+      break;
+    case FormulaPreviewFromBackendN:
+      ret = {
+        ...state,
+        previewEditedDataObj: action.event.currentDataObj,
       };
       break;
   }
@@ -89,6 +111,10 @@ export const reducers = {
 };
 export const getFormula = createFeatureSelector<FormulaState>('formula');
 
+export const getEditorOn = createSelector(
+  getFormula,
+  (state: FormulaState) => state ? state.editorOn : formulaEditorInitialState.editorOn
+);
 export const getEditorExpr = createSelector(
   getFormula,
   (state: FormulaState) => state ? state.editorExpr : formulaEditorInitialState.editorExpr
@@ -96,6 +122,10 @@ export const getEditorExpr = createSelector(
 export const getEditedEntity = createSelector(
   getFormula,
   (state: FormulaState) => state ? state.editedEntity : formulaEditorInitialState.editedEntity
+);
+export const getEditedDataObj = createSelector(
+  getFormula,
+  (state: FormulaState) => state ? state.editedDataObj : formulaEditorInitialState.editedDataObj
 );
 export const getEditedProperty = createSelector(
   getFormula,

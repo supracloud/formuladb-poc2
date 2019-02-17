@@ -90,6 +90,15 @@ export class ServerEventDeleteProperty implements Action {
     }
 }
 
+export class ServerEventPreviewFormula implements Action {
+    readonly type = events.ServerEventPreviewFormulaN;
+    public event: events.ServerEventPreviewFormula;
+
+    constructor(public targetEntity: Entity, public targetPropertyName: string, public currentDataObj: DataObj, public formula: string) {
+        this.event = new events.ServerEventPreviewFormula(targetEntity, targetPropertyName, currentDataObj, formula);
+    }
+}
+
 export type EntityActions =
     | EntitiesFromBackendFullLoadAction
     | SelectedEntityAction
@@ -98,6 +107,7 @@ export type EntityActions =
     | ServerEventDeleteEntity
     | ServerEventSetProperty
     | ServerEventDeleteEntity
+    | ServerEventPreviewFormula
 ;
 
 /**

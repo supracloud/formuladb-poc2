@@ -3,7 +3,6 @@ export const Inventory_ro = {
     sales_agent: "Agent Vanzari",
     creation_date: "Data Creare",
 
-    product_id: 'Id Produs',
     location_code: 'Cod Locaţie',
     category: 'Categorie',
     received_stock__: 'Intrări Total',

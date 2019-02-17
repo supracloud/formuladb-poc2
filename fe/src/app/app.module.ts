@@ -21,7 +21,6 @@ import { BackendService } from './backend.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import * as appState from './app.state';
-import { FrmdbPopupDirective } from './dev-mode-common/frmdb-popup.directive';
 import { ApplicationsComponent } from './applications/applications.component';
 import { ApplicationComponent } from './applications/application/application.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -32,7 +31,6 @@ import { FormulaEditorModule } from './formula-editor/formula-editor.module';
 @NgModule({
   declarations: [
     AppComponent,
-    FrmdbPopupDirective,
     ApplicationsComponent,
     ApplicationComponent,
   ],

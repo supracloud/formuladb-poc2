@@ -24,7 +24,7 @@ import { Form, NodeElement, NodeType, getDefaultForm } from "@core/domain/uimeta
 import * as appState from './app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
-import { TableFormBackendAction } from './app.state';
+import { TableFormBackendAction, FormulaPreviewFromBackend } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
@@ -39,6 +39,7 @@ export type ActionsToBeSentToServer =
     | appState.ServerEventDeleteEntity
     | appState.ServerEventSetProperty
     | appState.ServerEventDeleteProperty
+    | appState.ServerEventPreviewFormula
     ;
 export const ActionsToBeSentToServerNames = [
     events.ServerEventModifiedFormDataN,
@@ -48,6 +49,7 @@ export const ActionsToBeSentToServerNames = [
     events.ServerEventDeleteEntityN,
     events.ServerEventSetPropertyN,
     events.ServerEventDeletePropertyN,
+    events.ServerEventPreviewFormulaN
 ];
 
 @Injectable()
@@ -127,6 +129,10 @@ export class AppEffects {
             }
             case events.ServerEventDeletePropertyN: {
                 this.changeEntity(eventFromBe.targetEntity._id);
+                break;
+            }
+            case events.ServerEventPreviewFormulaN: {
+                this.store.dispatch(new FormulaPreviewFromBackend(eventFromBe));
                 break;
             }
             default:

@@ -15,8 +15,6 @@ import { SchemaCompiler } from "./schema_compiler";
 import { generateUUID } from "@core/domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
-import { compileFormula } from "./formula_compiler";
-import { ScalarType } from "./key_value_store_i";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;

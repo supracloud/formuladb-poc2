@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from "@core/formula_tokenizer";
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
 import { BackendService } from '../backend.service';
+import { FormulaState, formulaEditorInitialState } from '../formula.state';
 
 const STYLES = [
   { bgColor: '#b6d0f988' },
@@ -33,19 +34,19 @@ const DEFAULT_UITOKEN: UiToken = {
 export class FormulaEditorService {
   private subscriptions: Subscription[] = [];
 
-  public editedEntity: appState.Entity | undefined;
-  public editedProperty: EntityProperty | undefined;
+  public formulaState: FormulaState = formulaEditorInitialState;
   public selectedFormula$: Observable<string | undefined>;
   public editorExpr$: Observable<string | undefined>;
-  private developerMode: boolean = false;
+  public editorOn$: Observable<boolean>;
+  public developerMode: boolean = false;
   private highlightTableColumns: { [tableName: string]: { [columnName: string]: string } } = {};
   private formulaTokenizer: FormulaTokenizer;
   private formulaTokenizerSchemaChecker: FormulaTokenizerSchemaChecker;
 
-
   constructor(protected store: Store<appState.AppState>, private backendService: BackendService) {
-    this.subscriptions.push(this.store.select(appState.getEditedEntity).subscribe(x => this.editedEntity = x));
-    this.subscriptions.push(this.store.select(appState.getEditedProperty).subscribe(x => this.editedProperty = x));
+    this.subscriptions.push(this.store.select(appState.getFormula).subscribe(x => {
+      this.formulaState = x;
+    }));
     this.selectedFormula$ = this.store.select(appState.getSelectedPropertyState).pipe(
       map(selectedProperty => {
         if (selectedProperty) {
@@ -56,6 +57,7 @@ export class FormulaEditorService {
       })
     );
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(devMode => this.developerMode = devMode));
+    this.editorOn$ = this.store.select(appState.getEditorOn);
     this.editorExpr$ = this.store.select(appState.getEditorExpr);
     this.formulaTokenizer = new FormulaTokenizer();
   }
@@ -71,6 +73,12 @@ export class FormulaEditorService {
     let ret = this.parse(editorTxt, caretPos);
     this.store.dispatch(new appState.FormulaEdited(this.highlightTableColumns));
     return ret;
+  }
+
+  public previewFormula(formula: string){
+    if (this.formulaState && this.formulaState.editedEntity && this.formulaState.editedProperty && this.formulaState.editedDataObj) {
+      this.store.dispatch(new appState.ServerEventPreviewFormula(this.formulaState.editedEntity, this.formulaState.editedProperty.name, this.formulaState.editedDataObj, formula));
+    }
   }
 
   private getFormulaTokenizerSchemaChecker() {
@@ -89,9 +97,9 @@ export class FormulaEditorService {
   }
 
   private parse(editorTxt: string, caretPos: number): UiToken[] {
-    if (!this.editedEntity || !this.editedProperty) return [];
+    if (!this.formulaState.editedEntity || !this.formulaState.editedProperty) return [];
 
-    let parserTokens: Token[] = this.formulaTokenizer.tokenizeAndStaticCheckFormula(this.editedEntity._id, this.editedProperty.name, editorTxt, caretPos);
+    let parserTokens: Token[] = this.formulaTokenizer.tokenizeAndStaticCheckFormula(this.formulaState.editedEntity._id, this.formulaState.editedProperty.name, editorTxt, caretPos);
     let ret: UiToken[] = [];
 
     let newHighlightTableColumns: { [tableName: string]: { [columnName: string]: string } } = {};

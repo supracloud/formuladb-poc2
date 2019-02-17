@@ -434,29 +434,7 @@ export function combine2Nodes<T extends Expression>(
         } else if (isMapFunctionAndQuery(node2)) {
             throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
-            if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
-                let scalarExpr = _.cloneDeep(expr);
-                scalarExpr.right = $s2e("$TRG$['" + node2.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']");
-                scalarExpr.origExpr = scalarExpr.origExpr.replace(expr.right.origExpr, scalarExpr.right.origExpr);
-
-                return {
-                    type_: CompiledFormulaN,
-                    finalExpression: scalarExpr,
-                    rawExpr: expr,
-                    targetEntityName: context.targetEntityName,
-                    targetPropertyName: context.targetPropertyName,
-                    triggers: [node2]
-                };
-            } else return {
-                ...node2,
-                rawExpr: Object.assign({}, expr, {
-                    [node1Name]: node1.rawExpr,
-                    [node2Name]: {
-                        type: 'Identifier',
-                        name: node2.rawExpr,
-                    },
-                }) as T,
-            };
+            return combineTriggerWithScalar(expr, node2, node2Name, node1, node1Name, context);
         } else if (isCompiledFormula(node2)) {
             throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
@@ -507,16 +485,7 @@ export function combine2Nodes<T extends Expression>(
         }
     } else if (isMapReduceTrigger(node1)) {
         if (isCompiledScalar(node2)) {
-            return {
-                ...node1,
-                rawExpr: Object.assign({}, expr, {
-                    [node1Name]: {
-                        type: 'Identifier',
-                        name: node1.rawExpr,
-                    },
-                    [node2Name]: node2.rawExpr,
-                }) as T,
-            };
+            return combineTriggerWithScalar(expr, node1, node1Name, node2, node2Name, context);
         } else if (isMapFunctionAndQuery(node2)) {
             throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
@@ -559,7 +528,7 @@ export function combine2Nodes<T extends Expression>(
                 ...node1,
                 rawExpr: expr,
                 finalExpression: Object.assign({}, expr, {
-                    [node1Name]: node1.rawExpr,
+                    [node1Name]: node1.finalExpression,
                     [node2Name]: node2.rawExpr,
                 }) as T,
             };
@@ -597,6 +566,37 @@ export function combine2Nodes<T extends Expression>(
             throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else throw Error("Unknown node1/node2 combination for Expression" + JSON.stringify([expr, node1, node2], null, 4));//FIXME: security breach, too many details in error messages, these should not be available to the clients
+}
+
+function combineTriggerWithScalar<T extends Expression>(
+    expr: T,
+    trg: MapReduceTrigger, 
+    trgName: keyof typeof expr,
+    scalar: CompiledScalar,
+    scalarName: keyof typeof expr,
+    context: FormulaCompilerContextType
+): CompiledFormula | MapReduceTrigger 
+{
+    if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
+        return {
+            type_: CompiledFormulaN,
+            finalExpression: $s2e(expr.origExpr.replace(trg.rawExpr.origExpr, 
+                "$TRG$['" + trg.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName + "']")),
+            rawExpr: expr,
+            targetEntityName: context.targetEntityName,
+            targetPropertyName: context.targetPropertyName,
+            triggers: [trg]
+        };
+    } else return {
+        ...trg,
+        rawExpr: Object.assign({}, expr, {
+            [trgName]: trg.rawExpr,
+            [scalarName]: {
+                type: 'Identifier',
+                name: trg.rawExpr,
+            },
+        }) as T,
+    };
 }
 
 function checkIdentifiers(mexpr: MemberExpression) {
