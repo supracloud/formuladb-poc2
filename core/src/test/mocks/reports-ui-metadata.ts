@@ -62,13 +62,13 @@ export var REP__LargeSales_Form: Form = {
             childNodes: [
               {
                 nodeType: NodeType.form_input,
-                propertyName: "product_location_id",
+                propertyName: "product_id",
                 "propertyType": Pn.STRING,
                 _id: "9fGmxqFEtxP9ypQYzJ9Uoe"
               },
               {
                 nodeType: NodeType.form_input,
-                propertyName: "product_location_id",
+                propertyName: "product_id",
                 "propertyType": Pn.STRING,
                 _id: "4x12CPz2SRTasvTpEgA37G"
               },

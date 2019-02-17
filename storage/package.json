@@ -37,7 +37,7 @@
     "shelljs": "^0.8.3",
     "source-map-support": "^0.5.10",
     "ts-node": "^7.0.1",
-    "typescript": "^3.2.4"
+    "typescript": "^2.8.3"
   },
   "_moduleAliases": {
     "@kv_selector_base": "./dist"

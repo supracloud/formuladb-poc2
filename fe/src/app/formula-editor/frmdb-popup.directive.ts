@@ -4,10 +4,17 @@ import { OnInit, Directive, HostBinding, OnDestroy, HostListener } from '@angula
   selector: '[frmdb-popup]',
   host: {
     '[draggable]': 'true',
+    '[style.position]': '"fixed"',
+    '[style.padding]': '"5px"',
+    '[style.bottom]': '"10px"',
+    '[style.right]': '"10px"',
+    '[style.background-color]': '"white"',
+    '[style.border]': '"4px solid black"',
+    '[style.border-radius]': '"5px"',
+    '[style.box-shadow]': '"5px 5px grey"',
   }
 })
 // <div ="true" [style.transform]="'translate3d('+x+'px,'+y+'px,0px)'" (mousedown)="dragStartHandle($event)"
-
 export class FrmdbPopupDirective implements OnInit, OnDestroy {
 
   @HostBinding('style.transform')
@@ -22,7 +29,8 @@ export class FrmdbPopupDirective implements OnInit, OnDestroy {
   dragged = false;
 
   @HostListener('mousedown', ['$event']) onmousedown($event) {
-    this.dragStartHandle($event)
+    // this.dragStartHandle($event);
+    //FIXME: mouseup is never received, draggable is not working
   }
 
   ngOnInit() {
@@ -59,7 +67,5 @@ export class FrmdbPopupDirective implements OnInit, OnDestroy {
 
   dragEndHandle(e: any) {
     this.dragged = false;
-
   }
-
 }

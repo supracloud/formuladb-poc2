@@ -243,7 +243,7 @@ describe('FormulaCompiler', () => {
 
     xit('should compile test complex formula', () => {
         let test_subFormula1 =
-            Fn.SUMIF(`R_A.num`, `aY == @[bY] && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`@[bZ]`) + ` + 1`));
+            Fn.SUMIF(`R_A.num`, `a_y == @[b_y] && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`@[bZ]`) + ` + 1`));
         trigger1 = {
             type_: MapReduceTriggerN,
             rawExpr: $s2e(`'V1'`),
@@ -251,11 +251,11 @@ describe('FormulaCompiler', () => {
                 aggsViewName: 'bla',
                 map: {
                     entityName: 'R_A',
-                    keyExpr: [$s2e(`aY`), $s2e(Fn.FACT(`aZ`))],
+                    keyExpr: [$s2e(`a_y`), $s2e(Fn.FACT(`aZ`))],
                     valueExpr: $s2e(`num`),
                     query: {
-                        startkeyExpr: [$s2e(`@[bY]`), $s2e(`''`)],
-                        endkeyExpr: [$s2e(`@[bY]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
+                        startkeyExpr: [$s2e(`@[b_y]`), $s2e(`''`)],
+                        endkeyExpr: [$s2e(`@[b_y]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
                         inclusive_start: false,
                         inclusive_end: false,
                     }
@@ -265,11 +265,11 @@ describe('FormulaCompiler', () => {
             mapObserversImpactedByOneObservable: {
                 obsViewName: 'blu',
                 entityName: 'R_B',
-                keyExpr: [$s2e(`@[bY]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
+                keyExpr: [$s2e(`@[b_y]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
                 valueExpr: $s2e(`_id`),
                 query: {
-                    startkeyExpr: [$s2e(`aY`), $s2e(Fn.FACT(`aZ`))],
-                    endkeyExpr: [$s2e(`aY`), $s2e(`''`)],
+                    startkeyExpr: [$s2e(`a_y`), $s2e(Fn.FACT(`aZ`))],
+                    endkeyExpr: [$s2e(`a_y`), $s2e(`''`)],
                     inclusive_start: false,
                     inclusive_end: true,
                 }
@@ -314,7 +314,7 @@ describe('FormulaCompiler', () => {
 
         let test_complexFormulaExpr = `bX + ` + test_subFormula1 + ` + ` + Fn.TEXT(test_subFormula2, `"00000"`)
         expect(test_complexFormulaExpr)
-            .toEqual(`bX + SUMIF(R_A.num,aY == @[bY] && FACT(aZ) < ROUND(SQRT(@[bZ]) + 1)) + TEXT(RANK(GROUP_BY(R_C,EOMONTH(cT,-1)),@[bT]),"00000")`);
+            .toEqual(`bX + SUMIF(R_A.num,a_y == @[b_y] && FACT(aZ) < ROUND(SQRT(@[bZ]) + 1)) + TEXT(RANK(GROUP_BY(R_C,EOMONTH(cT,-1)),@[bT]),"00000")`);
 
         compiledFormula = compileFormula('R_B', 'sum__', test_complexFormulaExpr);
 

@@ -58,20 +58,20 @@ export const INV__PRD__Location24 = { _id: "INV__PRD__Location~~1__24", product_
 export const INV__PRD__Location25 = { _id: "INV__PRD__Location~~1__25", product_id: "INV__PRD~~25", location_code: "Warehouse1", category: "C2", price: 10.5, received_stock__: 0, ordered_stock__: 0, available_stock__: 0 };
 export const INV__PRDUnit1 = { _id: "INV__PRD__Unit~~1" };
 export const INV__Order1 = { _id: "INV__Order~~1", sales_agent: "John Doe", creation_date: "2018-09-27" };
-export const INV__Order__Item1_1 = { _id: "INV__Order__Item~~1__1", product_location_id: INV__PRD__Location1._id, quantity: 10 };
-export const INV__Order__Item1_2 = { _id: "INV__Order__Item~~1__2", product_location_id: INV__PRD__Location1a._id, quantity: 4 };
+export const INV__Order__Item1_1 = { _id: "INV__Order__Item~~1__1", product_id: INV__PRD__Location1._id, quantity: 10 };
+export const INV__Order__Item1_2 = { _id: "INV__Order__Item~~1__2", product_id: INV__PRD__Location1a._id, quantity: 4 };
 export const INV__Receipt1 = { _id: "INV__Receipt~~1" };
-export const INV__Receipt__Item1_1 = { _id: "INV__Receipt__Item~~1__1", product_location_id: INV__PRD__Location1._id, quantity: 15 };
-export const INV__Receipt__Item1_2 = { _id: "INV__Receipt__Item~~1__2", product_location_id: INV__PRD__Location1a._id, quantity: 5 };
+export const INV__Receipt__Item1_1 = { _id: "INV__Receipt__Item~~1__1", product_id: INV__PRD__Location1._id, quantity: 15 };
+export const INV__Receipt__Item1_2 = { _id: "INV__Receipt__Item~~1__2", product_id: INV__PRD__Location1a._id, quantity: 5 };
 export const INV__Receipt2 = { _id: "INV__Receipt~~2" };
-export const INV__Receipt__Item2_1 = { _id: "INV__Receipt__Item~~2__1", product_location_id: INV__PRD__Location1._id, quantity: 10 };
-export const INV__Receipt__Item2_2 = { _id: "INV__Receipt__Item~~2__2", product_location_id: INV__PRD__Location1a._id, quantity: 5 };
+export const INV__Receipt__Item2_1 = { _id: "INV__Receipt__Item~~2__1", product_id: INV__PRD__Location1._id, quantity: 10 };
+export const INV__Receipt__Item2_2 = { _id: "INV__Receipt__Item~~2__2", product_id: INV__PRD__Location1a._id, quantity: 5 };
 
 export const largeSalesReport1 = { _id: 'REP__LargeSales~~1', client: "John Doe", month: "2018-09-01"};
-export const largeSalesReport1p1 = { _id: 'REP__LargeSales__Product~~1__1', product_location_id: INV__PRD__Location9a._id, product_name: Prd_9a.name, large_sales_value: 120};
-export const largeSalesReport1p2 = { _id: 'REP__LargeSales__Product~~1__2', product_location_id: INV__PRD__Location10._id, product_name: Prd_10.name, large_sales_value: 140};
-export const largeSalesReport1p3 = { _id: 'REP__LargeSales__Product~~1__3', product_location_id: INV__PRD__Location11._id, product_name: Prd_11.name, large_sales_value: 160};
-export const largeSalesReport1p4 = { _id: 'REP__LargeSales__Product~~1__4', product_location_id: INV__PRD__Location12._id, product_name: Prd_12.name, large_sales_value: 180};
+export const largeSalesReport1p1 = { _id: 'REP__LargeSales__Product~~1__1', product_id: INV__PRD__Location9a._id, product_name: Prd_9a.name, large_sales_value: 120};
+export const largeSalesReport1p2 = { _id: 'REP__LargeSales__Product~~1__2', product_id: INV__PRD__Location10._id, product_name: Prd_10.name, large_sales_value: 140};
+export const largeSalesReport1p3 = { _id: 'REP__LargeSales__Product~~1__3', product_id: INV__PRD__Location11._id, product_name: Prd_11.name, large_sales_value: 160};
+export const largeSalesReport1p4 = { _id: 'REP__LargeSales__Product~~1__4', product_id: INV__PRD__Location12._id, product_name: Prd_12.name, large_sales_value: 180};
 
 export const InventoryData = [
     Prd_1,

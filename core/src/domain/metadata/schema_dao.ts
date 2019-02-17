@@ -23,18 +23,28 @@ export class SchemaDAO {
         return _.values(this.schema.entities);
     }
 
+    public getFormulas(objId: string): CompiledFormula[] {
+        let ret: CompiledFormula[] = [];
+        let entity = this.getEntityForDataObj(objId);
+        _.values(entity.props).forEach(pr => {
+            if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                ret.push(pr.compiledFormula_);
+            }
+        })
+        return ret;
+    }
+
     public getSelfFormulas(objId: string): CompiledFormula[] {
         let entityName = parseDataObjId(objId).entityName;
         let ret: CompiledFormula[] = [];
-        this.entities().forEach(en => {
-            _.values(en.props).forEach(pr => {
-                if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
-                    if (pr.compiledFormula_.targetEntityName === en._id && pr.compiledFormula_.targetEntityName === entityName && !pr.compiledFormula_.triggers) {
-                        ret.push(pr.compiledFormula_);
-                    }
+        let entity = this.schema.entities[entityName];
+        for (let pr of Object.values(entity.props)) {
+            if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
+                if (pr.compiledFormula_.targetEntityName === entityName && !pr.compiledFormula_.triggers) {
+                    ret.push(pr.compiledFormula_);
                 }
-            })
-        });
+            }
+        }
         return ret;
     }
 

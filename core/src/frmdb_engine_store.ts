@@ -39,18 +39,51 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
     constructor(public kvsFactory: KeyValueStoreFactoryI, schema: Schema) {
-        super(kvsFactory, schema);
+        super(kvsFactory, _.cloneDeep(schema));
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 
-    public async installFormula(formula: CompiledFormula): Promise<any> {
+    public async installFormula(formula: CompiledFormula, skipExisting?: boolean): Promise<any> {
         for (let trigger of (formula.triggers || [])) {
             let obs = trigger.mapObserversImpactedByOneObservable.obsViewName,
                 aggs = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
-            await this.createMapReduceView(obs, trigger.mapObserversImpactedByOneObservable, true);
-            await this.createMapReduceView(aggs, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
-                false,
-                trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+            if (!skipExisting || null == this.mapReduceViews.get(obs)) {
+                await this.createMapReduceView(obs, trigger.mapObserversImpactedByOneObservable, true);
+            }
+            if (!skipExisting || null == this.mapReduceViews.get(aggs)) {
+                await this.createMapReduceView(aggs, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
+                    false,
+                    trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
+            }
+        }
+    }
+
+    public async uninstallFormula(formula: CompiledFormula): Promise<any> {
+        for (let trigger of (formula.triggers || [])) {
+            await this.removeMapReduceView(trigger.mapObserversImpactedByOneObservable.obsViewName);
+            await this.removeMapReduceView(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+        }
+    }
+
+    private async initView(viewHashCode: string) {
+        let view = this.view(viewHashCode, "forceUpdate");
+        let allObjs = await this.getDataListByPrefix(view.map.entityName + '~~');
+        for (let obj of allObjs) {
+            await this.forceUpdateViewForObj(viewHashCode, null, obj);
+        }
+    }
+    public async initViewsForNewFormula(oldCompiledFormula: CompiledFormula, compiledFormula: CompiledFormula): Promise<any> {
+        let oldTriggers = _.flatMap(oldCompiledFormula.triggers || [], trg => [
+            trg.mapObserversImpactedByOneObservable.obsViewName,
+            trg.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
+        ]);
+        for (let trigger of (compiledFormula.triggers || [])) {
+            if (!oldTriggers.includes(trigger.mapObserversImpactedByOneObservable.obsViewName)) {
+                await this.initView(trigger.mapObserversImpactedByOneObservable.obsViewName);
+            }
+            if (!oldTriggers.includes(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName)) {
+                await this.initView(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName);
+            }
         }
     }
 
@@ -119,50 +152,53 @@ export class FrmdbEngineStore extends FrmdbStore {
             ret = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
         // obsNew[compiledFormula.targetPropertyName]
-        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
+        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + ret + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
 
         //TODO: validations are important for Formula Preview, not necessarily for Reports
 
         return ret;
     }
 
-    public createMapReduceView(viewName: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
+    public removeMapReduceView(viewHashCode: string) {
+        this.mapReduceViews.delete(viewHashCode);
+    }
+    public createMapReduceView(viewHashCode: string, map: MapFunctionT, use$ROW$?: boolean, reduceFun?: ReduceFun) {
         if (map.existingIndex != null) return Promise.resolve("existing index");
 
-        this.mapReduceViews.set(viewName, new MapReduceView(
+        this.mapReduceViews.set(viewHashCode, new MapReduceView(
             this.kvsFactory,
-            viewName,
+            viewHashCode,
             map,
             use$ROW$,
             reduceFun,
         ));
     }
 
-    private view(viewName: string, opts: any): MapReduceView {
-        let mrView = this.mapReduceViews.get(viewName);
-        if (!mrView) throw new Error("mapQuery called on non-existent view " + viewName + "; with opts " + JSON.stringify(opts));
+    private view(viewHashCode: string, opts: any): MapReduceView {
+        let mrView = this.mapReduceViews.get(viewHashCode);
+        if (!mrView) throw new Error("view called on non-existent view " + viewHashCode + "; with opts " + JSON.stringify(opts));
         return mrView;
     }
-    public mapQuery<T>(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
-        return this.view(viewName, queryOpts).mapQuery(queryOpts || {});
+    public mapQuery<T>(viewHashCode: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
+        return this.view(viewHashCode, queryOpts).mapQuery(queryOpts || {});
     }
-    public mapQueryWithKeys<T>(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
-        return this.view(viewName, queryOpts).mapQueryWithKeys(queryOpts || {});
+    public mapQueryWithKeys<T>(viewHashCode: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
+        return this.view(viewHashCode, queryOpts).mapQueryWithKeys(queryOpts || {});
     }
-    public reduceQuery(viewName: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
-        return this.view(viewName, queryOpts).reduceQuery(queryOpts || {});
+    public reduceQuery(viewHashCode: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>) {
+        return this.view(viewHashCode, queryOpts).reduceQuery(queryOpts || {});
     }
-    public async forceUpdateViewForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj) {
-        let view = this.view(viewName, newObj);
+    public async forceUpdateViewForObj(viewHashCode: string, oldObj: DataObj | null, newObj: DataObj) {
+        let view = this.view(viewHashCode, newObj);
         let updates = await view.preComputeViewUpdateForObj(oldObj, newObj);
         return view.updateViewForObj(updates);
     }
     public async updateViewForObj(updates: MapReduceViewUpdates<string | number>) {
-        let view = this.view(updates.viewName, undefined);
+        let view = this.view(updates.viewHashCode, undefined);
         return view.updateViewForObj(updates);
     }
-    public async preComputeViewUpdateForObj(viewName: string, oldObj: DataObj | null, newObj: DataObj): Promise<MapReduceViewUpdates<string | number>> {
-        let view = this.view(viewName, undefined);
+    public async preComputeViewUpdateForObj(viewHashCode: string, oldObj: DataObj | null, newObj: DataObj): Promise<MapReduceViewUpdates<string | number>> {
+        let view = this.view(viewHashCode, undefined);
         return view.preComputeViewUpdateForObj(oldObj, newObj);
     }
 
@@ -176,8 +212,8 @@ export class FrmdbEngineStore extends FrmdbStore {
                 .catch(ex => ex.status === 404 ? [] : _throwEx(ex));
         } else {
             let mapQuery = trigger.mapObserversImpactedByOneObservable.query;
-            let viewName = trigger.mapObserversImpactedByOneObservable.obsViewName;
-            ret = await this.mapQueryWithKeys<DataObj>(viewName, {
+            let viewHashCode = trigger.mapObserversImpactedByOneObservable.obsViewName;
+            ret = await this.mapQueryWithKeys<DataObj>(viewHashCode, {
                 startkey: evalExprES5(observableObj, mapQuery.startkeyExpr),
                 endkey: evalExprES5(observableObj, mapQuery.endkeyExpr),
                 inclusive_start: mapQuery.inclusive_start,

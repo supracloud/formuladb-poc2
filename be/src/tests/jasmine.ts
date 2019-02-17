@@ -27,6 +27,7 @@ try {
         spec: {
             displayPending: false,
             displayStacktrace: true,
+            displayDuration: true,
         },
         summary: {
             displayDuration: false,

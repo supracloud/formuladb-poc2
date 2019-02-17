@@ -21,16 +21,16 @@ import { BackendService } from './backend.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import * as appState from './app.state';
-import { FrmdbPopupDirective } from './dev-mode-common/frmdb-popup.directive';
 import { ApplicationsComponent } from './applications/applications.component';
 import { ApplicationComponent } from './applications/application/application.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
+import { FormulaEditorModule } from './formula-editor/formula-editor.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    FrmdbPopupDirective,
     ApplicationsComponent,
     ApplicationComponent,
   ],
@@ -48,6 +48,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     NgbModule.forRoot(),
     HttpClientModule,
     FontAwesomeModule,
+    FormulaEditorModule, //TODO: lazy load components from this module, e.g. https://plnkr.co/edit/ZGC82G9u10EQFYFvvRMB?p=preview
+    DevModeCommonModule,
   ],
   providers: [
     BackendService,

@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
 
 
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 
-import * as appState from 'src/app/app.state';
-import { Store } from '@ngrx/store';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
 import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
+import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -17,6 +17,7 @@ import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
 export class FormulaCodeEditorComponent implements OnInit {
   ftext: string;
 
+  private onEdit$: Subject<any> = new Subject();
   private currentSuggestions: Suggestion[];
   private activeSuggestion: number = 0;
   private noEditKeys: string[] = ['Tab', 'ArrowDown', 'ArrowUp', 'Enter', 'ArrowLeft', 'ArrowRight'];
@@ -27,7 +28,12 @@ export class FormulaCodeEditorComponent implements OnInit {
   @ViewChild('editor')
   private textarea: ElementRef;
 
+  applyChangesIcon = faCheckCircle;
+  discardChangesIcon = faTimesCircle;
+
   editorExpr: string;
+  editorOn: boolean;
+  editorExprHasErrors: boolean = false;
 
   suggestion?: (string) => string[];
 
@@ -35,9 +41,24 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   protected subscriptions: Subscription[] = [];
 
-  constructor(private formulaEditorService: FormulaEditorService, private router: Router) {
-    this.subscriptions.push(formulaEditorService.editorExpr$.subscribe(
-      expr => this.editorExpr = expr || ''));
+  constructor(public formulaEditorService: FormulaEditorService, private router: Router) {
+    this.subscriptions.push(formulaEditorService.editorOn$.subscribe(x => {
+      if (this.editorOn && !x) {
+        this.ftext = '';
+      } else if (!this.editorOn && x) {
+        this.onEdit();
+      }
+      this.editorOn = x;
+    }));
+    this.subscriptions.push(formulaEditorService.editorExpr$.subscribe(expr => {
+      if (!this.editorOn) return;
+      this.editorExpr = expr || '';
+    }));
+    this.subscriptions.push(this.formulaEditorService.selectedFormula$.subscribe(selectedFormula => {
+      if (this.editorOn) return;
+      this.editorExpr = selectedFormula || 'COLUMN';
+    }));
+    this.subscriptions.push(this.onEdit$.pipe(debounceTime(500)).subscribe(() => this.performOnEdit()));
   }
 
   ngOnInit() {
@@ -101,30 +122,39 @@ export class FormulaCodeEditorComponent implements OnInit {
     }
   }
   onEdit(): void {
-    setTimeout(() => {
-      this.ftext = "";
-      if (this.editorExpr) {
-        let errors;
-        if (this.validation) {
-          errors = this.validation(this.editorExpr);
-        }
-        let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
-        this.currentTokens = tokens;
-        for (let i: number = 0; i < tokens.length; i++) {
-          switch (tokens[i].type) {
-            case TokenType.NLINE:
-              this.ftext += "<br>";
-              break;
-            case TokenType.SPACE:
-              this.ftext += "&nbsp;";
-              break;
-            default:
-              this.ftext += this.renderToken(tokens[i]);
-          }
-        }
-        this.cursorMove(this.textarea.nativeElement.selectionStart);
+    this.onEdit$.next()
+  }
+  performOnEdit(): void {
+    this.ftext = "";
+    if (this.editorExpr) {
+      let errors;
+      if (this.validation) {
+        errors = this.validation(this.editorExpr);
       }
-    }, 10);
+      let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
+      this.currentTokens = tokens;
+      let hasErrors: boolean = false;
+      for (let i: number = 0; i < tokens.length; i++) {
+        switch (tokens[i].type) {
+          case TokenType.NLINE:
+            this.ftext += "<br>";
+            break;
+          case TokenType.SPACE:
+            this.ftext += "&nbsp;";
+            break;
+          default:
+            this.ftext += this.renderToken(tokens[i]);
+            hasErrors = tokens[i].errors && tokens[i].errors.length > 0
+        }
+      }
+      this.cursorMove(this.textarea.nativeElement.selectionStart);
+      if (!hasErrors) {
+        this.editorExprHasErrors = false;
+        this.formulaEditorService.previewFormula(this.editorExpr);
+      } else {
+        this.editorExprHasErrors = true;
+      }
+    }
   }
 
   nextSuggestion(event: any): void {
@@ -204,6 +234,25 @@ export class FormulaCodeEditorComponent implements OnInit {
     }
 
     return ret.join('');
+  }
+
+  startEditing() {
+    this.formulaEditorService.toggleFormulaEditor();
+  }
+  applyChanges() {
+    if (!this.editorExprHasErrors) {
+      if (confirm("Please confirm, apply modifications to DB ?")) {
+        this.formulaEditorService.applyChangesToFormula(this.editorExpr);
+        this.formulaEditorService.toggleFormulaEditor();
+      }
+    } else {
+      alert("Expression has errors, cannot apply on DB");
+    }
+  }
+  discardChanges() {
+    if (confirm("Please confirm, dicard changes ?")) {
+      this.formulaEditorService.toggleFormulaEditor();
+    }
   }
 
 }
