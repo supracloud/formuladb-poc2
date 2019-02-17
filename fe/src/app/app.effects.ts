@@ -12,10 +12,7 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { KeyValueObj } from "@core/domain/key_value_obj";
-import { DataObj } from "@core/domain/metadata/data_obj";
 import { Entity } from "@core/domain/metadata/entity";
-import { ChangeObj } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
 
 import { Table, TableColumn, getDefaultTable } from "@core/domain/uimetadata/table";

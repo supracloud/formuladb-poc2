@@ -80,6 +80,16 @@ export class FormulaEditorService {
       this.store.dispatch(new appState.ServerEventPreviewFormula(this.formulaState.editedEntity, this.formulaState.editedProperty.name, this.formulaState.editedDataObj, formula));
     }
   }
+  
+  public applyChangesToFormula(formula: string){
+    if (this.formulaState && this.formulaState.editedEntity && this.formulaState.editedProperty && this.formulaState.editedDataObj) {
+      this.store.dispatch(new appState.ServerEventSetProperty(this.formulaState.editedEntity, {
+        name: this.formulaState.editedProperty.name, 
+        propType_: Pn.FORMULA,
+        formula
+      }));
+    }
+  }
 
   private getFormulaTokenizerSchemaChecker() {
     if (!this.formulaTokenizerSchemaChecker) {

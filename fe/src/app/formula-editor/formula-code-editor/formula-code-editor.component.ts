@@ -3,8 +3,6 @@ import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular
 
 import { Observable, Subscription, Subject } from 'rxjs';
 
-import * as appState from 'src/app/app.state';
-import { Store } from '@ngrx/store';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
 import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
@@ -35,6 +33,7 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   editorExpr: string;
   editorOn: boolean;
+  editorExprHasErrors: boolean = false;
 
   suggestion?: (string) => string[];
 
@@ -150,7 +149,10 @@ export class FormulaCodeEditorComponent implements OnInit {
       }
       this.cursorMove(this.textarea.nativeElement.selectionStart);
       if (!hasErrors) {
+        this.editorExprHasErrors = false;
         this.formulaEditorService.previewFormula(this.editorExpr);
+      } else {
+        this.editorExprHasErrors = true;
       }
     }
   }
@@ -238,8 +240,13 @@ export class FormulaCodeEditorComponent implements OnInit {
     this.formulaEditorService.toggleFormulaEditor();
   }
   applyChanges() {
-    if (confirm("Please confirm, apply modifications to DB ?")) {
-      this.formulaEditorService.toggleFormulaEditor();
+    if (!this.editorExprHasErrors) {
+      if (confirm("Please confirm, apply modifications to DB ?")) {
+        this.formulaEditorService.applyChangesToFormula(this.editorExpr);
+        this.formulaEditorService.toggleFormulaEditor();
+      }
+    } else {
+      alert("Expression has errors, cannot apply on DB");
     }
   }
   discardChanges() {
