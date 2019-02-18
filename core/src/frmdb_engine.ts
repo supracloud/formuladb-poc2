@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, isFormulaProperty, Schema, FormulaValidation } from "@core/domain/metadata/entity";
+import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@core/domain/metadata/entity";
 import { SchemaDAO } from "@core/domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
 
@@ -21,9 +21,9 @@ export class FrmdbEngine {
     private schemaDAO: SchemaDAO;
     public frmdbEngineTools: FrmdbEngineTools;
     constructor(public frmdbEngineStore: FrmdbEngineStore) {
-        this.schemaDAO = new SchemaCompiler(frmdbEngineStore.schema).compileSchema();
+        this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
-        this.transactionRunner = new FrmdbTransactionRunner(frmdbEngineStore, this.frmdbEngineTools);
+        this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
     }
 
     public async init(installFormulas: boolean = true) {
@@ -38,10 +38,19 @@ export class FrmdbEngine {
                 }
             }
         };
+
+        await this.frmdbEngineStore.syncSchema();
     }
 
+    public async putSchema(schema: Schema): Promise<Schema> {
+        await this.frmdbEngineStore.putSchema(schema);
+        this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
+        this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
+        this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
+        return Promise.resolve(schema);
+    }
 
-    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+    public processEvent(event: events.MwzEvents): Promise<events.MwzEvent> {
         event._id = Date.now() + '_' + generateUUID();
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + JSON.stringify(event));
 
@@ -56,8 +65,12 @@ export class FrmdbEngine {
                 return this.newEntity(event)
             case events.ServerEventDeleteEntityN:
                 return this.deleteEntity(event);
-            case events.ServerEventModifiedEntityN:
-                return this.processEntity(event);
+            case events.ServerEventPreviewFormulaN:
+                return this.transactionRunner.previewFormula(event);
+            case events.ServerEventSetPropertyN:
+                return this.transactionRunner.setEntityProperty(event);
+            case events.ServerEventDeletePropertyN:
+                return this.transactionRunner.deleteEntityProperty(event);
             default:
                 return Promise.reject("n/a event");
         }
@@ -118,17 +131,6 @@ export class FrmdbEngine {
             })
             ;
     }
-
-    private processEntity(event: events.ServerEventModifiedEntity): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.putEntity(event.entity)
-            .then(() => {
-                event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
-                delete event._rev;
-                return event;
-            })
-        ;
-    }
-
 
     public async putDataObjAndUpdateViews(oldObj: DataObj | null, newObj: DataObj) {
         if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + JSON.stringify({oldObj, newObj}));

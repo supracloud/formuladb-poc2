@@ -6,7 +6,7 @@
 import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
+import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula, ServerEventSetPropertyN } from "@core/domain/event";
 import { $s2e } from './formula_compiler';
 import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema } from "@core/domain/metadata/entity";
@@ -81,7 +81,11 @@ describe('FrmdbEngine', () => {
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.kvsFactory.clearAll();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 55000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 123000;
+        console.log("frmdbEngine.frmdbEngineStore.mapReduceViews.size=", (frmdbEngine.frmdbEngineStore as any).mapReduceViews.size);
+        console.log("stockReservationSchema.entities.B.props.sum__.formula=", (stockReservationSchema as any).entities.B.props.sum__.formula);
+        console.log("stockReservationSchema.entities.B.props.sum__.compiledFormula_=", (stockReservationSchema as any).entities.B.props.sum__.compiledFormula_);
+        console.log("stockReservationSchema.entities.B.props.x__.formula=", (stockReservationSchema as any).entities.B.props.x__.formula);
         done();
     });
 
@@ -129,7 +133,113 @@ describe('FrmdbEngine', () => {
         done();
     });
 
-    for (let TestRun = 1; TestRun <= 1; TestRun++) {
+    it("Should allow preview formulas", async (done) => {
+        await frmdbEngine.init();
+
+        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
+        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
+        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
+        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
+        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
+        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+
+        let a3 = { _id: 'A~~', b: 'B~~1', val: 2 };
+        await putObj(a3 as DataObj);
+        let b1After: any = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
+
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventPreviewFormulaN,
+            targetEntity: stockReservationSchema.entities['B'],
+            targetPropertyName: 'x__',
+            formula: '200 - sum__',
+            currentDataObj: b1After,
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        expect((ev.currentDataObj as any).x__).toEqual(195);
+
+        let b1Get: any = await frmdbTStore.getDataObj('B~~1');
+        expect(b1Get).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
+
+        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventPreviewFormulaN,
+            targetEntity: stockReservationSchema.entities['B'],
+            targetPropertyName: 'sum__',
+            formula: 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])',
+            currentDataObj: b1Get,
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        expect((ev2.currentDataObj as any).sum__).toEqual(a1.val + a2.val + a3.val + 3);
+        expect((ev2.currentDataObj as any).x__).toEqual(100 - (a1.val + a2.val + a3.val + 3));
+
+        done();
+    });
+
+
+    it("Should allow adding/modifying formulas", async (done) => {
+        await frmdbEngine.init();
+
+        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
+        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
+        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
+        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
+        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
+        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+
+        let a3 = { _id: 'A~~', b: 'B~~1', val: 2 };
+        await putObj(a3 as DataObj);
+        let b1After: any = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
+
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventSetPropertyN,
+            targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
+            property: {
+                name: 'x__',
+                propType_: Pn.FORMULA,
+                formula: '200 - sum__',
+            },
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 195}));
+
+        let ev2: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventSetPropertyN,
+            targetEntity: frmdbEngine.frmdbEngineStore.schema.entities['B'],
+            property: {
+                name: 'sum__',
+                propType_: Pn.FORMULA,
+                formula: 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])',
+            },
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({
+            sum__: a1.val + a2.val + a3.val + 3, 
+            x__: 200 - (a1.val + a2.val + a3.val + 3)
+        }));
+
+        let a4 = { _id: 'A~~', b: 'B~~1', val: 10 };
+        await putObj(a4 as DataObj);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({
+            sum__: a1.val + a2.val + a3.val + 3 + a4.val + 1, 
+            x__: 200 - (a1.val + a2.val + a3.val + 3 + a4.val + 1)
+        }));
+
+        done();
+    });
+    
+    for (let TestRun = 1; TestRun <= 2; TestRun++) {
 
         it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
@@ -173,7 +283,7 @@ describe('FrmdbEngine', () => {
 
         it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
             frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
-            frmdbEngine = new FrmdbEngine(frmdbTStore, );
+            frmdbEngine = new FrmdbEngine(frmdbTStore);
             await frmdbEngine.init();
 
             let ac1: any = { _id: "Ac~~1", balance__: 123}; await frmdbEngine.putDataObjAndUpdateViews(null, ac1);

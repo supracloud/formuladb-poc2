@@ -22,7 +22,7 @@ export const INV__PRD__Location = {
         received_stock__: {
             name: 'received_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV__Receipt__Item.quantity, product_location_id == @[_id])',
+            formula: 'SUMIF(INV__Receipt__Item.quantity, product_id == @[_id])',
         } as FormulaProperty,
         available_stock__: {
             name: 'available_stock__',
@@ -32,7 +32,7 @@ export const INV__PRD__Location = {
         ordered_stock__: {
             name: 'ordered_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV__Order__Item.quantity, product_location_id == @[_id])'
+            formula: 'SUMIF(INV__Order__Item.quantity, product_id == @[_id])'
         } as FormulaProperty,
         price: { name: 'price', propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
         currency: {
@@ -113,7 +113,7 @@ export const INV__Receipt__Item = {
     _id: 'INV__Receipt__Item',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_location_id: { name: 'product_location_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         units: {
             name: 'units',
@@ -139,7 +139,7 @@ export const INV__Order__Item = {
     _id: 'INV__Order__Item',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_location_id: { name: 'product_location_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         error_quantity: { name: 'error_quantity', propType_: Pn.FORMULA, formula: '0 - 0' } as EntityProperty,
         client_stock: { name: 'client_stock', propType_: Pn.NUMBER } as EntityProperty,
@@ -215,12 +215,12 @@ export const REP__LargeSales = {
 export const REP__LargeSales__Product = {
     _id: "REP__LargeSales__Product",
     props: {
-        product_location_id: { name: "product_location_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_id: { name: "product_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_name: { name: "product_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         large_sales_value: {
             name: "large_sales_value",
             propType_: Pn.FORMULA,
-            formula: `SUMIF(INV__Order__Item.quantity, product_location_id == @[product_location_id] && quantity > 100)`,
+            formula: `SUMIF(INV__Order__Item.quantity, product_id == @[product_id] && quantity > 100)`,
         } as FormulaProperty,
     }
 }

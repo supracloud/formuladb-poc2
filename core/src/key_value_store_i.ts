@@ -6,6 +6,10 @@
 import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
 import { Entity } from "./domain/metadata/entity";
+import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "./domain/metadata/reduce_functions";
+import { DataObj } from "./domain/metadata/data_obj";
+import { MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
+import { Expression } from "jsep";
 
 type NumberFilterT = 'equals' | 'notEqual' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual' | 'inRange';
 type TextFilterT = 'equals' | 'notEqual' | 'contains' | 'notContains' | 'startsWith' | 'endsWith';
@@ -73,6 +77,10 @@ export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<O
     entity: Entity;
     /** filtering and grouping by any _id */
     simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
+    /** The resulting rows are grouped */
+    mapQuery(keyExpr: Expression[], opts: RangeQueryOptsBaseI<string>): Promise<OBJT[]>;
+    /** The resulting rows are grouped */
+    reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsBaseI<string>, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType>;
     init(): Promise<any>;
 }
 
@@ -81,6 +89,24 @@ export function kvsKey2Str(_id: any): string {
 }
 export function kvsStr2Key(_id: string): any {
     return FormuladbCollate.parseIndexableString(_id);
+}
+
+export function kvsReduceValues(values: ScalarType[], reduceFun: ReduceFun, viewHashCode: string, reReduce: boolean) {
+    return values.reduce((acc, current, idx) => {
+        if (SumReduceFunN === reduceFun.name) {
+            if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewHashCode + ' _sum accepts only numbers but found (' + acc + ', ' + current + ')');
+            return acc + current;
+        } else if (CountReduceFunN === reduceFun.name) {
+            if (typeof acc !== 'number' || typeof current !== 'number') throw new Error('View ' + viewHashCode + ' _count accepts only numbers but found (' + acc + ', ' + current + ')');
+            return acc + (reReduce ? current : 1);//this is "re-reduce" we must sum the counts from the reduce values per each key
+        } else if (TextjoinReduceFunN === reduceFun.name) {
+            if (0 == idx && acc == '') return current;
+            return acc + reduceFun.delimiter + current;
+        } else {
+            throw new Error('Unknown reduce function ' + reduceFun);
+        }
+
+    }, ReduceFunDefaultValue[reduceFun.name]);
 }
 
 class KeyValueStoreBase<KEYT, VALUET> {
@@ -134,7 +160,8 @@ export interface KeyValueStoreFactoryI {
     clearAll(): Promise<void>;
 }
 
-export type KVSArrayKeyType = (string | number | boolean)[];
+export type ScalarType = string | number | boolean;
+export type KVSArrayKeyType = ScalarType[];
 // export class KeyValueStoreArrayKeys<VALUET> extends KeyValueStoreBase<KVSArrayKeyType, VALUET> {
 export class KeyValueStoreArrayKeys<VALUET> extends KeyValueStoreBase<KVSArrayKeyType, VALUET> {
 }

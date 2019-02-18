@@ -33,7 +33,7 @@ export const tableInitialState: TableState = {
 
 export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const ServerEventModifiedTableN = events.ServerEventModifiedTableN;
-export const ServerEventSelectedRowForEditingN = "[table] ServerEventSelectedRowForEditing";
+export const UserSelectRowN = "[table] UserSelectRow";
 export const ServerEventNewRowN = "[table] ServerEventNewRow";
 export const UserSelectCellN = "[table] UserSelectCell";
 
@@ -52,10 +52,10 @@ export class TableFormBackendAction implements Action {
   constructor(public table: Table) { }
 }
 
-export class ServerEventSelectedRowForEditing implements Action {
-  readonly type = ServerEventSelectedRowForEditingN;
+export class UserSelectRow implements Action {
+  readonly type = UserSelectRowN;
 
-  constructor(public row: DataObj) { }
+  constructor(public dataObj: DataObj) { }
 }
 
 export class ServerEventNewRow implements Action {
@@ -73,7 +73,7 @@ export class UserSelectCell implements Action {
 export type TableActions =
   | TableFormBackendAction
   | ServerEventModifiedTable
-  | ServerEventSelectedRowForEditing
+  | UserSelectRow
   | ServerEventNewRow
   | UserSelectCell
   ;

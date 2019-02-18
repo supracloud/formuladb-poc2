@@ -32,6 +32,7 @@ create-docker-env() {
         
         VBoxManage controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
         VBoxManage controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
+        VBoxManage controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
         VBoxManage controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
 
         docker-machine stop docker1
@@ -86,4 +87,8 @@ startFrmdb() {
     FRMDB_RELEASE=`git branch|grep '^\*'|sed -e 's/[*] //g'`
     # TODO: if release is not "master" or x.y.z replace tags for formuladb-fe and formuladb-be with "stopped"
     FRMDB_RELEASE=${FRMDB_RELEASE} docker-compose.exe up --remove-orphans --abort-on-container-exit
+}
+
+ssh-ci() {
+    ssh -i ./ssh/frmdb.id_rsa root@46.101.228.142
 }

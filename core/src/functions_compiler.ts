@@ -374,9 +374,15 @@ function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, lo
     if (!isMapReduceKeysQueriesAndValue(range)) throw new Error("SUMIF expects a value to sum at " + fc.funcExpr.origExpr);
     return _REDUCE(fc, range, {name: SumReduceFunN});
 }
-function COUNT(fc: FuncCommon, entityRange) {
+function COUNT(fc: FuncCommon, tableRange: MemberExpression | CallExpression) {
+    let inputRange = compileArg(fc, 'basicRange', tableRange, [isMemberExpression, isCallExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
+    return _REDUCE(fc, inputRange, {name: CountReduceFunN});
 }
-function COUNTIF(fc: FuncCommon, entityRange, booleanExpr) {
+function COUNTIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
+    let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
+    let range = _IF(fc, inputRange, compiledLogicalExpression);
+    if (!isMapReduceKeysQueriesAndValue(range)) throw new Error("COUNTIF expects a value to sum at " + fc.funcExpr.origExpr);
+    return _REDUCE(fc, range, {name: CountReduceFunN});
 }
 function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiteral): MapReduceTrigger {
     let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);

@@ -11,6 +11,7 @@ build:
     - cd ..
     - cd core && npm install 
     - cd ..
+    - npm run initpgdb
     - cd be && npm install
     - cd ..
     - cd fe && npm install
@@ -68,8 +69,9 @@ videos:
     expire_in: 1 week
     paths:
       - fe/e2e/protractor_videos/
-#  only:
-#    - web
+  only:
+    refs:
+      - master
 
 cleanup:
   stage: cleanup

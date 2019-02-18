@@ -134,7 +134,17 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           selectedProperty: selectedProperty,
         }
       }
-    } else if (action.type === fromFormula.FormulaEditorToggleN) {
+    }
+    else if (action.type === fromTable.UserSelectRowN) {
+      updatedState = {
+        ...state,
+        formula: {
+          ...state.formula,
+          editedDataObj: action.dataObj,
+        }
+      }
+    }
+    else if (action.type === fromFormula.FormulaEditorToggleN) {
       updatedState = {
         ...state,
         table: {

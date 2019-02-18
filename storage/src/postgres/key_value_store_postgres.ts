@@ -5,7 +5,7 @@
  * https://github.com/vitaly-t/pg-promise/wiki/Common-Mistakes
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, KeyTableStoreI } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import * as pgPromise from "pg-promise";
@@ -13,6 +13,9 @@ import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
 import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
 import { waitUntilNotNull } from "@core/ts-utils";
+import { ReduceFun } from "@core/domain/metadata/reduce_functions";
+import { Expression } from "jsep";
+import { evalExprES5 } from "@core/map_reduce_utils";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -300,6 +303,34 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
         let res = await this.getDB().any(query);
         return res;
     }
+
+    //TODO: implement using SQL and plv8
+    async mapQuery(keyExpr: Expression[], opts: RangeQueryOptsI): Promise<OBJT[]> {
+        let all = await this.all();
+        let ret = all.map(x => {
+            return [kvsKey2Str(evalExprES5(x, keyExpr)), x];
+        }).filter(([key, val]) =>
+            (opts.startkey < key && key < opts.endkey)
+            || (opts.inclusive_start && key === opts.startkey)
+            || (opts.inclusive_end && key === opts.endkey)
+        )
+            .sort(([keyA, valA], [keyB, valB]) => {
+                if (keyA < keyB) return -1;
+                if (keyA > keyB) return 1;
+                return 0;
+            })
+            .map(([_id, val]) => val as OBJT);
+
+        return Promise.resolve(ret);
+    }
+
+    //TODO: implement using SQL and plv8
+    reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
+        return this.mapQuery(keyExpr, opts)
+            .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
+            .then(values => kvsReduceValues(values, reduceFun, this.entity._id, false));
+    }
+
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     readonly name = "KeyValueStoreFactoryPostgres";

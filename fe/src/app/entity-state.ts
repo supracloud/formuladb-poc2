@@ -35,9 +35,6 @@ export const entityInitialState: EntityState = {
 export const EntitiesFromBackendFullLoadActionN = "[entity] EntitiesFromBackendFullLoadAction";
 export const SelectedEntityActionN = "[entity] SelectedEntityAction";
 export const CollapsedEntityActionN = "[entity] CollapsedEntityAction";
-export const ServerEventModifiedEntityN = events.ServerEventModifiedEntityN;
-export const ServerEventNewEntityN = events.ServerEventNewEntityN;
-export const ServerEventDeleteEntityN = events.ServerEventDeleteEntityN;
 
 export class EntitiesFromBackendFullLoadAction implements Action {
     readonly type = EntitiesFromBackendFullLoadActionN;
@@ -57,17 +54,8 @@ export class CollapsedEntityAction implements Action {
     constructor(public id: string, public collapsed: boolean) { }
 }
 
-export class ServerEventModifiedEntity implements Action {
-    readonly type = ServerEventModifiedEntityN;
-    public event: events.ServerEventModifiedEntity;
-
-    constructor(public entity: Entity) {
-        this.event = new events.ServerEventModifiedEntity(entity);
-    }
-}
-
 export class ServerEventNewEntity implements Action {
-    readonly type = ServerEventNewEntityN;
+    readonly type = events.ServerEventNewEntityN;
     public event: events.ServerEventNewEntity;
 
     constructor(path: string) {
@@ -76,11 +64,38 @@ export class ServerEventNewEntity implements Action {
 }
 
 export class ServerEventDeleteEntity implements Action {
-    readonly type = ServerEventDeleteEntityN;
+    readonly type = events.ServerEventDeleteEntityN;
     public event: events.ServerEventDeleteEntity;
 
     constructor(entityId: string) {
         this.event = new events.ServerEventDeleteEntity(entityId);
+    }
+}
+
+export class ServerEventSetProperty implements Action {
+    readonly type = events.ServerEventSetPropertyN;
+    public event: events.ServerEventSetProperty;
+
+    constructor(entity: Entity, public property: EntityProperty) {
+        this.event = new events.ServerEventSetProperty(entity, property);
+    }
+}
+
+export class ServerEventDeleteProperty implements Action {
+    readonly type = events.ServerEventDeletePropertyN;
+    public event: events.ServerEventDeleteProperty;
+
+    constructor(entity: Entity, public propertyName: string) {
+        this.event = new events.ServerEventDeleteProperty(entity, propertyName);
+    }
+}
+
+export class ServerEventPreviewFormula implements Action {
+    readonly type = events.ServerEventPreviewFormulaN;
+    public event: events.ServerEventPreviewFormula;
+
+    constructor(public targetEntity: Entity, public targetPropertyName: string, public currentDataObj: DataObj, public formula: string) {
+        this.event = new events.ServerEventPreviewFormula(targetEntity, targetPropertyName, currentDataObj, formula);
     }
 }
 
@@ -89,8 +104,11 @@ export type EntityActions =
     | SelectedEntityAction
     | CollapsedEntityAction
     | ServerEventNewEntity
-    | ServerEventModifiedEntity
-    | ServerEventDeleteEntity;
+    | ServerEventDeleteEntity
+    | ServerEventSetProperty
+    | ServerEventDeleteEntity
+    | ServerEventPreviewFormula
+;
 
 /**
  * 

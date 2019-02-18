@@ -12,10 +12,7 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { KeyValueObj } from "@core/domain/key_value_obj";
-import { DataObj } from "@core/domain/metadata/data_obj";
 import { Entity } from "@core/domain/metadata/entity";
-import { ChangeObj } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
 
 import { Table, TableColumn, getDefaultTable } from "@core/domain/uimetadata/table";
@@ -24,7 +21,7 @@ import { Form, NodeElement, NodeType, getDefaultForm } from "@core/domain/uimeta
 import * as appState from './app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
-import { TableFormBackendAction } from './app.state';
+import { TableFormBackendAction, FormulaPreviewFromBackend } from './app.state';
 import { FormDataFromBackendAction } from './form/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
@@ -35,17 +32,21 @@ export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedFormData
     | appState.ServerEventModifiedForm
     | appState.ServerEventModifiedTable
-    | appState.ServerEventModifiedEntity
     | appState.ServerEventNewEntity
     | appState.ServerEventDeleteEntity
+    | appState.ServerEventSetProperty
+    | appState.ServerEventDeleteProperty
+    | appState.ServerEventPreviewFormula
     ;
 export const ActionsToBeSentToServerNames = [
-    appState.ServerEventModifiedFormDataN,
-    appState.ServerEventModifiedFormN,
-    appState.ServerEventModifiedTableN,
-    appState.ServerEventModifiedEntityN,
-    appState.ServerEventNewEntityN,
-    appState.ServerEventDeleteEntityN
+    events.ServerEventModifiedFormDataN,
+    events.ServerEventModifiedFormN,
+    events.ServerEventModifiedTableN,
+    events.ServerEventNewEntityN,
+    events.ServerEventDeleteEntityN,
+    events.ServerEventSetPropertyN,
+    events.ServerEventDeletePropertyN,
+    events.ServerEventPreviewFormulaN
 ];
 
 @Injectable()
@@ -119,8 +120,16 @@ export class AppEffects {
                 this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/__\w+$/, ''))]);
                 break;
             }
-            case events.ServerEventModifiedEntityN: {
-                this.changeEntity(eventFromBe.entity._id);
+            case events.ServerEventSetPropertyN: {
+                this.changeEntity(eventFromBe.targetEntity._id);
+                break;
+            }
+            case events.ServerEventDeletePropertyN: {
+                this.changeEntity(eventFromBe.targetEntity._id);
+                break;
+            }
+            case events.ServerEventPreviewFormulaN: {
+                this.store.dispatch(new FormulaPreviewFromBackend(eventFromBe));
                 break;
             }
             default:

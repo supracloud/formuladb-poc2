@@ -2,3 +2,8 @@
     padding-left: 5px;
     padding-right: 5px;
 }
+
+
+:host > .navbar-light .navbar-nav .nav-link {
+    padding: 0;
+}
