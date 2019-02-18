@@ -38,7 +38,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
+    StoreModule.forRoot(appState.reducers, { initialState: appState.appInitialState ,metaReducers: [appState.appMetaReducer] }),
     StoreDevtoolsModule.instrument({
       maxAge: 50, // Retains last 25 states
       // logOnly: environment.production, // Restrict extension to log-only mode
