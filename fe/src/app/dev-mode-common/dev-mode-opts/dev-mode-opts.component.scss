@@ -4,10 +4,17 @@
     left: 0;
 }
 
-#frmdb-dev-mode-top-menu {
+#frmdb-dev-mode-menu {
     position: fixed;
     top: 40px;
     right: 2px;
+}
+
+#frmdb-dev-mode-page-editor {
+    position: fixed;
+    top: -1000px;//workaround for angular-gridster2 not initializing correctly for display: none
+    right: 2px;
+    display: block;
 }
 
 .add-del-things {

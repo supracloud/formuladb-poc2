@@ -19,10 +19,10 @@ import { ObservedValueOf, Observable } from 'rxjs';
 export class AppComponent {
   title = 'frmdb';
   public devMode$: Observable<boolean>;
-  bodyPadding = "0 0 150px 0";
+  bodyPadding = "0 0 32px 0";
   constructor(protected store: Store<appState.AppState>) {
     this.devMode$ = this.store.select(appState.getDeveloperMode);
-    this.devMode$.subscribe(devMode => devMode ? this.bodyPadding = "150px 0 0 0" : this.bodyPadding = "0 0 150px 0");
+    this.devMode$.subscribe(devMode => devMode ? this.bodyPadding = "32px 0 0 0" : this.bodyPadding = "0 0 32px 0");
   }
 
   toggleDevMode() {

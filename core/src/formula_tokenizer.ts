@@ -123,7 +123,7 @@ export class FormulaTokenizer {
 
             case 'Identifier':
                 return [{
-                    ...this.expr2token(TokenType.COLUMN_NAME, node, context),
+                    ...this.expr2token(node.startIndex == 0 ? TokenType.FUNCTION_NAME : TokenType.COLUMN_NAME, node, context),
                     tableName: node.parent || context.targetEntityName,
                     columnName: node.name
                 }];

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
 import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
 
-import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy } from '@fortawesome/free-solid-svg-icons';
+import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy, faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../formula-editor.service';
@@ -28,6 +28,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   devModeIcon = faTools;
   changeAppIcon = faImages;
   settingsIcon = faCogs;
+  pageEditorIcon = faNewspaper;
   collorPaletteIcon = faPalette;
 
   editIcon = faPenFancy;
@@ -55,6 +56,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   clickSaveEdits$: Subject<void> = new Subject();
 
   menuOpened: boolean = false;
+  pageEditorOpened: boolean = false;
 
   currentEntity: appState.Entity | undefined;
   currentProperty: EntityProperty | undefined;
@@ -138,6 +140,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
       {cols: 1, rows: 1, y: 1, x: 2},
     ];
   }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())
   }

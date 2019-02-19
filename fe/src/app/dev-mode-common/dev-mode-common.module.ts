@@ -11,11 +11,7 @@ import { ToggleFormulaEditorDirective } from './toggle-formula-editor.directive'
 import { CurrentFormulaDirective } from './current-formula.directive';
 import { FrmdbPopupDirective } from './frmdb-popup.directive';
 import { FormsModule } from '@angular/forms';
-import { NumberPropEditorComponent } from './number-prop-editor/number-prop-editor.component';
-import { StringPropEditorComponent } from './string-prop-editor/string-prop-editor.component';
-import { ReferenceToPropEditorComponent } from './reference-to-prop-editor/reference-to-prop-editor.component';
 import { DatetimePropEditorComponent } from './datetime-prop-editor/datetime-prop-editor.component';
-import { DurationPropEditorComponent } from './duration-prop-editor/duration-prop-editor.component';
 
 @NgModule({
   imports: [
@@ -32,11 +28,7 @@ import { DurationPropEditorComponent } from './duration-prop-editor/duration-pro
     ToggleFormulaEditorDirective, 
     CurrentFormulaDirective,
     FrmdbPopupDirective,
-    NumberPropEditorComponent,
-    StringPropEditorComponent,
-    ReferenceToPropEditorComponent,
     DatetimePropEditorComponent,
-    DurationPropEditorComponent,
   ],
   exports: [
     DevModeOptsComponent,

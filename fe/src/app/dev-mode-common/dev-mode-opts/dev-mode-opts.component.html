@@ -1,5 +1,5 @@
-<div id="frmdb-dev-mode-top-bar">
-  <div class="container" *ngIf="developerMode$ | async">
+<div id="frmdb-dev-mode-top-bar" *ngIf="developerMode$ | async">
+  <div class="container">
     <div class="row">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -13,21 +13,19 @@
       <frmdb-formula-code-editor></frmdb-formula-code-editor>
 
       <div class="dropdown" placement="bottom-right">
-        <a class="dropdown-toggle" (click)="menuOpened = !menuOpened" href="javascript:void(0)" id="TopNavSettings" aria-haspopup="true" aria-expanded="false">
+        <a (click)="pageEditorOpened = !pageEditorOpened" href="javascript:void(0)">
+          <fa-icon [icon]="pageEditorIcon" class="fa-sm"></fa-icon>
+        </a>
+      </div>
+      <div class="dropdown" placement="bottom-right">
+        <a (click)="menuOpened = !menuOpened" href="javascript:void(0)">
           <fa-icon [icon]="settingsIcon" class="fa-sm"></fa-icon>
         </a>
       </div>
     </div>
-    <div class="row" style="height: 118px">
-      <gridster [options]="gridsterOptions">
-        <gridster-item [item]="item" *ngFor="let item of gridsterPage">
-          <!-- your content here -->
-        </gridster-item>
-      </gridster>
-    </div>
   </div>
 </div>
-<div id="frmdb-dev-mode-top-menu" class="dropdown-menu dropdown-menu-right" [style.display]="menuOpened ? 'block' : 'none'" aria-labelledby="TopNavSettings">
+<div id="frmdb-dev-mode-menu" class="dropdown-menu dropdown-menu-right" [style.display]="menuOpened ? 'block' : 'none'">
   <a class="dropdown-item" href="javascript:void(0)">
     <img src="assets/flags/us.png" (click)="switchLanguage('us')" style="margin-right: 5px; cursor: pointer" />
     <img src="assets/flags/de.png" (click)="switchLanguage('de')" style="margin-right: 5px; cursor: pointer" />
@@ -124,4 +122,16 @@
     <fa-icon [icon]="changeAppIcon" class="fa-sm"></fa-icon>
     {{ 'Change app' | i18n }}
   </a>
+</div>
+<div id="frmdb-dev-mode-page-editor" class="dropdown-menu" [style.top]="pageEditorOpened ? '40px' : '-1000px'">
+  <div class="container">
+    <div class="row">gigi</div>
+    <div class="row" style="width: 800px; height: 200px;">
+      <gridster [options]="gridsterOptions">
+        <gridster-item [item]="item" *ngFor="let item of gridsterPage">
+          <!-- your content here -->
+        </gridster-item>
+      </gridster>
+    </div>
+  </div>
 </div>

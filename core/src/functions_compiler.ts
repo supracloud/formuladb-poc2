@@ -368,13 +368,29 @@ function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): Map
     return _REDUCE(fc, inputRange, {name: SumReduceFunN});
 }
 
-function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression | CallExpression): CompiledScalar {
+function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
     return {
         type_: CompiledScalarN,
         rawExpr: fc.funcExpr,
         has$Identifier: false,
         hasNon$Identifier: false,
     };
+}
+
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression | CallExpression): CompiledScalar {
+    return propertyTypeFunction(fc);
+}
+function NUMBER(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function STRING(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function DATETIME(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function DURATION(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
 }
 
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
@@ -548,10 +564,16 @@ export const ScalarFunctions = {
 }
 
 export const PropertyTypeFunctions = {
+    NUMBER: NUMBER,
+    STRING: STRING,
+    TEXT: TEXT,
+    DATETIME: DATETIME,
+    DURATION: DURATION,
     REFERENCE_TO: REFERENCE_TO,
 }
 
 export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))
+    .concat(Object.keys(PropertyTypeFunctions))
 ;
