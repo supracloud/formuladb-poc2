@@ -42,6 +42,8 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
   developerMode$: Observable<boolean>;
   editorOn$: Observable<boolean>;
+  displayedProperty$: Observable<EntityProperty | undefined>;
+
 
   clickPropertyType$: Subject<string> = new Subject();
   clickStartEdit$: Subject<void> = new Subject();
@@ -58,6 +60,10 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
     this.sub(this.clickStartEdit$.subscribe(() => this.formulaEditorService.toggleFormulaEditor()));
     this.clickCancelEdits$.subscribe(() => this.discardChanges());
+
+    this.displayedProperty$ = combineLatest(this.formulaEditorService.currentProperty$, this.formulaEditorService.editedProperty$).pipe(
+      map(([currentProperty, editedProperty]) => editedProperty ? editedProperty : currentProperty)
+    );
 
     let saveStream$ = this.clickSaveEdits$.pipe(
       withLatestFrom(combineLatest(this.formulaEditorService.editorExprHasErrors$, this.formulaEditorService.editedEntity$, this.formulaEditorService.editedProperty$)),

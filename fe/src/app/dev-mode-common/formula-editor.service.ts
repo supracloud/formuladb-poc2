@@ -35,14 +35,16 @@ const DEFAULT_UITOKEN: UiToken = {
 export class FormulaEditorService {
   private subscriptions: Subscription[] = [];
 
-  public formulaState: FormulaState = formulaEditorInitialState;
-  public selectedFormula$: Observable<string | undefined>;
   public currentEntity$: Observable<appState.Entity | undefined>;
+  public currentProperty$: Observable<EntityProperty | undefined>;
   public editedEntity$: Observable<appState.Entity | undefined>;
   public editorExpr$: Observable<string | undefined>;
   public editorOn$: Observable<boolean>;
   public editedProperty$: Subject<EntityProperty> = new Subject();
   public editorExprHasErrors$: Subject<boolean> = new Subject();
+
+  public formulaState: FormulaState = formulaEditorInitialState;
+  public selectedFormula$: Observable<string | undefined>;  
   public developerMode: boolean = false;
   private highlightTableColumns: { [tableName: string]: { [columnName: string]: string } } = {};
   private formulaTokenizer: FormulaTokenizer;
@@ -50,6 +52,7 @@ export class FormulaEditorService {
 
   constructor(protected store: Store<appState.AppState>, private backendService: BackendService) {
     this.currentEntity$ = this.store.select(appState.getTableEntityState);
+    this.currentProperty$ = this.store.select(appState.getSelectedPropertyState);
     this.editedEntity$ = this.store.select(appState.getEditedEntity);
     this.subscriptions.push(this.store.select(appState.getFormula).subscribe(x => {
       this.formulaState = x;

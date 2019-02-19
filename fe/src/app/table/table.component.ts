@@ -176,6 +176,8 @@ export class TableComponent implements OnInit, OnDestroy {
                 }
             })
         );
+
+        this.gridApi.closeToolPanel();
     }
 
     refreshData() {

@@ -3,14 +3,14 @@
     <li class="nav-item" ngbDropdown placement="bottom-left">
         <button id="PropertyType" class="btn nav-link formula-button" href="javascript:void(0)" ngbDropdownToggle
           aria-haspopup="true" aria-expanded="false" [disabled]="editorOn$ | async">
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == undefined" [icon]="undefinedPropTypeIcon" class="fa-sm"></fa-icon>
-          <img *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'FORMULA'" src="assets/img/formula16.png" width="16" height="16" />
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'NUMBER'" [icon]="numberPropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'STRING'" [icon]="stringPropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'DATETIME'" [icon]="datePropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'DURATION'" [icon]="durationPropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'CHILD_TABLE'" [icon]="childTablePropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'REFERENCE_TO'" [icon]="referenceToPropTypeIcon" class="fa-sm"></fa-icon>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == undefined" [icon]="undefinedPropTypeIcon" class="fa-sm"></fa-icon>
+          <img *ngIf="(displayedProperty$ | async)?.propType_ == 'FORMULA'" src="assets/img/formula16.png" width="16" height="16" />
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'NUMBER'" [icon]="numberPropTypeIcon" class="fa-sm"></fa-icon>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'STRING'" [icon]="stringPropTypeIcon" class="fa-sm"></fa-icon>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'DATETIME'" [icon]="datePropTypeIcon" class="fa-sm"></fa-icon>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'DURATION'" [icon]="durationPropTypeIcon" class="fa-sm"></fa-icon>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'CHILD_TABLE'" [icon]="childTablePropTypeIcon" class="fa-sm"></fa-icon>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'REFERENCE_TO'" [icon]="referenceToPropTypeIcon" class="fa-sm"></fa-icon>
         </button>
         <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="PropertyType">
           <a (click)="clickPropertyType$.next('FORMULA')" class="dropdown-item" href="javascript:void(0)"><img src="assets/img/formula16.png" width="16" height="16" />FORMULA</a>
@@ -25,14 +25,14 @@
     <li class="nav-item">
       <form class="navbar-form" role="search">
         <div class="input-group" style="min-width: 900px;">
-          <fa-icon *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == undefined" ></fa-icon>
-          <frmdb-formula-code-editor *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'FORMULA'"></frmdb-formula-code-editor>
-          <frmdb-number-prop-editor *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'NUMBER'"></frmdb-number-prop-editor>
-          <frmdb-string-prop-editor *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'STRING'"></frmdb-string-prop-editor>
-          <frmdb-datetime-prop-editor *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'DATETIME'"></frmdb-datetime-prop-editor>
-          <frmdb-duration-prop-editor *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'DURATION'"></frmdb-duration-prop-editor>
-          <span *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'CHILD_TABLE'">CHILD_TABLE</span>
-          <frmdb-reference-to-prop-editor *ngIf="formulaEditorService?.formulaState?.selectedProperty?.propType_ == 'REFERENCE_TO'"></frmdb-reference-to-prop-editor>
+          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == undefined" ></fa-icon>
+          <frmdb-formula-code-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'FORMULA'"></frmdb-formula-code-editor>
+          <frmdb-number-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'NUMBER'"></frmdb-number-prop-editor>
+          <frmdb-string-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'STRING'"></frmdb-string-prop-editor>
+          <frmdb-datetime-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'DATETIME'"></frmdb-datetime-prop-editor>
+          <frmdb-duration-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'DURATION'"></frmdb-duration-prop-editor>
+          <span *ngIf="(displayedProperty$ | async)?.propType_ == 'CHILD_TABLE'">CHILD_TABLE</span>
+          <frmdb-reference-to-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'REFERENCE_TO'"></frmdb-reference-to-prop-editor>
         </div>
       </form>
     </li>
