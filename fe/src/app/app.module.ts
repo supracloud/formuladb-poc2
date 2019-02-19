@@ -4,8 +4,8 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
+import { NgModule, InjectionToken } from '@angular/core';
+import { StoreModule, ActionReducerMap } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
@@ -27,6 +27,12 @@ import { ApplicationComponent } from './applications/application/application.com
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
+export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
+
+export function getReducers() {
+  return appState.reducers;
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +44,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
+    StoreModule.forRoot(REDUCER_TOKEN, { initialState: appState.getInitialState, metaReducers: [appState.appMetaReducer] }),
     StoreDevtoolsModule.instrument({
       maxAge: 50, // Retains last 25 states
       // logOnly: environment.production, // Restrict extension to log-only mode
@@ -51,6 +57,11 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
   ],
   providers: [
     BackendService,
+    {
+      provide: REDUCER_TOKEN,
+      useFactory: getReducers,
+    }
+
   ],
   bootstrap: [AppComponent]
 })
