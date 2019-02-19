@@ -368,6 +368,15 @@ function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): Map
     return _REDUCE(fc, inputRange, {name: SumReduceFunN});
 }
 
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression | CallExpression): CompiledScalar {
+    return {
+        type_: CompiledScalarN,
+        rawExpr: fc.funcExpr,
+        has$Identifier: false,
+        hasNon$Identifier: false,
+    };
+}
+
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
@@ -536,6 +545,10 @@ export const ScalarFunctions = {
     FACT: FACT,
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
+}
+
+export const PropertyTypeFunctions = {
+    REFERENCE_TO: REFERENCE_TO,
 }
 
 export const FunctionsList = Object.keys(ScalarFunctions)

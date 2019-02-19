@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
 import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
 
-import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../formula-editor.service';
@@ -30,8 +30,8 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   settingsIcon = faCogs;
   collorPaletteIcon = faPalette;
 
-  editIcon = faSquare;
-  edit2Icon = faPen;
+  editIcon = faPenFancy;
+  edit2Icon = faPenFancy;
   applyChangesIcon = faCheckCircle;
   discardChangesIcon = faTimesCircle;
 
@@ -49,11 +49,12 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   editorOn$: Observable<boolean>;
   displayedProperty$: Observable<EntityProperty | undefined>;
 
-
   clickPropertyType$: Subject<string> = new Subject();
   clickStartEdit$: Subject<void> = new Subject();
   clickCancelEdits$: Subject<void> = new Subject();
   clickSaveEdits$: Subject<void> = new Subject();
+
+  menuOpened: boolean = false;
 
   currentEntity: appState.Entity | undefined;
   currentProperty: EntityProperty | undefined;

@@ -1,11 +1,13 @@
-:host {
+#frmdb-dev-mode-top-bar {
     position: fixed;
     top: 0;
     left: 0;
 }
 
-:host div.row {
-    width: 100%;
+#frmdb-dev-mode-top-menu {
+    position: fixed;
+    top: 40px;
+    right: 2px;
 }
 
 .add-del-things {
