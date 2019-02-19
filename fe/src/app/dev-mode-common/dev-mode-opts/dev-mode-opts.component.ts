@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
 import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
 
-import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../formula-editor.service';
+import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
 
 @Component({
   selector: 'frmdb-dev-mode-opts',
@@ -17,6 +18,9 @@ import { FormulaEditorService } from '../formula-editor.service';
   styleUrls: ['./dev-mode-opts.component.scss']
 })
 export class DevModeOptsComponent implements OnInit, OnDestroy {
+  gridsterOptions: GridsterConfig;
+  gridsterPage: Array<GridsterItem>;
+
   tableIcon = faTable;
   columnIcon = faColumns;
   addIcon = faPlusCircle;
@@ -26,7 +30,8 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   settingsIcon = faCogs;
   collorPaletteIcon = faPalette;
 
-  editIcon = faEdit;
+  editIcon = faSquare;
+  edit2Icon = faPen;
   applyChangesIcon = faCheckCircle;
   discardChangesIcon = faTimesCircle;
 
@@ -91,6 +96,46 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         input.value = prefix + input.value;
       }
     }));
+
+    this.gridsterOptions = {
+      gridType: "fixed",
+      fixedColWidth: 100,
+      fixedRowHeight: 40,
+      margin: 2,
+      minCols: 6,
+      maxCols: 6,
+      minRows: 2,
+      maxRows: 6,
+      defaultItemCols: 2,
+      defaultItemRows: 1,
+      maxItemCols: 6,
+      maxItemRows: 1,
+      minItemCols: 1,
+      minItemRows: 1,
+      draggable: {
+        enabled: true,
+      },
+      resizable: {
+        enabled: true,
+      },
+      swap: true,
+      pushItems: true,
+      disablePushOnDrag: false,
+      disablePushOnResize: false,
+      pushDirections: {north: true, east: true, south: true, west: true},
+      pushResizeItems: false,
+      displayGrid: DisplayGrid.Always,
+      disableWindowResize: false,
+      disableWarnings: false,
+      scrollToNewItems: false
+    };
+
+    this.gridsterPage = [
+      {cols: 2, rows: 1, y: 0, x: 0},
+      {cols: 1, rows: 1, y: 0, x: 2},
+      {cols: 2, rows: 1, y: 1, x: 0},
+      {cols: 1, rows: 1, y: 1, x: 2},
+    ];
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())

@@ -1,54 +1,18 @@
-<nav *ngIf="developerMode$ | async" class="navbar navbar-expand-sm fixed-top navbar-light bg-light" style="padding: 0 28px 0 0;">
-  <ul class="navbar-nav">
-    <li class="nav-item" ngbDropdown placement="bottom-left">
-        <button id="PropertyType" class="btn nav-link formula-button" href="javascript:void(0)" ngbDropdownToggle
-          aria-haspopup="true" aria-expanded="false" [disabled]="editorOn$ | async">
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == undefined" [icon]="undefinedPropTypeIcon" class="fa-sm"></fa-icon>
-          <img *ngIf="(displayedProperty$ | async)?.propType_ == 'FORMULA'" src="assets/img/formula16.png" width="16" height="16" />
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'NUMBER'" [icon]="numberPropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'STRING'" [icon]="stringPropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'DATETIME'" [icon]="datePropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'DURATION'" [icon]="durationPropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'CHILD_TABLE'" [icon]="childTablePropTypeIcon" class="fa-sm"></fa-icon>
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == 'REFERENCE_TO'" [icon]="referenceToPropTypeIcon" class="fa-sm"></fa-icon>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="PropertyType">
-          <a (click)="clickPropertyType$.next('FORMULA')" class="dropdown-item" href="javascript:void(0)"><img src="assets/img/formula16.png" width="16" height="16" />FORMULA</a>
-          <a (click)="clickPropertyType$.next('NUMBER')" class="dropdown-item" href="javascript:void(0)"><fa-icon [icon]="numberPropTypeIcon" class="fa-sm"></fa-icon> NUMBER</a>
-          <a (click)="clickPropertyType$.next('STRING')" class="dropdown-item" href="javascript:void(0)"><fa-icon [icon]="stringPropTypeIcon" class="fa-sm"></fa-icon> STRING</a>
-          <a (click)="clickPropertyType$.next('DATETIME')" class="dropdown-item" href="javascript:void(0)"><fa-icon [icon]="datePropTypeIcon" class="fa-sm"></fa-icon> DATETIME</a>
-          <a (click)="clickPropertyType$.next('DURATION')" class="dropdown-item" href="javascript:void(0)"><fa-icon [icon]="durationPropTypeIcon" class="fa-sm"></fa-icon> DURATION</a>
-          <a (click)="clickPropertyType$.next('CHILD_TABLE')" class="dropdown-item" href="javascript:void(0)"><fa-icon [icon]="childTablePropTypeIcon" class="fa-sm"></fa-icon> CHILD_TABLE</a>
-          <a (click)="clickPropertyType$.next('REFERENCE_TO')" class="dropdown-item" href="javascript:void(0)"><fa-icon [icon]="referenceToPropTypeIcon" class="fa-sm"></fa-icon> REFERENCE_TO</a>
-        </div>
-    </li>
-    <li class="nav-item">
-      <form class="navbar-form" role="search">
-        <div class="input-group" style="min-width: 900px;">
-          <fa-icon *ngIf="(displayedProperty$ | async)?.propType_ == undefined" ></fa-icon>
-          <frmdb-formula-code-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'FORMULA'"></frmdb-formula-code-editor>
-          <frmdb-number-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'NUMBER'"></frmdb-number-prop-editor>
-          <frmdb-string-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'STRING'"></frmdb-string-prop-editor>
-          <frmdb-datetime-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'DATETIME'"></frmdb-datetime-prop-editor>
-          <frmdb-duration-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'DURATION'"></frmdb-duration-prop-editor>
-          <span *ngIf="(displayedProperty$ | async)?.propType_ == 'CHILD_TABLE'">CHILD_TABLE</span>
-          <frmdb-reference-to-prop-editor *ngIf="(displayedProperty$ | async)?.propType_ == 'REFERENCE_TO'"></frmdb-reference-to-prop-editor>
-        </div>
-      </form>
-    </li>
-  </ul>
+<div class="container" *ngIf="developerMode$ | async">
+  <div class="row">
+    <img src="assets/img/formula16.png" width="16" height="16" />
 
-  <ul class="navbar-nav ml-auto">
-    <li class="nav-item">
-        <span style="white-space: nowrap; margin-left: 2px">
-            <fa-icon *ngIf="!(editorOn$ | async)" [icon]="editIcon" class="fa-sm" (click)="clickStartEdit$.next()"></fa-icon>
-            <fa-icon *ngIf="editorOn$ | async" [icon]="discardChangesIcon" class="fa-sm" (click)="clickCancelEdits$.next()" style="color:orange"></fa-icon>
-            <fa-icon *ngIf="editorOn$ | async" [icon]="applyChangesIcon" class="fa-sm" (click)="clickSaveEdits$.next()" [style.color]="(editorExprHasErrors$ | async) ? 'red' : 'green'"></fa-icon>
-        </span>
-    </li>
-    <li class="nav-item dropdown" ngbDropdown placement="bottom-right">
-      <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="TopNavSettings" ngbDropdownToggle
-        aria-haspopup="true" aria-expanded="false">
+    <fa-icon *ngIf="!(editorOn$ | async)" [icon]="editIcon" class="fa-sm" (click)="clickStartEdit$.next()"></fa-icon>
+    <fa-icon *ngIf="editorOn$ | async" [icon]="discardChangesIcon" class="fa-sm" (click)="clickCancelEdits$.next()" style="color:orange"></fa-icon>
+
+    <fa-icon *ngIf="!(editorOn$ | async)" [icon]="edit2Icon" class="fa-sm" (click)="clickStartEdit$.next()"></fa-icon>
+    <fa-icon *ngIf="editorOn$ | async" [icon]="applyChangesIcon" class="fa-sm" (click)="clickSaveEdits$.next()"
+      [style.color]="(editorExprHasErrors$ | async) ? 'red' : 'green'"></fa-icon>
+
+    <frmdb-formula-code-editor></frmdb-formula-code-editor>
+
+    <div class="nav-item dropdown" ngbDropdown placement="bottom-right">
+      <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="TopNavSettings" ngbDropdownToggle aria-haspopup="true" aria-expanded="false">
         <fa-icon [icon]="settingsIcon" class="fa-sm"></fa-icon>
       </a>
       <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu aria-labelledby="TopNavSettings">
@@ -67,57 +31,48 @@
         </a>
         <div class="divider"></div>
         <a class="dropdown-item" href="javascript:void(0)">
-          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('red')"
-            style="color: red; cursor: pointer"></fa-icon>&nbsp;
-          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('green')"
-            style="color: green; cursor: pointer"></fa-icon>&nbsp;
-          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('blue')"
-            style="color: blue; cursor: pointer"></fa-icon>&nbsp;
-          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('purple')"
-            style="color: purple; cursor: pointer"></fa-icon>&nbsp;
-          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('orange')"
-            style="color: orange; cursor: pointer"></fa-icon>&nbsp;
+          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></fa-icon>&nbsp;
+          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></fa-icon>&nbsp;
+          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></fa-icon>&nbsp;
+          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></fa-icon>&nbsp;
+          <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></fa-icon>&nbsp;
         </a>
         <div class="divider"></div>
         <a class="dropdown-item" disabled href="javascript:void(0)">
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-4.jpg')"
-            src="assets/sidebar_images/sidebar-4.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-1.jpg')"
-            src="assets/sidebar_images/sidebar-1.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-2.jpg')"
-            src="assets/sidebar_images/sidebar-2.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-3.jpg')"
-            src="assets/sidebar_images/sidebar-3.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-5.jpg')"
-            src="assets/sidebar_images/sidebar-5.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-6.jpg')"
-            src="assets/sidebar_images/sidebar-6.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-7.jpg')"
-            src="assets/sidebar_images/sidebar-7.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-8.jpg')"
-            src="assets/sidebar_images/sidebar-8.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-9.jpg')"
-            src="assets/sidebar_images/sidebar-9.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-10.jpg')"
-            src="assets/sidebar_images/sidebar-10.jpg" style="margin-right: 4px" />
-          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-11.jpg')"
-            src="assets/sidebar_images/sidebar-11.jpg" style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-4.jpg')" src="assets/sidebar_images/sidebar-4.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-1.jpg')" src="assets/sidebar_images/sidebar-1.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-2.jpg')" src="assets/sidebar_images/sidebar-2.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-3.jpg')" src="assets/sidebar_images/sidebar-3.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-5.jpg')" src="assets/sidebar_images/sidebar-5.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-6.jpg')" src="assets/sidebar_images/sidebar-6.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-7.jpg')" src="assets/sidebar_images/sidebar-7.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-8.jpg')" src="assets/sidebar_images/sidebar-8.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-9.jpg')" src="assets/sidebar_images/sidebar-9.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-10.jpg')" src="assets/sidebar_images/sidebar-10.jpg"
+            style="margin-right: 4px" />
+          <img height="50" width="30" (click)="switchSideBarImage('assets/sidebar_images/sidebar-11.jpg')" src="assets/sidebar_images/sidebar-11.jpg"
+            style="margin-right: 4px" />
         </a>
         <div class="divider"></div>
-        <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="60" width="80"
-            src="assets/light.jpg" />
+        <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(0)"><img height="60" width="80" src="assets/light.jpg" />
           Light Theme</a>
-        <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="60" width="80"
-            src="assets/material.jpg" />
+        <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(1)"><img height="60" width="80" src="assets/material.jpg" />
           Material Theme</a>
-        <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="60" width="80"
-            src="assets/nowui.jpg" />
+        <a class="dropdown-item" href="javascript:void(0)" (click)="switchTheme(2)"><img height="60" width="80" src="assets/nowui.jpg" />
           NowUI Theme</a>
         <div class="divider"></div>
         <a class="dropdown-item" href="javascript:void(0)">
           <span style="font-size: 75%">{{currentEntity?._id}}</span>
-          <input style="width: 5em" #tableName type="text" (click)="stopPropagation($event)"
-            (keydown)="keepPrefix(tableName, '__')" value="__" />
+          <input style="width: 5em" #tableName type="text" (click)="stopPropagation($event)" (keydown)="keepPrefix(tableName, '__')" value="__" />
           <span title="{{'add table' | i18n}}" class="add-del-things" (click)="addTable(tableName)">
             <fa-icon [icon]="addIcon" class="fa-sm"></fa-icon>
             <sup>
@@ -126,8 +81,7 @@
           </span>
           &nbsp;/&nbsp;
           <span style="font-size: 75%">{{currentEntity?._id}}</span>
-          <input style="width: 5em" #columnName type="text" (click)="stopPropagation($event)"
-            (keydown)="keepPrefix(columnName, '.')" value="." />
+          <input style="width: 5em" #columnName type="text" (click)="stopPropagation($event)" (keydown)="keepPrefix(columnName, '.')" value="." />
           <span title="{{'add column' | i18n}}" class="add-del-things" (click)="addColumnToCurrentTable(columnName)">
             <fa-icon [icon]="addIcon" class="fa-sm"></fa-icon>
             <sup>
@@ -159,6 +113,13 @@
           {{ 'Change app' | i18n }}
         </a>
       </div>
-    </li>
-  </ul>
-</nav>
+    </div>
+  </div>
+  <div class="row" style="height: 118px">
+    <gridster [options]="gridsterOptions">
+      <gridster-item [item]="item" *ngFor="let item of gridsterPage">
+        <!-- your content here -->
+      </gridster-item>
+    </gridster>
+  </div>
+</div>

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import { GridsterModule } from 'angular-gridster2';
 
 import { DevModeOptsComponent } from './dev-mode-opts/dev-mode-opts.component';
 import { CrosscuttingModule } from '../crosscutting/crosscutting.module';
@@ -23,6 +24,7 @@ import { DurationPropEditorComponent } from './duration-prop-editor/duration-pro
     CrosscuttingModule,
     FontAwesomeModule,
     NgbModule,
+    GridsterModule,
   ],
   declarations: [
     DevModeOptsComponent,
