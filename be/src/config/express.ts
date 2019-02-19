@@ -32,57 +32,61 @@ export default function (frmdbEngine: FrmdbEngine) {
         res.json({ message: 'test' });
     });
 
-    app.get('/query/:dbname/:id', function (req, res) {
+    app.get('/query/:appname/:id', function (req, res) {
         res.json({ message: 'test' });
     });
 
-    app.post('/api/:dbname/:entityName/simpleadhocquery', async function(req, res) {
+    app.post('/api/:appname/:entityName/simpleadhocquery', async function(req, res) {
         let query = req.body as SimpleAddHocQuery;
         let ret = await frmdbEngine.frmdbEngineStore.simpleAdHocQuery(req.params.entityName, query);
         res.json(ret);
     });
 
-    app.get('/api/:dbname/byprefix/:prefix', async function(req, res) {
+    app.get('/api/:appname/byprefix/:prefix', async function(req, res) {
         let ret = await frmdbEngine.frmdbEngineStore.getDataListByPrefix(req.params.prefix);
         res.json(ret);
     });
-    app.get('/api/:dbname/obj/:id', async function(req, res) {
+    app.get('/api/:appname/obj/:id', async function(req, res) {
         let obj = await frmdbEngine.frmdbEngineStore.getDataObj(req.params.id);
         res.json(obj);
     });
-    app.get('/api/:dbname/table/:id', async function(req, res) {
+    app.get('/api/:appname/table/:id', async function(req, res) {
         let table = await frmdbEngine.frmdbEngineStore.getTable(req.params.id);
         res.json(table);
     });
-    app.get('/api/:dbname/form/:id', async function(req, res) {
+    app.get('/api/:appname/form/:id', async function(req, res) {
         let form = await frmdbEngine.frmdbEngineStore.getForm(req.params.id);
         res.json(form);
     });
-    app.get('/api/:dbname/schema', async function(req, res) {
+    app.get('/api/:appname/schema', async function(req, res) {
         let schema = await frmdbEngine.frmdbEngineStore.getSchema();
         res.json(schema);
     });
-    app.put('/api/:dbname/schema', async function(req, res) {
-        return frmdbEngine.frmdbEngineStore.init(req.body)
-            .then(ret => res.json(ret))
-            .catch(err => console.error(err));
-    });
-    app.get('/api/:dbname/entity/:id', async function(req, res) {
+    app.get('/api/:appname/entity/:id', async function(req, res) {
         let entity = await frmdbEngine.frmdbEngineStore.getEntity(req.params.id);
         res.json(entity);
     });
 
-    app.put('/api/:dbname/bulk', async function(req, res) {
+    //all write operations are handled via events
+    app.post('/api/:appname/event', async function (req, res) {
+        return frmdbEngine.processEvent(req.body)
+            .then(notif => res.json(notif))
+            .catch(err => console.error(err));
+    });
+
+
+    //TODO: these APIs are mostly for OAM, should probably not be used directly by end-users
+    app.put('/api/:appname/schema', async function(req, res) {
+        return frmdbEngine.frmdbEngineStore.init(req.body)
+            .then(ret => res.json(ret))
+            .catch(err => console.error(err));
+    });
+    app.put('/api/:appname/bulk', async function(req, res) {
         return frmdbEngine.frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
 
-    app.post('/api/:dbname/event', async function (req, res) {
-        return frmdbEngine.processEvent(req.body)
-            .then(notif => res.json(notif))
-            .catch(err => console.error(err));
-    });
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {

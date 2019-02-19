@@ -8,12 +8,12 @@ import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data
 import { Form } from "@core/domain/uimetadata/form";
 import { Table } from "@core/domain/uimetadata/table";
 import { MwzEvents } from "@core/domain/event";
-import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
 import { KeyValueError } from "@core/domain/key_value_obj";
-import { AddHocQuery, isExpressionColumn, isSubqueryColumn } from "@core/domain/metadata/ad_hoc_query";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
 import { evalExprES5 } from "./map_reduce_utils";
 import * as _ from "lodash";
+import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
@@ -28,6 +28,13 @@ export class FrmdbStore {
         await this.putSchema(schema);
         let kvsList = await Promise.all(Object.keys(this.schema.entities).map(entityName => this.getDataKvs(entityName)));
         return Promise.all(kvsList.map(kvs => kvs.init()));
+    }
+
+    public async syncSchema() {
+        let savedSchema = await this.getSchema();
+        if (! _.isEqual(savedSchema, this.schema)) {
+            await this.putSchema(this.schema);
+        }
     }
 
     private async getTransactionsDB() {
@@ -69,11 +76,11 @@ export class FrmdbStore {
     }
     public async putSchema(schema: Schema): Promise<Schema> {
         let ret: Schema = await (await this.getMetadataKvs()).put(schema) as Schema;
-        this.schema = ret;
+        Object.assign(this.schema, ret);
         return ret;
     }
     public setSchema(schema: Schema) {
-        this.schema = schema;
+        Object.assign(this.schema, schema);
     }
 
     public getEntities(): Promise<Entity[]> {
@@ -173,82 +180,16 @@ export class FrmdbStore {
         return (await this.getDataKvs(entityName)).simpleAdHocQuery(query);
     }
 
-    public async adHocQuery(entityName: string, query: AddHocQuery): Promise<any[]> {
-        //First we filter the rows
-        let filteredObjs: any[] = [];
-        let all = await this.all(entityName);
-        for (let obj of all) {
-            let filteredObj: any = _.cloneDeep(obj);
-            for (let col of query.extraColsBeforeGroup) {
-                if (isSubqueryColumn(col)) {
-                    let val = await this.adHocQuery(entityName, col.subquery);
-                    //TODO: check that the return of the subquery is a scalar value: string | number | boolean
-                    filteredObj[col.alias] = val[0][col.subquery.returnedColumns[0] + ''];
-                }
-            }
-
-            for (let col of query.extraColsBeforeGroup) {
-                if (isExpressionColumn(col)) {
-                    let x = evalExprES5(filteredObj, col.expr);
-                    filteredObj[col.alias] = col.expr instanceof Array ? kvsKey2Str(x) : x;
-                }
-            }
-
-            let matchesFilter: boolean = true;
-            for (let filter of query.filters) {
-                if (!evalExprES5(filteredObj, filter)) {
-                    matchesFilter = false;
-                    break;
-                }
-            }
-            if (matchesFilter) filteredObjs.push(filteredObj);
-        }
-
-        if (query.groupColumns && query.groupColumns.length > 0) {
-            //Then we group them
-            let grouped: any = {};
-            for (let obj of filteredObjs) {
-                let groupKey: string[] = [];
-                let groupObj: any = {};
-                for (let group of query.groupColumns) {
-                    groupKey.push(obj[group]);
-                    groupObj[group] = obj[group];
-                }
-
-                let key = kvsKey2Str(groupKey);
-                if (grouped[key]) {
-                    groupObj = grouped[key];
-                } else {
-                    grouped[key] = groupObj;
-                }
-
-                for (let groupAgg of query.groupAggs) {
-                    groupObj[groupAgg.alias] = this.evaluateAggregation(obj[groupAgg.colName], groupAgg.reduceFun,
-                        groupObj[groupAgg.alias] || ReduceFunDefaultValue[groupAgg.reduceFun.name]);
-                }
-            }
-
-            //Then we filter the groups
-            let groupedFiltered: any[] = [];
-            for (let obj of Object.values(grouped)) {
-
-                for (let col of query.returnedColumns) {
-                    if (isExpressionColumn(col)) {
-                        obj[col.alias] = evalExprES5(obj, col.expr);
-                    }
-                }
-
-                let matchesFilter: boolean = true;
-                for (let filter of query.groupFilters) {
-                    if (!evalExprES5(obj, filter)) {
-                        matchesFilter = false;
-                        break;
-                    }
-                }
-                if (matchesFilter) groupedFiltered.push(obj);
-            }
-
-            return Promise.resolve(groupedFiltered);
-        } else return Promise.resolve(filteredObjs);
+    public async mapReduceAdHocQuery(obs: DataObj, map: MapFunctionAndQueryT, reduceFun: ReduceFun) {
+        let start = kvsKey2Str(evalExprES5({ $ROW$: obs }, map.query.startkeyExpr));
+        let end = kvsKey2Str(evalExprES5({ $ROW$: obs }, map.query.startkeyExpr));
+        let kvs = await this.getDataKvs(map.entityName);
+        return kvs.reduceQuery(map.keyExpr, {
+            startkey: start,
+            endkey: end,
+            inclusive_start: map.query.inclusive_start,
+            inclusive_end: map.query.inclusive_end,
+        }, map.valueExpr, reduceFun);
     }
+
 }

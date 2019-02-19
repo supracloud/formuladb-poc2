@@ -58,13 +58,13 @@ describe('Inventory Metadata', () => {
 
         let pl1 = { _id: "INV__PRD__Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
         await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
-        let ri1_1 = { _id: "INV__Receipt__Item~~1__1", product_location_id: "INV__PRD__Location~~1", quantity: 10}; 
+        let ri1_1 = { _id: "INV__Receipt__Item~~1__1", product_id: "INV__PRD__Location~~1", quantity: 10}; 
         await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
-        let ri1_2 = { _id: "INV__Receipt__Item~~1__2", product_location_id: "INV__PRD__Location~~1", quantity: 5}; 
+        let ri1_2 = { _id: "INV__Receipt__Item~~1__2", product_id: "INV__PRD__Location~~1", quantity: 5}; 
         await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
-        let oi1_1 = { _id: "INV__Order__Item~~1__1", product_location_id: "INV__PRD__Location~~1", quantity: 10};
+        let oi1_1 = { _id: "INV__Order__Item~~1__1", product_id: "INV__PRD__Location~~1", quantity: 10};
         await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
-        let oi1_2 = { _id: "INV__Order__Item~~1__2", product_location_id: "INV__PRD__Location~~1", quantity: 4};
+        let oi1_2 = { _id: "INV__Order__Item~~1__2", product_id: "INV__PRD__Location~~1", quantity: 4};
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);
@@ -107,7 +107,8 @@ describe('Inventory Metadata', () => {
 
         // check auto-correction
         let oi1_2new = _.cloneDeep(oi1_2);
-        oi1_2new.quantity = 10;
+        let oi1_2newQuantity = 10;
+        oi1_2new.quantity = oi1_2newQuantity;
         await putObj(ri1_1new);
         await putObj(oi1_2new);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
@@ -116,7 +117,7 @@ describe('Inventory Metadata', () => {
         expect(availStock).toEqual(0);
         let o: any = await frmdbTStore.getDataObj(oi1_2new._id);
         expect(o.quantity).toEqual(6);
-        expect(o.error_quantity).toEqual(4);
+        expect(o.error_quantity).toEqual(oi1_1.quantity + oi1_2newQuantity - ri1_1new.quantity - ri1_2.quantity);
         
         done();
     });

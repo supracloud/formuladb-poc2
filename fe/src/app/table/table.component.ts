@@ -63,7 +63,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     private table$: Observable<tableState.Table>;
     private currentEntity: Entity | undefined;
-    public data: tableState.DataObj[] = [];
+    public currentRow: tableState.DataObj;
     private selectedRowIdx: number;
     private highlighted: string;
     private agGridOptions: GridOptions = {};
@@ -74,8 +74,8 @@ export class TableComponent implements OnInit, OnDestroy {
     private subscriptions: Subscription[] = [];
     private highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
 
-    private frameworkComponents;
-    private defaultColDef;
+    public frameworkComponents;
+    public defaultColDef;
 
     private tableState: tableState.Table;
 
@@ -187,10 +187,8 @@ export class TableComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromTable.UserSelectCell(event.column.getColDef().field));
     }
 
-    onEditClicked(row: tableState.DataObj) {
-        if (this.currentEntity && this.currentEntity.isEditable) {
-            this.router.navigate(['./' + row._id], { relativeTo: this.route });
-        }
+    onRowClicked(event: RowClickedEvent) {
+        this.store.dispatch(new fromTable.UserSelectRow(event.data));
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {

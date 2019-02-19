@@ -17,6 +17,8 @@ export class TableService {
         let req = params.request;
         self.backendService.simpleAdHocQuery(entity._id, req as SimpleAddHocQuery)
           .then((data: any[]) => {
+            console.log("%c <---- simpleAdHocQuery: ",
+              "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", data);
             return params.successCallback(data, 
               self.getRowCount(req.startRow, req.endRow - req.startRow, data.length))
           })
