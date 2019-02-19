@@ -1,13 +1,7 @@
 <div class="formula-code-editor">
-    <a class="formula-button" [class.isDisabled]="!formulaEditorService.developerMode" href="javascript:void(0)">
-        <img (click)="startEditing()" src="assets/img/formula16.png" width="16" height="16" *ngIf="!editorOn" />
-        <span style="white-space: nowrap" *ngIf="editorOn">
-            <fa-icon [icon]="discardChangesIcon" class="fa-sm" (click)="discardChanges()"></fa-icon>
-            <fa-icon [icon]="applyChangesIcon" class="fa-sm" (click)="applyChanges()"></fa-icon>
-        </span>
-    </a>
-    <div>
+    <div style="margin: 0 5px 0 5px;">
       <textarea class="editor-textarea" 
+        [disabled]="!editorOn"
         #editor 
         spellcheck="false" 
         [(ngModel)]="editorExpr" 

@@ -121,7 +121,11 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventSetPropertyN: {
-                this.changeEntity(eventFromBe.targetEntity._id);
+                if (this.router.url.indexOf(eventFromBe.targetEntity._id) >= 0) {
+                    this.changeEntity(eventFromBe.targetEntity._id);
+                } else {
+                    this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.targetEntity._id)]);
+                }
                 break;
             }
             case events.ServerEventDeletePropertyN: {

@@ -7,3 +7,11 @@
 :host > .navbar-light .navbar-nav .nav-link {
     padding: 0;
 }
+
+:host {
+    border-bottom: 1px solid black;
+}
+
+button[disabled] {
+    //TODO, grey out images
+}

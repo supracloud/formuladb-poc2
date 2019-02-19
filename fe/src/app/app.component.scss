@@ -1,0 +1,12 @@
+#frmdb-toggle-dev-mode {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    opacity: 0.4;
+    cursor: pointer;
+    z-index: 12345;
+}
+
+#frmdb-toggle-dev-mode.dev-mode-on {
+    opacity: 1;
+}

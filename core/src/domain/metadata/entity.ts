@@ -88,6 +88,7 @@ export const enum Pn {
     STRING = "STRING",
     TEXT = "TEXT",
     DATETIME = "DATETIME",
+    DURATION = "DURATION",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
     EXTENDS_ENTITY = "SUB_ENTITY",
@@ -117,6 +118,13 @@ export interface DatetimeProperty {
     name: string;
     allowNull?: boolean;
 }
+
+export interface DurationProperty {
+    propType_: Pn.DURATION;
+    name: string;
+    allowNull?: boolean;
+}
+
 
 /**
  * Table of existing entities or entities created
@@ -187,6 +195,7 @@ export type EntityProperty =
     | StringProperty
     | TextProperty
     | DatetimeProperty
+    | DurationProperty
     | ChildTableProperty
     | SubTableProperty
     | ExtendsEntityProperty

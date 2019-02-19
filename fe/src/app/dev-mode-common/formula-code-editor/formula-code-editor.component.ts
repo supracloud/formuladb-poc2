@@ -6,8 +6,9 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
 import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faTimesCircle, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglass, faHourglassHalf, faTable, faHandPointRight, faShareSquare } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime } from 'rxjs/operators';
+import { Pn } from '@core/domain/metadata/entity';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -28,11 +29,8 @@ export class FormulaCodeEditorComponent implements OnInit {
   @ViewChild('editor')
   private textarea: ElementRef;
 
-  applyChangesIcon = faCheckCircle;
-  discardChangesIcon = faTimesCircle;
-
   editorExpr: string;
-  editorOn: boolean;
+  editorOn: boolean = false;
   editorExprHasErrors: boolean = false;
 
   suggestion?: (string) => string[];
@@ -122,7 +120,7 @@ export class FormulaCodeEditorComponent implements OnInit {
     }
   }
   onEdit(): void {
-    this.onEdit$.next()
+    this.onEdit$.next();
   }
   performOnEdit(): void {
     this.ftext = "";
@@ -151,7 +149,14 @@ export class FormulaCodeEditorComponent implements OnInit {
       if (!hasErrors) {
         this.editorExprHasErrors = false;
         this.formulaEditorService.previewFormula(this.editorExpr);
+        this.formulaEditorService.editorExprHasErrors$.next(false);
+        this.formulaEditorService.editedProperty$.next({
+          name: ((this.formulaEditorService.formulaState||{}as any).editedProperty || {}as any).name, 
+          propType_: Pn.FORMULA,
+          formula: this.editorExpr,
+        });
       } else {
+        this.formulaEditorService.editorExprHasErrors$.next(true);
         this.editorExprHasErrors = true;
       }
     }
@@ -234,25 +239,6 @@ export class FormulaCodeEditorComponent implements OnInit {
     }
 
     return ret.join('');
-  }
-
-  startEditing() {
-    this.formulaEditorService.toggleFormulaEditor();
-  }
-  applyChanges() {
-    if (!this.editorExprHasErrors) {
-      if (confirm("Please confirm, apply modifications to DB ?")) {
-        this.formulaEditorService.applyChangesToFormula(this.editorExpr);
-        this.formulaEditorService.toggleFormulaEditor();
-      }
-    } else {
-      alert("Expression has errors, cannot apply on DB");
-    }
-  }
-  discardChanges() {
-    if (confirm("Please confirm, dicard changes ?")) {
-      this.formulaEditorService.toggleFormulaEditor();
-    }
   }
 
 }

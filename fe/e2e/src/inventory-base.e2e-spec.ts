@@ -23,7 +23,8 @@ var messages = [ '<speak>Navigate to inventory page<break time="1s"/></speak>',
                  '<speak>See the data in order page<break time="1s"/></speak>',
                  '<speak>Edit item quantity and be auto-corrected<break time="1s"/></speak>',
                  '<speak>Navigate back to product locations<break time="1s"/></speak>',
-                 '<speak>Notice the stock is zero<break time="1s"/></speak>' ];
+                 '<speak>Notice the stock is zero<break time="1s"/></speak>', 
+];
 
 var durations = new Array(messages.length);
 

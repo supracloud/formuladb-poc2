@@ -14,7 +14,6 @@ import { OnInit, Directive, HostBinding, OnDestroy, HostListener } from '@angula
     '[style.box-shadow]': '"5px 5px grey"',
   }
 })
-// <div ="true" [style.transform]="'translate3d('+x+'px,'+y+'px,0px)'" (mousedown)="dragStartHandle($event)"
 export class FrmdbPopupDirective implements OnInit, OnDestroy {
 
   @HostBinding('style.transform')

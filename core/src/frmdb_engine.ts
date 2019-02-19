@@ -110,7 +110,7 @@ export class FrmdbEngine {
             ;
     }
 
-    private newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
+    private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         let newEntity: Entity = { _id: event.path, props: {} };
 
         return this.frmdbEngineStore.putEntity(newEntity)
