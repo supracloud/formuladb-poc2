@@ -41,6 +41,7 @@ import { TableService } from '../table/table.service';
 import { FormItemEditorComponent } from '../form/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '../form/form-item-editor/form-input-editor/form-input-editor.component';
 import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
+import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 
 @NgModule({
   imports: [
@@ -79,6 +80,7 @@ import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
     FormInputEditorComponent
   ],
   providers: [
+    InjectionService,
     FormEditingService,
     TableService,
     I18nPipe

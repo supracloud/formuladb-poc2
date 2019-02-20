@@ -41,7 +41,6 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
   gradient = false;
   showLegend = true;
   legendTitle = 'Legend';
-  legendPosition = 'right';
   showXAxisLabel = true;
   tooltipDisabled = false;
   xAxisLabel = 'Country';

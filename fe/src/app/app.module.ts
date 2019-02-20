@@ -27,6 +27,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
 import { FormulaEditorModule } from './formula-editor/formula-editor.module';
+import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 
 export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
 
@@ -58,6 +59,7 @@ export function getReducers() {
     DevModeCommonModule,
   ],
   providers: [
+    InjectionService,
     BackendService,
     {
       provide: REDUCER_TOKEN,
