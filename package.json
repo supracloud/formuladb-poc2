@@ -5,7 +5,7 @@
   "scripts": {
     "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
     "start": "node dist/be/src/server.js",
-    "initpgdb": "node storage/bin/start_postgres.js"
+    "initpgdb": "docker-compose up -d db"
   },
   "dependencies": {
   },
