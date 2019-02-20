@@ -4,8 +4,8 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
+import { NgModule, InjectionToken } from '@angular/core';
+import { StoreModule, ActionReducerMap } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
@@ -28,6 +28,12 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
 import { FormulaEditorModule } from './formula-editor/formula-editor.module';
 
+export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
+
+export function getReducers() {
+  return appState.reducers;
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +44,7 @@ import { FormulaEditorModule } from './formula-editor/formula-editor.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    StoreModule.forRoot(appState.reducers, { initialState: appState.appInitialState ,metaReducers: [appState.appMetaReducer] }),
+    StoreModule.forRoot(REDUCER_TOKEN, { initialState: appState.getInitialState, metaReducers: [appState.appMetaReducer] }),
     StoreDevtoolsModule.instrument({
       maxAge: 50, // Retains last 25 states
       // logOnly: environment.production, // Restrict extension to log-only mode
@@ -53,6 +59,11 @@ import { FormulaEditorModule } from './formula-editor/formula-editor.module';
   ],
   providers: [
     BackendService,
+    {
+      provide: REDUCER_TOKEN,
+      useFactory: getReducers,
+    }
+
   ],
   bootstrap: [AppComponent]
 })
