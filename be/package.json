@@ -14,7 +14,8 @@
     "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",
-    "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"sleep 2 && npm run jasmine:watch\" "
+    "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"sleep 2 && npm run jasmine:watch\" ",
+    "build-prod": "rm -rf dist && tsc -p src --inlineSourceMap --outFile dist/server-ts.js -m system && node src/minify.js"
   },
   "dependencies": {
     "acorn": "^5.4.1",
@@ -65,7 +66,9 @@
     "tsc-watch": "^1.0.16",
     "typescript": "^2.8.3",
     "uuid": "^3.2.1",
-    "watch": "^1.0.2"
+    "watch": "^1.0.2",
+    "@node-minify/core": "^4.0.5",
+    "@node-minify/terser": "^4.1.0"
   },
   "_moduleAliases": {
     "@storage": "./dist/storage/src",
