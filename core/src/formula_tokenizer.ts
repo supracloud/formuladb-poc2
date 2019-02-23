@@ -1,8 +1,8 @@
-import { Expression, isIdentifier, isLiteral } from 'jsep';
+import { Expression, isIdentifier, isLiteral, isCallExpression, isBinaryExpression, isLogicalExpression } from 'jsep';
 import { compileFormulaForce, FormulaCompilerError, $s2e } from './formula_compiler';
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict } from './functions_compiler';
 import * as _ from 'lodash';
-import { isCompiledFormula } from './domain/metadata/execution_plan';
+import { isCompiledFormula, isScalarCallExpression } from './domain/metadata/execution_plan';
 
 
 export enum TokenType {
@@ -115,13 +115,13 @@ export class FormulaTokenizer {
 
             case 'ArrayExpression':
                 return [this.punctuationToken(node.startIndex, '[', context)]
-                    .concat(node.elements.reduce((arr, e) => arr.concat(this.walkASTAndStaticCheck(e, context)), [] as Token[]))
+                    .concat(node.elements.reduce((arr, e) => arr.concat(this.walkASTAndStaticCheck(e, {...context, parentNode: node})), [] as Token[]))
                     .concat(this.punctuationToken(node.endIndex - 1, ']', context));
 
             case 'BinaryExpression':
-                return this.walkASTAndStaticCheck(node.left, context)
+                return this.walkASTAndStaticCheck(node.left, {...context, parentNode: node})
                     .concat(this.punctuationToken(node.left.endIndex, ' ' + node.operator + ' ', context))
-                    .concat(this.walkASTAndStaticCheck(node.right, context));
+                    .concat(this.walkASTAndStaticCheck(node.right, {...context, parentNode: node}));
 
             case 'CallExpression':
                 ret = [];
@@ -129,12 +129,12 @@ export class FormulaTokenizer {
                 if (isIdentifier(node.callee)) {
                     ret.push(this.expr2token(TokenType.FUNCTION_NAME, node.callee, context));
                 } else {
-                    ret.push.apply(ret, this.walkASTAndStaticCheck(node.callee, context));
+                    ret.push.apply(ret, this.walkASTAndStaticCheck(node.callee, {...context, parentNode: node}));
                 }
                 ret.push(this.punctuationToken(node.callee.endIndex, '(', context));
                 let endParanthesisPos = node.arguments.length > 0 ? node.arguments[node.arguments.length - 1].endIndex : node.callee.endIndex + 1;
                 for (var i = 0; i < node.arguments.length; i++) {
-                    let tokensForArgument = this.walkASTAndStaticCheck(node.arguments[i], context);
+                    let tokensForArgument = this.walkASTAndStaticCheck(node.arguments[i], {...context, parentNode: node});
                     this.setCallStackFrame(tokensForArgument, functionName, i);
                     ret = [...ret, ...tokensForArgument];
                     if (i < node.arguments.length - 1) ret.push(this.punctuationToken(node.endIndex, ', ', context));
@@ -146,25 +146,39 @@ export class FormulaTokenizer {
                 return ret;
 
             case 'ConditionalExpression':
-                return this.walkASTAndStaticCheck(node.test, context)
-                    .concat(this.walkASTAndStaticCheck(node.consequent, context))
-                    .concat(this.walkASTAndStaticCheck(node.alternate, context))
+                return this.walkASTAndStaticCheck(node.test, {...context, parentNode: node})
+                    .concat(this.walkASTAndStaticCheck(node.consequent, {...context, parentNode: node}))
+                    .concat(this.walkASTAndStaticCheck(node.alternate, {...context, parentNode: node}))
                     ;
 
             case 'Identifier':
-                let token = this.expr2token(node.startIndex == 0 ? TokenType.FUNCTION_NAME : TokenType.TABLE_NAME, node, context);
+                let token: Token;
                 if (node.startIndex == 0) {
+                    token = this.expr2token(TokenType.FUNCTION_NAME, node, context);
                     if (FunctionsDict[token.value]) {
                         token.errors.push("Function " + token.value + " is missing ( *parameters )");
                     } else {
                         token.errors.push("Uknown function " + token.value);
                     }
+                    return [token];
                 }
-                return [{
-                    ...token,
-                    tableName: node.belongsTo || context.targetEntityName,
-                    columnName: node.name
-                }];
+                else if (context.parentNode && (
+                    isBinaryExpression(context.parentNode) 
+                    || isLogicalExpression(context.parentNode) 
+                    || isScalarCallExpression(context.parentNode) 
+                )) {
+                    return [{
+                        ...this.expr2token(TokenType.COLUMN_NAME, node, context),
+                        tableName: node.belongsTo || context.targetEntityName,
+                        columnName: node.name
+                    }];
+                } 
+                else {
+                    return [{
+                        ...this.expr2token(TokenType.TABLE_NAME, node, context),
+                        tableName: node.name,
+                    }];
+                }
 
             case 'NumberLiteral':
                 return [this.expr2token(TokenType.LITERAL, node, context)];
@@ -176,9 +190,9 @@ export class FormulaTokenizer {
                 return [this.expr2token(TokenType.LITERAL, node, context)];
 
             case 'LogicalExpression':
-                return this.walkASTAndStaticCheck(node.left, context)
+                return this.walkASTAndStaticCheck(node.left, {...context, parentNode: node})
                     .concat(this.punctuationToken(node.left.endIndex, node.operator, context))
-                    .concat(this.walkASTAndStaticCheck(node.right, context));
+                    .concat(this.walkASTAndStaticCheck(node.right, {...context, parentNode: node}));
 
             case 'MemberExpression':
                 ret = [];
@@ -199,7 +213,7 @@ export class FormulaTokenizer {
                             tableName: tableName,
                         });
                     } else {
-                        ret.push.apply(ret, this.walkASTAndStaticCheck(node.object, context));
+                        ret.push.apply(ret, this.walkASTAndStaticCheck(node.object, {...context, parentNode: node}));
                     }
                     if (isIdentifier(node.property)) {
                         ret.push(this.punctuationToken(node.endIndex, '.', context));
@@ -210,7 +224,7 @@ export class FormulaTokenizer {
                         });
                     } else {
                         ret.push(this.punctuationToken(node.endIndex, '.', context));
-                        ret.push.apply(ret, this.walkASTAndStaticCheck(node.property, context));
+                        ret.push.apply(ret, this.walkASTAndStaticCheck(node.property, {...context, parentNode: node}));
                     }
                 }
                 return ret;
@@ -220,7 +234,7 @@ export class FormulaTokenizer {
 
             case 'UnaryExpression':
                 return [this.punctuationToken(node.argument.startIndex - 1, node.operator, context)]
-                    .concat(this.walkASTAndStaticCheck(node.argument, context));
+                    .concat(this.walkASTAndStaticCheck(node.argument, {...context, parentNode: node}));
 
             case 'Compound':
                 throw new Error("Compound expr are not supported: " + node.origExpr);

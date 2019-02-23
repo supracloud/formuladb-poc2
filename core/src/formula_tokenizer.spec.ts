@@ -114,7 +114,6 @@ describe('FormulaTokenizer', () => {
             pstart: 42,
             type: TokenType.FUNCTION_NAME,
             value: "ROUND",
-            errors: [],
             suggestions: [],
             callStack: [{ functionName: "SUMIF", argumentName: "logicalExpression" }],
         }));
@@ -146,7 +145,7 @@ describe('FormulaTokenizer', () => {
         let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', "suf(A.num");
         expect(parserTokens[0]).toEqual(jasmine.objectContaining({
             callStack: [],
-            errors:["Cannot compile formula: Error: Unknown function: suf(A.num)"],
+            errors:["Unknown function: suf(A.num)"],
             pend: 3,
             pstart: 0,
             type: TokenType.FUNCTION_NAME,
@@ -172,6 +171,7 @@ describe('FormulaTokenizer', () => {
                 expect(parserTokens[i]).toEqual(jasmine.objectContaining(token));
             }
             for (let [i, suggs] of suggestions.entries()) {
+                if (!suggs) continue;
                 let suggsForToken = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[i]);
                 for (let [j, s] of suggs.entries()) {
                     expect(suggsForToken[j]).toEqual(jasmine.objectContaining(s));
@@ -207,6 +207,19 @@ describe('FormulaTokenizer', () => {
         [{suggestion: "REFERENCE_TO"}]
     ]);
 
+
+    test(it, "REFERENCE_TO(Bla", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "REFERENCE_TO",
+        errors: ["REFERENCE_TO expects an TableName.column_name as argument"]
+    }, {
+        type: TokenType.PUNCTUATION,
+        value: "(",
+    }], [
+        [{suggestion: "REFERENCE_TO"}],
+        null,
+        [{suggestion: "A"}, {suggestion: "B"}]
+    ]);
 
     test(it, "num", [{
         type: TokenType.FUNCTION_NAME,

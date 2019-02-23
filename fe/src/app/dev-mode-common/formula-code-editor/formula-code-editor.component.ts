@@ -143,7 +143,7 @@ export class FormulaCodeEditorComponent implements OnInit {
             break;
           default:
             this.ftext += this.renderToken(tokens[i]);
-            hasErrors = tokens[i].errors && tokens[i].errors.length > 0
+            hasErrors = hasErrors || (tokens[i].errors && tokens[i].errors.length > 0);
         }
       }
       this.cursorMove(this.textarea.nativeElement.selectionStart);
