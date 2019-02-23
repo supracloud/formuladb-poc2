@@ -161,5 +161,58 @@ describe('FormulaTokenizer', () => {
             suggestion: 'SUMIF',
             matchedFragments: [{ startPos: 0, endPos: 1 }, { startPos: 4, endPos: 4 }],
         });
-    })
+    });
+
+    function test(it: any, expr: string, tokens: any[], suggestions: any[]) {
+        it ('test ' + expr, () => {
+            let formulaStaticTypeChecker = new FormulaTokenizer();
+            let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
+            let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', expr);
+            for (let [i, token] of tokens.entries()) {
+                expect(parserTokens[i]).toEqual(jasmine.objectContaining(token));
+            }
+            for (let [i, suggs] of suggestions.entries()) {
+                let suggsForToken = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[i]);
+                for (let [j, s] of suggs.entries()) {
+                    expect(suggsForToken[j]).toEqual(jasmine.objectContaining(s));
+                }
+            }
+        });
+    }
+
+    test(it, "REF", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "REF",
+        errors: ["Uknown function REF"]
+    }], [
+        [{suggestion: "REFERENCE_TO"}]
+    ]);
+
+    test(it, "REFERENCE_TO", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "REFERENCE_TO",
+        errors: ["Function REFERENCE_TO is missing ( *parameters )"]
+    }], [
+        [{suggestion: "REFERENCE_TO"}]
+    ]);
+
+    test(it, "REFERENCE_TO(", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "REFERENCE_TO",
+        errors: ["REFERENCE_TO expects an TableName.column_name as argument"]
+    }, {
+        type: TokenType.PUNCTUATION,
+        value: "(",
+    }], [
+        [{suggestion: "REFERENCE_TO"}]
+    ]);
+
+
+    test(it, "num", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "num",
+    }], [
+        [{suggestion: "NUMBER"}]
+    ]);
+
 });

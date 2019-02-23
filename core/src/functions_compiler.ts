@@ -38,7 +38,7 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "@core/domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName } from './formula_compiler';
+import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName, FormulaCompilerError } from './formula_compiler';
 import { _throw } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 
@@ -377,7 +377,8 @@ function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
     };
 }
 
-function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression | CallExpression): CompiledScalar {
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression): CompiledScalar {
+    if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO expects an TableName.column_name as argument");
     return propertyTypeFunction(fc);
 }
 function NUMBER(fc: FuncCommon) {
@@ -572,6 +573,7 @@ export const PropertyTypeFunctions = {
     REFERENCE_TO: REFERENCE_TO,
 }
 
+export const FunctionsDict: {[x: string]: Function} = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
 export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))

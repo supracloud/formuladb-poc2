@@ -4,6 +4,7 @@
 dist
 ./tmp
 ./out-tsc
+./e2e/protractor_videos
 
 # dependencies
 node_modules
