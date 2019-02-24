@@ -168,6 +168,7 @@ describe('FormulaTokenizer', () => {
             let formulaTokenizerSchemaChecker = new FormulaTokenizerSchemaChecker(schema);
             let parserTokens: Token[] = formulaStaticTypeChecker.tokenizeAndStaticCheckFormula('B', 'sum', expr);
             for (let [i, token] of tokens.entries()) {
+                formulaTokenizerSchemaChecker.checkToken(parserTokens[i]);
                 expect(parserTokens[i]).toEqual(jasmine.objectContaining(token));
             }
             for (let [i, suggs] of suggestions.entries()) {
@@ -207,7 +208,6 @@ describe('FormulaTokenizer', () => {
         [{suggestion: "REFERENCE_TO"}]
     ]);
 
-
     test(it, "REFERENCE_TO(Bla", [{
         type: TokenType.FUNCTION_NAME,
         value: "REFERENCE_TO",
@@ -219,6 +219,30 @@ describe('FormulaTokenizer', () => {
         [{suggestion: "REFERENCE_TO"}],
         null,
         [{suggestion: "A"}, {suggestion: "B"}]
+    ]);
+
+    test(fit, "REFERENCE_TO(B.", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "REFERENCE_TO",
+    }, {
+        type: TokenType.PUNCTUATION,
+        value: "(",
+    }, {
+        type: TokenType.TABLE_NAME,
+        value: "B",
+    }, {
+        type: TokenType.PUNCTUATION,
+        value: ".",
+    }, {
+        type: TokenType.COLUMN_NAME,
+        value: "identifier_expected",
+        errors: ["Unknown column identifier_expected for table B"]
+    }], [
+        [{suggestion: "REFERENCE_TO"}],
+        null,
+        null,
+        null,
+        [{suggestion: "_id"}, {suggestion: "b_x"}, {suggestion: "b_y"}, {suggestion: "sum"}]
     ]);
 
     test(it, "num", [{

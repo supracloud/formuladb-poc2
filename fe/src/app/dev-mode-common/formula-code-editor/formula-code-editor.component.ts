@@ -56,7 +56,7 @@ export class FormulaCodeEditorComponent implements OnInit {
       if (this.editorOn) return;
       this.editorExpr = selectedFormula || 'COLUMN';
     }));
-    this.subscriptions.push(this.onEdit$.pipe(debounceTime(500)).subscribe(() => this.performOnEdit()));
+    this.subscriptions.push(this.onEdit$.pipe(debounceTime(250)).subscribe(() => this.performOnEdit()));
   }
 
   ngOnInit() {
@@ -130,6 +130,7 @@ export class FormulaCodeEditorComponent implements OnInit {
         errors = this.validation(this.editorExpr);
       }
       let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
+      console.log(tokens);
       this.currentTokens = tokens;
       let editedPropertyToSend = this.getEntityPropertyFromTokens(tokens);
       let hasErrors: boolean = false;

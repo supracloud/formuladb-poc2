@@ -1,6 +1,6 @@
 import { Expression, isIdentifier, isLiteral, isCallExpression, isBinaryExpression, isLogicalExpression } from 'jsep';
 import { compileFormulaForce, FormulaCompilerError, $s2e } from './formula_compiler';
-import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict } from './functions_compiler';
+import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict, PropertyTypeFunctions } from './functions_compiler';
 import * as _ from 'lodash';
 import { isCompiledFormula, isScalarCallExpression } from './domain/metadata/execution_plan';
 
@@ -142,7 +142,7 @@ export class FormulaTokenizer {
                 ret.push(this.punctuationToken(endParanthesisPos, ')', context));
                 if (context.compilerErr && context.compilerErr.node === node) {
                     ret[0].errors.push(context.compilerErr.message);
-                } else this.checkFunction(ret);
+                }
                 return ret;
 
             case 'ConditionalExpression':
@@ -244,17 +244,13 @@ export class FormulaTokenizer {
         }
     }
 
-    private checkFunction(tokens: Token[]) {
-        let functionDef = FunctionsDict[tokens[0].value];
-        if (tokens.length != functionDef.length - 1 /*the fc context*/ + 3 /*3 tokens: function name, (, ) */) {
-            if (tokens[0].errors.length == 0) {
-                tokens[0].errors.push("Function " + tokens[0].value + " expects " + functionDef.length + " arguments but found " + (tokens.length - 3));
-            }
-        }
+    private checkColumnToken(token: Token) {
+        if (token.type != TokenType.COLUMN_NAME) {console.warn("this is not a COLUMN_NAME token", token); return;}
+        
     }
 
     private setCallStackFrame(tokens: Token[], functionName: string, argumentIdx: number) {
-        let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName];
+        let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName] || PropertyTypeFunctions[functionName];
         let errors: string[] = [];
         let argumentName: string | undefined = undefined;
 
