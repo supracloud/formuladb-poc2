@@ -10,7 +10,7 @@ import { Fn } from "@core/domain/metadata/functions";
 
 export const Forms = {
     _id: 'Forms',
-    module_: true,
+    isStaticPage_: true,
     props: {},
 };
 

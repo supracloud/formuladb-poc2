@@ -8,7 +8,7 @@ import { Pn, EntityProperty } from "@core/domain/metadata/entity";
 
 export const MusicBooking = {
     _id: 'MBK',
-    module_: true,
+    isStaticPage_: true,
     props: {},
 };
 

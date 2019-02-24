@@ -10,7 +10,7 @@ import { Fn } from "@core/domain/metadata/functions";
 
 export const Reports = {
     _id: "REP",
-    module_: true,
+    isStaticPage_: true,
     props: {},
 };
 

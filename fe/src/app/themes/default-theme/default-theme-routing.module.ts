@@ -14,7 +14,7 @@ export function getLayoutRoutes(LayoutComponentClass: any): Routes {
       component: LayoutComponentClass,
       children: [
         {
-          path: ':module__entity',
+          path: ':isStaticPage__entity',
           loadChildren: '../../frmdb/frmdb.module#FrmdbModule'
         },
       ]

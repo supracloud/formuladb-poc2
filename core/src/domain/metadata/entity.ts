@@ -13,7 +13,7 @@ import { Expression } from 'jsep';
  */
 export interface Entity extends KeyValueObj {
     _id: string;
-    module_?: boolean;
+    isStaticPage_?: boolean;
     aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
