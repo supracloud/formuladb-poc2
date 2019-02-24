@@ -175,7 +175,8 @@ describe('FormulaTokenizer', () => {
                 if (!suggs) continue;
                 let suggsForToken = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[i]);
                 for (let [j, s] of suggs.entries()) {
-                    expect(suggsForToken[j]).toEqual(jasmine.objectContaining(s));
+                    if (undefined === s) expect(suggsForToken[j]).toBeUndefined()
+                    else expect(suggsForToken[j]).toEqual(jasmine.objectContaining(s));
                 }
             }
         });
@@ -221,7 +222,7 @@ describe('FormulaTokenizer', () => {
         [{suggestion: "A"}, {suggestion: "B"}]
     ]);
 
-    test(fit, "REFERENCE_TO(B.", [{
+    test(it, "REFERENCE_TO(B.", [{
         type: TokenType.FUNCTION_NAME,
         value: "REFERENCE_TO",
     }, {
@@ -243,6 +244,31 @@ describe('FormulaTokenizer', () => {
         null,
         null,
         [{suggestion: "_id"}, {suggestion: "b_x"}, {suggestion: "b_y"}, {suggestion: "sum"}]
+    ]);
+
+
+    test(it, "REFERENCE_TO(B.i", [{
+        type: TokenType.FUNCTION_NAME,
+        value: "REFERENCE_TO",
+    }, {
+        type: TokenType.PUNCTUATION,
+        value: "(",
+    }, {
+        type: TokenType.TABLE_NAME,
+        value: "B",
+    }, {
+        type: TokenType.PUNCTUATION,
+        value: ".",
+    }, {
+        type: TokenType.COLUMN_NAME,
+        value: "i",
+        errors: ["Unknown column i for table B"]
+    }], [
+        [{suggestion: "REFERENCE_TO"}],
+        null,
+        null,
+        null,
+        [{suggestion: "_id"}, undefined]
     ]);
 
     test(it, "num", [{
