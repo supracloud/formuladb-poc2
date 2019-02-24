@@ -115,12 +115,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
     //TODO: this should be an effect
     else if (action.type === fromTable.UserSelectCellN) {
       let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : undefined;
-      let editorExpr = 'Not Defined';
-      if (selectedProperty) {
-        if (selectedProperty.propType_ == Pn.FORMULA) {
-          editorExpr = selectedProperty.formula;
-        } else editorExpr = selectedProperty.propType_;
-      }
+      let editorExpr = fromFormula.entityProperty2Formula(selectedProperty);
 
       updatedState = {
         ...state,

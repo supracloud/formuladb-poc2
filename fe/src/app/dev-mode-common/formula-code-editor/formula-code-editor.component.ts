@@ -270,7 +270,7 @@ export class FormulaCodeEditorComponent implements OnInit {
 
     ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
 
-    if (token.caret && token.value && token.value.length > 2) {
+    if (token.caret) {
       this.currentSuggestions = this.formulaEditorService.getSuggestionsForToken(token);
       this.currentTokenAtCaret = token;
       if (this.currentSuggestions && this.currentSuggestions.length > 0) {

@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from "@core/formula_tokenizer";
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
 import { BackendService } from '../backend.service';
-import { FormulaState, formulaEditorInitialState } from '../formula.state';
+import { FormulaState, formulaEditorInitialState, entityProperty2Formula } from '../formula.state';
 import { PickOmit } from '@core/ts-utils';
 
 const STYLES = [
@@ -58,13 +58,7 @@ export class FormulaEditorService {
       this.formulaState = x;
     }));
     this.selectedFormula$ = this.store.select(appState.getSelectedPropertyState).pipe(
-      map(selectedProperty => {
-        if (selectedProperty) {
-          if (selectedProperty.propType_ == Pn.FORMULA) {
-            return selectedProperty.formula;
-          } else return selectedProperty.propType_;
-        } else return undefined;
-      })
+      map(selectedProperty => entityProperty2Formula(selectedProperty))
     );
     this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(devMode => this.developerMode = devMode));
     this.editorOn$ = this.store.select(appState.getEditorOn);
