@@ -21,6 +21,7 @@ export enum NodeType {
     form_chart = "form_chart",
     form_datepicker = "form_datepicker",
     form_timepicker = "form_timepicker",
+    form_text = "form_text"
 }
 
 export class FormGrid implements SubObj {
@@ -43,6 +44,12 @@ export class FormInput implements SubObj {
     _id: string;
     propertyName: string;
     propertyType: Pn.TEXT | Pn.NUMBER | Pn.STRING;
+}
+export class FormText implements SubObj {
+    readonly nodeType = NodeType.form_text;
+    _id: string;
+    propertyName: string;
+    representation: string; // heading, paragraph, caption, jumbo, etc.
 }
 export class FormAutocomplete implements SubObj {
     readonly nodeType = NodeType.form_autocomplete;
@@ -67,6 +74,14 @@ export class FormTable implements SubObj {
     readonly nodeType = NodeType.form_table;
     _id: string;
     tableName: string;
+    childNodes?: NodeElement[];
+}
+
+export class FormDataGrid implements SubObj {
+    readonly nodeType = NodeType.form_table;
+    _id: string;
+    refEntityName: string;
+    displayedRefEntityProperties?: string[];
     childNodes?: NodeElement[];
 }
 
@@ -115,6 +130,7 @@ export type NodeElement =
     | FormDatepicker
     | FormTimepicker
     | FormChart
+    | FormText
     ;
 
 export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;

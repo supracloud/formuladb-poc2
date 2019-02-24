@@ -6,6 +6,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
+import { NotFoundComponent } from '@kv_selector_base/app/not-found/not-found.component';
+import { TableComponent } from './components/table/table.component';
+import { FormComponent } from './components/form/form.component';
 
 export function getLayoutRoutes(LayoutComponentClass: any): Routes {
   return [
@@ -15,7 +18,15 @@ export function getLayoutRoutes(LayoutComponentClass: any): Routes {
       children: [
         {
           path: ':module__entity',
-          loadChildren: '../../frmdb/frmdb.module#FrmdbModule'
+          children:[
+            {
+              path: '', component: TableComponent,
+            },
+            {
+              path: ':_id', component: FormComponent,
+            },
+            { path: '**', component: NotFoundComponent }
+          ]          
         },
       ]
     }
