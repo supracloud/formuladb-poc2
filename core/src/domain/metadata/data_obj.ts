@@ -17,6 +17,9 @@ export function parsePrefix(prefix: string): string {
     let idx = prefix.indexOf('~~');
     return prefix.substr(0, idx) || 'ZZZblabla';
 }
+export function entityNameFromDataObjId(_id: string): string {
+    return _id.replace(/[~][~].*/, '');
+}
 export function parseDataObjId(_id: string): DataObjId {
     let ret = _parseDataObjId(_id);
     if (ret) return ret;

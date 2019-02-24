@@ -31,6 +31,7 @@ export class MwzEvent implements KeyValueObj {
 }
 
 export const ServerEventModifiedFormDataN = "[form] ServerEventModifiedFormData";
+export const ServerEventDeletedFormDataN = "[form] ServerEventDeletedFormData";
 export const ServerEventModifiedFormN = "[form] ServerEventModifiedForm";
 export const ServerEventModifiedTableN = "[table] ServerEventModifiedTable";
 export const ServerEventNewEntityN = "[entity] ServerEventNewEntity";
@@ -41,6 +42,14 @@ export const ServerEventDeletePropertyN = "[entity] ServerEventDeleteProperty";
 
 export class ServerEventModifiedFormDataEvent extends MwzEvent {
     readonly type_ = ServerEventModifiedFormDataN;
+
+    constructor(public obj: DataObj) {
+        super();
+    }
+}
+
+export class ServerEventDeletedFormData extends MwzEvent {
+    readonly type_ = ServerEventDeletedFormDataN;
 
     constructor(public obj: DataObj) {
         super();
@@ -106,6 +115,7 @@ export class ServerEventDeleteProperty extends MwzEvent {
 
 export type MwzEvents = 
     | ServerEventModifiedFormDataEvent
+    | ServerEventDeletedFormData
     | ServerEventModifiedFormEvent
     | ServerEventModifiedTableEvent
     | ServerEventNewEntity

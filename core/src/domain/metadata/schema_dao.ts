@@ -48,9 +48,12 @@ export class SchemaDAO {
         return ret;
     }
 
+    public getValidationsForEntity(entityName: string): _.Dictionary<FormulaValidation> | undefined {
+        return this.schema.entities[entityName].validations;
+    }
     public getValidations(objId: string): _.Dictionary<FormulaValidation> | undefined {
         let entityName = parseDataObjId(objId).entityName;
-        return this.schema.entities[entityName].validations;
+        return this.getValidationsForEntity(entityName);
     }
 
     public getProperty(entityName: string, propertyName: string): EntityProperty {

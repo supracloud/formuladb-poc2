@@ -257,4 +257,16 @@ export class TableComponent implements OnInit, OnDestroy {
     excel() {
         this.gridApi.exportDataAsExcel();
     }
+
+    addRow() {
+        if (this.currentEntity && this.currentEntity.isEditable) {
+            this.router.navigate(['./' + this.currentEntity._id + '~~'], { relativeTo: this.route });
+        }
+    }
+
+    deleteRow() {
+        if (this.currentRow && this.currentRow._id && this.currentEntity && this.currentEntity.isEditable) {
+            this.store.dispatch(new tableState.ServerEventDeleteFormData(this.currentRow));
+        }
+    }
 }

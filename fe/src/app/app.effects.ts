@@ -30,6 +30,7 @@ import { ExampleApps } from "@core/test/mocks/mock-metadata";
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedFormData
+    | appState.ServerEventDeleteFormData
     | appState.ServerEventModifiedForm
     | appState.ServerEventModifiedTable
     | appState.ServerEventNewEntity
@@ -87,18 +88,26 @@ export class AppEffects {
         if (!eventFromBe) return;
 
         switch (eventFromBe.type_) {
-            case appState.ServerEventModifiedFormN:
+            case events.ServerEventModifiedFormN:
                 this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                 break;
-            case appState.ServerEventModifiedTableN: {
+            case events.ServerEventModifiedTableN: {
                 // this.store.dispatch(new appState.FormNotifFromBackendAction(event));
                 //TODO: display loading indicator, not currently used
                 break;
             }
             case events.ServerEventModifiedFormDataN: {
-                this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
-                this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
-                console.error("FIXME, replicate cheanges from the server");
+                if (this.router.url.match(/~~$/)) {
+                    this.router.navigate([this.router.url.replace(/\w+~~$/, eventFromBe.obj._id)]);
+                } else {
+                    this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
+                    this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                    console.error("FIXME, replicate cheanges from the server");
+                }
+                break;
+            }
+            case events.ServerEventDeletedFormDataN: {
+                //TODO
                 break;
             }
             case events.ServerEventModifiedFormN: {
@@ -199,10 +208,18 @@ export class AppEffects {
 
         if (id && id != this.currentUrl.id) {
             this.currentUrl.id = id;
-            this.backendService.getDataObj(id)
-                .then(obj => this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj)))
-                .catch(err => console.error(err))
-                ;
+            if (id === path + '~~') {
+                this.store.dispatch(new appState.ResetFormDataFromBackendAction({_id: id}));
+            } else {
+                this.backendService.getDataObj(id)
+                    .then(obj => this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj)))
+                    .catch(err => console.error(err))
+                    ;
+            }
+        }
+
+        if (!id && this.currentUrl.id) {
+            this.currentUrl.id = null;
         }
 
     }

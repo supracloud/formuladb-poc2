@@ -45,8 +45,6 @@ export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
 export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
 export const FormAddActionN = '[form] FormAddAction';
-export const ServerEventModifiedFormDataN = events.ServerEventModifiedFormDataN;
-export const ServerEventModifiedFormN = events.ServerEventModifiedFormN;
 
 
 export class FormDataFromBackendAction implements Action {
@@ -86,7 +84,7 @@ export class FormFromBackendAction implements Action {
 }
 
 export class ServerEventModifiedForm implements Action {
-  readonly type = ServerEventModifiedFormN;
+  readonly type = events.ServerEventModifiedFormN;
   public event: events.ServerEventModifiedFormEvent;
 
   constructor(public form: Form) {
@@ -95,7 +93,17 @@ export class ServerEventModifiedForm implements Action {
 }
 
 export class ServerEventModifiedFormData implements Action {
-  readonly type = ServerEventModifiedFormDataN;
+  readonly type = events.ServerEventModifiedFormDataN;
+  public event: events.ServerEventModifiedFormDataEvent;
+
+  constructor(obj: DataObj) {
+    this.event = new events.ServerEventModifiedFormDataEvent(obj);
+  }
+}
+
+
+export class ServerEventDeleteFormData implements Action {
+  readonly type = events.ServerEventDeletedFormDataN;
   public event: events.ServerEventModifiedFormDataEvent;
 
   constructor(obj: DataObj) {
