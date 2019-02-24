@@ -3,7 +3,7 @@ import { createReadStream } from 'fs';
 
 import { KeyValueStoreFactoryMem } from "@storage/mem/key_value_store_mem";
 import { $s2e } from "@core/formula_compiler";
-import { evalExprES5 } from "@core/map_reduce_utils";
+import { evalExpression } from "@core/map_reduce_utils";
 
 
 interface Prlp {
@@ -79,7 +79,7 @@ lineReader.on('line', function (line) {
     for (let obj of DB) {
         // if (values.includes(obj.updated_at)) {
         // if ("2018-10-23T21:20:36.627208" === obj.updated_at) {
-        // if (evalExprES5(obj, filterExpr)) {
+        // if (evalExpression(obj, filterExpr)) {
         if (filterFunc(obj)) {
             ret.push(obj);
         }

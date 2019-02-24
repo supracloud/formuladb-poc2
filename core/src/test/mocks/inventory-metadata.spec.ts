@@ -7,7 +7,7 @@ import * as _ from "lodash";
 import { FrmdbEngineStore } from "../../frmdb_engine_store";
 
 import { compileFormula } from '../../formula_compiler';
-import { evalExprES5 } from "../../map_reduce_utils";
+import { evalExpression } from "../../map_reduce_utils";
 import { INV__PRD__Location, INV__Receipt__Item, INV__Order__Item } from "./mock-metadata";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
@@ -95,14 +95,14 @@ describe('Inventory Metadata', () => {
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(10);
         
-        let availStock = evalExprES5(pl1, cf3.finalExpression);
+        let availStock = evalExpression(pl1, cf3.finalExpression);
         expect(availStock).toEqual(6);
 
         await frmdbEngine.putDataObjAndUpdateViews(null, oi1_2);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(14);
         
-        availStock = evalExprES5(pl1, cf3.finalExpression);
+        availStock = evalExpression(pl1, cf3.finalExpression);
         expect(availStock).toEqual(2);
 
         // check auto-correction
@@ -113,7 +113,7 @@ describe('Inventory Metadata', () => {
         await putObj(oi1_2new);
         pl1.ordered_stock__ = (await frmdbTStore.getAggValueForObserver(pl1, cf2.triggers![0])) as number;
         expect(pl1.ordered_stock__).toEqual(16);
-        availStock = evalExprES5(pl1, cf3.finalExpression);
+        availStock = evalExpression(pl1, cf3.finalExpression);
         expect(availStock).toEqual(0);
         let o: any = await frmdbTStore.getDataObj(oi1_2new._id);
         expect(o.quantity).toEqual(6);

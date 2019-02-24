@@ -6,14 +6,14 @@
 import { MapReduceTrigger } from "@core/domain/metadata/execution_plan";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { evalExprES5 } from "../map_reduce_utils";
+import { evalExpression } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";
 
 export async function _sum_preComputeAggForObserverAndObservable(
     store: FrmdbEngineStore,
     observerObj: KeyValueObj,
     observableOld: KeyValueObj | null,
-    observableNew: KeyValueObj,
+    observableNew: KeyValueObj | null,
     trigger: MapReduceTrigger): Promise<string | number> {
 
     try {
@@ -21,9 +21,9 @@ export async function _sum_preComputeAggForObserverAndObservable(
         let getSumValue = await store.getAggValueForObserver(observerObj, trigger);
         if (typeof getSumValue === 'string') throw new Error("SUM aggregation returned a text value");
         let current: number = getSumValue;
-        let oldVal = observableOld ? evalExprES5(observableOld, args.valueExpr) : 0;
+        let oldVal = observableOld ? evalExpression(observableOld, args.valueExpr) : 0;
         let newVal: number;
-        newVal = evalExprES5(observableNew, args.valueExpr);
+        newVal = observableNew ? evalExpression(observableNew, args.valueExpr) : 0;
     
         return preComputeAggForObserverAndObservableBase(store, observerObj, observableOld, observableNew, trigger, {
             newKeyMatches_oldKeyMatches: async (oldKey, newKey, newValue, startkey, endkey) => {

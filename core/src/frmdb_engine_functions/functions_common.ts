@@ -6,7 +6,7 @@
 import { MapReduceTrigger } from "@core/domain/metadata/execution_plan";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { evalExprES5, includesKey } from "../map_reduce_utils";
+import { evalExpression, includesKey } from "../map_reduce_utils";
 
 export interface PreComputeAggForObserverAndObservableOpts {
     newKeyMatches_oldKeyMatches: (oldKey, newKey, newValue, startkey, endkey) => Promise<string | number>,
@@ -19,7 +19,7 @@ export async function preComputeAggForObserverAndObservableBase (
     store: FrmdbEngineStore, 
     observerObj: KeyValueObj, 
     observableOld: KeyValueObj | null, 
-    observableNew: KeyValueObj, 
+    observableNew: KeyValueObj | null, 
     trigger: MapReduceTrigger,
     opts: PreComputeAggForObserverAndObservableOpts): Promise<string | number> {
 
@@ -27,12 +27,12 @@ export async function preComputeAggForObserverAndObservableBase (
     
     let args = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map;
     let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
-    let oldKey = observableOld ? evalExprES5(observableOld, args.keyExpr) : [];
-    let newKey = evalExprES5(observableNew, args.keyExpr);
-    let newValue = evalExprES5(observableNew, args.valueExpr);
+    let oldKey = observableOld ? evalExpression(observableOld, args.keyExpr) : [];
+    let newKey = observableNew ? evalExpression(observableNew, args.keyExpr) : [];
+    let newValue = observableNew ? evalExpression(observableNew, args.valueExpr) : null;
 
-    let startkey = evalExprES5({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr);
-    let endkey = evalExprES5({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr);
+    let startkey = evalExpression({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr);
+    let endkey = evalExpression({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr);
     let inclusive_start = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_start;
     let inclusive_end = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end;
 

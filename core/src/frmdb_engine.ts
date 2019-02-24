@@ -58,7 +58,7 @@ export class FrmdbEngine {
             case events.ServerEventModifiedFormDataN:
                 return this.transactionRunner.computeFormulasAndSave(event);
             case events.ServerEventDeletedFormDataN:
-                return this.deleteDataObj(event);
+                return this.transactionRunner.computeFormulasAndSave(event);
             case events.ServerEventModifiedFormN:
                 return this.processForm(event);
             case events.ServerEventModifiedTableN:

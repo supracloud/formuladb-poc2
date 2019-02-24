@@ -8,7 +8,7 @@ import { SchemaDAO } from "@core/domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, entityNameFromDataObjId } from "@core/domain/metadata/data_obj";
 
 import * as _ from 'lodash';
-import { evalExprES5 } from "./map_reduce_utils";
+import { evalExpression } from "./map_reduce_utils";
 
 
 export interface FailedValidation {
@@ -72,7 +72,7 @@ export class FrmdbEngineTools {
         let validations = this.schemaDAO.getValidationsForEntity(obsEntityName);
         for (let vEntry of _.entries(validations)) {
             let [validationName, validation] = vEntry;
-            if (evalExprES5(obsNew, validation.conditionExpr) == false) {
+            if (evalExpression(obsNew, validation.conditionExpr) == false) {
                 failedValidations.push({
                     obsObj: obsNew,
                     validation: validation,

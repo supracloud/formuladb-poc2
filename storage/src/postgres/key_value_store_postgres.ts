@@ -15,7 +15,7 @@ import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Expression } from "jsep";
-import { evalExprES5 } from "@core/map_reduce_utils";
+import { evalExpression } from "@core/map_reduce_utils";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -308,7 +308,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     async mapQuery(keyExpr: Expression[], opts: RangeQueryOptsI): Promise<OBJT[]> {
         let all = await this.all();
         let ret = all.map(x => {
-            return [kvsKey2Str(evalExprES5(x, keyExpr)), x];
+            return [kvsKey2Str(evalExpression(x, keyExpr)), x];
         }).filter(([key, val]) =>
             (opts.startkey < key && key < opts.endkey)
             || (opts.inclusive_start && key === opts.startkey)
@@ -327,7 +327,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     //TODO: implement using SQL and plv8
     reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
         return this.mapQuery(keyExpr, opts)
-            .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
+            .then(rows => rows.map(r => evalExpression(r, valueExpr)))
             .then(values => kvsReduceValues(values, reduceFun, this.entity._id, false));
     }
 

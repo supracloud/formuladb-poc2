@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 import { isKeyValueError } from "@core/domain/key_value_obj";
 import { generateUUID } from "@core/domain/uuid";
 import { CompiledFormula } from "@core/domain/metadata/execution_plan";
-import { evalExprES5 } from "./map_reduce_utils";
+import { evalExpression } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
@@ -32,9 +32,9 @@ class TransactionDAG {
     levels: string[][] = [];
     objs: {
         [id: string]: {
-            PREV?: DataObj | null,
+            objId: string,
             OLD: DataObj | null,
-            NEW: DataObj,
+            NEW: DataObj | null,
             aggsViewsUpdates: MapReduceViewUpdates<string | number>[],
             obsViewsUpdates: MapViewUpdates<string | number>[],
         },
@@ -47,19 +47,22 @@ class TransactionDAG {
     }
 
     public addObj(
-        newObj: DataObj,
+        newObj: DataObj | null,
         oldObj: DataObj | null,
         aggsViewsUpdates: MapReduceViewUpdates<string | number>[],
         obsViewsUpdates: MapViewUpdates<string | number>[],
     ) {
         let start = Date.now();
 
-        if (oldObj && newObj._id !== oldObj._id) throw new Error("expected OLD id to equal NEW id " + JSON.stringify(newObj) + " // " + JSON.stringify(oldObj));
-        if (this.objs[newObj._id]) {
+        if (!oldObj && !newObj) throw new Error("one of OLD or NEW needs to be non null");
+        if (oldObj && newObj && newObj._id !== oldObj._id) throw new Error("expected OLD id to equal NEW id " + JSON.stringify(newObj) + " // " + JSON.stringify(oldObj));
+        if (newObj && this.objs[newObj._id]) {
             throw new Error("Circular dependency found for " + JSON.stringify(newObj) + ", current " + JSON.stringify(this.objs, null, 4));
         }
+        let objId = oldObj ? oldObj._id : newObj!._id;
 
-        this.objs[newObj._id] = {
+        this.objs[objId] = {
+            objId,
             OLD: oldObj,
             NEW: newObj,
             aggsViewsUpdates,
@@ -68,8 +71,8 @@ class TransactionDAG {
         while (this.levels.length - 1 < this.currentLevel) {
             this.levels.push([]);
         }
-        this.levels[this.currentLevel].push(newObj._id);
-        console.log(ll(this) + "|addObj|" + (Date.now() - start) + "ms; level=" + this.currentLevel + "|" + newObj._id + "/" + JSON.stringify({ newObj, oldObj, aggsViewsUpdates, obsViewsUpdates }) + " in " + JSON.stringify(this.levels));
+        this.levels[this.currentLevel].push(objId);
+        console.log(ll(this) + "|addObj|" + (Date.now() - start) + "ms; level=" + this.currentLevel + "|" + objId + "/" + JSON.stringify({ newObj, oldObj, aggsViewsUpdates, obsViewsUpdates }) + " in " + JSON.stringify(this.levels));
     }
     public getTrObj(id: string) {
         let ret = this.objs[id];
@@ -94,8 +97,12 @@ class TransactionDAG {
     public getLevelObjsForSave(level: string[]) {
         return level.map(objId => this.objs[objId].NEW);
     }
-    public getAllObjects(): DataObj[] {
-        return _.values(this.objs).map(trObj => trObj.NEW);
+    public getAllObjectsToSave(): DataObj[] {
+        let ret: DataObj[] = [];
+        for (let obj of _.values(this.objs).map(trObj => trObj.NEW)) {
+            if (obj != null) ret.push(obj);
+        }
+        return ret;
     }
     public getAllViewUpdates(): MapReduceViewUpdates<string | number>[] {
         let aggs = _.flatMap(_.values(this.objs), trObj => trObj.aggsViewsUpdates);
@@ -105,7 +112,7 @@ class TransactionDAG {
     }
     public getAllImpactedObjectIdsAndViewKeys(): string[] {
         return _.flatMap(_.values(this.objs),
-            trObj => [trObj.NEW._id]
+            trObj => (trObj.NEW ? [trObj.NEW._id] : [])
                 .concat(_.flatMap(trObj.aggsViewsUpdates, vupd => MapReduceView.strigifyViewUpdatesKeys(vupd)))
                 .concat(_.flatMap(trObj.obsViewsUpdates, vupd => MapReduceView.strigifyViewUpdatesKeys(vupd)))
         );
@@ -120,7 +127,7 @@ class FailedValidationsError {
 }
 
 class TransactionAbortedError {
-    constructor(public event: events.ServerEventModifiedFormDataEvent) { }
+    constructor(public event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormData) { }
 }
 
 export class FrmdbTransactionRunner {
@@ -134,7 +141,7 @@ export class FrmdbTransactionRunner {
         let saveObj = false;
         for (let failedValidation of ex.failedValidations) {
             for (let autoCorrection of this.schemaDAO.getAutoCorrections(obj._id, failedValidation.validationFullName)) {
-                obj[autoCorrection.targetPropertyName] = evalExprES5(
+                obj[autoCorrection.targetPropertyName] = evalExpression(
                     Object.assign({ $ROW$: failedValidation.obsObj, $OLD$: objOLD }, obj),
                     autoCorrection.autoCorrectExpr);
                 if (obj[autoCorrection.targetPropertyName] != objOLD[autoCorrection.targetPropertyName]) {
@@ -254,7 +261,7 @@ export class FrmdbTransactionRunner {
     }
 
     public async computeFormulasAndSave(
-        event: events.ServerEventModifiedFormDataEvent): Promise<events.MwzEvents> {
+        event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormData): Promise<events.MwzEvents> {
 
         let transacDAG: TransactionDAG;
         try {
@@ -273,7 +280,7 @@ export class FrmdbTransactionRunner {
                     await this.preComputeNonSelfFormulaOfObj(event.obj, compiledFormula);
                 }
                 for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
-                    event.obj[selfFormula.targetPropertyName] = evalExprES5(event.obj, selfFormula.finalExpression);
+                    event.obj[selfFormula.targetPropertyName] = evalExpression(event.obj, selfFormula.finalExpression);
                     console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
                 }
 
@@ -289,7 +296,11 @@ export class FrmdbTransactionRunner {
                             // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                         }
                     }
-                    transacDAG.addObj(event.obj, oldObj, [], []);
+                    if (event instanceof events.ServerEventDeletedFormData) {
+                        transacDAG.addObj(event.obj, null, [], []);
+                    } else {
+                        transacDAG.addObj(event.obj, oldObj, [], []);
+                    }
 
                     try {
                         await this.preComputeNextTransactionDAGLevel(transacDAG);
@@ -310,7 +321,7 @@ export class FrmdbTransactionRunner {
             }
 
             let saveObjects = async () => {
-                let objsToSave = transacDAG.getAllObjects();
+                let objsToSave = transacDAG.getAllObjectsToSave();
                 console.log(ll(transacDAG) + "|computeFormulasAndSave|saveObjects: " + stringifyObj(objsToSave));
                 let results = await this.frmdbEngineStore.putBulk(objsToSave);
                 for (let res of results) {
@@ -362,7 +373,7 @@ export class FrmdbTransactionRunner {
         let failedValidations: FailedValidation[] = [];
         for (let vEntry of _.entries(this.schemaDAO.getValidations(obsNew._id))) {
             let [validationName, validation] = vEntry;
-            if (evalExprES5(obsNew, validation.conditionExpr) == false) {
+            if (evalExpression(obsNew, validation.conditionExpr) == false) {
                 failedValidations.push({
                     obsObj: obsNew,
                     validation: validation,
@@ -385,15 +396,15 @@ export class FrmdbTransactionRunner {
 
     private computeFormulaExprWithValidations(triggerValues: _.Dictionary<ScalarType>, compiledFormula: CompiledFormula, obsNew: DataObj): CompiledFormula[] {
         if (!compiledFormula.triggers) {
-            obsNew[compiledFormula.targetPropertyName] = evalExprES5(obsNew, compiledFormula.finalExpression);
+            obsNew[compiledFormula.targetPropertyName] = evalExpression(obsNew, compiledFormula.finalExpression);
         } else {
-            obsNew[compiledFormula.targetPropertyName] = evalExprES5(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
+            obsNew[compiledFormula.targetPropertyName] = evalExpression(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
 
         let selfFormulas = this.schemaDAO.getSelfFormulas(obsNew._id);
         for (let selfFormula of selfFormulas) {
             if (selfFormula.targetPropertyName === compiledFormula.targetPropertyName) continue;
-            obsNew[selfFormula.targetPropertyName] = evalExprES5(obsNew, selfFormula.finalExpression);
+            obsNew[selfFormula.targetPropertyName] = evalExpression(obsNew, selfFormula.finalExpression);
         }
 
         let failedValidations = this.validateObj(obsNew);
@@ -405,8 +416,8 @@ export class FrmdbTransactionRunner {
         return selfFormulas;
     }
 
-    private async preComputeFormula(transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
-        let oblEntityName = parseDataObjId(oblNew._id).entityName;
+    private async preComputeFormula(oblId: string, transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj | null, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
+        let oblEntityName = parseDataObjId(oblId).entityName;
         let aggsViewUpdates: MapReduceViewUpdates<string | number>[] = [];
         let obsViewUpdates: MapViewUpdates<string | number>[] = [];
 
@@ -425,7 +436,7 @@ export class FrmdbTransactionRunner {
         }
 
         let selfFormulas = this.computeFormulaExprWithValidations(triggerValues, compiledFormula, obsNew);
-        console.log(ll(transacDAG) + "|preComputeFormula|" + oblNew._id + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
+        console.log(ll(transacDAG) + "|preComputeFormula|" + oblId + " --> " + obsOld._id + "[" + compiledFormula.targetPropertyName + "] = " + obsNew[compiledFormula.targetPropertyName] + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
         for (let selfFormula of selfFormulas) {
             console.log(ll(transacDAG) + "|preComputeFormula| - selfFormula: " + obsNew._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + obsNew[selfFormula.targetPropertyName]);
         }
@@ -438,7 +449,7 @@ export class FrmdbTransactionRunner {
         transactionDAG.incrementLevel();
         for (let trObj of currentLevel) {
             let observersTriggeredByObj: Map<string, {obs: DataObj, formulaTriggeredByObj: FormulaTriggeredByObj}> = new Map();
-            for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(trObj.NEW._id)) {
+            for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(trObj.objId)) {
                 for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {
                     let obss = await this.frmdbEngineStore.getObserversOfObservableOldAndNew(trObj.OLD, trObj.NEW, triggerOfFormula);
                     for (let obs of obss) {observersTriggeredByObj.set(obs._id, {obs, formulaTriggeredByObj})}

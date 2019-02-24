@@ -10,7 +10,7 @@ import { ServerEventModifiedFormDataN } from "@core/domain/event";
 import { Fn } from "@core/domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "@core/domain/metadata/execution_plan";
 import { compileFormula, $s2e } from '../formula_compiler';
-import { evalExprES5 } from "../map_reduce_utils";
+import { evalExpression } from "../map_reduce_utils";
 import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 import { Schema, Pn, Entity } from "@core/domain/metadata/entity";
 
@@ -74,7 +74,7 @@ describe('FrmdbEngineStore _count', () => {
         let a4 = { "_id": "A~~4", "x": 7 }; await putAndForceUpdateView(null, a4, true); await putAndForceUpdateView(null, a4, false);
 
         let f = Fn.FLOOR(`x/4`, `1`) + ` * 4`;
-        let x = evalExprES5(a3, $s2e(f));
+        let x = evalExpression(a3, $s2e(f));
 
         let obs1 = await frmdbTStore.getObserversOfObservable(a3, compiledFormula.triggers![0]);
         expect(obs1.length).toEqual(2);
