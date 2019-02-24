@@ -22,13 +22,13 @@ import {
     isMemberExpression,
     isCallExpression
 } from "jsep";
-import *  as jsep from 'jsep';
 import { PickOmit } from "../../ts-utils";
 import { ScalarFunctionsN } from "./functions";
 import { ReduceFun } from "./reduce_functions";
 
 export type ScalarCallExpression = CallExpression;
-export function isScalarCallExpression(param: CallExpression): param is ScalarCallExpression {
+export function isScalarCallExpression(param: Expression): param is ScalarCallExpression {
+    if (!isCallExpression(param)) return false;
     if (!isIdentifier(param.callee)) return false;
     return ScalarFunctionsN[param.callee.name] != null;
 }

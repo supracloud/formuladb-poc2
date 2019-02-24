@@ -32,7 +32,7 @@ import {
     includesMapFunctionAndQuery,
     CompiledScalar,
 } from "@core/domain/metadata/execution_plan";
-import { ScalarFunctions, MapFunctions, MapReduceFunctions } from "./functions_compiler";
+import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
 import { logCompileFormula } from "./test/test_utils";
 
 
@@ -45,6 +45,10 @@ export class FormulaCompilerContextType {
 export class FuncCommon {
     context: FormulaCompilerContextType;
     funcExpr: CallExpression;
+}
+
+export class FormulaCompilerError {
+    constructor(public node: Expression, public message: string) {}
 }
 
 /**
@@ -82,17 +86,18 @@ export function getQueryKeys(op: string, node: Expression, reverse?: boolean): M
             return !reverse ?
                 { startkeyExpr: [node], endkeyExpr: [$s2e(`'\ufff0'`)], inclusive_start: true, inclusive_end: false }
                 : { startkeyExpr: [$s2e(`''`)], endkeyExpr: [node], inclusive_start: false, inclusive_end: true };
-        default: throw new Error("Expected logical binary operator but found " + op + '; ' + JSON.stringify([op, node], null, 4));
+        default: throw new FormulaCompilerError(node, "Expected logical binary operator but found " + op + '; ' + JSON.stringify([op, node], null, 4));
     }
 }
 
 export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: BinaryExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
-    if (!isLogicalOpBinaryExpression(logicalOpBinaryExpr)) throw new Error("Expected logical binary expression but found " + JSON.stringify(logicalOpBinaryExpr, null, 4));
+    let node = logicalOpBinaryExpr;
+    if (!isLogicalOpBinaryExpression(logicalOpBinaryExpr)) throw new FormulaCompilerError(node, "Expected logical binary expression but found " + JSON.stringify(logicalOpBinaryExpr, null, 4));
     let left = compileExpression(logicalOpBinaryExpr.left, context, CompiledScalarN);
     let right = compileExpression(logicalOpBinaryExpr.right, context, CompiledScalarN);
-    if (!isCompiledScalar(left) || !isCompiledScalar(right)) throw new Error("operands of logical BinaryExpression must be scalar expressions, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
-    if (left.has$Identifier && right.has$Identifier) throw new Error("@[] (local row) cannot be used in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
-    if (left.hasNon$Identifier && right.hasNon$Identifier) throw new Error("accessing remote rows cannot be done in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
+    if (!isCompiledScalar(left) || !isCompiledScalar(right)) throw new FormulaCompilerError(node, "operands of logical BinaryExpression must be scalar expressions, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
+    if (left.has$Identifier && right.has$Identifier) throw new FormulaCompilerError(node, "@[] (local row) cannot be used in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
+    if (left.hasNon$Identifier && right.hasNon$Identifier) throw new FormulaCompilerError(node, "accessing remote rows cannot be done in both left and right operands of a logical BinaryExpression, at: " + JSON.stringify(logicalOpBinaryExpr, null, 4));
 
     let op = logicalOpBinaryExpr.operator;
     return {
@@ -112,16 +117,17 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
 }
 
 export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
-    if (logicalExpr.operator !== '&&') throw new Error(`Only && operator is supported currently. 
+    let node = logicalExpr;
+    if (logicalExpr.operator !== '&&') throw new FormulaCompilerError(node, `Only && operator is supported currently. 
             If you need ||, please create 2 different properties and combine them with another formula. 
             For example SUMIF(..., x < @[someVal] || y > @[otherVal]) can be: p1=SUMIF(..., x < @[someVal]), p2=SUMIF(y > @[otherVal]), p3 = p1 + p2
             At ` + logicalExpr.origExpr);
     if (!isLogicalOpBinaryExpression(logicalExpr.left) || !isLogicalOpBinaryExpression(logicalExpr.right))
-        throw new Error("Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
+        throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
     let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
     let right = extractKeysAndQueriesFromBinaryExpression(logicalExpr.right, context);
 
-    if (logicalExpr.left.operator !== '==') throw new Error(`Currently first operator for a LogicalExpession must be "==", at ` + logicalExpr.origExpr);
+    if (logicalExpr.left.operator !== '==') throw new FormulaCompilerError(node, `Currently first operator for a LogicalExpession must be "==", at ` + logicalExpr.origExpr);
 
     return {
         type_: MapReduceKeysAndQueriesN,
@@ -180,20 +186,20 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 
         case 'CallExpression':
             var fn: (...args) => ExecPlanCompiledExpression;
-            if (!isIdentifier(node.callee)) throw new Error("Expected function name but found " + JSON.stringify(node.callee, null, 4));
-            fn = ScalarFunctions[node.callee.name] || MapFunctions[node.callee.name] || MapReduceFunctions[node.callee.name];
+            if (!isIdentifier(node.callee)) throw new FormulaCompilerError(node, "Expected function name but found " + JSON.stringify(node.callee, null, 4));
+            fn = ScalarFunctions[node.callee.name] || MapFunctions[node.callee.name] || MapReduceFunctions[node.callee.name] || PropertyTypeFunctions[node.callee.name];
             if (fn != null) {
                 return fn.call(null, {
                     context: context,
                     funcExpr: node,
                 } as FuncCommon, ...node.arguments);
-            } else throw new Error("Unknown function: " + node.origExpr);
+            } else throw new FormulaCompilerError(node, "Unknown function: " + node.origExpr);
 
         case 'ConditionalExpression':
-            throw new Error("ConditionalExpression(s) are not supported (yet): " + node.origExpr);
+            throw new FormulaCompilerError(node, "ConditionalExpression(s) are not supported (yet): " + node.origExpr);
 
         case 'Identifier':
-            node.parent = context.currentEntityName;
+            node.belongsTo = context.currentEntityName;
             return {
                 type_: CompiledScalarN, rawExpr: node,
                 has$Identifier: false,
@@ -226,15 +232,15 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 return mergeBinaryNodes(node, compileExpression(node.left, context, CompiledScalarN), compileExpression(node.right, context, CompiledScalarN), context);
             } else if (includesMapReduceKeysAndQueriesN(requestedRetType)) {
                 return extractKeysAndQueriesFromLogicalExpression(node, context);
-            } else throw new Error("Unknown context:" + node.origExpr);
+            } else throw new FormulaCompilerError(node, "Unknown context:" + node.origExpr);
 
         case 'MemberExpression':
-            if (!isIdentifier(node.property)) throw new Error('Calculated MemberExpression property is not allowed at ' + node.origExpr);
-            if (!(isLiteral(node.object) && node.object.raw === '@') && !isIdentifier(node.object) && !isMemberExpression(node.object)) throw new Error('Calculated MemberExpression object is not allowed at ' + node.origExpr);
+            if (!isIdentifier(node.property)) throw new FormulaCompilerError(node, 'Calculated MemberExpression property is not allowed at ' + node.origExpr);
+            if (!(isLiteral(node.object) && node.object.raw === '@') && !isIdentifier(node.object) && !isMemberExpression(node.object)) throw new FormulaCompilerError(node, 'Calculated MemberExpression object is not allowed at ' + node.origExpr);
             let obj = compileExpression(node.object, context, requestedRetType);
             let prop = compileExpression(node.property, context, requestedRetType);
             if (CompiledScalarN === requestedRetType || !isTableName(node.object.origExpr)) {
-                if (!isCompiledScalar(obj) || !isCompiledScalar(prop)) throw new Error("Expected scalar expressions in scalar context but found " + node.property.origExpr + "; " + node.object.origExpr);
+                if (!isCompiledScalar(obj) || !isCompiledScalar(prop)) throw new FormulaCompilerError(node, "Expected scalar expressions in scalar context but found " + node.property.origExpr + "; " + node.object.origExpr);
                 return {
                     type_: CompiledScalarN, rawExpr: node,
                     has$Identifier: obj.has$Identifier,
@@ -249,13 +255,13 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 
                 if (isLiteral(node.object) && node.object.raw === '@') {
                     //set the table name for this column to the table of the current row
-                    (prop.rawExpr as Identifier).parent = context.targetEntityName;
+                    (prop.rawExpr as Identifier).belongsTo = context.targetEntityName;
                 } else {
                     //set the table name for this column to the referenced table
-                    (prop.rawExpr as Identifier).parent = referencedTableName;
+                    (prop.rawExpr as Identifier).belongsTo = referencedTableName;
                 }
 
-                if (!m) throw new Error("Expected MemberExpression but found " + JSON.stringify(node));
+                if (!m) throw new FormulaCompilerError(node, "Expected MemberExpression but found " + JSON.stringify(node));
                 return {
                     type_: MapValueN,
                     rawExpr: node,
@@ -266,10 +272,10 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 };
             } else return combine2Nodes(node, 'object', obj, 'property', prop, context);
         case 'ThisExpression':
-            throw new Error("'this' expressions are not supported: " + node.origExpr);
+            throw new FormulaCompilerError(node, "'this' expressions are not supported: " + node.origExpr);
 
         case 'UnaryExpression':
-            if (!isNumberLiteral(node.argument)) throw new Error("Unary operators only supported on number literals but found " + node.origExpr);
+            if (!isNumberLiteral(node.argument)) throw new FormulaCompilerError(node, "Unary operators only supported on number literals but found " + node.origExpr);
             return {
                 type_: CompiledScalarN, rawExpr: node,
                 has$Identifier: false,
@@ -277,18 +283,34 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             };
 
         case 'Compound':
-            throw new Error("Compound are not supported: " + node.origExpr);
+            throw new FormulaCompilerError(node, "Compound are not supported: " + node.origExpr);
 
         default:
-            throw new Error("Unknown expression: " + JSON.stringify(node));
+            throw new FormulaCompilerError(node, "Unknown expression: " + JSON.stringify(node));
     }
 }
 
-export function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
+function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
     return jsep.parse(formula, forceParseIncompleteExpr);
 }
-export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): CompiledFormula {
-    let formulaAstNode = parseFormula(formula, forceParseIncompleteExpr);
+
+export function compileFormulaForce(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula | {ast: Expression, err: FormulaCompilerError} {
+    let ast = parseFormula(formula, true);
+    try {
+        let compiledFormula = compileFormulaExpression(targetEntityName, propJsPath, ast);
+        return compiledFormula;
+    } catch (err) {
+        if (err instanceof FormulaCompilerError) {
+            return {ast, err};
+        } else throw err;
+    }
+}
+export function compileFormula(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula {
+    let formulaAstNode = parseFormula(formula, false);
+    return compileFormulaExpression(targetEntityName, propJsPath, formulaAstNode);
+}
+function compileFormulaExpression(targetEntityName: string, propJsPath: string, formulaAstNode: Expression): CompiledFormula {
+    
     let compiledExpression = compileExpression(formulaAstNode, { targetEntityName: targetEntityName, targetPropertyName: propJsPath }, CompiledFormulaN);
     let ret = compiledExpression;
 
@@ -301,7 +323,7 @@ export function compileFormula(targetEntityName: string, propJsPath: string, for
             targetPropertyName: propJsPath,
         };
     } else if (isMapFunctionAndQuery(compiledExpression)) {
-        throw new Error("MAP functions must be reduced: " + JSON.stringify(compiledExpression, null, 4));
+        throw new FormulaCompilerError(formulaAstNode, "MAP functions must be reduced: " + JSON.stringify(compiledExpression, null, 4));
     } else if (isMapReduceTrigger(compiledExpression)) {
         ret = {
             type_: CompiledFormulaN,
@@ -313,9 +335,9 @@ export function compileFormula(targetEntityName: string, propJsPath: string, for
         }
     } else if (isCompiledFormula(compiledExpression)) {
         ret = compiledExpression;
-    } else throw new Error("Unknown compiled formula: " + JSON.stringify(compiledExpression, null, 4));
+    } else throw new FormulaCompilerError(formulaAstNode, "Unknown compiled formula: " + JSON.stringify(compiledExpression, null, 4));
     
-    logCompileFormula(formula, ret);
+    logCompileFormula(formulaAstNode.origExpr, ret);
 
     return ret;
 }
@@ -376,10 +398,10 @@ export function _rem_$e2s_(node: Expression, strict: boolean = false): string {
             return lP + node.operator + _rem_$e2s_(node.argument, strict) + rP;
 
         case 'Compound':
-            throw new Error("Compound expr are not supported: " + node.origExpr);
+            throw new FormulaCompilerError(node, "Compound expr are not supported: " + node.origExpr);
 
         default:
-            throw new Error("Unknown expression: " + JSON.stringify(node));
+            throw new FormulaCompilerError(node, "Unknown expression: " + JSON.stringify(node));
     }
 }
 
@@ -423,6 +445,8 @@ export function combine2Nodes<T extends Expression>(
     node2: ExecPlanCompiledExpression,
     context: FormulaCompilerContextType): ExecPlanCompiledExpression {
 
+    let node = node1.rawExpr;
+
     if (isCompiledScalar(node1)) {
         if (isCompiledScalar(node2)) {
             return {
@@ -432,25 +456,25 @@ export function combine2Nodes<T extends Expression>(
                 hasNon$Identifier: node1.hasNon$Identifier || node2.hasNon$Identifier,
             };
         } else if (isMapFunctionAndQuery(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
             return combineTriggerWithScalar(expr, node2, node2Name, node1, node1Name, context);
         } else if (isCompiledFormula(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else if (isMapValue(node1)) {
         if (isCompiledScalar(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapFunctionAndQuery(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else if (isMapKeyAndQuery(node1)) {
         if (isCompiledScalar(node2)) {
@@ -463,31 +487,31 @@ export function combine2Nodes<T extends Expression>(
                 query: node1.query,
             }
         } else if (isMapFunctionAndQuery(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else if (isMapFunctionAndQuery(node1)) {
         if (isCompiledScalar(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapFunctionAndQuery(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else if (isMapReduceTrigger(node1)) {
         if (isCompiledScalar(node2)) {
             return combineTriggerWithScalar(expr, node1, node1Name, node2, node2Name, context);
         } else if (isMapFunctionAndQuery(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
@@ -503,7 +527,7 @@ export function combine2Nodes<T extends Expression>(
                     targetPropertyName: context.targetPropertyName,
                     triggers: [node1, node2]
                 };
-            } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            } else throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
@@ -518,9 +542,9 @@ export function combine2Nodes<T extends Expression>(
                     finalExpression: scalarExpr,
                     triggers: [node1].concat(node2.triggers || [])
                 };
-            } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            } else throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else if (isCompiledFormula(node1)) {
         if (isCompiledScalar(node2)) {
@@ -533,7 +557,7 @@ export function combine2Nodes<T extends Expression>(
                 }) as T,
             };
         } else if (isMapFunctionAndQuery(node2)) {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isMapReduceTrigger(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
@@ -547,7 +571,7 @@ export function combine2Nodes<T extends Expression>(
                     finalExpression: scalarExpr,
                     triggers: (node1.triggers || []).concat(node2)
                 };
-            } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            } else throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else if (isCompiledFormula(node2)) {
             if (isBinaryExpression(expr) || isLogicalExpression(expr)) {
                 let scalarExpr = _.cloneDeep(expr);
@@ -561,9 +585,9 @@ export function combine2Nodes<T extends Expression>(
                     finalExpression: scalarExpr,
                     triggers: (node1.triggers || []).concat(node2.triggers || [])
                 };
-            } else throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            } else throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         } else {
-            throw new Error("nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
+            throw new FormulaCompilerError(node, "nodes cannot be merged: " + JSON.stringify([node1, node2], null, 4));
         }
     } else throw Error("Unknown node1/node2 combination for Expression" + JSON.stringify([expr, node1, node2], null, 4));//FIXME: security breach, too many details in error messages, these should not be available to the clients
 }
@@ -600,9 +624,10 @@ function combineTriggerWithScalar<T extends Expression>(
 }
 
 function checkIdentifiers(mexpr: MemberExpression) {
-    if (!isIdentifier(mexpr.property)) throw new Error("computed MemberExpression property is not supported, at " + mexpr.origExpr);
+    let node = mexpr;
+    if (!isIdentifier(mexpr.property)) throw new FormulaCompilerError(node, "computed MemberExpression property is not supported, at " + mexpr.origExpr);
     if (isMemberExpression(mexpr.object)) return checkIdentifiers(mexpr.object);
-    else if (!isIdentifier(mexpr.object)) throw new Error("computed MemberExpression object is not supported, at " + mexpr.origExpr);
+    else if (!isIdentifier(mexpr.object)) throw new FormulaCompilerError(node, "computed MemberExpression object is not supported, at " + mexpr.origExpr);
 }
 
 function isTableName(identifier: string) {

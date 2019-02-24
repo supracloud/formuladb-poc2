@@ -6,8 +6,9 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { FormulaEditorService, UiToken } from '../formula-editor.service';
 import { Router } from '@angular/router';
 import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
-import { faCheckCircle, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faTimesCircle, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglass, faHourglassHalf, faTable, faHandPointRight, faShareSquare } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime } from 'rxjs/operators';
+import { Pn, EntityProperty } from '@core/domain/metadata/entity';
 
 @Component({
   selector: 'frmdb-formula-code-editor',
@@ -28,11 +29,8 @@ export class FormulaCodeEditorComponent implements OnInit {
   @ViewChild('editor')
   private textarea: ElementRef;
 
-  applyChangesIcon = faCheckCircle;
-  discardChangesIcon = faTimesCircle;
-
   editorExpr: string;
-  editorOn: boolean;
+  editorOn: boolean = false;
   editorExprHasErrors: boolean = false;
 
   suggestion?: (string) => string[];
@@ -122,7 +120,7 @@ export class FormulaCodeEditorComponent implements OnInit {
     }
   }
   onEdit(): void {
-    this.onEdit$.next()
+    this.onEdit$.next();
   }
   performOnEdit(): void {
     this.ftext = "";
@@ -133,6 +131,7 @@ export class FormulaCodeEditorComponent implements OnInit {
       }
       let tokens: UiToken[] = this.formulaEditorService.tokenize(this.editorExpr, this.textarea.nativeElement.selectionStart);
       this.currentTokens = tokens;
+      let editedPropertyToSend = this.getEntityPropertyFromTokens(tokens);
       let hasErrors: boolean = false;
       for (let i: number = 0; i < tokens.length; i++) {
         switch (tokens[i].type) {
@@ -144,16 +143,65 @@ export class FormulaCodeEditorComponent implements OnInit {
             break;
           default:
             this.ftext += this.renderToken(tokens[i]);
-            hasErrors = tokens[i].errors && tokens[i].errors.length > 0
+            hasErrors = hasErrors || (tokens[i].errors && tokens[i].errors.length > 0);
         }
       }
       this.cursorMove(this.textarea.nativeElement.selectionStart);
       if (!hasErrors) {
         this.editorExprHasErrors = false;
         this.formulaEditorService.previewFormula(this.editorExpr);
+        this.formulaEditorService.editorExprHasErrors$.next(false);
+        if (editedPropertyToSend) {
+          this.formulaEditorService.editedProperty$.next(editedPropertyToSend);
+        }
       } else {
+        this.formulaEditorService.editorExprHasErrors$.next(true);
         this.editorExprHasErrors = true;
       }
+    }
+  }
+
+  getEntityPropertyFromTokens(tokens: UiToken[]): EntityProperty | null {
+    for (let token of tokens) {
+      if (token.errors && token.errors.length > 0) {
+        return null;
+      }
+    }
+
+    if (tokens.length <= 0) return null;
+
+    if (this.editorExpr.indexOf(Pn.REFERENCE_TO) === 0) {
+      let entityNameToken = tokens[2];
+      let propertyNameToken = tokens[4];
+      if (!entityNameToken) {
+        tokens[0].errors.push("missing referenced table name");
+        return null;
+      }
+      if (entityNameToken.type !== TokenType.TABLE_NAME) {
+        tokens[0].errors.push("Expected table name but found " + entityNameToken.value + " at " + entityNameToken.pstart);
+        return null;
+      }
+      if (!propertyNameToken) {
+        tokens[0].errors.push("missing referenced column name of referenced table " + entityNameToken.value);
+        return null;
+      }
+      if (propertyNameToken.type !== TokenType.COLUMN_NAME) {
+        tokens[0].errors.push("Expected column name but found " + propertyNameToken.value + " at " + propertyNameToken.pstart);
+        return null;
+      }
+
+      return {
+        name: ((this.formulaEditorService.formulaState || {} as any).editedProperty || {} as any).name,
+        propType_: Pn.REFERENCE_TO,
+        referencedEntityName: entityNameToken.value,
+        referencedPropertyName: propertyNameToken.value,
+      };
+    } else {
+      return {
+        name: ((this.formulaEditorService.formulaState || {} as any).editedProperty || {} as any).name,
+        propType_: Pn.FORMULA,
+        formula: this.editorExpr,
+      };
     }
   }
 
@@ -234,25 +282,6 @@ export class FormulaCodeEditorComponent implements OnInit {
     }
 
     return ret.join('');
-  }
-
-  startEditing() {
-    this.formulaEditorService.toggleFormulaEditor();
-  }
-  applyChanges() {
-    if (!this.editorExprHasErrors) {
-      if (confirm("Please confirm, apply modifications to DB ?")) {
-        this.formulaEditorService.applyChangesToFormula(this.editorExpr);
-        this.formulaEditorService.toggleFormulaEditor();
-      }
-    } else {
-      alert("Expression has errors, cannot apply on DB");
-    }
-  }
-  discardChanges() {
-    if (confirm("Please confirm, dicard changes ?")) {
-      this.formulaEditorService.toggleFormulaEditor();
-    }
   }
 
 }

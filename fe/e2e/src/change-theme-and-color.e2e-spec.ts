@@ -9,6 +9,7 @@
 
 import { browser, element, ExpectedConditions, by } from 'protractor';
 import * as e2e_utils from "./utils";
+import { checkAndUpdateBinding } from '@angular/core/src/view/util';
 
 const path = require('path');
 const mp3Duration = require('mp3-duration');
@@ -124,4 +125,10 @@ describe('Switch themes colors and images', () => {
     e2e_utils.cleanup(test_name);
   })
 
+});
+
+
+voice("Change widget from Table to Mosaic", () => {
+  check(
+  click()
 });

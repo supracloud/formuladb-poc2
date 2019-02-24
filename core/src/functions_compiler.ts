@@ -38,7 +38,7 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "@core/domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName } from './formula_compiler';
+import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName, FormulaCompilerError } from './formula_compiler';
 import { _throw } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 
@@ -368,6 +368,32 @@ function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): Map
     return _REDUCE(fc, inputRange, {name: SumReduceFunN});
 }
 
+function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
+    return {
+        type_: CompiledScalarN,
+        rawExpr: fc.funcExpr,
+        has$Identifier: false,
+        hasNon$Identifier: false,
+    };
+}
+
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression): CompiledScalar {
+    if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO expects an TableName.column_name as argument");
+    return propertyTypeFunction(fc);
+}
+function NUMBER(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function STRING(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function DATETIME(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function DURATION(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
@@ -538,7 +564,18 @@ export const ScalarFunctions = {
     FLOOR: FLOOR,
 }
 
+export const PropertyTypeFunctions = {
+    NUMBER: NUMBER,
+    STRING: STRING,
+    TEXT: TEXT,
+    DATETIME: DATETIME,
+    DURATION: DURATION,
+    REFERENCE_TO: REFERENCE_TO,
+}
+
+export const FunctionsDict: {[x: string]: Function} = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
 export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))
+    .concat(Object.keys(PropertyTypeFunctions))
 ;

@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { EntityProperty, Pn } from "@core/domain/metadata/entity";
+import { EntityProperty, Pn, FormulaProperty, Entity } from "@core/domain/metadata/entity";
 import * as appState from 'src/app/app.state';
 import { map } from 'rxjs/operators';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from "@core/formula_tokenizer";
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
 import { BackendService } from '../backend.service';
 import { FormulaState, formulaEditorInitialState } from '../formula.state';
+import { PickOmit } from '@core/ts-utils';
 
 const STYLES = [
   { bgColor: '#b6d0f988' },
@@ -34,16 +35,25 @@ const DEFAULT_UITOKEN: UiToken = {
 export class FormulaEditorService {
   private subscriptions: Subscription[] = [];
 
-  public formulaState: FormulaState = formulaEditorInitialState;
-  public selectedFormula$: Observable<string | undefined>;
+  public currentEntity$: Observable<appState.Entity | undefined>;
+  public currentProperty$: Observable<EntityProperty | undefined>;
+  public editedEntity$: Observable<appState.Entity | undefined>;
   public editorExpr$: Observable<string | undefined>;
   public editorOn$: Observable<boolean>;
+  public editedProperty$: Subject<EntityProperty> = new Subject();
+  public editorExprHasErrors$: Subject<boolean> = new Subject();
+
+  public formulaState: FormulaState = formulaEditorInitialState;
+  public selectedFormula$: Observable<string | undefined>;  
   public developerMode: boolean = false;
   private highlightTableColumns: { [tableName: string]: { [columnName: string]: string } } = {};
   private formulaTokenizer: FormulaTokenizer;
   private formulaTokenizerSchemaChecker: FormulaTokenizerSchemaChecker;
 
   constructor(protected store: Store<appState.AppState>, private backendService: BackendService) {
+    this.currentEntity$ = this.store.select(appState.getTableEntityState);
+    this.currentProperty$ = this.store.select(appState.getSelectedPropertyState);
+    this.editedEntity$ = this.store.select(appState.getEditedEntity);
     this.subscriptions.push(this.store.select(appState.getFormula).subscribe(x => {
       this.formulaState = x;
     }));
@@ -78,16 +88,6 @@ export class FormulaEditorService {
   public previewFormula(formula: string){
     if (this.formulaState && this.formulaState.editedEntity && this.formulaState.editedProperty && this.formulaState.editedDataObj) {
       this.store.dispatch(new appState.ServerEventPreviewFormula(this.formulaState.editedEntity, this.formulaState.editedProperty.name, this.formulaState.editedDataObj, formula));
-    }
-  }
-  
-  public applyChangesToFormula(formula: string){
-    if (this.formulaState && this.formulaState.editedEntity && this.formulaState.editedProperty && this.formulaState.editedDataObj) {
-      this.store.dispatch(new appState.ServerEventSetProperty(this.formulaState.editedEntity, {
-        name: this.formulaState.editedProperty.name, 
-        propType_: Pn.FORMULA,
-        formula
-      }));
     }
   }
 
