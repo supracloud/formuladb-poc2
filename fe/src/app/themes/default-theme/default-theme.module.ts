@@ -37,8 +37,7 @@ import { FormTabsComponent } from '@kv_selector_base/app/form/form_tabs/form_tab
 @NgModule({
   imports: [
     CommonModule,
-    // FrmdbRoutingModule,
-    FrmdbModule.forRoot(),
+    FrmdbModule,
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
@@ -65,9 +64,6 @@ import { FormTabsComponent } from '@kv_selector_base/app/form/form_tabs/form_tab
     FormVerticalLayoutComponent,
     FormHorizontalLayoutComponent,
     FormTabsComponent
-  ],
-  // providers: [FormEditingService,
-  //   TableService,
-  //   I18nPipe]
+  ]
 })
 export class DefaultThemeModule { }
