@@ -98,14 +98,4 @@ import { DevModeCommonModule } from '../dev-mode-common/dev-mode-common.module';
     FormTextComponent
   ]
 })
-export class FrmdbModule {
-
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: FrmdbModule,
-      providers: [FormEditingService,
-        TableService,
-        I18nPipe]
-    };
-  }
-}
+export class FrmdbModule {}
