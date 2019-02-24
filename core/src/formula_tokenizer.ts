@@ -271,8 +271,8 @@ export class FormulaTokenizer {
             }
         }
         for (let token of tokens) {
-            if (errors.length > 0) {
-                token.errors = token.errors.concat(errors);
+            if (errors.length > 0 && token.errors.length == 0) {
+                token.errors = errors;
             }
             if (argumentName) {
                 token.callStack.push({functionName, argumentName});

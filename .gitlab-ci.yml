@@ -44,8 +44,8 @@ test:
   script:
     - FRMDB_RELEASE=0.0.1 docker-compose up -d db
     - cd be
-    - npm test || true
-    - FRMDB_STORAGE=postgres npm test || true
+    - npm test
+    - FRMDB_STORAGE=postgres npm test
     - npm run start &
     - cd ..
     - cd fe

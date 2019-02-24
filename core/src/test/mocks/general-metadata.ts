@@ -110,3 +110,18 @@ export const GEN__Client: Entity = {
         state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
     }
 };
+
+export const GEN__StaticPage: Entity = {
+    _id: "GEN__StaticPage",
+    props: {
+        name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+    }
+};
+
+export const GEN__StaticPage__Element: Entity = {
+    _id: "GEN__StaticPage__Element",
+    props: {
+        name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+        type: { name: "type", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
+    }
+};

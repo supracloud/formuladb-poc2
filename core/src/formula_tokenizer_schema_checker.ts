@@ -24,7 +24,7 @@ export class FormulaTokenizerSchemaChecker {
     if (TokenType.FUNCTION_NAME === token.type) {
       let functionName = token.value;
       let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName] || PropertyTypeFunctions[functionName];
-      if (!fn) {
+      if (!fn && token.errors.length == 0) {
         token.errors.push("Unknown function " + functionName);
         token.foundInSchema = false;
       }
