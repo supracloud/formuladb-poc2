@@ -7,7 +7,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
-import { map, withLatestFrom } from 'rxjs/operators'
+import { map, withLatestFrom, filter } from 'rxjs/operators'
 
 import * as fromEntity from '../../../entity-state';
 import { NavigationItem } from '../../../navigation.item';
@@ -24,14 +24,16 @@ export class NavigationComponent implements OnInit {
   constructor(protected store: Store<AppState>) {
     this.metadataCatalog$ = this.store.select(fromEntity.getEntitiesTree)
       .pipe(
-        withLatestFrom(this.store.select(state => state.router.state.url)),
+        withLatestFrom(this.store.select(state => state.router ? state.router.state.url : null)),
+        // filter(([entities, route]) => route != null),
         map(([entities, route]) => {
-          const rp = parseUrl(route);
+          console.warn(entities);
+          const rp = parseUrl(route!);
           const path = rp === null || rp.path === null ? [] : rp.path.split("__");
           const re = this.setCollapsed(entities, path);
           return re;
         }
-        ));
+      ));
   }
 
   ngOnInit() {

@@ -7,11 +7,6 @@ import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
 import { Observable } from 'rxjs';
 
-@Component({
-  selector: 'v-layout',
-  templateUrl: './form-vertical-layout.component.html',
-  styleUrls: ['./form-vertical-layout.component.scss']
-})
 export class FormVerticalLayoutComponent implements OnInit {
 
   @Input()

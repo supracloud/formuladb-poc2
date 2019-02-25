@@ -11,7 +11,7 @@ import { map } from 'rxjs/operators'
 
 import * as fromEntity from '../../../entity-state';
 import { NavigationItem, unflatten } from '../../../navigation.item';
-import { NavigationComponent as NavigationComponentBase} from '../../default-theme/navigation/navigation.component'
+import { NavigationComponent as NavigationComponentBase} from '../../light-theme/navigation/navigation.component'
 import { AppState } from 'src/app/app.state';
 
 @Component({

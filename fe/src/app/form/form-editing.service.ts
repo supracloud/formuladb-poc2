@@ -1,6 +1,6 @@
-import { Injectable, Directive, forwardRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BackendService } from '../backend.service';
-import { ValidatorFn, AsyncValidatorFn, ValidationErrors, AsyncValidator, NG_ASYNC_VALIDATORS } from '@angular/forms';
+import { ValidatorFn, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { AbstractControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { FrmdbFormControl } from './form.component';

@@ -11,11 +11,15 @@ import { FormHorizontalLayoutComponent as FormHorizontalLayoutComponentBase } fr
 
 
 
+import { Store } from '@ngrx/store';
+import * as fromForm from '../../../../form/form.state';
 @Component({
     selector: 'h-layout',
     templateUrl: '../../../../form/form-horizontal-layout/form-horizontal-layout.component.html',
     styleUrls: ['../../../../form/form-horizontal-layout/form-horizontal-layout.component.scss']
 })
 export class FormHorizontalLayoutComponent extends FormHorizontalLayoutComponentBase implements OnInit {
-    
+    constructor(protected formStore: Store<fromForm.FormState>) {
+        super(formStore);
+    }
 }

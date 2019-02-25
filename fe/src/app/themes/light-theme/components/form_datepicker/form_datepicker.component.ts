@@ -10,10 +10,15 @@ import * as _ from "lodash";
 
 import { FormDatepickerComponent as FormDatepickerComponentBase } from '@fe/app/form/form_datepicker/form_datepicker.component';
 
+import { Store } from '@ngrx/store';
+import * as fromForm from '../../../../form/form.state';
 @Component({
   selector: 'form-datepicker',
   templateUrl: '../../../../form/form_datepicker/form_datepicker.component.html',
-  styleUrls: ['../../../../form/form_datepicker/form_datepicker.component.scss']
+  styleUrls: ['../../../../form/form_input/form_input.component.scss']
 })
 export class FormDatepickerComponent extends FormDatepickerComponentBase implements OnInit, OnDestroy {
+  constructor(protected formStore: Store<fromForm.FormState>) {
+    super(formStore);
+  }
 }

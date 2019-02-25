@@ -18,12 +18,6 @@ import * as _ from "lodash";
 import * as fromForm from '../form.state';
 import { Pn } from "@core/domain/metadata/entity";
 
-@Component({
-    selector: 'form-input',
-    host: { class: "col form-group" },
-    templateUrl: 'form_input.component.html',
-    styleUrls: ['form_input.component.scss']
-})
 export class FormInputComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 

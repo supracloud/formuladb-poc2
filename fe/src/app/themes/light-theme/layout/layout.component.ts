@@ -35,7 +35,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      lightBootstrapDashbord()
+      lightBootstrapDashbord();
     }
   }
 }

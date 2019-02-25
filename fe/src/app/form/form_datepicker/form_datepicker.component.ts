@@ -10,12 +10,7 @@ import { BaseNodeComponent } from "../base_node";
 import * as fromForm from '../form.state';
 import { FormDatepicker } from "@core/domain/uimetadata/form";
 
-@Component({
-  selector: 'form-datepicker',
-  host: { class: "col form_group" },
-  templateUrl: 'form_datepicker.component.html',
-  styleUrls: ['./../form_input/form_input.component.scss']
-})
+
 export class FormDatepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);

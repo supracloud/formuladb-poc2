@@ -10,12 +10,8 @@ import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/for
 import * as fromForm from '../form.state';
 
 import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
-@Component({
-  selector: '[form_tabs]',
-  host: { class: "col" },
-  templateUrl: 'form_tabs.component.html',
-  styleUrls: ['form_tabs.component.scss']
-})
+
+
 export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];
 

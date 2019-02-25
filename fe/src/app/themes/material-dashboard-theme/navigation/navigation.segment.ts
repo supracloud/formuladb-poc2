@@ -7,7 +7,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input } 
 import { NavigationItem } from '../../../navigation.item';
 import { Store } from '@ngrx/store';
 import * as fromEntity from '../../../entity-state';
-import { NavigationSegment as NavigationSegmentBase } from '../../default-theme/navigation/navigation.segment'
+import { NavigationSegment as NavigationSegmentBase } from '../../light-theme/navigation/navigation.segment'
 
 @Component({
     selector: 'frmdb-navigation-segment',

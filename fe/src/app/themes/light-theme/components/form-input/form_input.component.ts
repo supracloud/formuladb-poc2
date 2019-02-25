@@ -8,17 +8,17 @@ import {
 } from '@angular/core';
 import * as _ from "lodash";
 
-import { FormTextComponent as BaseFormTextComponent } from "@fe/app/form/form-text/form_text.component";
+import { FormInputComponent as BaseFormInputComponent } from "@fe/app/form/form_input/form_input.component";
 
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../../../form/form.state';
 @Component({
-    selector: 'form-text',
+    selector: 'form-input',
     host: { class: "col form-group" },
-    templateUrl: '../../../../form/form-text/form_text.component.html',
-    styleUrls: ['../../../../form/form-text/form_text.component.scss']
+    templateUrl: '../../../../form/form_input/form_input.component.html',
+    styleUrls: ['../../../../form/form_input/form_input.component.scss']
 })
-export class FormTextComponent extends BaseFormTextComponent implements OnInit, OnDestroy {
+export class FormInputComponent extends BaseFormInputComponent implements OnInit, OnDestroy {
     constructor(protected formStore: Store<fromForm.FormState>) {
         super(formStore);
     }

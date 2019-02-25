@@ -10,11 +10,6 @@ import { BaseNodeComponent } from "../base_node";
 import * as fromForm from '../form.state';
 import { FormTimepicker } from "@core/domain/uimetadata/form";
 
-@Component({
-  selector: 'form-timepicker',
-  templateUrl: 'form_timepicker.component.html',
-  styleUrls: ['./../form_input/form_input.component.scss']
-})
 export class FormTimepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
   constructor(protected formStore: Store<fromForm.FormState>) {
     super(formStore);

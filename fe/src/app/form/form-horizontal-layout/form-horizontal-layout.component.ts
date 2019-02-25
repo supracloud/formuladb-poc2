@@ -5,13 +5,8 @@ import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
-import { Observable } from 'rxjs';
 
-@Component({
-  selector: 'h-layout',
-  templateUrl: './form-horizontal-layout.component.html',
-  styleUrls: ['./form-horizontal-layout.component.scss']
-})
+
 export class FormHorizontalLayoutComponent implements OnInit {
 
   @Input()

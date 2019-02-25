@@ -12,12 +12,6 @@ import * as fromForm from '../form.state';
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 
 
-@Component({
-  selector: 'form_item',
-  templateUrl: 'form_item.component.html',
-  // host: { '[class]': 'getHostClassForElement()' },
-  styleUrls: ['form_item.component.scss']
-})
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;

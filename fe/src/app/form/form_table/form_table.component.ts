@@ -11,12 +11,8 @@ import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
 import * as fromForm from '../form.state';
 import { Pn } from "@core/domain/metadata/entity";
-@Component({
-  selector: '[form_table]',
-  host: { class: 'col' },
-  templateUrl: 'form_table.component.html',
-  styleUrls: ['form_table.component.scss']
-})
+
+
 export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(protected store: Store<fromForm.FormState>) {

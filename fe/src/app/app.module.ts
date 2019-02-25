@@ -6,11 +6,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import { environment } from '../environments/environment';
 
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
@@ -38,10 +36,6 @@ import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
     BrowserAnimationsModule,
     AppRoutingModule,
     StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
-    StoreDevtoolsModule.instrument({
-      maxAge: 50, // Retains last 25 states
-      // logOnly: environment.production, // Restrict extension to log-only mode
-    }),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([AppEffects]),
     NgbModule.forRoot(),

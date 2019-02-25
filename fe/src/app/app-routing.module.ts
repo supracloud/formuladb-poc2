@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: ':appName/0',
-    loadChildren: '../app/themes/default-theme/default-theme.module#LightThemeModule'
+    loadChildren: '../app/themes/light-theme/light-theme.module#LightThemeModule'
   },
   {
     path: ':appName/1',

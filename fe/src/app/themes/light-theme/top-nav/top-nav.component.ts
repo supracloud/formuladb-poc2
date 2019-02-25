@@ -3,8 +3,6 @@ import { Observable, Subscription } from 'rxjs';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
-import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
 
 @Component({
   selector: 'frmdb-top-nav',
