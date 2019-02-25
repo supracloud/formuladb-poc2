@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,8 +16,6 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 
 import { FrmdbRoutingModule } from './frmdb-routing.module';
 import { NotFoundComponent } from '../not-found/not-found.component';
-import { TableComponent } from '../table/table.component';
-import { FormComponent } from '../form/form.component';
 import { FormInputComponent } from '../form/form_input/form_input.component';
 import { FormAutocompleteComponent } from '../form/form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from '../form/form_tabs/form_tabs.component';
@@ -41,47 +39,63 @@ import { TableService } from '../table/table.service';
 import { FormItemEditorComponent } from '../form/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '../form/form-item-editor/form-input-editor/form-input-editor.component';
 import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
+import { FormTextComponent } from '../form/form-text/form_text.component';
+import { DevModeCommonModule } from '../dev-mode-common/dev-mode-common.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    FrmdbRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    AgGridModule.withComponents([TableComponent, TableHeaderComponent]),
+    AgGridModule.withComponents([TableHeaderComponent]),
     CrosscuttingModule,
     FontAwesomeModule,
     NgxChartsModule,
     NgxGraphModule,
+    NgbModule,
+    DevModeCommonModule
   ],
   declarations: [
     NotFoundComponent,
-    TableComponent,
     TableHeaderComponent,
-    FormComponent,
     FormInputComponent,
     FormStateComponent,
     FormAutocompleteComponent,
-    FormTabsComponent,
     FormTableComponent,
     FormDataGridComponent,
     FormDatepickerComponent,
     FormTimepickerComponent,
-    FormItemComponent,
     FormChartComponent,
     DropHandleComponent,
-    FormHorizontalLayoutComponent,
-    FormVerticalLayoutComponent,
     ContextMenuComponent,
     FrmdbOnfocusDirective,
     FormItemEditorComponent,
-    FormInputEditorComponent
+    FormInputEditorComponent,
+    FormTextComponent
   ],
   providers: [
     FormEditingService,
     TableService,
     I18nPipe
+  ],
+  exports: [
+    NotFoundComponent,
+    TableHeaderComponent,
+    FormInputComponent,
+    FormStateComponent,
+    FormAutocompleteComponent,
+    FormTableComponent,
+    FormDataGridComponent,
+    FormDatepickerComponent,
+    FormTimepickerComponent,
+    FormChartComponent,
+    DropHandleComponent,
+    ContextMenuComponent,
+    FrmdbOnfocusDirective,
+    FormItemEditorComponent,
+    FormInputEditorComponent,
+    FormTextComponent
   ]
 })
-export class FrmdbModule { }
+export class FrmdbModule {}
