@@ -9,7 +9,8 @@
     border-bottom: 1px solid red;
 }
 
-#frmdb-dev-mode-top-bar {
+:host #frmdb-dev-mode-top-bar .fa-sm {
+    height: 16px;
 }
 
 #frmdb-dev-mode-menu {

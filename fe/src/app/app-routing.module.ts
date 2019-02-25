@@ -12,9 +12,9 @@ const routes: Routes = [
     path: '',
     component: ApplicationsComponent,
   },
- {
+  {
     path: ':appName/0',
-    loadChildren: '../app/themes/default-theme/default-theme.module#DefaultThemeModule'
+    loadChildren: '../app/themes/default-theme/default-theme.module#LightThemeModule'
   },
   {
     path: ':appName/1',

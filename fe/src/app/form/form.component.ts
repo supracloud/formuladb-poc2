@@ -48,12 +48,7 @@ export class FrmdbFormGroup extends FormGroup {
     }
 
 }
-@Component({
-    selector: 'mwz-form',
-    templateUrl: 'form.component.html',
-    styleUrls: ['./form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-})
+
 export class FormComponent implements OnInit, OnDestroy {
     public theFormGroup: FormGroup;
     public changes: any[] = [];

@@ -18,11 +18,6 @@ import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
 import { switchMap, map, filter } from 'rxjs/operators';
 
-@Component({
-    selector: 'form-autocomplete',
-    templateUrl: 'form_autocomplete.component.html',
-    styleUrls: ['./../form_input/form_input.component.scss', 'form_autocomplete.component.scss']
-})
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
     inputElement: FormAutocomplete;
