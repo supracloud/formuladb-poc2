@@ -13,7 +13,7 @@ import { ObservedValueOf, Observable } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   host: {
-    '[style.padding]': 'bodyPadding',
+    // '[style.padding]': 'bodyPadding',
   }
 })
 export class AppComponent {

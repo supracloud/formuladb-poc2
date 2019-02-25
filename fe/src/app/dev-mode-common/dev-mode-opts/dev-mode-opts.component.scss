@@ -1,3 +1,17 @@
+:host {
+    z-index: 2000;
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid red;
+}
+
+#frmdb-dev-mode-top-bar {
+}
+
 #frmdb-dev-mode-menu {
     position: fixed;
     top: 40px;
@@ -16,10 +30,3 @@
     padding-right: 5px;
 }
 
-:host {
-    z-index: 110;
-    position: fixed;
-    display: block;
-    top: 0;
-    left: 0;
-}

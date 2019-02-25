@@ -12,15 +12,14 @@ const routes: Routes = [
     path: '',
     component: ApplicationsComponent,
   },
- //TODO: lazy load components from this module, e.g. https://plnkr.co/edit/ZGC82G9u10EQFYFvvRMB?p=preview
  {
     path: ':appName/0',
     loadChildren: '../app/themes/default-theme/default-theme.module#DefaultThemeModule'
   },
-  // {
-  //   path: ':appName/1',
-  //   loadChildren: '../app/themes/material-dashboard-theme/material-dashboard-theme.module#MaterialDashboardThemeModule'
-  // },
+  {
+    path: ':appName/1',
+    loadChildren: '../app/themes/material-dashboard-theme/material-dashboard-theme.module#MaterialDashboardThemeModule'
+  },
   {
     path: ':appName/2',
     loadChildren: '../app/themes/now-uidashboard-theme/now-uidashboard-theme.module#NowUIDashboardThemeModule'
