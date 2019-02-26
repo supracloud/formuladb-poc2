@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import * as shape from 'd3-shape';
 import { BaseNodeComponent } from '../base_node';
-import { Store } from '@ngrx/store';
 
-import * as fromForm from '../form.state';
 import { FormChart } from "@core/domain/uimetadata/form";
-import { AbstractControl, FormArray, FormControl } from '@angular/forms';
+import { FormArray, FormControl } from '@angular/forms';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 @Component({
   selector: 'form-chart',
@@ -192,7 +191,7 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
     domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
   };
 
-  single: {name: string, value: number}[] = [
+  single: { name: string, value: number }[] = [
     {
       "name": "Product 1",
       "value": 8940000
@@ -343,14 +342,15 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
     }
   ];
   multi = this.lineData;
-  
+
 
   formChart: FormChart;
   formArray: FormArray;
 
-  constructor(protected store: Store<fromForm.FormState>) {
-    super(store);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
+
 
   setSingleData() {
     this.single = [];

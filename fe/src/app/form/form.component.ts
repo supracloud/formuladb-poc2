@@ -27,7 +27,6 @@ import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
 import { j2str } from '../crosscutting/utils/j2str';
 import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
-import { ServerEventModifiedFormDataEvent } from '@core/domain/event';
 import { UserModifiedFormData } from '../frmdb-streams/frmdb-user-events';
 
 export class FrmdbFormControl extends FormControl {
@@ -49,29 +48,23 @@ export class FrmdbFormGroup extends FormGroup {
 
 }
 
-@Component({
-    selector: 'mwz-form',
-    templateUrl: 'form.component.html',
-    styleUrls: ['./form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-})
 export class FormComponent implements OnInit, OnDestroy {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
 
     private tickUsed: boolean = false;
     private lastSaveEvent: UserModifiedFormData;
-    public form$: Observable<Form | null>;
-    private formData: DataObj | null;
+    public formData: DataObj | null;
+    public form: DataObj | null;
     private formReadOnly: boolean;
     private saveInProgress = false;
     private alertType = 'success';
     protected subscriptions: Subscription[] = [];
 
     constructor(
-        private frmdbStreams: FrmdbStreamsService,
-        private formEditingService: FormEditingService,
-        private _location: Location
+        protected frmdbStreams: FrmdbStreamsService,
+        protected formEditingService: FormEditingService,
+        protected _location: Location
     ) {
         try {
             this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');
@@ -92,17 +85,18 @@ export class FormComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.form$ = this.frmdbStreams.form$.pipe(tap(
-            form => {
-                try {
-                    if (null === form) { return; }
-                    // set readonly fields
-                    this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
-                } catch (ex) {
-                    console.error(ex);
-                }
+        this.subscriptions.push(this.frmdbStreams.form$.subscribe(form => {
+            try {
+                if (null === form) { return; }
+                // set readonly fields
+                this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
+                this.form = form;
+            } catch (ex) {
+                console.error(ex);
             }
-        ));
+            console.warn(form, this.form, this.formData);
+        }));
+
         this.subscriptions.push(this.frmdbStreams.formData$.subscribe(formData => {
             try {
                 this.formData = formData;
@@ -112,6 +106,7 @@ export class FormComponent implements OnInit, OnDestroy {
             } catch (ex) {
                 console.error(ex);
             }
+            console.warn(formData, this.form, this.formData);
         }));
     }
 
@@ -146,7 +141,7 @@ export class FormComponent implements OnInit, OnDestroy {
                     console.warn('Cound not find parent for ' + valueChange);
                     return;
                 }
-                this.lastSaveEvent = new UserModifiedFormData(_.cloneDeep(obj));
+                this.lastSaveEvent = {type: "UserModifiedFormData", obj: _.cloneDeep(obj)};
                 this.frmdbStreams.userEvents$.next(this.lastSaveEvent);
             });
 

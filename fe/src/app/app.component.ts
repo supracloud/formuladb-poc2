@@ -46,8 +46,12 @@ export class AppComponent {
     });
 
     this.store.select(appState.getFormReadOnly).subscribe(readOnly => frmdbStreams.readonlyMode$.next(readOnly));
-    this.store.select(appState.getFormState).subscribe(form => frmdbStreams.form$.next(form!));
-    this.store.select(appState.getFormDataState).subscribe(formData => frmdbStreams.formData$.next(formData!));
+    this.store.select(appState.getFormState).subscribe(form => {
+      if (form) frmdbStreams.form$.next(form);
+    });
+    this.store.select(appState.getFormDataState).subscribe(formData => {
+      if (formData) frmdbStreams.formData$.next(formData);
+    });
 
   }
 

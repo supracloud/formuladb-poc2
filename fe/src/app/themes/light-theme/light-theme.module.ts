@@ -69,7 +69,6 @@ import { FormStateComponent } from '@fe/app/form/form-state/form-state.component
     NavigationComponent,
     NavigationSegment,
     TopNavComponent,
-    TableComponent,
     FormComponent,
     FormItemComponent,
     FormTextComponent,
