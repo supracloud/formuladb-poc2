@@ -13,21 +13,21 @@ const routes: Routes = [
     component: ApplicationsComponent,
   },
   {
-    path: 'theme/argon',
-    loadChildren: '../app/themes/argon-theme/argon-theme.module#ArgonThemeModule'
-  },
-  {
-    path: 'theme/0',
+    path: ':appName/0',
     loadChildren: '../app/themes/light-theme/light-theme.module#LightThemeModule'
   },
   {
-    path: 'theme/1',
+    path: ':appName/1',
     loadChildren: '../app/themes/material-dashboard-theme/material-dashboard-theme.module#MaterialDashboardThemeModule'
   },
   {
-    path: 'theme/2',
+    path: ':appName/2',
     loadChildren: '../app/themes/now-uidashboard-theme/now-uidashboard-theme.module#NowUIDashboardThemeModule'
-  }
+  },
+  {
+    path: ':appName/3',
+    loadChildren: '../app/themes/argon-theme/argon-theme.module#ArgonThemeModule'
+  },
 ];
 
 @NgModule({

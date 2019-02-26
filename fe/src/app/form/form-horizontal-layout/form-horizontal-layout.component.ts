@@ -5,6 +5,7 @@ import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 
 export class FormHorizontalLayoutComponent implements OnInit {
@@ -24,8 +25,8 @@ export class FormHorizontalLayoutComponent implements OnInit {
   @HostBinding("class.outline")
   editMode: boolean;
 
-  constructor(protected store: Store<fromForm.FormState>) {
-    this.store.select(fromForm.isEditMode).subscribe(e => this.editMode = e);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
   }
 
   ngOnInit() {

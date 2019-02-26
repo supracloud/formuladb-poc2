@@ -10,9 +10,9 @@ import * as _ from "lodash";
 
 import { FormAutocompleteComponent as FormAutocompleteComponentBase } from '@fe/app/form/form_autocomplete/form_autocomplete.component';
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
 import { FormEditingService } from '@fe/app/form/form-editing.service';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: 'form-autocomplete',
     templateUrl: '../../../../form/form_autocomplete/form_autocomplete.component.html',
@@ -22,7 +22,7 @@ import { FormEditingService } from '@fe/app/form/form-editing.service';
     ]
 })
 export class FormAutocompleteComponent extends FormAutocompleteComponentBase implements OnInit, OnDestroy {
-    constructor(protected formStore: Store<fromForm.FormState>, formEditingService: FormEditingService) {
-        super(formStore, formEditingService);
+    constructor(protected frmdbStreams: FrmdbStreamsService, formEditingService: FormEditingService) {
+        super(frmdbStreams, formEditingService);
     }
 }

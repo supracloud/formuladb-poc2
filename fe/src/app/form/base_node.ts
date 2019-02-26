@@ -14,7 +14,7 @@ import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
 
 export class BaseNodeComponent {
 
-    @HostBinding('class.form-item-highlight') highlighted: boolean;
+    @HostBinding('class.form-item-highlight') highlightId: boolean;
 
     @Input()
     nodeElement: NodeElement;
@@ -35,11 +35,6 @@ export class BaseNodeComponent {
     }
 
     constructor(protected frmdbStreams: FrmdbStreamsService) {
-        this.subscriptions.push(
-            this.store.select(fromForm.getHighlightedId)
-                .subscribe(h => {
-                    this.highlighted = this.nodeElement && this.nodeElement._id === h;
-                }));
     }
 
 }

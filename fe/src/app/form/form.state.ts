@@ -19,7 +19,6 @@ export interface FormState {
   formData: DataObj | null;
   eventFromBackend: events.MwzEvents | null;
   formReadOnly: boolean;
-  highlighted: any;
   dragged: NodeElement | null;
 }
 
@@ -28,7 +27,6 @@ export const formInitialState: FormState = {
   formData: null,
   eventFromBackend: null,
   formReadOnly: true,
-  highlighted: null,
   dragged: null
 };
 
@@ -36,7 +34,6 @@ export const FormDataFromBackendActionN = "[form] FormDataFromBackendAction";
 export const ResetFormDataFromBackendActionN = "[form] ResetFormDataFromBackendAction";
 export const FormNotifFromBackendActionN = "[form] FormNotifFromBackendAction";
 export const FormFromBackendActionN = "[form] FormFromBackendAction";
-export const FormItemHighlightActionN = "[form] FormItemHighlightAction";
 export const FormDragActionN = "[form] FormDragAction";
 export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
@@ -56,12 +53,6 @@ export class ResetFormDataFromBackendAction implements Action {
   readonly type = ResetFormDataFromBackendActionN;
 
   constructor(public obj: DataObj) { }
-}
-
-export class FormItemHighlightAction implements Action {
-  readonly type = FormItemHighlightActionN;
-
-  constructor(public id: any) { }
 }
 
 export class FormNotifFromBackendAction implements Action {
@@ -134,7 +125,6 @@ export type FormActions =
   | FormNotifFromBackendAction
   | ServerEventModifiedForm
   | ServerEventModifiedFormData
-  | FormItemHighlightAction
   | FormDragAction
   | FormDropAction
   | FormDeleteAction
@@ -246,13 +236,6 @@ export function formReducer(state = formInitialState, action: FormActions): Form
       };
       break;
 
-    case FormItemHighlightActionN:
-      ret = {
-        ...state,
-        highlighted: action.id,
-      };
-      break;
-
     case FormDragActionN:
       return { ...state, dragged: action.payload }
 
@@ -297,8 +280,4 @@ export const getFormState = createSelector(
 export const getFormReadOnly = createSelector(
   getForm,
   (state: FormState) => state ? state.formReadOnly : formInitialState.formReadOnly
-);
-export const getHighlightedId = createSelector(
-  getForm,
-  (state: FormState) => state ? state.highlighted : formInitialState.highlighted
 );

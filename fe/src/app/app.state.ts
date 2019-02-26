@@ -102,16 +102,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
           formReadOnly: action.appReadonly != fromCore.NotReadonly,
         }
       }
-    } 
-    else if (action.type === fromCore.CoreToggleDeveloperModeActionN) {
-      updatedState = {
-        ...state,
-        form: {
-          ...state.form,
-          formEditMode: !state.core.developerMode,
-        }
-      }
-    } 
+    }
     //TODO: this should be an effect
     else if (action.type === fromTable.UserSelectCellN) {
       let selectedProperty = state.entity.selectedEntity && action.columnName ? state.entity.selectedEntity.props[action.columnName] : undefined;

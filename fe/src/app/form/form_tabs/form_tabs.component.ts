@@ -5,21 +5,21 @@
 
 import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
-import { Store } from '@ngrx/store';
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
-import * as fromForm from '../form.state';
 
 import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 
 export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];
 
-  constructor(protected store: Store<fromForm.FormState>) {
-    super(store);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
 
-  ngOnInit(){}
+
+  ngOnInit() { }
 
   ngOnChanges() {
     if (this.nodeElement.nodeType !== NodeType.form_tabs) throw new Error("form_tabs component does not work with nodeElement " + this.nodeElement);

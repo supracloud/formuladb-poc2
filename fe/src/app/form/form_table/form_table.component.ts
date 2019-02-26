@@ -3,20 +3,18 @@
  * License TBD
  */
 
-import { Component, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { Store } from '@ngrx/store';
 import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@core/domain/uimetadata/form";
-import { FormControl, FormGroup, AbstractControl } from '@angular/forms';
 
-import * as fromForm from '../form.state';
 import { Pn } from "@core/domain/metadata/entity";
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 
 export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(protected store: Store<fromForm.FormState>) {
-    super(store);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
 
   tableElement: FormTable | FormTabs;

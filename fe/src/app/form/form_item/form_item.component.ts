@@ -10,6 +10,8 @@ import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from "@core/domain/uimetadata/form";
 import * as fromForm from '../form.state';
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { UserDraggedFormElement } from '@fe/app/frmdb-streams/frmdb-user-events';
 
 
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
@@ -23,8 +25,8 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-  constructor(protected formStore: Store<fromForm.FormState>) {
-    super(formStore);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
 
   getChildPath(childEl: NodeElement) {
@@ -76,7 +78,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
 
   dragStart(e: any): boolean {
     if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodeElement._id) {
-      this.formStore.dispatch(new fromForm.FormDragAction(this.nodeElement));
+      this.frmdbStreams.userEvents$.next({type: "UserDraggedFormElement", nodeElement: this.nodeElement});
       e.stopPropagation();
       return true;
     } else {
@@ -86,6 +88,6 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   }
 
   dragEnd(e: any): void {
-    this.formStore.dispatch(new fromForm.FormDragAction(null));
+    this.frmdbStreams.userEvents$.next({type: "UserDraggedFormElement", nodeElement: null});
   }
 }

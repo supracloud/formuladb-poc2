@@ -10,8 +10,8 @@ import * as _ from "lodash";
 
 import { FormTextComponent as BaseFormTextComponent } from "@fe/app/form/form-text/form_text.component";
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: 'form-text',
     host: { class: "col form-group" },
@@ -19,7 +19,7 @@ import * as fromForm from '../../../../form/form.state';
     styleUrls: ['../../../../form/form-text/form_text.component.scss']
 })
 export class FormTextComponent extends BaseFormTextComponent implements OnInit, OnDestroy {
-    constructor(protected formStore: Store<fromForm.FormState>) {
-        super(formStore);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
     }
 }

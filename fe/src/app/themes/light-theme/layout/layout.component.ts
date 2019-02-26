@@ -13,6 +13,8 @@ import { Store } from '@ngrx/store';
 import * as appState from '../../../app.state';
 import { Observable } from 'rxjs';
 
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
   selector: 'frmdb-layout',
   templateUrl: './layout.component.html',

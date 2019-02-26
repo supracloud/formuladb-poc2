@@ -4,6 +4,8 @@ import { Observable, Subscription } from 'rxjs';
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
   selector: 'frmdb-top-nav',
   templateUrl: './top-nav.component.html',

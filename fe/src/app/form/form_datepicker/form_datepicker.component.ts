@@ -3,17 +3,15 @@
  * License TBD
  */
 
-import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
-import * as fromForm from '../form.state';
 import { FormDatepicker } from "@core/domain/uimetadata/form";
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 
 export class FormDatepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
-  constructor(protected formStore: Store<fromForm.FormState>) {
-    super(formStore);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
 
   inputElement: FormDatepicker;

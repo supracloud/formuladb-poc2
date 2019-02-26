@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
 import { Observable } from 'rxjs';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 export class FormVerticalLayoutComponent implements OnInit {
 
@@ -24,8 +25,8 @@ export class FormVerticalLayoutComponent implements OnInit {
   @HostBinding("class.outline")
   editMode: boolean;
 
-  constructor(protected store: Store<fromForm.FormState>) {
-    this.store.select(fromForm.isEditMode).subscribe(e => this.editMode = e);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    frmdbStreams.devMode$.subscribe(e => this.editMode = e);
   }
 
   ngOnInit() {

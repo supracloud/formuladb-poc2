@@ -11,15 +11,15 @@ import { FormTabsComponent  as FormTabsComponentBase} from '@fe/app/form/form_ta
 
 
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: '[form_tabs]',
     templateUrl: '../../../../form/form_tabs/form_tabs.component.html',
     styleUrls: ['../../../../form/form_tabs/form_tabs.component.scss']
 })
 export class FormTabsComponent extends FormTabsComponentBase implements OnInit {
-    constructor(protected formStore: Store<fromForm.FormState>) {
-        super(formStore);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
     }
 }

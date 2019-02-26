@@ -9,22 +9,20 @@ import {
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
     forwardRef
 } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+
 import { BaseNodeComponent } from "../base_node";
 import { AbstractControl } from '@angular/forms';
 import * as _ from "lodash";
 
-import * as fromForm from '../form.state';
-import { Pn } from "@core/domain/metadata/entity";
+import { FrmdbStreamsService } from "@fe/app/frmdb-streams/frmdb-streams.service";
 
 export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 
     inputElement: FormText;
 
-    constructor(protected formStore: Store<fromForm.FormState>) {
-        super(formStore);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
     }
 
     ngOnInit(): void {

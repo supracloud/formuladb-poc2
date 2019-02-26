@@ -10,15 +10,15 @@ import * as _ from "lodash";
 
 import { FormDataGridComponent as FormDataGridComponentBase } from '@fe/app/form/form_data_grid/form_data_grid.component';
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
   selector: '[form_data_grid]',
   templateUrl: '../../../../form/form_data_grid/form_data_grid.component.html',
   styleUrls: ['../../../../form/form_data_grid/form_data_grid.component.scss']
 })
 export class FormDataGridComponent extends FormDataGridComponentBase implements OnInit, OnDestroy {
-  constructor(protected formStore: Store<fromForm.FormState>) {
-    super(formStore);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
 }

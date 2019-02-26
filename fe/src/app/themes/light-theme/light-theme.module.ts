@@ -11,8 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { StoreModule } from '@ngrx/store';
-import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 import { LightThemeRoutingModule } from './light-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
@@ -36,7 +34,6 @@ import { FormTableComponent } from './components/form_table/form_table.component
 import { FormDataGridComponent } from './components/form_data_grid/form_data_grid.component';
 import { NotFoundComponent } from '@fe/app/not-found/not-found.component';
 
-import * as appState from '../../app.state';
 import { ContextMenuComponent } from '@fe/app/dev-mode-overlay/context-menu/context-menu.component';
 import { FormItemEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-input-editor/form-input-editor.component';
@@ -54,8 +51,6 @@ import { FormStateComponent } from '@fe/app/form/form-state/form-state.component
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
-    StoreRouterConnectingModule,
     AgGridModule.withComponents([TableComponent, TableHeaderComponent]),
     CrosscuttingModule,
     FontAwesomeModule,

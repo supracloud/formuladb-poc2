@@ -10,14 +10,14 @@ import * as _ from "lodash";
 
 import { FormTimepickerComponent as FormTimepickerComponentBase } from '@fe/app/form/form_timepicker/form_timepicker.component';
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
   selector: 'form-timepicker',
   templateUrl: '../../../../form/form_timepicker/form_timepicker.component.html',
 })
 export class FormTimepickerComponent extends FormTimepickerComponentBase implements OnInit, OnDestroy {
-  constructor(protected formStore: Store<fromForm.FormState>) {
-    super(formStore);
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+    super(frmdbStreams);
   }
 }

@@ -10,8 +10,8 @@ import * as _ from "lodash";
 
 import { TableComponent  as BaseTableComponent} from '@fe/app/table/table.component';
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: 'mwz-table',
     templateUrl: '../../../../table/table.component.html',

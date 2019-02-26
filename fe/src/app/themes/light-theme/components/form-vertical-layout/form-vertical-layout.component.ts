@@ -13,13 +13,15 @@ import { FormVerticalLayoutComponent as FormVerticalLayoutComponentBase } from '
 
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: 'v-layout',
     templateUrl: '../../../../form/form-vertical-layout/form-vertical-layout.component.html',
     styleUrls: ['../../../../form/form-vertical-layout/form-vertical-layout.component.scss']
 })
 export class FormVerticalLayoutComponent extends FormVerticalLayoutComponentBase implements OnInit {
-    constructor(protected formStore: Store<fromForm.FormState>) {
-        super(formStore);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
     }
 }

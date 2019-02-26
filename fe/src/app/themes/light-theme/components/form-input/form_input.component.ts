@@ -10,8 +10,8 @@ import * as _ from "lodash";
 
 import { FormInputComponent as BaseFormInputComponent } from "@fe/app/form/form_input/form_input.component";
 
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: 'form-input',
     host: { class: "col form-group" },
@@ -19,7 +19,7 @@ import * as fromForm from '../../../../form/form.state';
     styleUrls: ['../../../../form/form_input/form_input.component.scss']
 })
 export class FormInputComponent extends BaseFormInputComponent implements OnInit, OnDestroy {
-    constructor(protected formStore: Store<fromForm.FormState>) {
-        super(formStore);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
     }
 }

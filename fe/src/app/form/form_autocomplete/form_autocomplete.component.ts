@@ -17,6 +17,7 @@ import { FormAutocomplete } from "@core/domain/uimetadata/form";
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
 import { switchMap, map, filter } from 'rxjs/operators';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
@@ -34,8 +35,8 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
     spotOptions: any[];
 
-    constructor(protected fromStore: Store<fromForm.FormState>, protected formEditingService: FormEditingService) {
-        super(fromStore);
+    constructor(protected fromStreams: FrmdbStreamsService, protected formEditingService: FormEditingService) {
+        super(fromStreams);
     }
 
     ngOnInit(): void {

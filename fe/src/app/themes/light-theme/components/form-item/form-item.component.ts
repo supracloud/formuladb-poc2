@@ -9,15 +9,15 @@ import {
 import * as _ from "lodash";
 
 import { FormItemComponent as FormItemComponentBase } from '@fe/app/form/form_item/form_item.component';
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../../../form/form.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
     selector: 'form_item',
     templateUrl: '../../../../form/form_item/form_item.component.html',
     styleUrls: ['../../../../form/form_item/form_item.component.scss']
 })
 export class FormItemComponent extends FormItemComponentBase implements OnInit, OnDestroy {
-    constructor(protected formStore: Store<fromForm.FormState>) {
-        super(formStore);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
     }
 }

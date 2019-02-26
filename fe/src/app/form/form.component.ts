@@ -28,6 +28,7 @@ import { AsyncValidatorFn } from '@angular/forms';
 import { j2str } from '../crosscutting/utils/j2str';
 import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
 import { ServerEventModifiedFormDataEvent } from '@core/domain/event';
+import { UserModifiedFormData } from '../frmdb-streams/frmdb-user-events';
 
 export class FrmdbFormControl extends FormControl {
     constructor(public name: string,
@@ -59,7 +60,7 @@ export class FormComponent implements OnInit, OnDestroy {
     public changes: any[] = [];
 
     private tickUsed: boolean = false;
-    private lastSaveEvent: ServerEventModifiedFormDataEvent;
+    private lastSaveEvent: UserModifiedFormData;
     public form$: Observable<Form | null>;
     private formData: DataObj | null;
     private formReadOnly: boolean;
@@ -145,8 +146,8 @@ export class FormComponent implements OnInit, OnDestroy {
                     console.warn('Cound not find parent for ' + valueChange);
                     return;
                 }
-                this.lastSaveEvent = new ServerEventModifiedFormDataEvent(_.cloneDeep(obj));
-                this.frmdbStreams.saveFormEvents$.next(this.lastSaveEvent);
+                this.lastSaveEvent = new UserModifiedFormData(_.cloneDeep(obj));
+                this.frmdbStreams.userEvents$.next(this.lastSaveEvent);
             });
 
         return ctrl;

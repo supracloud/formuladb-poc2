@@ -13,6 +13,8 @@ import * as fromEntity from '../../../entity-state';
 import { NavigationItem } from '../../../navigation.item';
 import { AppState, parseUrl } from 'src/app/app.state';
 
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
 @Component({
   selector: 'frmdb-navigation',
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +29,6 @@ export class NavigationComponent implements OnInit {
         withLatestFrom(this.store.select(state => state.router ? state.router.state.url : null)),
         // filter(([entities, route]) => route != null),
         map(([entities, route]) => {
-          console.warn(entities);
           const rp = parseUrl(route!);
           const path = rp === null || rp.path === null ? [] : rp.path.split("__");
           const re = this.setCollapsed(entities, path);
