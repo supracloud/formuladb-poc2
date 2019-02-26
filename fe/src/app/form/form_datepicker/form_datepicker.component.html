@@ -1,6 +1,6 @@
 <label [for]="inputElement.propertyName">
     {{inputElement.propertyName | i18n}}
-    <div class="frmdb-input-dev-mode-label" *ngIf="editMode$ | async">{{inputElement.propertyName}}</div>
+    <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">{{inputElement.propertyName}}</div>
 </label>
 <ng-container *ngIf="hasControl(parentFormPath)">
     <div class="input-group">

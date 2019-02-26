@@ -19,7 +19,6 @@ export interface FormState {
   formData: DataObj | null;
   eventFromBackend: events.MwzEvents | null;
   formReadOnly: boolean;
-  formEditMode: boolean;
   highlighted: any;
   dragged: NodeElement | null;
 }
@@ -29,7 +28,6 @@ export const formInitialState: FormState = {
   formData: null,
   eventFromBackend: null,
   formReadOnly: true,
-  formEditMode: false,
   highlighted: null,
   dragged: null
 };
@@ -39,7 +37,6 @@ export const ResetFormDataFromBackendActionN = "[form] ResetFormDataFromBackendA
 export const FormNotifFromBackendActionN = "[form] FormNotifFromBackendAction";
 export const FormFromBackendActionN = "[form] FormFromBackendAction";
 export const FormItemHighlightActionN = "[form] FormItemHighlightAction";
-export const FormSwitchEditModeActionN = "[form] FormSwitchEditModeAction";
 export const FormDragActionN = "[form] FormDragAction";
 export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
@@ -59,12 +56,6 @@ export class ResetFormDataFromBackendAction implements Action {
   readonly type = ResetFormDataFromBackendActionN;
 
   constructor(public obj: DataObj) { }
-}
-
-export class FormSwitchEditModeAction implements Action {
-  readonly type = FormSwitchEditModeActionN;
-
-  constructor(public editMode: boolean) { }
 }
 
 export class FormItemHighlightAction implements Action {
@@ -144,7 +135,6 @@ export type FormActions =
   | ServerEventModifiedForm
   | ServerEventModifiedFormData
   | FormItemHighlightAction
-  | FormSwitchEditModeAction
   | FormDragAction
   | FormDropAction
   | FormDeleteAction
@@ -263,13 +253,6 @@ export function formReducer(state = formInitialState, action: FormActions): Form
       };
       break;
 
-    case FormSwitchEditModeActionN:
-      ret = {
-        ...state,
-        formEditMode: action.editMode,
-      };
-      break;
-
     case FormDragActionN:
       return { ...state, dragged: action.payload }
 
@@ -318,8 +301,4 @@ export const getFormReadOnly = createSelector(
 export const getHighlightedId = createSelector(
   getForm,
   (state: FormState) => state ? state.highlighted : formInitialState.highlighted
-);
-export const isEditMode = createSelector(
-  getForm,
-  (state: FormState) => state ? state.formEditMode : formInitialState.formEditMode
 );

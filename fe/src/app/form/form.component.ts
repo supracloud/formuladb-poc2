@@ -11,13 +11,11 @@ import {
 import { Location } from '@angular/common';
 
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
-import { Store } from '@ngrx/store';
 
 import { DataObj } from "@core/domain/metadata/data_obj";
-import { Form, NodeElement, NodeType, FormTab } from "@core/domain/uimetadata/form";
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, combineLatest } from 'rxjs';
-import { sampleTime, filter, debounceTime, tap } from 'rxjs/operators';
+import { Form, NodeElement, NodeType } from "@core/domain/uimetadata/form";
+import { Subscription } from 'rxjs';
+import { filter, debounceTime, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 
@@ -27,8 +25,9 @@ import { AbstractControl } from '@angular/forms';
 import { FormEditingService } from './form-editing.service';
 import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
-import { ValidationErrors } from '@angular/forms';
 import { j2str } from '../crosscutting/utils/j2str';
+import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
+import { ServerEventModifiedFormDataEvent } from '@core/domain/event';
 
 export class FrmdbFormControl extends FormControl {
     constructor(public name: string,
@@ -60,7 +59,7 @@ export class FormComponent implements OnInit, OnDestroy {
     public changes: any[] = [];
 
     private tickUsed: boolean = false;
-    private lastSaveAction: fromForm.ServerEventModifiedFormData;
+    private lastSaveEvent: ServerEventModifiedFormDataEvent;
     public form$: Observable<Form | null>;
     private formData: DataObj | null;
     private formReadOnly: boolean;
@@ -69,7 +68,7 @@ export class FormComponent implements OnInit, OnDestroy {
     protected subscriptions: Subscription[] = [];
 
     constructor(
-        private store: Store<fromForm.FormState>,
+        private frmdbStreams: FrmdbStreamsService,
         private formEditingService: FormEditingService,
         private _location: Location
     ) {
@@ -83,7 +82,7 @@ export class FormComponent implements OnInit, OnDestroy {
     ngOnInit() {
         const cmp = this;
 
-        this.subscriptions.push(this.store.select(fromForm.getFormReadOnly).subscribe(formReadOnly => {
+        this.subscriptions.push(this.frmdbStreams.readonlyMode$.subscribe(formReadOnly => {
             this.formReadOnly = formReadOnly;
             if (formReadOnly && !this.theFormGroup.disabled) {
                 this.theFormGroup.disable();
@@ -92,7 +91,7 @@ export class FormComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.form$ = this.store.select(fromForm.getFormState).pipe(tap(
+        this.form$ = this.frmdbStreams.form$.pipe(tap(
             form => {
                 try {
                     if (null === form) { return; }
@@ -103,7 +102,7 @@ export class FormComponent implements OnInit, OnDestroy {
                 }
             }
         ));
-        this.subscriptions.push(this.store.select(fromForm.getFormDataState).subscribe(formData => {
+        this.subscriptions.push(this.frmdbStreams.formData$.subscribe(formData => {
             try {
                 this.formData = formData;
                 if (formData == null) { return; }
@@ -146,8 +145,8 @@ export class FormComponent implements OnInit, OnDestroy {
                     console.warn('Cound not find parent for ' + valueChange);
                     return;
                 }
-                this.lastSaveAction = new fromForm.ServerEventModifiedFormData(_.cloneDeep(obj));
-                this.store.dispatch(this.lastSaveAction);
+                this.lastSaveEvent = new ServerEventModifiedFormDataEvent(_.cloneDeep(obj));
+                this.frmdbStreams.saveFormEvents$.next(this.lastSaveEvent);
             });
 
         return ctrl;

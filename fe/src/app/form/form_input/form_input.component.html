@@ -1,7 +1,6 @@
-<!-- <edit-panel *ngIf="editMode$|async" [node]="nodeElement"></edit-panel> -->
 <label [for]="inputElement._id">
     {{inputElement.propertyName | i18n}}
-    <div class="frmdb-input-dev-mode-label" *ngIf="editMode$ | async">{{inputElement.propertyName}}</div>
+    <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">{{inputElement.propertyName}}</div>
 </label>
 <input [id]="inputElement._id" class="form-control" [type]="getType()" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"
     *ngIf="hasControl(parentFormPath)" frmdbOnfocus />

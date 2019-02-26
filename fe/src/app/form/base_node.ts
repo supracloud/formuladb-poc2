@@ -10,6 +10,7 @@ import { Observable, Subscription } from 'rxjs';
 import * as fromForm from './form.state';
 
 import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
+import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
 
 export class BaseNodeComponent {
 
@@ -27,15 +28,13 @@ export class BaseNodeComponent {
     @Input()
     formReadOnly: boolean;
 
-    editMode$: Observable<boolean>;
     protected subscriptions: Subscription[] = [];
 
     hasControl(path: string): boolean {
         return this.topLevelFormGroup.get(path) != null;
     }
 
-    constructor(protected store: Store<fromForm.FormState>) {
-        this.editMode$ = this.store.select(fromForm.isEditMode);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
         this.subscriptions.push(
             this.store.select(fromForm.getHighlightedId)
                 .subscribe(h => {

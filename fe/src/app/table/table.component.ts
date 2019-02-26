@@ -65,7 +65,6 @@ export class TableComponent implements OnInit, OnDestroy {
     private currentEntity: Entity | undefined;
     public currentRow: tableState.DataObj;
     private selectedRowIdx: number;
-    private highlighted: string;
     private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
     private columns: any[] = [];
