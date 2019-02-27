@@ -1,14 +1,14 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
-import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
 import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
+import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
+import { Observable } from 'rxjs';
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
-
-export class FormHorizontalLayoutComponent implements OnInit {
+export class VLayoutComponent implements OnInit {
 
   @Input()
   nodeElement: NodeElementWithChildren;
@@ -26,11 +26,10 @@ export class FormHorizontalLayoutComponent implements OnInit {
   editMode: boolean;
 
   constructor(protected frmdbStreams: FrmdbStreamsService) {
-    frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
+    frmdbStreams.devMode$.subscribe(e => this.editMode = e);
   }
 
   ngOnInit() {
-
   }
 
   getChildPath(childEl: NodeElement) {

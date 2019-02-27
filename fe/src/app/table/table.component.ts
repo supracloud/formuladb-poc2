@@ -24,13 +24,6 @@ import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from './table.service';
 import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
 
-@Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'mwz-table',
-    templateUrl: 'table.component.html',
-    styleUrls: ['table.component.scss']
-})
-
 export class TableComponent implements OnInit, OnDestroy {
 
     statusBar = {

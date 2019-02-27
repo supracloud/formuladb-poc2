@@ -1,12 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as shape from 'd3-shape';
 import { EntityStateGraph } from "@core/domain/metadata/entity";
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
-@Component({
-  selector: 'form-state',
-  templateUrl: './form-state.component.html',
-  styleUrls: ['./form-state.component.scss']
-})
 export class FormStateComponent implements OnInit {
   curve: any = shape.curveBundle.beta(1);
   view: any[];
@@ -29,7 +25,9 @@ export class FormStateComponent implements OnInit {
     label: string
   }[] = [];
 
-  constructor() { }
+  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  }
+
 
   ngOnInit() {
     this.nodes = this.stateGraph.nodes.map(n => ({id: n, label: n}));

@@ -6,11 +6,6 @@ import { FormChart } from "@core/domain/uimetadata/form";
 import { FormArray, FormControl } from '@angular/forms';
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
-@Component({
-  selector: 'form-chart',
-  templateUrl: './form-chart.component.html',
-  styleUrls: ['./form-chart.component.scss']
-})
 export class FormChartComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   chartType: string;

@@ -65,7 +65,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
     switch (this.nodeElement.nodeType) {
       case NodeType.form_grid:
         return [new FormGridRow()];
-      case NodeType.form_grid_row:
+      case NodeType.h_layout:
         return [new FormGridCol()];
       default:
         return null;

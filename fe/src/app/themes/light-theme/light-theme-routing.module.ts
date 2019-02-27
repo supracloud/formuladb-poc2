@@ -7,8 +7,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LayoutComponent } from './layout/layout.component';
 import { NotFoundComponent } from '@fe/app/not-found/not-found.component';
-import { TableComponent } from './components/table/table.component';
-import { FormComponent } from './components/form/form.component';
+import { TableComponent } from './theme-components';
+import { FormComponent } from './theme-components';
 
 export function getLayoutRoutes(LayoutComponentClass: any): Routes {
   return [

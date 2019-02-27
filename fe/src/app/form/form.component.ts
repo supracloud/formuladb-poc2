@@ -154,8 +154,8 @@ export class FormComponent implements OnInit, OnDestroy {
         for (const nodeEl of nodeElements) {
 
             if (nodeEl.nodeType === NodeType.form_grid
-                || nodeEl.nodeType === NodeType.form_grid_row
-                || nodeEl.nodeType === NodeType.form_grid_col
+                || nodeEl.nodeType === NodeType.h_layout
+                || nodeEl.nodeType === NodeType.v_layout
                 || nodeEl.nodeType === NodeType.form_tab) {
                 const childNodes = nodeEl.childNodes || [];
                 this.updateFormGroup(newParent, childNodes, formReadOnly);

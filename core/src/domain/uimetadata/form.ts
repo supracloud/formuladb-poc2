@@ -11,8 +11,8 @@ import * as _ from 'lodash';
 
 export enum NodeType {
     form_grid = "form_grid",
-    form_grid_row = "form_grid_row",
-    form_grid_col = "form_grid_col",
+    h_layout = "h_layout",
+    v_layout = "v_layout",
     form_input = "form_input",
     form_autocomplete = "form_autocomplete",
     form_tabs = "form_tabs",
@@ -30,12 +30,12 @@ export class FormGrid implements SubObj {
     childNodes?: NodeElement[];
 }
 export class FormGridRow implements SubObj {
-    readonly nodeType = NodeType.form_grid_row;
+    readonly nodeType = NodeType.h_layout;
     _id: string;
     childNodes?: NodeElement[];
 }
 export class FormGridCol implements SubObj {
-    readonly nodeType = NodeType.form_grid_col;
+    readonly nodeType = NodeType.v_layout;
     _id: string;
     childNodes?: NodeElement[];
 }
@@ -136,8 +136,8 @@ export type NodeElement =
 export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.form_grid
-        || nodeEl.nodeType === NodeType.form_grid_row
-        || nodeEl.nodeType === NodeType.form_grid_col
+        || nodeEl.nodeType === NodeType.h_layout
+        || nodeEl.nodeType === NodeType.v_layout
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
         || nodeEl.nodeType === NodeType.form_tab

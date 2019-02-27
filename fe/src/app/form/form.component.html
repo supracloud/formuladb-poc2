@@ -8,8 +8,8 @@
             {{ theFormGroup.status }}
         </span>
     </div>
-    <form-state [stateGraph]="(frmdbStreams.form$ | async)?.stateGraph" *ngIf="(frmdbStreams.form$ | async)?.stateGraph"></form-state>
-    <form_item [nodeElement]="(frmdbStreams.form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
+    <frmdb-form_state [stateGraph]="(frmdbStreams.form$ | async)?.stateGraph" *ngIf="(frmdbStreams.form$ | async)?.stateGraph"></frmdb-form_state>
+    <frmdb-form_item [nodeElement]="(frmdbStreams.form$ | async)?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="(frmdbStreams.form$ | async)">
-    </form_item>
+    </frmdb-form_item>
 </form>
