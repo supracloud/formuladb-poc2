@@ -42,6 +42,17 @@ export class AppComponent {
         case "UserModifiedFormData":
           this.store.dispatch(new appState.ServerEventModifiedFormData(userEvent.obj));
           break;
+        case "UserSelectedCell":
+          this.store.dispatch(new appState.UserSelectCell(userEvent.columnName));
+          break;
+        case "UserSelectedRow":
+          this.store.dispatch(new appState.UserSelectRow(userEvent.dataObj));
+          break;
+        case "UserModifiedTableUi":
+          this.store.dispatch(new appState.ServerEventModifiedTable(userEvent.table));
+          break;
+
+
       }
     });
 
@@ -52,6 +63,16 @@ export class AppComponent {
     this.store.select(appState.getFormDataState).subscribe(formData => {
       if (formData) frmdbStreams.formData$.next(formData);
     });
+
+    this.store.select(appState.getTableState).subscribe(x => {
+      if (x) frmdbStreams.table$.next(x);
+    })
+    this.store.select(appState.getTableHighlightColumns).subscribe(x => {
+      if (x) frmdbStreams.formulaHighlightedColumns$.next(x);
+    })
+    this.store.select(appState.getTableEntityState).subscribe(x => {
+      if (x) frmdbStreams.entity$.next(x);
+    })
 
   }
 

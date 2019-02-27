@@ -17,11 +17,17 @@ export { ChangeObj, applyChanges };
 import * as events from "@core/domain/event";
 import { Entity } from "@core/domain/metadata/entity";
 
+export interface FormulaHighlightedColumns {
+  [tableName: string]: { 
+    [columnName: string]: string 
+  }
+}
+
 export interface TableState {
   entity: Entity | undefined;
   table: Table;
   selectedColumnName: string | undefined;
-  formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
+  formulaHighlightedColumns: FormulaHighlightedColumns;
 }
 
 export const tableInitialState: TableState = {

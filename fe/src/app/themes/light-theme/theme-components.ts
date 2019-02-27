@@ -29,6 +29,9 @@ import { VLayoutComponent as FormVerticalLayoutComponentBase } from '@fe/app/for
 import { TableComponent  as BaseTableComponent} from '@fe/app/table/table.component';
 import { FormChartComponent as BaseFormChartComponent } from "@fe/app/form/form_chart/form_chart.component";
 import { FormStateComponent as BaseFormStateComponent } from "@fe/app/form/form_state/form_state.component";
+import { Router, ActivatedRoute } from '@angular/router';
+import { TableService } from '@fe/app/table/table.service';
+import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 
 
 @Component({
@@ -102,7 +105,7 @@ export class FormTableComponent extends FormTableComponentBase implements OnInit
 }
 
 @Component({
-  selector: 'form-timepicker',
+  selector: 'frmdb-form_timepicker',
   templateUrl: '../../form/form_timepicker/form_timepicker.component.html',
 })
 export class FormTimepickerComponent extends FormTimepickerComponentBase implements OnInit, OnDestroy {
@@ -185,7 +188,15 @@ export class VLayoutComponent extends FormVerticalLayoutComponentBase implements
     styleUrls: ['../../table/table.component.scss']
 })
 export class TableComponent extends BaseTableComponent implements OnInit, OnDestroy {
-    
+    constructor(
+        frmdbStreams: FrmdbStreamsService,
+        router: Router,
+        route: ActivatedRoute,
+        tableService: TableService,
+        i18npipe: I18nPipe) 
+    {
+        super(frmdbStreams, router, route, tableService, i18npipe);
+    }
 }
 
 @Component({

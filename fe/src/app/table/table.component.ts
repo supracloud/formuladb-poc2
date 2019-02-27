@@ -23,6 +23,7 @@ import { TableHeaderComponent } from './table-header.component';
 import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from './table.service';
 import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
+import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
 
 export class TableComponent implements OnInit, OnDestroy {
 
@@ -71,7 +72,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     private tableState: tableState.Table;
 
-    constructor(private store: Store<tableState.TableState>,
+    constructor(public frmdbStreams: FrmdbStreamsService,
         private router: Router,
         private route: ActivatedRoute,
         private tableService: TableService,
@@ -83,7 +84,7 @@ export class TableComponent implements OnInit, OnDestroy {
             width: 100,
             headerComponentParams: { menuIcon: 'fa-bars' }
         };
-        this.table$ = store.select(tableState.getTableState);
+        this.table$ = frmdbStreams.table$;
     }
 
     applyCellStyles(params) {
@@ -118,7 +119,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onGridReady(params: GridReadyEvent) {
         this.gridApi = params.api as GridApi;
-        this.subscriptions.push(this.store.select(tableState.getTableEntityState)
+        this.subscriptions.push(this.frmdbStreams.entity$
             .subscribe(e => {
                 if (e) {
                     this.currentEntity = e;
@@ -160,7 +161,7 @@ export class TableComponent implements OnInit, OnDestroy {
                 console.error(ex);
             }
         }));
-        this.subscriptions.push(this.store.select(tableState.getTableHighlightColumns)
+        this.subscriptions.push(this.frmdbStreams.formulaHighlightedColumns$
             .subscribe(h => {
                 this.highlightColumns = h || {};
                 if (this.gridApi) {
@@ -177,12 +178,13 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     onCellFocused(event: CellFocusedEvent) {
-        if (!event.column) { return; }
-        this.store.dispatch(new fromTable.UserSelectCell(event.column.getColDef().field));
+        if (event.column && event.column.getColDef() && event.column.getColDef().field) {
+            this.frmdbStreams.userEvents$.next({type: "UserSelectedCell", columnName: event.column.getColDef().field!});
+        }
     }
 
     onRowClicked(event: RowClickedEvent) {
-        this.store.dispatch(new fromTable.UserSelectRow(event.data));
+        this.frmdbStreams.userEvents$.next({type: "UserSelectedRow", dataObj: event.data});
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
@@ -202,7 +204,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     columnMoved(event: ColumnMovedEvent) {
         if (this.tableState) {
-            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
+            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
     }
 
@@ -211,7 +213,7 @@ export class TableComponent implements OnInit, OnDestroy {
             const col = (this.tableState.columns || [])
                 .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
             if (col) { col.width = event.column.getActualWidth(); }
-            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
+            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
     }
 
@@ -225,7 +227,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     c.filter = undefined;
                 }
             });
-            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
+            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
         this.filters = this.gridApi.getFilterModel();
     }
@@ -241,7 +243,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     c.sort = undefined;
                 }
             });
-            this.store.dispatch(new fromTable.ServerEventModifiedTable(this.tableState));
+            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
         this.sort = this.gridApi.getSortModel();
     }
