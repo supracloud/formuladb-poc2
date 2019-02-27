@@ -24,12 +24,12 @@
                 <ng-container *ngSwitchCase="'form_autocomplete'">
                     <td *ngFor="let propName of child.snapshotCurrentValueOfProperties; let colIdx = index">
                         <input class="form-control" type="text" [id]="parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx)"
-                            [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx))" frmdbOnfocus />
+                            [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.entityName + '.' + getCopiedPropertyName(child, colIdx))" frmdb-on_focus />
                     </td>
                 </ng-container>
                 <td *ngSwitchCase="'form_input'">
                     <input class="form-control" [type]="getType(child)" [id]="parentFormPath + '.' + idx + '.' + child.propertyName" [formControl]="topLevelFormGroup.get(parentFormPath + '.' + idx + '.' + child.propertyName)"
-                    frmdbOnfocus />
+                    frmdb-on_focus />
                 </td>
             </ng-container>
         </tr>

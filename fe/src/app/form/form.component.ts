@@ -62,9 +62,9 @@ export class FormComponent implements OnInit, OnDestroy {
     protected subscriptions: Subscription[] = [];
 
     constructor(
-        protected frmdbStreams: FrmdbStreamsService,
-        protected formEditingService: FormEditingService,
-        protected _location: Location
+        public frmdbStreams: FrmdbStreamsService,
+        public formEditingService: FormEditingService,
+        public _location: Location
     ) {
         try {
             this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');

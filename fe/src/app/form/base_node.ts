@@ -34,7 +34,7 @@ export class BaseNodeComponent {
         return this.topLevelFormGroup.get(path) != null;
     }
 
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
     }
 
 }

@@ -10,7 +10,7 @@ import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service
 
 
 export class FormDatepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 

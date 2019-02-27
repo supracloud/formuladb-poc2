@@ -25,7 +25,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 

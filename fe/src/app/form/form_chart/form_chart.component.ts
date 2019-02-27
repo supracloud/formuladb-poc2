@@ -342,7 +342,7 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
   formChart: FormChart;
   formArray: FormArray;
 
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 

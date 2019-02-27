@@ -25,7 +25,7 @@ export class HLayoutComponent implements OnInit {
   @HostBinding("class.outline")
   editMode: boolean;
 
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
   }
 

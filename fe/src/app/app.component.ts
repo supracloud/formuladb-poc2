@@ -22,7 +22,7 @@ export class AppComponent {
   title = 'frmdb';
   public devMode$: Observable<boolean>;
   bodyPadding = "0 0 32px 0";
-  constructor(protected store: Store<appState.AppState>, protected frmdbStreams: FrmdbStreamsService) {
+  constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
     this.devMode$ = this.store.select(appState.getDeveloperMode);
     this.devMode$.subscribe(devMode => {
       if (devMode) {

@@ -22,7 +22,7 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, OnD
 
     inputElement: FormInput;
 
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 

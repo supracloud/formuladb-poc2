@@ -17,7 +17,7 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
   frameworkComponents: any;
   defaultColDef: any;
 
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 

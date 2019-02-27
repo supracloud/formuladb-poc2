@@ -5,7 +5,6 @@
 
 import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
-import { Label } from './label';
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
 
@@ -21,7 +20,23 @@ export enum NodeType {
     form_chart = "form_chart",
     form_datepicker = "form_datepicker",
     form_timepicker = "form_timepicker",
-    form_text = "form_text"
+    form_text = "form_text",
+    form_enum = "form_enum",
+    card = "card",
+    list = "list",
+    gallery = "gallery",
+    calendar = "calendar",
+    image = "image",
+    icon = "icon",
+    media = "media",
+    v_nav = "v_nav",
+    h_nav = "h_nav",
+    timeline = "timeline",
+    dropdown = "dropdown",
+    v_filters = "v_filters",
+    h_filters = "h_filters",
+    button = "button",
+    button_group = "button_group",
 }
 
 export class FormGrid implements SubObj {
@@ -59,6 +74,13 @@ export class FormAutocomplete implements SubObj {
     propertyName: string;
 }
 export class FormTabs implements SubObj {
+    readonly nodeType = NodeType.form_tabs;
+    _id: string;
+    tableName: string;
+    tabNameFormPath: string;
+    childNodes?: NodeElement[];
+}
+export class FormCard implements SubObj {
     readonly nodeType = NodeType.form_tabs;
     _id: string;
     tableName: string;

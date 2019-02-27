@@ -3,7 +3,7 @@
     <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">{{inputElement.propertyName}}</div>
 </label>
 <input [id]="inputElement._id" class="form-control" [type]="getType()" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"
-    *ngIf="hasControl(parentFormPath)" frmdbOnfocus />
+    *ngIf="hasControl(parentFormPath)" frmdb-on_focus />
 
 <div class="form-input-feedback-invalid" *ngIf="ctrl && ctrl.dirty && ctrl.invalid">
     <div *ngFor="let err of getErrors()">

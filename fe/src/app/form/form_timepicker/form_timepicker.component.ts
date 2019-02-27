@@ -10,7 +10,7 @@ import { FormTimepicker } from "@core/domain/uimetadata/form";
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 export class FormTimepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 

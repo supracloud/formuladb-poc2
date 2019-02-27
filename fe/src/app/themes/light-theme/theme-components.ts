@@ -29,6 +29,22 @@ import { VLayoutComponent as FormVerticalLayoutComponentBase } from '@fe/app/for
 import { TableComponent  as BaseTableComponent} from '@fe/app/table/table.component';
 import { FormChartComponent as BaseFormChartComponent } from "@fe/app/form/form_chart/form_chart.component";
 import { FormStateComponent as BaseFormStateComponent } from "@fe/app/form/form_state/form_state.component";
+import { CardComponent as BaseCardComponent } from "@fe/app/form/card/card.component";
+import { FormEnumComponent as BaseFormEnumComponent } from "@fe/app/form/form_enum/form_enum.component";
+import { ListComponent as BaseListComponent } from "@fe/app/form/list/list.component";
+import { GalleryComponent as BaseGalleryComponent } from "@fe/app/form/gallery/gallery.component";
+import { CalendarComponent as BaseCalendarComponent } from "@fe/app/form/calendar/calendar.component";
+import { ImageComponent as BaseImageComponent } from "@fe/app/form/image/image.component";
+import { IconComponent as BaseIconComponent } from "@fe/app/form/icon/icon.component";
+import { MediaComponent as BaseMediaComponent } from "@fe/app/form/media/media.component";
+import { VNavComponent as BaseVNavComponent } from "@fe/app/form/v_nav/v_nav.component";
+import { HNavComponent as BaseHNavComponent } from "@fe/app/form/h_nav/h_nav.component";
+import { TimelineComponent as BaseTimelineComponent } from "@fe/app/form/timeline/timeline.component";
+import { DropdownComponent as BaseDropdownComponent } from "@fe/app/form/dropdown/dropdown.component";
+import { VFiltersComponent as BaseVFiltersComponent } from "@fe/app/form/v_filters/v_filters.component";
+import { HFiltersComponent as BaseHFiltersComponent } from "@fe/app/form/h_filters/h_filters.component";
+import { ButtonComponent as BaseButtonComponent } from "@fe/app/form/button/button.component";
+import { ButtonGroupComponent as BaseButtonGroupComponent } from "@fe/app/form/button_group/button_group.component";
 import { Router, ActivatedRoute } from '@angular/router';
 import { TableService } from '@fe/app/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
@@ -65,7 +81,7 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
     ]
 })
 export class FormAutocompleteComponent extends FormAutocompleteComponentBase implements OnInit, OnDestroy {
-    constructor(protected frmdbStreams: FrmdbStreamsService, formEditingService: FormEditingService) {
+    constructor(public frmdbStreams: FrmdbStreamsService, formEditingService: FormEditingService) {
         super(frmdbStreams, formEditingService);
     }
 }
@@ -76,7 +92,7 @@ export class FormAutocompleteComponent extends FormAutocompleteComponentBase imp
   styleUrls: ['../../form/form_data_grid/form_data_grid.component.scss']
 })
 export class FormDataGridComponent extends FormDataGridComponentBase implements OnInit, OnDestroy {
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 }
@@ -87,7 +103,7 @@ export class FormDataGridComponent extends FormDataGridComponentBase implements 
   styleUrls: ['../../form/form_input/form_input.component.scss']
 })
 export class FormDatepickerComponent extends FormDatepickerComponentBase implements OnInit, OnDestroy {
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 }
@@ -99,7 +115,7 @@ export class FormDatepickerComponent extends FormDatepickerComponentBase impleme
   styleUrls: ['../../form/form_table/form_table.component.scss']
 })
 export class FormTableComponent extends FormTableComponentBase implements OnInit, OnDestroy {
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 }
@@ -109,7 +125,7 @@ export class FormTableComponent extends FormTableComponentBase implements OnInit
   templateUrl: '../../form/form_timepicker/form_timepicker.component.html',
 })
 export class FormTimepickerComponent extends FormTimepickerComponentBase implements OnInit, OnDestroy {
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 }
@@ -120,7 +136,7 @@ export class FormTimepickerComponent extends FormTimepickerComponentBase impleme
     styleUrls: ['../../form/h_layout/h_layout.component.scss']
 })
 export class HLayoutComponent extends FormHorizontalLayoutComponentBase implements OnInit {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -132,7 +148,7 @@ export class HLayoutComponent extends FormHorizontalLayoutComponentBase implemen
     styleUrls: ['../../form/form_input/form_input.component.scss']
 })
 export class FormInputComponent extends BaseFormInputComponent implements OnInit, OnDestroy {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -143,7 +159,7 @@ export class FormInputComponent extends BaseFormInputComponent implements OnInit
     styleUrls: ['../../form/form_item/form_item.component.scss']
 })
 export class FormItemComponent extends FormItemComponentBase implements OnInit, OnDestroy {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -154,7 +170,7 @@ export class FormItemComponent extends FormItemComponentBase implements OnInit, 
     styleUrls: ['../../form/form_tabs/form_tabs.component.scss']
 })
 export class FormTabsComponent extends FormTabsComponentBase implements OnInit {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -166,7 +182,7 @@ export class FormTabsComponent extends FormTabsComponentBase implements OnInit {
     styleUrls: ['../../form/form_text/form_text.component.scss']
 })
 export class FormTextComponent extends BaseFormTextComponent implements OnInit, OnDestroy {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -177,7 +193,7 @@ export class FormTextComponent extends BaseFormTextComponent implements OnInit, 
     styleUrls: ['../../form/v_layout/v_layout.component.scss']
 })
 export class VLayoutComponent extends FormVerticalLayoutComponentBase implements OnInit {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -205,7 +221,7 @@ export class TableComponent extends BaseTableComponent implements OnInit, OnDest
     styleUrls: ['../../form/form_chart/form_chart.component.scss']
 })
 export class FormChartComponent extends BaseFormChartComponent implements OnInit, OnDestroy {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }
@@ -216,7 +232,198 @@ export class FormChartComponent extends BaseFormChartComponent implements OnInit
     styleUrls: ['../../form/form_state/form_state.component.scss']
 })
 export class FormStateComponent extends BaseFormStateComponent implements OnInit {
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+@Component({
+    selector: 'frmdb-card',
+    templateUrl: '../../form/card/card.component.html',
+    styleUrls: ['../../form/card/card.component.scss']
+})
+export class CardComponent extends BaseCardComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-form_enum',
+    templateUrl: '../../form/form_enum/form_enum.component.html',
+    styleUrls: ['../../form/form_enum/form_enum.component.scss']
+})
+export class FormEnumComponent extends BaseFormEnumComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-list',
+    templateUrl: '../../form/list/list.component.html',
+    styleUrls: ['../../form/list/list.component.scss']
+})
+export class ListComponent extends BaseListComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-gallery',
+    templateUrl: '../../form/gallery/gallery.component.html',
+    styleUrls: ['../../form/gallery/gallery.component.scss']
+})
+export class GalleryComponent extends BaseGalleryComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-calendar',
+    templateUrl: '../../form/calendar/calendar.component.html',
+    styleUrls: ['../../form/calendar/calendar.component.scss']
+})
+export class CalendarComponent extends BaseCalendarComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-image',
+    templateUrl: '../../form/image/image.component.html',
+    styleUrls: ['../../form/image/image.component.scss']
+})
+export class ImageComponent extends BaseImageComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-icon',
+    templateUrl: '../../form/icon/icon.component.html',
+    styleUrls: ['../../form/icon/icon.component.scss']
+})
+export class IconComponent extends BaseIconComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-media',
+    templateUrl: '../../form/media/media.component.html',
+    styleUrls: ['../../form/media/media.component.scss']
+})
+export class MediaComponent extends BaseMediaComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-vnav',
+    templateUrl: '../../form/vnav/vnav.component.html',
+    styleUrls: ['../../form/vnav/vnav.component.scss']
+})
+export class VNavComponent extends BaseVNavComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-hnav',
+    templateUrl: '../../form/hnav/hnav.component.html',
+    styleUrls: ['../../form/hnav/hnav.component.scss']
+})
+export class HNavComponent extends BaseHNavComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-timeline',
+    templateUrl: '../../form/timeline/timeline.component.html',
+    styleUrls: ['../../form/timeline/timeline.component.scss']
+})
+export class TimelineComponent extends BaseTimelineComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-dropdown',
+    templateUrl: '../../form/dropdown/dropdown.component.html',
+    styleUrls: ['../../form/dropdown/dropdown.component.scss']
+})
+export class DropdownComponent extends BaseDropdownComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-vfilters',
+    templateUrl: '../../form/vfilters/vfilters.component.html',
+    styleUrls: ['../../form/vfilters/vfilters.component.scss']
+})
+export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-hfilters',
+    templateUrl: '../../form/hfilters/hfilters.component.html',
+    styleUrls: ['../../form/hfilters/hfilters.component.scss']
+})
+export class HFiltersComponent extends BaseHFiltersComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-button',
+    templateUrl: '../../form/button/button.component.html',
+    styleUrls: ['../../form/button/button.component.scss']
+})
+export class ButtonComponent extends BaseButtonComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
+
+
+@Component({
+    selector: 'frmdb-button_group',
+    templateUrl: '../../form/button_group/button_group.component.html',
+    styleUrls: ['../../form/button_group/button_group.component.scss']
+})
+export class ButtonGroupComponent extends BaseButtonGroupComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 }

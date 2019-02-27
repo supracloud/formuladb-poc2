@@ -1,15 +1,14 @@
 import { Directive, OnDestroy, OnInit } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
-import * as appState from '../app.state';
-import { Store } from '@ngrx/store';
 import { FrmdbFormControl } from '../form/form.component';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
 
 
 @Directive({
-  selector: '[frmdbOnfocus]',
+  selector: '[frmdb-on_focus]',
   host: {
     '(focus)': 'onFocus($event)',
   }
@@ -18,7 +17,8 @@ export class FrmdbOnfocusDirective implements OnInit, OnDestroy {
   focusEvents$: Subject<number> = new Subject();
   protected subscriptions: Subscription[] = [];
 
-  constructor(public formControl: NgControl, private store: Store<appState.AppState>) {
+  constructor(public formControl: NgControl, private frmdbStreams: FrmdbStreamsService) {
+    console.warn("FrmdbOnfocusDirective");
   }
 
   onFocus($event) {
@@ -28,7 +28,7 @@ export class FrmdbOnfocusDirective implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.push(this.focusEvents$.pipe(debounceTime(500)).subscribe(() => {
       if (this.formControl.control && this.formControl.control instanceof FrmdbFormControl) {
-        this.store.dispatch(new appState.UserSelectCell(this.formControl.control.name));
+        this.frmdbStreams.userEvents$.next({type: "UserSelectedCell", columnName: this.formControl.control.name});
       }
     }));
   }

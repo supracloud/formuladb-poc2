@@ -21,7 +21,7 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
 
     inputElement: FormText;
 
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
         super(frmdbStreams);
     }
 

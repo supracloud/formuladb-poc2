@@ -29,21 +29,38 @@ import { TableHeaderComponent } from '@fe/app/table/table-header.component';
 import { FormEditingService } from '@fe/app/form/form-editing.service';
 import { TableService } from '@fe/app/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
-import { FormTabsComponent } from './theme-components'
-import { FormTableComponent } from './theme-components'
-import { FormDataGridComponent } from './theme-components'
 import { NotFoundComponent } from '@fe/app/not-found/not-found.component';
-
+import { FrmdbOnfocusDirective } from '@fe/app/dev-mode-overlay/frmdb-onfocus.directive';
 import { ContextMenuComponent } from '@fe/app/dev-mode-overlay/context-menu/context-menu.component';
 import { FormItemEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-input-editor/form-input-editor.component';
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
+
+import { FormTabsComponent } from './theme-components'
+import { FormTableComponent } from './theme-components'
+import { FormDataGridComponent } from './theme-components'
 import { FormAutocompleteComponent } from './theme-components'
 import { FormDatepickerComponent } from './theme-components'
 import { FormInputComponent } from './theme-components'
 import { FormTimepickerComponent } from './theme-components'
 import { FormChartComponent } from './theme-components';
 import { FormStateComponent } from './theme-components';
+import { CardComponent } from './theme-components';
+import { FormEnumComponent } from './theme-components';
+import { ListComponent } from './theme-components';
+import { GalleryComponent } from './theme-components';
+import { CalendarComponent } from './theme-components';
+import { ImageComponent } from './theme-components';
+import { IconComponent } from './theme-components';
+import { MediaComponent } from './theme-components';
+import { VNavComponent } from './theme-components';
+import { HNavComponent } from './theme-components';
+import { TimelineComponent } from './theme-components';
+import { DropdownComponent } from './theme-components';
+import { VFiltersComponent } from './theme-components';
+import { HFiltersComponent } from './theme-components';
+import { ButtonComponent } from './theme-components';
+import { ButtonGroupComponent } from './theme-components';
 
 @NgModule({
   imports: [
@@ -64,6 +81,7 @@ import { FormStateComponent } from './theme-components';
     ContextMenuComponent,
     FormItemEditorComponent,
     FormInputEditorComponent,
+    FrmdbOnfocusDirective,
     DropHandleComponent,
     LayoutComponent,
     NavigationComponent,
@@ -86,6 +104,22 @@ import { FormStateComponent } from './theme-components';
     NotFoundComponent,
     TableHeaderComponent,
     TableComponent,
+    CardComponent,
+    FormEnumComponent,
+    ListComponent,
+    GalleryComponent,
+    CalendarComponent,
+    ImageComponent,
+    IconComponent,
+    MediaComponent,
+    VNavComponent,
+    HNavComponent,
+    TimelineComponent,
+    DropdownComponent,
+    VFiltersComponent,
+    HFiltersComponent,
+    ButtonComponent,
+    ButtonGroupComponent,
   ],
   providers: [
     FormEditingService,

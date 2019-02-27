@@ -13,7 +13,7 @@ import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service
 
 export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
     super(frmdbStreams);
   }
 

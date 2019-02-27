@@ -25,7 +25,7 @@ export class FormStateComponent implements OnInit {
     label: string
   }[] = [];
 
-  constructor(protected frmdbStreams: FrmdbStreamsService) {
+  constructor(public frmdbStreams: FrmdbStreamsService) {
   }
 
 
