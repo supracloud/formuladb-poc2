@@ -335,8 +335,8 @@ export class MediaComponent extends BaseMediaComponent implements OnInit {
 
 @Component({
     selector: 'frmdb-vnav',
-    templateUrl: '../../form/vnav/vnav.component.html',
-    styleUrls: ['../../form/vnav/vnav.component.scss']
+    templateUrl: '../../form/v_nav/v_nav.component.html',
+    styleUrls: ['../../form/v_nav/v_nav.component.scss']
 })
 export class VNavComponent extends BaseVNavComponent implements OnInit {
     constructor(public frmdbStreams: FrmdbStreamsService) {
@@ -347,8 +347,8 @@ export class VNavComponent extends BaseVNavComponent implements OnInit {
 
 @Component({
     selector: 'frmdb-hnav',
-    templateUrl: '../../form/hnav/hnav.component.html',
-    styleUrls: ['../../form/hnav/hnav.component.scss']
+    templateUrl: '../../form/h_nav/h_nav.component.html',
+    styleUrls: ['../../form/h_nav/h_nav.component.scss']
 })
 export class HNavComponent extends BaseHNavComponent implements OnInit {
     constructor(public frmdbStreams: FrmdbStreamsService) {
@@ -383,8 +383,8 @@ export class DropdownComponent extends BaseDropdownComponent implements OnInit {
 
 @Component({
     selector: 'frmdb-vfilters',
-    templateUrl: '../../form/vfilters/vfilters.component.html',
-    styleUrls: ['../../form/vfilters/vfilters.component.scss']
+    templateUrl: '../../form/v_filters/v_filters.component.html',
+    styleUrls: ['../../form/v_filters/v_filters.component.scss']
 })
 export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
     constructor(public frmdbStreams: FrmdbStreamsService) {
@@ -395,8 +395,8 @@ export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
 
 @Component({
     selector: 'frmdb-hfilters',
-    templateUrl: '../../form/hfilters/hfilters.component.html',
-    styleUrls: ['../../form/hfilters/hfilters.component.scss']
+    templateUrl: '../../form/h_filters/h_filters.component.html',
+    styleUrls: ['../../form/h_filters/h_filters.component.scss']
 })
 export class HFiltersComponent extends BaseHFiltersComponent implements OnInit {
     constructor(public frmdbStreams: FrmdbStreamsService) {
