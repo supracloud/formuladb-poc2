@@ -1,7 +1,6 @@
 export interface NavigationItem extends Node {
     linkName: string;
     path: string;
-    indent: number;
     active: boolean;
     collapsed: boolean;
     onPath?: boolean;

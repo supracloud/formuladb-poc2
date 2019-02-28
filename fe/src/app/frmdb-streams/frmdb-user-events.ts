@@ -22,6 +22,11 @@ export interface UserModifiedTableUi {
     type: 'UserModifiedTableUi';
     table: Table;
 }
+export interface UserCollapsedNavItem {
+    type: 'UserCollapsedNavItem';
+    id: string;
+    collapsed: boolean;
+}
 
 export type UserEvent = 
     | UserModifiedFormData
@@ -29,4 +34,5 @@ export type UserEvent =
     | UserSelectedCell
     | UserSelectedRow
     | UserModifiedTableUi
+    | UserCollapsedNavItem
 ;

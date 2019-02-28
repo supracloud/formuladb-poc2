@@ -15,6 +15,7 @@ export class FrmdbStreamsService {
 
   public devMode$: Subject<boolean> = new ReplaySubject();
   public readonlyMode$: Subject<boolean> = new ReplaySubject();
+  public entities$: Subject<Entity[]> = new ReplaySubject();
   public entity$: Subject<Entity> = new ReplaySubject();
   public table$: Subject<Table> = new ReplaySubject();
   public formulaHighlightedColumns$: Subject<FormulaHighlightedColumns> = new ReplaySubject();

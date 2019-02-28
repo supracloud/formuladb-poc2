@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
-import { BaseNodeComponent } from '../base_node';
+import { OnInit, OnDestroy } from '@angular/core';
 
-export class HNavComponent extends BaseNodeComponent implements OnInit {
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+
+export class HNavComponent implements OnInit, OnDestroy {
 
   constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
   }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
   }
 
 }

@@ -38,6 +38,7 @@ import { ImageComponent as BaseImageComponent } from "@fe/app/components/image/i
 import { IconComponent as BaseIconComponent } from "@fe/app/components/icon/icon.component";
 import { MediaComponent as BaseMediaComponent } from "@fe/app/components/media/media.component";
 import { VNavComponent as BaseVNavComponent } from "@fe/app/components/v_nav/v_nav.component";
+import { VNavSegmentComponent as BaseVNavSegmentComponent } from "@fe/app/components/v_nav/v_nav_segment.component";
 import { HNavComponent as BaseHNavComponent } from "@fe/app/components/h_nav/h_nav.component";
 import { TimelineComponent as BaseTimelineComponent } from "@fe/app/components/timeline/timeline.component";
 import { DropdownComponent as BaseDropdownComponent } from "@fe/app/components/dropdown/dropdown.component";
@@ -48,8 +49,6 @@ import { ButtonGroupComponent as BaseButtonGroupComponent } from "@fe/app/compon
 import { Router, ActivatedRoute } from '@angular/router';
 import { TableService } from '@fe/app/components/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
-
-
 @Component({
     selector: 'frmdb-form',
     templateUrl: '../../components/form.component.html',
@@ -247,8 +246,6 @@ export class CardComponent extends BaseCardComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-form_enum',
     templateUrl: '../../components/form_enum/form_enum.component.html',
@@ -259,8 +256,6 @@ export class FormEnumComponent extends BaseFormEnumComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-list',
     templateUrl: '../../components/list/list.component.html',
@@ -271,8 +266,6 @@ export class ListComponent extends BaseListComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-gallery',
     templateUrl: '../../components/gallery/gallery.component.html',
@@ -283,8 +276,6 @@ export class GalleryComponent extends BaseGalleryComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-calendar',
     templateUrl: '../../components/calendar/calendar.component.html',
@@ -295,8 +286,6 @@ export class CalendarComponent extends BaseCalendarComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-image',
     templateUrl: '../../components/image/image.component.html',
@@ -307,8 +296,6 @@ export class ImageComponent extends BaseImageComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-icon',
     templateUrl: '../../components/icon/icon.component.html',
@@ -319,8 +306,6 @@ export class IconComponent extends BaseIconComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-media',
     templateUrl: '../../components/media/media.component.html',
@@ -331,10 +316,8 @@ export class MediaComponent extends BaseMediaComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
-    selector: 'frmdb-vnav',
+    selector: 'frmdb-v_nav',
     templateUrl: '../../components/v_nav/v_nav.component.html',
     styleUrls: ['../../components/v_nav/v_nav.component.scss']
 })
@@ -344,9 +327,19 @@ export class VNavComponent extends BaseVNavComponent implements OnInit {
     }
 }
 
+@Component({
+    selector: '[frmdb-v_nav_segment]',
+    templateUrl: '../../components/v_nav/v_nav_segment.component.html',
+    styleUrls: ['../../components/v_nav/v_nav_segment.component.scss']
+})
+export class VNavSegmentComponent extends BaseVNavSegmentComponent implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService) {
+        super(frmdbStreams);
+    }
+}
 
 @Component({
-    selector: 'frmdb-hnav',
+    selector: 'frmdb-h_nav',
     templateUrl: '../../components/h_nav/h_nav.component.html',
     styleUrls: ['../../components/h_nav/h_nav.component.scss']
 })
@@ -355,8 +348,6 @@ export class HNavComponent extends BaseHNavComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-timeline',
     templateUrl: '../../components/timeline/timeline.component.html',
@@ -367,8 +358,6 @@ export class TimelineComponent extends BaseTimelineComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-dropdown',
     templateUrl: '../../components/dropdown/dropdown.component.html',
@@ -379,10 +368,8 @@ export class DropdownComponent extends BaseDropdownComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
-    selector: 'frmdb-vfilters',
+    selector: 'frmdb-v_filters',
     templateUrl: '../../components/v_filters/v_filters.component.html',
     styleUrls: ['../../components/v_filters/v_filters.component.scss']
 })
@@ -391,10 +378,8 @@ export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
-    selector: 'frmdb-hfilters',
+    selector: 'frmdb-h_filters',
     templateUrl: '../../components/h_filters/h_filters.component.html',
     styleUrls: ['../../components/h_filters/h_filters.component.scss']
 })
@@ -403,8 +388,6 @@ export class HFiltersComponent extends BaseHFiltersComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-button',
     templateUrl: '../../components/button/button.component.html',
@@ -415,8 +398,6 @@ export class ButtonComponent extends BaseButtonComponent implements OnInit {
         super(frmdbStreams);
     }
 }
-
-
 @Component({
     selector: 'frmdb-button_group',
     templateUrl: '../../components/button_group/button_group.component.html',

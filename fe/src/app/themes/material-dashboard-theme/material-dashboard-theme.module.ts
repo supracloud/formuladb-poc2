@@ -10,9 +10,6 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { MaterialDashboardThemeRoutingModule } from './material-dashboard-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
-import { NavigationComponent } from './navigation/navigation.component';
-import { NavigationSegment } from './navigation/navigation.segment';
-import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
 import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.module';
 
@@ -26,9 +23,6 @@ import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.mod
   ],
   declarations: [
     LayoutComponent,
-    NavigationComponent,
-    NavigationSegment,
-    TopNavComponent,
   ]
 })
 export class MaterialDashboardThemeModule { 

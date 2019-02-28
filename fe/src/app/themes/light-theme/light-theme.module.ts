@@ -14,11 +14,8 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 
 import { LightThemeRoutingModule } from './light-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
-import { NavigationComponent } from './navigation/navigation.component';
-import { NavigationSegment } from './navigation/navigation.segment';
-import { TopNavComponent } from './top-nav/top-nav.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
-import { FormTextComponent } from './theme-components'
+import { FormTextComponent, VNavSegmentComponent } from './theme-components'
 import { TableComponent } from './theme-components'
 import { FormComponent } from './theme-components'
 import { VLayoutComponent } from './theme-components'
@@ -84,9 +81,6 @@ import { ButtonGroupComponent } from './theme-components';
     FrmdbOnfocusDirective,
     DropHandleComponent,
     LayoutComponent,
-    NavigationComponent,
-    NavigationSegment,
-    TopNavComponent,
     FormComponent,
     FormItemComponent,
     FormTextComponent,
@@ -113,6 +107,7 @@ import { ButtonGroupComponent } from './theme-components';
     IconComponent,
     MediaComponent,
     VNavComponent,
+    VNavSegmentComponent,
     HNavComponent,
     TimelineComponent,
     DropdownComponent,
