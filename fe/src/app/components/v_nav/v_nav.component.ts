@@ -17,15 +17,14 @@ export class VNavComponent implements OnInit {
 
   constructor(public frmdbStreams: FrmdbStreamsService) {
     this.metadataCatalog$ = frmdbStreams.entities$.pipe(
-      withLatestFrom(frmdbStreams.entity$),
-      map(([entities, selectedEntity]) => entities.map(entity => {
+      map(entities => entities.map(entity => {
         return {
           id: entity._id,
           linkName: entity._id,
           path: entity._id,
-          active: entity._id === selectedEntity._id,
+          active: false,
           children: [],//FIXME: topological sort by CHILD_TABLES
-          collapsed: entity._id !== selectedEntity._id,
+          collapsed: false,
         }
       }))
     );

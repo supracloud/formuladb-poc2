@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { ArgonThemeRoutingModule } from './argon-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
-import { VerticalNavigationComponent } from './vertical-navigation/vertical-navigation.component';
 import { FrmdbStreamsModule } from '@fe/app/frmdb-streams/frmdb-streams.module';
 
 @NgModule({
@@ -12,6 +11,6 @@ import { FrmdbStreamsModule } from '@fe/app/frmdb-streams/frmdb-streams.module';
     ArgonThemeRoutingModule,
     FrmdbStreamsModule,
   ],
-  declarations: [LayoutComponent, VerticalNavigationComponent]
+  declarations: [LayoutComponent]
 })
 export class ArgonThemeModule { }
