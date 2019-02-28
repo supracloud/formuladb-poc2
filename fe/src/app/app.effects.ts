@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 
 import {
-    RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
+    RouterNavigationAction, ROUTER_NAVIGATION
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
@@ -22,7 +22,7 @@ import * as appState from './app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
 import { TableFormBackendAction, FormulaPreviewFromBackend } from './app.state';
-import { FormDataFromBackendAction } from './form/form.state';
+import { FormDataFromBackendAction } from './components/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ExampleApps } from "@core/test/mocks/mock-metadata";
@@ -199,12 +199,7 @@ export class AppEffects {
 
         if (id && path && id != this.currentUrl.id) {
             this.currentUrl.id = id;
-            let entity = await this.backendService.getEntity(path);
             let dataObj = await this.backendService.getDataObj(id);
-            let form: Form = await this.backendService.getForm(dataObj._id)
-                || await this.backendService.getForm(path) 
-                || getDefaultForm(entity, this.cachedEntitiesMap);
-            this.store.dispatch(new appState.FormFromBackendAction(form));
             this.store.dispatch(new appState.ResetFormDataFromBackendAction(dataObj));
         }
     }
@@ -234,6 +229,9 @@ export class AppEffects {
 
             let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
             this.store.dispatch(new appState.TableFormBackendAction(table));
+
+            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
+            this.store.dispatch(new appState.FormFromBackendAction(form));
 
         } catch (err) {
             console.error(err, err.stack);

@@ -25,9 +25,9 @@ import { VLayoutComponent } from './theme-components'
 import { FormItemComponent } from './theme-components'
 import { HLayoutComponent } from './theme-components'
 import { AgGridModule } from 'ag-grid-angular';
-import { TableHeaderComponent } from '@fe/app/table/table-header.component';
-import { FormEditingService } from '@fe/app/form/form-editing.service';
-import { TableService } from '@fe/app/table/table.service';
+import { TableHeaderComponent } from '@fe/app/components/table/table-header.component';
+import { FormEditingService } from '@fe/app/components/form-editing.service';
+import { TableService } from '@fe/app/components/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import { NotFoundComponent } from '@fe/app/not-found/not-found.component';
 import { FrmdbOnfocusDirective } from '@fe/app/dev-mode-overlay/frmdb-onfocus.directive';

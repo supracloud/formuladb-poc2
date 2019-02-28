@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, HostBinding, HostListener } from '@angular/core';
 import { NodeElement } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
-import * as fromForm from '../../form/form.state';
+import * as fromForm from '../../components/form.state';
 
 @Component({
   selector: 'drop-handle',

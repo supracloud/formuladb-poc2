@@ -12,7 +12,7 @@ function getTestUUID() {
 }
 
 export var HomePage_Form: Form = {
-  _id: "Form_:ALL^^StaticPage~~home",
+  _id: "Form_:Home",
   "grid": {
     nodeType: NodeType.form_grid, _id: getTestUUID(),
     childNodes: [

@@ -8,7 +8,7 @@ import { GEN__Actor } from './general-metadata';
 
 export const Financial = {
     _id: "FIN",
-    module_: true,
+    usedOnlyForNavigationGrouping: true,
     props: {},
 };
 

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BackendService } from '../backend.service';
-import { IServerSideDatasource, IServerSideGetRowsParams, IServerSideGetRowsRequest } from 'ag-grid-community';
-import { SumReduceFunN } from '@core/domain/metadata/reduce_functions';
+import { BackendService } from '../../backend.service';
+import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
-import { Entity } from '../entity-state';
+import { Entity } from '@core/domain/metadata/entity';
 
 @Injectable()
 export class TableService {

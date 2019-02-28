@@ -6,7 +6,7 @@ import { ServerEventModifiedFormDataEvent } from '@core/domain/event';
 import { UserEvent } from './frmdb-user-events';
 import { Table } from '@core/domain/uimetadata/table';
 import { Entity } from '@core/domain/metadata/entity';
-import { FormulaHighlightedColumns } from '../table/table.state';
+import { FormulaHighlightedColumns } from '../components/table/table.state';
 
 @Injectable({
   providedIn: 'root'

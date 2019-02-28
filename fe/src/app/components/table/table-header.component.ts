@@ -1,8 +1,6 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs';
-import { Store } from '@ngrx/store';
-
-import * as appState from '../app.state';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 @Component({
     selector: 'app-loading-overlay',
@@ -17,8 +15,8 @@ export class TableHeaderComponent {
     private noSort: string;
     public devMode$: Observable<boolean>;
 
-    constructor(protected store: Store<appState.EntityState>) {
-        this.devMode$ = store.select(appState.getDeveloperMode);
+    constructor(protected frmdbStreams: FrmdbStreamsService) {
+        this.devMode$ = frmdbStreams.devMode$;
     }
 
     @ViewChild('menuButton', {read: ElementRef}) public menuButton;
@@ -35,7 +33,7 @@ export class TableHeaderComponent {
     };
 
     selectColumn(colName: string) {
-        this.store.dispatch(new appState.UserSelectCell(colName));
+        this.frmdbStreams.userEvents$.next({type: "UserSelectedCell", columnName: colName});
     }
 
     onSortChanged() {

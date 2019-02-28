@@ -22,8 +22,8 @@ import * as _ from 'lodash';
 import { TableHeaderComponent } from './table-header.component';
 import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from './table.service';
-import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
-import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
+import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
+import { FrmdbStreamsService } from '../../frmdb-streams/frmdb-streams.service';
 
 export class TableComponent implements OnInit, OnDestroy {
 

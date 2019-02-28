@@ -13,7 +13,7 @@ import { Expression } from 'jsep';
  */
 export interface Entity extends KeyValueObj {
     _id: string;
-    module_?: boolean;
+    usedOnlyForNavigationGrouping?: boolean;
     aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
@@ -91,6 +91,7 @@ export const enum Pn {
     DOCUMENT = "TEXT",
     DATETIME = "DATETIME",
     DURATION = "DURATION",
+    ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
     EXTENDS_ENTITY = "SUB_ENTITY",
@@ -130,6 +131,12 @@ export interface DurationProperty {
     allowNull?: boolean;
 }
 
+export interface AttachmentProperty {
+    propType_: Pn.ATTACHMENT;
+    name: string;
+    mediaType: "pdf" | "png" | "jpg" | "gif" | "csv" | "docx" | "xlsx";
+    url: string;
+}
 
 /**
  * Table of existing entities or entities created
@@ -192,6 +199,7 @@ export type EntityProperty =
     | DocumentProperty
     | DatetimeProperty
     | DurationProperty
+    | AttachmentProperty
     | ChildTableProperty
     | ExtendsEntityProperty
     | ReferenceToProperty

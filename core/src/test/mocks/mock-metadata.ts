@@ -13,7 +13,7 @@ import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
-import * as StaticPagesMetadata from "./static-pages-metadata";
+import * as StaticPagesMetadata from "./website-metadata";
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -45,12 +45,10 @@ export class MockMetadata {
 
         switch (app) {
             case ExampleApps.test:
-                this.entities.push(StaticPagesMetadata.StaticPage);
-                this.entities.push(StaticPagesMetadata.StaticPageElement);
-                this.entities.push(StaticPagesMetadata.StaticPageSubElement);
-                this.entities.push(StaticPagesMetadata.StaticPageThirdLevelElement);
-                this.entities.push(StaticPagesMetadata.StaticPageFourthLevelElement);
-                this.entities.push(StaticPagesMetadata.StaticPageFifthLevelElement);
+                this.entities.push(StaticPagesMetadata.Home);
+                this.entities.push(StaticPagesMetadata.ProductFeature);
+                this.entities.push(StaticPagesMetadata.Dashboard);
+                this.entities.push(StaticPagesMetadata.WebsiteStatistic);
                 this.entities.push(InventoryMetadata.Inventory);
                 this.entities.push(InventoryMetadata.INV__Order);
                 this.entities.push(InventoryMetadata.INV__Order__Item);

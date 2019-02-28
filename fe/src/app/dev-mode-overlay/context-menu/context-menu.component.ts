@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
-import * as fromForm from '../../form/form.state';
+import * as fromForm from '../../components/form.state';
 import * as fromEntity from '../../entity-state';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { FormItemEditorComponent } from '../form-item-editor/form-item-editor.component';

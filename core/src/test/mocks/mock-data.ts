@@ -11,7 +11,7 @@ import { DataObj } from '@core/domain/metadata/data_obj';
 import { FormsData } from './forms-data';
 import { ReportsData } from './reports-data';
 import { GeneralData } from './general-data';
-import { StaticPagesData } from './static-pages-data';
+import { StaticPagesData } from './website-data';
 
 
 export class MockData {

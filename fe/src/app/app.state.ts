@@ -28,14 +28,14 @@ export { ChangeObj, applyChanges };
 import * as fromCore from './core.state';
 import * as fromTheme from './theme.state';
 import * as fromEntity from "./entity-state";
-import * as fromTable from './table/table.state';
-import * as fromForm from './form/form.state';
+import * as fromTable from './components/table/table.state';
+import * as fromForm from './components/form.state';
 import * as fromI18n from './crosscutting/i18n/i18n.state';
 import * as fromFormula from './formula.state'
 
 export * from "./entity-state";
-export * from "./table/table.state";
-export * from "./form/form.state";
+export * from "./components/table/table.state";
+export * from "./components/form.state";
 export * from "./core.state";
 export * from "./theme.state";
 export * from "./crosscutting/i18n/i18n.state";

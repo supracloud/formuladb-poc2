@@ -9,7 +9,7 @@ import { $s2e } from '../../formula_compiler';
 
 export const General: Entity = {
     _id: "GEN",
-    module_: true,
+    usedOnlyForNavigationGrouping: true,
     props: {},
 };
 

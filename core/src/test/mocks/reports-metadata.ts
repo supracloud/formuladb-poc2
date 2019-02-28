@@ -9,7 +9,7 @@ import { Fn } from "@core/domain/metadata/functions";
 
 export const Reports = {
     _id: "REP",
-    module_: true,
+    usedOnlyForNavigationGrouping: true,
     props: {},
 };
 
