@@ -4,8 +4,8 @@
  */
 
 import * as _ from "lodash";
+import * as CircularJSON from "circular-json";
 import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
-import { Expression, StringLiteral, NumberLiteral } from "jsep";
 declare var emit: any;
 
 export function isNumberES5(s) {
@@ -163,8 +163,8 @@ export function evalExprES5(doc, expr) {
             });
         } else return evaluate(expr, doc);
     } catch (e) {
-        throw new Error("Error while evaluating expression: " + (expr.expr || JSON.stringify(expr, null, 4)) 
-            + "\nfor document " + JSON.stringify(doc, null, 4)
+        throw new Error("Error while evaluating expression: " + (expr.expr || CircularJSON.stringify(expr, null, 4)) 
+            + "\nfor document " + CircularJSON.stringify(doc, null, 4)
             + "\nCaused by: " + e + "\n" + e.stack);
     }
 }
@@ -194,7 +194,7 @@ function compareStringsES5(s1, s2) {
     } else return s1 < s2 ? -1 : s1 === s2 ? 0 : 1;
 }
 function compareKeysES5(k1, k2) {
-    if (!(k1 instanceof Array) || !(k2 instanceof Array)) throw new Error("keys must be string arrays: " + JSON.stringify(k1) + "/" + JSON.stringify(k2));
+    if (!(k1 instanceof Array) || !(k2 instanceof Array)) throw new Error("keys must be string arrays: " + CircularJSON.stringify(k1) + "/" + CircularJSON.stringify(k2));
 
     if (k1.length === 0) {
         if (k2.length === 0) return 0;
@@ -252,7 +252,7 @@ export function packFunction(func: (doc, ...a) => void, dependencies: ((...a) =>
         '    var dependencies = {',
         '        ' + deps.map(({ n, f }) => n + ': ' + f).join(',\n        '),
         '    };',
-        '    var args = ' + JSON.stringify(args, null, 4).replace(/\n/g, "\n    "),
+        '    var args = ' + CircularJSON.stringify(args, null, 4).replace(/\n/g, "\n    "),
         '    ' + func.toString()
             .replace(/function.*?\{/, 'function zaFunc(doc, dependencies) {')
             .replace(/\w+\.emit\s*\(/g, (m, $1) => 'emit(')

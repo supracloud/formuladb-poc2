@@ -21,16 +21,16 @@ import { filter } from 'rxjs/operators';
 export class AppComponent {
   title = 'frmdb';
   public devMode$: Observable<boolean>;
-  bodyPadding = "0 0 32px 0";
+  bodyPadding = "0 0 22px 0";
   constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
     this.devMode$ = this.store.select(appState.getDeveloperMode);
     this.devMode$.subscribe(devMode => {
       if (devMode) {
         this.frmdbStreams.devMode$.next(true);
-        this.bodyPadding = "32px 0 0 0";
+        this.bodyPadding = "22px 0 0 0";
       } else {
         this.frmdbStreams.devMode$.next(false);
-        this.bodyPadding = "0 0 32px 0";
+        this.bodyPadding = "0 0 22px 0";
       }
     });
 

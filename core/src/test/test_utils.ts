@@ -1,5 +1,6 @@
 import { CompiledFormula, MapQuery } from "@core/domain/metadata/execution_plan";
 import * as _ from "lodash";
+import * as CircularJSON from "circular-json";
 import { isExpression, Expression } from "jsep";
 
 export function toStringCompiledFormula(formula: string, compiledFormula: CompiledFormula) {
@@ -32,7 +33,7 @@ export function toStringCompiledFormula(formula: string, compiledFormula: Compil
     return "\n# " + compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + formula + "\n" + 
         compiledFormula.targetEntityName + '.' + compiledFormula.targetPropertyName + ' = ' + compiledFormula.rawExpr.origExpr + "\n" + 
         "```json\n" +
-        JSON.stringify(toString(compiledFormula.triggers), null, 4) +
+        CircularJSON.stringify(toString(compiledFormula.triggers), null, 4) +
         "\n```"
     ;
 }

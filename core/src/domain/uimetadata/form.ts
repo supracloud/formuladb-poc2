@@ -7,6 +7,7 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
+import * as CircularJSON from "circular-json";
 
 export enum NodeType {
     form_grid = "form_grid",
@@ -203,7 +204,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form.grid = new FormGrid();
 
     setFormElementChildren(form.grid, entity, entitiesMap);
-    console.log('form:', JSON.stringify(form));
+    console.log('form:', CircularJSON.stringify(form));
     addIdsToForm(form.grid);
     return form;
 }

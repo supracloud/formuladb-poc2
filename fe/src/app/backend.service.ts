@@ -6,6 +6,7 @@
 import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
+import * as CircularJSON from "circular-json";
 
 import { DataObj, parseDataObjId, isDataObj } from "@core/domain/metadata/data_obj";
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
@@ -134,7 +135,7 @@ export class BackendService {
         });
         if (!http) throw new Error('Asked for non-existent object ' + id + '.');
         let dataObj = http;
-        if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + JSON.stringify(dataObj));
+        if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
 
         let { entityName: referencedEntityName, id: objId, uid: parentUUID } = parseDataObjId(id);
         let entity = await this.getEntity(referencedEntityName);
@@ -154,7 +155,7 @@ export class BackendService {
         });
         if (!http) return null;
         let ti = http;
-        if (!isTable(ti)) throw new Error("response is not Table " + JSON.stringify(ti));
+        if (!isTable(ti)) throw new Error("response is not Table " + CircularJSON.stringify(ti));
         addIdsToTable(ti);
         return ti;
     }
@@ -165,7 +166,7 @@ export class BackendService {
         });
         if (!http) return null;
         let fi = http;
-        if (!isForm(fi)) throw new Error("response is not Form " + JSON.stringify(fi));
+        if (!isForm(fi)) throw new Error("response is not Form " + CircularJSON.stringify(fi));
         addIdsToForm(fi.grid);
         return fi;
     }
@@ -180,7 +181,7 @@ export class BackendService {
             return data.body as any as Schema;
         });
         if (!http) throw new Error("empty schema !");
-        if (!isSchema(http)) throw new Error("response is not Schema " + JSON.stringify(http));
+        if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));
         return http;
     }
 
@@ -189,7 +190,7 @@ export class BackendService {
             return data.body as any as Entity;
         });
         if (!http) throw new Error("missing Entity " + path);
-        if (!isEntity(http)) throw new Error("response is not Entity " + JSON.stringify(http));
+        if (!isEntity(http)) throw new Error("response is not Entity " + CircularJSON.stringify(http));
         return http;
     }
 

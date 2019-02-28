@@ -47,6 +47,18 @@ export class MockMetadata {
             case ExampleApps.test:
                 this.entities.push(StaticPagesMetadata.StaticPage);
                 this.entities.push(StaticPagesMetadata.StaticPageElement);
+                this.entities.push(InventoryMetadata.Inventory);
+                this.entities.push(InventoryMetadata.INV__Order);
+                this.entities.push(InventoryMetadata.INV__Order__Item);
+                this.entities.push(InventoryMetadata.INV__Receipt);
+                this.entities.push(InventoryMetadata.INV__Receipt__Item);
+                this.entities.push(InventoryMetadata.INV__PRD);
+                this.entities.push(InventoryMetadata.INV__PRD__Location);
+                this.entities.push(InventoryMetadata.INV__PRD__Unit);
+                this.entities.push(InventoryMetadata.Reports);
+                this.entities.push(InventoryMetadata.REP__LargeSales);
+                this.entities.push(InventoryMetadata.REP__LargeSales__Product);
+                break;
             case ExampleApps.service:
                 this.entities.push(FormsMetadata.Forms);
                 this.entities.push(FormsMetadata.Forms__ServiceForm);

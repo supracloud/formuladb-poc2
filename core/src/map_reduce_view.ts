@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as CircularJSON from "circular-json";
 
 import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "./key_value_store_i";
 import { MapFunctionT } from "@core/domain/metadata/execution_plan";
@@ -123,7 +124,7 @@ export class MapReduceView {
     }
 
     public reduceQuery(queryOpts: Partial<RangeQueryOptsArrayKeysI>): Promise<string | number> {
-        if (!this.reduceFunction) throw new Error("Reduce called on a map view " + this.viewHashCode + "; " + JSON.stringify(this.map) + ";" + this.reduceFunction);
+        if (!this.reduceFunction) throw new Error("Reduce called on a map view " + this.viewHashCode + "; " + CircularJSON.stringify(this.map) + ";" + this.reduceFunction);
         let reduceFunction = this.reduceFunction;
         let viewHashCode = this.viewHashCode;
 
@@ -149,10 +150,10 @@ export class MapReduceView {
 
         let ret: MapReduceViewUpdates<T> = { viewHashCode: viewHashCode, map: [], mapDelete: [], reduce: [], reduceDelete: [] };
         let newMapKey = this.use$ROW$ ? evalExprES5({ $ROW$: newObj }, this.map.keyExpr) : evalExprES5(newObj, this.map.keyExpr);
-        if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, newMapKey }));
+        if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + CircularJSON.stringify({ viewHashCode, newMapKey }));
 
         let newMapValue: T = this.use$ROW$ ? evalExprES5({ $ROW$: newObj }, this.map.valueExpr) : evalExprES5(newObj, this.map.valueExpr);
-        if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue }));
+        if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + CircularJSON.stringify({ viewHashCode, newMapKey, newMapValue }));
 
         //In order to allow multiple map values for the same key we need to append the objectId to the key
         ret.map.push({ key: MapReduceView.makeUniqueMapKey(newMapKey, newObj), value: newMapValue });
@@ -164,10 +165,10 @@ export class MapReduceView {
         if (oldObj) {
 
             oldMapKey = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.keyExpr) : evalExprES5(oldObj, this.map.keyExpr);
-            if (!(oldMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, oldMapKey }));
+            if (!(oldMapKey instanceof Array)) throw new Error("Keys are not arrays " + CircularJSON.stringify({ viewHashCode, oldMapKey }));
 
             oldMapValue = this.use$ROW$ ? evalExprES5({ $ROW$: oldObj }, this.map.valueExpr) : evalExprES5(oldObj, this.map.valueExpr);
-            if (valueExample != null && typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue, oldMapKey, oldMapValue }));
+            if (valueExample != null && typeof oldMapValue !== typeof valueExample) throw new Error("oldMapValue with incorrect type found " + CircularJSON.stringify({ viewHashCode, newMapKey, newMapValue, oldMapKey, oldMapValue }));
 
             let otherMapValuesWithOldKey = await this.mapKVS.rangeQueryWithKeys({
                 startkey: oldMapKey,

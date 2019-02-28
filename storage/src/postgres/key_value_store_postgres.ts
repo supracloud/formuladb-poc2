@@ -17,6 +17,7 @@ import { ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExprES5 } from "@core/map_reduce_utils";
 const calculateSlot = require('cluster-key-slot');
+import * as CircularJSON from "circular-json";
 
 /**
  * Key Value Store with optimistic locking functionality
@@ -133,7 +134,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         return new Promise((resolve) => {
             this.initialize().then(() => {
                 let escapedId = this.pgSpecialChars(_id);
-                let object_as_json = JSON.stringify(obj);
+                let object_as_json = CircularJSON.stringify(obj);
                 let query: string = 'INSERT INTO ' + this.table_id + ' VALUES($1, $2) ON CONFLICT (_id) DO UPDATE SET _id=$1, val=$2';
                 this.getDB().none(query, [escapedId, object_as_json]).then(() => {
                     resolve(obj);

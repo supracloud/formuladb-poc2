@@ -9,6 +9,7 @@ import {
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
     forwardRef
 } from '@angular/core';
+import * as CircularJSON from "circular-json";
 
 import { BaseNodeComponent } from "../base_node";
 import { AbstractControl } from '@angular/forms';
@@ -36,7 +37,7 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, OnD
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
     getType(): string {
-        if (this.nodeElement.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + JSON.stringify(this.nodeElement));
+        if (this.nodeElement.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + CircularJSON.stringify(this.nodeElement));
         if (this.nodeElement.propertyType === Pn.NUMBER) return "number";
         else return "text";
     }

@@ -9,6 +9,7 @@ import {
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
     forwardRef
 } from '@angular/core';
+import * as CircularJSON from "circular-json";
 
 import { BaseNodeComponent } from "../base_node";
 import { AbstractControl } from '@angular/forms';
@@ -34,7 +35,7 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
     get type(): string {
-        if (this.nodeElement.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + JSON.stringify(this.nodeElement));
+        if (this.nodeElement.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodeElement));
         return this.nodeElement.representation || 'paragraph';
     }
 
