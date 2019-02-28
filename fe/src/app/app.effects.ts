@@ -197,14 +197,14 @@ export class AppEffects {
             await this.changeEntity(path!);
         }
 
-        if (id && id != this.currentUrl.id) {
+        if (id && path && id != this.currentUrl.id) {
             this.currentUrl.id = id;
-            this.backendService.getDataObj(id)
-                .then(obj => this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj)))
-                .catch(err => console.error(err))
-                ;
+            let entity = await this.backendService.getEntity(path);
+            let dataObj = await this.backendService.getDataObj(id);
+            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
+            this.store.dispatch(new appState.FormFromBackendAction(form));
+            this.store.dispatch(new appState.ResetFormDataFromBackendAction(dataObj));
         }
-
     }
 
     private listenForNewDataObjActions() {
@@ -232,9 +232,6 @@ export class AppEffects {
 
             let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
             this.store.dispatch(new appState.TableFormBackendAction(table));
-
-            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
-            this.store.dispatch(new appState.FormFromBackendAction(form));
 
         } catch (err) {
             console.error(err, err.stack);

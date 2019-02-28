@@ -64,7 +64,8 @@ export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
     propertyName: string;
-    representation: string; // heading, paragraph, caption, jumbo, etc.
+    representation: "heading" | "paragraph" | "caption" | "jumbo";
+    uppercase?: boolean;
 }
 export class FormAutocomplete implements SubObj {
     readonly nodeType = NodeType.form_autocomplete;

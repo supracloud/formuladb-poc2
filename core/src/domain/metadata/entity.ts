@@ -18,6 +18,7 @@ export interface Entity extends KeyValueObj {
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
+    extendsEntityName?: string;
     stateGraph?: EntityStateGraph;
     isView?: boolean;
     isEditable?: boolean;

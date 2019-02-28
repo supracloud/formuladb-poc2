@@ -13,6 +13,7 @@ import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
+import * as StaticPagesMetadata from "./static-pages-metadata";
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -21,6 +22,7 @@ export * from "./reports-metadata";
 export * from "./financial-metadata";
 
 export enum ExampleApps {
+    test = "test",
     inventory = "inventory",
     booking = "booking",
     expenses = "expenses",
@@ -42,12 +44,14 @@ export class MockMetadata {
         this.entities.push(GeneralMetadata.GEN__Client);
 
         switch (app) {
+            case ExampleApps.test:
+                this.entities.push(StaticPagesMetadata.StaticPage);
+                this.entities.push(StaticPagesMetadata.StaticPageElement);
             case ExampleApps.service:
                 this.entities.push(FormsMetadata.Forms);
                 this.entities.push(FormsMetadata.Forms__ServiceForm);
                 this.entities.push(ReportsMetadata.REP__DetailedCentralizerReport);
                 this.entities.push(ReportsMetadata.REP__ServiceCentralizerReport);
-                //also need the inventory
             case ExampleApps.inventory:
                 this.entities.push(InventoryMetadata.Inventory);
                 this.entities.push(InventoryMetadata.INV__Order);
