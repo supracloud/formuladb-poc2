@@ -21,7 +21,7 @@ export class FormInputEditorComponent implements OnInit {
 
   propertyType: string;
 
-  propertyTypes = [Pn.STRING, Pn.NUMBER, Pn.TEXT];
+  propertyTypes = [Pn.STRING, Pn.NUMBER, Pn.DOCUMENT];
 
   ngOnInit() {
     if (this.item) {

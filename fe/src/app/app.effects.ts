@@ -201,7 +201,9 @@ export class AppEffects {
             this.currentUrl.id = id;
             let entity = await this.backendService.getEntity(path);
             let dataObj = await this.backendService.getDataObj(id);
-            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
+            let form: Form = await this.backendService.getForm(dataObj._id)
+                || await this.backendService.getForm(path) 
+                || getDefaultForm(entity, this.cachedEntitiesMap);
             this.store.dispatch(new appState.FormFromBackendAction(form));
             this.store.dispatch(new appState.ResetFormDataFromBackendAction(dataObj));
         }

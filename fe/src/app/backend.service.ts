@@ -161,7 +161,7 @@ export class BackendService {
     }
 
     public async getForm(path: string): Promise<Form | null> {
-        let http = await this.get<Form | null>('/api/' + this.appName + '/form/' + encodeURIComponent(path), (data: HttpResponse<any[]>) => {
+        let http = await this.get<Form | null>('/api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
             return data.body as any as Form;
         });
         if (!http) return null;

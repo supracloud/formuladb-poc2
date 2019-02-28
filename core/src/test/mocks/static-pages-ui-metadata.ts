@@ -3,45 +3,38 @@
  * License TBD
  */
 
-import * as metadata from './mock-metadata';
 import { Entity, Pn } from "@core/domain/metadata/entity";
 import { Form, NodeType } from '@core/domain/uimetadata/form'
-import { Forms__ServiceForm } from "./forms-metadata";
-import { REP__LargeSales } from './inventory-metadata';
 
 let testUUID = 1;
 function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
 
-export var REP__LargeSales_Form: Form = {
-  _id: "Form_:ALL^^REP__LargeSales",
+export var HomePage_Form: Form = {
+  _id: "Form_:ALL^^StaticPage~~home",
   "grid": {
-    nodeType: NodeType.form_grid,
+    nodeType: NodeType.form_grid, _id: getTestUUID(),
     childNodes: [
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.h_layout, _id: getTestUUID(),
         childNodes: [
           {
-            nodeType: NodeType.form_text,
+            nodeType: NodeType.form_text, _id: getTestUUID(),
             propertyName: "client",
             representation:'paragraph',
-            // "propertyType": Pn.STRING,
-            _id: "7x8JM1B39JihWrCoX6B64K"
           },
           {
-            nodeType: NodeType.form_datepicker,
+            nodeType: NodeType.form_datepicker, _id: getTestUUID(),
             propertyName: "month",
-            _id: "oBuxsDC9wUamzQ9Ft2M3Ja"
           }
         ],
-        _id: "fVmzojRQqQSeAWJzQtjf9h"
       },
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.h_layout, _id: getTestUUID(),
         childNodes: [
           {
-            nodeType: NodeType.form_chart,
+            nodeType: NodeType.form_chart, _id: getTestUUID(),
             tableName: "large_sales",
             chartType: "bar-vertical",
             width: 850,
@@ -49,61 +42,50 @@ export var REP__LargeSales_Form: Form = {
             xPropertyName: "product_name",
             yPropertyName: "large_sales_value",
             groupByPropertyName: undefined,
-            _id: "7x8JM1B39JihWrCoX6B64z"
           },
         ],
-        _id: "fVmzojRQqQSeAWJzQtjf9h"
       },
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.h_layout, _id: getTestUUID(),
         childNodes: [
           {
-            nodeType: NodeType.form_table,
+            nodeType: NodeType.form_table, _id: getTestUUID(),
             "tableName": "large_sales",
             childNodes: [
               {
-                nodeType: NodeType.form_input,
+                nodeType: NodeType.form_input, _id: getTestUUID(),
                 propertyName: "product_id",
                 "propertyType": Pn.STRING,
-                _id: "9fGmxqFEtxP9ypQYzJ9Uoe"
               },
               {
-                nodeType: NodeType.form_input,
+                nodeType: NodeType.form_input, _id: getTestUUID(),
                 propertyName: "product_id",
                 "propertyType": Pn.STRING,
-                _id: "4x12CPz2SRTasvTpEgA37G"
               },
               {
-                nodeType: NodeType.form_input,
+                nodeType: NodeType.form_input, _id: getTestUUID(),
                 propertyName: "large_sales_value",
                 "propertyType": Pn.NUMBER,
-                _id: "hy94dLU9CNYrKnJxyhAvGa"
               },
               {
-                nodeType: NodeType.form_input,
+                nodeType: NodeType.form_input, _id: getTestUUID(),
                 propertyName: "_id",
                 "propertyType": Pn.STRING,
-                _id: "qZULQDuppbY1C9MVVdMsz5"
               }
             ],
-            _id: "qwYyqnVcDkExQDrsc8sBKP"
           }
         ],
-        _id: "6rHs2cBbzYNyfESXeVuqMn"
       },
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.h_layout, _id: getTestUUID(),
         childNodes: [
           {
-            nodeType: NodeType.form_input,
+            nodeType: NodeType.form_input, _id: getTestUUID(),
             propertyName: "_id",
             "propertyType": Pn.STRING,
-            _id: "vpSLco8jAdLXDzDo9FDxp6"
           }
         ],
-        _id: "sVg53VC62sxpNRcUyDSDJn"
       }
     ],
-    _id: "4RGwA8vWTYzYTVTUZnxjXb"
   }
 };

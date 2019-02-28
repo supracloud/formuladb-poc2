@@ -87,14 +87,14 @@ export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: En
 export const enum Pn {
     NUMBER = "NUMBER",
     STRING = "STRING",
-    TEXT = "TEXT",
+    BOOLEAN = "BOOLEAN",
+    DOCUMENT = "TEXT",
     DATETIME = "DATETIME",
     DURATION = "DURATION",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
     EXTENDS_ENTITY = "SUB_ENTITY",
     FORMULA = "FORMULA",
-    SUB_TABLE = "SUB_TABLE"
 }
 
 export interface NumberProperty {
@@ -109,8 +109,12 @@ export interface StringProperty {
     defaultValue?: string;
     allowNull?: boolean;
 }
-export interface TextProperty {
-    propType_: Pn.TEXT;
+export interface BooleanProperty {
+    propType_: Pn.BOOLEAN;
+    name: string;
+}
+export interface DocumentProperty {
+    propType_: Pn.DOCUMENT;
     name: string;
     allowNull?: boolean;
 }
@@ -142,15 +146,6 @@ export function isSubTableProperty(param): param is ChildTableProperty {
     return param != null && typeof param === 'object' && param.propType_ === Pn.CHILD_TABLE;
 }
 
-
-export interface SubTableProperty {
-    propType_: Pn.SUB_TABLE;
-    name: string;
-    referencedEntityName?: string;
-    snapshotCurrentValueOfProperties?: string[];
-    isLargeTable?: boolean;
-    props: EntityProperties;
-}
 
 /**
  * This property represents an embedded entity that is created when the parent entity is created
@@ -194,11 +189,10 @@ export function isFormulaProperty(param): param is FormulaProperty {
 export type EntityProperty =
     | NumberProperty
     | StringProperty
-    | TextProperty
+    | DocumentProperty
     | DatetimeProperty
     | DurationProperty
     | ChildTableProperty
-    | SubTableProperty
     | ExtendsEntityProperty
     | ReferenceToProperty
     | FormulaProperty

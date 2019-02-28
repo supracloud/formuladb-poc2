@@ -62,7 +62,7 @@ create-docker-env() {
 }
 
 psql() {
-    docker exec -it febe_db_1 psql -U postgres
+    docker exec -it formuladb-pg psql -U postgres
 }
 pglogs() {
     docker logs -f febe_db_1

@@ -73,9 +73,9 @@ export const Forms__ServiceForm = {
                     referencedEntityName: INV__PRD__Unit._id,
                     referencedPropertyName: 'serial1'
                 } as EntityProperty,
-                reported_problem: { name: 'reported_problem', propType_: Pn.TEXT } as EntityProperty,
-                found_problem: { name: 'found_problem', propType_: Pn.TEXT } as EntityProperty,
-                work_description: { name: 'work_description', propType_: Pn.TEXT } as EntityProperty,
+                reported_problem: { name: 'reported_problem', propType_: Pn.DOCUMENT } as EntityProperty,
+                found_problem: { name: 'found_problem', propType_: Pn.DOCUMENT } as EntityProperty,
+                work_description: { name: 'work_description', propType_: Pn.DOCUMENT } as EntityProperty,
                 nb_piston_cycles: { name: 'nb_piston_cycles', propType_: Pn.STRING } as EntityProperty,
                 brita_counter: { name: 'brita_counter', propType_: Pn.STRING } as EntityProperty,
                 washing_cycles: { name: 'washing_cycles', propType_: Pn.STRING } as EntityProperty,

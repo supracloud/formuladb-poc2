@@ -13,7 +13,7 @@ function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
 export const Forms__ServiceForm_Form_: Form = {
-  _id: 'Form_:' + Forms__ServiceForm._id,
+  _id: 'Form_:ALL^^' + Forms__ServiceForm._id,
   grid: {
     _id: getTestUUID(), nodeType: NodeType.form_grid,
     childNodes: [
