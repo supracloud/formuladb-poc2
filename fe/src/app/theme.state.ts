@@ -3,8 +3,7 @@
  * License TBD
  */
 
-import { Params, RouterStateSnapshot } from '@angular/router';
-import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 export interface ThemeState {
   themeColorPalette: string;

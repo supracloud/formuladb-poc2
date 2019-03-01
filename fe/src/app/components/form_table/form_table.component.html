@@ -1,0 +1,17 @@
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th *ngFor="let child of tableElement.childNodes">
+                {{child.propertyName | i18n}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
+            <td *ngFor="let child of tableElement.childNodes">
+                <frmdb-form_item [nodeElement]="child" [topLevelFormGroup]="topLevelFormGroup"
+                    [parentFormPath]="parentFormPath + '.' + idx + '.' + child.propertyName" [formReadOnly]="formReadOnly"></frmdb-form_item>
+            </td>
+        </tr>
+    </tbody>
+</table>

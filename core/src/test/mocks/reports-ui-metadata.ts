@@ -15,17 +15,18 @@ function getTestUUID() {
 }
 
 export var REP__LargeSales_Form: Form = {
-  _id: "Form_:REP__LargeSales",
+  _id: "Form_:ALL^^REP__LargeSales",
   "grid": {
     nodeType: NodeType.form_grid,
     childNodes: [
       {
-        nodeType: NodeType.form_grid_row,
+        nodeType: NodeType.h_layout,
         childNodes: [
           {
-            nodeType: NodeType.form_input,
+            nodeType: NodeType.form_text,
             propertyName: "client",
-            "propertyType": Pn.STRING,
+            representation:'paragraph',
+            // "propertyType": Pn.STRING,
             _id: "7x8JM1B39JihWrCoX6B64K"
           },
           {
@@ -37,7 +38,7 @@ export var REP__LargeSales_Form: Form = {
         _id: "fVmzojRQqQSeAWJzQtjf9h"
       },
       {
-        nodeType: NodeType.form_grid_row,
+        nodeType: NodeType.h_layout,
         childNodes: [
           {
             nodeType: NodeType.form_chart,
@@ -54,7 +55,7 @@ export var REP__LargeSales_Form: Form = {
         _id: "fVmzojRQqQSeAWJzQtjf9h"
       },
       {
-        nodeType: NodeType.form_grid_row,
+        nodeType: NodeType.h_layout,
         childNodes: [
           {
             nodeType: NodeType.form_table,
@@ -91,7 +92,7 @@ export var REP__LargeSales_Form: Form = {
         _id: "6rHs2cBbzYNyfESXeVuqMn"
       },
       {
-        nodeType: NodeType.form_grid_row,
+        nodeType: NodeType.h_layout,
         childNodes: [
           {
             nodeType: NodeType.form_input,

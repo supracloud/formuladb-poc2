@@ -4,6 +4,7 @@
  */
 
 import * as _ from "lodash";
+import { CircularJSON } from "@core/json-stringify";
 import {
     Expression, CallExpression, BinaryExpression, Identifier, isExpression, isIdentifier,
     ExpressionBase, LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLiteral
@@ -47,7 +48,7 @@ export class SchemaCompiler {
         };
 
         let formulaDAG: DAG<{id: string, entityProp: EntityProperty}> = new DAG();
-        this.createFormulaDAG(formulaDAG);
+        // this.createFormulaDAG(formulaDAG);
 
         return new SchemaDAO(this.schema, formulaDAG);
     }
@@ -135,7 +136,7 @@ export class SchemaCompiler {
                 throw new Error("Compound expr are not supported: " + node.origExpr);
     
             default:
-                throw new Error("Unknown expression: " + JSON.stringify(node));
+                throw new Error("Unknown expression: " + CircularJSON.stringify(node));
         }
     }
     private createFormulaDAG(formulaDAG: DAG<{id: string, entityProp: EntityProperty}>) {

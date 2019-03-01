@@ -1,4 +1,5 @@
 import { KeyValueStoreFactoryI } from "./key_value_store_i";
+import { CircularJSON } from "@core/json-stringify";
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -35,8 +36,8 @@ export class TransactionManager {
         });
         this.currentTransactions.set(transactionId, newTrans);//works because this is single-threaded
 
-        console.log(ll(transactionId, 0) + "|objIds: " + JSON.stringify(objIds) + "|conflicts: " + 
-            JSON.stringify(Array.from(newTrans.conflictingTransactions.keys())));
+        console.log(ll(transactionId, 0) + "|objIds: " + CircularJSON.stringify(objIds) + "|conflicts: " + 
+            CircularJSON.stringify(Array.from(newTrans.conflictingTransactions.keys())));
 
         while (newTrans.conflictingTransactions.size > 0) {
             await this.sleep(100);
