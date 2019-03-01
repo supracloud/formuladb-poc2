@@ -158,11 +158,11 @@ export class MapReduceView {
             newMapKey = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.keyExpr) : evalExpression(newObj, this.map.keyExpr);
             if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, newMapKey }));
 
-            let newMapValue: T = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.valueExpr) : evalExpression(newObj, this.map.valueExpr);
+            newMapValue = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.valueExpr) : evalExpression(newObj, this.map.valueExpr);
             if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue }));
 
             //In order to allow multiple map values for the same key we need to append the objectId to the key
-            ret.map.push({ key: MapReduceView.makeUniqueMapKey(newMapKey, newObj), value: newMapValue });
+            ret.map.push({ key: MapReduceView.makeUniqueMapKey(newMapKey, newObj), value: newMapValue! });
         }
 
 
