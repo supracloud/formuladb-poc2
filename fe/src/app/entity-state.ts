@@ -16,7 +16,6 @@ export { Entity };
 export { ChangeObj, applyChanges };
 
 import * as events from "@core/domain/event";
-import { unflatten, NavigationItem } from './navigation.item';
 
 export interface EntityState {
     entities: Entity[];
@@ -155,25 +154,6 @@ export const getEntitiesState = createSelector(
         return state.entities;
     }
 );
-export const getEntitiesTree = createSelector(
-    getEntityState,
-    (state: EntityState) => {
-        try {
-            let u: any = unflatten<NavigationItem>(state.entities.sort((e1, e2) => e1._id < e2._id ? -1 : (e1._id > e2._id ? 1 : 0))
-                .map(entity => ({
-                    id: entity._id,
-                    linkName: entity._id.split(/__/).slice(-1)[0],
-                    path: entity._id.replace(/^__/, ''),
-                    indent: entity._id.split(/__/).length - 1,
-                    active: state.selectedEntity ? entity._id === state.selectedEntity._id : false,
-                    children: [],
-                    collapsed: !state.expanded.some(ex => ex === entity._id)
-                })), (n1, n2) => n1.id !== n2.id && n2.id.startsWith(n1.id));
-            return u;
-        } catch (ex) {
-            return [];
-        }
-    });
 export const getSelectedEntityState = createSelector(
     getEntityState,
     (state: EntityState) => state ? state.selectedEntity : entityInitialState.selectedEntity

@@ -13,6 +13,8 @@ import { KeyValueError } from "@core/domain/key_value_obj";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
 import { evalExprES5 } from "./map_reduce_utils";
 import * as _ from "lodash";
+import { CircularJSON } from "@core/json-stringify";
+
 import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
 
 export class FrmdbStore {
@@ -95,7 +97,7 @@ export class FrmdbStore {
 
     public async putEntity(entity: Entity): Promise<Entity> {
         let schema = await this.getSchema();
-        if (!schema) throw new Error("Attempt to put entity in an empty schema " + JSON.stringify(entity));
+        if (!schema) throw new Error("Attempt to put entity in an empty schema " + CircularJSON.stringify(entity));
         schema.entities[entity._id] = entity;
         //the Entity's _id is the path
         return this.putSchema(schema)

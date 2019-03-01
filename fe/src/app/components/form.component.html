@@ -1,0 +1,15 @@
+<form [formGroup]="theFormGroup" novalidate class="flex-fill">
+    <div class="frmdb-form-status">
+        <span class="frmdb-form-status-text badge-pill" 
+            [class.badge-success]="theFormGroup.status == 'VALID'"  
+            [class.badge-danger]="theFormGroup.status == 'INVALID'"
+            [class.badge-warning]="theFormGroup.status == 'PENDING'"
+        >
+            {{ theFormGroup.status }}
+        </span>
+    </div>
+    <frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state>
+    <frmdb-form_item [nodeElement]="form?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
+         *ngIf="null != form">
+    </frmdb-form_item>
+</form>

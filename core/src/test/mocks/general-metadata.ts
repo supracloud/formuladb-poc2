@@ -9,7 +9,7 @@ import { $s2e } from '../../formula_compiler';
 
 export const General: Entity = {
     _id: "GEN",
-    isStaticPage_: true,
+    usedOnlyForNavigationGrouping: true,
     props: {},
 };
 
@@ -18,7 +18,7 @@ export const GEN__Settings: Entity = {
     props: {
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         valueNumber: { name: "valueNumber", propType_: Pn.NUMBER } as EntityProperty,
-        valueText: { name: "valueText", propType_: Pn.TEXT } as EntityProperty,
+        valueText: { name: "valueText", propType_: Pn.DOCUMENT } as EntityProperty,
         valueDate: { name: "valueDate", propType_: Pn.DATETIME } as EntityProperty,
     }
 }

@@ -8,7 +8,7 @@
         "paths": {
             "@core/*": ["../../core/src/*"],
             "@storage/*": ["../../storage/src/*"],
-	        "@kv_selector_base/*": ["./*"]
+	        "@fe/*": ["./*"]
         }
     },
     "include": [

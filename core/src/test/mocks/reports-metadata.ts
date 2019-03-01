@@ -4,13 +4,12 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty } from "@core/domain/metadata/entity";
-import { INV__PRD, INV__PRD__Location } from './inventory-metadata';
 import { Fn } from "@core/domain/metadata/functions";
 
 
 export const Reports = {
     _id: "REP",
-    isStaticPage_: true,
+    usedOnlyForNavigationGrouping: true,
     props: {},
 };
 

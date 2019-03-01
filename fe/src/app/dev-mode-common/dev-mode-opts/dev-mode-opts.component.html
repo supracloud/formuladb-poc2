@@ -3,6 +3,8 @@
     <div class="row">
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
+      <!-- role, table, id -->
+
       <fa-icon *ngIf="!(editorOn$ | async)" [icon]="editIcon" class="fa-sm" style="visibility: hidden;" (click)="clickStartEdit$.next()"></fa-icon>
       <fa-icon *ngIf="editorOn$ | async" [icon]="discardChangesIcon" class="fa-sm" (click)="clickCancelEdits$.next()" style="color:orange"></fa-icon>
 
@@ -12,11 +14,11 @@
 
       <frmdb-formula-code-editor></frmdb-formula-code-editor>
 
-      <div class="dropdown" placement="bottom-right">
+      <!-- <div class="dropdown" placement="bottom-right">
         <a (click)="pageEditorOpened = !pageEditorOpened" href="javascript:void(0)">
           <fa-icon [icon]="pageEditorIcon" class="fa-sm"></fa-icon>
         </a>
-      </div>
+      </div> -->
       <div class="dropdown" placement="bottom-right">
         <a (click)="menuOpened = !menuOpened" href="javascript:void(0)">
           <fa-icon [icon]="settingsIcon" class="fa-sm"></fa-icon>

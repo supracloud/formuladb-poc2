@@ -5,6 +5,7 @@
 
 import { Dictionary } from "lodash";
 import * as _ from "lodash";
+import { CircularJSON } from "@core/json-stringify";
 
 export class DAGNode<T extends {id: string}> {
     constructor(
@@ -15,7 +16,7 @@ export class DAGNode<T extends {id: string}> {
 
     private checkCycle(parent: DAGNode<T>, obj: T) {
         if (parent.obj.id === obj.id) {
-            throw new Error("Node " + JSON.stringify(obj) + " already exists (cyclic dependency?) in this DAG " + JSON.stringify(parent.obj, null, 4));            
+            throw new Error("Node " + CircularJSON.stringify(obj) + " already exists (cyclic dependency?) in this DAG " + CircularJSON.stringify(parent.obj, null, 4));            
         } else if (parent.parent) {
             this.checkCycle(parent.parent, obj);
         }
@@ -27,7 +28,7 @@ export class DAGNode<T extends {id: string}> {
             child = new DAGNode(this.nodeCache, obj, this);
             this.nodeCache[obj.id] = child;
         } else {
-            if (!_.isEqual(child.obj, obj)) throw new Error("Obj with " + JSON.stringify(obj) + " already exists in the DAG but with different properties " + JSON.stringify(child.obj));
+            if (!_.isEqual(child.obj, obj)) throw new Error("Obj with " + CircularJSON.stringify(obj) + " already exists in the DAG but with different properties " + CircularJSON.stringify(child.obj));
         }
         this.children.push(child);
         return child;
@@ -45,12 +46,12 @@ export class DAG<T extends {id: string}> {
             this.roots.push(ret);
             this.nodeCache[obj.id] = ret;
         } else {
-            if (!_.isEqual(ret.obj, obj)) throw new Error("Obj with " + JSON.stringify(obj) + " already exists in the DAG but with different properties " + JSON.stringify(ret.obj));
+            if (!_.isEqual(ret.obj, obj)) throw new Error("Obj with " + CircularJSON.stringify(obj) + " already exists in the DAG but with different properties " + CircularJSON.stringify(ret.obj));
         }
         return ret;
     }
     public addRoot(obj: T): DAGNode<T> {
-        if (this.nodeCache[obj.id]) throw new Error("Root node " + JSON.stringify(obj) + " already exists in DAG " + JSON.stringify(this.roots.map(x => x.obj), null, 4));
+        if (this.nodeCache[obj.id]) throw new Error("Root node " + CircularJSON.stringify(obj) + " already exists in DAG " + CircularJSON.stringify(this.roots.map(x => x.obj), null, 4));
         return this.addRootIfNotExists(obj);
     }
 

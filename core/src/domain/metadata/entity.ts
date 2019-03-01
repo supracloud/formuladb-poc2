@@ -13,11 +13,12 @@ import { Expression } from 'jsep';
  */
 export interface Entity extends KeyValueObj {
     _id: string;
-    isStaticPage_?: boolean;
+    usedOnlyForNavigationGrouping?: boolean;
     aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
+    extendsEntityName?: string;
     stateGraph?: EntityStateGraph;
     isView?: boolean;
     isEditable?: boolean;
@@ -86,14 +87,15 @@ export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: En
 export const enum Pn {
     NUMBER = "NUMBER",
     STRING = "STRING",
-    TEXT = "TEXT",
+    BOOLEAN = "BOOLEAN",
+    DOCUMENT = "TEXT",
     DATETIME = "DATETIME",
     DURATION = "DURATION",
+    ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
     EXTENDS_ENTITY = "SUB_ENTITY",
     FORMULA = "FORMULA",
-    SUB_TABLE = "SUB_TABLE"
 }
 
 export interface NumberProperty {
@@ -108,8 +110,12 @@ export interface StringProperty {
     defaultValue?: string;
     allowNull?: boolean;
 }
-export interface TextProperty {
-    propType_: Pn.TEXT;
+export interface BooleanProperty {
+    propType_: Pn.BOOLEAN;
+    name: string;
+}
+export interface DocumentProperty {
+    propType_: Pn.DOCUMENT;
     name: string;
     allowNull?: boolean;
 }
@@ -125,6 +131,12 @@ export interface DurationProperty {
     allowNull?: boolean;
 }
 
+export interface AttachmentProperty {
+    propType_: Pn.ATTACHMENT;
+    name: string;
+    mediaType: "pdf" | "png" | "jpg" | "gif" | "csv" | "docx" | "xlsx";
+    url: string;
+}
 
 /**
  * Table of existing entities or entities created
@@ -141,15 +153,6 @@ export function isSubTableProperty(param): param is ChildTableProperty {
     return param != null && typeof param === 'object' && param.propType_ === Pn.CHILD_TABLE;
 }
 
-
-export interface SubTableProperty {
-    propType_: Pn.SUB_TABLE;
-    name: string;
-    referencedEntityName?: string;
-    snapshotCurrentValueOfProperties?: string[];
-    isLargeTable?: boolean;
-    props: EntityProperties;
-}
 
 /**
  * This property represents an embedded entity that is created when the parent entity is created
@@ -193,11 +196,11 @@ export function isFormulaProperty(param): param is FormulaProperty {
 export type EntityProperty =
     | NumberProperty
     | StringProperty
-    | TextProperty
+    | DocumentProperty
     | DatetimeProperty
     | DurationProperty
+    | AttachmentProperty
     | ChildTableProperty
-    | SubTableProperty
     | ExtendsEntityProperty
     | ReferenceToProperty
     | FormulaProperty

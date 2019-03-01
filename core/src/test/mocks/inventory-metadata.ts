@@ -8,7 +8,7 @@ import { $s2e } from '../../formula_compiler';
 
 export const Inventory = {
     _id: 'INV',
-    isStaticPage_: true,
+    usedOnlyForNavigationGrouping: true,
     props: {},
 };
 
