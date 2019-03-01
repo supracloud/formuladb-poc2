@@ -144,19 +144,27 @@ export class MapReduceView {
         return key.pop() + '';
     }
 
-    private async preComputeMap<T extends (string | number)>(oldObj: KeyValueObj | null, newObj: KeyValueObj, valueExample: T | null): Promise<{ ret: MapReduceViewUpdates<T>, newMapKey: KVSArrayKeyType, newMapValue: T, oldMapKey: KVSArrayKeyType | null, oldMapValue: T | null, otherMapValueWithOldKeyExist: boolean | null }> {
+    private async preComputeMap<T extends (string | number)>(oldObj: KeyValueObj | null, newObj: KeyValueObj | null, valueExample: T | null): Promise<{ ret: MapReduceViewUpdates<T>, newMapKey: KVSArrayKeyType | null, newMapValue: T | null, oldMapKey: KVSArrayKeyType | null, oldMapValue: T | null, otherMapValueWithOldKeyExist: boolean | null }> {
         let viewHashCode = this.viewHashCode;
-        if (oldObj && oldObj._id !== newObj._id) throw new Error("Unexpected view update for different objects " + oldObj._id + " !==  " + newObj._id);
+        if (!oldObj && !newObj) throw new Error("view update with old=new=null");
+        if (oldObj && newObj && oldObj._id !== newObj._id) throw new Error("Unexpected view update for different objects " + oldObj._id + " !==  " + newObj._id);
 
         let ret: MapReduceViewUpdates<T> = { viewHashCode: viewHashCode, map: [], mapDelete: [], reduce: [], reduceDelete: [] };
-        let newMapKey = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.keyExpr) : evalExpression(newObj, this.map.keyExpr);
-        if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, newMapKey }));
 
-        let newMapValue: T = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.valueExpr) : evalExpression(newObj, this.map.valueExpr);
-        if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue }));
+        let newMapKey: KVSArrayKeyType | null = null;
+        let newMapValue: T | null = null;
+        
+        if (newObj) {
+            newMapKey = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.keyExpr) : evalExpression(newObj, this.map.keyExpr);
+            if (!(newMapKey instanceof Array)) throw new Error("Keys are not arrays " + JSON.stringify({ viewHashCode, newMapKey }));
 
-        //In order to allow multiple map values for the same key we need to append the objectId to the key
-        ret.map.push({ key: MapReduceView.makeUniqueMapKey(newMapKey, newObj), value: newMapValue });
+            let newMapValue: T = this.use$ROW$ ? evalExpression({ $ROW$: newObj }, this.map.valueExpr) : evalExpression(newObj, this.map.valueExpr);
+            if (valueExample != null && typeof newMapValue !== typeof valueExample) throw new Error("newMapValue with incorrect type found " + JSON.stringify({ viewHashCode, newMapKey, newMapValue }));
+
+            //In order to allow multiple map values for the same key we need to append the objectId to the key
+            ret.map.push({ key: MapReduceView.makeUniqueMapKey(newMapKey, newObj), value: newMapValue });
+        }
+
 
         let oldMapKey: KVSArrayKeyType | null = null;
         let oldMapValue: T | null = null;
@@ -188,6 +196,8 @@ export class MapReduceView {
      * @returns List of keys updated
      */
     public async preComputeViewUpdateForObj(oldObj: KeyValueObj | null, newObj: KeyValueObj | null): Promise<MapReduceViewUpdates<string | number>> {
+        if (!oldObj && !newObj) throw new Error("view update with old=new=null");
+
         let rFun = this.reduceFunction;
         if (!rFun) {
             let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue } = await this.preComputeMap(oldObj, newObj, null);
@@ -197,10 +207,12 @@ export class MapReduceView {
             if (SumReduceFunN === rFun.name) {
                 let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
                     await this.preComputeMap<number>(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
-                let newReduceValue = await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name];
+                
+                let newReduceValue = null != newMapKey ? (await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name]) : null;
+
                 if (null != oldMapKey && null != oldMapValue) {
                     let oldReduceValue = await rFun.kvs.get(oldMapKey) || ReduceFunDefaultValue[rFun.name];
-                    if (_.isEqual(oldMapKey, newMapKey)) {
+                    if (_.isEqual(oldMapKey, newMapKey) && null != newMapKey && null != newMapValue) {
                         ret.reduce.push({ key: newMapKey, value: oldReduceValue - oldMapValue + newMapValue });
                     } else {
                         if (otherMapValueWithOldKeyExist) {
@@ -208,19 +220,23 @@ export class MapReduceView {
                         } else {
                             ret.reduceDelete.push(oldMapKey);
                         }
-                        ret.reduce.push({ key: newMapKey, value: newReduceValue + newMapValue });
+                        if (null != newMapKey && null != newMapValue && null != newReduceValue) {
+                            ret.reduce.push({ key: newMapKey, value: newReduceValue + newMapValue });
+                        }
                     }
                 } else {
-                    ret.reduce.push({ key: newMapKey, value: newReduceValue + newMapValue });
+                    if (null != newMapKey && null != newMapValue && null != newReduceValue) {
+                        ret.reduce.push({ key: newMapKey, value: newReduceValue + newMapValue });
+                    }
                 }
                 return ret;
             } else if (CountReduceFunN === rFun.name) {
                 let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
                     await this.preComputeMap<number>(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
-                let newReduceValue = await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name];
+                let newReduceValue = null != newMapKey ? (await rFun.kvs.get(newMapKey) || ReduceFunDefaultValue[rFun.name]) : null;
                 if (null != oldMapKey && null != oldMapValue) {
                     let oldReduceValue = await rFun.kvs.get(oldMapKey) || ReduceFunDefaultValue[rFun.name];
-                    if (_.isEqual(oldMapKey, newMapKey)) {
+                    if (_.isEqual(oldMapKey, newMapKey) && null != newMapKey && null != newMapValue) {
                         ret.reduce.push({ key: newMapKey, value: oldReduceValue - 1 + 1 });
                     } else {
                         if (otherMapValueWithOldKeyExist) {
@@ -228,10 +244,14 @@ export class MapReduceView {
                         } else {
                             ret.reduceDelete.push(oldMapKey);
                         }
-                        ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
+                        if (null != newMapKey && null != newMapValue && null != newReduceValue) {
+                            ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
+                        }
                     }
                 } else {
-                    ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
+                    if (null != newMapKey && null != newMapValue && null != newReduceValue) {
+                        ret.reduce.push({ key: newMapKey, value: newReduceValue + 1 });
+                    }
                 }
                 return ret;
             } else if (TextjoinReduceFunN === rFun.name) {
@@ -242,7 +262,9 @@ export class MapReduceView {
                 if (null != oldMapKey && null != oldMapValue && !_.isEqual(oldMapKey, newMapKey) && !otherMapValueWithOldKeyExist) {
                     ret.reduceDelete.push(oldMapKey);
                 }
-                ret.reduce.push({ key: newMapKey, value: newMapValue });
+                if (null != newMapKey && null != newMapValue) {
+                    ret.reduce.push({ key: newMapKey, value: newMapValue });
+                }
                 
                 return ret;
             } else {

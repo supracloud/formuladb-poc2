@@ -459,7 +459,7 @@ export class FrmdbTransactionRunner {
             }
             for (let obsTrgByObj of observersTriggeredByObj.values()) {
                 let obsNew = _.cloneDeep(obsTrgByObj.obs);
-                await this.preComputeFormula(transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
+                await this.preComputeFormula(trObj.objId, transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
             }            
         };
         if (transactionDAG.currentLevelSize() > 0) {

@@ -43,7 +43,7 @@ export const UserSelectRowN = "[table] UserSelectRow";
 export const ServerEventNewRowN = "[table] ServerEventNewRow";
 export const UserSelectCellN = "[table] UserSelectCell";
 
-export { ServerEventDeleteFormData } from '../form/form.state';
+export { ServerEventDeleteFormData } from '../form.state';
 
 export class ServerEventModifiedTable implements Action {
   readonly type = ServerEventModifiedTableN;
