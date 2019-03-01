@@ -149,14 +149,14 @@ export class AppEffects {
 
     private async init() {
 
+        let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
+
         //load entities and remove readOnly flag
-        this.backendService.getEntities().then(entities => {
-            this.cachedEntitiesMap = {};
-            entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
-            this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
-            this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
-            this.processRouterUrlChange(this.router.url);
-        }).catch(err => console.error(err));
+        this.cachedEntitiesMap = {};
+        entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
+        this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
+        this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
+        this.processRouterUrlChange(this.router.url);
 
         //send actions to server so that the engine can process them, compute all formulas and update the data
         this.listenForServerEvents();

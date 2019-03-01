@@ -125,7 +125,8 @@ export function getChildPath(nodeEl: NodeElement) {
     if (isPropertyNodeElement(nodeEl)) return nodeEl.propertyName;
     if (isEntityNodeElement(nodeEl)) return nodeEl.refEntityName;
     if (isTableNodeElement(nodeEl)) return nodeEl.tableName;
-    return 'n/a-childPath-for' + nodeEl.nodeType;
+    return '';
+    // return 'n/a-childPath-for' + nodeEl.nodeType;
 }
 
 export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>): Form {

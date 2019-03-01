@@ -5,7 +5,7 @@
  */
 
 import {
-    Component, OnInit, OnDestroy, ChangeDetectionStrategy
+    Component, OnInit, OnDestroy, ChangeDetectionStrategy, OnChanges, ChangeDetectorRef
 } from '@angular/core';
 
 import { Location } from '@angular/common';
@@ -53,15 +53,16 @@ import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
     selector: 'frmdb-form',
     templateUrl: '../../components/form.component.html',
     styleUrls: ['../../components/form.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormComponent extends BaseFormComponent implements OnInit, OnDestroy {
+export class FormComponent extends BaseFormComponent implements OnInit, OnDestroy, OnChanges {
     constructor(
         frmdbStreams: FrmdbStreamsService,
         formEditingService: FormEditingService,
+        changeDetectorRef: ChangeDetectorRef,
         _location: Location
     ) {
-        super(frmdbStreams, formEditingService, _location);
+        super(frmdbStreams, formEditingService, changeDetectorRef, _location);
         this.frmdbStreams.form$.subscribe(form => {
             console.warn(form, this.form, this.formData);
         });
@@ -69,6 +70,11 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
             console.warn(formData, this.form, this.formData);
         });
     }
+
+    ngOnChanges() {
+        console.log(this.form, this.formData);
+    }
+
 }
 
 @Component({

@@ -5,7 +5,7 @@
 
 import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
-    ChangeDetectionStrategy, Directive, OnDestroy
+    ChangeDetectionStrategy, Directive, OnDestroy, OnChanges, ChangeDetectorRef
 } from '@angular/core';
 
 import { Location } from '@angular/common';
@@ -15,7 +15,7 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { Form, NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Subscription } from 'rxjs';
-import { filter, debounceTime, tap, withLatestFrom } from 'rxjs/operators';
+import { filter, debounceTime, tap, combineLatest } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 
@@ -48,7 +48,7 @@ export class FrmdbFormGroup extends FormGroup {
 
 }
 
-export class FormComponent implements OnInit, OnDestroy {
+export class FormComponent implements OnInit, OnDestroy, OnChanges {
     public theFormGroup: FormGroup;
     public changes: any[] = [];
 
@@ -64,6 +64,7 @@ export class FormComponent implements OnInit, OnDestroy {
     constructor(
         public frmdbStreams: FrmdbStreamsService,
         public formEditingService: FormEditingService,
+        protected changeDetectorRef: ChangeDetectorRef,
         public _location: Location
     ) {
         try {
@@ -86,18 +87,22 @@ export class FormComponent implements OnInit, OnDestroy {
         }));
 
         this.subscriptions.push(
-            this.frmdbStreams.form$.pipe(withLatestFrom(this.frmdbStreams.formData$))
+            this.frmdbStreams.form$.pipe(combineLatest(this.frmdbStreams.formData$))
                 .subscribe(([form, formData]) => {
                     try {
-                        this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
                         this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
+                        this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
                         this.formData = formData;
                         this.form = form;
                     } catch (ex) {
                         console.error(ex);
                     }
                     console.warn(form, this.form, this.formData);
+                    this.changeDetectorRef.detectChanges();
                 }));
+    }
+    ngOnChanges() {
+        console.log(this.form, this.formData);
     }
 
     private formulaFieldValidation(nameRe: RegExp): ValidatorFn {
