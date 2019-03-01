@@ -1,4 +1,4 @@
-import { INV__PRD__Location1, INV__PRD__Location1a, INV__Order1 } from "./inventory-data";
+import { ProductLocation1, ProductLocation1a, InventoryOrder1 } from "./inventory-data";
 
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -25,7 +25,7 @@ export const FRM__ServiceForm1 = {
 };
 
 const Equip1 = {
-    _id: 'INV__PRD~~26',
+    _id: 'InventoryProduct~~26',
     code: 'EQUIP1', barcode: '40063813339326',
     name: 'Equipment 1',
     category: 'Automotive',
@@ -34,7 +34,7 @@ const Equip1 = {
     longDescription: 'A culpa soluta quaerat debitis sed unde dolores nihil. Ipsa labore temporibus quisquam non sed. Minima qui inventore possimus culpa ratione.\n \rQuidem blanditiis magni sint doloribus assumenda. Aut sunt quia libero est vitae facere. Aut sit non blanditiis atque est.\n \rOmnis quia non sed quo explicabo consequatur. Ipsum ea sit qui omnis aut. Impedit ut non illum eos odit ipsam. Earum aut qui tenetur non nesciunt minima similique.'
 };
 const Equip1Unit1 = {
-    _id: 'INV__PRD__Unit~~26__1', code: 'EQPT-12354',
+    _id: 'InventoryProductUnit~~26__1', code: 'EQPT-12354',
     product: {
         _id: Equip1._id,
         code: Equip1.code,
@@ -43,7 +43,7 @@ const Equip1Unit1 = {
     serial1: '12343626245',
 };
 const Equip1Unit2 = {
-    _id: 'INV__PRD__Unit~~26__2', code: 'EQPT-12354',
+    _id: 'InventoryProductUnit~~26__2', code: 'EQPT-12354',
     product: {
         _id: Equip1._id,
         code: Equip1.code,
@@ -53,8 +53,8 @@ const Equip1Unit2 = {
 };
 
 const SFU1 = {
-    ...INV__Order1,
-    _id: 'INV__Order~~1__1',
+    ...InventoryOrder1,
+    _id: 'InventoryOrder~~1__1',
     equipment: {
         _id: Equip1Unit1._id,
         code: Equip1Unit1.code,
@@ -72,8 +72,8 @@ const SFU1 = {
 };
 
 const SFU2 = {
-    ...INV__Order1,
-    _id: 'INV__Order~~1__2',
+    ...InventoryOrder1,
+    _id: 'InventoryOrder~~1__2',
     equipment: {
         _id: Equip1Unit2._id,
         code: Equip1Unit2.code,

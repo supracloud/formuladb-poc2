@@ -20,25 +20,6 @@ export class VNavComponent implements OnInit {
 
   constructor(public frmdbStreams: FrmdbStreamsService,
     protected changeDetectorRef: ChangeDetectorRef) {
-
-    frmdbStreams.entities$.pipe(
-      combineLatest(frmdbStreams.entity$.pipe(startWith(Home), tap(x => console.warn(x))))
-    ).subscribe(([entities, selectedEntity]) => {
-      let navItemsTree: Map<string, NavigationItem> = new Map(entities.map(e =>
-        [e._id, this.entity2NavSegment(e, selectedEntity)] as [string, NavigationItem]));
-      for (let entity of entities) {
-        for (let prop of Object.values(entity.props)) {
-          if (prop.propType_ === Pn.CHILD_TABLE && prop.referencedEntityName && navItemsTree.get(prop.referencedEntityName)) {
-            console.warn(entity, prop.referencedEntityName);
-            navItemsTree.get(prop.referencedEntityName!)!.isNotRootNavItem = true;
-            navItemsTree.get(entity._id)!.children.push(navItemsTree.get(prop.referencedEntityName!)!);
-          }
-        }
-      }
-
-      this.navigationItemsTree = Array.from(navItemsTree.values()).filter(item => !item.isNotRootNavItem);
-      this.changeDetectorRef.detectChanges();
-    });
   }
 
   private entity2NavSegment(entity: Entity, selectedEntity: Entity): NavigationItem {
@@ -54,6 +35,31 @@ export class VNavComponent implements OnInit {
 
   ngOnInit() {
 
+    this.frmdbStreams.entities$.pipe(
+      combineLatest(this.frmdbStreams.entity$.pipe(startWith(Home)))
+    ).subscribe(([entities, selectedEntity]) => {
+      let navItemsTree: Map<string, NavigationItem> = new Map(entities.map(e =>
+        [e._id, this.entity2NavSegment(e, selectedEntity)] as [string, NavigationItem]));
+      for (let entity of entities) {
+        if (entity.pureNavGroupingChildren && entity.pureNavGroupingChildren.length > 0) {
+          for (let childEntityId of entity.pureNavGroupingChildren) {
+            if (navItemsTree.get(childEntityId)) {
+              navItemsTree.get(childEntityId)!.isNotRootNavItem = true;
+              navItemsTree.get(entity._id)!.children.push(navItemsTree.get(childEntityId)!);
+            }
+          }
+        }
+        for (let prop of Object.values(entity.props)) {
+          if (prop.propType_ === Pn.CHILD_TABLE && prop.referencedEntityName && navItemsTree.get(prop.referencedEntityName)) {
+            navItemsTree.get(prop.referencedEntityName!)!.isNotRootNavItem = true;
+            navItemsTree.get(entity._id)!.children.push(navItemsTree.get(prop.referencedEntityName!)!);
+          }
+        }
+      }
+
+      this.navigationItemsTree = Array.from(navItemsTree.values()).filter(item => !item.isNotRootNavItem);
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   private setCollapsed(entities: any[], route: string[]): any[] {

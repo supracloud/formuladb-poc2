@@ -6,14 +6,8 @@
 import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
 
-export const Inventory = {
-    _id: 'INV',
-    usedOnlyForNavigationGrouping: true,
-    props: {},
-};
-
-export const INV__PRD__Location = {
-    _id: 'INV__PRD__Location',
+export const ProductLocation = {
+    _id: 'ProductLocation',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false, defaultValue: 'DEFAULT-location' } as EntityProperty,
@@ -22,7 +16,7 @@ export const INV__PRD__Location = {
         received_stock__: {
             name: 'received_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV__Receipt__Item.quantity, product_id == @[_id])',
+            formula: 'SUMIF(ReceiptItem.quantity, product_id == @[_id])',
         } as FormulaProperty,
         available_stock__: {
             name: 'available_stock__',
@@ -32,7 +26,7 @@ export const INV__PRD__Location = {
         ordered_stock__: {
             name: 'ordered_stock__',
             propType_: Pn.FORMULA,
-            formula: 'SUMIF(INV__Order__Item.quantity, product_id == @[_id])'
+            formula: 'SUMIF(OrderItem.quantity, product_id == @[_id])'
         } as FormulaProperty,
         price: { name: 'price', propType_: Pn.NUMBER, allowNull: true } as EntityProperty,
         currency: {
@@ -49,10 +43,10 @@ export const INV__PRD__Location = {
         positiveStock: { conditionExpr: $s2e('available_stock__ >= 0') }
     },
 };
-const eeee: Entity = INV__PRD__Location as Entity;
+const eeee: Entity = ProductLocation as Entity;
 
-export const INV__PRD = {
-    _id: 'INV__PRD',
+export const InventoryProduct = {
+    _id: 'InventoryProduct',
     props: {
         code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         barcode: { name: 'barcode', propType_: Pn.STRING } as EntityProperty,
@@ -60,26 +54,26 @@ export const INV__PRD = {
         description: { name: 'description', propType_: Pn.STRING } as EntityProperty,
         inventory_location: {
             name: 'inventory_location',
-            propType_: Pn.CHILD_TABLE, referencedEntityName: INV__PRD__Location._id, props: {}
+            propType_: Pn.CHILD_TABLE, referencedEntityName: ProductLocation._id, props: {}
         } as EntityProperty,
     }
 };
 
-export const INV__PRD__Unit = {
-    _id: 'INV__PRD__Unit',
+export const InventoryProductUnit = {
+    _id: 'InventoryProductUnit',
     props: {
 
         code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         productCode: {
             propType_: Pn.REFERENCE_TO,
             name: 'product_code',
-            referencedEntityName: INV__PRD._id,
+            referencedEntityName: InventoryProduct._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
         product_name: {
             propType_: Pn.REFERENCE_TO,
             name: 'product_name',
-            referencedEntityName: INV__PRD._id,
+            referencedEntityName: InventoryProduct._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
         inventory_location: { name: 'inventory_location', propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -99,18 +93,18 @@ export const INV__PRD__Unit = {
 };
 
 
-export const INV__Receipt = {
-    _id: 'INV__Receipt',
+export const InventoryReceipt = {
+    _id: 'InventoryReceipt',
     props: {
         items: {
             name: 'items', propType_: Pn.CHILD_TABLE,
-            referencedEntityName: 'INV__Receipt__Item', props: {}, isLargeTable: true
+            referencedEntityName: 'ReceiptItem', props: {}, isLargeTable: true
         } as EntityProperty,
     }
 };
 
-export const INV__Receipt__Item = {
-    _id: 'INV__Receipt__Item',
+export const ReceiptItem = {
+    _id: 'ReceiptItem',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -121,12 +115,12 @@ export const INV__Receipt__Item = {
             props: {
                 unitCode: {
                     name: 'unit_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'code'
                 } as EntityProperty,
                 unitSerial: {
                     name: 'unit_serial', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'serial'
                 } as EntityProperty,
             }
@@ -135,8 +129,8 @@ export const INV__Receipt__Item = {
 };
 
 
-export const INV__Order__Item = {
-    _id: 'INV__Order__Item',
+export const OrderItem = {
+    _id: 'OrderItem',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -149,19 +143,19 @@ export const INV__Order__Item = {
             props: {
                 unitCode: {
                     name: 'unit_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'code'
                 } as EntityProperty,
                 unitSerial: {
                     name: 'unit_serial', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'serial'
                 } as EntityProperty,
             }
         } as EntityProperty,
     },
     autoCorrectionsOnValidationFailed: {
-        'INV__PRD__Location!positiveStock': [
+        'ProductLocation!positiveStock': [
             { targetPropertyName: 'quantity', autoCorrectExpr: $s2e('MAX(0, quantity + $ROW$.available_stock__)') },
             { targetPropertyName: 'error_quantity', autoCorrectExpr: $s2e('ABS($OLD$.quantity - quantity)') },
         ],
@@ -169,8 +163,8 @@ export const INV__Order__Item = {
 };
 
 
-export const INV__Order = {
-    _id: 'INV__Order',
+export const InventoryOrder = {
+    _id: 'InventoryOrder',
     stateGraph: {
         nodes: ['PENDING', 'COMPLETE', 'APPROVED', 'PROCESSED', 'CANCELLED'],
         transitions: [
@@ -188,39 +182,45 @@ export const INV__Order = {
         items: {
             name: 'items',
             propType_: Pn.CHILD_TABLE,
-            referencedEntityName: INV__Order__Item._id,
+            referencedEntityName: OrderItem._id,
             props: {},
             isLargeTable: true,
         } as EntityProperty,
     }
 };
 
+export const Inventory = {
+    _id: 'Inventory',
+    pureNavGroupingChildren: [InventoryProduct._id, InventoryOrder._id, InventoryReceipt._id, InventoryProductUnit._id],
+    props: {},
+};
+
 export { Reports } from './reports-metadata';
 
-export const REP__LargeSales = {
-    _id: "REP__LargeSales",
+export const LargeSalesReport = {
+    _id: "LargeSalesReport",
     props: {
         client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
         large_sales: {
             name: "large_sales",
             propType_: Pn.CHILD_TABLE,
-            referencedEntityName: "REP__LargeSales__Product",
+            referencedEntityName: "LargeSalesProduct",
             isLargeTable: true,
             props: {},
         } as EntityProperty,
     }
 };
 
-export const REP__LargeSales__Product = {
-    _id: "REP__LargeSales__Product",
+export const LargeSalesProduct = {
+    _id: "LargeSalesProduct",
     props: {
         product_id: { name: "product_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_name: { name: "product_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         large_sales_value: {
             name: "large_sales_value",
             propType_: Pn.FORMULA,
-            formula: `SUMIF(INV__Order__Item.quantity, product_id == @[product_id] && quantity > 100)`,
+            formula: `SUMIF(OrderItem.quantity, product_id == @[product_id] && quantity > 100)`,
         } as FormulaProperty,
     }
 }

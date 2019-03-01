@@ -13,7 +13,8 @@ import { Expression } from 'jsep';
  */
 export interface Entity extends KeyValueObj {
     _id: string;
-    usedOnlyForNavigationGrouping?: boolean;
+    pureNavGroupingChildren?: string[];
+    isStaticPage?: boolean;
     aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;

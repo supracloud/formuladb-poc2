@@ -7,15 +7,15 @@ import * as metadata from './mock-metadata';
 import { Entity, Pn } from "@core/domain/metadata/entity";
 import { Form, NodeType } from '@core/domain/uimetadata/form'
 import { Forms__ServiceForm } from "./forms-metadata";
-import { REP__LargeSales } from './inventory-metadata';
+import { LargeSalesReport } from './inventory-metadata';
 
 let testUUID = 1;
 function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
 
-export var REP__LargeSales_Form: Form = {
-  _id: "Form_:ALL^^REP__LargeSales",
+export var LargeSalesReport_Form: Form = {
+  _id: "Form_:ALL^^LargeSalesReport",
   "grid": {
     nodeType: NodeType.form_grid,
     childNodes: [

@@ -7,12 +7,6 @@ import { Entity, Pn, EntityProperty, FormulaProperty } from "@core/domain/metada
 import { Fn } from "@core/domain/metadata/functions";
 
 
-export const Reports = {
-    _id: "REP",
-    usedOnlyForNavigationGrouping: true,
-    props: {},
-};
-
 export const REP__DetailedCentralizerReport = {
     _id: "REP__DetailedCentralizerReport",
     props: {
@@ -59,4 +53,10 @@ export const REP__ServiceCentralizerReport = {
         vatCost: { name: "vatCost", propType_: Pn.STRING } as EntityProperty,
         totalCost: { name: "totalCost", propType_: Pn.STRING } as EntityProperty,
     }
+};
+
+export const Reports = {
+    _id: "REP",
+    pureNavGroupingChildren: [REP__DetailedCentralizerReport._id, REP__ServiceCentralizerReport._id],
+    props: {},
 };

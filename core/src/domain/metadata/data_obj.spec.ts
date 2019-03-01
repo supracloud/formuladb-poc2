@@ -4,7 +4,7 @@
  */
 
 import * as _ from 'lodash';
-import { INV__PRD, INV__Order } from "../../test/mocks/inventory-metadata";
+import { InventoryProduct, InventoryOrder } from "../../test/mocks/inventory-metadata";
 import { Forms__ServiceForm } from "../../test/mocks/forms-metadata";
 import { parseDataObjId } from './data_obj';
 
@@ -13,10 +13,10 @@ describe('DataObj', () => {
   });
 
   it('should parse _id(s) correctly', () => {
-    let parsedObjId = parseDataObjId("INV__PRD__Location~~1__1");
-    expect(parsedObjId).toEqual({entityName: "INV__PRD__Location", id: "INV__PRD__Location~~1__1", uid: "1__1"});
-    parsedObjId = parseDataObjId("INV__PRD~~1");
-    expect(parsedObjId).toEqual({entityName: "INV__PRD", id: "INV__PRD~~1", uid: "1"});
+    let parsedObjId = parseDataObjId("ProductLocation~~1__1");
+    expect(parsedObjId).toEqual({entityName: "ProductLocation", id: "ProductLocation~~1__1", uid: "1__1"});
+    parsedObjId = parseDataObjId("InventoryProduct~~1");
+    expect(parsedObjId).toEqual({entityName: "InventoryProduct", id: "InventoryProduct~~1", uid: "1"});
     expect(() => parseDataObjId('')).toThrow();
   });
 });
