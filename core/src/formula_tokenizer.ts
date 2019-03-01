@@ -2,7 +2,7 @@ import { Expression, isIdentifier, isLiteral, isCallExpression, isBinaryExpressi
 import { compileFormulaForce, FormulaCompilerError, $s2e } from './formula_compiler';
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict, PropertyTypeFunctions } from './functions_compiler';
 import * as _ from 'lodash';
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { isCompiledFormula, isScalarCallExpression } from './domain/metadata/execution_plan';
 

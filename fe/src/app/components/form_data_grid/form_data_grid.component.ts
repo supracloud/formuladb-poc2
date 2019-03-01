@@ -7,7 +7,7 @@ import { OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, TableNodeElement } from "@core/domain/uimetadata/form";
 
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { Pn } from "@core/domain/metadata/entity";
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';

@@ -4,7 +4,7 @@
  */
 
 import * as _ from "lodash";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
 declare var emit: any;
 

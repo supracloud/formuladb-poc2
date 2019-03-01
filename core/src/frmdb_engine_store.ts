@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@core/domain/metadata/execution_plan";

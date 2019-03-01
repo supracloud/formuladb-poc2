@@ -5,7 +5,7 @@
 
 import { Dictionary } from "lodash";
 import * as _ from "lodash";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 export class DAGNode<T extends {id: string}> {
     constructor(

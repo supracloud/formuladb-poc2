@@ -4,7 +4,7 @@
  */
 
 import { isExpression } from "jsep";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 export function _throw<OUT>(msg: string, param1?, param2?): OUT {
     let p1 = param1 ? (isExpression(param1) ? param1.origExpr : CircularJSON.stringify(param1, null, 4)) : '';

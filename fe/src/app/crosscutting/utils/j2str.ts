@@ -1,4 +1,4 @@
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 export function j2str(obj) {
     let cache: any[] = [];

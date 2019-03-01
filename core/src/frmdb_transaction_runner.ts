@@ -10,7 +10,7 @@ import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
 import * as events from "@core/domain/event";
 import * as _ from 'lodash';
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { isKeyValueError } from "@core/domain/key_value_obj";
 import { generateUUID } from "@core/domain/uuid";

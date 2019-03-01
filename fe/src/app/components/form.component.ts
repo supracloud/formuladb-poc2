@@ -15,7 +15,7 @@ import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { Form, NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Subscription } from 'rxjs';
-import { filter, debounceTime, tap } from 'rxjs/operators';
+import { filter, debounceTime, tap, withLatestFrom } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 
@@ -85,29 +85,19 @@ export class FormComponent implements OnInit, OnDestroy {
             }
         }));
 
-        this.subscriptions.push(this.frmdbStreams.form$.subscribe(form => {
-            try {
-                if (null === form) { return; }
-                // set readonly fields
-                this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
-                this.form = form;
-            } catch (ex) {
-                console.error(ex);
-            }
-            console.warn(form, this.form, this.formData);
-        }));
-
-        this.subscriptions.push(this.frmdbStreams.formData$.subscribe(formData => {
-            try {
-                this.formData = formData;
-                if (formData == null) { return; }
-
-                this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
-            } catch (ex) {
-                console.error(ex);
-            }
-            console.warn(formData, this.form, this.formData);
-        }));
+        this.subscriptions.push(
+            this.frmdbStreams.form$.pipe(withLatestFrom(this.frmdbStreams.formData$))
+                .subscribe(([form, formData]) => {
+                    try {
+                        this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
+                        this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
+                        this.formData = formData;
+                        this.form = form;
+                    } catch (ex) {
+                        console.error(ex);
+                    }
+                    console.warn(form, this.form, this.formData);
+                }));
     }
 
     private formulaFieldValidation(nameRe: RegExp): ValidatorFn {
@@ -141,7 +131,7 @@ export class FormComponent implements OnInit, OnDestroy {
                     console.warn('Cound not find parent for ' + valueChange);
                     return;
                 }
-                this.lastSaveEvent = {type: "UserModifiedFormData", obj: _.cloneDeep(obj)};
+                this.lastSaveEvent = { type: "UserModifiedFormData", obj: _.cloneDeep(obj) };
                 this.frmdbStreams.userEvents$.next(this.lastSaveEvent);
             });
 

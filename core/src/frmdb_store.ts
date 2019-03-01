@@ -13,7 +13,7 @@ import { KeyValueError } from "@core/domain/key_value_obj";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
 import { evalExprES5 } from "./map_reduce_utils";
 import * as _ from "lodash";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
 

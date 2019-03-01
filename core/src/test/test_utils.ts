@@ -1,6 +1,6 @@
 import { CompiledFormula, MapQuery } from "@core/domain/metadata/execution_plan";
 import * as _ from "lodash";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 import { isExpression, Expression } from "jsep";
 
 export function toStringCompiledFormula(formula: string, compiledFormula: CompiledFormula) {

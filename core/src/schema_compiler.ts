@@ -4,7 +4,7 @@
  */
 
 import * as _ from "lodash";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 import {
     Expression, CallExpression, BinaryExpression, Identifier, isExpression, isIdentifier,
     ExpressionBase, LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLiteral

@@ -1,5 +1,5 @@
 import { KeyValueStoreFactoryI } from "./key_value_store_i";
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;

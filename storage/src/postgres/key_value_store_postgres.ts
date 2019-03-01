@@ -17,7 +17,7 @@ import { ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExprES5 } from "@core/map_reduce_utils";
 const calculateSlot = require('cluster-key-slot');
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 /**
  * Key Value Store with optimistic locking functionality

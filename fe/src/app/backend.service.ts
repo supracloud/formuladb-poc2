@@ -6,7 +6,7 @@
 import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { DataObj, parseDataObjId, isDataObj } from "@core/domain/metadata/data_obj";
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";

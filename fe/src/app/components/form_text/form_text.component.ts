@@ -9,7 +9,7 @@ import {
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
     forwardRef
 } from '@angular/core';
-import * as CircularJSON from "circular-json";
+import { CircularJSON } from "@core/json-stringify";
 
 import { BaseNodeComponent } from "../base_node";
 import { AbstractControl } from '@angular/forms';
