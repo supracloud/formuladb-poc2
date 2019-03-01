@@ -15,7 +15,7 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { LightThemeRoutingModule } from './light-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
-import { FormTextComponent, VNavSegmentComponent } from './theme-components'
+import { FormTextComponent, VNavSegmentComponent, CardContainerComponent } from './theme-components'
 import { TableComponent } from './theme-components'
 import { FormComponent } from './theme-components'
 import { VLayoutComponent } from './theme-components'
@@ -115,6 +115,7 @@ import { ButtonGroupComponent } from './theme-components';
     HFiltersComponent,
     ButtonComponent,
     ButtonGroupComponent,
+    CardContainerComponent
   ],
   providers: [
     FormEditingService,
