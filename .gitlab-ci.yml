@@ -11,7 +11,7 @@ build:
     - cd ..
     - cd core && npm install 
     - cd ..
-    - npm run initpgdb
+    - npm run db
     - cd be && npm install
     - cd ..
     - cd fe && npm install
