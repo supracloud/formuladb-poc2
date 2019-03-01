@@ -55,7 +55,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
     private tickUsed: boolean = false;
     private lastSaveEvent: UserModifiedFormData;
     public formData: DataObj | null;
-    public form: DataObj | null;
+    public form: Form | null;
     private formReadOnly: boolean;
     private saveInProgress = false;
     private alertType = 'success';
