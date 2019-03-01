@@ -10,6 +10,8 @@ import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
 import * as events from "@core/domain/event";
 import * as _ from 'lodash';
+import { CircularJSON } from "@core/json-stringify";
+
 import { isKeyValueError } from "@core/domain/key_value_obj";
 import { generateUUID } from "@core/domain/uuid";
 import { CompiledFormula } from "@core/domain/metadata/execution_plan";
@@ -25,7 +27,7 @@ function ll(transacDAG: TransactionDAG): string {
 }
 function stringifyObj(obj: DataObj | DataObj[]): string {
     let arr = obj instanceof Array ? obj : [obj];
-    return arr.map(o => JSON.stringify(_.omit(o, ['_revisions']))).join(", ");
+    return arr.map(o => CircularJSON.stringify(_.omit(o, ['_revisions']))).join(", ");
 }
 
 class TransactionDAG {
@@ -76,7 +78,7 @@ class TransactionDAG {
     }
     public getTrObj(id: string) {
         let ret = this.objs[id];
-        if (null == ret) throw new Error("Obj id " + id + " does not exist in transaction " + JSON.stringify(this, null, 4));
+        if (null == ret) throw new Error("Obj id " + id + " does not exist in transaction " + CircularJSON.stringify(this, null, 4));
         return ret;
     }
     public incrementLevel() {
@@ -185,7 +187,7 @@ export class FrmdbTransactionRunner {
     public async setEntityProperty(event: events.ServerEventSetProperty) {
         try {
             let modifiedEntity = await this.frmdbEngineStore.getEntity(event.targetEntity._id);
-            if (!modifiedEntity) throw new Error("Cannot modify non existent entity " + event.targetEntity._id + ", " + JSON.stringify(event.property));
+            if (!modifiedEntity) throw new Error("Cannot modify non existent entity " + event.targetEntity._id + ", " + CircularJSON.stringify(event.property));
 
             if (Pn.FORMULA == event.property.propType_) {
                 let compiledFormula = compileFormula(event.targetEntity._id, event.property.name, event.property.formula);
@@ -325,7 +327,7 @@ export class FrmdbTransactionRunner {
                 console.log(ll(transacDAG) + "|computeFormulasAndSave|saveObjects: " + stringifyObj(objsToSave));
                 let results = await this.frmdbEngineStore.putBulk(objsToSave);
                 for (let res of results) {
-                    if (isKeyValueError(res)) throw new Error("Unexpected error in saveObjects " + JSON.stringify(res) + "; full results: " + JSON.stringify(results));
+                    if (isKeyValueError(res)) throw new Error("Unexpected error in saveObjects " + CircularJSON.stringify(res) + "; full results: " + CircularJSON.stringify(results));
                 }
                 let allViewsUpdates = transacDAG.getAllViewUpdates();
                 for (let viewUpdate of allViewsUpdates) {
@@ -356,7 +358,7 @@ export class FrmdbTransactionRunner {
             this.handleError(new TransactionAbortedError(event));//no await
         }
 
-        console.log(new Date().toISOString() + "|" + event._id + "|" + (null != transacDAG! ? transacDAG!.retry : -1) + "|FINISH|" + JSON.stringify(event));
+        console.log(new Date().toISOString() + "|" + event._id + "|" + (null != transacDAG! ? transacDAG!.retry : -1) + "|FINISH|" + CircularJSON.stringify(event));
         return event;
     }
 

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import * as moment from 'moment';
+import { CircularJSON } from "@core/json-stringify";
 
 import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@core/domain/metadata/execution_plan";
@@ -152,7 +152,7 @@ export class FrmdbEngineStore extends FrmdbStore {
             ret = evalExpression(Object.assign({}, { $TRG$: triggerValues }, obsNew), compiledFormula.finalExpression);
         }
         // obsNew[compiledFormula.targetPropertyName]
-        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + ret + " ($TRG$=" + JSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
+        console.log("adHocFormulaQuery|[" + compiledFormula.targetPropertyName + "] = " + ret + " ($TRG$=" + CircularJSON.stringify(triggerValues) + ") = [" + compiledFormula.finalExpression.origExpr + "]");
 
         //TODO: validations are important for Formula Preview, not necessarily for Reports
 
@@ -176,7 +176,7 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     private view(viewHashCode: string, opts: any): MapReduceView {
         let mrView = this.mapReduceViews.get(viewHashCode);
-        if (!mrView) throw new Error("view called on non-existent view " + viewHashCode + "; with opts " + JSON.stringify(opts));
+        if (!mrView) throw new Error("view called on non-existent view " + viewHashCode + "; with opts " + CircularJSON.stringify(opts));
         return mrView;
     }
     public mapQuery<T>(viewHashCode: string, queryOpts?: Partial<RangeQueryOptsArrayKeysI>): Promise<T[]> {
@@ -221,7 +221,7 @@ export class FrmdbEngineStore extends FrmdbStore {
             }).then(rows => Promise.all(
                 rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row._id))))
             ).then(objs => objs.filter(o => {
-                if (o == null) console.error("map query returned null object", JSON.stringify({observableObj, trigger}));
+                if (o == null) console.error("map query returned null object", CircularJSON.stringify({observableObj, trigger}));
                 return o != null;
             })) as DataObj[];
         }

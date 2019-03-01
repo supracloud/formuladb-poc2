@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import { CircularJSON } from "@core/json-stringify";
 
 import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "./key_value_store_i";
 import { MapFunctionT } from "@core/domain/metadata/execution_plan";
@@ -123,7 +124,7 @@ export class MapReduceView {
     }
 
     public reduceQuery(queryOpts: Partial<RangeQueryOptsArrayKeysI>): Promise<string | number> {
-        if (!this.reduceFunction) throw new Error("Reduce called on a map view " + this.viewHashCode + "; " + JSON.stringify(this.map) + ";" + this.reduceFunction);
+        if (!this.reduceFunction) throw new Error("Reduce called on a map view " + this.viewHashCode + "; " + CircularJSON.stringify(this.map) + ";" + this.reduceFunction);
         let reduceFunction = this.reduceFunction;
         let viewHashCode = this.viewHashCode;
 

@@ -4,6 +4,7 @@
  */
 
 import * as _ from "lodash";
+import { CircularJSON } from "@core/json-stringify";
 
 export interface KeyValueObj {
     _id: string;
@@ -41,7 +42,7 @@ export function isReservedPropName(propName: string): boolean {
 }
 
 export const RESERVED_PROP_NAMES = ['_id', '_rev', 'created_', 'updated_', 'updated_by_', 'rev_', 'trs_', 'id_',
-    'type_', 'propType_', 'module_', 'executionPlan_'];
+    'type_', 'propType_', 'usedOnlyForNavigationGrouping', 'executionPlan_'];
 
 
 /**
@@ -52,7 +53,7 @@ export const RESERVED_PROP_NAMES = ['_id', '_rev', 'created_', 'updated_', 'upda
 export function diffObj(before: any, after: any) {
     let o = Symbol('object'), a = Symbol('array'), s = Symbol('scalar');
     function getTypeOf(x) {
-        if (typeof x === 'function') throw new Error('functions are not supported, just plain objects! x = ' + JSON.stringify(x) + '; before=' + JSON.stringify(before) + '; after=' + JSON.stringify(after));
+        if (typeof x === 'function') throw new Error('functions are not supported, just plain objects! x = ' + CircularJSON.stringify(x) + '; before=' + CircularJSON.stringify(before) + '; after=' + CircularJSON.stringify(after));
         return _.isPlainObject(x) ? o : (_.isArray(x) ? a : s);
     }
     function changes(lhs, rhs) {
@@ -61,7 +62,7 @@ export function diffObj(before: any, after: any) {
         if (lhsType != rhsType) {
             return { lhs: lhs, rhs: rhs };
         } else if (lhsType === s && rhsType === s) {
-            throw new Error('At least lhs' + JSON.stringify(lhs) + ' or rhs ' + JSON.stringify(rhs) + ' should be an object or array');
+            throw new Error('At least lhs' + CircularJSON.stringify(lhs) + ' or rhs ' + CircularJSON.stringify(rhs) + ' should be an object or array');
         } else {
             let ret = lhsType === a ? [] : {};
             _.forOwn(lhs, (lhsVal, key) => {

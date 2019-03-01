@@ -11,15 +11,18 @@ import { DataObj } from '@core/domain/metadata/data_obj';
 import { FormsData } from './forms-data';
 import { ReportsData } from './reports-data';
 import { GeneralData } from './general-data';
+import { StaticPagesData } from './website-data';
 
 
 export class MockData {
 
-    allData: DataObj[] = InventoryData;
+    allData: DataObj[] = InventoryData
+        .concat(StaticPagesData)
         // .concat(MusicBookingData)
         // .concat(FormsData)
         // .concat(ReportsData)
-        // .concat(GeneralData);
+        .concat(GeneralData)
+    ;
 
     constructor(private entitiesMap: _.Dictionary<Entity>) {
     }

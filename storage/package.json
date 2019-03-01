@@ -40,6 +40,6 @@
     "typescript": "^2.8.3"
   },
   "_moduleAliases": {
-    "@kv_selector_base": "./dist"
+    "@fe": "./dist"
   }
 }

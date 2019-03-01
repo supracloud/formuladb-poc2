@@ -1,8 +1,6 @@
-import { Form } from "./form";
-
 export interface Page {
-    form: Form;
-
+    logo: string;
+    logoUrl: string; 
     navPosition: "top" | "left";
     secondaryNavPosition: "bottom" | "right";
     tbd1: string;

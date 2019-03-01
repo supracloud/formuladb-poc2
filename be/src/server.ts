@@ -17,7 +17,7 @@ import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 let frmdbEngine: FrmdbEngine;
 const devMode = true;
-let mockMetadata = new MockMetadata(ExampleApps.inventory);
+let mockMetadata = new MockMetadata(ExampleApps.test);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {

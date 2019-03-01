@@ -8,7 +8,7 @@ import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 
 import {
-    RouterNavigationAction, RouterNavigationPayload, ROUTER_NAVIGATION
+    RouterNavigationAction, ROUTER_NAVIGATION
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
@@ -22,7 +22,7 @@ import * as appState from './app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
 import { TableFormBackendAction, FormulaPreviewFromBackend } from './app.state';
-import { FormDataFromBackendAction } from './form/form.state';
+import { FormDataFromBackendAction } from './components/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ExampleApps } from "@core/test/mocks/mock-metadata";
@@ -158,14 +158,14 @@ export class AppEffects {
 
     private async init() {
 
+        let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
+
         //load entities and remove readOnly flag
-        this.backendService.getEntities().then(entities => {
-            this.cachedEntitiesMap = {};
-            entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
-            this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
-            this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
-            this.processRouterUrlChange(this.router.url);
-        }).catch(err => console.error(err));
+        this.cachedEntitiesMap = {};
+        entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
+        this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
+        this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
+        this.processRouterUrlChange(this.router.url);
 
         //send actions to server so that the engine can process them, compute all formulas and update the data
         this.listenForServerEvents();
@@ -206,7 +206,7 @@ export class AppEffects {
             await this.changeEntity(path!);
         }
 
-        if (id && id != this.currentUrl.id) {
+        if (id && path && id != this.currentUrl.id) {
             this.currentUrl.id = id;
             if (id === path + '~~') {
                 this.store.dispatch(new appState.ResetFormDataFromBackendAction({_id: id}));
@@ -221,7 +221,6 @@ export class AppEffects {
         if (!id && this.currentUrl.id) {
             this.currentUrl.id = null;
         }
-
     }
 
     private listenForNewDataObjActions() {
