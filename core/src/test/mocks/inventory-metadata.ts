@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph } from "@core/domain/metadata/entity";
+import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
 
 export const Inventory = {
@@ -118,19 +118,8 @@ export const INV__Receipt__Item = {
         units: {
             name: 'units',
             propType_: Pn.CHILD_TABLE,
-            props: {
-                unitCode: {
-                    name: 'unit_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
-                    referencedPropertyName: 'code'
-                } as EntityProperty,
-                unitSerial: {
-                    name: 'unit_serial', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
-                    referencedPropertyName: 'serial'
-                } as EntityProperty,
-            }
-        } as EntityProperty,
+            referencedEntityName: INV__PRD__Unit._id,
+        } as ChildTableProperty,
     }
 };
 
@@ -146,19 +135,8 @@ export const INV__Order__Item = {
         units: {
             name: 'units',
             propType_: Pn.CHILD_TABLE,
-            props: {
-                unitCode: {
-                    name: 'unit_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
-                    referencedPropertyName: 'code'
-                } as EntityProperty,
-                unitSerial: {
-                    name: 'unit_serial', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
-                    referencedPropertyName: 'serial'
-                } as EntityProperty,
-            }
-        } as EntityProperty,
+            referencedEntityName: INV__PRD__Unit._id,
+        } as ChildTableProperty,
     },
     autoCorrectionsOnValidationFailed: {
         'INV__PRD__Location!positiveStock': [
