@@ -1,16 +1,17 @@
-import { BaseNodeComponent } from "../base_node";
-import { OnInit, Input, Component, HostBinding } from "@angular/core";
-import { Themable } from "./themable";
-import { DomSanitizer } from "@angular/platform-browser";
-import { FormItemComponent } from "../form_item/form_item.component";
-import { FrmdbStreamsService } from "@fe/app/frmdb-streams/frmdb-streams.service";
+import { BaseNodeComponent } from '../base_node';
+import { OnInit, Input, Component, HostBinding } from '@angular/core';
+import { Themable } from './themable';
+import { DomSanitizer } from '@angular/platform-browser';
+import { FormItemComponent } from '../form_item/form_item.component';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-card_prototype',
     templateUrl: 'card_prototype.component.html',
     styleUrls: ['card_prototype.component.scss']
 })
-export class CardPrototypeComponent extends FormItemComponent implements OnInit, Themable {
+export class CardPrototypeComponent extends BaseNodeComponent implements OnInit, Themable {
 
     constructor(public frmdbStreams: FrmdbStreamsService, private sanitizer: DomSanitizer) {
         super(frmdbStreams);

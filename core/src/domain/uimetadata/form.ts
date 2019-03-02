@@ -40,6 +40,7 @@ export enum NodeType {
     h_filters = "h_filters",
     button = "button",
     button_group = "button_group",
+    card_container="card_container"
 }
 
 
@@ -86,6 +87,7 @@ export type NodeElement =
     | VFilters
     | VLayout
     | VNav
+    | CardContainer
     ;
 
 export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;
@@ -245,6 +247,14 @@ export class FormTable implements SubObj {
     _id: string;
     tableName: string;
     childNodes?: NodeElement[];
+}
+
+export class CardContainer implements SubObj {
+    readonly nodeType = NodeType.card_container;
+    _id: string;
+    tableName: string;
+    tabNameFormPath: string;
+    cardNode: NodeElement;
 }
 
 export class FormDataGrid implements SubObj {

@@ -15,12 +15,12 @@ import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { LightThemeRoutingModule } from './light-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
-import { FormTextComponent, VNavSegmentComponent, CardContainerComponent } from './theme-components'
-import { TableComponent } from './theme-components'
-import { FormComponent } from './theme-components'
-import { VLayoutComponent } from './theme-components'
-import { FormItemComponent } from './theme-components'
-import { HLayoutComponent } from './theme-components'
+import { FormTextComponent, VNavSegmentComponent, CardContainerComponent } from './theme-components';
+import { TableComponent } from './theme-components';
+import { FormComponent } from './theme-components';
+import { VLayoutComponent } from './theme-components';
+import { FormItemComponent } from './theme-components';
+import { HLayoutComponent } from './theme-components';
 import { AgGridModule } from 'ag-grid-angular';
 import { TableHeaderComponent } from '@fe/app/components/table/table-header.component';
 import { FormEditingService } from '@fe/app/components/form-editing.service';
@@ -32,14 +32,16 @@ import { ContextMenuComponent } from '@fe/app/dev-mode-overlay/context-menu/cont
 import { FormItemEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-input-editor/form-input-editor.component';
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
+import { CardPrototypeComponent } from '@fe/app/components/card_prototype/card_prototype.component';
 
-import { FormTabsComponent } from './theme-components'
-import { FormTableComponent } from './theme-components'
-import { FormDataGridComponent } from './theme-components'
-import { FormAutocompleteComponent } from './theme-components'
-import { FormDatepickerComponent } from './theme-components'
-import { FormInputComponent } from './theme-components'
-import { FormTimepickerComponent } from './theme-components'
+
+import { FormTabsComponent } from './theme-components';
+import { FormTableComponent } from './theme-components';
+import { FormDataGridComponent } from './theme-components';
+import { FormAutocompleteComponent } from './theme-components';
+import { FormDatepickerComponent } from './theme-components';
+import { FormInputComponent } from './theme-components';
+import { FormTimepickerComponent } from './theme-components';
 import { FormChartComponent } from './theme-components';
 import { FormStateComponent } from './theme-components';
 import { CardComponent } from './theme-components';
@@ -115,7 +117,8 @@ import { ButtonGroupComponent } from './theme-components';
     HFiltersComponent,
     ButtonComponent,
     ButtonGroupComponent,
-    CardContainerComponent
+    CardContainerComponent,
+    CardPrototypeComponent
   ],
   providers: [
     FormEditingService,

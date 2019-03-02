@@ -5,11 +5,8 @@
 
 import { OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, TableNodeElement } from "@core/domain/uimetadata/form";
+import { CardContainer } from '@core/domain/uimetadata/form';
 
-import { CircularJSON } from "@core/json-stringify";
-
-import { Pn } from "@core/domain/metadata/entity";
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 import { Themable } from './themable';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -32,10 +29,10 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
       );
   }
 
-  tableElement: TableNodeElement;
+  cardContainer: CardContainer;
 
   ngOnInit() {
-    this.tableElement = this.nodeElement as TableNodeElement;
+    this.cardContainer = this.nodeElement as CardContainer;
   }
 
   ngOnChanges() {
@@ -43,6 +40,5 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-  
 
 }
