@@ -82,11 +82,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 .subscribe(([form, formData, formReadOnly]) => {
                     try {
                         this.formReadOnly = formReadOnly;
-                        if (formReadOnly && !this.theFormGroup.disabled) {
-                            this.theFormGroup.disable();
-                        } else if (!formReadOnly && this.theFormGroup.disabled) {
-                            this.theFormGroup.enable();
-                        }
+                        this.syncReadonly(formReadOnly, this.theFormGroup);
 
                         this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
                         this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
@@ -101,6 +97,14 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
     }
     ngOnChanges() {
         console.log(this.form, this.formData);
+    }
+
+    private syncReadonly(formReadOnly: boolean, control: AbstractControl) {
+        if (formReadOnly && !control.disabled) {
+            control.disable();
+        } else if (!formReadOnly && control.disabled) {
+            control.enable();
+        }
     }
 
     private formulaFieldValidation(nameRe: RegExp): ValidatorFn {
@@ -193,7 +197,9 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                             this.updateFormGroup(arrayElemCtrl, childNodes, formReadOnly);
                         } else { throw new Error('Expected FormGroup as part of FormArray but found ' + j2str(arrayElemCtrl)); }
                     }
-                } else { throw new Error('Expected FormArray for autocomplete but found ' + j2str(arrayCtrl)); }
+                } else { 
+                    throw new Error('Expected FormArray for autocomplete but found ' + j2str(arrayCtrl)); 
+                }
 
             }
         }
@@ -202,6 +208,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
     private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, formReadOnly: boolean) {
 
         // TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
+        this.syncReadonly(formReadOnly, formGroup);
 
         for (const key in objFromServer) {
             if ('type_' === key) { continue; }
@@ -222,12 +229,12 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 }
 
                 let formArray = formVal as FormArray;
-                objVal.forEach((o, i) => {
+                for (let [i, o] of objVal.entries()) {
                     if (formArray.length <= i) {
                         formArray.push(new FormGroup({}));
                     }
                     this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly);
-                });
+                };
                 for (let i = objVal.length; i < formArray.length; i++) {
                     formArray.removeAt(i);
                 }
@@ -242,6 +249,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 }
 
                 formVal.reset(objVal);
+                this.syncReadonly(formReadOnly, formVal);
             } else if ('object' === typeof objVal) {
                 if (null == formVal) {
                     formVal = new FormGroup({});

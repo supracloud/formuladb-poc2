@@ -111,12 +111,18 @@ export class AppEffects {
                 } else {
                     this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                     this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
-                    console.error("FIXME, replicate cheanges from the server");
+                    console.error("FIXME, replicate changes from the server");
                 }
                 break;
             }
             case events.ServerEventDeletedFormDataN: {
-                this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
+                let { appName, path, id } = appState.parseUrl(this.router.url);
+                if (null == id) {
+                    this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
+                } else {
+                    let obj = await this.backendService.getDataObj(id);
+                    this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj));
+                }
                 break;
             }
             case events.ServerEventModifiedFormN: {

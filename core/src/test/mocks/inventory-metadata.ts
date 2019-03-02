@@ -130,7 +130,7 @@ export const INV__Order__Item = {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
-        error_quantity: { name: 'error_quantity', propType_: Pn.FORMULA, formula: '0 - 0' } as EntityProperty,
+        error_quantity: { name: 'error_quantity', propType_: Pn.NUMBER } as EntityProperty,
         client_stock: { name: 'client_stock', propType_: Pn.NUMBER } as EntityProperty,
         units: {
             name: 'units',
