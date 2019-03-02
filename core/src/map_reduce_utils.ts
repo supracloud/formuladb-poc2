@@ -6,6 +6,7 @@
 import * as _ from "lodash";
 import { CircularJSON } from "@core/json-stringify";
 import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
+import { Expression } from "jsep";
 
 declare var emit: any;
 
@@ -20,7 +21,7 @@ export function jsonPathMapGetterExpr(jsonPath: string) {
     return 'doc.' + jsonPath.replace(/^\$\./, '').replace(/\[.*?\]/g, '');
 }
 
-export function evalExpression(doc: {}, expr) {
+export function evalExpression(doc: {}, expr: Expression | Expression[]) {
     //Copyright (c) 2017 Don McCurdy
     
     var binops = {
@@ -164,7 +165,7 @@ export function evalExpression(doc: {}, expr) {
             });
         } else return evaluate(expr, doc);
     } catch (e) {
-        throw new Error("Error while evaluating expression: " + (expr.expr || CircularJSON.stringify(expr, null, 4)) 
+        throw new Error("Error while evaluating expression: " + CircularJSON.stringify(expr, null, 4)
             + "\nfor document " + CircularJSON.stringify(doc, null, 4)
             + "\nCaused by: " + e + "\n" + e.stack);
     }

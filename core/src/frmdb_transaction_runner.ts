@@ -129,7 +129,7 @@ class FailedValidationsError {
 }
 
 class TransactionAbortedError {
-    constructor(public event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormData) { }
+    constructor(public event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormDataEvent) { }
 }
 
 export class FrmdbTransactionRunner {
@@ -263,7 +263,7 @@ export class FrmdbTransactionRunner {
     }
 
     public async computeFormulasAndSave(
-        event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormData): Promise<events.MwzEvents> {
+        event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
 
         let transacDAG: TransactionDAG;
         try {
@@ -278,14 +278,6 @@ export class FrmdbTransactionRunner {
             let getObjectIdsToSave = async (retryNb: number) => {
                 Object.assign(event.obj, originalObj);
 
-                for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
-                    await this.preComputeNonSelfFormulaOfObj(event.obj, compiledFormula);
-                }
-                for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
-                    event.obj[selfFormula.targetPropertyName] = evalExpression(event.obj, selfFormula.finalExpression);
-                    console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
-                }
-
                 for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
                     transacDAG = new TransactionDAG(event._id, retryNb + "|" + failedValidationRetry);
                     let oldObj: DataObj | null = null;
@@ -298,9 +290,17 @@ export class FrmdbTransactionRunner {
                             // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                         }
                     }
-                    if (event instanceof events.ServerEventDeletedFormData) {
-                        transacDAG.addObj(event.obj, null, [], []);
+                    if (event instanceof events.ServerEventDeletedFormDataEvent) {
+                        transacDAG.addObj(null, event.obj, [], []);
                     } else {
+                        for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
+                            await this.preComputeNonSelfFormulaOfObj(event.obj, compiledFormula);
+                        }
+                        for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
+                            event.obj[selfFormula.targetPropertyName] = evalExpression(event.obj, selfFormula.finalExpression);
+                            console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
+                        }
+        
                         transacDAG.addObj(event.obj, oldObj, [], []);
                     }
 
@@ -460,7 +460,7 @@ export class FrmdbTransactionRunner {
             for (let obsTrgByObj of observersTriggeredByObj.values()) {
                 let obsNew = _.cloneDeep(obsTrgByObj.obs);
                 await this.preComputeFormula(trObj.objId, transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
-            }            
+            }
         };
         if (transactionDAG.currentLevelSize() > 0) {
             await this.preComputeNextTransactionDAGLevel(transactionDAG);

@@ -135,7 +135,7 @@ export class FrmdbEngine {
             ;
     }
 
-    private deleteDataObj(event: events.ServerEventDeletedFormData): Promise<events.MwzEvents> {
+    private deleteDataObj(event: events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
         //FIXME recompute formulas that depend on this object
         return Promise.resolve(event);
     }
