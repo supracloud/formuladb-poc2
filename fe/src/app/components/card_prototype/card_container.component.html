@@ -1,1 +1,1 @@
-<frmdb-card_prototype *ngFor="let items of table" [theme]="theme" [data]=""></frmdb-card_prototype>
+<frmdb-card_prototype *ngFor="let cardItem of topLevelFormGroup.get(parentFormPath)?.controls" [theme]="theme" [data]="cardItem"></frmdb-card_prototype>
