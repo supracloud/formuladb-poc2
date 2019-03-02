@@ -41,6 +41,7 @@ export type ActionsToBeSentToServer =
     ;
 export const ActionsToBeSentToServerNames = [
     events.ServerEventModifiedFormDataN,
+    events.ServerEventDeletedFormDataN,
     events.ServerEventModifiedFormN,
     events.ServerEventModifiedTableN,
     events.ServerEventNewEntityN,

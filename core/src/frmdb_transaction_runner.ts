@@ -290,7 +290,7 @@ export class FrmdbTransactionRunner {
                             // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                         }
                     }
-                    if (event instanceof events.ServerEventDeletedFormDataEvent) {
+                    if (event.type_ === events.ServerEventDeletedFormDataN) {
                         transacDAG.addObj(null, event.obj, [], []);
                     } else {
                         for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
@@ -325,6 +325,9 @@ export class FrmdbTransactionRunner {
             let saveObjects = async () => {
                 let objsToSave = transacDAG.getAllObjectsToSave();
                 console.log(ll(transacDAG) + "|computeFormulasAndSave|saveObjects: " + stringifyObj(objsToSave));
+                if (event.type_ === events.ServerEventDeletedFormDataN) {
+                    await this.frmdbEngineStore.delDataObj(event.obj._id);
+                }
                 let results = await this.frmdbEngineStore.putBulk(objsToSave);
                 for (let res of results) {
                     if (isKeyValueError(res)) throw new Error("Unexpected error in saveObjects " + CircularJSON.stringify(res) + "; full results: " + CircularJSON.stringify(results));

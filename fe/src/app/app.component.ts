@@ -42,6 +42,9 @@ export class AppComponent {
         case "UserModifiedFormData":
           this.store.dispatch(new appState.ServerEventModifiedFormData(userEvent.obj));
           break;
+        case "UserDeletedFormData":
+          this.store.dispatch(new appState.ServerEventDeleteFormData(userEvent.obj));
+          break;
         case "UserSelectedCell":
           this.store.dispatch(new appState.UserSelectCell(userEvent.columnName));
           break;

@@ -185,6 +185,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onRowClicked(event: RowClickedEvent) {
         this.frmdbStreams.userEvents$.next({type: "UserSelectedRow", dataObj: event.data});
+        this.currentRow = event.data;
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
@@ -260,7 +261,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     deleteRow() {
         if (this.currentRow && this.currentRow._id && this.currentEntity && this.currentEntity.isEditable) {
-            this.store.dispatch(new tableState.ServerEventDeleteFormData(this.currentRow));
+            this.frmdbStreams.userEvents$.next({type: "UserDeletedFormData", obj: this.currentRow});
         }
     }
 }

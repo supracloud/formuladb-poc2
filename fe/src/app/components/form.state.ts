@@ -86,10 +86,10 @@ export class ServerEventModifiedFormData implements Action {
 
 export class ServerEventDeleteFormData implements Action {
   readonly type = events.ServerEventDeletedFormDataN;
-  public event: events.ServerEventModifiedFormDataEvent;
+  public event: events.ServerEventDeletedFormDataEvent;
 
   constructor(obj: DataObj) {
-    this.event = new events.ServerEventModifiedFormDataEvent(obj);
+    this.event = new events.ServerEventDeletedFormDataEvent(obj);
   }
 }
 
