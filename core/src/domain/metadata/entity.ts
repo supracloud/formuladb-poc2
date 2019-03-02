@@ -144,8 +144,7 @@ export interface AttachmentProperty {
 export interface ChildTableProperty {
     propType_: Pn.CHILD_TABLE;
     name: string;
-    referencedEntityName?: string;
-    snapshotCurrentValueOfProperties?: string[];
+    referencedEntityName: string;
     isLargeTable?: boolean;
     props: EntityProperties;
 }

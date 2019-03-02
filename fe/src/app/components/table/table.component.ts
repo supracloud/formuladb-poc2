@@ -261,7 +261,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
     deleteRow() {
         if (this.currentRow && this.currentRow._id && this.currentEntity && this.currentEntity.isEditable) {
-            this.frmdbStreams.userEvents$.next({type: "UserDeletedFormData", obj: this.currentRow});
+            if (confirm("Are you sure you want to delete row " + this.currentRow._id + " ?")) {
+                this.frmdbStreams.userEvents$.next({ type: "UserDeletedFormData", obj: this.currentRow });
+            }
         }
     }
 }

@@ -42,13 +42,4 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
     if (child.propertyType === Pn.NUMBER) { return 'number'; } else { return 'text'; }
   }
 
-  // getCopiedPropertyName(child: NodeElement, idx: number) {
-  //   let ret;
-  //   if (isEntityNodeElement(child)) ret = child.snapshotCurrentValueOfProperties![idx];
-  //   if (!ret) {
-  //     console.error('copiedProperties does not have enough elements: ', child, idx);
-  //     ret = 'NOT-FOUND-' + idx;
-  //   }
-  //   return ret;
-  // }
 }

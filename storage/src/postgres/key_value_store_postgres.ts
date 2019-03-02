@@ -102,7 +102,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     protected pgSpecialChars(str: string) {
-        return str;
+        return str.replace(/\ufff0/g, "~~~~~~~~~~~~~");//FIXME: what can we use as +infinity in Postgres ?
     }
 
     /** querying a map-reduce view must return the results ordered by _id */
@@ -113,6 +113,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 let sign2: string = opts.inclusive_end ? "<=" : "<";
                 let start: string = this.pgSpecialChars(opts.startkey);
                 let end: string = this.pgSpecialChars(opts.endkey);
+                
 
                 let query: string = this.rangeSQL(sign1, sign2);
                 this.getDB().any<{ _id: string, val: VALUET }>(query, [start, end]).then((res) => {
@@ -199,7 +200,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStorePostgres<OBJT> implements KeyObjStoreI<OBJT> {
 
     public findByPrefix(prefix: string): Promise<OBJT[]> {
-        return this.rangeQuery({ startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false });
+        return this.rangeQuery({ startkey: prefix, endkey: prefix + "\ufff0", inclusive_start: true, inclusive_end: false });
     }
     public put(obj: OBJT): Promise<OBJT> {
         return this.set(obj._id, obj);

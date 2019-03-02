@@ -26,6 +26,7 @@ import { FormDataFromBackendAction } from './components/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ExampleApps } from "@core/test/mocks/mock-metadata";
+import { isNewDataObjId, isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
 
 
 export type ActionsToBeSentToServer =
@@ -98,7 +99,12 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventModifiedFormDataN: {
-                if (this.router.url.match(/~~$/)) {
+                let { appName, path, id } = appState.parseUrl(this.router.url);
+                if (!id) {
+                    console.error("Modify object for non-object url: " + this.router.url);
+                    break;
+                }
+                if (isNewTopLevelDataObjId(id)) {
                     this.router.navigate([this.router.url.replace(/\w+~~$/, eventFromBe.obj._id)]);
                 } else {
                     this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));

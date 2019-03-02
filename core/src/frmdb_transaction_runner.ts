@@ -4,7 +4,7 @@
  */
 
 import { SchemaDAO, FormulaTriggeredByObj } from "@core/domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
+import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix } from "@core/domain/metadata/data_obj";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
@@ -262,6 +262,19 @@ export class FrmdbTransactionRunner {
         return Promise.resolve(event);
     }
 
+    private async getChildObjects(obj: DataObj): Promise<DataObj[]> {
+        let ret: DataObj[] = [];
+        let {entityName, id, uid} = parseDataObjId(obj._id);
+        let entity = await this.frmdbEngineStore.getEntity(entityName);
+        if (!entity) throw new Error("Cannot find children of object with missing entity " + obj._id);
+        for (let prop of Object.values(entity.props)) {
+            if (prop.propType_ === Pn.CHILD_TABLE) {
+                ret = ret.concat(await this.frmdbEngineStore.getDataListByPrefix(getChildrenPrefix(prop.referencedEntityName, uid)));
+            }
+        }
+        return ret;
+    }
+
     public async computeFormulasAndSave(
         event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
 
@@ -270,6 +283,7 @@ export class FrmdbTransactionRunner {
 
             let newObj: boolean = false;
             if (isNewDataObjId(event.obj._id)) {
+                if (event.type_ === events.ServerEventDeletedFormDataN) throw new Error("Deleting a new object is not possible " + event.obj._id);
                 event.obj._id = event.obj._id + generateUUID();
                 newObj = true;
             }
@@ -292,6 +306,11 @@ export class FrmdbTransactionRunner {
                     }
                     if (event.type_ === events.ServerEventDeletedFormDataN) {
                         transacDAG.addObj(null, event.obj, [], []);
+                        for (let childObj of (await this.getChildObjects(event.obj))) {
+                            let childDelEvent = new events.ServerEventDeletedFormDataEvent(childObj);
+                            childDelEvent._id = event._id + '__';
+                            await this.computeFormulasAndSave(childDelEvent);
+                        }
                     } else {
                         for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
                             await this.preComputeNonSelfFormulaOfObj(event.obj, compiledFormula);

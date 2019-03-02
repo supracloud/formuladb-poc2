@@ -32,7 +32,14 @@ function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);
 }
 export function isNewDataObjId(_id: string): boolean {
+    return _id.endsWith('~~') || _id.endsWith('__');
+}
+export function isNewTopLevelDataObjId(_id: string): boolean {
     return _id.endsWith('~~');
+}
+
+export function getChildrenPrefix(referencedEntityName: string, parentUID: string) {
+    return referencedEntityName + '~~' + parentUID + '__';
 }
 
 export type DataObjDeepPath = string;
