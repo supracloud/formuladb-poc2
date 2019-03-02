@@ -11,3 +11,7 @@
 :host .table.table-sm tr td {
     padding: 0.3rem !important;
 }
+
+:host fa-icon {
+    cursor: pointer;
+}

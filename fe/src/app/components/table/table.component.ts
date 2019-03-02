@@ -170,6 +170,12 @@ export class TableComponent implements OnInit, OnDestroy {
             })
         );
 
+        this.subscriptions.push(this.frmdbStreams.serverEvents$.subscribe(serverEvent => {
+            if (serverEvent.type === "ServerDeletedFormData") {
+                this.gridApi.purgeServerSideCache()
+            }
+        }));
+
         this.gridApi.closeToolPanel();
     }
 

@@ -27,7 +27,8 @@ import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ExampleApps } from "@core/test/mocks/mock-metadata";
 import { isNewDataObjId, isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
-
+import { FrmdbStreamsService } from './frmdb-streams/frmdb-streams.service';
+import * as serverEvents from './frmdb-streams/server-events';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedFormData
@@ -61,7 +62,8 @@ export class AppEffects {
         private actions$: Actions,
         private store: Store<appState.AppState>,
         private backendService: BackendService,
-        private router: Router
+        private router: Router,
+        private frmdbStreams: FrmdbStreamsService
     ) {
 
         //change app state based on router actions
@@ -114,7 +116,7 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventDeletedFormDataN: {
-                //TODO
+                this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
                 break;
             }
             case events.ServerEventModifiedFormN: {

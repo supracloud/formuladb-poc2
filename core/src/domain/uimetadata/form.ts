@@ -159,6 +159,9 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             child.propertyType = pn.propType_;
         } else {
             child = new FormInput();
+            if (parentFormEl.nodeType === NodeType.form_table) {
+                child.noLabel = true;
+            }
             child.propertyName = pn.name;
             child.propertyType = pn.propType_;
         }
@@ -204,6 +207,7 @@ export class FormGridCol implements SubObj {
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
     _id: string;
+    noLabel?: boolean;
     propertyName: string;
     propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
 }

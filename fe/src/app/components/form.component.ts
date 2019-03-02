@@ -16,7 +16,6 @@ import { DataObj } from "@core/domain/metadata/data_obj";
 import { Form, NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Subscription } from 'rxjs';
 import { filter, debounceTime, tap, combineLatest } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 
 import * as fromForm from './form.state';
@@ -77,19 +76,18 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
     ngOnInit() {
         const cmp = this;
 
-        this.subscriptions.push(this.frmdbStreams.readonlyMode$.subscribe(formReadOnly => {
-            this.formReadOnly = formReadOnly;
-            if (formReadOnly && !this.theFormGroup.disabled) {
-                this.theFormGroup.disable();
-            } else if (!formReadOnly && this.theFormGroup.disabled) {
-                this.theFormGroup.enable();
-            }
-        }));
-
         this.subscriptions.push(
-            this.frmdbStreams.form$.pipe(combineLatest(this.frmdbStreams.formData$))
-                .subscribe(([form, formData]) => {
+            this.frmdbStreams.form$.pipe(
+                combineLatest(this.frmdbStreams.formData$, this.frmdbStreams.readonlyMode$))
+                .subscribe(([form, formData, formReadOnly]) => {
                     try {
+                        this.formReadOnly = formReadOnly;
+                        if (formReadOnly && !this.theFormGroup.disabled) {
+                            this.theFormGroup.disable();
+                        } else if (!formReadOnly && this.theFormGroup.disabled) {
+                            this.theFormGroup.enable();
+                        }
+
                         this.updateFormGroup(this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
                         this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
                         this.formData = formData;
@@ -223,13 +221,16 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                     throw new Error('key ' + key + ', objVal Array \'' + objVal + '\', but formVal not FormArray: \'' + formVal + '\'');
                 }
 
+                let formArray = formVal as FormArray;
                 objVal.forEach((o, i) => {
-                    const formArray = formVal as FormArray;
                     if (formArray.length <= i) {
                         formArray.push(new FormGroup({}));
                     }
                     this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly);
                 });
+                for (let i = objVal.length; i < formArray.length; i++) {
+                    formArray.removeAt(i);
+                }
 
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
                 if (null == formVal) {
