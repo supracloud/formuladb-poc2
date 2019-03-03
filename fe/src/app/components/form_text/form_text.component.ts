@@ -15,15 +15,15 @@ import { BaseNodeComponent } from "../base_node";
 import { AbstractControl } from '@angular/forms';
 import * as _ from "lodash";
 
-import { FrmdbStreamsService } from "@fe/app/frmdb-streams/frmdb-streams.service";
+import { FormEditingService } from "../form-editing.service";
 
 export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 
     inputElement: FormText;
 
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 
     ngOnInit(): void {

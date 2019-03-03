@@ -26,7 +26,7 @@ export class SideBarPage {
   }
 
   async openInventoryOrders() {
-    let prod = element(by.css('a[ng-reflect-router-link="INV__Order"]'));
+    let prod = element(by.css('a[ng-reflect-router-link="InventoryOrder"]'));
     await browser.wait(ExpectedConditions.visibilityOf(prod), 10000);
     await prod.click();
   }
@@ -38,8 +38,8 @@ export class SideBarPage {
   }
 
   async openProductLocations() {
-    let prod = element(by.css('a[ng-reflect-router-link*="INV__PRD"]'));
-    let prodLoc = element(by.css('a[ng-reflect-router-link*="INV__PRD__Location"]'));
+    let prod = element(by.css('a[ng-reflect-router-link*="InventoryProduct"]'));
+    let prodLoc = element(by.css('a[ng-reflect-router-link*="ProductLocation"]'));
     await browser.wait(ExpectedConditions.visibilityOf(prod), 10000);
     await prod.click();
     await browser.wait(ExpectedConditions.visibilityOf(prodLoc), 10000);

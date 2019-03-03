@@ -58,6 +58,8 @@ export class FrmdbEngine {
         switch (event.type_) {
             case events.ServerEventModifiedFormDataN:
                 return this.transactionRunner.computeFormulasAndSave(event);
+            case events.ServerEventDeletedFormDataN:
+                return this.transactionRunner.computeFormulasAndSave(event);
             case events.ServerEventModifiedFormN:
                 return this.processForm(event);
             case events.ServerEventModifiedTableN:
@@ -131,6 +133,11 @@ export class FrmdbEngine {
                 return event;
             })
             ;
+    }
+
+    private deleteDataObj(event: events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
+        //FIXME recompute formulas that depend on this object
+        return Promise.resolve(event);
     }
 
     public async putDataObjAndUpdateViews(oldObj: DataObj | null, newObj: DataObj) {

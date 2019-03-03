@@ -55,7 +55,7 @@ export class SchemaCompiler {
 
     private compileEntity(entity: Entity): Entity {
         try {
-            SchemaCompiler.applyInheritanceTo(entity, this.schema.entities);
+            // SchemaCompiler.applyInheritanceTo(entity, this.schema.entities);
 
             // create execution plan
             this.compileFormulas(entity);

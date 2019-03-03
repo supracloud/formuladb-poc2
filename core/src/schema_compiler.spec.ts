@@ -9,7 +9,7 @@ import { SchemaCompiler } from "./schema_compiler";
 
 describe('SchemaCompiler', () => {
 
-    it('should create a formula DAG correctly', async (done) => {
+    xit('should create a formula DAG correctly', async (done) => {
         let schema = {
             _id: "FRMDB_SCHEMA",
             entities: {

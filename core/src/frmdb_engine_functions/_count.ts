@@ -6,25 +6,25 @@
 import { MapReduceTrigger } from "@core/domain/metadata/execution_plan";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { evalExprES5 } from "../map_reduce_utils";
+import { evalExpression } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";
 
 export async function _count_preComputeAggForObserverAndObservable(
     store: FrmdbEngineStore, 
     observerObj: KeyValueObj, 
     observableOld: KeyValueObj | null, 
-    observableNew: KeyValueObj, 
+    observableNew: KeyValueObj | null, 
     trigger: MapReduceTrigger): Promise<string | number> {
     
     let args = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map;
     let countValue = await store.getAggValueForObserver(observerObj, trigger);
     if (typeof countValue === 'string') throw new Error("_count aggregation returned a text value");
     let current: number = countValue;
-    let oldKey = observableOld ? evalExprES5(observableOld, args.keyExpr) : null;
-    let newKey = evalExprES5(observableNew, args.keyExpr);
+    let oldKey = observableOld ? evalExpression(observableOld, args.keyExpr) : null;
+    let newKey = observableNew ? evalExpression(observableNew, args.keyExpr) : null;
 
-    let startkey = evalExprES5({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr);
-    let endkey = evalExprES5({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr);
+    let startkey = evalExpression({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr);
+    let endkey = evalExpression({$ROW$: observerObj}, trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr);
 
     return preComputeAggForObserverAndObservableBase(store, observerObj, observableOld, observableNew, trigger, {
         newKeyMatches_oldKeyMatches: async (oldKey, newKey, newValue, startkey, endkey) => {

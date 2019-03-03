@@ -26,10 +26,13 @@ import { FormDataFromBackendAction } from './components/form.state';
 import { EntitiesFromBackendFullLoadAction } from './entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ExampleApps } from "@core/test/mocks/mock-metadata";
-
+import { isNewDataObjId, isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
+import { FrmdbStreamsService } from './frmdb-streams/frmdb-streams.service';
+import * as serverEvents from './frmdb-streams/server-events';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedFormData
+    | appState.ServerEventDeleteFormData
     | appState.ServerEventModifiedForm
     | appState.ServerEventModifiedTable
     | appState.ServerEventNewEntity
@@ -40,6 +43,7 @@ export type ActionsToBeSentToServer =
     ;
 export const ActionsToBeSentToServerNames = [
     events.ServerEventModifiedFormDataN,
+    events.ServerEventDeletedFormDataN,
     events.ServerEventModifiedFormN,
     events.ServerEventModifiedTableN,
     events.ServerEventNewEntityN,
@@ -58,7 +62,8 @@ export class AppEffects {
         private actions$: Actions,
         private store: Store<appState.AppState>,
         private backendService: BackendService,
-        private router: Router
+        private router: Router,
+        private frmdbStreams: FrmdbStreamsService
     ) {
 
         //change app state based on router actions
@@ -87,18 +92,37 @@ export class AppEffects {
         if (!eventFromBe) return;
 
         switch (eventFromBe.type_) {
-            case appState.ServerEventModifiedFormN:
+            case events.ServerEventModifiedFormN:
                 this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
                 break;
-            case appState.ServerEventModifiedTableN: {
+            case events.ServerEventModifiedTableN: {
                 // this.store.dispatch(new appState.FormNotifFromBackendAction(event));
                 //TODO: display loading indicator, not currently used
                 break;
             }
             case events.ServerEventModifiedFormDataN: {
-                this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
-                this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
-                console.error("FIXME, replicate cheanges from the server");
+                let { appName, path, id } = appState.parseUrl(this.router.url);
+                if (!id) {
+                    console.error("Modify object for non-object url: " + this.router.url);
+                    break;
+                }
+                if (isNewTopLevelDataObjId(id)) {
+                    this.router.navigate([this.router.url.replace(/\w+~~$/, eventFromBe.obj._id)]);
+                } else {
+                    this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
+                    this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                    console.error("FIXME, replicate changes from the server");
+                }
+                break;
+            }
+            case events.ServerEventDeletedFormDataN: {
+                let { appName, path, id } = appState.parseUrl(this.router.url);
+                if (null == id) {
+                    this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
+                } else {
+                    let obj = await this.backendService.getDataObj(id);
+                    this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj));
+                }
                 break;
             }
             case events.ServerEventModifiedFormN: {
@@ -199,8 +223,18 @@ export class AppEffects {
 
         if (id && path && id != this.currentUrl.id) {
             this.currentUrl.id = id;
-            let dataObj = await this.backendService.getDataObj(id);
-            this.store.dispatch(new appState.ResetFormDataFromBackendAction(dataObj));
+            if (id === path + '~~') {
+                this.store.dispatch(new appState.ResetFormDataFromBackendAction({_id: id}));
+            } else {
+                this.backendService.getDataObj(id)
+                    .then(obj => this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj)))
+                    .catch(err => console.error(err))
+                    ;
+            }
+        }
+
+        if (!id && this.currentUrl.id) {
+            this.currentUrl.id = null;
         }
     }
 

@@ -6,6 +6,10 @@ export interface UserModifiedFormData {
     type: 'UserModifiedFormData';
     obj: DataObj;
 }
+export interface UserDeletedFormData {
+    type: 'UserDeletedFormData';
+    obj: DataObj;
+}
 export interface UserDraggedFormElement {
     type: 'UserDraggedFormElement';
     nodeElement: NodeElement | null;
@@ -30,6 +34,7 @@ export interface UserCollapsedNavItem {
 
 export type UserEvent = 
     | UserModifiedFormData
+    | UserDeletedFormData
     | UserDraggedFormElement
     | UserSelectedCell
     | UserSelectedRow

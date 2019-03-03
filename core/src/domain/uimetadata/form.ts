@@ -150,6 +150,9 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             if (pn.referencedEntityName) setFormElementChildren(child, entitiesMap[pn.referencedEntityName]!, entitiesMap);
         } else if (pn.propType_ === Pn.REFERENCE_TO) {
             child = new FormAutocomplete();
+            if (parentFormEl.nodeType === NodeType.form_table) {
+                child.noLabel = true;
+            }
             child.refEntityName = pn.referencedEntityName;
             child.refPropertyName = pn.referencedPropertyName;
             child.propertyName = pn.name;
@@ -159,6 +162,9 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             child.propertyType = pn.propType_;
         } else {
             child = new FormInput();
+            if (parentFormEl.nodeType === NodeType.form_table) {
+                child.noLabel = true;
+            }
             child.propertyName = pn.name;
             child.propertyType = pn.propType_;
         }
@@ -204,6 +210,7 @@ export class FormGridCol implements SubObj {
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
     _id: string;
+    noLabel?: boolean;
     propertyName: string;
     propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
 }
@@ -217,6 +224,7 @@ export class FormText implements SubObj {
 export class FormAutocomplete implements SubObj {
     readonly nodeType = NodeType.form_autocomplete;
     _id: string;
+    noLabel?: boolean;
     refEntityName: string;
     refPropertyName: string;
     propertyName: string;

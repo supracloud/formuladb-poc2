@@ -11,7 +11,7 @@ import { MwzEvents } from "@core/domain/event";
 import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
 import { KeyValueError } from "@core/domain/key_value_obj";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
-import { evalExprES5 } from "./map_reduce_utils";
+import { evalExpression } from "./map_reduce_utils";
 import * as _ from "lodash";
 import { CircularJSON } from "@core/json-stringify";
 
@@ -183,8 +183,8 @@ export class FrmdbStore {
     }
 
     public async mapReduceAdHocQuery(obs: DataObj, map: MapFunctionAndQueryT, reduceFun: ReduceFun) {
-        let start = kvsKey2Str(evalExprES5({ $ROW$: obs }, map.query.startkeyExpr));
-        let end = kvsKey2Str(evalExprES5({ $ROW$: obs }, map.query.startkeyExpr));
+        let start = kvsKey2Str(evalExpression({ $ROW$: obs }, map.query.startkeyExpr));
+        let end = kvsKey2Str(evalExpression({ $ROW$: obs }, map.query.startkeyExpr));
         let kvs = await this.getDataKvs(map.entityName);
         return kvs.reduceQuery(map.keyExpr, {
             startkey: start,

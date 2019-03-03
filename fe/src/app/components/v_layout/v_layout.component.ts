@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import * as fromForm from '../form.state';
 import { Observable } from 'rxjs';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 export class VLayoutComponent implements OnInit {
 
@@ -25,8 +25,8 @@ export class VLayoutComponent implements OnInit {
   @HostBinding("class.outline")
   editMode: boolean;
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    frmdbStreams.devMode$.subscribe(e => this.editMode = e);
+  constructor(formEditingService: FormEditingService) {
+    formEditingService.frmdbStreams.devMode$.subscribe(e => this.editMode = e);
   }
 
   ngOnInit() {

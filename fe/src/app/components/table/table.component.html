@@ -1,5 +1,7 @@
 <div class="mwz-table-wrapper">
     <button (click)="excel()">Excel</button>
+    <button (click)="addRow()">Add</button>
+    <button (click)="deleteRow()">Delete</button>
     <ag-grid-angular #agGrid class="ag-theme-balham" rowHeight="25" enableColResize="true"
         [frameworkComponents]="frameworkComponents" [defaultColDef]="defaultColDef" (rowDoubleClicked)="onRowDoubleClicked($event)"
         (rowClicked)="onRowClicked($event)"

@@ -12,7 +12,6 @@ import { Location } from '@angular/common';
 import * as _ from "lodash";
 
 import { FormEditingService } from '@fe/app/components/form-editing.service';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 import { FormComponent as BaseFormComponent } from '@fe/app/components/form.component';
 import { FormAutocompleteComponent as FormAutocompleteComponentBase } from '@fe/app/components/form_autocomplete/form_autocomplete.component';
@@ -49,6 +48,7 @@ import { ButtonGroupComponent as BaseButtonGroupComponent } from "@fe/app/compon
 import { Router, ActivatedRoute } from '@angular/router';
 import { TableService } from '@fe/app/components/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 @Component({
     selector: 'frmdb-form',
     templateUrl: '../../components/form.component.html',
@@ -86,8 +86,8 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
     ]
 })
 export class FormAutocompleteComponent extends FormAutocompleteComponentBase implements OnInit, OnDestroy {
-    constructor(public frmdbStreams: FrmdbStreamsService, formEditingService: FormEditingService) {
-        super(frmdbStreams, formEditingService);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -97,8 +97,8 @@ export class FormAutocompleteComponent extends FormAutocompleteComponentBase imp
   styleUrls: ['../../components/form_data_grid/form_data_grid.component.scss']
 })
 export class FormDataGridComponent extends FormDataGridComponentBase implements OnInit, OnDestroy {
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 }
 
@@ -108,8 +108,8 @@ export class FormDataGridComponent extends FormDataGridComponentBase implements 
   styleUrls: ['../../components/form_input/form_input.component.scss']
 })
 export class FormDatepickerComponent extends FormDatepickerComponentBase implements OnInit, OnDestroy {
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 }
 
@@ -120,8 +120,8 @@ export class FormDatepickerComponent extends FormDatepickerComponentBase impleme
   styleUrls: ['../../components/form_table/form_table.component.scss']
 })
 export class FormTableComponent extends FormTableComponentBase implements OnInit, OnDestroy {
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 }
 
@@ -130,8 +130,8 @@ export class FormTableComponent extends FormTableComponentBase implements OnInit
   templateUrl: '../../components/form_timepicker/form_timepicker.component.html',
 })
 export class FormTimepickerComponent extends FormTimepickerComponentBase implements OnInit, OnDestroy {
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 }
 
@@ -141,8 +141,8 @@ export class FormTimepickerComponent extends FormTimepickerComponentBase impleme
     styleUrls: ['../../components/h_layout/h_layout.component.scss']
 })
 export class HLayoutComponent extends FormHorizontalLayoutComponentBase implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -153,8 +153,8 @@ export class HLayoutComponent extends FormHorizontalLayoutComponentBase implemen
     styleUrls: ['../../components/form_input/form_input.component.scss']
 })
 export class FormInputComponent extends BaseFormInputComponent implements OnInit, OnDestroy {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -164,8 +164,8 @@ export class FormInputComponent extends BaseFormInputComponent implements OnInit
     styleUrls: ['../../components/form_item/form_item.component.scss']
 })
 export class FormItemComponent extends FormItemComponentBase implements OnInit, OnDestroy {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -175,8 +175,8 @@ export class FormItemComponent extends FormItemComponentBase implements OnInit, 
     styleUrls: ['../../components/form_tabs/form_tabs.component.scss']
 })
 export class FormTabsComponent extends FormTabsComponentBase implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -187,8 +187,8 @@ export class FormTabsComponent extends FormTabsComponentBase implements OnInit {
     styleUrls: ['../../components/form_text/form_text.component.scss']
 })
 export class FormTextComponent extends BaseFormTextComponent implements OnInit, OnDestroy {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -198,8 +198,8 @@ export class FormTextComponent extends BaseFormTextComponent implements OnInit, 
     styleUrls: ['../../components/v_layout/v_layout.component.scss']
 })
 export class VLayoutComponent extends FormVerticalLayoutComponentBase implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -226,8 +226,8 @@ export class TableComponent extends BaseTableComponent implements OnInit, OnDest
     styleUrls: ['../../components/form_chart/form_chart.component.scss']
 })
 export class FormChartComponent extends BaseFormChartComponent implements OnInit, OnDestroy {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -237,8 +237,8 @@ export class FormChartComponent extends BaseFormChartComponent implements OnInit
     styleUrls: ['../../components/form_state/form_state.component.scss']
 })
 export class FormStateComponent extends BaseFormStateComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -248,8 +248,8 @@ export class FormStateComponent extends BaseFormStateComponent implements OnInit
     styleUrls: ['../../components/card/card.component.scss']
 })
 export class CardComponent extends BaseCardComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -258,8 +258,8 @@ export class CardComponent extends BaseCardComponent implements OnInit {
     styleUrls: ['../../components/form_enum/form_enum.component.scss']
 })
 export class FormEnumComponent extends BaseFormEnumComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -268,8 +268,8 @@ export class FormEnumComponent extends BaseFormEnumComponent implements OnInit {
     styleUrls: ['../../components/list/list.component.scss']
 })
 export class ListComponent extends BaseListComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -278,8 +278,8 @@ export class ListComponent extends BaseListComponent implements OnInit {
     styleUrls: ['../../components/gallery/gallery.component.scss']
 })
 export class GalleryComponent extends BaseGalleryComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -288,8 +288,8 @@ export class GalleryComponent extends BaseGalleryComponent implements OnInit {
     styleUrls: ['../../components/calendar/calendar.component.scss']
 })
 export class CalendarComponent extends BaseCalendarComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -298,8 +298,8 @@ export class CalendarComponent extends BaseCalendarComponent implements OnInit {
     styleUrls: ['../../components/image/image.component.scss']
 })
 export class ImageComponent extends BaseImageComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -308,8 +308,8 @@ export class ImageComponent extends BaseImageComponent implements OnInit {
     styleUrls: ['../../components/icon/icon.component.scss']
 })
 export class IconComponent extends BaseIconComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -318,8 +318,8 @@ export class IconComponent extends BaseIconComponent implements OnInit {
     styleUrls: ['../../components/media/media.component.scss']
 })
 export class MediaComponent extends BaseMediaComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -328,8 +328,8 @@ export class MediaComponent extends BaseMediaComponent implements OnInit {
     styleUrls: ['../../components/v_nav/v_nav.component.scss']
 })
 export class VNavComponent extends BaseVNavComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService, changeDetectorRef: ChangeDetectorRef) {
+        super(formEditingService, changeDetectorRef);
     }
 }
 
@@ -339,8 +339,8 @@ export class VNavComponent extends BaseVNavComponent implements OnInit {
     styleUrls: ['../../components/v_nav/v_nav_segment.component.scss']
 })
 export class VNavSegmentComponent extends BaseVNavSegmentComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 
@@ -350,8 +350,8 @@ export class VNavSegmentComponent extends BaseVNavSegmentComponent implements On
     styleUrls: ['../../components/h_nav/h_nav.component.scss']
 })
 export class HNavComponent extends BaseHNavComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -360,8 +360,8 @@ export class HNavComponent extends BaseHNavComponent implements OnInit {
     styleUrls: ['../../components/timeline/timeline.component.scss']
 })
 export class TimelineComponent extends BaseTimelineComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -370,8 +370,8 @@ export class TimelineComponent extends BaseTimelineComponent implements OnInit {
     styleUrls: ['../../components/dropdown/dropdown.component.scss']
 })
 export class DropdownComponent extends BaseDropdownComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -380,8 +380,8 @@ export class DropdownComponent extends BaseDropdownComponent implements OnInit {
     styleUrls: ['../../components/v_filters/v_filters.component.scss']
 })
 export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -390,8 +390,8 @@ export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
     styleUrls: ['../../components/h_filters/h_filters.component.scss']
 })
 export class HFiltersComponent extends BaseHFiltersComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -400,8 +400,8 @@ export class HFiltersComponent extends BaseHFiltersComponent implements OnInit {
     styleUrls: ['../../components/button/button.component.scss']
 })
 export class ButtonComponent extends BaseButtonComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }
 @Component({
@@ -410,7 +410,7 @@ export class ButtonComponent extends BaseButtonComponent implements OnInit {
     styleUrls: ['../../components/button_group/button_group.component.scss']
 })
 export class ButtonGroupComponent extends BaseButtonGroupComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 }

@@ -42,6 +42,9 @@ export class AppComponent {
         case "UserModifiedFormData":
           this.store.dispatch(new appState.ServerEventModifiedFormData(userEvent.obj));
           break;
+        case "UserDeletedFormData":
+          this.store.dispatch(new appState.ServerEventDeleteFormData(userEvent.obj));
+          break;
         case "UserSelectedCell":
           this.store.dispatch(new appState.UserSelectCell(userEvent.columnName));
           break;
@@ -60,6 +63,7 @@ export class AppComponent {
     this.store.select(appState.getFormReadOnly).subscribe(readOnly => frmdbStreams.readonlyMode$.next(readOnly));
     this.store.select(appState.getEntitiesState).subscribe(entities => {
       if (entities) frmdbStreams.entities$.next(entities);
+      console.warn(entities);
     });
     this.store.select(appState.getFormState).subscribe(form => {
       if (form) frmdbStreams.form$.next(form);

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as shape from 'd3-shape';
 import { EntityStateGraph } from "@core/domain/metadata/entity";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 export class FormStateComponent implements OnInit {
   curve: any = shape.curveBundle.beta(1);
@@ -25,7 +25,7 @@ export class FormStateComponent implements OnInit {
     label: string
   }[] = [];
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
+  constructor(formEditingService: FormEditingService) {
   }
 
 

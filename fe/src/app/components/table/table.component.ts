@@ -170,6 +170,12 @@ export class TableComponent implements OnInit, OnDestroy {
             })
         );
 
+        this.subscriptions.push(this.frmdbStreams.serverEvents$.subscribe(serverEvent => {
+            if (serverEvent.type === "ServerDeletedFormData") {
+                this.gridApi.purgeServerSideCache()
+            }
+        }));
+
         this.gridApi.closeToolPanel();
     }
 
@@ -185,6 +191,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onRowClicked(event: RowClickedEvent) {
         this.frmdbStreams.userEvents$.next({type: "UserSelectedRow", dataObj: event.data});
+        this.currentRow = event.data;
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
@@ -250,5 +257,19 @@ export class TableComponent implements OnInit, OnDestroy {
 
     excel() {
         this.gridApi.exportDataAsExcel();
+    }
+
+    addRow() {
+        if (this.currentEntity && this.currentEntity.isEditable) {
+            this.router.navigate(['./' + this.currentEntity._id + '~~'], { relativeTo: this.route });
+        }
+    }
+
+    deleteRow() {
+        if (this.currentRow && this.currentRow._id && this.currentEntity && this.currentEntity.isEditable) {
+            if (confirm("Are you sure you want to delete row " + this.currentRow._id + " ?")) {
+                this.frmdbStreams.userEvents$.next({ type: "UserDeletedFormData", obj: this.currentRow });
+            }
+        }
     }
 }

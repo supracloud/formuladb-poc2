@@ -9,7 +9,7 @@ import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Entity } from "@core/domain/metadata/entity";
 import { Expression } from "jsep";
-import { evalExprES5 } from "@core/map_reduce_utils";
+import { evalExpression } from "@core/map_reduce_utils";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -202,7 +202,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
 
     mapQuery(keyExpr: Expression[], opts: RangeQueryOptsI): Promise<OBJT[]> {
         let ret = _.entries(this.db).map(([_id, x]) => {
-            return [kvsKey2Str(evalExprES5(x, keyExpr)), x];
+            return [kvsKey2Str(evalExpression(x, keyExpr)), x];
         }).filter(([key, val]) =>
             (opts.startkey < key && key < opts.endkey)
             || (opts.inclusive_start && key === opts.startkey)
@@ -220,7 +220,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
 
     reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
         return this.mapQuery(keyExpr, opts)
-            .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
+            .then(rows => rows.map(r => evalExpression(r, valueExpr)))
             .then(values => kvsReduceValues(values, reduceFun, this.entity._id, false));
     }
 }

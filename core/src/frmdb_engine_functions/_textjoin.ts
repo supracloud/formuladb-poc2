@@ -22,7 +22,7 @@ export async function _textjoin_preComputeAggForObserverAndObservable(
     store: FrmdbEngineStore, 
     observerObj: KeyValueObj, 
     observableOld: KeyValueObj | null, 
-    observableNew: KeyValueObj, 
+    observableNew: KeyValueObj | null, 
     trigger: MapReduceTrigger): Promise<string | number> 
 {
 

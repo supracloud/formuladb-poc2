@@ -4,15 +4,10 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "@core/domain/metadata/entity";
-import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
+import { InventoryProduct, InventoryOrder, InventoryProductUnit } from './inventory-metadata';
 import { GEN__Client } from "./general-metadata";
 import { Fn } from "@core/domain/metadata/functions";
 
-export const Forms = {
-    _id: 'Forms',
-    usedOnlyForNavigationGrouping: true,
-    props: {},
-};
 
 export const Forms__ServiceForm = {
     _id: 'FRM__ServiceForm',
@@ -56,21 +51,21 @@ export const Forms__ServiceForm = {
         accommodation: { name: 'accommodation', propType_: Pn.NUMBER } as EntityProperty,
         service_form_units: {
             name: 'service_form_units',
-            propType_: Pn.CHILD_TABLE, referencedEntityName: INV__Order._id,
+            propType_: Pn.CHILD_TABLE, referencedEntityName: InventoryOrder._id,
             props: {
                 equipmentCode: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'code'
                 } as EntityProperty,
                 equipmentProductCode: {
                     name: 'equipment_product_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'product_code'
                 } as EntityProperty,
                 equipmentSerial1: {
                     name: 'equipment_serial1', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id,
+                    referencedEntityName: InventoryProductUnit._id,
                     referencedPropertyName: 'serial1'
                 } as EntityProperty,
                 reported_problem: { name: 'reported_problem', propType_: Pn.DOCUMENT } as EntityProperty,
@@ -84,4 +79,10 @@ export const Forms__ServiceForm = {
             }
         } as ChildTableProperty,
     }
+};
+
+export const Ticketing = {
+    _id: 'Ticketing',
+    pureNavGroupingChildren: [],
+    props: {},
 };

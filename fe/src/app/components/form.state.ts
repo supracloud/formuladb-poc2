@@ -5,7 +5,7 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
+import { DataObj, mergeSubObj } from "@core/domain/metadata/data_obj";
 import { Form, NodeElement, isNodeElementWithChildren, NodeType } from "@core/domain/uimetadata/form";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
@@ -39,8 +39,6 @@ export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
 export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
 export const FormAddActionN = '[form] FormAddAction';
-export const ServerEventModifiedFormDataN = events.ServerEventModifiedFormDataN;
-export const ServerEventModifiedFormN = events.ServerEventModifiedFormN;
 
 
 export class FormDataFromBackendAction implements Action {
@@ -68,7 +66,7 @@ export class FormFromBackendAction implements Action {
 }
 
 export class ServerEventModifiedForm implements Action {
-  readonly type = ServerEventModifiedFormN;
+  readonly type = events.ServerEventModifiedFormN;
   public event: events.ServerEventModifiedFormEvent;
 
   constructor(public form: Form) {
@@ -77,11 +75,21 @@ export class ServerEventModifiedForm implements Action {
 }
 
 export class ServerEventModifiedFormData implements Action {
-  readonly type = ServerEventModifiedFormDataN;
+  readonly type = events.ServerEventModifiedFormDataN;
   public event: events.ServerEventModifiedFormDataEvent;
 
   constructor(obj: DataObj) {
     this.event = new events.ServerEventModifiedFormDataEvent(obj);
+  }
+}
+
+
+export class ServerEventDeleteFormData implements Action {
+  readonly type = events.ServerEventDeletedFormDataN;
+  public event: events.ServerEventDeletedFormDataEvent;
+
+  constructor(obj: DataObj) {
+    this.event = new events.ServerEventDeletedFormDataEvent(obj);
   }
 }
 
@@ -131,23 +139,6 @@ export type FormActions =
   | FormSwitchTypeAction
   | FormAddAction
   ;
-
-function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
-  if (parentObj == null) return false;
-
-  for (let key of Object.keys(parentObj)) {
-    if (typeof parentObj[key] === 'object' && parentObj[key]._id === obj._id) {
-      parentObj[key] = obj;
-      return true;
-    }
-  }
-  for (let key of Object.keys(parentObj)) {
-    if (typeof parentObj[key] === 'object' && mergeSubObj(parentObj[key], obj)) {
-      return true;
-    }
-  }
-  return false;
-}
 
 
 const removeRecursive = (tree: NodeElement, item: NodeElement) => {

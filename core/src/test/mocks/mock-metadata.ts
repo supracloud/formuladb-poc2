@@ -13,7 +13,7 @@ import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
-import * as StaticPagesMetadata from "./website-metadata";
+import * as StaticPagesMetadata from "../../default_pages/website-metadata";
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -50,16 +50,16 @@ export class MockMetadata {
                 this.entities.push(StaticPagesMetadata.Dashboard);
                 this.entities.push(StaticPagesMetadata.WebsiteStatistic);
                 this.entities.push(InventoryMetadata.Inventory);
-                this.entities.push(InventoryMetadata.INV__Order);
-                this.entities.push(InventoryMetadata.INV__Order__Item);
-                this.entities.push(InventoryMetadata.INV__Receipt);
-                this.entities.push(InventoryMetadata.INV__Receipt__Item);
-                this.entities.push(InventoryMetadata.INV__PRD);
-                this.entities.push(InventoryMetadata.INV__PRD__Location);
-                this.entities.push(InventoryMetadata.INV__PRD__Unit);
+                this.entities.push(InventoryMetadata.InventoryOrder);
+                this.entities.push(InventoryMetadata.OrderItem);
+                this.entities.push(InventoryMetadata.InventoryReceipt);
+                this.entities.push(InventoryMetadata.ReceiptItem);
+                this.entities.push(InventoryMetadata.InventoryProduct);
+                this.entities.push(InventoryMetadata.ProductLocation);
+                this.entities.push(InventoryMetadata.InventoryProductUnit);
                 this.entities.push(InventoryMetadata.Reports);
-                this.entities.push(InventoryMetadata.REP__LargeSales);
-                this.entities.push(InventoryMetadata.REP__LargeSales__Product);
+                this.entities.push(InventoryMetadata.LargeSalesReport);
+                this.entities.push(InventoryMetadata.LargeSalesProduct);
                 break;
             case ExampleApps.service:
                 this.entities.push(FormsMetadata.Forms);
@@ -68,16 +68,16 @@ export class MockMetadata {
                 this.entities.push(ReportsMetadata.REP__ServiceCentralizerReport);
             case ExampleApps.inventory:
                 this.entities.push(InventoryMetadata.Inventory);
-                this.entities.push(InventoryMetadata.INV__Order);
-                this.entities.push(InventoryMetadata.INV__Order__Item);
-                this.entities.push(InventoryMetadata.INV__Receipt);
-                this.entities.push(InventoryMetadata.INV__Receipt__Item);
-                this.entities.push(InventoryMetadata.INV__PRD);
-                this.entities.push(InventoryMetadata.INV__PRD__Location);
-                this.entities.push(InventoryMetadata.INV__PRD__Unit);
+                this.entities.push(InventoryMetadata.InventoryOrder);
+                this.entities.push(InventoryMetadata.OrderItem);
+                this.entities.push(InventoryMetadata.InventoryReceipt);
+                this.entities.push(InventoryMetadata.ReceiptItem);
+                this.entities.push(InventoryMetadata.InventoryProduct);
+                this.entities.push(InventoryMetadata.ProductLocation);
+                this.entities.push(InventoryMetadata.InventoryProductUnit);
                 this.entities.push(InventoryMetadata.Reports);
-                this.entities.push(InventoryMetadata.REP__LargeSales);
-                this.entities.push(InventoryMetadata.REP__LargeSales__Product);
+                this.entities.push(InventoryMetadata.LargeSalesReport);
+                this.entities.push(InventoryMetadata.LargeSalesProduct);
                 break;
             case ExampleApps.booking:
                 this.entities.push(MusicBookingMetadata.MusicBooking);

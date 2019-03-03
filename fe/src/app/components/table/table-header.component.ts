@@ -1,5 +1,6 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs';
+import { FormEditingService } from '../form-editing.service';
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 @Component({
@@ -14,9 +15,11 @@ export class TableHeaderComponent {
     private descSort: string;
     private noSort: string;
     public devMode$: Observable<boolean>;
+    public frmdbStreams: FrmdbStreamsService;
 
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
-        this.devMode$ = frmdbStreams.devMode$;
+    constructor(protected formEditingService: FormEditingService) {
+        this.devMode$ = formEditingService.frmdbStreams.devMode$;
+        this.frmdbStreams = formEditingService.frmdbStreams;
     }
 
     @ViewChild('menuButton', {read: ElementRef}) public menuButton;

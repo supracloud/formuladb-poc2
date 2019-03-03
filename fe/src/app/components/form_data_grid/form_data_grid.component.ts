@@ -10,7 +10,7 @@ import { NodeElement, NodeType, TableNodeElement } from "@core/domain/uimetadata
 import { CircularJSON } from "@core/json-stringify";
 
 import { Pn } from "@core/domain/metadata/entity";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 export class FormDataGridComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
@@ -18,8 +18,8 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
   frameworkComponents: any;
   defaultColDef: any;
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
 
@@ -42,13 +42,4 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
     if (child.propertyType === Pn.NUMBER) { return 'number'; } else { return 'text'; }
   }
 
-  // getCopiedPropertyName(child: NodeElement, idx: number) {
-  //   let ret;
-  //   if (isEntityNodeElement(child)) ret = child.snapshotCurrentValueOfProperties![idx];
-  //   if (!ret) {
-  //     console.error('copiedProperties does not have enough elements: ', child, idx);
-  //     ret = 'NOT-FOUND-' + idx;
-  //   }
-  //   return ret;
-  // }
 }

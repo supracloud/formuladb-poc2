@@ -9,13 +9,18 @@ import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@c
 import { CircularJSON } from "@core/json-stringify";
 
 import { Pn } from "@core/domain/metadata/entity";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
+import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
+import { FrmdbFormControl, FrmdbFormGroup } from '../form.component';
 
 
 export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  addIcon = faPlusCircle;
+  delIcon = faMinusCircle;
+
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
   tableElement: FormTable | FormTabs;
@@ -38,13 +43,14 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
     if (child.propertyType === Pn.NUMBER) { return 'number'; } else { return 'text'; }
   }
 
-  // getCopiedPropertyName(child: NodeElement, idx: number) {
-  //   let ret;
-  //   if (isEntityNodeElement(child)) ret = child.snapshotCurrentValueOfProperties![idx];
-  //   if (!ret) {
-  //     console.error('copiedProperties does not have enough elements: ', child, idx);
-  //     ret = 'NOT-FOUND-' + idx;
-  //   }
-  //   return ret;
-  // }
+  addRow() {
+    this.addChildDataObj();
+  }
+
+  deleteRow(control: FrmdbFormGroup) {
+    let obj = control.getRawValue();
+    if (obj._id && confirm("Are you sure you want to delete row " + obj._id + " ?")) {
+      this.frmdbStreams.userEvents$.next({ type: "UserDeletedFormData", obj });
+    }
+  }
 }
