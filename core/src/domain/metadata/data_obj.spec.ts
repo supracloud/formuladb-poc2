@@ -20,7 +20,7 @@ describe('DataObj', () => {
     expect(() => parseDataObjId('')).toThrow();
   });
 
-  fit('merge child DataObj correctly', () => {
+  it('merge child DataObj correctly', () => {
     let parentObj = {
       ...InventoryReceipt,
       receipt_item_table: [
