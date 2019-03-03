@@ -42,9 +42,13 @@ export function getChildrenPrefix(referencedEntityName: string, parentUID: strin
     return referencedEntityName + '~~' + parentUID + '__';
 }
 
-export function childTableNameToFieldName(childTableName: string) {
-    return childTableName.replace(/([a-z])([A-Z0-9])/g, (m, $1, $2) => $1 + '_' + $2)
+export function entityNameToChildTableFieldName(entityName: string) {
+    return entityName.replace(/([a-z])([A-Z0-9])/g, (m, $1, $2) => $1 + '_' + $2)
         .toLowerCase() + '_table';
+}
+export function childTableFieldNameToEntityName(childTableName: string) {
+    return childTableName.replace('_table', '')
+        .replace(/(^|_)([a-z0-9])/g, (m, $1, $2) => $2.toUpperCase());
 }
 
 export function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
@@ -71,7 +75,7 @@ export function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
 
 function addChildObjToChildTable(parentChildTable: Array<DataObj>, childTableKeyName: string, childObj: DataObj): boolean {
     let {entityName, id, uid} = parseDataObjId(childObj._id);
-    if (childTableKeyName === childTableNameToFieldName(entityName)) {
+    if (childTableKeyName === entityNameToChildTableFieldName(entityName)) {
         parentChildTable.push(childObj);
         return true;
     } else return false;

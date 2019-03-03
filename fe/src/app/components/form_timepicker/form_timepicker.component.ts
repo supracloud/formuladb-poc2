@@ -7,11 +7,11 @@ import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 
 import { FormTimepicker } from "@core/domain/uimetadata/form";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 export class FormTimepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
   inputElement: FormTimepicker ;

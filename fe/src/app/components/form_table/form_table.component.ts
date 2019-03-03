@@ -9,7 +9,7 @@ import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@c
 import { CircularJSON } from "@core/json-stringify";
 
 import { Pn } from "@core/domain/metadata/entity";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FrmdbFormControl, FrmdbFormGroup } from '../form.component';
 
@@ -19,8 +19,8 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   addIcon = faPlusCircle;
   delIcon = faMinusCircle;
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
   tableElement: FormTable | FormTabs;
@@ -44,7 +44,7 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   }
 
   addRow() {
-    
+    this.addChildDataObj();
   }
 
   deleteRow(control: FrmdbFormGroup) {

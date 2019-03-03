@@ -107,7 +107,7 @@ export const ReceiptItem = {
     _id: 'ReceiptItem',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_id: { name: 'product_id', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props._id.name } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         units: {
             name: 'units',
@@ -122,7 +122,7 @@ export const OrderItem = {
     _id: 'OrderItem',
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        product_id: { name: 'product_id', propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        product_id: { name: 'product_id', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props._id.name } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         error_quantity: { name: 'error_quantity', propType_: Pn.NUMBER } as EntityProperty,
         client_stock: { name: 'client_stock', propType_: Pn.NUMBER } as EntityProperty,
@@ -157,8 +157,8 @@ export const InventoryOrder = {
     props: {
         sales_agent: { name: 'sales_agent', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         creation_date: { name: 'creation_date', propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
-        items: {
-            name: 'items',
+        order_item_table: {
+            name: 'order_item_table',
             propType_: Pn.CHILD_TABLE,
             referencedEntityName: OrderItem._id,
             props: {},
@@ -180,8 +180,8 @@ export const LargeSalesReport = {
     props: {
         client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
-        large_sales: {
-            name: "large_sales",
+        large_sales_product_table: {
+            name: "large_sales_product_table",
             propType_: Pn.CHILD_TABLE,
             referencedEntityName: "LargeSalesProduct",
             isLargeTable: true,

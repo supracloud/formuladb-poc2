@@ -8,14 +8,14 @@ import { BaseNodeComponent } from "../base_node";
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 
 import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 
 export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
 

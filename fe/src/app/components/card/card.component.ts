@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
 export class CardComponent extends BaseNodeComponent implements OnInit {
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
   ngOnInit() {

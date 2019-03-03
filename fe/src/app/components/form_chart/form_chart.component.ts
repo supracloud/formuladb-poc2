@@ -4,7 +4,7 @@ import { BaseNodeComponent } from '../base_node';
 
 import { FormChart } from "@core/domain/uimetadata/form";
 import { FormArray, FormControl } from '@angular/forms';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 export class FormChartComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
@@ -342,8 +342,8 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
   formChart: FormChart;
   formArray: FormArray;
 
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
 

@@ -14,7 +14,7 @@ describe('Entity', () => {
 
   it('extendEntityProperties should correctly extend entities', () => {
     let expected = _.cloneDeep(Forms__ServiceForm.props.service_form_units);
-    expected.props.items = _.cloneDeep(InventoryOrder.props.items);
+    expected.props.items = _.cloneDeep(InventoryOrder.props.order_item_table);
     expected.props.sales_agent = _.cloneDeep(InventoryOrder.props.sales_agent);
     expected.props.creation_date = _.cloneDeep(InventoryOrder.props.creation_date);
     

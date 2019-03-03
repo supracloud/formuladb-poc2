@@ -10,16 +10,19 @@ import { map, startWith, combineLatest, tap } from 'rxjs/operators'
 
 import { NavigationItem } from './navigation.item';
 
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 import * as _ from 'lodash';
 import { Pn, Entity } from '@core/domain/metadata/entity';
 import { Home } from '@core/default_pages/website-metadata';
+import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 export class VNavComponent implements OnInit {
   public navigationItemsTree: NavigationItem[] = [];
+  public frmdbStreams: FrmdbStreamsService;
 
-  constructor(public frmdbStreams: FrmdbStreamsService,
+  constructor(public formEditingService: FormEditingService,
     protected changeDetectorRef: ChangeDetectorRef) {
+      this.frmdbStreams = formEditingService.frmdbStreams;
   }
 
   private entity2NavSegment(entity: Entity, selectedEntity: Entity): NavigationItem {

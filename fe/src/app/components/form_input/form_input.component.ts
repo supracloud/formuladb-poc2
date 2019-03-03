@@ -16,15 +16,15 @@ import { AbstractControl } from '@angular/forms';
 import * as _ from "lodash";
 
 import { Pn } from "@core/domain/metadata/entity";
-import { FrmdbStreamsService } from "@fe/app/frmdb-streams/frmdb-streams.service";
+import { FormEditingService } from "../form-editing.service";
 
 export class FormInputComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 
     inputElement: FormInput;
 
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(formEditingService: FormEditingService) {
+        super(formEditingService);
     }
 
 

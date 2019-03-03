@@ -10,7 +10,7 @@ import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from "@core/domain/uimetadata/form";
 import * as fromForm from '../form.state';
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 import { UserDraggedFormElement } from '@fe/app/frmdb-streams/frmdb-user-events';
 
 
@@ -25,8 +25,8 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
   getChildPath(childEl: NodeElement) {

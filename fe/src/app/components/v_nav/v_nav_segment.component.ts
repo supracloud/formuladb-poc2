@@ -7,6 +7,7 @@ import { OnInit, Input } from '@angular/core';
 import { NavigationItem } from './navigation.item';
 import { Observable } from 'rxjs';
 
+import { FormEditingService } from '../form-editing.service';
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 
 
@@ -16,9 +17,11 @@ export class VNavSegmentComponent implements OnInit {
     nav: NavigationItem[];
 
     public devMode$: Observable<boolean>;
+    public frmdbStreams: FrmdbStreamsService;
 
-    constructor(protected frmdbStreams: FrmdbStreamsService) {
-        this.devMode$ = frmdbStreams.devMode$;
+    constructor(protected formEditingService: FormEditingService) {
+        this.devMode$ = formEditingService.frmdbStreams.devMode$;
+        this.frmdbStreams = formEditingService.frmdbStreams;
     }
 
     ngOnInit(): void {

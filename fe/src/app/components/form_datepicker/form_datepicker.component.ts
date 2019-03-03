@@ -6,12 +6,12 @@
 import { OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 import { FormDatepicker } from "@core/domain/uimetadata/form";
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FormEditingService } from '../form-editing.service';
 
 
 export class FormDatepickerComponent extends BaseNodeComponent implements OnInit, OnDestroy {
-  constructor(public frmdbStreams: FrmdbStreamsService) {
-    super(frmdbStreams);
+  constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
   }
 
   inputElement: FormDatepicker;
