@@ -42,7 +42,7 @@ export function isReservedPropName(propName: string): boolean {
 }
 
 export const RESERVED_PROP_NAMES = ['_id', '_rev', 'created_', 'updated_', 'updated_by_', 'rev_', 'trs_', 'id_',
-    'type_', 'propType_', 'usedOnlyForNavigationGrouping', 'executionPlan_'];
+    'type_', 'propType_', 'pureNavGroupingChildren', 'executionPlan_'];
 
 
 /**

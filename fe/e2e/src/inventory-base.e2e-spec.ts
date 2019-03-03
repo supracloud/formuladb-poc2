@@ -146,7 +146,7 @@ describe('Inventory App Base E2E', () => {
   it('Should have zero stock', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
 
-    expect(Number(await inventoryPL!.getStockInRowById('INV__PRD__Location~~1__1a'))).toEqual(Number('0.0'));
+    expect(Number(await inventoryPL!.getStockInRowById('ProductLocation~~1__1a'))).toEqual(Number('0.0'));
   });
 
   it('Should end recording and cleanup', async () => {

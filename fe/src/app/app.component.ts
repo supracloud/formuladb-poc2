@@ -63,6 +63,7 @@ export class AppComponent {
     this.store.select(appState.getFormReadOnly).subscribe(readOnly => frmdbStreams.readonlyMode$.next(readOnly));
     this.store.select(appState.getEntitiesState).subscribe(entities => {
       if (entities) frmdbStreams.entities$.next(entities);
+      console.warn(entities);
     });
     this.store.select(appState.getFormState).subscribe(form => {
       if (form) frmdbStreams.form$.next(form);

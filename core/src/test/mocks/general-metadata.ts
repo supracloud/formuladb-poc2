@@ -7,12 +7,6 @@ import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
 
 
-export const General: Entity = {
-    _id: "GEN",
-    usedOnlyForNavigationGrouping: true,
-    props: {},
-};
-
 export const GEN__Settings: Entity = {
     _id: "GEN__Settings",
     props: {
@@ -111,17 +105,9 @@ export const GEN__Client: Entity = {
     }
 };
 
-export const GEN__StaticPage: Entity = {
-    _id: "GEN__StaticPage",
-    props: {
-        name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-    }
-};
 
-export const GEN__StaticPage__Element: Entity = {
-    _id: "GEN__StaticPage__Element",
-    props: {
-        name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-        type: { name: "type", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-    }
+export const General: Entity = {
+    _id: "GEN",
+    pureNavGroupingChildren: [GEN__Actor._id, GEN__Client._id, GEN__Currency._id, GEN__Person._id],
+    props: {},
 };

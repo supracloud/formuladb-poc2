@@ -328,8 +328,8 @@ export class MediaComponent extends BaseMediaComponent implements OnInit {
     styleUrls: ['../../components/v_nav/v_nav.component.scss']
 })
 export class VNavComponent extends BaseVNavComponent implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService) {
-        super(frmdbStreams);
+    constructor(frmdbStreams: FrmdbStreamsService, changeDetectorRef: ChangeDetectorRef) {
+        super(frmdbStreams, changeDetectorRef);
     }
 }
 

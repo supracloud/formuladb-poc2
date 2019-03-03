@@ -4,19 +4,19 @@
  */
 
 import * as _ from 'lodash';
+import { Inventory, ReceiptItem, InventoryReceipt } from "../../test/mocks/inventory-metadata";
 import { parseDataObjId, mergeSubObj, getChildrenPrefix, DataObj } from './data_obj';
-import { INV__Receipt1, INV__Receipt__Item1_1, INV__Receipt__Item1_2, INV__PRD__Location1, INV__PRD__Location12 } from '@core/test/mocks/inventory-data';
-import { INV__Receipt__Item, INV__Receipt } from '@core/test/mocks/mock-metadata';
+import { INV__Receipt1, INV__Receipt__Item1_1, INV__Receipt__Item1_2, INV__PRD__Location12 } from '@core/test/mocks/inventory-data';
 
 describe('DataObj', () => {
   beforeEach(() => {
   });
 
   it('should parse _id(s) correctly', () => {
-    let parsedObjId = parseDataObjId("INV__PRD__Location~~1__1");
-    expect(parsedObjId).toEqual({entityName: "INV__PRD__Location", id: "INV__PRD__Location~~1__1", uid: "1__1"});
-    parsedObjId = parseDataObjId("INV__PRD~~1");
-    expect(parsedObjId).toEqual({entityName: "INV__PRD", id: "INV__PRD~~1", uid: "1"});
+    let parsedObjId = parseDataObjId("ProductLocation~~1__1");
+    expect(parsedObjId).toEqual({entityName: "ProductLocation", id: "ProductLocation~~1__1", uid: "1__1"});
+    parsedObjId = parseDataObjId("InventoryProduct~~1");
+    expect(parsedObjId).toEqual({entityName: "InventoryProduct", id: "InventoryProduct~~1", uid: "1"});
     expect(() => parseDataObjId('')).toThrow();
   });
 
@@ -40,8 +40,8 @@ describe('DataObj', () => {
     expect(parentObj).toEqual(mergedParentObj);
 
     let newChildObj = {
-      _id: getChildrenPrefix(INV__Receipt__Item._id, 
-        INV__Receipt1._id.replace(INV__Receipt._id + '~~', '')) + "1A2B",
+      _id: getChildrenPrefix(ReceiptItem._id, 
+        INV__Receipt1._id.replace(InventoryReceipt._id + '~~', '')) + "1A2B",
       product_id: INV__PRD__Location12._id,
       quantity: 456,
     };

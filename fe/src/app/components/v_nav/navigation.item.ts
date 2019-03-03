@@ -4,6 +4,7 @@ export interface NavigationItem extends Node {
     active: boolean;
     collapsed: boolean;
     onPath?: boolean;
+    isNotRootNavItem?: boolean;
 }
 
 export interface Node {

@@ -6,13 +6,6 @@
 import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { GEN__Actor } from './general-metadata';
 
-export const Financial = {
-    _id: "FIN",
-    usedOnlyForNavigationGrouping: true,
-    props: {},
-};
-
-
 export const FIN__Account = {
     _id: "FIN__Account",
     props: {
@@ -64,4 +57,10 @@ export const FIN__Transaction = {
         } as EntityProperty,
         amount: { name: 'amount', propType_: Pn.NUMBER } as EntityProperty,
     }
+};
+
+export const Financial = {
+    _id: "FIN",
+    pureNavGroupingChildren: [FIN__Account._id, FIN__Transaction._id],
+    props: {},
 };

@@ -8,7 +8,7 @@ import { FrmdbEngineStore } from "../../frmdb_engine_store";
 
 import { compileFormula } from '../../formula_compiler';
 import { evalExpression } from "../../map_reduce_utils";
-import { INV__PRD__Location, INV__Receipt__Item, INV__Order__Item } from "./mock-metadata";
+import { ProductLocation, ReceiptItem, OrderItem } from "./mock-metadata";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
@@ -26,9 +26,9 @@ describe('Inventory Metadata', () => {
     const InventorySchema: Schema = {
         _id: "FRMDB_SCHEMA",
         entities: {
-            INV__PRD__Location: INV__PRD__Location,
-            INV__Receipt__Item: INV__Receipt__Item,
-            INV__Order__Item: INV__Order__Item,
+            ProductLocation: ProductLocation,
+            ReceiptItem: ReceiptItem,
+            OrderItem: OrderItem,
         }
     };
 
@@ -52,19 +52,19 @@ describe('Inventory Metadata', () => {
 
     it("Basic stock operations", async (done) => {
 
-        let cf1 = compileFormula(INV__PRD__Location._id, 'received_stock__', INV__PRD__Location.props.received_stock__.formula);
-        let cf2 = compileFormula(INV__PRD__Location._id, 'ordered_stock__', INV__PRD__Location.props.ordered_stock__.formula);
-        let cf3 = compileFormula(INV__PRD__Location._id, 'available_stock__', INV__PRD__Location.props.available_stock__.formula);
+        let cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
+        let cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
+        let cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);
 
-        let pl1 = { _id: "INV__PRD__Location~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
+        let pl1 = { _id: "ProductLocation~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
         await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
-        let ri1_1 = { _id: "INV__Receipt__Item~~1__1", product_id: "INV__PRD__Location~~1", quantity: 10}; 
+        let ri1_1 = { _id: "ReceiptItem~~1__1", product_id: "ProductLocation~~1", quantity: 10}; 
         await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
-        let ri1_2 = { _id: "INV__Receipt__Item~~1__2", product_id: "INV__PRD__Location~~1", quantity: 5}; 
+        let ri1_2 = { _id: "ReceiptItem~~1__2", product_id: "ProductLocation~~1", quantity: 5}; 
         await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
-        let oi1_1 = { _id: "INV__Order__Item~~1__1", product_id: "INV__PRD__Location~~1", quantity: 10};
+        let oi1_1 = { _id: "OrderItem~~1__1", product_id: "ProductLocation~~1", quantity: 10};
         await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
-        let oi1_2 = { _id: "INV__Order__Item~~1__2", product_id: "INV__PRD__Location~~1", quantity: 4};
+        let oi1_2 = { _id: "OrderItem~~1__2", product_id: "ProductLocation~~1", quantity: 4};
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);
