@@ -47,7 +47,7 @@ test:
     - npm test || true
     - FRMDB_STORAGE=postgres npm test || true
     - npm run start &
-    - while ! nc -z localhost 4300 </dev/null; do echo "Waiting for BE ..."; sleep 1; done
+    - while ! nc -z localhost 3000 </dev/null; do echo "Waiting for BE ..."; sleep 1; done
     - cd ..
     - cd fe
     - npm run e2e
