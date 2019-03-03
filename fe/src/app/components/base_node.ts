@@ -4,7 +4,7 @@
  */
 
 import { Input, Type, ViewContainerRef, ComponentFactoryResolver, HostBinding } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, FormArray } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import * as fromForm from './form.state';
@@ -35,6 +35,15 @@ export class BaseNodeComponent {
     }
 
     constructor(public frmdbStreams: FrmdbStreamsService) {
+    }
+
+    protected addChildDataObj() {
+        if (this.nodeElement.nodeType === NodeType.form_table || this.nodeElement.nodeType === NodeType.form_tabs) {
+            let formArray = this.topLevelFormGroup.get(this.parentFormPath);
+            if (formArray instanceof FormArray) {
+
+            } else console.warn("Expected form array but found", formArray, this.nodeElement, this.topLevelFormGroup, this.parentFormPath);
+        } else console.warn("Cannot add children to a scalar node element", this.nodeElement, this.topLevelFormGroup, this.parentFormPath);
     }
 
 }

@@ -115,7 +115,7 @@ describe('FrmdbEngine', () => {
         await putObj({ _id: 'A~~', b: 'B~~1', val: val } as DataObj);
     }
 
-    fit("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
+    it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
         await frmdbEngine.init();
 
         let b1 = { _id: "B~~1", sum__: 1, x__: 7};

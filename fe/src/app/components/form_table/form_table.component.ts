@@ -44,7 +44,7 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   }
 
   addRow() {
-
+    
   }
 
   deleteRow(control: FrmdbFormGroup) {

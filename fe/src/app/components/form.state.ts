@@ -5,7 +5,7 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
+import { DataObj, mergeSubObj } from "@core/domain/metadata/data_obj";
 import { Form, NodeElement, isNodeElementWithChildren, NodeType } from "@core/domain/uimetadata/form";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
@@ -139,23 +139,6 @@ export type FormActions =
   | FormSwitchTypeAction
   | FormAddAction
   ;
-
-function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
-  if (parentObj == null) return false;
-
-  for (let key of Object.keys(parentObj)) {
-    if (typeof parentObj[key] === 'object' && parentObj[key]._id === obj._id) {
-      parentObj[key] = obj;
-      return true;
-    }
-  }
-  for (let key of Object.keys(parentObj)) {
-    if (typeof parentObj[key] === 'object' && mergeSubObj(parentObj[key], obj)) {
-      return true;
-    }
-  }
-  return false;
-}
 
 
 const removeRecursive = (tree: NodeElement, item: NodeElement) => {
