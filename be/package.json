@@ -15,7 +15,7 @@
     "test": "node dist/be/src/tests/jasmine.js",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",
     "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"sleep 2 && npm run jasmine:watch\" ",
-    "build-prod": "rm -rf dist && tsc -p src --inlineSourceMap --outFile dist/server-ts.js -m system && node src/minify.js"
+    "build-prod": "rm -rf dist && webpack"
   },
   "dependencies": {
     "acorn": "^5.4.1",
@@ -62,13 +62,16 @@
     "nodemon": "^1.14.12",
     "rxjs-marbles": "^2.3.0",
     "rxjs-test": "^5.5.0-beta.0",
+    "terser-webpack-plugin": "^1.2.3",
+    "ts-loader": "^5.3.3",
     "ts-node": "^3.3.0",
     "tsc-watch": "^1.0.16",
     "typescript": "^2.8.3",
     "uuid": "^3.2.1",
     "watch": "^1.0.2",
-    "@node-minify/core": "^4.0.5",
-    "@node-minify/terser": "^4.1.0"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.2.3",
+    "webpack-node-externals": "^1.7.2"
   },
   "_moduleAliases": {
     "@storage": "./dist/storage/src",
