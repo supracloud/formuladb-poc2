@@ -5,11 +5,11 @@
  */
 
 import {
-    Component, OnInit, OnDestroy, ChangeDetectionStrategy, OnChanges, ChangeDetectorRef
+    Component, OnInit, OnDestroy, ChangeDetectionStrategy, OnChanges, ChangeDetectorRef, HostBinding, Input
 } from '@angular/core';
 
 import { Location } from '@angular/common';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 import { FormEditingService } from '@fe/app/components/form-editing.service';
 
@@ -20,35 +20,39 @@ import { FormDatepickerComponent as FormDatepickerComponentBase } from '@fe/app/
 import { FormTableComponent as FormTableComponentBase } from '@fe/app/components/form_table/form_table.component';
 import { FormTimepickerComponent as FormTimepickerComponentBase } from '@fe/app/components/form_timepicker/form_timepicker.component';
 import { HLayoutComponent as FormHorizontalLayoutComponentBase } from '@fe/app/components/h_layout/h_layout.component';
-import { FormInputComponent as BaseFormInputComponent } from "@fe/app/components/form_input/form_input.component";
+import { FormInputComponent as BaseFormInputComponent } from '@fe/app/components/form_input/form_input.component';
 import { FormItemComponent as FormItemComponentBase } from '@fe/app/components/form_item/form_item.component';
-import { FormTabsComponent  as FormTabsComponentBase} from '@fe/app/components/form_tabs/form_tabs.component';
-import { FormTextComponent as BaseFormTextComponent } from "@fe/app/components/form_text/form_text.component";
+import { FormTabsComponent as FormTabsComponentBase } from '@fe/app/components/form_tabs/form_tabs.component';
+import { FormTextComponent as BaseFormTextComponent } from '@fe/app/components/form_text/form_text.component';
 import { VLayoutComponent as FormVerticalLayoutComponentBase } from '@fe/app/components/v_layout/v_layout.component';
-import { TableComponent  as BaseTableComponent} from '@fe/app/components/table/table.component';
-import { FormChartComponent as BaseFormChartComponent } from "@fe/app/components/form_chart/form_chart.component";
-import { FormStateComponent as BaseFormStateComponent } from "@fe/app/components/form_state/form_state.component";
-import { CardComponent as BaseCardComponent } from "@fe/app/components/card/card.component";
-import { FormEnumComponent as BaseFormEnumComponent } from "@fe/app/components/form_enum/form_enum.component";
-import { ListComponent as BaseListComponent } from "@fe/app/components/list/list.component";
-import { GalleryComponent as BaseGalleryComponent } from "@fe/app/components/gallery/gallery.component";
-import { CalendarComponent as BaseCalendarComponent } from "@fe/app/components/calendar/calendar.component";
-import { ImageComponent as BaseImageComponent } from "@fe/app/components/image/image.component";
-import { IconComponent as BaseIconComponent } from "@fe/app/components/icon/icon.component";
-import { MediaComponent as BaseMediaComponent } from "@fe/app/components/media/media.component";
-import { VNavComponent as BaseVNavComponent } from "@fe/app/components/v_nav/v_nav.component";
-import { VNavSegmentComponent as BaseVNavSegmentComponent } from "@fe/app/components/v_nav/v_nav_segment.component";
-import { HNavComponent as BaseHNavComponent } from "@fe/app/components/h_nav/h_nav.component";
-import { TimelineComponent as BaseTimelineComponent } from "@fe/app/components/timeline/timeline.component";
-import { DropdownComponent as BaseDropdownComponent } from "@fe/app/components/dropdown/dropdown.component";
-import { VFiltersComponent as BaseVFiltersComponent } from "@fe/app/components/v_filters/v_filters.component";
-import { HFiltersComponent as BaseHFiltersComponent } from "@fe/app/components/h_filters/h_filters.component";
-import { ButtonComponent as BaseButtonComponent } from "@fe/app/components/button/button.component";
-import { ButtonGroupComponent as BaseButtonGroupComponent } from "@fe/app/components/button_group/button_group.component";
+import { TableComponent as BaseTableComponent } from '@fe/app/components/table/table.component';
+import { FormChartComponent as BaseFormChartComponent } from '@fe/app/components/form_chart/form_chart.component';
+import { FormStateComponent as BaseFormStateComponent } from '@fe/app/components/form_state/form_state.component';
+import { CardComponent as BaseCardComponent } from '@fe/app/components/card/card.component';
+import { FormEnumComponent as BaseFormEnumComponent } from '@fe/app/components/form_enum/form_enum.component';
+import { ListComponent as BaseListComponent } from '@fe/app/components/list/list.component';
+import { GalleryComponent as BaseGalleryComponent } from '@fe/app/components/gallery/gallery.component';
+import { CalendarComponent as BaseCalendarComponent } from '@fe/app/components/calendar/calendar.component';
+import { ImageComponent as BaseImageComponent } from '@fe/app/components/image/image.component';
+import { IconComponent as BaseIconComponent } from '@fe/app/components/icon/icon.component';
+import { MediaComponent as BaseMediaComponent } from '@fe/app/components/media/media.component';
+import { VNavComponent as BaseVNavComponent } from '@fe/app/components/v_nav/v_nav.component';
+import { VNavSegmentComponent as BaseVNavSegmentComponent } from '@fe/app/components/v_nav/v_nav_segment.component';
+import { HNavComponent as BaseHNavComponent } from '@fe/app/components/h_nav/h_nav.component';
+import { TimelineComponent as BaseTimelineComponent } from '@fe/app/components/timeline/timeline.component';
+import { DropdownComponent as BaseDropdownComponent } from '@fe/app/components/dropdown/dropdown.component';
+import { VFiltersComponent as BaseVFiltersComponent } from '@fe/app/components/v_filters/v_filters.component';
+import { HFiltersComponent as BaseHFiltersComponent } from '@fe/app/components/h_filters/h_filters.component';
+import { ButtonComponent as BaseButtonComponent } from '@fe/app/components/button/button.component';
+import { ButtonGroupComponent as BaseButtonGroupComponent } from '@fe/app/components/button_group/button_group.component';
+import { CardContainerComponent as CardContainerComponentBase } from '@fe/app/components/card_prototype/card_container.component';
+import { CardPrototypeComponent as CardComponentBase} from '@fe/app/components/card_prototype/card_prototype.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TableService } from '@fe/app/components/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { DomSanitizer } from '@angular/platform-browser';
+
 @Component({
     selector: 'frmdb-form',
     templateUrl: '../../components/form.component.html',
@@ -78,6 +82,7 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_autocomplete',
     templateUrl: '../../components/form_autocomplete/form_autocomplete.component.html',
     styleUrls: [
@@ -92,9 +97,10 @@ export class FormAutocompleteComponent extends FormAutocompleteComponentBase imp
 }
 
 @Component({
-  selector: '[frmdb-form_data_grid]',
-  templateUrl: '../../components/form_data_grid/form_data_grid.component.html',
-  styleUrls: ['../../components/form_data_grid/form_data_grid.component.scss']
+    // tslint:disable-next-line:component-selector
+    selector: '[frmdb-form_data_grid]',
+    templateUrl: '../../components/form_data_grid/form_data_grid.component.html',
+    styleUrls: ['../../components/form_data_grid/form_data_grid.component.scss']
 })
 export class FormDataGridComponent extends FormDataGridComponentBase implements OnInit, OnDestroy {
   constructor(formEditingService: FormEditingService) {
@@ -103,9 +109,10 @@ export class FormDataGridComponent extends FormDataGridComponentBase implements 
 }
 
 @Component({
-  selector: 'frmdb-form_datepicker',
-  templateUrl: '../../components/form_datepicker/form_datepicker.component.html',
-  styleUrls: ['../../components/form_input/form_input.component.scss']
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_datepicker',
+    templateUrl: '../../components/form_datepicker/form_datepicker.component.html',
+    styleUrls: ['../../components/form_input/form_input.component.scss']
 })
 export class FormDatepickerComponent extends FormDatepickerComponentBase implements OnInit, OnDestroy {
   constructor(formEditingService: FormEditingService) {
@@ -114,10 +121,11 @@ export class FormDatepickerComponent extends FormDatepickerComponentBase impleme
 }
 
 @Component({
-  selector: '[frmdb-form_table]',
-  host: { class: "col form-group" },
-  templateUrl: '../../components/form_table/form_table.component.html',
-  styleUrls: ['../../components/form_table/form_table.component.scss']
+    // tslint:disable-next-line:component-selector
+    selector: '[frmdb-form_table]',
+    host: { class: 'col form-group' },
+    templateUrl: '../../components/form_table/form_table.component.html',
+    styleUrls: ['../../components/form_table/form_table.component.scss']
 })
 export class FormTableComponent extends FormTableComponentBase implements OnInit, OnDestroy {
   constructor(formEditingService: FormEditingService) {
@@ -126,8 +134,9 @@ export class FormTableComponent extends FormTableComponentBase implements OnInit
 }
 
 @Component({
-  selector: 'frmdb-form_timepicker',
-  templateUrl: '../../components/form_timepicker/form_timepicker.component.html',
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_timepicker',
+    templateUrl: '../../components/form_timepicker/form_timepicker.component.html',
 })
 export class FormTimepickerComponent extends FormTimepickerComponentBase implements OnInit, OnDestroy {
   constructor(formEditingService: FormEditingService) {
@@ -136,6 +145,7 @@ export class FormTimepickerComponent extends FormTimepickerComponentBase impleme
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-h_layout',
     templateUrl: '../../components/h_layout/h_layout.component.html',
     styleUrls: ['../../components/h_layout/h_layout.component.scss']
@@ -147,8 +157,9 @@ export class HLayoutComponent extends FormHorizontalLayoutComponentBase implemen
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_input',
-    host: { class: "col form-group" },
+    host: { class: 'col form-group' },
     templateUrl: '../../components/form_input/form_input.component.html',
     styleUrls: ['../../components/form_input/form_input.component.scss']
 })
@@ -159,6 +170,7 @@ export class FormInputComponent extends BaseFormInputComponent implements OnInit
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_item',
     templateUrl: '../../components/form_item/form_item.component.html',
     styleUrls: ['../../components/form_item/form_item.component.scss']
@@ -170,6 +182,7 @@ export class FormItemComponent extends FormItemComponentBase implements OnInit, 
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: '[frmdb-form_tabs]',
     templateUrl: '../../components/form_tabs/form_tabs.component.html',
     styleUrls: ['../../components/form_tabs/form_tabs.component.scss']
@@ -181,8 +194,9 @@ export class FormTabsComponent extends FormTabsComponentBase implements OnInit {
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_text',
-    host: { class: "col form-group" },
+    host: { class: 'col form-group' },
     templateUrl: '../../components/form_text/form_text.component.html',
     styleUrls: ['../../components/form_text/form_text.component.scss']
 })
@@ -193,6 +207,7 @@ export class FormTextComponent extends BaseFormTextComponent implements OnInit, 
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-v_layout',
     templateUrl: '../../components/v_layout/v_layout.component.html',
     styleUrls: ['../../components/v_layout/v_layout.component.scss']
@@ -214,13 +229,13 @@ export class TableComponent extends BaseTableComponent implements OnInit, OnDest
         router: Router,
         route: ActivatedRoute,
         tableService: TableService,
-        i18npipe: I18nPipe) 
-    {
+        i18npipe: I18nPipe) {
         super(frmdbStreams, router, route, tableService, i18npipe);
     }
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_chart',
     templateUrl: '../../components/form_chart/form_chart.component.html',
     styleUrls: ['../../components/form_chart/form_chart.component.scss']
@@ -232,6 +247,7 @@ export class FormChartComponent extends BaseFormChartComponent implements OnInit
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_state',
     templateUrl: '../../components/form_state/form_state.component.html',
     styleUrls: ['../../components/form_state/form_state.component.scss']
@@ -253,6 +269,7 @@ export class CardComponent extends BaseCardComponent implements OnInit {
     }
 }
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_enum',
     templateUrl: '../../components/form_enum/form_enum.component.html',
     styleUrls: ['../../components/form_enum/form_enum.component.scss']
@@ -323,6 +340,7 @@ export class MediaComponent extends BaseMediaComponent implements OnInit {
     }
 }
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-v_nav',
     templateUrl: '../../components/v_nav/v_nav.component.html',
     styleUrls: ['../../components/v_nav/v_nav.component.scss']
@@ -334,6 +352,7 @@ export class VNavComponent extends BaseVNavComponent implements OnInit {
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: '[frmdb-v_nav_segment]',
     templateUrl: '../../components/v_nav/v_nav_segment.component.html',
     styleUrls: ['../../components/v_nav/v_nav_segment.component.scss']
@@ -345,6 +364,7 @@ export class VNavSegmentComponent extends BaseVNavSegmentComponent implements On
 }
 
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-h_nav',
     templateUrl: '../../components/h_nav/h_nav.component.html',
     styleUrls: ['../../components/h_nav/h_nav.component.scss']
@@ -375,6 +395,7 @@ export class DropdownComponent extends BaseDropdownComponent implements OnInit {
     }
 }
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-v_filters',
     templateUrl: '../../components/v_filters/v_filters.component.html',
     styleUrls: ['../../components/v_filters/v_filters.component.scss']
@@ -385,6 +406,7 @@ export class VFiltersComponent extends BaseVFiltersComponent implements OnInit {
     }
 }
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-h_filters',
     templateUrl: '../../components/h_filters/h_filters.component.html',
     styleUrls: ['../../components/h_filters/h_filters.component.scss']
@@ -405,6 +427,7 @@ export class ButtonComponent extends BaseButtonComponent implements OnInit {
     }
 }
 @Component({
+    // tslint:disable-next-line:component-selector
     selector: 'frmdb-button_group',
     templateUrl: '../../components/button_group/button_group.component.html',
     styleUrls: ['../../components/button_group/button_group.component.scss']
@@ -413,4 +436,39 @@ export class ButtonGroupComponent extends BaseButtonGroupComponent implements On
     constructor(formEditingService: FormEditingService) {
         super(formEditingService);
     }
+}
+
+@Component({
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-card_container',
+    templateUrl: '../../components/card_prototype/card_container.component.html',
+    styleUrls: ['../../components/card_prototype/card_container.component.scss']
+})
+export class CardContainerComponent extends CardContainerComponentBase implements OnInit {
+    constructor(public frmdbStreams: FrmdbStreamsService, sanitizer: DomSanitizer) {
+        super(frmdbStreams, sanitizer);
+    }
+
+    @HostBinding('style')
+    get style() { return super.style; }
+
+    @Input()
+    set theme(t: { [k: string]: string }) { super.theme = t; }
+}
+
+@Component({
+    selector: 'frmdb-card',
+    templateUrl: '../../components/card_prototype/card_container.component.html',
+    styleUrls: ['../../components/card_prototype/card_container.component.scss']
+})
+export class CardPrototypeComponent extends CardComponentBase {
+    constructor(public frmdbStreams: FrmdbStreamsService, sanitizer: DomSanitizer) {
+        super(frmdbStreams, sanitizer);
+    }
+
+    @HostBinding('style')
+    get style() { return super.style; }
+
+    @Input()
+    set theme(t: { [k: string]: string }) { super.theme = t; }
 }
