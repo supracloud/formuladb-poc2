@@ -96,8 +96,8 @@ export const InventoryProductUnit = {
 export const InventoryReceipt = {
     _id: 'InventoryReceipt',
     props: {
-        items: {
-            name: 'items', propType_: Pn.CHILD_TABLE,
+        receipt_item_table: {
+            name: 'receipt_item_table', propType_: Pn.CHILD_TABLE,
             referencedEntityName: 'ReceiptItem', props: {}, isLargeTable: true
         } as EntityProperty,
     }

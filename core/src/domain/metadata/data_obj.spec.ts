@@ -6,7 +6,7 @@
 import * as _ from 'lodash';
 import { Inventory, ReceiptItem, InventoryReceipt } from "../../test/mocks/inventory-metadata";
 import { parseDataObjId, mergeSubObj, getChildrenPrefix, DataObj } from './data_obj';
-import { INV__Receipt1, INV__Receipt__Item1_1, INV__Receipt__Item1_2, INV__PRD__Location12 } from '@core/test/mocks/inventory-data';
+import { InventoryReceipt1, ReceiptItem1_1, ReceiptItem1_2, ProductLocation12, ProductLocation1 } from '@core/test/mocks/inventory-data';
 
 describe('DataObj', () => {
   beforeEach(() => {
@@ -22,35 +22,38 @@ describe('DataObj', () => {
 
   fit('merge child DataObj correctly', () => {
     let parentObj = {
-      ...INV__Receipt1,
-      items: [
-        INV__Receipt__Item1_1,
-        INV__Receipt__Item1_2,
+      ...InventoryReceipt,
+      receipt_item_table: [
+        ReceiptItem1_1,
+        ReceiptItem1_2,
       ]
     };
 
-    let mergeResult = mergeSubObj(parentObj, {
-      _id: INV__Receipt__Item1_1._id,
-      quantity: INV__Receipt__Item1_1.quantity + 123,
-    } as DataObj);
     let mergedParentObj = _.cloneDeep(parentObj);
-    mergedParentObj.items[0].quantity = INV__Receipt__Item1_1.quantity + 123;
+    let mergeResult = mergeSubObj(mergedParentObj, {
+      _id: ReceiptItem1_1._id,
+      product_id: ProductLocation1._id,
+      quantity: ReceiptItem1_1.quantity + 123,
+    } as DataObj);
+    let expectedParentObj = _.cloneDeep(parentObj);
+    expectedParentObj.receipt_item_table[0].quantity = ReceiptItem1_1.quantity + 123;
 
     expect(mergeResult).toEqual(true);
-    expect(parentObj).toEqual(mergedParentObj);
+    expect(mergedParentObj).toEqual(expectedParentObj);
 
     let newChildObj = {
       _id: getChildrenPrefix(ReceiptItem._id, 
-        INV__Receipt1._id.replace(InventoryReceipt._id + '~~', '')) + "1A2B",
-      product_id: INV__PRD__Location12._id,
+        InventoryReceipt._id.replace(InventoryReceipt._id + '~~', '')) + "1A2B",
+      product_id: ProductLocation12._id,
       quantity: 456,
     };
-    mergeResult = mergeSubObj(parentObj, newChildObj);
     mergedParentObj = _.cloneDeep(parentObj);
-    mergedParentObj.items.push(newChildObj);
+    mergeResult = mergeSubObj(mergedParentObj, newChildObj);
+    expectedParentObj = _.cloneDeep(parentObj);
+    expectedParentObj.receipt_item_table.push(newChildObj);
   
     expect(mergeResult).toEqual(true);
-    expect(parentObj).toEqual(mergedParentObj);
+    expect(mergedParentObj).toEqual(expectedParentObj);
 
   });
 });

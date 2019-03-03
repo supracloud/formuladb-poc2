@@ -42,6 +42,11 @@ export function getChildrenPrefix(referencedEntityName: string, parentUID: strin
     return referencedEntityName + '~~' + parentUID + '__';
 }
 
+export function childTableNameToFieldName(childTableName: string) {
+    return childTableName.replace(/([a-z])([A-Z0-9])/g, (m, $1, $2) => $1 + '_' + $2)
+        .toLowerCase() + '_table';
+}
+
 export function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
     if (parentObj == null) return false;
 
@@ -58,9 +63,19 @@ export function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
             for (let childObj of parentObj[key]) {
                 if (mergeSubObj(childObj, obj)) return true;
             }
+            if (addChildObjToChildTable(parentObj[key], key, obj)) return true;
         }
     }
     return false;
+}
+
+function addChildObjToChildTable(parentChildTable: Array<DataObj>, childTableKeyName: string, childObj: DataObj): boolean {
+    let {entityName, id, uid} = parseDataObjId(childObj._id);
+    if (childTableKeyName === childTableNameToFieldName(entityName)) {
+        parentChildTable.push(childObj);
+        return true;
+    } else return false;
+
 }
 
 export type DataObjDeepPath = string;
