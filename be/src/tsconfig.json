@@ -9,8 +9,7 @@
             "@core/*": ["../../core/src/*"],
             "@storage/*": ["../../storage/src/*"],
 	        "@kv_selector_base/*": ["./*"]
-        },
-        "sourceMap": true
+        }
     },
     "include": [
         "./**/*",

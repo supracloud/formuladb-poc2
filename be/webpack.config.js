@@ -23,7 +23,14 @@ module.exports = {
   module: {
     rules: [
       {
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              configFile : 'prod.tsconfig.json'
+            }
+          }
+        ]
       },
     ],
   },

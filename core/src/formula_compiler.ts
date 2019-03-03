@@ -193,7 +193,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
             throw new Error("ConditionalExpression(s) are not supported (yet): " + node.origExpr);
 
         case 'Identifier':
-            node.parent = context.currentEntityName;
+            node.belongsTo = context.currentEntityName;
             return {
                 type_: CompiledScalarN, rawExpr: node,
                 has$Identifier: false,
@@ -249,10 +249,10 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
 
                 if (isLiteral(node.object) && node.object.raw === '@') {
                     //set the table name for this column to the table of the current row
-                    (prop.rawExpr as Identifier).parent = context.targetEntityName;
+                    (prop.rawExpr as Identifier).belongsTo = context.targetEntityName;
                 } else {
                     //set the table name for this column to the referenced table
-                    (prop.rawExpr as Identifier).parent = referencedTableName;
+                    (prop.rawExpr as Identifier).belongsTo = referencedTableName;
                 }
 
                 if (!m) throw new Error("Expected MemberExpression but found " + JSON.stringify(node));

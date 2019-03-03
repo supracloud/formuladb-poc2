@@ -124,7 +124,7 @@ export class FormulaTokenizer {
             case 'Identifier':
                 return [{
                     ...this.expr2token(TokenType.COLUMN_NAME, node, context),
-                    tableName: node.parent || context.targetEntityName,
+                    tableName: node.belongsTo || context.targetEntityName,
                     columnName: node.name
                 }];
 
