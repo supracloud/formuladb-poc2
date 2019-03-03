@@ -8,29 +8,7 @@
     </div>
   </div>
   <div class="card-body">
-    <!-- Chart -->
-    <div class="chart">
-      <div class="chartjs-size-monitor"
-        style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-        <div class="chartjs-size-monitor-expand"
-          style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-          <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-        </div>
-        <div class="chartjs-size-monitor-shrink"
-          style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-          <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-        </div>
-      </div>
-      <canvas id="chart-bars" class="chart-canvas chartjs-render-monitor" width="249" height="350"
-        style="display: block; width: 249px; height: 350px;"></canvas>
-    </div>
+    <frmdb-form_item [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath"
+      [formReadOnly]="formReadOnly"></frmdb-form_item>
   </div>
 </div>
-<ngb-tabset>
-  <ngb-tab *ngFor="let childControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index" [title]="tabNames[idx]">
-    <ng-template ngbTabContent>
-      <frmdb-form_item [nodeElement]="nodeElement.childNodes[0]" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath + '.' + idx"
-        [formReadOnly]="formReadOnly"></frmdb-form_item>
-    </ng-template>
-  </ngb-tab>
-</ngb-tabset>

@@ -10,6 +10,7 @@ import { CardContainer } from '@core/domain/uimetadata/form';
 import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
 import { Themable } from './themable';
 import { DomSanitizer } from '@angular/platform-browser';
+import { FormEditingService } from '../form-editing.service';
 
 export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy, Themable {
 
@@ -17,8 +18,8 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
   frameworkComponents: any;
   defaultColDef: any;
 
-  constructor(public frmdbStreams: FrmdbStreamsService, private sanitizer: DomSanitizer) {
-    super(frmdbStreams);
+  constructor(public formEditingService: FormEditingService, private sanitizer: DomSanitizer) {
+    super(formEditingService);
   }
 
   theme: { [key: string]: string };

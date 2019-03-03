@@ -1,1 +1,4 @@
-<frmdb-card_prototype *ngFor="let cardItem of topLevelFormGroup.get(parentFormPath)?.controls" [theme]="theme" [data]="cardItem"></frmdb-card_prototype>
+<ng-container *ngFor="let childControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
+    <frmdb-card [nodeElement]="nodeElement.childNodes[0]" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath + '.' + idx"
+    [formReadOnly]="formReadOnly"></frmdb-card>
+</ng-container>

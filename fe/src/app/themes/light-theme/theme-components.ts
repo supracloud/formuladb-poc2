@@ -46,7 +46,6 @@ import { HFiltersComponent as BaseHFiltersComponent } from '@fe/app/components/h
 import { ButtonComponent as BaseButtonComponent } from '@fe/app/components/button/button.component';
 import { ButtonGroupComponent as BaseButtonGroupComponent } from '@fe/app/components/button_group/button_group.component';
 import { CardContainerComponent as CardContainerComponentBase } from '@fe/app/components/card_prototype/card_container.component';
-import { CardPrototypeComponent as CardComponentBase} from '@fe/app/components/card_prototype/card_prototype.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TableService } from '@fe/app/components/table/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
@@ -264,8 +263,8 @@ export class FormStateComponent extends BaseFormStateComponent implements OnInit
     styleUrls: ['../../components/card/card.component.scss']
 })
 export class CardComponent extends BaseCardComponent implements OnInit {
-    constructor(formEditingService: FormEditingService) {
-        super(formEditingService);
+    constructor(formEditingService: FormEditingService, sanitizer: DomSanitizer) {
+        super(formEditingService, sanitizer);
     }
 }
 @Component({
@@ -445,25 +444,8 @@ export class ButtonGroupComponent extends BaseButtonGroupComponent implements On
     styleUrls: ['../../components/card_prototype/card_container.component.scss']
 })
 export class CardContainerComponent extends CardContainerComponentBase implements OnInit {
-    constructor(public frmdbStreams: FrmdbStreamsService, sanitizer: DomSanitizer) {
-        super(frmdbStreams, sanitizer);
-    }
-
-    @HostBinding('style')
-    get style() { return super.style; }
-
-    @Input()
-    set theme(t: { [k: string]: string }) { super.theme = t; }
-}
-
-@Component({
-    selector: 'frmdb-card',
-    templateUrl: '../../components/card_prototype/card_container.component.html',
-    styleUrls: ['../../components/card_prototype/card_container.component.scss']
-})
-export class CardPrototypeComponent extends CardComponentBase {
-    constructor(public frmdbStreams: FrmdbStreamsService, sanitizer: DomSanitizer) {
-        super(frmdbStreams, sanitizer);
+    constructor(public formEditingService: FormEditingService, sanitizer: DomSanitizer) {
+        super(formEditingService, sanitizer);
     }
 
     @HostBinding('style')

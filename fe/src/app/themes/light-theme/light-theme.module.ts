@@ -32,7 +32,6 @@ import { ContextMenuComponent } from '@fe/app/dev-mode-overlay/context-menu/cont
 import { FormItemEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-input-editor/form-input-editor.component';
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
-import { CardPrototypeComponent } from '@fe/app/components/card_prototype/card_prototype.component';
 
 
 import { FormTabsComponent } from './theme-components';
@@ -118,7 +117,6 @@ import { ButtonGroupComponent } from './theme-components';
     ButtonComponent,
     ButtonGroupComponent,
     CardContainerComponent,
-    CardPrototypeComponent
   ],
   providers: [
     FormEditingService,
