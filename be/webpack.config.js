@@ -1,6 +1,7 @@
 const nodeExternals = require('webpack-node-externals');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   target: "node",
@@ -43,5 +44,12 @@ module.exports = {
       }),
     ],
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      filename: 'dist/[file].map',
+      publicPath: 'https://localhost:5050/',
+      fileContext: 'public'
+    })
+  ]
 };
