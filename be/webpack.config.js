@@ -9,7 +9,7 @@ module.exports = {
     app: ["./src/server.ts"]
   },
   output: {
-      filename: './dist/server.js',
+      filename: './dist/be/src/server.js',
       path: __dirname
   },
   resolve: {
