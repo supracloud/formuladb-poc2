@@ -60,7 +60,6 @@ test:
       - be/node_modules/
       - be/dist/
       - fe/node_modules/
-  retry: 2
 
 videos:
   stage: videos

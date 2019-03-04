@@ -22,7 +22,7 @@ export class InventoryProductLocationPage {
         break;
       console.log(await sibling.getText());  
     }
-    let target = element(by.css('div[class="ag-column-drop ag-font-style ag-column-drop-vertical ag-column-drop-row-group"]'));
+    let target = element(by.css('div[class*="ag-tool-panel-wrapper"]')).element(by.css('div[class*="ag-column-drop-row-group"]'));
     // This shit is still not working ... elements look good
     browser.driver.actions().dragAndDrop(elem,target).perform();
   }
