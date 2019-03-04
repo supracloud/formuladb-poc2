@@ -1,7 +1,7 @@
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList, PropertyTypeFunctions } from "./functions_compiler";
 import { Token, TokenType, Suggestion } from "./formula_tokenizer";
 import * as Fuse from 'fuse.js';
-import { Schema } from "@core/domain/metadata/entity";
+import { Schema, Entity } from "@core/domain/metadata/entity";
 
 
 export class FormulaTokenizerSchemaChecker {
@@ -34,7 +34,7 @@ export class FormulaTokenizerSchemaChecker {
         token.foundInSchema = false;
       }
     } else if (TokenType.COLUMN_NAME === token.type) {
-      if (!Object.keys(this.schema.entities['' + token.tableName].props).find(p => p == token.columnName)) {
+      if (!Object.keys((this.schema.entities['' + token.tableName] ||{} as Entity).props || {}).find(p => p == token.columnName)) {
         token.errors.push("Unknown column " + token.columnName + " for table " + token.tableName);
         token.foundInSchema = false;
       }

@@ -14,6 +14,7 @@ import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
 import { Schema } from "@core/domain/metadata/entity";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
+import { CompiledFormula } from "@core/domain/metadata/execution_plan";
 
 
 
@@ -22,6 +23,15 @@ describe('Inventory Metadata', () => {
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
+
+    let cf1: CompiledFormula;
+    let cf2: CompiledFormula;
+    let cf3: CompiledFormula;
+    let pl1 = { _id: "ProductLocation~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
+    let ri1_1 = { _id: "ReceiptItem~~1__1", product_id: "ProductLocation~~1", quantity: 10}; 
+    let ri1_2 = { _id: "ReceiptItem~~1__2", product_id: "ProductLocation~~1", quantity: 5}; 
+    let oi1_1 = { _id: "OrderItem~~1__1", product_id: "ProductLocation~~1", quantity: 10};
+    let oi1_2 = { _id: "OrderItem~~1__2", product_id: "ProductLocation~~1", quantity: 4};
 
     const InventorySchema: Schema = {
         _id: "FRMDB_SCHEMA",
@@ -39,6 +49,16 @@ describe('Inventory Metadata', () => {
         await frmdbEngine.init();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+
+        cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
+        cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
+        cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);
+
+        await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
+        await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
+
         done();
     });
 
@@ -50,21 +70,7 @@ describe('Inventory Metadata', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it("Basic stock operations", async (done) => {
-
-        let cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
-        let cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
-        let cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);
-
-        let pl1 = { _id: "ProductLocation~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
-        await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
-        let ri1_1 = { _id: "ReceiptItem~~1__1", product_id: "ProductLocation~~1", quantity: 10}; 
-        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
-        let ri1_2 = { _id: "ReceiptItem~~1__2", product_id: "ProductLocation~~1", quantity: 5}; 
-        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
-        let oi1_1 = { _id: "OrderItem~~1__1", product_id: "ProductLocation~~1", quantity: 10};
-        await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
-        let oi1_2 = { _id: "OrderItem~~1__2", product_id: "ProductLocation~~1", quantity: 4};
+    fit("Basic stock operations", async (done) => {
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);

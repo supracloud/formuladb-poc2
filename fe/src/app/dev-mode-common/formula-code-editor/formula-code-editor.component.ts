@@ -84,7 +84,7 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   cursorMove(cursorPos: number) {
     let tokenAtCursor = this.currentTokens.find(x => x.pstart <= cursorPos && cursorPos <= x.pend)
-    if (tokenAtCursor && tokenAtCursor.tableName) {
+    if (tokenAtCursor && tokenAtCursor.tableName && tokenAtCursor.errors.length === 0) {
       let fragment = tokenAtCursor.tableName;
       this.router.navigate([this.router.url.replace(/(\/\d+).*/, (match, $1) => $1 + '/' + fragment)]);
     }

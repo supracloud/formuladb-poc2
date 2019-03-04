@@ -69,7 +69,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     inputLeave(val: string) {
-        const option = this.spotOptions.find(opt => opt[this.inputElement.refPropertyName] === val);
-        if (option) { this.selection$.next(option); }
+        // const option = this.spotOptions.find(opt => opt[this.inputElement.refPropertyName] === val);
+        // if (option) { this.selection$.next(option); }
     }
 }
