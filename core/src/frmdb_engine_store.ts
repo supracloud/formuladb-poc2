@@ -239,7 +239,7 @@ export class FrmdbEngineStore extends FrmdbStore {
         return _.unionBy(oldObs, newObs, '_id');
     }
 
-    public async getAggValueForObserver(observerObj, trigger: MapReduceTrigger): Promise<number | string> {
+    public async getAggValueForObserver(observerObj: DataObj, trigger: MapReduceTrigger): Promise<number | string> {
         // let defaultValue = this.getAggDefaultValue(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
         let mapQuery = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query;
         return this.reduceQuery(
@@ -274,7 +274,7 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async withLock(
         eventId: string,
         transacRetry: number,
-        getIds: (retryNb: number) => Promise<string[]>,
+        getIds: () => Promise<string[]>,
         lockAcquiredCallback: () => Promise<any>) {
         return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
     }

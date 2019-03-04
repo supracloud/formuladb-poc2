@@ -10,9 +10,9 @@ import { compileFormula } from '../../formula_compiler';
 import { evalExpression } from "../../map_reduce_utils";
 import { ProductLocation, ReceiptItem, OrderItem } from "./mock-metadata";
 import { KeyValueObj } from "@core/domain/key_value_obj";
-import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
+import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormula, ServerEventSetPropertyN } from "@core/domain/event";
 import { FrmdbEngine } from "../../frmdb_engine";
-import { Schema } from "@core/domain/metadata/entity";
+import { Schema, Pn, FormulaProperty } from "@core/domain/metadata/entity";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 import { CompiledFormula } from "@core/domain/metadata/execution_plan";
 
@@ -50,15 +50,6 @@ describe('Inventory Metadata', () => {
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
 
-        cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
-        cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
-        cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);
-
-        await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
-        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
-        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
-        await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
-
         done();
     });
 
@@ -70,7 +61,15 @@ describe('Inventory Metadata', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    fit("Basic stock operations", async (done) => {
+    it("Basic stock operations", async (done) => {
+        cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
+        cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
+        cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);
+
+        await frmdbEngine.putDataObjAndUpdateViews(null, pl1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, ri1_2);
+        await frmdbEngine.putDataObjAndUpdateViews(null, oi1_1);
 
         let obs = await frmdbTStore.getObserversOfObservable(ri1_1, cf1.triggers![0]);
         expect(obs[0]).toEqual(pl1);
@@ -127,4 +126,32 @@ describe('Inventory Metadata', () => {
         
         done();
     });
+
+    it("Change formula", async (done) => {
+        await putObj(pl1);
+        await putObj(ri1_1);
+        await putObj(ri1_2);
+        await putObj(oi1_1);
+
+        let pl1After = await frmdbTStore.getDataObj(pl1._id) as any;
+        expect(pl1After).toEqual(jasmine.objectContaining({received_stock__: ri1_1.quantity + ri1_2.quantity}));
+
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+            _id: 'ABC123',
+            type_: ServerEventSetPropertyN,
+            targetEntity: _.cloneDeep(ProductLocation),
+            property: {
+                name: 'received_stock__',
+                propType_: Pn.FORMULA,
+                formula: 'COUNTIF(ReceiptItem.quantity, product_id == @[_id])',
+            } as FormulaProperty,
+            state_: "BEGIN",
+            clientId_: 'ABC'
+        }) as ServerEventPreviewFormula;
+        
+        pl1After = await frmdbTStore.getDataObj(pl1._id) as any;
+        expect(pl1After).toEqual(jasmine.objectContaining({received_stock__: 2}));
+        
+        done();
+    })
 });
