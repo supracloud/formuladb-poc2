@@ -11,7 +11,7 @@ import { j2str } from '../crosscutting/utils/j2str';
 import { UserModifiedFormData } from '../frmdb-streams/frmdb-user-events';
 import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
 import * as _ from 'lodash';
-import { NodeType, NodeElement } from '@core/domain/uimetadata/form';
+import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/form';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 
 @Injectable()
@@ -41,11 +41,10 @@ export class FormEditingService {
     const ctrl = new FrmdbFormControl(name, formState, {
       updateOn: 'blur',
       validators: [
-        // this.formEditingService.propertyValidator()
-        //TODO: refactor FormEditingService and FrmdbStreamsService
+        this.propertyValidator()
       ],
       asyncValidators: [
-        // this.formEditingService.asycValidator()
+        // this.asycValidator()
         // this.testAsyncValidator.validate.bind(this.testAsyncValidator),
       ]
     });
@@ -157,21 +156,21 @@ export class FormEditingService {
 
   public getOptions(entityName: string, property: string, startWith: string): Promise<any[]> {
     return this.backendService.simpleAdHocQuery(entityName, {
-      "startRow": 0,
-      "endRow": 25,
-      "rowGroupCols": [],
-      "valueCols": [],
-      "pivotCols": [],
-      "pivotMode": false,
-      "groupKeys": [],
-      "filterModel": {
+      startRow: 0,
+      endRow: 25,
+      rowGroupCols: [],
+      valueCols: [],
+      pivotCols: [],
+      pivotMode: false,
+      groupKeys: [],
+      filterModel: {
           [property]: {
-              "type": "contains",
-              "filter": startWith,
-              "filterType": "text"
+              type: "contains",
+              filter: startWith,
+              filterType: "text"
           }
       },
-      "sortModel": [],
+      sortModel: [],
     } as SimpleAddHocQuery);
   }
 

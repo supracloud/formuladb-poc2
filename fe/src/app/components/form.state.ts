@@ -6,7 +6,7 @@
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj, mergeSubObj } from "@core/domain/metadata/data_obj";
-import { Form, NodeElement, isNodeElementWithChildren, NodeType } from "@core/domain/uimetadata/form";
+import { Form, NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete } from "@core/domain/uimetadata/form";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
 
@@ -14,12 +14,19 @@ export { DataObj };
 export { Form };
 export { ChangeObj, applyChanges };
 
+export class RelatedAutoCompleteControls {
+  entityName: string;
+  entityAlias: string;
+  controls: FormAutocomplete[];
+}
+
 export interface FormState {
   form: Form | null;
   formData: DataObj | null;
   eventFromBackend: events.MwzEvents | null;
   formReadOnly: boolean;
   dragged: NodeElement | null;
+  relatedAutoCompleteControls: RelatedAutoCompleteControls | null;
 }
 
 export const formInitialState: FormState = {
@@ -27,7 +34,8 @@ export const formInitialState: FormState = {
   formData: null,
   eventFromBackend: null,
   formReadOnly: true,
-  dragged: null
+  dragged: null,
+  relatedAutoCompleteControls: null,
 };
 
 export const FormDataFromBackendActionN = "[form] FormDataFromBackendAction";
@@ -39,7 +47,7 @@ export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
 export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
 export const FormAddActionN = '[form] FormAddAction';
-
+export const UserEnteredAutocompleteTextN = '[form] UserEnteredAutocompleteText';
 
 export class FormDataFromBackendAction implements Action {
   readonly type = FormDataFromBackendActionN;
@@ -124,6 +132,11 @@ export class FormSwitchTypeAction implements Action {
   constructor(public payload: { node: NodeElement, toType: NodeType }) { }
 }
 
+export class UserEnteredAutocompleteText implements Action {
+  readonly type = UserEnteredAutocompleteTextN;
+
+  constructor(public text: string, formNode: FormAutocomplete) { }
+}
 
 
 export type FormActions =
@@ -138,6 +151,7 @@ export type FormActions =
   | FormDeleteAction
   | FormSwitchTypeAction
   | FormAddAction
+  | UserEnteredAutocompleteText
   ;
 
 
@@ -271,4 +285,8 @@ export const getFormState = createSelector(
 export const getFormReadOnly = createSelector(
   getForm,
   (state: FormState) => state ? state.formReadOnly : formInitialState.formReadOnly
+);
+export const getRelatedAutoCompleteControls = createSelector(
+  getForm,
+  (state: FormState) => state ? state.relatedAutoCompleteControls : formInitialState.relatedAutoCompleteControls
 );

@@ -32,6 +32,7 @@ export interface UserCollapsedNavItem {
     collapsed: boolean;
 }
 
+
 export type UserEvent = 
     | UserModifiedFormData
     | UserDeletedFormData

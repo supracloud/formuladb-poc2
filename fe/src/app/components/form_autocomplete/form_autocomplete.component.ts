@@ -17,6 +17,7 @@ import { switchMap, map, filter } from 'rxjs/operators';
 import { FormEditingService } from '../form-editing.service';
 import { Pn } from '@core/domain/metadata/entity';
 import { CircularJSON } from '@core/json-stringify';
+import * as appState from 'src/app/app.state';
 
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
@@ -64,7 +65,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
     inputChange(val: string) {
         if (val.length > 2) {
-            this.userInput$.next(val);
+            this.frmdbStreams.action(new appState.UserEnteredAutocompleteText(val, this.inputElement));
         }
     }
 
