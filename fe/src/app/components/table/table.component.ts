@@ -79,7 +79,7 @@ export class TableComponent implements OnInit, OnDestroy {
         private i18npipe: I18nPipe) {
         // tslint:disable-next-line:max-line-length
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
-        this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
+        // this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
         this.defaultColDef = {
             width: 100,
             headerComponentParams: { menuIcon: 'fa-bars' }
@@ -211,7 +211,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     columnMoved(event: ColumnMovedEvent) {
         if (this.tableState) {
-            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
+            // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
     }
 
@@ -220,7 +220,7 @@ export class TableComponent implements OnInit, OnDestroy {
             const col = (this.tableState.columns || [])
                 .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
             if (col) { col.width = event.column.getActualWidth(); }
-            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
+            // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
     }
 
@@ -250,7 +250,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     c.sort = undefined;
                 }
             });
-            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
+            // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
         this.sort = this.gridApi.getSortModel();
     }

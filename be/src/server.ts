@@ -16,13 +16,13 @@ import { FrmdbEngine } from "@core/frmdb_engine";
 import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
 
 let frmdbEngine: FrmdbEngine;
-const devMode = true;
+const devMode = false;
 let mockMetadata = new MockMetadata(ExampleApps.test);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
   if (devMode) {
-    frmdbEngine = await loadTestData(mockMetadata.schema)
+    // frmdbEngine = await loadTestData(mockMetadata.schema)
   } else {
     frmdbEngine = await getFrmdbEngine({_id: "FRMDB_SCHEMA", entities: {}});
     let schema = await frmdbEngine.frmdbEngineStore.getSchema();

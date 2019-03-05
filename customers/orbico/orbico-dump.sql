@@ -17,7 +17,8 @@ COPY (
         pr.barcode as barcode,
         prlp.quantity as quantity,
         prlp.quantity_error as quantityerror,
-        prlp.price as price,
+        pr.price as price,
+        pr.name as product_name,
         ord.state as ordstate,
         ord.actor_code as agentcode
     FROM

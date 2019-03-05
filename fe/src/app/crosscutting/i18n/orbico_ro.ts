@@ -1,5 +1,5 @@
 export const Orbico_ro = {
-    DeliveryRate: 'Rata de Livrare',
+    REP__DeliveryRate: 'Rata de Livrare',
     ordernb: 'Nr Comanda',
     externalordernb: 'Nr extern Comanda',
     ordercreationdate: 'Data Creare Comanda',
@@ -20,7 +20,7 @@ export const Orbico_ro = {
     ordstate: 'Stare Comansda',
     agentcode: 'Cod Agent',
 
-    Orders: 'Comenzi',
+    REP__Orders: 'Comenzi',
     id: 'Nr',
     state: 'stare',
     client_code: 'Cod Client',
@@ -32,4 +32,17 @@ export const Orbico_ro = {
     details: 'Detalii',
     created_at: 'Data Creare',
     updated_at: 'Data ultimei modificari',
+    wms_id: "WMS id",
+    wms_aviz: "WMS aviz",
+    wms_awb: "WMS awb",
+    wms_statusorderwms: "WMS Stare Comanda",
+    wms_statusawb: "WMS Stare AWB",
+    wms_deliveryaddress: "WMS Adresa de Livrare",
+    wms_insertdate: "WMS insertdate",
+    wms_imported: "WMS imported",
+    wms_importdate: "WMS importdate",
+
+    REP__TopCust: 'Top 10 Clienti cu Lipsuri',
+    REP__TopProd: 'Top 10 Produse cu Lipsuri',
+
 };

@@ -8,5 +8,8 @@
         (cellFocused)="onCellFocused($event)" enableSorting="true" enableFilter="true" floatingFilter="true"
         [autoGroupColumnDef]="autoGroupColumnDef" [sideBar]="sideBar" (gridReady)="onGridReady($event)" (columnMoved)="columnMoving($event)"
         (dragStopped)="columnMoved($event)" (columnResized)="columnResized($event)" (filterChanged)="filterChanged($event)"
-        (sortChanged)="sortChanged($event)" rowModelType="serverSide" enableRangeSelection="true" [statusBar]="statusBar"></ag-grid-angular>
+        (sortChanged)="sortChanged($event)" rowModelType="serverSide" enableRangeSelection="true" [statusBar]="statusBar"
+        (firstDataRendered)="onFirstDataRendered($event)"
+    >
+    </ag-grid-angular>
 </div>

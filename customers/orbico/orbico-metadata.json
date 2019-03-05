@@ -1,11 +1,6 @@
 {
     "_id": "FRMDB_SCHEMA",
     "entities": {
-        "REP": {
-            "_id": "REP",
-            "module_": true,
-            "props": {}
-        },
         "REP__Orders": {
             "_id": "REP__Orders",
             "props": {
@@ -55,6 +50,22 @@
                 "barcode": { "name": "barcode", "propType_": "STRING", "allowNull": false },
                 "ordstate": { "name": "ordstate", "propType_": "STRING", "allowNull": false },
                 "agentcode": { "name": "agentcode", "propType_": "STRING", "allowNull": false }
+            }
+        },
+        "REP__TopCust": {
+            "_id": "REP__TopCust",
+            "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
+                "client": { "name": "client", "propType_": "STRING"},
+                "errors": { "name": "errors", "propType_": "STRING"}
+            }
+        },        
+        "REP__TopProd": {
+            "_id": "REP__TopProd",
+            "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
+                "barcode": { "name": "barcode", "propType_": "STRING"},
+                "errors": { "name": "errors", "propType_": "STRING"}
             }
         }
     }

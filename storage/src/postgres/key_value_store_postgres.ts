@@ -301,7 +301,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {
         await this.initialize();
         let query = this.sqlQueryCreator.createSqlQuery(this.table_id!, squery);
-        let res = await this.getDB().any(query);
+        let res = await this.getDB().any(query.replace(/\b_id_1\b/g, '_id'));//FIXME: why ag-grid sends _id_1 ? because column name starts with _ ?
         return res;
     }
 
