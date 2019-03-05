@@ -227,6 +227,7 @@ export class FormAutocomplete implements SubObj {
     readonly nodeType = NodeType.form_autocomplete;
     _id: string;
     noLabel?: boolean;
+    refEntityAlias?: string;
     refEntityName: string;
     refPropertyName: string;
     propertyName: string;

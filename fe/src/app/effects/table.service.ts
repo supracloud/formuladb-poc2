@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BackendService } from '../../backend.service';
+import { BackendService } from './backend.service';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 import { Entity } from '@core/domain/metadata/entity';

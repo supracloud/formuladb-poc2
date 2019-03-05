@@ -33,7 +33,7 @@ export interface UserCollapsedNavItem {
 }
 
 
-export type UserEvent = 
+export type FrmdbUserEvent = 
     | UserModifiedFormData
     | UserDeletedFormData
     | UserDraggedFormElement

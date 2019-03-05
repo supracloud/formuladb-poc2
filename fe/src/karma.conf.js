@@ -41,7 +41,13 @@ module.exports = function (config) {
     colors: true,
     logLevel: process.platform === "win32" ? config.LOG_INFO : config.LOG_WARN,
     autoWatch: true,
-    browsers: [process.platform === "win32" ? "Chrome" : "ChromeHeadless"],
-    singleRun: false
+    browsers: [process.platform === "win32" ? "ChromeDebugging" : "ChromeHeadless"],
+    singleRun: false,
+    customLaunchers: {
+      ChromeDebugging: {
+        base: 'Chrome',
+        flags: [ '--remote-debugging-port=9369' ]
+      }
+    },    
   });
 };

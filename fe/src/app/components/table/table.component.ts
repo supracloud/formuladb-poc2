@@ -9,7 +9,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { Store } from '@ngrx/store';
 
-import * as tableState from './table.state';
+import * as tableState from '../../state/table.state';
 import { TableColumn } from "@core/domain/uimetadata/table";
 import {
     GridOptions, GridApi, GridReadyEvent,
@@ -17,13 +17,13 @@ import {
     RowClickedEvent, CellClickedEvent, CellFocusedEvent
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
-import * as fromTable from './table.state';
+import * as fromTable from '../../state/table.state';
 import * as _ from 'lodash';
 import { TableHeaderComponent } from './table-header.component';
 import { Entity } from "@core/domain/metadata/entity";
-import { TableService } from './table.service';
+import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
-import { FrmdbStreamsService } from '../../frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
 
 export class TableComponent implements OnInit, OnDestroy {
 

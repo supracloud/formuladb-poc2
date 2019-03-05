@@ -1,7 +1,7 @@
 import {Component, ViewChild, ElementRef} from '@angular/core';
 import { Observable } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 @Component({
     selector: 'app-loading-overlay',

@@ -18,22 +18,19 @@ import * as events from "@core/domain/event";
 import { Table, TableColumn, getDefaultTable } from "@core/domain/uimetadata/table";
 import { Form, NodeElement, NodeType, getDefaultForm } from "@core/domain/uimetadata/form";
 
-import * as appState from './app.state';
+import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
-import { TableFormBackendAction, FormulaPreviewFromBackend } from './app.state';
-import { FormDataFromBackendAction } from './components/form.state';
-import { EntitiesFromBackendFullLoadAction } from './entity-state';
+import { TableFormBackendAction, FormulaPreviewFromBackend } from '../state/app.state';
+import { FormDataFromBackendAction, FormNotifFromBackendAction, ResetFormDataFromBackendAction, FormFromBackendAction } from '../actions/form.backend.actions';
+import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ExampleApps } from "@core/test/mocks/mock-metadata";
-import { isNewDataObjId, isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
-import { FrmdbStreamsService } from './frmdb-streams/frmdb-streams.service';
-import * as serverEvents from './frmdb-streams/server-events';
+import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
+import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
 
 export type ActionsToBeSentToServer =
-    | appState.ServerEventModifiedFormData
-    | appState.ServerEventDeleteFormData
-    | appState.ServerEventModifiedForm
     | appState.ServerEventModifiedTable
     | appState.ServerEventNewEntity
     | appState.ServerEventDeleteEntity
@@ -93,7 +90,7 @@ export class AppEffects {
 
         switch (eventFromBe.type_) {
             case events.ServerEventModifiedFormN:
-                this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
+                this.store.dispatch(new FormNotifFromBackendAction(eventFromBe));
                 break;
             case events.ServerEventModifiedTableN: {
                 // this.store.dispatch(new appState.FormNotifFromBackendAction(event));
@@ -109,7 +106,7 @@ export class AppEffects {
                 if (isNewTopLevelDataObjId(id)) {
                     this.router.navigate([this.router.url.replace(/\w+~~$/, eventFromBe.obj._id)]);
                 } else {
-                    this.store.dispatch(new appState.FormNotifFromBackendAction(eventFromBe));
+                    this.store.dispatch(new FormNotifFromBackendAction(eventFromBe));
                     this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
                     console.error("FIXME, replicate changes from the server");
                 }
@@ -121,7 +118,7 @@ export class AppEffects {
                     this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
                 } else {
                     let obj = await this.backendService.getDataObj(id);
-                    this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj));
+                    this.store.dispatch(new ResetFormDataFromBackendAction(obj));
                 }
                 break;
             }
@@ -190,7 +187,7 @@ export class AppEffects {
     }
 
     private listenForServerEvents() {
-        this.actions$.pipe(ofType<ActionsToBeSentToServer>(...ActionsToBeSentToServerNames)).subscribe(action => {
+        this.actions$.pipe(ofType<AppServerEventAction>(AppServerEventActionN)).subscribe(action => {
             console.log("%c ----> " + action.event.type_ + " " + action.event._id,
                 "color: cyan; font-size: 115%; font-weight: bold; text-decoration: underline;", action.event);
             this.backendService.putEvent(action.event);
@@ -224,10 +221,10 @@ export class AppEffects {
         if (id && path && id != this.currentUrl.id) {
             this.currentUrl.id = id;
             if (id === path + '~~') {
-                this.store.dispatch(new appState.ResetFormDataFromBackendAction({_id: id}));
+                this.store.dispatch(new ResetFormDataFromBackendAction({_id: id}));
             } else {
                 this.backendService.getDataObj(id)
-                    .then(obj => this.store.dispatch(new appState.ResetFormDataFromBackendAction(obj)))
+                    .then(obj => this.store.dispatch(new ResetFormDataFromBackendAction(obj)))
                     .catch(err => console.error(err))
                     ;
             }
@@ -242,7 +239,7 @@ export class AppEffects {
         this.actions$.pipe(ofType<appState.ServerEventNewRow>(appState.ServerEventNewRowN)).subscribe(action => {
             this.currentUrl.id = generateUUID();
             this.router.navigate([this.currentUrl.entity!._id + '/' + this.currentUrl.id]);
-            this.store.dispatch(new appState.FormDataFromBackendAction({ _id: this.currentUrl.id }))
+            this.store.dispatch(new FormDataFromBackendAction({ _id: this.currentUrl.id }))
         });
     }
 
@@ -265,7 +262,7 @@ export class AppEffects {
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
             let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
-            this.store.dispatch(new appState.FormFromBackendAction(form));
+            this.store.dispatch(new FormFromBackendAction(form));
 
         } catch (err) {
             console.error(err, err.stack);

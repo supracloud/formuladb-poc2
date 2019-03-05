@@ -14,7 +14,6 @@ export { DataObj };
 export { ChangeObj, applyChanges };
 
 import { EntityProperty, Pn, Entity } from "@core/domain/metadata/entity";
-import { FormFromBackendActionN } from './components/form.state';
 
 export interface FormulaState {
   editorOn: boolean;

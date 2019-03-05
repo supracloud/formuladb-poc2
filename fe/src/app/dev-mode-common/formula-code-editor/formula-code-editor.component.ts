@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular
 
 import { Observable, Subscription, Subject } from 'rxjs';
 
-import { FormulaEditorService, UiToken } from '../formula-editor.service';
+import { FormulaEditorService, UiToken } from '../../effects/formula-editor.service';
 import { Router } from '@angular/router';
 import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
 import { faCheckCircle, faTimesCircle, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglass, faHourglassHalf, faTable, faHandPointRight, faShareSquare } from '@fortawesome/free-solid-svg-icons';

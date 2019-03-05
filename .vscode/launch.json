@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "FE serve",
             "type": "chrome",
@@ -61,6 +62,19 @@
             "outFiles": [
                 "${workspaceRoot}/be/dist/**/*.js"
             ]
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "FE specs",
+            "address": "localhost",
+            "port": 9369,
+            "sourceMaps": true,
+            "restart": "true",
+            "pathMapping": {
+                "/": "${workspaceRoot}/febe",
+                "/base/": "${workspaceRoot}/febe"
+            }
         },
         {
             "name": "ng e2e",

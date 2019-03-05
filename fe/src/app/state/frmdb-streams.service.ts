@@ -2,15 +2,19 @@ import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
 import { Form } from '@core/domain/uimetadata/form';
 import { DataObj } from '@core/domain/metadata/data_obj';
-import { UserEvent, UserModifiedFormData } from './frmdb-user-events';
+import { FrmdbUserEvent } from './frmdb-user-events';
 import { Table } from '@core/domain/uimetadata/table';
 import { Entity } from '@core/domain/metadata/entity';
-import { FormulaHighlightedColumns } from '../components/table/table.state';
-import { ServerEvent } from './server-events';
+import { FormulaHighlightedColumns } from './table.state';
+import { FrmdbServerEvent } from './frmdb-server-events';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
-import * as appState from 'src/app/app.state';
+import * as appState from '@fe/app/state/app.state';
 import { filter } from 'rxjs/operators';
+import { AppServerEventAction } from '../actions/app.actions';
+import { ServerEventModifiedFormData } from '../actions/form.backend.actions';
+import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@core/domain/event';
+import { FormDragAction } from '../actions/form.user.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -25,10 +29,10 @@ export class FrmdbStreamsService {
   public formulaHighlightedColumns$: Observable<FormulaHighlightedColumns>;
   public form$: Observable<Form>;
   public formData$: Observable<DataObj>;
-  public relatedAutoCompleteControls$: Observable<appState.RelatedAutoCompleteControls>;
+  public autoCompleteState$: Observable<appState.AutoCompleteState>;
 
-  public userEvents$: Subject<UserEvent> = new ReplaySubject();
-  public serverEvents$: Subject<ServerEvent> = new Subject();
+  public userEvents$: Subject<FrmdbUserEvent> = new ReplaySubject();
+  public serverEvents$: Subject<FrmdbServerEvent> = new Subject();
 
   constructor(protected store: Store<appState.AppState>) {
     this.devMode$ = this.store.select(appState.getDeveloperMode);
@@ -39,19 +43,19 @@ export class FrmdbStreamsService {
     this.table$ = this.store.select(appState.getTableState);
     this.formulaHighlightedColumns$ = this.store.select(appState.getTableHighlightColumns);
     this.entity$ = this.store.select(appState.getTableEntityState).pipe(filter<Entity>(x => x != null));
-    this.relatedAutoCompleteControls$ = this.store.select(appState.getRelatedAutoCompleteControls).pipe(filter<appState.RelatedAutoCompleteControls>(x => x != null));
+    this.autoCompleteState$ = this.store.select(appState.getAutoCompleteState).pipe(filter<appState.AutoCompleteState>(x => x != null));
 
     //TODO: remove these and use only ngrx Actions
     this.userEvents$.subscribe(userEvent => {
       switch (userEvent.type) {
         case "UserDraggedFormElement":
-          this.store.dispatch(new appState.FormDragAction(userEvent.nodeElement));
+          this.store.dispatch(new FormDragAction(userEvent.nodeElement));
           break;
         case "UserModifiedFormData":
-          this.store.dispatch(new appState.ServerEventModifiedFormData(userEvent.obj));
+          this.store.dispatch(new AppServerEventAction(new ServerEventModifiedFormDataEvent(userEvent.obj)));
           break;
         case "UserDeletedFormData":
-          this.store.dispatch(new appState.ServerEventDeleteFormData(userEvent.obj));
+          this.store.dispatch(new AppServerEventAction(new ServerEventDeletedFormDataEvent(userEvent.obj)));
           break;
         case "UserSelectedCell":
           this.store.dispatch(new appState.UserSelectCell(userEvent.columnName));
@@ -60,7 +64,7 @@ export class FrmdbStreamsService {
           this.store.dispatch(new appState.UserSelectRow(userEvent.dataObj));
           break;
         case "UserModifiedTableUi":
-          this.store.dispatch(new appState.ServerEventModifiedTable(userEvent.table));
+          this.store.dispatch(new AppServerEventAction(new ServerEventModifiedTableEvent(userEvent.table)));
           break;
         case "UserCollapsedNavItem":
           this.store.dispatch(new appState.CollapsedEntityAction(userEvent.id, userEvent.collapsed));

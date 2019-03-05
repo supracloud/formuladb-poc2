@@ -8,7 +8,7 @@ import { NavigationItem } from './navigation.item';
 import { Observable } from 'rxjs';
 
 import { FormEditingService } from '../form-editing.service';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 
 export class VNavSegmentComponent implements OnInit {

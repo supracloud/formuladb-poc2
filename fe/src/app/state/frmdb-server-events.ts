@@ -1,6 +1,4 @@
 import { DataObj } from "@core/domain/metadata/data_obj";
-import { NodeElement } from "@core/domain/uimetadata/form";
-import { Table } from "@core/domain/uimetadata/table";
 
 export interface ServerModifiedFormData {
     type: 'ServerModifiedFormData';
@@ -12,7 +10,7 @@ export interface ServerDeletedFormData {
 }
 
 
-export type ServerEvent = 
+export type FrmdbServerEvent = 
     | ServerModifiedFormData
     | ServerDeletedFormData
 ;

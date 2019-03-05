@@ -4,59 +4,53 @@
  */
 
 import {
-    Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
-    Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
-    forwardRef
+    OnInit, OnDestroy
 } from '@angular/core';
 
 import { BaseNodeComponent } from '../base_node';
 
-import { FormAutocomplete, NodeType } from "@core/domain/uimetadata/form";
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { switchMap, map, filter } from 'rxjs/operators';
+import { FormAutocomplete } from "@core/domain/uimetadata/form";
 import { FormEditingService } from '../form-editing.service';
-import { Pn } from '@core/domain/metadata/entity';
-import { CircularJSON } from '@core/json-stringify';
-import * as appState from 'src/app/app.state';
+import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/app/actions/form.user.actions';
+import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
     inputElement: FormAutocomplete;
-
-    userInput$ = new BehaviorSubject('');
-
-    value$: Observable<string>;
-
-    optionsFn$: (search: string) => Observable<any[]>;
-
     options: string[] = [];
-
-    selection$: Subject<any>;
-
     spotOptions: any[];
 
-    constructor(formEditingService: FormEditingService) {
+    constructor(formEditingService: FormEditingService, private i18npipe: I18nPipe) {
         super(formEditingService);
     }
 
     ngOnInit(): void {
         this.inputElement = this.nodeElement as FormAutocomplete;
-        this.subscriptions.push(this.userInput$.subscribe(async (userInput) => {
-            let referencedRows = await this.formEditingService.getOptions(this.inputElement.refEntityName, this.inputElement.refPropertyName, userInput);
-            this.options = referencedRows.map(row => row[this.inputElement.refPropertyName]);
-        }))
 
-        this.selection$ = this.formEditingService.getAutoComplete(this.inputElement.refEntityName);
-        this.subscriptions.push(
-            this.selection$.pipe(
-                filter(s => s !== null && s !== undefined),
-                map(s => s[this.inputElement.refPropertyName])
-            ).subscribe(x => {
+        this.subscriptions.push(this.frmdbStreams.autoCompleteState$.subscribe(async (autoCompleteState) => {
+            let relatedAutoCompleteControlsState = autoCompleteState[this.inputElement.refEntityAlias || this.inputElement.refEntityName];
+            if (!relatedAutoCompleteControlsState) return;
+            this.options = relatedAutoCompleteControlsState.options.map(row => {
+                let valueForCurrentControl = row[this.inputElement.refPropertyName];
+                let relatedControlsValues: string[] = [];
+                for (let relatedControl of Object.values(relatedAutoCompleteControlsState.controls)) {
+                    if (relatedControl.propertyName === this.inputElement.propertyName) continue;
+                    relatedControlsValues.push(this.i18npipe.transform(relatedControl.propertyName) + ': ' 
+                        + row[relatedControl.propertyName]);
+                }
+
+                return valueForCurrentControl + " (" + relatedControlsValues.join(", ") + ")"; 
+            });
+
+            if (relatedAutoCompleteControlsState.selectedOption) {
                 let ctrl = this.topLevelFormGroup.get(this.parentFormPath);
-                if (!ctrl) throw new Error("Control not found for autocomplete " + CircularJSON.stringify(this.topLevelFormGroup) + ", " + this.parentFormPath);
-                ctrl.reset(x);
-            })
-        );
+                if (!ctrl) console.warn("Control not found for autocomplete ", this.topLevelFormGroup, this.parentFormPath);
+                else {
+                    ctrl.reset(relatedAutoCompleteControlsState.selectedOption[this.inputElement.refPropertyName]);
+                }
+            }
+        }));
+
     }
 
     ngOnDestroy(): void {
@@ -65,12 +59,11 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
     inputChange(val: string) {
         if (val.length > 2) {
-            this.frmdbStreams.action(new appState.UserEnteredAutocompleteText(val, this.inputElement));
+            this.frmdbStreams.action(new UserEnteredAutocompleteText(val, this.inputElement));
         }
     }
 
     inputLeave(val: string) {
-        // const option = this.spotOptions.find(opt => opt[this.inputElement.refPropertyName] === val);
-        // if (option) { this.selection$.next(option); }
+        this.frmdbStreams.action(new UserChoseAutocompleteOption(val, this.inputElement));
     }
 }

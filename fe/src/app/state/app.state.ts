@@ -28,17 +28,18 @@ export { ChangeObj, applyChanges };
 import * as fromCore from './core.state';
 import * as fromTheme from './theme.state';
 import * as fromEntity from "./entity-state";
-import * as fromTable from './components/table/table.state';
-import * as fromForm from './components/form.state';
-import * as fromI18n from './crosscutting/i18n/i18n.state';
+import * as fromTable from './table.state';
+import * as fromForm from './form.state';
+import * as fromI18n from './i18n.state';
 import * as fromFormula from './formula.state'
+import { AppServerEventAction } from '../actions/app.actions';
 
 export * from "./entity-state";
-export * from "./components/table/table.state";
-export * from "./components/form.state";
+export * from "./table.state";
+export * from "./form.state";
 export * from "./core.state";
 export * from "./theme.state";
-export * from "./crosscutting/i18n/i18n.state";
+export * from "./i18n.state";
 export * from './formula.state'
 
 export interface RouterState {
@@ -69,6 +70,7 @@ export const appInitialState = {
 };
 
 export type AppActions =
+  | AppServerEventAction
   | fromCore.CoresActions
   | fromTheme.ThemesActions
   | fromEntity.EntityActions

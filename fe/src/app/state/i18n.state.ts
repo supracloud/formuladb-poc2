@@ -4,8 +4,8 @@
  */
 
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
-import { Dictioary_ro } from './dictionary_ro';
-import { Dictioary_en } from './dictionary_en';
+import { Dictioary_ro } from '../crosscutting/i18n/dictionary_ro';
+import { Dictioary_en } from '../crosscutting/i18n/dictionary_en';
 
 let Dictionaries = {
     ro: Dictioary_ro,

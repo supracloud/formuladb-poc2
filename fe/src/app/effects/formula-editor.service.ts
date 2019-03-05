@@ -3,12 +3,12 @@ import { Observable, Subscription, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
 import { EntityProperty, Pn, FormulaProperty, Entity } from "@core/domain/metadata/entity";
-import * as appState from 'src/app/app.state';
+import * as appState from '@fe/app/state/app.state';
 import { map } from 'rxjs/operators';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from "@core/formula_tokenizer";
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
-import { BackendService } from '../backend.service';
-import { FormulaState, formulaEditorInitialState, entityProperty2Formula } from '../formula.state';
+import { BackendService } from './backend.service';
+import { FormulaState, formulaEditorInitialState, entityProperty2Formula } from '../state/formula.state';
 import { PickOmit } from '@core/ts-utils';
 
 const STYLES = [

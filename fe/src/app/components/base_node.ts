@@ -8,7 +8,7 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
-import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } from '@core/domain/metadata/data_obj';
 import { FormEditingService } from './form-editing.service';
 
