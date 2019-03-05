@@ -5,7 +5,9 @@ FROM node:8
 # where available (npm@5+)
 COPY package.json /package.json
 
-RUN npm install  --only=production
+RUN npm install  --only=production && \
+  apt-get update && \
+  apt-get install -y socat net-tools
 
 COPY dist/be/src/server.js /dist/be/src/server.js
 COPY .env.prod /.env

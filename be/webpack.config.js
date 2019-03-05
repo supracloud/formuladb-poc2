@@ -48,7 +48,7 @@ module.exports = {
   plugins: [
     new webpack.SourceMapDevToolPlugin({
       filename: 'dist/[file].map',
-      publicPath: 'https://localhost:5050/',
+      publicPath: 'http://localhost:5050/',
       fileContext: 'public'
     })
   ]
