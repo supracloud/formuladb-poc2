@@ -44,7 +44,7 @@ module.exports = {
       }),
     ],
   },
-  devtool: 'source-map',
+  devtool: false,
   plugins: [
     new webpack.SourceMapDevToolPlugin({
       filename: 'dist/[file].map',
