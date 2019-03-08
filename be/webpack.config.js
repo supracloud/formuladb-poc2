@@ -49,7 +49,8 @@ module.exports = {
     new webpack.SourceMapDevToolPlugin({
       filename: 'dist/[file].map',
       publicPath: 'http://localhost:5050/',
-      fileContext: 'public'
+      fileContext: 'public',
+      moduleFilenameTemplate: '[resource-path]'
     })
   ]
 };

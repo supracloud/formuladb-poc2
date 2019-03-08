@@ -18,17 +18,21 @@ build:
     - cd ..
     - cd be
     - npm run build-prod
-    - docker build -t formuladb-be .
-    - echo "TODO push to registry"
-    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
-    - docker build -t formuladb-be-sourcemaps -f Dockerfile.map .
-    - docker tag formuladb-be-sourcemaps registry.gitlab.com/metawiz/febe/formuladb-be-sourcemaps:0.0.1
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-be-sourcemaps:0.0.1
-    - npm run compile
     - cd ..
     - cd fe
     - npm run build -- --prod --deploy-url=/formuladb/ --base-href=/formuladb/ --source-map
+    - cd ..
+    - docker build -t formuladb-sourcemaps -f Dockerfile.map .
+    - docker tag formuladb-sourcemaps registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:0.0.1
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:0.0.1
+    - cd be
+    - docker build -t formuladb-be .
+    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - npm run compile
+    - cd ..
+    - cd fe
+    - rm dist/fe/*.js.map
     - docker build -t formuladb-fe .
     - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
     - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
