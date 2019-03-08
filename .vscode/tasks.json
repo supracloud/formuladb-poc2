@@ -16,6 +16,7 @@
             "options": {
                 "cwd": "./fe",
             },
+            "terminalGroup": "run_febe",
             "presentation": {
                 "echo": true,
                 "reveal": "never",
@@ -63,6 +64,7 @@
                 "run",
                 "serve"
             ],
+            "terminalGroup": "run_febe",
             "presentation": {
                 "echo": true,
                 "reveal": "always",

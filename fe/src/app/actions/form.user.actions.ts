@@ -19,7 +19,6 @@ export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
 export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
 export const FormAddActionN = '[form] FormAddAction';
-export const UserEnteredAutocompleteTextN = '[form] UserEnteredAutocompleteText';
 export const UserChoseAutocompleteOptionN = '[form] UserChoseAutocompleteOptionN';
 
 
@@ -54,14 +53,15 @@ export class FormSwitchTypeAction implements Action {
   constructor(public payload: { node: NodeElement, toType: NodeType }) { }
 }
 
+export const UserEnteredAutocompleteTextN = '[form] UserEnteredAutocompleteText';
 export class UserEnteredAutocompleteText implements Action {
   readonly type = UserEnteredAutocompleteTextN;
 
-  constructor(public text: string, public formAutocompleteNode: FormAutocomplete) { }
+  constructor(public currentObjId: string, public text: string, public formAutocompleteNode: FormAutocomplete) { }
 }
 
 export class UserChoseAutocompleteOption implements Action {
   readonly type = UserChoseAutocompleteOptionN;
 
-  constructor(public text: string, public formAutocompleteNode: FormAutocomplete) { }
+  constructor(public option: {}, public formAutocompleteNode: FormAutocomplete) { }
 }

@@ -48,7 +48,7 @@ export const FormAutoCompleteOptionsFromBackendActionN = "[form] FormAutoComplet
 export class FormAutoCompleteOptionsFromBackendAction implements Action {
   readonly type = FormAutoCompleteOptionsFromBackendActionN;
 
-  constructor(public formAutocomplete: FormAutocomplete, public rows: {}[]) { }
+  constructor(public currentObjId: string, public formAutocomplete: FormAutocomplete, public rows: {}[]) { }
 }
 
 export class ServerEventModifiedForm implements Action {

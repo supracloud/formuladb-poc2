@@ -170,7 +170,7 @@ export class FormInputComponent extends BaseFormInputComponent implements OnInit
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'frmdb-form_item',
+    selector: '[frmdb-form_item]',
     templateUrl: '../../components/form_item/form_item.component.html',
     styleUrls: ['../../components/form_item/form_item.component.scss']
 })

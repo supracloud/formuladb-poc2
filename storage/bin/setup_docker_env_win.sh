@@ -17,7 +17,7 @@ create-docker-env() {
         echo "The following steps assume you have installed:
             - https://www.virtualbox.org/wiki/Downloads
             - https://docs.docker.com/toolbox/toolbox_install_windows/
-         VBoxManage and docker* commands must be in your path.
+         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' and docker* commands must be in your path.
         "
         
         docker-machine create --virtualbox-cpu-count "2" --virtualbox-memory "12000" --virtualbox-disk-size "60000" docker1
@@ -30,14 +30,14 @@ create-docker-env() {
 
         echo '{ "insecure-registries":["nexus.computaris.net:4436"] }' | docker-machine ssh "docker1" sudo tee /etc/docker/daemon.json
         
-        VBoxManage controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
-        VBoxManage controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
-        VBoxManage controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
-        VBoxManage controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
 
         docker-machine stop docker1
-        VBoxManage sharedfolder add "docker1" --name "d" --hostpath "d:/" --automount
-        VBoxManage modifyvm docker1 --natdnshostresolver1 on
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' sharedfolder add "docker1" --name "d" --hostpath "d:/" --automount
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' modifyvm docker1 --natdnshostresolver1 on
         docker-machine start docker1
 
         # disable TLS

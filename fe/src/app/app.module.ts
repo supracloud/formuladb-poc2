@@ -24,6 +24,7 @@ import { ApplicationComponent } from './applications/application/application.com
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
+import { FormEffects } from './effects/form.effects';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
     AppRoutingModule,
     StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
     StoreRouterConnectingModule,
-    EffectsModule.forRoot([AppEffects]),
+    EffectsModule.forRoot([AppEffects, FormEffects]),
     NgbModule.forRoot(),
     HttpClientModule,
     FontAwesomeModule,

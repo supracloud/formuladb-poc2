@@ -14,6 +14,12 @@ import * as _ from 'lodash';
 import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/form';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 
+export class RelatedAutoCompleteControls {
+  controls: {[refPropertyName: string]: FormAutocomplete} = {};
+  options: {}[] = [];
+  selectedOption: {} | null;
+}
+
 @Injectable()
 export class FormEditingService {
   public formChangeDetectorRef: ChangeDetectorRef;

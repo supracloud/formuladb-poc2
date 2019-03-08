@@ -64,7 +64,9 @@ export class FrmdbStreamsService {
           this.store.dispatch(new appState.UserSelectRow(userEvent.dataObj));
           break;
         case "UserModifiedTableUi":
-          this.store.dispatch(new AppServerEventAction(new ServerEventModifiedTableEvent(userEvent.table)));
+          //FIXME: allow only the admin to change the "DEFAULT order of the table columns"
+          //Currently we sending to the server an event too often time a user
+          // this.store.dispatch(new AppServerEventAction(new ServerEventModifiedTableEvent(userEvent.table)));
           break;
         case "UserCollapsedNavItem":
           this.store.dispatch(new appState.CollapsedEntityAction(userEvent.id, userEvent.collapsed));

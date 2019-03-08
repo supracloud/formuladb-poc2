@@ -7,8 +7,6 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 
-import * as events from "@core/domain/event";
-
 import * as appState from '../state/app.state';
 import { BackendService } from "./backend.service";
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
@@ -43,8 +41,7 @@ export class FormEffects {
                 },
                 sortModel: [],
               } as SimpleAddHocQuery);
-            this.store.dispatch(new FormAutoCompleteOptionsFromBackendAction(action.formAutocompleteNode, referencedRows));
+            this.store.dispatch(new FormAutoCompleteOptionsFromBackendAction(action.currentObjId, action.formAutocompleteNode, referencedRows));
         });
-
     }
 }

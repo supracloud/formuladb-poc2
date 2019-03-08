@@ -17,14 +17,12 @@ export { DataObj };
 export { Form };
 export { ChangeObj, applyChanges };
 
-export class RelatedAutoCompleteControls {
-    controls: {[refPropertyName: string]: FormAutocomplete};
+export class AutoCompleteState {
+    controls: {[refPropertyName: string]: FormAutocomplete} = {};
     options: {}[] = [];
     selectedOption: {} | null;
-}
 
-export class AutoCompleteState {
-    [entityAlias: string]: RelatedAutoCompleteControls
+    constructor(public currentObjId: string, public entityAlias: string) {}
 }
 
 export interface FormState {
@@ -146,15 +144,38 @@ export function formReducer(state = formInitialState, action: FormActions): Form
                 ...state,
                 form: action.form,
             };
-            setAutoCompleteState(ret);
             break;
         case formServerActions.FormAutoCompleteOptionsFromBackendActionN:
-            ret = _.cloneDeep(state);
-            ((ret.autoCompleteState||{})
-                [action.formAutocomplete.refEntityAlias || action.formAutocomplete.refEntityName]||{})
-                .options = action.rows;
+            ret = {...state};
+            let incomingEntityName = action.formAutocomplete.refEntityAlias || action.formAutocomplete.refEntityName;
+            if (!ret.autoCompleteState || ret.autoCompleteState.entityAlias !== incomingEntityName || ret.autoCompleteState.currentObjId !== action.currentObjId) {
+                console.warn("Internal check failed for FormAutoCompleteOptionsFromBackendAction, autocomplete from backend does not match the state:", ret.autoCompleteState, action);
+            } else {
+                ret.autoCompleteState = {
+                   ...ret.autoCompleteState, 
+                   options: action.rows,
+                };
+            }
             break;
-
+        case formUserActions.UserEnteredAutocompleteTextN:
+            ret = {...state};
+            setAutoCompleteState(action.currentObjId, ret, action.formAutocompleteNode);
+            break;
+        case formUserActions.UserChoseAutocompleteOptionN:
+            if (!state.autoCompleteState || !state.autoCompleteState.options || _.find(state.autoCompleteState.options, action.option) ) {
+                console.warn("Internal check failed for UserChoseAutocompleteOption, autocomplete from backend does not match the state:", ret.autoCompleteState, action);
+            } else {
+                ret = {
+                    ...state,
+                    autoCompleteState: {
+                        ...state.autoCompleteState,
+                        selectedOption: action.option,
+                    },
+                };
+            }
+            break;
+        case formServerActions.FormAutoCompleteOptionsFromBackendActionN:
+            break;
         case formUserActions.FormDragActionN:
             return { ...state, dragged: action.payload }
 
@@ -182,17 +203,21 @@ export function formReducer(state = formInitialState, action: FormActions): Form
 }
 
 
-function setAutoCompleteState(state: FormState) {
+function setAutoCompleteState(currentObjId: string, state: FormState, autoCompleteNode: FormAutocomplete) {
     if (!state.form) return;
-    state.autoCompleteState = new AutoCompleteState();
+    state.autoCompleteState = new AutoCompleteState(currentObjId, autoCompleteNode.refEntityAlias || autoCompleteNode.refEntityName);
     walkForm(state.form.grid, state.autoCompleteState);
 }
 function walkForm(node: NodeElement, autoCompleteState: AutoCompleteState) {
     if (node.nodeType === NodeType.form_autocomplete) {
         let entityName = node.refEntityAlias || node.refEntityName;
-        let relatedAutoCompleteControls: RelatedAutoCompleteControls = autoCompleteState[entityName] || new RelatedAutoCompleteControls();
-        relatedAutoCompleteControls.controls[node.refPropertyName] = node;
-        autoCompleteState[entityName] = relatedAutoCompleteControls; 
+        if (autoCompleteState.entityAlias === entityName) {
+            autoCompleteState.controls[node.refPropertyName] = node;
+        }
+    } else if (isNodeElementWithChildren(node)) {
+        for (let childNode of node.childNodes || []) {
+            walkForm(childNode, autoCompleteState);
+        }
     }
 }
 

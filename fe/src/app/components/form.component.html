@@ -9,7 +9,7 @@
         </span>
     </div>
     <frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state>
-    <frmdb-form_item [nodeElement]="form?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
+    <div frmdb-form_item [nodeElement]="form?.grid" [topLevelFormGroup]="theFormGroup" parentFormPath="" [formReadOnly]="formReadOnly"
          *ngIf="null != form">
-    </frmdb-form_item>
+    </div>
 </form>

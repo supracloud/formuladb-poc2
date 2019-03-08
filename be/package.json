@@ -7,7 +7,7 @@
     "preserve": "rm -rf dist && tsc --inlineSourceMap -p src",
     "inspect": "kill-port 9231 && node --inspect=0.0.0.0:9231 dist/be/src/server.js",
     "nodemon-inspect": "nodemon --delay 100ms --watch dist --exec \"npm run inspect\"",
-    "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"sleep 40 && npm run nodemon-inspect\"",
+    "serve": "concurrently --kill-others \"tsc --inlineSourceMap -w -p src\" \"sleep 10 && npm run nodemon-inspect\"",
     "start": "node dist/be/src/server.js",
     "compile": "tsc --inlineSourceMap -p src",
     "compile:watch": "tsc --inlineSourceMap -w -p src",
