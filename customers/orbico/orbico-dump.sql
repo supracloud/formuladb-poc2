@@ -5,6 +5,7 @@ create view trep__deliveryrate AS
         ord.id as ordernb,
         ord.external_id as externalordernb,
         ord.created_at as ordercreationdate,
+        GREATEST(prlp.updated_at, ord.updated_at) as ordermodificationdate,
         ord.client_code as clientcode,
         cln.name as client,
         ord.address_code as addresscode,
@@ -33,14 +34,15 @@ create view trep__deliveryrate AS
         prlp.quantity_error > 0
         AND prlp.created_at >= '2019-01-01' AND prlp.created_at < '2020-01-01'
 ;
+
 -- ) TO '/home/sfa/bak/backups/delivery_report.csv';
 
 
 
 -- COPY (
-CREATE VIEW trep__orders2018 AS
+CREATE VIEW trep__orders AS
     SELECT 
-        'REP__Orders2018~~' || ord.id as _id,
+        'REP__Orders~~' || ord.id as _id,
         ord.state as state,
         ord.product_list_id as product_list_id,
         ord.client_code as client_code,
@@ -60,7 +62,7 @@ CREATE VIEW trep__orders2018 AS
         INNER JOIN addresses addr ON ord.address_code = addr.code
         INNER JOIN clients cln ON ord.client_code = cln.code
     WHERE 
-        ord.created_at >= '2018-01-01' AND ord.created_at < '2019-01-01'
+        ord.created_at >= '2019-01-01' AND ord.created_at < '2020-01-01'
 ;
 -- ) TO '/home/sfa/bak/backups/orders.csv';
 

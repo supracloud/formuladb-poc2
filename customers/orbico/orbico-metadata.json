@@ -97,6 +97,7 @@
                 "address": { "name": "address", "propType_": "STRING", "allowNull": false },
                 "externalordernb": { "name": "externalordernb", "propType_": "STRING", "allowNull": false },
                 "ordercreationdate": { "name": "ordercreationdate", "propType_": "STRING", "allowNull": false },
+                "ordermodificationdate": { "name": "ordermodificationdate", "propType_": "STRING", "allowNull": false },
                 "clientcode": { "name": "clientcode", "propType_": "STRING", "allowNull": false },
                 "addresscode": { "name": "addresscode", "propType_": "STRING", "allowNull": false },
                 "group1": { "name": "group1", "propType_": "STRING", "allowNull": false },
@@ -115,7 +116,7 @@
             "props": {
                 "_id": { "name": "_id", "propType_": "STRING"},
                 "client": { "name": "client", "propType_": "STRING"},
-                "errors": { "name": "errors", "propType_": "STRING"}
+                "errors": { "name": "errors", "propType_": "NUMBER"}
             }
         },        
         "REP__TopProd": {
@@ -123,7 +124,7 @@
             "props": {
                 "_id": { "name": "_id", "propType_": "STRING"},
                 "barcode": { "name": "barcode", "propType_": "STRING"},
-                "errors": { "name": "errors", "propType_": "STRING"}
+                "errors": { "name": "errors", "propType_": "NUMBER"}
             }
         }
     }

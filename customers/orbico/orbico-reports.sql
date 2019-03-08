@@ -1,4 +1,5 @@
 -- top 10 clients for errors
+insert into trep__topcust
 SELECT * FROM (
     SELECT 
         row_number() over() as _id,
@@ -8,9 +9,10 @@ SELECT * FROM (
     GROUP BY client
 ) as tmp
 ORDER BY total_errors DESC
-LIMIT 10;
+LIMIT 20;
 
 -- top 10 products for errors
+insert into trep__topprod
 SELECT * FROM (
     SELECT 
         row_number() over() as _id,
@@ -20,4 +22,4 @@ SELECT * FROM (
     GROUP BY barcode
 ) as tmp
 ORDER BY total_errors DESC
-LIMIT 10;
+LIMIT 20;
