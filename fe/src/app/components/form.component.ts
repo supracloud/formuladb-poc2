@@ -79,7 +79,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 combineLatest(this.frmdbStreams.formData$, this.frmdbStreams.readonlyMode$))
                 .subscribe(([form, formData, formReadOnly]) => {
                     try {
-                        this.formReadOnly = formReadOnly;
+                        this.formReadOnly = formReadOnly || form.isEditable !== true;
                         this.syncReadonly(formReadOnly, this.theFormGroup);
 
                         this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);

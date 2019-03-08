@@ -34,7 +34,7 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
-    get type(): string {
+    get representation(): string {
         if (this.nodeElement.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodeElement));
         return this.nodeElement.representation || 'paragraph';
     }

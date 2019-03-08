@@ -40,7 +40,7 @@ export enum NodeType {
     h_filters = "h_filters",
     button = "button",
     button_group = "button_group",
-    card_container="card_container"
+    card_container = "card_container"
 }
 
 
@@ -49,6 +49,7 @@ export class Form implements KeyValueObj {
     _rev?: string;
     grid: FormGrid;
     stateGraph?: EntityStateGraph;
+    isEditable?: boolean;
 }
 export function isForm(param: KeyValueObj): param is Form {
     return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;
@@ -116,7 +117,9 @@ export type PropertyNodeElement = FormInput | FormTimepicker | FormDatepicker;
 export function isPropertyNodeElement(nodeEl: NodeElement): nodeEl is PropertyNodeElement {
     return nodeEl.nodeType === NodeType.form_input
         || nodeEl.nodeType === NodeType.form_timepicker
-        || nodeEl.nodeType === NodeType.form_datepicker;
+        || nodeEl.nodeType === NodeType.form_datepicker
+        || nodeEl.nodeType === NodeType.form_text
+    ;
 }
 
 export function isKnownNodeElement(nodeType: string) {
@@ -162,6 +165,11 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             child = new FormDatepicker();
             child.propertyName = pn.name;
             child.propertyType = pn.propType_;
+        } else if (pn.propType_ === Pn.LINK) {
+            child = new FormText();
+            child.propertyName = pn.name;
+            child.propertyType = pn.propType_;
+            child.representation = "link";
         } else {
             child = new FormInput();
             if (parentFormEl.nodeType === NodeType.form_table) {
@@ -220,7 +228,7 @@ export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
     propertyName: string;
-    representation: "heading" | "paragraph" | "caption" | "jumbo";
+    representation: "heading" | "paragraph" | "caption" | "jumbo" | "link";
     uppercase?: boolean;
 }
 export class FormAutocomplete implements SubObj {

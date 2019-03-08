@@ -83,7 +83,9 @@ export class FormEditingService {
       } else if (nodeEl.nodeType === NodeType.form_input
         || nodeEl.nodeType === NodeType.form_autocomplete
         || nodeEl.nodeType === NodeType.form_datepicker
-        || nodeEl.nodeType === NodeType.form_timepicker) {
+        || nodeEl.nodeType === NodeType.form_timepicker
+        || nodeEl.nodeType === NodeType.form_text
+      ) {
         if (nodeEl.propertyName === 'type_') { return; }
         if (nodeEl.propertyName === '_id' || nodeEl.propertyName === '_rev') { disabled = true; }
         if (parentFormGroup.get(nodeEl.propertyName) == null) {

@@ -75,12 +75,13 @@ copy2pg() {
 }
 putSchema() {
     SCHEMA_FILE=$1
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} localhost:8084/api/bla/schema
+    PORT=$2
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-8084}/api/bla/schema
 }
 #putSchema customers/orbico/orbico-metadata.json
 putBulk() {
     DATA_FILE=$1
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} localhost:8084/api/bla/bulk
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:8084/api/bla/bulk
 }
 
 startFrmdb() {

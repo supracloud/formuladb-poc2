@@ -92,6 +92,7 @@ export const enum Pn {
     DOCUMENT = "TEXT",
     DATETIME = "DATETIME",
     DURATION = "DURATION",
+    LINK = "LINK",
     ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
@@ -137,6 +138,13 @@ export interface AttachmentProperty {
     name: string;
     mediaType: "pdf" | "png" | "jpg" | "gif" | "csv" | "docx" | "xlsx";
     url: string;
+}
+
+export interface LinkProperty {
+    propType_: Pn.LINK;
+    name: string;
+    defaultValue?: string;
+    allowNull?: boolean;
 }
 
 /**
@@ -199,6 +207,7 @@ export type EntityProperty =
     | DocumentProperty
     | DatetimeProperty
     | DurationProperty
+    | LinkProperty
     | AttachmentProperty
     | ChildTableProperty
     | ExtendsEntityProperty

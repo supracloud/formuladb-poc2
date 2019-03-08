@@ -61,6 +61,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private selectedRowIdx: number;
     private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
+    private gridColumnApi;
     private columns: any[] = [];
     private filters: any = {};
     private sort: any = {};
@@ -119,6 +120,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onGridReady(params: GridReadyEvent) {
         this.gridApi = params.api as GridApi;
+        this.gridColumnApi = params.columnApi;
         this.subscriptions.push(this.frmdbStreams.entity$
             .subscribe(e => {
                 if (e) {
@@ -185,17 +187,17 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onCellFocused(event: CellFocusedEvent) {
         if (event.column && event.column.getColDef() && event.column.getColDef().field) {
-            this.frmdbStreams.userEvents$.next({type: "UserSelectedCell", columnName: event.column.getColDef().field!});
+            this.frmdbStreams.userEvents$.next({ type: "UserSelectedCell", columnName: event.column.getColDef().field! });
         }
     }
 
     onRowClicked(event: RowClickedEvent) {
-        this.frmdbStreams.userEvents$.next({type: "UserSelectedRow", dataObj: event.data});
+        this.frmdbStreams.userEvents$.next({ type: "UserSelectedRow", dataObj: event.data });
         this.currentRow = event.data;
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
-        if (event.data._id && this.currentEntity && this.currentEntity.isEditable) {
+        if (event.data._id && this.currentEntity) {
             this.router.navigate(['./' + event.data._id], { relativeTo: this.route });
         }
     }
@@ -234,7 +236,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     c.filter = undefined;
                 }
             });
-            this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
+            this.frmdbStreams.userEvents$.next({ type: "UserModifiedTableUi", table: this.tableState });
         }
         this.filters = this.gridApi.getFilterModel();
     }
@@ -260,16 +262,24 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     addRow() {
-        if (this.currentEntity && this.currentEntity.isEditable) {
+        if (this.currentEntity) {
             this.router.navigate(['./' + this.currentEntity._id + '~~'], { relativeTo: this.route });
         }
     }
 
     deleteRow() {
-        if (this.currentRow && this.currentRow._id && this.currentEntity && this.currentEntity.isEditable) {
+        if (this.currentRow && this.currentRow._id && this.currentEntity) {
             if (confirm("Are you sure you want to delete row " + this.currentRow._id + " ?")) {
                 this.frmdbStreams.userEvents$.next({ type: "UserDeletedFormData", obj: this.currentRow });
             }
         }
+    }
+
+    onFirstDataRendered($event) {
+        var allColumnIds: any[] = [];
+        this.gridColumnApi.getAllColumns().forEach(function (column) {
+            allColumnIds.push(column.colId);
+        });
+        this.gridColumnApi.autoSizeColumns(allColumnIds);
     }
 }
