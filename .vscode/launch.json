@@ -19,9 +19,12 @@
             "name": "BE serve",
             "type": "node",
             "request": "attach",
-            "port": 9231,
+            "address": "localhost",
             "protocol": "inspector",
-            "restart": "true"
+            "restart": true,
+            "port": 9231,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/d/code/metawiz/febe"         
         },
         {
             "name": "BE specs mem",

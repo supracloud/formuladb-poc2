@@ -1,4 +1,4 @@
-CREATE table f_4320_cols (
+CREATE table delivery_report_import (
     _id varchar,
     ordernb varchar,
     externalordernb varchar,
@@ -17,6 +17,7 @@ CREATE table f_4320_cols (
     quantity integer,
     quantityerror integer,
     price varchar,
+    product_name varchar,
     ordstate varchar,
     agentcode varchar
 );
@@ -40,7 +41,7 @@ CREATE TABLE orders_input (
 
 COPY orders_input FROM '/orders.csv';
 insert into trep__orders select * from orders_input ;
-COPY trep__deliveryrate FROM '/delivery_report.csv';
+COPY delivery_report_import FROM '/delivery_report.csv';
 
 -- CREATE TABLE IF NOT EXISTS f_4320 (key VARCHAR NOT NULL PRIMARY KEY, val json);
 -- CREATE TABLE IF NOT EXISTS f_2735 (key VARCHAR NOT NULL PRIMARY KEY, val json);

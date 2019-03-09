@@ -1,1 +1,3 @@
-<p>{{value}}</p>
+<a [href]="value" *ngIf="representation == 'link'" target="_blank">{{value}}</a>
+<span *ngIf="representation == '_id'">{{value}}</span>
+<span *ngIf="representation == 'string'">{{value}}</span>

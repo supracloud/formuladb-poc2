@@ -8,7 +8,7 @@
         "paths": {
             "@core/*": ["../../core/src/*"],
             "@storage/*": ["../../storage/src/*"],
-	        "@fe/*": ["./*"]
+	        "@fe/*": ["./*"],
         }
     },
     "include": [

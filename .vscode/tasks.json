@@ -56,9 +56,6 @@
             "type": "shell",
             "options": {
                 "cwd": "./be",
-                "env": {
-                    "FRMDB_STORAGE": "postgres",
-                }
             },
             "args": [
                 "run",
