@@ -14,7 +14,7 @@ import { TableColumn } from "@core/domain/uimetadata/table";
 import {
     GridOptions, GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellClickedEvent, CellFocusedEvent
+    RowClickedEvent, CellClickedEvent, CellFocusedEvent, ValueFormatterService
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as fromTable from './table.state';
@@ -143,7 +143,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     },
                     enableRowGroup: true,
                     enableValue: true,
-
+                    valueFormatter: (params) => this.valueFormatter(params),
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
                 });
 
@@ -183,6 +183,11 @@ export class TableComponent implements OnInit, OnDestroy {
 
     refreshData() {
 
+    }
+
+    valueFormatter(params) {
+        if (params.colDef.field === '_id') return params.value.replace(/^.*~~/, '');
+        else return params.value;
     }
 
     onCellFocused(event: CellFocusedEvent) {

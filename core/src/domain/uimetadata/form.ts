@@ -170,6 +170,11 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
             child.propertyName = pn.name;
             child.propertyType = pn.propType_;
             child.representation = "link";
+        } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
+            child = new FormText();
+            child.propertyName = pn.name;
+            child.propertyType = pn.propType_;
+            child.representation = "_id";
         } else {
             child = new FormInput();
             if (parentFormEl.nodeType === NodeType.form_table) {
@@ -228,7 +233,7 @@ export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
     propertyName: string;
-    representation: "heading" | "paragraph" | "caption" | "jumbo" | "link";
+    representation: "string" | "heading" | "paragraph" | "caption" | "jumbo" | "link" | "_id";
     uppercase?: boolean;
 }
 export class FormAutocomplete implements SubObj {

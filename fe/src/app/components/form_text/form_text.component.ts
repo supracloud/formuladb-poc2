@@ -36,12 +36,15 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     }
     get representation(): string {
         if (this.nodeElement.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodeElement));
-        return this.nodeElement.representation || 'paragraph';
+        return this.nodeElement.representation || "string";
     }
 
     get value(): string {
         if (this.ctrl) {
-            return this.ctrl.value;
+            if (this.inputElement.representation === '_id') {
+                return this.ctrl.value.replace(/^.*~~/, '')
+            } 
+            else return this.ctrl.value;
         }
         return "No content available";
     }
