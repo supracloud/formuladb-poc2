@@ -14,7 +14,7 @@ import { FormEditingService } from '../form-editing.service';
 import * as _ from 'lodash';
 import { Pn, Entity } from '@core/domain/metadata/entity';
 import { Home } from '@core/default_pages/website-metadata';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 export class VNavComponent implements OnInit {
   public navigationItemsTree: NavigationItem[] = [];

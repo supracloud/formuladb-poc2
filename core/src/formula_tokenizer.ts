@@ -1,4 +1,4 @@
-import { Expression, isIdentifier, isLiteral, isCallExpression, isBinaryExpression, isLogicalExpression } from 'jsep';
+import { Expression, isIdentifier, isLiteral, isCallExpression, isBinaryExpression, isLogicalExpression, CallExpression } from 'jsep';
 import { compileFormulaForce, FormulaCompilerError, $s2e } from './formula_compiler';
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict, PropertyTypeFunctions } from './functions_compiler';
 import * as _ from 'lodash';
@@ -107,7 +107,7 @@ export class FormulaTokenizer {
         } catch (err) {
             return [{
                 ...DEFAULT_TOKEN,
-                errors: ['' + err]
+                errors: ['' + err + err.stack]
             }];
         }
     }
@@ -160,7 +160,7 @@ export class FormulaTokenizer {
                     if (FunctionsDict[token.value]) {
                         token.errors.push("Function " + token.value + " is missing ( *parameters )");
                     } else {
-                        token.errors.push("Uknown function " + token.value);
+                        token.errors.push("Unknown function " + token.value);
                     }
                     return [token];
                 }
@@ -168,6 +168,7 @@ export class FormulaTokenizer {
                     isBinaryExpression(context.parentNode) 
                     || isLogicalExpression(context.parentNode) 
                     || isScalarCallExpression(context.parentNode) 
+                    || this.isSecondPramOfCallExpression(context.parentNode, node)
                 )) {
                     return [{
                         ...this.expr2token(TokenType.COLUMN_NAME, node, context),
@@ -246,9 +247,14 @@ export class FormulaTokenizer {
         }
     }
 
-    private checkColumnToken(token: Token) {
-        if (token.type != TokenType.COLUMN_NAME) {console.warn("this is not a COLUMN_NAME token", token); return;}
-        
+    private isSecondPramOfCallExpression(callExpr: Expression, node: Expression) {
+        if (!isCallExpression(callExpr)) return false;
+        for (let [i, arg] of callExpr.arguments.entries()) {
+            if (arg.origExpr === node.origExpr && i > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private setCallStackFrame(tokens: Token[], functionName: string, argumentIdx: number) {

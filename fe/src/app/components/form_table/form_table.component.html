@@ -14,9 +14,10 @@
             <td>
                 <fa-icon (click)="deleteRow(rowControl)" [icon]="delIcon" class="fa-sm"></fa-icon>
             </td>
-            <td *ngFor="let child of tableElement.childNodes">
-                <frmdb-form_item [nodeElement]="child" [topLevelFormGroup]="topLevelFormGroup"
-                    [parentFormPath]="parentFormPath + '.' + idx + '.' + child.propertyName" [formReadOnly]="formReadOnly"></frmdb-form_item>
+            <td frmdb-form_item *ngFor="let child of tableElement.childNodes"
+                [nodeElement]="child" [topLevelFormGroup]="topLevelFormGroup"
+                    [parentFormPath]="parentFormPath + '.' + idx + '.' + child.propertyName" [formReadOnly]="formReadOnly"
+                    >
             </td>
         </tr>
     </tbody>

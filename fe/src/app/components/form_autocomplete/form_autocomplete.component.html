@@ -1,12 +1,29 @@
-<label [for]="parentFormPath + '.' + inputElement.propertyName" *ngIf="!inputElement.noLabel">
+<label [for]="parentFormPath" *ngIf="!inputElement.noLabel">
     {{inputElement.refEntityName | i18n}}/{{inputElement.refPropertyName | i18n}}
 </label>
-<input [id]="parentFormPath" class="form-control" [type]="text" [name]="parentFormPath" 
-    [formControl]="topLevelFormGroup.get(parentFormPath)"
-    *ngIf="hasControl(parentFormPath)" frmdb-on_focus 
-    [attr.list]="parentFormPath + '.' + inputElement.propertyName+'.list'"
-    (input)="inputChange($event.target.value)" (blur)="inputLeave($event.target.value)"
+<input #input [id]="parentFormPath" class="form-control" type="text" [name]="parentFormPath" autocomplete="off"
+    *ngIf="hasControl(parentFormPath)"
+    [formControl]="control"
+    (input)="text$.next($event.target.value)"
+    (keydown.enter)="selectCurrentOption()" 
+    (keydown.arrowdown)="nextSuggestion()" 
+    (keydown.arrowup)="prevSuggestion()"
 />
-<datalist [id]="parentFormPath + '.' + inputElement.propertyName+'.list'">
-    <option *ngFor="let option of options">{{option}}</option>
-</datalist>
+
+<table [class.visible]="popupOpened" class="frmdb-autocomplete_popup table table-striped table-sm">
+    <thead>
+        <tr>
+            <th *ngFor="let relatedCtrl of relatedControls">
+                {{relatedCtrl.refPropertyName | i18n}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let option of autoCompleteState?.options; let idx = index" (click)="selectOption(option)">
+            <td [class.selected]="currentOptionIdx == idx" *ngFor="let relatedCtrl of relatedControls">
+                <span *ngIf="relatedCtrl.propertyName === inputElement.propertyName" [innerHtml]="highlightOption(option)"></span>
+                <span *ngIf="relatedCtrl.propertyName !== inputElement.propertyName">{{option[relatedCtrl.propertyName]}}</span>
+            </td>
+        </tr>
+    </tbody>
+</table>

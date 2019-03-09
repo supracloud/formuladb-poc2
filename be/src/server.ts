@@ -29,6 +29,7 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
     if (schema) {
       frmdbEngine.frmdbEngineStore.setSchema(schema);
     }
+    console.log("Starting with Schema in the DB: " + JSON.stringify(frmdbEngine.frmdbEngineStore.schema, null, 4));
     await frmdbEngine.init(true);
   }
 })

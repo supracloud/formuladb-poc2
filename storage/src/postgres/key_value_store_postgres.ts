@@ -301,7 +301,10 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {
         await this.initialize();
         let query = this.sqlQueryCreator.createSqlQuery(this.table_id!, squery);
-        let res = await this.getDB().any(query);
+
+        //FIXME: why ag-grid sends _id_1, or errors_1, invetigate why ?!?!
+        let regex = new RegExp("\\b(" + Object.values(this.entity.props).map(p => p.name).join('|') + ")_1\\b", "g");
+        let res = await this.getDB().any(query.replace(regex, (match, $1) => $1));
         return res;
     }
 

@@ -1,4 +1,4 @@
-<div [ngSwitch]="nodeElement.nodeType" draggable="true" class="layout-container flex-fill" (dragstart)="dragStart($event)" (dragend)="dragEnd($event)">
+<ng-container [ngSwitch]="nodeElement.nodeType" draggable="true" class="layout-container flex-fill" (dragstart)="dragStart($event)" (dragend)="dragEnd($event)">
   <fa-icon [icon]="icon" *ngIf="frmdbStreams.devMode$|async" class="drag-handle fa-xs" #dragHandle [id]="'drag_'+nodeElement._id" (mousedown)="checkHandle($event)">
   </fa-icon>
   <form-context-menu [item]="nodeElement" [canDelete]="nodeElement.nodeType!=='form_grid'" [availableChildren]="getAvailableChildren()"
@@ -14,7 +14,7 @@
     [parentFormPath]="parentFormPath" [formReadOnly]="formReadOnly"></frmdb-form_autocomplete>
   <frmdb-form_input *ngSwitchCase="'form_input'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath"
     [formReadOnly]="formReadOnly"></frmdb-form_input>
-  <frmdb-form_text *ngSwitchCase="'form_text'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
+  <frmdb-form_text *ngSwitchCase="'form_text'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath"
     [formReadOnly]="formReadOnly"></frmdb-form_text>
   <frmdb-form_datepicker *ngSwitchCase="'form_datepicker'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup"
     [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></frmdb-form_datepicker>
@@ -30,4 +30,4 @@
     [formReadOnly]="formReadOnly"></frmdb-v_layout>
   <div *ngSwitchDefault style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeType}}' !</div>
 
-</div>
+</ng-container>

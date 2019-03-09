@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, HostBinding, HostListener } from '@angular/core';
 import { NodeElement } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
-import * as fromForm from '../../components/form.state';
+import * as fromForm from '../../state/form.state';
+import { FormDropAction } from '@fe/app/actions/form.user.actions';
 
 @Component({
   selector: 'drop-handle',
@@ -47,7 +48,7 @@ export class DropHandleComponent implements OnInit {
   @HostListener('drop', ['$event'])
   onDrop(e) {
     this.visible = false;
-    this.store.dispatch(new fromForm.FormDropAction({ drop: this.item, position: this.position }));
+    this.store.dispatch(new FormDropAction({ drop: this.item, position: this.position }));
     // e.preventDefault();
   }
 

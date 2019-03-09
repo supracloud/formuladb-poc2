@@ -1,10 +1,34 @@
 {
     "_id": "FRMDB_SCHEMA",
     "entities": {
-        "REP": {
-            "_id": "REP",
-            "module_": true,
-            "props": {}
+        "REP__Orders2018": {
+            "_id": "REP__Orders2018",
+            "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
+                "state": { "name": "state", "propType_": "STRING"},
+                "client_code": { "name": "client_code", "propType_": "STRING"},
+                "actor_code": { "name": "actor_code", "propType_": "STRING"},
+                "address_code": { "name": "address_code", "propType_": "STRING"},
+                "address": { "name": "address", "propType_": "STRING"},
+                "address_name": { "name": "address_name", "propType_": "STRING"},
+                "city": { "name": "city", "propType_": "STRING"},
+                "external_id": { "name": "external_id", "propType_": "STRING"},
+                "details": { "name": "details", "propType_": "STRING"},
+                "created_at": { "name": "created_at", "propType_": "STRING"},
+                "updated_at": { "name": "updated_at", "propType_": "STRING"},
+                "client": { "name": "client", "propType_": "STRING"},
+                "wms_id": { "name": "wms_id", "propType_": "STRING"},
+                "wms_aviz": { "name": "wms_aviz", "propType_": "STRING"},
+                "wms_awb": { "name": "wms_awb", "propType_": "STRING"},
+                "wms_statusorderwms": { "name": "wms_statusorderwms", "propType_": "STRING"},
+                "wms_statusawb": { "name": "wms_statusawb", "propType_": "STRING"},
+                "wms_deliveryaddress": { "name": "wms_deliveryaddress", "propType_": "STRING"},
+                "wms_insertdate": { "name": "wms_insertdate", "propType_": "STRING"},
+                "wms_imported": { "name": "wms_imported", "propType_": "STRING"},
+                "wms_importdate": { "name": "wms_importdate", "propType_": "STRING"},
+                "cargus_link": { "name": "cargus_link", "propType_": "LINK"},
+                "fancourier_link": { "name": "fancourier_link", "propType_": "LINK"}
+            }
         },
         "REP__Orders": {
             "_id": "REP__Orders",
@@ -29,11 +53,13 @@
                 "wms_deliveryaddress": { "name": "wms_deliveryaddress", "propType_": "STRING"},
                 "wms_insertdate": { "name": "wms_insertdate", "propType_": "STRING"},
                 "wms_imported": { "name": "wms_imported", "propType_": "STRING"},
-                "wms_importdate": { "name": "wms_importdate", "propType_": "STRING"}
+                "wms_importdate": { "name": "wms_importdate", "propType_": "STRING"},
+                "cargus_link": { "name": "cargus_link", "propType_": "LINK"},
+                "fancourier_link": { "name": "fancourier_link", "propType_": "LINK"}
             }
         },
-        "REP__DeliveryRate": {
-            "_id": "REP__DeliveryRate",
+        "REP__DeliveryRate2018": {
+            "_id": "REP__DeliveryRate2018",
             "props": {
                 "_id": { "name": "_id", "propType_": "STRING"},
                 "ordernb": { "name": "ordernb", "propType_": "STRING", "allowNull": false },
@@ -42,6 +68,7 @@
                 "quantity": { "name": "quantity", "propType_": "NUMBER", "allowNull": false },
                 "price": { "name": "price", "propType_": "NUMBER", "allowNull": false },
                 "addressname": { "name": "addressname", "propType_": "STRING", "allowNull": false },
+                "address": { "name": "address", "propType_": "STRING", "allowNull": false },
                 "externalordernb": { "name": "externalordernb", "propType_": "STRING", "allowNull": false },
                 "ordercreationdate": { "name": "ordercreationdate", "propType_": "STRING", "allowNull": false },
                 "clientcode": { "name": "clientcode", "propType_": "STRING", "allowNull": false },
@@ -55,6 +82,49 @@
                 "barcode": { "name": "barcode", "propType_": "STRING", "allowNull": false },
                 "ordstate": { "name": "ordstate", "propType_": "STRING", "allowNull": false },
                 "agentcode": { "name": "agentcode", "propType_": "STRING", "allowNull": false }
+            }
+        },
+        "REP__DeliveryRate": {
+            "_id": "REP__DeliveryRate",
+            "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
+                "ordernb": { "name": "ordernb", "propType_": "STRING", "allowNull": false },
+                "client": { "name": "client", "propType_": "STRING", "allowNull": false },
+                "quantityerror": { "name": "quantityerror", "propType_": "NUMBER", "allowNull": false },
+                "quantity": { "name": "quantity", "propType_": "NUMBER", "allowNull": false },
+                "price": { "name": "price", "propType_": "NUMBER", "allowNull": false },
+                "addressname": { "name": "addressname", "propType_": "STRING", "allowNull": false },
+                "address": { "name": "address", "propType_": "STRING", "allowNull": false },
+                "externalordernb": { "name": "externalordernb", "propType_": "STRING", "allowNull": false },
+                "ordercreationdate": { "name": "ordercreationdate", "propType_": "STRING", "allowNull": false },
+                "ordermodificationdate": { "name": "ordermodificationdate", "propType_": "STRING", "allowNull": false },
+                "clientcode": { "name": "clientcode", "propType_": "STRING", "allowNull": false },
+                "addresscode": { "name": "addresscode", "propType_": "STRING", "allowNull": false },
+                "group1": { "name": "group1", "propType_": "STRING", "allowNull": false },
+                "group2": { "name": "group2", "propType_": "STRING", "allowNull": false },
+                "group3": { "name": "group3", "propType_": "STRING", "allowNull": false },
+                "group4": { "name": "group4", "propType_": "STRING", "allowNull": false },
+                "location": { "name": "location", "propType_": "STRING", "allowNull": false },
+                "productcode": { "name": "productcode", "propType_": "STRING", "allowNull": false },
+                "barcode": { "name": "barcode", "propType_": "STRING", "allowNull": false },
+                "ordstate": { "name": "ordstate", "propType_": "STRING", "allowNull": false },
+                "agentcode": { "name": "agentcode", "propType_": "STRING", "allowNull": false }
+            }
+        },
+        "REP__TopCust": {
+            "_id": "REP__TopCust",
+            "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
+                "client": { "name": "client", "propType_": "STRING"},
+                "errors": { "name": "errors", "propType_": "NUMBER"}
+            }
+        },        
+        "REP__TopProd": {
+            "_id": "REP__TopProd",
+            "props": {
+                "_id": { "name": "_id", "propType_": "STRING"},
+                "barcode": { "name": "barcode", "propType_": "STRING"},
+                "errors": { "name": "errors", "propType_": "NUMBER"}
             }
         }
     }

@@ -1,18 +1,24 @@
 import { Injectable, ChangeDetectorRef } from '@angular/core';
-import { BackendService } from '../backend.service';
+import { BackendService } from '../effects/backend.service';
 import { ValidatorFn, AsyncValidatorFn, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { AbstractControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { FrmdbFormControl, FrmdbFormGroup } from './form.component';
-import { DataObj } from './form.state';
+import { DataObj } from '../state/form.state';
 import { Observable, Subject, of, from, BehaviorSubject } from 'rxjs';
 import { take, catchError, delay, map, filter, debounceTime } from 'rxjs/operators';
 import { j2str } from '../crosscutting/utils/j2str';
-import { UserModifiedFormData } from '../frmdb-streams/frmdb-user-events';
-import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
+import { UserModifiedFormData } from '../state/frmdb-user-events';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import * as _ from 'lodash';
-import { NodeType, NodeElement } from '@core/domain/uimetadata/form';
+import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/form';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
+
+export class RelatedAutoCompleteControls {
+  controls: {[refPropertyName: string]: FormAutocomplete} = {};
+  options: {}[] = [];
+  selectedOption: {} | null;
+}
 
 @Injectable()
 export class FormEditingService {
@@ -24,8 +30,6 @@ export class FormEditingService {
   ) { }
 
   private tst$: Subject<ValidationErrors | null> = new Subject();
-
-  private autoComplete$: { [entity: string]: BehaviorSubject<any> } = {};
 
   public getParentObj(control: AbstractControl): DataObj | null {
     let ctrl = control;
@@ -41,11 +45,10 @@ export class FormEditingService {
     const ctrl = new FrmdbFormControl(name, formState, {
       updateOn: 'blur',
       validators: [
-        // this.formEditingService.propertyValidator()
-        //TODO: refactor FormEditingService and FrmdbStreamsService
+        this.propertyValidator()
       ],
       asyncValidators: [
-        // this.formEditingService.asycValidator()
+        // this.asycValidator()
         // this.testAsyncValidator.validate.bind(this.testAsyncValidator),
       ]
     });
@@ -84,7 +87,9 @@ export class FormEditingService {
       } else if (nodeEl.nodeType === NodeType.form_input
         || nodeEl.nodeType === NodeType.form_autocomplete
         || nodeEl.nodeType === NodeType.form_datepicker
-        || nodeEl.nodeType === NodeType.form_timepicker) {
+        || nodeEl.nodeType === NodeType.form_timepicker
+        || nodeEl.nodeType === NodeType.form_text
+      ) {
         if (nodeEl.propertyName === 'type_') { return; }
         if (nodeEl.propertyName === '_id' || nodeEl.propertyName === '_rev') { disabled = true; }
         if (parentFormGroup.get(nodeEl.propertyName) == null) {
@@ -154,33 +159,5 @@ export class FormEditingService {
       }));
     };
   }
-
-  public getOptions(entityName: string, property: string, startWith: string): Promise<any[]> {
-    return this.backendService.simpleAdHocQuery(entityName, {
-      "startRow": 0,
-      "endRow": 25,
-      "rowGroupCols": [],
-      "valueCols": [],
-      "pivotCols": [],
-      "pivotMode": false,
-      "groupKeys": [],
-      "filterModel": {
-          [property]: {
-              "type": "contains",
-              "filter": startWith,
-              "filterType": "text"
-          }
-      },
-      "sortModel": [],
-    } as SimpleAddHocQuery);
-  }
-
-  public getAutoComplete(entity: string): BehaviorSubject<any> {
-    if (!this.autoComplete$[entity]) {
-      this.autoComplete$[entity] = new BehaviorSubject(null);
-    }
-    return this.autoComplete$[entity];
-  }
-
 
 }

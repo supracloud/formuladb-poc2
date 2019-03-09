@@ -56,10 +56,10 @@ function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     validatorFunctions.forEach(f => {
         if (f(value)) validArg = true;
     });
-    if (!validArg) throw new Error("Expected " + validatorFunctions.map(f => f.name).join('|') + "but found " + value.origExpr)
+    if (!validArg) throw new FormulaCompilerError(fc.funcExpr, "Expected " + validatorFunctions.map(f => f.name).join('|') + "but found " + value.origExpr)
 
     let ret = compileExpression(value, context, requestedRetType);
-    if (!outValidator(ret)) throw new Error("Compilation failed for argument " + value.origExpr + "; expected " + outValidator.name + " but found " + ret.type_ + "; " + CircularJSON.stringify(ret, null, 4));
+    if (!outValidator(ret)) throw new FormulaCompilerError(fc.funcExpr, "Compilation failed for argument " + value.origExpr + "; expected " + outValidator.name + " but found " + ret.type_ + "; " + CircularJSON.stringify(ret, null, 4));
     return ret;
 }
 
@@ -75,7 +75,7 @@ function compileArgNV<IN extends Expression>(
     validatorFunctions.forEach(f => {
         if (f(value)) validArg = true;
     });
-    if (!validArg) throw new Error("Expected " + validatorFunctions.map(f => f.name).join('|') + "but found " + value.origExpr)
+    if (!validArg) throw new FormulaCompilerError(fc.funcExpr, "Expected " + validatorFunctions.map(f => f.name).join('|') + "but found " + value.origExpr)
 
     let ret = compileExpression(value, context, requestedRetType);
     return ret;
@@ -83,7 +83,7 @@ function compileArgNV<IN extends Expression>(
 
 
 function checkMandatoryArg<T>(fc: FuncCommon, name: string, arg: T | undefined): T {
-    if (!arg) throw new Error("Mandatory parameter " + name + " missing for " + fc.funcExpr.origExpr);
+    if (!arg) throw new FormulaCompilerError(fc.funcExpr, "Mandatory parameter " + name + " missing for " + fc.funcExpr.origExpr);
     else return arg;
 }
 
@@ -102,7 +102,7 @@ function _MAP_VALUE(fc: FuncCommon, fullTableRange: Identifier, valueExpr: Expre
             has$Identifier: ce.has$Identifier,
             hasNon$Identifier: ce.hasNon$Identifier,
         };
-    } else throw new Error("Expected identifier but found " + CircularJSON.stringify(fullTableRange));
+    } else throw new FormulaCompilerError(fc.funcExpr, "Expected identifier but found " + CircularJSON.stringify(fullTableRange));
 }
 
 function _MAP_KEY(fc: FuncCommon, fullTableRange: Identifier, keyExpr: Expression): MapKey {
@@ -116,20 +116,20 @@ function _MAP_KEY(fc: FuncCommon, fullTableRange: Identifier, keyExpr: Expressio
             has$Identifier: ce.has$Identifier,
             hasNon$Identifier: ce.hasNon$Identifier,
         };
-    } else throw new Error("Expected identifier but found " + CircularJSON.stringify(fullTableRange));
+    } else throw new FormulaCompilerError(fc.funcExpr, "Expected identifier but found " + CircularJSON.stringify(fullTableRange));
 }
 
 function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, keyExpr: Expression, valueExpr?: Expression): MapKey | MapFunction {
     let inputRange = compileArgNV(fc, 'basicRange', basicRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
     let cKey = compileArg(fc, 'expr', keyExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
-    if (cKey.has$Identifier) throw new Error("@[] is not allowed in lookup key expressions: " + fc.funcExpr.origExpr);
+    if (cKey.has$Identifier) throw new FormulaCompilerError(fc.funcExpr, "@[] is not allowed in lookup key expressions: " + fc.funcExpr.origExpr);
     if (valueExpr) {
         let cVal = compileArg(fc, 'expr', valueExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
-        if (cVal.has$Identifier) throw new Error("@[] is not allowed in map value expressions: " + fc.funcExpr.origExpr);
+        if (cVal.has$Identifier) throw new FormulaCompilerError(fc.funcExpr, "@[] is not allowed in map value expressions: " + fc.funcExpr.origExpr);
     }
 
     if (isIdentifier(basicRange)) {
-        if (!isCompiledScalar(inputRange)) throw new Error("Expected Identifier but found " + CircularJSON.stringify(inputRange) + " for " + basicRange.origExpr);
+        if (!isCompiledScalar(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "Expected Identifier but found " + CircularJSON.stringify(inputRange) + " for " + basicRange.origExpr);
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
@@ -139,7 +139,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
             hasNon$Identifier: inputRange.hasNon$Identifier,
         };
     } else if (isMapValue(inputRange)) {
-        if (valueExpr) throw new Error("Value expression already provided: " + fc.funcExpr.origExpr);
+        if (valueExpr) throw new FormulaCompilerError(fc.funcExpr, "Value expression already provided: " + fc.funcExpr.origExpr);
         return {
             type_: MapFunctionN,
             rawExpr: fc.funcExpr,
@@ -148,7 +148,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
             valueExpr: inputRange.valueExpr,
         };
     } else if (isMapFunction(inputRange)) {
-        if (valueExpr) throw new Error("Map value expression already provided: " + fc.funcExpr.origExpr);
+        if (valueExpr) throw new FormulaCompilerError(fc.funcExpr, "Map value expression already provided: " + fc.funcExpr.origExpr);
         return {
             type_: MapFunctionN,
             rawExpr: fc.funcExpr,
@@ -156,7 +156,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
             keyExpr: inputRange.keyExpr.concat(isArrayExpression(keyExpr) ? keyExpr.elements : [keyExpr]),
             valueExpr: inputRange.valueExpr,
         };
-    } else throw new Error("GROUP_BY expects MapValue or MapFunction but received " + basicRange.origExpr);
+    } else throw new FormulaCompilerError(fc.funcExpr, "GROUP_BY expects MapValue or MapFunction but received " + basicRange.origExpr);
 }
 
 function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, ...groupExpr: Expression[]): MapKey | MapFunction {
@@ -165,7 +165,7 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
         compileArg(fc, 'groupExpr' + idx, ge, [isExpression], fc.context, CompiledScalarN, isCompiledScalar));
 
     if (isIdentifier(basicRange)) {
-        if (!isCompiledScalar(inputRange)) throw new Error("Expected Identifier but found " + CircularJSON.stringify(inputRange) + " for " + basicRange.origExpr);
+        if (!isCompiledScalar(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "Expected Identifier but found " + CircularJSON.stringify(inputRange) + " for " + basicRange.origExpr);
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
@@ -190,7 +190,7 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
             keyExpr: inputRange.keyExpr.concat(compiledGroupExpr.map(cg => cg.rawExpr)),
             valueExpr: inputRange.valueExpr,
         };
-    } else throw new Error("GROUP_BY expects MapValue or MapFunction but received " + basicRange.origExpr);
+    } else throw new FormulaCompilerError(fc.funcExpr, "GROUP_BY expects MapValue or MapFunction but received " + basicRange.origExpr);
 }
 function IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression): MapReduceKeysAndQueries | MapReduceKeysQueriesAndValue {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
@@ -273,14 +273,14 @@ function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLog
 
 function _RANGE(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, startExpr: Expression, endExpr: Expression, inclusive_start?: Identifier, inclusive_end?: Identifier): MapFunctionAndQuery {
     let inputRange = compileArgNV(fc, 'basicRange', basicRange, [isIdentifier, isMemberExpression, isCallExpression], fc.context, MapFunctionN);
-    if (!includesMapKey(inputRange)) throw new Error("basicRange is expected to have lookup keys: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
-    if (!includesMapValue(inputRange)) throw new Error("basicRange is expected to have a selected column or computed value: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
+    if (!includesMapKey(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "basicRange is expected to have lookup keys: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
+    if (!includesMapValue(inputRange)) throw new FormulaCompilerError(fc.funcExpr, "basicRange is expected to have a selected column or computed value: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
     let compiledStartExpr = compileArg(fc, 'start', startExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledStartExpr) || !compiledStartExpr.has$Identifier || compiledStartExpr.hasNon$Identifier)
-        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + startExpr.origExpr + "; " + CircularJSON.stringify(compiledStartExpr, null, 4));
+        throw new FormulaCompilerError(fc.funcExpr, "RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + startExpr.origExpr + "; " + CircularJSON.stringify(compiledStartExpr, null, 4));
     let compiledEndExpr = compileArg(fc, 'end', endExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledEndExpr) || !compiledEndExpr.has$Identifier || compiledEndExpr.hasNon$Identifier)
-        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + endExpr.origExpr + "; " + CircularJSON.stringify(compiledEndExpr, null, 4));
+        throw new FormulaCompilerError(fc.funcExpr, "RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + endExpr.origExpr + "; " + CircularJSON.stringify(compiledEndExpr, null, 4));
 
     return {
         type_: MapFunctionAndQueryN,
@@ -398,7 +398,7 @@ function DURATION(fc: FuncCommon) {
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
-    if (!isMapReduceKeysQueriesAndValue(range)) throw new Error("SUMIF expects a value to sum at " + fc.funcExpr.origExpr);
+    if (!isMapReduceKeysQueriesAndValue(range)) throw new FormulaCompilerError(fc.funcExpr, "SUMIF expects a value to sum at " + fc.funcExpr.origExpr);
     return _REDUCE(fc, range, {name: SumReduceFunN});
 }
 function COUNT(fc: FuncCommon, tableRange: MemberExpression | CallExpression) {
@@ -406,9 +406,10 @@ function COUNT(fc: FuncCommon, tableRange: MemberExpression | CallExpression) {
     return _REDUCE(fc, inputRange, {name: CountReduceFunN});
 }
 function COUNTIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
+    if (!tableRange || !logicalExpression) throw new FormulaCompilerError(fc.funcExpr, "Expected arguments tableRange, logicalExpression");
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
-    if (!isMapReduceKeysQueriesAndValue(range)) throw new Error("COUNTIF expects a value to sum at " + fc.funcExpr.origExpr);
+    if (!isMapReduceKeysQueriesAndValue(range)) throw new FormulaCompilerError(fc.funcExpr, "COUNTIF expects a value to sum at " + fc.funcExpr.origExpr);
     return _REDUCE(fc, range, {name: CountReduceFunN});
 }
 function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiteral): MapReduceTrigger {
@@ -452,7 +453,7 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
 function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression): MapReduceTrigger {
     let compiledLookupExpr = compileArg(fc, 'lookupExpr', lookupExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledLookupExpr) || !compiledLookupExpr.has$Identifier || compiledLookupExpr.hasNon$Identifier)
-        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + lookupExpr.origExpr + "; " + CircularJSON.stringify(compiledLookupExpr, null, 4));
+        throw new FormulaCompilerError(fc.funcExpr, "RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + lookupExpr.origExpr + "; " + CircularJSON.stringify(compiledLookupExpr, null, 4));
     let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapFunctionN, isMapFunction);
     
     return {
@@ -505,16 +506,16 @@ export const MapReduceFunctions = {
 // simple scalar functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanCompiledExpression {
-    if (!isCallExpression(fc.funcExpr)) throw new Error("Expected function call expression but found " + CircularJSON.stringify(fc.funcExpr));
+    if (!isCallExpression(fc.funcExpr)) throw new FormulaCompilerError(fc.funcExpr, "Expected function call expression but found " + CircularJSON.stringify(fc.funcExpr));
     let evalledArs: CompiledScalar[] = args.map(arg => {
-        if (!isExpression(arg)) throw new Error("Unexpected function arg " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
+        if (!isExpression(arg)) throw new FormulaCompilerError(fc.funcExpr, "Unexpected function arg " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         let ret = compileExpression(arg, fc.context, CompiledScalarN);
 
         //FIXME: this is not true, arguments of scalar functions can be the results of trigger calculations, e.g. MAX(SUMIF(blabla...), 20)
         //to fix this and implement spec "scalar-functions having table-functions as argument"
-        if (!isCompiledScalar(ret)) throw new Error("Arguments of scalar functions must be scalar expressions at " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
+        if (!isCompiledScalar(ret)) throw new FormulaCompilerError(fc.funcExpr, "Arguments of scalar functions must be scalar expressions at " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         
-        if (!isExpression(ret.rawExpr)) throw new Error("Arguments of scalar functions must be scalar expressions " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
+        if (!isExpression(ret.rawExpr)) throw new FormulaCompilerError(fc.funcExpr, "Arguments of scalar functions must be scalar expressions " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         return ret;
     });
 

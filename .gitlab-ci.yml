@@ -20,14 +20,14 @@ build:
     - npm run compile
     - docker build -t formuladb-be .
     - echo "TODO push to registry"
-    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.1
+    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.2
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.2
     - cd ..
     - cd fe
     - npm run build -- --prod --deploy-url=/formuladb/ --base-href=/formuladb/ --source-map
     - docker build -t formuladb-fe .
-    - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.1
+    - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.2
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.2
   # Keep the cache to be reused in the test stage.
   # use commit id as key, we don't want to reuse cache between succesive pipelines. Or ... ?
   cache:
@@ -42,7 +42,7 @@ build:
 test:
   stage: test
   script:
-    - FRMDB_RELEASE=0.0.1 docker-compose up -d db
+    - FRMDB_RELEASE=0.0.2 docker-compose up -d db
     - cd be
     - npm test
     - FRMDB_STORAGE=postgres npm test

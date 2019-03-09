@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 import { Store } from '@ngrx/store';
-import * as fromI18n from './i18n.state';
+import * as fromI18n from '../../state/i18n.state';
 
 @Pipe({ name: 'i18n' })
 export class I18nPipe implements PipeTransform {
