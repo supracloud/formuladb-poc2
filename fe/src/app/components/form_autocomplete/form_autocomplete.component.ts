@@ -144,10 +144,13 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
         this.selectOption(this.autoCompleteState.options[this.currentOptionIdx]);
     }
     nextSuggestion() {
-        this.currentOptionIdx++;
+        if (this.autoCompleteState && this.autoCompleteState.options.length - 1 > this.currentOptionIdx) {
+            this.currentOptionIdx++;
+        }
     }
     prevSuggestion() {
-        this.currentOptionIdx--;
+        if (this.currentOptionIdx > 0) {
+            this.currentOptionIdx--;
+        }
     }
-
 }
