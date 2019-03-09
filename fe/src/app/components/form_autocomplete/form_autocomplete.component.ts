@@ -42,8 +42,9 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
                 let validators: ValidatorFn[] = [];
                 if (ctrl.validator) validators.push(ctrl.validator);
                 validators.push((control: AbstractControl): { [key: string]: any } | null => {
+                    if (!this.autoCompleteState) return null;
                     let validSelection = false;
-                    for (let opt of elvis_a(elvis(this.autoCompleteState).options)) {
+                    for (let opt of this.autoCompleteState.options) {
                         if (opt[this.inputElement.refPropertyName] === control.value) {
                             validSelection = true;
                         }
@@ -68,14 +69,17 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
         this.getControl();
 
         this.subscriptions.push(this.frmdbStreams.autoCompleteState$.subscribe(async (autoCompleteState) => {
-            if (!this.isAutocompleteStateMatching(autoCompleteState)) return;
+            if (!this.isAutocompleteStateMatching(autoCompleteState)) {
+                this.autoCompleteState = null;
+                return;
+            }
             this.autoCompleteState = autoCompleteState;
 
             if (autoCompleteState.selectedOption) {
                 let ctrl = this.getControl();
                 if (!ctrl) console.warn("Control not found for autocomplete ", this.topLevelFormGroup, this.parentFormPath);
                 else {
-                    ctrl.reset(autoCompleteState.selectedOption[this.inputElement.refPropertyName]);
+                    ctrl.setValue(autoCompleteState.selectedOption[this.inputElement.refPropertyName]);
                 }
             }
             this.popupOpened = this.currentSearchTxt != null
