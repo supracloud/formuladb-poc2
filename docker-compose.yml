@@ -16,6 +16,7 @@ services:
     ports:
       # publish node inspector port. By default the V8 inspector listens on 127.0.0.1 only.
       # To debug, run `socat -d tcp-listen:9229,reuseaddr,fork,bind=`hostname -i` tcp:127.0.0.1:9229 &` from inside the BE container
+      # source maps not working in chrome for node ? https://github.com/webpack/webpack/issues/2612
       - "9229:9229"
   fe:
     image: registry.gitlab.com/metawiz/febe/formuladb-fe:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
