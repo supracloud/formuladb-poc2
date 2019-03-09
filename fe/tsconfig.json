@@ -10,19 +10,19 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "ES2018",
     "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types"
     ],
     "lib": [
-      "es2017",
+      "es2018",
       "dom"
     ],
     "paths": {
       "@core/*": ["../core/src/*"],
       "@storage/*": ["../storage/src/*"],
-      "@kv_selector_base/*": ["./src/*"]
+      "@fe/*": ["./src/*"]
     }
   }
 }

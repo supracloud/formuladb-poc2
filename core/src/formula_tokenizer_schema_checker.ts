@@ -1,4 +1,4 @@
-import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList } from "./functions_compiler";
+import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList, PropertyTypeFunctions } from "./functions_compiler";
 import { Token, TokenType, Suggestion } from "./formula_tokenizer";
 import * as Fuse from 'fuse.js';
 import { Schema } from "@core/domain/metadata/entity";
@@ -23,8 +23,8 @@ export class FormulaTokenizerSchemaChecker {
 
     if (TokenType.FUNCTION_NAME === token.type) {
       let functionName = token.value;
-      let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName];
-      if (!fn) {
+      let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName] || PropertyTypeFunctions[functionName];
+      if (!fn && token.errors.length == 0) {
         token.errors.push("Unknown function " + functionName);
         token.foundInSchema = false;
       }

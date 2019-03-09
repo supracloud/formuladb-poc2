@@ -9,10 +9,11 @@ import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { compareKeys } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";
 import { TextjoinReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { CircularJSON } from "@core/json-stringify";
 
 function prepareReturnValue(ret: any[], delimiter: string): string {
     return ret.map(x => {
-        if (typeof x !== 'string') throw new Error("TEXTJOIN returned non-string value: " + JSON.stringify(x));
+        if (typeof x !== 'string') throw new Error("TEXTJOIN returned non-string value: " + CircularJSON.stringify(x));
         return x;
     }).filter(x => x != null && x.length > 0).join(delimiter);
 }
@@ -21,11 +22,11 @@ export async function _textjoin_preComputeAggForObserverAndObservable(
     store: FrmdbEngineStore, 
     observerObj: KeyValueObj, 
     observableOld: KeyValueObj | null, 
-    observableNew: KeyValueObj, 
+    observableNew: KeyValueObj | null, 
     trigger: MapReduceTrigger): Promise<string | number> 
 {
 
-    if (trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun.name !== TextjoinReduceFunN) throw new Error("textjoin aggregation attempt for a non-textjoin trigger " + JSON.stringify(trigger));;
+    if (trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun.name !== TextjoinReduceFunN) throw new Error("textjoin aggregation attempt for a non-textjoin trigger " + CircularJSON.stringify(trigger));;
     let reduceFun = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun;
 
     // console.debug("WARNING: this reduce precomputation works only for unique keys...needs enhancement to allow non-unique keys");

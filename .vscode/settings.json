@@ -58,5 +58,6 @@
     "typescript.reportStyleChecksAsWarnings": false,
     "git.ignoreLimitWarning": true,
     "files.eol": "\n",
-    "search.usePCRE2": true
+    "search.usePCRE2": true,
+    "html.format.wrapLineLength": 160
 }

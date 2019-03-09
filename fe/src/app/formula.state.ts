@@ -14,7 +14,7 @@ export { DataObj };
 export { ChangeObj, applyChanges };
 
 import { EntityProperty, Pn, Entity } from "@core/domain/metadata/entity";
-import { FormFromBackendActionN } from './form/form.state';
+import { FormFromBackendActionN } from './components/form.state';
 
 export interface FormulaState {
   editorOn: boolean;
@@ -40,6 +40,20 @@ export const formulaEditorInitialState: FormulaState = {
   formulaHighlightedColumns: {},
 };
 
+export function entityProperty2Formula(selectedProperty: EntityProperty | undefined): string | undefined {
+  if (selectedProperty) {
+    if (selectedProperty.propType_ == Pn.FORMULA) {
+      return selectedProperty.formula;
+    } 
+    else if (selectedProperty.propType_ == Pn.REFERENCE_TO) {
+      return `${Pn.REFERENCE_TO}(${selectedProperty.referencedEntityName}.${selectedProperty.referencedPropertyName})`;
+    } 
+    else {
+      return selectedProperty.propType_;
+    }
+  } else return undefined;
+
+}
 
 export const FormulaEditorToggleN = "[fx] FormulaEditorToggle";
 export const FormulaEditedN = "[fx] FormulaEdited";

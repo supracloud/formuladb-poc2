@@ -1,8 +1,0 @@
-<li *ngFor="let entity of nav" class="nav-item" [class.active]="entity.active">
-    <i *ngIf="entity.children.length>0 && entity.collapsed" class="now-ui-icons arrows-1_minimal-right" (click)="expand(entity.id, $event)"></i>
-    <i *ngIf="entity.children.length>0 && !entity.collapsed" class="now-ui-icons arrows-1_minimal-down" (click)="collapse(entity.id, $event)"></i>
-    <a [routerLink]="[entity.path]" routerLinkActive="active" class="nav-link">
-        <p>{{entity.linkName | i18n }}</p>
-    </a>
-    <frmdb-navigation-segment [nav]="entity.children" *ngIf="!entity.collapsed"></frmdb-navigation-segment>
-</li>

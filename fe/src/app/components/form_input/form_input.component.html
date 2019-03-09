@@ -1,0 +1,12 @@
+<label [for]="inputElement._id" *ngIf="!inputElement.noLabel">
+    {{inputElement.propertyName | i18n}}
+    <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">{{inputElement.propertyName}}</div>
+</label>
+<input [id]="parentFormPath" class="form-control" [type]="getType()" [name]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)"
+    *ngIf="hasControl(parentFormPath)" frmdb-on_focus />
+
+<div class="form-input-feedback-invalid" *ngIf="ctrl && ctrl.dirty && ctrl.invalid && !inputElement.noLabel">
+    <div *ngFor="let err of getErrors()">
+        {{err | i18n }}
+    </div>
+</div>

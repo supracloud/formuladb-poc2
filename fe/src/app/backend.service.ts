@@ -6,8 +6,9 @@
 import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
 
 import { catchError, map, tap } from 'rxjs/operators';
+import { CircularJSON } from "@core/json-stringify";
 
-import { DataObj, parseDataObjId, isDataObj } from "@core/domain/metadata/data_obj";
+import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@core/domain/metadata/data_obj";
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@core/domain/event";
 import { SimpleAddHocQuery } from "@core/key_value_store_i";
@@ -134,14 +135,14 @@ export class BackendService {
         });
         if (!http) throw new Error('Asked for non-existent object ' + id + '.');
         let dataObj = http;
-        if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + JSON.stringify(dataObj));
+        if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
 
-        let { entityName: referencedEntityName, id: objId, uid: parentUUID } = parseDataObjId(id);
-        let entity = await this.getEntity(referencedEntityName);
-        if (!entity) throw new Error("CHILD_TABLE references a non existent entity: " + referencedEntityName);
+        let { entityName, id: objId, uid: parentUUID } = parseDataObjId(id);
+        let entity = await this.getEntity(entityName);
+        if (!entity) throw new Error("cannot find entity: " + entityName + ", for getting children");
         for (const prop of Object.values(entity.props)) {
             if (prop.propType_ === Pn.CHILD_TABLE) {
-                const subtableData = await this.getTableData(prop.referencedEntityName + '~~' + parentUUID + '__');
+                const subtableData = await this.getTableData(getChildrenPrefix(prop.referencedEntityName, parentUUID));
                 dataObj[prop.name] = subtableData;
             }
         }
@@ -154,18 +155,18 @@ export class BackendService {
         });
         if (!http) return null;
         let ti = http;
-        if (!isTable(ti)) throw new Error("response is not Table " + JSON.stringify(ti));
+        if (!isTable(ti)) throw new Error("response is not Table " + CircularJSON.stringify(ti));
         addIdsToTable(ti);
         return ti;
     }
 
     public async getForm(path: string): Promise<Form | null> {
-        let http = await this.get<Form | null>('/api/' + this.appName + '/form/' + encodeURIComponent(path), (data: HttpResponse<any[]>) => {
+        let http = await this.get<Form | null>('/api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
             return data.body as any as Form;
         });
         if (!http) return null;
         let fi = http;
-        if (!isForm(fi)) throw new Error("response is not Form " + JSON.stringify(fi));
+        if (!isForm(fi)) throw new Error("response is not Form " + CircularJSON.stringify(fi));
         addIdsToForm(fi.grid);
         return fi;
     }
@@ -180,7 +181,7 @@ export class BackendService {
             return data.body as any as Schema;
         });
         if (!http) throw new Error("empty schema !");
-        if (!isSchema(http)) throw new Error("response is not Schema " + JSON.stringify(http));
+        if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));
         return http;
     }
 
@@ -189,7 +190,7 @@ export class BackendService {
             return data.body as any as Entity;
         });
         if (!http) throw new Error("missing Entity " + path);
-        if (!isEntity(http)) throw new Error("response is not Entity " + JSON.stringify(http));
+        if (!isEntity(http)) throw new Error("response is not Entity " + CircularJSON.stringify(http));
         return http;
     }
 

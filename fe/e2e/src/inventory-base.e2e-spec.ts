@@ -23,7 +23,8 @@ var messages = [ '<speak>Navigate to inventory page<break time="1s"/></speak>',
                  '<speak>See the data in order page<break time="1s"/></speak>',
                  '<speak>Edit item quantity and be auto-corrected<break time="1s"/></speak>',
                  '<speak>Navigate back to product locations<break time="1s"/></speak>',
-                 '<speak>Notice the stock is zero<break time="1s"/></speak>' ];
+                 '<speak>Notice the stock is zero<break time="1s"/></speak>', 
+];
 
 var durations = new Array(messages.length);
 
@@ -145,7 +146,7 @@ describe('Inventory App Base E2E', () => {
   it('Should have zero stock', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
 
-    expect(Number(await inventoryPL!.getStockInRowById('INV__PRD__Location~~1__1a'))).toEqual(Number('0.0'));
+    expect(Number(await inventoryPL!.getStockInRowById('ProductLocation~~1__1a'))).toEqual(Number('0.0'));
   });
 
   it('Should end recording and cleanup', async () => {

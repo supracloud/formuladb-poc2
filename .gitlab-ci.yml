@@ -11,7 +11,7 @@ build:
     - cd ..
     - cd core && npm install 
     - cd ..
-    - npm run initpgdb
+    - npm run db
     - cd be && npm install
     - cd ..
     - cd fe && npm install
@@ -20,7 +20,7 @@ build:
     - npm run build-prod
     - cd ..
     - cd fe
-    - npm run build -- --prod --deploy-url=/formuladb/ --base-href=/formuladb/ --source-map
+    - npm run build -- --prod --source-map
     - cd ..
     - docker build -t formuladb-sourcemaps -f Dockerfile.map .
     - docker tag formuladb-sourcemaps registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:0.0.1
@@ -52,8 +52,8 @@ test:
   script:
     - FRMDB_RELEASE=0.0.1 docker-compose up -d db
     - cd be
-    - npm test || true
-    - FRMDB_STORAGE=postgres npm test || true
+    - npm test
+    - FRMDB_STORAGE=postgres npm test
     - npm run start &
     - while ! nc -z localhost 3000 </dev/null; do echo "Waiting for BE ..."; sleep 1; done
     - cd ..

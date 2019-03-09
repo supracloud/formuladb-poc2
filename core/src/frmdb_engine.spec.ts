@@ -6,10 +6,10 @@
 import * as _ from "./frmdb_lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula, ServerEventSetPropertyN } from "@core/domain/event";
+import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula, ServerEventSetPropertyN, ServerEventDeletedFormDataEvent } from "@core/domain/event";
 import { $s2e } from './formula_compiler';
 import { FrmdbEngine } from "./frmdb_engine";
-import { Pn, Entity, FormulaProperty, Schema } from "@core/domain/metadata/entity";
+import { Pn, Entity, FormulaProperty, Schema, EntityProperty, ChildTableProperty } from "@core/domain/metadata/entity";
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { getFrmdbEngine, getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
@@ -45,6 +45,16 @@ describe('FrmdbEngine', () => {
                 validations: {
                     positiveX: { conditionExpr: $s2e('x__ >= 0') }
                 },
+            } as Entity,
+            C: {
+                _id: 'C', props: {
+                    _id: { name: "_id", propType_: Pn.STRING },
+                    aaaa: {
+                        name: 'aaaa',
+                        propType_: Pn.CHILD_TABLE,
+                        referencedEntityName: 'A',
+                    } as ChildTableProperty,
+                }
             } as Entity,
         }
     };
@@ -92,6 +102,9 @@ describe('FrmdbEngine', () => {
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
+    async function delObj(obj: KeyValueObj): Promise<ServerEventDeletedFormDataEvent> {
+        return await frmdbEngine.processEvent(new ServerEventDeletedFormDataEvent(obj)) as ServerEventDeletedFormDataEvent;
+    }
 
     afterEach(function () {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
@@ -111,12 +124,18 @@ describe('FrmdbEngine', () => {
         await frmdbEngine.putDataObjAndUpdateViews(null, a1);
         let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
         await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+        let c = { _id: "C~~c"};
+        await frmdbEngine.putDataObjAndUpdateViews(null, c);
 
-        await putObj({ _id: 'A~~', b: 'B~~1', val: 2 } as DataObj);
+        let a3 = { _id: 'A~~c__', b: 'B~~1', val: 2 };
+        let ev = await putObj(a3);
+        a3._id = ev.obj._id;
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
 
-        await putObj({ _id: 'A~~', b: 'B~~1', val: 3 } as DataObj);
+        let a4 = { _id: 'A~~c__', b: 'B~~1', val: 3 };
+        ev = await putObj(a4);
+        a4._id = ev.obj._id;
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 8, x__: 92}));
         
@@ -125,10 +144,40 @@ describe('FrmdbEngine', () => {
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 10, x__: 90}));
 
-        let ev = await putObj({ _id: 'A~~', b: 'B~~1', val: 95 } as DataObj);
+        ev = await putObj({ _id: 'A~~', b: 'B~~1', val: 95 } as DataObj);
         b1After = await frmdbTStore.getDataObj('B~~1');
         expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
         expect(ev.obj['val']).toEqual(90);
+        expect(ev.obj['err']).toEqual(5);
+
+        await delObj(ev.obj);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 10, x__: 90}));
+
+        ev = await putObj({ _id: 'A~~', b: 'B~~1', val: 295 } as DataObj);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 100, x__: 0}));
+        expect(ev.obj['val']).toEqual(90);
+        expect(ev.obj['err']).toEqual(205);
+
+        await delObj(ev.obj);
+        await delObj(a2);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        let sum = a1.val + a3.val + a4.val;
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: sum, x__: 100 - sum}));
+        
+        await delObj(a1);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        sum = a3.val + a4.val;
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: sum, x__: 100 - sum}));
+        
+        await delObj(c);
+        b1After = await frmdbTStore.getDataObj('B~~1');
+        let mapViewObjs = await (frmdbTStore as any).mapReduceViews.get("vaggs-A-SUMIF(A.val, b == @[_id])").mapKVS.kvs.all();
+        let reduceViewObjs = await (frmdbTStore as any).mapReduceViews.get("vaggs-A-SUMIF(A.val, b == @[_id])").reduceFunction.kvs.kvs.all();
+        expect(mapViewObjs.length).toEqual(0);
+        expect(reduceViewObjs.length).toEqual(0);
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 0, x__: 100}));
 
         done();
     });

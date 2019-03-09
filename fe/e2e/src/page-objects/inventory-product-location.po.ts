@@ -35,7 +35,7 @@ export class InventoryProductLocationPage {
     await elem.click();
   }
 
-  async getStockInRowById(id: string) { /* e.g. INV__PRD__Location~~1__1a */
+  async getStockInRowById(id: string) { /* e.g. ProductLocation~~1__1a */
     let count = 0;
     let elem = element(by.cssContainingText('.ag-cell', id)).element(by.xpath('..')).element(by.css('div[col-id="available_stock__"]'));
     await browser.wait(ExpectedConditions.visibilityOf(elem), 5000);

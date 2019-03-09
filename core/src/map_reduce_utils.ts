@@ -4,8 +4,10 @@
  */
 
 import * as _ from "lodash";
+import { CircularJSON } from "@core/json-stringify";
 import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
-import { Expression, StringLiteral, NumberLiteral } from "jsep";
+import { Expression } from "jsep";
+
 declare var emit: any;
 
 export function isNumberES5(s) {
@@ -19,7 +21,7 @@ export function jsonPathMapGetterExpr(jsonPath: string) {
     return 'doc.' + jsonPath.replace(/^\$\./, '').replace(/\[.*?\]/g, '');
 }
 
-export function evalExprES5(doc, expr) {
+export function evalExpression(doc: {}, expr: Expression | Expression[]) {
     //Copyright (c) 2017 Don McCurdy
     
     var binops = {
@@ -163,8 +165,8 @@ export function evalExprES5(doc, expr) {
             });
         } else return evaluate(expr, doc);
     } catch (e) {
-        throw new Error("Error while evaluating expression: " + (expr.expr || JSON.stringify(expr, null, 4)) 
-            + "\nfor document " + JSON.stringify(doc, null, 4)
+        throw new Error("Error while evaluating expression: " + CircularJSON.stringify(expr, null, 4)
+            + "\nfor document " + CircularJSON.stringify(doc, null, 4)
             + "\nCaused by: " + e + "\n" + e.stack);
     }
 }
@@ -194,7 +196,7 @@ function compareStringsES5(s1, s2) {
     } else return s1 < s2 ? -1 : s1 === s2 ? 0 : 1;
 }
 function compareKeysES5(k1, k2) {
-    if (!(k1 instanceof Array) || !(k2 instanceof Array)) throw new Error("keys must be string arrays: " + JSON.stringify(k1) + "/" + JSON.stringify(k2));
+    if (!(k1 instanceof Array) || !(k2 instanceof Array)) throw new Error("keys must be string arrays: " + CircularJSON.stringify(k1) + "/" + CircularJSON.stringify(k2));
 
     if (k1.length === 0) {
         if (k2.length === 0) return 0;
@@ -230,9 +232,9 @@ export function generateMapFunctionAndQuery(args: MapFunctionAndQueryT): string 
     return packMapFunctionAndQuery(
         function (doc) {
             if (doc._id.match('^' + args.entityName))
-                emit(['trid', evalExprES5(doc, args.keyExpr)],
-                    evalExprES5(doc, args.valueExpr));
-        }, [evalExprES5], args);
+                emit(['trid', evalExpression(doc, args.keyExpr)],
+                    evalExpression(doc, args.valueExpr));
+        }, [evalExpression], args);
 }
 
 export function packMapFunctionAndQuery(mapFunc: (doc, ...a) => void, dependencies: [(...a) => any], args: MapFunctionAndQueryT): string {
@@ -252,7 +254,7 @@ export function packFunction(func: (doc, ...a) => void, dependencies: ((...a) =>
         '    var dependencies = {',
         '        ' + deps.map(({ n, f }) => n + ': ' + f).join(',\n        '),
         '    };',
-        '    var args = ' + JSON.stringify(args, null, 4).replace(/\n/g, "\n    "),
+        '    var args = ' + CircularJSON.stringify(args, null, 4).replace(/\n/g, "\n    "),
         '    ' + func.toString()
             .replace(/function.*?\{/, 'function zaFunc(doc, dependencies) {')
             .replace(/\w+\.emit\s*\(/g, (m, $1) => 'emit(')
@@ -268,20 +270,20 @@ export const PackedMapFunctions = {
         function map1(doc) {
             var id = parseDataObjIdES5(doc._id);
             if (id && id.entityName === args.entityName) {
-                emit(evalExprES5({$ROW$: doc}, args.keyExpr), evalExprES5({$ROW$: doc}, args.valueExpr));
+                emit(evalExpression({$ROW$: doc}, args.keyExpr), evalExpression({$ROW$: doc}, args.valueExpr));
             }
         }
-        return packFunction(map1, [parseDataObjIdES5, evalExprES5], args);        
+        return packFunction(map1, [parseDataObjIdES5, evalExpression], args);        
     },
     mapByKeyArrayExpression2: (map: MapFunctionT) => {
         let args = map;
         function map1(doc) {
             var id = parseDataObjIdES5(doc._id);
             if (id && id.entityName === args.entityName) {
-                emit(evalExprES5(doc, args.keyExpr), evalExprES5(doc, args.valueExpr));
+                emit(evalExpression(doc, args.keyExpr), evalExpression(doc, args.valueExpr));
             }
         }
-        return packFunction(map1, [parseDataObjIdES5, evalExprES5], args);
+        return packFunction(map1, [parseDataObjIdES5, evalExpression], args);
     }
 }
 

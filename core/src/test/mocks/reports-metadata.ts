@@ -4,15 +4,8 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty } from "@core/domain/metadata/entity";
-import { INV__PRD, INV__PRD__Location } from './inventory-metadata';
 import { Fn } from "@core/domain/metadata/functions";
 
-
-export const Reports = {
-    _id: "REP",
-    module_: true,
-    props: {},
-};
 
 export const REP__DetailedCentralizerReport = {
     _id: "REP__DetailedCentralizerReport",
@@ -60,4 +53,10 @@ export const REP__ServiceCentralizerReport = {
         vatCost: { name: "vatCost", propType_: Pn.STRING } as EntityProperty,
         totalCost: { name: "totalCost", propType_: Pn.STRING } as EntityProperty,
     }
+};
+
+export const Reports = {
+    _id: "REP",
+    pureNavGroupingChildren: [REP__DetailedCentralizerReport._id, REP__ServiceCentralizerReport._id],
+    props: {},
 };

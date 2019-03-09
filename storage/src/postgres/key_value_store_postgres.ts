@@ -15,7 +15,7 @@ import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Expression } from "jsep";
-import { evalExprES5 } from "@core/map_reduce_utils";
+import { evalExpression } from "@core/map_reduce_utils";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -102,7 +102,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     }
 
     protected pgSpecialChars(str: string) {
-        return str;
+        return str.replace(/\ufff0/g, "~~~~~~~~~~~~~");//FIXME: what can we use as +infinity in Postgres ?
     }
 
     /** querying a map-reduce view must return the results ordered by _id */
@@ -113,6 +113,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 let sign2: string = opts.inclusive_end ? "<=" : "<";
                 let start: string = this.pgSpecialChars(opts.startkey);
                 let end: string = this.pgSpecialChars(opts.endkey);
+                
 
                 let query: string = this.rangeSQL(sign1, sign2);
                 this.getDB().any<{ _id: string, val: VALUET }>(query, [start, end]).then((res) => {
@@ -199,7 +200,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 export class KeyObjStorePostgres<OBJT extends KeyValueObj> extends KeyValueStorePostgres<OBJT> implements KeyObjStoreI<OBJT> {
 
     public findByPrefix(prefix: string): Promise<OBJT[]> {
-        return this.rangeQuery({ startkey: prefix, endkey: "\ufff0", inclusive_start: true, inclusive_end: false });
+        return this.rangeQuery({ startkey: prefix, endkey: prefix + "\ufff0", inclusive_start: true, inclusive_end: false });
     }
     public put(obj: OBJT): Promise<OBJT> {
         return this.set(obj._id, obj);
@@ -308,7 +309,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     async mapQuery(keyExpr: Expression[], opts: RangeQueryOptsI): Promise<OBJT[]> {
         let all = await this.all();
         let ret = all.map(x => {
-            return [kvsKey2Str(evalExprES5(x, keyExpr)), x];
+            return [kvsKey2Str(evalExpression(x, keyExpr)), x];
         }).filter(([key, val]) =>
             (opts.startkey < key && key < opts.endkey)
             || (opts.inclusive_start && key === opts.startkey)
@@ -327,7 +328,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     //TODO: implement using SQL and plv8
     reduceQuery(keyExpr: Expression[], opts: RangeQueryOptsI, valueExpr: Expression, reduceFun: ReduceFun): Promise<ScalarType> {
         return this.mapQuery(keyExpr, opts)
-            .then(rows => rows.map(r => evalExprES5(r, valueExpr)))
+            .then(rows => rows.map(r => evalExpression(r, valueExpr)))
             .then(values => kvsReduceValues(values, reduceFun, this.entity._id, false));
     }
 

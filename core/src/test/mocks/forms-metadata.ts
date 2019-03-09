@@ -4,16 +4,10 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "@core/domain/metadata/entity";
-import { INV__PRD, INV__Order, INV__PRD__Unit } from './inventory-metadata';
+import { InventoryProduct, InventoryOrder, InventoryProductUnit } from './inventory-metadata';
 import { GEN__Client } from "./general-metadata";
 import { Sn } from '@core/domain/metadata/stored_procedure';
 import { Fn } from "@core/domain/metadata/functions";
-
-export const Forms = {
-    _id: 'FRM',
-    module_: true,
-    props: {},
-};
 
 export const Forms__ServiceForm = {
     _id: 'FRM__ServiceForm',
@@ -59,23 +53,23 @@ export const Forms__ServiceForm = {
         accommodation: { name: 'accommodation', propType_: Pn.NUMBER } as EntityProperty,
         service_form_units: {
             name: 'service_form_units',
-            propType_: Pn.CHILD_TABLE, referencedEntityName: INV__Order._id,
+            propType_: Pn.CHILD_TABLE, referencedEntityName: InventoryOrder._id,
             props: {
                 equipmentCode: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id, referencedPropertyName: 'code'
+                    referencedEntityName: InventoryProductUnit._id, referencedPropertyName: 'code'
                 } as EntityProperty,
                 equipmentProductCode: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id, referencedPropertyName: 'product_code'
+                    referencedEntityName: InventoryProductUnit._id, referencedPropertyName: 'product_code'
                 } as EntityProperty,
                 equipmentSerial1: {
                     name: 'equipment_code', propType_: Pn.REFERENCE_TO,
-                    referencedEntityName: INV__PRD__Unit._id, referencedPropertyName: 'serial1'
+                    referencedEntityName: InventoryProductUnit._id, referencedPropertyName: 'serial1'
                 } as EntityProperty,
-                reported_problem: { name: 'reported_problem', propType_: Pn.TEXT } as EntityProperty,
-                found_problem: { name: 'found_problem', propType_: Pn.TEXT } as EntityProperty,
-                work_description: { name: 'work_description', propType_: Pn.TEXT } as EntityProperty,
+                reported_problem: { name: 'reported_problem', propType_: Pn.DOCUMENT } as EntityProperty,
+                found_problem: { name: 'found_problem', propType_: Pn.DOCUMENT } as EntityProperty,
+                work_description: { name: 'work_description', propType_: Pn.DOCUMENT } as EntityProperty,
                 nb_piston_cycles: { name: 'nb_piston_cycles', propType_: Pn.STRING } as EntityProperty,
                 brita_counter: { name: 'brita_counter', propType_: Pn.STRING } as EntityProperty,
                 washing_cycles: { name: 'washing_cycles', propType_: Pn.STRING } as EntityProperty,
@@ -84,4 +78,10 @@ export const Forms__ServiceForm = {
             }
         } as ChildTableProperty,
     }
+};
+
+export const Forms = {
+    _id: 'FRM',
+    pureNavGroupingChildren: [Forms__ServiceForm._id],
+    props: {},
 };

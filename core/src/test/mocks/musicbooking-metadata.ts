@@ -6,12 +6,6 @@
 import { Pn, EntityProperty } from "@core/domain/metadata/entity";
 
 
-export const MusicBooking = {
-    _id: 'MBK',
-    module_: true,
-    props: {},
-};
-
 export const MBK__Service = {
     _id: 'MBK__Service',
     props: {
@@ -110,4 +104,18 @@ export const MBK__Email = {
         template: { name: 'template', propType_: Pn.STRING, 'allowNull': false } as EntityProperty,
         // should be reference to GEN__Client
     },
+};
+
+export const MusicBooking = {
+    _id: 'MBK',
+    pureNavGroupingChildren: [
+        MBK__Service._id,
+        MBK__Estimate._id,
+        MBK__Estimate__Service._id,
+        MBK__Session._id,
+        MBK__Booking._id,
+        MBK__Booking__Musician._id,
+        MBK__Email._id,
+    ],
+    props: {},
 };

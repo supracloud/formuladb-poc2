@@ -7,18 +7,12 @@ import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
 
 
-export const General: Entity = {
-    _id: "GEN",
-    module_: true,
-    props: {},
-};
-
 export const GEN__Settings: Entity = {
     _id: "GEN__Settings",
     props: {
         name: { name: "name", propType_: Pn.STRING } as EntityProperty,
         valueNumber: { name: "valueNumber", propType_: Pn.NUMBER } as EntityProperty,
-        valueText: { name: "valueText", propType_: Pn.TEXT } as EntityProperty,
+        valueText: { name: "valueText", propType_: Pn.DOCUMENT } as EntityProperty,
         valueDate: { name: "valueDate", propType_: Pn.DATETIME } as EntityProperty,
     }
 }
@@ -109,4 +103,11 @@ export const GEN__Client: Entity = {
         param1: { name: "param1", propType_: Pn.STRING } as EntityProperty,
         state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
     }
+};
+
+
+export const General: Entity = {
+    _id: "GEN",
+    pureNavGroupingChildren: [GEN__Actor._id, GEN__Client._id, GEN__Currency._id, GEN__Person._id],
+    props: {},
 };

@@ -1,14 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 
 import * as appState from 'src/app/app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from 'src/app/theme.state';
-import { Subscription, Subject } from 'rxjs';
+import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
 
-import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette } from '@fortawesome/free-solid-svg-icons';
-import { Pn, EntityProperty } from "@core/domain/metadata/entity";
-import { debounceTime, tap } from 'rxjs/operators';
+import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy, faNewspaper } from '@fortawesome/free-solid-svg-icons';
+import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
+import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
+import { FormulaEditorService } from '../formula-editor.service';
+import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
 
 @Component({
   selector: 'frmdb-dev-mode-opts',
@@ -16,6 +18,9 @@ import { debounceTime, tap } from 'rxjs/operators';
   styleUrls: ['./dev-mode-opts.component.scss']
 })
 export class DevModeOptsComponent implements OnInit, OnDestroy {
+  gridsterOptions: GridsterConfig;
+  gridsterPage: Array<GridsterItem>;
+
   tableIcon = faTable;
   columnIcon = faColumns;
   addIcon = faPlusCircle;
@@ -23,24 +28,65 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
   devModeIcon = faTools;
   changeAppIcon = faImages;
   settingsIcon = faCogs;
+  pageEditorIcon = faNewspaper;
   collorPaletteIcon = faPalette;
 
+  editIcon = faPenFancy;
+  edit2Icon = faPenFancy;
+  applyChangesIcon = faCheckCircle;
+  discardChangesIcon = faTimesCircle;
+
+  undefinedPropTypeIcon = faQuestion;
+  numberPropTypeIcon = faSortNumericDown;
+  stringPropTypeIcon = faTextHeight;
+  datePropTypeIcon = faCalendarAlt;
+  durationPropTypeIcon = faHourglassHalf;
+  childTablePropTypeIcon = faTable;
+  referenceToPropTypeIcon = faShareSquare;
+  
   keepPrefixSubject$: Subject<{ input: HTMLInputElement, prefix: string }> = new Subject();
 
-  editorOpened: boolean = false;
-  developerMode: boolean = false;
+  developerMode$: Observable<boolean>;
+  editorOn$: Observable<boolean>;
+  displayedProperty$: Observable<EntityProperty | undefined>;
+
+  clickPropertyType$: Subject<string> = new Subject();
+  clickStartEdit$: Subject<void> = new Subject();
+  clickCancelEdits$: Subject<void> = new Subject();
+  clickSaveEdits$: Subject<void> = new Subject();
+
+  menuOpened: boolean = false;
+  pageEditorOpened: boolean = false;
+
   currentEntity: appState.Entity | undefined;
   currentProperty: EntityProperty | undefined;
   protected subscriptions: Subscription[] = [];
 
-  constructor(protected store: Store<appState.AppState>, private router: Router) {
-    this.subscriptions.push(this.store.select(appState.getDeveloperMode).subscribe(prop => {
-      this.developerMode = prop
+  constructor(protected store: Store<appState.AppState>, private router: Router, public formulaEditorService: FormulaEditorService) {
+    this.developerMode$ = this.store.select(appState.getDeveloperMode);
+    this.editorOn$ = this.store.select(appState.getEditorOn);
+
+    this.sub(this.clickStartEdit$.subscribe(() => this.formulaEditorService.toggleFormulaEditor()));
+    this.clickCancelEdits$.subscribe(() => this.discardChanges());
+
+    this.displayedProperty$ = combineLatest(this.formulaEditorService.currentProperty$, this.formulaEditorService.editedProperty$).pipe(
+      map(([currentProperty, editedProperty]) => editedProperty ? editedProperty : currentProperty)
+    );
+
+    let saveStream$ = this.clickSaveEdits$.pipe(
+      withLatestFrom(combineLatest(this.formulaEditorService.editorExprHasErrors$, this.formulaEditorService.editedEntity$, this.formulaEditorService.editedProperty$)),
+      map(([x, [editorExprHasErrors, editedEntity, editedProperty]]) => ({ editorExprHasErrors, editedEntity, editedProperty }))
+    );
+    this.sub(saveStream$.subscribe(({editorExprHasErrors, editedEntity, editedProperty}) => {
+      if (editedEntity) this.applyChanges(editorExprHasErrors, editedEntity, editedProperty);
     }));
-    this.subscriptions.push(store.select(appState.getTableEntityState)
-      .subscribe(e => this.currentEntity = e));
-    this.subscriptions.push(this.store.select(appState.getSelectedPropertyState)
-      .subscribe(prop => this.currentProperty = prop));
+
+    this.sub(store.select(appState.getTableEntityState).subscribe(e => this.currentEntity = e));
+    this.sub(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.currentProperty = prop));
+  }
+
+  sub(s: Subscription) {
+    this.subscriptions.push(s);
   }
 
   ngOnInit() {
@@ -53,7 +99,48 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         input.value = prefix + input.value;
       }
     }));
+
+    this.gridsterOptions = {
+      gridType: "fixed",
+      fixedColWidth: 100,
+      fixedRowHeight: 40,
+      margin: 2,
+      minCols: 6,
+      maxCols: 6,
+      minRows: 2,
+      maxRows: 6,
+      defaultItemCols: 2,
+      defaultItemRows: 1,
+      maxItemCols: 6,
+      maxItemRows: 1,
+      minItemCols: 1,
+      minItemRows: 1,
+      draggable: {
+        enabled: true,
+      },
+      resizable: {
+        enabled: true,
+      },
+      swap: true,
+      pushItems: true,
+      disablePushOnDrag: false,
+      disablePushOnResize: false,
+      pushDirections: {north: true, east: true, south: true, west: true},
+      pushResizeItems: false,
+      displayGrid: DisplayGrid.Always,
+      disableWindowResize: false,
+      disableWarnings: false,
+      scrollToNewItems: false
+    };
+
+    this.gridsterPage = [
+      {cols: 2, rows: 1, y: 0, x: 0},
+      {cols: 1, rows: 1, y: 0, x: 2},
+      {cols: 2, rows: 1, y: 1, x: 0},
+      {cols: 1, rows: 1, y: 1, x: 2},
+    ];
   }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe())
   }
@@ -74,22 +161,10 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
   }
 
-  formulaFocused() {
-    this.editorOpened = true;
-  }
-
-  toggleFormulaEditor() {
-    if (!this.developerMode) return;
-
-    this.editorOpened = !this.editorOpened;
-  }
-
-  toggleDeveloperMode() {
-    this.store.dispatch(new appState.CoreToggleDeveloperModeAction());
-  }
 
   stopPropagation($event) {
     $event.stopPropagation();
+    $event.preventDefault();
   }
 
   addColumnToCurrentTable(input: HTMLInputElement) {
@@ -146,4 +221,31 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
+  startEditing() {
+    this.formulaEditorService.toggleFormulaEditor();
+  }
+
+  modifyPropertyType(type: string) {
+    if (!this.formulaEditorService.formulaState.selectedProperty) return;
+    if (this.formulaEditorService.formulaState.selectedProperty.propType_ != type && !this.formulaEditorService.formulaState.editorOn) {
+      this.formulaEditorService.toggleFormulaEditor();
+    }
+  }
+
+
+  applyChanges(editorExprHasErrors: boolean, editedEntity: Entity, editedProperty: EntityProperty) {
+    if (!editorExprHasErrors) {
+      if (confirm("Please confirm, apply modifications to DB ?")) {
+        this.store.dispatch(new appState.ServerEventSetProperty(editedEntity, editedProperty));
+        this.formulaEditorService.toggleFormulaEditor();
+      }
+    } else {
+      alert("Expression has errors, cannot apply on DB");
+    }
+  }
+  discardChanges() {
+    if (confirm("Please confirm, dicard changes ?")) {
+      this.formulaEditorService.toggleFormulaEditor();
+    }
+  }  
 }

@@ -4,6 +4,7 @@
  */
 
 import * as _ from "lodash";
+import { CircularJSON } from "@core/json-stringify";
 import {
     Expression, LogicalExpression, StringLiteral, NumberLiteral, isExpression,
     isMemberExpression, isCallExpression, BinaryExpression, CallExpression, MemberExpression,
@@ -38,7 +39,7 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "@core/domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName } from './formula_compiler';
+import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName, FormulaCompilerError } from './formula_compiler';
 import { _throw } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
 
@@ -58,7 +59,7 @@ function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     if (!validArg) throw new Error("Expected " + validatorFunctions.map(f => f.name).join('|') + "but found " + value.origExpr)
 
     let ret = compileExpression(value, context, requestedRetType);
-    if (!outValidator(ret)) throw new Error("Compilation failed for argument " + value.origExpr + "; expected " + outValidator.name + " but found " + ret.type_ + "; " + JSON.stringify(ret, null, 4));
+    if (!outValidator(ret)) throw new Error("Compilation failed for argument " + value.origExpr + "; expected " + outValidator.name + " but found " + ret.type_ + "; " + CircularJSON.stringify(ret, null, 4));
     return ret;
 }
 
@@ -101,7 +102,7 @@ function _MAP_VALUE(fc: FuncCommon, fullTableRange: Identifier, valueExpr: Expre
             has$Identifier: ce.has$Identifier,
             hasNon$Identifier: ce.hasNon$Identifier,
         };
-    } else throw new Error("Expected identifier but found " + JSON.stringify(fullTableRange));
+    } else throw new Error("Expected identifier but found " + CircularJSON.stringify(fullTableRange));
 }
 
 function _MAP_KEY(fc: FuncCommon, fullTableRange: Identifier, keyExpr: Expression): MapKey {
@@ -115,7 +116,7 @@ function _MAP_KEY(fc: FuncCommon, fullTableRange: Identifier, keyExpr: Expressio
             has$Identifier: ce.has$Identifier,
             hasNon$Identifier: ce.hasNon$Identifier,
         };
-    } else throw new Error("Expected identifier but found " + JSON.stringify(fullTableRange));
+    } else throw new Error("Expected identifier but found " + CircularJSON.stringify(fullTableRange));
 }
 
 function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, keyExpr: Expression, valueExpr?: Expression): MapKey | MapFunction {
@@ -128,7 +129,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
     }
 
     if (isIdentifier(basicRange)) {
-        if (!isCompiledScalar(inputRange)) throw new Error("Expected Identifier but found " + JSON.stringify(inputRange) + " for " + basicRange.origExpr);
+        if (!isCompiledScalar(inputRange)) throw new Error("Expected Identifier but found " + CircularJSON.stringify(inputRange) + " for " + basicRange.origExpr);
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
@@ -164,7 +165,7 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
         compileArg(fc, 'groupExpr' + idx, ge, [isExpression], fc.context, CompiledScalarN, isCompiledScalar));
 
     if (isIdentifier(basicRange)) {
-        if (!isCompiledScalar(inputRange)) throw new Error("Expected Identifier but found " + JSON.stringify(inputRange) + " for " + basicRange.origExpr);
+        if (!isCompiledScalar(inputRange)) throw new Error("Expected Identifier but found " + CircularJSON.stringify(inputRange) + " for " + basicRange.origExpr);
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
@@ -272,14 +273,14 @@ function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLog
 
 function _RANGE(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallExpression, startExpr: Expression, endExpr: Expression, inclusive_start?: Identifier, inclusive_end?: Identifier): MapFunctionAndQuery {
     let inputRange = compileArgNV(fc, 'basicRange', basicRange, [isIdentifier, isMemberExpression, isCallExpression], fc.context, MapFunctionN);
-    if (!includesMapKey(inputRange)) throw new Error("basicRange is expected to have lookup keys: " + basicRange.origExpr + "; " + JSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
-    if (!includesMapValue(inputRange)) throw new Error("basicRange is expected to have a selected column or computed value: " + basicRange.origExpr + "; " + JSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
+    if (!includesMapKey(inputRange)) throw new Error("basicRange is expected to have lookup keys: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
+    if (!includesMapValue(inputRange)) throw new Error("basicRange is expected to have a selected column or computed value: " + basicRange.origExpr + "; " + CircularJSON.stringify(inputRange) + ". Context: " + fc.funcExpr.origExpr);
     let compiledStartExpr = compileArg(fc, 'start', startExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledStartExpr) || !compiledStartExpr.has$Identifier || compiledStartExpr.hasNon$Identifier)
-        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + startExpr.origExpr + "; " + JSON.stringify(compiledStartExpr, null, 4));
+        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + startExpr.origExpr + "; " + CircularJSON.stringify(compiledStartExpr, null, 4));
     let compiledEndExpr = compileArg(fc, 'end', endExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledEndExpr) || !compiledEndExpr.has$Identifier || compiledEndExpr.hasNon$Identifier)
-        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + endExpr.origExpr + "; " + JSON.stringify(compiledEndExpr, null, 4));
+        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + endExpr.origExpr + "; " + CircularJSON.stringify(compiledEndExpr, null, 4));
 
     return {
         type_: MapFunctionAndQueryN,
@@ -368,6 +369,32 @@ function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): Map
     return _REDUCE(fc, inputRange, {name: SumReduceFunN});
 }
 
+function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
+    return {
+        type_: CompiledScalarN,
+        rawExpr: fc.funcExpr,
+        has$Identifier: false,
+        hasNon$Identifier: false,
+    };
+}
+
+function REFERENCE_TO(fc: FuncCommon, tableRange: MemberExpression): CompiledScalar {
+    if (!isMemberExpression(tableRange)) throw new FormulaCompilerError(fc.funcExpr, "REFERENCE_TO expects an TableName.column_name as argument");
+    return propertyTypeFunction(fc);
+}
+function NUMBER(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function STRING(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function DATETIME(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+function DURATION(fc: FuncCommon) {
+    return propertyTypeFunction(fc);
+}
+
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
@@ -425,7 +452,7 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
 function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression): MapReduceTrigger {
     let compiledLookupExpr = compileArg(fc, 'lookupExpr', lookupExpr, [isExpression], fc.context, CompiledScalarN, isCompiledScalar);
     if (!isCompiledScalar(compiledLookupExpr) || !compiledLookupExpr.has$Identifier || compiledLookupExpr.hasNon$Identifier)
-        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + lookupExpr.origExpr + "; " + JSON.stringify(compiledLookupExpr, null, 4));
+        throw new Error("RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + lookupExpr.origExpr + "; " + CircularJSON.stringify(compiledLookupExpr, null, 4));
     let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapFunctionN, isMapFunction);
     
     return {
@@ -434,7 +461,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
             aggsViewName: getViewName(true, inputRange.entityName, fc.funcExpr),
             map: {
-                entityName: inputRange.entityName || _throw("RANK table range missing table name: " + tableRange.origExpr + "; " + JSON.stringify(inputRange)),
+                entityName: inputRange.entityName || _throw("RANK table range missing table name: " + tableRange.origExpr + "; " + CircularJSON.stringify(inputRange)),
                 keyExpr: inputRange.keyExpr,
                 valueExpr: $s2e(`1`),
                 query: {
@@ -478,16 +505,16 @@ export const MapReduceFunctions = {
 // simple scalar functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanCompiledExpression {
-    if (!isCallExpression(fc.funcExpr)) throw new Error("Expected function call expression but found " + JSON.stringify(fc.funcExpr));
+    if (!isCallExpression(fc.funcExpr)) throw new Error("Expected function call expression but found " + CircularJSON.stringify(fc.funcExpr));
     let evalledArs: CompiledScalar[] = args.map(arg => {
-        if (!isExpression(arg)) throw new Error("Unexpected function arg " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
+        if (!isExpression(arg)) throw new Error("Unexpected function arg " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         let ret = compileExpression(arg, fc.context, CompiledScalarN);
 
         //FIXME: this is not true, arguments of scalar functions can be the results of trigger calculations, e.g. MAX(SUMIF(blabla...), 20)
         //to fix this and implement spec "scalar-functions having table-functions as argument"
-        if (!isCompiledScalar(ret)) throw new Error("Arguments of scalar functions must be scalar expressions at " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
+        if (!isCompiledScalar(ret)) throw new Error("Arguments of scalar functions must be scalar expressions at " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         
-        if (!isExpression(ret.rawExpr)) throw new Error("Arguments of scalar functions must be scalar expressions " + JSON.stringify(arg) + '; ' + JSON.stringify(fc.funcExpr));
+        if (!isExpression(ret.rawExpr)) throw new Error("Arguments of scalar functions must be scalar expressions " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         return ret;
     });
 
@@ -538,7 +565,18 @@ export const ScalarFunctions = {
     FLOOR: FLOOR,
 }
 
+export const PropertyTypeFunctions = {
+    NUMBER: NUMBER,
+    STRING: STRING,
+    TEXT: TEXT,
+    DATETIME: DATETIME,
+    DURATION: DURATION,
+    REFERENCE_TO: REFERENCE_TO,
+}
+
+export const FunctionsDict: {[x: string]: Function} = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
 export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))
+    .concat(Object.keys(PropertyTypeFunctions))
 ;

@@ -6,6 +6,7 @@
 import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@core/domain/metadata/entity";
 import { SchemaDAO } from "@core/domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
+import { CircularJSON } from "@core/json-stringify";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
@@ -52,10 +53,12 @@ export class FrmdbEngine {
 
     public processEvent(event: events.MwzEvents): Promise<events.MwzEvent> {
         event._id = Date.now() + '_' + generateUUID();
-        console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + JSON.stringify(event));
+        console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 
         switch (event.type_) {
             case events.ServerEventModifiedFormDataN:
+                return this.transactionRunner.computeFormulasAndSave(event);
+            case events.ServerEventDeletedFormDataN:
                 return this.transactionRunner.computeFormulasAndSave(event);
             case events.ServerEventModifiedFormN:
                 return this.processForm(event);
@@ -110,7 +113,7 @@ export class FrmdbEngine {
             ;
     }
 
-    private newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
+    private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         let newEntity: Entity = { _id: event.path, props: {} };
 
         return this.frmdbEngineStore.putEntity(newEntity)
@@ -132,13 +135,18 @@ export class FrmdbEngine {
             ;
     }
 
+    private deleteDataObj(event: events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
+        //FIXME recompute formulas that depend on this object
+        return Promise.resolve(event);
+    }
+
     public async putDataObjAndUpdateViews(oldObj: DataObj | null, newObj: DataObj) {
-        if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + JSON.stringify({oldObj, newObj}));
+        if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + CircularJSON.stringify({oldObj, newObj}));
         await this.frmdbEngineStore.putDataObj(newObj);
         await this.updateViewsForObj(oldObj, newObj);
     }
     public async updateViewsForObj(oldObj: DataObj | null, newObj: DataObj) {
-        if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + JSON.stringify({oldObj, newObj}));
+        if (oldObj && oldObj._id !== newObj._id) throw new Error("old and new id(s) do not match " + CircularJSON.stringify({oldObj, newObj}));
         for (let formulaTriggeredByObj of this.schemaDAO.getFormulasTriggeredByObj(newObj._id)) {
 
             for (let triggerOfFormula of formulaTriggeredByObj.formula.triggers || []) {

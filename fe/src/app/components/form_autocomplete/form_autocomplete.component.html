@@ -1,0 +1,12 @@
+<label [for]="parentFormPath + '.' + inputElement.propertyName" *ngIf="!inputElement.noLabel">
+    {{inputElement.refEntityName | i18n}}/{{inputElement.refPropertyName | i18n}}
+</label>
+<input [id]="parentFormPath" class="form-control" [type]="text" [name]="parentFormPath" 
+    [formControl]="topLevelFormGroup.get(parentFormPath)"
+    *ngIf="hasControl(parentFormPath)" frmdb-on_focus 
+    [attr.list]="parentFormPath + '.' + inputElement.propertyName+'.list'"
+    (input)="inputChange($event.target.value)" (blur)="inputLeave($event.target.value)"
+/>
+<datalist [id]="parentFormPath + '.' + inputElement.propertyName+'.list'">
+    <option *ngFor="let option of options">{{option}}</option>
+</datalist>
