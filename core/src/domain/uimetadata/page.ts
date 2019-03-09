@@ -1,7 +1,7 @@
-export interface Page {
+export class Page {
     logo: string;
     logoUrl: string; 
-    navPosition: "top" | "left";
+    navPosition: "top" | "left" = "left";
     secondaryNavPosition: "bottom" | "right";
     tbd1: string;
     tbd2: string;

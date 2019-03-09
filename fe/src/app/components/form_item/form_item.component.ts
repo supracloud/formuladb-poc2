@@ -7,7 +7,7 @@ import { Component, OnInit, HostBinding, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow } from "@core/domain/uimetadata/form";
+import { NodeElement, NodeType, isKnownNodeElement, getChildPath, FormGridCol, FormGridRow, VLayout } from "@core/domain/uimetadata/form";
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 
@@ -64,7 +64,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
       case NodeType.form_grid:
         return [new FormGridRow()];
       case NodeType.h_layout:
-        return [new FormGridCol()];
+        return [new VLayout()];
       default:
         return null;
     }

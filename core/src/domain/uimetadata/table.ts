@@ -7,12 +7,14 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Entity, Pn } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
+import { Page } from './page';
 
 export class TableColumn implements SubObj {
     _id: string;
     width?: number;
     sort?: string;
     filter?: ColumnFilter;
+    page: Partial<Page>;
     constructor(public name: string, public type: Pn) {
     }
 }

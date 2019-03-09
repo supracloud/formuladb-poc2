@@ -9,6 +9,7 @@ import { LargeSalesReport_Form } from "./mocks/reports-ui-metadata";
 import { FrmdbEngine } from "../frmdb_engine";
 import { Schema } from "@core/domain/metadata/entity";
 import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
+import { HomePage_Form } from "@core/default_pages/website-ui-metadata";
 
 export async function loadTestData(schema: Schema): Promise<FrmdbEngine> {
     try {
@@ -23,7 +24,7 @@ export async function loadTestData(schema: Schema): Promise<FrmdbEngine> {
             await frmdbEngine.updateViewsForObj(null, obj);
         }
 
-        [Forms__ServiceForm_Form_, LargeSalesReport_Form].forEach(async (formUiMeta) => {
+        [Forms__ServiceForm_Form_, LargeSalesReport_Form, HomePage_Form].forEach(async (formUiMeta) => {
             await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
         });
 

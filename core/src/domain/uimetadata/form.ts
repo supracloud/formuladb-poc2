@@ -8,6 +8,7 @@ import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
 import { CircularJSON } from "@core/json-stringify";
+import { Page } from './page';
 
 export enum NodeType {
     form_grid = "form_grid",
@@ -47,6 +48,7 @@ export enum NodeType {
 export class Form implements KeyValueObj {
     _id: string;
     _rev?: string;
+    page: Partial<Page>;
     grid: FormGrid;
     stateGraph?: EntityStateGraph;
     isEditable?: boolean;
@@ -218,11 +220,7 @@ export class FormGridRow implements SubObj {
     _id: string;
     childNodes?: NodeElement[];
 }
-export class FormGridCol implements SubObj {
-    readonly nodeType = NodeType.v_layout;
-    _id: string;
-    childNodes?: NodeElement[];
-}
+
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
     _id: string;
