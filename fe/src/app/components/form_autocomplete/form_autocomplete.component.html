@@ -5,6 +5,9 @@
     *ngIf="hasControl(parentFormPath)"
     [formControl]="control"
     (input)="text$.next($event.target.value)"
+    (keydown.enter)="selectCurrentOption()" 
+    (keydown.arrowdown)="nextSuggestion()" 
+    (keydown.arrowup)="prevSuggestion()"
 />
 
 <table [class.visible]="popupOpened" class="frmdb-autocomplete_popup table table-striped table-sm">
@@ -16,8 +19,8 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let option of autoCompleteState?.options" (click)="selectOption(option)">
-            <td *ngFor="let relatedCtrl of relatedControls">
+        <tr *ngFor="let option of autoCompleteState?.options; let idx = index" (click)="selectOption(option)">
+            <td [class.selected]="currentOptionIdx == idx" *ngFor="let relatedCtrl of relatedControls">
                 <span *ngIf="relatedCtrl.propertyName === inputElement.propertyName" [innerHtml]="highlightOption(option)"></span>
                 <span *ngIf="relatedCtrl.propertyName !== inputElement.propertyName">{{option[relatedCtrl.propertyName]}}</span>
             </td>

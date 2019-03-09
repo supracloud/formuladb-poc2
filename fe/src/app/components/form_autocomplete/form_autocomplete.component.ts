@@ -93,6 +93,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
             debounceTime(200),
         ).subscribe(val => {
             if (val.length >= 2 && this.control) {
+                this.currentOptionIdx = 0;
                 this.currentSearchTxt = val;
                 let parentObj = this.formEditingService.getParentObj(this.control);
                 if (parentObj && parentObj._id) {
@@ -137,4 +138,16 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
         this.frmdbStreams.action(new UserChoseAutocompleteOption(option, this.inputElement));
         this.inputField.nativeElement.focus();
     }
+    currentOptionIdx: number = 0;
+    selectCurrentOption() {
+        if (!this.autoCompleteState || this.autoCompleteState.options.length <= this.currentOptionIdx) return;
+        this.selectOption(this.autoCompleteState.options[this.currentOptionIdx]);
+    }
+    nextSuggestion() {
+        this.currentOptionIdx++;
+    }
+    prevSuggestion() {
+        this.currentOptionIdx--;
+    }
+
 }

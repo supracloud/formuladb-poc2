@@ -18,6 +18,10 @@
     cursor: pointer;
 }
 
+.frmdb-autocomplete_popup td.selected {
+    background-color: lightblue;
+}
+
 .frmdb-autocomplete_popup.visible {
     display: block;
 }
