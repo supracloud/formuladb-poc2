@@ -22,7 +22,7 @@ export class AutoCompleteState {
     options: {}[] = [];
     selectedOption: {} | null;
 
-    constructor(public currentObjId: string, public entityAlias: string) {}
+    constructor(public currentObjId: string, public entityAlias: string, public currentControl: FormAutocomplete) {}
 }
 
 export interface FormState {
@@ -162,7 +162,7 @@ export function formReducer(state = formInitialState, action: FormActions): Form
             setAutoCompleteState(action.currentObjId, ret, action.formAutocompleteNode);
             break;
         case formUserActions.UserChoseAutocompleteOptionN:
-            if (!state.autoCompleteState || !state.autoCompleteState.options || _.find(state.autoCompleteState.options, action.option) ) {
+            if (!state.autoCompleteState || !state.autoCompleteState.options || !_.find(state.autoCompleteState.options, action.option) ) {
                 console.warn("Internal check failed for UserChoseAutocompleteOption, autocomplete from backend does not match the state:", ret.autoCompleteState, action);
             } else {
                 ret = {
@@ -205,7 +205,7 @@ export function formReducer(state = formInitialState, action: FormActions): Form
 
 function setAutoCompleteState(currentObjId: string, state: FormState, autoCompleteNode: FormAutocomplete) {
     if (!state.form) return;
-    state.autoCompleteState = new AutoCompleteState(currentObjId, autoCompleteNode.refEntityAlias || autoCompleteNode.refEntityName);
+    state.autoCompleteState = new AutoCompleteState(currentObjId, autoCompleteNode.refEntityAlias || autoCompleteNode.refEntityName, autoCompleteNode);
     walkForm(state.form.grid, state.autoCompleteState);
 }
 function walkForm(node: NodeElement, autoCompleteState: AutoCompleteState) {

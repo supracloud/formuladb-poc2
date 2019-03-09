@@ -18,7 +18,7 @@ export interface I18nState {
 }
 
 export const i18nInitialState: I18nState = {
-    dictionary: Dictioary_ro,
+    dictionary: Dictioary_en,
     locale: 'en'
 };
 

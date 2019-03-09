@@ -137,6 +137,7 @@ export function getChildPath(nodeEl: NodeElement) {
 export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>): Form {
     let form = new Form();
     form._id = 'Form_:' + entity._id;
+    form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
     form.grid = new FormGrid();
 

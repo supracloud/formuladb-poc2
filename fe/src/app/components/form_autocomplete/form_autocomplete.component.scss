@@ -1,3 +1,24 @@
 .mwz-form-autocomplete {
     margin-left: 25px;
 }
+
+:host {
+    position: relative;
+}
+
+.frmdb-autocomplete_popup {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    display: none;
+    z-index: 9123;
+    background-color: white; 
+}
+
+.frmdb-autocomplete_popup td {
+    cursor: pointer;
+}
+
+.frmdb-autocomplete_popup.visible {
+    display: block;
+}

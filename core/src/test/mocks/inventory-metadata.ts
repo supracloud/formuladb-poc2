@@ -95,6 +95,7 @@ export const InventoryProductUnit = {
 
 export const InventoryReceipt = {
     _id: 'InventoryReceipt',
+    isEditable: true,
     props: {
         receipt_item_table: {
             name: 'receipt_item_table', propType_: Pn.CHILD_TABLE,

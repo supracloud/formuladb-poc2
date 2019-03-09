@@ -90,8 +90,8 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
     ]
 })
 export class FormAutocompleteComponent extends FormAutocompleteComponentBase implements OnInit, OnDestroy {
-    constructor(formEditingService: FormEditingService, i18npipe: I18nPipe) {
-        super(formEditingService, i18npipe);
+    constructor(formEditingService: FormEditingService, i18npipe: I18nPipe, changeDetectorRef: ChangeDetectorRef) {
+        super(formEditingService, i18npipe, changeDetectorRef);
     }
 }
 

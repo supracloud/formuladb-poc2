@@ -282,7 +282,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onFirstDataRendered($event) {
         var allColumnIds: any[] = [];
-        this.gridColumnApi.getAllColumns().forEach(function (column) {
+        (this.gridColumnApi.getAllColumns()||[]).forEach(function (column) {
             allColumnIds.push(column.colId);
         });
         this.gridColumnApi.autoSizeColumns(allColumnIds);

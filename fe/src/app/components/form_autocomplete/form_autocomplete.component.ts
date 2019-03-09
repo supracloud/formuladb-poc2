@@ -4,7 +4,7 @@
  */
 
 import {
-    OnInit, OnDestroy
+    OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef
 } from '@angular/core';
 
 import { BaseNodeComponent } from '../base_node';
@@ -16,20 +16,22 @@ import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import * as _ from 'lodash';
 import { ValidatorFn, AbstractControl } from '@angular/forms';
 import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { debounceTime, map, tap, combineLatest, zip, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, map, tap, combineLatest, zip, distinctUntilChanged, filter } from 'rxjs/operators';
 import { AutoCompleteState } from '@fe/app/state/app.state';
 import { elvis, elvis_a } from '@core/elvis';
-import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
     inputElement: FormAutocomplete;
     public text$: Subject<string> = new BehaviorSubject('');
-    public formatedStrOptions: string[] = [];
+    // public formatedStrOptions: string[] = [];
     private control: AbstractControl | null;
+    private parentObjId: string | undefined;
     public autoCompleteState: AutoCompleteState | null;
+    public currentSearchTxt: string | null;
+    public popupOpened: boolean = false;
 
-    constructor(formEditingService: FormEditingService, private i18npipe: I18nPipe) {
+    constructor(formEditingService: FormEditingService, private i18npipe: I18nPipe, private changeDetectorRef: ChangeDetectorRef) {
         super(formEditingService);
     }
 
@@ -49,26 +51,25 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
                     return validSelection ? null : { "option-not-found": "referenced value must exist" };
                 });
                 ctrl.setValidators(validators);
+                this.parentObjId = elvis(this.formEditingService.getParentObj(ctrl))._id;
             }
             this.control = ctrl;
         }
         return this.control;
     }
 
+    get relatedControls() {
+        let ret = Object.values(elvis(elvis(this.autoCompleteState).controls) || {});
+        return ret;
+    }
+
     ngOnInit(): void {
         this.inputElement = this.nodeElement as FormAutocomplete;
         this.getControl();
-        if (this.control) {
-            this.formatedStrOptions = [this.control.value];
-        }
 
         this.subscriptions.push(this.frmdbStreams.autoCompleteState$.subscribe(async (autoCompleteState) => {
-            if (!this.control) return;
-            let parentObj = this.formEditingService.getParentObj(this.control);
-            if (!parentObj || !parentObj._id || parentObj._id !== autoCompleteState.currentObjId) return;
-
+            if (!this.isAutocompleteStateMatching(autoCompleteState)) return;
             this.autoCompleteState = autoCompleteState;
-            console.debug((this.control as any).name, autoCompleteState);
 
             if (autoCompleteState.selectedOption) {
                 let ctrl = this.getControl();
@@ -77,41 +78,46 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
                     ctrl.reset(autoCompleteState.selectedOption[this.inputElement.refPropertyName]);
                 }
             }
-
-            this.formatedStrOptions = [];
-            for (let opt of autoCompleteState.options) {
-                this.formatedStrOptions.push(this.getOptionValue(opt, autoCompleteState));
-            }
-
-            // return this.frmdbStreams.autoCompleteState$.pipe(
-            //     map(autoCompleteState => {
-            //         console.debug(autoCompleteState.options);
-            //         return autoCompleteState.options;
-            //     }));
-    
+            this.popupOpened = this.currentSearchTxt != null
+                && (autoCompleteState.currentControl.propertyName === this.inputElement.propertyName);
+            console.debug(this.parentObjId, (this.control as any).name, autoCompleteState, this.popupOpened, this.currentSearchTxt);
+            this.changeDetectorRef.detectChanges();
         }));
 
         this.subscriptions.push(this.text$.pipe(
             distinctUntilChanged(),
             debounceTime(200),
         ).subscribe(val => {
-                if (val.length >= 2 && this.control) {
-                    let parentObj = this.formEditingService.getParentObj(this.control);
-                    if (parentObj && parentObj._id) {
-                        this.frmdbStreams.action(new UserEnteredAutocompleteText(parentObj._id, val, this.inputElement));
-                    }
+            if (val.length >= 2 && this.control) {
+                this.currentSearchTxt = val;
+                let parentObj = this.formEditingService.getParentObj(this.control);
+                if (parentObj && parentObj._id) {
+                    this.frmdbStreams.action(new UserEnteredAutocompleteText(parentObj._id, val, this.inputElement));
                 }
+            }
         }));
+    }
+
+    highlightOption(option: {}) {
+        return option[this.inputElement.refPropertyName].replace(this.currentSearchTxt + '', '<strong>' + this.currentSearchTxt + '</strong>');
+    }
+
+    isAutocompleteStateMatching(autoCompleteState: AutoCompleteState): boolean {
+        if (!this.control) return false;
+        if (!this.parentObjId || this.parentObjId !== autoCompleteState.currentObjId
+            || (this.inputElement.refEntityAlias || this.inputElement.refEntityName) !== autoCompleteState.entityAlias) return false;
+        return true;
     }
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
-    getOptionValue(row, autoCompleteState: AutoCompleteState): string {
+    getOptionValue(row): string {
+        if (!this.autoCompleteState) return '';
         let valueForCurrentControl = row[this.inputElement.refPropertyName];
         let relatedControlsValues: string[] = [];
-        for (let relatedControl of Object.values(autoCompleteState.controls)) {
+        for (let relatedControl of Object.values(this.autoCompleteState.controls)) {
             if (relatedControl.propertyName === this.inputElement.propertyName) continue;
             relatedControlsValues.push(this.i18npipe.transform(relatedControl.propertyName) + ': '
                 + row[relatedControl.propertyName]);
@@ -120,7 +126,11 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
         return valueForCurrentControl + " (" + relatedControlsValues.join(", ") + ")";
     }
 
-    selectOption($event: NgbTypeaheadSelectItemEvent) {
-        this.frmdbStreams.action(new UserChoseAutocompleteOption($event.item, this.inputElement));
+    @ViewChild("input") inputField: ElementRef;
+    selectOption(option: {}) {
+        this.popupOpened = false;
+        this.currentSearchTxt = null;
+        this.frmdbStreams.action(new UserChoseAutocompleteOption(option, this.inputElement));
+        this.inputField.nativeElement.focus();
     }
 }
