@@ -14,6 +14,9 @@ function getTestUUID() {
 }
 export const Forms__ServiceForm_Form_: Form = {
   _id: 'Form_:ALL^^' + Forms__ServiceForm._id,
+  page: {
+    
+  },
   grid: {
     _id: getTestUUID(), nodeType: NodeType.form_grid,
     childNodes: [

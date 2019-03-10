@@ -3,11 +3,8 @@
  * License TBD
  */
 
-import * as metadata from './mock-metadata';
-import { Entity, Pn } from "@core/domain/metadata/entity";
+import { Pn } from "@core/domain/metadata/entity";
 import { Form, NodeType } from '@core/domain/uimetadata/form'
-import { Forms__ServiceForm } from "./forms-metadata";
-import { LargeSalesReport } from './inventory-metadata';
 
 let testUUID = 1;
 function getTestUUID() {
@@ -16,7 +13,10 @@ function getTestUUID() {
 
 export var LargeSalesReport_Form: Form = {
   _id: "Form_:ALL^^LargeSalesReport",
-  "grid": {
+  page: {
+
+  },
+  grid: {
     nodeType: NodeType.form_grid,
     childNodes: [
       {

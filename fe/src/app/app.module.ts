@@ -25,12 +25,14 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
 import { FormEffects } from './effects/form.effects';
+import { PageComponent } from './components/page/page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ApplicationsComponent,
     ApplicationComponent,
+    PageComponent,
   ],
   imports: [
     BrowserModule,

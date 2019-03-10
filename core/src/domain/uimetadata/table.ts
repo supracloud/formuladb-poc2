@@ -14,7 +14,6 @@ export class TableColumn implements SubObj {
     width?: number;
     sort?: string;
     filter?: ColumnFilter;
-    page: Partial<Page>;
     constructor(public name: string, public type: Pn) {
     }
 }
@@ -27,6 +26,7 @@ export class ColumnFilter {
 export class Table implements KeyValueObj {
     _id: string;
     _rev?: string;
+    page: Partial<Page>;
     literal: string;
     columns: TableColumn[];
 }

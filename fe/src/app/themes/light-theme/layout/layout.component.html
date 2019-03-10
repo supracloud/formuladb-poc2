@@ -7,10 +7,9 @@
 -->
     <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
       <div class="logo">
-        <a href="http://www.orbicobeauty.ro/" class="simple-text">
-          <img src="/assets/customers/orbico/orbico-beauty.svg" width="145" height="42" />
-          &nbsp;
-          <strong style="font-size: 32px">SFA</strong>
+        <a href="/" class="simple-text">
+          <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+          <strong style="font-size: 32px">{{(page$|async)?.brandName}}</strong>
         </a>
       </div>
       <frmdb-v_nav class="nav"></frmdb-v_nav>

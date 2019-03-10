@@ -1,7 +1,7 @@
-export class Page {
-    logo: string;
+interface FullPage {
+    brandName: string;
     logoUrl: string; 
-    navPosition: "top" | "left" = "left";
+    navPosition: "top" | "left";
     secondaryNavPosition: "bottom" | "right";
     tbd1: string;
     tbd2: string;
@@ -11,3 +11,5 @@ export class Page {
     tbd6: string;
     tbd7: string;
 }
+
+export type Page = Partial<FullPage>;

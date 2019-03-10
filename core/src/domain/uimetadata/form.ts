@@ -7,7 +7,6 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { CircularJSON } from "@core/json-stringify";
 import { Page } from './page';
 
 export enum NodeType {
@@ -48,7 +47,7 @@ export enum NodeType {
 export class Form implements KeyValueObj {
     _id: string;
     _rev?: string;
-    page: Partial<Page>;
+    page: Page;
     grid: FormGrid;
     stateGraph?: EntityStateGraph;
     isEditable?: boolean;
@@ -59,8 +58,6 @@ export function isForm(param: KeyValueObj): param is Form {
 
 export type NodeElement =
     | FormGrid
-    | FormGridRow
-    | FormGridCol
     | FormInput
     | FormAutocomplete
     | FormTabs
@@ -93,7 +90,7 @@ export type NodeElement =
     | CardContainer
     ;
 
-export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;
+export type NodeElementWithChildren = FormGrid | HLayout | VLayout | FormTable | FormTabs | FormTab;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.form_grid
         || nodeEl.nodeType === NodeType.h_layout
@@ -191,7 +188,7 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
         if (parentFormEl.nodeType === NodeType.form_table) {
             ret = child;
         } else {
-            ret = new FormGridRow();
+            ret = new HLayout();
             ret.childNodes = [child];
         }
 
@@ -215,11 +212,6 @@ export class FormGrid implements SubObj {
     _id: string;
     childNodes?: NodeElement[];
 }
-export class FormGridRow implements SubObj {
-    readonly nodeType = NodeType.h_layout;
-    _id: string;
-    childNodes?: NodeElement[];
-}
 
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
@@ -232,7 +224,7 @@ export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
     propertyName: string;
-    representation: "string" | "heading" | "paragraph" | "caption" | "jumbo" | "link" | "_id";
+    representation: "string" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id";
     uppercase?: boolean;
 }
 export class FormAutocomplete implements SubObj {
