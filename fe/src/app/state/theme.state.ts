@@ -12,7 +12,7 @@ export interface ThemeState {
 
 export const themeInitialState: ThemeState = {
   themeColorPalette: "default",
-  sidebarImageUrl: "/assets/sidebar_images/sidebar-8.jpg",//TODO: set default per theme !
+  sidebarImageUrl: "/assets/img/sidebar/sidebar-8.jpg",//TODO: set default per theme !
 };
 
 export const ThemeColorPaletteChangedActionN = "[theme] ThemeColorPaletteChangedAction";

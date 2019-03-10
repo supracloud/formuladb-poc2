@@ -5,7 +5,7 @@
 
 import { Form, NodeType } from '@core/domain/uimetadata/form'
 import { Pn } from '@core/domain/metadata/entity';
-import { Home } from './website-metadata';
+import { Home, Dashboard } from './website-metadata';
 
 let testUUID = 1;
 function getTestUUID() {
@@ -16,7 +16,7 @@ export var HomePage_Form: Form = {
   _id: "Form_:ALL^^" + Home._id,
   page: {
     logoUrl: '/assets/logo7.png',
-    navPosition: "top",
+    layout: "landing",
   },
   grid: {
     nodeType: NodeType.form_grid, _id: getTestUUID(),
@@ -25,9 +25,9 @@ export var HomePage_Form: Form = {
         nodeType: NodeType.h_layout, _id: getTestUUID(),
         childNodes: [
           {
-            nodeType: NodeType.form_input, _id: getTestUUID(),
+            nodeType: NodeType.form_text, _id: getTestUUID(),
             propertyName: "title",
-            propertyType: Pn.STRING,
+            representation: "title"
           }
         ],
       },
@@ -35,9 +35,9 @@ export var HomePage_Form: Form = {
         nodeType: NodeType.h_layout, _id: getTestUUID(),
         childNodes: [
           {
-            nodeType: NodeType.form_input, _id: getTestUUID(),
+            nodeType: NodeType.form_text, _id: getTestUUID(),
             propertyName: "tagline",
-            propertyType: Pn.STRING,
+            representation: "paragraph"
           }
         ],
       },

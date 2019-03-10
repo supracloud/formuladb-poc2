@@ -13,8 +13,8 @@ import { Store } from '@ngrx/store';
 import * as appState from '../../../state/app.state';
 import { Observable } from 'rxjs';
 import { Page } from '@core/domain/uimetadata/page';
-import { combineLatest, merge, map, filter } from 'rxjs/operators';
-import { isNotNullOrUndefined } from '@core/elvis';
+import { combineLatest, merge, map, filter, tap } from 'rxjs/operators';
+import { isNotNullOrUndefined, elvis } from '@core/elvis';
 
 @Component({
   selector: 'frmdb-layout',
@@ -26,6 +26,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
   themeColorPalette$: Observable<string>;
   sidebarImageUrl$: Observable<string>;
   page$: Observable<Page>;
+  layout: Page['layout'] | null;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, protected store: Store<appState.EntityState>) {
     this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
@@ -34,7 +35,9 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     this.page$ = this.store.select(appState.getFormState).pipe(
       merge(this.store.select(appState.getTableState)),
       filter(isNotNullOrUndefined),
-      map(x => x.page));
+      map(x => x.page),
+      tap(x => this.layout = elvis(x).layout)
+    );
   }
 
   ngOnInit() {

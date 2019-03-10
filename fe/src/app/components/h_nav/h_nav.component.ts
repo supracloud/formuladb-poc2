@@ -4,9 +4,12 @@ import { FormEditingService } from '../form-editing.service';
 import { combineLatest, startWith } from 'rxjs/operators';
 import { Home } from '@core/default_pages/website-metadata';
 import { entites2navItems, NavigationItem } from '../v_nav/navigation.item';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 export class HNavComponent implements OnInit, OnDestroy {
   public navigationItemsTree: NavigationItem[] = [];
+
+  userIcon = faUserCircle;
 
   constructor(public formEditingService: FormEditingService,
     protected changeDetectorRef: ChangeDetectorRef) {

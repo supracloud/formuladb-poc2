@@ -1,52 +1,89 @@
-<div class="wrapper frmdb-layout">
-  <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
-    <!--
-    Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
-
-    Tip 2: you can also add an image using data-image tag
--->
-    <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
-      <div class="logo">
-        <a href="/" class="simple-text">
-          <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
-          <strong style="font-size: 32px">{{(page$|async)?.brandName}}</strong>
-        </a>
-      </div>
-      <frmdb-v_nav class="nav"></frmdb-v_nav>
+<div *ngIf="layout == 'landing'"  class="header-wrapper frmdb-layout">
+    <nav class="navbar navbar-transparent navbar-fixed-top" role="navigation" color-on-scroll>
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button id="menu-toggle" type="button" class="navbar-toggle">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar bar1"></span>
+                    <span class="icon-bar bar2"></span>
+                    <span class="icon-bar bar3"></span>
+                </button>
+                <a href="/">
+                    <div class="logo-container">
+                        <div class="logo">
+                            <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                        </div>
+                        <div class="brand">
+                            {{(page$|async)?.brandName}}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse">
+                <ul  class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href='https://github.com/creativetimofficial/light-bootstrap-dashboard/issues' target="_blank" id="issueButton" class="btn btn-simple btn-neutral">Have an issue?</a>
+                    </li>
+                </ul>
+                
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+    
+    <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
+        
+        <router-outlet></router-outlet>
     </div>
-    <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>      
-  </div>
-  <div class="main-panel">
-    <!-- Navbar -->
-    <frmdb-h_nav></frmdb-h_nav>
-
-    <!-- End Navbar -->
-    <div class="content">
-      <router-outlet></router-outlet>
-      <!-- <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-12">
-          </div>
-        </div>
-      </div> -->
-    </div>
-    <footer class="footer">
-      <div class="container">
-        <nav>
-          <p class="copyright text-center">
-            <span style="font-size: 70%; color: lightgrey">
-              Powered by
-              <a href="http://formuladb.io" target="_blank">formuladb.io</a> &copy; 2018 S.C. FORMULA DATABASE S.R.L. &nbsp;
-            </span>
-            <span style="font-size: 60%; color: lightgrey">
-              ( webdesign &copy; 2018
-              <a style="color: grey" href="http://www.creative-tim.com">Creative Tim</a>,
-              Some icons by <a style="color: grey" href="http://www.freepik.com" title="Freepik">Freepik</a> from <a style="color: grey" href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a  style="color: grey" href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
-              )
-            </span>
-          </p>
-        </nav>
-      </div>
-    </footer>
-  </div>
 </div>
+<div *ngIf="layout == null || layout == 'dashboard'" class="wrapper frmdb-layout">
+    <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
+        <!--
+            Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+            
+            Tip 2: you can also add an image using data-image tag
+        -->
+        <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
+            <div class="logo">
+                <a href="/" class="simple-text">
+                    <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                    <strong style="font-size: 32px">{{(page$|async)?.brandName}}</strong>
+                </a>
+            </div>
+            <frmdb-v_nav class="nav"></frmdb-v_nav>
+        </div>
+        <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>      
+    </div>
+    <div class="main-panel">
+        <!-- Navbar -->
+        <frmdb-h_nav></frmdb-h_nav>
+        
+        <!-- End Navbar -->
+        <div class="content">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <nav>
+            <p class="copyright text-center">
+                <span style="font-size: 70%; color: lightgrey">
+                    Powered by
+                    <a href="http://formuladb.io" target="_blank">formuladb.io</a> &copy; 2018 S.C. FORMULA DATABASE S.R.L. &nbsp;
+                </span>
+                <span style="font-size: 60%; color: lightgrey">
+                    ( webdesign &copy; 2018
+                    <a style="color: grey" href="http://www.creative-tim.com">Creative Tim</a>,
+                    Some icons by <a style="color: grey" href="http://www.freepik.com" title="Freepik">Freepik</a> from <a style="color: grey"
+                    href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a style="color: grey"
+                    href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+                    )
+                </span>
+            </p>
+        </nav>
+    </div>
+</footer>

@@ -41,3 +41,24 @@ export const WebsiteStatistic: Entity = {
         value: { name: "value", propType_: Pn.NUMBER } as EntityProperty,
     }
 }
+
+export const Ecommerce: Entity = {
+    _id: "Ecommerce",
+    isPresentationPage: true,
+    props: {
+    }
+}
+
+export const Blog: Entity = {
+    _id: "Blog",
+    isPresentationPage: true,
+    props: {
+    }
+}
+
+export const Pages: Entity = {
+    _id: "Pages",
+    isPresentationPage: true,
+    pureNavGroupingChildren: [Ecommerce._id, Blog._id],
+    props: {}
+}

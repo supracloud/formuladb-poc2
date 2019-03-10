@@ -1,7 +1,7 @@
 interface FullPage {
     brandName: string;
     logoUrl: string; 
-    navPosition: "top" | "left";
+    layout: "dashboard" | "landing";
     secondaryNavPosition: "bottom" | "right";
     tbd1: string;
     tbd2: string;

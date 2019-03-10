@@ -7,6 +7,7 @@ export interface NavigationItem extends Node {
     collapsed: boolean;
     onPath?: boolean;
     isNotRootNavItem?: boolean;
+    isPureNavGroupingChildren?: boolean;
 }
 
 export interface Node {
@@ -49,14 +50,14 @@ export function entites2navItems(entitiesList: Entity[], selectedEntity: Entity,
     return Array.from(navItemsTree.values()).filter(item => !item.isNotRootNavItem);
 }
 
-
 export function entity2NavSegment(entity: Entity, selectedEntity: Entity): NavigationItem {
     return {
         id: entity._id,
         linkName: entity._id,
-        path: entity._id,
+        path: entity.isPresentationPage ? entity._id + '/' + entity._id + '~~' + entity._id : entity._id,
         active: selectedEntity._id === entity._id,
         children: [],
         collapsed: selectedEntity._id !== entity._id,
+        isPureNavGroupingChildren: entity.pureNavGroupingChildren != null,
     };
 }

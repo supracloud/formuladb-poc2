@@ -139,6 +139,9 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
     form.grid = new FormGrid();
+    form.page = {
+        layout: "dashboard",
+    }
 
     setFormElementChildren(form.grid, entity, entitiesMap);
     console.log('form:', form);
@@ -224,7 +227,7 @@ export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
     propertyName: string;
-    representation: "string" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id";
+    representation: "title" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id" | "string";
     uppercase?: boolean;
 }
 export class FormAutocomplete implements SubObj {

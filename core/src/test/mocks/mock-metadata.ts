@@ -49,6 +49,9 @@ export class MockMetadata {
                 this.entities.push(StaticPagesMetadata.ProductFeature);
                 this.entities.push(StaticPagesMetadata.Dashboard);
                 this.entities.push(StaticPagesMetadata.WebsiteStatistic);
+                this.entities.push(StaticPagesMetadata.Pages);
+                this.entities.push(StaticPagesMetadata.Ecommerce);
+                this.entities.push(StaticPagesMetadata.Blog);
                 this.entities.push(InventoryMetadata.Inventory);
                 this.entities.push(InventoryMetadata.InventoryOrder);
                 this.entities.push(InventoryMetadata.OrderItem);

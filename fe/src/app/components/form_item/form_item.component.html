@@ -1,4 +1,4 @@
-<ng-container [ngSwitch]="nodeElement.nodeType" draggable="true" class="layout-container flex-fill" (dragstart)="dragStart($event)" (dragend)="dragEnd($event)">
+<div [ngSwitch]="nodeElement.nodeType" draggable="true" class="layout-container flex-fill" (dragstart)="dragStart($event)" (dragend)="dragEnd($event)">
   <fa-icon [icon]="icon" *ngIf="frmdbStreams.devMode$|async" class="drag-handle fa-xs" #dragHandle [id]="'drag_'+nodeElement._id" (mousedown)="checkHandle($event)">
   </fa-icon>
   <form-context-menu [item]="nodeElement" [canDelete]="nodeElement.nodeType!=='form_grid'" [availableChildren]="getAvailableChildren()"
@@ -30,4 +30,4 @@
     [formReadOnly]="formReadOnly"></frmdb-v_layout>
   <div *ngSwitchDefault style="border: 1px solid red;">Child Element NOT KNOWN '{{childEl.nodeType}}' !</div>
 
-</ng-container>
+</div>
