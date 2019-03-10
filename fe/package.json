@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "concurrently --kill-others \"ng serve --progress=false\" \"ng test --progress=false\" | perl -pe 's!^\\[\\d+\\] !!; s!ERROR in !!; s!^src/app/!fe/src/app/!'",
-    "start": "ng serve --proxy-config proxy.conf.json --source-map",
+    "start": "ng serve --aot --proxy-config proxy.conf.json --source-map",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -32,8 +32,8 @@
     "@ngrx/router-store": "^7.2.0",
     "@ngrx/store": "^7.2.0",
     "@ngrx/store-devtools": "^7.2.0",
-    "@swimlane/ngx-charts": "^10.0.0",
-    "@swimlane/ngx-graph": "^5.2.1",
+    "@swimlane/ngx-charts": "^8.1.0",
+    "@swimlane/ngx-graph": "^5.0.0",
     "@types/fuse": "^2.6.0",
     "ag-grid-angular": "^20.0.0",
     "ag-grid-community": "^20.0.0",
@@ -59,7 +59,8 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.8.0",
+    "@angular-builders/custom-webpack": "^7.4.2",
+    "@angular-devkit/build-angular": "^0.8.9",
     "@angular/cli": "~6.2.7",
     "@angular/compiler-cli": "^6.1.0",
     "@angular/language-service": "^6.1.0",

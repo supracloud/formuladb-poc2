@@ -15,8 +15,13 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "deployUrl": "/formuladb/",
+            "baseHref": "/formuladb/",
+            "customWebpackConfig": {
+              "path": "src/extra-webpack-prod.config.js"
+            },
             "outputPath": "dist/fe",
             "index": "src/index.html",
             "main": "src/main.ts",

@@ -4,8 +4,8 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
+import { NgModule, InjectionToken } from '@angular/core';
+import { StoreModule, ActionReducerMap } from '@ngrx/store';
 import { HttpClientModule } from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
@@ -25,6 +25,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
 import { FormEffects } from './effects/form.effects';
+import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
+
+export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
+
+export function getReducers() {
+  return appState.reducers;
+}
 
 @NgModule({
   declarations: [
@@ -36,7 +43,7 @@ import { FormEffects } from './effects/form.effects';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    StoreModule.forRoot(appState.reducers, { metaReducers: [appState.appMetaReducer] }),
+    StoreModule.forRoot(REDUCER_TOKEN, { initialState: appState.getInitialState, metaReducers: [appState.appMetaReducer] }),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([AppEffects, FormEffects]),
     NgbModule.forRoot(),
@@ -45,7 +52,13 @@ import { FormEffects } from './effects/form.effects';
     DevModeCommonModule,
   ],
   providers: [
+    InjectionService,
     BackendService,
+    {
+      provide: REDUCER_TOKEN,
+      useFactory: getReducers,
+    }
+
   ],
   bootstrap: [AppComponent]
 })

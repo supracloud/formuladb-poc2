@@ -103,6 +103,24 @@
                 "ts-node/register"
             ],
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "protocol": "inspector",
+            "request": "attach",
+            "name": "Attach to Remote BE",
+            "address": "127.0.0.1",
+            "port": 9229,
+            "trace": "sm",
+            "sourceMaps": true,
+//            "restart": true,
+//            "outFiles": ["${workspaceRoot}/be/dist/be/src/"],
+//            "localRoot": "${workspaceRoot}/be/dist/be/src/",
+//            "remoteRoot": "/dist/be/src",
+//            "sourceMapPathOverrides": {
+//                "webpack:///*": "${workspaceRoot}/be/*"
+//            }
+
         }
     ]
 }

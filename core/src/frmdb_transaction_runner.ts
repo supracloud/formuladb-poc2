@@ -505,7 +505,7 @@ export class FrmdbTransactionRunner {
                     for (let obs of obss) { observersTriggeredByObj.set(obs._id, { obs, formulaTriggeredByObj }) }
                 }
             }
-            for (let obsTrgByObj of observersTriggeredByObj.values()) {
+            for (let obsTrgByObj of Array.from(observersTriggeredByObj.values())) {
                 let obsNew = _.cloneDeep(obsTrgByObj.obs);
                 await this.preComputeFormula(trObj.objId, transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
             }

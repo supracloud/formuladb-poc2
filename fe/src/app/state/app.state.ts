@@ -69,6 +69,9 @@ export const appInitialState = {
   formula: fromFormula.formulaEditorInitialState,
 };
 
+export function getInitialState() {
+  return { ...appInitialState };
+}
 export type AppActions =
   | AppServerEventAction
   | fromCore.CoresActions
