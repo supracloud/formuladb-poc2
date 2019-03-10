@@ -14,22 +14,14 @@ import { Expression } from 'jsep';
 export interface Entity extends KeyValueObj {
     _id: string;
     pureNavGroupingChildren?: string[];
-    isStaticPage?: boolean;
     aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
     extendsEntityName?: string;
     stateGraph?: EntityStateGraph;
-    isView?: boolean;
+    isPresentationPage?: boolean;
     isEditable?: boolean;
-
-    // fromObjLiteral<T extends Pick<Entity, Exclude<keyof Entity, 'type_' | 'props' | 'fromObjLiteral'>> & {props: any}>(
-    //     obj: T & {props: {readonly [x in keyof T['props']]: EntityProperty}}): Entity 
-    // {
-    //     Object.assign(this, obj);
-    //     return this;
-    // }
 }
 
 export interface EntityStateGraph {

@@ -369,8 +369,8 @@ export class VNavSegmentComponent extends BaseVNavSegmentComponent implements On
     styleUrls: ['../../components/h_nav/h_nav.component.scss']
 })
 export class HNavComponent extends BaseHNavComponent implements OnInit {
-    constructor(formEditingService: FormEditingService) {
-        super(formEditingService);
+    constructor(formEditingService: FormEditingService, changeDetectorRef: ChangeDetectorRef) {
+        super(formEditingService, changeDetectorRef);
     }
 }
 @Component({
