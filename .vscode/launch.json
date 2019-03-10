@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "FE serve",
             "type": "chrome",
@@ -18,9 +19,12 @@
             "name": "BE serve",
             "type": "node",
             "request": "attach",
-            "port": 9231,
+            "address": "localhost",
             "protocol": "inspector",
-            "restart": "true"
+            "restart": true,
+            "port": 9231,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/d/code/metawiz/febe"         
         },
         {
             "name": "BE specs mem",
@@ -61,6 +65,19 @@
             "outFiles": [
                 "${workspaceRoot}/be/dist/**/*.js"
             ]
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "FE specs",
+            "address": "localhost",
+            "port": 9369,
+            "sourceMaps": true,
+            "restart": "true",
+            "pathMapping": {
+                "/": "${workspaceRoot}/febe",
+                "/base/": "${workspaceRoot}/febe"
+            }
         },
         {
             "name": "ng e2e",

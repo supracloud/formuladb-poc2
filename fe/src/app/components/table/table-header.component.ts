@@ -1,7 +1,7 @@
-import {Component, ViewChild, ElementRef} from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 @Component({
     selector: 'app-loading-overlay',
@@ -22,7 +22,7 @@ export class TableHeaderComponent {
         this.frmdbStreams = formEditingService.frmdbStreams;
     }
 
-    @ViewChild('menuButton', {read: ElementRef}) public menuButton;
+    @ViewChild('menuButton', { read: ElementRef }) public menuButton;
 
     agInit(params): void {
         this.params = params;
@@ -35,8 +35,12 @@ export class TableHeaderComponent {
         this.params.showColumnMenu(this.menuButton.nativeElement);
     };
 
+    onFirstDataRendered(params) {
+        params.api.autoSizeColumns();
+    }
+
     selectColumn(colName: string) {
-        this.frmdbStreams.userEvents$.next({type: "UserSelectedCell", columnName: colName});
+        this.frmdbStreams.userEvents$.next({ type: "UserSelectedCell", columnName: colName });
     }
 
     onSortChanged() {

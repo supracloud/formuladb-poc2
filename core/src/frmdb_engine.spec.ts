@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import * as _ from "./frmdb_lodash";
+import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
 import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula, ServerEventSetPropertyN, ServerEventDeletedFormDataEvent } from "@core/domain/event";
@@ -99,6 +99,16 @@ describe('FrmdbEngine', () => {
         done();
     });
 
+    let b1 = { _id: "B~~1", sum__: 1, x__: 7};
+    let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
+    let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
+    async function testDataStockReservationSchema() {
+        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+
+    }
+
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
@@ -118,12 +128,7 @@ describe('FrmdbEngine', () => {
     it("Should allow basic formulas computation when saving an object with auto-correct", async (done) => {
         await frmdbEngine.init();
 
-        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
-        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
-        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+        await testDataStockReservationSchema();
         let c = { _id: "C~~c"};
         await frmdbEngine.putDataObjAndUpdateViews(null, c);
 
@@ -185,13 +190,6 @@ describe('FrmdbEngine', () => {
     it("Should allow preview formulas", async (done) => {
         await frmdbEngine.init();
 
-        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
-        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
-        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
-
         let a3 = { _id: 'A~~', b: 'B~~1', val: 2 };
         await putObj(a3 as DataObj);
         let b1After: any = await frmdbTStore.getDataObj('B~~1');
@@ -228,16 +226,13 @@ describe('FrmdbEngine', () => {
         done();
     });
 
+    it("Should allow preview formulas", async (done) => {
+    });
 
     it("Should allow adding/modifying formulas", async (done) => {
         await frmdbEngine.init();
 
-        let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
-        let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
-        let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+        await testDataStockReservationSchema();
 
         let a3 = { _id: 'A~~', b: 'B~~1', val: 2 };
         await putObj(a3 as DataObj);
@@ -288,17 +283,29 @@ describe('FrmdbEngine', () => {
         done();
     });
     
+    fit("Should update views and compute new values of Observer when Observer field chande", async (done) => {
+        let schema = _.cloneDeep(stockReservationSchema);
+        (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
+        frmdbTStore = await getFrmdbEngineStore(schema);
+        frmdbEngine = new FrmdbEngine(frmdbTStore);
+        await frmdbEngine.init();
+
+        await putObj(b1);
+        await putObj(a1);
+        await putObj(a2);
+
+        let b1After: any = await frmdbTStore.getDataObj('B~~1');
+        expect(b1After).toEqual(jasmine.objectContaining({sum__: 5, x__: 95}));
+
+        done();
+    });
+
     for (let TestRun = 1; TestRun <= 2; TestRun++) {
 
         it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
 
-            let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-            await frmdbEngine.putDataObjAndUpdateViews(null, b1);
-            let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-            await frmdbEngine.putDataObjAndUpdateViews(null, a1);
-            let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-            await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+            await testDataStockReservationSchema();
 
             let workers: Promise<void>[] = [];
             for (var i = 0; i < 10; i++) {

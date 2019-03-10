@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
-import * as fromForm from '../form.state';
+import * as fromForm from '../../state/form.state';
 import { Observable } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
 

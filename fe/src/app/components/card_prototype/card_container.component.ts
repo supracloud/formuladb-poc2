@@ -7,7 +7,7 @@ import { OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { CardContainer } from '@core/domain/uimetadata/form';
 
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 import { Themable } from './themable';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';

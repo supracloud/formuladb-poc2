@@ -34,6 +34,7 @@ describe('DataObj', () => {
       _id: ReceiptItem1_1._id,
       product_id: ProductLocation1._id,
       quantity: ReceiptItem1_1.quantity + 123,
+      price: ProductLocation1.price,
     } as DataObj);
     let expectedParentObj = _.cloneDeep(parentObj);
     expectedParentObj.receipt_item_table[0].quantity = ReceiptItem1_1.quantity + 123;
@@ -46,6 +47,7 @@ describe('DataObj', () => {
         InventoryReceipt._id.replace(InventoryReceipt._id + '~~', '')) + "1A2B",
       product_id: ProductLocation12._id,
       quantity: 456,
+      price: ProductLocation12.price,
     };
     mergedParentObj = _.cloneDeep(parentObj);
     mergeResult = mergeSubObj(mergedParentObj, newChildObj);

@@ -47,9 +47,9 @@ import { ButtonComponent as BaseButtonComponent } from '@fe/app/components/butto
 import { ButtonGroupComponent as BaseButtonGroupComponent } from '@fe/app/components/button_group/button_group.component';
 import { CardContainerComponent as CardContainerComponentBase } from '@fe/app/components/card_prototype/card_container.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TableService } from '@fe/app/components/table/table.service';
+import { TableService } from '@fe/app/effects/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
-import { FrmdbStreamsService } from '@fe/app/frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
@@ -90,8 +90,8 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
     ]
 })
 export class FormAutocompleteComponent extends FormAutocompleteComponentBase implements OnInit, OnDestroy {
-    constructor(formEditingService: FormEditingService) {
-        super(formEditingService);
+    constructor(formEditingService: FormEditingService, i18npipe: I18nPipe, changeDetectorRef: ChangeDetectorRef) {
+        super(formEditingService, i18npipe, changeDetectorRef);
     }
 }
 
@@ -170,7 +170,7 @@ export class FormInputComponent extends BaseFormInputComponent implements OnInit
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'frmdb-form_item',
+    selector: '[frmdb-form_item]',
     templateUrl: '../../components/form_item/form_item.component.html',
     styleUrls: ['../../components/form_item/form_item.component.scss']
 })

@@ -18,15 +18,12 @@ import { Subscription } from 'rxjs';
 import { filter, debounceTime, tap, combineLatest } from 'rxjs/operators';
 import * as _ from 'lodash';
 
-import * as fromForm from './form.state';
 import { ValidatorFn } from '@angular/forms';
 import { AbstractControl } from '@angular/forms';
 import { FormEditingService } from './form-editing.service';
 import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
-import { j2str } from '../crosscutting/utils/j2str';
-import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
-import { UserModifiedFormData } from '../frmdb-streams/frmdb-user-events';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { CircularJSON } from '@core/json-stringify';
 
 export class FrmdbFormControl extends FormControl {
@@ -79,7 +76,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 combineLatest(this.frmdbStreams.formData$, this.frmdbStreams.readonlyMode$))
                 .subscribe(([form, formData, formReadOnly]) => {
                     try {
-                        this.formReadOnly = formReadOnly;
+                        this.formReadOnly = formReadOnly || form.isEditable !== true;
                         this.syncReadonly(formReadOnly, this.theFormGroup);
 
                         this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);

@@ -1,10 +1,11 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
-import * as fromForm from '../../components/form.state';
-import * as fromEntity from '../../entity-state';
+import * as fromForm from '../../state/form.state';
+import * as fromEntity from '../../state/entity-state';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { FormItemEditorComponent } from '../form-item-editor/form-item-editor.component';
+import { FormDeleteAction, FormSwitchTypeAction } from '@fe/app/actions/form.user.actions';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -64,11 +65,11 @@ export class ContextMenuComponent implements OnInit {
   }
 
   delete() {
-    this.formStore.dispatch(new fromForm.FormDeleteAction(this.item));
+    this.formStore.dispatch(new FormDeleteAction(this.item));
   }
 
   switchTo(p: NodeType) {
-    this.formStore.dispatch(new fromForm.FormSwitchTypeAction({ node: this.item, toType: p }));
+    this.formStore.dispatch(new FormSwitchTypeAction({ node: this.item, toType: p }));
   }
 
   // addChild(p: NodeElement) {

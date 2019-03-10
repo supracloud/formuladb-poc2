@@ -27,11 +27,9 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
 
   ngOnInit() {
     this.tableElement = this.nodeElement as FormTable | FormTabs;
-    console.log(this.nodeElement, this.topLevelFormGroup);
   }
 
   ngOnChanges() {
-    console.log(this.nodeElement, this.topLevelFormGroup);
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());

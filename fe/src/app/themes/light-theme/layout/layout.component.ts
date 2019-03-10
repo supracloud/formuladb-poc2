@@ -10,7 +10,7 @@ import { Inject } from '@angular/core';
 import { PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import * as appState from '../../../app.state';
+import * as appState from '../../../state/app.state';
 import { Observable } from 'rxjs';
 
 @Component({

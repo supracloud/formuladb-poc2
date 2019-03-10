@@ -4,7 +4,7 @@ import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
 import { Store } from '@ngrx/store';
-import * as fromForm from '../form.state';
+import * as fromForm from '../../state/form.state';
 import { FormEditingService } from '../form-editing.service';
 
 

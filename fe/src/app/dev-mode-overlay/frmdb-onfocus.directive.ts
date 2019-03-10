@@ -4,7 +4,7 @@ import { NgControl } from '@angular/forms';
 import { FrmdbFormControl } from '../components/form.component';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { FrmdbStreamsService } from '../frmdb-streams/frmdb-streams.service';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 
 
 @Directive({

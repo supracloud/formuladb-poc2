@@ -16,6 +16,7 @@
             "options": {
                 "cwd": "./fe",
             },
+            "terminalGroup": "run_febe",
             "presentation": {
                 "echo": true,
                 "reveal": "never",
@@ -55,14 +56,12 @@
             "type": "shell",
             "options": {
                 "cwd": "./be",
-                "env": {
-                    "FRMDB_STORAGE": "postgres",
-                }
             },
             "args": [
                 "run",
                 "serve"
             ],
+            "terminalGroup": "run_febe",
             "presentation": {
                 "echo": true,
                 "reveal": "always",

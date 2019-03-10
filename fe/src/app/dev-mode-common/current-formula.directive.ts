@@ -1,5 +1,5 @@
 import { Directive, ElementRef, OnDestroy } from '@angular/core';
-import { FormulaEditorService } from './formula-editor.service';
+import { FormulaEditorService } from '../effects/formula-editor.service';
 import { Subscription } from 'rxjs';
 
 @Directive({

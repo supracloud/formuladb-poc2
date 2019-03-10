@@ -95,6 +95,7 @@ export const InventoryProductUnit = {
 
 export const InventoryReceipt = {
     _id: 'InventoryReceipt',
+    isEditable: true,
     props: {
         receipt_item_table: {
             name: 'receipt_item_table', propType_: Pn.CHILD_TABLE,
@@ -109,6 +110,7 @@ export const ReceiptItem = {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_id: { name: 'product_id', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props._id.name } as EntityProperty,
         quantity: { name: 'quantity', propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        price: { name: 'price', propType_: Pn.REFERENCE_TO, referencedEntityName: ProductLocation._id, referencedPropertyName: ProductLocation.props.price.name } as EntityProperty,
         units: {
             name: 'units',
             propType_: Pn.CHILD_TABLE,
