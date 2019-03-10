@@ -13,31 +13,9 @@ npminstall:
     - cd ..
     - cd core && npm install 
     - cd ..
-    - npm run db
     - cd be && npm install
     - cd ..
     - cd fe && npm install
-    - cd ..
-    - cd be
-    - npm run build-prod
-    - cd ..
-    - cd fe
-    - npm run build -- --prod --source-map
-    - cd ..
-    - docker build -t formuladb-sourcemaps -f Dockerfile.map .
-    - docker tag formuladb-sourcemaps registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:0.0.2
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:0.0.2
-    - cd be
-    - docker build -t formuladb-be .
-    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:0.0.2
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:0.0.2
-    - npm run compile
-    - cd ..
-    - cd fe
-    - rm dist/fe/*.js.map
-    - docker build -t formuladb-fe .
-    - docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.2
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:0.0.2
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
