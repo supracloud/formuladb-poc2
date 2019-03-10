@@ -76,7 +76,7 @@ buildprodimages:
   only:
     - tags
 
-build
+build:
   stage: build
   script:
     - npm run db
