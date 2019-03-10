@@ -24,6 +24,17 @@ services:
       - "8084:8084"
     volumes:
       - $PWD/auth.htpasswd:/etc/nginx/auth.htpasswd
+  minio:
+    image: minio/minio:RELEASE.2019-03-06T22-47-10Z
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: minio server /data/
+    volumes:
+      - object-storage:/data
 
 volumes:
   pg-persistence:
+  object-storage:
