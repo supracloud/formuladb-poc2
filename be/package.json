@@ -8,7 +8,7 @@
     "inspect": "kill-port 9231 && node --inspect=0.0.0.0:9231 dist/be/src/server.js",
     "nodemon-inspect": "nodemon --delay 100ms --watch dist --exec \"npm run inspect\"",
     "serve": "FRMDB_STORAGE=postgres concurrently --kill-others \"tsc --sourceMap -w -p src\" \"sleep 10 && npm run nodemon-inspect\"",
-    "start": "node dist/be/src/server.js",
+    "start": "node --inspect dist/be/src/server.js",
     "compile": "tsc --sourceMap -p src",
     "compile:watch": "tsc --sourceMap -w -p src",
     "pretest": "npm run compile",
