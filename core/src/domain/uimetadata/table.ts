@@ -37,6 +37,9 @@ export function isTable(param: SubObj): param is Table {
 export function getDefaultTable(entity: Entity): Table {
     const table = new Table();
     table.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
+    table.page = {
+        layout: "dashboard",
+    }
     addIdsToTable(table);
     return table;
 }

@@ -67,10 +67,10 @@ export class FormComponent extends BaseFormComponent implements OnInit, OnDestro
     ) {
         super(frmdbStreams, formEditingService, changeDetectorRef, _location);
         this.frmdbStreams.form$.subscribe(form => {
-            console.warn(form, this.form, this.formData);
+            console.debug(form, this.form, this.formData);
         });
         this.frmdbStreams.formData$.subscribe(formData => {
-            console.warn(formData, this.form, this.formData);
+            console.debug(formData, this.form, this.formData);
         });
     }
 
