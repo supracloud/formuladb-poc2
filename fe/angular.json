@@ -28,8 +28,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/favicon.png",
-              "src/assets"
+              "src/favicon.png"
             ],
             "styles": [
               "./node_modules/ag-grid-community/dist/styles/ag-grid.css",
@@ -101,8 +100,7 @@
               "./node_modules/bootstrap/dist/js/bootstrap.min.js"
             ],
             "assets": [
-              "src/favicon.png",
-              "src/assets"
+              "src/favicon.png"
             ]
           }
         },
