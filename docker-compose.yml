@@ -11,6 +11,8 @@ services:
       - pg-persistence:/var/lib/postgresql/data
   be:
     image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    depends_on:
+      - db
     environment:
       FRMDB_STORAGE: "postgres"
     ports:
