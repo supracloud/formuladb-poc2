@@ -1,6 +1,6 @@
 FROM minio/minio:RELEASE.2019-03-06T22-47-10Z
 
-COPY fe/src/assets/* /data/assets/
+COPY fe/src/assets /data/assets
 
 RUN cd /data && \
     wget https://dl.minio.io/client/mc/release/linux-amd64/mc && \
