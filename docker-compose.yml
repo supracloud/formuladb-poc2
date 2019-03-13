@@ -22,6 +22,8 @@ services:
       - "9229:9229"
   fe:
     image: registry.gitlab.com/metawiz/febe/formuladb-fe:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    depends_on:
+      - be
     ports:
       - "8084:8084"
     volumes:
