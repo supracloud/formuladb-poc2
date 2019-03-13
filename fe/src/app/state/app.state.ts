@@ -186,17 +186,19 @@ export const reducers = {
 };
 
 
-export function parseUrl(url: string): { appName: string | null, path: string | null, id: string | null } {
-  let match = url.match(/^\/([\w_]+)\/\d+\/?([\w_]+)?\/?([-_%\w\d~]+)?/)
+export function parseUrl(url: string): { appName: string | null, themeId: string | null, entityName: string | null, id: string | null } {
+  let match = url.match(/^\/([\w_]+)\/(\d+)\/?([\w_]+)?\/?([-_%\w\d~]+)?/)
   let appName: string | null = null;
-  let path: string | null = null;
+  let themeId: string | null = null;
+  let entityName: string | null = null;
   let id: string | null = null;
   if (null != match) {
     appName = match[1];
-    if (match.length >= 3 && match[2] != null) path = match[2];
-    if (match.length >= 4 && match[3] != null) id = match[3];
+    if (match.length >= 3 && match[2] != null) themeId = match[2];
+    if (match.length >= 4 && match[3] != null) entityName = match[3];
+    if (match.length >= 5 && match[4] != null) id = match[4];
   }
 
-  return { appName, path, id };
+  return { appName, themeId, entityName, id };
 
 }

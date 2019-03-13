@@ -10,11 +10,26 @@ import * as logger from "morgan";
 import * as path from "path";
 
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { SimpleAddHocQuery } from "@core/key_value_store_i";
+import { SimpleAddHocQuery, KeyValueStoreFactoryI } from "@core/key_value_store_i";
+import { FrmdbEngineStore } from "@core/frmdb_engine_store";
+
+let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
 
-export default function (frmdbEngine: FrmdbEngine) {
+
+export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
+
+    async function getFrmdbEngine(appName: string) {
+        let frmdbEngine = frmdbEngines.get(appName);
+        if (!frmdbEngine) {
+            let schema = await kvsFactory.getSchema("FRMDB_SCHEMA~~" + appName);
+            if (!schema) throw new Error("The app does not exist " + appName);
+            frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
+            frmdbEngines.set(appName, frmdbEngine);
+        }
+        return frmdbEngine;
+    }
 
     app.use(logger("dev"));
     app.use(cookieParser());
@@ -32,44 +47,49 @@ export default function (frmdbEngine: FrmdbEngine) {
         res.json({ message: 'test' });
     });
 
+    app.get('/api/applications', async function (req, res) {
+        let apps = await kvsFactory.getAllApps();
+        res.json(apps);
+    });
+
     app.get('/query/:appname/:id', function (req, res) {
         res.json({ message: 'test' });
     });
 
     app.post('/api/:appname/:entityName/simpleadhocquery', async function(req, res) {
         let query = req.body as SimpleAddHocQuery;
-        let ret = await frmdbEngine.frmdbEngineStore.simpleAdHocQuery(req.params.entityName, query);
+        let ret = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.simpleAdHocQuery(req.params.entityName, query);
         res.json(ret);
     });
 
     app.get('/api/:appname/byprefix/:prefix', async function(req, res) {
-        let ret = await frmdbEngine.frmdbEngineStore.getDataListByPrefix(req.params.prefix);
+        let ret = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getDataListByPrefix(req.params.prefix);
         res.json(ret);
     });
     app.get('/api/:appname/obj/:id', async function(req, res) {
-        let obj = await frmdbEngine.frmdbEngineStore.getDataObj(req.params.id);
+        let obj = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getDataObj(req.params.id);
         res.json(obj);
     });
     app.get('/api/:appname/table/:id', async function(req, res) {
-        let table = await frmdbEngine.frmdbEngineStore.getTable(req.params.id);
+        let table = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getTable(req.params.id);
         res.json(table);
     });
     app.get('/api/:appname/form/:id', async function(req, res) {
-        let form = await frmdbEngine.frmdbEngineStore.getForm(req.params.id);
+        let form = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getForm(req.params.id);
         res.json(form);
     });
     app.get('/api/:appname/schema', async function(req, res) {
-        let schema = await frmdbEngine.frmdbEngineStore.getSchema();
+        let schema = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getSchema('FRMDB_SCHEMA~~' + req.params.appname);
         res.json(schema);
     });
     app.get('/api/:appname/entity/:id', async function(req, res) {
-        let entity = await frmdbEngine.frmdbEngineStore.getEntity(req.params.id);
+        let entity = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getEntity(req.params.id);
         res.json(entity);
     });
 
     //all write operations are handled via events
     app.post('/api/:appname/event', async function (req, res) {
-        return frmdbEngine.processEvent(req.body)
+        return (await getFrmdbEngine(req.params.appname)).processEvent(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
     });
@@ -77,12 +97,12 @@ export default function (frmdbEngine: FrmdbEngine) {
 
     //TODO: these APIs are mostly for OAM, should probably not be used directly by end-users
     app.put('/api/:appname/schema', async function(req, res) {
-        return frmdbEngine.frmdbEngineStore.init(req.body)
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
     app.put('/api/:appname/bulk', async function(req, res) {
-        return frmdbEngine.frmdbEngineStore.putBulk(req.body)
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });

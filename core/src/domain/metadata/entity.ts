@@ -42,12 +42,12 @@ export type HasEntityProperties = Entity | ChildTableProperty | ExtendsEntityPro
 export type EntityProperties = { [x: string]: EntityProperty };
 export type EntityDeepPath = string;
 export interface Schema extends KeyValueObj {
-    readonly _id: 'FRMDB_SCHEMA';
+    readonly _id: string;
     entities: { [x: string]: Entity };
 }
 
 export function isSchema(param): param is Schema {
-    return param != null && typeof param === 'object' && param['_id'] == 'FRMDB_SCHEMA' && param['entities'] != null;
+    return param != null && typeof param === 'object' && param['_id'].startsWith('FRMDB_SCHEMA~~') && param['entities'] != null;
 }
 
 export function isEntity(param): param is Entity {

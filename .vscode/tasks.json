@@ -14,7 +14,7 @@
             "command": "npm start",
             "type": "shell",
             "options": {
-                "cwd": "./fe",
+                "cwd": "./fe"
             },
             "terminalGroup": "run_febe",
             "presentation": {
@@ -28,34 +28,14 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": {
-                "name": "ng-serve-tsc-watch",
-                "label": "%typescript.problemMatchers.tscWatch.label%",
-                "owner": "typescript",
-                "source": "ts",
-                "applyTo": "closedDocuments",
-                "fileLocation": [
-                  "relative",
-                  "${cwd}"
-                ],
-                "pattern": "$tsc",
-                "background": {
-                  "activeOnStart": true,
-                  "beginsPattern": {
-                    "regexp": "Compiling...|TS\\d+:"
-                  },
-                  "endsPattern": {
-                    "regexp": "Compiled |Failed to compile."
-                  }
-                }                
-            }
+            "problemMatcher": []
         },
         {
             "label": "BE serve",
             "command": "npm",
             "type": "shell",
             "options": {
-                "cwd": "./be",
+                "cwd": "./be"
             },
             "args": [
                 "run",
@@ -73,9 +53,7 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": {
-                "base": "$tsc-watch",
-            }
+            "problemMatcher": []
         }
     ]
 }

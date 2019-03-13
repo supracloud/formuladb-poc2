@@ -27,7 +27,6 @@ export class Table implements KeyValueObj {
     _id: string;
     _rev?: string;
     page: Partial<Page>;
-    literal: string;
     columns: TableColumn[];
 }
 export function isTable(param: SubObj): param is Table {

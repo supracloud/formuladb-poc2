@@ -11,31 +11,26 @@ import * as http from "http";
 
 //FIXME: use this only for dev/test environment
 import { loadTestData } from "@core/test/load_test_data";
-import { MockMetadata, ExampleApps } from "@core/test/mocks/mock-metadata";
+import { MockMetadata } from "@core/test/mocks/mock-metadata";
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { getFrmdbEngine } from '@storage/key_value_store_impl_selector';
+import { getFrmdbEngine, getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
+import { App } from "@core/domain/app";
+import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
 
-let frmdbEngine: FrmdbEngine;
+let kvsFactory: KeyValueStoreFactoryI;
 const devMode = true;
-let mockMetadata = new MockMetadata(ExampleApps.test);
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
   if (devMode) {
-    frmdbEngine = await loadTestData(mockMetadata.schema)
+    kvsFactory = await loadTestData();
   } else {
-    frmdbEngine = await getFrmdbEngine({_id: "FRMDB_SCHEMA", entities: {}});
-    let schema = await frmdbEngine.frmdbEngineStore.getSchema();
-    if (schema) {
-      frmdbEngine.frmdbEngineStore.setSchema(schema);
-    }
-    console.log("Starting with Schema in the DB: " + JSON.stringify(frmdbEngine.frmdbEngineStore.schema, null, 4));
-    await frmdbEngine.init(true);
+    kvsFactory = await getKeyValueStoreFactory();
   }
 })
 .then(() => {
   // Init the express application
-  const app = require("./config/express").default(frmdbEngine);
+  const app = require("./config/express").default(kvsFactory);
 
   const server: http.Server = http.createServer(app);
 

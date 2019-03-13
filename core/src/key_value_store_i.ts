@@ -5,11 +5,12 @@
 
 import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
-import { Entity } from "./domain/metadata/entity";
+import { Entity, Schema } from "./domain/metadata/entity";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "./domain/metadata/reduce_functions";
 import { DataObj } from "./domain/metadata/data_obj";
 import { MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
 import { Expression } from "jsep";
+import { App } from "./domain/app";
 
 type NumberFilterT = 'equals' | 'notEqual' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual' | 'inRange';
 type TextFilterT = 'equals' | 'notEqual' | 'contains' | 'notContains' | 'startsWith' | 'endsWith';
@@ -158,6 +159,10 @@ export interface KeyValueStoreFactoryI {
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
     clearAll(): Promise<void>;
+    getAllApps(): Promise<App[]>;
+    putApp(app: App): Promise<App>;
+    getSchema(schemaId: string): Promise<Schema | null>;
+    putSchema(schema: Schema): Promise<Schema>;
 }
 
 export type ScalarType = string | number | boolean;

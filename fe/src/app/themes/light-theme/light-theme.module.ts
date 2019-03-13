@@ -59,6 +59,7 @@ import { VFiltersComponent } from './theme-components';
 import { HFiltersComponent } from './theme-components';
 import { ButtonComponent } from './theme-components';
 import { ButtonGroupComponent } from './theme-components';
+import { PageComponent } from './page/page.component';
 
 @NgModule({
   imports: [
@@ -117,6 +118,7 @@ import { ButtonGroupComponent } from './theme-components';
     ButtonComponent,
     ButtonGroupComponent,
     CardContainerComponent,
+    PageComponent,
   ],
   providers: [
     FormEditingService,

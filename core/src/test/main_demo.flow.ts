@@ -10,8 +10,8 @@ import { MockData } from "./mocks/mock-data";
 
 import { getDefaultTable } from "@core/domain/uimetadata/table";
 
-export var mockMetadata = new meta.MockMetadata(meta.ExampleApps.inventory);
-export var mockData = new MockData(mockMetadata.schema.entities);
+export var mockMetadata = new meta.MockMetadata();
+export var mockData = new MockData({});
 
 class Participant {
     msgTo(dst: Participant, payload: any) {

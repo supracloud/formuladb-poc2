@@ -269,8 +269,7 @@ export class CardContainer implements SubObj {
     readonly nodeType = NodeType.card_container;
     _id: string;
     tableName: string;
-    tabNameFormPath: string;
-    cardNode: NodeElement;
+    childNodes?: NodeElement[];
 }
 
 export class FormDataGrid implements SubObj {

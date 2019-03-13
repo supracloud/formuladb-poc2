@@ -1,3 +1,5 @@
 <a [href]="value" *ngIf="representation == 'link'" target="_blank">{{value}}</a>
 <span *ngIf="representation == '_id'">{{value}}</span>
 <span *ngIf="representation == 'string'">{{value}}</span>
+<h1 *ngIf="representation == 'title'">{{value}}</h1>
+<p *ngIf="representation == 'paragraph'">{{value}}</p>

@@ -11,7 +11,7 @@
 :host ::ng-deep {
     @import "~bootstrap/scss/bootstrap.scss";
     @import "./light-bootstrap-dashboard";
-    
+
     .show .dropdown-menu {
         @include opacity(1);
         visibility: visible;
@@ -23,6 +23,21 @@
 
         .row div {
             padding: 0;
+        }
+    }
+
+    .frmdb-layout-landing {
+        @import "./landing";
+
+        .navbar-nav.navbar-right {
+            display: block;
+            float: right;
+        }
+        
+        .nav>li {
+            display: block;
+            float: left;
+            position: relative;
         }
     }
 

@@ -1,44 +1,52 @@
 <div *ngIf="layout == null" class="header-wrapper frmdb-layout">
     <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
-        <div class="filter"></div>
+        <div class="filter" [attr.data-color]="(themeColorPalette$ | async) || 'default'"></div>
     </div>
 </div>
-<div *ngIf="layout == 'landing'" class="header-wrapper frmdb-layout">
-    <nav class="navbar navbar-transparent navbar-fixed-top" role="navigation" color-on-scroll>
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button id="menu-toggle" type="button" class="navbar-toggle">
+
+<!----------------------------------------------------------------------------------------------------------------
+    landing 
+------------------------------------------------------------------------------------------------------------------>
+<div *ngIf="layout == 'landing'" class="frmdb-layout frmdb-layout-landing">
+    <div class="header-wrapper">
+        <nav class="navbar navbar-transparent fixed-top" role="navigation" color-on-scroll>
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <!-- <button id="menu-toggle" type="button" class="navbar-toggle">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar bar1"></span>
                     <span class="icon-bar bar2"></span>
                     <span class="icon-bar bar3"></span>
-                </button>
-                <a href="/">
-                    <div class="logo-container">
-                        <div class="logo">
-                            <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                </button> -->
+                    <a href="/">
+                        <div class="logo-container">
+                            <div class="logo">
+                                <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                            </div>
+                            <div class="brand">
+                                {{(page$|async)?.brandName}}
+                            </div>
                         </div>
-                        <div class="brand">
-                            {{(page$|async)?.brandName}}
-                        </div>
-                    </div>
-                </a>
+                    </a>
+                </div>
+
+                <div frmdb-h_nav class="collapse navbar-collapse">
+                </div>
             </div>
+        </nav>
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse">
-                <div class="filter"></div>
-                <frmdb-h_nav></frmdb-h_nav>
-            </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-    </nav>
-
-    <div class="filter"></div>
-    <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
-        <router-outlet></router-outlet>
+        <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
+            <div class="filter" [attr.data-color]="(themeColorPalette$ | async) || 'default'"></div>
+            <div class="frmdb-content">
+                <router-outlet></router-outlet>
+            </div>
+        </div>
     </div>
 </div>
+<!-----------------------------------------------------------------------------------------------------------------
+    dashboard 
+------------------------------------------------------------------------------------------------------------------>
 <div *ngIf="layout == 'dashboard'" class="wrapper frmdb-layout">
     <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
         <!--
@@ -59,7 +67,21 @@
     </div>
     <div class="main-panel">
         <!-- Navbar -->
-        <frmdb-h_nav></frmdb-h_nav>
+        <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+            <div class=" container-fluid  ">
+                <!-- <a class="navbar-brand" href="#pablo">
+                    {{ (selectedEntity$ | async)?._id | i18n }}
+                </a> -->
+                <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar burger-lines"></span>
+                    <span class="navbar-toggler-bar burger-lines"></span>
+                    <span class="navbar-toggler-bar burger-lines"></span>
+                </button>
+                <div frmdb-h_nav class="collapse navbar-collapse justify-content-end" id="navigation">
+                </div>
+            </div>
+        </nav>
 
         <!-- End Navbar -->
         <div class="content">

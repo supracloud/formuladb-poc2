@@ -364,7 +364,7 @@ export class VNavSegmentComponent extends BaseVNavSegmentComponent implements On
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'frmdb-h_nav',
+    selector: '[frmdb-h_nav]',
     templateUrl: '../../components/h_nav/h_nav.component.html',
     styleUrls: ['../../components/h_nav/h_nav.component.scss']
 })

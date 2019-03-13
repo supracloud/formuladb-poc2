@@ -16,10 +16,11 @@ import * as _ from "lodash";
 import { CircularJSON } from "@core/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
+import { App } from "./domain/app";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
-    protected metadataKvs: KeyObjStoreI<Schema | Form | Table>;
+    protected metadataKvs: KeyObjStoreI<App | Schema | Form | Table>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
 
     constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
@@ -32,13 +33,6 @@ export class FrmdbStore {
         return Promise.all(kvsList.map(kvs => kvs.init()));
     }
 
-    public async syncSchema() {
-        let savedSchema = await this.getSchema();
-        if (! _.isEqual(savedSchema, this.schema)) {
-            await this.putSchema(this.schema);
-        }
-    }
-
     private async getTransactionsDB() {
         if (!this.transactionsDB) {
             this.transactionsDB = await this.kvsFactory.createKeyObjS<MwzEvents>('transaction');
@@ -48,7 +42,7 @@ export class FrmdbStore {
 
     private async getMetadataKvs() {
         if (!this.metadataKvs) {
-            this.metadataKvs = await this.kvsFactory.createKeyObjS<Schema | Form | Table>('metadata');
+            this.metadataKvs = await this.kvsFactory.createKeyObjS<App | Schema | Form | Table>('metadata');
         }
         return this.metadataKvs;
     }
@@ -73,11 +67,11 @@ export class FrmdbStore {
         return (await this.getTransactionsDB()).put(event);
     }
 
-    public async getSchema(): Promise<Schema | null> {
-        return (await this.getMetadataKvs()).get('FRMDB_SCHEMA') as Promise<Schema | null>;
+    public async getSchema(schemaId: string): Promise<Schema | null> {
+        return this.kvsFactory.getSchema(schemaId);
     }
     public async putSchema(schema: Schema): Promise<Schema> {
-        let ret: Schema = await (await this.getMetadataKvs()).put(schema) as Schema;
+        let ret: Schema = await this.kvsFactory.putSchema(schema);
         Object.assign(this.schema, ret);
         return ret;
     }
@@ -86,17 +80,17 @@ export class FrmdbStore {
     }
 
     public getEntities(): Promise<Entity[]> {
-        return this.getSchema().then(s => s ? Object.values(s.entities) : []);
+        return this.getSchema(this.schema._id).then(s => s ? Object.values(s.entities) : []);
     }
 
     public async getEntity(path: string): Promise<Entity | null> {
-        let schema = await this.getSchema();
+        let schema = await this.getSchema(this.schema._id);
         //the Entity's _id is the path
         return schema ? schema.entities[path] : null;
     }
 
     public async putEntity(entity: Entity): Promise<Entity> {
-        let schema = await this.getSchema();
+        let schema = await this.getSchema(this.schema._id);
         if (!schema) throw new Error("Attempt to put entity in an empty schema " + CircularJSON.stringify(entity));
         schema.entities[entity._id] = entity;
         //the Entity's _id is the path
@@ -105,7 +99,7 @@ export class FrmdbStore {
     }
 
     public async delEntity(entityId: string): Promise<Entity> {
-        let schema = await this.getSchema();
+        let schema = await this.getSchema(this.schema._id);
         if (!schema) throw new Error("Attempt to del entity " + entityId + " from empty schema");
         let ret = schema.entities[entityId];
         if (!ret) throw new Error("Attempt to del non existent entity " + entityId);
@@ -113,6 +107,10 @@ export class FrmdbStore {
         //the Entity's _id is the path
         return this.putSchema(schema)
             .then(x => ret);
+    }
+
+    public async putApp(app: App): Promise<App> {
+        return this.kvsFactory.putApp(app);
     }
 
     public async getTable(path: string): Promise<Table | null> {

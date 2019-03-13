@@ -18,16 +18,16 @@ import { Form, NodeElement, addIdsToForm, isForm } from "@core/domain/uimetadata
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { ExampleApps } from "@core/test/mocks/mock-metadata";
+import { App } from "@core/domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
 
 
 @Injectable()
 export class BackendService {
 
+    public applications: Map<string, App> = new Map();
     private appName: string;
     private frmdbEngineTools: FrmdbEngineTools;
-    private initCallback: () => void;
     private notifCallback: (event: MwzEvents) => void;
 
     constructor(private http: HttpClient) {
@@ -37,19 +37,15 @@ export class BackendService {
         return this.frmdbEngineTools;
     }
 
-    public async init(
-        app: ExampleApps,
-        initCallback: () => void,
+    public async initApplication(
+        app: App,
         notifCallback: (event: MwzEvents) => void) {
 
-        this.appName = app;
-        this.initCallback = initCallback;
+        this.appName = app._id.replace(/^App~~/, '');
         this.notifCallback = notifCallback;
 
         let schema = await this.getSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(schema).compileSchema());
-
-        this.initCallback();
 
         // TODO: replicate transactions via lon gpolling from all users that modify objects with ids from current table
     }
@@ -118,9 +114,24 @@ export class BackendService {
         return ret;
     }
 
+    public async getApplications(): Promise<Map<string, App> | null> {
+        if (this.applications.size == 0) {
+            let apps = await this.get<App[] | null>('/api/applications', (data: HttpResponse<any[]>) => {
+                return data && data.body;
+            });
+            if (apps) {
+                for (let app of apps) {
+                    this.applications.set(app._id.replace(/^App~~/, ''), app);
+                }
+            }
+        }
+
+        return this.applications.size > 0 ? this.applications : null;
+    }
+
     public getTableData(prefix: string): Promise<DataObj[]> {
         return this.get<DataObj[]>('/api/' + this.appName + '/byprefix/' + encodeURIComponent(prefix), (data: HttpResponse<any[]>) => {
-            return (data.body || []);
+            return ((data && data.body) || []);
         });
     }
 
@@ -150,7 +161,7 @@ export class BackendService {
     }
 
     public async getTable(path: string): Promise<Table | null> {
-        let http = await this.get<Table | null>('/api/' + this.appName + '/table/' + encodeURIComponent(path), (data: HttpResponse<any[]>) => {
+        let http = await this.get<Table | null>('/api/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
             return data.body as any as Table;
         });
         if (!http) return null;

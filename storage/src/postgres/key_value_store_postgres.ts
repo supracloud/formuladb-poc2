@@ -11,11 +11,12 @@ import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
-import { Entity, EntityProperty, Pn } from "@core/domain/metadata/entity";
+import { Entity, EntityProperty, Pn, Schema } from "@core/domain/metadata/entity";
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ReduceFun } from "@core/domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExpression } from "@core/map_reduce_utils";
+import { App } from "@core/domain/app";
 const calculateSlot = require('cluster-key-slot');
 
 /**
@@ -73,7 +74,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             await this.createTable();
             this.tableCreated = true;
         } else {
-            await waitUntilNotNull(() => this.tableCreated, 50);
+            await waitUntilNotNull(() => Promise.resolve(this.tableCreated), 50);
         }
     }
 
@@ -356,4 +357,24 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
         await forCleanup.clearAll();
     }
 
+    
+    metadataKOS: KeyObjStoreI<App | Schema>;
+    private getMetadataKOS() {
+        if (!this.metadataKOS) {
+            this.metadataKOS = new KeyObjStorePostgres<App | Schema>('metadata');
+        }
+        return this.metadataKOS;
+    }
+    async getAllApps(): Promise<App[]> {
+        return this.getMetadataKOS().findByPrefix('App~~') as Promise<App[]>;
+    }
+    async putApp(app: App): Promise<App> {
+        return this.getMetadataKOS().put(app) as Promise<App>;
+    }
+    async putSchema(schema: Schema): Promise<Schema> {
+        return this.getMetadataKOS().put(schema) as Promise<Schema>;
+    }
+    async getSchema(schemaId: string): Promise<Schema> {
+        return this.getMetadataKOS().get(schemaId) as Promise<Schema>;
+    }
 }

@@ -1,3 +1,4 @@
+// https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/
 interface FullPage {
     brandName: string;
     logoUrl: string; 
