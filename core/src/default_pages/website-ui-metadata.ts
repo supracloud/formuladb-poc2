@@ -42,57 +42,62 @@ export var HomePage_Form: Form = {
           }
         ],
       },
-      // {
-      //   nodeType: NodeType.h_layout, _id: getTestUUID(),
-      //   childNodes: [
-      //     {
-      //       nodeType: NodeType.card_container, _id: getTestUUID(),
-      //       tableName: "product_features",
-      //       childNodes: [
-      //         {
-      //           nodeType: NodeType.h_layout, _id: getTestUUID(),
-      //           childNodes: [
-      //             {
-      //               nodeType: NodeType.form_text, _id: getTestUUID(),
-      //               propertyName: "name",
-      //               representation: "h2",
-      //             }
-      //           ],
-      //         },
-      //         {
-      //           nodeType: NodeType.h_layout, _id: getTestUUID(),
-      //           childNodes: [
-      //             {
-      //               nodeType: NodeType.form_text, _id: getTestUUID(),
-      //               propertyName: "description",
-      //               representation: "paragraph",
-      //             }
-      //           ],
-      //         },
-      //         {
-      //           nodeType: NodeType.h_layout, _id: getTestUUID(),
-      //           childNodes: [
-      //             {
-      //               nodeType: NodeType.form_text, _id: getTestUUID(),
-      //               propertyName: "_id",
-      //               representation: "_id",
-      //             }
-      //           ],
-      //         }
-      //       ],
-      //     }
-      //   ],
-      // },
-      // {
-      //   nodeType: NodeType.h_layout, _id: getTestUUID(),
-      //   childNodes: [
-      //     {
-      //       nodeType: NodeType.form_text, _id: getTestUUID(),
-      //       propertyName: "_id",
-      //       representation: "_id",
-      //     }
-      //   ],
-      // }
+      {
+        nodeType: NodeType.h_layout, _id: getTestUUID(),
+        childNodes: [
+          {
+            nodeType: NodeType.card_container, _id: getTestUUID(),
+            tableName: "product_features",
+            cardNode: {
+              nodeType: NodeType.card, _id: getTestUUID(),
+
+              childNodes: [
+                {
+                  nodeType: NodeType.h_layout, _id: getTestUUID(),
+                  childNodes: [
+                    {
+                      nodeType: NodeType.form_text, _id: getTestUUID(),
+                      propertyName: "name",
+                      representation: "h2",
+                    }
+                  ],
+                },
+                {
+                  nodeType: NodeType.h_layout, _id: getTestUUID(),
+                  childNodes: [
+                    {
+                      nodeType: NodeType.form_text, _id: getTestUUID(),
+                      propertyName: "description",
+                      representation: "paragraph",
+                    }
+                  ],
+                },
+                {
+                  nodeType: NodeType.h_layout, _id: getTestUUID(),
+                  childNodes: [
+                    {
+                      nodeType: NodeType.form_text, _id: getTestUUID(),
+                      propertyName: "_id",
+                      representation: "_id",
+                    }
+                  ],
+                }
+              ],
+            }
+          }
+        ],
+
+      },
+      {
+        nodeType: NodeType.h_layout, _id: getTestUUID(),
+        childNodes: [
+          {
+            nodeType: NodeType.form_text, _id: getTestUUID(),
+            propertyName: "_id",
+            representation: "_id",
+          }
+        ],
+      }
     ],
   }
 };
@@ -100,29 +105,29 @@ export var HomePage_Form: Form = {
 export var HomePage_Table: Table = {
   _id: "Table_:ALL^^" + Home._id,
   page: {
-    logoUrl: '/assets/logo7.png',
+    logoUrl: '/assets/icon2.128.png',
     layout: "landing",
   },
   "columns": [
-      {
-          "name": "title",
-          type: Pn.STRING,
-          "_id": "nKq4X7Z1vBEb5xtHJer7uw"
-      },
-      {
-          "name": "tagline",
-          type: Pn.STRING,
-          "_id": "4Jz4rDLNpMAgNqsiaPfTjT"
-      },
-      {
-          "name": "product_features",
-          type: Pn.CHILD_TABLE,
-          "_id": "kNNqKxD4rJKejoqGMqyc9C"
-      },
-      {
-          "name": "_id",
-          type: Pn.STRING,
-          "_id": "ggsFTkHEyYkpfFVipqndU6"
-      }
+    {
+      "name": "title",
+      type: Pn.STRING,
+      "_id": "nKq4X7Z1vBEb5xtHJer7uw"
+    },
+    {
+      "name": "tagline",
+      type: Pn.STRING,
+      "_id": "4Jz4rDLNpMAgNqsiaPfTjT"
+    },
+    {
+      "name": "product_features",
+      type: Pn.CHILD_TABLE,
+      "_id": "kNNqKxD4rJKejoqGMqyc9C"
+    },
+    {
+      "name": "_id",
+      type: Pn.STRING,
+      "_id": "ggsFTkHEyYkpfFVipqndU6"
+    }
   ],
 } 

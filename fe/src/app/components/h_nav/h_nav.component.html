@@ -1,6 +1,6 @@
 <ul class="nav navbar-nav navbar-right">
     <ng-container *ngFor="let navItem of navigationItemsTree">
-        <li *ngIf="!navItem.isPureNavGroupingChildren"><a [routerLink]="[navItem.path]">{{navItem.linkName | i18n }}</a></li>
+        <li *ngIf="!navItem.isPureNavGroupingChildren" class="nav-item"><a class="nav-link" [routerLink]="[navItem.path]">{{navItem.linkName | i18n }}</a></li>
         <li *ngIf="navItem.isPureNavGroupingChildren" class="nav-item dropdown" ngbDropdown placement="bottom-right">
             <a class="nav-link dropdown-toggle" href="javascript:void(0)" ngbDropdownToggle aria-haspopup="true"
                 aria-expanded="false">{{navItem.linkName | i18n }}</a>

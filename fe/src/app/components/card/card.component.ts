@@ -3,6 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
+import { getChildPath, NodeElement } from '@core/domain/uimetadata/form';
 export class CardComponent extends BaseNodeComponent implements OnInit {
   theme: { [key: string]: string };
 
@@ -16,6 +17,10 @@ export class CardComponent extends BaseNodeComponent implements OnInit {
     );
   }
   ngOnInit() {
+    console.log(this.nodeElement, this.topLevelFormGroup);
   }
 
+  getChildPath(childEl: NodeElement) {
+    return getChildPath(childEl);
+  }
 }

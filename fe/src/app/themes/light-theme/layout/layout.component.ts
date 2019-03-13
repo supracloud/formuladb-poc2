@@ -4,8 +4,6 @@
  */
 
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnChanges, DoCheck } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { lightBootstrapDashbord } from './light-bootstrap-dashboard';
 import { Inject } from '@angular/core';
 import { PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngrx/store';
@@ -13,8 +11,8 @@ import { Store } from '@ngrx/store';
 import * as appState from '../../../state/app.state';
 import { Observable } from 'rxjs';
 import { Page } from '@core/domain/uimetadata/page';
-import { combineLatest, merge, map, filter, tap } from 'rxjs/operators';
-import { isNotNullOrUndefined, elvis } from '@core/elvis';
+import { merge, map, filter, tap } from 'rxjs/operators';
+import { isNotNullOrUndefined } from '@core/elvis';
 
 @Component({
   selector: 'frmdb-layout',
@@ -48,16 +46,16 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnChanges, DoChec
 
   ngOnInit() {
     this.page$.subscribe(x => {
-      console.log(x);
-      this.changeDetectorRef.detectChanges();
+      try {
+        this.changeDetectorRef.detectChanges();
+      } catch (err) {
+        console.debug(err);
+      }
     });
   }
 
   
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      lightBootstrapDashbord();
-    }
   }
 
   ngDoCheck(): void {

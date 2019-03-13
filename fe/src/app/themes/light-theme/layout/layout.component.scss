@@ -12,22 +12,28 @@
     @import "~bootstrap/scss/bootstrap.scss";
     @import "./light-bootstrap-dashboard";
 
-    .show .dropdown-menu {
-        @include opacity(1);
-        visibility: visible;
-        transform: translate3d(0px, 0px, 0px) !important;
-    }
+    .frmdb-layout-dashboard {
+        .show .dropdown-menu {
+            @include opacity(1);
+            visibility: visible;
+            transform: translate3d(0px, 0px, 0px) !important;
+        }
 
-    .main-panel .content .container-fluid {
-        padding: 0;
-
-        .row div {
+        .main-panel .content .container-fluid {
             padding: 0;
+
+            .row div {
+                padding: 0;
+            }
         }
     }
 
     .frmdb-layout-landing {
         @import "./landing";
+
+        .frmdb-content {
+            margin-top: 150px;
+        }
 
         .navbar-nav.navbar-right {
             display: block;
@@ -38,6 +44,10 @@
             display: block;
             float: left;
             position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
         }
     }
 

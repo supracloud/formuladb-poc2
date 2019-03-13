@@ -109,7 +109,8 @@ export function isEntityNodeElement(nodeEl: NodeElement): nodeEl is EntityNodeEl
 export type TableNodeElement = FormTable | FormTabs | FormChart;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
     return nodeEl.nodeType === NodeType.form_table
-        || nodeEl.nodeType === NodeType.form_tabs;
+        || nodeEl.nodeType === NodeType.form_tabs
+        || nodeEl.nodeType === NodeType.card_container;
 }
 
 export type PropertyNodeElement = FormInput | FormTimepicker | FormDatepicker;
@@ -269,7 +270,7 @@ export class CardContainer implements SubObj {
     readonly nodeType = NodeType.card_container;
     _id: string;
     tableName: string;
-    childNodes?: NodeElement[];
+    cardNode: Card;
 }
 
 export class FormDataGrid implements SubObj {
@@ -324,6 +325,7 @@ export class Calendar implements SubObj {
 export class Card implements SubObj {
     readonly nodeType = NodeType.card;
     _id: string;
+    childNodes?: NodeElement[];
 }
 
 

@@ -44,52 +44,58 @@
         </div>
     </div>
 </div>
+
 <!-----------------------------------------------------------------------------------------------------------------
     dashboard 
 ------------------------------------------------------------------------------------------------------------------>
-<div *ngIf="layout == 'dashboard'" class="wrapper frmdb-layout">
-    <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
-        <!--
+<div *ngIf="layout == 'dashboard'" class="frmdb-layout frmdb-layout-dashboard">
+    <div class="wrapper">
+        <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
+            <!--
             Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
             
             Tip 2: you can also add an image using data-image tag
         -->
-        <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
-            <div class="logo">
-                <a href="/" class="simple-text">
-                    <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
-                    <strong style="font-size: 32px">{{(page$|async)?.brandName}}</strong>
-                </a>
+            <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
+                <div class="logo">
+                    <a href="/" class="simple-text">
+                        <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                        <strong style="font-size: 32px">{{(page$|async)?.brandName}}</strong>
+                    </a>
+                </div>
+                <frmdb-v_nav class="nav"></frmdb-v_nav>
             </div>
-            <frmdb-v_nav class="nav"></frmdb-v_nav>
+            <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>
         </div>
-        <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>
-    </div>
-    <div class="main-panel">
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg " color-on-scroll="500">
-            <div class=" container-fluid  ">
-                <!-- <a class="navbar-brand" href="#pablo">
+        <div class="main-panel">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+                <div class=" container-fluid  ">
+                    <!-- <a class="navbar-brand" href="#pablo">
                     {{ (selectedEntity$ | async)?._id | i18n }}
                 </a> -->
-                <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-bar burger-lines"></span>
-                    <span class="navbar-toggler-bar burger-lines"></span>
-                    <span class="navbar-toggler-bar burger-lines"></span>
-                </button>
-                <div frmdb-h_nav class="collapse navbar-collapse justify-content-end" id="navigation">
+                    <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                        <span class="navbar-toggler-bar burger-lines"></span>
+                    </button>
+                    <div frmdb-h_nav class="collapse navbar-collapse justify-content-end" id="navigation">
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
 
-        <!-- End Navbar -->
-        <div class="content">
-            <router-outlet></router-outlet>
+            <!-- End Navbar -->
+            <div class="content">
+                <router-outlet></router-outlet>
+            </div>
         </div>
     </div>
 </div>
 
+<!-----------------------------------------------------------------------------------------------------------------
+    footer 
+------------------------------------------------------------------------------------------------------------------>
 <footer class="footer">
     <div class="container">
         <nav>

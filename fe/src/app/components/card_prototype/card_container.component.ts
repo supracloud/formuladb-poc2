@@ -25,8 +25,8 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
   theme: { [key: string]: string };
 
   get style() {
-      return this.sanitizer.bypassSecurityTrustStyle(
-          Object.keys(this.theme).map(k => k + ':' + this.theme[k]).join(';')
+      return this.sanitizer.bypassSecurityTrustStyle(''
+          // Object.keys(this.theme).map(k => k + ':' + this.theme[k]).join(';')
       );
   }
 
@@ -34,6 +34,7 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
 
   ngOnInit() {
     this.cardContainer = this.nodeElement as CardContainer;
+    console.log(this.topLevelFormGroup, this.nodeElement);
   }
 
   ngOnChanges() {
