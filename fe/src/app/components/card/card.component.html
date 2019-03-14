@@ -1,14 +1,12 @@
-<div class="card">
-  <div class="card-header bg-transparent">
-    <div class="row align-items-center">
-      <div class="col">
-        <h6 class="text-uppercase text-muted ls-1 mb-1">card id</h6>
-        <h2 class="h3 mb-0">Card Title</h2>
-      </div>
+<div class="card-header bg-transparent">
+  <div class="row align-items-center">
+    <div class="col">
+      <h6 class="text-uppercase text-muted ls-1 mb-1">card id</h6>
+      <h2 class="h3 mb-0">Card Title</h2>
     </div>
   </div>
-  <div class="card-body">
-    <div *ngFor="let child of nodeElement.childNodes" frmdb-form_item [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
-      [formReadOnly]="formReadOnly"></div>
-  </div>
+</div>
+<div class="card-body">
+  <div frmdb-page_item *ngFor="let child of nodel.childNodes" [nodel]="child" [formgrp]="formgrp"
+    [fullpath]="getChildPath(child)" [rdonly]="rdonly"></div>
 </div>

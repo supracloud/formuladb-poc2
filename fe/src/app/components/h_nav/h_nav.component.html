@@ -10,10 +10,10 @@
         </li>
     </ng-container>
     <li ngbDropdown placement="bottom-right">
-        <a class="nav-link dropdown-toggle" href="javascript:void(0)" ngbDropdownToggle aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="userMenu" ngbDropdownToggle>
             <fa-icon [icon]="userIcon"></fa-icon>
         </a>
-        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu" ngbDropdownMenu>
             <a class="dropdown-item" href="javascript:void(0)">{{'Logout' | i18n }}</a>
         </div>
     </li>

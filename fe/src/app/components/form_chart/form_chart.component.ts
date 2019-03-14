@@ -369,12 +369,12 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-    this.formChart = this.nodeElement as FormChart;
+    this.formChart = this.nodel as FormChart;
     this.view = [this.formChart.width, this.formChart.height];
     this.chartType = this.formChart.chartType;
     this.xAxisLabel = this.formChart.xPropertyName;//TODO: add i18n HERE
     this.yAxisLabel = this.formChart.yPropertyName;
-    let tmpCtrl = this.topLevelFormGroup.get(this.formChart.tableName);
+    let tmpCtrl = this.formgrp.get(this.formChart.tableName);
     if (tmpCtrl instanceof FormArray) {
       this.formArray = tmpCtrl;
       this.setSingleData();

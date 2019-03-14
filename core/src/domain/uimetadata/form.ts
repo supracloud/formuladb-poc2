@@ -10,13 +10,12 @@ import * as _ from 'lodash';
 import { Page } from './page';
 
 export enum NodeType {
-    form_grid = "form_grid",
+    form = "form",
     grid_row = "grid_row",
     grid_col = "grid_col",
     form_input = "form_input",
     form_autocomplete = "form_autocomplete",
     form_tabs = "form_tabs",
-    form_tab = "form_tab",
     form_table = "form_table",
     form_data_grid = "form_data_grid",
     form_chart = "form_chart",
@@ -26,6 +25,7 @@ export enum NodeType {
     form_enum = "form_enum",
     form_state = "form_state",
     card = "card",
+    jumbotron = "jumbotron",
     list = "list",
     gallery = "gallery",
     calendar = "calendar",
@@ -47,8 +47,9 @@ export enum NodeType {
 export class Form implements KeyValueObj {
     _id: string;
     _rev?: string;
+    readonly nodeType = NodeType.form;
     page: Page;
-    grid: FormGrid;
+    childNodes?: NodeElement[];
     stateGraph?: EntityStateGraph;
     isEditable?: boolean;
 }
@@ -57,11 +58,10 @@ export function isForm(param: KeyValueObj): param is Form {
 }
 
 export type NodeElement =
-    | FormGrid
+    | Form
     | FormInput
     | FormAutocomplete
     | FormTabs
-    | FormTab
     | FormTable
     | FormDatepicker
     | FormTimepicker
@@ -71,6 +71,7 @@ export type NodeElement =
     | ButtonGroup
     | Calendar
     | Card
+    | Jumbotron
     | Dropdown
     | FormDataGrid
     | FormEnum
@@ -90,14 +91,13 @@ export type NodeElement =
     | CardContainer
     ;
 
-export type NodeElementWithChildren = FormGrid | GridRow | GridCol | FormTable | FormTabs | FormTab;
+export type NodeElementWithChildren = Form | GridRow | GridCol | FormTable | FormTabs;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
-    return nodeEl.nodeType === NodeType.form_grid
+    return isForm(nodeEl)
         || nodeEl.nodeType === NodeType.grid_row
         || nodeEl.nodeType === NodeType.grid_col
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
-        || nodeEl.nodeType === NodeType.form_tab
         ;
 }
 
@@ -131,7 +131,6 @@ export function getChildPath(nodeEl: NodeElement) {
     if (isEntityNodeElement(nodeEl)) return nodeEl.refEntityName;
     if (isTableNodeElement(nodeEl)) return nodeEl.tableName;
     return '';
-    // return 'n/a-childPath-for' + nodeEl.nodeType;
 }
 
 export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>): Form {
@@ -139,14 +138,13 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form._id = 'Form_:' + entity._id;
     form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
-    form.grid = new FormGrid();
     form.page = {
         layout: "dashboard",
     }
 
-    setFormElementChildren(form.grid, entity, entitiesMap);
+    setFormElementChildren(form, entity, entitiesMap);
     console.log('form:', form);
-    addIdsToForm(form.grid);
+    addIdsToForm(form);
     return form;
 }
 
@@ -211,12 +209,6 @@ export function addIdsToForm(input: NodeElement): void {
     }
 }
 
-export class FormGrid implements SubObj {
-    readonly nodeType = NodeType.form_grid;
-    _id: string;
-    childNodes?: NodeElement[];
-}
-
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
     _id: string;
@@ -254,11 +246,6 @@ export class FormCard implements SubObj {
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export class FormTab implements SubObj {
-    readonly nodeType = NodeType.form_tab;
-    _id: string;
-    childNodes?: NodeElement[];
-}
 export class FormTable implements SubObj {
     readonly nodeType = NodeType.form_table;
     _id: string;
@@ -271,7 +258,7 @@ export class CardContainer implements SubObj {
     _id: string;
     tableName: string;
     cardNode: Card;
-    style: "group" | "deck" | "columns";
+    style?: "group" | "deck" | "masonry";
 }
 
 export class FormDataGrid implements SubObj {
@@ -322,6 +309,12 @@ export class Calendar implements SubObj {
     _id: string;
 }
 
+
+export class Jumbotron implements SubObj {
+    readonly nodeType = NodeType.jumbotron;
+    _id: string;
+    childNodes?: NodeElement[];
+}
 
 export class Card implements SubObj {
     readonly nodeType = NodeType.card;

@@ -33,7 +33,7 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   tableElement: FormTable | FormTabs;
 
   ngOnInit() {
-    this.tableElement = this.nodeElement as FormTable | FormTabs;
+    this.tableElement = this.nodel as FormTable | FormTabs;
   }
 
   ngOnChanges() {
@@ -43,7 +43,7 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   }
   getType(child: NodeElement): string {
     if (child.nodeType !== NodeType.form_input) {
-      throw new Error('form-input node element is wrong: ' + CircularJSON.stringify(this.nodeElement));
+      throw new Error('form-input node element is wrong: ' + CircularJSON.stringify(this.nodel));
     }
     if (child.propertyType === Pn.NUMBER) { return 'number'; } else { return 'text'; }
   }

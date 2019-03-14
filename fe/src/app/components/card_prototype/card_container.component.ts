@@ -3,14 +3,13 @@
  * License TBD
  */
 
-import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy, Component, HostBinding } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { CardContainer } from '@core/domain/uimetadata/form';
 
-import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
-import { Themable } from './themable';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';
+import { elvis } from '@core/elvis';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -18,8 +17,13 @@ import { FormEditingService } from '../form-editing.service';
   templateUrl: './card_container.component.html',
   styleUrls: ['./card_container.component.scss']
 })
-export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy, Themable {
+export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
+  cardContainer: CardContainer;
+  @HostBinding('class.card-deck') s1: boolean = elvis(this.cardContainer).style == null || elvis(this.cardContainer).style == "deck";
+  @HostBinding('class.card-group') s2: boolean = elvis(this.cardContainer).style == "group";
+  @HostBinding('class.card-columns') s3: boolean = elvis(this.cardContainer).style == "masonry";
+  
   data: any;
   frameworkComponents: any;
   defaultColDef: any;
@@ -28,19 +32,9 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
     super(formEditingService);
   }
 
-  theme: { [key: string]: string };
-
-  get style() {
-      return this.sanitizer.bypassSecurityTrustStyle(''
-          // Object.keys(this.theme).map(k => k + ':' + this.theme[k]).join(';')
-      );
-  }
-
-  cardContainer: CardContainer;
-
   ngOnInit() {
-    this.cardContainer = this.nodeElement as CardContainer;
-    console.log(this.topLevelFormGroup, this.nodeElement);
+    this.cardContainer = this.nodel as CardContainer;
+    console.log(this.formgrp, this.nodel);
   }
 
   ngOnChanges() {

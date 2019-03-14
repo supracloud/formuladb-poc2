@@ -8,41 +8,37 @@ import { FormEditingService } from '../form-editing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'frmdb-grid_row',
+  selector: '[frmdb-grid_row]',
   templateUrl: './grid_row.component.html',
-  styleUrls: ['./grid_row.component.scss']
+  styleUrls: ['./grid_row.component.scss'],
+  host: {
+    '[class.row]': 'true',
+  }
 })
-export class GridRowComponent implements OnInit {
+export class GridRowComponent extends BaseNodeComponent implements OnInit {
 
   @Input()
-  nodeElement: NodeElementWithChildren;
+  nodel: NodeElementWithChildren;
 
   @Input()
-  topLevelFormGroup: FormGroup;
+  formgrp: FormGroup;
 
   @Input()
-  parentFormPath: string;
+  fullpath: string;
 
   @Input()
-  formReadOnly: boolean;
+  rdonly: boolean;
 
   @HostBinding("class.outline")
   editMode: boolean;
 
   constructor(formEditingService: FormEditingService) {
+    super(formEditingService);
     formEditingService.frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
   }
 
   ngOnInit() {
 
-  }
-
-  getChildPath(childEl: NodeElement) {
-    let formPath = _.isEmpty(this.parentFormPath) ? [] : [this.parentFormPath]
-    let childPath: string | null = null;
-    childPath = getChildPath(childEl);
-    if (childPath) formPath.push(childPath);
-    return formPath.join('.');
   }
 
 }

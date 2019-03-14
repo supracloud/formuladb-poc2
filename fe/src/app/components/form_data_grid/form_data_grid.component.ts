@@ -32,18 +32,18 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
   tableElement: TableNodeElement;
 
   ngOnInit() {
-    this.tableElement = this.nodeElement as TableNodeElement;
+    this.tableElement = this.nodel as TableNodeElement;
   }
 
   ngOnChanges() {
-    console.log(this.nodeElement, this.topLevelFormGroup);
+    console.log(this.nodel, this.formgrp);
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
   getType(child: NodeElement): string {
     if (child.nodeType !== NodeType.form_input) {
-      throw new Error('form-input node element is wrong: ' + CircularJSON.stringify(this.nodeElement));
+      throw new Error('form-input node element is wrong: ' + CircularJSON.stringify(this.nodel));
     }
     if (child.propertyType === Pn.NUMBER) { return 'number'; } else { return 'text'; }
   }

@@ -3,7 +3,7 @@
 //
 
 
-.page-item {
+.page_item {
     &.active .page-link {
         box-shadow: $pagination-active-box-shadow;
     }
@@ -26,7 +26,7 @@
 // Size variations
 
 .pagination-lg {
-    .page-item {
+    .page_item {
         .page-link,
         span {
             width: 46px;
@@ -37,7 +37,7 @@
 }
 
 .pagination-sm {
-    .page-item {
+    .page_item {
         .page-link,
         span {
             width: 30px;

@@ -13,7 +13,7 @@ import { Location } from '@angular/common';
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 
 import { DataObj } from "@core/domain/metadata/data_obj";
-import { Form, NodeElement, NodeType } from "@core/domain/uimetadata/form";
+import { Form, NodeElement, NodeType, getChildPath } from "@core/domain/uimetadata/form";
 import { Subscription } from 'rxjs';
 import { filter, debounceTime, tap, combineLatest } from 'rxjs/operators';
 import * as _ from 'lodash';
@@ -57,7 +57,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
 
     public formData: DataObj | null;
     public form: Form | null;
-    private formReadOnly: boolean;
+    private rdonly: boolean;
     protected subscriptions: Subscription[] = [];
 
     constructor(
@@ -74,19 +74,23 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
+    protected getChildPath(childEl: NodeElement) {
+        return getChildPath(childEl);
+    }
+        
     ngOnInit() {
         const cmp = this;
 
         this.subscriptions.push(
             this.frmdbStreams.form$.pipe(
                 combineLatest(this.frmdbStreams.formData$, this.frmdbStreams.readonlyMode$))
-                .subscribe(([form, formData, formReadOnly]) => {
+                .subscribe(([form, formData, rdonly]) => {
                     try {
-                        this.formReadOnly = formReadOnly || form.isEditable !== true;
-                        this.syncReadonly(formReadOnly, this.theFormGroup);
+                        this.rdonly = rdonly || form.isEditable !== true;
+                        this.syncReadonly(rdonly, this.theFormGroup);
 
-                        this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, form.grid.childNodes || [], this.formReadOnly);
-                        this.updateFormGroupWithData(formData, this.theFormGroup, this.formReadOnly);
+                        this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, form.childNodes || [], this.rdonly);
+                        this.updateFormGroupWithData(formData, this.theFormGroup, this.rdonly);
                         this.formData = formData;
                         this.form = form;
                     } catch (ex) {
@@ -100,10 +104,10 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
         console.debug(this.form, this.formData);
     }
 
-    private syncReadonly(formReadOnly: boolean, control: AbstractControl) {
-        if (formReadOnly && !control.disabled) {
+    private syncReadonly(rdonly: boolean, control: AbstractControl) {
+        if (rdonly && !control.disabled) {
             control.disable();
-        } else if (!formReadOnly && control.disabled) {
+        } else if (!rdonly && control.disabled) {
             control.enable();
         }
     }
@@ -115,10 +119,10 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
         };
     }
 
-    private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, formReadOnly: boolean) {
+    private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, rdonly: boolean) {
 
         // TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
-        this.syncReadonly(formReadOnly, formGroup);
+        this.syncReadonly(rdonly, formGroup);
 
         for (const key in objFromServer) {
             if ('type_' === key) { continue; }
@@ -143,7 +147,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                     if (formArray.length <= i) {
                         formArray.push(new FormGroup({}));
                     }
-                    this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, formReadOnly);
+                    this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, rdonly);
                 };
                 for (let i = objVal.length; i < formArray.length; i++) {
                     formArray.removeAt(i);
@@ -151,7 +155,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
 
             } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
                 if (null == formVal) {
-                    formVal = this.formEditingService.makeFormControl(this.theFormGroup, key, { value: undefined, disabled: formReadOnly });
+                    formVal = this.formEditingService.makeFormControl(this.theFormGroup, key, { value: undefined, disabled: rdonly });
                     formGroup.setControl(key, formVal);
                 }
                 if (!(formVal instanceof FormControl)) {
@@ -159,7 +163,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 }
 
                 formVal.reset(objVal);
-                this.syncReadonly(formReadOnly, formVal);
+                this.syncReadonly(rdonly, formVal);
             } else if ('object' === typeof objVal) {
                 if (null == formVal) {
                     formVal = new FormGroup({});
@@ -169,7 +173,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                     throw new Error('key ' + key + ', objVal object \'' + objVal + '\', but formVal not FormGroup: \'' + formVal + '\'');
                 }
 
-                this.updateFormGroupWithData(objVal, formVal, formReadOnly);
+                this.updateFormGroupWithData(objVal, formVal, rdonly);
             } else {
                 throw new Error('unkown objVal type: \'' + objVal + '\'');
             }

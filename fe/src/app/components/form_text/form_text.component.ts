@@ -34,16 +34,16 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     }
 
     ngOnInit(): void {
-        this.inputElement = this.nodeElement as FormText;
-        this.ctrl = this.topLevelFormGroup.get(this.parentFormPath);
+        this.inputElement = this.nodel as FormText;
+        this.ctrl = this.formgrp.get(this.fullpath);
         // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
     get representation(): string {
-        if (this.nodeElement.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodeElement));
-        return this.nodeElement.representation || "string";
+        if (this.nodel.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodel));
+        return this.nodel.representation || "string";
     }
 
     get value(): string {

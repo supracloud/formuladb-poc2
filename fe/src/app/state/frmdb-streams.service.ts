@@ -49,7 +49,7 @@ export class FrmdbStreamsService {
     this.userEvents$.subscribe(userEvent => {
       switch (userEvent.type) {
         case "UserDraggedFormElement":
-          this.store.dispatch(new FormDragAction(userEvent.nodeElement));
+          this.store.dispatch(new FormDragAction(userEvent.nodel));
           break;
         case "UserModifiedFormData":
           this.store.dispatch(new AppServerEventAction(new ServerEventModifiedFormDataEvent(userEvent.obj)));

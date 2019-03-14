@@ -10,13 +10,13 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let rowControl of topLevelFormGroup.get(parentFormPath)?.controls; let idx = index">
+        <tr *ngFor="let rowControl of formgrp.get(fullpath)?.controls; let idx = index">
             <td>
                 <fa-icon (click)="deleteRow(rowControl)" [icon]="delIcon" class="fa-sm"></fa-icon>
             </td>
-            <td frmdb-form_item *ngFor="let child of tableElement.childNodes"
-                [nodeElement]="child" [topLevelFormGroup]="topLevelFormGroup"
-                    [parentFormPath]="parentFormPath + '.' + idx + '.' + child.propertyName" [formReadOnly]="formReadOnly"
+            <td frmdb-page_item *ngFor="let child of tableElement.childNodes"
+                [nodel]="child" [formgrp]="formgrp"
+                    [fullpath]="fullpath + '.' + idx + '.' + child.propertyName" [rdonly]="rdonly"
                     >
             </td>
         </tr>

@@ -36,16 +36,16 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, OnD
 
 
     ngOnInit(): void {
-        this.inputElement=this.nodeElement as FormInput;
-        this.ctrl = this.topLevelFormGroup.get(this.parentFormPath);
+        this.inputElement=this.nodel as FormInput;
+        this.ctrl = this.formgrp.get(this.fullpath);
         // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
     getType(): string {
-        if (this.nodeElement.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + CircularJSON.stringify(this.nodeElement));
-        if (this.nodeElement.propertyType === Pn.NUMBER) return "number";
+        if (this.nodel.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + CircularJSON.stringify(this.nodel));
+        if (this.nodel.propertyType === Pn.NUMBER) return "number";
         else return "text";
     }
 

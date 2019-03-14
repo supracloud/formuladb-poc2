@@ -45,7 +45,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     getControl() {
-        let ctrl = this.topLevelFormGroup.get(this.parentFormPath);
+        let ctrl = this.formgrp.get(this.fullpath);
         if (!this.control) {
             if (ctrl) {
                 let validators: ValidatorFn[] = [];
@@ -74,7 +74,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     ngOnInit(): void {
-        this.inputElement = this.nodeElement as FormAutocomplete;
+        this.inputElement = this.nodel as FormAutocomplete;
         this.getControl();
 
         this.subscriptions.push(this.frmdbStreams.autoCompleteState$.subscribe(async (autoCompleteState) => {
@@ -86,7 +86,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
             if (autoCompleteState.selectedOption) {
                 let ctrl = this.getControl();
-                if (!ctrl) console.warn("Control not found for autocomplete ", this.topLevelFormGroup, this.parentFormPath);
+                if (!ctrl) console.warn("Control not found for autocomplete ", this.formgrp, this.fullpath);
                 else {
                     ctrl.setValue(autoCompleteState.selectedOption[this.inputElement.refPropertyName]);
                 }

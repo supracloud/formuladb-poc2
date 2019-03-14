@@ -101,7 +101,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
         ...state,
         form: {
           ...state.form,
-          formReadOnly: action.appReadonly != fromCore.NotReadonly,
+          rdonly: action.appReadonly != fromCore.NotReadonly,
         }
       }
     }

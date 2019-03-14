@@ -31,8 +31,16 @@
     .frmdb-layout-landing {
         @import "./landing";
 
+        .navbar > .container {
+            display: block;
+        }
+
+        .navbar-header {
+            float: left;
+        }
+
         .frmdb-content {
-            margin-top: 150px;
+            margin-top: 40px;
         }
 
         .navbar-nav.navbar-right {

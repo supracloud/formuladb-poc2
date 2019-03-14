@@ -11,19 +11,19 @@ import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 
 
-@Component({
-  // tslint:disable-next-line:component-selector
-  selector: '[frmdb-form_item]',
-  templateUrl: './form_item.component.html',
-  styleUrls: ['./form_item.component.scss']
-})
+// @Component({
+//   // tslint:disable-next-line:component-selector
+//   selector: '[frmdb-form_item]',
+//   templateUrl: './form_item.component.html',
+//   styleUrls: ['./form_item.component.scss']
+// })
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;
   icon = faArrowsAltH;
 
   ngOnInit() {
-    // console.log(this.nodeElement);
+    // console.log(this.nodel);
   }
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
@@ -32,27 +32,18 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
     super(formEditingService);
   }
 
-  getChildPath(childEl: NodeElement) {
-    // let formPath = _.isEmpty(this.parentFormPath) ? [] : [this.parentFormPath]
-    // let childPath: string | null = null;
-    // childPath = getChildPath(childEl);
-    // if (childPath) formPath.push(childPath);
-    // return formPath.join('.');
-    return getChildPath(childEl);
-  }
-
-  isUnknownElement(nodeElement: NodeElement): boolean {
-    return !isKnownNodeElement(nodeElement.nodeType);
+  isUnknownElement(nodel: NodeElement): boolean {
+    return !isKnownNodeElement(nodel.nodeType);
   }
 
   getHostClassForElement(): string {
-    if (null == this.nodeElement) return '';
-    if (null == this.nodeElement.nodeType) return '';
-    return this.nodeElement.nodeType == NodeType.form_grid ? 'container' : this.nodeElement.nodeType.replace(/^form_grid_/, '');
+    if (null == this.nodel) return '';
+    if (null == this.nodel.nodeType) return '';
+    return this.nodel.nodeType == NodeType.form ? 'container' : this.nodel.nodeType.replace(/^form_grid_/, '');
   }
 
   getAvailableTypes(): NodeType[] | null {
-    switch (this.nodeElement.nodeType) {
+    switch (this.nodel.nodeType) {
       case NodeType.form_autocomplete:
       case NodeType.form_datepicker:
       case NodeType.form_input:
@@ -65,8 +56,8 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
 
 
   getAvailableChildren(): NodeElement[] | null {
-    switch (this.nodeElement.nodeType) {
-      case NodeType.form_grid:
+    switch (this.nodel.nodeType) {
+      case NodeType.form:
         return [new GridRow()];
       case NodeType.grid_row:
         return [new GridCol()];
@@ -80,8 +71,8 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   }
 
   dragStart(e: any): boolean {
-    if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodeElement._id) {
-      this.frmdbStreams.userEvents$.next({type: "UserDraggedFormElement", nodeElement: this.nodeElement});
+    if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodel._id) {
+      this.frmdbStreams.userEvents$.next({type: "UserDraggedFormElement", nodel: this.nodel});
       e.stopPropagation();
       return true;
     } else {
@@ -91,6 +82,6 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   }
 
   dragEnd(e: any): void {
-    this.frmdbStreams.userEvents$.next({type: "UserDraggedFormElement", nodeElement: null});
+    this.frmdbStreams.userEvents$.next({type: "UserDraggedFormElement", nodel: null});
   }
 }

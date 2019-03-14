@@ -178,7 +178,7 @@ export class BackendService {
         if (!http) return null;
         let fi = http;
         if (!isForm(fi)) throw new Error("response is not Form " + CircularJSON.stringify(fi));
-        addIdsToForm(fi.grid);
+        addIdsToForm(fi);
         return fi;
     }
 

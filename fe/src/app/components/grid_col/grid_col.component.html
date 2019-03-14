@@ -1,6 +1,6 @@
-<ng-container *ngFor="let childEl of nodeElement.childNodes">
+<ng-container *ngFor="let childEl of nodel.childNodes">
   <drop-handle position="before" [item]="childEl" orientation="horizontal"></drop-handle>
-  <div frmdb-form_item class="flex-fill" [nodeElement]="childEl" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(childEl)"
-    [formReadOnly]="formReadOnly"></div>
+  <div frmdb-page_item [nodel]="childEl" [formgrp]="formgrp" [fullpath]="getChildPath(childEl)"
+    [rdonly]="rdonly"></div>
 </ng-container>
-<drop-handle position="append" *ngIf="nodeElement.childNodes" [item]="nodeElement" orientation="horizontal"></drop-handle>
+<drop-handle position="append" *ngIf="nodel.childNodes" [item]="nodel" orientation="horizontal"></drop-handle>

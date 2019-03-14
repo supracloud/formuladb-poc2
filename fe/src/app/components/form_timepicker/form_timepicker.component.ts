@@ -22,7 +22,7 @@ export class FormTimepickerComponent extends BaseNodeComponent implements OnInit
   inputElement: FormTimepicker ;
 
   ngOnInit():void{
-    this.inputElement = this.nodeElement as FormTimepicker;
+    this.inputElement = this.nodel as FormTimepicker;
   }
 
   ngOnDestroy(): void {

@@ -26,7 +26,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
 import { FormEffects } from './effects/form.effects';
 import { PageComponent } from './components/page/page.component';
-import { PageItemDirective } from './components/page-item.directive';
 
 @NgModule({
   declarations: [
@@ -34,7 +33,6 @@ import { PageItemDirective } from './components/page-item.directive';
     ApplicationsComponent,
     ApplicationComponent,
     PageComponent,
-    PageItemDirective,
   ],
   imports: [
     BrowserModule,

@@ -23,7 +23,7 @@ export class FormDatepickerComponent extends BaseNodeComponent implements OnInit
   inputElement: FormDatepicker;
 
   ngOnInit(): void {
-    this.inputElement = this.nodeElement as FormDatepicker;
+    this.inputElement = this.nodel as FormDatepicker;
   }
 
   ngOnDestroy(): void {
