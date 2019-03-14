@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { CardContainer } from '@core/domain/uimetadata/form';
 
@@ -12,6 +12,12 @@ import { Themable } from './themable';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-card_container',
+  templateUrl: './card_container.component.html',
+  styleUrls: ['./card_container.component.scss']
+})
 export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy, Themable {
 
   data: any;

@@ -50,6 +50,7 @@
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.5",
     "moment": "^2.22.2",
+    "ngx-take-until-destroy": "^5.4.0",
     "pg": "^7.8.0",
     "popper.js": "^1.14.3",
     "pouchdb-collate": "^7.0.0",

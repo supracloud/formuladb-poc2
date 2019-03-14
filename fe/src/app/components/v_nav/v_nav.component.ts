@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { OnInit, ChangeDetectorRef } from '@angular/core';
+import { OnInit, ChangeDetectorRef, Component } from '@angular/core';
 
 import { Observable } from 'rxjs';
 import { map, startWith, combineLatest, tap } from 'rxjs/operators'
@@ -16,6 +16,12 @@ import { Pn, Entity } from '@core/domain/metadata/entity';
 import { Home } from '@core/default_pages/website-metadata';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-v_nav',
+  templateUrl: './v_nav.component.html',
+  styleUrls: ['./v_nav.component.scss']
+})
 export class VNavComponent implements OnInit {
   public navigationItemsTree: NavigationItem[] = [];
   public frmdbStreams: FrmdbStreamsService;

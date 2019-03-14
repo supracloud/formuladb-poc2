@@ -24,12 +24,12 @@
     [parentFormPath]="getChildPath(nodeElement)" [formReadOnly]="formReadOnly"></frmdb-form_timepicker>
   <frmdb-form_chart *ngSwitchCase="'form_chart'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
     [formReadOnly]="formReadOnly"></frmdb-form_chart>
-  <frmdb-h_layout *ngSwitchCase="'h_layout'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
-    [formReadOnly]="formReadOnly"></frmdb-h_layout>
-  <frmdb-v_layout *ngSwitchCase="'v_layout'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
-    [formReadOnly]="formReadOnly"></frmdb-v_layout>
-  <frmdb-v_layout *ngSwitchCase="'form_grid'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
-    [formReadOnly]="formReadOnly"></frmdb-v_layout>
+  <frmdb-grid_row *ngSwitchCase="'grid_row'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
+    [formReadOnly]="formReadOnly"></frmdb-grid_row>
+  <frmdb-grid_col *ngSwitchCase="'grid_col'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
+    [formReadOnly]="formReadOnly"></frmdb-grid_col>
+  <frmdb-grid_col *ngSwitchCase="'form_grid'" [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="getChildPath(nodeElement)"
+    [formReadOnly]="formReadOnly"></frmdb-grid_col>
   <div *ngSwitchDefault style="border: 1px solid red;">Child Element NOT KNOWN '{{nodeElement.nodeType}}' !</div>
 
 </div>

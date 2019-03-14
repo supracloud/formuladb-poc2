@@ -79,8 +79,8 @@ export class FormEditingService {
     for (const nodeEl of nodeElements) {
 
       if (nodeEl.nodeType === NodeType.form_grid
-        || nodeEl.nodeType === NodeType.h_layout
-        || nodeEl.nodeType === NodeType.v_layout
+        || nodeEl.nodeType === NodeType.grid_row
+        || nodeEl.nodeType === NodeType.grid_col
         || nodeEl.nodeType === NodeType.form_tab) {
         const childNodes = nodeEl.childNodes || [];
         this.updateFormGroup(topLevelFormGroup, newParent, childNodes, formReadOnly);

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, TableNodeElement } from "@core/domain/uimetadata/form";
 
@@ -12,6 +12,12 @@ import { CircularJSON } from "@core/json-stringify";
 import { Pn } from "@core/domain/metadata/entity";
 import { FormEditingService } from '../form-editing.service';
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: '[frmdb-form_data_grid]',
+  templateUrl: './form_data_grid.component.html',
+  styleUrls: ['./form_data_grid.component.scss']
+})
 export class FormDataGridComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   data: any;

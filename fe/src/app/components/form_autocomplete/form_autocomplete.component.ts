@@ -4,7 +4,7 @@
  */
 
 import {
-    OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef
+    OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, Component
 } from '@angular/core';
 
 import { BaseNodeComponent } from '../base_node';
@@ -15,11 +15,20 @@ import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/ap
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import * as _ from 'lodash';
 import { ValidatorFn, AbstractControl } from '@angular/forms';
-import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { debounceTime, map, tap, combineLatest, zip, distinctUntilChanged, filter } from 'rxjs/operators';
 import { AutoCompleteState } from '@fe/app/state/app.state';
 import { elvis, elvis_a } from '@core/elvis';
 
+@Component({
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_autocomplete',
+    templateUrl: './form_autocomplete.component.html',
+    styleUrls: [
+        '../form_input/form_input.component.scss',
+        './form_autocomplete.component.scss',
+    ]
+})
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
     inputElement: FormAutocomplete;

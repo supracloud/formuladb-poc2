@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@core/domain/uimetadata/form";
 import { CircularJSON } from "@core/json-stringify";
@@ -14,6 +14,13 @@ import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FrmdbFormControl, FrmdbFormGroup } from '../form.component';
 
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: '[frmdb-form_table]',
+  host: { class: 'col form-group' },
+  templateUrl: './form_table.component.html',
+  styleUrls: ['./form_table.component.scss']
+})
 export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   addIcon = faPlusCircle;

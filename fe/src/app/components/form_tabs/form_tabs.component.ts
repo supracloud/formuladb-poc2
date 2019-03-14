@@ -11,6 +11,12 @@ import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
 import { FormEditingService } from '../form-editing.service';
 
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: '[frmdb-form_tabs]',
+  templateUrl: './form_tabs.component.html',
+  styleUrls: ['./form_tabs.component.scss']
+})
 export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];
 

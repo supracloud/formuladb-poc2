@@ -21,7 +21,7 @@ export const Forms__ServiceForm_Form_: Form = {
     _id: getTestUUID(), nodeType: NodeType.form_grid,
     childNodes: [
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'code' },
           { _id: getTestUUID(), nodeType: NodeType.form_datepicker, propertyName: 'time_of_arrival' },
@@ -30,7 +30,7 @@ export const Forms__ServiceForm_Form_: Form = {
         ]
       },
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           {
             _id: getTestUUID(), nodeType: NodeType.form_autocomplete,
@@ -47,19 +47,19 @@ export const Forms__ServiceForm_Form_: Form = {
         ]
       },
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'notes' },
         ]
       },
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'accommodation' },
         ]
       },
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           {
             _id: getTestUUID(), nodeType: NodeType.form_tabs, tableName: 'service_form_units', tabNameFormPath: 'equipment.code',
@@ -68,39 +68,39 @@ export const Forms__ServiceForm_Form_: Form = {
                 _id: getTestUUID(), nodeType: NodeType.form_grid,
                 childNodes: [
                   {
-                    _id: getTestUUID(), nodeType: NodeType.h_layout,
+                    _id: getTestUUID(), nodeType: NodeType.grid_row,
                     childNodes: [
                       { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'equipment_group' },
                       { _id: getTestUUID(), nodeType: NodeType.form_autocomplete, entityName: 'equipment' },
                     ]
                   },
                   {
-                    _id: getTestUUID(), nodeType: NodeType.h_layout,
+                    _id: getTestUUID(), nodeType: NodeType.grid_row,
                     childNodes: [
                       { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'washing_cycles' },
                       { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'nb_piston_cycles' },
                     ]
                   },
                   {
-                    _id: getTestUUID(), nodeType: NodeType.h_layout,
+                    _id: getTestUUID(), nodeType: NodeType.grid_row,
                     childNodes: [
                       { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'reported_problem' },
                     ]
                   },
                   {
-                    _id: getTestUUID(), nodeType: NodeType.h_layout,
+                    _id: getTestUUID(), nodeType: NodeType.grid_row,
                     childNodes: [
                       { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'found_problem' },
                     ]
                   },
                   {
-                    _id: getTestUUID(), nodeType: NodeType.h_layout,
+                    _id: getTestUUID(), nodeType: NodeType.grid_row,
                     childNodes: [
                       { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'work_description' },
                     ]
                   },
                   {
-                    _id: getTestUUID(), nodeType: NodeType.h_layout,
+                    _id: getTestUUID(), nodeType: NodeType.grid_row,
                     childNodes: [
                       {
                         _id: getTestUUID(), nodeType: NodeType.form_table, tableName: 'items',
@@ -137,7 +137,7 @@ export const Forms__ServiceForm_Form_: Form = {
         ]
       },
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           { _id: getTestUUID(), nodeType: NodeType.form_timepicker, propertyName: 'time_of_arrival' },
           { _id: getTestUUID(), nodeType: NodeType.form_timepicker, propertyName: 'time_of_departure' },
@@ -148,7 +148,7 @@ export const Forms__ServiceForm_Form_: Form = {
         ]
       },
       {
-        _id: getTestUUID(), nodeType: NodeType.h_layout,
+        _id: getTestUUID(), nodeType: NodeType.grid_row,
         childNodes: [
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: 'type_' },
           { _id: getTestUUID(), nodeType: NodeType.form_input, propertyType: Pn.STRING, propertyName: '_id' },

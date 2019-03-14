@@ -3,14 +3,20 @@
  * License TBD
  */
 
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnInit, OnDestroy, Component } from '@angular/core';
 import * as _ from 'lodash';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement, getChildPath, VLayout, HLayout } from "@core/domain/uimetadata/form";
+import { NodeElement, NodeType, isKnownNodeElement, getChildPath, GridCol, GridRow } from "@core/domain/uimetadata/form";
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: '[frmdb-form_item]',
+  templateUrl: './form_item.component.html',
+  styleUrls: ['./form_item.component.scss']
+})
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;
@@ -61,9 +67,9 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   getAvailableChildren(): NodeElement[] | null {
     switch (this.nodeElement.nodeType) {
       case NodeType.form_grid:
-        return [new HLayout()];
-      case NodeType.h_layout:
-        return [new VLayout()];
+        return [new GridRow()];
+      case NodeType.grid_row:
+        return [new GridCol()];
       default:
         return null;
     }

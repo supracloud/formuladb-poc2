@@ -1,12 +1,16 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
-import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
-import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
+import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
 import * as _ from 'lodash';
 import { FormEditingService } from '../form-editing.service';
 
-
-export class HLayoutComponent implements OnInit {
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-grid_col',
+  templateUrl: './grid_col.component.html',
+  styleUrls: ['./grid_col.component.scss']
+})
+export class GridColComponent implements OnInit {
 
   @Input()
   nodeElement: NodeElementWithChildren;
@@ -24,11 +28,10 @@ export class HLayoutComponent implements OnInit {
   editMode: boolean;
 
   constructor(formEditingService: FormEditingService) {
-    formEditingService.frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
+    formEditingService.frmdbStreams.devMode$.subscribe(e => this.editMode = e);
   }
 
   ngOnInit() {
-
   }
 
   getChildPath(childEl: NodeElement) {

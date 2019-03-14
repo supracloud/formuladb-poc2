@@ -1,14 +1,18 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
 import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
-import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
 import * as _ from 'lodash';
-import { Store } from '@ngrx/store';
-import * as fromForm from '../../state/form.state';
-import { Observable } from 'rxjs';
 import { FormEditingService } from '../form-editing.service';
 
-export class VLayoutComponent implements OnInit {
+
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-grid_row',
+  templateUrl: './grid_row.component.html',
+  styleUrls: ['./grid_row.component.scss']
+})
+export class GridRowComponent implements OnInit {
 
   @Input()
   nodeElement: NodeElementWithChildren;
@@ -26,10 +30,11 @@ export class VLayoutComponent implements OnInit {
   editMode: boolean;
 
   constructor(formEditingService: FormEditingService) {
-    formEditingService.frmdbStreams.devMode$.subscribe(e => this.editMode = e);
+    formEditingService.frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
   }
 
   ngOnInit() {
+
   }
 
   getChildPath(childEl: NodeElement) {

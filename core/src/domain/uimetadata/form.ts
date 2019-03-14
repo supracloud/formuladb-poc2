@@ -11,8 +11,8 @@ import { Page } from './page';
 
 export enum NodeType {
     form_grid = "form_grid",
-    h_layout = "h_layout",
-    v_layout = "v_layout",
+    grid_row = "grid_row",
+    grid_col = "grid_col",
     form_input = "form_input",
     form_autocomplete = "form_autocomplete",
     form_tabs = "form_tabs",
@@ -77,7 +77,7 @@ export type NodeElement =
     | FormState
     | Gallery
     | HFilters
-    | HLayout
+    | GridRow
     | HNav
     | Icon
     | Image
@@ -85,16 +85,16 @@ export type NodeElement =
     | Media
     | Timeline
     | VFilters
-    | VLayout
+    | GridCol
     | VNav
     | CardContainer
     ;
 
-export type NodeElementWithChildren = FormGrid | HLayout | VLayout | FormTable | FormTabs | FormTab;
+export type NodeElementWithChildren = FormGrid | GridRow | GridCol | FormTable | FormTabs | FormTab;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.form_grid
-        || nodeEl.nodeType === NodeType.h_layout
-        || nodeEl.nodeType === NodeType.v_layout
+        || nodeEl.nodeType === NodeType.grid_row
+        || nodeEl.nodeType === NodeType.grid_col
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
         || nodeEl.nodeType === NodeType.form_tab
@@ -192,7 +192,7 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
         if (parentFormEl.nodeType === NodeType.form_table) {
             ret = child;
         } else {
-            ret = new HLayout();
+            ret = new GridRow();
             ret.childNodes = [child];
         }
 
@@ -271,6 +271,7 @@ export class CardContainer implements SubObj {
     _id: string;
     tableName: string;
     cardNode: Card;
+    style: "group" | "deck" | "columns";
 }
 
 export class FormDataGrid implements SubObj {
@@ -359,8 +360,8 @@ export class HFilters implements SubObj {
 }
 
 
-export class HLayout implements SubObj {
-    readonly nodeType = NodeType.h_layout;
+export class GridRow implements SubObj {
+    readonly nodeType = NodeType.grid_row;
     _id: string;
     childNodes: NodeElement[];
 }
@@ -408,8 +409,8 @@ export class VFilters implements SubObj {
 }
 
 
-export class VLayout implements SubObj {
-    readonly nodeType = NodeType.v_layout;
+export class GridCol implements SubObj {
+    readonly nodeType = NodeType.grid_col;
     _id: string;
     childNodes?: NodeElement[];
 }

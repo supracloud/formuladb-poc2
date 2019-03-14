@@ -45,6 +45,12 @@ export class FrmdbFormGroup extends FormGroup {
 
 }
 
+@Component({
+    selector: 'frmdb-form',
+    templateUrl: './form.component.html',
+    styleUrls: ['./form.component.scss'],
+    // changeDetection: ChangeDetectionStrategy.OnPush,
+})
 export class FormComponent implements OnInit, OnDestroy, OnChanges {
     public theFormGroup: FormGroup;
     public changes: any[] = [];

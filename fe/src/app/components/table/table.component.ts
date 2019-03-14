@@ -25,6 +25,11 @@ import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
 
+@Component({
+    selector: 'frmdb-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss']
+})
 export class TableComponent implements OnInit, OnDestroy {
 
     statusBar = {

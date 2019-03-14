@@ -20,7 +20,7 @@ export var LargeSalesReport_Form: Form = {
     nodeType: NodeType.form_grid,
     childNodes: [
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.grid_row,
         childNodes: [
           {
             nodeType: NodeType.form_text,
@@ -38,7 +38,7 @@ export var LargeSalesReport_Form: Form = {
         _id: "fVmzojRQqQSeAWJzQtjf9h"
       },
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.grid_row,
         childNodes: [
           {
             nodeType: NodeType.form_chart,
@@ -55,7 +55,7 @@ export var LargeSalesReport_Form: Form = {
         _id: "fVmzojRQqQSeAWJzQtjf9h"
       },
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.grid_row,
         childNodes: [
           {
             nodeType: NodeType.form_table,
@@ -92,7 +92,7 @@ export var LargeSalesReport_Form: Form = {
         _id: "6rHs2cBbzYNyfESXeVuqMn"
       },
       {
-        nodeType: NodeType.h_layout,
+        nodeType: NodeType.grid_row,
         childNodes: [
           {
             nodeType: NodeType.form_input,

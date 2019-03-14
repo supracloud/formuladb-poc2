@@ -6,6 +6,12 @@ import { FormChart } from "@core/domain/uimetadata/form";
 import { FormArray, FormControl } from '@angular/forms';
 import { FormEditingService } from '../form-editing.service';
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-form_chart',
+  templateUrl: './form_chart.component.html',
+  styleUrls: ['./form_chart.component.scss']
+})
 export class FormChartComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   chartType: string;

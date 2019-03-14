@@ -17,6 +17,13 @@ import * as _ from "lodash";
 
 import { FormEditingService } from "../form-editing.service";
 
+@Component({
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_text',
+    host: { class: 'col form-group' },
+    templateUrl: './form_text.component.html',
+    styleUrls: ['./form_text.component.scss']
+})
 export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 

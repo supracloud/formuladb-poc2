@@ -3,6 +3,12 @@ import * as shape from 'd3-shape';
 import { EntityStateGraph } from "@core/domain/metadata/entity";
 import { FormEditingService } from '../form-editing.service';
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-form_state',
+  templateUrl: './form_state.component.html',
+  styleUrls: ['./form_state.component.scss']
+})
 export class FormStateComponent implements OnInit {
   curve: any = shape.curveBundle.beta(1);
   view: any[];

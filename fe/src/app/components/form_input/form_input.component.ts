@@ -18,6 +18,13 @@ import * as _ from "lodash";
 import { Pn } from "@core/domain/metadata/entity";
 import { FormEditingService } from "../form-editing.service";
 
+@Component({
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_input',
+    host: { class: 'col form-group' },
+    templateUrl: './form_input.component.html',
+    styleUrls: ['./form_input.component.scss']
+})
 export class FormInputComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 

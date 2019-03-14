@@ -12,15 +12,43 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 
+import { FormComponent } from '@fe/app/components/form.component';
+import { FormAutocompleteComponent } from '@fe/app/components/form_autocomplete/form_autocomplete.component';
+import { FormDataGridComponent } from '@fe/app/components/form_data_grid/form_data_grid.component';
+import { FormDatepickerComponent } from '@fe/app/components/form_datepicker/form_datepicker.component';
+import { FormTableComponent } from '@fe/app/components/form_table/form_table.component';
+import { FormTimepickerComponent } from '@fe/app/components/form_timepicker/form_timepicker.component';
+import { GridRowComponent } from '@fe/app/components/grid_row/grid_row.component';
+import { FormInputComponent } from '@fe/app/components/form_input/form_input.component';
+import { FormItemComponent } from '@fe/app/components/form_item/form_item.component';
+import { FormTabsComponent } from '@fe/app/components/form_tabs/form_tabs.component';
+import { FormTextComponent } from '@fe/app/components/form_text/form_text.component';
+import { GridColComponent } from '@fe/app/components/grid_col/grid_col.component';
+import { TableComponent } from '@fe/app/components/table/table.component';
+import { FormChartComponent } from '@fe/app/components/form_chart/form_chart.component';
+import { FormStateComponent } from '@fe/app/components/form_state/form_state.component';
+import { CardComponent } from '@fe/app/components/card/card.component';
+import { FormEnumComponent } from '@fe/app/components/form_enum/form_enum.component';
+import { ListComponent } from '@fe/app/components/list/list.component';
+import { GalleryComponent } from '@fe/app/components/gallery/gallery.component';
+import { CalendarComponent } from '@fe/app/components/calendar/calendar.component';
+import { ImageComponent } from '@fe/app/components/image/image.component';
+import { IconComponent } from '@fe/app/components/icon/icon.component';
+import { MediaComponent } from '@fe/app/components/media/media.component';
+import { VNavComponent } from '@fe/app/components/v_nav/v_nav.component';
+import { VNavSegmentComponent } from '@fe/app/components/v_nav/v_nav_segment.component';
+import { HNavComponent } from '@fe/app/components/h_nav/h_nav.component';
+import { TimelineComponent } from '@fe/app/components/timeline/timeline.component';
+import { DropdownComponent } from '@fe/app/components/dropdown/dropdown.component';
+import { VFiltersComponent } from '@fe/app/components/v_filters/v_filters.component';
+import { HFiltersComponent } from '@fe/app/components/h_filters/h_filters.component';
+import { ButtonComponent } from '@fe/app/components/button/button.component';
+import { ButtonGroupComponent } from '@fe/app/components/button_group/button_group.component';
+import { CardContainerComponent } from '@fe/app/components/card_prototype/card_container.component';
+
 import { LightThemeRoutingModule } from './light-theme-routing.module';
 import { LayoutComponent } from './layout/layout.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
-import { FormTextComponent, VNavSegmentComponent, CardContainerComponent } from './theme-components';
-import { TableComponent } from './theme-components';
-import { FormComponent } from './theme-components';
-import { VLayoutComponent } from './theme-components';
-import { FormItemComponent } from './theme-components';
-import { HLayoutComponent } from './theme-components';
 import { AgGridModule } from 'ag-grid-angular';
 import { TableHeaderComponent } from '@fe/app/components/table/table-header.component';
 import { FormEditingService } from '@fe/app/components/form-editing.service';
@@ -34,31 +62,6 @@ import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-edi
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
 
 
-import { FormTabsComponent } from './theme-components';
-import { FormTableComponent } from './theme-components';
-import { FormDataGridComponent } from './theme-components';
-import { FormAutocompleteComponent } from './theme-components';
-import { FormDatepickerComponent } from './theme-components';
-import { FormInputComponent } from './theme-components';
-import { FormTimepickerComponent } from './theme-components';
-import { FormChartComponent } from './theme-components';
-import { FormStateComponent } from './theme-components';
-import { CardComponent } from './theme-components';
-import { FormEnumComponent } from './theme-components';
-import { ListComponent } from './theme-components';
-import { GalleryComponent } from './theme-components';
-import { CalendarComponent } from './theme-components';
-import { ImageComponent } from './theme-components';
-import { IconComponent } from './theme-components';
-import { MediaComponent } from './theme-components';
-import { VNavComponent } from './theme-components';
-import { HNavComponent } from './theme-components';
-import { TimelineComponent } from './theme-components';
-import { DropdownComponent } from './theme-components';
-import { VFiltersComponent } from './theme-components';
-import { HFiltersComponent } from './theme-components';
-import { ButtonComponent } from './theme-components';
-import { ButtonGroupComponent } from './theme-components';
 import { PageComponent } from './page/page.component';
 
 @NgModule({
@@ -88,8 +91,8 @@ import { PageComponent } from './page/page.component';
     FormTextComponent,
     FormInputComponent,
     FormStateComponent,
-    VLayoutComponent,
-    HLayoutComponent,
+    GridColComponent,
+    GridRowComponent,
     FormTabsComponent,
     FormTableComponent,
     FormDataGridComponent,

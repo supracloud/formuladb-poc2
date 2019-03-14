@@ -23,7 +23,7 @@ export var HomePage_Form: Form = {
     nodeType: NodeType.form_grid, _id: getTestUUID(),
     childNodes: [
       {
-        nodeType: NodeType.h_layout, _id: getTestUUID(),
+        nodeType: NodeType.grid_row, _id: getTestUUID(),
         childNodes: [
           {
             nodeType: NodeType.form_text, _id: getTestUUID(),
@@ -33,7 +33,7 @@ export var HomePage_Form: Form = {
         ],
       },
       {
-        nodeType: NodeType.h_layout, _id: getTestUUID(),
+        nodeType: NodeType.grid_row, _id: getTestUUID(),
         childNodes: [
           {
             nodeType: NodeType.form_text, _id: getTestUUID(),
@@ -43,7 +43,7 @@ export var HomePage_Form: Form = {
         ],
       },
       {
-        nodeType: NodeType.h_layout, _id: getTestUUID(),
+        nodeType: NodeType.grid_row, _id: getTestUUID(),
         childNodes: [
           {
             nodeType: NodeType.card_container, _id: getTestUUID(),
@@ -53,7 +53,7 @@ export var HomePage_Form: Form = {
 
               childNodes: [
                 {
-                  nodeType: NodeType.h_layout, _id: getTestUUID(),
+                  nodeType: NodeType.grid_row, _id: getTestUUID(),
                   childNodes: [
                     {
                       nodeType: NodeType.form_text, _id: getTestUUID(),
@@ -63,7 +63,7 @@ export var HomePage_Form: Form = {
                   ],
                 },
                 {
-                  nodeType: NodeType.h_layout, _id: getTestUUID(),
+                  nodeType: NodeType.grid_row, _id: getTestUUID(),
                   childNodes: [
                     {
                       nodeType: NodeType.form_text, _id: getTestUUID(),
@@ -73,7 +73,7 @@ export var HomePage_Form: Form = {
                   ],
                 },
                 {
-                  nodeType: NodeType.h_layout, _id: getTestUUID(),
+                  nodeType: NodeType.grid_row, _id: getTestUUID(),
                   childNodes: [
                     {
                       nodeType: NodeType.form_text, _id: getTestUUID(),
@@ -89,7 +89,7 @@ export var HomePage_Form: Form = {
 
       },
       {
-        nodeType: NodeType.h_layout, _id: getTestUUID(),
+        nodeType: NodeType.grid_row, _id: getTestUUID(),
         childNodes: [
           {
             nodeType: NodeType.form_text, _id: getTestUUID(),
