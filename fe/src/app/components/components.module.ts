@@ -58,8 +58,7 @@ import { ContextMenuComponent } from '@fe/app/dev-mode-overlay/context-menu/cont
 import { FormItemEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-item-editor.component';
 import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-editor/form-input-editor/form-input-editor.component';
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
-import { PageItemComponent } from '@fe/app/components/page_item/page_item.component';
-import { PageItemHostDirective } from '@fe/app/components/page_item/page_item_host.directive';
+import { PageItemsDirective } from './page_items.directive';
 
 const pageItemComponents: any[] = [ 
   FormComponent,
@@ -102,12 +101,10 @@ const components = pageItemComponents.concat([
   FormInputEditorComponent,
   FrmdbOnfocusDirective,
   DropHandleComponent,
-  PageItemComponent,
-  PageItemHostDirective,
   NotFoundComponent,
   TableHeaderComponent,
   TableComponent,
-
+  PageItemsDirective,
 ]);
 
 @NgModule({

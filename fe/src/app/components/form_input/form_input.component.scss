@@ -3,7 +3,7 @@
 @import "~bootstrap/scss/_mixins";
 :host {
     position: relative;
-    flex-basis: 0;
+    flex-basis: 40px;
     flex-grow: 1;
     max-width: 100%;
     &.form-item-highlight {

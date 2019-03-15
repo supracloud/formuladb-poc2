@@ -38,7 +38,7 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, OnD
     ngOnInit(): void {
         this.inputElement=this.nodel as FormInput;
         this.ctrl = this.formgrp.get(this.fullpath);
-        // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
+        console.debug(this.fullpath, this.nodel);
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())

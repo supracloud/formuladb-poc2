@@ -12,24 +12,21 @@
     @import "~bootstrap/scss/bootstrap.scss";
     @import "./light-bootstrap-dashboard";
 
-    .frmdb-layout-dashboard {
+    .frmdb-ly-dashboard {
         .show .dropdown-menu {
             @include opacity(1);
             visibility: visible;
             transform: translate3d(0px, 0px, 0px) !important;
         }
 
-        .main-panel .content .container-fluid {
-            padding: 0;
-
-            .row div {
-                padding: 0;
-            }
+        .main-panel > .content {
+            padding: 30px 15px;
+            min-height: calc(100% - 123px);
         }
     }
 
-    .frmdb-layout-landing {
-        @import "./landing";
+    .frmdb-ly-landing {
+        @import "./frmdb-ly-landing";
 
         .navbar > .container {
             display: block;

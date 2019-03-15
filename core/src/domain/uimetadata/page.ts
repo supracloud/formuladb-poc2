@@ -2,7 +2,7 @@
 interface FullPage {
     brandName: string;
     logoUrl: string; 
-    layout: "dashboard" | "landing";
+    layout: "frmdb-ly-dashboard" | "frmdb-ly-landing";
     secondaryNavPosition: "bottom" | "right";
     tbd1: string;
     tbd2: string;

@@ -14,10 +14,11 @@
             <td>
                 <fa-icon (click)="deleteRow(rowControl)" [icon]="delIcon" class="fa-sm"></fa-icon>
             </td>
-            <td frmdb-page_item *ngFor="let child of tableElement.childNodes"
-                [nodel]="child" [formgrp]="formgrp"
-                    [fullpath]="fullpath + '.' + idx + '.' + child.propertyName" [rdonly]="rdonly"
-                    >
+            <td *ngFor="let child of tableElement.childNodes">
+                <ng-container [frmdbPageItems]="[child]"
+                [formgrp]="formgrp"
+                [fullpath]="fullpath + '.' + idx" 
+                [rdonly]="rdonly"></ng-container>
             </td>
         </tr>
     </tbody>

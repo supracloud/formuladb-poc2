@@ -34,6 +34,7 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
 
   ngOnInit() {
     this.tableElement = this.nodel as FormTable | FormTabs;
+    console.debug(this.fullpath, this.nodel, this.formgrp);
   }
 
   ngOnChanges() {

@@ -1,7 +1,4 @@
-<div class="card-deck">
-    <ng-container *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index">
-        <div frmdb-card [nodel]="cardContainer.cardNode" [formgrp]="formgrp" 
-            [fullpath]="fullpath + '.' + idx" [rdonly]="rdonly">
-        </div>
-    </ng-container>
-</div>
+<ng-container *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index">
+    <frmdb-card [nodel]="cardContainer" [formgrp]="formgrp" [fullpath]="fullpath + '.' + idx" [rdonly]="rdonly">
+    </frmdb-card>
+</ng-container>

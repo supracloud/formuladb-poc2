@@ -51,7 +51,10 @@ export class FrmdbStore {
         let ret = this.dataKVSMap.get(entityName);
         if (!ret) {
             let entity = this.schema.entities[entityName];
-            if (!entity) throw new Error("getDataKvs unknown entity " + entityName);
+            if (!entity) {
+                console.error("getDataKvs unknown entity " + entityName, this.schema.entities);
+                throw new Error("getDataKvs unknown entity " + entityName);
+            }
 
             ret = await this.kvsFactory.createKeyTableS<DataObj>(entity);
             this.dataKVSMap.set(entityName, ret);

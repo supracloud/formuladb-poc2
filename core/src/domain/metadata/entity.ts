@@ -84,7 +84,7 @@ export const enum Pn {
     DOCUMENT = "TEXT",
     DATETIME = "DATETIME",
     DURATION = "DURATION",
-    LINK = "LINK",
+    ACTION = "ACTION",
     ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
@@ -132,8 +132,8 @@ export interface AttachmentProperty {
     url: string;
 }
 
-export interface LinkProperty {
-    propType_: Pn.LINK;
+export interface ActionProperty {
+    propType_: Pn.ACTION;
     name: string;
     defaultValue?: string;
     allowNull?: boolean;
@@ -199,7 +199,7 @@ export type EntityProperty =
     | DocumentProperty
     | DatetimeProperty
     | DurationProperty
-    | LinkProperty
+    | ActionProperty
     | AttachmentProperty
     | ChildTableProperty
     | ExtendsEntityProperty

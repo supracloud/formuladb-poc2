@@ -101,11 +101,6 @@ export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeEl
         ;
 }
 
-export type EntityNodeElement = FormAutocomplete;
-export function isEntityNodeElement(nodeEl: NodeElement): nodeEl is EntityNodeElement {
-    return nodeEl.nodeType === NodeType.form_autocomplete;
-}
-
 export type TableNodeElement = FormTable | FormTabs | FormChart;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
     return nodeEl.nodeType === NodeType.form_table
@@ -119,6 +114,7 @@ export function isPropertyNodeElement(nodeEl: NodeElement): nodeEl is PropertyNo
         || nodeEl.nodeType === NodeType.form_timepicker
         || nodeEl.nodeType === NodeType.form_datepicker
         || nodeEl.nodeType === NodeType.form_text
+        || nodeEl.nodeType === NodeType.form_autocomplete
     ;
 }
 
@@ -128,7 +124,6 @@ export function isKnownNodeElement(nodeType: string) {
 
 export function getChildPath(nodeEl: NodeElement) {
     if (isPropertyNodeElement(nodeEl)) return nodeEl.propertyName;
-    if (isEntityNodeElement(nodeEl)) return nodeEl.refEntityName;
     if (isTableNodeElement(nodeEl)) return nodeEl.tableName;
     return '';
 }
@@ -139,7 +134,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
     form.page = {
-        layout: "dashboard",
+        layout: "frmdb-ly-dashboard",
     }
 
     setFormElementChildren(form, entity, entitiesMap);
@@ -166,12 +161,9 @@ export function setFormElementChildren(parentFormEl: NodeElementWithChildren, en
         } else if (pn.propType_ === Pn.DATETIME) {
             child = new FormDatepicker();
             child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-        } else if (pn.propType_ === Pn.LINK) {
-            child = new FormText();
+        } else if (pn.propType_ === Pn.ACTION) {
+            child = new Button();
             child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-            child.representation = "link";
         } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
             child = new FormText();
             child.propertyName = pn.name;
@@ -253,11 +245,18 @@ export class FormTable implements SubObj {
     childNodes?: NodeElement[];
 }
 
-export class CardContainer implements SubObj {
-    readonly nodeType = NodeType.card_container;
+class CardBase implements SubObj {
     _id: string;
+    childNodes?: NodeElement[];
+}
+
+export class Card extends CardBase implements SubObj {
+    readonly nodeType = NodeType.card;
+}
+
+export class CardContainer extends CardBase implements SubObj {
+    readonly nodeType = NodeType.card_container;
     tableName: string;
-    cardNode: Card;
     style?: "group" | "deck" | "masonry";
 }
 
@@ -295,6 +294,7 @@ export class FormChart implements SubObj {
 export class Button implements SubObj {
     readonly nodeType = NodeType.button;
     _id: string;
+    propertyName: string;
 }
 
 
@@ -312,12 +312,6 @@ export class Calendar implements SubObj {
 
 export class Jumbotron implements SubObj {
     readonly nodeType = NodeType.jumbotron;
-    _id: string;
-    childNodes?: NodeElement[];
-}
-
-export class Card implements SubObj {
-    readonly nodeType = NodeType.card;
     _id: string;
     childNodes?: NodeElement[];
 }

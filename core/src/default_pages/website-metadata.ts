@@ -22,8 +22,8 @@ export const ProductFeature: Entity = {
     }
 }
 
-export const Dashboard: Entity = {
-    _id: "Dashboard",
+export const Components: Entity = {
+    _id: "Components",
     isPresentationPage: true,
     props: {
         website_statistics: {

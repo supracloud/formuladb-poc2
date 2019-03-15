@@ -1,7 +1,6 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { FormEditingService } from '../form-editing.service';
-import { NodeElement, getChildPath } from '@core/domain/uimetadata/form';
 
 @Component({
   selector: '[frmdb-jumbotron]',

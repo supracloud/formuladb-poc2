@@ -3,22 +3,20 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
-import { getChildPath, NodeElement } from '@core/domain/uimetadata/form';
-import { PageItemComponent } from '../page_item/page_item.component';
 
 @Component({
-  selector: '[frmdb-card]',
+  selector: 'frmdb-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
   host: {
     '[class.card]': 'true',
   }
 })
-export class CardComponent extends PageItemComponent implements OnInit {
+export class CardComponent extends BaseNodeComponent implements OnInit {
   theme: { [key: string]: string };
 
   constructor(formEditingService: FormEditingService, componentFactoryResolver: ComponentFactoryResolver, private sanitizer: DomSanitizer) {
-    super(formEditingService, componentFactoryResolver);
+    super(formEditingService);
   }
 
   get style() {

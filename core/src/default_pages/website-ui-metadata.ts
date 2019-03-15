@@ -5,7 +5,7 @@
 
 import { Form, NodeType } from '@core/domain/uimetadata/form'
 import { Pn } from '@core/domain/metadata/entity';
-import { Home, Dashboard } from './website-metadata';
+import { Home } from './website-metadata';
 import { Table } from '@core/domain/uimetadata/table';
 
 let testUUID = 1;
@@ -18,7 +18,7 @@ export var HomePage_Form: Form = {
   nodeType: NodeType.form,
   page: {
     logoUrl: '/assets/icon2.128.png',
-    layout: "landing",
+    layout: "frmdb-ly-landing",
   },
   childNodes: [
     {
@@ -50,42 +50,38 @@ export var HomePage_Form: Form = {
             {
               nodeType: NodeType.card_container, _id: getTestUUID(),
               tableName: "product_features",
-              cardNode: {
-                nodeType: NodeType.card, _id: getTestUUID(),
-
-                childNodes: [
-                  {
-                    nodeType: NodeType.grid_row, _id: getTestUUID(),
-                    childNodes: [
-                      {
-                        nodeType: NodeType.form_text, _id: getTestUUID(),
-                        propertyName: "name",
-                        representation: "h2",
-                      }
-                    ],
-                  },
-                  {
-                    nodeType: NodeType.grid_row, _id: getTestUUID(),
-                    childNodes: [
-                      {
-                        nodeType: NodeType.form_text, _id: getTestUUID(),
-                        propertyName: "description",
-                        representation: "paragraph",
-                      }
-                    ],
-                  },
-                  {
-                    nodeType: NodeType.grid_row, _id: getTestUUID(),
-                    childNodes: [
-                      {
-                        nodeType: NodeType.form_text, _id: getTestUUID(),
-                        propertyName: "_id",
-                        representation: "_id",
-                      }
-                    ],
-                  }
-                ],
-              }
+              childNodes: [
+                {
+                  nodeType: NodeType.grid_row, _id: getTestUUID(),
+                  childNodes: [
+                    {
+                      nodeType: NodeType.grid_col, _id: getTestUUID(),
+                      childNodes: [
+                        {
+                          nodeType: NodeType.form_text, _id: getTestUUID(),
+                          propertyName: "name",
+                          representation: "h3",
+                        }
+                      ]
+                    }
+                  ],
+                },
+                {
+                  nodeType: NodeType.grid_row, _id: getTestUUID(),
+                  childNodes: [
+                    {
+                      nodeType: NodeType.grid_col, _id: getTestUUID(),
+                      childNodes: [
+                        {
+                          nodeType: NodeType.form_text, _id: getTestUUID(),
+                          propertyName: "description",
+                          representation: "paragraph",
+                        }
+                      ]
+                    }
+                  ],
+                },
+              ],
             }
           ]
         }
@@ -98,7 +94,7 @@ export var HomePage_Table: Table = {
   _id: "Table_:ALL^^" + Home._id,
   page: {
     logoUrl: '/assets/icon2.128.png',
-    layout: "landing",
+    layout: "frmdb-ly-landing",
   },
   "columns": [
     {

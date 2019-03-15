@@ -19,6 +19,7 @@ import { FormEditingService } from '@fe/app/components/form-editing.service';
 import { TableService } from '@fe/app/effects/table.service';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import { ComponentsModule } from '@fe/app/components/components.module';
+import { LayoutLandingCoverComponent } from './layout-landing-cover/layout-landing-cover.component';
 
 @NgModule({
   imports: [
@@ -36,6 +37,7 @@ import { ComponentsModule } from '@fe/app/components/components.module';
   ],
   declarations: [
     LayoutComponent,
+    LayoutLandingCoverComponent,
   ],
   providers: [
     FormEditingService,

@@ -3,11 +3,9 @@
  * License TBD
  */
 
-import { NodeElement, NodeType, FormInput, FormText } from "@core/domain/uimetadata/form";
+import { NodeType, FormText } from "@core/domain/uimetadata/form";
 import {
-    Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
-    Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
-    forwardRef
+    Component, OnInit, OnDestroy
 } from '@angular/core';
 import { CircularJSON } from "@core/json-stringify";
 
@@ -36,7 +34,7 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     ngOnInit(): void {
         this.inputElement = this.nodel as FormText;
         this.ctrl = this.formgrp.get(this.fullpath);
-        // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
+        console.log(this.fullpath, this.nodel, this.ctrl);
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())

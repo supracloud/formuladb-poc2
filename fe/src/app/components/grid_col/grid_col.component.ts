@@ -7,7 +7,7 @@ import { BaseNodeComponent } from '../base_node';
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: '[frmdb-grid_col]',
+  selector: 'frmdb-grid_col',
   templateUrl: './grid_col.component.html',
   styleUrls: ['./grid_col.component.scss'],
   host: {
@@ -37,5 +37,6 @@ export class GridColComponent extends BaseNodeComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.debug(this.fullpath, this.nodel);
   }
 }

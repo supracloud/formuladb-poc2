@@ -34,8 +34,11 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             let mockData = new MockData(schema.entities);
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
-            for (let obj of mockData.getAll()) {
-                await putObj(frmdbEngine, obj);
+            for (let entityId of Object.keys(schema.entities)) {
+                for (let obj of mockData.getAllForPath(entityId)) {
+                    await frmdbEngineStore.putDataObj(obj);
+                    // await putObj(frmdbEngine, obj);
+                }
             }
             if (!uiMetaLoaded) {
                 [Forms__ServiceForm_Form_, LargeSalesReport_Form, HomePage_Form].forEach(async (formUiMeta) => {

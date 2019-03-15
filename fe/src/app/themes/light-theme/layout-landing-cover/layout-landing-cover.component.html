@@ -1,0 +1,37 @@
+<div class="frmdb-layout frmdb-ly-landing">
+  <div class="header-wrapper">
+      <nav class="navbar navbar-transparent fixed-top" role="navigation" color-on-scroll>
+          <div class="container">
+              <!-- Brand and toggle get grouped for better mobile display -->
+              <div class="navbar-header">
+                  <!-- <button id="menu-toggle" type="button" class="navbar-toggle">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar bar1"></span>
+                  <span class="icon-bar bar2"></span>
+                  <span class="icon-bar bar3"></span>
+              </button> -->
+                  <a href="/">
+                      <div class="logo-container">
+                          <div class="logo">
+                              <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                          </div>
+                          <div class="brand">
+                              {{(page$|async)?.brandName}}
+                          </div>
+                      </div>
+                  </a>
+              </div>
+
+              <div frmdb-h_nav class="collapse navbar-collapse">
+              </div>
+          </div>
+      </nav>
+
+      <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
+          <div class="filter" [attr.data-color]="(themeColorPalette$ | async) || 'default'"></div>
+          <div class="frmdb-content">
+              <router-outlet></router-outlet>
+          </div>
+      </div>
+  </div>
+</div>

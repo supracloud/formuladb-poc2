@@ -9,11 +9,7 @@
         </span>
     </div>
     <frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state>
-    <div frmdb-page_item *ngFor="let child of form?.childNodes" 
-        [nodel]="child" [formgrp]="theFormGroup"
-        [fullpath]="getChildPath(child)" [rdonly]="rdonly"></div>
-    <div frmdb-page_item [nodel]="form?.grid" [formgrp]="theFormGroup" 
-    fullpath="" [rdonly]="rdonly"
-         *ngIf="null != form">
-    </div>
+    <div [frmdbPageItems]="form?.childNodes" 
+        [formgrp]="theFormGroup"
+        [fullpath]="''" [rdonly]="rdonly"></div>
 </form>

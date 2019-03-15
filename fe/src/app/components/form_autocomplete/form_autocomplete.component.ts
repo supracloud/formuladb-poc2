@@ -74,6 +74,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     ngOnInit(): void {
+        console.debug(this.fullpath, this.nodel);
         this.inputElement = this.nodel as FormAutocomplete;
         this.getControl();
 

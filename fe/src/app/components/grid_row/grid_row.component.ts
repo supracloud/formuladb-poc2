@@ -8,7 +8,7 @@ import { FormEditingService } from '../form-editing.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: '[frmdb-grid_row]',
+  selector: 'frmdb-grid_row',
   templateUrl: './grid_row.component.html',
   styleUrls: ['./grid_row.component.scss'],
   host: {
@@ -38,7 +38,7 @@ export class GridRowComponent extends BaseNodeComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    console.debug(this.fullpath, this.nodel);
   }
 
 }

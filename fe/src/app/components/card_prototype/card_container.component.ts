@@ -34,7 +34,7 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
 
   ngOnInit() {
     this.cardContainer = this.nodel as CardContainer;
-    console.log(this.formgrp, this.nodel);
+    console.log(this.fullpath, this.formgrp, this.nodel);
   }
 
   ngOnChanges() {
