@@ -35,7 +35,7 @@ services:
     environment:
       MINIO_ACCESS_KEY: minio
       MINIO_SECRET_KEY: minio123
-    command: minio server /data/
+    command: minio server /data/minio/
     volumes:
       - object-storage:/data
   createbuckets:
