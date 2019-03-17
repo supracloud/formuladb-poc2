@@ -314,6 +314,7 @@ export class Jumbotron implements SubObj {
     readonly nodeType = NodeType.jumbotron;
     _id: string;
     childNodes?: NodeElement[];
+    style: "jumbotron" | "cover";
 }
 
 

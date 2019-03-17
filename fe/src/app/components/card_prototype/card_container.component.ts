@@ -20,9 +20,7 @@ import { elvis } from '@core/elvis';
 export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   cardContainer: CardContainer;
-  @HostBinding('class.card-deck') s1: boolean = elvis(this.cardContainer).style == null || elvis(this.cardContainer).style == "deck";
-  @HostBinding('class.card-group') s2: boolean = elvis(this.cardContainer).style == "group";
-  @HostBinding('class.card-columns') s3: boolean = elvis(this.cardContainer).style == "masonry";
+  @HostBinding('class') tmp: string = elvis(this.cardContainer).style || "card-deck";
   
   data: any;
   frameworkComponents: any;

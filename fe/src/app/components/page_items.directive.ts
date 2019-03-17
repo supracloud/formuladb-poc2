@@ -90,6 +90,7 @@ export class PageItemsDirective {
 
     @Input() set frmdbPageItems(childElements: NodeElement[]) {
         console.debug(this.fullpath, childElements);
+        if (null == this.fullpath) return;
         let componentFactory: ComponentFactory<PageItemComponents>;
         let viewContainerRef = this.viewContainerRef;
         viewContainerRef.clear();
