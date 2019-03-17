@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  namespace: {{ .Release.Name }}
+  annotations:
+    kompose.cmd: ./kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: minio
+  name: minio
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: minio
+    spec:
+      imagePullSecrets:
+      - name: gitlab-febe-docker-registry
+      containers:
+      - args:
+        - minio
+        - server
+        - /data/minio/
+        env:
+        - name: MINIO_ACCESS_KEY
+          value: minio
+        - name: MINIO_SECRET_KEY
+          value: minio123
+        image: registry.gitlab.com/metawiz/febe/formuladb-minio:0.0.4
+        name: minio
+        ports:
+        - containerPort: 9000
+        resources: {}
+        volumeMounts:
+        - mountPath: /data
+          name: object-storage
+      restartPolicy: Always
+      volumes:
+      - name: object-storage
+        persistentVolumeClaim:
+          claimName: object-storage
+status: {}
+
