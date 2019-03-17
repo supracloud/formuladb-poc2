@@ -1,0 +1,9 @@
+FROM minio/minio:RELEASE.2019-03-06T22-47-10Z
+
+COPY fe/src/assets /data/minio/assets
+
+RUN cd /data/minio && \
+    wget https://dl.minio.io/client/mc/release/linux-amd64/mc && \
+    chmod u+x mc
+
+VOLUME /data/minio
