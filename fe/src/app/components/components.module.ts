@@ -121,9 +121,9 @@ const components = pageItemComponents.concat([
     LightThemeRoutingModule,
     CrosscuttingModule,
   ],
-  declarations: components,
+  declarations: ([] as any[]).concat(components),
   entryComponents: pageItemComponents,
-  exports: components,
+  exports: ([] as any[]).concat(components),
   providers: [
     FormEditingService,
     TableService,

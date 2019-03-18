@@ -12,7 +12,7 @@
     @import "~bootstrap/scss/bootstrap.scss";
     @import "./light-bootstrap-dashboard";
 
-    .frmdb-ly-dashboard {
+    frmdb-ly-admin {
         .show .dropdown-menu {
             @include opacity(1);
             visibility: visible;
@@ -25,8 +25,8 @@
         }
     }
 
-    .frmdb-ly-landing {
-        @import "./frmdb-ly-landing";
+    frmdb-ly-cover {
+        @import "./frmdb-ly-cover";
 
         .navbar > .container {
             display: block;
@@ -55,6 +55,4 @@
             display: none;
         }
     }
-
 }
-

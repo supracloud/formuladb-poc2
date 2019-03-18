@@ -11,11 +11,9 @@ import { elvis } from '@core/elvis';
   host: {
     '[class.jumbotron]': 'true',
   }
-
 })
 export class JumbotronComponent extends BaseNodeComponent implements OnInit {
   jumbotron: Jumbotron;
-  @HostBinding('class') tmp: string = elvis(this.jumbotron).style || "jumbotron";
 
   constructor(formEditingService: FormEditingService) {
     super(formEditingService);

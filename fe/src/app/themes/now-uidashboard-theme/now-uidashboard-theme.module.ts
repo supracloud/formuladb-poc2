@@ -11,6 +11,7 @@ import { LayoutComponent } from './layout/layout.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.module';
+import { ComponentsModule } from '@fe/app/components/components.module';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.mod
     CrosscuttingModule,
     NgbModule,
     DevModeCommonModule,
+    ComponentsModule,
   ],
   declarations: [
     LayoutComponent,

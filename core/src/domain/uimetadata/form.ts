@@ -26,6 +26,7 @@ export enum NodeType {
     form_state = "form_state",
     card = "card",
     jumbotron = "jumbotron",
+    header = "header",
     list = "list",
     gallery = "gallery",
     calendar = "calendar",
@@ -72,6 +73,7 @@ export type NodeElement =
     | Calendar
     | Card
     | Jumbotron
+    | Header
     | Dropdown
     | FormDataGrid
     | FormEnum
@@ -134,7 +136,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
     form.page = {
-        layout: "frmdb-ly-dashboard",
+        layout: "frmdb-ly-admin",
     }
 
     setFormElementChildren(form, entity, entitiesMap);
@@ -310,11 +312,16 @@ export class Calendar implements SubObj {
 }
 
 
+export class Header implements SubObj {
+    readonly nodeType = NodeType.header;
+    _id: string;
+    childNodes?: NodeElement[];
+}
+
 export class Jumbotron implements SubObj {
     readonly nodeType = NodeType.jumbotron;
     _id: string;
     childNodes?: NodeElement[];
-    style: "jumbotron" | "cover";
 }
 
 

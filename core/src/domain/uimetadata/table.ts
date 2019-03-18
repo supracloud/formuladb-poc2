@@ -37,7 +37,7 @@ export function getDefaultTable(entity: Entity): Table {
     const table = new Table();
     table.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
     table.page = {
-        layout: "frmdb-ly-dashboard",
+        layout: "frmdb-ly-admin",
     }
     addIdsToTable(table);
     return table;

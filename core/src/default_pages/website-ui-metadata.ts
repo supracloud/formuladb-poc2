@@ -17,10 +17,10 @@ export var HomePage_Form: Form = {
     _id: "Form_:ALL^^" + Home._id, nodeType: NodeType.form,
     page: {
         logoUrl: '/assets/icon2.128.png',
-        layout: "frmdb-ly-landing",
+        layout: "frmdb-ly-cover",
     },
     childNodes: [
-        { nodeType: NodeType.jumbotron, _id: getTestUUID(), style: "cover", childNodes: [
+        { nodeType: NodeType.header, _id: getTestUUID(), childNodes: [
             { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "title", representation: "title" },
             { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "tagline", representation: "paragraph" },
         ]},
@@ -43,7 +43,7 @@ export var HomePage_Table: Table = {
     _id: "Table_:ALL^^" + Home._id,
     page: {
         logoUrl: '/assets/icon2.128.png',
-        layout: "frmdb-ly-landing",
+        layout: "frmdb-ly-cover",
     },
     "columns": [
         {
