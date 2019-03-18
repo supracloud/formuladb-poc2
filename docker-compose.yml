@@ -11,14 +11,45 @@ services:
       - pg-persistence:/var/lib/postgresql/data
   be:
     image: registry.gitlab.com/metawiz/febe/formuladb-be:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    depends_on:
+      - db
     environment:
       FRMDB_STORAGE: "postgres"
+    ports:
+      # publish node inspector port. By default the V8 inspector listens on 127.0.0.1 only.
+      # To debug, run `socat -d tcp-listen:9229,reuseaddr,fork,bind=`hostname -i` tcp:127.0.0.1:9229 &` from inside the BE container
+      # source maps not working in chrome for node ? https://github.com/webpack/webpack/issues/2612
+      - "9229:9229"
   fe:
     image: registry.gitlab.com/metawiz/febe/formuladb-fe:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    depends_on:
+      - be
     ports:
       - "8084:8084"
     volumes:
       - $PWD/auth.htpasswd:/etc/nginx/auth.htpasswd
+  minio:
+    image: registry.gitlab.com/metawiz/febe/formuladb-minio:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    command: minio server /data/minio/
+    volumes:
+      - object-storage:/data
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host rm local;
+      /usr/bin/mc config host add local http://minio:9000 minio minio123;
+      /usr/bin/mc policy public local/assets;
+      exit 0;
+      "
 
 volumes:
   pg-persistence:
+  object-storage:

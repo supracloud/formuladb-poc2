@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "dev": "concurrently --kill-others \"ng serve --progress=false\" \"ng test --progress=false\" | perl -pe 's!^\\[\\d+\\] !!; s!ERROR in !!; s!^src/app/!fe/src/app/!'",
-    "start": "ng serve --proxy-config proxy.conf.json --source-map",
+    "start": "ng serve --aot --proxy-config proxy.conf.json --source-map",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -60,6 +60,7 @@
     "zone.js": "~0.8.29"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "^7.4.2",
     "@angular-devkit/build-angular": "~0.13.5",
     "@angular/cli": "~7.3.5",
     "@angular/compiler-cli": "^7.2.9",

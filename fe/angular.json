@@ -15,16 +15,20 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "deployUrl": "/formuladb/",
+            "baseHref": "/formuladb/",
+            "customWebpackConfig": {
+              "path": "src/extra-webpack-prod.config.js"
+            },
             "outputPath": "dist/fe",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/favicon.png",
-              "src/assets"
+              "src/favicon.png"
             ],
             "styles": [
               "./node_modules/ag-grid-community/dist/styles/ag-grid.css",
@@ -96,8 +100,7 @@
               "./node_modules/bootstrap/dist/js/bootstrap.min.js"
             ],
             "assets": [
-              "src/favicon.png",
-              "src/assets"
+              "src/favicon.png"
             ]
           }
         },

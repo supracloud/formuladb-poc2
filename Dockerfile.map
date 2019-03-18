@@ -1,0 +1,5 @@
+FROM nginx:1.14
+
+COPY be/dist/be/src/server.js.map /usr/share/nginx/html/dist/be/src/server.js.map
+
+COPY fe/dist/fe/*.js.map /usr/share/nginx/html/dist/fe/

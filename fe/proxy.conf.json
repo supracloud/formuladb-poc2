@@ -9,5 +9,18 @@
         "target": "http://localhost:3000",
         "secure": false,
         "logLevel": "debug"
+    },
+    "/formuladb/assets/*": {
+        "target": "http://127.0.0.1:9000/",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/formuladb": ""
+        }
+    },
+    "/assets/*": {
+        "target": "http://127.0.0.1:9000/",
+        "secure": false,
+        "logLevel": "debug"
     }
 }
