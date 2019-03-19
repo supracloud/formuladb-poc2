@@ -8,11 +8,12 @@ import { Inject } from '@angular/core';
 import { PLATFORM_ID } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import * as appState from '../../state/app.state';
+import * as appState from '../state/app.state';
 import { Observable } from 'rxjs';
 import { Page } from '@core/domain/uimetadata/page';
 import { merge, map, filter, tap } from 'rxjs/operators';
 import { isNotNullOrUndefined } from '@core/elvis';
+import { FormEditingService } from '../components/form-editing.service';
 
 export class LayoutComponent implements OnInit, AfterViewInit, OnChanges, DoCheck {
   selectedEntity$: Observable<appState.Entity | undefined>;
@@ -21,25 +22,27 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnChanges, DoChec
   page$: Observable<Page>;
   layout: Page['layout'] | null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, protected store: Store<appState.EntityState>, 
-  private changeDetectorRef: ChangeDetectorRef) {
-    this.selectedEntity$ = this.store.select(appState.getSelectedEntityState);
-    this.themeColorPalette$ = this.store.select(appState.getThemeColorPalette);
-    this.sidebarImageUrl$ = this.store.select(appState.getSidebarImageUrl);
-    this.page$ = this.store.select(appState.getFormState).pipe(
-      merge(this.store.select(appState.getTableState)),
-      merge(this.store.select(appState.getTableState)),
+  constructor(public formEditingService: FormEditingService, private changeDetectorRef: ChangeDetectorRef) {
+    this.selectedEntity$ = this.formEditingService.frmdbStreams.entity$;
+    this.themeColorPalette$ = this.formEditingService.frmdbStreams.themeColorPalette$;
+    this.sidebarImageUrl$ = this.formEditingService.frmdbStreams.sidebarImageUrl$;
+    this.page$ = this.formEditingService.frmdbStreams.form$.pipe(
+      tap(x => console.debug(x)),
+      merge(this.formEditingService.frmdbStreams.table$),
+      tap(x => console.debug(x)),
       filter(isNotNullOrUndefined),
+      tap(x => console.debug(x)),
       map(x => x.page),
+      tap(x => console.debug(x)),
       filter(isNotNullOrUndefined),
-      tap(x => {
-        console.log(x);
-        this.layout = x.layout;
-      })
+      tap(x => console.debug(x)),
+      tap(x => this.layout = x.layout)
     );
   }
 
   ngOnInit() {
+    console.debug(this.layout);
+    //TODO: cleanup, perhaps use this: https://github.com/NetanelBasal/ngx-take-until-destroy
     this.page$.subscribe(x => {
       try {
         this.changeDetectorRef.detectChanges();
@@ -51,6 +54,7 @@ export class LayoutComponent implements OnInit, AfterViewInit, OnChanges, DoChec
 
   
   ngAfterViewInit(): void {
+    console.debug(this.layout);
   }
 
   ngDoCheck(): void {

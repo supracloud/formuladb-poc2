@@ -1,18 +1,18 @@
 <div *ngIf="layout == null" class="header-wrapper frmdb-layout">
     <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
-        <div class="filter" [attr.data-color]="(themeColorPalette$ | async) || 'default'"></div>
+        <div class="filter" [attr.data-color]="themeColorPalette || 'default'"></div>
     </div>
 </div>
 
 <!----------------------------------------------------------------------------------------------------------------
     landing 
 ------------------------------------------------------------------------------------------------------------------>
-<frmdb-ly-cover *ngIf="layout == 'frmdb-ly-cover'"></frmdb-ly-cover>
+<frmdb-ly-cover *ngIf="layout == 'frmdb-ly-cover'" [page]="page$|async"></frmdb-ly-cover>
 
 <!-----------------------------------------------------------------------------------------------------------------
     dashboard 
 ------------------------------------------------------------------------------------------------------------------>
-<frmdb-ly-admin *ngIf="layout == 'frmdb-ly-admin'"></frmdb-ly-admin>
+<frmdb-ly-admin *ngIf="layout == 'frmdb-ly-admin'" [page]="page$|async"></frmdb-ly-admin>
 
 <!-----------------------------------------------------------------------------------------------------------------
     footer 

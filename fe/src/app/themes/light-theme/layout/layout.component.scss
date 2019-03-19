@@ -28,6 +28,18 @@
     frmdb-ly-cover {
         @import "./frmdb-ly-cover";
 
+        frmdb-form frmdb-header {
+            text-align: center;
+            color: #fff;
+            display: block;
+            margin-top: 30vh;
+            height: 90vh;
+        }
+    
+        frmdb-form frmdb-card_container frmdb-card {
+            flex: 1 0 45% !important ;
+        }
+
         .navbar > .container {
             display: block;
         }

@@ -11,8 +11,6 @@ import * as http from "http";
 
 //FIXME: use this only for dev/test environment
 import { loadTestData } from "@core/test/load_test_data";
-import { MockMetadata } from "@core/test/mocks/mock-metadata";
-import { FrmdbEngine } from "@core/frmdb_engine";
 import { getFrmdbEngine, getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { App } from "@core/domain/app";
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";

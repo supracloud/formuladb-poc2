@@ -5,7 +5,7 @@
 
 import {
     Component, OnInit, AfterViewInit, HostListener, ViewChild, EventEmitter, Output,
-    ChangeDetectionStrategy, Directive, OnDestroy, OnChanges, ChangeDetectorRef
+    ChangeDetectionStrategy, Directive, OnDestroy, OnChanges, ChangeDetectorRef, HostBinding
 } from '@angular/core';
 
 import { Location } from '@angular/common';
@@ -49,15 +49,19 @@ export class FrmdbFormGroup extends FormGroup {
     selector: 'frmdb-form',
     templateUrl: './form.component.html',
     styleUrls: ['./form.component.scss'],
+    host: {
+        "novalidate": "",
+    }
     // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormComponent implements OnInit, OnDestroy, OnChanges {
+    // @HostBinding("formGroup")
     public theFormGroup: FormGroup;
     public changes: any[] = [];
 
     public formData: DataObj | null;
     public form: Form | null;
-    private rdonly: boolean;
+    public rdonly: boolean;
     protected subscriptions: Subscription[] = [];
 
     constructor(

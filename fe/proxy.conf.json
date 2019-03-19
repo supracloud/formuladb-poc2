@@ -10,7 +10,7 @@
         "secure": false,
         "logLevel": "debug"
     },
-    "/formuladb/assets/*": {
+    "REM/formuladb/assets/*": {
         "target": "http://127.0.0.1:9000/",
         "secure": false,
         "logLevel": "debug",
@@ -18,7 +18,7 @@
             "^/formuladb": ""
         }
     },
-    "/assets/*": {
+    "REM/assets/*": {
         "target": "http://127.0.0.1:9000/",
         "secure": false,
         "logLevel": "debug"

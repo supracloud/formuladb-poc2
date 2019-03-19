@@ -1,20 +1,20 @@
 <div class="wrapper">
-    <div class="sidebar" [attr.data-image]="sidebarImageUrl$ | async" [attr.data-color]="(themeColorPalette$ | async) || 'default'">
+    <div class="sidebar" [attr.data-image]="sidebarImageUrl" [attr.data-color]="themeColorPalette || 'default'">
         <!--
             Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
             
             Tip 2: you can also add an image using data-image tag
         -->
-        <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + (sidebarImageUrl$ | async) + ')'">
+        <div class="sidebar-wrapper" [style.background-image]="'background-image: url(' + sidebarImageUrl + ')'">
             <div class="logo">
                 <a href="/" class="simple-text">
-                    <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
-                    <strong style="font-size: 32px">{{(page$|async)?.brandName}}</strong>
+                    <img [src]="page?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                    <strong style="font-size: 32px">{{page?.brandName}}</strong>
                 </a>
             </div>
             <frmdb-v_nav class="nav"></frmdb-v_nav>
         </div>
-        <div class="sidebar-background" [style.background-image]="'url(' + (sidebarImageUrl$ | async) + ')' "></div>
+        <div class="sidebar-background" [style.background-image]="'url(' + sidebarImageUrl + ')' "></div>
     </div>
     <div class="main-panel">
         <!-- Navbar -->

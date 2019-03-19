@@ -4,7 +4,9 @@
  */
 
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnChanges, DoCheck } from '@angular/core';
-import { LayoutComponent as LayoutComponentBase } from '@fe/app/layouts/layout/layout.component';
+import { LayoutComponent as LayoutComponentBase } from '@fe/app/layouts/layout.component';
+
+import { FormEditingService } from '@fe/app/components/form-editing.service';
 
 @Component({
   selector: 'frmdb-layout',
@@ -13,17 +15,21 @@ import { LayoutComponent as LayoutComponentBase } from '@fe/app/layouts/layout/l
 })
 export class LayoutComponent extends LayoutComponentBase implements OnInit, AfterViewInit, OnChanges, DoCheck {
 
-
-  ngOnInit() {
-    console.debug("init");
+  constructor(formEditingService: FormEditingService, changeDetectorRef: ChangeDetectorRef) {
+    super(formEditingService, changeDetectorRef);
   }
 
+  ngOnInit() {
+    super.ngOnInit();
+    console.debug("ngOnInit", this.layout);
+  }
   
   ngAfterViewInit(): void {
+    console.debug("ngAfterViewInit", this.layout);
   }
 
   ngDoCheck(): void {
-    console.debug("ngDoCheck");
+    console.debug("ngDoCheck", this.layout);
   }
   ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
     console.debug("ngOnChanges", changes);

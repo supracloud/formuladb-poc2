@@ -30,6 +30,8 @@ export class FrmdbStreamsService {
   public form$: Observable<Form>;
   public formData$: Observable<DataObj>;
   public autoCompleteState$: Observable<appState.AutoCompleteState>;
+  public themeColorPalette$: Observable<string>;
+  public sidebarImageUrl$: Observable<string>;
 
   public userEvents$: Subject<FrmdbUserEvent> = new ReplaySubject();
   public serverEvents$: Subject<FrmdbServerEvent> = new Subject();
@@ -44,6 +46,8 @@ export class FrmdbStreamsService {
     this.formulaHighlightedColumns$ = this.store.select(appState.getTableHighlightColumns);
     this.entity$ = this.store.select(appState.getTableEntityState).pipe(filter<Entity>(x => x != null));
     this.autoCompleteState$ = this.store.select(appState.getAutoCompleteState).pipe(filter<appState.AutoCompleteState>(x => x != null));
+    this.themeColorPalette$ = this.store.select(appState.getThemeColorPalette);
+    this.sidebarImageUrl$ = this.store.select(appState.getSidebarImageUrl);
 
     //TODO: remove these and use only ngrx Actions
     this.userEvents$.subscribe(userEvent => {

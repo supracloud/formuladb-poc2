@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { BaseLayoutComponent } from '@fe/app/layouts/base-layout.component';
 
 @Component({
   selector: 'frmdb-ly-cover',
@@ -8,9 +9,7 @@ import { Component, OnInit } from '@angular/core';
     '[class.frmdb-layout]': 'true',
   }
 })
-export class FrmdbLyCoverComponent implements OnInit {
-
-  constructor() { }
+export class FrmdbLyCoverComponent extends BaseLayoutComponent implements OnInit {
 
   ngOnInit() {
   }

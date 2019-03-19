@@ -12,10 +12,10 @@
                 <a href="/">
                     <div class="logo-container">
                         <div class="logo">
-                            <img [src]="(page$|async)?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
+                            <img [src]="page?.logoUrl ||'/assets/formuladb256.png'" width="145" height="42" />
                         </div>
                         <div class="brand">
-                            {{(page$|async)?.brandName}}
+                            {{page?.brandName}}
                         </div>
                     </div>
                 </a>
@@ -27,7 +27,7 @@
     </nav>
 
     <div class="header" style="background-image: url('/assets/img/banner/full-screen-image-3.jpg');">
-        <div class="filter" [attr.data-color]="(themeColorPalette$ | async) || 'default'"></div>
+        <div class="filter" [attr.data-color]="themeColorPalette || 'default'"></div>
         <div class="frmdb-content">
             <router-outlet></router-outlet>
         </div>

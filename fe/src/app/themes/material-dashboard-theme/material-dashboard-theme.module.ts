@@ -12,7 +12,6 @@ import { MaterialDashboardThemeRoutingModule } from './material-dashboard-theme-
 import { LayoutComponent } from './layout/layout.component';
 import { CrosscuttingModule } from '../../crosscutting/crosscutting.module';
 import { DevModeCommonModule } from 'src/app/dev-mode-common/dev-mode-common.module';
-import { ComponentsModule } from '@fe/app/components/components.module';
 
 @NgModule({
   imports: [
@@ -21,7 +20,6 @@ import { ComponentsModule } from '@fe/app/components/components.module';
     NgbModule,
     CrosscuttingModule,
     DevModeCommonModule,
-    ComponentsModule,
   ],
   declarations: [
     LayoutComponent,

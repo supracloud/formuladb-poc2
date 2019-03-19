@@ -36,6 +36,7 @@ import { ButtonComponent } from './button/button.component';
 import { ButtonGroupComponent } from './button_group/button_group.component';
 import { CardContainerComponent } from './card_prototype/card_container.component';
 import { FormGroup } from '@angular/forms';
+import { HeaderComponent } from './header/header.component';
 
 export type PageItemComponents =
     | FormComponent
@@ -52,6 +53,7 @@ export type PageItemComponents =
     | CalendarComponent
     | CardComponent
     | JumbotronComponent
+    | HeaderComponent
     | DropdownComponent
     | FormDataGridComponent
     | FormEnumComponent
@@ -90,7 +92,7 @@ export class PageItemsDirective {
 
     @Input() set frmdbPageItems(childElements: NodeElement[]) {
         console.debug(this.fullpath, childElements);
-        if (null == this.fullpath) return;
+        if (null == this.fullpath || null == childElements) return;
         let componentFactory: ComponentFactory<PageItemComponents>;
         let viewContainerRef = this.viewContainerRef;
         viewContainerRef.clear();
@@ -150,6 +152,9 @@ export class PageItemsDirective {
                     break;
                 case NodeType.jumbotron:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(JumbotronComponent)
+                    break;
+                case NodeType.header:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(HeaderComponent)
                     break;
                 case NodeType.list:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(ListComponent)
@@ -214,5 +219,5 @@ export class PageItemsDirective {
         childPath = getChildPath(childEl);
         if (childPath) formPath.push(childPath);
         return formPath.join('.');
-    }    
+    }
 }
