@@ -198,7 +198,7 @@ export class AppEffects {
     }
 
     private async processRouterUrlChange(url: string) {
-        let { appName, themeId, entityName, id } = appState.parseUrl(url);
+        let { appName, entityName, id } = appState.parseUrl(url);
 
         if (appName === this.currentUrl.appName && entityName === this.currentUrl.entityName && id === this.currentUrl.id) return;
 
@@ -235,7 +235,7 @@ export class AppEffects {
         }
 
         if (appNameChanged && !entityName) {
-            this.router.navigate([appName + '/' + (themeId || '0') + '/Home/Home~~Home']);
+            this.router.navigate([appName + '/Home/Home~~Home']);
         }
     }
 

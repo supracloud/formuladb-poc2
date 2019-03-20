@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from '@fe/app/state/theme.state';
 import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
 
-import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy, faNewspaper } from '@fortawesome/free-solid-svg-icons';
+import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy, faNewspaper, faObjectGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../../effects/formula-editor.service';
@@ -15,26 +15,29 @@ import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
 @Component({
   selector: 'frmdb-dev-mode-opts',
   templateUrl: './dev-mode-opts.component.html',
-  styleUrls: ['./dev-mode-opts.component.scss']
+  styleUrls: ['./dev-mode-opts.component.scss'],
 })
 export class DevModeOptsComponent implements OnInit, OnDestroy {
   gridsterOptions: GridsterConfig;
   gridsterPage: Array<GridsterItem>;
+
+  editIcon = faEdit;
+  edit2Icon = faEdit;
+  applyChangesIcon = faCheckCircle;
+  discardChangesIcon = faTimesCircle;
+
+  layoutIcon = faObjectGroup;
+  dataIcon = faTable;
+  styleIcon = faPalette;
+  changeAppIcon = faSignOutAlt;
 
   tableIcon = faTable;
   columnIcon = faColumns;
   addIcon = faPlusCircle;
   delIcon = faMinusCircle;
   devModeIcon = faTools;
-  changeAppIcon = faImages;
-  settingsIcon = faCogs;
   pageEditorIcon = faNewspaper;
   collorPaletteIcon = faPalette;
-
-  editIcon = faPenFancy;
-  edit2Icon = faPenFancy;
-  applyChangesIcon = faCheckCircle;
-  discardChangesIcon = faTimesCircle;
 
   undefinedPropTypeIcon = faQuestion;
   numberPropTypeIcon = faSortNumericDown;

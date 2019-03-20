@@ -101,7 +101,10 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                         console.error(ex);
                     }
                     console.debug(form, this.form, this.formData);
-                    this.changeDetectorRef.detectChanges();
+                    if (!this.changeDetectorRef['destroyed']) {
+                        console.debug(form, this.form, this.formData);
+                        this.changeDetectorRef.detectChanges();
+                    }
                 }));
     }
     ngOnChanges() {

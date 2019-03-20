@@ -8,11 +8,11 @@ import { LayoutComponent as LayoutComponentBase } from '@fe/app/layouts/layout.c
 
 import { FormEditingService } from '@fe/app/components/form-editing.service';
 
-@Component({
-  selector: 'frmdb-layout',
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
-})
+// @Component({
+//   selector: 'frmdb-layout',
+//   templateUrl: './layout.component.html',
+//   styleUrls: ['./layout.component.scss']
+// })
 export class LayoutComponent extends LayoutComponentBase implements OnInit, AfterViewInit, OnChanges, DoCheck {
 
   constructor(formEditingService: FormEditingService, changeDetectorRef: ChangeDetectorRef) {

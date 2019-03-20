@@ -95,7 +95,9 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
             this.popupOpened = this.currentSearchTxt != null
                 && (autoCompleteState.currentControl.propertyName === this.inputElement.propertyName);
             console.debug(this.parentObjId, (this.control as any).name, autoCompleteState, this.popupOpened, this.currentSearchTxt);
-            this.changeDetectorRef.detectChanges();
+            if (!this.changeDetectorRef['destroyed']) {
+                this.changeDetectorRef.detectChanges();
+            }
         }));
 
         this.subscriptions.push(this.text$.pipe(

@@ -2,10 +2,11 @@
 interface FullPage {
     brandName: string;
     logoUrl: string;
-    layout: "frmdb-ly-admin" | "frmdb-ly-cover" | "frmdb-ly-large-header" 
-         | "frmdb-ly-slim-header" | "frmdb-ly-slim-carousel" | "frmdb-ly-split" 
-         | "frmdb-ly-fpattern" | "frmdb-ly-zpattern" | "frmdb-ly-mosaic" 
-         | "frmdb-ly-magazine" | "frmdb-ly-container-free";
+    layout: "frmdb-ly-admin" | "frmdb-ly-cover" | "frmdb-ly-landing" 
+        | "frmdb-ly-lading-slim-header" | "frmdb-ly-carousel" | "frmdb-ly-split" 
+        | "frmdb-ly-fpattern" | "frmdb-ly-zpattern" | "frmdb-ly-mosaic" 
+        | "frmdb-ly-magazine" | "frmdb-ly-container-free" 
+        | "frmdb-ly-horizontal-symetry" | "frmdb-ly-radial-symetry" | "frmdb-ly-asymetry" ;
     tbd1: string;
     tbd2: string;
     tbd3: string;
@@ -14,5 +15,7 @@ interface FullPage {
     tbd6: string;
     tbd7: string;
 }
+
+export type Layouts = FullPage['layout'];
 
 export type Page = Partial<FullPage>;

@@ -1,33 +1,7 @@
-:host {
-    z-index: 2000;
-    position: fixed;
-    display: block;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    border-bottom: 1px solid grey;
-}
+:host ::ng-deep {
+    @import "~bootstrap/scss/bootstrap.scss";
 
-:host #frmdb-dev-mode-top-bar .fa-sm {
-    height: 22px;
+    .navbar.fixed-top {
+        z-index: 1031;
+    }
 }
-
-#frmdb-dev-mode-menu {
-    position: fixed;
-    top: 40px;
-    right: 2px;
-}
-
-#frmdb-dev-mode-page-editor {
-    position: fixed;
-    top: -1000px;//workaround for angular-gridster2 not initializing correctly for display: none
-    right: 2px;
-    display: block;
-}
-
-.add-del-things {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-

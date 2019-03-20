@@ -4,6 +4,26 @@ body {
     line-height: 1rem!important;
 }
 
+frmdb-layout,
+frmdb-ly-cover,
+frmdb-ly-lading-header,
+frmdb-ly-lading-slim-header,
+frmdb-ly-carousel,
+frmdb-ly-split,
+frmdb-ly-fpattern,
+frmdb-ly-zpattern,
+frmdb-ly-mosaic,
+frmdb-ly-magazine,
+frmdb-ly-container-free,
+frmdb-form, 
+frmdb-header, 
+frmdb-form_text, 
+drop-handle,
+frmdb-card_container, 
+frmdb-card {
+    display: block;
+}
+
 .form-input-feedback-valid {
     color: green;
 }

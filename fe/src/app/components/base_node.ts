@@ -66,7 +66,9 @@ export class BaseNodeComponent {
                         getChildrenPrefix(childTableEntityName, parentUUID)));
                 this.formEditingService.updateFormGroup(this.formgrp, newChildFormGroup, this.nodel.childNodes, false);
                 formArray.push(newChildFormGroup);
-                this.formEditingService.formChangeDetectorRef.detectChanges();
+                if (!this.formEditingService.formChangeDetectorRef['destroyed']) {
+                    this.formEditingService.formChangeDetectorRef.detectChanges();
+                }
             } else console.warn("Expected form array but found", formArray, this.nodel, this.formgrp, this.fullpath);
         } else console.warn("Cannot add children to a scalar node element", this.nodel, this.formgrp, this.fullpath);
     }

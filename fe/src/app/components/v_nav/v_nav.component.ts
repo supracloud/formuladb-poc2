@@ -18,7 +18,7 @@ import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'frmdb-v_nav',
+  selector: 'nav[frmdb-v_nav]',
   templateUrl: './v_nav.component.html',
   styleUrls: ['./v_nav.component.scss']
 })
@@ -37,7 +37,9 @@ export class VNavComponent implements OnInit {
       combineLatest(this.frmdbStreams.entity$.pipe(startWith(Home)))
     ).subscribe(([entities, selectedEntity]) => {
       this.navigationItemsTree = entites2navItems(entities, selectedEntity);
-      this.changeDetectorRef.detectChanges();
+      if (!this.changeDetectorRef['destroyed']) {
+        this.changeDetectorRef.detectChanges();
+      }
     });
   }
 
