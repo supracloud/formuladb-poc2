@@ -11,6 +11,7 @@ import { Card } from '@core/domain/uimetadata/form';
   styleUrls: ['./card.component.scss'],
   host: {
     '[class.card]': 'true',
+    '[class.mt-2]': 'true',
   }
 })
 export class CardComponent extends BaseNodeComponent implements OnInit {

@@ -8,7 +8,7 @@ import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'frmdb-h_nav',
+    selector: 'nav[frmdb-h_nav]',
     templateUrl: './h_nav.component.html',
     styleUrls: ['./h_nav.component.scss'],
 })

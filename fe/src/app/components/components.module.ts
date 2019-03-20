@@ -61,6 +61,8 @@ import { FormInputComponent } from '@fe/app/components/form_input/form_input.com
 import { HeaderComponent } from '@fe/app/components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { FrmdbLyAdminComponent } from './frmdb-ly-admin/frmdb-ly-admin.component';
+import { FrmdbLyCoverComponent } from './frmdb-ly-cover/frmdb-ly-cover.component';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 
 @NgModule({
     imports: [
@@ -119,7 +121,8 @@ import { FrmdbLyAdminComponent } from './frmdb-ly-admin/frmdb-ly-admin.component
         VNavSegmentComponent,
         CardContainerComponent,
         FormInputComponent,
-        FrmdbLyAdminComponent,        
+        FrmdbLyAdminComponent,
+        FrmdbLyCoverComponent,        
     ],
     entryComponents: [
         FormComponent,
@@ -198,6 +201,8 @@ import { FrmdbLyAdminComponent } from './frmdb-ly-admin/frmdb-ly-admin.component
         VNavSegmentComponent,
         CardContainerComponent,
         FormInputComponent,
+        FrmdbLyAdminComponent,
+        FrmdbLyCoverComponent,
     ],
     providers: [
         FormEditingService,
