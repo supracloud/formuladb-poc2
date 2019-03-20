@@ -60,7 +60,7 @@ import { CardContainerComponent } from '@fe/app/components/card_prototype/card_c
 import { FormInputComponent } from '@fe/app/components/form_input/form_input.component';
 import { HeaderComponent } from '@fe/app/components/header/header.component';
 import { RouterModule } from '@angular/router';
-
+import { FrmdbLyAdminComponent } from './frmdb-ly-admin/frmdb-ly-admin.component';
 
 @NgModule({
     imports: [
@@ -118,7 +118,8 @@ import { RouterModule } from '@angular/router';
         VNavComponent,
         VNavSegmentComponent,
         CardContainerComponent,
-        FormInputComponent,        
+        FormInputComponent,
+        FrmdbLyAdminComponent,        
     ],
     entryComponents: [
         FormComponent,
