@@ -11,4 +11,40 @@
         width: auto;
         display: inline-block;
     }
+
+    .frmdb-themes {
+        display: inline-grid;
+        grid-template-columns: auto;
+    }
+    .frmdb-look-filters {
+        display: inline-grid;
+        grid-template-columns: auto auto;
+    }
+    .frmdb-layout-filters {
+        display: inline-grid;
+        grid-template-columns: auto auto;
+    }
+
+    @media (min-width: 450px) {
+        .frmdb-themes {
+            grid-template-columns: auto auto;
+        }
+        .frmdb-look-filters {
+            grid-template-columns: auto auto auto;
+        }
+        .frmdb-layout-filters {
+            grid-template-columns: auto auto auto;
+        }
+    }
+    @media (min-width: 1200px) {
+        .frmdb-themes {
+            grid-template-columns: auto auto auto;
+        }
+        .frmdb-look-filters {
+            grid-template-columns: auto auto auto auto;
+        }
+        .frmdb-layout-filters {
+            grid-template-columns: auto auto auto auto;
+        }
+    }
 }
