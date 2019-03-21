@@ -12,6 +12,7 @@ import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
 import { FrmdbLook, FrmdbLy } from '@core/domain/uimetadata/page';
+import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 
 @Component({
     selector: 'frmdb-dev-mode-opts',
@@ -48,8 +49,6 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     childTablePropTypeIcon = faTable;
     referenceToPropTypeIcon = faShareSquare;
 
-    keepPrefixSubject$: Subject<{ input: HTMLInputElement, prefix: string }> = new Subject();
-
     developerMode$: Observable<boolean>;
     editorOn$: Observable<boolean>;
     displayedProperty$: Observable<EntityProperty | undefined>;
@@ -69,7 +68,9 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     looks: {[x: string]: boolean} = {};
     layouts: {[x: string]: boolean} = {};
 
-    constructor(protected store: Store<appState.AppState>, private router: Router, public formulaEditorService: FormulaEditorService) {
+    constructor(protected store: Store<appState.AppState>, private router: Router, 
+        public formulaEditorService: FormulaEditorService,
+        private i18npipe: I18nPipe) {
         this.developerMode$ = this.store.select(appState.getDeveloperMode);
         this.editorOn$ = this.store.select(appState.getEditorOn);
 
@@ -108,15 +109,6 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        this.subscriptions.push(this.keepPrefixSubject$.pipe(
-            debounceTime(250),
-        ).subscribe(({ input, prefix }) => {
-            if (input.value.indexOf(prefix) !== 0) {
-                input.value = input.value.replace(/^\s+/, '').replace(new RegExp('^[' + prefix[0] + ']+'), '');
-                input.value = prefix + input.value;
-            }
-        }));
-
     }
 
     ngOnDestroy(): void {
@@ -124,7 +116,9 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     allThemes = [
-        {name: "Basic", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/basic.png", css: ""},
+        {name: "Basic", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/basic-admin.png", css: ""},
+        {name: "Basic", layout: "frmdb-ly-cover", look: "Stylish", img: "assets/img/themes/basic-cover.png", css: ""},
+        {name: "Basic", layout: "frmdb-ly-horizontal-symetry", look: "Approachable", img: "assets/img/themes/basic-horizontal-symetry.png", css: ""},
         {name: "Light", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/light.jpg", css: ""},
         {name: "Material", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/material.jpg", css: "/assets/material-dashboard-theme/material-dashboard.min.css"},
         {name: "NowUI", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/nowui.jpg", css: ""},
@@ -246,8 +240,12 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         return ret;
     }
 
-    keepPrefix(input: HTMLInputElement, prefix: string) {
-        this.keepPrefixSubject$.next({ input, prefix });
+    get addTableLabel() {
+        return this.currentEntity ? this.i18npipe.transform('add child table to', this.currentEntity._id) : this.i18npipe.transform('add table');
+    }
+
+    get addColumnLabel() {
+        return this.currentEntity ? this.i18npipe.transform('add column to', this.currentEntity._id) : this.i18npipe.transform('add column');
     }
 
     goToAppList() {

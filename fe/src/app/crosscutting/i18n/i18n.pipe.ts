@@ -11,8 +11,15 @@ export class I18nPipe implements PipeTransform {
     constructor(private store: Store<fromI18n.I18nState>) {
         this.store.select(fromI18n.getDictionary).subscribe(d => this.dictionary = d);
     }
-    transform(value: string): string {
+    transform(value: string, param?: string, param2?: string): string {
+        let p = param || '';
+        let p2 = param2 || '';
         let transalation = this.dictionary ? this.dictionary[value] : null;
+        if (transalation) {
+            transalation = transalation.replace('$PARAM$', this.dictionary[p] || p)
+                .replace('$PARAM2$', this.dictionary[p2] || p2)
+            ;
+        }
         // console.error("I18N " + transalation, value, this.dictionary);
         return transalation || value;
     }

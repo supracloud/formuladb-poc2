@@ -20,7 +20,7 @@ const defaultDict_en = {
     "frmdb-ly-mosaic" : "Mosaic",
     "frmdb-ly-magazine": "Magazine",
     "frmdb-ly-container-free" : "Container Free",
-    "frmdb-ly-horizontal-symetry": "Horizontal symetry",
+    "frmdb-ly-horizontal-symetry": "Horizontal Symetry",
     "frmdb-ly-radial-symetry": "Radial symetry",
     "frmdb-ly-asymetry": "Asymetry",
 
@@ -35,8 +35,12 @@ const defaultDict_en = {
     'HighTech': "High Tech",
     'Powerful': "Powerful",
 
-    'add table': "Add Table",
-    'add column': "Add Column",
+    'add table': "Add table",
+    'add child table to': "Add child table to $PARAM$",
+    'add column to': "Add column to $PARAM$",
+    'add column': "Add column",
+    'del table': "Delete table",
+    'del column': "Delete column",
 
     Financial: 'Financial',
     General:'General',

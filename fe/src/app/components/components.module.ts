@@ -63,6 +63,7 @@ import { RouterModule } from '@angular/router';
 import { FrmdbLyAdminComponent } from './frmdb-ly-admin/frmdb-ly-admin.component';
 import { FrmdbLyCoverComponent } from './frmdb-ly-cover/frmdb-ly-cover.component';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
+import { FrmdbLyHorizontalSymetryComponent } from './frmdb-ly-horizontal-symetry/frmdb-ly-horizontal-symetry.component';
 
 @NgModule({
     imports: [
@@ -122,7 +123,8 @@ import { FrmdbStreamsService } from '../state/frmdb-streams.service';
         CardContainerComponent,
         FormInputComponent,
         FrmdbLyAdminComponent,
-        FrmdbLyCoverComponent,        
+        FrmdbLyCoverComponent,
+        FrmdbLyHorizontalSymetryComponent,        
     ],
     entryComponents: [
         FormComponent,
@@ -203,6 +205,7 @@ import { FrmdbStreamsService } from '../state/frmdb-streams.service';
         FormInputComponent,
         FrmdbLyAdminComponent,
         FrmdbLyCoverComponent,
+        FrmdbLyHorizontalSymetryComponent,
     ],
     providers: [
         FormEditingService,
