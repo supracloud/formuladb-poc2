@@ -7,7 +7,7 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Entity, Pn } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { Page } from './page';
+import { Page, FrmdbLy } from './page';
 
 export class TableColumn implements SubObj {
     _id: string;
@@ -37,7 +37,7 @@ export function getDefaultTable(entity: Entity): Table {
     const table = new Table();
     table.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
     table.page = {
-        layout: "frmdb-ly-admin",
+        layout: FrmdbLy.admin,
     }
     addIdsToTable(table);
     return table;

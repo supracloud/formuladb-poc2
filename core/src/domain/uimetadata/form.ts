@@ -7,7 +7,7 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { Page } from './page';
+import { Page, FrmdbLy } from './page';
 
 export enum NodeType {
     form = "form",
@@ -136,7 +136,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
     form.page = {
-        layout: "frmdb-ly-admin",
+        layout: FrmdbLy.admin,
     }
 
     setFormElementChildren(form, entity, entitiesMap);

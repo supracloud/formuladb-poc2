@@ -4,4 +4,9 @@
     .navbar.fixed-top {
         z-index: 1031;
     }
+
+    .frmdb-theme-dropdown .dropdown-item {
+        width: auto;
+        display: inline-block;
+    }
 }

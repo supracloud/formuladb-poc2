@@ -11,17 +11,53 @@
  *     https://thenextweb.com/dd/2017/11/08/psychology-web-design/
  */
 
+export enum FrmdbLy {
+    spreadsheet = "frmdb-ly-spreadsheet",
+    admin = "frmdb-ly-admin",
+    cover = "frmdb-ly-cover",
+    landing = "frmdb-ly-landing" ,
+    carousel = "frmdb-ly-carousel",
+    split = "frmdb-ly-split" ,
+    fpattern = "frmdb-ly-fpattern",
+    zpattern = "frmdb-ly-zpattern",
+    mosaic = "frmdb-ly-mosaic" ,
+    magazine = "frmdb-ly-magazine",
+    container_free = "frmdb-ly-container-free" ,
+    horizontal_symetry = "frmdb-ly-horizontal-symetry",
+    radial_symetry = "frmdb-ly-radial-symetry",
+    asymetry = "frmdb-ly-asymetry",
+}
+export enum FrmdbLook {
+    Friendly = 'Friendly',
+    Approachable = 'Approachable',
+    Professional = 'Professional',
+    Experienced = 'Experienced',//similar to Professional
+    Upscale = 'Upscale',//similar to Exclusive ?
+    Exclusive = 'Exclusive',
+    CuttingEdge = 'CuttingEdge',//similar to HighTech, but means new and shiny (and still with potential issues)
+    Stylish = 'Stylish',
+    HighTech = 'HighTech',
+    Powerful = 'Powerful',
+}
+
+export const BrandCharacteristics = [
+    {left: "Conservative", right: "Progressive"},
+    {left: "Warm", right: "Cold"},
+    {left: "Fun", right: "Serious"},
+    {left: "Casual", right: "Formal"},
+    {left: "Energetic", right: "LaidBack"},
+    {left: "Trendy", right: "Classic"},
+    {left: "Spontaneous", right: "Orderly"},
+    {left: "Solitary", right: "Popular"},
+    {left: "Unique", right: "Familiar"},
+    {left: "Young", right: "Old"},
+];
+
 interface FullPage {
     brandName: string;
     logoUrl: string;
-    layout: "frmdb-ly-admin" | "frmdb-ly-cover" | "frmdb-ly-landing" 
-        | "frmdb-ly-slim-header" | "frmdb-ly-carousel" | "frmdb-ly-split" 
-        | "frmdb-ly-fpattern" | "frmdb-ly-zpattern" | "frmdb-ly-mosaic" 
-        | "frmdb-ly-magazine" | "frmdb-ly-container-free" 
-        | "frmdb-ly-horizontal-symetry" | "frmdb-ly-radial-symetry" | "frmdb-ly-asymetry";
-    look: 'Friendly' | 'Approachable' | 'Professional'
-        | 'Experienced' | 'Upscale' | 'Exclusive'
-        | 'Cutting edge' | 'Stylish' | 'High-tech' | 'Powerful',
+    layout: FrmdbLy;
+    look: FrmdbLook,
     tbd1: string;
     tbd2: string;
     tbd3: string;

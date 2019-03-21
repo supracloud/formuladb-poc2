@@ -11,6 +11,7 @@ import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
+import { FrmdbLook, FrmdbLy } from '@core/domain/uimetadata/page';
 
 @Component({
     selector: 'frmdb-dev-mode-opts',
@@ -65,6 +66,9 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     currentProperty: EntityProperty | undefined;
     protected subscriptions: Subscription[] = [];
 
+    looks: {[x: string]: boolean} = {};
+    layouts: {[x: string]: boolean} = {};
+
     constructor(protected store: Store<appState.AppState>, private router: Router, public formulaEditorService: FormulaEditorService) {
         this.developerMode$ = this.store.select(appState.getDeveloperMode);
         this.editorOn$ = this.store.select(appState.getEditorOn);
@@ -86,7 +90,17 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
         this.sub(store.select(appState.getTableEntityState).subscribe(e => this.currentEntity = e));
         this.sub(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.currentProperty = prop));
+
+        for (let look of Object.values(FrmdbLook)) {
+            this.looks[look] = false;
+        }
+        
+        for (let layout of Object.values(FrmdbLy)) {
+            this.layouts[layout] = false;
+        }
     }
+
+    objectKeys = Object.keys;
 
     sub(s: Subscription) {
         this.subscriptions.push(s);
@@ -107,6 +121,24 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())
+    }
+
+    allThemes = [
+        {name: "Basic", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/basic.png", css: ""},
+        {name: "Light", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/light.jpg", css: ""},
+        {name: "Material", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/material.jpg", css: "/assets/material-dashboard-theme/material-dashboard.min.css"},
+        {name: "NowUI", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/nowui.jpg", css: ""},
+    ];
+
+    get themes() {
+        let areLooksFilered = Object.values(this.looks).filter(x => x === true).length > 0;
+        let areLayoutsFilered = Object.values(this.layouts).filter(x => x === true).length > 0;
+        return this.allThemes.filter(theme => {
+            let ret = true;
+            if (areLooksFilered && !this.looks[theme.look]) ret = false;
+            if (areLayoutsFilered && !this.layouts[theme.layout]) ret = false;
+            return ret;
+        });
     }
 
     switchTheme(cssURL: string) {
