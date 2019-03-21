@@ -13,242 +13,240 @@ import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
 
 @Component({
-  selector: 'frmdb-dev-mode-opts',
-  templateUrl: './dev-mode-opts.component.html',
-  styleUrls: ['./dev-mode-opts.component.scss'],
+    selector: 'frmdb-dev-mode-opts',
+    templateUrl: './dev-mode-opts.component.html',
+    styleUrls: ['./dev-mode-opts.component.scss'],
 })
 export class DevModeOptsComponent implements OnInit, OnDestroy {
-  gridsterOptions: GridsterConfig;
-  gridsterPage: Array<GridsterItem>;
+    gridsterOptions: GridsterConfig;
+    gridsterPage: Array<GridsterItem>;
 
-  editIcon = faEdit;
-  edit2Icon = faEdit;
-  applyChangesIcon = faCheckCircle;
-  discardChangesIcon = faTimesCircle;
+    editIcon = faEdit;
+    edit2Icon = faEdit;
+    applyChangesIcon = faCheckCircle;
+    discardChangesIcon = faTimesCircle;
 
-  layoutIcon = faObjectGroup;
-  dataIcon = faTable;
-  styleIcon = faPalette;
-  changeAppIcon = faSignOutAlt;
+    layoutIcon = faObjectGroup;
+    dataIcon = faTable;
+    styleIcon = faPalette;
+    changeAppIcon = faSignOutAlt;
 
-  tableIcon = faTable;
-  columnIcon = faColumns;
-  addIcon = faPlusCircle;
-  delIcon = faMinusCircle;
-  devModeIcon = faTools;
-  pageEditorIcon = faNewspaper;
-  collorPaletteIcon = faPalette;
+    tableIcon = faTable;
+    columnIcon = faColumns;
+    addIcon = faPlusCircle;
+    delIcon = faMinusCircle;
+    devModeIcon = faTools;
+    pageEditorIcon = faNewspaper;
+    collorPaletteIcon = faPalette;
 
-  undefinedPropTypeIcon = faQuestion;
-  numberPropTypeIcon = faSortNumericDown;
-  stringPropTypeIcon = faTextHeight;
-  datePropTypeIcon = faCalendarAlt;
-  durationPropTypeIcon = faHourglassHalf;
-  childTablePropTypeIcon = faTable;
-  referenceToPropTypeIcon = faShareSquare;
-  
-  keepPrefixSubject$: Subject<{ input: HTMLInputElement, prefix: string }> = new Subject();
+    undefinedPropTypeIcon = faQuestion;
+    numberPropTypeIcon = faSortNumericDown;
+    stringPropTypeIcon = faTextHeight;
+    datePropTypeIcon = faCalendarAlt;
+    durationPropTypeIcon = faHourglassHalf;
+    childTablePropTypeIcon = faTable;
+    referenceToPropTypeIcon = faShareSquare;
 
-  developerMode$: Observable<boolean>;
-  editorOn$: Observable<boolean>;
-  displayedProperty$: Observable<EntityProperty | undefined>;
+    keepPrefixSubject$: Subject<{ input: HTMLInputElement, prefix: string }> = new Subject();
 
-  clickPropertyType$: Subject<string> = new Subject();
-  clickStartEdit$: Subject<void> = new Subject();
-  clickCancelEdits$: Subject<void> = new Subject();
-  clickSaveEdits$: Subject<void> = new Subject();
+    developerMode$: Observable<boolean>;
+    editorOn$: Observable<boolean>;
+    displayedProperty$: Observable<EntityProperty | undefined>;
 
-  menuOpened: boolean = false;
-  pageEditorOpened: boolean = false;
+    clickPropertyType$: Subject<string> = new Subject();
+    clickStartEdit$: Subject<void> = new Subject();
+    clickCancelEdits$: Subject<void> = new Subject();
+    clickSaveEdits$: Subject<void> = new Subject();
 
-  currentEntity: appState.Entity | undefined;
-  currentProperty: EntityProperty | undefined;
-  protected subscriptions: Subscription[] = [];
+    menuOpened: boolean = false;
+    pageEditorOpened: boolean = false;
 
-  constructor(protected store: Store<appState.AppState>, private router: Router, public formulaEditorService: FormulaEditorService) {
-    this.developerMode$ = this.store.select(appState.getDeveloperMode);
-    this.editorOn$ = this.store.select(appState.getEditorOn);
+    currentEntity: appState.Entity | undefined;
+    currentProperty: EntityProperty | undefined;
+    protected subscriptions: Subscription[] = [];
 
-    this.sub(this.clickStartEdit$.subscribe(() => this.formulaEditorService.toggleFormulaEditor()));
-    this.clickCancelEdits$.subscribe(() => this.discardChanges());
+    constructor(protected store: Store<appState.AppState>, private router: Router, public formulaEditorService: FormulaEditorService) {
+        this.developerMode$ = this.store.select(appState.getDeveloperMode);
+        this.editorOn$ = this.store.select(appState.getEditorOn);
 
-    this.displayedProperty$ = combineLatest(this.formulaEditorService.currentProperty$, this.formulaEditorService.editedProperty$).pipe(
-      map(([currentProperty, editedProperty]) => editedProperty ? editedProperty : currentProperty)
-    );
+        this.sub(this.clickStartEdit$.subscribe(() => this.formulaEditorService.toggleFormulaEditor()));
+        this.clickCancelEdits$.subscribe(() => this.discardChanges());
 
-    let saveStream$ = this.clickSaveEdits$.pipe(
-      withLatestFrom(combineLatest(this.formulaEditorService.editorExprHasErrors$, this.formulaEditorService.editedEntity$, this.formulaEditorService.editedProperty$)),
-      map(([x, [editorExprHasErrors, editedEntity, editedProperty]]) => ({ editorExprHasErrors, editedEntity, editedProperty }))
-    );
-    this.sub(saveStream$.subscribe(({editorExprHasErrors, editedEntity, editedProperty}) => {
-      if (editedEntity) this.applyChanges(editorExprHasErrors, editedEntity, editedProperty);
-    }));
+        this.displayedProperty$ = combineLatest(this.formulaEditorService.currentProperty$, this.formulaEditorService.editedProperty$).pipe(
+            map(([currentProperty, editedProperty]) => editedProperty ? editedProperty : currentProperty)
+        );
 
-    this.sub(store.select(appState.getTableEntityState).subscribe(e => this.currentEntity = e));
-    this.sub(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.currentProperty = prop));
-  }
+        let saveStream$ = this.clickSaveEdits$.pipe(
+            withLatestFrom(combineLatest(this.formulaEditorService.editorExprHasErrors$, this.formulaEditorService.editedEntity$, this.formulaEditorService.editedProperty$)),
+            map(([x, [editorExprHasErrors, editedEntity, editedProperty]]) => ({ editorExprHasErrors, editedEntity, editedProperty }))
+        );
+        this.sub(saveStream$.subscribe(({ editorExprHasErrors, editedEntity, editedProperty }) => {
+            if (editedEntity) this.applyChanges(editorExprHasErrors, editedEntity, editedProperty);
+        }));
 
-  sub(s: Subscription) {
-    this.subscriptions.push(s);
-  }
-
-  ngOnInit() {
-
-    this.subscriptions.push(this.keepPrefixSubject$.pipe(
-      debounceTime(250),
-    ).subscribe(({ input, prefix }) => {
-      if (input.value.indexOf(prefix) !== 0) {
-        input.value = input.value.replace(/^\s+/, '').replace(new RegExp('^[' + prefix[0] + ']+'), '');
-        input.value = prefix + input.value;
-      }
-    }));
-
-    this.gridsterOptions = {
-      gridType: "fixed",
-      fixedColWidth: 100,
-      fixedRowHeight: 40,
-      margin: 2,
-      minCols: 6,
-      maxCols: 6,
-      minRows: 2,
-      maxRows: 6,
-      defaultItemCols: 2,
-      defaultItemRows: 1,
-      maxItemCols: 6,
-      maxItemRows: 1,
-      minItemCols: 1,
-      minItemRows: 1,
-      draggable: {
-        enabled: true,
-      },
-      resizable: {
-        enabled: true,
-      },
-      swap: true,
-      pushItems: true,
-      disablePushOnDrag: false,
-      disablePushOnResize: false,
-      pushDirections: {north: true, east: true, south: true, west: true},
-      pushResizeItems: false,
-      displayGrid: DisplayGrid.Always,
-      disableWindowResize: false,
-      disableWarnings: false,
-      scrollToNewItems: false
-    };
-
-    this.gridsterPage = [
-      {cols: 2, rows: 1, y: 0, x: 0},
-      {cols: 1, rows: 1, y: 0, x: 2},
-      {cols: 2, rows: 1, y: 1, x: 0},
-      {cols: 1, rows: 1, y: 1, x: 2},
-    ];
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe())
-  }
-
-  switchTheme(themeIdx: number) {
-    this.router.navigate([this.router.url.replace(/\/\d+\/?/, '/' + themeIdx + '/')]);
-  }
-
-  switchThemeColorPalette(color: string) {
-    this.store.dispatch(new ThemeColorPaletteChangedAction(color));
-  }
-
-  switchLanguage(language: string) {
-
-  }
-
-  switchSideBarImage(url: string) {
-    this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
-  }
-
-
-  stopPropagation($event) {
-    $event.stopPropagation();
-    $event.preventDefault();
-  }
-
-  addColumnToCurrentTable(input: HTMLInputElement) {
-    if (!this.currentEntity) {
-      alert("Please select an entity for adding a column");//TODO: add i18n
-      return;
+        this.sub(store.select(appState.getTableEntityState).subscribe(e => this.currentEntity = e));
+        this.sub(this.store.select(appState.getSelectedPropertyState).subscribe(prop => this.currentProperty = prop));
     }
-    let newPropName = input.value.replace(/^\./, '');
-    this.store.dispatch(new appState.ServerEventSetProperty(this.currentEntity, {
-      name: newPropName,
-      propType_: Pn.STRING,
-    }));
-  }
 
-  addTable(input: HTMLInputElement) {
-    let newTableName = input.value;
-    let prefix = this.currentEntity ? this.currentEntity._id : '';
-    if (prefix === '') newTableName = newTableName.replace(/^__/, '');
-    this.store.dispatch(new appState.ServerEventNewEntity(prefix + newTableName));
-  }
-
-  delTable() {
-    if (!this.currentEntity) {
-      alert("Select entity to be deleted");
-      return;
+    sub(s: Subscription) {
+        this.subscriptions.push(s);
     }
-    if (confirm("Are you sure you want to delete table " + this.currentEntity._id + " ?")) {
-      this.store.dispatch(new appState.ServerEventDeleteEntity(this.currentEntity._id));
+
+    ngOnInit() {
+
+        this.subscriptions.push(this.keepPrefixSubject$.pipe(
+            debounceTime(250),
+        ).subscribe(({ input, prefix }) => {
+            if (input.value.indexOf(prefix) !== 0) {
+                input.value = input.value.replace(/^\s+/, '').replace(new RegExp('^[' + prefix[0] + ']+'), '');
+                input.value = prefix + input.value;
+            }
+        }));
+
     }
-  }
 
-  delColumnFromCurrentTable() {
-    if (!this.currentEntity || !this.currentProperty) {
-      alert("Please select a column to be deleted");//TODO: add i18n
-      return;
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe())
     }
-    if (confirm("Are you sure you want to delete " + this.currentProperty.name + " column of " + this.currentEntity._id + " ?")) {
-      this.store.dispatch(new appState.ServerEventDeleteProperty(this.currentEntity, this.currentProperty.name));
+
+    switchTheme(cssURL: string) {
+        if (this.themeStylesheetElement) {
+            this.getDocHead().removeChild(this.themeStylesheetElement);
+            this.themeStylesheetElement = null;
+        }
+        if (cssURL) {
+            this.loadExternalStyles(cssURL);
+        }
     }
-  }
 
-  getNameOfAddedTableOrColumn(tableNameInput: HTMLInputElement, colNameInput: HTMLInputElement) {
-    let ret = this.currentEntity ? this.currentEntity._id : '';
-    if (tableNameInput.value) ret += '__' + tableNameInput.value;
-    if (colNameInput.value) ret += '.' + tableNameInput.value;
-    return ret;
-  }
-
-  keepPrefix(input: HTMLInputElement, prefix: string) {
-    this.keepPrefixSubject$.next({ input, prefix });
-  }
-
-  goToAppList() {
-    this.router.navigate(['/']);
-  }
-
-  startEditing() {
-    this.formulaEditorService.toggleFormulaEditor();
-  }
-
-  modifyPropertyType(type: string) {
-    if (!this.formulaEditorService.formulaState.selectedProperty) return;
-    if (this.formulaEditorService.formulaState.selectedProperty.propType_ != type && !this.formulaEditorService.formulaState.editorOn) {
-      this.formulaEditorService.toggleFormulaEditor();
+    switchThemeColorPalette(color: string) {
+        this.store.dispatch(new ThemeColorPaletteChangedAction(color));
     }
-  }
 
+    switchLanguage(language: string) {
 
-  applyChanges(editorExprHasErrors: boolean, editedEntity: Entity, editedProperty: EntityProperty) {
-    if (!editorExprHasErrors) {
-      if (confirm("Please confirm, apply modifications to DB ?")) {
-        this.store.dispatch(new appState.ServerEventSetProperty(editedEntity, editedProperty));
+    }
+
+    switchSideBarImage(url: string) {
+        this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
+    }
+
+    private getDocHead(): HTMLHeadElement {
+        if (document && document.head != null) {
+            return document.head;
+        } else throw new Error("document.head null");
+    }
+
+    private getDocBody(): HTMLElement {
+        if (document && document.body != null) {
+            return document.body;
+        } else throw new Error("document.head null");
+    }
+
+    private themeStylesheetElement: HTMLLinkElement | null;
+    private loadExternalStyles(styleUrl: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.themeStylesheetElement = document.createElement('link');
+            this.themeStylesheetElement.rel = 'stylesheet';
+            this.themeStylesheetElement.href = styleUrl;
+            this.themeStylesheetElement.onload = resolve;
+            this.getDocHead().appendChild(this.themeStylesheetElement);
+        });
+    }
+
+    private loadExternalScript(scriptUrl: string): Promise<any> {
+        return new Promise(resolve => {
+            const scriptElement = document.createElement('script');
+            scriptElement.src = scriptUrl;
+            scriptElement.onload = resolve;
+            this.getDocBody().appendChild(scriptElement);
+        });
+    }
+
+    stopPropagation($event) {
+        $event.stopPropagation();
+        $event.preventDefault();
+    }
+
+    addColumnToCurrentTable(input: HTMLInputElement) {
+        if (!this.currentEntity) {
+            alert("Please select an entity for adding a column");//TODO: add i18n
+            return;
+        }
+        let newPropName = input.value.replace(/^\./, '');
+        this.store.dispatch(new appState.ServerEventSetProperty(this.currentEntity, {
+            name: newPropName,
+            propType_: Pn.STRING,
+        }));
+    }
+
+    addTable(input: HTMLInputElement) {
+        let newTableName = input.value;
+        let prefix = this.currentEntity ? this.currentEntity._id : '';
+        if (prefix === '') newTableName = newTableName.replace(/^__/, '');
+        this.store.dispatch(new appState.ServerEventNewEntity(prefix + newTableName));
+    }
+
+    delTable() {
+        if (!this.currentEntity) {
+            alert("Select entity to be deleted");
+            return;
+        }
+        if (confirm("Are you sure you want to delete table " + this.currentEntity._id + " ?")) {
+            this.store.dispatch(new appState.ServerEventDeleteEntity(this.currentEntity._id));
+        }
+    }
+
+    delColumnFromCurrentTable() {
+        if (!this.currentEntity || !this.currentProperty) {
+            alert("Please select a column to be deleted");//TODO: add i18n
+            return;
+        }
+        if (confirm("Are you sure you want to delete " + this.currentProperty.name + " column of " + this.currentEntity._id + " ?")) {
+            this.store.dispatch(new appState.ServerEventDeleteProperty(this.currentEntity, this.currentProperty.name));
+        }
+    }
+
+    getNameOfAddedTableOrColumn(tableNameInput: HTMLInputElement, colNameInput: HTMLInputElement) {
+        let ret = this.currentEntity ? this.currentEntity._id : '';
+        if (tableNameInput.value) ret += '__' + tableNameInput.value;
+        if (colNameInput.value) ret += '.' + tableNameInput.value;
+        return ret;
+    }
+
+    keepPrefix(input: HTMLInputElement, prefix: string) {
+        this.keepPrefixSubject$.next({ input, prefix });
+    }
+
+    goToAppList() {
+        this.router.navigate(['/']);
+    }
+
+    startEditing() {
         this.formulaEditorService.toggleFormulaEditor();
-      }
-    } else {
-      alert("Expression has errors, cannot apply on DB");
     }
-  }
-  discardChanges() {
-    if (confirm("Please confirm, dicard changes ?")) {
-      this.formulaEditorService.toggleFormulaEditor();
+
+    modifyPropertyType(type: string) {
+        if (!this.formulaEditorService.formulaState.selectedProperty) return;
+        if (this.formulaEditorService.formulaState.selectedProperty.propType_ != type && !this.formulaEditorService.formulaState.editorOn) {
+            this.formulaEditorService.toggleFormulaEditor();
+        }
     }
-  }  
+
+
+    applyChanges(editorExprHasErrors: boolean, editedEntity: Entity, editedProperty: EntityProperty) {
+        if (!editorExprHasErrors) {
+            if (confirm("Please confirm, apply modifications to DB ?")) {
+                this.store.dispatch(new appState.ServerEventSetProperty(editedEntity, editedProperty));
+                this.formulaEditorService.toggleFormulaEditor();
+            }
+        } else {
+            alert("Expression has errors, cannot apply on DB");
+        }
+    }
+    discardChanges() {
+        if (confirm("Please confirm, dicard changes ?")) {
+            this.formulaEditorService.toggleFormulaEditor();
+        }
+    }
 }
