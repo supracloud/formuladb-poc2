@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top shadow-sm" *ngIf="developerMode$ | async">
+<nav class="navbar navbar-expand-md navbar-dark bg-danger fixed-top shadow-lg" *ngIf="developerMode$ | async">
     <!-- <a class="navbar-brand" href="#">Navbar</a> -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
         aria-expanded="false" aria-label="Toggle navigation">
@@ -81,7 +81,7 @@
                     </div>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" *ngFor="let theme of themes" href="javascript:void(0)">
-                        <img height="100" width="125" [src]="theme.img" (click)="switchTheme(theme.css)" />
+                        <img height="150" width="200" [src]="theme.img" (click)="switchTheme(theme.css)" />
                         <br />{{theme.name}} {{theme.layout | i18n}} {{theme.look | i18n}}
                     </a>
                 </div>

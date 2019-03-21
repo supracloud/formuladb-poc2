@@ -15,15 +15,16 @@ import { FrmdbStreamsService } from './state/frmdb-streams.service';
   styleUrls: ['./app.component.scss'],
   host: {
     '[style.padding]': 'bodyPadding',
+    '[class.frmdb-dev-mode-on]': 'devMode',
   }
 })
 export class AppComponent {
   title = 'frmdb';
-  public devMode$: Observable<boolean>;
+  public devMode: boolean;
   bodyPadding = "0 0 49px 0";
   constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
-    this.devMode$ = this.store.select(appState.getDeveloperMode);
-    this.devMode$.subscribe(devMode => {
+    this.store.select(appState.getDeveloperMode).subscribe(devMode => {
+      this.devMode = devMode;
       if (devMode) {
         this.bodyPadding = "49px 0 0 0";
       } else {

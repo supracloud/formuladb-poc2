@@ -24,6 +24,10 @@ frmdb-card {
     display: block;
 }
 
+.frmdb-dev-mode-on .frmdb-fixed-top-0 {
+    top: 49px !important;
+}
+
 .form-input-feedback-valid {
     color: green;
 }
