@@ -1,12 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ComponentFactoryResolver, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
+import { Card } from '@core/domain/uimetadata/form';
+
+@Component({
+  selector: 'frmdb-card',
+  templateUrl: './card.component.html',
+  styleUrls: ['./card.component.scss'],
+  host: {
+    '[class.card]': 'true',
+    '[class.mt-2]': 'true',
+    '[class.frmdb-card-horizontal]': 'card.horizontal'
+  }
+})
 export class CardComponent extends BaseNodeComponent implements OnInit {
   theme: { [key: string]: string };
+  card: Card;
 
-  constructor(formEditingService: FormEditingService, private sanitizer: DomSanitizer) {
+  constructor(formEditingService: FormEditingService, componentFactoryResolver: ComponentFactoryResolver, private sanitizer: DomSanitizer) {
     super(formEditingService);
   }
 
@@ -15,7 +28,9 @@ export class CardComponent extends BaseNodeComponent implements OnInit {
       Object.keys(this.theme).map(k => k + ':' + this.theme[k]).join(';')
     );
   }
+  
   ngOnInit() {
+    this.card = this.nodel as Card;
+    console.log(this.nodel, this.formgrp);
   }
-
 }

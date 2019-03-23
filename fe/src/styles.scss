@@ -4,6 +4,34 @@ body {
     line-height: 1rem!important;
 }
 
+frmdb-layout,
+frmdb-ly_cover,
+frmdb-ly_lading_header,
+frmdb-ly_lading_slim-header,
+frmdb-ly_carousel,
+frmdb-ly_split,
+frmdb-ly_fpattern,
+frmdb-ly_zpattern,
+frmdb-ly_mosaic,
+frmdb-ly_magazine,
+frmdb-ly_container_free,
+frmdb-form, 
+frmdb-header, 
+frmdb-form_text, 
+drop-handle,
+frmdb-card_container, 
+frmdb-card {
+    display: block;
+}
+
+.vw-75 { width: 75vw !important; }
+.vw-50 { width: 50vw !important; }
+.vw-25 { width: 25vw !important; }
+
+.frmdb-dev-mode-on .frmdb-fixed-top-0 {
+    top: 49px !important;
+}
+
 .form-input-feedback-valid {
     color: green;
 }

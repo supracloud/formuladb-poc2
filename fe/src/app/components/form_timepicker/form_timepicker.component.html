@@ -1,2 +1,2 @@
 <label [for]="inputElement.propertyName">{{inputElement.propertyName}}</label>
-<ngb-timepicker [id]="parentFormPath" [formControl]="topLevelFormGroup.get(parentFormPath)" *ngIf="hasControl(parentFormPath)"></ngb-timepicker>
+<ngb-timepicker [id]="fullpath" [formControl]="formgrp.get(fullpath)" *ngIf="hasControl(fullpath)"></ngb-timepicker>

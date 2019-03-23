@@ -3,31 +3,55 @@
  * License TBD
  */
 
+import { getKeyValueStoreFactory, getFrmdbEngineStore } from "@storage/key_value_store_impl_selector";
+
+import { mockMetadata } from "./main_demo.flow";
+import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
 import { MockData } from "./mocks/mock-data";
+import { FrmdbEngineStore } from "@core/frmdb_engine_store";
+import { FrmdbEngine } from "@core/frmdb_engine";
+import { KeyValueObj } from "@core/domain/key_value_obj";
+import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
 import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { LargeSalesReport_Form } from "./mocks/reports-ui-metadata";
-import { FrmdbEngine } from "../frmdb_engine";
-import { Schema } from "@core/domain/metadata/entity";
-import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
+import { HomePage_Form, HomePage_Table } from "@core/default_pages/website-ui-metadata";
 
-export async function loadTestData(schema: Schema): Promise<FrmdbEngine> {
+function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
+    return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
+}
+
+export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
     try {
-        let frmdbEngine = await getFrmdbEngine(schema);
-        await frmdbEngine.frmdbEngineStore.kvsFactory.clearAll();
-        await frmdbEngine.putSchema(schema);
-        await frmdbEngine.init(true);
-
-        let mockData = new MockData(schema.entities);
-        await frmdbEngine.frmdbEngineStore.putBulk(mockData.getAll());
-        for (let obj of mockData.getAll()) {
-            await frmdbEngine.updateViewsForObj(null, obj);
+        let kvsFactory = await getKeyValueStoreFactory();
+        await kvsFactory.clearAll();
+        for (let app of mockMetadata.apps) {
+            await kvsFactory.putApp(app);
         }
 
-        [Forms__ServiceForm_Form_, LargeSalesReport_Form].forEach(async (formUiMeta) => {
-            await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
-        });
+        let uiMetaLoaded = false;
+        for (let schema of mockMetadata.schemas) {
+            await kvsFactory.putSchema(schema);
+            let mockData = new MockData(schema.entities);
+            let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
+            let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
+            for (let entityId of Object.keys(schema.entities)) {
+                for (let obj of mockData.getAllForPath(entityId)) {
+                    await frmdbEngineStore.putDataObj(obj);
+                    // await putObj(frmdbEngine, obj);
+                }
+            }
+            if (!uiMetaLoaded) {
+                [Forms__ServiceForm_Form_, LargeSalesReport_Form, HomePage_Form].forEach(async (formUiMeta) => {
+                    await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
+                });
+                [HomePage_Table].forEach(async (tbl) => {
+                    await frmdbEngine.frmdbEngineStore.putTable(tbl);
+                });
+                uiMetaLoaded = true;
+            }
+        }
 
-        return frmdbEngine;
+        return kvsFactory;
     } catch (err) {
         console.error(err);
         throw err;

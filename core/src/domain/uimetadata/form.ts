@@ -7,16 +7,15 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { CircularJSON } from "@core/json-stringify";
+import { FrmdbLy, Page } from './page';
 
 export enum NodeType {
-    form_grid = "form_grid",
-    h_layout = "h_layout",
-    v_layout = "v_layout",
+    form = "form",
+    grid_row = "grid_row",
+    grid_col = "grid_col",
     form_input = "form_input",
     form_autocomplete = "form_autocomplete",
     form_tabs = "form_tabs",
-    form_tab = "form_tab",
     form_table = "form_table",
     form_data_grid = "form_data_grid",
     form_chart = "form_chart",
@@ -26,6 +25,8 @@ export enum NodeType {
     form_enum = "form_enum",
     form_state = "form_state",
     card = "card",
+    jumbotron = "jumbotron",
+    header = "header",
     list = "list",
     gallery = "gallery",
     calendar = "calendar",
@@ -40,14 +41,18 @@ export enum NodeType {
     h_filters = "h_filters",
     button = "button",
     button_group = "button_group",
-    card_container = "card_container"
+    card_container = "card_container",
+    ly_admin = "ly_admin",
+    ly_cover = "ly_cover",
 }
 
 
 export class Form implements KeyValueObj {
     _id: string;
     _rev?: string;
-    grid: FormGrid;
+    readonly nodeType = NodeType.form;
+    page: Partial<Page>;
+    childNodes?: NodeElement[];
     stateGraph?: EntityStateGraph;
     isEditable?: boolean;
 }
@@ -56,13 +61,10 @@ export function isForm(param: KeyValueObj): param is Form {
 }
 
 export type NodeElement =
-    | FormGrid
-    | FormGridRow
-    | FormGridCol
+    | Form
     | FormInput
     | FormAutocomplete
     | FormTabs
-    | FormTab
     | FormTable
     | FormDatepicker
     | FormTimepicker
@@ -72,13 +74,15 @@ export type NodeElement =
     | ButtonGroup
     | Calendar
     | Card
+    | Jumbotron
+    | Header
     | Dropdown
     | FormDataGrid
     | FormEnum
     | FormState
     | Gallery
     | HFilters
-    | HLayout
+    | GridRow
     | HNav
     | Icon
     | Image
@@ -86,31 +90,26 @@ export type NodeElement =
     | Media
     | Timeline
     | VFilters
-    | VLayout
+    | GridCol
     | VNav
     | CardContainer
     ;
 
-export type NodeElementWithChildren = FormGrid | FormGridRow | FormGridCol | FormTable | FormTabs | FormTab;
+export type NodeElementWithChildren = Form | GridRow | GridCol | FormTable | FormTabs | CardContainer;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
-    return nodeEl.nodeType === NodeType.form_grid
-        || nodeEl.nodeType === NodeType.h_layout
-        || nodeEl.nodeType === NodeType.v_layout
+    return isForm(nodeEl)
+        || nodeEl.nodeType === NodeType.grid_row
+        || nodeEl.nodeType === NodeType.grid_col
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
-        || nodeEl.nodeType === NodeType.form_tab
         ;
-}
-
-export type EntityNodeElement = FormAutocomplete;
-export function isEntityNodeElement(nodeEl: NodeElement): nodeEl is EntityNodeElement {
-    return nodeEl.nodeType === NodeType.form_autocomplete;
 }
 
 export type TableNodeElement = FormTable | FormTabs | FormChart;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
     return nodeEl.nodeType === NodeType.form_table
-        || nodeEl.nodeType === NodeType.form_tabs;
+        || nodeEl.nodeType === NodeType.form_tabs
+        || nodeEl.nodeType === NodeType.card_container;
 }
 
 export type PropertyNodeElement = FormInput | FormTimepicker | FormDatepicker;
@@ -119,6 +118,7 @@ export function isPropertyNodeElement(nodeEl: NodeElement): nodeEl is PropertyNo
         || nodeEl.nodeType === NodeType.form_timepicker
         || nodeEl.nodeType === NodeType.form_datepicker
         || nodeEl.nodeType === NodeType.form_text
+        || nodeEl.nodeType === NodeType.form_autocomplete
     ;
 }
 
@@ -128,101 +128,10 @@ export function isKnownNodeElement(nodeType: string) {
 
 export function getChildPath(nodeEl: NodeElement) {
     if (isPropertyNodeElement(nodeEl)) return nodeEl.propertyName;
-    if (isEntityNodeElement(nodeEl)) return nodeEl.refEntityName;
     if (isTableNodeElement(nodeEl)) return nodeEl.tableName;
     return '';
-    // return 'n/a-childPath-for' + nodeEl.nodeType;
 }
 
-export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>): Form {
-    let form = new Form();
-    form._id = 'Form_:' + entity._id;
-    form.isEditable = entity.isEditable;
-    form.stateGraph = entity.stateGraph;
-    form.grid = new FormGrid();
-
-    setFormElementChildren(form.grid, entity, entitiesMap);
-    console.log('form:', form);
-    addIdsToForm(form.grid);
-    return form;
-}
-
-export function setFormElementChildren(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
-    parentFormEl.childNodes = _.values(entity.props).map(pn => {
-        let child;
-        if (pn.propType_ === Pn.CHILD_TABLE) {
-            child = pn.isLargeTable ? new FormTable() : new FormTabs();
-            child.tableName = pn.name;
-            if (pn.referencedEntityName) setFormElementChildren(child, entitiesMap[pn.referencedEntityName]!, entitiesMap);
-        } else if (pn.propType_ === Pn.REFERENCE_TO) {
-            child = new FormAutocomplete();
-            if (parentFormEl.nodeType === NodeType.form_table) {
-                child.noLabel = true;
-            }
-            child.refEntityName = pn.referencedEntityName;
-            child.refPropertyName = pn.referencedPropertyName;
-            child.propertyName = pn.name;
-        } else if (pn.propType_ === Pn.DATETIME) {
-            child = new FormDatepicker();
-            child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-        } else if (pn.propType_ === Pn.LINK) {
-            child = new FormText();
-            child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-            child.representation = "link";
-        } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
-            child = new FormText();
-            child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-            child.representation = "_id";
-        } else {
-            child = new FormInput();
-            if (parentFormEl.nodeType === NodeType.form_table) {
-                child.noLabel = true;
-            }
-            child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-        }
-
-        let ret;
-        if (parentFormEl.nodeType === NodeType.form_table) {
-            ret = child;
-        } else {
-            ret = new FormGridRow();
-            ret.childNodes = [child];
-        }
-
-        return ret;
-    });
-}
-
-function getFormElementForStaticPages(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
-
-}
-
-export function addIdsToForm(input: NodeElement): void {
-    if (!input._id) { input._id = generateUUID(); }
-    if (isNodeElementWithChildren(input) && input.childNodes && input.childNodes.length > 0) {
-        input.childNodes.forEach(c => addIdsToForm(c));
-    }
-}
-
-export class FormGrid implements SubObj {
-    readonly nodeType = NodeType.form_grid;
-    _id: string;
-    childNodes?: NodeElement[];
-}
-export class FormGridRow implements SubObj {
-    readonly nodeType = NodeType.h_layout;
-    _id: string;
-    childNodes?: NodeElement[];
-}
-export class FormGridCol implements SubObj {
-    readonly nodeType = NodeType.v_layout;
-    _id: string;
-    childNodes?: NodeElement[];
-}
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
     _id: string;
@@ -233,8 +142,10 @@ export class FormInput implements SubObj {
 export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
+    noLabel?: boolean;
     propertyName: string;
-    representation: "string" | "heading" | "paragraph" | "caption" | "jumbo" | "link" | "_id";
+    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
+    representation: "title" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id" | "string";
     uppercase?: boolean;
 }
 export class FormAutocomplete implements SubObj {
@@ -260,11 +171,6 @@ export class FormCard implements SubObj {
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export class FormTab implements SubObj {
-    readonly nodeType = NodeType.form_tab;
-    _id: string;
-    childNodes?: NodeElement[];
-}
 export class FormTable implements SubObj {
     readonly nodeType = NodeType.form_table;
     _id: string;
@@ -272,12 +178,20 @@ export class FormTable implements SubObj {
     childNodes?: NodeElement[];
 }
 
-export class CardContainer implements SubObj {
-    readonly nodeType = NodeType.card_container;
+class CardBase implements SubObj {
     _id: string;
+    horizontal: boolean;
+    childNodes?: NodeElement[];
+}
+
+export class Card extends CardBase implements SubObj {
+    readonly nodeType = NodeType.card;
+}
+
+export class CardContainer extends CardBase implements SubObj {
+    readonly nodeType = NodeType.card_container;
     tableName: string;
-    tabNameFormPath: string;
-    cardNode: NodeElement;
+    style?: "group" | "deck" | "masonry";
 }
 
 export class FormDataGrid implements SubObj {
@@ -314,6 +228,7 @@ export class FormChart implements SubObj {
 export class Button implements SubObj {
     readonly nodeType = NodeType.button;
     _id: string;
+    propertyName: string;
 }
 
 
@@ -329,9 +244,16 @@ export class Calendar implements SubObj {
 }
 
 
-export class Card implements SubObj {
-    readonly nodeType = NodeType.card;
+export class Header implements SubObj {
+    readonly nodeType = NodeType.header;
     _id: string;
+    childNodes?: NodeElement[];
+}
+
+export class Jumbotron implements SubObj {
+    readonly nodeType = NodeType.jumbotron;
+    _id: string;
+    childNodes?: NodeElement[];
 }
 
 
@@ -365,8 +287,8 @@ export class HFilters implements SubObj {
 }
 
 
-export class HLayout implements SubObj {
-    readonly nodeType = NodeType.h_layout;
+export class GridRow implements SubObj {
+    readonly nodeType = NodeType.grid_row;
     _id: string;
     childNodes: NodeElement[];
 }
@@ -414,8 +336,8 @@ export class VFilters implements SubObj {
 }
 
 
-export class VLayout implements SubObj {
-    readonly nodeType = NodeType.v_layout;
+export class GridCol implements SubObj {
+    readonly nodeType = NodeType.grid_col;
     _id: string;
     childNodes?: NodeElement[];
 }

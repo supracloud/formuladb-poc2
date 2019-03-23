@@ -41,7 +41,7 @@ export class FormEditingService {
   }
 
 
-  public makeFormControl(topLevelFormGroup: FormGroup, name: string, formState?: any): FormControl {
+  public makeFormControl(formgrp: FormGroup, name: string, formState?: any): FormControl {
     const ctrl = new FrmdbFormControl(name, formState, {
       updateOn: 'blur',
       validators: [
@@ -59,7 +59,7 @@ export class FormEditingService {
     )
       .forEach(valueChange => {
         console.log('CHANGEEEEES:', j2str(valueChange),
-          topLevelFormGroup.errors, topLevelFormGroup.dirty, topLevelFormGroup.status);
+          formgrp.errors, formgrp.dirty, formgrp.status);
         const obj = this.getParentObj(ctrl);
         if (obj == null) {
           console.warn('Cound not find parent for ' + valueChange);
@@ -73,17 +73,17 @@ export class FormEditingService {
   }
 
 
-  public updateFormGroup(topLevelFormGroup: FormGroup, parentFormGroup: FormGroup, nodeElements: NodeElement[], formReadOnly: boolean) {
+  public updateFormGroup(formgrp: FormGroup, parentFormGroup: FormGroup, nodeElements: NodeElement[], rdonly: boolean) {
     let newParent = parentFormGroup;
-    let disabled = formReadOnly;
+    let disabled = rdonly;
     for (const nodeEl of nodeElements) {
 
-      if (nodeEl.nodeType === NodeType.form_grid
-        || nodeEl.nodeType === NodeType.h_layout
-        || nodeEl.nodeType === NodeType.v_layout
-        || nodeEl.nodeType === NodeType.form_tab) {
+      if (nodeEl.nodeType === NodeType.form
+        || nodeEl.nodeType === NodeType.grid_row
+        || nodeEl.nodeType === NodeType.grid_col
+      ) {
         const childNodes = nodeEl.childNodes || [];
-        this.updateFormGroup(topLevelFormGroup, newParent, childNodes, formReadOnly);
+        this.updateFormGroup(formgrp, newParent, childNodes, rdonly);
       } else if (nodeEl.nodeType === NodeType.form_input
         || nodeEl.nodeType === NodeType.form_autocomplete
         || nodeEl.nodeType === NodeType.form_datepicker
@@ -94,7 +94,7 @@ export class FormEditingService {
         if (nodeEl.propertyName === '_id' || nodeEl.propertyName === '_rev') { disabled = true; }
         if (parentFormGroup.get(nodeEl.propertyName) == null) {
           parentFormGroup.setControl(nodeEl.propertyName,
-            this.makeFormControl(topLevelFormGroup, nodeEl.propertyName, { value: undefined, disabled: formReadOnly }));
+            this.makeFormControl(formgrp, nodeEl.propertyName, { value: undefined, disabled: rdonly }));
         }
       } else if (nodeEl.nodeType === NodeType.form_tabs || nodeEl.nodeType === NodeType.form_table) {
         const childNodes = nodeEl.childNodes || [];
@@ -102,11 +102,11 @@ export class FormEditingService {
         if (arrayCtrl == null) {
           newParent = new FrmdbFormGroup(nodeEl.tableName);
           parentFormGroup.setControl(nodeEl.tableName, new FormArray([newParent]));
-          this.updateFormGroup(topLevelFormGroup, newParent, childNodes, formReadOnly);
+          this.updateFormGroup(formgrp, newParent, childNodes, rdonly);
         } else if (arrayCtrl instanceof FormArray) {
           for (const arrayElemCtrl of arrayCtrl.controls) {
             if (arrayElemCtrl instanceof FormGroup) {
-              this.updateFormGroup(topLevelFormGroup, arrayElemCtrl, childNodes, formReadOnly);
+              this.updateFormGroup(formgrp, arrayElemCtrl, childNodes, rdonly);
             } else { throw new Error('Expected FormGroup as part of FormArray but found ' + j2str(arrayElemCtrl)); }
           }
         } else {

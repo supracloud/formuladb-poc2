@@ -29,7 +29,7 @@ export interface FormState {
     form: Form | null;
     formData: DataObj | null;
     eventFromBackend: events.MwzEvents | null;
-    formReadOnly: boolean;
+    rdonly: boolean;
     dragged: NodeElement | null;
     autoCompleteState: AutoCompleteState | null;
 }
@@ -38,7 +38,7 @@ export const formInitialState: FormState = {
     form: null,
     formData: null,
     eventFromBackend: null,
-    formReadOnly: true,
+    rdonly: true,
     dragged: null,
     autoCompleteState: null,
 };
@@ -181,19 +181,19 @@ export function formReducer(state = formInitialState, action: FormActions): Form
 
         case formUserActions.FormDropActionN:
             if (state.form && state.dragged) {
-                removeRecursive(state.form.grid, state.dragged as NodeElement);
-                addRecursive(state.form.grid, action.payload.drop, action.payload.position, state.dragged as NodeElement);
+                removeRecursive(state.form, state.dragged as NodeElement);
+                addRecursive(state.form, action.payload.drop, action.payload.position, state.dragged as NodeElement);
             }
             return { ...state, dragged: null } //TODO check immutable
 
         case formUserActions.FormDeleteActionN:
             if (state.form) {
-                removeRecursive(state.form.grid, action.payload);
+                removeRecursive(state.form, action.payload);
             }
             return state;
         case formUserActions.FormSwitchTypeActionN:
             if (state.form) {
-                modifyRecursive(state.form.grid, n => n._id === action.payload.node._id, n => console.log(n))//TODO implement conversion
+                modifyRecursive(state.form, n => n._id === action.payload.node._id, n => console.log(n))//TODO implement conversion
             }
             return state;
     }
@@ -206,7 +206,7 @@ export function formReducer(state = formInitialState, action: FormActions): Form
 function setAutoCompleteState(currentObjId: string, state: FormState, autoCompleteNode: FormAutocomplete) {
     if (!state.form) return;
     state.autoCompleteState = new AutoCompleteState(currentObjId, autoCompleteNode.refEntityAlias || autoCompleteNode.refEntityName, autoCompleteNode);
-    walkForm(state.form.grid, state.autoCompleteState);
+    walkForm(state.form, state.autoCompleteState);
 }
 function walkForm(node: NodeElement, autoCompleteState: AutoCompleteState) {
     if (node.nodeType === NodeType.form_autocomplete) {
@@ -238,7 +238,7 @@ export const getFormState = createSelector(
 );
 export const getFormReadOnly = createSelector(
     getForm,
-    (state: FormState) => state ? state.formReadOnly : formInitialState.formReadOnly
+    (state: FormState) => state ? state.rdonly : formInitialState.rdonly
 );
 export const getAutoCompleteState = createSelector(
     getForm,

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@core/domain/uimetadata/form";
 import { CircularJSON } from "@core/json-stringify";
@@ -14,6 +14,13 @@ import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FrmdbFormControl, FrmdbFormGroup } from '../form.component';
 
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: '[frmdb-form_table]',
+  host: { class: 'col form-group' },
+  templateUrl: './form_table.component.html',
+  styleUrls: ['./form_table.component.scss']
+})
 export class FormTableComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   addIcon = faPlusCircle;
@@ -26,7 +33,8 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   tableElement: FormTable | FormTabs;
 
   ngOnInit() {
-    this.tableElement = this.nodeElement as FormTable | FormTabs;
+    this.tableElement = this.nodel as FormTable | FormTabs;
+    console.debug(this.fullpath, this.nodel, this.formgrp);
   }
 
   ngOnChanges() {
@@ -36,7 +44,7 @@ export class FormTableComponent extends BaseNodeComponent implements OnInit, OnC
   }
   getType(child: NodeElement): string {
     if (child.nodeType !== NodeType.form_input) {
-      throw new Error('form-input node element is wrong: ' + CircularJSON.stringify(this.nodeElement));
+      throw new Error('form-input node element is wrong: ' + CircularJSON.stringify(this.nodel));
     }
     if (child.propertyType === Pn.NUMBER) { return 'number'; } else { return 'text'; }
   }

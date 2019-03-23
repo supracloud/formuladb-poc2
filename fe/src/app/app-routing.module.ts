@@ -1,37 +1,33 @@
 /**
- * © 2018 S.C. FORMULA DATABASE S.R.L.
- * License TBD
- */
+* © 2018 S.C. FORMULA DATABASE S.R.L.
+* License TBD
+*/
 
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, PreloadAllModules } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 import { ApplicationsComponent } from './applications/applications.component';
+import { PageComponent } from './components/page/page.component';
+import { TableComponent } from './components/table/table.component';
+import { FormComponent } from './components/form.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: ApplicationsComponent,
-  },
-  {
-    path: ':appName/0',
-    loadChildren: '../app/themes/light-theme/light-theme.module#LightThemeModule'
-  },
-  {
-    path: ':appName/1',
-    loadChildren: '../app/themes/material-dashboard-theme/material-dashboard-theme.module#MaterialDashboardThemeModule'
-  },
-  {
-    path: ':appName/2',
-    loadChildren: '../app/themes/now-uidashboard-theme/now-uidashboard-theme.module#NowUIDashboardThemeModule'
-  },
-  {
-    path: ':appName/3',
-    loadChildren: '../app/themes/argon-theme/argon-theme.module#ArgonThemeModule'
-  },
+    {
+        path: '', component: ApplicationsComponent,
+    },
+    {
+        path: ':appName', component: PageComponent,
+        children: [
+            { path: ':entityName', component: TableComponent },
+            { path: ':entityName/:_id', component: FormComponent }
+        ]
+
+    },
+    { path: '**', component: NotFoundComponent },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })],
-  exports: [RouterModule]
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule]
 })
 export class AppRoutingModule { }

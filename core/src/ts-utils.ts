@@ -18,14 +18,14 @@ export function isType<K extends keyof typeof NN, T>(t: K, p: any): p is T {
 }
 
 
-export function waitUntilNotNull<T>(callback: () => T, sleepTime = 250): Promise<T> {
-    let ret: T = callback();
-    if (ret) return Promise.resolve(ret);
-    return new Promise(resolve => {
-        let interval = setInterval(() => {
-            let x: T = callback();
+export async function waitUntilNotNull<T>(callback: () => Promise<T>, sleepTime = 250): Promise<Exclude<T, null | undefined>> {
+    let ret: T = await callback();
+    if (ret) return Promise.resolve(ret as Exclude<T, null | undefined>);
+    return new Promise<Exclude<T, null | undefined>>(resolve => {
+        let interval = setInterval(async () => {
+            let x: T = await callback();
             if (x) {
-                resolve(x);
+                resolve(x as Exclude<T, null | undefined>);
                 clearInterval(interval);
             }
         }, sleepTime)

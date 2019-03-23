@@ -1,8 +1,8 @@
-<label [for]="parentFormPath" *ngIf="!inputElement.noLabel">
+<label [for]="fullpath" *ngIf="!inputElement.noLabel">
     {{inputElement.refEntityName | i18n}}/{{inputElement.refPropertyName | i18n}}
 </label>
-<input #input [id]="parentFormPath" class="form-control" type="text" [name]="parentFormPath" autocomplete="off"
-    *ngIf="hasControl(parentFormPath)"
+<input #input [id]="fullpath" class="form-control" type="text" [name]="fullpath" autocomplete="off"
+    *ngIf="hasControl(fullpath)"
     [formControl]="control"
     (input)="text$.next($event.target.value)"
     (keydown.enter)="selectCurrentOption()" 

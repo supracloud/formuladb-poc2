@@ -14,22 +14,14 @@ import { Expression } from 'jsep';
 export interface Entity extends KeyValueObj {
     _id: string;
     pureNavGroupingChildren?: string[];
-    isStaticPage?: boolean;
     aliases?: { [aliasName: string]: string };
     validations?: _.Dictionary<FormulaValidation>;
     autoCorrectionsOnValidationFailed?: _.Dictionary<AutoCorrectionOnValidationFailed[]>;
     props: EntityProperties;
     extendsEntityName?: string;
     stateGraph?: EntityStateGraph;
-    isView?: boolean;
+    isPresentationPage?: boolean;
     isEditable?: boolean;
-
-    // fromObjLiteral<T extends Pick<Entity, Exclude<keyof Entity, 'type_' | 'props' | 'fromObjLiteral'>> & {props: any}>(
-    //     obj: T & {props: {readonly [x in keyof T['props']]: EntityProperty}}): Entity 
-    // {
-    //     Object.assign(this, obj);
-    //     return this;
-    // }
 }
 
 export interface EntityStateGraph {
@@ -50,12 +42,12 @@ export type HasEntityProperties = Entity | ChildTableProperty | ExtendsEntityPro
 export type EntityProperties = { [x: string]: EntityProperty };
 export type EntityDeepPath = string;
 export interface Schema extends KeyValueObj {
-    readonly _id: 'FRMDB_SCHEMA';
+    readonly _id: string;
     entities: { [x: string]: Entity };
 }
 
 export function isSchema(param): param is Schema {
-    return param != null && typeof param === 'object' && param['_id'] == 'FRMDB_SCHEMA' && param['entities'] != null;
+    return param != null && typeof param === 'object' && param['_id'].startsWith('FRMDB_SCHEMA~~') && param['entities'] != null;
 }
 
 export function isEntity(param): param is Entity {
@@ -92,7 +84,7 @@ export const enum Pn {
     DOCUMENT = "TEXT",
     DATETIME = "DATETIME",
     DURATION = "DURATION",
-    LINK = "LINK",
+    ACTION = "ACTION",
     ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
@@ -140,8 +132,8 @@ export interface AttachmentProperty {
     url: string;
 }
 
-export interface LinkProperty {
-    propType_: Pn.LINK;
+export interface ActionProperty {
+    propType_: Pn.ACTION;
     name: string;
     defaultValue?: string;
     allowNull?: boolean;
@@ -207,7 +199,7 @@ export type EntityProperty =
     | DocumentProperty
     | DatetimeProperty
     | DurationProperty
-    | LinkProperty
+    | ActionProperty
     | AttachmentProperty
     | ChildTableProperty
     | ExtendsEntityProperty

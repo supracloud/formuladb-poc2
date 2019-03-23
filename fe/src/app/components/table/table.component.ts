@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
@@ -25,6 +25,11 @@ import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
 
+@Component({
+    selector: 'frmdb-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss']
+})
 export class TableComponent implements OnInit, OnDestroy {
 
     statusBar = {
@@ -77,7 +82,8 @@ export class TableComponent implements OnInit, OnDestroy {
         private router: Router,
         private route: ActivatedRoute,
         private tableService: TableService,
-        private i18npipe: I18nPipe) {
+        private i18npipe: I18nPipe,
+        private _ngZone: NgZone) {
         // tslint:disable-next-line:max-line-length
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
         // this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
@@ -203,7 +209,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
         if (event.data._id && this.currentEntity) {
-            this.router.navigate(['./' + event.data._id], { relativeTo: this.route });
+            this._ngZone.run(() => {
+                this.router.navigate(['./' + event.data._id], { relativeTo: this.route });
+            })
         }
     }
 
@@ -212,7 +220,6 @@ export class TableComponent implements OnInit, OnDestroy {
             const colx: number = this.tableState.columns.findIndex(c => c.name === event.column.colId);
             const col: TableColumn = this.tableState.columns.splice(colx, 1)[0];
             this.tableState.columns.splice(event.toIndex, 0, col);
-
         }
     }
 
@@ -267,9 +274,11 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     addRow() {
-        if (this.currentEntity) {
-            this.router.navigate(['./' + this.currentEntity._id + '~~'], { relativeTo: this.route });
-        }
+        this._ngZone.run(() => {
+            if (this.currentEntity) {
+                this.router.navigate(['./' + this.currentEntity._id + '~~'], { relativeTo: this.route });
+            }
+        })
     }
 
     deleteRow() {
@@ -282,7 +291,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onFirstDataRendered($event) {
         var allColumnIds: any[] = [];
-        (this.gridColumnApi.getAllColumns()||[]).forEach(function (column) {
+        (this.gridColumnApi.getAllColumns() || []).forEach(function (column) {
             allColumnIds.push(column.colId);
         });
         this.gridColumnApi.autoSizeColumns(allColumnIds);

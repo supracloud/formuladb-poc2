@@ -8,17 +8,17 @@ import { ChangeObj } from "@core/domain/change_obj";
 import * as meta from './mocks/mock-metadata';
 import { MockData } from "./mocks/mock-data";
 
-import { getDefaultTable } from "@core/domain/uimetadata/table";
+import { autoLayoutTable } from "@core/domain/uimetadata/table";
 import { _throw } from '../throw';
 
 export function flow() {
-    let mockMetadata = new meta.MockMetadata(meta.ExampleApps.service);
-    let mockData = new MockData(mockMetadata.schema.entities);
+    let mockMetadata = new meta.MockMetadata();
+    let mockData = new MockData({});
 
     return {
         mockMetadata: mockMetadata,
         mockData: mockData,
-        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm),
+        serviceFormTable: autoLayoutTable(meta.Forms__ServiceForm),
     };
 }
 

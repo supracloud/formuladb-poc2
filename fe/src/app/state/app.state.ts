@@ -4,7 +4,7 @@
  */
 
 import { Params, RouterStateSnapshot } from '@angular/router';
-import { Action, ActionReducerMap, createSelector, createFeatureSelector, ActionReducer } from '@ngrx/store';
+import { ActionReducer } from '@ngrx/store';
 import {
   StoreRouterConnectingModule,
   routerReducer,
@@ -26,19 +26,20 @@ export { Entity };
 export { ChangeObj, applyChanges };
 
 import * as fromCore from './core.state';
-import * as fromTheme from './theme.state';
+import * as fromPage from './page.state';
 import * as fromEntity from "./entity-state";
 import * as fromTable from './table.state';
 import * as fromForm from './form.state';
 import * as fromI18n from './i18n.state';
 import * as fromFormula from './formula.state'
 import { AppServerEventAction } from '../actions/app.actions';
+import { autoLayoutReducer } from './auto-layout.reducer';
 
 export * from "./entity-state";
 export * from "./table.state";
 export * from "./form.state";
 export * from "./core.state";
-export * from "./theme.state";
+export * from "./page.state";
 export * from "./i18n.state";
 export * from './formula.state'
 
@@ -51,7 +52,7 @@ export interface RouterState {
 export interface AppState {
   'router': RouterReducerState<RouterState>;
   'core': fromCore.CoreState;
-  'theme': fromTheme.ThemeState;
+  'page': fromPage.PageState;
   'entity': fromEntity.EntityState;
   'table': fromTable.TableState;
   'form': fromForm.FormState;
@@ -61,7 +62,7 @@ export interface AppState {
 
 export const appInitialState = {
   core: fromCore.coreInitialState,
-  theme: fromTheme.themeInitialState,
+  page: fromPage.pageInitialState,
   entity: fromEntity.entityInitialState,
   table: fromTable.tableInitialState,
   form: fromForm.formInitialState,
@@ -75,7 +76,7 @@ export function getInitialState() {
 export type AppActions =
   | AppServerEventAction
   | fromCore.CoresActions
-  | fromTheme.ThemesActions
+  | fromPage.PageActions
   | fromEntity.EntityActions
   | fromTable.TableActions
   | fromForm.FormActions
@@ -98,13 +99,14 @@ export class CustomSerializer implements RouterStateSerializer<RouterState> {
 
 export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
   return function (state: AppState, action: AppActions) {
-    let updatedState = state;
+    let updatedState = autoLayoutReducer(state, action);
+
     if (action.type === fromCore.CoreAppReadonlyActionN) {
       updatedState = {
         ...state,
         form: {
           ...state.form,
-          formReadOnly: action.appReadonly != fromCore.NotReadonly,
+          rdonly: action.appReadonly != fromCore.NotReadonly,
         }
       }
     }
@@ -180,7 +182,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
 export const reducers = {
   'router': routerReducer,
   ...fromCore.reducers,
-  ...fromTheme.reducers,
+  ...fromPage.reducers,
   ...fromEntity.reducers,
   ...fromTable.reducers,
   ...fromForm.reducers,
@@ -189,17 +191,17 @@ export const reducers = {
 };
 
 
-export function parseUrl(url: string): { appName: string | null, path: string | null, id: string | null } {
-  let match = url.match(/^\/([\w_]+)\/\d+\/?([\w_]+)?\/?([-_%\w\d~]+)?/)
+export function parseUrl(url: string): { appName: string | null, entityName: string | null, id: string | null } {
+  let match = url.match(/^\/([\w_]+)\/?([\w_]+)?\/?([-_%\w\d~]+)?/)
   let appName: string | null = null;
-  let path: string | null = null;
+  let entityName: string | null = null;
   let id: string | null = null;
   if (null != match) {
     appName = match[1];
-    if (match.length >= 3 && match[2] != null) path = match[2];
+    if (match.length >= 3 && match[2] != null) entityName = match[2];
     if (match.length >= 4 && match[3] != null) id = match[3];
   }
 
-  return { appName, path, id };
+  return { appName, entityName, id };
 
 }

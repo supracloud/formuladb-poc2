@@ -15,8 +15,8 @@ import { Router } from "@angular/router";
 import { Entity } from "@core/domain/metadata/entity";
 import * as events from "@core/domain/event";
 
-import { Table, TableColumn, getDefaultTable } from "@core/domain/uimetadata/table";
-import { Form, NodeElement, NodeType, getDefaultForm } from "@core/domain/uimetadata/form";
+import { Table } from "@core/domain/uimetadata/table";
+import { Form } from "@core/domain/uimetadata/form";
 
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
@@ -25,10 +25,11 @@ import { TableFormBackendAction, FormulaPreviewFromBackend } from '../state/app.
 import { FormDataFromBackendAction, FormNotifFromBackendAction, ResetFormDataFromBackendAction, FormFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
-import { ExampleApps } from "@core/test/mocks/mock-metadata";
 import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
+import { App } from '@core/domain/app';
+import { autoLayoutTable, autoLayoutForm } from '../components/frmdb-auto-layouts';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedTable
@@ -52,7 +53,7 @@ export const ActionsToBeSentToServerNames = [
 
 @Injectable()
 export class AppEffects {
-    private currentUrl: { appName: string | null, path: string | null, id: string | null, entity: Entity | null } = { appName: null, path: null, id: null, entity: null };
+    private currentUrl: { appName: string | null, entityName: string | null, id: string | null, entity: Entity | null } = { appName: null, entityName: null, id: null, entity: null };
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
 
     constructor(
@@ -62,22 +63,40 @@ export class AppEffects {
         private router: Router,
         private frmdbStreams: FrmdbStreamsService
     ) {
-
         //change app state based on router actions
         this.listenForRouterChanges();
+    
+        //send actions to server so that the engine can process them, compute all formulas and update the data
+        this.listenForServerEvents();
 
+        //listen for new object creations
+        this.listenForNewDataObjActions();
     }
 
-    public async load() {
+    public async changeApplication(appName: string) {
         try {
-
-            await waitUntilNotNull(() => this.getAppName());
-
+            let apps: Map<string, App> = await waitUntilNotNull(async () => {
+                let ret = await this.backendService.getApplications();
+                return ret;
+            });
+            
+            let app = apps.get(appName);
+            if (!app) {console.warn("App not found", app); return;}
+    
             //we first initialize the DB (sync with remote DB)
-            return this.backendService.init(
-                this.getAppName()!,
-                () => this.init(),
-                change => this.listenForNotifsFromServer(change));
+            await this.backendService.initApplication(
+                app,
+                change => this.listenForNotifsFromServer(change)
+            );
+
+            let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
+
+            //load entities and remove readOnly flag
+            this.cachedEntitiesMap = {};
+            entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
+            this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
+            this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
+        
         } catch (err) {
             console.error("Error creating AppEffects: ", err);
         }
@@ -98,7 +117,7 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventModifiedFormDataN: {
-                let { appName, path, id } = appState.parseUrl(this.router.url);
+                let { appName, entityName: path, id } = appState.parseUrl(this.router.url);
                 if (!id) {
                     console.error("Modify object for non-object url: " + this.router.url);
                     break;
@@ -113,7 +132,7 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventDeletedFormDataN: {
-                let { appName, path, id } = appState.parseUrl(this.router.url);
+                let { appName, entityName: path, id } = appState.parseUrl(this.router.url);
                 if (null == id) {
                     this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
                 } else {
@@ -162,30 +181,6 @@ export class AppEffects {
         }
     }
 
-
-    private getAppName(): ExampleApps | null {
-        let { appName, path, id } = appState.parseUrl(this.router.url);
-        return appName ? ExampleApps[appName] : null;
-    }
-
-    private async init() {
-
-        let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
-
-        //load entities and remove readOnly flag
-        this.cachedEntitiesMap = {};
-        entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
-        this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
-        this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
-        this.processRouterUrlChange(this.router.url);
-
-        //send actions to server so that the engine can process them, compute all formulas and update the data
-        this.listenForServerEvents();
-
-        //listen for new object creations
-        this.listenForNewDataObjActions();
-    }
-
     private listenForServerEvents() {
         this.actions$.pipe(ofType<AppServerEventAction>(AppServerEventActionN)).subscribe(action => {
             console.log("%c ----> " + action.event.type_ + " " + action.event._id,
@@ -204,23 +199,29 @@ export class AppEffects {
     }
 
     private async processRouterUrlChange(url: string) {
-        let { appName, path, id } = appState.parseUrl(url);
+        let { appName, entityName, id } = appState.parseUrl(url);
 
-        if (appName === this.currentUrl.appName && path === this.currentUrl.path && id === this.currentUrl.id) return;
+        if (appName === this.currentUrl.appName && entityName === this.currentUrl.entityName && id === this.currentUrl.id) return;
 
+        let appNameChanged = false;
         if (appName !== this.currentUrl.appName) {
             this.currentUrl.appName = appName;
-            await this.load();
+            if (appName) {
+                await this.changeApplication(appName);
+                appNameChanged = true;
+            }
         }
 
-        if (path !== this.currentUrl.path) {
-            this.currentUrl.path = path;
-            await this.changeEntity(path!);
+        if (entityName !== this.currentUrl.entityName) {
+            this.currentUrl.entityName = entityName;
+            if (entityName) {
+                await this.changeEntity(entityName);
+            }
         }
 
-        if (id && path && id != this.currentUrl.id) {
+        if (id && entityName && id != this.currentUrl.id) {
             this.currentUrl.id = id;
-            if (id === path + '~~') {
+            if (id === entityName + '~~') {
                 this.store.dispatch(new ResetFormDataFromBackendAction({_id: id}));
             } else {
                 this.backendService.getDataObj(id)
@@ -232,6 +233,10 @@ export class AppEffects {
 
         if (!id && this.currentUrl.id) {
             this.currentUrl.id = null;
+        }
+
+        if (appNameChanged && !entityName) {
+            this.router.navigate([appName + '/Home/Home~~Home']);
         }
     }
 
@@ -258,10 +263,10 @@ export class AppEffects {
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.SelectedEntityAction(entity));
 
-            let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
+            let table: Table = (await this.backendService.getTable(path)) || autoLayoutTable(entity);;
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
+            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(entity, this.cachedEntitiesMap);
             this.store.dispatch(new FormFromBackendAction(form));
 
         } catch (err) {

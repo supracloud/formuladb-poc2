@@ -12,7 +12,7 @@ export interface UserDeletedFormData {
 }
 export interface UserDraggedFormElement {
     type: 'UserDraggedFormElement';
-    nodeElement: NodeElement | null;
+    nodel: NodeElement | null;
 }
 export interface UserSelectedCell {
     type: 'UserSelectedCell';

@@ -35,7 +35,7 @@
     "shelljs": "^0.8.3",
     "source-map-support": "^0.5.10",
     "ts-node": "^8.0.2",
-    "typescript": "2.8.3"
+    "typescript": "3.1.6"
   },
   "_moduleAliases": {
     "@storage": "./dist/storage/src",

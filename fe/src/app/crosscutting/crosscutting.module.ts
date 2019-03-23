@@ -11,6 +11,9 @@ import { I18nPipe } from './i18n/i18n.pipe';
   ],
   exports: [
     I18nPipe
+  ],
+  providers: [
+    I18nPipe
   ]
 })
 export class CrosscuttingModule { }

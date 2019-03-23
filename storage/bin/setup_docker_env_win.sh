@@ -34,6 +34,7 @@ create-docker-env() {
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "minio,tcp,,9000,,9000"
 
         docker-machine stop docker1
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' sharedfolder add "docker1" --name "d" --hostpath "d:/" --automount
@@ -91,5 +92,5 @@ startFrmdb() {
 }
 
 ssh-ci() {
-    ssh -i ./ssh/frmdb.id_rsa root@46.101.228.142
+    ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
 }

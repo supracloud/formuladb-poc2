@@ -72,10 +72,6 @@ export class ContextMenuComponent implements OnInit {
     this.formStore.dispatch(new FormSwitchTypeAction({ node: this.item, toType: p }));
   }
 
-  // addChild(p: NodeElement) {
-  //   this.formStore.dispatch(new fromForm.FormAddAction({ what: p, to: this.item }));
-  // }
-
   edit() {
     this.expanded = false;
     this.editor.open();

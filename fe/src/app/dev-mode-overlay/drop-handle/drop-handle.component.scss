@@ -1,19 +1,19 @@
 :host {
     border-style: solid;
     border-width: 1px;
-    border-color:transparent;
+    border-color: transparent;
 
     &.visible {
-        border-style:dashed;
-        border-color:gray;
+        border-style: dashed;
+        border-color: gray;
     }
     &.vertical {
-        width: .5rem;
+        width: 5px;
         top: 0;
         bottom: 0;
     }
     &.horizontal {
-        height: .5rem;
+        height: 5px;
         left: 0;
         right: 0;
     }

@@ -8,10 +8,14 @@
  * When it is solved we will not need these functions
  */
 
- export function elvis<T extends Object>(val: T | null | undefined): Partial<T> {
+export function elvis<T extends Object>(val: T | null | undefined): Partial<T> {
     return null == val ? {} : val;
 }
 
 export function elvis_a<K, T extends Array<K>>(val: T | null | undefined): Array<K> {
     return null == val ? [] : val;
+}
+
+export function isNotNullOrUndefined<T>(input: null | undefined | T): input is T {
+    return input != null;
 }

@@ -5,7 +5,7 @@
 
 import * as _ from 'lodash';
 
-import { Entity, Schema, Pn } from "@core/domain/metadata/entity";
+import { Schema, Pn } from "@core/domain/metadata/entity";
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
@@ -14,6 +14,8 @@ import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../../default_pages/website-metadata";
+import { App } from '@core/domain/app';
+import { FrmdbLy } from '@core/domain/uimetadata/page';
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -21,95 +23,184 @@ export * from "./forms-metadata";
 export * from "./reports-metadata";
 export * from "./financial-metadata";
 
-export enum ExampleApps {
-    test = "test",
-    inventory = "inventory",
-    booking = "booking",
-    expenses = "expenses",
-    ticketing = "ticketing",
-    planning = "planning",
-    ecommerce = "ecommerce",
-    service = "service",
-    reporting = "reporting",
+export const App_test: App = {
+    _id: "App~~test",
+    description: "Test many types of entities",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_test: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_test._id.replace(/^App~~/, ''),
+    entities: {
+        [StaticPagesMetadata.Home._id]: StaticPagesMetadata.Home,
+        [StaticPagesMetadata.ProductFeature._id]: StaticPagesMetadata.ProductFeature,
+        [StaticPagesMetadata.Components._id]: StaticPagesMetadata.Components,
+        [StaticPagesMetadata.WebsiteStatistic._id]: StaticPagesMetadata.WebsiteStatistic,
+        [StaticPagesMetadata.Pages._id]: StaticPagesMetadata.Pages,
+        [StaticPagesMetadata.Ecommerce._id]: StaticPagesMetadata.Ecommerce,
+        [StaticPagesMetadata.Blog._id]: StaticPagesMetadata.Blog,
+        [InventoryMetadata.Inventory._id]: InventoryMetadata.Inventory,
+        [InventoryMetadata.InventoryOrder._id]: InventoryMetadata.InventoryOrder,
+        [InventoryMetadata.OrderItem._id]: InventoryMetadata.OrderItem,
+        [InventoryMetadata.InventoryReceipt._id]: InventoryMetadata.InventoryReceipt,
+        [InventoryMetadata.ReceiptItem._id]: InventoryMetadata.ReceiptItem,
+        [InventoryMetadata.InventoryProduct._id]: InventoryMetadata.InventoryProduct,
+        [InventoryMetadata.ProductLocation._id]: InventoryMetadata.ProductLocation,
+        [InventoryMetadata.InventoryProductUnit._id]: InventoryMetadata.InventoryProductUnit,
+        [InventoryMetadata.Reports._id]: InventoryMetadata.Reports,
+        [InventoryMetadata.LargeSalesReport._id]: InventoryMetadata.LargeSalesReport,
+        [InventoryMetadata.LargeSalesProduct._id]: InventoryMetadata.LargeSalesProduct,
+    }
 }
-
+export const App_inventory: App = {
+    _id: "App~~inventory",
+    description: "Basic Inventory, Single Warehouse",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_inventory: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_inventory._id.replace(/^App~~/, ''),
+    entities: {
+        [StaticPagesMetadata.Home._id]: StaticPagesMetadata.Home,
+        [StaticPagesMetadata.ProductFeature._id]: StaticPagesMetadata.ProductFeature,
+        [StaticPagesMetadata.Components._id]: StaticPagesMetadata.Components,
+        [StaticPagesMetadata.WebsiteStatistic._id]: StaticPagesMetadata.WebsiteStatistic,
+        [StaticPagesMetadata.Pages._id]: StaticPagesMetadata.Pages,
+        [StaticPagesMetadata.Ecommerce._id]: StaticPagesMetadata.Ecommerce,
+        [StaticPagesMetadata.Blog._id]: StaticPagesMetadata.Blog,
+        [InventoryMetadata.Inventory._id]: InventoryMetadata.Inventory,
+        [InventoryMetadata.InventoryOrder._id]: InventoryMetadata.InventoryOrder,
+        [InventoryMetadata.OrderItem._id]: InventoryMetadata.OrderItem,
+        [InventoryMetadata.InventoryReceipt._id]: InventoryMetadata.InventoryReceipt,
+        [InventoryMetadata.ReceiptItem._id]: InventoryMetadata.ReceiptItem,
+        [InventoryMetadata.InventoryProduct._id]: InventoryMetadata.InventoryProduct,
+        [InventoryMetadata.ProductLocation._id]: InventoryMetadata.ProductLocation,
+        [InventoryMetadata.InventoryProductUnit._id]: InventoryMetadata.InventoryProductUnit,
+        [InventoryMetadata.Reports._id]: InventoryMetadata.Reports,
+        [InventoryMetadata.LargeSalesReport._id]: InventoryMetadata.LargeSalesReport,
+        [InventoryMetadata.LargeSalesProduct._id]: InventoryMetadata.LargeSalesProduct,
+    }
+}
+export const App_booking: App = {
+    _id: "App~~booking",
+    description: "Booking Items (e.g. rooms, events, cars)",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_booking: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_booking._id.replace(/^App~~/, ''),
+    entities: {
+        [MusicBookingMetadata.MusicBooking._id]: MusicBookingMetadata.MusicBooking,
+        [MusicBookingMetadata.MBK__Service._id]: MusicBookingMetadata.MBK__Service,
+        [MusicBookingMetadata.MBK__Estimate._id]: MusicBookingMetadata.MBK__Estimate,
+        [MusicBookingMetadata.MBK__Estimate__Service._id]: MusicBookingMetadata.MBK__Estimate__Service,
+        [MusicBookingMetadata.MBK__Session._id]: MusicBookingMetadata.MBK__Session,
+        [MusicBookingMetadata.MBK__Booking._id]: MusicBookingMetadata.MBK__Booking,
+        [MusicBookingMetadata.MBK__Booking__Musician._id]: MusicBookingMetadata.MBK__Booking__Musician,
+        [MusicBookingMetadata.MBK__Email._id]: MusicBookingMetadata.MBK__Email,
+    },
+}
+export const App_expenses: App = {
+    _id: "App~~expenses",
+    description: "Expenses, Accounts, Transactions, Budgets",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_expenses: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_expenses._id.replace(/^App~~/, ''),
+    entities: {
+        [FinancialMetadata.Financial._id]: FinancialMetadata.Financial,
+        [FinancialMetadata.FIN__Account._id]: FinancialMetadata.FIN__Account,
+        [FinancialMetadata.FIN__Transaction._id]: FinancialMetadata.FIN__Transaction,
+    },
+}
+export const App_ticketing: App = {
+    _id: "App~~ticketing",
+    description: "Ticketing, Issues",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_ticketing: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_ticketing._id.replace(/^App~~/, ''),
+    entities: {},
+}
+export const App_planning: App = {
+    _id: "App~~planning",
+    description: "Planning, Meetings, Sessions",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_planning: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_planning._id.replace(/^App~~/, ''),
+    entities: {},
+}
+export const App_ecommerce: App = {
+    _id: "App~~ecommerce",
+    description: "Basic eCommerce",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_ecommerce: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_ecommerce._id.replace(/^App~~/, ''),
+    entities: {},
+}
+export const App_service: App = {
+    _id: "App~~service",
+    description: "Bike/Car Service",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_service: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_service._id.replace(/^App~~/, ''),
+    entities: {
+        [FormsMetadata.Forms._id]: FormsMetadata.Forms,
+        [FormsMetadata.Forms__ServiceForm._id]: FormsMetadata.Forms__ServiceForm,
+        [ReportsMetadata.REP__DetailedCentralizerReport._id]: ReportsMetadata.REP__DetailedCentralizerReport,
+        [ReportsMetadata.REP__ServiceCentralizerReport._id]: ReportsMetadata.REP__ServiceCentralizerReport,
+    },
+}
+export const App_reporting: App = {
+    _id: "App~~reporting",
+    description: "Reporting",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_reporting: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_reporting._id.replace(/^App~~/, ''),
+    entities: {},
+}
 export class MockMetadata {
-    public schema: Schema = { _id: 'FRMDB_SCHEMA', entities: {} };
-    public entities: Entity[] = [];
+    public apps: App[];
+    public schemas: Schema[];
 
-    public constructor(app: ExampleApps) {
-        this.entities.push(GeneralMetadata.General);
-        this.entities.push(GeneralMetadata.GEN__Actor);
-        this.entities.push(GeneralMetadata.GEN__Currency);
-        this.entities.push(GeneralMetadata.GEN__Client);
+    public constructor() {
 
-        switch (app) {
-            case ExampleApps.test:
-                this.entities.push(StaticPagesMetadata.Home);
-                this.entities.push(StaticPagesMetadata.ProductFeature);
-                this.entities.push(StaticPagesMetadata.Dashboard);
-                this.entities.push(StaticPagesMetadata.WebsiteStatistic);
-                this.entities.push(InventoryMetadata.Inventory);
-                this.entities.push(InventoryMetadata.InventoryOrder);
-                this.entities.push(InventoryMetadata.OrderItem);
-                this.entities.push(InventoryMetadata.InventoryReceipt);
-                this.entities.push(InventoryMetadata.ReceiptItem);
-                this.entities.push(InventoryMetadata.InventoryProduct);
-                this.entities.push(InventoryMetadata.ProductLocation);
-                this.entities.push(InventoryMetadata.InventoryProductUnit);
-                this.entities.push(InventoryMetadata.Reports);
-                this.entities.push(InventoryMetadata.LargeSalesReport);
-                this.entities.push(InventoryMetadata.LargeSalesProduct);
-                break;
-            case ExampleApps.service:
-                this.entities.push(FormsMetadata.Forms);
-                this.entities.push(FormsMetadata.Forms__ServiceForm);
-                this.entities.push(ReportsMetadata.REP__DetailedCentralizerReport);
-                this.entities.push(ReportsMetadata.REP__ServiceCentralizerReport);
-            case ExampleApps.inventory:
-                this.entities.push(InventoryMetadata.Inventory);
-                this.entities.push(InventoryMetadata.InventoryOrder);
-                this.entities.push(InventoryMetadata.OrderItem);
-                this.entities.push(InventoryMetadata.InventoryReceipt);
-                this.entities.push(InventoryMetadata.ReceiptItem);
-                this.entities.push(InventoryMetadata.InventoryProduct);
-                this.entities.push(InventoryMetadata.ProductLocation);
-                this.entities.push(InventoryMetadata.InventoryProductUnit);
-                this.entities.push(InventoryMetadata.Reports);
-                this.entities.push(InventoryMetadata.LargeSalesReport);
-                this.entities.push(InventoryMetadata.LargeSalesProduct);
-                break;
-            case ExampleApps.booking:
-                this.entities.push(MusicBookingMetadata.MusicBooking);
-                this.entities.push(MusicBookingMetadata.MBK__Service);
-                this.entities.push(MusicBookingMetadata.MBK__Estimate);
-                this.entities.push(MusicBookingMetadata.MBK__Estimate__Service);
-                this.entities.push(MusicBookingMetadata.MBK__Session);
-                this.entities.push(MusicBookingMetadata.MBK__Booking);
-                this.entities.push(MusicBookingMetadata.MBK__Booking__Musician);
-                this.entities.push(MusicBookingMetadata.MBK__Email);
-                break;
-            case ExampleApps.expenses:
-                this.entities.push(FinancialMetadata.Financial);
-                this.entities.push(FinancialMetadata.FIN__Account);
-                this.entities.push(FinancialMetadata.FIN__Transaction);
-                break;
-            case ExampleApps.ticketing:
-                break;
-            case ExampleApps.planning:
-                break;
-            case ExampleApps.ecommerce:
-                break;
+        this.apps = [
+            App_test,
+            App_inventory,
+            App_booking,
+            App_expenses,
+            App_ticketing,
+            App_planning,
+            App_ecommerce,
+            App_service,
+            App_reporting,
+        ];
+
+        this.schemas = [
+            Schema_test,
+            Schema_inventory,
+            Schema_booking,
+            Schema_expenses,
+            Schema_ticketing,
+            Schema_planning,
+            Schema_ecommerce,
+            Schema_service,
+            Schema_reporting,
+        ];
+
+        for (let sch of this.schemas) {
+            sch.entities[GeneralMetadata.General._id] = GeneralMetadata.General;
+            sch.entities[GeneralMetadata.GEN__Actor._id] = GeneralMetadata.GEN__Actor;
+            sch.entities[GeneralMetadata.GEN__Currency._id] = GeneralMetadata.GEN__Currency;
+            sch.entities[GeneralMetadata.GEN__Client._id] = GeneralMetadata.GEN__Client;
+            sch.entities[StaticPagesMetadata.Home._id] = StaticPagesMetadata.Home;
+
+            for (let ent of Object.values(sch.entities)) {
+                ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
+                ent.isEditable = true;    
+            }
         }
-
-        this.entities.forEach(ent => {
-            ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
-            ent.isEditable = true;
-            this.schema.entities[ent._id] = ent;
-        });
-
-        this.entities.forEach(ent => {
-            // SchemaCompiler.applyInheritanceTo(ent, this.entitiesMap);
-        });
     }
 }

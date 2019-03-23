@@ -11,6 +11,12 @@ import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
 import { FormEditingService } from '../form-editing.service';
 
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: '[frmdb-form_tabs]',
+  templateUrl: './form_tabs.component.html',
+  styleUrls: ['./form_tabs.component.scss']
+})
 export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];
 
@@ -22,12 +28,12 @@ export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnCh
   ngOnInit() { }
 
   ngOnChanges() {
-    if (this.nodeElement.nodeType !== NodeType.form_tabs) throw new Error("form_tabs component does not work with nodeElement " + this.nodeElement);
+    if (this.nodel.nodeType !== NodeType.form_tabs) throw new Error("form_tabs component does not work with nodel " + this.nodel);
 
-    let formArray = this.topLevelFormGroup.get(this.parentFormPath) as FormArray;
+    let formArray = this.formgrp.get(this.fullpath) as FormArray;
     if (!formArray) return;
     this.tabNames = formArray.controls.map(child => {
-      return (child.get((this.nodeElement as FormTabs).tabNameFormPath) || {} as any).value;
+      return (child.get((this.nodel as FormTabs).tabNameFormPath) || {} as any).value;
     });
   }
 

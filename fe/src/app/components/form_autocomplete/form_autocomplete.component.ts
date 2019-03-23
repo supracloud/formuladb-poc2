@@ -4,7 +4,7 @@
  */
 
 import {
-    OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef
+    OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, Component
 } from '@angular/core';
 
 import { BaseNodeComponent } from '../base_node';
@@ -15,11 +15,20 @@ import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/ap
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import * as _ from 'lodash';
 import { ValidatorFn, AbstractControl } from '@angular/forms';
-import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { debounceTime, map, tap, combineLatest, zip, distinctUntilChanged, filter } from 'rxjs/operators';
 import { AutoCompleteState } from '@fe/app/state/app.state';
 import { elvis, elvis_a } from '@core/elvis';
 
+@Component({
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_autocomplete',
+    templateUrl: './form_autocomplete.component.html',
+    styleUrls: [
+        '../form_input/form_input.component.scss',
+        './form_autocomplete.component.scss',
+    ]
+})
 export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
     inputElement: FormAutocomplete;
@@ -36,7 +45,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     getControl() {
-        let ctrl = this.topLevelFormGroup.get(this.parentFormPath);
+        let ctrl = this.formgrp.get(this.fullpath);
         if (!this.control) {
             if (ctrl) {
                 let validators: ValidatorFn[] = [];
@@ -65,7 +74,8 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     ngOnInit(): void {
-        this.inputElement = this.nodeElement as FormAutocomplete;
+        console.debug(this.fullpath, this.nodel);
+        this.inputElement = this.nodel as FormAutocomplete;
         this.getControl();
 
         this.subscriptions.push(this.frmdbStreams.autoCompleteState$.subscribe(async (autoCompleteState) => {
@@ -77,7 +87,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
             if (autoCompleteState.selectedOption) {
                 let ctrl = this.getControl();
-                if (!ctrl) console.warn("Control not found for autocomplete ", this.topLevelFormGroup, this.parentFormPath);
+                if (!ctrl) console.warn("Control not found for autocomplete ", this.formgrp, this.fullpath);
                 else {
                     ctrl.setValue(autoCompleteState.selectedOption[this.inputElement.refPropertyName]);
                 }
@@ -85,7 +95,9 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
             this.popupOpened = this.currentSearchTxt != null
                 && (autoCompleteState.currentControl.propertyName === this.inputElement.propertyName);
             console.debug(this.parentObjId, (this.control as any).name, autoCompleteState, this.popupOpened, this.currentSearchTxt);
-            this.changeDetectorRef.detectChanges();
+            if (!this.changeDetectorRef['destroyed']) {
+                this.changeDetectorRef.detectChanges();
+            }
         }));
 
         this.subscriptions.push(this.text$.pipe(

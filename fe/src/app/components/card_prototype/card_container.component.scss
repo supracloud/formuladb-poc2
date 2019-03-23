@@ -1,5 +1,7 @@
-:host{
-    display:flex;
-    flex-wrap: wrap;
-    flex-direction: row;
+:host[class*="card-"] .card {
+    flex: 1 0 35ch;
+}
+
+:host[class*="card-"] .card.frmdb-card-horizontal {
+    flex: 1 0 100%;
 }

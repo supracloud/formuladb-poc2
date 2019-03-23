@@ -39,8 +39,6 @@ export class FrmdbEngine {
                 }
             }
         };
-
-        await this.frmdbEngineStore.syncSchema();
     }
 
     public async putSchema(schema: Schema): Promise<Schema> {
@@ -133,11 +131,6 @@ export class FrmdbEngine {
                 return event;
             })
             ;
-    }
-
-    private deleteDataObj(event: events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
-        //FIXME recompute formulas that depend on this object
-        return Promise.resolve(event);
     }
 
     public async putDataObjAndUpdateViews(oldObj: DataObj | null, newObj: DataObj) {

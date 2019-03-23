@@ -6,6 +6,12 @@ import { FormChart } from "@core/domain/uimetadata/form";
 import { FormArray, FormControl } from '@angular/forms';
 import { FormEditingService } from '../form-editing.service';
 
+@Component({
+  // tslint:disable-next-line:component-selector
+  selector: 'frmdb-form_chart',
+  templateUrl: './form_chart.component.html',
+  styleUrls: ['./form_chart.component.scss']
+})
 export class FormChartComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   chartType: string;
@@ -362,12 +368,12 @@ export class FormChartComponent extends BaseNodeComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-    this.formChart = this.nodeElement as FormChart;
+    this.formChart = this.nodel as FormChart;
     this.view = [this.formChart.width, this.formChart.height];
     this.chartType = this.formChart.chartType;
     this.xAxisLabel = this.formChart.xPropertyName;//TODO: add i18n HERE
     this.yAxisLabel = this.formChart.yPropertyName;
-    let tmpCtrl = this.topLevelFormGroup.get(this.formChart.tableName);
+    let tmpCtrl = this.formgrp.get(this.formChart.tableName);
     if (tmpCtrl instanceof FormArray) {
       this.formArray = tmpCtrl;
       this.setSingleData();

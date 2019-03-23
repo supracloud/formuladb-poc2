@@ -8,7 +8,6 @@ import * as appState from '@fe/app/state/app.state';
 import { Store } from '@ngrx/store';
 import { ObservedValueOf, Observable } from 'rxjs';
 import { FrmdbStreamsService } from './state/frmdb-streams.service';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'body',
@@ -16,19 +15,20 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./app.component.scss'],
   host: {
     '[style.padding]': 'bodyPadding',
+    '[class.frmdb-dev-mode-on]': 'devMode',
   }
 })
 export class AppComponent {
   title = 'frmdb';
-  public devMode$: Observable<boolean>;
-  bodyPadding = "0 0 22px 0";
+  public devMode: boolean;
+  bodyPadding = "0 0 49px 0";
   constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
-    this.devMode$ = this.store.select(appState.getDeveloperMode);
-    this.devMode$.subscribe(devMode => {
+    this.store.select(appState.getDeveloperMode).subscribe(devMode => {
+      this.devMode = devMode;
       if (devMode) {
-        this.bodyPadding = "22px 0 0 0";
+        this.bodyPadding = "49px 0 0 0";
       } else {
-        this.bodyPadding = "0 0 22px 0";
+        this.bodyPadding = "0 0 49px 0";
       }
     });
 

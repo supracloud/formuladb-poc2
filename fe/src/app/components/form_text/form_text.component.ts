@@ -3,11 +3,9 @@
  * License TBD
  */
 
-import { NodeElement, NodeType, FormInput, FormText } from "@core/domain/uimetadata/form";
+import { NodeType, FormText } from "@core/domain/uimetadata/form";
 import {
-    Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
-    Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
-    forwardRef
+    Component, OnInit, OnDestroy
 } from '@angular/core';
 import { CircularJSON } from "@core/json-stringify";
 
@@ -17,6 +15,13 @@ import * as _ from "lodash";
 
 import { FormEditingService } from "../form-editing.service";
 
+@Component({
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-form_text',
+    host: { class: 'col form-group' },
+    templateUrl: './form_text.component.html',
+    styleUrls: ['./form_text.component.scss']
+})
 export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDestroy {
     ctrl: AbstractControl | null;
 
@@ -27,16 +32,16 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     }
 
     ngOnInit(): void {
-        this.inputElement = this.nodeElement as FormText;
-        this.ctrl = this.topLevelFormGroup.get(this.parentFormPath);
-        // console.log("$$$$$$$$$$$$$$$$$$$$$$$$", this.ctrl);
+        this.inputElement = this.nodel as FormText;
+        this.ctrl = this.formgrp.get(this.fullpath);
+        console.log(this.fullpath, this.nodel, this.ctrl);
     }
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
     get representation(): string {
-        if (this.nodeElement.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodeElement));
-        return this.nodeElement.representation || "string";
+        if (this.nodel.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodel));
+        return this.nodel.representation || "string";
     }
 
     get value(): string {

@@ -1,14 +1,20 @@
-<div class="card">
-  <div class="card-header bg-transparent">
-    <div class="row align-items-center">
-      <div class="col">
-        <h6 class="text-uppercase text-muted ls-1 mb-1">card id</h6>
-        <h2 class="h3 mb-0">Card Title</h2>
-      </div>
+<!-- <div class="card-header bg-transparent">
+  <div class="row align-items-center">
+    <div class="col">
+      <h6 class="text-uppercase text-muted ls-1 mb-1">card id</h6>
+      <h2 class="h3 mb-0">Card Title</h2>
     </div>
   </div>
-  <div class="card-body">
-    <div frmdb-form_item [nodeElement]="nodeElement" [topLevelFormGroup]="topLevelFormGroup" [parentFormPath]="parentFormPath"
-      [formReadOnly]="formReadOnly"></div>
+</div> -->
+<div [class.row]="card.horizontal">
+  <div [class.col-md-4]="card.horizontal">
+    <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
+      focusable="false" role="img" aria-label="Placeholder: Image cap">
+      <title>Placeholder</title>
+      <rect width="100%" height="100%" fill="#868e96"></rect><text x="50%" y="50%" fill="#dee2e6" dy=".3em">Image cap</text>
+    </svg>
+  </div>
+  <div class="card-body" [class.col-md-8]="card.horizontal">
+    <ng-container [frmdbPageItems]="card.childNodes" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>
   </div>
 </div>

@@ -7,9 +7,10 @@ import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, k
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
 import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
-import { Entity } from "@core/domain/metadata/entity";
+import { Entity, Schema } from "@core/domain/metadata/entity";
 import { Expression } from "jsep";
 import { evalExpression } from "@core/map_reduce_utils";
+import { App } from "@core/domain/app";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -242,4 +243,24 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     async clearAll() {
         // Mem KV store is ephemeral so nothing to clear
     };
+
+    apps: Map<string, App> = new Map();
+    getAllApps(): Promise<App[]> {
+        return simulateIO(Array.from(this.apps.values()));
+    }
+
+    putApp(app: App): Promise<App> {
+        this.apps.set(app._id, app);
+        return simulateIO(app);
+    }
+
+    schemas: Map<string, Schema> = new Map();
+    getSchema(schemaId: string): Promise<Schema | null> {
+        return simulateIO(this.schemas.get(schemaId) || null);
+    }
+
+    putSchema(schema: Schema): Promise<Schema> {
+        this.schemas.set(schema._id, schema);
+        return simulateIO(schema);
+    }
 }

@@ -1,33 +1,55 @@
-:host {
-    z-index: 2000;
-    position: fixed;
-    display: block;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #ffffff;
-    border-bottom: 1px solid grey;
-}
+:host ::ng-deep {
+    @import "~bootstrap/scss/bootstrap.scss";
 
-:host #frmdb-dev-mode-top-bar .fa-sm {
-    height: 22px;
-}
+    .navbar.fixed-top {
+        z-index: 1031;
+        box-shadow: 0 1rem 2rem rgba(234,88,72,.15) !important;
+        background-color: rgb(234,88,72) !important;
+    }
 
-#frmdb-dev-mode-menu {
-    position: fixed;
-    top: 40px;
-    right: 2px;
-}
+    .frmdb-theme-dropdown .dropdown-item {
+        width: auto;
+        display: inline-block;
 
-#frmdb-dev-mode-page-editor {
-    position: fixed;
-    top: -1000px;//workaround for angular-gridster2 not initializing correctly for display: none
-    right: 2px;
-    display: block;
-}
+        .frmdb-themes .frmdb-theme {
+            cursor: pointer;
+        }        
+    }
 
-.add-del-things {
-    padding-left: 5px;
-    padding-right: 5px;
-}
 
+    .frmdb-themes {
+        display: inline-grid;
+        grid-template-columns: auto auto;
+    }
+    .frmdb-look-filters {
+        display: inline-grid;
+        grid-template-columns: auto auto;
+    }
+    .frmdb-layout-filters {
+        display: inline-grid;
+        grid-template-columns: auto auto;
+    }
+
+    @media (min-width: 450px) {
+        .frmdb-themes {
+            grid-template-columns: auto auto auto;
+        }
+        .frmdb-look-filters {
+            grid-template-columns: auto auto auto;
+        }
+        .frmdb-layout-filters {
+            grid-template-columns: auto auto auto ;
+        }
+    }
+    @media (min-width: 1200px) {
+        .frmdb-themes {
+            grid-template-columns: auto auto auto auto;
+        }
+        .frmdb-look-filters {
+            grid-template-columns: auto auto auto auto;
+        }
+        .frmdb-layout-filters {
+            grid-template-columns: auto auto auto auto ;
+        }
+    }
+}

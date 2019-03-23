@@ -3,7 +3,7 @@
 @import "~bootstrap/scss/_mixins";
 :host {
     position: relative;
-    flex-basis: 0;
+    flex-basis: 40px;
     flex-grow: 1;
     max-width: 100%;
     &.form-item-highlight {
@@ -13,11 +13,14 @@
         }
     }
 
+    .frmdb-input-label {
+        position: relative;
+    }
     .frmdb-input-dev-mode-label {
         color: lightgrey;
         position: absolute;
-        bottom: -0.7em;
-        right: 0;
+        bottom: -0.9em;
+        left: 0;
         font-size: .7em;
     }
     // edit-panel {
