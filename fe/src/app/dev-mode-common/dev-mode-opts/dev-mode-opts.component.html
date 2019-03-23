@@ -54,12 +54,12 @@
                 <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <fa-icon [icon]="layoutIcon" class="fa-sm"></fa-icon>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown" aria-labelledby="dropdown01" style="width: 75vw; text-align: center">
+                <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown vw-75 text-center" aria-labelledby="dropdown01">
                     <div class="row">
-                        <div class="col-md-2" style="position: relative; font-weight: bold">
-                            <span style="position: absolute; top: calc(50% - 0.5em)">Look</span>
+                        <div class="col-md-1 d-flex align-items-center font-weight-bold">
+                            <span>Look</span>
                         </div>
-                        <div class="col-md-10 frmdb-look-filters">
+                        <div class="col-md-11 frmdb-look-filters">
                             <div class="form-check form-check-inline" *ngFor="let look of objectKeys(looks)">
                                 <input class="form-check-input" type="checkbox" [id]="look" [(ngModel)]="looks[look]">
                                 <label class="form-check-label" [for]="look">{{look | i18n}}</label>
@@ -68,9 +68,9 @@
                     </div>
                     <div class="dropdown-divider"></div>
                     <div class="row">
-                        <div class="col-md-2" style="position: relative; font-weight: bold">
+                        <div class="col-md-1 d-flex align-items-center position-relative font-weight-bold">
                             <span style="position: absolute; top: -10px">&nbsp;&nbsp;&</span>
-                            <span style="position: absolute; top: calc(50% - 0.5em)">Feel</span>
+                            <span>Feel</span>
                         </div>
                         <div class="col-md-10 frmdb-layout-filters">
                             <div class="form-check form-check-inline" *ngFor="let layout of objectKeys(layouts)">
@@ -82,8 +82,8 @@
                     <div class="dropdown-divider"></div>
                     <div class="frmdb-themes">
                         <a class="dropdown-item" *ngFor="let theme of themes" href="javascript:void(0)">
-                            <img height="150" width="200" [src]="theme.img" (click)="switchTheme(theme.css)" />
-                            <br />{{theme.name}} / {{theme.layout | i18n}} / {{theme.look | i18n}}
+                            <img class="frmdb-theme" height="90" width="150" [src]="theme.img" (click)="switchTheme(theme.css, theme.layout)" />
+                            <!-- <br />{{theme.name}} / {{theme.layout | i18n}} / {{theme.look | i18n}} -->
                         </a>
                     </div>
                 </div>
@@ -108,11 +108,11 @@
                     </a>
                     <div class="divider"></div>
                     <a class="dropdown-item" href="javascript:void(0)">
-                        <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('red')" style="color: red; cursor: pointer"></fa-icon>&nbsp;
-                        <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('green')" style="color: green; cursor: pointer"></fa-icon>&nbsp;
-                        <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('blue')" style="color: blue; cursor: pointer"></fa-icon>&nbsp;
-                        <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('purple')" style="color: purple; cursor: pointer"></fa-icon>&nbsp;
-                        <fa-icon [icon]="collorPaletteIcon" (click)="switchThemeColorPalette('orange')" style="color: orange; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('red')" style="color: red; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('green')" style="color: green; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('blue')" style="color: blue; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('purple')" style="color: purple; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('orange')" style="color: orange; cursor: pointer"></fa-icon>&nbsp;
                     </a>
                     <div class="divider"></div>
                     <a class="dropdown-item" disabled href="javascript:void(0)">

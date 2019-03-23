@@ -4,13 +4,12 @@
 */
 
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef, OnChanges, DoCheck, OnDestroy } from '@angular/core';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import * as appState from '@fe/app/state/app.state';
 import { Observable } from 'rxjs';
 import { Page } from '@core/domain/uimetadata/page';
 import { Theme } from '@core/domain/uimetadata/theme';
-import { merge, map, filter, tap } from 'rxjs/operators';
-import { isNotNullOrUndefined } from '@core/elvis';
 import { FormEditingService } from '../form-editing.service';
 
 @Component({
@@ -21,27 +20,15 @@ import { FormEditingService } from '../form-editing.service';
 export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck, OnDestroy {
 
     selectedEntity$: Observable<appState.Entity | undefined>;
-    themeColorPalette$: Observable<string>;
+    colorPalette$: Observable<string>;
     sidebarImageUrl$: Observable<string>;
     page$: Observable<Page>;
-    layout: Page['layout'] | null;
+    page: Page | null;
 
     constructor(public formEditingService: FormEditingService, private changeDetectorRef: ChangeDetectorRef) {
         this.selectedEntity$ = this.formEditingService.frmdbStreams.entity$;
-        this.themeColorPalette$ = this.formEditingService.frmdbStreams.themeColorPalette$;
-        this.sidebarImageUrl$ = this.formEditingService.frmdbStreams.sidebarImageUrl$;
-        this.page$ = this.formEditingService.frmdbStreams.form$.pipe(
-            tap(x => console.debug(x)),
-            merge(this.formEditingService.frmdbStreams.table$),
-            tap(x => console.debug(x)),
-            filter(isNotNullOrUndefined),
-            tap(x => console.debug(x)),
-            map(x => x.page),
-            tap(x => console.debug(x)),
-            filter(isNotNullOrUndefined),
-            tap(x => console.debug(x)),
-            tap(x => this.layout = x.layout)
-        );
+        this.page$ = this.formEditingService.frmdbStreams.page$.pipe(untilDestroyed(this));
+        this.page$.pipe(untilDestroyed(this)).subscribe(p => this.page = p);
     }
 
     protected getTheme(): Theme {
@@ -51,7 +38,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck,
     }
 
     ngOnInit() {
-        console.debug("ngOnInit", this.layout);
+        console.debug("ngOnInit", this.page);
         //TODO: cleanup, perhaps use this: https://github.com/NetanelBasal/ngx-take-until-destroy
         this.page$.subscribe(x => {
             try {
@@ -68,7 +55,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck,
 
 
     ngAfterViewInit(): void {
-        console.debug(this.layout);
+        console.debug(this.page);
     }
 
     ngDoCheck(): void {

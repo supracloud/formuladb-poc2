@@ -60,10 +60,9 @@ import { CardContainerComponent } from '@fe/app/components/card_prototype/card_c
 import { FormInputComponent } from '@fe/app/components/form_input/form_input.component';
 import { HeaderComponent } from '@fe/app/components/header/header.component';
 import { RouterModule } from '@angular/router';
-import { FrmdbLyAdminComponent } from './frmdb-ly-admin/frmdb-ly-admin.component';
-import { FrmdbLyCoverComponent } from './frmdb-ly-cover/frmdb-ly-cover.component';
-import { FrmdbStreamsService } from '../state/frmdb-streams.service';
-import { FrmdbLyHorizontalSymetryComponent } from './frmdb-ly-horizontal-symetry/frmdb-ly-horizontal-symetry.component';
+import { LyAdminComponent } from './ly_admin/ly_admin.component';
+import { LyCoverComponent } from './ly_cover/ly_cover.component';
+import { LyCardsComponent } from './ly_cards/ly_cards.component';
 
 @NgModule({
     imports: [
@@ -122,9 +121,9 @@ import { FrmdbLyHorizontalSymetryComponent } from './frmdb-ly-horizontal-symetry
         VNavSegmentComponent,
         CardContainerComponent,
         FormInputComponent,
-        FrmdbLyAdminComponent,
-        FrmdbLyCoverComponent,
-        FrmdbLyHorizontalSymetryComponent,        
+        LyAdminComponent,
+        LyCoverComponent,
+        LyCardsComponent,        
     ],
     entryComponents: [
         FormComponent,
@@ -203,9 +202,9 @@ import { FrmdbLyHorizontalSymetryComponent } from './frmdb-ly-horizontal-symetry
         VNavSegmentComponent,
         CardContainerComponent,
         FormInputComponent,
-        FrmdbLyAdminComponent,
-        FrmdbLyCoverComponent,
-        FrmdbLyHorizontalSymetryComponent,
+        LyAdminComponent,
+        LyCoverComponent,
+        LyCardsComponent,
     ],
     providers: [
         FormEditingService,

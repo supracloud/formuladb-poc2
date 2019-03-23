@@ -5,16 +5,16 @@ body {
 }
 
 frmdb-layout,
-frmdb-ly-cover,
-frmdb-ly-lading-header,
-frmdb-ly-lading-slim-header,
-frmdb-ly-carousel,
-frmdb-ly-split,
-frmdb-ly-fpattern,
-frmdb-ly-zpattern,
-frmdb-ly-mosaic,
-frmdb-ly-magazine,
-frmdb-ly-container-free,
+frmdb-ly_cover,
+frmdb-ly_lading_header,
+frmdb-ly_lading_slim-header,
+frmdb-ly_carousel,
+frmdb-ly_split,
+frmdb-ly_fpattern,
+frmdb-ly_zpattern,
+frmdb-ly_mosaic,
+frmdb-ly_magazine,
+frmdb-ly_container_free,
 frmdb-form, 
 frmdb-header, 
 frmdb-form_text, 
@@ -23,6 +23,10 @@ frmdb-card_container,
 frmdb-card {
     display: block;
 }
+
+.vw-75 { width: 75vw !important; }
+.vw-50 { width: 50vw !important; }
+.vw-25 { width: 25vw !important; }
 
 .frmdb-dev-mode-on .frmdb-fixed-top-0 {
     top: 49px !important;

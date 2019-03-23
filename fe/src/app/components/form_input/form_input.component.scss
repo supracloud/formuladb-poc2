@@ -13,11 +13,14 @@
         }
     }
 
+    .frmdb-input-label {
+        position: relative;
+    }
     .frmdb-input-dev-mode-label {
         color: lightgrey;
         position: absolute;
-        bottom: -0.7em;
-        right: 0;
+        bottom: -0.9em;
+        left: 0;
         font-size: .7em;
     }
     // edit-panel {

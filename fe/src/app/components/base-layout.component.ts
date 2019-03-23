@@ -1,16 +1,24 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Page } from '@core/domain/uimetadata/page';
 
 export class BaseLayoutComponent implements OnInit {
     
     @Input()
-    page: Page;
+    brandName: string = 'Cover';
+  
+    @Input()
+    logoUrl: string = 'Cover';
+
+    @Input()
+    hNav: boolean = true;
+  
+    @Input()
+    vNav: boolean = true;
 
     @Input()
     sidebarImageUrl: string;
 
     @Input()
-    themeColorPalette: string;
+    colorPalette: string;
     
     constructor() { }
     

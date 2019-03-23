@@ -5,6 +5,7 @@
 
 import { Pn } from "@core/domain/metadata/entity";
 import { Form, NodeType } from '@core/domain/uimetadata/form'
+import { FrmdbLy } from "@core/domain/uimetadata/page";
 
 let testUUID = 1;
 function getTestUUID() {
@@ -15,7 +16,7 @@ export var LargeSalesReport_Form: Form = {
   _id: "Form_:ALL^^LargeSalesReport",
   nodeType: NodeType.form,
   page: {
-
+    layout: FrmdbLy.ly_admin,
   },
   childNodes: [
     {

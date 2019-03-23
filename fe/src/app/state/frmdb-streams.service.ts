@@ -12,9 +12,9 @@ import { Store } from '@ngrx/store';
 import * as appState from '@fe/app/state/app.state';
 import { filter } from 'rxjs/operators';
 import { AppServerEventAction } from '../actions/app.actions';
-import { ServerEventModifiedFormData } from '../actions/form.backend.actions';
 import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@core/domain/event';
 import { FormDragAction } from '../actions/form.user.actions';
+import { Page } from '@core/domain/uimetadata/page';
 
 @Injectable({
   providedIn: 'root'
@@ -30,8 +30,8 @@ export class FrmdbStreamsService {
   public form$: Observable<Form>;
   public formData$: Observable<DataObj>;
   public autoCompleteState$: Observable<appState.AutoCompleteState>;
-  public themeColorPalette$: Observable<string>;
-  public sidebarImageUrl$: Observable<string>;
+  public page$: Observable<Page>;
+
 
   public userEvents$: Subject<FrmdbUserEvent> = new ReplaySubject();
   public serverEvents$: Subject<FrmdbServerEvent> = new Subject();
@@ -46,8 +46,7 @@ export class FrmdbStreamsService {
     this.formulaHighlightedColumns$ = this.store.select(appState.getTableHighlightColumns);
     this.entity$ = this.store.select(appState.getTableEntityState).pipe(filter<Entity>(x => x != null));
     this.autoCompleteState$ = this.store.select(appState.getAutoCompleteState).pipe(filter<appState.AutoCompleteState>(x => x != null));
-    this.themeColorPalette$ = this.store.select(appState.getThemeColorPalette);
-    this.sidebarImageUrl$ = this.store.select(appState.getSidebarImageUrl);
+    this.page$ = this.store.select(appState.getPageState);
 
     //TODO: remove these and use only ngrx Actions
     this.userEvents$.subscribe(userEvent => {

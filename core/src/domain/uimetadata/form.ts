@@ -7,7 +7,7 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { Page, FrmdbLy } from './page';
+import { FrmdbLy, Page } from './page';
 
 export enum NodeType {
     form = "form",
@@ -41,7 +41,9 @@ export enum NodeType {
     h_filters = "h_filters",
     button = "button",
     button_group = "button_group",
-    card_container = "card_container"
+    card_container = "card_container",
+    ly_admin = "ly_admin",
+    ly_cover = "ly_cover",
 }
 
 
@@ -49,7 +51,7 @@ export class Form implements KeyValueObj {
     _id: string;
     _rev?: string;
     readonly nodeType = NodeType.form;
-    page: Page;
+    page: Partial<Page>;
     childNodes?: NodeElement[];
     stateGraph?: EntityStateGraph;
     isEditable?: boolean;
@@ -136,7 +138,7 @@ export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>
     form.isEditable = entity.isEditable;
     form.stateGraph = entity.stateGraph;
     form.page = {
-        layout: FrmdbLy.admin,
+        layout: FrmdbLy.ly_admin,
     }
 
     setFormElementChildren(form, entity, entitiesMap);

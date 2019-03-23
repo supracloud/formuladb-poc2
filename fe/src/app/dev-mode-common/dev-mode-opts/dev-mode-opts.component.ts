@@ -3,16 +3,18 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import * as appState from '@fe/app/state/app.state';
 import { Store } from '@ngrx/store';
 import { Router } from '@angular/router';
-import { ThemeColorPaletteChangedAction, ThemeSidebarImageUrlChangedAction } from '@fe/app/state/theme.state';
 import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy, faNewspaper, faObjectGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
-import { FrmdbLook, FrmdbLy } from '@core/domain/uimetadata/page';
+import { FrmdbLook, FrmdbLy, Page } from '@core/domain/uimetadata/page';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
+import { PageChangedAction } from '@fe/app/actions/page.user.actions';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 @Component({
     selector: 'frmdb-dev-mode-opts',
@@ -67,12 +69,16 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
     looks: {[x: string]: boolean} = {};
     layouts: {[x: string]: boolean} = {};
+    page$: Observable<Page>;
+    page: Page;
 
     constructor(protected store: Store<appState.AppState>, private router: Router, 
         public formulaEditorService: FormulaEditorService,
         private i18npipe: I18nPipe) {
         this.developerMode$ = this.store.select(appState.getDeveloperMode);
         this.editorOn$ = this.store.select(appState.getEditorOn);
+        this.page$ = this.store.select(appState.getPageState).pipe(untilDestroyed(this));
+        this.page$.subscribe(p => this.page = p);
 
         this.sub(this.clickStartEdit$.subscribe(() => this.formulaEditorService.toggleFormulaEditor()));
         this.clickCancelEdits$.subscribe(() => this.discardChanges());
@@ -108,7 +114,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-
+        this.page$.subscribe(p => this.applyTheme(p));
     }
 
     ngOnDestroy(): void {
@@ -116,12 +122,16 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     allThemes = [
-        {name: "Basic", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/basic-admin.png", css: ""},
-        {name: "Basic", layout: "frmdb-ly-cover", look: "Stylish", img: "assets/img/themes/basic-cover.png", css: ""},
-        {name: "Basic", layout: "frmdb-ly-horizontal-symetry", look: "Approachable", img: "assets/img/themes/basic-horizontal-symetry.png", css: ""},
-        {name: "Light", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/light.jpg", css: ""},
-        {name: "Material", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/material.jpg", css: "/assets/material-dashboard-theme/material-dashboard.min.css"},
-        {name: "NowUI", layout: "frmdb-ly-admin", look: "Professional", img: "assets/img/themes/nowui.jpg", css: ""},
+        {name: "Basic", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/ly_admin.png", css: ""},
+        {name: "Basic", layout: "ly_cover", look: "lk_Stylish", img: "assets/img/themes/ly_cover.png", css: ""},
+        {name: "Basic", layout: "ly_cards", look: "lk_Approachable", img: "assets/img/themes/ly_cards.png", css: ""},
+        {name: "Basic", layout: "ly_fpattern", look: "lk_Friendly", img: "assets/img/themes/ly_fpattern.png", css: ""},
+        {name: "Basic", layout: "ly_dashboard", look: "lk_Friendly", img: "assets/img/themes/ly_dashboard.png", css: ""},
+        {name: "Basic", layout: "ly_carousel", look: "lk_Friendly", img: "assets/img/themes/ly_carousel.png", css: ""},
+        {name: "Basic", layout: "ly_zigzagpattern", look: "lk_Friendly", img: "assets/img/themes/ly_zigzagpattern.png", css: ""},
+        {name: "Light", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: ""},
+        {name: "Material", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/material.jpg", css: "/assets/material-dashboard-theme/material-dashboard.min.css"},
+        {name: "NowUI", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: ""},
     ];
 
     get themes() {
@@ -135,18 +145,27 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         });
     }
 
-    switchTheme(cssURL: string) {
-        if (this.themeStylesheetElement) {
+    switchTheme(cssUrl: string, layout: FrmdbLy) {
+        this.store.dispatch(new PageChangedAction({
+            ...this.page, 
+            cssUrl,
+            layout,
+        }));
+    }
+
+    private applyTheme(page: Page) {
+
+        if (this.themeStylesheetElement && this.themeStylesheetElement.href != page.cssUrl) {
             this.getDocHead().removeChild(this.themeStylesheetElement);
             this.themeStylesheetElement = null;
         }
-        if (cssURL) {
-            this.loadExternalStyles(cssURL);
+        if (page.cssUrl && null == this.themeStylesheetElement) {
+            this.loadExternalStyles(page.cssUrl);
         }
     }
 
-    switchThemeColorPalette(color: string) {
-        this.store.dispatch(new ThemeColorPaletteChangedAction(color));
+    switchcolorPalette(color: string) {
+        this.store.dispatch(new PageChangedAction({...this.page, colorPalette: color}));
     }
 
     switchLanguage(language: string) {
@@ -154,7 +173,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     switchSideBarImage(url: string) {
-        this.store.dispatch(new ThemeSidebarImageUrlChangedAction(url));
+        this.store.dispatch(new PageChangedAction({...this.page, sidebarImageUrl: url}));
     }
 
     private getDocHead(): HTMLHeadElement {

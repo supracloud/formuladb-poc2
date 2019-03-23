@@ -4,7 +4,9 @@
 */
 
 /**
- * Layouts (UX, "the feel"): https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/
+ * Layouts (UX, "the feel"): 
+ *     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/
+ *     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c
  * Themes (UI, "the look"): 
  *     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/
  *     https://www.bopdesign.com/bop-blog/2013/11/what-is-the-look-and-feel-of-a-website-and-why-its-important/
@@ -12,35 +14,41 @@
  */
 
 export enum FrmdbLy {
-    spreadsheet = "frmdb-ly-spreadsheet",
-    admin = "frmdb-ly-admin",
-    cover = "frmdb-ly-cover",
-    landing = "frmdb-ly-landing" ,
-    carousel = "frmdb-ly-carousel",
-    split = "frmdb-ly-split" ,
-    fpattern = "frmdb-ly-fpattern",
-    cards = "frmdb-ly-cards" ,
-    grid = "frmdb-ly-grid" ,
-    zpattern = "frmdb-ly-zpattern",
-    zigzag = "frmdb-ly-zigzag",
-    mosaic = "frmdb-ly-mosaic" ,
-    magazine = "frmdb-ly-magazine",
-    container_free = "frmdb-ly-container-free" ,
-    horizontal_symetry = "frmdb-ly-horizontal-symetry",
-    radial_symetry = "frmdb-ly-radial-symetry",
-    asymetry = "frmdb-ly-asymetry",
+    ly_admin = "ly_admin",
+    ly_cover = "ly_cover",
+    ly_landing = "ly_landing",
+    ly_cards = "ly_cards",
+    ly_fpattern = "ly_fpattern",
+
+    ly_dashboard = "ly_dashboard",
+    ly_spreadsheet = "ly_spreadsheet",
+    ly_carousel = "ly_carousel",
+    ly_form = "ly_form", //same with admin
+
+    ly_split = "ly_split",
+    ly_zpattern = "ly_zpattern",
+    ly_zigzagpattern = "ly_zigzagpattern",
+    ly_mosaic = "ly_mosaic",
+    ly_magazine = "ly_magazine",
+    ly_container_free = "ly_container_free",
+    ly_horizontal_symetry = "ly_horizontal_symetry",
+    ly_radial_symetry = "ly_radial_symetry",
+    ly_asymetry = "ly_asymetry",
+    // Other layouts ?
+    // - tabs
+    // - wizard
 }
 export enum FrmdbLook {
-    Friendly = 'Friendly',
-    Approachable = 'Approachable',
-    Professional = 'Professional',
-    Experienced = 'Experienced',//similar to Professional
-    Upscale = 'Upscale',//similar to Exclusive ?
-    Exclusive = 'Exclusive',
-    CuttingEdge = 'CuttingEdge',//similar to HighTech, but means new and shiny (and still with potential issues)
-    Stylish = 'Stylish',
-    HighTech = 'HighTech',
-    Powerful = 'Powerful',
+    lk_Friendly = 'lk_Friendly',
+    lk_Approachable = 'lk_Approachable',
+    lk_Professional = 'lk_Professional',
+    lk_Experienced = 'lk_Experienced',//similar to Professional
+    lk_Upscale = 'lk_Upscale',//similar to Exclusive ?
+    lk_Exclusive = 'lk_Exclusive',
+    lk_CuttingEdge = 'lk_CuttingEdge',//similar to HighTech, but means new and shiny (and still with potential issues)
+    lk_Stylish = 'lk_Stylish',
+    lk_HighTech = 'lk_HighTech',
+    lk_Powerful = 'lk_Powerful',
 }
 
 export const BrandCharacteristics = [
@@ -56,20 +64,22 @@ export const BrandCharacteristics = [
     {left: "Young", right: "Old"},
 ];
 
-interface FullPage {
+export interface Page {
+    colorPalette: string;
+    sidebarImageUrl: string;    
     brandName: string;
     logoUrl: string;
+    cssUrl: string | null;
     layout: FrmdbLy;
     look: FrmdbLook,
-    tbd1: string;
-    tbd2: string;
-    tbd3: string;
-    tbd4: string;
-    tbd5: string;
-    tbd6: string;
-    tbd7: string;
+    // tbd1: string;
+    // tbd2: string;
+    // tbd3: string;
+    // tbd4: string;
+    // tbd5: string;
+    // tbd6: string;
+    // tbd7: string;
 }
 
-export type Layouts = FullPage['layout'];
+export type Layouts = Page['layout'];
 
-export type Page = Partial<FullPage>;

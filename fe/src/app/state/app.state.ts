@@ -26,7 +26,7 @@ export { Entity };
 export { ChangeObj, applyChanges };
 
 import * as fromCore from './core.state';
-import * as fromTheme from './theme.state';
+import * as fromPage from './page.state';
 import * as fromEntity from "./entity-state";
 import * as fromTable from './table.state';
 import * as fromForm from './form.state';
@@ -38,7 +38,7 @@ export * from "./entity-state";
 export * from "./table.state";
 export * from "./form.state";
 export * from "./core.state";
-export * from "./theme.state";
+export * from "./page.state";
 export * from "./i18n.state";
 export * from './formula.state'
 
@@ -51,7 +51,7 @@ export interface RouterState {
 export interface AppState {
   'router': RouterReducerState<RouterState>;
   'core': fromCore.CoreState;
-  'theme': fromTheme.ThemeState;
+  'theme': fromPage.PageState;
   'entity': fromEntity.EntityState;
   'table': fromTable.TableState;
   'form': fromForm.FormState;
@@ -61,7 +61,7 @@ export interface AppState {
 
 export const appInitialState = {
   core: fromCore.coreInitialState,
-  theme: fromTheme.themeInitialState,
+  theme: fromPage.themeInitialState,
   entity: fromEntity.entityInitialState,
   table: fromTable.tableInitialState,
   form: fromForm.formInitialState,
@@ -75,7 +75,7 @@ export function getInitialState() {
 export type AppActions =
   | AppServerEventAction
   | fromCore.CoresActions
-  | fromTheme.ThemesActions
+  | fromPage.PageActions
   | fromEntity.EntityActions
   | fromTable.TableActions
   | fromForm.FormActions
@@ -180,7 +180,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
 export const reducers = {
   'router': routerReducer,
   ...fromCore.reducers,
-  ...fromTheme.reducers,
+  ...fromPage.reducers,
   ...fromEntity.reducers,
   ...fromTable.reducers,
   ...fromForm.reducers,

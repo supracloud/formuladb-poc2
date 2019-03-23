@@ -3,5 +3,5 @@ import { KeyValueObj } from "./key_value_obj";
 
 export interface App extends KeyValueObj {
     description: string;
-    page: Page;
+    page: Partial<Page>;
 }

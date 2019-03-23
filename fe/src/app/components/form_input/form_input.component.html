@@ -1,6 +1,6 @@
-<label [for]="inputElement._id" *ngIf="!inputElement.noLabel">
+<label class="frmdb-input-label" [for]="inputElement._id" *ngIf="!inputElement.noLabel">
     {{inputElement.propertyName | i18n}}
-    <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">{{inputElement.propertyName}}</div>
+    <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">.{{inputElement.propertyName}}</div>
 </label>
 <input [id]="fullpath" class="form-control" [type]="getType()" [name]="fullpath" [formControl]="formgrp.get(fullpath)"
     *ngIf="hasControl(fullpath)" frmdb-on_focus />
