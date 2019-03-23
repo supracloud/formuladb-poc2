@@ -15,8 +15,8 @@ import { Router } from "@angular/router";
 import { Entity } from "@core/domain/metadata/entity";
 import * as events from "@core/domain/event";
 
-import { Table, getDefaultTable } from "@core/domain/uimetadata/table";
-import { Form, getDefaultForm } from "@core/domain/uimetadata/form";
+import { Table } from "@core/domain/uimetadata/table";
+import { Form } from "@core/domain/uimetadata/form";
 
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
@@ -29,6 +29,7 @@ import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
 import { App } from '@core/domain/app';
+import { autoLayoutTable, autoLayoutForm } from '../components/frmdb-auto-layouts';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedTable
@@ -262,10 +263,10 @@ export class AppEffects {
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.SelectedEntityAction(entity));
 
-            let table: Table = (await this.backendService.getTable(path)) || getDefaultTable(entity);;
+            let table: Table = (await this.backendService.getTable(path)) || autoLayoutTable(entity);;
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let form: Form = (await this.backendService.getForm(path)) || getDefaultForm(entity, this.cachedEntitiesMap);
+            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(entity, this.cachedEntitiesMap);
             this.store.dispatch(new FormFromBackendAction(form));
 
         } catch (err) {

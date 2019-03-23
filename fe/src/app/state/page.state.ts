@@ -11,7 +11,7 @@ export interface PageState extends Page {
   pageType: 'table' | 'form' | null;
 }
 
-export const themeInitialState: PageState = {
+export const pageInitialState: PageState = {
   colorPalette: "default",
   sidebarImageUrl: "/assets/img/sidebar/sidebar-8.jpg",//TODO: set default per page !
   brandName: "FormulaDB",
@@ -32,7 +32,7 @@ export type PageActions =
  * @param state 
  * @param action 
  */
-export function themeReducer(state = themeInitialState, action: PageActions): PageState {
+export function themeReducer(state = pageInitialState, action: PageActions): PageState {
   let ret: PageState = state;
   switch (action.type) {
     case PageChangedActionN:
@@ -56,13 +56,13 @@ export const reducers = {
 export const getPageState = createFeatureSelector<PageState>('page');
 export const getPageLayout = createSelector(
   getPageState,
-  (state: PageState) => state ? state.layout : themeInitialState.layout
+  (state: PageState) => state ? state.layout : pageInitialState.layout
 );
 export const getPageColorPalette = createSelector(
   getPageState,
-  (state: PageState) => state ? state.colorPalette : themeInitialState.colorPalette
+  (state: PageState) => state ? state.colorPalette : pageInitialState.colorPalette
 );
 export const getPageSidebarImageUrl = createSelector(
   getPageState,
-  (state: PageState) => state ? state.sidebarImageUrl : themeInitialState.sidebarImageUrl
+  (state: PageState) => state ? state.sidebarImageUrl : pageInitialState.sidebarImageUrl
 );

@@ -5,6 +5,7 @@ import { combineLatest, startWith, tap } from 'rxjs/operators';
 import { Home } from '@core/default_pages/website-metadata';
 import { entites2navItems, NavigationItem } from '../v_nav/navigation.item';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { Observable } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -16,9 +17,11 @@ export class HNavComponent implements OnInit, OnDestroy, DoCheck {
     public navigationItemsTree: NavigationItem[] = [];
 
     userIcon = faUserCircle;
+    public devMode$: Observable<boolean>;
 
     constructor(public formEditingService: FormEditingService,
         protected changeDetectorRef: ChangeDetectorRef) {
+        this.devMode$ = formEditingService.frmdbStreams.devMode$;
         console.warn("constructor");
     }
 

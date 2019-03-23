@@ -95,7 +95,7 @@ export type NodeElement =
     | CardContainer
     ;
 
-export type NodeElementWithChildren = Form | GridRow | GridCol | FormTable | FormTabs;
+export type NodeElementWithChildren = Form | GridRow | GridCol | FormTable | FormTabs | CardContainer;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return isForm(nodeEl)
         || nodeEl.nodeType === NodeType.grid_row
@@ -132,79 +132,6 @@ export function getChildPath(nodeEl: NodeElement) {
     return '';
 }
 
-export function getDefaultForm(entity: Entity, entitiesMap: _.Dictionary<Entity>): Form {
-    let form = new Form();
-    form._id = 'Form_:' + entity._id;
-    form.isEditable = entity.isEditable;
-    form.stateGraph = entity.stateGraph;
-    form.page = {
-        layout: FrmdbLy.ly_admin,
-    }
-
-    setFormElementChildren(form, entity, entitiesMap);
-    console.log('form:', form);
-    addIdsToForm(form);
-    return form;
-}
-
-export function setFormElementChildren(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
-    parentFormEl.childNodes = _.values(entity.props).map(pn => {
-        let child;
-        if (pn.propType_ === Pn.CHILD_TABLE) {
-            child = pn.isLargeTable ? new FormTable() : new FormTabs();
-            child.tableName = pn.name;
-            if (pn.referencedEntityName) setFormElementChildren(child, entitiesMap[pn.referencedEntityName]!, entitiesMap);
-        } else if (pn.propType_ === Pn.REFERENCE_TO) {
-            child = new FormAutocomplete();
-            if (parentFormEl.nodeType === NodeType.form_table) {
-                child.noLabel = true;
-            }
-            child.refEntityName = pn.referencedEntityName;
-            child.refPropertyName = pn.referencedPropertyName;
-            child.propertyName = pn.name;
-        } else if (pn.propType_ === Pn.DATETIME) {
-            child = new FormDatepicker();
-            child.propertyName = pn.name;
-        } else if (pn.propType_ === Pn.ACTION) {
-            child = new Button();
-            child.propertyName = pn.name;
-        } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
-            child = new FormText();
-            child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-            child.representation = "_id";
-        } else {
-            child = new FormInput();
-            if (parentFormEl.nodeType === NodeType.form_table) {
-                child.noLabel = true;
-            }
-            child.propertyName = pn.name;
-            child.propertyType = pn.propType_;
-        }
-
-        let ret;
-        if (parentFormEl.nodeType === NodeType.form_table) {
-            ret = child;
-        } else {
-            ret = new GridRow();
-            ret.childNodes = [child];
-        }
-
-        return ret;
-    });
-}
-
-function getFormElementForStaticPages(parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
-
-}
-
-export function addIdsToForm(input: NodeElement): void {
-    if (!input._id) { input._id = generateUUID(); }
-    if (isNodeElementWithChildren(input) && input.childNodes && input.childNodes.length > 0) {
-        input.childNodes.forEach(c => addIdsToForm(c));
-    }
-}
-
 export class FormInput implements SubObj {
     readonly nodeType = NodeType.form_input;
     _id: string;
@@ -215,7 +142,9 @@ export class FormInput implements SubObj {
 export class FormText implements SubObj {
     readonly nodeType = NodeType.form_text;
     _id: string;
+    noLabel?: boolean;
     propertyName: string;
+    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
     representation: "title" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id" | "string";
     uppercase?: boolean;
 }
@@ -251,6 +180,7 @@ export class FormTable implements SubObj {
 
 class CardBase implements SubObj {
     _id: string;
+    horizontal: boolean;
     childNodes?: NodeElement[];
 }
 

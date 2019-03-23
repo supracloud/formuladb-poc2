@@ -1,4 +1,4 @@
-import { Component, OnInit, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, ComponentFactoryResolver, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { FormEditingService } from '../form-editing.service';
@@ -12,12 +12,12 @@ import { Card } from '@core/domain/uimetadata/form';
   host: {
     '[class.card]': 'true',
     '[class.mt-2]': 'true',
+    '[class.frmdb-card-horizontal]': 'card.horizontal'
   }
 })
 export class CardComponent extends BaseNodeComponent implements OnInit {
   theme: { [key: string]: string };
   card: Card;
-
 
   constructor(formEditingService: FormEditingService, componentFactoryResolver: ComponentFactoryResolver, private sanitizer: DomSanitizer) {
     super(formEditingService);

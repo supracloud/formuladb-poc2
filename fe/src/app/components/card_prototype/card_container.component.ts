@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { OnChanges, OnInit, OnDestroy, Component, HostBinding } from '@angular/core';
+import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { CardContainer } from '@core/domain/uimetadata/form';
 
@@ -21,6 +21,9 @@ export class CardContainerComponent extends BaseNodeComponent implements OnInit,
 
   cardContainer: CardContainer;
   @HostBinding('class') tmp: string = elvis(this.cardContainer).style || "card-deck";
+  
+  @Input()
+  horizontal: boolean = false;
   
   data: any;
   frameworkComponents: any;

@@ -1,8 +1,9 @@
+<frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state>
+<ng-container [frmdbPageItems]="form?.childNodes" [formgrp]="theFormGroup" [fullpath]="''" [rdonly]="rdonly"></ng-container>
+
 <div class="frmdb-form-status">
     <span class="frmdb-form-status-text badge-pill" [class.badge-success]="theFormGroup.status == 'VALID'"
         [class.badge-danger]="theFormGroup.status == 'INVALID'" [class.badge-warning]="theFormGroup.status == 'PENDING'">
         {{ theFormGroup.status }}
     </span>
 </div>
-<frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state>
-<ng-container [frmdbPageItems]="form?.childNodes" [formgrp]="theFormGroup" [fullpath]="''" [rdonly]="rdonly"></ng-container>

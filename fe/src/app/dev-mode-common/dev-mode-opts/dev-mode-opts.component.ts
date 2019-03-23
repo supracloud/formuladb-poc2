@@ -126,12 +126,12 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         {name: "Basic", layout: "ly_cover", look: "lk_Stylish", img: "assets/img/themes/ly_cover.png", css: ""},
         {name: "Basic", layout: "ly_cards", look: "lk_Approachable", img: "assets/img/themes/ly_cards.png", css: ""},
         {name: "Basic", layout: "ly_fpattern", look: "lk_Friendly", img: "assets/img/themes/ly_fpattern.png", css: ""},
-        {name: "Basic", layout: "ly_dashboard", look: "lk_Friendly", img: "assets/img/themes/ly_dashboard.png", css: ""},
-        {name: "Basic", layout: "ly_carousel", look: "lk_Friendly", img: "assets/img/themes/ly_carousel.png", css: ""},
         {name: "Basic", layout: "ly_zigzagpattern", look: "lk_Friendly", img: "assets/img/themes/ly_zigzagpattern.png", css: ""},
-        {name: "Light", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: ""},
+        {name: "Basic", layout: "ly_carousel", look: "lk_Friendly", img: "assets/img/themes/ly_carousel.png", css: ""},
+        {name: "Basic", layout: "ly_dashboard", look: "lk_Friendly", img: "assets/img/themes/ly_dashboard.png", css: ""},
+        // {name: "Light", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: ""},
         {name: "Material", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/material.jpg", css: "/assets/material-dashboard-theme/material-dashboard.min.css"},
-        {name: "NowUI", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: ""},
+        // {name: "NowUI", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: ""},
     ];
 
     get themes() {

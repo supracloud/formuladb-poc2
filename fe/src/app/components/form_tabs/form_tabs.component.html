@@ -1,5 +1,5 @@
 <ngb-tabset>
-  <ngb-tab *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index" [title]="tabNames[idx]">
+  <ngb-tab *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index" [title]="tabNames[idx] || 'tab'">
     <ng-template ngbTabContent>
       <div [frmdbPageItems]="[nodel.childNodes[0]]" [formgrp]="formgrp" [fullpath]="fullpath + '.' + idx"
         [rdonly]="rdonly"></div>

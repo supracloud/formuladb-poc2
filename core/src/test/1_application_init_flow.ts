@@ -8,7 +8,7 @@ import { ChangeObj } from "@core/domain/change_obj";
 import * as meta from './mocks/mock-metadata';
 import { MockData } from "./mocks/mock-data";
 
-import { getDefaultTable } from "@core/domain/uimetadata/table";
+import { autoLayoutTable } from "@core/domain/uimetadata/table";
 import { _throw } from '../throw';
 
 export function flow() {
@@ -18,7 +18,7 @@ export function flow() {
     return {
         mockMetadata: mockMetadata,
         mockData: mockData,
-        serviceFormTable: getDefaultTable(meta.Forms__ServiceForm),
+        serviceFormTable: autoLayoutTable(meta.Forms__ServiceForm),
     };
 }
 

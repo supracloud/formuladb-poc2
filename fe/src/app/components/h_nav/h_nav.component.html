@@ -1,7 +1,7 @@
 <a class="navbar-brand" href="#">Brand</a>
 
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#frmdb-h_nav-id" aria-controls="frmdb-h_nav-id"
-    aria-expanded="false" aria-label="Toggle navigation">
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#frmdb-h_nav-id" aria-controls="frmdb-h_nav-id" aria-expanded="false"
+    aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
 </button>
 
@@ -9,14 +9,35 @@
 
     <ul class="nav navbar-nav navbar-right">
         <ng-container *ngFor="let navItem of navigationItemsTree">
-            <li *ngIf="!navItem.isPureNavGroupingChildren" class="nav-item"><a class="nav-link" [routerLink]="[navItem.path]">{{navItem.linkName | i18n }}</a>
+            <li *ngIf="!navItem.isPureNavGroupingChildren" class="nav-item">
+                <a class="nav-link" [routerLink]="[navItem.path]">
+                    <span class="frmdb-nav-segment-text">
+                        <span class="frmdb-nav-segment-dev-mode-identifier" *ngIf="devMode$ | async">
+                            {{navItem.linkName}}
+                        </span>
+                        {{navItem.linkName | i18n }}
+                    </span>
+                </a>
             </li>
-            <li *ngIf="navItem.isPureNavGroupingChildren" class="nav-item dropdown" >
+            <li *ngIf="navItem.isPureNavGroupingChildren" class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)" id="navItem.linkName" aria-haspopup="true"
-                    aria-expanded="false">{{navItem.linkName | i18n }}</a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navItem.linkName" >
-                    <a *ngFor="let childNavItem of navItem.children" class="dropdown-item"
-                        [routerLink]="[childNavItem.path]">{{childNavItem.linkName | i18n }}</a>
+                    aria-expanded="false">
+                    <span class="frmdb-nav-segment-text">
+                        <span class="frmdb-nav-segment-dev-mode-identifier" *ngIf="devMode$ | async">
+                            {{navItem.linkName}}
+                        </span>
+                        {{navItem.linkName | i18n }}
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navItem.linkName">
+                    <a *ngFor="let childNavItem of navItem.children" class="dropdown-item" [routerLink]="[childNavItem.path]">
+                        <span class="frmdb-nav-segment-text">
+                            <span class="frmdb-nav-segment-dev-mode-identifier" *ngIf="devMode$ | async">
+                                {{childNavItem.linkName}}
+                            </span>
+                            {{childNavItem.linkName | i18n }}
+                        </span>
+                    </a>
                 </div>
             </li>
         </ng-container>

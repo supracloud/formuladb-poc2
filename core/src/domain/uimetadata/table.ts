@@ -32,22 +32,3 @@ export class Table implements KeyValueObj {
 export function isTable(param: SubObj): param is Table {
     return param != null && typeof param === 'object' && param._id.indexOf('Table_:') === 0;
 }
-
-export function getDefaultTable(entity: Entity): Table {
-    const table = new Table();
-    table.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
-    table.page = {
-        layout: FrmdbLy.ly_admin,
-    }
-    addIdsToTable(table);
-    return table;
-}
-
-export function addIdsToTable(input: Table): void {
-    if (input) {
-        if (!input._id) { input._id = generateUUID(); }
-        if (input.columns && input.columns.length > 0) {
-            input.columns.forEach(c => c._id = generateUUID());
-        }
-    }
-}

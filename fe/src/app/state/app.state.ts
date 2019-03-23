@@ -33,6 +33,7 @@ import * as fromForm from './form.state';
 import * as fromI18n from './i18n.state';
 import * as fromFormula from './formula.state'
 import { AppServerEventAction } from '../actions/app.actions';
+import { autoLayoutReducer } from './auto-layout.reducer';
 
 export * from "./entity-state";
 export * from "./table.state";
@@ -51,7 +52,7 @@ export interface RouterState {
 export interface AppState {
   'router': RouterReducerState<RouterState>;
   'core': fromCore.CoreState;
-  'theme': fromPage.PageState;
+  'page': fromPage.PageState;
   'entity': fromEntity.EntityState;
   'table': fromTable.TableState;
   'form': fromForm.FormState;
@@ -61,7 +62,7 @@ export interface AppState {
 
 export const appInitialState = {
   core: fromCore.coreInitialState,
-  theme: fromPage.themeInitialState,
+  page: fromPage.pageInitialState,
   entity: fromEntity.entityInitialState,
   table: fromTable.tableInitialState,
   form: fromForm.formInitialState,
@@ -98,7 +99,8 @@ export class CustomSerializer implements RouterStateSerializer<RouterState> {
 
 export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<AppState> {
   return function (state: AppState, action: AppActions) {
-    let updatedState = state;
+    let updatedState = autoLayoutReducer(state, action);
+
     if (action.type === fromCore.CoreAppReadonlyActionN) {
       updatedState = {
         ...state,

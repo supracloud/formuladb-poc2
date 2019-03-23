@@ -16,18 +16,19 @@
 export enum FrmdbLy {
     ly_admin = "ly_admin",
     ly_cover = "ly_cover",
-    ly_landing = "ly_landing",
     ly_cards = "ly_cards",
-    ly_fpattern = "ly_fpattern",
+    ly_fpattern = "ly_fpattern", //same as ly_cards just with a different style for the cards
+    ly_zigzagpattern = "ly_zigzagpattern", //same as ly_cards just with a different style for the cards
+    ly_grid = "ly_grid", //same as ly_cards just with a different style for the cards
 
+    ly_landing = "ly_landing",
     ly_dashboard = "ly_dashboard",
     ly_spreadsheet = "ly_spreadsheet",
     ly_carousel = "ly_carousel",
-    ly_form = "ly_form", //same with admin
+    ly_form = "ly_form", //same with ly_admin for Form pages
 
     ly_split = "ly_split",
     ly_zpattern = "ly_zpattern",
-    ly_zigzagpattern = "ly_zigzagpattern",
     ly_mosaic = "ly_mosaic",
     ly_magazine = "ly_magazine",
     ly_container_free = "ly_container_free",

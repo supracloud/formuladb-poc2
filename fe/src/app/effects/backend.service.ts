@@ -12,14 +12,15 @@ import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@core/dom
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@core/domain/event";
 import { SimpleAddHocQuery } from "@core/key_value_store_i";
-import { Table, addIdsToTable, isTable } from "@core/domain/uimetadata/table";
+import { Table, isTable } from "@core/domain/uimetadata/table";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
-import { Form, NodeElement, addIdsToForm, isForm } from "@core/domain/uimetadata/form";
+import { Form, isForm } from "@core/domain/uimetadata/form";
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { App } from "@core/domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
+import { addIdsToTable, addIdsToForm } from '../components/frmdb-auto-layouts';
 
 
 @Injectable()
