@@ -25,6 +25,7 @@ import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
+import { waitUntilNotNull } from '@core/ts-utils';
 
 @Component({
     selector: 'frmdb-table',
@@ -119,9 +120,11 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.table$.subscribe(t => {
-            if (!this.gridApi) return;
-            console.log('new table ', t);
+        console.debug("ngOnInit", this.currentEntity, this.tableState);
+        this.table$.subscribe(async (t) => {
+            console.debug('new table ', t, this.gridApi);
+            await waitUntilNotNull(() => Promise.resolve(this.gridApi));
+            console.debug('new table ', t);
             if (!t.columns) { return; }
             try {
                 this.tableState = _.cloneDeep(t);
@@ -160,6 +163,7 @@ export class TableComponent implements OnInit, OnDestroy {
                 console.error(ex);
             }
         });
+        this.frmdbStreams.entity$.pipe(untilDestroyed(this)).subscribe(e => this.currentEntity = e);
         this.subscriptions.push(this.frmdbStreams.formulaHighlightedColumns$
             .subscribe(h => {
                 this.highlightColumns = h || {};
@@ -181,6 +185,7 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     onGridReady(params: GridReadyEvent) {
+        console.debug("onGridReady", this.currentEntity, this.tableState);
         if (!this.gridApi) {
             this.gridApi = params.api as GridApi;
             this.gridColumnApi = params.columnApi;
