@@ -12,12 +12,14 @@ import { FormsData } from './forms-data';
 import { ReportsData } from './reports-data';
 import { GeneralData } from './general-data';
 import { StaticPagesData } from '../../default_pages/website-data';
+import { BookingData } from './booking-data';
 
 
 export class MockData {
 
     allData: DataObj[] = InventoryData
         .concat(StaticPagesData)
+        .concat(BookingData)
         // .concat(MusicBookingData)
         // .concat(FormsData)
         // .concat(ReportsData)

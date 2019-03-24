@@ -14,6 +14,7 @@ import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../../default_pages/website-metadata";
+import * as Booking from './booking-metadata';
 import { App } from '@core/domain/app';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
 
@@ -79,13 +80,13 @@ export const Schema_inventory: Schema = {
         [InventoryMetadata.LargeSalesProduct._id]: InventoryMetadata.LargeSalesProduct,
     }
 }
-export const App_booking: App = {
-    _id: "App~~booking",
-    description: "Booking Items (e.g. rooms, events, cars)",
+export const App_musicbooking: App = {
+    _id: "App~~musicbooking",
+    description: "Music Studio Booking",
     page: { layout: FrmdbLy.ly_admin },
 };
-export const Schema_booking: Schema = {
-    _id: 'FRMDB_SCHEMA~~' + App_booking._id.replace(/^App~~/, ''),
+export const Schema_musicbooking: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_musicbooking._id.replace(/^App~~/, ''),
     entities: {
         [MusicBookingMetadata.MusicBooking._id]: MusicBookingMetadata.MusicBooking,
         [MusicBookingMetadata.MBK__Service._id]: MusicBookingMetadata.MBK__Service,
@@ -95,6 +96,19 @@ export const Schema_booking: Schema = {
         [MusicBookingMetadata.MBK__Booking._id]: MusicBookingMetadata.MBK__Booking,
         [MusicBookingMetadata.MBK__Booking__Musician._id]: MusicBookingMetadata.MBK__Booking__Musician,
         [MusicBookingMetadata.MBK__Email._id]: MusicBookingMetadata.MBK__Email,
+    },
+}
+export const App_booking: App = {
+    _id: "App~~booking",
+    description: "Booking Items (e.g. rooms, events, cars)",
+    page: { layout: FrmdbLy.ly_admin },
+};
+export const Schema_booking: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + App_booking._id.replace(/^App~~/, ''),
+    entities: {
+        [Booking.BookingApp._id]: Booking.BookingApp,
+        [Booking.BookingItem._id]: Booking.BookingItem,
+        [Booking.Booking._id]: Booking.Booking,
     },
 }
 export const App_expenses: App = {

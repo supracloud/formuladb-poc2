@@ -274,7 +274,7 @@ export class AppEffects {
             }
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap, this.page);
+            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
             if (!form.childNodes || form.childNodes.length == 0) {
                 autoLayoutForm(form, entity, this.cachedEntitiesMap);
             }

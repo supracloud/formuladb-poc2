@@ -17,7 +17,7 @@ export const GEN__Settings: Entity = {
     }
 }
 
-export const GEN__Actor: Entity = {
+export const GEN__Actor = {
     _id: "GEN__Actor",
     props: {
 

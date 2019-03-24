@@ -14,6 +14,7 @@ import { AbstractControl } from '@angular/forms';
 import * as _ from "lodash";
 
 import { FormEditingService } from "../form-editing.service";
+import { elvis } from "@core/elvis";
 
 @Component({
     // tslint:disable-next-line:component-selector
@@ -47,7 +48,7 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     get value(): string {
         if (this.ctrl) {
             if (this.inputElement.representation === '_id') {
-                return this.ctrl.value.replace(/^.*~~/, '')
+                return (this.ctrl.value || '').replace(/^.*~~/, '')
             } 
             else return this.ctrl.value;
         }

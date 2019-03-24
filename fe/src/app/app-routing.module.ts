@@ -18,7 +18,7 @@ const routes: Routes = [
     {
         path: ':appName', component: PageComponent,
         children: [
-            { path: ':entityName', component: TableComponent },
+            { path: ':entityName', component: TableComponent, data: { noReuse: true } },
             { path: ':entityName/:_id', component: FormComponent }
         ]
 

@@ -85,6 +85,7 @@ export const enum Pn {
     DATETIME = "DATETIME",
     DURATION = "DURATION",
     ACTION = "ACTION",
+    IMAGE = "IMAGE",
     ATTACHMENT = "ATTACHMENT",
     CHILD_TABLE = "CHILD_TABLE",
     REFERENCE_TO = "REFERENCE_TO",
@@ -128,8 +129,15 @@ export interface DurationProperty {
 export interface AttachmentProperty {
     propType_: Pn.ATTACHMENT;
     name: string;
-    mediaType: "pdf" | "png" | "jpg" | "gif" | "csv" | "docx" | "xlsx";
+    mediaType: "pdf" | "csv" | "docx" | "xlsx";
     url: string;
+}
+
+export interface ImageProperty {
+    propType_: Pn.IMAGE;
+    name: string;
+    url: string;
+    urls?: string[];
 }
 
 export interface ActionProperty {
@@ -201,6 +209,7 @@ export type EntityProperty =
     | DurationProperty
     | ActionProperty
     | AttachmentProperty
+    | ImageProperty
     | ChildTableProperty
     | ExtendsEntityProperty
     | ReferenceToProperty
