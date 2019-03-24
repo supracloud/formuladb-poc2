@@ -3,25 +3,32 @@ import { BackendService } from './backend.service';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 import { Entity } from '@core/domain/metadata/entity';
+import { FrmdbStreamsService } from '../state/frmdb-streams.service';
+import { waitUntilNotNull } from '@core/ts-utils';
 
 @Injectable()
 export class TableService {
+  currentEntity: Entity;
+  constructor(private backendService: BackendService, private frmdbStreams: FrmdbStreamsService) {
+    frmdbStreams.entity$.subscribe(e => this.currentEntity = e);
+  }
 
-  constructor(private backendService: BackendService) { }
-
-  public getDataSource(entity: Entity): IServerSideDatasource {
-    let self = this;
+  public getDataSource(): IServerSideDatasource {
     return {
-      getRows(params: IServerSideGetRowsParams): void {
+      getRows: async (params: IServerSideGetRowsParams): Promise<void> => {
+        await waitUntilNotNull(() => Promise.resolve(this.currentEntity));
         let req = params.request;
-        self.backendService.simpleAdHocQuery(entity._id, req as SimpleAddHocQuery)
+        this.backendService.simpleAdHocQuery(this.currentEntity._id, req as SimpleAddHocQuery)
           .then((data: any[]) => {
             console.log("%c <---- simpleAdHocQuery: ",
               "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", data);
             return params.successCallback(data, 
-              self.getRowCount(req.startRow, req.endRow - req.startRow, data.length))
+              this.getRowCount(req.startRow, req.endRow - req.startRow, data.length))
           })
-          .catch(() => params.failCallback());
+          .catch((err) => {
+            console.warn(err);
+            params.failCallback();
+          });
       }
     };
   }

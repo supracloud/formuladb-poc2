@@ -24,6 +24,7 @@ import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 @Component({
     selector: 'frmdb-table',
@@ -91,7 +92,7 @@ export class TableComponent implements OnInit, OnDestroy {
             width: 100,
             headerComponentParams: { menuIcon: 'fa-bars' }
         };
-        this.table$ = frmdbStreams.table$;
+        this.table$ = frmdbStreams.table$.pipe(untilDestroyed(this));
     }
 
     applyCellStyles(params) {
@@ -118,23 +119,8 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-
-    }
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub.unsubscribe());
-    }
-
-    onGridReady(params: GridReadyEvent) {
-        this.gridApi = params.api as GridApi;
-        this.gridColumnApi = params.columnApi;
-        this.subscriptions.push(this.frmdbStreams.entity$
-            .subscribe(e => {
-                if (e) {
-                    this.currentEntity = e;
-                    this.gridApi.setServerSideDatasource(this.tableService.getDataSource(e));
-                }
-            }));
-        this.subscriptions.push(this.table$.subscribe(t => {
+        this.table$.subscribe(t => {
+            if (!this.gridApi) return;
             console.log('new table ', t);
             if (!t.columns) { return; }
             try {
@@ -152,8 +138,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     valueFormatter: (params) => this.valueFormatter(params),
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
                 });
-
-                this.gridApi.setColumnDefs(this.columns);
+          
                 const fs = {};
                 t.columns.filter(c => c.filter)
                     .forEach(c => {
@@ -161,14 +146,20 @@ export class TableComponent implements OnInit, OnDestroy {
                             fs[c.name] = { type: c.filter.operator, filter: c.filter.value, filterType: 'text' };
                         }
                     });
-                this.gridApi.setFilterModel(fs);
-                this.gridApi.setSortModel(t.columns.filter(c => c.sort !== null)
-                    .map(c => <any>{ colId: c.name, sort: c.sort }));
+
+                this.gridApi.setColumnDefs(this.columns);
+                try {
+                    this.gridApi.setFilterModel(fs);
+                    this.gridApi.setSortModel(t.columns.filter(c => c.sort !== null)
+                        .map(c => <any>{ colId: c.name, sort: c.sort }));
+                } catch (err) {
+                    console.error(err);
+                }
 
             } catch (ex) {
                 console.error(ex);
             }
-        }));
+        });
         this.subscriptions.push(this.frmdbStreams.formulaHighlightedColumns$
             .subscribe(h => {
                 this.highlightColumns = h || {};
@@ -179,20 +170,28 @@ export class TableComponent implements OnInit, OnDestroy {
         );
 
         this.subscriptions.push(this.frmdbStreams.serverEvents$.subscribe(serverEvent => {
+            if (!this.gridApi) return;
             if (serverEvent.type === "ServerDeletedFormData") {
                 this.gridApi.purgeServerSideCache()
             }
         }));
-
-        this.gridApi.closeToolPanel();
+    }
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
-    refreshData() {
+    onGridReady(params: GridReadyEvent) {
+        if (!this.gridApi) {
+            this.gridApi = params.api as GridApi;
+            this.gridColumnApi = params.columnApi;
+            this.gridApi.setServerSideDatasource(this.tableService.getDataSource());
+            this.gridApi.closeToolPanel();
+        }
 
     }
 
     valueFormatter(params) {
-        if (params.colDef.field === '_id') return params.value.replace(/^.*~~/, '');
+        if (params.colDef.field === '_id') return (params.value||'').replace(/^.*~~/, '');
         else return params.value;
     }
 
