@@ -15,7 +15,10 @@ import { FormEditingService } from '../form-editing.service';
   // tslint:disable-next-line:component-selector
   selector: '[frmdb-form_tabs]',
   templateUrl: './form_tabs.component.html',
-  styleUrls: ['./form_tabs.component.scss']
+  styleUrls: ['./form_tabs.component.scss'],
+  host: {
+    '[class.w-100]': 'true',
+  }
 })
 export class FormTabsComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
   private tabNames: string[] = [];

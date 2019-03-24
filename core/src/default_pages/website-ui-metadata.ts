@@ -20,24 +20,7 @@ export var HomePage_Form: Form = {
         logoUrl: '/assets/icon2.128.png',
         layout: FrmdbLy.ly_cover,
     },
-    childNodes: [
-        { nodeType: NodeType.header, _id: getTestUUID(), childNodes: [
-            { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "title", representation: "title" },
-            { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "tagline", representation: "paragraph" },
-        ]},
-        { nodeType: NodeType.card_container, _id: getTestUUID(), tableName: "product_features", childNodes: [
-            { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
-                { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
-                    { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "name", representation: "h3", }
-                ]}
-            ]},
-            { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
-                { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
-                    { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "description", representation: "paragraph"}
-                ]}
-            ]},
-        ]}
-    ]
+    childNodes: [],
 };
 
 export var HomePage_Table: Table = {
@@ -46,26 +29,5 @@ export var HomePage_Table: Table = {
         logoUrl: '/assets/icon2.128.png',
         layout: FrmdbLy.ly_cover,
     },
-    "columns": [
-        {
-            "name": "title",
-            type: Pn.STRING,
-            "_id": "nKq4X7Z1vBEb5xtHJer7uw"
-        },
-        {
-            "name": "tagline",
-            type: Pn.STRING,
-            "_id": "4Jz4rDLNpMAgNqsiaPfTjT"
-        },
-        {
-            "name": "product_features",
-            type: Pn.CHILD_TABLE,
-            "_id": "kNNqKxD4rJKejoqGMqyc9C"
-        },
-        {
-            "name": "_id",
-            type: Pn.STRING,
-            "_id": "ggsFTkHEyYkpfFVipqndU6"
-        }
-    ],
+    columns: [],
 };

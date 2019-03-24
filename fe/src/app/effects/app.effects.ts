@@ -29,7 +29,9 @@ import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
 import { App } from '@core/domain/app';
-import { autoLayoutTable, autoLayoutForm } from '../components/frmdb-auto-layouts';
+import { autoLayoutForm } from '../components/auto-layout-form';
+import { autoLayoutTable } from '../components/auto-layout-table';
+import { Page } from '@core/domain/uimetadata/page';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedTable
@@ -55,6 +57,7 @@ export const ActionsToBeSentToServerNames = [
 export class AppEffects {
     private currentUrl: { appName: string | null, entityName: string | null, id: string | null, entity: Entity | null } = { appName: null, entityName: null, id: null, entity: null };
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
+    private page: Page;
 
     constructor(
         private actions$: Actions,
@@ -71,6 +74,8 @@ export class AppEffects {
 
         //listen for new object creations
         this.listenForNewDataObjActions();
+
+        this.store.select(appState.getPageState).subscribe(p => this.page = p);
     }
 
     public async changeApplication(appName: string) {
@@ -263,10 +268,16 @@ export class AppEffects {
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.SelectedEntityAction(entity));
 
-            let table: Table = (await this.backendService.getTable(path)) || autoLayoutTable(entity);;
+            let table: Table = (await this.backendService.getTable(path)) || autoLayoutTable(null, entity);
+            if (table.columns.length == 0) {
+                autoLayoutTable(table, entity);
+            }
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(entity, this.cachedEntitiesMap);
+            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap, this.page);
+            if (!form.childNodes || form.childNodes.length == 0) {
+                autoLayoutForm(form, entity, this.cachedEntitiesMap);
+            }
             this.store.dispatch(new FormFromBackendAction(form));
 
         } catch (err) {

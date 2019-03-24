@@ -1,5 +1,4 @@
 import { Entity } from "@core/domain/metadata/entity";
-import { Table } from "@core/domain/uimetadata/table";
 import { Page, FrmdbLy } from "@core/domain/uimetadata/page";
 import { NodeElementWithChildren, FormTable, FormTabs, FormAutocomplete, NodeType, FormDatepicker, FormText, FormInput, GridRow, NodeElement, isNodeElementWithChildren, Form, Button, CardContainer } from "@core/domain/uimetadata/form";
 
@@ -8,22 +7,21 @@ import * as _ from "lodash";
 import { Pn } from "@core/domain/metadata/entity";
 
 import { generateUUID } from "@core/domain/uuid";
-import { TableColumn } from "@core/domain/uimetadata/table";
 import { elvis } from "@core/elvis";
 
-export function autoLayoutForm(entity: Entity, entitiesMap: _.Dictionary<Entity>, pageOpts?: Partial<Page>): Form {
-    let form = new Form();
-    form._id = 'Form_:' + entity._id;
-    form.isEditable = entity.isEditable;
-    form.stateGraph = entity.stateGraph;
-    form.page = pageOpts || {
+export function autoLayoutForm(form: Form | null, entity: Entity, entitiesMap: _.Dictionary<Entity>, pageOpts?: Partial<Page>): Form {
+    let retForm = form || new Form();
+    retForm._id = 'Form_:' + entity._id;
+    retForm.isEditable = entity.isEditable;
+    retForm.stateGraph = entity.stateGraph;
+    retForm.page = retForm.page || pageOpts || {
         layout: FrmdbLy.ly_admin,
     };
 
-    setFormElementChildren(form.page, form, entity, entitiesMap);
-    console.log('form:', form);
-    addIdsToForm(form);
-    return form;
+    setFormElementChildren(retForm.page, retForm, entity, entitiesMap);
+    console.log('form:', retForm);
+    addIdsToForm(retForm);
+    return retForm;
 }
 
 export function setFormElementChildren(pageOpts: Partial<Page>, parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
@@ -37,6 +35,9 @@ export function setFormElementChildren(pageOpts: Partial<Page>, parentFormEl: No
                 if (FrmdbLy.ly_fpattern === layout) {
                     child.horizontal = true;
                 }
+            } else if (FrmdbLy.ly_cover === layout) {
+                child = new CardContainer();
+                child.style = "group";
             } else {
                 child = pn.isLargeTable ? new FormTable() : new FormTabs();
             }
@@ -86,24 +87,5 @@ export function addIdsToForm(input: NodeElement): void {
     if (!input._id) { input._id = generateUUID(); }
     if (isNodeElementWithChildren(input) && input.childNodes && input.childNodes.length > 0) {
         input.childNodes.forEach(c => addIdsToForm(c));
-    }
-}
-
-export function autoLayoutTable(entity: Entity): Table {
-    const table = new Table();
-    table.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
-    table.page = {
-        layout: FrmdbLy.ly_admin,
-    }
-    addIdsToTable(table);
-    return table;
-}
-
-export function addIdsToTable(input: Table): void {
-    if (input) {
-        if (!input._id) { input._id = generateUUID(); }
-        if (input.columns && input.columns.length > 0) {
-            input.columns.forEach(c => c._id = generateUUID());
-        }
     }
 }

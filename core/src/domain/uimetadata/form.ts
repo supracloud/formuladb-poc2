@@ -180,7 +180,7 @@ export class FormTable implements SubObj {
 
 class CardBase implements SubObj {
     _id: string;
-    horizontal: boolean;
+    horizontal?: boolean;
     childNodes?: NodeElement[];
 }
 

@@ -20,7 +20,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { App } from "@core/domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
-import { addIdsToTable, addIdsToForm } from '../components/frmdb-auto-layouts';
+import { addIdsToForm } from '../components/auto-layout-form';
+import { addIdsToTable } from '../components/auto-layout-table';
 
 
 @Injectable()

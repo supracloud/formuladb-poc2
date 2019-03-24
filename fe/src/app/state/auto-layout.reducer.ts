@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import { AppState, AppActions } from "./app.state";
 import { PageChangedActionN } from "../actions/page.user.actions";
-import { autoLayoutForm } from "../components/frmdb-auto-layouts";
+import { autoLayoutForm } from "../components/auto-layout-form";
 import { FormFromBackendActionN } from '../actions/form.backend.actions';
 
 export function autoLayoutReducer(state: AppState, action: AppActions): AppState {
@@ -13,7 +13,7 @@ export function autoLayoutReducer(state: AppState, action: AppActions): AppState
                 ...state,
                 form: {
                     ...state.form,
-                    form: autoLayoutForm(state.entity.selectedEntity, _.keyBy(state.entity.entities, '_id'), action.page),
+                    form: autoLayoutForm(null, state.entity.selectedEntity, _.keyBy(state.entity.entities, '_id'), action.page),
                 }
             }
             break;
