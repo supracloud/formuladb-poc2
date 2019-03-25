@@ -33,6 +33,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     layoutIcon = faObjectGroup;
     dataIcon = faTable;
     styleIcon = faPalette;
+    userIcon = faUserCircle;
     changeAppIcon = faSignOutAlt;
 
     tableIcon = faTable;

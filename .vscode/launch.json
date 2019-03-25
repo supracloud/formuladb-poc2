@@ -29,6 +29,9 @@
         {
             "name": "BE specs mem",
             "type": "node",
+            "useWSL": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
@@ -48,6 +51,7 @@
         {
             "name": "BE specs postgres",
             "type": "node",
+            "useWSL": true,
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",

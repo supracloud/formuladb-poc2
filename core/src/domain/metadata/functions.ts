@@ -78,17 +78,6 @@ function FACT(expr: string | Expression): string { return f2s(FACT, expr); }
 function HLOOKUP(expr: string | Expression): string { return f2s(HLOOKUP, expr); }
 function FLOOR(expr: string, significance: string): string { return f2s(FLOOR, expr, significance); }
 
-export const ScalarFunctionsN = {
-    TEXT: TEXT,
-    REGEXREPLACE: REGEXREPLACE,
-    EOMONTH: EOMONTH,
-    SQRT: SQRT,
-    ROUND: ROUND,
-    FACT: FACT,
-    HLOOKUP: HLOOKUP,
-    FLOOR: FLOOR,
-}
-
 export const Fn = {
     GROUP_BY: GROUP_BY,
     _MAP: _MAP,

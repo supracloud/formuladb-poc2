@@ -283,7 +283,7 @@ describe('FrmdbEngine', () => {
         done();
     });
     
-    fit("Should update views and compute new values of Observer when Observer field chande", async (done) => {
+    it("Should update views and compute new values of Observer when Observer field chande", async (done) => {
         let schema = _.cloneDeep(stockReservationSchema);
         (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
         frmdbTStore = await getFrmdbEngineStore(schema);

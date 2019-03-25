@@ -21,7 +21,7 @@
                 <frmdb-formula-code-editor></frmdb-formula-code-editor>
             </form>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" title="Table" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" title="Table Data" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <fa-icon [icon]="dataIcon" class="fa-sm"></fa-icon>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
@@ -141,6 +141,16 @@
                     </a>
                 </div>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                    <fa-icon [icon]="userIcon"></fa-icon>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                    <a class="dropdown-item" href="javascript:void(0)">Admin</a>
+                    <a class="dropdown-item" href="javascript:void(0)">User</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Partner</a>
+                </div>
+            </li>    
             <li class="nav-item">
                 <a class="nav-link" href="javascript:void(0)" (click)="goToAppList()">
                     <fa-icon title="'Change app' | i18n" [icon]="changeAppIcon" class="fa-sm"></fa-icon>

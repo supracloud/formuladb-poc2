@@ -391,9 +391,7 @@ function STRING(fc: FuncCommon) {
 function DATETIME(fc: FuncCommon) {
     return propertyTypeFunction(fc);
 }
-function DURATION(fc: FuncCommon) {
-    return propertyTypeFunction(fc);
-}
+
 
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
@@ -554,6 +552,9 @@ function HLOOKUP(fc: FuncCommon, expr: Expression): CompiledScalar {
 function FLOOR(fc: FuncCommon, expr: Expression, significance: NumberLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function DATEDIF(fc: FuncCommon, start_date: Expression, end_date: Expression, unit: StringLiteral): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 
 export const ScalarFunctions = {
     TEXT: TEXT,
@@ -564,6 +565,7 @@ export const ScalarFunctions = {
     FACT: FACT,
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
+    DATEDIF: DATEDIF,
 }
 
 export const PropertyTypeFunctions = {
@@ -571,7 +573,6 @@ export const PropertyTypeFunctions = {
     STRING: STRING,
     TEXT: TEXT,
     DATETIME: DATETIME,
-    DURATION: DURATION,
     REFERENCE_TO: REFERENCE_TO,
 }
 

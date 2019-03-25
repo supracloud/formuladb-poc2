@@ -7,6 +7,7 @@ import * as _ from "lodash";
 import { CircularJSON } from "@core/json-stringify";
 import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { Expression } from "jsep";
+import * as moment from 'moment';
 
 declare var emit: any;
 
@@ -102,7 +103,27 @@ export function evalExpression(doc: {}, expr: Expression | Expression[]) {
         },
         HLOOKUP: function HLOOKUP(expr) {
             //TODO
-        },        
+        },
+        DATEDIF: function DATEDIF(start_date, end_date, unit) {
+            let start = moment(start_date);
+            let end = moment(end_date);
+            let diff = end.diff(start);
+            let duration = moment.duration(diff);
+            switch(unit) {
+                case "Y":
+                    return duration.asYears();
+                case "M":
+                    return duration.asMonths();
+                case "D":
+                    return duration.asDays();
+                case "MD":
+                    return duration.asDays();//TODO
+                case "YM":
+                    return duration.asDays();//TODO
+                case "YD":
+                    return duration.asDays();//TODO
+            }
+        }
     };
 
     function evaluate(node, context) {

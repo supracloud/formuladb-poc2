@@ -81,9 +81,8 @@ export const enum Pn {
     NUMBER = "NUMBER",
     STRING = "STRING",
     BOOLEAN = "BOOLEAN",
-    DOCUMENT = "TEXT",
+    DOCUMENT = "DOCUMENT",
     DATETIME = "DATETIME",
-    DURATION = "DURATION",
     ACTION = "ACTION",
     IMAGE = "IMAGE",
     ATTACHMENT = "ATTACHMENT",
@@ -96,6 +95,7 @@ export const enum Pn {
 export interface NumberProperty {
     propType_: Pn.NUMBER;
     name: string;
+    format?: "default" | "currency" | "percentage";
     defaultValue?: number;
     allowNull?: boolean;
 }
@@ -116,12 +116,6 @@ export interface DocumentProperty {
 }
 export interface DatetimeProperty {
     propType_: Pn.DATETIME;
-    name: string;
-    allowNull?: boolean;
-}
-
-export interface DurationProperty {
-    propType_: Pn.DURATION;
     name: string;
     allowNull?: boolean;
 }
@@ -206,7 +200,6 @@ export type EntityProperty =
     | StringProperty
     | DocumentProperty
     | DatetimeProperty
-    | DurationProperty
     | ActionProperty
     | AttachmentProperty
     | ImageProperty

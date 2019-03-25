@@ -23,14 +23,14 @@ import {
     isCallExpression
 } from "jsep";
 import { PickOmit } from "../../ts-utils";
-import { ScalarFunctionsN } from "./functions";
 import { ReduceFun } from "./reduce_functions";
+import { ScalarFunctions } from "@core/functions_compiler";
 
 export type ScalarCallExpression = CallExpression;
 export function isScalarCallExpression(param: Expression): param is ScalarCallExpression {
     if (!isCallExpression(param)) return false;
     if (!isIdentifier(param.callee)) return false;
-    return ScalarFunctionsN[param.callee.name] != null;
+    return ScalarFunctions[param.callee.name] != null;
 }
 
 export const enum ExecPlanN {

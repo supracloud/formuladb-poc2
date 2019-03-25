@@ -1,881 +1,203 @@
-[
-    {
-        "code": "c-Forms__ServiceForm100",
-        "product_form_id": 101,
-        "client": {
-            "_id": "Forms__ServiceForm~~UUID-undefined",
-            "code": "c-Inventory__Client100",
-            "username": "username101",
-            "name": "NInventory__Client102",
-            "role": "role103",
-            "password": "password104",
-            "details": "details105",
-            "type": "type106",
-            "parent_code": "parent_code107",
-            "param1": "param1108",
-            "state": "state109"
-        },
-        "time_of_arrival": "2018-08-17T12:07:48.610Z",
-        "time_of_departure": "2018-08-17T12:07:48.610Z",
-        "normal_hours": 105,
-        "warranty_hours": 106,
-        "night_hours": 107,
-        "shipment_cost": "shipment_cost108",
-        "notes": "notes109",
-        "technician_code": "technician_code110",
-        "technician2_code": "technician2_code111",
-        "client_person": "client_person112",
-        "state": "state113",
-        "nb_installments": 114,
-        "accommodation": 115,
-        "service_form_units": [
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit300",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product200",
-                        "barcode": "barcode201",
-                        "name": "NInventory__Product202",
-                        "description": "description203",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation302",
-                    "serial1": "serial1303",
-                    "serial2": "serial2304",
-                    "serial3": "serial3305",
-                    "serial4": "serial4306",
-                    "serial5": "serial5307",
-                    "serial6": "serial6308",
-                    "serial7": "serial7309",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state311",
-                    "nb_piston_cycles": "nb_piston_cycles312",
-                    "brita_counter": "brita_counter313",
-                    "washing_cycles": "washing_cycles314"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_116001",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_116002",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_116003",
-                "nb_piston_cycles": "nb_piston_cycles116004",
-                "brita_counter": "brita_counter116005",
-                "washing_cycles": "washing_cycles116006",
-                "state": "state116007",
-                "equipment_group": "equipment_group116008",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-1160"
-            },
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit100",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product300",
-                        "barcode": "barcode301",
-                        "name": "NInventory__Product302",
-                        "description": "description303",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation102",
-                    "serial1": "serial1103",
-                    "serial2": "serial2104",
-                    "serial3": "serial3105",
-                    "serial4": "serial4106",
-                    "serial5": "serial5107",
-                    "serial6": "serial6108",
-                    "serial7": "serial7109",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state111",
-                    "nb_piston_cycles": "nb_piston_cycles112",
-                    "brita_counter": "brita_counter113",
-                    "washing_cycles": "washing_cycles114"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_116101",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_116102",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_116103",
-                "nb_piston_cycles": "nb_piston_cycles116104",
-                "brita_counter": "brita_counter116105",
-                "washing_cycles": "washing_cycles116106",
-                "state": "state116107",
-                "equipment_group": "equipment_group116108",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-1161"
-            },
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit200",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product100",
-                        "barcode": "barcode101",
-                        "name": "NInventory__Product102",
-                        "description": "description103",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation202",
-                    "serial1": "serial1203",
-                    "serial2": "serial2204",
-                    "serial3": "serial3205",
-                    "serial4": "serial4206",
-                    "serial5": "serial5207",
-                    "serial6": "serial6208",
-                    "serial7": "serial7209",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state211",
-                    "nb_piston_cycles": "nb_piston_cycles212",
-                    "brita_counter": "brita_counter213",
-                    "washing_cycles": "washing_cycles214"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_116201",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_116202",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_116203",
-                "nb_piston_cycles": "nb_piston_cycles116204",
-                "brita_counter": "brita_counter116205",
-                "washing_cycles": "washing_cycles116206",
-                "state": "state116207",
-                "equipment_group": "equipment_group116208",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-1162"
-            }
-        ],
-        "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-1",
-        "_rev": "21-2afbc0c41837dbfbec941723f4112e87"
-    },
-    {
-        "code": "c-Forms__ServiceForm200",
-        "product_form_id": 201,
-        "client": {
-            "_id": "Forms__ServiceForm~~UUID-undefined",
-            "code": "c-Inventory__Client200",
-            "username": "username201",
-            "name": "NInventory__Client202",
-            "role": "role203",
-            "password": "password204",
-            "details": "details205",
-            "type": "type206",
-            "parent_code": "parent_code207",
-            "param1": "param1208",
-            "state": "state209"
-        },
-        "time_of_arrival": "2018-08-17T12:07:48.610Z",
-        "time_of_departure": "2018-08-17T12:07:48.610Z",
-        "normal_hours": 205,
-        "warranty_hours": 206,
-        "night_hours": 207,
-        "shipment_cost": "shipment_cost208",
-        "notes": "notes209",
-        "technician_code": "technician_code210",
-        "technician2_code": "technician2_code211",
-        "client_person": "client_person212",
-        "state": "state213",
-        "nb_installments": 214,
-        "accommodation": 215,
-        "service_form_units": [
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit100",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product300",
-                        "barcode": "barcode301",
-                        "name": "NInventory__Product302",
-                        "description": "description303",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation102",
-                    "serial1": "serial1103",
-                    "serial2": "serial2104",
-                    "serial3": "serial3105",
-                    "serial4": "serial4106",
-                    "serial5": "serial5107",
-                    "serial6": "serial6108",
-                    "serial7": "serial7109",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state111",
-                    "nb_piston_cycles": "nb_piston_cycles112",
-                    "brita_counter": "brita_counter113",
-                    "washing_cycles": "washing_cycles114"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_216001",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_216002",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_216003",
-                "nb_piston_cycles": "nb_piston_cycles216004",
-                "brita_counter": "brita_counter216005",
-                "washing_cycles": "washing_cycles216006",
-                "state": "state216007",
-                "equipment_group": "equipment_group216008",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-2160"
-            },
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit200",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product100",
-                        "barcode": "barcode101",
-                        "name": "NInventory__Product102",
-                        "description": "description103",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation202",
-                    "serial1": "serial1203",
-                    "serial2": "serial2204",
-                    "serial3": "serial3205",
-                    "serial4": "serial4206",
-                    "serial5": "serial5207",
-                    "serial6": "serial6208",
-                    "serial7": "serial7209",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state211",
-                    "nb_piston_cycles": "nb_piston_cycles212",
-                    "brita_counter": "brita_counter213",
-                    "washing_cycles": "washing_cycles214"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_216101",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_216102",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_216103",
-                "nb_piston_cycles": "nb_piston_cycles216104",
-                "brita_counter": "brita_counter216105",
-                "washing_cycles": "washing_cycles216106",
-                "state": "state216107",
-                "equipment_group": "equipment_group216108",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-2161"
-            },
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit300",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product200",
-                        "barcode": "barcode201",
-                        "name": "NInventory__Product202",
-                        "description": "description203",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation302",
-                    "serial1": "serial1303",
-                    "serial2": "serial2304",
-                    "serial3": "serial3305",
-                    "serial4": "serial4306",
-                    "serial5": "serial5307",
-                    "serial6": "serial6308",
-                    "serial7": "serial7309",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state311",
-                    "nb_piston_cycles": "nb_piston_cycles312",
-                    "brita_counter": "brita_counter313",
-                    "washing_cycles": "washing_cycles314"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_216201",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_216202",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_216203",
-                "nb_piston_cycles": "nb_piston_cycles216204",
-                "brita_counter": "brita_counter216205",
-                "washing_cycles": "washing_cycles216206",
-                "state": "state216207",
-                "equipment_group": "equipment_group216208",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-2162"
-            }
-        ],
-        "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-2",
-        "_rev": "21-5cbcd6ffdee51b9304dc2e13a7c20dc5"
-    },
-    {
-        "code": "c-Forms__ServiceForm300",
-        "product_form_id": 301,
-        "client": {
-            "_id": "Forms__ServiceForm~~UUID-undefined",
-            "code": "c-Inventory__Client300",
-            "username": "username301",
-            "name": "NInventory__Client302",
-            "role": "role303",
-            "password": "password304",
-            "details": "details305",
-            "type": "type306",
-            "parent_code": "parent_code307",
-            "param1": "param1308",
-            "state": "state309"
-        },
-        "time_of_arrival": "2018-08-17T12:07:48.610Z",
-        "time_of_departure": "2018-08-17T12:07:48.610Z",
-        "normal_hours": 305,
-        "warranty_hours": 306,
-        "night_hours": 307,
-        "shipment_cost": "shipment_cost308",
-        "notes": "notes309",
-        "technician_code": "technician_code310",
-        "technician2_code": "technician2_code311",
-        "client_person": "client_person312",
-        "state": "state313",
-        "nb_installments": 314,
-        "accommodation": 315,
-        "service_form_units": [
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit200",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product100",
-                        "barcode": "barcode101",
-                        "name": "NInventory__Product102",
-                        "description": "description103",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation202",
-                    "serial1": "serial1203",
-                    "serial2": "serial2204",
-                    "serial3": "serial3205",
-                    "serial4": "serial4206",
-                    "serial5": "serial5207",
-                    "serial6": "serial6208",
-                    "serial7": "serial7209",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state211",
-                    "nb_piston_cycles": "nb_piston_cycles212",
-                    "brita_counter": "brita_counter213",
-                    "washing_cycles": "washing_cycles214"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_316001",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_316002",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_316003",
-                "nb_piston_cycles": "nb_piston_cycles316004",
-                "brita_counter": "brita_counter316005",
-                "washing_cycles": "washing_cycles316006",
-                "state": "state316007",
-                "equipment_group": "equipment_group316008",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-3160"
-            },
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit300",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product200",
-                        "barcode": "barcode201",
-                        "name": "NInventory__Product202",
-                        "description": "description203",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-2042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation302",
-                    "serial1": "serial1303",
-                    "serial2": "serial2304",
-                    "serial3": "serial3305",
-                    "serial4": "serial4306",
-                    "serial5": "serial5307",
-                    "serial6": "serial6308",
-                    "serial7": "serial7309",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state311",
-                    "nb_piston_cycles": "nb_piston_cycles312",
-                    "brita_counter": "brita_counter313",
-                    "washing_cycles": "washing_cycles314"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_316101",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_316102",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_316103",
-                "nb_piston_cycles": "nb_piston_cycles316104",
-                "brita_counter": "brita_counter316105",
-                "washing_cycles": "washing_cycles316106",
-                "state": "state316107",
-                "equipment_group": "equipment_group316108",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-3161"
-            },
-            {
-                "equipment": {
-                    "_id": "Forms__ServiceForm~~UUID-undefined",
-                    "code": "c-Inventory__ProductUnit100",
-                    "product": {
-                        "_id": "Inventory__ProductUnit~~UUID-undefined",
-                        "code": "c-Inventory__Product300",
-                        "barcode": "barcode301",
-                        "name": "NInventory__Product302",
-                        "description": "description303",
-                        "inventoryLocation": [
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3040"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3041"
-                            },
-                            {
-                                "_id": "Inventory__Product~~UUID-Inventory__Product-t-3042"
-                            }
-                        ]
-                    },
-                    "inventoryLocation": "inventoryLocation102",
-                    "serial1": "serial1103",
-                    "serial2": "serial2104",
-                    "serial3": "serial3105",
-                    "serial4": "serial4106",
-                    "serial5": "serial5107",
-                    "serial6": "serial6108",
-                    "serial7": "serial7109",
-                    "install_date": "2018-08-17T12:07:48.610Z",
-                    "state": "state111",
-                    "nb_piston_cycles": "nb_piston_cycles112",
-                    "brita_counter": "brita_counter113",
-                    "washing_cycles": "washing_cycles114"
-                },
-                "reported_problem": "reported_problem_reported_problem_reported_problem_reported_problem_reported_problem_316201",
-                "found_problem": "found_problem_found_problem_found_problem_found_problem_found_problem_316202",
-                "work_description": "work_description_work_description_work_description_work_description_work_description_316203",
-                "nb_piston_cycles": "nb_piston_cycles316204",
-                "brita_counter": "brita_counter316205",
-                "washing_cycles": "washing_cycles316206",
-                "state": "state316207",
-                "equipment_group": "equipment_group316208",
-                "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-t-3162"
-            }
-        ],
-        "_id": "Forms__ServiceForm~~UUID-Forms__ServiceForm-3",
-        "_rev": "21-96724691869227e0a39ed47e58160b3f"
-    },
-    {
-        "code": "c-Inventory__Client100",
-        "username": "username101",
-        "name": "NInventory__Client102",
-        "role": "role103",
-        "password": "password104",
-        "details": "details105",
-        "type": "type106",
-        "parent_code": "parent_code107",
-        "param1": "param1108",
-        "state": "state109",
-        "_id": "Forms__ServiceForm~~UUID-undefined",
-        "_rev": "21-768c86628252ba0eaebc7f8e0c18598a"
-    },
-    {
-        "code": "c-General__Actor100",
-        "username": "username101",
-        "name": "NGeneral__Actor102",
-        "role": "role103",
-        "password": "password104",
-        "details": "details105",
-        "type": "type106",
-        "parent_code": "parent_code107",
-        "param1": "param1108",
-        "state": "state109",
-        "_id": "General__Actor~~UUID-General__Actor-1",
-        "_rev": "21-1e81ad61ca4c58c819dd89017a0a9d4e"
-    },
-    {
-        "code": "c-General__Actor200",
-        "username": "username201",
-        "name": "NGeneral__Actor202",
-        "role": "role203",
-        "password": "password204",
-        "details": "details205",
-        "type": "type206",
-        "parent_code": "parent_code207",
-        "param1": "param1208",
-        "state": "state209",
-        "_id": "General__Actor~~UUID-General__Actor-2",
-        "_rev": "21-a79bba55d85ba0f5d670c76e3d174780"
-    },
-    {
-        "code": "c-General__Actor300",
-        "username": "username301",
-        "name": "NGeneral__Actor302",
-        "role": "role303",
-        "password": "password304",
-        "details": "details305",
-        "type": "type306",
-        "parent_code": "parent_code307",
-        "param1": "param1308",
-        "state": "state309",
-        "_id": "General__Actor~~UUID-General__Actor-3",
-        "_rev": "21-c9cfb398f7f0a0a6a0b013c94889f7d3"
-    },
-    {
-        "code": "c-General__Currency100",
-        "rate1": 101,
-        "rate2": 102,
-        "rate3": 103,
-        "rate4": 104,
-        "rate5": 105,
-        "_id": "General__Currency~~UUID-General__Currency-1",
-        "_rev": "29-e39be1f765af7da1aa455f773b3ce234"
-    },
-    {
-        "code": "c-General__Currency200",
-        "rate1": 201,
-        "rate2": 202,
-        "rate3": 203,
-        "rate4": 204,
-        "rate5": 205,
-        "_id": "General__Currency~~UUID-General__Currency-2",
-        "_rev": "21-a80f530771ec49d1cd3c42d4f7e3b38c"
-    },
-    {
-        "code": "c-General__Currency300",
-        "rate1": 301,
-        "rate2": 302,
-        "rate3": 303,
-        "rate4": 304,
-        "rate5": 305,
-        "_id": "General__Currency~~UUID-General__Currency-3",
-        "_rev": "21-21d264cec941d41d416fa384372c9f16"
-    },
-    {
-        "code": "c-General__Person100",
-        "actor_code": "actor_code101",
-        "name": "NGeneral__Person102",
-        "district": "district103",
-        "city": "city104",
-        "address": "address105",
-        "supervisor": "supervisor106",
-        "manager": "manager107",
-        "phone": "phone108",
-        "fax": "fax109",
-        "tax_number": "tax_number110",
-        "details": "details111",
-        "state": "state112",
-        "_id": "General__Person~~UUID-General__Person-1",
-        "_rev": "21-98b719bafd9219e8ae6680ec04a3d497"
-    },
-    {
-        "code": "c-General__Person200",
-        "actor_code": "actor_code201",
-        "name": "NGeneral__Person202",
-        "district": "district203",
-        "city": "city204",
-        "address": "address205",
-        "supervisor": "supervisor206",
-        "manager": "manager207",
-        "phone": "phone208",
-        "fax": "fax209",
-        "tax_number": "tax_number210",
-        "details": "details211",
-        "state": "state212",
-        "_id": "General__Person~~UUID-General__Person-2",
-        "_rev": "21-c14fecc3e2817048629af1b86e36c83d"
-    },
-    {
-        "code": "c-General__Person300",
-        "actor_code": "actor_code301",
-        "name": "NGeneral__Person302",
-        "district": "district303",
-        "city": "city304",
-        "address": "address305",
-        "supervisor": "supervisor306",
-        "manager": "manager307",
-        "phone": "phone308",
-        "fax": "fax309",
-        "tax_number": "tax_number310",
-        "details": "details311",
-        "state": "state312",
-        "_id": "General__Person~~UUID-General__Person-3",
-        "_rev": "21-b4bf8714c89822c38ed97d0804241127"
-    },
-    {
-        "code": "c-General__User100",
-        "username": "username101",
-        "name": "NGeneral__User102",
-        "role": "role103",
-        "password": "password104",
-        "details": "details105",
-        "type": "type106",
-        "parent_code": "parent_code107",
-        "param1": "param1108",
-        "state": "state109",
-        "_id": "General__User~~UUID-General__User-1",
-        "_rev": "21-84f9bd2c633e78d9dbe3e4a3bf8f8f04"
-    },
-    {
-        "code": "c-General__User200",
-        "username": "username201",
-        "name": "NGeneral__User202",
-        "role": "role203",
-        "password": "password204",
-        "details": "details205",
-        "type": "type206",
-        "parent_code": "parent_code207",
-        "param1": "param1208",
-        "state": "state209",
-        "_id": "General__User~~UUID-General__User-2",
-        "_rev": "21-a9d491aa39a87703777b46cfed2600d6"
-    },
-    {
-        "code": "c-General__User300",
-        "username": "username301",
-        "name": "NGeneral__User302",
-        "role": "role303",
-        "password": "password304",
-        "details": "details305",
-        "type": "type306",
-        "parent_code": "parent_code307",
-        "param1": "param1308",
-        "state": "state309",
-        "_id": "General__User~~UUID-General__User-3",
-        "_rev": "21-bfaf2a3bf141a83e9953ad54060705f3"
-    },
-    {
-        "undefined": [
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-1000"
-            },
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-1001"
-            },
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-1002"
-            }
-        ],
-        "_id": "Inventory__Order~~UUID-Inventory__Order-1",
-        "_rev": "21-2201f239faf4a57af9611e2052c2ffd6"
-    },
-    {
-        "undefined": [
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-2000"
-            },
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-2001"
-            },
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-2002"
-            }
-        ],
-        "_id": "Inventory__Order~~UUID-Inventory__Order-2",
-        "_rev": "21-b013ef2adb006793f1f58828e87025b5"
-    },
-    {
-        "undefined": [
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-3000"
-            },
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-3001"
-            },
-            {
-                "_id": "Inventory__Order~~UUID-Inventory__Order-t-3002"
-            }
-        ],
-        "_id": "Inventory__Order~~UUID-Inventory__Order-3",
-        "_rev": "21-94db7a54c8ca0d499ed07c1f0e954175"
-    },
-    {
-        "code": "c-Inventory__Product100",
-        "barcode": "barcode101",
-        "name": "NInventory__Product102",
-        "description": "description103",
-        "inventoryLocation": [
-            {
-                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1040"
-            },
-            {
-                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1041"
-            },
-            {
-                "_id": "Inventory__Product~~UUID-Inventory__Product-t-1042"
-            }
-        ],
-        "_id": "Inventory__ProductUnit~~UUID-undefined",
-        "_rev": "21-3cbabb595a3792703ca2e2c646ed01d8"
-    },
-    {
-        "items$": [
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-1000"
-            },
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-1001"
-            },
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-1002"
-            }
-        ],
-        "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-1",
-        "_rev": "21-921faf8252c762af278330a04103991c"
-    },
-    {
-        "items$": [
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-2000"
-            },
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-2001"
-            },
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-2002"
-            }
-        ],
-        "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-2",
-        "_rev": "21-6edc56c1466d8cc10959c0da151c533c"
-    },
-    {
-        "items$": [
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-3000"
-            },
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-3001"
-            },
-            {
-                "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-t-3002"
-            }
-        ],
-        "_id": "Inventory__Receipt~~UUID-Inventory__Receipt-3",
-        "_rev": "21-0e48bb3da284aeb3eed9a740bc448b24"
-    },
-    {
-        "_id": "Reports__DetailedCentralizerReport~~UUID-Reports__DetailedCentralizerReport-1",
-        "_rev": "21-a508efa4ce0c71371650b8b42b8e7309"
-    },
-    {
-        "_id": "Reports__DetailedCentralizerReport~~UUID-Reports__DetailedCentralizerReport-2",
-        "_rev": "21-51048d7c74ac6afca4b4772a6bb79400"
-    },
-    {
-        "_id": "Reports__DetailedCentralizerReport~~UUID-Reports__DetailedCentralizerReport-3",
-        "_rev": "21-e7e7a59607a7fcef484495056c8d7e78"
-    },
-    {
-        "client": "client100",
-        "month": "2018-08-17T12:07:48.611Z",
-        "totalItemsCost": "totalItemsCost103",
-        "totalNightWorkHours": "totalNightWorkHours107",
-        "nightHourPrice": "nightHourPrice108",
-        "totalNightWorkHoursCost": "totalNightWorkHoursCost109",
-        "totalWorkHoursCost": "totalWorkHoursCost110",
-        "totalLocalTransportUnits": "totalLocalTransportUnits111",
-        "localTransportUnitPrice": "localTransportUnitPrice112",
-        "totalLocalTransportCost": "totalLocalTransportCost113",
-        "totalTransportCost": "totalTransportCost114",
-        "totalAccomodationsCost": "totalAccomodationsCost115",
-        "eurExchangeRate": "eurExchangeRate116",
-        "totalEURCost": "totalEURCost117",
-        "totalRONCost": "totalRONCost118",
-        "vatCost": "vatCost119",
-        "totalCost": "totalCost120",
-        "_id": "Reports__ServiceCentralizerReport~~UUID-Reports__ServiceCentralizerReport-1",
-        "_rev": "21-b451f7c603551f0322fdada25754e899"
-    },
-    {
-        "client": "client200",
-        "month": "2018-08-17T12:07:48.611Z",
-        "totalItemsCost": "totalItemsCost203",
-        "totalNightWorkHours": "totalNightWorkHours207",
-        "nightHourPrice": "nightHourPrice208",
-        "totalNightWorkHoursCost": "totalNightWorkHoursCost209",
-        "totalWorkHoursCost": "totalWorkHoursCost210",
-        "totalLocalTransportUnits": "totalLocalTransportUnits211",
-        "localTransportUnitPrice": "localTransportUnitPrice212",
-        "totalLocalTransportCost": "totalLocalTransportCost213",
-        "totalTransportCost": "totalTransportCost214",
-        "totalAccomodationsCost": "totalAccomodationsCost215",
-        "eurExchangeRate": "eurExchangeRate216",
-        "totalEURCost": "totalEURCost217",
-        "totalRONCost": "totalRONCost218",
-        "vatCost": "vatCost219",
-        "totalCost": "totalCost220",
-        "_id": "Reports__ServiceCentralizerReport~~UUID-Reports__ServiceCentralizerReport-2",
-        "_rev": "21-3826ef6abe3c7ec475588ec080bfe0ca"
-    },
-    {
-        "client": "client300",
-        "month": "2018-08-17T12:07:48.611Z",
-        "totalItemsCost": "totalItemsCost303",
-        "totalNightWorkHours": "totalNightWorkHours307",
-        "nightHourPrice": "nightHourPrice308",
-        "totalNightWorkHoursCost": "totalNightWorkHoursCost309",
-        "totalWorkHoursCost": "totalWorkHoursCost310",
-        "totalLocalTransportUnits": "totalLocalTransportUnits311",
-        "localTransportUnitPrice": "localTransportUnitPrice312",
-        "totalLocalTransportCost": "totalLocalTransportCost313",
-        "totalTransportCost": "totalTransportCost314",
-        "totalAccomodationsCost": "totalAccomodationsCost315",
-        "eurExchangeRate": "eurExchangeRate316",
-        "totalEURCost": "totalEURCost317",
-        "totalRONCost": "totalRONCost318",
-        "vatCost": "vatCost319",
-        "totalCost": "totalCost320",
-        "_id": "Reports__ServiceCentralizerReport~~UUID-Reports__ServiceCentralizerReport-3",
-        "_rev": "21-d6920234dd40f69e52ae9fa8affa8da9"
-    }
-]
+C:\Windows\System32\bash.exe -ic 'node --trace-warnings --debug-brk --inspect=0.0.0.0:9232 dist/be/src/tests/jasmine.js' 
+bash: /usr/lib/git-core/git-sh-prompt: line 300: syntax error near unexpected token `('
+bash: /usr/lib/git-core/git-sh-prompt: line 300: `__git_ps1 ()'
+Debugger listening on ws://0.0.0.0:9232/d189c8a5-3008-43d7-b134-87e77bca4a2b
+For help, see: https://nodejs.org/en/docs/inspector
+Debugger attached.
+Jasmine started
+frmdbEngine.frmdbEngineStore.mapReduceViews.size= 0
+stockReservationSchema.entities.B.props.sum__.formula= SUMIF(A.val, b == @[_id])
+stockReservationSchema.entities.B.props.sum__.compiledFormula_= undefined
+stockReservationSchema.entities.B.props.x__.formula= 100 - sum__
+Starting FormulaDBEngine...
+2019-03-25T08:00:14.743Z|1553500814743_w5Se6a5AHysmUVWg24SdTu|BEGIN|{"clientId_":"rFc3hB61ioUJk3iKwjKLRp","state_":"BEGIN","obj":{"_id":"B~~1","sum__":1,"x__":7},"type_":"[form] ServerEventModifiedFormData","_id":"1553500814743_w5Se6a5AHysmUVWg24SdTu"}
+2019-03-25T08:00:14.771Z|1553500814743_w5Se6a5AHysmUVWg24SdTu||computeFormulasAndSave| - selfFormula: B~~1[x__] = [100 - sum__] = 100
+2019-03-25T08:00:14.772Z|1553500814743_w5Se6a5AHysmUVWg24SdTu||1|addObj|0ms; level=0|B~~1/{"newObj":{"_id":"B~~1","sum__":0,"x__":100},"aggsViewsUpdates":[],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]},{"viewHashCode":"vobs-B-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{}]
+2019-03-25T08:00:14.778Z|1553500814743_w5Se6a5AHysmUVWg24SdTu|0|objIds: ["B~~1","MAP:B~~1\u0001B~~1","MAP:B~~1\u0001B~~1"]|conflicts: []
+2019-03-25T08:00:14.779Z|1553500814743_w5Se6a5AHysmUVWg24SdTu|0|executing transaction
+2019-03-25T08:00:14.798Z|1553500814743_w5Se6a5AHysmUVWg24SdTu||computeFormulasAndSave| - selfFormula: B~~1[x__] = [100 - sum__] = 100
+2019-03-25T08:00:14.798Z|1553500814743_w5Se6a5AHysmUVWg24SdTu||1|addObj|0ms; level=0|B~~1/{"newObj":{"_id":"B~~1","sum__":0,"x__":100},"aggsViewsUpdates":[],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]},{"viewHashCode":"vobs-B-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{}]
+2019-03-25T08:00:14.799Z|1553500814743_w5Se6a5AHysmUVWg24SdTu||1|computeFormulasAndSave|saveObjects: {"_id":"B~~1","sum__":0,"x__":100}
+2019-03-25T08:00:14.830Z|1553500814743_w5Se6a5AHysmUVWg24SdTu||1|FINISH|{"clientId_":"rFc3hB61ioUJk3iKwjKLRp","state_":"BEGIN","obj":{"_id":"B~~1","sum__":0,"x__":100},"type_":"[form] ServerEventModifiedFormData","_id":"1553500814743_w5Se6a5AHysmUVWg24SdTu"}
+2019-03-25T08:00:14.832Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5|BEGIN|{"clientId_":"6Njqs8yE3R2x4EC3tFbMXY","state_":"BEGIN","obj":{"_id":"A~~1","b":"B~~1","val":1},"type_":"[form] ServerEventModifiedFormData","_id":"1553500814832_7zoCGwZRDH6hhNSYuXyWX5"}
+2019-03-25T08:00:14.842Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|addObj|0ms; level=0|A~~1/{"newObj":{"_id":"A~~1","b":"B~~1","val":1},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:14.899Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|preComputeFormula|A~~1 --> B~~1[sum__] = 2 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":1,"vaggs-A-COUNTIF(A.val, b == @[_id])":1}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])'] + $TRG$['vaggs-A-COUNTIF(A.val, b == @[_id])']]
+2019-03-25T08:00:14.900Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 98
+2019-03-25T08:00:14.901Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":2,"x__":98},"oldObj":{"_id":"B~~1","sum__":0,"x__":100},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~1"],"value":1}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":1}],"reduceDelete":[]},{"viewHashCode":"vaggs-A-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~1"],"value":1}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":1}],"reduceDelete":[]}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]},{"viewHashCode":"vobs-B-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{},{}]
+2019-03-25T08:00:14.902Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5|0|objIds: ["A~~1","B~~1","MAP:B~~1\u0001A~~1","REDUCE:B~~1","MAP:B~~1\u0001A~~1","REDUCE:B~~1","MAP:B~~1\u0001B~~1","MAP:B~~1\u0001B~~1"]|conflicts: []
+2019-03-25T08:00:14.903Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5|0|executing transaction
+2019-03-25T08:00:14.911Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|addObj|0ms; level=0|A~~1/{"newObj":{"_id":"A~~1","b":"B~~1","val":1},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:14.964Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|preComputeFormula|A~~1 --> B~~1[sum__] = 2 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":1,"vaggs-A-COUNTIF(A.val, b == @[_id])":1}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])'] + $TRG$['vaggs-A-COUNTIF(A.val, b == @[_id])']]
+2019-03-25T08:00:14.964Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 98
+2019-03-25T08:00:14.965Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":2,"x__":98},"oldObj":{"_id":"B~~1","sum__":0,"x__":100},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~1"],"value":1}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":1}],"reduceDelete":[]},{"viewHashCode":"vaggs-A-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~1"],"value":1}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":1}],"reduceDelete":[]}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]},{"viewHashCode":"vobs-B-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{},{}]
+2019-03-25T08:00:14.966Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|computeFormulasAndSave|saveObjects: {"_id":"A~~1","b":"B~~1","val":1}, {"_id":"B~~1","sum__":2,"x__":98}
+2019-03-25T08:00:15.017Z|1553500814832_7zoCGwZRDH6hhNSYuXyWX5||1|FINISH|{"clientId_":"6Njqs8yE3R2x4EC3tFbMXY","state_":"BEGIN","obj":{"_id":"A~~1","b":"B~~1","val":1},"type_":"[form] ServerEventModifiedFormData","_id":"1553500814832_7zoCGwZRDH6hhNSYuXyWX5"}
+2019-03-25T08:00:15.018Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ|BEGIN|{"clientId_":"9TMLGAQq5zp3iaEe493x27","state_":"BEGIN","obj":{"_id":"A~~2","b":"B~~1","val":2},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815018_s8wfxEYgaLk2AZ87BJFdPZ"}
+2019-03-25T08:00:15.023Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|addObj|0ms; level=0|A~~2/{"newObj":{"_id":"A~~2","b":"B~~1","val":2},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.089Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|preComputeFormula|A~~2 --> B~~1[sum__] = 5 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":3,"vaggs-A-COUNTIF(A.val, b == @[_id])":2}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])'] + $TRG$['vaggs-A-COUNTIF(A.val, b == @[_id])']]
+2019-03-25T08:00:15.090Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 95
+2019-03-25T08:00:15.090Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":5,"x__":95},"oldObj":{"_id":"B~~1","sum__":2,"x__":98},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~2"],"value":2}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":3}],"reduceDelete":[]},{"viewHashCode":"vaggs-A-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~2"],"value":2}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":2}],"reduceDelete":[]}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]},{"viewHashCode":"vobs-B-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{},{}]
+2019-03-25T08:00:15.091Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ|0|objIds: ["A~~2","B~~1","MAP:B~~1\u0001A~~2","REDUCE:B~~1","MAP:B~~1\u0001A~~2","REDUCE:B~~1","MAP:B~~1\u0001B~~1","MAP:B~~1\u0001B~~1"]|conflicts: []
+2019-03-25T08:00:15.092Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ|0|executing transaction
+2019-03-25T08:00:15.102Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|addObj|0ms; level=0|A~~2/{"newObj":{"_id":"A~~2","b":"B~~1","val":2},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.161Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|preComputeFormula|A~~2 --> B~~1[sum__] = 5 ($TRG$={"vaggs-A-SUMIF(A.val, b == @[_id])":3,"vaggs-A-COUNTIF(A.val, b == @[_id])":2}) = [$TRG$['vaggs-A-SUMIF(A.val, b == @[_id])'] + $TRG$['vaggs-A-COUNTIF(A.val, b == @[_id])']]
+2019-03-25T08:00:15.162Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|preComputeFormula| - selfFormula: B~~1[x__] = [100 - sum__] = 95
+2019-03-25T08:00:15.162Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|addObj|0ms; level=1|B~~1/{"newObj":{"_id":"B~~1","sum__":5,"x__":95},"oldObj":{"_id":"B~~1","sum__":2,"x__":98},"aggsViewsUpdates":[{"viewHashCode":"vaggs-A-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~2"],"value":2}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":3}],"reduceDelete":[]},{"viewHashCode":"vaggs-A-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","A~~2"],"value":2}],"mapDelete":[],"reduce":[{"key":["B~~1"],"value":2}],"reduceDelete":[]}],"obsViewsUpdates":[{"viewHashCode":"vobs-B-SUMIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]},{"viewHashCode":"vobs-B-COUNTIF(A.val, b == @[_id])","map":[{"key":["B~~1","B~~1"]}],"mapDelete":[],"reduce":[],"reduceDelete":[]}]} in [{},{}]
+2019-03-25T08:00:15.163Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|computeFormulasAndSave|saveObjects: {"_id":"A~~2","b":"B~~1","val":2}, {"_id":"B~~1","sum__":5,"x__":95}
+2019-03-25T08:00:15.217Z|1553500815018_s8wfxEYgaLk2AZ87BJFdPZ||1|FINISH|{"clientId_":"9TMLGAQq5zp3iaEe493x27","state_":"BEGIN","obj":{"_id":"A~~2","b":"B~~1","val":2},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815018_s8wfxEYgaLk2AZ87BJFdPZ"}
+
+  FrmdbEngine
+    ✓ Should update views and compute new values of Observer when Observer field chande (0.53 sec)
+
+Starting FormulaDBEngine...
+2019-03-25T08:00:15.244Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB|BEGIN|{"clientId_":"i7PLmJ5tZHWV3ctYrHZmVS","state_":"BEGIN","obj":{"_id":"BookingItem~~1","name":"Practical Room","picture":"/assets/img/rooms/living-room-581073_1920.jpg","description":"Quas reiciendis non et eveniet iure aut.","long_description":"Doloribus recusandae fuga ea magnam. Magnam unde culpa sed voluptates alias veniam quis ea provident. Qui ad rerum laborum quas eum quisquam.\n \rIpsam voluptates quaerat molestias. Aperiam eos explicabo voluptate id est molestias iusto. Aliquam dolores sit quo quia. Nobis doloremque aut neque. Enim et sit nobis minima est ipsa ut mollitia. Odio aut nemo dolorum repellat occaecati possimus quia saepe consequuntur.\n \rVoluptas nisi qui dolore commodi quis fugiat fuga. Ipsam qui quasi ad. Sapiente repellendus quidem qui dolorum. Asperiores vel velit repellat aut voluptate excepturi. Doloribus quia accusamus qui hic blanditiis. Totam et reprehenderit autem sequi eveniet quas sapiente et dolores."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815244_jALUXq5AwdXvKFCVNwd7RB"}
+2019-03-25T08:00:15.255Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB||1|addObj|0ms; level=0|BookingItem~~1/{"newObj":{"_id":"BookingItem~~1","name":"Practical Room","picture":"/assets/img/rooms/living-room-581073_1920.jpg","description":"Quas reiciendis non et eveniet iure aut.","long_description":"Doloribus recusandae fuga ea magnam. Magnam unde culpa sed voluptates alias veniam quis ea provident. Qui ad rerum laborum quas eum quisquam.\n \rIpsam voluptates quaerat molestias. Aperiam eos explicabo voluptate id est molestias iusto. Aliquam dolores sit quo quia. Nobis doloremque aut neque. Enim et sit nobis minima est ipsa ut mollitia. Odio aut nemo dolorum repellat occaecati possimus quia saepe consequuntur.\n \rVoluptas nisi qui dolore commodi quis fugiat fuga. Ipsam qui quasi ad. Sapiente repellendus quidem qui dolorum. Asperiores vel velit repellat aut voluptate excepturi. Doloribus quia accusamus qui hic blanditiis. Totam et reprehenderit autem sequi eveniet quas sapiente et dolores."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.257Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB|0|objIds: ["BookingItem~~1"]|conflicts: []
+2019-03-25T08:00:15.259Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB|0|executing transaction
+2019-03-25T08:00:15.265Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB||1|addObj|0ms; level=0|BookingItem~~1/{"newObj":{"_id":"BookingItem~~1","name":"Practical Room","picture":"/assets/img/rooms/living-room-581073_1920.jpg","description":"Quas reiciendis non et eveniet iure aut.","long_description":"Doloribus recusandae fuga ea magnam. Magnam unde culpa sed voluptates alias veniam quis ea provident. Qui ad rerum laborum quas eum quisquam.\n \rIpsam voluptates quaerat molestias. Aperiam eos explicabo voluptate id est molestias iusto. Aliquam dolores sit quo quia. Nobis doloremque aut neque. Enim et sit nobis minima est ipsa ut mollitia. Odio aut nemo dolorum repellat occaecati possimus quia saepe consequuntur.\n \rVoluptas nisi qui dolore commodi quis fugiat fuga. Ipsam qui quasi ad. Sapiente repellendus quidem qui dolorum. Asperiores vel velit repellat aut voluptate excepturi. Doloribus quia accusamus qui hic blanditiis. Totam et reprehenderit autem sequi eveniet quas sapiente et dolores."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.266Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB||1|computeFormulasAndSave|saveObjects: {"_id":"BookingItem~~1","name":"Practical Room","picture":"/assets/img/rooms/living-room-581073_1920.jpg","description":"Quas reiciendis non et eveniet iure aut.","long_description":"Doloribus recusandae fuga ea magnam. Magnam unde culpa sed voluptates alias veniam quis ea provident. Qui ad rerum laborum quas eum quisquam.\n \rIpsam voluptates quaerat molestias. Aperiam eos explicabo voluptate id est molestias iusto. Aliquam dolores sit quo quia. Nobis doloremque aut neque. Enim et sit nobis minima est ipsa ut mollitia. Odio aut nemo dolorum repellat occaecati possimus quia saepe consequuntur.\n \rVoluptas nisi qui dolore commodi quis fugiat fuga. Ipsam qui quasi ad. Sapiente repellendus quidem qui dolorum. Asperiores vel velit repellat aut voluptate excepturi. Doloribus quia accusamus qui hic blanditiis. Totam et reprehenderit autem sequi eveniet quas sapiente et dolores."}
+2019-03-25T08:00:15.278Z|1553500815244_jALUXq5AwdXvKFCVNwd7RB||1|FINISH|{"clientId_":"i7PLmJ5tZHWV3ctYrHZmVS","state_":"BEGIN","obj":{"_id":"BookingItem~~1","name":"Practical Room","picture":"/assets/img/rooms/living-room-581073_1920.jpg","description":"Quas reiciendis non et eveniet iure aut.","long_description":"Doloribus recusandae fuga ea magnam. Magnam unde culpa sed voluptates alias veniam quis ea provident. Qui ad rerum laborum quas eum quisquam.\n \rIpsam voluptates quaerat molestias. Aperiam eos explicabo voluptate id est molestias iusto. Aliquam dolores sit quo quia. Nobis doloremque aut neque. Enim et sit nobis minima est ipsa ut mollitia. Odio aut nemo dolorum repellat occaecati possimus quia saepe consequuntur.\n \rVoluptas nisi qui dolore commodi quis fugiat fuga. Ipsam qui quasi ad. Sapiente repellendus quidem qui dolorum. Asperiores vel velit repellat aut voluptate excepturi. Doloribus quia accusamus qui hic blanditiis. Totam et reprehenderit autem sequi eveniet quas sapiente et dolores."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815244_jALUXq5AwdXvKFCVNwd7RB"}
+2019-03-25T08:00:15.280Z|1553500815280_9b9BQ593kisZBB8pKWfpWb|BEGIN|{"clientId_":"uiSYY9cMwuDHBZ1QGTpG7E","state_":"BEGIN","obj":{"_id":"BookingItem~~2","name":"Gorgeous Room","picture":"/assets/img/rooms/kitchen-2165756_1920.jpg","description":"Libero voluptatem aut.","long_description":"Velit saepe nam aspernatur ut expedita. Delectus accusantium ut non voluptate dolorem asperiores fuga ipsa. Ut animi tempora sed nihil et. Id voluptatum aut soluta suscipit. Qui ut illo et. Soluta adipisci sint.\n \rEst rerum vel est facilis dolorum ut. Provident corrupti doloremque et. Nihil culpa et rem libero. Beatae iste quidem et nulla asperiores atque voluptatem.\n \rUt temporibus incidunt. Unde dignissimos impedit eligendi veritatis hic et dolores. Tempore animi velit repudiandae beatae vero."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815280_9b9BQ593kisZBB8pKWfpWb"}
+2019-03-25T08:00:15.292Z|1553500815280_9b9BQ593kisZBB8pKWfpWb||1|addObj|0ms; level=0|BookingItem~~2/{"newObj":{"_id":"BookingItem~~2","name":"Gorgeous Room","picture":"/assets/img/rooms/kitchen-2165756_1920.jpg","description":"Libero voluptatem aut.","long_description":"Velit saepe nam aspernatur ut expedita. Delectus accusantium ut non voluptate dolorem asperiores fuga ipsa. Ut animi tempora sed nihil et. Id voluptatum aut soluta suscipit. Qui ut illo et. Soluta adipisci sint.\n \rEst rerum vel est facilis dolorum ut. Provident corrupti doloremque et. Nihil culpa et rem libero. Beatae iste quidem et nulla asperiores atque voluptatem.\n \rUt temporibus incidunt. Unde dignissimos impedit eligendi veritatis hic et dolores. Tempore animi velit repudiandae beatae vero."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.294Z|1553500815280_9b9BQ593kisZBB8pKWfpWb|0|objIds: ["BookingItem~~2"]|conflicts: []
+2019-03-25T08:00:15.296Z|1553500815280_9b9BQ593kisZBB8pKWfpWb|0|executing transaction
+2019-03-25T08:00:15.307Z|1553500815280_9b9BQ593kisZBB8pKWfpWb||1|addObj|0ms; level=0|BookingItem~~2/{"newObj":{"_id":"BookingItem~~2","name":"Gorgeous Room","picture":"/assets/img/rooms/kitchen-2165756_1920.jpg","description":"Libero voluptatem aut.","long_description":"Velit saepe nam aspernatur ut expedita. Delectus accusantium ut non voluptate dolorem asperiores fuga ipsa. Ut animi tempora sed nihil et. Id voluptatum aut soluta suscipit. Qui ut illo et. Soluta adipisci sint.\n \rEst rerum vel est facilis dolorum ut. Provident corrupti doloremque et. Nihil culpa et rem libero. Beatae iste quidem et nulla asperiores atque voluptatem.\n \rUt temporibus incidunt. Unde dignissimos impedit eligendi veritatis hic et dolores. Tempore animi velit repudiandae beatae vero."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.308Z|1553500815280_9b9BQ593kisZBB8pKWfpWb||1|computeFormulasAndSave|saveObjects: {"_id":"BookingItem~~2","name":"Gorgeous Room","picture":"/assets/img/rooms/kitchen-2165756_1920.jpg","description":"Libero voluptatem aut.","long_description":"Velit saepe nam aspernatur ut expedita. Delectus accusantium ut non voluptate dolorem asperiores fuga ipsa. Ut animi tempora sed nihil et. Id voluptatum aut soluta suscipit. Qui ut illo et. Soluta adipisci sint.\n \rEst rerum vel est facilis dolorum ut. Provident corrupti doloremque et. Nihil culpa et rem libero. Beatae iste quidem et nulla asperiores atque voluptatem.\n \rUt temporibus incidunt. Unde dignissimos impedit eligendi veritatis hic et dolores. Tempore animi velit repudiandae beatae vero."}
+2019-03-25T08:00:15.312Z|1553500815280_9b9BQ593kisZBB8pKWfpWb||1|FINISH|{"clientId_":"uiSYY9cMwuDHBZ1QGTpG7E","state_":"BEGIN","obj":{"_id":"BookingItem~~2","name":"Gorgeous Room","picture":"/assets/img/rooms/kitchen-2165756_1920.jpg","description":"Libero voluptatem aut.","long_description":"Velit saepe nam aspernatur ut expedita. Delectus accusantium ut non voluptate dolorem asperiores fuga ipsa. Ut animi tempora sed nihil et. Id voluptatum aut soluta suscipit. Qui ut illo et. Soluta adipisci sint.\n \rEst rerum vel est facilis dolorum ut. Provident corrupti doloremque et. Nihil culpa et rem libero. Beatae iste quidem et nulla asperiores atque voluptatem.\n \rUt temporibus incidunt. Unde dignissimos impedit eligendi veritatis hic et dolores. Tempore animi velit repudiandae beatae vero."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815280_9b9BQ593kisZBB8pKWfpWb"}
+2019-03-25T08:00:15.313Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6|BEGIN|{"clientId_":"eXL14oVLTGneb8uZSGQfJk","state_":"BEGIN","obj":{"_id":"BookingItem~~3","name":"Fantastic Room","picture":"/assets/img/rooms/bedroom-1872196_1920.jpg","description":"Aut culpa iusto harum ad.","long_description":"Earum dolore hic fugit ad delectus reprehenderit consequatur inventore. Dolore autem dolor cum et ipsa facilis. Eius eligendi incidunt et sapiente et laborum tempora. Et blanditiis quo praesentium mollitia inventore qui.\n \rEos iure voluptate distinctio sed dolor. Id asperiores ut unde illum modi velit non. Sit dolorem velit. Sed soluta velit. Accusantium et aliquam.\n \rAutem praesentium aspernatur reprehenderit praesentium sed. Perspiciatis architecto quia non neque. Sint repellat omnis enim officia est rerum. Similique quia fugiat odio cumque accusantium dolor. Molestiae animi impedit voluptate maiores ipsam rem excepturi sed. Pariatur dolorem voluptatem non est enim assumenda impedit."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815313_qHg7aDdTdzoS59xLRAJeY6"}
+2019-03-25T08:00:15.317Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6||1|addObj|0ms; level=0|BookingItem~~3/{"newObj":{"_id":"BookingItem~~3","name":"Fantastic Room","picture":"/assets/img/rooms/bedroom-1872196_1920.jpg","description":"Aut culpa iusto harum ad.","long_description":"Earum dolore hic fugit ad delectus reprehenderit consequatur inventore. Dolore autem dolor cum et ipsa facilis. Eius eligendi incidunt et sapiente et laborum tempora. Et blanditiis quo praesentium mollitia inventore qui.\n \rEos iure voluptate distinctio sed dolor. Id asperiores ut unde illum modi velit non. Sit dolorem velit. Sed soluta velit. Accusantium et aliquam.\n \rAutem praesentium aspernatur reprehenderit praesentium sed. Perspiciatis architecto quia non neque. Sint repellat omnis enim officia est rerum. Similique quia fugiat odio cumque accusantium dolor. Molestiae animi impedit voluptate maiores ipsam rem excepturi sed. Pariatur dolorem voluptatem non est enim assumenda impedit."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.319Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6|0|objIds: ["BookingItem~~3"]|conflicts: []
+2019-03-25T08:00:15.321Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6|0|executing transaction
+2019-03-25T08:00:15.326Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6||1|addObj|0ms; level=0|BookingItem~~3/{"newObj":{"_id":"BookingItem~~3","name":"Fantastic Room","picture":"/assets/img/rooms/bedroom-1872196_1920.jpg","description":"Aut culpa iusto harum ad.","long_description":"Earum dolore hic fugit ad delectus reprehenderit consequatur inventore. Dolore autem dolor cum et ipsa facilis. Eius eligendi incidunt et sapiente et laborum tempora. Et blanditiis quo praesentium mollitia inventore qui.\n \rEos iure voluptate distinctio sed dolor. Id asperiores ut unde illum modi velit non. Sit dolorem velit. Sed soluta velit. Accusantium et aliquam.\n \rAutem praesentium aspernatur reprehenderit praesentium sed. Perspiciatis architecto quia non neque. Sint repellat omnis enim officia est rerum. Similique quia fugiat odio cumque accusantium dolor. Molestiae animi impedit voluptate maiores ipsam rem excepturi sed. Pariatur dolorem voluptatem non est enim assumenda impedit."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.327Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6||1|computeFormulasAndSave|saveObjects: {"_id":"BookingItem~~3","name":"Fantastic Room","picture":"/assets/img/rooms/bedroom-1872196_1920.jpg","description":"Aut culpa iusto harum ad.","long_description":"Earum dolore hic fugit ad delectus reprehenderit consequatur inventore. Dolore autem dolor cum et ipsa facilis. Eius eligendi incidunt et sapiente et laborum tempora. Et blanditiis quo praesentium mollitia inventore qui.\n \rEos iure voluptate distinctio sed dolor. Id asperiores ut unde illum modi velit non. Sit dolorem velit. Sed soluta velit. Accusantium et aliquam.\n \rAutem praesentium aspernatur reprehenderit praesentium sed. Perspiciatis architecto quia non neque. Sint repellat omnis enim officia est rerum. Similique quia fugiat odio cumque accusantium dolor. Molestiae animi impedit voluptate maiores ipsam rem excepturi sed. Pariatur dolorem voluptatem non est enim assumenda impedit."}
+2019-03-25T08:00:15.337Z|1553500815313_qHg7aDdTdzoS59xLRAJeY6||1|FINISH|{"clientId_":"eXL14oVLTGneb8uZSGQfJk","state_":"BEGIN","obj":{"_id":"BookingItem~~3","name":"Fantastic Room","picture":"/assets/img/rooms/bedroom-1872196_1920.jpg","description":"Aut culpa iusto harum ad.","long_description":"Earum dolore hic fugit ad delectus reprehenderit consequatur inventore. Dolore autem dolor cum et ipsa facilis. Eius eligendi incidunt et sapiente et laborum tempora. Et blanditiis quo praesentium mollitia inventore qui.\n \rEos iure voluptate distinctio sed dolor. Id asperiores ut unde illum modi velit non. Sit dolorem velit. Sed soluta velit. Accusantium et aliquam.\n \rAutem praesentium aspernatur reprehenderit praesentium sed. Perspiciatis architecto quia non neque. Sint repellat omnis enim officia est rerum. Similique quia fugiat odio cumque accusantium dolor. Molestiae animi impedit voluptate maiores ipsam rem excepturi sed. Pariatur dolorem voluptatem non est enim assumenda impedit."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815313_qHg7aDdTdzoS59xLRAJeY6"}
+2019-03-25T08:00:15.338Z|1553500815338_986w6R2TMgEMgyyTJwsaGj|BEGIN|{"clientId_":"avauwxuGVeFDMMSKQwFQ63","state_":"BEGIN","obj":{"_id":"BookingItem~~4","name":"Awesome Room","picture":"/assets/img/rooms/interior-2685521_1920.jpg","description":"Assumenda nostrum quaerat fugit nesciunt libero aliquam.","long_description":"Quia minus veritatis quidem autem et sed qui qui. Aut qui repellendus aut et ipsum porro. Illo vel optio quisquam voluptatibus vel enim qui sint et. Doloribus quis ea reprehenderit aliquam deleniti rem nesciunt temporibus sequi.\n \rMinima cum minima sed consequatur deleniti voluptate dolor vero. Cupiditate quibusdam voluptatibus eum et distinctio laudantium numquam. Facere maxime ut accusantium est id culpa. Reprehenderit maiores at. Et laboriosam explicabo ab sed tempore exercitationem enim perspiciatis. Corrupti omnis cum qui nostrum.\n \rDignissimos corporis molestiae velit qui. Ea dolores ea fugit facilis atque blanditiis praesentium aut. Iure rem aliquam."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815338_986w6R2TMgEMgyyTJwsaGj"}
+2019-03-25T08:00:15.348Z|1553500815338_986w6R2TMgEMgyyTJwsaGj||1|addObj|0ms; level=0|BookingItem~~4/{"newObj":{"_id":"BookingItem~~4","name":"Awesome Room","picture":"/assets/img/rooms/interior-2685521_1920.jpg","description":"Assumenda nostrum quaerat fugit nesciunt libero aliquam.","long_description":"Quia minus veritatis quidem autem et sed qui qui. Aut qui repellendus aut et ipsum porro. Illo vel optio quisquam voluptatibus vel enim qui sint et. Doloribus quis ea reprehenderit aliquam deleniti rem nesciunt temporibus sequi.\n \rMinima cum minima sed consequatur deleniti voluptate dolor vero. Cupiditate quibusdam voluptatibus eum et distinctio laudantium numquam. Facere maxime ut accusantium est id culpa. Reprehenderit maiores at. Et laboriosam explicabo ab sed tempore exercitationem enim perspiciatis. Corrupti omnis cum qui nostrum.\n \rDignissimos corporis molestiae velit qui. Ea dolores ea fugit facilis atque blanditiis praesentium aut. Iure rem aliquam."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.350Z|1553500815338_986w6R2TMgEMgyyTJwsaGj|0|objIds: ["BookingItem~~4"]|conflicts: []
+2019-03-25T08:00:15.351Z|1553500815338_986w6R2TMgEMgyyTJwsaGj|0|executing transaction
+2019-03-25T08:00:15.358Z|1553500815338_986w6R2TMgEMgyyTJwsaGj||1|addObj|0ms; level=0|BookingItem~~4/{"newObj":{"_id":"BookingItem~~4","name":"Awesome Room","picture":"/assets/img/rooms/interior-2685521_1920.jpg","description":"Assumenda nostrum quaerat fugit nesciunt libero aliquam.","long_description":"Quia minus veritatis quidem autem et sed qui qui. Aut qui repellendus aut et ipsum porro. Illo vel optio quisquam voluptatibus vel enim qui sint et. Doloribus quis ea reprehenderit aliquam deleniti rem nesciunt temporibus sequi.\n \rMinima cum minima sed consequatur deleniti voluptate dolor vero. Cupiditate quibusdam voluptatibus eum et distinctio laudantium numquam. Facere maxime ut accusantium est id culpa. Reprehenderit maiores at. Et laboriosam explicabo ab sed tempore exercitationem enim perspiciatis. Corrupti omnis cum qui nostrum.\n \rDignissimos corporis molestiae velit qui. Ea dolores ea fugit facilis atque blanditiis praesentium aut. Iure rem aliquam."},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.359Z|1553500815338_986w6R2TMgEMgyyTJwsaGj||1|computeFormulasAndSave|saveObjects: {"_id":"BookingItem~~4","name":"Awesome Room","picture":"/assets/img/rooms/interior-2685521_1920.jpg","description":"Assumenda nostrum quaerat fugit nesciunt libero aliquam.","long_description":"Quia minus veritatis quidem autem et sed qui qui. Aut qui repellendus aut et ipsum porro. Illo vel optio quisquam voluptatibus vel enim qui sint et. Doloribus quis ea reprehenderit aliquam deleniti rem nesciunt temporibus sequi.\n \rMinima cum minima sed consequatur deleniti voluptate dolor vero. Cupiditate quibusdam voluptatibus eum et distinctio laudantium numquam. Facere maxime ut accusantium est id culpa. Reprehenderit maiores at. Et laboriosam explicabo ab sed tempore exercitationem enim perspiciatis. Corrupti omnis cum qui nostrum.\n \rDignissimos corporis molestiae velit qui. Ea dolores ea fugit facilis atque blanditiis praesentium aut. Iure rem aliquam."}
+2019-03-25T08:00:15.367Z|1553500815338_986w6R2TMgEMgyyTJwsaGj||1|FINISH|{"clientId_":"avauwxuGVeFDMMSKQwFQ63","state_":"BEGIN","obj":{"_id":"BookingItem~~4","name":"Awesome Room","picture":"/assets/img/rooms/interior-2685521_1920.jpg","description":"Assumenda nostrum quaerat fugit nesciunt libero aliquam.","long_description":"Quia minus veritatis quidem autem et sed qui qui. Aut qui repellendus aut et ipsum porro. Illo vel optio quisquam voluptatibus vel enim qui sint et. Doloribus quis ea reprehenderit aliquam deleniti rem nesciunt temporibus sequi.\n \rMinima cum minima sed consequatur deleniti voluptate dolor vero. Cupiditate quibusdam voluptatibus eum et distinctio laudantium numquam. Facere maxime ut accusantium est id culpa. Reprehenderit maiores at. Et laboriosam explicabo ab sed tempore exercitationem enim perspiciatis. Corrupti omnis cum qui nostrum.\n \rDignissimos corporis molestiae velit qui. Ea dolores ea fugit facilis atque blanditiis praesentium aut. Iure rem aliquam."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815338_986w6R2TMgEMgyyTJwsaGj"}
+2019-03-25T08:00:15.370Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2|BEGIN|{"clientId_":"t2bJaAEhTxbHzTQAQAAZhm","state_":"BEGIN","obj":{"_id":"Booking~~1","booking_item_id":"BookingItem~~1","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Practical Room","user_id":"GEN__Actor~~4","user_name":"Keyon Wolf"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815370_53FTLVP6t33ZcUAMpjQhr2"}
+2019-03-25T08:00:15.383Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||computeFormulasAndSave| - selfFormula: Booking~~1[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.384Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||computeFormulasAndSave| - selfFormula: Booking~~1[duration] = [1234] = 1234
+2019-03-25T08:00:15.386Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||computeFormulasAndSave| - selfFormula: Booking~~1[cost] = [1234] = 1234
+2019-03-25T08:00:15.388Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||1|addObj|0ms; level=0|Booking~~1/{"newObj":{"_id":"Booking~~1","booking_item_id":"BookingItem~~1","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Practical Room","user_id":"GEN__Actor~~4","user_name":"Keyon Wolf","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.390Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2|0|objIds: ["Booking~~1"]|conflicts: []
+2019-03-25T08:00:15.392Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2|0|executing transaction
+2019-03-25T08:00:15.401Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||computeFormulasAndSave| - selfFormula: Booking~~1[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.402Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||computeFormulasAndSave| - selfFormula: Booking~~1[duration] = [1234] = 1234
+2019-03-25T08:00:15.404Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||computeFormulasAndSave| - selfFormula: Booking~~1[cost] = [1234] = 1234
+2019-03-25T08:00:15.405Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||1|addObj|0ms; level=0|Booking~~1/{"newObj":{"_id":"Booking~~1","booking_item_id":"BookingItem~~1","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Practical Room","user_id":"GEN__Actor~~4","user_name":"Keyon Wolf","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.407Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~1","booking_item_id":"BookingItem~~1","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Practical Room","user_id":"GEN__Actor~~4","user_name":"Keyon Wolf","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.417Z|1553500815370_53FTLVP6t33ZcUAMpjQhr2||1|FINISH|{"clientId_":"t2bJaAEhTxbHzTQAQAAZhm","state_":"BEGIN","obj":{"_id":"Booking~~1","booking_item_id":"BookingItem~~1","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Practical Room","user_id":"GEN__Actor~~4","user_name":"Keyon Wolf","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815370_53FTLVP6t33ZcUAMpjQhr2"}
+2019-03-25T08:00:15.418Z|1553500815418_qoCeotqsBAKFetCyX7BHct|BEGIN|{"clientId_":"4TYAn47J5rwchxZ3dymQrB","state_":"BEGIN","obj":{"_id":"Booking~~2","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~1","user_name":"Rhianna Johns"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815418_qoCeotqsBAKFetCyX7BHct"}
+2019-03-25T08:00:15.429Z|1553500815418_qoCeotqsBAKFetCyX7BHct||computeFormulasAndSave| - selfFormula: Booking~~2[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.431Z|1553500815418_qoCeotqsBAKFetCyX7BHct||computeFormulasAndSave| - selfFormula: Booking~~2[duration] = [1234] = 1234
+2019-03-25T08:00:15.433Z|1553500815418_qoCeotqsBAKFetCyX7BHct||computeFormulasAndSave| - selfFormula: Booking~~2[cost] = [1234] = 1234
+2019-03-25T08:00:15.435Z|1553500815418_qoCeotqsBAKFetCyX7BHct||1|addObj|0ms; level=0|Booking~~2/{"newObj":{"_id":"Booking~~2","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~1","user_name":"Rhianna Johns","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.439Z|1553500815418_qoCeotqsBAKFetCyX7BHct|0|objIds: ["Booking~~2"]|conflicts: []
+2019-03-25T08:00:15.440Z|1553500815418_qoCeotqsBAKFetCyX7BHct|0|executing transaction
+2019-03-25T08:00:15.454Z|1553500815418_qoCeotqsBAKFetCyX7BHct||computeFormulasAndSave| - selfFormula: Booking~~2[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.455Z|1553500815418_qoCeotqsBAKFetCyX7BHct||computeFormulasAndSave| - selfFormula: Booking~~2[duration] = [1234] = 1234
+2019-03-25T08:00:15.456Z|1553500815418_qoCeotqsBAKFetCyX7BHct||computeFormulasAndSave| - selfFormula: Booking~~2[cost] = [1234] = 1234
+2019-03-25T08:00:15.457Z|1553500815418_qoCeotqsBAKFetCyX7BHct||1|addObj|0ms; level=0|Booking~~2/{"newObj":{"_id":"Booking~~2","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~1","user_name":"Rhianna Johns","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.459Z|1553500815418_qoCeotqsBAKFetCyX7BHct||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~2","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~1","user_name":"Rhianna Johns","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.467Z|1553500815418_qoCeotqsBAKFetCyX7BHct||1|FINISH|{"clientId_":"4TYAn47J5rwchxZ3dymQrB","state_":"BEGIN","obj":{"_id":"Booking~~2","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~1","user_name":"Rhianna Johns","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815418_qoCeotqsBAKFetCyX7BHct"}
+2019-03-25T08:00:15.469Z|1553500815469_5SophjYAwa5jmVUsfWFxEf|BEGIN|{"clientId_":"6Dz46TPRtB8DBWegmoxrKT","state_":"BEGIN","obj":{"_id":"Booking~~3","booking_item_id":"BookingItem~~2","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~2","user_name":"Monserrat Simonis"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815469_5SophjYAwa5jmVUsfWFxEf"}
+2019-03-25T08:00:15.480Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||computeFormulasAndSave| - selfFormula: Booking~~3[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.481Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||computeFormulasAndSave| - selfFormula: Booking~~3[duration] = [1234] = 1234
+2019-03-25T08:00:15.484Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||computeFormulasAndSave| - selfFormula: Booking~~3[cost] = [1234] = 1234
+2019-03-25T08:00:15.486Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||1|addObj|0ms; level=0|Booking~~3/{"newObj":{"_id":"Booking~~3","booking_item_id":"BookingItem~~2","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~2","user_name":"Monserrat Simonis","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.488Z|1553500815469_5SophjYAwa5jmVUsfWFxEf|0|objIds: ["Booking~~3"]|conflicts: []
+2019-03-25T08:00:15.489Z|1553500815469_5SophjYAwa5jmVUsfWFxEf|0|executing transaction
+2019-03-25T08:00:15.494Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||computeFormulasAndSave| - selfFormula: Booking~~3[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.495Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||computeFormulasAndSave| - selfFormula: Booking~~3[duration] = [1234] = 1234
+2019-03-25T08:00:15.497Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||computeFormulasAndSave| - selfFormula: Booking~~3[cost] = [1234] = 1234
+2019-03-25T08:00:15.498Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||1|addObj|0ms; level=0|Booking~~3/{"newObj":{"_id":"Booking~~3","booking_item_id":"BookingItem~~2","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~2","user_name":"Monserrat Simonis","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.501Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~3","booking_item_id":"BookingItem~~2","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~2","user_name":"Monserrat Simonis","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.511Z|1553500815469_5SophjYAwa5jmVUsfWFxEf||1|FINISH|{"clientId_":"6Dz46TPRtB8DBWegmoxrKT","state_":"BEGIN","obj":{"_id":"Booking~~3","booking_item_id":"BookingItem~~2","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~2","user_name":"Monserrat Simonis","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815469_5SophjYAwa5jmVUsfWFxEf"}
+2019-03-25T08:00:15.512Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5|BEGIN|{"clientId_":"vQRQRASGqxAVdsEQ6snzf4","state_":"BEGIN","obj":{"_id":"Booking~~4","booking_item_id":"BookingItem~~2","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~3","user_name":"Vergie Stracke Sr."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815512_vTRqSxpHr7axHGcKLUKwy5"}
+2019-03-25T08:00:15.523Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||computeFormulasAndSave| - selfFormula: Booking~~4[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.524Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||computeFormulasAndSave| - selfFormula: Booking~~4[duration] = [1234] = 1234
+2019-03-25T08:00:15.526Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||computeFormulasAndSave| - selfFormula: Booking~~4[cost] = [1234] = 1234
+2019-03-25T08:00:15.527Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||1|addObj|0ms; level=0|Booking~~4/{"newObj":{"_id":"Booking~~4","booking_item_id":"BookingItem~~2","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~3","user_name":"Vergie Stracke Sr.","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.529Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5|0|objIds: ["Booking~~4"]|conflicts: []
+2019-03-25T08:00:15.531Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5|0|executing transaction
+2019-03-25T08:00:15.539Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||computeFormulasAndSave| - selfFormula: Booking~~4[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.540Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||computeFormulasAndSave| - selfFormula: Booking~~4[duration] = [1234] = 1234
+2019-03-25T08:00:15.541Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||computeFormulasAndSave| - selfFormula: Booking~~4[cost] = [1234] = 1234
+2019-03-25T08:00:15.542Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||1|addObj|0ms; level=0|Booking~~4/{"newObj":{"_id":"Booking~~4","booking_item_id":"BookingItem~~2","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~3","user_name":"Vergie Stracke Sr.","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.544Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~4","booking_item_id":"BookingItem~~2","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~3","user_name":"Vergie Stracke Sr.","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.555Z|1553500815512_vTRqSxpHr7axHGcKLUKwy5||1|FINISH|{"clientId_":"vQRQRASGqxAVdsEQ6snzf4","state_":"BEGIN","obj":{"_id":"Booking~~4","booking_item_id":"BookingItem~~2","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Gorgeous Room","user_id":"GEN__Actor~~3","user_name":"Vergie Stracke Sr.","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815512_vTRqSxpHr7axHGcKLUKwy5"}
+2019-03-25T08:00:15.557Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt|BEGIN|{"clientId_":"gbaarc3Xe1bkPPZUdBD4cP","state_":"BEGIN","obj":{"_id":"Booking~~5","booking_item_id":"BookingItem~~3","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~5","user_name":"Jerad Buckridge"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815557_dXvxTeqvoAb3XLvivvBdnt"}
+2019-03-25T08:00:15.570Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||computeFormulasAndSave| - selfFormula: Booking~~5[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.572Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||computeFormulasAndSave| - selfFormula: Booking~~5[duration] = [1234] = 1234
+2019-03-25T08:00:15.574Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||computeFormulasAndSave| - selfFormula: Booking~~5[cost] = [1234] = 1234
+2019-03-25T08:00:15.576Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||1|addObj|0ms; level=0|Booking~~5/{"newObj":{"_id":"Booking~~5","booking_item_id":"BookingItem~~3","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~5","user_name":"Jerad Buckridge","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.579Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt|0|objIds: ["Booking~~5"]|conflicts: []
+2019-03-25T08:00:15.581Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt|0|executing transaction
+2019-03-25T08:00:15.589Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||computeFormulasAndSave| - selfFormula: Booking~~5[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.590Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||computeFormulasAndSave| - selfFormula: Booking~~5[duration] = [1234] = 1234
+2019-03-25T08:00:15.592Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||computeFormulasAndSave| - selfFormula: Booking~~5[cost] = [1234] = 1234
+2019-03-25T08:00:15.593Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||1|addObj|0ms; level=0|Booking~~5/{"newObj":{"_id":"Booking~~5","booking_item_id":"BookingItem~~3","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~5","user_name":"Jerad Buckridge","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.595Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~5","booking_item_id":"BookingItem~~3","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~5","user_name":"Jerad Buckridge","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.599Z|1553500815557_dXvxTeqvoAb3XLvivvBdnt||1|FINISH|{"clientId_":"gbaarc3Xe1bkPPZUdBD4cP","state_":"BEGIN","obj":{"_id":"Booking~~5","booking_item_id":"BookingItem~~3","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~5","user_name":"Jerad Buckridge","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815557_dXvxTeqvoAb3XLvivvBdnt"}
+2019-03-25T08:00:15.601Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk|BEGIN|{"clientId_":"8fPFhFcibzKVXEEfxKkE6a","state_":"BEGIN","obj":{"_id":"Booking~~6","booking_item_id":"BookingItem~~3","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~7","user_name":"Hobart MacGyver"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815601_6DJn8t8GBHs5NVBNEkHvXk"}
+2019-03-25T08:00:15.616Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||computeFormulasAndSave| - selfFormula: Booking~~6[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.618Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||computeFormulasAndSave| - selfFormula: Booking~~6[duration] = [1234] = 1234
+2019-03-25T08:00:15.620Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||computeFormulasAndSave| - selfFormula: Booking~~6[cost] = [1234] = 1234
+2019-03-25T08:00:15.624Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||1|addObj|0ms; level=0|Booking~~6/{"newObj":{"_id":"Booking~~6","booking_item_id":"BookingItem~~3","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~7","user_name":"Hobart MacGyver","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.626Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk|0|objIds: ["Booking~~6"]|conflicts: []
+2019-03-25T08:00:15.627Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk|0|executing transaction
+2019-03-25T08:00:15.632Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||computeFormulasAndSave| - selfFormula: Booking~~6[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.636Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||computeFormulasAndSave| - selfFormula: Booking~~6[duration] = [1234] = 1234
+2019-03-25T08:00:15.637Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||computeFormulasAndSave| - selfFormula: Booking~~6[cost] = [1234] = 1234
+2019-03-25T08:00:15.639Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||1|addObj|0ms; level=0|Booking~~6/{"newObj":{"_id":"Booking~~6","booking_item_id":"BookingItem~~3","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~7","user_name":"Hobart MacGyver","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.640Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~6","booking_item_id":"BookingItem~~3","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~7","user_name":"Hobart MacGyver","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.652Z|1553500815601_6DJn8t8GBHs5NVBNEkHvXk||1|FINISH|{"clientId_":"8fPFhFcibzKVXEEfxKkE6a","state_":"BEGIN","obj":{"_id":"Booking~~6","booking_item_id":"BookingItem~~3","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Fantastic Room","user_id":"GEN__Actor~~7","user_name":"Hobart MacGyver","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815601_6DJn8t8GBHs5NVBNEkHvXk"}
+2019-03-25T08:00:15.654Z|1553500815654_64uMxL9bsQid9jbhcx9eCH|BEGIN|{"clientId_":"ntHnWQA24JPGqZLhJ7xYXp","state_":"BEGIN","obj":{"_id":"Booking~~7","booking_item_id":"BookingItem~~4","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~8","user_name":"Brandon Ondricka Jr."},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815654_64uMxL9bsQid9jbhcx9eCH"}
+2019-03-25T08:00:15.662Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||computeFormulasAndSave| - selfFormula: Booking~~7[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.664Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||computeFormulasAndSave| - selfFormula: Booking~~7[duration] = [1234] = 1234
+2019-03-25T08:00:15.667Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||computeFormulasAndSave| - selfFormula: Booking~~7[cost] = [1234] = 1234
+2019-03-25T08:00:15.669Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||1|addObj|0ms; level=0|Booking~~7/{"newObj":{"_id":"Booking~~7","booking_item_id":"BookingItem~~4","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~8","user_name":"Brandon Ondricka Jr.","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.671Z|1553500815654_64uMxL9bsQid9jbhcx9eCH|0|objIds: ["Booking~~7"]|conflicts: []
+2019-03-25T08:00:15.673Z|1553500815654_64uMxL9bsQid9jbhcx9eCH|0|executing transaction
+2019-03-25T08:00:15.685Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||computeFormulasAndSave| - selfFormula: Booking~~7[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.687Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||computeFormulasAndSave| - selfFormula: Booking~~7[duration] = [1234] = 1234
+2019-03-25T08:00:15.688Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||computeFormulasAndSave| - selfFormula: Booking~~7[cost] = [1234] = 1234
+2019-03-25T08:00:15.690Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||1|addObj|0ms; level=0|Booking~~7/{"newObj":{"_id":"Booking~~7","booking_item_id":"BookingItem~~4","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~8","user_name":"Brandon Ondricka Jr.","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.691Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~7","booking_item_id":"BookingItem~~4","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~8","user_name":"Brandon Ondricka Jr.","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.699Z|1553500815654_64uMxL9bsQid9jbhcx9eCH||1|FINISH|{"clientId_":"ntHnWQA24JPGqZLhJ7xYXp","state_":"BEGIN","obj":{"_id":"Booking~~7","booking_item_id":"BookingItem~~4","start_date":"2019-03-03","end_date":"2019-03-08","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~8","user_name":"Brandon Ondricka Jr.","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815654_64uMxL9bsQid9jbhcx9eCH"}
+2019-03-25T08:00:15.701Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8|BEGIN|{"clientId_":"a6of5ELZRhkQxUCMeGscGB","state_":"BEGIN","obj":{"_id":"Booking~~8","booking_item_id":"BookingItem~~4","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~9","user_name":"Bonita Collins"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815701_uRPnhX5vfHq2xNbffrMbQ8"}
+2019-03-25T08:00:15.711Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||computeFormulasAndSave| - selfFormula: Booking~~8[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.713Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||computeFormulasAndSave| - selfFormula: Booking~~8[duration] = [1234] = 1234
+2019-03-25T08:00:15.714Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||computeFormulasAndSave| - selfFormula: Booking~~8[cost] = [1234] = 1234
+2019-03-25T08:00:15.716Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||1|addObj|0ms; level=0|Booking~~8/{"newObj":{"_id":"Booking~~8","booking_item_id":"BookingItem~~4","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~9","user_name":"Bonita Collins","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.718Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8|0|objIds: ["Booking~~8"]|conflicts: []
+2019-03-25T08:00:15.719Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8|0|executing transaction
+2019-03-25T08:00:15.729Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||computeFormulasAndSave| - selfFormula: Booking~~8[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.731Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||computeFormulasAndSave| - selfFormula: Booking~~8[duration] = [1234] = 1234
+2019-03-25T08:00:15.732Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||computeFormulasAndSave| - selfFormula: Booking~~8[cost] = [1234] = 1234
+2019-03-25T08:00:15.734Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||1|addObj|0ms; level=0|Booking~~8/{"newObj":{"_id":"Booking~~8","booking_item_id":"BookingItem~~4","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~9","user_name":"Bonita Collins","overlapping":1234,"duration":1234,"cost":1234},"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.736Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~8","booking_item_id":"BookingItem~~4","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~9","user_name":"Bonita Collins","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.748Z|1553500815701_uRPnhX5vfHq2xNbffrMbQ8||1|FINISH|{"clientId_":"a6of5ELZRhkQxUCMeGscGB","state_":"BEGIN","obj":{"_id":"Booking~~8","booking_item_id":"BookingItem~~4","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Awesome Room","user_id":"GEN__Actor~~9","user_name":"Bonita Collins","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815701_uRPnhX5vfHq2xNbffrMbQ8"}
+2019-03-25T08:00:15.750Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX|BEGIN|{"clientId_":"w2uA2Mq11XRUeQi9SzKTRt","state_":"BEGIN","obj":{"_id":"Booking~~","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~10","user_name":"Lonie Wiza"},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815750_kJprZ5STEn9BWFzQBx5ddX"}
+2019-03-25T08:00:15.753Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||computeFormulasAndSave| - selfFormula: Booking~~npth2XVyqu5LEKvtFsw8uZ[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.756Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||computeFormulasAndSave| - selfFormula: Booking~~npth2XVyqu5LEKvtFsw8uZ[duration] = [1234] = 1234
+2019-03-25T08:00:15.759Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||computeFormulasAndSave| - selfFormula: Booking~~npth2XVyqu5LEKvtFsw8uZ[cost] = [1234] = 1234
+2019-03-25T08:00:15.760Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||1|addObj|0ms; level=0|Booking~~npth2XVyqu5LEKvtFsw8uZ/{"newObj":{"_id":"Booking~~npth2XVyqu5LEKvtFsw8uZ","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~10","user_name":"Lonie Wiza","overlapping":1234,"duration":1234,"cost":1234},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.763Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX|0|objIds: ["Booking~~npth2XVyqu5LEKvtFsw8uZ"]|conflicts: []
+2019-03-25T08:00:15.765Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX|0|executing transaction
+2019-03-25T08:00:15.768Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||computeFormulasAndSave| - selfFormula: Booking~~npth2XVyqu5LEKvtFsw8uZ[overlapping] = [1234] = 1234
+2019-03-25T08:00:15.770Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||computeFormulasAndSave| - selfFormula: Booking~~npth2XVyqu5LEKvtFsw8uZ[duration] = [1234] = 1234
+2019-03-25T08:00:15.771Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||computeFormulasAndSave| - selfFormula: Booking~~npth2XVyqu5LEKvtFsw8uZ[cost] = [1234] = 1234
+2019-03-25T08:00:15.773Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||1|addObj|0ms; level=0|Booking~~npth2XVyqu5LEKvtFsw8uZ/{"newObj":{"_id":"Booking~~npth2XVyqu5LEKvtFsw8uZ","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~10","user_name":"Lonie Wiza","overlapping":1234,"duration":1234,"cost":1234},"oldObj":null,"aggsViewsUpdates":[],"obsViewsUpdates":[]} in [{}]
+2019-03-25T08:00:15.776Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||1|computeFormulasAndSave|saveObjects: {"_id":"Booking~~npth2XVyqu5LEKvtFsw8uZ","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~10","user_name":"Lonie Wiza","overlapping":1234,"duration":1234,"cost":1234}
+2019-03-25T08:00:15.789Z|1553500815750_kJprZ5STEn9BWFzQBx5ddX||1|FINISH|{"clientId_":"w2uA2Mq11XRUeQi9SzKTRt","state_":"BEGIN","obj":{"_id":"Booking~~npth2XVyqu5LEKvtFsw8uZ","booking_item_id":"BookingItem~~1","start_date":"2019-03-19","end_date":"2019-03-24","booking_item_name":"Practical Room","user_id":"GEN__Actor~~10","user_name":"Lonie Wiza","overlapping":1234,"duration":1234,"cost":1234},"type_":"[form] ServerEventModifiedFormData","_id":"1553500815750_kJprZ5STEn9BWFzQBx5ddX"}
+  FrmdbEngine
+    ✓ Should allow non-overlapping bookings to be created (0.563 sec)
+
+Executed 2 of 68 specs INCOMPLETE (66 SKIPPED).
+Randomized with seed 50179.
+
