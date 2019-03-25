@@ -68,7 +68,6 @@ function isLogicalOpBinaryExpression(expr: Expression): expr is BinaryExpression
 
 
 export function getQueryKeys(op: string, node: Expression, reverse?: boolean): MapQuery {
-    //FIXME: CouchDB does not have inclusive_start ... should emulate it by adding something to the end of the key
     switch (op) {
         case '==':
             return { startkeyExpr: [node], endkeyExpr: [node], inclusive_start: true, inclusive_end: true };

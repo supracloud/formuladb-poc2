@@ -50,6 +50,10 @@ describe('FrmdbEngine', () => {
         expect(newBk).toEqual(jasmine.objectContaining({
             days: 6,
             cost: BkItem1.price * 6,
+            overlapping_start: 0,
+            overlapping_end: 0,
+            overlapping_both: 0,
+            overlapping: 0,
         }));
 
         let bk1After: any = await frmdbTStore.getDataObj(BkItem1._id);

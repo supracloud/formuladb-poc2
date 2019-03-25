@@ -28,7 +28,10 @@ export const Booking = {
         booking_item_price: { name: "booking_item_price", propType_: Pn.REFERENCE_TO, referencedEntityName: BookingItem._id, referencedPropertyName: BookingItem.props.price.name } as EntityProperty,
         start_date: { name: "start_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         end_date: { name: "end_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
-        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: '1234' } as EntityProperty,
+        overlapping_start: { name: "overlapping_start", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking._id, @[booking_item_id] == booking_item_id && @[start_date] <= start_date && start_date <= @[end_date])' } as EntityProperty,
+        overlapping_end: { name: "overlapping_end", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking._id, @[booking_item_id] == booking_item_id && @[start_date] <= end_date && end_date <= @[end_date])' } as EntityProperty,
+        overlapping_both: { name: "overlapping_both", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking._id, @[booking_item_id] == booking_item_id && @[start_date] <= start_date && end_date <= @[end_date])' } as EntityProperty,
+        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'overlapping_start + overlapping_end + overlapping_both' } as EntityProperty,
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
         cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * booking_item_price' } as EntityProperty,
     }
