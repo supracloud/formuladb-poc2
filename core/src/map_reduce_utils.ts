@@ -123,6 +123,16 @@ export function evalExpression(doc: {}, expr: Expression | Expression[]) {
                 case "YD":
                     return duration.asDays();//TODO
             }
+        },
+        OVERLAP(start_date_1, end_date_1, start_date_2, end_date_2, max_interval) {
+            let start1 = moment(start_date_1);
+            let end1 = moment(end_date_1);
+            let start2 = moment(start_date_2);
+            let end2 = moment(end_date_2);
+            return (start2.isSameOrBefore(start1) && start1.isSameOrBefore(end2))
+                || (start2.isSameOrBefore(end1) && end1.isSameOrBefore(end2))
+                || (start2.isSameOrBefore(start1) && end1.isSameOrBefore(end2))
+            ;    
         }
     };
 

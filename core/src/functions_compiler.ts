@@ -555,6 +555,9 @@ function FLOOR(fc: FuncCommon, expr: Expression, significance: NumberLiteral): C
 function DATEDIF(fc: FuncCommon, start_date: Expression, end_date: Expression, unit: StringLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function OVERLAP(fc: FuncCommon, start_date_1: Expression, end_date_1: Expression, start_date_2: Expression, end_date_2: Expression, max_interval: StringLiteral): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 
 export const ScalarFunctions = {
     TEXT: TEXT,
@@ -566,6 +569,7 @@ export const ScalarFunctions = {
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
     DATEDIF: DATEDIF,
+    OVERLAP: OVERLAP,
 }
 
 export const PropertyTypeFunctions = {

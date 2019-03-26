@@ -14,7 +14,17 @@ export function autoLayoutReducer(state: AppState, action: AppActions): AppState
                 form: {
                     ...state.form,
                     form: autoLayoutForm(null, state.entity.selectedEntity, _.keyBy(state.entity.entities, '_id'), action.page),
-                }
+                },
+                table: {
+                    ...state.table,
+                    table: {
+                        ...state.table.table,
+                        page: {
+                            ...state.table.table.page,
+                            layout: action.page.layout,
+                        },
+                    }
+                },
             }
             break;
         case FormFromBackendActionN:

@@ -1,0 +1,8 @@
+<div class="row">
+    <div class="col-md-4">
+        <img [src]="dataObj.picture" width="100%" height="100%" />
+    </div>
+    <div class="col-md-8">
+        <p *ngFor="let key of objectKeys(dataObj)">{{dataObj[key]}}</p>
+    </div>
+</div>

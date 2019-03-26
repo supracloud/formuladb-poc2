@@ -26,7 +26,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { DevModeCommonModule } from './dev-mode-common/dev-mode-common.module';
 import { FormEffects } from './effects/form.effects';
 import { PageComponent } from './components/page/page.component';
-import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
+// import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 import { ComponentsModule } from './components/components.module';
 
 export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
@@ -56,7 +56,7 @@ export function getReducers() {
     ComponentsModule,
   ],
   providers: [
-    InjectionService,
+    // InjectionService,
     BackendService,
     {
       provide: REDUCER_TOKEN,

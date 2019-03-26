@@ -63,6 +63,9 @@ import { RouterModule } from '@angular/router';
 import { LyAdminComponent } from './ly_admin/ly_admin.component';
 import { LyCoverComponent } from './ly_cover/ly_cover.component';
 import { LyCardsComponent } from './ly_cards/ly_cards.component';
+import { TableFpatternRenderer } from './table/table-fpattern.component';
+import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
+import { TableToolsComponent } from './table/table-tools.component';
 
 @NgModule({
     imports: [
@@ -71,7 +74,7 @@ import { LyCardsComponent } from './ly_cards/ly_cards.component';
         FormsModule,
         ReactiveFormsModule,
         NgbModule,
-        AgGridModule.withComponents([TableComponent, TableHeaderComponent]),
+        AgGridModule.withComponents([TableComponent, TableHeaderComponent, TableFpatternRenderer, TableToolsComponent]),
         CrosscuttingModule,
         FontAwesomeModule,
         NgxChartsModule,
@@ -86,6 +89,8 @@ import { LyCardsComponent } from './ly_cards/ly_cards.component';
         DropHandleComponent,
         NotFoundComponent,
         TableHeaderComponent,
+        TableFpatternRenderer,
+        TableToolsComponent,
         HeaderComponent,
         TableComponent,
         PageItemsDirective,
@@ -208,6 +213,7 @@ import { LyCardsComponent } from './ly_cards/ly_cards.component';
     ],
     providers: [
         FormEditingService,
+        InjectionService,
         TableService,
         I18nPipe
     ]

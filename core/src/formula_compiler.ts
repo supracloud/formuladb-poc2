@@ -117,13 +117,30 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
     };
 }
 
+function specialLogicalExpressions(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries | null {
+    let node = logicalExpr;
+    if (!isLogicalOpBinaryExpression(logicalExpr.left))
+        throw new FormulaCompilerError(node, "Only logical operators are currently allowed in left LogicalExpession, at: " + logicalExpr.origExpr);
+    
+    if (jsep.isCallExpression(logicalExpr.right) && isIdentifier(logicalExpr.right.callee) && 'OVERLAP' === logicalExpr.right.callee.name) {
+        let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
+        return left;
+    } else return null;
+}
+
 export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
     let node = logicalExpr;
     if (logicalExpr.operator !== '&&') throw new FormulaCompilerError(node, `Only && operator is supported currently. 
             If you need ||, please create 2 different properties and combine them with another formula. 
             For example SUMIF(..., x < @[someVal] || y > @[otherVal]) can be: p1=SUMIF(..., x < @[someVal]), p2=SUMIF(y > @[otherVal]), p3 = p1 + p2
             At ` + logicalExpr.origExpr);
-    if (!isLogicalOpBinaryExpression(logicalExpr.left) || !isLogicalOpBinaryExpression(logicalExpr.right))
+    if (!isLogicalOpBinaryExpression(logicalExpr.left))
+        throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
+    
+    let specialNode = specialLogicalExpressions(logicalExpr, context);
+    if (specialNode) return specialNode;
+
+    if (!isLogicalOpBinaryExpression(logicalExpr.right)) 
         throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
     let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
     let right = extractKeysAndQueriesFromBinaryExpression(logicalExpr.right, context);

@@ -257,7 +257,9 @@ export class MapReduceTrigger implements ExecPlanBase {
         map: MapFunctionAndQueryT;
         reduceFun: ReduceFun;
     };
-    mapObserversImpactedByOneObservable: MapFunctionAndQueryT & {obsViewName: string};
+    mapObserversImpactedByOneObservable: MapFunctionAndQueryT & {
+        obsViewName: string
+    };
 
     mapreduceAggsOfManyObservablesQueryableFromOneObs__?: string;//FIXME: security breach!!! this should be put somewhere else and not be available for the clients to see
     mapObserversImpactedByOneObservable__?: string;//FIXME: security breach!!! this should be put somewhere else and not be available for the clients to see

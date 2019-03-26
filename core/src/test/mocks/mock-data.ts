@@ -17,13 +17,13 @@ import { BookingData } from './booking-data';
 
 export class MockData {
 
-    allData: DataObj[] = InventoryData
+    allData: DataObj[] = (GeneralData as any)
         .concat(StaticPagesData)
         .concat(BookingData)
         // .concat(MusicBookingData)
         // .concat(FormsData)
         // .concat(ReportsData)
-        .concat(GeneralData)
+        .concat(InventoryData)
     ;
 
     constructor(private entitiesMap: _.Dictionary<Entity>) {

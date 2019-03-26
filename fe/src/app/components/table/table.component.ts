@@ -14,7 +14,7 @@ import { TableColumn } from "@core/domain/uimetadata/table";
 import {
     GridOptions, GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellClickedEvent, CellFocusedEvent, ValueFormatterService
+    RowClickedEvent, CellClickedEvent, CellFocusedEvent, ValueFormatterService, ColDef
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as fromTable from '../../state/table.state';
@@ -26,6 +26,10 @@ import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { waitUntilNotNull } from '@core/ts-utils';
+import { Page, FrmdbLy } from '@core/domain/uimetadata/page';
+import { TableFpatternRenderer } from './table-fpattern.component';
+import { elvis } from '@core/elvis';
+import { TableToolsComponent } from './table-tools.component';
 
 @Component({
     selector: 'frmdb-table',
@@ -47,6 +51,13 @@ export class TableComponent implements OnInit, OnDestroy {
     sideBar = {
         toolPanels: [
             {
+                id: "tableActions",
+                labelDefault: "Table Actions",
+                labelKey: "tableActions",
+                iconKey: "table-actions",
+                toolPanel: "tableActionsToolPanel"
+            },            
+            {
                 id: 'columns',
                 labelDefault: 'Columns',
                 labelKey: 'columns',
@@ -58,7 +69,7 @@ export class TableComponent implements OnInit, OnDestroy {
                 // }
             }
         ],
-        defaultToolPanel: 'columns'
+        defaultToolPanel: 'tableActions'
     };
 
 
@@ -69,7 +80,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
     private gridColumnApi;
-    private columns: any[] = [];
+    private columns: ColDef[] = [];
     private filters: any = {};
     private sort: any = {};
     private subscriptions: Subscription[] = [];
@@ -77,6 +88,8 @@ export class TableComponent implements OnInit, OnDestroy {
 
     public frameworkComponents;
     public defaultColDef;
+    rowHeight = 25;
+    headerHeight = 25;
 
     private tableState: tableState.Table;
 
@@ -88,12 +101,17 @@ export class TableComponent implements OnInit, OnDestroy {
         private _ngZone: NgZone) {
         // tslint:disable-next-line:max-line-length
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
-        // this.frameworkComponents = { agColumnHeader: TableHeaderComponent };
+        this.frameworkComponents = { 
+            // agColumnHeader: TableHeaderComponent,
+            tableFpatternRenderer: TableFpatternRenderer,
+            tableActionsToolPanel: TableToolsComponent,
+        };
         this.defaultColDef = {
             width: 100,
             headerComponentParams: { menuIcon: 'fa-bars' }
         };
         this.table$ = frmdbStreams.table$.pipe(untilDestroyed(this));
+        this.table$.subscribe(t => this.tableState = _.cloneDeep(t));
     }
 
     applyCellStyles(params) {
@@ -119,15 +137,38 @@ export class TableComponent implements OnInit, OnDestroy {
         }
     }
 
+    getRowHeight = () => {
+        if (elvis(elvis(this.tableState).page).layout === FrmdbLy.ly_fpattern) {
+            return 200;
+        } else return 25;
+    }
+
     ngOnInit(): void {
         console.debug("ngOnInit", this.currentEntity, this.tableState);
+
         this.table$.subscribe(async (t) => {
             console.debug('new table ', t, this.gridApi);
             await waitUntilNotNull(() => Promise.resolve(this.gridApi));
             console.debug('new table ', t);
             if (!t.columns) { return; }
             try {
-                this.tableState = _.cloneDeep(t);
+                if (t.page.layout === FrmdbLy.ly_fpattern) {
+                    this.rowHeight = 250;
+                    this.headerHeight = 0;
+                    this.columns = [{
+                        headerName: "N/A",
+                        field: "picture",
+                        cellRenderer: "tableFpatternRenderer",
+                        editable: true,
+                        colId: "picture",
+                        width: 800,
+                    }];
+                    this.gridApi.setColumnDefs(this.columns);
+                    this.gridApi.setHeaderHeight(0);
+                    this.gridApi.sizeColumnsToFit();
+                    return;    
+                }
+
                 this.columns = t.columns.map(c => <GridOptions>{
                     headerName: this.i18npipe.transform(c.name),
                     field: c.name,
@@ -184,6 +225,10 @@ export class TableComponent implements OnInit, OnDestroy {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
+    onGridSizeChanged() {
+        if (!this.gridApi) return;
+        this.gridApi.sizeColumnsToFit();
+    }
     onGridReady(params: GridReadyEvent) {
         console.debug("onGridReady", this.currentEntity, this.tableState);
         if (!this.gridApi) {
@@ -271,26 +316,6 @@ export class TableComponent implements OnInit, OnDestroy {
             // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
         this.sort = this.gridApi.getSortModel();
-    }
-
-    excel() {
-        this.gridApi.exportDataAsExcel();
-    }
-
-    addRow() {
-        this._ngZone.run(() => {
-            if (this.currentEntity) {
-                this.router.navigate(['./' + this.currentEntity._id + '~~'], { relativeTo: this.route });
-            }
-        })
-    }
-
-    deleteRow() {
-        if (this.currentRow && this.currentRow._id && this.currentEntity) {
-            if (confirm("Are you sure you want to delete row " + this.currentRow._id + " ?")) {
-                this.frmdbStreams.userEvents$.next({ type: "UserDeletedFormData", obj: this.currentRow });
-            }
-        }
     }
 
     onFirstDataRendered($event) {

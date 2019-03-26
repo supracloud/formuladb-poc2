@@ -210,6 +210,7 @@ export class MockMetadata {
             sch.entities[GeneralMetadata.GEN__Currency._id] = GeneralMetadata.GEN__Currency;
             sch.entities[GeneralMetadata.GEN__Client._id] = GeneralMetadata.GEN__Client;
             sch.entities[StaticPagesMetadata.Home._id] = StaticPagesMetadata.Home;
+            sch.entities[StaticPagesMetadata.ProductFeature._id] = StaticPagesMetadata.ProductFeature;
 
             for (let ent of Object.values(sch.entities)) {
                 ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };

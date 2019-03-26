@@ -120,6 +120,7 @@ export interface DatetimeProperty {
     allowNull?: boolean;
 }
 
+
 export interface AttachmentProperty {
     propType_: Pn.ATTACHMENT;
     name: string;

@@ -10,7 +10,7 @@ import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
 import { Schema_booking } from "./mock-metadata";
-import { Act_Wiza } from "./general-data";
+import { Act_Wiza, Act_Collins } from "./general-data";
 import { BookingData, BkItem1 } from "./booking-data";
 
 describe('FrmdbEngine', () => {
@@ -50,14 +50,24 @@ describe('FrmdbEngine', () => {
         expect(newBk).toEqual(jasmine.objectContaining({
             days: 6,
             cost: BkItem1.price * 6,
-            overlapping_start: 0,
-            overlapping_end: 0,
-            overlapping_both: 0,
-            overlapping: 0,
         }));
 
+
         let bk1After: any = await frmdbTStore.getDataObj(BkItem1._id);
-        // expect(bk1After.name).toEqual("Practical Room");
+        expect(bk1After).toEqual(jasmine.objectContaining({
+            name: BkItem1.name,
+            overlapping: 3,
+        }));
+
+        let newBk2: any = (await putObj({
+            ...newBooking,
+            user_id: Act_Collins._id,
+            user_name: Act_Collins.name
+        } as any)).obj;
+        expect(newBk2).toEqual(jasmine.objectContaining({
+            days: 6,
+            cost: BkItem1.price * 6,
+        }));
 
         done();
     });
