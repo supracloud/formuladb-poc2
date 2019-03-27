@@ -1,12 +1,17 @@
-<ag-grid-angular #agGrid class="ag-theme-balham" rowHeight="25" 
-        [rowData]="data" enableColResize="true" 
-        [frameworkComponents]="frameworkComponents"
-        [defaultColDef]="defaultColDef"
-        enableSorting="true" enableFilter="true" floatingFilter="true">
-        <!-- (rowDoubleClicked)="onRowDoubleClicked($event)"
-        (cellFocused)="onCellFocused($event)"
-        (gridReady)="onGridReady($event)" 
-        (columnMoved)="columnMoving($event)" (dragStopped)="columnMoved($event)"
-        (columnResized)="columnResized($event)" (filterChanged)="filterChanged($event)" 
-        (sortChanged)="sortChanged($event)" -->
-        </ag-grid-angular>
+<div class="row mb-3">
+  <ng-container *ngFor="let prop of dataGridElement?.properties">
+    <div class="col">
+        <frmdb-form_input 
+          [nodel]="prop"
+          [formgrp]="formgrp"
+          [fullpath]="getPropPath(prop)"
+          [rdonly]="true">
+        </frmdb-form_input>
+    </div>
+  </ng-container>
+</div>
+<frmdb-table
+  [tableObservable]="table$"
+  (onDataObjSelected)="onRowClicked($event)"
+  (onRowDblClicked)="navigateToFormPage($event)"
+></frmdb-table>

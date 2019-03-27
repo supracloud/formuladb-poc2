@@ -202,7 +202,8 @@ export class FormDataGrid implements SubObj {
     _id: string;
     refEntityAlias?: string;
     refEntityName: string;
-    properties: {refPropertyName: string, propertyName: string}[];
+    layout: FrmdbLy;
+    properties: ({refPropertyName: string} & FormInput)[];
 }
 
 export class FormDatepicker implements SubObj {

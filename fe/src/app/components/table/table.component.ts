@@ -27,6 +27,7 @@ import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
 import { Table, TableColumn } from '@core/domain/uimetadata/table';
 import { DataObj } from '@core/domain/metadata/data_obj';
+import { tableInitialState } from '@fe/app/state/app.state';
 
 @Component({
     selector: 'frmdb-table',
@@ -36,8 +37,6 @@ import { DataObj } from '@core/domain/metadata/data_obj';
 export class TableComponent implements OnInit, OnDestroy {
 
     @Input() tableObservable: Observable<Table>;
-
-    @Input() tableEntity: Entity | undefined;
 
     @Output() onDataObjSelected: EventEmitter<DataObj> = new EventEmitter()
     @Output() onRowDblClicked: EventEmitter<DataObj> = new EventEmitter()
@@ -91,7 +90,7 @@ export class TableComponent implements OnInit, OnDestroy {
     public defaultColDef;
     rowHeight = 25;
     headerHeight = 25;
-    tableState: Table;
+    table: Table;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
         private tableService: TableService,
@@ -110,10 +109,16 @@ export class TableComponent implements OnInit, OnDestroy {
 
     }
 
+    entityId() {
+        if (!this.table) return undefined;
+        return this.table._id.replace(/^Table_:\w+[^][^]/, '');
+    }
+
     applyCellStyles(params) {
-        if (this.tableEntity && this.tableEntity._id && this.highlightColumns[this.tableEntity._id]
-            && this.highlightColumns[this.tableEntity._id][params.colDef.field]) {
-            return { backgroundColor: this.highlightColumns[this.tableEntity._id][params.colDef.field].replace(/^c_/, '#') };
+        let entityName = this.entityId();
+        if (entityName && this.highlightColumns[entityName]
+            && this.highlightColumns[entityName][params.colDef.field]) {
+            return { backgroundColor: this.highlightColumns[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
     }
@@ -134,18 +139,19 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     getRowHeight = () => {
-        if (elvis(elvis(this.tableState).page).layout === FrmdbLy.ly_fpattern) {
+        if (elvis(elvis(this.table).page).layout === FrmdbLy.ly_fpattern) {
             return 200;
         } else return 25;
     }
-
+    
     ngOnInit(): void {
-        console.debug("ngOnInit", this.tableEntity, this.tableEntity);
+        console.debug("ngOnInit", this.table);
 
         this.tableObservable.subscribe(async (t) => {
             console.debug('new table ', t, this.gridApi);
-            this.tableState = _.cloneDeep(t)
+            this.table = _.cloneDeep(t)
             await waitUntilNotNull(() => Promise.resolve(this.gridApi));
+            this.gridApi.setServerSideDatasource(this.tableService.getDataSource(this.entityId()));
             console.debug('new table ', t);
             if (!t.columns) { return; }
             try {
@@ -166,7 +172,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     return;    
                 }
 
-                this.columns = t.columns.map(c => <GridOptions>{
+                this.columns = t.columns.map(c => <ColDef>{
                     headerName: this.i18npipe.transform(c.name),
                     field: c.name,
                     width: c.width ? c.width : 100,
@@ -176,6 +182,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     },
                     enableRowGroup: true,
                     enableValue: true,
+                    resizable: true,
                     valueFormatter: (params) => this.valueFormatter(params),
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
                 });
@@ -226,14 +233,12 @@ export class TableComponent implements OnInit, OnDestroy {
         this.gridApi.sizeColumnsToFit();
     }
     onGridReady(params: GridReadyEvent) {
-        console.debug("onGridReady", this.tableEntity, this.tableEntity);
         if (!this.gridApi) {
             this.gridApi = params.api as GridApi;
             this.gridColumnApi = params.columnApi;
-            this.gridApi.setServerSideDatasource(this.tableService.getDataSource());
             this.gridApi.closeToolPanel();
         }
-
+        console.debug("onGridReady", this.table, this.gridApi);
     }
 
     valueFormatter(params) {
@@ -256,22 +261,22 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     columnMoving(event: any) {
-        if (this.tableState) {
-            const colx: number = this.tableState.columns.findIndex(c => c.name === event.column.colId);
-            const col: TableColumn = this.tableState.columns.splice(colx, 1)[0];
-            this.tableState.columns.splice(event.toIndex, 0, col);
+        if (this.table) {
+            const colx: number = this.table.columns.findIndex(c => c.name === event.column.colId);
+            const col: TableColumn = this.table.columns.splice(colx, 1)[0];
+            this.table.columns.splice(event.toIndex, 0, col);
         }
     }
 
     columnMoved(event: ColumnMovedEvent) {
-        if (this.tableState) {
+        if (this.table) {
             // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
     }
 
     columnResized(event: ColumnResizedEvent) {
-        if (event.finished && this.tableState !== null && event && event.column) {
-            const col = (this.tableState.columns || [])
+        if (event.finished && this.table !== null && event && event.column) {
+            const col = (this.table.columns || [])
                 .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
             if (col) { col.width = event.column.getActualWidth(); }
             // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
@@ -281,14 +286,14 @@ export class TableComponent implements OnInit, OnDestroy {
     filterChanged(event: any) {
         if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
             const fs = this.gridApi.getFilterModel();
-            this.tableState.columns.forEach(c => {
+            this.table.columns.forEach(c => {
                 if (fs[c.name]) {
                     c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                 } else {
                     c.filter = undefined;
                 }
             });
-            this.frmdbStreams.userEvents$.next({ type: "UserModifiedTableUi", table: this.tableState });
+            this.frmdbStreams.userEvents$.next({ type: "UserModifiedTableUi", table: this.table });
         }
         this.filters = this.gridApi.getFilterModel();
     }
@@ -296,7 +301,7 @@ export class TableComponent implements OnInit, OnDestroy {
     sortChanged(event: any) {
         if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
             const srt = this.gridApi.getSortModel();
-            this.tableState.columns.forEach(c => {
+            this.table.columns.forEach(c => {
                 const s = srt.find(i => i.colId === c.name);
                 if (s) {
                     c.sort = s.sort;

@@ -15,6 +15,7 @@ import { ServerEventModifiedFormDataEvent } from "@core/domain/event";
 import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { LargeSalesReport_Form } from "./mocks/reports-ui-metadata";
 import { HomePage_Form, HomePage_Table } from "@core/default_pages/website-ui-metadata";
+import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "./mocks/booking-ui-metadata";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
     return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
@@ -41,12 +42,14 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
                 }
             }
             if (!uiMetaLoaded) {
-                [Forms__ServiceForm_Form_, LargeSalesReport_Form, HomePage_Form].forEach(async (formUiMeta) => {
+                for (let formUiMeta of [
+                    Forms__ServiceForm_Form_, LargeSalesReport_Form, HomePage_Form, BookingItem_Form, Booking_Form
+                ]) {
                     await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
-                });
-                [HomePage_Table].forEach(async (tbl) => {
+                };
+                for (let tbl of [HomePage_Table, BookingItem_Table, Booking_Table]) {
                     await frmdbEngine.frmdbEngineStore.putTable(tbl);
-                });
+                };
                 uiMetaLoaded = true;
             }
         }

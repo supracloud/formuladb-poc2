@@ -14,6 +14,7 @@ function getTestUUID() {
 }
 export const Forms__ServiceForm_Form_: Form = {
   _id: 'Form_:ALL^^' + Forms__ServiceForm._id,
+  isEditable: true,
   nodeType: NodeType.form,
   page: {
   },

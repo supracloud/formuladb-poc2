@@ -3,7 +3,7 @@
     <ag-grid-angular #agGrid class="ag-theme-balham" 
         [getRowHeight]="getRowHeight"
         [headerHeight]="headerHeight"
-        enableColResize="true"
+        suppressContextMenu="true"
         (gridSizeChanged)="onGridSizeChanged()"
         [frameworkComponents]="frameworkComponents" 
         [defaultColDef]="defaultColDef"

@@ -132,14 +132,19 @@ export function autoLayoutChildrenCards(layout: FrmdbLy, parentFormEl: NodeEleme
             let dataGrid = referenceToDataGrids.get(pn.referencedEntityName);
             if (!dataGrid) {
                 dataGrid = new FormDataGrid();
+                dataGrid.layout = layout;
                 dataGrid.properties = [];
                 dataGrid.refEntityName = pn.referencedEntityName;
                 referenceToDataGrids.set(pn.referencedEntityName, dataGrid);
             }
             child = dataGrid;
             child.properties.push({
+                _id: generateUUID(),
+                nodeType: NodeType.form_input,
                 refPropertyName: pn.referencedPropertyName,
-                propertyName: pn.name
+                propertyName: pn.name,
+                propertyType: /**FIXME!!!!! hardcoded heuristic */
+                    ["price"].includes(pn.referencedPropertyName) ? Pn.NUMBER : Pn.STRING,
             })
         } else {
             child = autoLayoutScalarCards(pn, layout, parentFormEl, entity, entitiesMap);

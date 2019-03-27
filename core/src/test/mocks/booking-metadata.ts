@@ -9,6 +9,7 @@ import { GEN__Actor } from "./general-metadata";
 
 export const BookingItem = {
     _id: "BookingItem",
+    isEditable: true,
     props: {
         name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -28,6 +29,7 @@ export const BookingItem = {
 
 export const Booking = {
     _id: "Booking",
+    isEditable: true,
     stateGraph: {
         nodes: ['PENDING', 'FINALIZED', 'CANCELLED'],
         transitions: [

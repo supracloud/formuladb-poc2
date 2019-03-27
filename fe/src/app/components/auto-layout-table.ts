@@ -11,14 +11,15 @@ import { generateUUID } from "@core/domain/uuid";
 import { TableColumn } from "@core/domain/uimetadata/table";
 import { elvis } from "@core/elvis";
 
-export function autoLayoutTable(table: Table | null, entity: Entity): Table {
-    const retTsble = table || new Table();
-    retTsble.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
-    retTsble.page = {
-        layout: FrmdbLy.ly_admin,
+export function autoLayoutTable(table: Table | null, entity: Entity, layout?: FrmdbLy): Table {
+    const retTable = table || new Table();
+    retTable.columns = _.values(entity.props).map(pn => new TableColumn(pn.name, pn.propType_));
+    retTable.page = {
+        layout: layout || FrmdbLy.ly_admin,
     }
-    addIdsToTable(retTsble);
-    return retTsble;
+    if (!retTable._id) { retTable._id = 'Table_:AUTOLAYOUT^^' + entity._id; }
+    addIdsToTable(retTable);
+    return retTable;
 }
 
 export function addIdsToTable(input: Table): void {
