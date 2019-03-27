@@ -182,10 +182,10 @@ describe('FormulaTokenizer', () => {
         });
     }
 
-    test(it, "REF", [{
+    test(it, "REF beginning of REFERENCE_TO", [{
         type: TokenType.FUNCTION_NAME,
         value: "REF",
-        errors: ["Uknown function REF"]
+        errors: ["Unknown function REF"]
     }], [
         [{suggestion: "REFERENCE_TO"}]
     ]);

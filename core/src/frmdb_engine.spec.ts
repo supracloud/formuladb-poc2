@@ -14,7 +14,7 @@ import { DataObj } from "@core/domain/metadata/data_obj";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { getFrmdbEngine, getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 
-describe('FrmdbEngine', () => {
+fdescribe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
@@ -189,6 +189,7 @@ describe('FrmdbEngine', () => {
 
     it("Should allow preview formulas", async (done) => {
         await frmdbEngine.init();
+        await testDataStockReservationSchema();
 
         let a3 = { _id: 'A~~', b: 'B~~1', val: 2 };
         await putObj(a3 as DataObj);

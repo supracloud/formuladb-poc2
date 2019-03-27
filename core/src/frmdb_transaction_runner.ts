@@ -45,6 +45,16 @@ class TransactionDAG {
     haveFailedValidations: boolean = false;
     finished: boolean = false;
 
+    public clear(eventId: string, retry: string) {
+        this.eventId = eventId;
+        this.retry = retry;
+        this.levels.length = 0;
+        this.objs = {};
+        this.currentLevel = 0;
+        this.haveFailedValidations = false;
+        this.finished = false;
+    }
+
     constructor(public eventId: string, public retry: string) {
     }
 
@@ -80,6 +90,9 @@ class TransactionDAG {
         let ret = this.objs[id];
         if (null == ret) throw new Error("Obj id " + id + " does not exist in transaction " + CircularJSON.stringify(this, null, 4));
         return ret;
+    }
+    public hasObj(id: string) {
+        return this.objs[id] != null;
     }
     public incrementLevel() {
         this.currentLevel++;
@@ -279,11 +292,11 @@ export class FrmdbTransactionRunner {
         | events.ServerEventDeletedFormDataEvent, transacDAG: TransactionDAG,
         originalObj: DataObj, isNewObj: boolean) 
     {
-        transacDAG
         Object.assign(event.obj, originalObj);
 
         for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
-            transacDAG.retry = '|' + failedValidationRetry;
+            transacDAG.clear(event._id, '|' + failedValidationRetry);
+
             let oldObj: DataObj | null = null;
             if (!isNewObj) {
                 oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
@@ -300,6 +313,7 @@ export class FrmdbTransactionRunner {
                     obsViewUpdates.push.apply(obsViewUpdates, 
                         await this.preComputeNonSelfFormulaOfTransactionRootObj(event.obj, null, compiledFormula));
                 }
+                //TODO: this is not transactional
                 for (let childObj of (await this.getChildObjects(event.obj))) {
                     let childDelEvent = new events.ServerEventDeletedFormDataEvent(childObj);
                     childDelEvent._id = event._id + '__';

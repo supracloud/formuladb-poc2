@@ -13,12 +13,13 @@ export class TableService {
     frmdbStreams.entity$.subscribe(e => this.currentEntity = e);
   }
 
-  public getDataSource(): IServerSideDatasource {
+  public getDataSource(fixedEntity?: Entity): IServerSideDatasource {
     return {
       getRows: async (params: IServerSideGetRowsParams): Promise<void> => {
-        await waitUntilNotNull(() => Promise.resolve(this.currentEntity));
+        let entity = fixedEntity || this.currentEntity;
+        await waitUntilNotNull(() => Promise.resolve(entity));
         let req = params.request;
-        this.backendService.simpleAdHocQuery(this.currentEntity._id, req as SimpleAddHocQuery)
+        this.backendService.simpleAdHocQuery(entity._id, req as SimpleAddHocQuery)
           .then((data: any[]) => {
             console.log("%c <---- simpleAdHocQuery: ",
               "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", data);

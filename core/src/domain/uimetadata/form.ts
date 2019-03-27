@@ -60,17 +60,22 @@ export function isForm(param: KeyValueObj): param is Form {
     return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;
 }
 
-export type NodeElement =
-    | Form
+export type ScalarNodeElement = 
     | FormInput
     | FormAutocomplete
-    | FormTabs
-    | FormTable
     | FormDatepicker
     | FormTimepicker
-    | FormChart
     | FormText
     | Button
+    | Icon
+    | Image
+;
+export type NodeElement =
+    | ScalarNodeElement
+    | Form
+    | FormTabs
+    | FormTable
+    | FormChart
     | ButtonGroup
     | Calendar
     | Card
@@ -84,8 +89,6 @@ export type NodeElement =
     | HFilters
     | GridRow
     | HNav
-    | Icon
-    | Image
     | List
     | Media
     | Timeline
@@ -197,9 +200,9 @@ export class CardContainer extends CardBase implements SubObj {
 export class FormDataGrid implements SubObj {
     readonly nodeType = NodeType.form_data_grid;
     _id: string;
+    refEntityAlias?: string;
     refEntityName: string;
-    displayedRefEntityProperties?: string[];
-    childNodes?: NodeElement[];
+    properties: {refPropertyName: string, propertyName: string}[];
 }
 
 export class FormDatepicker implements SubObj {

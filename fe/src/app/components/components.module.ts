@@ -66,6 +66,8 @@ import { LyCardsComponent } from './ly_cards/ly_cards.component';
 import { TableFpatternRenderer } from './table/table-fpattern.component';
 import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 import { TableToolsComponent } from './table/table-tools.component';
+import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
+import { TableContainerComponent } from './table-container/table_container.component';
 
 @NgModule({
     imports: [
@@ -128,7 +130,9 @@ import { TableToolsComponent } from './table/table-tools.component';
         FormInputComponent,
         LyAdminComponent,
         LyCoverComponent,
-        LyCardsComponent,        
+        LyCardsComponent,
+        DateRangePickerComponent,
+        TableContainerComponent,
     ],
     entryComponents: [
         FormComponent,
@@ -174,6 +178,7 @@ import { TableToolsComponent } from './table/table-tools.component';
         TableHeaderComponent,
         HeaderComponent,
         TableComponent,
+        TableContainerComponent,
         PageItemsDirective,
         FormComponent,
         FormAutocompleteComponent,

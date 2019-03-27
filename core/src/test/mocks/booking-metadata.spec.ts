@@ -34,7 +34,7 @@ describe('FrmdbEngine', () => {
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
 
-    fit("Should allow non-overlapping bookings to be created", async (done) => {
+    it("Should allow non-overlapping bookings to be created", async (done) => {
         let newBooking = { 
             _id: "Booking~~", 
             booking_item_id: BkItem1._id, 

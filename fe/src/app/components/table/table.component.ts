@@ -3,21 +3,16 @@
  * License TBD
  */
 
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 
-import { Store } from '@ngrx/store';
-
-import * as tableState from '../../state/table.state';
-import { TableColumn } from "@core/domain/uimetadata/table";
 import {
     GridOptions, GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
     RowClickedEvent, CellClickedEvent, CellFocusedEvent, ValueFormatterService, ColDef
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
-import * as fromTable from '../../state/table.state';
 import * as _ from 'lodash';
 import { TableHeaderComponent } from './table-header.component';
 import { Entity } from "@core/domain/metadata/entity";
@@ -30,6 +25,8 @@ import { Page, FrmdbLy } from '@core/domain/uimetadata/page';
 import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
+import { Table, TableColumn } from '@core/domain/uimetadata/table';
+import { DataObj } from '@core/domain/metadata/data_obj';
 
 @Component({
     selector: 'frmdb-table',
@@ -37,6 +34,13 @@ import { TableToolsComponent } from './table-tools.component';
     styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {
+
+    @Input() tableObservable: Observable<Table>;
+
+    @Input() tableEntity: Entity | undefined;
+
+    @Output() onDataObjSelected: EventEmitter<DataObj> = new EventEmitter()
+    @Output() onRowDblClicked: EventEmitter<DataObj> = new EventEmitter()
 
     statusBar = {
         statusPanels: [
@@ -73,9 +77,6 @@ export class TableComponent implements OnInit, OnDestroy {
     };
 
 
-    private table$: Observable<tableState.Table>;
-    private currentEntity: Entity | undefined;
-    public currentRow: tableState.DataObj;
     private selectedRowIdx: number;
     private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
@@ -90,15 +91,11 @@ export class TableComponent implements OnInit, OnDestroy {
     public defaultColDef;
     rowHeight = 25;
     headerHeight = 25;
-
-    private tableState: tableState.Table;
+    tableState: Table;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
-        private router: Router,
-        private route: ActivatedRoute,
         private tableService: TableService,
-        private i18npipe: I18nPipe,
-        private _ngZone: NgZone) {
+        private i18npipe: I18nPipe) {
         // tslint:disable-next-line:max-line-length
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
         this.frameworkComponents = { 
@@ -110,14 +107,13 @@ export class TableComponent implements OnInit, OnDestroy {
             width: 100,
             headerComponentParams: { menuIcon: 'fa-bars' }
         };
-        this.table$ = frmdbStreams.table$.pipe(untilDestroyed(this));
-        this.table$.subscribe(t => this.tableState = _.cloneDeep(t));
+
     }
 
     applyCellStyles(params) {
-        if (this.currentEntity && this.currentEntity._id && this.highlightColumns[this.currentEntity._id]
-            && this.highlightColumns[this.currentEntity._id][params.colDef.field]) {
-            return { backgroundColor: this.highlightColumns[this.currentEntity._id][params.colDef.field].replace(/^c_/, '#') };
+        if (this.tableEntity && this.tableEntity._id && this.highlightColumns[this.tableEntity._id]
+            && this.highlightColumns[this.tableEntity._id][params.colDef.field]) {
+            return { backgroundColor: this.highlightColumns[this.tableEntity._id][params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
     }
@@ -144,10 +140,11 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.debug("ngOnInit", this.currentEntity, this.tableState);
+        console.debug("ngOnInit", this.tableEntity, this.tableEntity);
 
-        this.table$.subscribe(async (t) => {
+        this.tableObservable.subscribe(async (t) => {
             console.debug('new table ', t, this.gridApi);
+            this.tableState = _.cloneDeep(t)
             await waitUntilNotNull(() => Promise.resolve(this.gridApi));
             console.debug('new table ', t);
             if (!t.columns) { return; }
@@ -204,7 +201,6 @@ export class TableComponent implements OnInit, OnDestroy {
                 console.error(ex);
             }
         });
-        this.frmdbStreams.entity$.pipe(untilDestroyed(this)).subscribe(e => this.currentEntity = e);
         this.subscriptions.push(this.frmdbStreams.formulaHighlightedColumns$
             .subscribe(h => {
                 this.highlightColumns = h || {};
@@ -230,7 +226,7 @@ export class TableComponent implements OnInit, OnDestroy {
         this.gridApi.sizeColumnsToFit();
     }
     onGridReady(params: GridReadyEvent) {
-        console.debug("onGridReady", this.currentEntity, this.tableState);
+        console.debug("onGridReady", this.tableEntity, this.tableEntity);
         if (!this.gridApi) {
             this.gridApi = params.api as GridApi;
             this.gridColumnApi = params.columnApi;
@@ -252,16 +248,11 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     onRowClicked(event: RowClickedEvent) {
-        this.frmdbStreams.userEvents$.next({ type: "UserSelectedRow", dataObj: event.data });
-        this.currentRow = event.data;
+        this.onDataObjSelected.emit(event.data);
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
-        if (event.data._id && this.currentEntity) {
-            this._ngZone.run(() => {
-                this.router.navigate(['./' + event.data._id], { relativeTo: this.route });
-            })
-        }
+        this.onRowDblClicked.emit(event.data);
     }
 
     columnMoving(event: any) {
