@@ -21,14 +21,14 @@ import { FrmdbStreamsService } from './state/frmdb-streams.service';
 export class AppComponent {
   title = 'frmdb';
   public devMode: boolean;
-  bodyPadding = "0 0 49px 0";
+  bodyPadding = "0 0 60px 0";
   constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
     this.store.select(appState.getDeveloperMode).subscribe(devMode => {
       this.devMode = devMode;
       if (devMode) {
-        this.bodyPadding = "49px 0 0 0";
+        this.bodyPadding = "49px 0 60px 0";
       } else {
-        this.bodyPadding = "0 0 49px 0";
+        this.bodyPadding = "0 0 60px 0";
       }
     });
 

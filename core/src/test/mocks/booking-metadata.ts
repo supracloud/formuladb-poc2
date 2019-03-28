@@ -23,7 +23,6 @@ export const BookingItem = {
             props: {},
             isLargeTable: true,
         } as EntityProperty,
-
     }
 };
 
@@ -48,7 +47,8 @@ export const Booking = {
         end_date: { name: "end_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
         cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * booking_item_price' } as EntityProperty,
-        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
+        // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
+        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: '0' } as EntityProperty,
     }
 }
 

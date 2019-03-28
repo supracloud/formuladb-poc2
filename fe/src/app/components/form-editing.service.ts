@@ -6,7 +6,7 @@ import { FormGroup } from '@angular/forms';
 import { FrmdbFormControl, FrmdbFormGroup } from './form.component';
 import { DataObj } from '../state/form.state';
 import { Observable, Subject, of, from, BehaviorSubject } from 'rxjs';
-import { take, catchError, delay, map, filter, debounceTime } from 'rxjs/operators';
+import { take, catchError, delay, map, filter, debounceTime, tap } from 'rxjs/operators';
 import { j2str } from '../crosscutting/utils/j2str';
 import { UserModifiedFormData } from '../state/frmdb-user-events';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
@@ -54,6 +54,7 @@ export class FormEditingService {
     });
 
     ctrl.valueChanges.pipe(
+      tap(x => console.debug("FrmdbFormControl " + name + " changed to " + x, ctrl.disabled, ctrl.dirty, ctrl.valid)),
       filter(() => !ctrl.disabled && ctrl.dirty && ctrl.valid),
       debounceTime(500)
     )

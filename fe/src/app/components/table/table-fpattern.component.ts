@@ -10,7 +10,10 @@ import { DataObj } from "@fe/app/state/app.state";
 export class TableFpatternRenderer implements ICellRendererAngularComp, OnInit {
     private params: any;
     dataObj: any;
-    objectKeys = Object.keys;
+    
+    getProps(dataObj) {
+        return Object.keys(dataObj).filter(p => p !== "picture");
+    }
 
     ngOnInit(): void {
         console.debug(this.params);

@@ -7,6 +7,13 @@
 :host ::ng-deep {
     font-size: 14px;
 
+    [frmdb-v_nav] [frmdb-v_nav_segment] {
+        flex-direction: row !important;
+        a p {
+            margin-bottom: 0 !important;
+        }
+    }
+
     .container {
         max-width: 960px;
     }

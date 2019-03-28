@@ -88,7 +88,6 @@ export class TableComponent implements OnInit, OnDestroy {
 
     public frameworkComponents;
     public defaultColDef;
-    rowHeight = 25;
     headerHeight = 25;
     table: Table;
 
@@ -140,7 +139,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     getRowHeight = () => {
         if (elvis(elvis(this.table).page).layout === FrmdbLy.ly_fpattern) {
-            return 200;
+            return 250;
         } else return 25;
     }
     
@@ -156,7 +155,6 @@ export class TableComponent implements OnInit, OnDestroy {
             if (!t.columns) { return; }
             try {
                 if (t.page.layout === FrmdbLy.ly_fpattern) {
-                    this.rowHeight = 250;
                     this.headerHeight = 0;
                     this.columns = [{
                         headerName: "N/A",
