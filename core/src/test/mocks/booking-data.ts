@@ -16,6 +16,4 @@ export const BookingData = [
     { _id: "Booking~~2__4", booking_item_id: BkItem2._id, start_date: '2019-03-19', end_date: '2019-03-24', booking_item_name: BkItem2.name, booking_item_price: BkItem2.price, user_id: Act_Stracke._id, user_name: Act_Stracke.name},
     { _id: "Booking~~3__5", booking_item_id: BkItem3._id, start_date: '2019-03-03', end_date: '2019-03-08', booking_item_name: BkItem3.name, booking_item_price: BkItem3.price, user_id: Act_Buckridge._id, user_name: Act_Buckridge.name},
     { _id: "Booking~~3__6", booking_item_id: BkItem3._id, start_date: '2019-03-19', end_date: '2019-03-24', booking_item_name: BkItem3.name, booking_item_price: BkItem3.price, user_id: Act_MacGyver._id, user_name: Act_MacGyver.name},
-    { _id: "Booking~~4__7", booking_item_id: BkItem4._id, start_date: '2019-03-03', end_date: '2019-03-08', booking_item_name: BkItem4.name, booking_item_price: BkItem4.price, user_id: Act_Ondricka._id, user_name: Act_Ondricka.name},
-    { _id: "Booking~~4__8", booking_item_id: BkItem4._id, start_date: '2019-03-19', end_date: '2019-03-24', booking_item_name: BkItem4.name, booking_item_price: BkItem4.price, user_id: Act_Collins._id, user_name: Act_Collins.name},
 ];

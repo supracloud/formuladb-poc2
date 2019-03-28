@@ -21,6 +21,7 @@ export enum NodeType {
     form_chart = "form_chart",
     form_datepicker = "form_datepicker",
     form_timepicker = "form_timepicker",
+    date_range_picker = "date_range_picker",
     form_text = "form_text",
     form_enum = "form_enum",
     form_state = "form_state",
@@ -63,8 +64,10 @@ export function isForm(param: KeyValueObj): param is Form {
 export type ScalarNodeElement = 
     | FormInput
     | FormAutocomplete
+    | FormDataGrid
     | FormDatepicker
     | FormTimepicker
+    | DateRangePicker
     | FormText
     | Button
     | Icon
@@ -82,7 +85,6 @@ export type NodeElement =
     | Jumbotron
     | Header
     | Dropdown
-    | FormDataGrid
     | FormEnum
     | FormState
     | Gallery
@@ -211,10 +213,19 @@ export class FormDatepicker implements SubObj {
     _id: string;
     propertyName: string;
 }
+
 export class FormTimepicker implements SubObj {
     readonly nodeType = NodeType.form_timepicker;
     _id: string;
     propertyName: string;
+}
+
+
+export class DateRangePicker implements SubObj {
+    readonly nodeType = NodeType.date_range_picker;
+    _id: string;
+    startPropertyName: string;
+    endPropertyName: string;
 }
 
 export class FormChart implements SubObj {

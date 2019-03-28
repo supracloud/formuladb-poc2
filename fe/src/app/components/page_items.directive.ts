@@ -37,6 +37,7 @@ import { ButtonGroupComponent } from './button_group/button_group.component';
 import { CardContainerComponent } from './card_prototype/card_container.component';
 import { FormGroup } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
+import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
 
 export type PageItemComponents =
     | FormComponent
@@ -45,6 +46,7 @@ export type PageItemComponents =
     | FormTabsComponent
     | FormTableComponent
     | FormDatepickerComponent
+    | DateRangePickerComponent
     | FormTimepickerComponent
     | FormChartComponent
     | FormTextComponent
@@ -137,6 +139,9 @@ export class PageItemsDirective {
                     break;
                 case NodeType.form_timepicker:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormTimepickerComponent)
+                    break;
+                case NodeType.date_range_picker:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(DateRangePickerComponent)
                     break;
                 case NodeType.form_text:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormTextComponent)

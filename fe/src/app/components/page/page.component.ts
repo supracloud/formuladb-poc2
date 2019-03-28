@@ -59,12 +59,12 @@ export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck,
     }
 
     ngDoCheck(): void {
-        console.debug("ngDoCheck");
+        // console.debug("ngDoCheck");
     }
     ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
-        console.debug("ngOnChanges", changes);
+        // console.debug("ngOnChanges", changes);
     }
     ngOnDestroy(): void {
-        console.debug("ngOnDestroy");
+        // console.debug("ngOnDestroy");
     }
 }

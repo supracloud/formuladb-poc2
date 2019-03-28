@@ -51,8 +51,8 @@ export class FrmdbFormGroup extends FormGroup {
     styleUrls: ['./form.component.scss'],
     host: {
         "novalidate": "",
-    }
-    // changeDetection: ChangeDetectionStrategy.OnPush,
+    },
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormComponent implements OnInit, OnDestroy, OnChanges {
     // @HostBinding("formGroup")

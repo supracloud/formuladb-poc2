@@ -31,17 +31,16 @@ export var Booking_Form: Form = {
     },
     childNodes: [
         { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
-            { nodeType: NodeType.form_autocomplete, _id: getTestUUID(), propertyName: "user_id", refEntityName: GEN__Actor._id, refPropertyName: '_id' },
-            { nodeType: NodeType.form_autocomplete, _id: getTestUUID(), propertyName: "user_name", refEntityName: GEN__Actor._id, refPropertyName: GEN__Actor.props.name.name },
-        ]},
-        { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
-            { nodeType: NodeType.form_datepicker, _id: getTestUUID(), propertyName: "start_date" },
-            { nodeType: NodeType.form_datepicker, _id: getTestUUID(), propertyName: "end_date" },
-        ]},
-        { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
-            { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "days", propertyType: Pn.NUMBER },
-            { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "cost", propertyType: Pn.NUMBER },
-            { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "overlapping", propertyType: Pn.NUMBER },
+            { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
+                { nodeType: NodeType.date_range_picker, _id: getTestUUID(), startPropertyName: "start_date", endPropertyName: "end_date" },
+            ]},
+            { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
+                { nodeType: NodeType.form_autocomplete, _id: getTestUUID(), propertyName: "user_id", refEntityName: GEN__Actor._id, refPropertyName: '_id' },
+                { nodeType: NodeType.form_autocomplete, _id: getTestUUID(), propertyName: "user_name", refEntityName: GEN__Actor._id, refPropertyName: GEN__Actor.props.name.name },
+                { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "days", propertyType: Pn.NUMBER },
+                { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "cost", propertyType: Pn.NUMBER },
+                { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "overlapping", propertyType: Pn.NUMBER },
+            ]},
         ]},
         { 
             nodeType: NodeType.form_data_grid, _id: getTestUUID(), 

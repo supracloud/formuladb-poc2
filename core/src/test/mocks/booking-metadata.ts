@@ -5,7 +5,17 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph } from "@core/domain/metadata/entity";
 import { GEN__Actor } from "./general-metadata";
+import { $s2e } from "@core/formula_compiler";
 
+// export const HotelReport = {
+//     _id: "HotelReport",
+//     isEditable: true,
+//     props: {
+//         date: { name: "date", propType_: Pn.DATETIME},
+//         occupancy: { name: "occupancy", propType_: Pn.FORMULA, 
+//             formula: 'COUNTIF(Booking, $OVERLAP(@[start_date], @[end_Date], date, date, "D")) / COUNT(BookingItem) * 100' } as EntityProperty,
+//     }
+// };
 
 export const BookingItem = {
     _id: "BookingItem",
@@ -48,10 +58,12 @@ export const Booking = {
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
         cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * booking_item_price' } as EntityProperty,
         // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
-        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: '0' } as EntityProperty,
-    }
+        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'booking_item_price / 100' } as EntityProperty,
+    },
+    validations: {
+        nonOverlap: { conditionExpr: $s2e('overlapping < 1.5') }
+    },
 }
-
 
 export const BookingDay = {
     _id: "BookingDay",

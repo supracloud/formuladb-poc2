@@ -41,7 +41,7 @@ export class HNavComponent implements OnInit, OnDestroy, DoCheck {
     }
 
     ngDoCheck(): void {
-        console.debug("ngDoCheck");
+        // console.debug("ngDoCheck");
     }
 
     ngOnDestroy() {

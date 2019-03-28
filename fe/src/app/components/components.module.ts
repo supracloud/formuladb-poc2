@@ -142,6 +142,7 @@ import { TableContainerComponent } from './table-container/table_container.compo
         FormTableComponent,
         FormDatepickerComponent,
         FormTimepickerComponent,
+        DateRangePickerComponent,
         FormChartComponent,
         FormTextComponent,
         ButtonComponent,

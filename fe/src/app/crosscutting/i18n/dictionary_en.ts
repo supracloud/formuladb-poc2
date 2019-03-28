@@ -4,6 +4,7 @@ import { Reports_en } from "./reports_en";
 import { Forms_en } from "./forms_en";
 import { General_en } from "./general_en";
 import { Financial_en } from "./financial_en";
+import { Booking_en } from "./booking_en";
 
 const defaultDict_en = {
     'Enable-Developer-Mode': 'Enable Developer Mode',
@@ -64,4 +65,5 @@ export const Dictioary_en = {
     ...Forms_en,
     ...General_en,
     ...Financial_en,
+    ...Booking_en,
 };
