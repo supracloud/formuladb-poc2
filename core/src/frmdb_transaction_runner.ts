@@ -520,6 +520,10 @@ export class FrmdbTransactionRunner {
                 }
             }
             for (let obsTrgByObj of Array.from(observersTriggeredByObj.values())) {
+                if (transactionDAG.hasObj(obsTrgByObj.obs._id)) {
+                    console.warn(ll(transactionDAG) + "|preComputeNextTransactionDAGLevel| obj " + obsTrgByObj.obs._id + "already computed by this transaction");
+                    continue;
+                }
                 let obsNew = _.cloneDeep(obsTrgByObj.obs);
                 await this.preComputeFormula(trObj.objId, transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
             }

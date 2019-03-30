@@ -24,13 +24,13 @@ export const REP__ServiceCentralizerReport = {
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
         serviceForms: {
             name: "serviceForms",
-            propType_: Pn.FORMULA, formula:
-                Fn.TEXTJOIN(Fn._MAP(`{{thisMonthServiceForms}}`, Fn.REGEXREPLACE(`code`, `".*\-0+"`, `""`) + `"/"` + Fn.TEXT(`time_interval`, `"dd.mm"`)), `", "`)
+            propType_: Pn.FORMULA, formula: '""'
+                // Fn.TEXTJOIN(Fn._MAP(`{{thisMonthServiceForms}}`, Fn.REGEXREPLACE(`code`, `".*\-0+"`, `""`) + `"/"` + Fn.TEXT(`time_interval`, `"dd.mm"`)), `", "`)
         } as EntityProperty,
         totalItemsCost: { name: "totalItemsCost", propType_: Pn.STRING } as EntityProperty,
 
-        totalNormalWorkHours: { name: "totalNormalWorkHours", propType_: Pn.FORMULA, formula: Fn.SUM(`{{thisMonthServiceForms}}.normal_hours`) } as EntityProperty,
-        normalHourPrice: { name: "normalHourPrice", propType_: Pn.FORMULA, formula: Fn.VLOOKUP(`General_Settings`, `name == "normalHourPrice"`, `valueNumber`) } as EntityProperty,
+        totalNormalWorkHours: { name: "totalNormalWorkHours", propType_: Pn.FORMULA, formula: '"Fn.SUM(`{{thisMonthServiceForms}}.normal_hours`)"' } as EntityProperty,
+        normalHourPrice: { name: "normalHourPrice", propType_: Pn.FORMULA, formula: '""'/*Fn.VLOOKUP(`General_Settings`, `name == "normalHourPrice"`, `valueNumber`)*/ } as EntityProperty,
         totalNormalWorkHoursCost: { name: "totalNormalWorkHoursCost", propType_: Pn.FORMULA, formula: `totalNormalWorkHours * normalHourPrice` } as EntityProperty,
 
         totalNightWorkHours: { name: "totalNightWorkHours", propType_: Pn.STRING } as EntityProperty,

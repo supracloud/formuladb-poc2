@@ -1,10 +1,12 @@
-<div>
-  <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
-  </ngb-datepicker>
-  <div class="position-relative">
-    <div class="d-flex justify-content-between position-absolute w-100 frmdb-from-to">
-      <span class="badge badge-pill badge-primary">{{formatDate(fromDate)}}</span>
-      <span class="badge badge-pill badge-primary">{{formatDate(toDate)}}</span>
+<div class="d-flex justify-content-center">
+  <div class="d-inline-block">
+    <ngb-datepicker #dp (select)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+    </ngb-datepicker>
+    <div class="position-relative d-flex">
+      <div class="d-flex justify-content-between position-absolute w-100 frmdb-from-to">
+        <span class="badge badge-pill badge-primary">{{formatDate(fromDate)}}</span>
+        <span class="badge badge-pill badge-primary">{{formatDate(toDate)}}</span>
+      </div>
     </div>
   </div>
 </div>

@@ -34,7 +34,7 @@ describe('FrmdbEngine', () => {
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
 
-    it("Should allow non-overlapping bookings to be created", async (done) => {
+    fit("Should allow non-overlapping bookings to be created", async (done) => {
         let newBooking = { 
             _id: "Booking~~", 
             booking_item_id: BkItem1._id, 
@@ -51,7 +51,6 @@ describe('FrmdbEngine', () => {
             days: 6,
             cost: BkItem1.price * 6,
         }));
-
 
         let bk1After: any = await frmdbTStore.getDataObj(BkItem1._id);
         expect(bk1After).toEqual(jasmine.objectContaining({

@@ -14,7 +14,7 @@ import { DataObj } from "@core/domain/metadata/data_obj";
 import { KeyValueObj } from "@core/domain/key_value_obj";
 import { getFrmdbEngine, getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 
-fdescribe('FrmdbEngine', () => {
+describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;

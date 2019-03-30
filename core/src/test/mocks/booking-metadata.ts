@@ -26,6 +26,8 @@ export const BookingItem = {
         picture: { name: "picture", propType_: Pn.IMAGE } as EntityProperty,
         long_description: { name: "long_description", propType_: Pn.STRING } as EntityProperty,
         price: { name: "price", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
+        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.cost, booking_item_id == @[_id])' } as EntityProperty,
         booking_table: {
             name: 'booking_table',
             propType_: Pn.CHILD_TABLE,
@@ -33,7 +35,10 @@ export const BookingItem = {
             props: {},
             isLargeTable: true,
         } as EntityProperty,
-    }
+    },
+    validations: {
+        noOverlap: { conditionExpr: $s2e('overlapping <= 1') }
+    },
 };
 
 export const Booking = {
@@ -57,11 +62,6 @@ export const Booking = {
         end_date: { name: "end_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
         cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * booking_item_price' } as EntityProperty,
-        // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
-        overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'booking_item_price / 100' } as EntityProperty,
-    },
-    validations: {
-        nonOverlap: { conditionExpr: $s2e('overlapping < 1.5') }
     },
 }
 
@@ -69,8 +69,8 @@ export const BookingDay = {
     _id: "BookingDay",
     props: {
         booking_id: { name: "booking_id", propType_: Pn.REFERENCE_TO, referencedEntityName: Booking._id, referencedPropertyName: '_id' } as EntityProperty,
+        booking_item_id: { name: "booking_item_id", propType_: Pn.REFERENCE_TO, referencedEntityName: Booking._id, referencedPropertyName: Booking.props.booking_item_id.name } as EntityProperty,
         date: { name: "date", propType_: Pn.DATETIME } as EntityProperty,
-        state: { name: "name", propType_: Pn.FORMULA, formula: 'VLOOKUP()' } as EntityProperty,
     }
 }
 

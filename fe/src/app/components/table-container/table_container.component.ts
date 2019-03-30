@@ -20,7 +20,7 @@ import { Entity } from '@core/domain/metadata/entity';
   styleUrls: ['./table_container.component.scss']
 })
 export class TableContainerComponent implements OnInit, OnDestroy {
-  private table$: Observable<Table>;
+  table$: Observable<Table>;
   private table: Table;
   private currentEntity: Entity | undefined;
 

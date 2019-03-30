@@ -16,13 +16,13 @@ export const Forms__ServiceForm = {
         code: {
             name: 'code',
             propType_: Pn.FORMULA,
-            formula:
-                `@[client].code` + `'-'` +
-                Fn.TEXT(
-                    Fn.RANK(
-                        Fn.GROUP_BY(`Forms_ServiceForm`, Fn.EOMONTH(`time_interval`, `-1`), `time_of_arrival`),
-                        Fn.EOMONTH(`@[time_interval]`, `-1`), `@[time_of_arrival]`),
-                    `'000000000'`)
+            formula: '""'
+                // `@[client].code` + `'-'` +
+                // Fn.TEXT(
+                //     Fn.RANK(
+                //         Fn.GROUP_BY(`Forms_ServiceForm`, Fn.EOMONTH(`time_interval`, `-1`), `time_of_arrival`),
+                //         Fn.EOMONTH(`@[time_interval]`, `-1`), `@[time_of_arrival]`),
+                //     `'000000000'`)
 
         } as FormulaProperty,
         product_form_id: { name: 'product_form_id', propType_: Pn.NUMBER, 'allowNull': false } as EntityProperty,

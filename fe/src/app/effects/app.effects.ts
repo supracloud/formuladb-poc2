@@ -131,7 +131,9 @@ export class AppEffects {
                     this.router.navigate([this.router.url.replace(/\w+~~$/, eventFromBe.obj._id)]);
                 } else {
                     this.store.dispatch(new FormNotifFromBackendAction(eventFromBe));
-                    this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                    if (eventFromBe.state_ !== "ABORT") {
+                        this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                    }
                     console.error("FIXME, replicate changes from the server");
                 }
                 break;

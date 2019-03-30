@@ -90,6 +90,9 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                 combineLatest(this.frmdbStreams.formData$, this.frmdbStreams.readonlyMode$))
                 .subscribe(([form, formData, rdonly]) => {
                     try {
+                        if (this.formData && this.formData._id !== formData._id) {
+                            this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');
+                        }
                         this.rdonly = rdonly || form.isEditable !== true;
                         this.syncReadonly(rdonly, this.theFormGroup);
 
@@ -100,7 +103,7 @@ export class FormComponent implements OnInit, OnDestroy, OnChanges {
                     } catch (ex) {
                         console.error(ex);
                     }
-                    console.debug(form, this.form, this.formData);
+                    console.debug(form, this.form, this.formData, this.theFormGroup);
                     if (!this.changeDetectorRef['destroyed']) {
                         console.debug(form, this.form, this.formData);
                         this.changeDetectorRef.detectChanges();
