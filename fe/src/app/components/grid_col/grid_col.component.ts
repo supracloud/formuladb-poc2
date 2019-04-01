@@ -4,6 +4,8 @@ import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain
 import * as _ from 'lodash';
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
+import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -15,6 +17,8 @@ import { BaseNodeComponent } from '../base_node';
   }
 })
 export class GridColComponent extends BaseNodeComponent implements OnInit {
+
+  dragIcon = faArrowsAlt;
 
   @Input()
   nodel: NodeElementWithChildren;
@@ -38,5 +42,26 @@ export class GridColComponent extends BaseNodeComponent implements OnInit {
 
   ngOnInit() {
     console.debug(this.fullpath, this.nodel);
+  }
+
+  dragHandle: any;
+
+  checkHandle(e: any): void {
+    this.dragHandle = e.currentTarget;
+  }
+
+  dragStart(e: any): boolean {
+    if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodel._id) {
+      this.frmdbStreams.userEvents$.next({ type: "UserDraggedFormElement", nodel: this.nodel });
+      e.stopPropagation();
+      return true;
+    } else {
+      e.stopPropagation();
+      return false;
+    }
+  }
+
+  dragEnd(e: any): void {
+    this.frmdbStreams.userEvents$.next({ type: "UserDraggedFormElement", nodel: null });
   }
 }

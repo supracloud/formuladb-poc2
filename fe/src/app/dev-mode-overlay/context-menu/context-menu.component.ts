@@ -3,7 +3,7 @@ import { NodeElement, NodeType } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../state/form.state';
 import * as fromEntity from '../../state/entity-state';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisH, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FormItemEditorComponent } from '../form-item-editor/form-item-editor.component';
 import { FormDeleteAction, FormSwitchTypeAction } from '@fe/app/actions/form.user.actions';
 
@@ -15,7 +15,7 @@ import { FormDeleteAction, FormSwitchTypeAction } from '@fe/app/actions/form.use
 })
 export class ContextMenuComponent implements OnInit {
 
-  icon = faEllipsisH;
+  icon = faEllipsisV;
 
   @ViewChild(FormItemEditorComponent) editor: FormItemEditorComponent;
 

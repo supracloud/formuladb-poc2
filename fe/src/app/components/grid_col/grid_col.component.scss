@@ -1,0 +1,10 @@
+.drag-handle {
+    position: absolute;
+    right: 0.5rem;
+    top: 0;
+    color: lightgrey;
+    // width: .5rem;
+    // height: .5rem;
+    z-index: 1000;
+    cursor: move;
+}
