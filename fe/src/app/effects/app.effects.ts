@@ -134,7 +134,7 @@ export class AppEffects {
                     if (eventFromBe.state_ !== "ABORT") {
                         this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
                     }
-                    console.error("FIXME, replicate changes from the server");
+                    console.warn("FIXME, replicate changes from the server");
                 }
                 break;
             }

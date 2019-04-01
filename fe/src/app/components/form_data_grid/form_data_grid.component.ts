@@ -43,8 +43,8 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
         for (let prop of this.dataGridElement.properties) {
             let ctrl = this.formgrp.get(this.getPropPath(prop));
             if (ctrl) {
-                ctrl.setValue(dataObj[prop.refPropertyName]);
                 ctrl.markAsDirty();
+                ctrl.setValue(dataObj[prop.refPropertyName]);
             }
         }
     }
