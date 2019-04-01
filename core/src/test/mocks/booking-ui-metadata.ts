@@ -39,7 +39,7 @@ export var Booking_Form: Form = {
                 { nodeType: NodeType.form_autocomplete, _id: getTestUUID(), propertyName: "user_name", refEntityName: GEN__Actor._id, refPropertyName: GEN__Actor.props.name.name },
                 { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "days", propertyType: Pn.NUMBER },
                 { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "cost", propertyType: Pn.NUMBER },
-                { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "overlapping", propertyType: Pn.NUMBER },
+                // { nodeType: NodeType.form_input, _id: getTestUUID(), propertyName: "overlapping", propertyType: Pn.NUMBER },
             ]},
         ]},
         { 

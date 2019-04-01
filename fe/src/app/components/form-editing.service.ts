@@ -13,6 +13,7 @@ import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import * as _ from 'lodash';
 import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/form';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
+import { Entity } from '@core/domain/metadata/entity';
 
 export class RelatedAutoCompleteControls {
   controls: {[refPropertyName: string]: FormAutocomplete} = {};
@@ -27,7 +28,8 @@ export class FormEditingService {
   constructor(
     private backendService: BackendService, 
     public frmdbStreams: FrmdbStreamsService,
-  ) { }
+  ) {
+  }
 
   private tst$: Subject<ValidationErrors | null> = new Subject();
 
