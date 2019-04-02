@@ -62,7 +62,7 @@ export const Booking = {
         end_date: { name: "end_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
         cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * booking_item_price' } as EntityProperty,
-        bookings_same_room: { name: "bookings_same_room", propType_: Pn.FORMULA, formula: '"FILTER(Booking, @[booking_item_id] == booking_item_id)"' } as EntityProperty,
+        bookings_for_the_same_room: { name: "bookings_for_the_same_room", propType_: Pn.FORMULA, formula: '"FILTER(Booking, @[booking_item_id] == booking_item_id)"' } as EntityProperty,
         // booking_day_table: {
         //     name: 'booking_day_table',
         //     propType_: Pn.CHILD_TABLE,

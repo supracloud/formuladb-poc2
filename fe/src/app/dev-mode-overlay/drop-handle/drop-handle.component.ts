@@ -1,23 +1,41 @@
-import { Component, OnInit, Input, HostBinding, HostListener } from '@angular/core';
-import { NodeElement } from "@core/domain/uimetadata/form";
+import { Component, OnInit, Input, HostBinding, HostListener, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { NodeElement, isNodeElementWithChildren } from "@core/domain/uimetadata/form";
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../state/form.state';
 import { FormDropAction } from '@fe/app/actions/form.user.actions';
+import { FormEditingService } from '@fe/app/components/form-editing.service';
+import { untilDestroyed } from 'ngx-take-until-destroy';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'drop-handle',
   templateUrl: './drop-handle.component.html',
   styleUrls: ['./drop-handle.component.scss']
 })
-export class DropHandleComponent implements OnInit {
+export class DropHandleComponent implements OnInit, OnDestroy {
 
-  constructor(protected store: Store<fromForm.FormState>) { }
+  dragover$: Subject<boolean> = new BehaviorSubject(false);
+
+  constructor(protected store: Store<fromForm.FormState>, 
+    public formEditingService: FormEditingService,
+    protected changeDetectorRef: ChangeDetectorRef
+  ) {
+    this.formEditingService.frmdbStreams.devMode$.pipe(untilDestroyed(this)).subscribe(x => this.visible = x);
+  }
+
+  
+  ngOnInit() {
+    this.dragover$.pipe(untilDestroyed(this)).subscribe(x => {
+      this.dragOver = x;
+      this.changeDetectorRef.detectChanges();
+    });
+  }
 
   @Input()
-  item: NodeElement;
+  addedToEl: NodeElement;
 
   @Input()
-  position: string = 'append';
+  position: number = 0;
 
   @Input()
   orientation: string;
@@ -31,29 +49,44 @@ export class DropHandleComponent implements OnInit {
   @HostBinding("class.visible")
   visible: boolean = false;
 
+  dragOver: boolean = false;
+
   @HostBinding("attr.droppable")
   allowDrop: boolean = true;
 
   @HostListener('dragover', ['$event'])
   onDragOver(e) {
-    this.visible = true;
+    this.dragover$.next(true);
     e.preventDefault();
   }
 
   @HostListener('dragleave')
   onDragOut() {
-    this.visible = false;
+    this.dragover$.next(false);
   }
 
   @HostListener('drop', ['$event'])
-  onDrop(e) {
-    this.visible = false;
-    this.store.dispatch(new FormDropAction({ drop: this.item, position: this.position }));
-    // e.preventDefault();
+  onDrop($event) {
+    this.dragover$.next(false);
+    
+    let removedFromNodeId = $event.dataTransfer.getData("removedFromNodeId");
+    let removedFromPos = $event.dataTransfer.getData("removedFromPos");
+    let movedNodeId = $event.dataTransfer.getData("movedNodeId");
+    let addedToNodeId = this.addedToEl._id;
+    let addedToPos = this.position;
+
+    this.store.dispatch(new FormDropAction(
+      removedFromNodeId,
+      removedFromPos,
+      movedNodeId,
+      addedToNodeId,
+      addedToPos, 
+    ));
+
+    $event.preventDefault();
   }
 
-  ngOnInit() {
-
+  ngOnDestroy(): void {
   }
 
 }

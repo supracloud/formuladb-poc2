@@ -20,6 +20,9 @@ export class ContextMenuComponent implements OnInit {
   @ViewChild(FormItemEditorComponent) editor: FormItemEditorComponent;
 
   @Input()
+  parentEl: NodeElement;
+
+  @Input()
   item: NodeElement;
 
   @Input()
@@ -65,7 +68,7 @@ export class ContextMenuComponent implements OnInit {
   }
 
   delete() {
-    this.formStore.dispatch(new FormDeleteAction(this.item));
+    this.formStore.dispatch(new FormDeleteAction(this.parentEl._id, this.item._id));
   }
 
   switchTo(p: NodeType) {

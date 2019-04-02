@@ -6,7 +6,7 @@
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj, mergeSubObj } from "@core/domain/metadata/data_obj";
-import { Form, NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete } from "@core/domain/uimetadata/form";
+import { Form, NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete, NodeElementWithChildren } from "@core/domain/uimetadata/form";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
 import * as formUserActions from '../actions/form.user.actions';
@@ -30,7 +30,6 @@ export interface FormState {
     formData: DataObj | null;
     eventFromBackend: events.MwzEvents | null;
     rdonly: boolean;
-    dragged: NodeElement | null;
     autoCompleteState: AutoCompleteState | null;
 }
 
@@ -39,7 +38,6 @@ export const formInitialState: FormState = {
     formData: null,
     eventFromBackend: null,
     rdonly: true,
-    dragged: null,
     autoCompleteState: null,
 };
 
@@ -50,7 +48,6 @@ export type FormActions =
     | formServerActions.FormFromBackendAction
     | formServerActions.FormNotifFromBackendAction
     | formServerActions.FormAutoCompleteOptionsFromBackendAction
-    | formUserActions.FormDragAction
     | formUserActions.FormDropAction
     | formUserActions.FormDeleteAction
     | formUserActions.FormSwitchTypeAction
@@ -60,13 +57,25 @@ export type FormActions =
     ;
 
 
-const removeRecursive = (tree: NodeElement, item: NodeElement) => {
-    if (isNodeElementWithChildren(tree)) {
-        if (tree.childNodes && tree.childNodes.length > 0) {
-            tree.childNodes = tree.childNodes.filter(c => c._id !== item._id);
-            tree.childNodes.forEach(c => removeRecursive(c, item));
+function removeRecursive(tree: NodeElementWithChildren, removedFromNodeId: string, movedNodeId: string): NodeElement | null {
+    let ret: NodeElement | null = null;
+    if (tree.childNodes && tree._id === removedFromNodeId) {
+        let newChildNodes: NodeElement[] = [];
+        for (let child of tree.childNodes || []) {
+            if (child._id === movedNodeId) {
+                ret = child;
+            } else newChildNodes.push(child);
+        }
+        tree.childNodes = newChildNodes;
+    } else {
+        for (let child of tree.childNodes || []) {
+            if (isNodeElementWithChildren(child)) {
+                ret = removeRecursive(child, removedFromNodeId, movedNodeId);
+                if (ret) break;
+            }
         }
     }
+    return ret;
 }
 
 const modifyRecursive = (tree: NodeElement, filter: (each: NodeElement) => boolean, action: (found: NodeElement) => void) => {
@@ -78,28 +87,12 @@ const modifyRecursive = (tree: NodeElement, filter: (each: NodeElement) => boole
     }
 }
 
-const addRecursive = (tree: NodeElement, sibling: NodeElement, position: string, what: NodeElement) => {
-    console.log(tree, position, sibling, what)
-    if (tree && isNodeElementWithChildren(tree) && tree.childNodes) {
-        for (var i: number = 0; i < tree.childNodes.length; i++) {
-            if (tree.childNodes[i]._id === sibling._id) {
-                switch (position) {
-                    case 'before':
-                        tree.childNodes.splice(i, 0, what);
-                        return;
-                    case 'after':
-                        tree.childNodes.splice(i + 1, 0, what);
-                        return;
-                    case 'append':
-                        const p = tree.childNodes[i];
-                        if (isNodeElementWithChildren(p) && p.childNodes)
-                            p.childNodes.push(what);
-                        return;
-                }
-            }
-            else {
-                addRecursive(tree.childNodes[i], sibling, position, what);
-            }
+function addRecursive(tree: NodeElementWithChildren, movedEl: NodeElement, addedToNodeId: string, pos: number) {
+    if (tree.childNodes && tree._id === addedToNodeId) {
+        tree.childNodes.splice(pos, 0, movedEl);
+    } else {
+        for (let child of tree.childNodes || []) {
+            if (isNodeElementWithChildren(child)) addRecursive(child, movedEl, addedToNodeId, pos);
         }
     }
 }
@@ -176,19 +169,22 @@ export function formReducer(state = formInitialState, action: FormActions): Form
             break;
         case formServerActions.FormAutoCompleteOptionsFromBackendActionN:
             break;
-        case formUserActions.FormDragActionN:
-            return { ...state, dragged: action.payload }
 
         case formUserActions.FormDropActionN:
-            if (state.form && state.dragged) {
-                removeRecursive(state.form, state.dragged as NodeElement);
-                addRecursive(state.form, action.payload.drop, action.payload.position, state.dragged as NodeElement);
-            }
-            return { ...state, dragged: null } //TODO check immutable
+            if (state.form) {
+                let newForm = _.cloneDeep(state.form);
+                let movedEl = removeRecursive(newForm, action.removedFromNodeId, action.movedNodeId);
+                if (!movedEl) {console.warn("Could not move not found element ", action); return state}
+                addRecursive(newForm, movedEl, action.addedToNodeId, action.addedToPos);
+                return { 
+                    ...state,
+                    form: newForm,
+                }
+            } else return state;
 
         case formUserActions.FormDeleteActionN:
             if (state.form) {
-                removeRecursive(state.form, action.payload);
+                removeRecursive(state.form, action.removedFromNodeId, action.movedNodeId);
             }
             return state;
         case formUserActions.FormSwitchTypeActionN:

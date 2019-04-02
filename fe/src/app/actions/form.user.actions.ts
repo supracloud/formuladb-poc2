@@ -14,7 +14,6 @@ export { DataObj };
 export { Form };
 export { ChangeObj, applyChanges };
 
-export const FormDragActionN = "[form] FormDragAction";
 export const FormDropActionN = "[form] FormDropAction";
 export const FormDeleteActionN = "[form] FormDeleteAction";
 export const FormSwitchTypeActionN = "[form] FormSwitchTypeAction";
@@ -22,23 +21,21 @@ export const FormAddActionN = '[form] FormAddAction';
 export const UserChoseAutocompleteOptionN = '[form] UserChoseAutocompleteOptionN';
 
 
-export class FormDragAction implements Action {
-  readonly type = FormDragActionN;
-
-  constructor(public payload: NodeElement | null) { }
-}
-
-
 export class FormDropAction implements Action {
   readonly type = FormDropActionN;
 
-  constructor(public payload: { drop: NodeElement, position: string }) { }
+  constructor(
+    public removedFromNodeId: string,
+    public removedFromPos: number,
+    public movedNodeId: string,
+    public addedToNodeId: string,
+    public addedToPos: number) { }
 }
 
 export class FormDeleteAction implements Action {
   readonly type = FormDeleteActionN;
 
-  constructor(public payload: NodeElement) { }
+  constructor(public removedFromNodeId: string, public movedNodeId: string) { }
 }
 
 export class FormAddAction implements Action {

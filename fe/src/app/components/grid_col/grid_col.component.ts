@@ -44,24 +44,26 @@ export class GridColComponent extends BaseNodeComponent implements OnInit {
     console.debug(this.fullpath, this.nodel);
   }
 
-  dragHandle: any;
-
-  checkHandle(e: any): void {
-    this.dragHandle = e.currentTarget;
+  dragHandleId: string;
+  setDragHandleId(id: string): void {
+    this.dragHandleId = id;
   }
 
-  dragStart(e: any): boolean {
-    if (this.dragHandle && this.dragHandle.id === 'drag_' + this.nodel._id) {
-      this.frmdbStreams.userEvents$.next({ type: "UserDraggedFormElement", nodel: this.nodel });
-      e.stopPropagation();
+  dragStart($event: any, pos: number): boolean {
+    if (this.dragHandleId.indexOf('frmdb-drag-handle-') === 0) {
+      // this.frmdbStreams.userEvents$.next({ type: "UserDraggedFormElement", nodel: this.nodel });
+      $event.dataTransfer.setData("movedNodeId", this.dragHandleId.replace(/^frmdb-drag-handle-/, ''));
+      $event.dataTransfer.setData("removedFromNodeId", this.nodel._id);
+      $event.dataTransfer.setData("removedFromPos", pos);
+      // $event.stopPropagation();
       return true;
     } else {
-      e.stopPropagation();
+      // $event.stopPropagation();
       return false;
     }
   }
 
   dragEnd(e: any): void {
-    this.frmdbStreams.userEvents$.next({ type: "UserDraggedFormElement", nodel: null });
+    // this.frmdbStreams.userEvents$.next({ type: "UserDraggedFormElement", nodel: null });
   }
 }

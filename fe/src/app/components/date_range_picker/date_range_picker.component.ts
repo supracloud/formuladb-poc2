@@ -111,8 +111,9 @@ export class DateRangePickerComponent extends BaseNodeComponent implements OnIni
     }
 
     getBookingsSameRoot(date: NgbDate) {
+        let _id = elvis(this.formgrp.get("_id")).value;
         let bookingItemId = elvis(this.formgrp.get("booking_item_id")).value;
-        return this.overlaps.filter(x => x.booking_item_id == bookingItemId);
+        return this.overlaps.filter(x => x.booking_item_id == bookingItemId && x._id != _id);
     }
 
     //TODO: remove hardcoding, get data from "VIEW_TABLE" property

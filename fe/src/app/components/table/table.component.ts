@@ -109,7 +109,7 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     entityId() {
-        if (!this.table) return undefined;
+        if (!this.table || !this.table._id) return undefined;
         return this.table._id.replace(/^Table_:\w+[^][^]/, '');
     }
 

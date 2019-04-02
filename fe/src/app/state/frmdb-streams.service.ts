@@ -13,7 +13,6 @@ import * as appState from '@fe/app/state/app.state';
 import { filter } from 'rxjs/operators';
 import { AppServerEventAction } from '../actions/app.actions';
 import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@core/domain/event';
-import { FormDragAction } from '../actions/form.user.actions';
 import { Page } from '@core/domain/uimetadata/page';
 
 @Injectable({
@@ -51,9 +50,6 @@ export class FrmdbStreamsService {
     //TODO: remove these and use only ngrx Actions
     this.userEvents$.subscribe(userEvent => {
       switch (userEvent.type) {
-        case "UserDraggedFormElement":
-          this.store.dispatch(new FormDragAction(userEvent.nodel));
-          break;
         case "UserModifiedFormData":
           this.store.dispatch(new AppServerEventAction(new ServerEventModifiedFormDataEvent(userEvent.obj)));
           break;

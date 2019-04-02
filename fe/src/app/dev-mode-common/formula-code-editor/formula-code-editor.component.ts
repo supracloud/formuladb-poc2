@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, EventEmitter, ChangeDetectorRef } from '@angular/core';
 
 
 import { Observable, Subscription, Subject } from 'rxjs';
@@ -39,7 +39,7 @@ export class FormulaCodeEditorComponent implements OnInit {
 
   protected subscriptions: Subscription[] = [];
 
-  constructor(public formulaEditorService: FormulaEditorService, private router: Router) {
+  constructor(public formulaEditorService: FormulaEditorService, private router: Router, protected changeDetectorRef: ChangeDetectorRef) {
     this.subscriptions.push(formulaEditorService.editorOn$.subscribe(x => {
       if (this.editorOn && !x) {
         this.ftext = '';
@@ -52,14 +52,16 @@ export class FormulaCodeEditorComponent implements OnInit {
       if (!this.editorOn) return;
       this.editorExpr = expr || '';
     }));
-    this.subscriptions.push(this.formulaEditorService.selectedFormula$.subscribe(selectedFormula => {
-      if (this.editorOn) return;
-      this.editorExpr = selectedFormula || 'COLUMN';
-    }));
     this.subscriptions.push(this.onEdit$.pipe(debounceTime(250)).subscribe(() => this.performOnEdit()));
   }
 
   ngOnInit() {
+    this.subscriptions.push(this.formulaEditorService.selectedFormula$.subscribe(selectedFormula => {
+      if (this.editorOn) return;
+      this.editorExpr = selectedFormula || 'COLUMN';
+      this.changeDetectorRef.detectChanges();
+      console.debug(this.editorExpr);
+    }));
   }
 
   handleChange($event) {
