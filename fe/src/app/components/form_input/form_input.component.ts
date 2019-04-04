@@ -21,7 +21,7 @@ import { FormEditingService } from "../form-editing.service";
 @Component({
     // tslint:disable-next-line:component-selector
     selector: 'frmdb-form_input',
-    host: { class: 'col form-group' },
+    host: { class: 'form-group' },
     templateUrl: './form_input.component.html',
     styleUrls: ['./form_input.component.scss']
 })
