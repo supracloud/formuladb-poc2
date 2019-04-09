@@ -32,7 +32,6 @@ export const GEN__Actor = {
         param1: { name: "param1", propType_: Pn.STRING } as EntityProperty,
         state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
     }
-
 };
 
 export const GEN__Currency: Entity = {
@@ -67,23 +66,6 @@ export const GEN__Person: Entity = {
         fax: { name: "fax", propType_: Pn.STRING } as EntityProperty,
         tax_number: { name: "tax_number", propType_: Pn.STRING } as EntityProperty,
         details: { name: "details", propType_: Pn.STRING } as EntityProperty,
-        state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
-    }
-};
-
-export const GEN__User: Entity = {
-    _id: "GEN__User",
-    props: {
-
-        code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-        username: { name: "username", propType_: Pn.STRING } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING } as EntityProperty,
-        role: { name: "role", propType_: Pn.STRING } as EntityProperty,
-        password: { name: "password", propType_: Pn.STRING } as EntityProperty,
-        details: { name: "details", propType_: Pn.STRING } as EntityProperty,
-        type: { name: "type", propType_: Pn.STRING } as EntityProperty,
-        parent_code: { name: "parent_code", propType_: Pn.STRING } as EntityProperty,
-        param1: { name: "param1", propType_: Pn.STRING } as EntityProperty,
         state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
     }
 };

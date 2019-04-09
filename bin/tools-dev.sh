@@ -75,14 +75,24 @@ copy2pg() {
     docker cp $1 febe_db_1:/`basename $1`
 }
 putSchema() {
-    SCHEMA_FILE=$1
-    PORT=$2
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-8084}/api/bla/schema
+    APP_NAME=$1
+    SCHEMA_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/schema
 }
+putApp() {
+    APP_NAME=$1
+    APP_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${APP_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}
+}
+
 #putSchema customers/orbico/orbico-metadata.json
 putBulk() {
-    DATA_FILE=$1
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:8084/api/bla/bulk
+    APP_NAME=$1
+    DATA_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/bulk
 }
 
 startFrmdb() {

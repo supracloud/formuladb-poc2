@@ -4,6 +4,7 @@
  */
 
 import { Injectable, InjectionToken, Inject, NgZone } from '@angular/core';
+import * as _ from "lodash";
 
 import { catchError, map, tap } from 'rxjs/operators';
 import { CircularJSON } from "@core/json-stringify";
@@ -135,6 +136,15 @@ export class BackendService {
         return this.get<DataObj[]>('/api/' + this.appName + '/byprefix/' + encodeURIComponent(prefix), (data: HttpResponse<any[]>) => {
             return ((data && data.body) || []);
         });
+    }
+
+    public async getDictionary(locale: App['locale']) {
+        let i18nList = await this.getTableData("$I18n~~");
+        let dictionary = {};
+        for (let i18n of i18nList) {
+            dictionary[i18n._id.replace('$I18n~~', '')] = i18n[locale];
+        }
+        return dictionary;
     }
 
     public simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {

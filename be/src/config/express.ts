@@ -7,7 +7,6 @@ import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
-import * as path from "path";
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { SimpleAddHocQuery, KeyValueStoreFactoryI } from "@core/key_value_store_i";
@@ -94,9 +93,34 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => console.error(err));
     });
 
+    app.patch('/api/:appname/:id', async function (req, res) {
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.patchDataObj(req.body)
+            .then(notif => res.json(notif))
+            .catch(err => console.error(err));
+    });
 
     //TODO: these APIs are mostly for OAM, should probably not be used directly by end-users
+    app.put('/api/:appname', async function(req, res) {
+        return kvsFactory.putApp(req.body)
+            .then(ret => res.json(ret))
+            .catch(err => console.error(err));
+    });
     app.put('/api/:appname/schema', async function(req, res) {
+        let schema = await kvsFactory.getSchema(req.body._id);
+        if (!schema) {
+            await kvsFactory.putSchema(req.body);
+        }
+
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(req.body)
+            .then(ret => res.json(ret))
+            .catch(err => console.error(err));
+    });
+    app.put('/api/:appname/i18n/:locale', async function(req, res) {
+        let schema = await kvsFactory.getSchema(req.body._id);
+        if (!schema) {
+            await kvsFactory.putSchema(req.body);
+        }
+
         return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
@@ -106,7 +130,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {
