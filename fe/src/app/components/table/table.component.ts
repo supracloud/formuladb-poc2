@@ -75,6 +75,15 @@ export class TableComponent implements OnInit, OnDestroy {
         defaultToolPanel: 'tableActions'
     };
 
+    excelStyles = [
+        {
+          id: "yellowBackground",
+          interior: {
+            color: "#fffb16",
+            pattern: "Solid"
+          }
+        },
+    ]
 
     private selectedRowIdx: number;
     private agGridOptions: GridOptions = {};
@@ -185,6 +194,11 @@ export class TableComponent implements OnInit, OnDestroy {
                     resizable: true,
                     valueFormatter: (params) => this.valueFormatter(params),
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
+                    cellClassRules: {
+                        yellowBackground: function(params) {
+                            return (elvis(params.data)._id || '').indexOf("-total") > 0;
+                        },
+                    }
                 });
           
                 const fs = {};
@@ -230,7 +244,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onGridSizeChanged() {
         if (!this.gridApi) return;
-        this.gridApi.sizeColumnsToFit();
+        // this.gridApi.sizeColumnsToFit();
     }
     onGridReady(params: GridReadyEvent) {
         if (!this.gridApi) {

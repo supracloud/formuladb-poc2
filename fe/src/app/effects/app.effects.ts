@@ -21,7 +21,7 @@ import { Form } from "@core/domain/uimetadata/form";
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
-import { TableFormBackendAction, FormulaPreviewFromBackend, I18nLoadDictionary } from '../state/app.state';
+import { TableFormBackendAction, FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
 import { FormDataFromBackendAction, FormNotifFromBackendAction, ResetFormDataFromBackendAction, FormFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
@@ -33,6 +33,7 @@ import { autoLayoutForm } from '../components/auto-layout-form';
 import { autoLayoutTable } from '../components/auto-layout-table';
 import { Page } from '@core/domain/uimetadata/page';
 import { elvis } from '@core/elvis';
+import { PageChangedAction } from '../actions/page.user.actions';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedTable
@@ -96,13 +97,18 @@ export class AppEffects {
             if (!app) {console.warn("App not found", app); return;}
             this.app = app;
 
+            this.store.dispatch(new PageChangedAction({
+                ...pageInitialState,
+                ...app.page
+            }));
+
             //we first initialize the DB (sync with remote DB)
             await this.backendService.initApplication(
                 app,
                 change => this.listenForNotifsFromServer(change)
             );
     
-            let dict = await this.backendService.getDictionary(app.locale);
+            let dict = await this.backendService.getDictionary(app.locale || 'en');
             this.store.dispatch(new I18nLoadDictionary(dict));
 
             let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});

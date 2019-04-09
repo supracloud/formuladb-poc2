@@ -99,29 +99,29 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => console.error(err));
     });
 
-    //TODO: these APIs are mostly for OAM, should probably not be used directly by end-users
     app.put('/api/:appname', async function(req, res) {
         return kvsFactory.putApp(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
     app.put('/api/:appname/schema', async function(req, res) {
-        let schema = await kvsFactory.getSchema(req.body._id);
-        if (!schema) {
-            await kvsFactory.putSchema(req.body);
+        let schema = req.body;
+        let existingSchema = await kvsFactory.getSchema(req.body._id);
+        if (!existingSchema) {
+            await kvsFactory.putSchema(schema);
         }
 
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(req.body)
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(schema)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/api/:appname/i18n/:locale', async function(req, res) {
-        let schema = await kvsFactory.getSchema(req.body._id);
-        if (!schema) {
-            await kvsFactory.putSchema(req.body);
-        }
-
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(req.body)
+    app.put('/api/:appname/table/:id', async function(req, res) {
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putTable(req.body)
+            .then(ret => res.json(ret))
+            .catch(err => console.error(err));
+    });
+    app.put('/api/:appname/form/:id', async function(req, res) {
+        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putForm(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });

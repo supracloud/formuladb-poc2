@@ -14,6 +14,7 @@ export class TableColumn implements SubObj {
     width?: number;
     sort?: string;
     filter?: ColumnFilter;
+
     constructor(public name: string, public type: Pn) {
     }
 }

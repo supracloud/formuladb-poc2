@@ -1,0 +1,1829 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Button": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "button"
+                    ],
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ButtonGroup": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "button_group"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Calendar": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "calendar"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Card": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "horizontal": {
+                    "type": "boolean"
+                },
+                "nodeType": {
+                    "enum": [
+                        "card"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "CardContainer": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "horizontal": {
+                    "type": "boolean"
+                },
+                "nodeType": {
+                    "enum": [
+                        "card_container"
+                    ],
+                    "type": "string"
+                },
+                "style": {
+                    "enum": [
+                        "deck",
+                        "group",
+                        "masonry"
+                    ],
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DateRangePicker": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "endPropertyName": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "date_range_picker"
+                    ],
+                    "type": "string"
+                },
+                "startPropertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Dropdown": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "dropdown"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "EntityStateGraph": {
+            "properties": {
+                "nodes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "transitions": {
+                    "items": {
+                        "properties": {
+                            "source": {
+                                "type": "string"
+                            },
+                            "target": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "Form": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "_rev": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "isEditable": {
+                    "type": "boolean"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form"
+                    ],
+                    "type": "string"
+                },
+                "page": {
+                    "$ref": "#/definitions/Partial<Page>"
+                },
+                "stateGraph": {
+                    "$ref": "#/definitions/EntityStateGraph"
+                }
+            },
+            "type": "object"
+        },
+        "FormAutocomplete": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "noLabel": {
+                    "type": "boolean"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_autocomplete"
+                    ],
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                },
+                "refEntityAlias": {
+                    "type": "string"
+                },
+                "refEntityName": {
+                    "type": "string"
+                },
+                "refPropertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormChart": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "chartType": {
+                    "type": "string"
+                },
+                "groupByPropertyName": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "number"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_chart"
+                    ],
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "number"
+                },
+                "xPropertyName": {
+                    "type": "string"
+                },
+                "yPropertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormDataGrid": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "layout": {
+                    "$ref": "#/definitions/FrmdbLy"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_data_grid"
+                    ],
+                    "type": "string"
+                },
+                "properties": {
+                    "items": {
+                        "allOf": [
+                            {
+                                "properties": {
+                                    "refPropertyName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "refEntityAlias": {
+                    "type": "string"
+                },
+                "refEntityName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormDatepicker": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_datepicker"
+                    ],
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormEnum": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_enum"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormInput": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "noLabel": {
+                    "type": "boolean"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_input"
+                    ],
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                },
+                "propertyType": {
+                    "enum": [
+                        "DOCUMENT",
+                        "NUMBER",
+                        "STRING"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormState": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_state"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormTable": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_table"
+                    ],
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormTabs": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_tabs"
+                    ],
+                    "type": "string"
+                },
+                "tabNameFormPath": {
+                    "type": "string"
+                },
+                "tableName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormText": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "noLabel": {
+                    "type": "boolean"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_text"
+                    ],
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                },
+                "propertyType": {
+                    "enum": [
+                        "DOCUMENT",
+                        "NUMBER",
+                        "STRING"
+                    ],
+                    "type": "string"
+                },
+                "representation": {
+                    "enum": [
+                        "_id",
+                        "caption",
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4",
+                        "jumbo",
+                        "link",
+                        "paragraph",
+                        "string",
+                        "title"
+                    ],
+                    "type": "string"
+                },
+                "uppercase": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "FormTimepicker": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "form_timepicker"
+                    ],
+                    "type": "string"
+                },
+                "propertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FrmdbLy": {
+            "description": "© 2018 S.C. FORMULA DATABASE S.R.L.\nLicense TBD\nLayouts (UX, \"the feel\"): \n     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/\n     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c\nThemes (UI, \"the look\"): \n     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/\n     https://www.bopdesign.com/bop-blog/2013/11/what-is-the-look-and-feel-of-a-website-and-why-its-important/\n     https://thenextweb.com/dd/2017/11/08/psychology-web-design/",
+            "enum": [
+                "ly_admin",
+                "ly_asymetry",
+                "ly_cards",
+                "ly_carousel",
+                "ly_container_free",
+                "ly_cover",
+                "ly_dashboard",
+                "ly_form",
+                "ly_fpattern",
+                "ly_grid",
+                "ly_horizontal_symetry",
+                "ly_landing",
+                "ly_magazine",
+                "ly_mosaic",
+                "ly_radial_symetry",
+                "ly_split",
+                "ly_spreadsheet",
+                "ly_zigzagpattern",
+                "ly_zpattern"
+            ],
+            "type": "string"
+        },
+        "Gallery": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "gallery"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "GridCol": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "nodeType": {
+                    "enum": [
+                        "grid_col"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "GridRow": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "nodeType": {
+                    "enum": [
+                        "grid_row"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "HFilters": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "h_filters"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "HNav": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "h_nav"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Header": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "nodeType": {
+                    "enum": [
+                        "header"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Icon": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "icon"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Image": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "image"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Jumbotron": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "childNodes": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/Form"
+                            },
+                            {
+                                "$ref": "#/definitions/FormInput"
+                            },
+                            {
+                                "$ref": "#/definitions/FormAutocomplete"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDataGrid"
+                            },
+                            {
+                                "$ref": "#/definitions/FormDatepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTimepicker"
+                            },
+                            {
+                                "$ref": "#/definitions/DateRangePicker"
+                            },
+                            {
+                                "$ref": "#/definitions/FormText"
+                            },
+                            {
+                                "$ref": "#/definitions/Button"
+                            },
+                            {
+                                "$ref": "#/definitions/Icon"
+                            },
+                            {
+                                "$ref": "#/definitions/Image"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTabs"
+                            },
+                            {
+                                "$ref": "#/definitions/FormTable"
+                            },
+                            {
+                                "$ref": "#/definitions/FormChart"
+                            },
+                            {
+                                "$ref": "#/definitions/ButtonGroup"
+                            },
+                            {
+                                "$ref": "#/definitions/Calendar"
+                            },
+                            {
+                                "$ref": "#/definitions/Card"
+                            },
+                            {
+                                "$ref": "#/definitions/Jumbotron"
+                            },
+                            {
+                                "$ref": "#/definitions/Header"
+                            },
+                            {
+                                "$ref": "#/definitions/Dropdown"
+                            },
+                            {
+                                "$ref": "#/definitions/FormEnum"
+                            },
+                            {
+                                "$ref": "#/definitions/FormState"
+                            },
+                            {
+                                "$ref": "#/definitions/Gallery"
+                            },
+                            {
+                                "$ref": "#/definitions/HFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridRow"
+                            },
+                            {
+                                "$ref": "#/definitions/HNav"
+                            },
+                            {
+                                "$ref": "#/definitions/List"
+                            },
+                            {
+                                "$ref": "#/definitions/Media"
+                            },
+                            {
+                                "$ref": "#/definitions/Timeline"
+                            },
+                            {
+                                "$ref": "#/definitions/VFilters"
+                            },
+                            {
+                                "$ref": "#/definitions/GridCol"
+                            },
+                            {
+                                "$ref": "#/definitions/VNav"
+                            },
+                            {
+                                "$ref": "#/definitions/CardContainer"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "nodeType": {
+                    "enum": [
+                        "jumbotron"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "List": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "list"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Media": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "media"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Partial<Page>": {
+            "description": "Make all properties in T optional",
+            "properties": {
+                "brandName": {
+                    "type": "string"
+                },
+                "colorPalette": {
+                    "type": "string"
+                },
+                "cssUrl": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "layout": {
+                    "description": "© 2018 S.C. FORMULA DATABASE S.R.L.\nLicense TBD\nLayouts (UX, \"the feel\"): \n     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/\n     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c\nThemes (UI, \"the look\"): \n     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/\n     https://www.bopdesign.com/bop-blog/2013/11/what-is-the-look-and-feel-of-a-website-and-why-its-important/\n     https://thenextweb.com/dd/2017/11/08/psychology-web-design/",
+                    "enum": [
+                        "ly_admin",
+                        "ly_asymetry",
+                        "ly_cards",
+                        "ly_carousel",
+                        "ly_container_free",
+                        "ly_cover",
+                        "ly_dashboard",
+                        "ly_form",
+                        "ly_fpattern",
+                        "ly_grid",
+                        "ly_horizontal_symetry",
+                        "ly_landing",
+                        "ly_magazine",
+                        "ly_mosaic",
+                        "ly_radial_symetry",
+                        "ly_split",
+                        "ly_spreadsheet",
+                        "ly_zigzagpattern",
+                        "ly_zpattern"
+                    ],
+                    "type": "string"
+                },
+                "logoUrl": {
+                    "type": "string"
+                },
+                "look": {
+                    "enum": [
+                        "lk_Approachable",
+                        "lk_CuttingEdge",
+                        "lk_Exclusive",
+                        "lk_Experienced",
+                        "lk_Friendly",
+                        "lk_HighTech",
+                        "lk_Powerful",
+                        "lk_Professional",
+                        "lk_Stylish",
+                        "lk_Upscale"
+                    ],
+                    "type": "string"
+                },
+                "sidebarImageUrl": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Timeline": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "timeline"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "VFilters": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "v_filters"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "VNav": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "nodeType": {
+                    "enum": [
+                        "v_nav"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "_id": {
+            "type": "string"
+        },
+        "_rev": {
+            "type": "string"
+        },
+        "childNodes": {
+            "items": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/Form"
+                    },
+                    {
+                        "$ref": "#/definitions/FormInput"
+                    },
+                    {
+                        "$ref": "#/definitions/FormAutocomplete"
+                    },
+                    {
+                        "$ref": "#/definitions/FormDataGrid"
+                    },
+                    {
+                        "$ref": "#/definitions/FormDatepicker"
+                    },
+                    {
+                        "$ref": "#/definitions/FormTimepicker"
+                    },
+                    {
+                        "$ref": "#/definitions/DateRangePicker"
+                    },
+                    {
+                        "$ref": "#/definitions/FormText"
+                    },
+                    {
+                        "$ref": "#/definitions/Button"
+                    },
+                    {
+                        "$ref": "#/definitions/Icon"
+                    },
+                    {
+                        "$ref": "#/definitions/Image"
+                    },
+                    {
+                        "$ref": "#/definitions/FormTabs"
+                    },
+                    {
+                        "$ref": "#/definitions/FormTable"
+                    },
+                    {
+                        "$ref": "#/definitions/FormChart"
+                    },
+                    {
+                        "$ref": "#/definitions/ButtonGroup"
+                    },
+                    {
+                        "$ref": "#/definitions/Calendar"
+                    },
+                    {
+                        "$ref": "#/definitions/Card"
+                    },
+                    {
+                        "$ref": "#/definitions/Jumbotron"
+                    },
+                    {
+                        "$ref": "#/definitions/Header"
+                    },
+                    {
+                        "$ref": "#/definitions/Dropdown"
+                    },
+                    {
+                        "$ref": "#/definitions/FormEnum"
+                    },
+                    {
+                        "$ref": "#/definitions/FormState"
+                    },
+                    {
+                        "$ref": "#/definitions/Gallery"
+                    },
+                    {
+                        "$ref": "#/definitions/HFilters"
+                    },
+                    {
+                        "$ref": "#/definitions/GridRow"
+                    },
+                    {
+                        "$ref": "#/definitions/HNav"
+                    },
+                    {
+                        "$ref": "#/definitions/List"
+                    },
+                    {
+                        "$ref": "#/definitions/Media"
+                    },
+                    {
+                        "$ref": "#/definitions/Timeline"
+                    },
+                    {
+                        "$ref": "#/definitions/VFilters"
+                    },
+                    {
+                        "$ref": "#/definitions/GridCol"
+                    },
+                    {
+                        "$ref": "#/definitions/VNav"
+                    },
+                    {
+                        "$ref": "#/definitions/CardContainer"
+                    }
+                ]
+            },
+            "type": "array"
+        },
+        "isEditable": {
+            "type": "boolean"
+        },
+        "nodeType": {
+            "enum": [
+                "form"
+            ],
+            "type": "string"
+        },
+        "page": {
+            "$ref": "#/definitions/Partial<Page>"
+        },
+        "stateGraph": {
+            "$ref": "#/definitions/EntityStateGraph"
+        }
+    },
+    "type": "object"
+}
+

@@ -61,7 +61,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     protected async createTable() {
         try {
-            let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR NOT NULL PRIMARY KEY, val json)';
+            let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR COLLATE "C" NOT NULL PRIMARY KEY, val json)';
             await this.getDB().any(query);
         } catch (err) {
             // When 2 or more workers are trying to create table on the same session
@@ -286,7 +286,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             default: 
                 type = "varchar";
         }
-        if (prop.name === '_id') type = type + ' NOT NULL PRIMARY KEY';
+        if (prop.name === '_id') type = type + ' COLLATE "C" NOT NULL PRIMARY KEY';
         return prop.name + ' ' + type;
     }
 

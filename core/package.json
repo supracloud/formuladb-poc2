@@ -7,6 +7,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "schemas": "for i in App Schema Table Form; do typescript-json-schema tsconfig.json $i > src/schemas/$i.schema.json; done"
+  },
   "dependencies": {
     "acorn": "^6.0.5",
     "cluster-key-slot": "^1.0.12",

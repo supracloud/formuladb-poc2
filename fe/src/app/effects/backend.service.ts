@@ -138,7 +138,7 @@ export class BackendService {
         });
     }
 
-    public async getDictionary(locale: App['locale']) {
+    public async getDictionary(locale: Exclude<App['locale'], undefined>) {
         let i18nList = await this.getTableData("$I18n~~");
         let dictionary = {};
         for (let i18n of i18nList) {

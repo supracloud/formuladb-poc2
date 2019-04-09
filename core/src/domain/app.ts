@@ -4,6 +4,6 @@ import { KeyValueObj } from "./key_value_obj";
 export interface App extends KeyValueObj {
     description: string;
     homePage?: string;
-    locale: "en" | "ro";
+    locale?: "en" | "ro";
     page: Partial<Page>;
 }
