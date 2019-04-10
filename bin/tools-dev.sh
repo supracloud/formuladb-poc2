@@ -86,6 +86,18 @@ putApp() {
     PORT=$3
     curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${APP_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}
 }
+putTable() {
+    APP_NAME=$1
+    TABLE_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${TABLE_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/table
+}
+putForm() {
+    APP_NAME=$1
+    FORM_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/form
+}
 
 #putSchema customers/orbico/orbico-metadata.json
 putBulk() {

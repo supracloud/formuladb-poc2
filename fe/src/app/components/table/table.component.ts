@@ -26,6 +26,7 @@ import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
 import { Table, TableColumn } from '@core/domain/uimetadata/table';
+import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
 import { ExcelStyles } from './excel-styles';
@@ -174,9 +175,10 @@ export class TableComponent implements OnInit, OnDestroy {
                 }
 
                 let cssClassRules: ColDef['cellClassRules'] = {};
-                for (let cssClassName of Object.keys(elvis(t.conditionalFormatting))) {
+                let conditionalFormatting = t.conditionalFormatting || {};
+                for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                     cssClassRules[cssClassName] = function(params) {
-                        
+                        return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                     }
                 }
 
@@ -193,11 +195,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     resizable: true,
                     valueFormatter: (params) => this.valueFormatter(params),
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
-                    cellClassRules: {
-                        yellowBackground: function(params) {
-                            return (elvis(params.data)._id || '').indexOf("-total") > 0;
-                        },
-                    }
+                    cellClassRules: cssClassRules,
                 });
           
                 const fs = {};

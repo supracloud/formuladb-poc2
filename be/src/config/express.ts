@@ -115,12 +115,12 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/api/:appname/table/:id', async function(req, res) {
+    app.put('/api/:appname/table', async function(req, res) {
         return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putTable(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/api/:appname/form/:id', async function(req, res) {
+    app.put('/api/:appname/form', async function(req, res) {
         return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putForm(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
