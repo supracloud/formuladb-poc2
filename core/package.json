@@ -3,13 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "scripts": {
     "schemas": "for i in App Schema Table Form; do typescript-json-schema tsconfig.json $i > src/schemas/$i.schema.json; done"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "acorn": "^6.0.5",
     "cluster-key-slot": "^1.0.12",
@@ -17,6 +16,7 @@
     "expression-eval": "git+https://github.com/acristu/expression-eval.git",
     "fuse.js": "^3.3.0",
     "jsep": "git+https://github.com/acristu/jsep.git",
+    "formulajs": "git+https://github.com/acristu/formula.js.git",
     "lodash": "^4.17.11",
     "module-alias": "^2.1.0",
     "moment": "^2.24.0",

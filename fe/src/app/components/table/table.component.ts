@@ -28,6 +28,7 @@ import { TableToolsComponent } from './table-tools.component';
 import { Table, TableColumn } from '@core/domain/uimetadata/table';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
+import { ExcelStyles } from './excel-styles';
 
 @Component({
     selector: 'frmdb-table',
@@ -75,16 +76,7 @@ export class TableComponent implements OnInit, OnDestroy {
         defaultToolPanel: 'tableActions'
     };
 
-    excelStyles = [
-        {
-          id: "yellowBackground",
-          interior: {
-            color: "#fffb16",
-            pattern: "Solid"
-          }
-        },
-    ]
-
+    excelStyles = ExcelStyles;
     private selectedRowIdx: number;
     private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
@@ -179,6 +171,13 @@ export class TableComponent implements OnInit, OnDestroy {
                     this.gridApi.setHeaderHeight(0);
                     this.gridApi.sizeColumnsToFit();
                     return;    
+                }
+
+                let cssClassRules: ColDef['cellClassRules'] = {};
+                for (let cssClassName of Object.keys(elvis(t.conditionalFormatting))) {
+                    cssClassRules[cssClassName] = function(params) {
+                        
+                    }
                 }
 
                 this.columns = t.columns.map(c => <ColDef>{

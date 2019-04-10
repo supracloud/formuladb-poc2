@@ -7,7 +7,7 @@ import * as _ from "lodash";
 import { CircularJSON } from "@core/json-stringify";
 import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@core/domain/metadata/execution_plan";
 import { Expression } from "jsep";
-import * as moment from 'moment';
+import { ScalarFunctionsImplementations } from './scalar_functions_implementations'
 
 declare var emit: any;
 
@@ -78,63 +78,7 @@ export function evalExpression(doc: {}, expr: Expression | Expression[]) {
         return unops[op](arg);
     }
 
-    var contextFunctions = {
-        //TODO: implement significance
-        FLOOR: function (x, significance) {return Math.floor(x)},
-        MAX: function(x, y) {return Math.max(x, y)},
-        ABS: function(x) {return Math.abs(x)},
-        TEXT: function TEXT(expr, format) {
-            //TODO
-        },
-        REGEXREPLACE: function REGEXREPLACE(expr, regex, replacement) {
-            //TODO
-        },
-        EOMONTH: function EOMONTH(expr, numMonths) {
-            //TODO
-        },
-        SQRT: function SQRT(expr) {
-            //TODO
-        },
-        ROUND: function ROUND(expr) {
-            //TODO
-        },
-        FACT: function FACT(expr) {
-            //TODO
-        },
-        HLOOKUP: function HLOOKUP(expr) {
-            //TODO
-        },
-        DATEDIF: function DATEDIF(start_date, end_date, unit) {
-            let start = moment(start_date);
-            let end = moment(end_date);
-            let diff = end.diff(start);
-            let duration = moment.duration(diff);
-            switch(unit) {
-                case "Y":
-                    return duration.asYears();
-                case "M":
-                    return duration.asMonths();
-                case "D":
-                    return duration.asDays();
-                case "MD":
-                    return duration.asDays();//TODO
-                case "YM":
-                    return duration.asDays();//TODO
-                case "YD":
-                    return duration.asDays();//TODO
-            }
-        },
-        OVERLAP(start_date_1, end_date_1, start_date_2, end_date_2, max_interval) {
-            let start1 = moment(start_date_1);
-            let end1 = moment(end_date_1);
-            let start2 = moment(start_date_2);
-            let end2 = moment(end_date_2);
-            return (start2.isSameOrBefore(start1) && start1.isSameOrBefore(end2))
-                || (start2.isSameOrBefore(end1) && end1.isSameOrBefore(end2))
-                || (start2.isSameOrBefore(start1) && end1.isSameOrBefore(end2))
-            ;    
-        }
-    };
+    var contextFunctions = ScalarFunctionsImplementations;
 
     function evaluate(node, context) {
 

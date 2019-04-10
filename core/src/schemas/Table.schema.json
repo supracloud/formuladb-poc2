@@ -98,15 +98,6 @@
                 "_id": {
                     "type": "string"
                 },
-                "classRules": {
-                    "additionalProperties": {
-                        "additionalProperties": {
-                            "type": "string"
-                        },
-                        "type": "object"
-                    },
-                    "type": "object"
-                },
                 "filter": {
                     "$ref": "#/definitions/ColumnFilter"
                 },
@@ -138,6 +129,12 @@
                 "$ref": "#/definitions/TableColumn"
             },
             "type": "array"
+        },
+        "conditionalFormatting": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "type": "object"
         },
         "page": {
             "$ref": "#/definitions/Partial<Page>"

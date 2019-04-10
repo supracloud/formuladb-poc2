@@ -36,6 +36,7 @@ import {
 } from "@core/domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
 import { logCompileFormula } from "./test/test_utils";
+import { parseFormula } from "./formula_parser";
 
 
 export class FormulaCompilerContextType {
@@ -308,10 +309,6 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     }
 }
 
-function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
-    return jsep.parse(formula, forceParseIncompleteExpr);
-}
-
 export function compileFormulaForce(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula | {ast: Expression, err: FormulaCompilerError} {
     let ast = parseFormula(formula, true);
     try {
@@ -364,63 +361,6 @@ function compileFormulaExpression(targetEntityName: string, propJsPath: string, 
 export function $s2e(expr: string | Expression): Expression {
     let parsedExpr = typeof expr === 'string' ? jsep.parse(expr) : expr;
     return parsedExpr;
-}
-
-export function _rem_$e2s_(node: Expression, strict: boolean = false): string {
-    let lP = strict ? '(' : '', rP = strict ? ')' : '';
-    switch (node.type) {
-
-        case 'ArrayExpression':
-            return '[' + node.elements.map(e => _rem_$e2s_(e, strict)).join(',') + ']';
-
-        case 'BinaryExpression':
-            return lP + _rem_$e2s_(node.left, strict) + node.operator + _rem_$e2s_(node.right, strict) + rP;
-
-        case 'CallExpression':
-            let ret: string[] = [];
-            if (isIdentifier(node.callee)) ret.push(node.callee.name)
-            else ret.push(lP + _rem_$e2s_(node.callee, strict) + rP)
-            ret.push('(');
-            ret.push(node.arguments.map(a => _rem_$e2s_(a, strict)).join(','));
-            ret.push(')');
-            return ret.join('');
-
-        case 'ConditionalExpression':
-            return lP + _rem_$e2s_(node.test, strict) + rP +
-                '?' + lP + _rem_$e2s_(node.consequent, strict) + rP +
-                ':' + lP + _rem_$e2s_(node.alternate, strict) + rP;
-
-        case 'Identifier':
-            return node.name;
-
-        case 'NumberLiteral':
-            return node.raw;
-
-        case 'StringLiteral':
-            return node.raw;
-
-        case 'Literal':
-            return node.raw;
-
-        case 'LogicalExpression':
-            return lP + _rem_$e2s_(node.left, strict) + node.operator + _rem_$e2s_(node.right, strict) + rP;
-
-        case 'MemberExpression':
-            return (isIdentifier(node.object) ? node.object.name : lP + _rem_$e2s_(node.object, strict) + rP) +
-                '.' + (isIdentifier(node.property) ? node.property.name : lP + _rem_$e2s_(node.property, strict) + rP)
-
-        case 'ThisExpression':
-            return 'this';
-
-        case 'UnaryExpression':
-            return lP + node.operator + _rem_$e2s_(node.argument, strict) + rP;
-
-        case 'Compound':
-            throw new FormulaCompilerError(node, "Compound expr are not supported: " + node.origExpr);
-
-        default:
-            throw new FormulaCompilerError(node, "Unknown expression: " + CircularJSON.stringify(node));
-    }
 }
 
 function encodeViewNameURIComponent(str: string): string {
