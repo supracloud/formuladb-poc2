@@ -81,13 +81,13 @@ test:
   script:
     - docker-compose up -d db
     - cd be
-    - npm test || true
-    - FRMDB_STORAGE=postgres npm test || true
+    - true || npm test
+    - FRMDB_STORAGE=postgres true || npm test
     - npm run start &
     - while ! nc -z localhost 3000 </dev/null; do echo "Waiting for BE ..."; sleep 1; done
     - cd ..
     - cd fe
-    - npm run e2e || true
+    - true || npm run e2e
     - killall node --quiet || true
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
