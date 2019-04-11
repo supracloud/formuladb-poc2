@@ -33,7 +33,7 @@ buildprodimages:
     - cd be
     - npm run build-prod
     - cd ../fe
-    - npm run build-high-memory -- --prod --source-map
+    - npm run build-high-memory -- --prod --source-map --deploy-url=/formuladb/ --base-href=/formuladb/
     - cd ..
     - docker build -t formuladb-sourcemaps -f Dockerfile.map .
     - docker tag formuladb-sourcemaps registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}

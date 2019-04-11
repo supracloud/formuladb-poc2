@@ -4,6 +4,11 @@ export DOCKER_TLS_VERIFY=""
 export DOCKER_CERT_PATH=""
 export COMPOSE_CONVERT_WINDOWS_PATHS=1
 
+export BASEDIR=/d/code/metawiz/febe
+export FRMDB_RELEASE=${1:not_set_FRMDB_RELEASE}
+export FRMDB_DEPLOYMENT_DIR=${2:EXAMPLES}
+export PS1="(${FRMDB_DEPLOYMENT_DIR}) ${PS1}"
+
 create-docker-env() {
 
     (
@@ -106,6 +111,15 @@ putBulk() {
     PORT=$3
     curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/bulk
 }
+
+rsync-deploy() {
+    PORT=$1
+    DST=$3
+
+    rsync -avz --exclude node_modules --exclude .git --exclude .gitignore -e "ssh -p $PORT" ${BASEDIR}/../${FRMDB_DEPLOYMENT_DIR} ${DST}/
+    rsync -avz ${BASEDIR}/docker-compose.yml -e "ssh -p $PORT" ${SRC_DIR} ${DST}/febe/
+}
+#rsync-deploy 4179 ../customer-dacris dacris@mail.dacris.ro:/opt/data/dacris/LIVE/formuladb
 
 startFrmdb() {
     FRMDB_RELEASE=`git branch|grep '^\*'|sed -e 's/[*] //g'`
