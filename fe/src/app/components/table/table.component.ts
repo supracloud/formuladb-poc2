@@ -90,7 +90,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     public frameworkComponents;
     public defaultColDef;
-    headerHeight = 25;
+    headerHeight = 50;
     table: Table;
 
     constructor(public frmdbStreams: FrmdbStreamsService,

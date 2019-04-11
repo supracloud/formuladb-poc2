@@ -2,7 +2,7 @@ import { scalarFormulaEvaluate } from "./scalar_formula_evaluate";
 
 describe('scalarFormulaEvalaluate', () => {
 
-    fit('should evaluate scalar formulas', () => {
+    it('should evaluate scalar formulas', () => {
         let scalarFormula = "ISNUMBER(FIND(\"-total\", _id))";
         let obj1 = {_id: 'blabla-total'};
         let obj2 = {_id: 'blabliblu'};
