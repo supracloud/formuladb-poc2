@@ -41,7 +41,7 @@ export class TableService {
     // but they could, for example, purge the cache, and since loading last time rows
     // have been removed from the server.
     if (resultsLength === 0) {
-        return -1;
+        // return -1;
     }
 
     // see how many rows we got back
@@ -57,6 +57,6 @@ export class TableService {
         let totalRowCount = startRow + rowCount;
         return totalRowCount;
     }
-}
+  }
   
 }

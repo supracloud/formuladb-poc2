@@ -21,7 +21,7 @@ import { Form } from "@core/domain/uimetadata/form";
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
-import { TableFormBackendAction, FormulaPreviewFromBackend } from '../state/app.state';
+import { TableFormBackendAction, FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
 import { FormDataFromBackendAction, FormNotifFromBackendAction, ResetFormDataFromBackendAction, FormFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
@@ -32,6 +32,8 @@ import { App } from '@core/domain/app';
 import { autoLayoutForm } from '../components/auto-layout-form';
 import { autoLayoutTable } from '../components/auto-layout-table';
 import { Page } from '@core/domain/uimetadata/page';
+import { elvis } from '@core/elvis';
+import { PageChangedAction } from '../actions/page.user.actions';
 
 export type ActionsToBeSentToServer =
     | appState.ServerEventModifiedTable
@@ -58,6 +60,7 @@ export class AppEffects {
     private currentUrl: { appName: string | null, entityName: string | null, id: string | null, entity: Entity | null } = { appName: null, entityName: null, id: null, entity: null };
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
     private page: Page;
+    private app: App;
 
     constructor(
         private actions$: Actions,
@@ -76,6 +79,11 @@ export class AppEffects {
         this.listenForNewDataObjActions();
 
         this.store.select(appState.getPageState).subscribe(p => this.page = p);
+
+        waitUntilNotNull(async () => {
+            let ret = await this.backendService.getApplications();
+            return ret;
+        });        
     }
 
     public async changeApplication(appName: string) {
@@ -87,12 +95,21 @@ export class AppEffects {
             
             let app = apps.get(appName);
             if (!app) {console.warn("App not found", app); return;}
-    
+            this.app = app;
+
+            this.store.dispatch(new PageChangedAction({
+                ...pageInitialState,
+                ...app.page
+            }));
+
             //we first initialize the DB (sync with remote DB)
             await this.backendService.initApplication(
                 app,
                 change => this.listenForNotifsFromServer(change)
             );
+    
+            let dict = await this.backendService.getDictionary(app.locale || 'en');
+            this.store.dispatch(new I18nLoadDictionary(dict));
 
             let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
 
@@ -243,7 +260,7 @@ export class AppEffects {
         }
 
         if (appNameChanged && !entityName) {
-            this.router.navigate([appName + '/Home/Home~~Home']);
+            this.router.navigate([appName! + '/' + (elvis(this.app).homePage || 'Home/Home~~Home')]);
         }
     }
 

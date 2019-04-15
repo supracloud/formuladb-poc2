@@ -1,14 +1,49 @@
-# Development
+# "febe" internal Development
 
-TODO: describe how to work on feature branches
+## Prerequisites
 
-## Start the DB or the whole formuladb with the release from the current branch
+* docker
+* docker-compose
+* bash + git + node + vscode
+
+## env
+
+FRMDB_DEPLOYMENT_DIR: examples, customer-orbico, customer-dacris, etc.
 
 ```bash
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe (master)
-$ . storage/bin/setup_docker_env_win.sh
-alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe (master)
-$ startFrmdb
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/examples
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/customer-orbico
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/customer-dacris
 ```
 
-## vscode
+## tools
+
+```bash
+# TBD TBD
+```
+
+# "app" Development and Deployment
+
+## Prerequisites
+
+* docker
+* docker-compose
+
+## env
+
+FRMDB_DEPLOYMENT_DIR: examples, customer-orbico, customer-dacris, etc.
+
+```bash
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/customer-dacris
+```
+
+## Deploy
+
+```bash
+alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
+. bin/tools-dev.sh
+
+# TBD TBD
+```

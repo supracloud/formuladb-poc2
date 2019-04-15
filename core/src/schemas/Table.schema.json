@@ -1,0 +1,145 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ColumnFilter": {
+            "properties": {
+                "operator": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Partial<Page>": {
+            "description": "Make all properties in T optional",
+            "properties": {
+                "brandName": {
+                    "type": "string"
+                },
+                "colorPalette": {
+                    "type": "string"
+                },
+                "cssUrl": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "layout": {
+                    "description": "© 2018 S.C. FORMULA DATABASE S.R.L.\nLicense TBD\nLayouts (UX, \"the feel\"): \n     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/\n     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c\nThemes (UI, \"the look\"): \n     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/\n     https://www.bopdesign.com/bop-blog/2013/11/what-is-the-look-and-feel-of-a-website-and-why-its-important/\n     https://thenextweb.com/dd/2017/11/08/psychology-web-design/",
+                    "enum": [
+                        "ly_admin",
+                        "ly_asymetry",
+                        "ly_cards",
+                        "ly_carousel",
+                        "ly_container_free",
+                        "ly_cover",
+                        "ly_dashboard",
+                        "ly_form",
+                        "ly_fpattern",
+                        "ly_grid",
+                        "ly_horizontal_symetry",
+                        "ly_landing",
+                        "ly_magazine",
+                        "ly_mosaic",
+                        "ly_radial_symetry",
+                        "ly_split",
+                        "ly_spreadsheet",
+                        "ly_zigzagpattern",
+                        "ly_zpattern"
+                    ],
+                    "type": "string"
+                },
+                "logoUrl": {
+                    "type": "string"
+                },
+                "look": {
+                    "enum": [
+                        "lk_Approachable",
+                        "lk_CuttingEdge",
+                        "lk_Exclusive",
+                        "lk_Experienced",
+                        "lk_Friendly",
+                        "lk_HighTech",
+                        "lk_Powerful",
+                        "lk_Professional",
+                        "lk_Stylish",
+                        "lk_Upscale"
+                    ],
+                    "type": "string"
+                },
+                "sidebarImageUrl": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Pn": {
+            "enum": [
+                "ACTION",
+                "ATTACHMENT",
+                "BOOLEAN",
+                "CHILD_TABLE",
+                "DATETIME",
+                "DOCUMENT",
+                "FORMULA",
+                "IMAGE",
+                "NUMBER",
+                "REFERENCE_TO",
+                "STRING",
+                "SUB_ENTITY"
+            ],
+            "type": "string"
+        },
+        "TableColumn": {
+            "properties": {
+                "_id": {
+                    "type": "string"
+                },
+                "filter": {
+                    "$ref": "#/definitions/ColumnFilter"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "sort": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/Pn"
+                },
+                "width": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "_id": {
+            "type": "string"
+        },
+        "_rev": {
+            "type": "string"
+        },
+        "columns": {
+            "items": {
+                "$ref": "#/definitions/TableColumn"
+            },
+            "type": "array"
+        },
+        "conditionalFormatting": {
+            "additionalProperties": {
+                "type": "string"
+            },
+            "type": "object"
+        },
+        "page": {
+            "$ref": "#/definitions/Partial<Page>"
+        }
+    },
+    "type": "object"
+}
+

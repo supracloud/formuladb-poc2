@@ -2,6 +2,7 @@
   "name": "fe",
   "version": "0.0.0",
   "scripts": {
+    "build-high-memory": "node --max_old_space_size=8000 ./node_modules/@angular/cli/bin/ng build",
     "ng": "ng",
     "dev": "concurrently --kill-others \"ng serve --progress=false\" \"ng test --progress=false\" | perl -pe 's!^\\[\\d+\\] !!; s!ERROR in !!; s!^src/app/!fe/src/app/!'",
     "start": "ng serve --aot --proxy-config proxy.conf.json --source-map",

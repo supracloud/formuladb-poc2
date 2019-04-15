@@ -9,7 +9,6 @@ import { Pn } from "@core/domain/metadata/entity";
 
 import { generateUUID } from "@core/domain/uuid";
 import { TableColumn } from "@core/domain/uimetadata/table";
-import { elvis } from "@core/elvis";
 
 export function autoLayoutTable(table: Table | null, entity: Entity, layout?: FrmdbLy): Table {
     const retTable = table || new Table();

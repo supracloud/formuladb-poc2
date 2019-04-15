@@ -4,6 +4,11 @@ export DOCKER_TLS_VERIFY=""
 export DOCKER_CERT_PATH=""
 export COMPOSE_CONVERT_WINDOWS_PATHS=1
 
+export BASEDIR=/d/code/metawiz/febe
+export FRMDB_RELEASE=${1:not_set_FRMDB_RELEASE}
+export FRMDB_DEPLOYMENT_DIR=${2:EXAMPLES}
+export PS1="(${FRMDB_DEPLOYMENT_DIR}) ${PS1}"
+
 create-docker-env() {
 
     (
@@ -75,15 +80,46 @@ copy2pg() {
     docker cp $1 febe_db_1:/`basename $1`
 }
 putSchema() {
-    SCHEMA_FILE=$1
-    PORT=$2
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-8084}/api/bla/schema
+    APP_NAME=$1
+    SCHEMA_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/schema
 }
+putApp() {
+    APP_NAME=$1
+    APP_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${APP_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}
+}
+putTable() {
+    APP_NAME=$1
+    TABLE_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${TABLE_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/table
+}
+putForm() {
+    APP_NAME=$1
+    FORM_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/form
+}
+
 #putSchema customers/orbico/orbico-metadata.json
 putBulk() {
-    DATA_FILE=$1
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:8084/api/bla/bulk
+    APP_NAME=$1
+    DATA_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/bulk
 }
+
+rsync-deploy() {
+    PORT=$1
+    DST=$3
+
+    rsync -avz --exclude node_modules --exclude .git --exclude .gitignore -e "ssh -p $PORT" ${BASEDIR}/../${FRMDB_DEPLOYMENT_DIR} ${DST}/
+    rsync -avz ${BASEDIR}/docker-compose.yml -e "ssh -p $PORT" ${SRC_DIR} ${DST}/febe/
+}
+#rsync-deploy 4179 ../customer-dacris dacris@mail.dacris.ro:/opt/data/dacris/LIVE/formuladb
 
 startFrmdb() {
     FRMDB_RELEASE=`git branch|grep '^\*'|sed -e 's/[*] //g'`

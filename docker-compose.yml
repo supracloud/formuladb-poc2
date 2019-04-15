@@ -28,6 +28,9 @@ services:
       - "8084:8084"
     volumes:
       - $PWD/auth.htpasswd:/etc/nginx/auth.htpasswd
+  integ:
+    build:
+      context: ../${FRMDB_DEPLOYMENT_DIR}/integ
   minio:
     image: registry.gitlab.com/metawiz/febe/formuladb-minio:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     ports:

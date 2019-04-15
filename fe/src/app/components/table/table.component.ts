@@ -26,8 +26,10 @@ import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
 import { Table, TableColumn } from '@core/domain/uimetadata/table';
+import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
+import { ExcelStyles } from './excel-styles';
 
 @Component({
     selector: 'frmdb-table',
@@ -75,7 +77,7 @@ export class TableComponent implements OnInit, OnDestroy {
         defaultToolPanel: 'tableActions'
     };
 
-
+    excelStyles = ExcelStyles;
     private selectedRowIdx: number;
     private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
@@ -88,7 +90,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     public frameworkComponents;
     public defaultColDef;
-    headerHeight = 25;
+    headerHeight = 100;
     table: Table;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
@@ -172,6 +174,14 @@ export class TableComponent implements OnInit, OnDestroy {
                     return;    
                 }
 
+                let cssClassRules: ColDef['cellClassRules'] = {};
+                let conditionalFormatting = t.conditionalFormatting || {};
+                for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
+                    cssClassRules[cssClassName] = function(params) {
+                        return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
+                    }
+                }
+
                 this.columns = t.columns.map(c => <ColDef>{
                     headerName: this.i18npipe.transform(c.name),
                     field: c.name,
@@ -185,6 +195,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     resizable: true,
                     valueFormatter: (params) => this.valueFormatter(params),
                     cellStyle: (cp: any) => this.applyCellStyles(cp),
+                    cellClassRules: cssClassRules,
                 });
           
                 const fs = {};
@@ -230,7 +241,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     onGridSizeChanged() {
         if (!this.gridApi) return;
-        this.gridApi.sizeColumnsToFit();
+        // this.gridApi.sizeColumnsToFit();
     }
     onGridReady(params: GridReadyEvent) {
         if (!this.gridApi) {

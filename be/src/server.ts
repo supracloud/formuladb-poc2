@@ -10,21 +10,14 @@ import "reflect-metadata";
 import * as http from "http";
 
 //FIXME: use this only for dev/test environment
-import { loadTestData } from "@core/test/load_test_data";
-import { getFrmdbEngine, getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
-import { App } from "@core/domain/app";
+import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
 
 let kvsFactory: KeyValueStoreFactoryI;
-const devMode = true;
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
-  if (devMode) {
-    kvsFactory = await loadTestData();
-  } else {
-    kvsFactory = await getKeyValueStoreFactory();
-  }
+  kvsFactory = await getKeyValueStoreFactory();
 })
 .then(() => {
   // Init the express application

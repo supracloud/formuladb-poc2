@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, ChangeDetectorRef, Component, DoCheck } from '@angular/core';
+import { OnInit, OnDestroy, ChangeDetectorRef, Component, DoCheck, Input } from '@angular/core';
 
 import { FormEditingService } from '../form-editing.service';
 import { combineLatest, startWith, tap } from 'rxjs/operators';
@@ -15,6 +15,9 @@ import { Observable } from 'rxjs';
 })
 export class HNavComponent implements OnInit, OnDestroy, DoCheck {
     public navigationItemsTree: NavigationItem[] = [];
+
+    @Input()
+    brandName: string;
 
     userIcon = faUserCircle;
     public devMode$: Observable<boolean>;

@@ -4,10 +4,11 @@
  */
 
 import { KeyValueObj, SubObj } from '../key_value_obj';
-import { Entity, Pn } from "../metadata/entity";
+import { Entity, Pn, FormulaExpression } from "../metadata/entity";
 import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
 import { FrmdbLy, Page } from './page';
+import { Expression } from 'jsep';
 
 export class TableColumn implements SubObj {
     _id: string;
@@ -16,6 +17,11 @@ export class TableColumn implements SubObj {
     filter?: ColumnFilter;
     constructor(public name: string, public type: Pn) {
     }
+}
+
+export class CellCssRule {
+    className: string;
+    formula: Expression;
 }
 
 export class ColumnFilter {
@@ -27,6 +33,7 @@ export class Table implements KeyValueObj {
     _id: string;
     _rev?: string;
     page: Partial<Page>;
+    conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
     columns: TableColumn[];
 }
 export function isTable(param: SubObj): param is Table {

@@ -1,8 +1,6 @@
-import { Orbico_ro } from "./orbico_ro";
 import { Inventory_ro } from "./inventory_ro";
 
 export const Dictioary_ro = {
-    ...Orbico_ro,
     ...Inventory_ro,
     'Enable-Developer-Mode':'Activare Mod Dezvoltator',
     'Disable-Developer-Mode':'Dezactivare Mod Dezvoltator',

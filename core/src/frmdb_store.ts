@@ -17,6 +17,7 @@ import { CircularJSON } from "@core/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
 import { App } from "./domain/app";
+import { $User, $I18n } from "./domain/metadata/default-metadata";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
@@ -50,7 +51,7 @@ export class FrmdbStore {
     private async getDataKvs(entityName: string) {
         let ret = this.dataKVSMap.get(entityName);
         if (!ret) {
-            let entity = this.schema.entities[entityName];
+            let entity = this.getDefaultEntity(entityName) || this.schema.entities[entityName];
             if (!entity) {
                 console.error("getDataKvs unknown entity " + entityName, this.schema.entities);
                 throw new Error("getDataKvs unknown entity " + entityName);
@@ -86,7 +87,21 @@ export class FrmdbStore {
         return this.getSchema(this.schema._id).then(s => s ? Object.values(s.entities) : []);
     }
 
+    private getDefaultEntity(path: string): Entity | null {
+        switch(path) {
+            case $User._id:
+                return $User;
+            case $I18n._id:
+                return $I18n;
+            default:
+                return null;
+        }
+    }
+
     public async getEntity(path: string): Promise<Entity | null> {
+        let defaultEntity = this.getDefaultEntity(path);
+        if (defaultEntity) return Promise.resolve(defaultEntity);
+
         let schema = await this.getSchema(this.schema._id);
         //the Entity's _id is the path
         return schema ? schema.entities[path] : null;
@@ -145,6 +160,13 @@ export class FrmdbStore {
     public async putDataObj(obj: DataObj): Promise<DataObj> {
         let entityName = parseDataObjId(obj._id).entityName;
         return (await this.getDataKvs(entityName)).put(obj);
+    }
+
+    public async patchDataObj(obj: DataObj): Promise<DataObj> {
+        let existingObj = await this.getDataObj(obj._id) || {_id: obj._id};
+        Object.assign(existingObj, obj);
+        let entityName = parseDataObjId(obj._id).entityName;
+        return (await this.getDataKvs(entityName)).put(existingObj);
     }
 
     public async putBulk(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {

@@ -47,7 +47,7 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
 
     excel() {
         if (!this.gridApi) return;
-        this.gridApi.exportDataAsExcel();
+        this.gridApi.exportDataAsExcel({headerRowHeight: 100});
     }
 
 

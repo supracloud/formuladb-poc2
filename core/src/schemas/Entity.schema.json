@@ -1,0 +1,1967 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "ActionProperty": {
+            "properties": {
+                "allowNull": {
+                    "type": "boolean"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "ACTION"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ArrayExpression": {
+            "properties": {
+                "elements": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ArrayExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/BinaryExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/CallExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Compound"
+                            },
+                            {
+                                "$ref": "#/definitions/ConditionalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Identifier"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/StringLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/Literal"
+                            },
+                            {
+                                "$ref": "#/definitions/LogicalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/MemberExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/ThisExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/UnaryExpression"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "ArrayExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "AttachmentProperty": {
+            "properties": {
+                "mediaType": {
+                    "enum": [
+                        "csv",
+                        "docx",
+                        "pdf",
+                        "xlsx"
+                    ],
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "ATTACHMENT"
+                    ],
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "AvgReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "AvgReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "BinaryExpression": {
+            "properties": {
+                "endIndex": {
+                    "type": "number"
+                },
+                "left": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "right": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "BinaryExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "CallExpression": {
+            "properties": {
+                "arguments": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ArrayExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/BinaryExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/CallExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Compound"
+                            },
+                            {
+                                "$ref": "#/definitions/ConditionalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Identifier"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/StringLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/Literal"
+                            },
+                            {
+                                "$ref": "#/definitions/LogicalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/MemberExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/ThisExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/UnaryExpression"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "callee": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "CallExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ChildTableProperty": {
+            "description": "Table of existing entities or entities created",
+            "properties": {
+                "isLargeTable": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "CHILD_TABLE"
+                    ],
+                    "type": "string"
+                },
+                "props": {
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ChildTableProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ExtendsEntityProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/StringProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/DocumentProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/DatetimeProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/AttachmentProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ImageProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ActionProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ReferenceToProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/FormulaProperty"
+                            }
+                        ]
+                    },
+                    "type": "object"
+                },
+                "referencedEntityName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "CompiledFormula": {
+            "properties": {
+                "finalExpression": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "rawExpr": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "targetEntityName": {
+                    "type": "string"
+                },
+                "targetPropertyName": {
+                    "type": "string"
+                },
+                "triggers": {
+                    "items": {
+                        "$ref": "#/definitions/MapReduceTrigger"
+                    },
+                    "type": "array"
+                },
+                "type_": {
+                    "enum": [
+                        "CompiledFormulaN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Compound": {
+            "properties": {
+                "body": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ArrayExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/BinaryExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/CallExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Compound"
+                            },
+                            {
+                                "$ref": "#/definitions/ConditionalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Identifier"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/StringLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/Literal"
+                            },
+                            {
+                                "$ref": "#/definitions/LogicalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/MemberExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/ThisExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/UnaryExpression"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "Compound"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ConditionalExpression": {
+            "properties": {
+                "alternate": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "consequent": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "test": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "type": {
+                    "enum": [
+                        "ConditionalExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "CountReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "CountReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DatetimeProperty": {
+            "properties": {
+                "allowNull": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "DATETIME"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "DocumentProperty": {
+            "properties": {
+                "allowNull": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "DOCUMENT"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "EntityStateGraph": {
+            "properties": {
+                "nodes": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "transitions": {
+                    "items": {
+                        "properties": {
+                            "source": {
+                                "type": "string"
+                            },
+                            "target": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "ExtendsEntityProperty": {
+            "description": "This property represents an embedded entity that is created when the parent entity is created",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "SUB_ENTITY"
+                    ],
+                    "type": "string"
+                },
+                "props": {
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ChildTableProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ExtendsEntityProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/StringProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/DocumentProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/DatetimeProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/AttachmentProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ImageProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ActionProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/ReferenceToProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/FormulaProperty"
+                            }
+                        ]
+                    },
+                    "type": "object"
+                },
+                "referencedEntityName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FirstReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "FirstReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "FormulaProperty": {
+            "description": "This property represents a formula definition",
+            "properties": {
+                "compiledFormula_": {
+                    "$ref": "#/definitions/CompiledFormula"
+                },
+                "formula": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "FORMULA"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Identifier": {
+            "properties": {
+                "belongsTo": {
+                    "type": "string"
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "Identifier"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ImageProperty": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "IMAGE"
+                    ],
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "urls": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "LastReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "LastReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Literal": {
+            "properties": {
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "raw": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "Literal"
+                    ],
+                    "type": "string"
+                },
+                "value": {
+                    "type": "boolean"
+                }
+            },
+            "type": "object"
+        },
+        "LogicalExpression": {
+            "properties": {
+                "endIndex": {
+                    "type": "number"
+                },
+                "left": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "right": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "LogicalExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "MapQuery": {
+            "properties": {
+                "endkeyExpr": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ArrayExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/BinaryExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/CallExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Compound"
+                            },
+                            {
+                                "$ref": "#/definitions/ConditionalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Identifier"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/StringLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/Literal"
+                            },
+                            {
+                                "$ref": "#/definitions/LogicalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/MemberExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/ThisExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/UnaryExpression"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "inclusive_end": {
+                    "type": "boolean"
+                },
+                "inclusive_start": {
+                    "type": "boolean"
+                },
+                "startkeyExpr": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ArrayExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/BinaryExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/CallExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Compound"
+                            },
+                            {
+                                "$ref": "#/definitions/ConditionalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Identifier"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/StringLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/Literal"
+                            },
+                            {
+                                "$ref": "#/definitions/LogicalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/MemberExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/ThisExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/UnaryExpression"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                }
+            },
+            "type": "object"
+        },
+        "MapReduceTrigger": {
+            "properties": {
+                "mapObserversImpactedByOneObservable": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityName\"|\"valueExpr\">"
+                        },
+                        {
+                            "properties": {
+                                "obsViewName": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    ]
+                },
+                "mapObserversImpactedByOneObservable__": {
+                    "type": "string"
+                },
+                "mapreduceAggsOfManyObservablesQueryableFromOneObs": {
+                    "properties": {
+                        "aggsViewName": {
+                            "type": "string"
+                        },
+                        "map": {
+                            "$ref": "#/definitions/Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityName\"|\"valueExpr\">"
+                        },
+                        "reduceFun": {
+                            "anyOf": [
+                                {
+                                    "$ref": "#/definitions/SumReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/CountReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/TextjoinReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/MinReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/MaxReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/AvgReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/FirstReduceFun"
+                                },
+                                {
+                                    "$ref": "#/definitions/LastReduceFun"
+                                }
+                            ]
+                        }
+                    },
+                    "type": "object"
+                },
+                "mapreduceAggsOfManyObservablesQueryableFromOneObs__": {
+                    "type": "string"
+                },
+                "rawExpr": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "type_": {
+                    "enum": [
+                        "MapReduceTriggerN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "MaxReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "MaxReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "MemberExpression": {
+            "properties": {
+                "computed": {
+                    "type": "boolean"
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "object": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "property": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "MemberExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "MinReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "MinReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "NumberLiteral": {
+            "properties": {
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "raw": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "NumberLiteral"
+                    ],
+                    "type": "string"
+                },
+                "value": {
+                    "type": "number"
+                }
+            },
+            "type": "object"
+        },
+        "NumberProperty": {
+            "properties": {
+                "allowNull": {
+                    "type": "boolean"
+                },
+                "defaultValue": {
+                    "type": "number"
+                },
+                "format": {
+                    "enum": [
+                        "currency",
+                        "default",
+                        "percentage"
+                    ],
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "NUMBER"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityName\"|\"valueExpr\">": {
+            "properties": {
+                "entityName": {
+                    "type": "string"
+                },
+                "existingIndex": {
+                    "type": "string"
+                },
+                "keyExpr": {
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ArrayExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/BinaryExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/CallExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Compound"
+                            },
+                            {
+                                "$ref": "#/definitions/ConditionalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/Identifier"
+                            },
+                            {
+                                "$ref": "#/definitions/NumberLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/StringLiteral"
+                            },
+                            {
+                                "$ref": "#/definitions/Literal"
+                            },
+                            {
+                                "$ref": "#/definitions/LogicalExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/MemberExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/ThisExpression"
+                            },
+                            {
+                                "$ref": "#/definitions/UnaryExpression"
+                            }
+                        ]
+                    },
+                    "type": "array"
+                },
+                "query": {
+                    "$ref": "#/definitions/MapQuery"
+                },
+                "valueExpr": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                }
+            },
+            "type": "object"
+        },
+        "ReferenceToProperty": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "REFERENCE_TO"
+                    ],
+                    "type": "string"
+                },
+                "referencedEntityName": {
+                    "type": "string"
+                },
+                "referencedPropertyName": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "StringLiteral": {
+            "properties": {
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "raw": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "StringLiteral"
+                    ],
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "StringProperty": {
+            "properties": {
+                "allowNull": {
+                    "type": "boolean"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "STRING"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "SumReduceFun": {
+            "properties": {
+                "name": {
+                    "enum": [
+                        "SumReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "T": {
+            "type": "object"
+        },
+        "TextjoinReduceFun": {
+            "properties": {
+                "delimiter": {
+                    "type": "string"
+                },
+                "name": {
+                    "enum": [
+                        "TextjoinReduceFunN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "ThisExpression": {
+            "properties": {
+                "endIndex": {
+                    "type": "number"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "ThisExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "UnaryExpression": {
+            "properties": {
+                "argument": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ArrayExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/BinaryExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/CallExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Compound"
+                        },
+                        {
+                            "$ref": "#/definitions/ConditionalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/Identifier"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/StringLiteral"
+                        },
+                        {
+                            "$ref": "#/definitions/Literal"
+                        },
+                        {
+                            "$ref": "#/definitions/LogicalExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/MemberExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/ThisExpression"
+                        },
+                        {
+                            "$ref": "#/definitions/UnaryExpression"
+                        }
+                    ]
+                },
+                "endIndex": {
+                    "type": "number"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "origExpr": {
+                    "type": "string"
+                },
+                "prefix": {
+                    "type": "boolean"
+                },
+                "returnType": {
+                },
+                "startIndex": {
+                    "type": "number"
+                },
+                "type": {
+                    "enum": [
+                        "UnaryExpression"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
+        "_.Dictionary<AutoCorrectionOnValidationFailed[]>": {
+            "additionalProperties": {
+                "$ref": "#/definitions/T"
+            },
+            "type": "object"
+        },
+        "_.Dictionary<FormulaValidation>": {
+            "additionalProperties": {
+                "$ref": "#/definitions/T"
+            },
+            "type": "object"
+        }
+    },
+    "description": "the _id of the Entity is the path, e.g. Forms__ServiceForm",
+    "properties": {
+        "_id": {
+            "type": "string"
+        },
+        "autoCorrectionsOnValidationFailed": {
+            "$ref": "#/definitions/_.Dictionary<AutoCorrectionOnValidationFailed[]>"
+        },
+        "autoGeneratedCol1": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/ArrayExpression"
+                },
+                {
+                    "$ref": "#/definitions/BinaryExpression"
+                },
+                {
+                    "$ref": "#/definitions/CallExpression"
+                },
+                {
+                    "$ref": "#/definitions/Compound"
+                },
+                {
+                    "$ref": "#/definitions/ConditionalExpression"
+                },
+                {
+                    "$ref": "#/definitions/Identifier"
+                },
+                {
+                    "$ref": "#/definitions/NumberLiteral"
+                },
+                {
+                    "$ref": "#/definitions/StringLiteral"
+                },
+                {
+                    "$ref": "#/definitions/Literal"
+                },
+                {
+                    "$ref": "#/definitions/LogicalExpression"
+                },
+                {
+                    "$ref": "#/definitions/MemberExpression"
+                },
+                {
+                    "$ref": "#/definitions/ThisExpression"
+                },
+                {
+                    "$ref": "#/definitions/UnaryExpression"
+                }
+            ]
+        },
+        "autoGeneratedId": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/ArrayExpression"
+                },
+                {
+                    "$ref": "#/definitions/BinaryExpression"
+                },
+                {
+                    "$ref": "#/definitions/CallExpression"
+                },
+                {
+                    "$ref": "#/definitions/Compound"
+                },
+                {
+                    "$ref": "#/definitions/ConditionalExpression"
+                },
+                {
+                    "$ref": "#/definitions/Identifier"
+                },
+                {
+                    "$ref": "#/definitions/NumberLiteral"
+                },
+                {
+                    "$ref": "#/definitions/StringLiteral"
+                },
+                {
+                    "$ref": "#/definitions/Literal"
+                },
+                {
+                    "$ref": "#/definitions/LogicalExpression"
+                },
+                {
+                    "$ref": "#/definitions/MemberExpression"
+                },
+                {
+                    "$ref": "#/definitions/ThisExpression"
+                },
+                {
+                    "$ref": "#/definitions/UnaryExpression"
+                }
+            ]
+        },
+        "isEditable": {
+            "type": "boolean"
+        },
+        "isPresentationPage": {
+            "type": "boolean"
+        },
+        "props": {
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ChildTableProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/ExtendsEntityProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/NumberProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/StringProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/DocumentProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/DatetimeProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/AttachmentProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/ImageProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/ActionProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/ReferenceToProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/FormulaProperty"
+                    }
+                ]
+            },
+            "type": "object"
+        },
+        "pureNavGroupingChildren": {
+            "items": {
+                "type": "string"
+            },
+            "type": "array"
+        },
+        "stateGraph": {
+            "$ref": "#/definitions/EntityStateGraph"
+        },
+        "validations": {
+            "$ref": "#/definitions/_.Dictionary<FormulaValidation>"
+        }
+    },
+    "type": "object"
+}
+
