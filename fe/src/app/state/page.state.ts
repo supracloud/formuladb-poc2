@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
+import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Page, FrmdbLy, FrmdbLook } from '@core/domain/uimetadata/page';
 import { PageChangedAction, PageChangedActionN } from '../actions/page.user.actions';
 

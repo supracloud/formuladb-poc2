@@ -9,6 +9,12 @@ type RecursivePartial<T> = {
 
 export const ExcelStyles: RecursivePartial<ExcelStyle>[] = [
     {
+        id: "header",
+        alignment: {
+            wrapText: true,
+        },
+    },
+    {
         id: "yellowBackground",
         interior: {
             color: "#fffb16",
