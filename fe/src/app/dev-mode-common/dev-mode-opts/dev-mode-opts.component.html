@@ -71,10 +71,18 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" title="Auto Layout" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" title="Auto-Layout" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <fa-icon [icon]="layoutIcon" class="fa-sm"></fa-icon>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown vw-75 text-center" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="javascript:void(0)">Headers</a>
+                    <div class="frmdb-themes">
+                        <a class="dropdown-item" *ngFor="let hd of allHeaders" href="javascript:void(0)">
+                            <img class="frmdb-theme" height="90" width="150" [src]="hd.img" (click)="switchHeader(hd.header)" />
+                        </a>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void(0)">Layouts</a>
                     <div class="frmdb-themes">
                         <a class="dropdown-item" *ngFor="let ly of allLayouts" href="javascript:void(0)">
                             <img class="frmdb-theme" height="90" width="150" [src]="ly.img" (click)="switchLayout(ly.layout)" />

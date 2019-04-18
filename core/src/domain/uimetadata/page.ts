@@ -16,6 +16,7 @@
 /** Auto-header styles */
 export enum FrmdbHeader {
     hd_cover = "hd_cover",
+    hd_jumbotron = "hd_jumbotron",
     hd_carousel = "hd_carousel",
     hd_split = "hd_split",
 }
