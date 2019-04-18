@@ -13,9 +13,16 @@
  *     https://thenextweb.com/dd/2017/11/08/psychology-web-design/
  */
 
+/** Auto-header styles */
+export enum FrmdbHeader {
+    hd_cover = "hd_cover",
+    hd_carousel = "hd_carousel",
+    hd_split = "hd_split",
+}
+
+/** Auto-layout options */
 export enum FrmdbLy {
     ly_admin = "ly_admin",
-    ly_cover = "ly_cover",
     ly_cards = "ly_cards",
     ly_fpattern = "ly_fpattern", //same as ly_cards just with a different style for the cards
     ly_zigzagpattern = "ly_zigzagpattern", //same as ly_cards just with a different style for the cards
@@ -24,10 +31,8 @@ export enum FrmdbLy {
     ly_landing = "ly_landing",
     ly_dashboard = "ly_dashboard",
     ly_spreadsheet = "ly_spreadsheet",
-    ly_carousel = "ly_carousel",
     ly_form = "ly_form", //same with ly_admin for Form pages
 
-    ly_split = "ly_split",
     ly_zpattern = "ly_zpattern",
     ly_mosaic = "ly_mosaic",
     ly_magazine = "ly_magazine",
@@ -67,10 +72,12 @@ export const BrandCharacteristics = [
 
 export interface Page {
     colorPalette: string;
+    sidebarOff?: boolean;
     sidebarImageUrl: string;    
     brandName: string;
     logoUrl: string;
     cssUrl: string | null;
+    header?: FrmdbHeader;
     layout: FrmdbLy;
     look: FrmdbLook,
     // tbd1: string;

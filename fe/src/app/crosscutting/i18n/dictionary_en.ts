@@ -40,12 +40,12 @@ const defaultDict_en = {
     'lk_HighTech': "High Tech",
     'lk_Powerful': "Powerful",
 
-    'add table': "Add table",
-    'add child table to': "Add child table to $PARAM$",
-    'add column to': "Add column to $PARAM$",
-    'add column': "Add column",
-    'del table': "Delete table",
-    'del column': "Delete column",
+    'add-table': "Add table",
+    'add-child-table-to': "Add child table to $PARAM$",
+    'add-column-to': "Add column to $PARAM$",
+    'add-column': "Add column",
+    'del-table': "Delete table",
+    'del-column': "Delete column",
 
     Financial: 'Financial',
     General:'General',

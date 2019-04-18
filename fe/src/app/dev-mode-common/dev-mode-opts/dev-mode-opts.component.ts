@@ -30,6 +30,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     applyChangesIcon = faCheckCircle;
     discardChangesIcon = faTimesCircle;
 
+    themeIcon = faImages;
     layoutIcon = faObjectGroup;
     dataIcon = faTable;
     styleIcon = faPalette;
@@ -123,33 +124,44 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     allThemes = [
-        {name: "Basic", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/ly_admin.png", css: ""},
-        {name: "Basic", layout: "ly_cover", look: "lk_Stylish", img: "assets/img/themes/ly_cover.png", css: ""},
-        {name: "Basic", layout: "ly_cards", look: "lk_Approachable", img: "assets/img/themes/ly_cards.png", css: ""},
-        {name: "Basic", layout: "ly_fpattern", look: "lk_Friendly", img: "assets/img/themes/ly_fpattern.png", css: ""},
-        {name: "Basic", layout: "ly_zigzagpattern", look: "lk_Friendly", img: "assets/img/themes/ly_zigzagpattern.png", css: ""},
-        {name: "Basic", layout: "ly_carousel", look: "lk_Friendly", img: "assets/img/themes/ly_carousel.png", css: ""},
-        {name: "Basic", layout: "ly_dashboard", look: "lk_Friendly", img: "assets/img/themes/ly_dashboard.png", css: ""},
-        // {name: "Light", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: ""},
-        {name: "Material", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/material.jpg", css: "/assets/material-dashboard-theme/material-dashboard.min.css"},
-        // {name: "NowUI", layout: "ly_admin", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: ""},
+        {name: "Basic", look: "lk_Professional", img: "assets/img/themes/basic.png", css: ""},
+        {name: "Lux", look: "lk_Stylish", img: "assets/img/themes/lux.png", css: "/assets/themes/basic-stylish/bootstrap.min.css"},
+        {name: "Yeti", look: "lk_Friendly", img: "assets/img/themes/yeti.png", css: "/assets/themes/basic-friendly/bootstrap.min.css"},
+        {name: "Material", look: "lk_Professional", img: "assets/img/themes/material.jpg", css: "/assets/themes/material/material-dashboard.min.css"},
+        {name: "Light", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: "/assets/themes/light/bootstrap.min.css"},
+        {name: "Now-UI", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: "/assets/themes/now-ui/bootstrap.min.css"},
     ];
+
+    allLayouts = [
+        {name: "Basic", layout: "ly_admin", img: "assets/img/layouts/ly_admin.png"},
+        {name: "Basic", layout: "ly_cover", img: "assets/img/layouts/ly_cover.png"},
+        {name: "Basic", layout: "ly_cards", img: "assets/img/layouts/ly_cards.png"},
+        {name: "Basic", layout: "ly_fpattern", img: "assets/img/layouts/ly_fpattern.png"},
+        {name: "Basic", layout: "ly_zigzagpattern", img: "assets/img/layouts/ly_zigzagpattern.png"},
+        {name: "Basic", layout: "ly_carousel", img: "assets/img/layouts/ly_carousel.png"},
+        {name: "Basic", layout: "ly_dashboard", img: "assets/img/layouts/ly_dashboard.png"},
+    ];
+
 
     get themes() {
         let areLooksFilered = Object.values(this.looks).filter(x => x === true).length > 0;
-        let areLayoutsFilered = Object.values(this.layouts).filter(x => x === true).length > 0;
         return this.allThemes.filter(theme => {
             let ret = true;
             if (areLooksFilered && !this.looks[theme.look]) ret = false;
-            if (areLayoutsFilered && !this.layouts[theme.layout]) ret = false;
             return ret;
         });
     }
 
-    switchTheme(cssUrl: string, layout: FrmdbLy) {
+    switchTheme(cssUrl: string) {
         this.store.dispatch(new PageChangedAction({
             ...this.page, 
             cssUrl,
+        }));
+    }
+
+    switchLayout(layout: FrmdbLy) {
+        this.store.dispatch(new PageChangedAction({
+            ...this.page, 
             layout,
         }));
     }
@@ -261,11 +273,11 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     get addTableLabel() {
-        return this.currentEntity ? this.i18npipe.transform('add child table to', this.currentEntity._id) : this.i18npipe.transform('add table');
+        return this.currentEntity ? this.i18npipe.transform('add-child-table-to', this.currentEntity._id) : this.i18npipe.transform('add-table');
     }
 
     get addColumnLabel() {
-        return this.currentEntity ? this.i18npipe.transform('add column to', this.currentEntity._id) : this.i18npipe.transform('add column');
+        return this.currentEntity ? this.i18npipe.transform('add-column-to', this.currentEntity._id) : this.i18npipe.transform('add-column');
     }
 
     goToAppList() {

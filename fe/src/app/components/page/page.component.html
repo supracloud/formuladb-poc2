@@ -1,9 +1,22 @@
-<frmdb-ly_admin *ngIf="page?.layout == 'ly_admin'" [brandName]="page?.brandName" [logoUrl]="page?.logoUrl"></frmdb-ly_admin>
-<frmdb-ly_cover *ngIf="page?.layout == 'ly_cover'" [brandName]="page?.brandName" [logoUrl]="page?.logoUrl"></frmdb-ly_cover>
-<frmdb-ly_cards *ngIf="page?.layout == 'ly_cards'" [brandName]="page?.brandName" [logoUrl]="page?.logoUrl"></frmdb-ly_cards>
-<frmdb-ly_cards *ngIf="page?.layout == 'ly_fpattern'" [brandName]="page?.brandName" [logoUrl]="page?.logoUrl"></frmdb-ly_cards>
-<frmdb-ly_cards *ngIf="page?.layout == 'ly_grid'" [brandName]="page?.brandName" [logoUrl]="page?.logoUrl"></frmdb-ly_cards>
-    
+<header>
+    <nav frmdb-h_nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap navbar-expand-md p-0 shadow frmdb-fixed-top-0" [brandName]="page?.brandName"></nav>
+</header>
+
+<div class="container-fluid">
+    <div class="row">
+        <nav *ngIf="!page?.sidebarOff" frmdb-v_nav class="col-md-2 d-none d-md-block bg-light sidebar frmdb-fixed-top-0">
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>
+
+<footer class="bg-white border-top fixed-bottom pb-1">
+    <nav frmdb-v_nav *ngIf="page?.sidebarOff" class="nav bg-none">
+    </nav>
+</footer>
 <ul class="w-100 fixed-bottom mb-0 frmdb-copy">
     <li style="font-size: 50%; color: lightgrey">
             Powered by

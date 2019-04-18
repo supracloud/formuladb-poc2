@@ -42,54 +42,48 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="delTable()">
                         <fa-icon [icon]="delIcon" class="fa-sm"></fa-icon>
-                        {{'del table' | i18n}} {{currentEntity?._id}}
+                        {{'del-table' | i18n}} {{currentEntity?._id}}
                     </a>
                     <a class="dropdown-item" href="javascript:void(0)" (click)="delColumnFromCurrentTable()">
                         <fa-icon [icon]="delIcon" class="fa-sm"></fa-icon>
-                        {{'del column' | i18n}} {{currentProperty?.name}}
+                        {{'del-column' | i18n}} {{currentProperty?.name}}
                     </a>
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" title="Look & Feel" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <fa-icon [icon]="layoutIcon" class="fa-sm"></fa-icon>
+                <a class="nav-link dropdown-toggle" title="Choose Theme" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <fa-icon [icon]="themeIcon" class="fa-sm"></fa-icon>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown vw-75 text-center" aria-labelledby="dropdown01">
-                    <div class="row">
-                        <div class="col-md-1 d-flex align-items-center font-weight-bold">
-                            <span>Look</span>
-                        </div>
-                        <div class="col-md-11 frmdb-look-filters">
-                            <div class="form-check form-check-inline" *ngFor="let look of objectKeys(looks)">
-                                <input class="form-check-input" type="checkbox" [id]="look" [(ngModel)]="looks[look]">
-                                <label class="form-check-label" [for]="look">{{look | i18n}}</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <div class="row">
-                        <div class="col-md-1 d-flex align-items-center position-relative font-weight-bold">
-                            <span style="position: absolute; top: -10px">&nbsp;&nbsp;&</span>
-                            <span>Feel</span>
-                        </div>
-                        <div class="col-md-10 frmdb-layout-filters">
-                            <div class="form-check form-check-inline" *ngFor="let layout of objectKeys(layouts)">
-                                <input class="form-check-input" type="checkbox" [id]="layout" [(ngModel)]="layouts[layout]">
-                                <label class="form-check-label" [for]="layout">{{layout | i18n}}</label>
-                            </div>
+                    <div class="row frmdb-look-filters">
+                        <div class="form-check form-check-inline" *ngFor="let look of objectKeys(looks)">
+                            <input class="form-check-input" type="checkbox" [id]="look" [(ngModel)]="looks[look]">
+                            <label class="form-check-label" [for]="look">{{look | i18n}}</label>
                         </div>
                     </div>
                     <div class="dropdown-divider"></div>
                     <div class="frmdb-themes">
                         <a class="dropdown-item" *ngFor="let theme of themes" href="javascript:void(0)">
-                            <img class="frmdb-theme" height="90" width="150" [src]="theme.img" (click)="switchTheme(theme.css, theme.layout)" />
-                            <!-- <br />{{theme.name}} / {{theme.layout | i18n}} / {{theme.look | i18n}} -->
+                            <img class="frmdb-theme" height="90" width="150" [src]="theme.img" (click)="switchTheme(theme.css)" />
+                            <br />{{theme.name}}
                         </a>
                     </div>
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" title="Customize Look" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" title="Auto Layout" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <fa-icon [icon]="layoutIcon" class="fa-sm"></fa-icon>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown vw-75 text-center" aria-labelledby="dropdown01">
+                    <div class="frmdb-themes">
+                        <a class="dropdown-item" *ngFor="let ly of allLayouts" href="javascript:void(0)">
+                            <img class="frmdb-theme" height="90" width="150" [src]="ly.img" (click)="switchLayout(ly.layout)" />
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" title="Colors, Fonts, Artwork" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <fa-icon [icon]="styleIcon" class="fa-sm"></fa-icon>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
@@ -142,7 +136,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" title="Roles" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
                     <fa-icon [icon]="userIcon"></fa-icon>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">

@@ -3,25 +3,21 @@
  * License TBD
  */
 
-import { Component, OnInit, OnDestroy, NgZone, Input, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
 import {
     GridOptions, GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellClickedEvent, CellFocusedEvent, ValueFormatterService, ColDef
+    RowClickedEvent, CellFocusedEvent, ColDef
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
-import { TableHeaderComponent } from './table-header.component';
-import { Entity } from "@core/domain/metadata/entity";
 import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
-import { untilDestroyed } from 'ngx-take-until-destroy';
 import { waitUntilNotNull } from '@core/ts-utils';
-import { Page, FrmdbLy } from '@core/domain/uimetadata/page';
+import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
@@ -78,8 +74,6 @@ export class TableComponent implements OnInit, OnDestroy {
     };
 
     excelStyles = ExcelStyles;
-    private selectedRowIdx: number;
-    private agGridOptions: GridOptions = {};
     private gridApi: GridApi;
     private gridColumnApi;
     private columns: ColDef[] = [];
@@ -90,7 +84,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     public frameworkComponents;
     public defaultColDef;
-    headerHeight = 100;
+    headerHeight = 50;
     table: Table;
 
     constructor(public frmdbStreams: FrmdbStreamsService,

@@ -5,7 +5,7 @@
   "scripts": {
     "e2e_serve": "rm -rf dist && tsc --sourceMap -p src && concurrently --kill-others \"./node_modules/.bin/pouchdb-server --in-memory --port 5984\" \"sleep 15 && node dist/be/src/server.js\"",
     "preserve": "rm -rf dist && tsc --sourceMap -p src",
-    "inspect": "kill-port 9231 && node --inspect=0.0.0.0:9231 dist/be/src/server.js",
+    "inspect": "kill-port 9231 && node --inspect=0.0.0.0:9231 dist/be/src/server.js && wait-on tcp:3000 && npm run test-data",
     "nodemon-inspect": "nodemon --delay 200ms --watch dist --exec \"npm run inspect\"",
     "serve": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"tsc --sourceMap -w -p src\" \"sleep 10 && npm run nodemon-inspect\"",
     "start": "node --inspect dist/be/src/server.js",
@@ -13,6 +13,8 @@
     "compile:watch": "tsc --sourceMap -w -p src",
     "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
+    "test-data": "node -e 'require(\"module-alias/register\"); require(\"@core/test/load_test_data.js\").loadTestData()'",
+    "exampleapps": "nodemon --delay 200ms --exec \"TBD generate json/csv for test data and metadata\" --watch ../core/src/test/mocks/ --watch ../core/src/domain/metadata/default-metadata.ts --watch ../core/src/domain/metadata/default-data.ts",
     "jasmine:watch": "watch \"node --inspect dist/be/src/tests/jasmine.js\" dist --wait=1 --interval=2",
     "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"sleep 2 && npm run jasmine:watch\" ",
     "build-prod": "rm -rf dist && webpack"
@@ -30,10 +32,10 @@
     "dotenv": "^6.2.0",
     "express": "~4.13.1",
     "express-session": "^1.15.6",
+    "formulajs": "git+https://github.com/acristu/formula.js.git",
     "fuse.js": "^3.3.0",
     "glob": "^5.0.14",
     "jsep": "git+https://github.com/acristu/jsep.git",
-    "formulajs": "git+https://github.com/acristu/formula.js.git",
     "lodash": "^4.17.5",
     "module-alias": "^2.1.0",
     "moment": "^2.24.0",
@@ -47,7 +49,8 @@
     "short-uuid": "^3.0.0",
     "source-map-support": "^0.5.3",
     "tslib": "^1.9.3",
-    "typedi": "^0.6.1"
+    "typedi": "^0.6.1",
+    "wait-on": "^3.2.0"
   },
   "devDependencies": {
     "@types/acorn": "^4.0.3",

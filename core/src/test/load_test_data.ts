@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { getKeyValueStoreFactory, getFrmdbEngineStore } from "@storage/key_value_store_impl_selector";
+import { getKeyValueStoreFactory } from "@storage/key_value_store_impl_selector";
 
 import { mockMetadata } from "./main_demo.flow";
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
@@ -16,6 +16,7 @@ import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { LargeSalesReport_Form } from "./mocks/reports-ui-metadata";
 import { HomePage_Form, HomePage_Table } from "@core/default_pages/website-ui-metadata";
 import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "./mocks/booking-ui-metadata";
+import { DefaultDictionary } from "@core/domain/metadata/default-data";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
     return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
@@ -29,6 +30,14 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             await kvsFactory.putApp(app);
         }
 
+        {
+            let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, {_id: 'FRMDB_SCHEMA~~dummy', entities: {}});
+            for (let obj of DefaultDictionary) {
+                console.log("loading", obj);
+                await frmdbEngineStore.putDataObj(obj);
+            }    
+        }
+        
         let uiMetaLoaded = false;
         for (let schema of mockMetadata.schemas) {
             await kvsFactory.putSchema(schema);
