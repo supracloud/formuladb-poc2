@@ -22,18 +22,18 @@ export var HomePage_Form: Form = {
     },
     childNodes: [
         { nodeType: NodeType.header, _id: getTestUUID(), childNodes: [
-            { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "title", representation: "title" },
-            { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "tagline", representation: "paragraph" },
+            { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "title", propertyType: Pn.STRING, representation: "title" },
+            { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "tagline", propertyType: Pn.STRING, representation: "paragraph" },
         ]},
-        { nodeType: NodeType.card_container, _id: getTestUUID(), tableName: "product_features", childNodes: [
+        { nodeType: NodeType.card_container, horizontal: true, _id: getTestUUID(), tableName: "product_features", childNodes: [
             { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
                 { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
-                    { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "name", representation: "h3", }
+                    { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "name", propertyType: Pn.STRING, representation: "h3", }
                 ]}
             ]},
             { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
                 { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
-                    { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "description", representation: "paragraph"}
+                    { nodeType: NodeType.form_text, _id: getTestUUID(), propertyName: "description", propertyType: Pn.STRING, representation: "paragraph"}
                 ]}
             ]},
         ]}

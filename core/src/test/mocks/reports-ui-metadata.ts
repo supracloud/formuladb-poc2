@@ -26,6 +26,7 @@ export var LargeSalesReport_Form: Form = {
           nodeType: NodeType.form_text,
           propertyName: "client",
           representation: 'paragraph',
+          propertyType: Pn.STRING,
           // "propertyType": Pn.STRING,
           _id: "7x8JM1B39JihWrCoX6B64K"
         },
