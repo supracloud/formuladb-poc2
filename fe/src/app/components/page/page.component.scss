@@ -1,3 +1,11 @@
 .frmdb-copy {
     background-color: white;
 }
+
+.main-pt-slim {
+    padding-top: calc(var(--nav-link-height) - var(--nav-link-padding-y) * 2);
+}
+
+.main-pt {
+    padding-top: var(--nav-link-height);
+}

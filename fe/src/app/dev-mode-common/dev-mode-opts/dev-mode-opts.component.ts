@@ -125,8 +125,8 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
 
     allThemes = [
         {name: "Basic", look: "lk_Professional", img: "assets/img/themes/basic.png", css: ""},
-        {name: "Lux", look: "lk_Stylish", img: "assets/img/themes/lux.png", css: "/assets/themes/basic-stylish/bootstrap.min.css"},
-        {name: "Yeti", look: "lk_Friendly", img: "assets/img/themes/yeti.png", css: "/assets/themes/basic-friendly/bootstrap.min.css"},
+        {name: "Lux", look: "lk_Stylish", img: "assets/img/themes/lux.png", css: "/assets/themes/lux.min.css"},
+        {name: "Yeti", look: "lk_Friendly", img: "assets/img/themes/yeti.png", css: "/assets/themes/yeti.min.css"},
         {name: "Material", look: "lk_Professional", img: "assets/img/themes/material.jpg", css: "/assets/themes/material/material-dashboard.min.css"},
         {name: "Light", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: "/assets/themes/light/bootstrap.min.css"},
         {name: "Now-UI", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: "/assets/themes/now-ui/bootstrap.min.css"},
@@ -142,11 +142,12 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     allLayouts = [
         {layout: "ly_admin", img: "assets/img/layouts/ly_admin.png"},
         {layout: "ly_fpattern", img: "assets/img/layouts/ly_fpattern.png"},
-        {layout: "ly_grid", img: "assets/img/layouts/ly_cards.png"},
+        {layout: "ly_grid", img: "assets/img/layouts/ly_grid.png"},
         {layout: "ly_cards", img: "assets/img/layouts/ly_cards.png"},
-        {layout: "ly_mosaic", img: "assets/img/layouts/ly_cards.png"},
+        {layout: "ly_mosaic", img: "assets/img/layouts/ly_mosaic.png"},
         {layout: "ly_zigzagpattern", img: "assets/img/layouts/ly_zigzagpattern.png"},
         {layout: "ly_dashboard", img: "assets/img/layouts/ly_dashboard.png"},
+        {layout: "ly_magazine", img: "assets/img/layouts/ly_magazine.png"},
     ];
 
 

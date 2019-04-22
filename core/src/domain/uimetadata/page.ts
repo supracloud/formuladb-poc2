@@ -58,6 +58,11 @@ export enum FrmdbLook {
     lk_Powerful = 'lk_Powerful',
 }
 
+export enum HNavLook {
+    default = "default",
+    slim = "slim",
+}
+
 export const BrandCharacteristics = [
     {left: "Conservative", right: "Progressive"},
     {left: "Warm", right: "Cold"},
@@ -78,6 +83,7 @@ export interface Page {
     brandName: string;
     logoUrl: string;
     cssUrl: string | null;
+    hnavLook?: HNavLook;
     header?: FrmdbHeader;
     layout: FrmdbLy;
     look: FrmdbLook,

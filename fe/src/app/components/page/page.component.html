@@ -1,13 +1,13 @@
-<header>
-    <nav frmdb-h_nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap navbar-expand-md p-0 shadow frmdb-fixed-top-0" [brandName]="page?.brandName"></nav>
-</header>
-
 <div class="container-fluid">
+    <div>
+        <nav [class.p-0]="page?.hnavLook == 'slim'" frmdb-h_nav
+            class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap navbar-expand-md shadow frmdb-fixed-top-0" [brandName]="page?.brandName"></nav>
+    </div>
     <div class="row">
         <nav *ngIf="!page?.sidebarOff" frmdb-v_nav class="col-md-2 d-none d-md-block bg-light sidebar frmdb-fixed-top-0">
         </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main role="main" [class.main-pt-slim]="page?.hnavLook == 'slim'" [class.main-pt]="page?.hnavLook != 'slim'" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <router-outlet></router-outlet>
         </main>
     </div>
@@ -19,8 +19,8 @@
 </footer>
 <ul class="w-100 fixed-bottom mb-0 frmdb-copy">
     <li style="font-size: 50%; color: lightgrey">
-            Powered by
-            <a href="http://formuladb.io" target="_blank">formuladb.io</a> 
-            &copy; 2018 S.C. FORMULA DATABASE S.R.L.
+        Powered by
+        <a href="http://formuladb.io" target="_blank">formuladb.io</a>
+        &copy; 2018 S.C. FORMULA DATABASE S.R.L.
     </li>
 </ul>
