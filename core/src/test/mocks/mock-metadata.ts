@@ -17,6 +17,7 @@ import * as StaticPagesMetadata from "../../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@core/domain/app';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
+import { $User, $I18n } from '@core/domain/metadata/default-metadata';
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -178,6 +179,16 @@ export class MockMetadata {
     public apps: App[];
     public schemas: Schema[];
 
+    public commonEntities = [
+        GeneralMetadata.General,
+        $User,
+        $I18n,
+        GeneralMetadata.GEN__Currency,
+        GeneralMetadata.GEN__Client,
+        StaticPagesMetadata.Home,
+        StaticPagesMetadata.ProductFeature,
+    ];
+
     public constructor() {
 
         this.apps = [
@@ -205,12 +216,9 @@ export class MockMetadata {
         ];
 
         for (let sch of this.schemas) {
-            sch.entities[GeneralMetadata.General._id] = GeneralMetadata.General;
-            sch.entities[GeneralMetadata.GEN__Actor._id] = GeneralMetadata.GEN__Actor;
-            sch.entities[GeneralMetadata.GEN__Currency._id] = GeneralMetadata.GEN__Currency;
-            sch.entities[GeneralMetadata.GEN__Client._id] = GeneralMetadata.GEN__Client;
-            sch.entities[StaticPagesMetadata.Home._id] = StaticPagesMetadata.Home;
-            sch.entities[StaticPagesMetadata.ProductFeature._id] = StaticPagesMetadata.ProductFeature;
+            for (let commonEntity of this.commonEntities) {
+                sch.entities[commonEntity._id] = commonEntity;    
+            }
 
             for (let ent of Object.values(sch.entities)) {
                 ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };

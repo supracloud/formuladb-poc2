@@ -104,6 +104,8 @@ putForm() {
     curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/form
 }
 
+#curl -XPOST  -H "Content-Type: application/json" -d '{"username":"Fredrick51","password":"pass123!"}' http://localhost:${PORT:-3000}/api/login
+
 #putSchema customers/orbico/orbico-metadata.json
 putBulk() {
     APP_NAME=$1

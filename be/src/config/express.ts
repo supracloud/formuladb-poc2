@@ -7,10 +7,16 @@ import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
+import * as passport from "passport";
+import * as connectEnsureLogin from "connect-ensure-login";
+import { Strategy as LocalStrategy } from "passport-local";
+import * as md5 from 'md5';
 
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { SimpleAddHocQuery, KeyValueStoreFactoryI } from "@core/key_value_store_i";
+import { SimpleAddHocQuery, KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
+import { $User, $UserI } from "@core/domain/metadata/default-metadata";
+import { DataObj } from "@core/domain/metadata/data_obj";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
@@ -18,6 +24,7 @@ let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
+    var kvs$User: KeyTableStoreI<$UserI>;
 
     async function getFrmdbEngine(appName: string) {
         let frmdbEngine = frmdbEngines.get(appName);
@@ -30,6 +37,41 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return frmdbEngine;
     }
 
+    async function getUserKvs() {
+        if (!kvs$User) {
+            kvs$User = await kvsFactory.createKeyTableS<$UserI>($User);
+        } 
+        return Promise.resolve(kvs$User);
+    }
+
+    passport.use("user-pass", new LocalStrategy(
+        async function (username, password, cb) {
+            try {
+                let userKVS = await getUserKvs();
+                let user = await userKVS.get('$User~~' + username);
+                if (!user) return cb(null, false);
+                let hashedPass = md5(password);
+                if (user.password != hashedPass) { return cb(null, false); }
+                return cb(null, user);
+            } catch (err) {
+                return cb(err);
+            }
+        }
+    ));
+    passport.serializeUser(function (user: $UserI, cb) {
+        cb(null, user._id);
+    });
+    passport.deserializeUser(async function (id, cb) {
+        try {
+            let userKVS = await getUserKvs();
+            let user = await userKVS.get('$User~~' + id);
+            if (!user) return cb(new Error("User " + id + " forbidden or not found !"));
+            return cb(null, user);
+        } catch (err) {
+            return cb(err);
+        }
+    });    
+
     app.use(logger("dev"));
     app.use(cookieParser());
     app.use(require('express-session')({
@@ -37,22 +79,26 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         resave: false,
         saveUninitialized: true
     }))
-
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-
-
-    app.get('/', function (req, res) {
-        res.json({ message: 'test' });
+  
+    app.use(passport.initialize());
+    app.use(passport.session());
+    app.use(function (req, res, next) {
+        if (req.path !== '/api/login') {
+            connectEnsureLogin.ensureLoggedIn('/api/login')(req, res, next);
+        } else next();
     });
+    app.post('/api/login',
+        passport.authenticate('user-pass', { failureRedirect: '/api/login' }),
+        function (req, res) {
+            res.redirect('/');
+        });
+
 
     app.get('/api/applications', async function (req, res) {
         let apps = await kvsFactory.getAllApps();
         res.json(apps);
-    });
-
-    app.get('/query/:appname/:id', function (req, res) {
-        res.json({ message: 'test' });
     });
 
     app.post('/api/:appname/:entityName/simpleadhocquery', async function(req, res) {

@@ -4,8 +4,8 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph } from "@core/domain/metadata/entity";
-import { GEN__Actor } from "./general-metadata";
 import { $s2e } from "@core/formula_compiler";
+import { $User } from "@core/domain/metadata/default-metadata";
 
 // export const HotelReport = {
 //     _id: "HotelReport",
@@ -53,8 +53,8 @@ export const Booking = {
         ]
     } as EntityStateGraph,    
     props: {
-        user_id: { name: "user_id", propType_: Pn.REFERENCE_TO, referencedEntityName: GEN__Actor._id, referencedPropertyName: '_id' } as EntityProperty,
-        user_name: { name: "user_name", propType_: Pn.REFERENCE_TO, referencedEntityName: GEN__Actor._id, referencedPropertyName: GEN__Actor.props.name.name } as EntityProperty,
+        user_id: { name: "user_id", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: '_id' } as EntityProperty,
+        user_name: { name: "user_name", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: $User.props.name.name } as EntityProperty,
         booking_item_id: { name: "booking_item_id", propType_: Pn.REFERENCE_TO, referencedEntityName: BookingItem._id, referencedPropertyName: '_id' } as EntityProperty,
         booking_item_name: { name: "booking_item_name", propType_: Pn.REFERENCE_TO, referencedEntityName: BookingItem._id, referencedPropertyName: BookingItem.props.name.name } as EntityProperty,
         booking_item_price: { name: "booking_item_price", propType_: Pn.REFERENCE_TO, referencedEntityName: BookingItem._id, referencedPropertyName: BookingItem.props.price.name } as EntityProperty,

@@ -6,18 +6,17 @@
 import * as _ from 'lodash';
 import { Entity } from "@core/domain/metadata/entity";
 import { InventoryData } from './inventory-data';
-import { MusicBookingData } from './musicbooking-data';
 import { DataObj } from '@core/domain/metadata/data_obj';
-import { FormsData } from './forms-data';
-import { ReportsData } from './reports-data';
 import { GeneralData } from './general-data';
 import { StaticPagesData } from '../../default_pages/website-data';
 import { BookingData } from './booking-data';
+import { DefaultDictionary } from '@core/domain/metadata/default-data';
 
 
 export class MockData {
 
     allData: DataObj[] = (GeneralData as any)
+        .concat(DefaultDictionary)
         .concat(StaticPagesData)
         .concat(BookingData)
         // .concat(MusicBookingData)
@@ -26,7 +25,7 @@ export class MockData {
         .concat(InventoryData)
     ;
 
-    constructor(private entitiesMap: _.Dictionary<Entity>) {
+    constructor(public entitiesMap: _.Dictionary<Entity>) {
     }
 
     public get(path: string, id: string): DataObj {

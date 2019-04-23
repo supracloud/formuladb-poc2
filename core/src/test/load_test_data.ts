@@ -29,22 +29,28 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
         for (let app of mockMetadata.apps) {
             await kvsFactory.putApp(app);
         }
-
-        {
-            let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, {_id: 'FRMDB_SCHEMA~~dummy', entities: {}});
-            for (let obj of DefaultDictionary) {
-                console.log("loading", obj);
-                await frmdbEngineStore.putDataObj(obj);
-            }    
-        }
         
         let uiMetaLoaded = false;
+        let commonEntitiesIds = mockMetadata.commonEntities.map(e => e._id);
+        {
+            let mockData = new MockData(mockMetadata.commonEntities.reduce((acc, e) => {
+                acc[e._id] = e; return acc;
+            }, {}));
+            let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, {_id: "FRMDB_SCHEMA", entities: mockData.entitiesMap});
+            for (let entityId of commonEntitiesIds) {
+                for (let obj of mockData.getAllForPath(entityId)) {
+                    await frmdbEngineStore.putDataObj(obj);
+                    // await putObj(frmdbEngine, obj);
+                }
+            }    
+        }
+
         for (let schema of mockMetadata.schemas) {
             await kvsFactory.putSchema(schema);
             let mockData = new MockData(schema.entities);
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
-            for (let entityId of Object.keys(schema.entities)) {
+            for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
                 for (let obj of mockData.getAllForPath(entityId)) {
                     await frmdbEngineStore.putDataObj(obj);
                     // await putObj(frmdbEngine, obj);

@@ -5,6 +5,7 @@
 
 import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
 import { $s2e } from '../../formula_compiler';
+import { $User, $I18n } from "@core/domain/metadata/default-metadata";
 
 
 export const GEN__Settings: Entity = {
@@ -16,23 +17,6 @@ export const GEN__Settings: Entity = {
         valueDate: { name: "valueDate", propType_: Pn.DATETIME } as EntityProperty,
     }
 }
-
-export const GEN__Actor = {
-    _id: "GEN__Actor",
-    props: {
-
-        code: { name: "code", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
-        username: { name: "username", propType_: Pn.STRING } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING } as EntityProperty,
-        role: { name: "role", propType_: Pn.STRING } as EntityProperty,
-        password: { name: "password", propType_: Pn.STRING } as EntityProperty,
-        details: { name: "details", propType_: Pn.STRING } as EntityProperty,
-        type: { name: "type", propType_: Pn.STRING } as EntityProperty,
-        parent_code: { name: "parent_code", propType_: Pn.STRING } as EntityProperty,
-        param1: { name: "param1", propType_: Pn.STRING } as EntityProperty,
-        state: { name: "state", propType_: Pn.STRING, "allowNull": false, } as EntityProperty,
-    }
-};
 
 export const GEN__Currency: Entity = {
     _id: "GEN__Currency",
@@ -90,6 +74,6 @@ export const GEN__Client: Entity = {
 
 export const General: Entity = {
     _id: "GEN",
-    pureNavGroupingChildren: [GEN__Actor._id, GEN__Client._id, GEN__Currency._id, GEN__Person._id],
+    pureNavGroupingChildren: [$User._id, $I18n._id, GEN__Client._id, GEN__Currency._id, GEN__Person._id],
     props: {},
 };

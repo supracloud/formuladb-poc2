@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
-import { GEN__Actor } from './general-metadata';
+import { $User } from "@core/domain/metadata/default-metadata";
 
 export const FIN__Account = {
     _id: "FIN__Account",
@@ -15,13 +15,13 @@ export const FIN__Account = {
         actor_code: {
             name: 'actor_code',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: GEN__Actor._id,
+            referencedEntityName: $User._id,
             referencedPropertyName: 'code'
         } as EntityProperty,
         actor_name: {
             name: 'actor_name',
             propType_: Pn.REFERENCE_TO,
-            referencedEntityName: GEN__Actor._id,
+            referencedEntityName: $User._id,
             referencedPropertyName: 'name'
         } as EntityProperty,
     }
