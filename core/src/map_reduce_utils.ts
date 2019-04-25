@@ -264,7 +264,7 @@ export const PackedMapFunctions = {
 
 export function parseDataObjIdES5(_id) {
     if (!_id) return null;
-    var m = _id.match(/^([$\w_]+)~~([-_\w]+)$/);
+    var m = _id.match(/^([$\w_]+)~~([-_\w~]+)$/);
     if (null != m) {
         return {
             entityName: m[1]!,

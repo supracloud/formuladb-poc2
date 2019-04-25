@@ -67,9 +67,6 @@ create-docker-env() {
     export COMPOSE_CONVERT_WINDOWS_PATHS=1
 }
 
-psql() {
-    docker exec -it febe_db_1 psql -U postgres
-}
 pglogs() {
     docker logs -f febe_db_1
 }
@@ -103,6 +100,15 @@ putForm() {
     PORT=$3
     curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/form
 }
+putTableData() {
+    APP_NAME=$1
+    FORM_FILE=$2
+    PORT=$3
+    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/api/${APP_NAME}/form
+}
+
+## dump json example:
+#  (echo '\t on'; echo '\pset format unaligned'; echo "select json_agg(r) from (select * from tmolreport('2019-04-01')) r;") | sudo -i -u postgres psql dacris
 
 #curl -XPOST  -H "Content-Type: application/json" -d '{"username":"Fredrick51","password":"pass123!"}' http://localhost:${PORT:-3000}/api/login
 #curl -XPOST  -H "Content-Type: application/json" -d '{"username":"Fredrick51","password":"pass123!"}' http://localhost:3000/api/bla/schema
