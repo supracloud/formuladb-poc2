@@ -11,12 +11,13 @@ FROM node:lts-alpine
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git
 
-COPY package.json /package.json
+COPY be/package.json /package.json
 
-RUN npm install  --only=production
+RUN npm install --only=production
 
-COPY dist/be/src/server.js /dist/be/src/server.js
-COPY .env.prod /.env
+COPY be/dist/be/src/server.js /dist/be/src/server.js
+
+COPY fe/dist/fe /public/
 
 EXPOSE 3000
 

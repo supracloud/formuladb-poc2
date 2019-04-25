@@ -16,7 +16,6 @@ import { FrmdbEngine } from "@core/frmdb_engine";
 import { SimpleAddHocQuery, KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { $User, $UserI } from "@core/domain/metadata/default-metadata";
-import { DataObj } from "@core/domain/metadata/data_obj";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
@@ -81,20 +80,29 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     }))
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-  
-    app.use(passport.initialize());
-    app.use(passport.session());
-    app.use(function (req, res, next) {
-        if (req.path !== '/api/login') {
-            connectEnsureLogin.ensureLoggedIn('/api/login')(req, res, next);
-        } else next();
-    });
-    app.post('/api/login',
-        passport.authenticate('user-pass', { failureRedirect: '/api/login' }),
-        function (req, res) {
-            res.redirect('/');
-        });
 
+    if (process.env.FRMDB_AUTH_ENABLED === "true") {
+        app.use(passport.initialize());
+        app.use(passport.session());
+        app.use(function (req, res, next) {
+            if (req.path !== '/api/login') {
+                connectEnsureLogin.ensureLoggedIn('/api/login')(req, res, next);
+            } else next();
+        });
+        app.post('/api/login',
+            passport.authenticate('user-pass', { failureRedirect: '/api/login' }),
+            function (req, res) {
+                res.redirect('/');
+            }
+        );
+    } else {
+        app.use(function (req, res, next) {
+            req.user = {role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN'};
+            next();
+        });
+    }
+
+    app.use('/formuladb', express.static('public'))
 
     app.get('/api/applications', async function (req, res) {
         let apps = await kvsFactory.getAllApps();
@@ -151,6 +159,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => console.error(err));
     });
     app.put('/api/:appname/schema', async function(req, res) {
+        if (req.user.role !== 'ADMIN') {res.status(403); return;}
         let schema = req.body;
         let existingSchema = await kvsFactory.getSchema(req.body._id);
         if (!existingSchema) {

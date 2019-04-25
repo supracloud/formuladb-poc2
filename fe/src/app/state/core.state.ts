@@ -11,6 +11,7 @@ export const NotReadonly = '_NotReadonly_';
 export interface CoreState {
   appReadonly: string;
   developerMode: boolean;
+  user?: {_id: string, role: string},
 }
 
 export const coreInitialState: CoreState = {
@@ -75,4 +76,8 @@ export const getCoreState = createFeatureSelector<CoreState>('core');
 export const getDeveloperMode = createSelector(
   getCoreState,
   (state: CoreState) => state ? state.developerMode : false
+);
+export const getUser = createSelector(
+  getCoreState,
+  (state: CoreState) => state ? state.user : undefined
 );

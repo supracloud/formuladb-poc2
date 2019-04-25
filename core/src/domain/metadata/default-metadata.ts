@@ -4,6 +4,7 @@ export interface $UserI {
     _id: string;
     username: string;
     password: string;
+    role: "USER" | "ADMIN";
 }
 
 export const $User: Entity = {
