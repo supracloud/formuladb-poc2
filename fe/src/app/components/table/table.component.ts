@@ -73,7 +73,7 @@ export class TableComponent implements OnInit, OnDestroy {
         defaultToolPanel: 'tableActions'
     };
 
-    excelStyles = ExcelStyles;
+    excelStyles = _.cloneDeep(ExcelStyles);
     private gridApi: GridApi;
     private gridColumnApi;
     private columns: ColDef[] = [];
@@ -145,7 +145,15 @@ export class TableComponent implements OnInit, OnDestroy {
         console.debug("ngOnInit", this.table);
 
         this.tableObservable.subscribe(async (t) => {
-            console.debug('new table ', t, this.gridApi);
+            console.debug('new table ', t, this.gridApi, Object.keys(t));
+            if (Object.keys(t).length == 0) return;
+
+            this.headerHeight = t.headerHeight || 50;
+            if (t.headerBackground) this.excelStyles.find(s => s.id === "header")!.interior = {
+                //FIXME: setting header background does not seem to work
+                color: t.headerBackground,
+                pattern: "Solid",
+            };
             this.table = _.cloneDeep(t)
             await waitUntilNotNull(() => Promise.resolve(this.gridApi));
             this.gridApi.setServerSideDatasource(this.tableService.getDataSource(this.entityId()));
@@ -205,6 +213,7 @@ export class TableComponent implements OnInit, OnDestroy {
                     this.gridApi.setFilterModel(fs);
                     this.gridApi.setSortModel(t.columns.filter(c => c.sort !== null)
                         .map(c => <any>{ colId: c.name, sort: c.sort }));
+                    this.gridApi.setHeaderHeight(this.headerHeight);
                 } catch (err) {
                     console.error(err);
                 }

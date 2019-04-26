@@ -1,4 +1,4 @@
-<div class="frmdb-table-wrapper">
+<div class="frmdb-table-wrapper" *ngIf="table != null">
     <!-- [rowHeight]="rowHeight" -->
     <ag-grid-angular #agGrid class="ag-theme-balham" 
         [getRowHeight]="getRowHeight"

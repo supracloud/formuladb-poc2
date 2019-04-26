@@ -15,6 +15,7 @@ export class TableColumn implements SubObj {
     width?: number;
     sort?: string;
     filter?: ColumnFilter;
+    skipExportExcel?: boolean;
     constructor(public name: string, public type: Pn) {
     }
 }
@@ -34,6 +35,8 @@ export class Table implements KeyValueObj {
     _rev?: string;
     page: Partial<Page>;
     conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
+    headerHeight?: number;
+    headerBackground?: string;
     columns: TableColumn[];
 }
 export function isTable(param: SubObj): param is Table {

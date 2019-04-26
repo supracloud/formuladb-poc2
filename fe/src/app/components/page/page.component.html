@@ -3,11 +3,11 @@
         <nav [class.p-0]="page?.hnavLook == 'slim'" frmdb-h_nav
             class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap navbar-expand-md shadow frmdb-fixed-top-0" [brandName]="page?.brandName"></nav>
     </div>
-    <div class="row">
+    <div class="row" [class.main-pt-slim]="page?.hnavLook == 'slim'" [class.main-pt]="page?.hnavLook != 'slim'" >
         <nav *ngIf="!page?.sidebarOff" frmdb-v_nav class="col-md-2 d-none d-md-block bg-light sidebar frmdb-fixed-top-0">
         </nav>
 
-        <main role="main" [class.main-pt-slim]="page?.hnavLook == 'slim'" [class.main-pt]="page?.hnavLook != 'slim'" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
             <router-outlet></router-outlet>
         </main>
     </div>
