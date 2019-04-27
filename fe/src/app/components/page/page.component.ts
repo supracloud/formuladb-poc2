@@ -11,6 +11,7 @@ import { Observable } from 'rxjs';
 import { Page } from '@core/domain/uimetadata/page';
 import { Theme } from '@core/domain/uimetadata/theme';
 import { FormEditingService } from '../form-editing.service';
+import { combineLatest, map } from 'rxjs/operators';
 
 @Component({
   selector: 'frmdb-page',
@@ -27,7 +28,12 @@ export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck,
 
     constructor(public formEditingService: FormEditingService, private changeDetectorRef: ChangeDetectorRef) {
         this.selectedEntity$ = this.formEditingService.frmdbStreams.entity$;
-        this.page$ = this.formEditingService.frmdbStreams.page$.pipe(untilDestroyed(this));
+        this.page$ = this.formEditingService.frmdbStreams.page$.pipe(
+            combineLatest(this.formEditingService.frmdbStreams.table$),
+            combineLatest(this.formEditingService.frmdbStreams.form$),
+            map(([[p, t], f]) => Object.assign({}, p, t.page, f.page)),
+            untilDestroyed(this)
+        );
         this.page$.pipe(untilDestroyed(this)).subscribe(p => this.page = p);
     }
 

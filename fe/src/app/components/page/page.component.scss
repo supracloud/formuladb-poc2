@@ -2,10 +2,11 @@
     background-color: white;
 }
 
-.main-pt-slim {
+
+[topNavLook="slim"] .frmdb-main-section {
     padding-top: calc(32px + var(--nav-link-height) - var(--nav-link-padding-y) * 2);
 }
 
-.main-pt {
+[topNavLook="default"] .frmdb-main-section {
     padding-top: calc(32px + var(--nav-link-height));
 }

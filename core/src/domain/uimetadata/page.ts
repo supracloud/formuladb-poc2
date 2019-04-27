@@ -19,6 +19,7 @@ export enum FrmdbHeader {
     hd_jumbotron = "hd_jumbotron",
     hd_carousel = "hd_carousel",
     hd_split = "hd_split",
+    hd_none = "hd_none",
 }
 
 /** Auto-layout options */
@@ -58,11 +59,6 @@ export enum FrmdbLook {
     lk_Powerful = 'lk_Powerful',
 }
 
-export enum HNavLook {
-    default = "default",
-    slim = "slim",
-}
-
 export const BrandCharacteristics = [
     {left: "Conservative", right: "Progressive"},
     {left: "Warm", right: "Cold"},
@@ -78,12 +74,13 @@ export const BrandCharacteristics = [
 
 export interface Page {
     colorPalette: string;
-    sidebarOff?: boolean;
     sidebarImageUrl: string;    
     brandName: string;
     logoUrl: string;
     cssUrl: string | null;
-    hnavLook?: HNavLook;
+    topNavLook?: "tn_nav" | "tn_slim";
+    sideNavLook?: "sn_nav" | "sn_none";
+    footerLook?: "ft_nav" | "ft_none";
     header?: FrmdbHeader;
     layout: FrmdbLy;
     look: FrmdbLook,

@@ -16,20 +16,21 @@
                         "string"
                     ]
                 },
+                "footerLook": {
+                    "enum": [
+                        "ft_nav",
+                        "ft_none"
+                    ],
+                    "type": "string"
+                },
                 "header": {
                     "description": "© 2018 S.C. FORMULA DATABASE S.R.L.\nLicense TBD\nLayouts (UX, \"the feel\"): \n     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/\n     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c\nThemes (UI, \"the look\"): \n     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/\n     https://www.bopdesign.com/bop-blog/2013/11/what-is-the-look-and-feel-of-a-website-and-why-its-important/\n     https://thenextweb.com/dd/2017/11/08/psychology-web-design/\nAuto-header styles",
                     "enum": [
                         "hd_carousel",
                         "hd_cover",
                         "hd_jumbotron",
+                        "hd_none",
                         "hd_split"
-                    ],
-                    "type": "string"
-                },
-                "hnavLook": {
-                    "enum": [
-                        "default",
-                        "slim"
                     ],
                     "type": "string"
                 },
@@ -78,6 +79,13 @@
                 },
                 "sidebarOff": {
                     "type": "boolean"
+                },
+                "topNavLook": {
+                    "enum": [
+                        "tn_nav",
+                        "tn_slim"
+                    ],
+                    "type": "string"
                 }
             },
             "type": "object"
