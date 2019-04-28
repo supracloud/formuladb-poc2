@@ -16,6 +16,7 @@ import { FeUser } from '@core/domain/user';
   styleUrls: ['./app.component.scss'],
   host: {
     '[style.padding]': 'bodyPadding',
+    '[style.background]': '"none transparent"',
     '[class.frmdb-dev-mode-on]': 'devMode',
   }
 })

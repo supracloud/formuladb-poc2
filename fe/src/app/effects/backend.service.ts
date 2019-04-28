@@ -95,7 +95,7 @@ export class BackendService {
     }
 
     public putEvent(event: MwzEvents) {
-        this.http.post<MwzEvents>('/api/' + this.appName + '/event', event)
+        this.http.post<MwzEvents>('/formuladb-api/' + this.appName + '/event', event)
             .pipe(
                 catchError(this.handleError<MwzEvents>('putEvent', event))
             ).subscribe(ev => this.handleNotif(ev));
@@ -119,7 +119,7 @@ export class BackendService {
 
     public async getApplications(): Promise<Map<string, App> | null> {
         if (this.applications.size == 0) {
-            let apps = await this.get<App[] | null>('/api/applications', (data: HttpResponse<any[]>) => {
+            let apps = await this.get<App[] | null>('/formuladb-api/applications', (data: HttpResponse<any[]>) => {
                 return data && data.body;
             });
             if (apps) {
@@ -133,7 +133,7 @@ export class BackendService {
     }
 
     public getTableData(prefix: string): Promise<DataObj[]> {
-        return this.get<DataObj[]>('/api/' + this.appName + '/byprefix/' + encodeURIComponent(prefix), (data: HttpResponse<any[]>) => {
+        return this.get<DataObj[]>('/formuladb-api/' + this.appName + '/byprefix/' + encodeURIComponent(prefix), (data: HttpResponse<any[]>) => {
             return ((data && data.body) || []);
         });
     }
@@ -148,12 +148,12 @@ export class BackendService {
     }
 
     public simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {
-        return this.http.post<DataObj[]>('/api/' + this.appName + '/' + entityName + '/simpleadhocquery',
+        return this.http.post<DataObj[]>('/formuladb-api/' + this.appName + '/' + entityName + '/simpleadhocquery',
             query).toPromise();
     }
 
     public async getDataObj(id: string): Promise<DataObj> {
-        let http = await this.get<DataObj | null>('/api/' + this.appName + '/obj/' + encodeURIComponent(id), (data: HttpResponse<any[]>) => {
+        let http = await this.get<DataObj | null>('/formuladb-api/' + this.appName + '/obj/' + encodeURIComponent(id), (data: HttpResponse<any[]>) => {
             return data.body as any as DataObj;
         });
         if (!http) throw new Error('Asked for non-existent object ' + id + '.');
@@ -173,7 +173,7 @@ export class BackendService {
     }
 
     public async getTable(path: string): Promise<Table | null> {
-        let http = await this.get<Table | null>('/api/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
+        let http = await this.get<Table | null>('/formuladb-api/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
             return data.body as any as Table;
         });
         if (!http) return null;
@@ -184,7 +184,7 @@ export class BackendService {
     }
 
     public async getForm(path: string): Promise<Form | null> {
-        let http = await this.get<Form | null>('/api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
+        let http = await this.get<Form | null>('/formuladb-api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
             return data.body as any as Form;
         });
         if (!http) return null;
@@ -200,7 +200,7 @@ export class BackendService {
     }
 
     public async getSchema(): Promise<Schema> {
-        let http = await this.get<Schema | null>('/api/' + this.appName + '/schema', (data: HttpResponse<any[]>) => {
+        let http = await this.get<Schema | null>('/formuladb-api/' + this.appName + '/schema', (data: HttpResponse<any[]>) => {
             return data.body as any as Schema;
         });
         if (!http) throw new Error("empty schema !");
@@ -209,7 +209,7 @@ export class BackendService {
     }
 
     public async getEntity(path: string): Promise<Entity> {
-        let http = await this.get<Entity>('/api/' + this.appName + '/entity/' + encodeURIComponent(path), (data: HttpResponse<any[]>) => {
+        let http = await this.get<Entity>('/formuladb-api/' + this.appName + '/entity/' + encodeURIComponent(path), (data: HttpResponse<any[]>) => {
             return data.body as any as Entity;
         });
         if (!http) throw new Error("missing Entity " + path);
