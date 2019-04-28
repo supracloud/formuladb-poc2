@@ -1,4 +1,4 @@
-export const DefaultDictionary = [
+export const DefaultData = [
     { _id: '$I18n~~Enable-Developer-Mode', en: 'Enable Developer Mode' , },
     { _id: '$I18n~~Disable-Developer-Mode', en: 'Disable Developer Mode' , },
 

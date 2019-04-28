@@ -10,13 +10,13 @@ import { DataObj } from '@core/domain/metadata/data_obj';
 import { GeneralData } from './general-data';
 import { StaticPagesData } from '../../default_pages/website-data';
 import { BookingData } from './booking-data';
-import { DefaultDictionary } from '@core/domain/metadata/default-data';
+import { DefaultData } from '@core/domain/metadata/default-data';
 
 
 export class MockData {
 
     allData: DataObj[] = (GeneralData as any)
-        .concat(DefaultDictionary)
+        .concat(DefaultData)
         .concat(StaticPagesData)
         .concat(BookingData)
         // .concat(MusicBookingData)

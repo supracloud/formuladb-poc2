@@ -8,6 +8,7 @@ import * as appState from '@fe/app/state/app.state';
 import { Store } from '@ngrx/store';
 import { ObservedValueOf, Observable } from 'rxjs';
 import { FrmdbStreamsService } from './state/frmdb-streams.service';
+import { FeUser } from '@core/domain/user';
 
 @Component({
   selector: 'body',
@@ -21,6 +22,7 @@ import { FrmdbStreamsService } from './state/frmdb-streams.service';
 export class AppComponent {
   title = 'frmdb';
   public devMode: boolean;
+  public user: FeUser | undefined;
   bodyPadding = "0 0 60px 0";
   constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
     this.store.select(appState.getDeveloperMode).subscribe(devMode => {
@@ -32,6 +34,7 @@ export class AppComponent {
       }
     });
 
+    this.frmdbStreams.user$.subscribe(u => this.user = u);
   }
 
   toggleDevMode() {

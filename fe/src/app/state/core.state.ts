@@ -5,13 +5,14 @@
 
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
+import { FeUser } from '@core/domain/user';
 
 export const NotReadonly = '_NotReadonly_';
 
 export interface CoreState {
   appReadonly: string;
   developerMode: boolean;
-  user?: {_id: string, role: string},
+  user?: FeUser,
 }
 
 export const coreInitialState: CoreState = {

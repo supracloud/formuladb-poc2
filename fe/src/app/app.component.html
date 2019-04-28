@@ -1,4 +1,4 @@
-<frmdb-dev-mode-opts></frmdb-dev-mode-opts>
+<frmdb-dev-mode-opts *ngIf="user?.isDeveloper"></frmdb-dev-mode-opts>
 <router-outlet></router-outlet>
-<img class="shadow-lg" (click)="toggleDevMode()" id="frmdb-toggle-dev-mode" [class.dev-mode-on]="devMode" width="16" height="16" alt="devMode-toggle"
+<img *ngIf="user?.isDeveloper" class="shadow-lg" (click)="toggleDevMode()" id="frmdb-toggle-dev-mode" [class.dev-mode-on]="devMode" width="16" height="16" alt="devMode-toggle"
     src="assets/formuladb16.png" />

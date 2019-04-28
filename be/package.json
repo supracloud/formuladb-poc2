@@ -5,7 +5,7 @@
   "scripts": {
     "e2e_serve": "rm -rf dist && tsc --sourceMap -p src && concurrently --kill-others \"./node_modules/.bin/pouchdb-server --in-memory --port 5984\" \"sleep 15 && node dist/be/src/server.js\"",
     "preserve": "rm -rf dist && tsc --sourceMap -p src",
-    "inspect": "kill-port 9231 && concurrently \"node --inspect=0.0.0.0:9231 dist/be/src/server.js\" \"npm run test-data\" ",
+    "inspect": "kill-port 9231 && concurrently \"DEBUG=express:* node --inspect=0.0.0.0:9231 dist/be/src/server.js\" \"npm run test-data\" ",
     "nodemon-inspect": "nodemon --delay 200ms --watch dist --exec \"npm run inspect\"",
     "serve": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"tsc --sourceMap -w -p src\" \"sleep 10 && npm run nodemon-inspect\"",
     "start": "node --inspect dist/be/src/server.js",
@@ -37,6 +37,7 @@
     "formulajs": "git+https://github.com/acristu/formula.js.git",
     "fuse.js": "^3.3.0",
     "glob": "^5.0.14",
+    "http-proxy-middleware": "^0.19.1",
     "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.5",
     "md5": "^2.2.1",

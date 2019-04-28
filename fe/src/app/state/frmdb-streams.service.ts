@@ -14,6 +14,7 @@ import { filter } from 'rxjs/operators';
 import { AppServerEventAction } from '../actions/app.actions';
 import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@core/domain/event';
 import { Page } from '@core/domain/uimetadata/page';
+import { FeUser } from '@core/domain/user';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,7 @@ export class FrmdbStreamsService {
   public formData$: Observable<DataObj>;
   public autoCompleteState$: Observable<appState.AutoCompleteState>;
   public page$: Observable<Page>;
+  public user$: Observable<FeUser>;
 
 
   public userEvents$: Subject<FrmdbUserEvent> = new ReplaySubject();
@@ -46,6 +48,7 @@ export class FrmdbStreamsService {
     this.entity$ = this.store.select(appState.getTableEntityState).pipe(filter<Entity>(x => x != null));
     this.autoCompleteState$ = this.store.select(appState.getAutoCompleteState).pipe(filter<appState.AutoCompleteState>(x => x != null));
     this.page$ = this.store.select(appState.getPageState);
+    this.user$ = this.store.select(appState.getUser).pipe(filter<FeUser>(x => x != null));
 
     //TODO: remove these and use only ngrx Actions
     this.userEvents$.subscribe(userEvent => {

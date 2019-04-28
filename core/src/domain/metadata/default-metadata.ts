@@ -1,12 +1,5 @@
 import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
 
-export interface $UserI {
-    _id: string;
-    username: string;
-    password: string;
-    role: "USER" | "ADMIN";
-}
-
 export const $User: Entity = {
     _id: "$User",
     props: {

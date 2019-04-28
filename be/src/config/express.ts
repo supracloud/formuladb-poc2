@@ -11,19 +11,23 @@ import * as passport from "passport";
 import * as connectEnsureLogin from "connect-ensure-login";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
+import * as proxy from 'http-proxy-middleware';
+
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { SimpleAddHocQuery, KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { $User, $UserI } from "@core/domain/metadata/default-metadata";
+import { $User } from "@core/domain/metadata/default-metadata";
+import { BeUser } from "@core/domain/user";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
-
+const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+const SECRET = 'bla-bla-secret';
 
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
-    var kvs$User: KeyTableStoreI<$UserI>;
+    var kvs$User: KeyTableStoreI<BeUser>;
 
     async function getFrmdbEngine(appName: string) {
         let frmdbEngine = frmdbEngines.get(appName);
@@ -38,7 +42,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     async function getUserKvs() {
         if (!kvs$User) {
-            kvs$User = await kvsFactory.createKeyTableS<$UserI>($User);
+            kvs$User = await kvsFactory.createKeyTableS<BeUser>($User);
         } 
         return Promise.resolve(kvs$User);
     }
@@ -57,7 +61,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }
         }
     ));
-    passport.serializeUser(function (user: $UserI, cb) {
+    passport.serializeUser(function (user: BeUser, cb) {
         cb(null, user._id);
     });
     passport.deserializeUser(async function (id, cb) {
@@ -69,15 +73,29 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } catch (err) {
             return cb(err);
         }
-    });    
+    }); 
 
     app.use(logger("dev"));
-    app.use(cookieParser());
+    app.use(cookieParser(SECRET));
     app.use(require('express-session')({
-        secret: 'blabblabla',
+        secret: SECRET,
         resave: false,
         saveUninitialized: true
     }))
+
+    //This needs to be before express bodyParser: https://github.com/nodejitsu/node-http-proxy/issues/180
+    process.env.FRMDB_PROXY = 'http://localhost:8085';
+    if (process.env.FRMDB_PROXY) {
+        let httpProxy = proxy({ target: process.env.FRMDB_PROXY });
+        app.use(function (req, res, next) {
+            if (/(\/api|\/formuladb)\/.*/.test(req.path)) {
+                next();
+            } else {
+                httpProxy(req, res, next);
+            }
+        });
+    }
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -101,7 +119,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next();
         });
     }
-
+    
     app.use('/formuladb', express.static('public'))
 
     app.get('/api/applications', async function (req, res) {

@@ -15,6 +15,7 @@ import { Router } from "@angular/router";
 import { Entity } from "@core/domain/metadata/entity";
 import * as events from "@core/domain/event";
 
+import { FeUser } from "@core/domain/user";
 import { Table } from "@core/domain/uimetadata/table";
 import { Form } from "@core/domain/uimetadata/form";
 
@@ -61,6 +62,7 @@ export class AppEffects {
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
     private page: Page;
     private app: App;
+    private user: FeUser;
 
     constructor(
         private actions$: Actions,
@@ -83,7 +85,9 @@ export class AppEffects {
         waitUntilNotNull(async () => {
             let ret = await this.backendService.getApplications();
             return ret;
-        });        
+        });
+
+        //FIXME: read user from be
     }
 
     public async changeApplication(appName: string) {

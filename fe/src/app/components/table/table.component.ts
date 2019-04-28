@@ -53,7 +53,7 @@ export class TableComponent implements OnInit, OnDestroy {
         toolPanels: [
             {
                 id: "tableActions",
-                labelDefault: "Table Actions",
+                labelDefault: "Optiuni Tabel",
                 labelKey: "tableActions",
                 iconKey: "table-actions",
                 toolPanel: "tableActionsToolPanel"
@@ -333,6 +333,6 @@ export class TableComponent implements OnInit, OnDestroy {
         (this.gridColumnApi.getAllColumns() || []).forEach(function (column) {
             allColumnIds.push(column.colId);
         });
-        this.gridColumnApi.autoSizeColumns(allColumnIds);
+        // this.gridColumnApi.autoSizeColumns(allColumnIds);
     }
 }

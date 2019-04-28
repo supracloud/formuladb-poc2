@@ -16,7 +16,6 @@ import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
 import { LargeSalesReport_Form } from "./mocks/reports-ui-metadata";
 import { HomePage_Form, HomePage_Table } from "@core/default_pages/website-ui-metadata";
 import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "./mocks/booking-ui-metadata";
-import { DefaultDictionary } from "@core/domain/metadata/default-data";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
     return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
