@@ -97,7 +97,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     }))
 
     //This needs to be before express bodyParser: https://github.com/nodejitsu/node-http-proxy/issues/180
-    process.env.FRMDB_PROXY = 'http://localhost:8085';
     if (process.env.FRMDB_PROXY) {
         let httpProxy = proxy({ target: process.env.FRMDB_PROXY });
         app.use(function (req, res, next) {
@@ -235,7 +234,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use((err: any, req: express.Request, res: express.Response, next): void => {
         res.status(err.status || 500).json({
             message: err.message,
-            error: {}
+            error: err
         });
     });
 

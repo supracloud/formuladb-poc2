@@ -80,31 +80,31 @@ putSchema() {
     APP_NAME=$1
     SCHEMA_FILE=$2
     PORT=$3
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/schema
+    curl -XPUT  -H "Content-Type: application/json" -d@${SCHEMA_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/schema
 }
 putApp() {
     APP_NAME=$1
     APP_FILE=$2
     PORT=$3
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${APP_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}
+    curl -XPUT  -H "Content-Type: application/json" -d@${APP_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}
 }
 putTable() {
     APP_NAME=$1
     TABLE_FILE=$2
     PORT=$3
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${TABLE_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/table
+    curl -XPUT  -H "Content-Type: application/json" -d@${TABLE_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/table
 }
 putForm() {
     APP_NAME=$1
     FORM_FILE=$2
     PORT=$3
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/form
+    curl -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/form
 }
 putTableData() {
     APP_NAME=$1
     FORM_FILE=$2
     PORT=$3
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/form
+    curl -XPUT  -H "Content-Type: application/json" -d@${FORM_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/form
 }
 
 ## dump json example:
@@ -118,7 +118,7 @@ putBulk() {
     APP_NAME=$1
     DATA_FILE=$2
     PORT=$3
-    curl -u foo:bar -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/bulk
+    curl -XPUT  -H "Content-Type: application/json" -d@${DATA_FILE} http://localhost:${PORT:-3000}/formuladb-api/${APP_NAME}/bulk
 }
 
 rsync-deploy() {
