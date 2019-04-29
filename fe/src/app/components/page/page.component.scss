@@ -2,6 +2,9 @@
     background-color: white;
 }
 
+.frmdb-main-section {
+    width: 100%;
+}
 
 [topNavLook="slim"] .frmdb-main-section {
     padding-top: calc(32px + var(--nav-link-height) - var(--nav-link-padding-y) * 2);
