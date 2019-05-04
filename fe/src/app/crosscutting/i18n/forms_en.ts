@@ -1,6 +1,6 @@
 export const Forms_en = {
     FRM: 'Forms',
-    ServiceForm: 'Service Form',
+    ServiceForm: 'Service FormPage',
     client: "Client",
     time_of_arrival: "Arrival Time",
     time_of_departure: "Departure Time",

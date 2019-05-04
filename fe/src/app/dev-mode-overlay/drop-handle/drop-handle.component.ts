@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, HostBinding, HostListener, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { NodeElement, isNodeElementWithChildren } from "@core/domain/uimetadata/form";
+import { NodeElement, isNodeElementWithChildren } from "@core/domain/uimetadata/node-elements";
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../state/form.state';
 import { FormDropAction } from '@fe/app/actions/form.user.actions';

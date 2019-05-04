@@ -3,7 +3,7 @@ import { BackendService } from '../effects/backend.service';
 import { ValidatorFn, AsyncValidatorFn, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { AbstractControl } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
-import { FrmdbFormControl, FrmdbFormGroup } from './form.component';
+import { FrmdbFormControl, FrmdbFormGroup } from './frmdb-page.component';
 import { DataObj } from '../state/form.state';
 import { Observable, Subject, of, from, BehaviorSubject } from 'rxjs';
 import { take, catchError, delay, map, filter, debounceTime, tap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { j2str } from '../crosscutting/utils/j2str';
 import { UserModifiedFormData } from '../state/frmdb-user-events';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import * as _ from 'lodash';
-import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/form';
+import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/node-elements';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 import { Entity } from '@core/domain/metadata/entity';
 
@@ -81,7 +81,7 @@ export class FormEditingService {
     let disabled = rdonly;
     for (const nodeEl of nodeElements) {
 
-      if (nodeEl.nodeType === NodeType.form
+      if (nodeEl.nodeType === NodeType.root_node
         || nodeEl.nodeType === NodeType.grid_row
         || nodeEl.nodeType === NodeType.grid_col
       ) {

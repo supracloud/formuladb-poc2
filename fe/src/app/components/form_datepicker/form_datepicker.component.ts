@@ -5,7 +5,7 @@
 
 import { OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
-import { FormDatepicker } from "@core/domain/uimetadata/form";
+import { FormDatepicker } from "@core/domain/uimetadata/node-elements";
 import { FormEditingService } from '../form-editing.service';
 
 

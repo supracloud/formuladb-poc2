@@ -16,8 +16,8 @@ import { Entity } from "@core/domain/metadata/entity";
 import * as events from "@core/domain/event";
 
 import { FeUser } from "@core/domain/user";
-import { Table } from "@core/domain/uimetadata/table";
-import { Form } from "@core/domain/uimetadata/form";
+import { TablePage } from "@core/domain/uimetadata/table-page";
+import { FormPage } from "@core/domain/uimetadata/form-page";
 
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
@@ -291,13 +291,13 @@ export class AppEffects {
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.SelectedEntityAction(entity));
 
-            let table: Table = (await this.backendService.getTable(path)) || autoLayoutTable(null, entity);
-            if (table.columns.length == 0) {
-                autoLayoutTable(table, entity);
+            let table: TablePage = (await this.backendService.getTable(path)) || autoLayoutTable(null, entity);
+            if (!table.childNodes || table.childNodes.length == 0) {
+                table = autoLayoutTable(table, entity);
             }
             this.store.dispatch(new appState.TableFormBackendAction(table));
 
-            let form: Form = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
+            let form: FormPage = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
             if (!form.childNodes || form.childNodes.length == 0) {
                 autoLayoutForm(form, entity, this.cachedEntitiesMap);
             }

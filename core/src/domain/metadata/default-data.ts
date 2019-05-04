@@ -8,7 +8,7 @@ export const DefaultData = [
 
     { _id: '$I18n~~ly_spreadsheet', en: "Spreadsheet" , },
     { _id: '$I18n~~ly_admin', en: "Admin" , },
-    { _id: '$I18n~~ly_form', en: "Form" , },
+    { _id: '$I18n~~ly_form', en: "FormPage" , },
     { _id: '$I18n~~ly_landing' , en: "Landing" , },
     { _id: '$I18n~~ly_fpattern', en: "F-Pattern" , },
     { _id: '$I18n~~ly_zpattern', en: "Z-Pattern" , },

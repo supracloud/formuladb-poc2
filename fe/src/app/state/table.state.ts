@@ -6,12 +6,12 @@
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj } from "@core/domain/metadata/data_obj";
-import { Table } from "@core/domain/uimetadata/table";
+import { TablePage } from "@core/domain/uimetadata/table-page";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 
 
 export { DataObj };
-export { Table };
+export { TablePage };
 export { ChangeObj, applyChanges };
 
 import * as events from "@core/domain/event";
@@ -25,14 +25,14 @@ export interface FormulaHighlightedColumns {
 
 export interface TableState {
   entity: Entity | undefined;
-  table: Table;
+  table: TablePage;
   selectedColumnName: string | undefined;
   formulaHighlightedColumns: FormulaHighlightedColumns;
 }
 
 export const tableInitialState: TableState = {
   entity: undefined,
-  table: {} as Table,
+  table: {} as TablePage,
   selectedColumnName: undefined,
   formulaHighlightedColumns: {},
 };
@@ -47,7 +47,7 @@ export class ServerEventModifiedTable implements Action {
   readonly type = ServerEventModifiedTableN;
   public event: events.ServerEventModifiedTableEvent;
 
-  constructor(public table: Table) {
+  constructor(public table: TablePage) {
     this.event = new events.ServerEventModifiedTableEvent(table);
   }
 }
@@ -55,7 +55,7 @@ export class ServerEventModifiedTable implements Action {
 export class TableFormBackendAction implements Action {
   readonly type = TableFromBackendActionN;
 
-  constructor(public table: Table) { }
+  constructor(public table: TablePage) { }
 }
 
 export class UserSelectRow implements Action {

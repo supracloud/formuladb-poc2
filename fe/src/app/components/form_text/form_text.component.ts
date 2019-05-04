@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { NodeType, FormText } from "@core/domain/uimetadata/form";
+import { NodeType, FormText } from "@core/domain/uimetadata/node-elements";
 import {
     Component, OnInit, OnDestroy
 } from '@angular/core';

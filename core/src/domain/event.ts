@@ -6,8 +6,8 @@
 import { KeyValueObj } from "./key_value_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity, EntityProperty } from "./metadata/entity";
-import { Form } from "./uimetadata/form";
-import { Table } from "./uimetadata/table";
+import { FormPage } from "./uimetadata/form-page";
+import { TablePage } from "./uimetadata/table-page";
 import { generateUUID } from "./uuid";
 
 /**
@@ -59,7 +59,7 @@ export class ServerEventDeletedFormDataEvent extends MwzEvent {
 export class ServerEventModifiedFormEvent extends MwzEvent {
     readonly type_ = ServerEventModifiedFormN;
 
-    constructor(public form: Form) {
+    constructor(public form: FormPage) {
         super();
     }
 }
@@ -68,7 +68,7 @@ export class ServerEventModifiedFormEvent extends MwzEvent {
 export class ServerEventModifiedTableEvent extends MwzEvent {
     readonly type_ = ServerEventModifiedTableN;
 
-    constructor(public table: Table) {
+    constructor(public table: TablePage) {
         super();
     }
 }

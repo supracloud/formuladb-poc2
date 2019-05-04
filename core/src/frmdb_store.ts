@@ -5,8 +5,8 @@
 
 import { Entity, Schema, isEntity } from "@core/domain/metadata/entity";
 import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data_obj";
-import { Form } from "@core/domain/uimetadata/form";
-import { Table } from "@core/domain/uimetadata/table";
+import { FormPage } from "@core/domain/uimetadata/form-page";
+import { TablePage } from "@core/domain/uimetadata/table-page";
 import { MwzEvents } from "@core/domain/event";
 import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
 import { KeyValueError } from "@core/domain/key_value_obj";
@@ -21,7 +21,7 @@ import { $User, $I18n } from "./domain/metadata/default-metadata";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
-    protected metadataKvs: KeyObjStoreI<App | Schema | Form | Table>;
+    protected metadataKvs: KeyObjStoreI<App | Schema | FormPage | TablePage>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
 
     constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
@@ -43,7 +43,7 @@ export class FrmdbStore {
 
     private async getMetadataKvs() {
         if (!this.metadataKvs) {
-            this.metadataKvs = await this.kvsFactory.createKeyObjS<App | Schema | Form | Table>('metadata');
+            this.metadataKvs = await this.kvsFactory.createKeyObjS<App | Schema | FormPage | TablePage>('metadata');
         }
         return this.metadataKvs;
     }
@@ -131,20 +131,20 @@ export class FrmdbStore {
         return this.kvsFactory.putApp(app);
     }
 
-    public async getTable(path: string): Promise<Table | null> {
-        return (await this.getMetadataKvs()).get('Table_:' + path) as Promise<Table | null>;
+    public async getTable(path: string): Promise<TablePage | null> {
+        return (await this.getMetadataKvs()).get('TablePage:' + path) as Promise<TablePage | null>;
     }
 
-    public async putTable(table: Table): Promise<Table | null> {
-        return (await this.getMetadataKvs()).put(table) as Promise<Table | null>;
+    public async putTable(table: TablePage): Promise<TablePage | null> {
+        return (await this.getMetadataKvs()).put(table) as Promise<TablePage | null>;
     }
 
-    public async getForm(path: string): Promise<Form | null> {
-        return (await this.getMetadataKvs()).get('Form_:' + path) as Promise<Form | null>;
+    public async getForm(path: string): Promise<FormPage | null> {
+        return (await this.getMetadataKvs()).get('FormPage:' + path) as Promise<FormPage | null>;
     }
 
-    public async putForm(form: Form): Promise<Form | null> {
-        return (await this.getMetadataKvs()).put(form) as Promise<Form | null>;
+    public async putForm(form: FormPage): Promise<FormPage | null> {
+        return (await this.getMetadataKvs()).put(form) as Promise<FormPage | null>;
     }
 
     public async getDataObj(id: string): Promise<DataObj | null> {

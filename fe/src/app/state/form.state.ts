@@ -6,7 +6,8 @@
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { DataObj, mergeSubObj } from "@core/domain/metadata/data_obj";
-import { Form, NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete, NodeElementWithChildren } from "@core/domain/uimetadata/form";
+import { FormPage } from "@core/domain/uimetadata/form-page";
+import { NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete, NodeElementWithChildren } from "@core/domain/uimetadata/node-elements";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
 import * as formUserActions from '../actions/form.user.actions';
@@ -14,7 +15,7 @@ import * as formServerActions from '../actions/form.backend.actions';
 import * as _ from 'lodash';
 
 export { DataObj };
-export { Form };
+export { FormPage };
 export { ChangeObj, applyChanges };
 
 export class AutoCompleteState {
@@ -26,7 +27,7 @@ export class AutoCompleteState {
 }
 
 export interface FormState {
-    form: Form | null;
+    form: FormPage | null;
     formData: DataObj | null;
     eventFromBackend: events.MwzEvents | null;
     rdonly: boolean;

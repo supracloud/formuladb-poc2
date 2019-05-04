@@ -13,16 +13,14 @@ import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@core/dom
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@core/domain/event";
 import { SimpleAddHocQuery } from "@core/key_value_store_i";
-import { Table, isTable } from "@core/domain/uimetadata/table";
+import { TablePage, isTable } from "@core/domain/uimetadata/table-page";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
-import { Form, isForm } from "@core/domain/uimetadata/form";
+import { FormPage, isForm } from "@core/domain/uimetadata/form-page";
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
 import { App } from "@core/domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
-import { addIdsToForm } from '../components/auto-layout-form';
-import { addIdsToTable } from '../components/auto-layout-table';
 
 
 @Injectable()
@@ -172,25 +170,23 @@ export class BackendService {
         return dataObj;
     }
 
-    public async getTable(path: string): Promise<Table | null> {
-        let http = await this.get<Table | null>('/formuladb-api/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
-            return data.body as any as Table;
+    public async getTable(path: string): Promise<TablePage | null> {
+        let http = await this.get<TablePage | null>('/formuladb-api/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
+            return data.body as any as TablePage;
         });
         if (!http) return null;
         let ti = http;
-        if (!isTable(ti)) throw new Error("response is not Table " + CircularJSON.stringify(ti));
-        addIdsToTable(ti);
+        if (!isTable(ti)) throw new Error("response is not TablePage " + CircularJSON.stringify(ti));
         return ti;
     }
 
-    public async getForm(path: string): Promise<Form | null> {
-        let http = await this.get<Form | null>('/formuladb-api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
-            return data.body as any as Form;
+    public async getForm(path: string): Promise<FormPage | null> {
+        let http = await this.get<FormPage | null>('/formuladb-api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path), (data: HttpResponse<any[]>) => {
+            return data.body as any as FormPage;
         });
         if (!http) return null;
         let fi = http;
-        if (!isForm(fi)) throw new Error("response is not Form " + CircularJSON.stringify(fi));
-        addIdsToForm(fi);
+        if (!isForm(fi)) throw new Error("response is not FormPage " + CircularJSON.stringify(fi));
         return fi;
     }
 

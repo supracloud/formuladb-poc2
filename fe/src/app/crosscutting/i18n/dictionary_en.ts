@@ -11,7 +11,7 @@ const defaultDict_en = {
 
     "ly_spreadsheet": "Spreadsheet",
     "ly_admin": "Admin",
-    "ly_form": "Form",
+    "ly_form": "FormPage",
     "ly_cover": "Cover",
     "ly_landing" : "Landing",
     "ly_carousel": "Carousel",

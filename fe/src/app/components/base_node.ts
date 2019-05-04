@@ -8,10 +8,10 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
 
-import { NodeElement, NodeType, getChildPath } from "@core/domain/uimetadata/form";
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } from '@core/domain/metadata/data_obj';
 import { FormEditingService } from './form-editing.service';
+import { NodeElement, getChildPath, NodeType } from '@core/domain/uimetadata/node-elements';
 
 export class BaseNodeComponent {
 
@@ -34,7 +34,7 @@ export class BaseNodeComponent {
 
     getChildPath(childEl: NodeElement) {
         let formPath = _.isEmpty(this.fullpath) ? [] : [this.fullpath]
-        let childPath: string | null = null;
+        let childPath: string | undefined = undefined;
         childPath = getChildPath(childEl);
         if (childPath) formPath.push(childPath);
         return formPath.join('.');

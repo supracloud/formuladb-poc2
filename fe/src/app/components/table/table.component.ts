@@ -21,7 +21,7 @@ import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
-import { Table, TableColumn } from '@core/domain/uimetadata/table';
+import { FormDataGrid, TableColumn } from '@core/domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
@@ -34,7 +34,7 @@ import { ExcelStyles } from './excel-styles';
 })
 export class TableComponent implements OnInit, OnDestroy {
 
-    @Input() tableObservable: Observable<Table>;
+    @Input() tableObservable: Observable<FormDataGrid>;
 
     @Output() onDataObjSelected: EventEmitter<DataObj> = new EventEmitter()
     @Output() onRowDblClicked: EventEmitter<DataObj> = new EventEmitter()
@@ -85,7 +85,7 @@ export class TableComponent implements OnInit, OnDestroy {
     public frameworkComponents;
     public defaultColDef;
     headerHeight = 50;
-    table: Table;
+    table: FormDataGrid;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
         private tableService: TableService,
@@ -108,7 +108,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
     entityId() {
         if (!this.table || !this.table._id) return undefined;
-        return this.table._id.replace(/^Table_:\w+[^][^]/, '');
+        return this.table._id.replace(/^TablePage:\w+[^][^]/, '');
     }
 
     applyCellStyles(params) {
@@ -136,7 +136,7 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     getRowHeight = () => {
-        if (elvis(elvis(this.table).page).layout === FrmdbLy.ly_fpattern) {
+        if (elvis(this.table).layout === FrmdbLy.ly_fpattern) {
             return 250;
         } else return 25;
     }
@@ -160,7 +160,7 @@ export class TableComponent implements OnInit, OnDestroy {
             console.debug('new table ', t);
             if (!t.columns) { return; }
             try {
-                if (t.page.layout === FrmdbLy.ly_fpattern) {
+                if (t.layout === FrmdbLy.ly_fpattern) {
                     this.headerHeight = 0;
                     this.columns = [{
                         headerName: "N/A",
@@ -276,9 +276,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
     columnMoving(event: any) {
         if (this.table) {
-            const colx: number = this.table.columns.findIndex(c => c.name === event.column.colId);
-            const col: TableColumn = this.table.columns.splice(colx, 1)[0];
-            this.table.columns.splice(event.toIndex, 0, col);
+            const colx: number = (this.table.columns||[]).findIndex(c => c.name === event.column.colId);
+            const col: TableColumn = (this.table.columns||[]).splice(colx, 1)[0];
+            (this.table.columns||[]).splice(event.toIndex, 0, col);
         }
     }
 
@@ -300,7 +300,7 @@ export class TableComponent implements OnInit, OnDestroy {
     filterChanged(event: any) {
         if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
             const fs = this.gridApi.getFilterModel();
-            this.table.columns.forEach(c => {
+            (this.table.columns||[]).forEach(c => {
                 if (fs[c.name]) {
                     c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                 } else {
@@ -315,7 +315,7 @@ export class TableComponent implements OnInit, OnDestroy {
     sortChanged(event: any) {
         if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
             const srt = this.gridApi.getSortModel();
-            this.table.columns.forEach(c => {
+            (this.table.columns||[]).forEach(c => {
                 const s = srt.find(i => i.colId === c.name);
                 if (s) {
                     c.sort = s.sort;

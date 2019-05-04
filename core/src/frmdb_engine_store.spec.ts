@@ -152,7 +152,7 @@ describe('frmdb_engine_store', () => {
         done();
     });
 
-    describe('Table Relationships', () => {
+    describe('TablePage Relationships', () => {
         it("example REFERENCE_TO by _id", async (done) => {
             compiledFormula = compileFormula('B', 'sum__', 'SUMIF(A.num, B$myB._id == @[_id])');
             await frmdbEngineStore.installFormula(compiledFormula);

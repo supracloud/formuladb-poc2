@@ -1,8 +1,8 @@
 import { Layouts } from "./page";
-import { NodeType } from "./form";
+import { NodeType } from "./node-elements";
 
 export type ThemeCustomClasses = {
-    [layout in Layouts]?: {
+    [layout in Exclude<Layouts, undefined>]?: {
         [component in NodeType]?: string[];
     };
 }

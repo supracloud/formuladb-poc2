@@ -4,20 +4,18 @@
  */
 
 import { Pn } from "@core/domain/metadata/entity";
-import { Form, NodeType } from '@core/domain/uimetadata/form'
+import { FormPage } from '@core/domain/uimetadata/form-page'
 import { FrmdbLy } from "@core/domain/uimetadata/page";
+import { NodeType } from "@core/domain/uimetadata/node-elements";
 
 let testUUID = 1;
 function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
 
-export var LargeSalesReport_Form: Form = {
-  _id: "Form_:ALL^^LargeSalesReport",
-  nodeType: NodeType.form,
-  page: {
-    layout: FrmdbLy.ly_admin,
-  },
+export var LargeSalesReport_Form: FormPage = {
+  _id: "FormPage:ALL^^LargeSalesReport",
+  layout: FrmdbLy.ly_admin,
   childNodes: [
     {
       nodeType: NodeType.grid_row,

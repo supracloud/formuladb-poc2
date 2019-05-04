@@ -6,12 +6,13 @@
 import { Action } from '@ngrx/store';
 
 import { DataObj } from "@core/domain/metadata/data_obj";
-import { Form, NodeElement, NodeType, FormAutocomplete } from "@core/domain/uimetadata/form";
+import { FormPage } from "@core/domain/uimetadata/form-page";
+import { NodeElement, NodeType, FormAutocomplete } from "@core/domain/uimetadata/node-elements";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
 
 export { DataObj };
-export { Form };
+export { FormPage };
 export { ChangeObj, applyChanges };
 
 export const FormDropActionN = "[form] FormDropAction";

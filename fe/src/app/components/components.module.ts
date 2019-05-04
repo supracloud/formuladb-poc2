@@ -27,7 +27,6 @@ import { NotFoundComponent } from '@fe/app/components/not-found/not-found.compon
 import { TableHeaderComponent } from '@fe/app/components/table/table-header.component';
 import { TableComponent } from '@fe/app/components/table/table.component';
 import { PageItemsDirective } from '@fe/app/components/page_items.directive';
-import { FormComponent } from '@fe/app/components/form.component';
 import { FormAutocompleteComponent } from '@fe/app/components/form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from '@fe/app/components/form_tabs/form_tabs.component';
 import { FormTableComponent } from '@fe/app/components/form_table/form_table.component';
@@ -96,7 +95,6 @@ import { TableContainerComponent } from './table-container/table_container.compo
         HeaderComponent,
         TableComponent,
         PageItemsDirective,
-        FormComponent,
         FormAutocompleteComponent,
         FormTabsComponent,
         FormTableComponent,
@@ -135,7 +133,6 @@ import { TableContainerComponent } from './table-container/table_container.compo
         TableContainerComponent,
     ],
     entryComponents: [
-        FormComponent,
         FormInputComponent,
         FormAutocompleteComponent,
         FormTabsComponent,
@@ -181,7 +178,6 @@ import { TableContainerComponent } from './table-container/table_container.compo
         TableComponent,
         TableContainerComponent,
         PageItemsDirective,
-        FormComponent,
         FormAutocompleteComponent,
         FormTabsComponent,
         FormTableComponent,

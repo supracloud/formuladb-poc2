@@ -128,7 +128,7 @@ describe('Switch themes colors and images', () => {
 });
 
 
-voice("Change widget from Table to Mosaic", () => {
+voice("Change widget from TablePage to Mosaic", () => {
   check(
   click()
 });

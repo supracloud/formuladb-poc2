@@ -19,10 +19,7 @@ export function autoLayoutReducer(state: AppState, action: AppActions): AppState
                     ...state.table,
                     table: {
                         ...state.table.table,
-                        page: {
-                            ...state.table.table.page,
-                            layout: action.page.layout,
-                        },
+                        layout: action.page.layout,
                     }
                 },
             }
@@ -32,7 +29,7 @@ export function autoLayoutReducer(state: AppState, action: AppActions): AppState
                 ...state,
                 page: {
                     ...state.page,
-                    layout: action.form.page.layout!,
+                    layout: action.form.layout!,
                 }
             }
 

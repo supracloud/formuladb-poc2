@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, TableNodeElement, FormDataGrid } from "@core/domain/uimetadata/form";
+import { NodeElement, NodeType, TableNodeElement, FormDataGrid } from "@core/domain/uimetadata/node-elements";
 
 import { CircularJSON } from "@core/json-stringify";
 
@@ -13,7 +13,7 @@ import { Pn, Entity } from "@core/domain/metadata/entity";
 import { FormEditingService } from '../form-editing.service';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { Subject, ReplaySubject } from 'rxjs';
-import { Table } from '@core/domain/uimetadata/table';
+import { TablePage } from '@core/domain/uimetadata/table-page';
 import { BackendService } from '@fe/app/effects/backend.service';
 import { autoLayoutTable } from '../auto-layout-table';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
@@ -29,7 +29,7 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
     data: any;
     frameworkComponents: any;
     defaultColDef: any;
-    table$: Subject<Table> = new ReplaySubject();
+    table$: Subject<TablePage> = new ReplaySubject();
 
     constructor(formEditingService: FormEditingService, private backendSevice: BackendService) {
         super(formEditingService);
@@ -40,7 +40,7 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
     // [tableObservable]="table$"
     onRowClicked(dataObj: DataObj) {
         if (!this.dataGridElement) return;
-        for (let prop of this.dataGridElement.properties) {
+        for (let prop of this.dataGridElement.autocompleteProperties || []) {
             let ctrl = this.formgrp.get(this.getPropPath(prop));
             if (ctrl) {
                 ctrl.markAsDirty();

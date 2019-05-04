@@ -12,15 +12,15 @@ import {
   RouterStateSerializer
 } from '@ngrx/router-store';
 
-import { Form } from "@core/domain/uimetadata/form";
-import { Table } from "@core/domain/uimetadata/table";
+import { FormPage } from "@core/domain/uimetadata/form-page";
+import { TablePage } from "@core/domain/uimetadata/table-page";
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { Entity, Pn } from "@core/domain/metadata/entity";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 
 
-export { Form };
-export { Table };
+export { FormPage };
+export { TablePage };
 export { DataObj };
 export { Entity };
 export { ChangeObj, applyChanges };

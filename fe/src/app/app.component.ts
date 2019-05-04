@@ -16,6 +16,7 @@ import { FeUser } from '@core/domain/user';
   styleUrls: ['./app.component.scss'],
   host: {
     '[style.padding]': 'bodyPadding',
+    '[style.overflow]': '"hidden"',
     '[style.background]': '"none transparent"',
     '[class.frmdb-dev-mode-on]': 'devMode',
   }
@@ -29,7 +30,7 @@ export class AppComponent {
     this.store.select(appState.getDeveloperMode).subscribe(devMode => {
       this.devMode = devMode;
       if (devMode) {
-        this.bodyPadding = "49px 0 60px 0";
+        this.bodyPadding = "234.56px 0 60px 0";
       } else {
         this.bodyPadding = "0 0 60px 0";
       }

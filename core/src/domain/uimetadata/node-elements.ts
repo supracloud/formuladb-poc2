@@ -4,13 +4,12 @@
  */
 
 import { KeyValueObj, SubObj } from '../key_value_obj';
-import { Pn, Entity, EntityStateGraph } from "../metadata/entity";
-import { generateUUID } from '../uuid';
+import { Pn, Entity, EntityStateGraph, FormulaExpression } from "../metadata/entity";
 import * as _ from 'lodash';
-import { FrmdbLy, Page } from './page';
+import { FrmdbLy } from './page';
 
 export enum NodeType {
-    form = "form",
+    root_node = "root_node",
     grid_row = "grid_row",
     grid_col = "grid_col",
     form_input = "form_input",
@@ -48,19 +47,6 @@ export enum NodeType {
 }
 
 
-export class Form implements KeyValueObj {
-    _id: string;
-    _rev?: string;
-    readonly nodeType = NodeType.form;
-    page: Partial<Page>;
-    childNodes?: NodeElement[];
-    stateGraph?: EntityStateGraph;
-    isEditable?: boolean;
-}
-export function isForm(param: KeyValueObj): param is Form {
-    return param != null && typeof param === 'object' && param._id.indexOf('Form_:') == 0;
-}
-
 export type ScalarNodeElement = 
     | FormInput
     | FormAutocomplete
@@ -75,7 +61,7 @@ export type ScalarNodeElement =
 ;
 export type NodeElement =
     | ScalarNodeElement
-    | Form
+    | RootNode
     | FormTabs
     | FormTable
     | FormChart
@@ -100,19 +86,30 @@ export type NodeElement =
     | CardContainer
     ;
 
-export type NodeElementWithChildren = Form | GridRow | GridCol | FormTable | FormTabs | CardContainer;
+export type NodeElementWithChildren = RootNode | GridRow | GridCol | FormTable | FormTabs | CardContainer;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
-    return isForm(nodeEl)
+    return nodeEl.nodeType === NodeType.root_node
         || nodeEl.nodeType === NodeType.grid_row
         || nodeEl.nodeType === NodeType.grid_col
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
-        ;
+    ;
 }
 
-export type TableNodeElement = FormTable | FormTabs | FormChart;
+export interface TableNodeElementBase extends SubObj {
+    refEntityAlias?: string;
+    refEntityName: string;
+    
+    autocompleteProperties?: ({refPropertyName: string} & FormInput)[];
+
+    tableName?: string;
+
+    childNodes?: NodeElement[];
+}
+export type TableNodeElement = FormDataGrid | FormTable | FormTabs | CardContainer;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
-    return nodeEl.nodeType === NodeType.form_table
+    return nodeEl.nodeType === NodeType.form_data_grid
+        || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
         || nodeEl.nodeType === NodeType.card_container;
 }
@@ -137,15 +134,14 @@ export function getChildPath(nodeEl: NodeElement) {
     return '';
 }
 
-export class FormInput implements SubObj {
-    readonly nodeType = NodeType.form_input;
-    _id: string;
+export interface FormInput extends SubObj {
+    nodeType: NodeType.form_input;
     noLabel?: boolean;
     propertyName: string;
     propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
 }
-export class FormText implements SubObj {
-    readonly nodeType = NodeType.form_text;
+export interface FormText extends SubObj {
+    nodeType: NodeType.form_text;
     _id: string;
     noLabel?: boolean;
     propertyName: string;
@@ -153,8 +149,8 @@ export class FormText implements SubObj {
     representation: "title" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id" | "string";
     uppercase?: boolean;
 }
-export class FormAutocomplete implements SubObj {
-    readonly nodeType = NodeType.form_autocomplete;
+export interface FormAutocomplete extends SubObj {
+    nodeType: NodeType.form_autocomplete;
     _id: string;
     noLabel?: boolean;
     refEntityAlias?: string;
@@ -162,74 +158,88 @@ export class FormAutocomplete implements SubObj {
     refPropertyName: string;
     propertyName: string;
 }
-export class FormTabs implements SubObj {
-    readonly nodeType = NodeType.form_tabs;
+export interface FormTabs extends TableNodeElementBase {
+    nodeType: NodeType.form_tabs;
     _id: string;
     tableName: string;
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export class FormCard implements SubObj {
-    readonly nodeType = NodeType.form_tabs;
+export interface FormCard extends SubObj {
+    nodeType: NodeType.form_tabs;
     _id: string;
     tableName: string;
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export class FormTable implements SubObj {
-    readonly nodeType = NodeType.form_table;
+export interface FormTable extends TableNodeElementBase {
+    nodeType: NodeType.form_table;
     _id: string;
     tableName: string;
     childNodes?: NodeElement[];
 }
 
-class CardBase implements SubObj {
+interface CardBase extends SubObj {
     _id: string;
     horizontal?: boolean;
     childNodes?: NodeElement[];
 }
 
-export class Card extends CardBase implements SubObj {
-    readonly nodeType = NodeType.card;
+export interface Card extends CardBase {
+    nodeType: NodeType.card;
 }
 
-export class CardContainer extends CardBase implements SubObj {
-    readonly nodeType = NodeType.card_container;
+export interface CardContainer extends TableNodeElementBase {
+    nodeType: NodeType.card_container;
     tableName: string;
-    style?: "group" | "deck" | "masonry";
+    layout?: FrmdbLy.ly_cards | FrmdbLy.ly_grid | FrmdbLy.ly_fpattern | FrmdbLy.ly_zigzagpattern | FrmdbLy.ly_mosaic;
 }
 
-export class FormDataGrid implements SubObj {
-    readonly nodeType = NodeType.form_data_grid;
+export interface TableColumn extends SubObj {
     _id: string;
-    refEntityAlias?: string;
-    refEntityName: string;
-    layout: FrmdbLy;
-    properties: ({refPropertyName: string} & FormInput)[];
+    width?: number;
+    sort?: string;
+    filter?: ColumnFilter;
+    skipExportExcel?: boolean;
+    name: string;
+    type: Pn;
+}
+export interface ColumnFilter {
+    operator: string;
+    value: string;
+}
+export interface FormDataGrid extends TableNodeElementBase {
+    nodeType: NodeType.form_data_grid;
+    _id: string;
+    conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
+    headerHeight?: number;
+    headerBackground?: string;
+    columns?: TableColumn[];
+    layout?: FrmdbLy.ly_admin | FrmdbLy.ly_fpattern;
 }
 
-export class FormDatepicker implements SubObj {
-    readonly nodeType = NodeType.form_datepicker;
+export interface FormDatepicker extends SubObj {
+    nodeType: NodeType.form_datepicker;
     _id: string;
     propertyName: string;
 }
 
-export class FormTimepicker implements SubObj {
-    readonly nodeType = NodeType.form_timepicker;
+export interface FormTimepicker extends SubObj {
+    nodeType: NodeType.form_timepicker;
     _id: string;
     propertyName: string;
 }
 
 
-export class DateRangePicker implements SubObj {
-    readonly nodeType = NodeType.date_range_picker;
+export interface DateRangePicker extends SubObj {
+    nodeType: NodeType.date_range_picker;
     _id: string;
     startPropertyName: string;
     endPropertyName: string;
 }
 
-export class FormChart implements SubObj {
-    readonly nodeType = NodeType.form_chart;
+export interface FormChart extends SubObj {
+    nodeType: NodeType.form_chart;
     _id: string;
     tableName: string;
     chartType: string;
@@ -240,126 +250,131 @@ export class FormChart implements SubObj {
     groupByPropertyName?: string;
 }
 
-export class Button implements SubObj {
-    readonly nodeType = NodeType.button;
+export interface Button extends SubObj {
+    nodeType: NodeType.button;
     _id: string;
     propertyName: string;
 }
 
 
-export class ButtonGroup implements SubObj {
-    readonly nodeType = NodeType.button_group;
+export interface ButtonGroup extends SubObj {
+    nodeType: NodeType.button_group;
     _id: string;
 }
 
 
-export class Calendar implements SubObj {
-    readonly nodeType = NodeType.calendar;
+export interface Calendar extends SubObj {
+    nodeType: NodeType.calendar;
     _id: string;
 }
 
 
-export class Header implements SubObj {
-    readonly nodeType = NodeType.header;
-    _id: string;
-    childNodes?: NodeElement[];
-}
-
-export class Jumbotron implements SubObj {
-    readonly nodeType = NodeType.jumbotron;
+export interface Header extends SubObj {
+    nodeType: NodeType.header;
     _id: string;
     childNodes?: NodeElement[];
 }
 
+export interface Jumbotron extends SubObj {
+    nodeType: NodeType.jumbotron;
+    _id: string;
+    childNodes?: NodeElement[];
+}
 
-export class Dropdown implements SubObj {
-    readonly nodeType = NodeType.dropdown;
+
+export interface Dropdown extends SubObj {
+    nodeType: NodeType.dropdown;
     _id: string;
 }
 
 
-export class FormEnum implements SubObj {
-    readonly nodeType = NodeType.form_enum;
+export interface FormEnum extends SubObj {
+    nodeType: NodeType.form_enum;
     _id: string;
 }
 
 
-export class FormState implements SubObj {
-    readonly nodeType = NodeType.form_state;
+export interface FormState extends SubObj {
+    nodeType: NodeType.form_state;
     _id: string;
 }
 
 
-export class Gallery implements SubObj {
-    readonly nodeType = NodeType.gallery;
+export interface Gallery extends SubObj {
+    nodeType: NodeType.gallery;
     _id: string;
 }
 
 
-export class HFilters implements SubObj {
-    readonly nodeType = NodeType.h_filters;
+export interface HFilters extends SubObj {
+    nodeType: NodeType.h_filters;
     _id: string;
 }
 
 
-export class GridRow implements SubObj {
-    readonly nodeType = NodeType.grid_row;
+export interface GridRow extends SubObj {
+    nodeType: NodeType.grid_row;
     _id: string;
     childNodes: NodeElement[];
 }
 
+export interface RootNode extends SubObj {
+    nodeType: NodeType.root_node;
+    _id: string;
+    childNodes?: NodeElement[];
+}
 
-export class HNav implements SubObj {
-    readonly nodeType = NodeType.h_nav;
+export interface HNav extends SubObj {
+    nodeType: NodeType.h_nav;
     _id: string;
 }
 
 
-export class Icon implements SubObj {
-    readonly nodeType = NodeType.icon;
+export interface Icon extends SubObj {
+    nodeType: NodeType.icon;
     _id: string;
 }
 
 
-export class Image implements SubObj {
-    readonly nodeType = NodeType.image;
+export interface Image extends SubObj {
+    nodeType: NodeType.image;
     _id: string;
 }
 
 
-export class List implements SubObj {
-    readonly nodeType = NodeType.list;
+export interface List extends SubObj {
+    nodeType: NodeType.list;
     _id: string;
 }
 
 
-export class Media implements SubObj {
-    readonly nodeType = NodeType.media;
+export interface Media extends SubObj {
+    nodeType: NodeType.media;
     _id: string;
 }
 
 
-export class Timeline implements SubObj {
-    readonly nodeType = NodeType.timeline;
+export interface Timeline extends SubObj {
+    nodeType: NodeType.timeline;
     _id: string;
 }
 
 
-export class VFilters implements SubObj {
-    readonly nodeType = NodeType.v_filters;
+export interface VFilters extends SubObj {
+    nodeType: NodeType.v_filters;
     _id: string;
 }
 
 
-export class GridCol implements SubObj {
-    readonly nodeType = NodeType.grid_col;
+export interface GridCol extends SubObj {
+    nodeType: NodeType.grid_col;
     _id: string;
     childNodes?: NodeElement[];
 }
 
 
-export class VNav implements SubObj {
-    readonly nodeType = NodeType.v_nav;
+export interface VNav extends SubObj {
+    nodeType: NodeType.v_nav;
     _id: string;
 }
 

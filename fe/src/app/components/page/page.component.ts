@@ -13,11 +13,7 @@ import { Theme } from '@core/domain/uimetadata/theme';
 import { FormEditingService } from '../form-editing.service';
 import { combineLatest, map } from 'rxjs/operators';
 
-@Component({
-  selector: 'frmdb-page',
-  templateUrl: './page.component.html',
-  styleUrls: ['./page.component.scss']
-})
+
 export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck, OnDestroy {
 
     selectedEntity$: Observable<appState.Entity | undefined>;
@@ -31,7 +27,7 @@ export class PageComponent implements OnInit, AfterViewInit, OnChanges, DoCheck,
         this.page$ = this.formEditingService.frmdbStreams.page$.pipe(
             combineLatest(this.formEditingService.frmdbStreams.table$),
             combineLatest(this.formEditingService.frmdbStreams.form$),
-            map(([[p, t], f]) => Object.assign({}, p, t.page, f.page)),
+            map(([[p, t], f]) => Object.assign({}, p, t, f)),
             untilDestroyed(this)
         );
         this.page$.pipe(untilDestroyed(this)).subscribe(p => this.page = p);

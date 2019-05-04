@@ -6,10 +6,10 @@
     width: 100%;
 }
 
-[topNavLook="slim"] .frmdb-main-section {
+[topnavlook="tn_slim"] .frmdb-main-section {
     padding-top: calc(32px + var(--nav-link-height) - var(--nav-link-padding-y) * 2);
 }
 
-[topNavLook="default"] .frmdb-main-section {
+[topnavlook="tn_nav"] .frmdb-main-section {
     padding-top: calc(32px + var(--nav-link-height));
 }

@@ -6,23 +6,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ApplicationsComponent } from './applications/applications.component';
-import { PageComponent } from './components/page/page.component';
-import { FormComponent } from './components/form.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
-import { TableContainerComponent } from './components/table-container/table_container.component';
+import { FrmdbPageComponent } from './components/frmdb-page.component';
 
 const routes: Routes = [
     {
         path: '', component: ApplicationsComponent,
     },
-    {
-        path: ':appName', component: PageComponent,
-        children: [
-            { path: ':entityName', component: TableContainerComponent },
-            { path: ':entityName/:_id', component: FormComponent }
-        ]
-
-    },
+    { path: ':appName', component: FrmdbPageComponent },
+    { path: ':appName/:entityName', component: FrmdbPageComponent },
+    { path: ':appName/:entityName/:_id', component: FrmdbPageComponent },
     { path: '**', component: NotFoundComponent },
 ];
 

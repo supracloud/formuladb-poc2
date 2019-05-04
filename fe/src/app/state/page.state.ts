@@ -6,12 +6,15 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Page, FrmdbLy, FrmdbLook } from '@core/domain/uimetadata/page';
 import { PageChangedAction, PageChangedActionN } from '../actions/page.user.actions';
+import { NodeType } from '@core/domain/uimetadata/node-elements';
 
 export interface PageState extends Page {
   pageType: 'table' | 'form' | null;
 }
 
 export const pageInitialState: PageState = {
+  _id: "",
+  nodeType: NodeType.root_node,
   colorPalette: "default",
   sidebarImageUrl: "/assets/img/sidebar/sidebar-8.jpg",//TODO: set default per page !
   brandName: "FormulaDB",

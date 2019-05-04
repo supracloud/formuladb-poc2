@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import * as shape from 'd3-shape';
 import { BaseNodeComponent } from '../base_node';
 
-import { FormChart } from "@core/domain/uimetadata/form";
+import { FormChart } from "@core/domain/uimetadata/node-elements";
 import { FormArray, FormControl } from '@angular/forms';
 import { FormEditingService } from '../form-editing.service';
 

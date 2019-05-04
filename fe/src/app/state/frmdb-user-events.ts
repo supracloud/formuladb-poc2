@@ -1,6 +1,6 @@
 import { DataObj } from "@core/domain/metadata/data_obj";
-import { NodeElement } from "@core/domain/uimetadata/form";
-import { Table } from "@core/domain/uimetadata/table";
+import { TablePage } from "@core/domain/uimetadata/table-page";
+import { NodeElement, FormDataGrid } from "@core/domain/uimetadata/node-elements";
 
 export interface UserModifiedFormData {
     type: 'UserModifiedFormData';
@@ -24,7 +24,7 @@ export interface UserSelectedRow {
 }
 export interface UserModifiedTableUi {
     type: 'UserModifiedTableUi';
-    table: Table;
+    table: FormDataGrid;
 }
 export interface UserCollapsedNavItem {
     type: 'UserCollapsedNavItem';

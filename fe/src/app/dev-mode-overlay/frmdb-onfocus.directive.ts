@@ -1,7 +1,7 @@
 import { Directive, OnDestroy, OnInit } from '@angular/core';
 import { NgControl } from '@angular/forms';
 
-import { FrmdbFormControl } from '../components/form.component';
+import { FrmdbFormControl } from '../components/frmdb-page.component';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';

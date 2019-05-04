@@ -3,32 +3,33 @@
 * License TBD
 */
 
-import { Form, NodeType } from '@core/domain/uimetadata/form'
+import { FormPage } from '@core/domain/uimetadata/form-page'
 import { Home } from './website-metadata';
-import { Table } from '@core/domain/uimetadata/table';
+import { TablePage } from '@core/domain/uimetadata/table-page';
 import { FrmdbLy, FrmdbHeader } from '@core/domain/uimetadata/page';
+import { NodeType, FormDataGrid } from '@core/domain/uimetadata/node-elements';
 
 let testUUID = 1;
 function getTestUUID() {
     return 'uuid' + ++testUUID;
 }
 
-export var HomePage_Form: Form = {
-    _id: "Form_:ALL^^" + Home._id, nodeType: NodeType.form,
-    page: {
-        logoUrl: '/assets/icon2.128.png',
-        header: FrmdbHeader.hd_cover,
-        layout: FrmdbLy.ly_cards,
-    },
+export var HomePage_Form: FormPage = {
+    _id: "FormPage:ALL^^" + Home._id,
+    nodeType: NodeType.root_node,
+    logoUrl: '/assets/icon2.128.png',
+    header: FrmdbHeader.hd_cover,
+    layout: FrmdbLy.ly_cards,
     childNodes: [],
 };
 
-export var HomePage_Table: Table = {
-    _id: "Table_:ALL^^" + Home._id,
-    page: {
-        logoUrl: '/assets/icon2.128.png',
-        header: FrmdbHeader.hd_cover,
-        layout: FrmdbLy.ly_cards,
-    },
-    columns: [],
+export var HomePage_Table: TablePage = {
+    _id: "TablePage:ALL^^" + Home._id,
+    nodeType: NodeType.root_node,
+    logoUrl: '/assets/icon2.128.png',
+    header: FrmdbHeader.hd_cover,
+    layout: FrmdbLy.ly_cards,
+    childNodes: [
+        { nodeType: NodeType.form_data_grid, _id: getTestUUID(), refEntityName: Home._id },
+    ]
 };

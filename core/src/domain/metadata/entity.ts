@@ -144,7 +144,7 @@ export interface ActionProperty {
 }
 
 /**
- * Table of existing entities or entities created
+ * TablePage of existing entities or entities created
  */
 export interface ChildTableProperty {
     propType_: Pn.CHILD_TABLE;
@@ -164,7 +164,7 @@ export function isSubTableProperty(param): param is ChildTableProperty {
 export interface ExtendsEntityProperty {
     propType_: Pn.EXTENDS_ENTITY;
     name: string;
-    referencedEntityName?: string;
+    referencedEntityName: string;
     props: EntityProperties;
 }
 export function isSubEntityProperty(param): param is ExtendsEntityProperty {
@@ -192,6 +192,7 @@ export interface FormulaProperty {
     name: string;
     formula: FormulaExpression;
     compiledFormula_?: CompiledFormula;
+    returnType_?: Exclude<EntityProperty, FormulaProperty>;
 }
 export function isFormulaProperty(param): param is FormulaProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.FORMULA;

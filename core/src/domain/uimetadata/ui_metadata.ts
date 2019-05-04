@@ -4,9 +4,9 @@
  */
 
 import { Entity } from "../metadata/entity";
-import { Table } from './table';
-import { Form } from './form';
+import { TablePage } from './table-page';
+import { FormPage } from './form-page';
 
 export class UiMetadata {
-    constructor (public entity: Entity, public table: Table, public form: Form) {}
+    constructor (public entity: Entity, public table: TablePage, public form: FormPage) {}
 }

@@ -2,9 +2,8 @@ import * as _ from 'lodash';
 import { Directive, ComponentFactoryResolver, ViewContainerRef, ComponentFactory, Input } from '@angular/core';
 
 import { BaseNodeComponent } from './base_node';
-import { NodeType, NodeElement, getChildPath } from '@core/domain/uimetadata/form';
+import { NodeType, NodeElement, getChildPath } from '@core/domain/uimetadata/node-elements';
 import { elvis } from '@core/elvis';
-import { FormComponent } from './form.component';
 import { GridRowComponent } from './grid_row/grid_row.component';
 import { GridColComponent } from './grid_col/grid_col.component';
 import { FormInputComponent } from './form_input/form_input.component';
@@ -40,7 +39,6 @@ import { HeaderComponent } from './header/header.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
 
 export type PageItemComponents =
-    | FormComponent
     | FormInputComponent
     | FormAutocompleteComponent
     | FormTabsComponent
@@ -107,9 +105,6 @@ export class PageItemsDirective {
             }
 
             switch (elvis(nodel).nodeType) {
-                case NodeType.form:
-                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormComponent)
-                    break;
                 case NodeType.grid_row:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(GridRowComponent)
                     break;
@@ -220,7 +215,7 @@ export class PageItemsDirective {
 
     getChildPath(childEl: NodeElement) {
         let formPath = _.isEmpty(this.fullpath) ? [] : [this.fullpath]
-        let childPath: string | null = null;
+        let childPath: string | undefined = undefined;
         childPath = getChildPath(childEl);
         if (childPath) formPath.push(childPath);
         return formPath.join('.');

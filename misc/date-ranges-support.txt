@@ -1,0 +1,11 @@
+A.start, A.end
+B.start, B.end
+
+  a1s        a1e    a2s         a2e                                   a3s          a3e
+        b1s                                                                 b1e 
+        b2s               b2e           
+
+OVERLAP_START relation
+======================
+observablesOf(b1) = A Where b1s <= s <= b1e = a2/a3
+obs(a2) = B Where ????

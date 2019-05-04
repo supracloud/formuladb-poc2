@@ -3,21 +3,19 @@
  * License TBD
  */
 
-import * as metadata from './mock-metadata';
-import { Entity, Pn } from "@core/domain/metadata/entity";
-import { Form, NodeType } from '@core/domain/uimetadata/form';
+import { Pn } from "@core/domain/metadata/entity";
+import { FormPage } from '@core/domain/uimetadata/form-page';
 import { Forms__ServiceForm } from './forms-metadata';
+import { NodeType } from "@core/domain/uimetadata/node-elements";
 
 let testUUID = 1;
 function getTestUUID() {
   return 'uuid' + ++testUUID;
 }
-export const Forms__ServiceForm_Form_: Form = {
-  _id: 'Form_:ALL^^' + Forms__ServiceForm._id,
+export const Forms__ServiceForm_Form_: FormPage = {
+  _id: 'FormPage:ALL^^' + Forms__ServiceForm._id,
+  nodeType: NodeType.root_node,
   isEditable: true,
-  nodeType: NodeType.form,
-  page: {
-  },
   childNodes: [
     {
       _id: getTestUUID(), nodeType: NodeType.grid_row,

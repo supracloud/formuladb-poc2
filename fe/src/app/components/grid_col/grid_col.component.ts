@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/form";
+import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/node-elements";
 import * as _ from 'lodash';
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';

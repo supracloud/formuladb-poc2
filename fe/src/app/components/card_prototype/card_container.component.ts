@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { CardContainer } from '@core/domain/uimetadata/form';
+import { CardContainer } from '@core/domain/uimetadata/node-elements';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';
@@ -20,7 +20,7 @@ import { elvis } from '@core/elvis';
 export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
 
   cardContainer: CardContainer;
-  @HostBinding('class') tmp: string = elvis(this.cardContainer).style || "card-deck";
+  @HostBinding('class') tmp: string = elvis(this.cardContainer).layout || "";
   
   @Input()
   horizontal: boolean = false;

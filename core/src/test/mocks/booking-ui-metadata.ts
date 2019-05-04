@@ -3,32 +3,31 @@
 * License TBD
 */
 
-import { Form, NodeType, FormDataGrid } from '@core/domain/uimetadata/form'
+import { FormPage } from '@core/domain/uimetadata/form-page'
 import { Pn } from '@core/domain/metadata/entity';
-import { Table } from '@core/domain/uimetadata/table';
+import { TablePage } from '@core/domain/uimetadata/table-page';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { BookingItem, Booking } from './booking-metadata';
 import { $User } from '@core/domain/metadata/default-metadata';
+import { NodeType, FormDataGrid } from '@core/domain/uimetadata/node-elements';
 
 let testUUID = 1;
 function getTestUUID() {
     return 'uuid' + ++testUUID;
 }
 
-export var BookingItem_Form: Form = {
-    _id: "Form_:ALL^^" + BookingItem._id, nodeType: NodeType.form,
+export var BookingItem_Form: FormPage = {
+    _id: "FormPage:ALL^^" + BookingItem._id,
+    nodeType: NodeType.root_node,
     isEditable: true,
-    page: {
-        layout: FrmdbLy.ly_fpattern,
-    },
+    layout: FrmdbLy.ly_fpattern,
     childNodes: [],
 };
-export var Booking_Form: Form = {
-    _id: "Form_:ALL^^" + Booking._id, nodeType: NodeType.form,
+export var Booking_Form: FormPage = {
+    _id: "FormPage:ALL^^" + Booking._id,
+    nodeType: NodeType.root_node,
     isEditable: true,
-    page: {
-        layout: FrmdbLy.ly_fpattern,
-    },
+    layout: FrmdbLy.ly_fpattern,
     childNodes: [
         { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
             { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
@@ -55,18 +54,14 @@ export var Booking_Form: Form = {
     ]
 };
 
-export var BookingItem_Table: Table = {
-    _id: "Table_:ALL^^" + BookingItem._id,
-    page: {
-        layout: FrmdbLy.ly_fpattern,
-    },
-    columns: [],
+export var BookingItem_Table: TablePage = {
+    _id: "TablePage:ALL^^" + BookingItem._id,
+    nodeType: NodeType.root_node,
+    layout: FrmdbLy.ly_fpattern,
 };
 
-export var Booking_Table: Table = {
-    _id: "Table_:ALL^^" + Booking._id,
-    page: {
-        layout: FrmdbLy.ly_fpattern,
-    },
-    columns: [],
+export var Booking_Table: TablePage = {
+    _id: "TablePage:ALL^^" + Booking._id,
+    nodeType: NodeType.root_node,
+    layout: FrmdbLy.ly_fpattern,
 };

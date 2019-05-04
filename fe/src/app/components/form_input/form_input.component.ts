@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { NodeElement, NodeType, FormInput } from "@core/domain/uimetadata/form";
+import { NodeElement, NodeType, FormInput } from "@core/domain/uimetadata/node-elements";
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,

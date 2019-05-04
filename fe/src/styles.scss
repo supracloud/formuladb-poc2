@@ -4,5 +4,20 @@
 @import './assets/themes/basic.min.css';
 
 .frmdb-dev-mode-on .frmdb-fixed-top-0 {
-    top: 49px !important;
+    top: 234.56px !important;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 4px lightgrey; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: grey; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: darkgray; 
 }

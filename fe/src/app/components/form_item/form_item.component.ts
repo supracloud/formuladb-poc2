@@ -6,7 +6,7 @@
 import { OnInit, OnDestroy, Component } from '@angular/core';
 import * as _ from 'lodash';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement, getChildPath, GridCol, GridRow } from "@core/domain/uimetadata/form";
+import { NodeElement, NodeType, isKnownNodeElement, getChildPath, GridCol, GridRow } from "@core/domain/uimetadata/node-elements";
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 
@@ -39,7 +39,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
   getHostClassForElement(): string {
     if (null == this.nodel) return '';
     if (null == this.nodel.nodeType) return '';
-    return this.nodel.nodeType == NodeType.form ? 'container' : this.nodel.nodeType.replace(/^form_grid_/, '');
+    return this.nodel.nodeType == NodeType.root_node ? 'container' : this.nodel.nodeType.replace(/^form_grid_/, '');
   }
 
   getAvailableTypes(): NodeType[] | null {
@@ -57,10 +57,10 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
 
   getAvailableChildren(): NodeElement[] | null {
     switch (this.nodel.nodeType) {
-      case NodeType.form:
-        return [new GridRow()];
+      case NodeType.root_node:
+        return [/*new GridRow()*/];
       case NodeType.grid_row:
-        return [new GridCol()];
+      return [/*new GridCol()*/];
       default:
         return null;
     }

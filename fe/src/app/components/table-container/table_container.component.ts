@@ -6,7 +6,7 @@
 import { Component, OnInit, NgZone, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 
-import { TableColumn, Table } from "@core/domain/uimetadata/table";
+import { TablePage } from "@core/domain/uimetadata/table-page";
 import { Observable } from 'rxjs';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -20,8 +20,8 @@ import { Entity } from '@core/domain/metadata/entity';
   styleUrls: ['./table_container.component.scss']
 })
 export class TableContainerComponent implements OnInit, OnDestroy {
-  table$: Observable<Table>;
-  private table: Table;
+  table$: Observable<TablePage>;
+  private table: TablePage;
   private currentEntity: Entity | undefined;
 
   constructor(public frmdbStreams: FrmdbStreamsService,

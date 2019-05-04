@@ -7,7 +7,7 @@ import { Component, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 import { FormControl, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 
-import { NodeType, FormTabs } from "@core/domain/uimetadata/form";
+import { NodeType, FormTabs } from "@core/domain/uimetadata/node-elements";
 import { FormEditingService } from '../form-editing.service';
 
 

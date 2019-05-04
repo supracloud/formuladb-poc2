@@ -1,3 +1,5 @@
+import { NodeElement, GridRow, RootNode } from "./node-elements";
+
 /**
 * © 2018 S.C. FORMULA DATABASE S.R.L.
 * License TBD
@@ -33,7 +35,7 @@ export enum FrmdbLy {
     ly_landing = "ly_landing",
     ly_dashboard = "ly_dashboard",
     ly_spreadsheet = "ly_spreadsheet",
-    ly_form = "ly_form", //same with ly_admin for Form pages
+    ly_form = "ly_form", //same with ly_admin for FormPage pages
 
     ly_zpattern = "ly_zpattern",
     ly_mosaic = "ly_mosaic",
@@ -72,18 +74,21 @@ export const BrandCharacteristics = [
     {left: "Young", right: "Old"},
 ];
 
-export interface Page {
-    colorPalette: string;
-    sidebarImageUrl: string;    
-    brandName: string;
-    logoUrl: string;
-    cssUrl: string | null;
+export interface Page extends RootNode {
+    _id: string;
+    childNodes?: NodeElement[];
+
+    colorPalette?: string;
+    sidebarImageUrl?: string;    
+    brandName?: string;
+    logoUrl?: string;
+    cssUrl?: string | null;
     topNavLook?: "tn_nav" | "tn_slim";
     sideNavLook?: "sn_nav" | "sn_none";
     footerLook?: "ft_nav" | "ft_none";
     header?: FrmdbHeader;
-    layout: FrmdbLy;
-    look: FrmdbLook,
+    layout?: FrmdbLy;
+    look?: FrmdbLook,
     // tbd1: string;
     // tbd2: string;
     // tbd3: string;

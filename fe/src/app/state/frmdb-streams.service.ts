@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { Form } from '@core/domain/uimetadata/form';
+import { FormPage } from '@core/domain/uimetadata/form-page';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { FrmdbUserEvent } from './frmdb-user-events';
-import { Table } from '@core/domain/uimetadata/table';
+import { TablePage } from '@core/domain/uimetadata/table-page';
 import { Entity } from '@core/domain/metadata/entity';
 import { FormulaHighlightedColumns } from './table.state';
 import { FrmdbServerEvent } from './frmdb-server-events';
@@ -25,9 +25,9 @@ export class FrmdbStreamsService {
   public readonlyMode$: Observable<boolean>;
   public entities$: Observable<Entity[]>;
   public entity$: Observable<Entity>;
-  public table$: Observable<Table>;
+  public table$: Observable<TablePage>;
   public formulaHighlightedColumns$: Observable<FormulaHighlightedColumns>;
-  public form$: Observable<Form>;
+  public form$: Observable<FormPage>;
   public formData$: Observable<DataObj>;
   public autoCompleteState$: Observable<appState.AutoCompleteState>;
   public page$: Observable<Page>;
@@ -41,7 +41,7 @@ export class FrmdbStreamsService {
     this.devMode$ = this.store.select(appState.getDeveloperMode);
     this.readonlyMode$ = this.store.select(appState.getFormReadOnly);
     this.entities$ = this.store.select(appState.getEntitiesState);
-    this.form$ = this.store.select(appState.getFormState).pipe(filter<Form>(x => x != null));
+    this.form$ = this.store.select(appState.getFormState).pipe(filter<FormPage>(x => x != null));
     this.formData$ = this.store.select(appState.getFormDataState).pipe(filter<DataObj>(x => x != null));
     this.table$ = this.store.select(appState.getTableState);
     this.formulaHighlightedColumns$ = this.store.select(appState.getTableHighlightColumns);

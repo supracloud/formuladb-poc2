@@ -6,7 +6,8 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Entity } from "@core/domain/metadata/entity";
 import { elvis_a } from "@core/elvis";
 import { untilDestroyed } from "ngx-take-until-destroy";
-import { Table } from "@core/domain/uimetadata/table";
+import { FormDataGrid, NodeType } from "@core/domain/uimetadata/node-elements";
+import { calcBindingFlags } from "@angular/core/src/view/util";
 
 @Component({
     selector: 'custom-stats',
@@ -18,7 +19,7 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
     private params: IToolPanelParams;
     private gridApi: GridApi;
     private currentEntity: Entity | undefined;
-    private currentTable: Table | undefined;
+    private currentTable: FormDataGrid | undefined;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
         private router: Router,
@@ -30,7 +31,9 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
     ngOnInit(): void {
         console.debug("ngOnInit");
         this.frmdbStreams.entity$.pipe(untilDestroyed(this)).subscribe(e => this.currentEntity = e);
-        this.frmdbStreams.table$.pipe(untilDestroyed(this)).subscribe(t => this.currentTable = t);
+        this.frmdbStreams.table$.pipe(untilDestroyed(this)).subscribe(t => 
+            this.currentTable = (t.childNodes||[]).find(cn => cn.nodeType == NodeType.form_data_grid) as FormDataGrid
+        );
     }
 
     ngOnDestroy(): void {
@@ -53,7 +56,7 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
 
         this.gridApi.exportDataAsExcel({
             headerRowHeight: 100,
-            columnKeys: this.currentTable.columns.filter(c => !c.skipExportExcel).map(c => c.name)
+            columnKeys: (this.currentTable.columns||[]).filter(c => !c.skipExportExcel).map(c => c.name)
         });
     }
 
