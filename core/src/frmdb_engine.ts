@@ -99,7 +99,7 @@ export class FrmdbEngine {
         return this.frmdbEngineStore.getTable(event.table._id)
             .catch(err => { console.log(err); return; })
             .then(tbl => {
-                if (tbl) event.table._rev = tbl._rev;
+                // if (tbl) event.table._rev = tbl._rev;
 
                 return this.frmdbEngineStore.putTable(event.table).catch(err => console.error(err));
             })

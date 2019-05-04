@@ -7,6 +7,7 @@ import { Pn } from "@core/domain/metadata/entity";
 import { FormPage } from '@core/domain/uimetadata/form-page'
 import { FrmdbLy } from "@core/domain/uimetadata/page";
 import { NodeType } from "@core/domain/uimetadata/node-elements";
+import { LargeSalesReport } from "./inventory-metadata";
 
 let testUUID = 1;
 function getTestUUID() {
@@ -15,6 +16,7 @@ function getTestUUID() {
 
 export var LargeSalesReport_Form: FormPage = {
   _id: "FormPage:ALL^^LargeSalesReport",
+  nodeType: NodeType.root_node,
   layout: FrmdbLy.ly_admin,
   childNodes: [
     {
@@ -58,7 +60,8 @@ export var LargeSalesReport_Form: FormPage = {
       childNodes: [
         {
           nodeType: NodeType.form_table,
-          "tableName": "large_sales",
+          tableName: "large_sales",
+          refEntityName: LargeSalesReport._id,
           childNodes: [
             {
               nodeType: NodeType.form_input,

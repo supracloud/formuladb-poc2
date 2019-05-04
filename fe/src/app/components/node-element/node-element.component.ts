@@ -11,12 +11,11 @@ import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 
 
-// @Component({
-//   // tslint:disable-next-line:component-selector
-//   selector: '[frmdb-form_item]',
-//   templateUrl: './form_item.component.html',
-//   styleUrls: ['./form_item.component.scss']
-// })
+@Component({
+  selector: '[frmdb-node-element]',
+  templateUrl: './node-element.component.html',
+  styleUrls: ['./node-element.component.scss']
+})
 export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   dragHandle: any;

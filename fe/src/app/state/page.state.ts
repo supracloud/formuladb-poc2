@@ -7,27 +7,36 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Page, FrmdbLy, FrmdbLook } from '@core/domain/uimetadata/page';
 import { PageChangedAction, PageChangedActionN } from '../actions/page.user.actions';
 import { NodeType } from '@core/domain/uimetadata/node-elements';
+import { HasId } from '@core/domain/key_value_obj';
+import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, PageDataFromBackendActionN, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
+import { mergeSubObj } from '@core/domain/metadata/data_obj';
 
-export interface PageState extends Page {
-  pageType: 'table' | 'form' | null;
+export interface PageState {
+  page: Page;
+  pageData: HasId | null;
 }
 
 export const pageInitialState: PageState = {
-  _id: "",
-  nodeType: NodeType.root_node,
-  colorPalette: "default",
-  sidebarImageUrl: "/assets/img/sidebar/sidebar-8.jpg",//TODO: set default per page !
-  brandName: "FormulaDB",
-  logoUrl: '/assets/logo7.png',
-  cssUrl: null,
-  layout: FrmdbLy.ly_admin,
-  look: FrmdbLook.lk_Approachable,
-  pageType: null,
+  page: {
+    _id: "",
+    nodeType: NodeType.root_node,
+    colorPalette: "default",
+    sidebarImageUrl: "/assets/img/sidebar/sidebar-8.jpg",//TODO: set default per page !
+    brandName: "FormulaDB",
+    logoUrl: '/assets/logo7.png',
+    cssUrl: null,
+    layout: FrmdbLy.ly_admin,
+    look: FrmdbLook.lk_Approachable,
+  },
+  pageData: null,
 };
 
 
 export type PageActions =
   | PageChangedAction
+  | PageFromBackendAction
+  | PageDataFromBackendAction
+  | ResetPageDataFromBackendAction
   ;
 
 /**
@@ -35,13 +44,38 @@ export type PageActions =
  * @param state 
  * @param action 
  */
-export function themeReducer(state = pageInitialState, action: PageActions): PageState {
+export function pageReducer(state = pageInitialState, action: PageActions): PageState {
   let ret: PageState = state;
   switch (action.type) {
     case PageChangedActionN:
       ret = {
-        pageType: state.pageType,
-        ...action.page
+        ...state,
+        page: action.page,
+      };
+      break;
+    case PageFromBackendActionN:
+      ret = {
+        ...state,
+        page: action.page,
+      };
+      break;
+    case PageDataFromBackendActionN:
+      if (null == state.pageData || state.pageData._id === action.obj._id) ret = { ...state, pageData: action.obj };
+      else {
+          let pageData = {
+              ...state.pageData
+          };
+          mergeSubObj(pageData, action.obj);
+          ret = {
+              ...state,
+              pageData: pageData,
+          };
+      }
+      break;
+    case ResetPageDataFromBackendActionN:
+      ret = {
+          ...state,
+          pageData: action.obj
       };
       break;
   }
@@ -54,18 +88,14 @@ export function themeReducer(state = pageInitialState, action: PageActions): Pag
  * Link with global application state
  */
 export const reducers = {
-  'page': themeReducer
+  'page': pageReducer
 };
-export const getPageState = createFeatureSelector<PageState>('page');
-export const getPageLayout = createSelector(
-  getPageState,
-  (state: PageState) => state ? state.layout : pageInitialState.layout
+const getPageStateBase = createFeatureSelector<PageState>('page');
+export const getPageState = createSelector(
+  getPageStateBase,
+  (state: PageState) => state.page
 );
-export const getPageColorPalette = createSelector(
-  getPageState,
-  (state: PageState) => state ? state.colorPalette : pageInitialState.colorPalette
-);
-export const getPageSidebarImageUrl = createSelector(
-  getPageState,
-  (state: PageState) => state ? state.sidebarImageUrl : pageInitialState.sidebarImageUrl
+export const getPageDataState = createSelector(
+  getPageStateBase,
+  (state: PageState) => state.pageData
 );

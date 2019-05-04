@@ -54,8 +54,6 @@ export interface AppState {
   'core': fromCore.CoreState;
   'page': fromPage.PageState;
   'entity': fromEntity.EntityState;
-  'table': fromTable.TableState;
-  'form': fromForm.FormState;
   'i18n': fromI18n.I18nState;
   'formula': fromFormula.FormulaState
 };
@@ -64,8 +62,6 @@ export const appInitialState = {
   core: fromCore.coreInitialState,
   page: fromPage.pageInitialState,
   entity: fromEntity.entityInitialState,
-  table: fromTable.tableInitialState,
-  form: fromForm.formInitialState,
   i18n: fromI18n.i18nInitialState,
   formula: fromFormula.formulaEditorInitialState,
 };
@@ -104,10 +100,6 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
     if (action.type === fromCore.CoreAppReadonlyActionN) {
       updatedState = {
         ...state,
-        form: {
-          ...state.form,
-          rdonly: action.appReadonly != fromCore.NotReadonly,
-        }
       }
     }
     //TODO: this should be an effect
@@ -140,31 +132,15 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
     else if (action.type === fromFormula.FormulaEditorToggleN) {
       updatedState = {
         ...state,
-        table: {
-          ...state.table,
-          formulaHighlightedColumns: {},
-        },
         formula: {
           ...state.formula,
           editedEntity: state.entity.selectedEntity,
           editedProperty: state.formula.selectedProperty,
         }
       }
-    } else if (action.type === fromFormula.FormulaEditedN) {
-      updatedState = {
-        ...state,
-        table: {
-          ...state.table,
-          formulaHighlightedColumns: action.formulaColumns,
-        }
-      }
     } else if (action.type == fromEntity.SelectedEntityActionN) {
       updatedState = {
         ...state,
-        table: {
-          ...state.table,
-          entity: action.entity,
-        }
       }
     }
     let newState = reducer(updatedState, action);

@@ -7,6 +7,7 @@ import { Pn } from "@core/domain/metadata/entity";
 import { FormPage } from '@core/domain/uimetadata/form-page';
 import { Forms__ServiceForm } from './forms-metadata';
 import { NodeType } from "@core/domain/uimetadata/node-elements";
+import { ProductLocation } from "./inventory-metadata";
 
 let testUUID = 1;
 function getTestUUID() {
@@ -59,7 +60,7 @@ export const Forms__ServiceForm_Form_: FormPage = {
       _id: getTestUUID(), nodeType: NodeType.grid_row,
       childNodes: [
         {
-          _id: getTestUUID(), nodeType: NodeType.form_tabs, tableName: 'service_form_units', tabNameFormPath: 'equipment.code',
+          _id: getTestUUID(), nodeType: NodeType.form_tabs, tableName: 'service_form_units', refEntityName: "ServiceFormUnits", tabNameFormPath: 'equipment.code',
           childNodes: [
             {
               _id: getTestUUID(), nodeType: NodeType.grid_row,
@@ -97,7 +98,7 @@ export const Forms__ServiceForm_Form_: FormPage = {
               _id: getTestUUID(), nodeType: NodeType.grid_row,
               childNodes: [
                 {
-                  _id: getTestUUID(), nodeType: NodeType.form_table, tableName: 'items',
+                  _id: getTestUUID(), nodeType: NodeType.form_table, tableName: 'items', refEntityName: ProductLocation._id,
                   childNodes: [
                     {
                       _id: getTestUUID(), nodeType: NodeType.form_autocomplete, refEntityName: 'product',

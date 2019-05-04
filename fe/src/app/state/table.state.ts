@@ -37,7 +37,6 @@ export const tableInitialState: TableState = {
   formulaHighlightedColumns: {},
 };
 
-export const TableFromBackendActionN = "[table] TableFromBackendAction";
 export const ServerEventModifiedTableN = events.ServerEventModifiedTableN;
 export const UserSelectRowN = "[table] UserSelectRow";
 export const ServerEventNewRowN = "[table] ServerEventNewRow";
@@ -52,11 +51,6 @@ export class ServerEventModifiedTable implements Action {
   }
 }
 
-export class TableFormBackendAction implements Action {
-  readonly type = TableFromBackendActionN;
-
-  constructor(public table: TablePage) { }
-}
 
 export class UserSelectRow implements Action {
   readonly type = UserSelectRowN;
@@ -77,7 +71,6 @@ export class UserSelectCell implements Action {
 }
 
 export type TableActions =
-  | TableFormBackendAction
   | ServerEventModifiedTable
   | UserSelectRow
   | ServerEventNewRow
@@ -94,12 +87,6 @@ export function tableReducer(state = tableInitialState, action: TableActions): T
   let ret: TableState = state;
   switch (action.type) {
     //user navigates to different tables
-    case TableFromBackendActionN:
-      ret = {
-        ...state,
-        table: action.table,
-      };
-      break;
     case UserSelectCellN:
       ret = {
         ...state,
@@ -128,7 +115,4 @@ export const getTableState = createSelector(
   getTable,
   (state: TableState) => state ? state.table : tableInitialState.table
 );
-export const getTableHighlightColumns = createSelector(
-  getTable,
-  (state: TableState) => state ? state.formulaHighlightedColumns : tableInitialState.formulaHighlightedColumns
-);
+

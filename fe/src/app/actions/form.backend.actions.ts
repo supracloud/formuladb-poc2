@@ -10,25 +10,35 @@ import { FormPage } from "@core/domain/uimetadata/form-page";
 import { NodeElement, NodeType, FormAutocomplete } from "@core/domain/uimetadata/node-elements";
 import { ChangeObj, applyChanges } from "@core/domain/change_obj";
 import * as events from "@core/domain/event";
+import { Page } from '@core/domain/uimetadata/page';
+import { HasId } from '@core/domain/key_value_obj';
 
 export { DataObj };
 export { FormPage };
 export { ChangeObj, applyChanges };
 
 
-export const FormDataFromBackendActionN = "[form] FormDataFromBackendAction";
-export const ResetFormDataFromBackendActionN = "[form] ResetFormDataFromBackendAction";
+export const ResetPageDataFromBackendActionN = "[form] ResetPageDataFromBackendAction";
 export const FormNotifFromBackendActionN = "[form] FormNotifFromBackendAction";
-export const FormFromBackendActionN = "[form] FormFromBackendAction";
+export const PageFromBackendActionN = "[page] PageFromBackendAction";
+export const PageDataFromBackendActionN = "[page] PageDataFromBackendAction";
 
-export class FormDataFromBackendAction implements Action {
-  readonly type = FormDataFromBackendActionN;
 
-  constructor(public obj: DataObj) { }
+export class PageFromBackendAction implements Action {
+  readonly type = PageFromBackendActionN;
+
+  constructor(public page: Page) { }
 }
 
-export class ResetFormDataFromBackendAction implements Action {
-  readonly type = ResetFormDataFromBackendActionN;
+
+export class PageDataFromBackendAction implements Action {
+  readonly type = PageDataFromBackendActionN;
+
+  constructor(public obj: HasId) { }
+}
+
+export class ResetPageDataFromBackendAction implements Action {
+  readonly type = ResetPageDataFromBackendActionN;
 
   constructor(public obj: DataObj) { }
 }
@@ -39,11 +49,6 @@ export class FormNotifFromBackendAction implements Action {
   constructor(public event: events.ServerEventModifiedFormEvent | events.ServerEventModifiedFormDataEvent) { }
 }
 
-export class FormFromBackendAction implements Action {
-  readonly type = FormFromBackendActionN;
-
-  constructor(public form: FormPage) { }
-}
 
 export const FormAutoCompleteOptionsFromBackendActionN = "[form] FormAutoCompleteOptionsFromBackendAction";
 export class FormAutoCompleteOptionsFromBackendAction implements Action {

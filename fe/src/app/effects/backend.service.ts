@@ -13,9 +13,9 @@ import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@core/dom
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@core/domain/event";
 import { SimpleAddHocQuery } from "@core/key_value_store_i";
-import { TablePage, isTable } from "@core/domain/uimetadata/table-page";
+import { TablePage, isTablePage } from "@core/domain/uimetadata/table-page";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
-import { FormPage, isForm } from "@core/domain/uimetadata/form-page";
+import { FormPage, isFormPage } from "@core/domain/uimetadata/form-page";
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
@@ -176,7 +176,7 @@ export class BackendService {
         });
         if (!http) return null;
         let ti = http;
-        if (!isTable(ti)) throw new Error("response is not TablePage " + CircularJSON.stringify(ti));
+        if (!isTablePage(ti)) throw new Error("response is not TablePage " + CircularJSON.stringify(ti));
         return ti;
     }
 
@@ -186,7 +186,7 @@ export class BackendService {
         });
         if (!http) return null;
         let fi = http;
-        if (!isForm(fi)) throw new Error("response is not FormPage " + CircularJSON.stringify(fi));
+        if (!isFormPage(fi)) throw new Error("response is not FormPage " + CircularJSON.stringify(fi));
         return fi;
     }
 

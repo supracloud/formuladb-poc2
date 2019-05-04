@@ -15,6 +15,6 @@ export interface FormPage extends Page {
     stateGraph?: EntityStateGraph;
     isEditable?: boolean;
 }
-export function isForm(param: KeyValueObj): param is FormPage {
-    return param != null && typeof param === 'object' && param._id.indexOf('FormPage:') == 0;
+export function isFormPage(param: KeyValueObj): param is FormPage {
+    return param != null && typeof param === 'object' && param._id != null && param._id.indexOf('FormPage:') == 0;
 }

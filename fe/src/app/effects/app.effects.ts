@@ -22,8 +22,8 @@ import { FormPage } from "@core/domain/uimetadata/form-page";
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
-import { TableFormBackendAction, FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
-import { FormDataFromBackendAction, FormNotifFromBackendAction, ResetFormDataFromBackendAction, FormFromBackendAction } from '../actions/form.backend.actions';
+import { FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
+import { FormNotifFromBackendAction, ResetPageDataFromBackendAction, PageFromBackendAction, PageDataFromBackendActionN, PageDataFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
@@ -102,7 +102,7 @@ export class AppEffects {
             this.app = app;
 
             this.store.dispatch(new PageChangedAction({
-                ...pageInitialState,
+                ...pageInitialState.page,
                 ...app.page
             }));
 
@@ -153,7 +153,7 @@ export class AppEffects {
                 } else {
                     this.store.dispatch(new FormNotifFromBackendAction(eventFromBe));
                     if (eventFromBe.state_ !== "ABORT") {
-                        this.store.dispatch(new FormDataFromBackendAction(eventFromBe.obj));
+                        this.store.dispatch(new PageDataFromBackendAction(eventFromBe.obj));
                     }
                     console.warn("FIXME, replicate changes from the server");
                 }
@@ -165,7 +165,7 @@ export class AppEffects {
                     this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
                 } else {
                     let obj = await this.backendService.getDataObj(id);
-                    this.store.dispatch(new ResetFormDataFromBackendAction(obj));
+                    this.store.dispatch(new ResetPageDataFromBackendAction(obj));
                 }
                 break;
             }
@@ -173,7 +173,7 @@ export class AppEffects {
                 break;
             }
             case events.ServerEventModifiedTableN: {
-                this.store.dispatch(new TableFormBackendAction(eventFromBe.table));
+                this.store.dispatch(new PageFromBackendAction(eventFromBe.table));
                 break;
             }
             case events.ServerEventNewEntityN: {
@@ -250,10 +250,10 @@ export class AppEffects {
         if (id && entityName && id != this.currentUrl.id) {
             this.currentUrl.id = id;
             if (id === entityName + '~~') {
-                this.store.dispatch(new ResetFormDataFromBackendAction({_id: id}));
+                this.store.dispatch(new ResetPageDataFromBackendAction({_id: id}));
             } else {
                 this.backendService.getDataObj(id)
-                    .then(obj => this.store.dispatch(new ResetFormDataFromBackendAction(obj)))
+                    .then(obj => this.store.dispatch(new ResetPageDataFromBackendAction(obj)))
                     .catch(err => console.error(err))
                     ;
             }
@@ -272,7 +272,7 @@ export class AppEffects {
         this.actions$.pipe(ofType<appState.ServerEventNewRow>(appState.ServerEventNewRowN)).subscribe(action => {
             this.currentUrl.id = generateUUID();
             this.router.navigate([this.currentUrl.entity!._id + '/' + this.currentUrl.id]);
-            this.store.dispatch(new FormDataFromBackendAction({ _id: this.currentUrl.id }))
+            this.store.dispatch(new PageDataFromBackendAction({ _id: this.currentUrl.id }))
         });
     }
 
@@ -295,13 +295,13 @@ export class AppEffects {
             if (!table.childNodes || table.childNodes.length == 0) {
                 table = autoLayoutTable(table, entity);
             }
-            this.store.dispatch(new appState.TableFormBackendAction(table));
+            this.store.dispatch(new PageFromBackendAction(table));
 
             let form: FormPage = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
             if (!form.childNodes || form.childNodes.length == 0) {
                 autoLayoutForm(form, entity, this.cachedEntitiesMap);
             }
-            this.store.dispatch(new FormFromBackendAction(form));
+            this.store.dispatch(new PageFromBackendAction(form));
 
         } catch (err) {
             console.error(err, err.stack);

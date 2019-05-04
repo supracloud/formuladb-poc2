@@ -10,4 +10,3 @@ export class PageChangedAction implements Action {
 
   constructor(public page: Page) { }
 }
-

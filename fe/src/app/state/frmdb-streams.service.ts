@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { FormPage } from '@core/domain/uimetadata/form-page';
+import { FormPage, isFormPage } from '@core/domain/uimetadata/form-page';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { FrmdbUserEvent } from './frmdb-user-events';
-import { TablePage } from '@core/domain/uimetadata/table-page';
+import { TablePage, isTablePage } from '@core/domain/uimetadata/table-page';
 import { Entity } from '@core/domain/metadata/entity';
 import { FormulaHighlightedColumns } from './table.state';
 import { FrmdbServerEvent } from './frmdb-server-events';
@@ -15,6 +15,7 @@ import { AppServerEventAction } from '../actions/app.actions';
 import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@core/domain/event';
 import { Page } from '@core/domain/uimetadata/page';
 import { FeUser } from '@core/domain/user';
+import { HasId } from '@core/domain/key_value_obj';
 
 @Injectable({
   providedIn: 'root'
@@ -25,12 +26,12 @@ export class FrmdbStreamsService {
   public readonlyMode$: Observable<boolean>;
   public entities$: Observable<Entity[]>;
   public entity$: Observable<Entity>;
-  public table$: Observable<TablePage>;
   public formulaHighlightedColumns$: Observable<FormulaHighlightedColumns>;
-  public form$: Observable<FormPage>;
-  public formData$: Observable<DataObj>;
   public autoCompleteState$: Observable<appState.AutoCompleteState>;
   public page$: Observable<Page>;
+  public table$: Observable<TablePage>;
+  public form$: Observable<FormPage>;
+  public pageData$: Observable<HasId>;
   public user$: Observable<FeUser>;
 
 
@@ -41,13 +42,13 @@ export class FrmdbStreamsService {
     this.devMode$ = this.store.select(appState.getDeveloperMode);
     this.readonlyMode$ = this.store.select(appState.getFormReadOnly);
     this.entities$ = this.store.select(appState.getEntitiesState);
-    this.form$ = this.store.select(appState.getFormState).pipe(filter<FormPage>(x => x != null));
-    this.formData$ = this.store.select(appState.getFormDataState).pipe(filter<DataObj>(x => x != null));
-    this.table$ = this.store.select(appState.getTableState);
-    this.formulaHighlightedColumns$ = this.store.select(appState.getTableHighlightColumns);
+    this.formulaHighlightedColumns$ = this.store.select(appState.getFormulaHighlightedColumns);
     this.entity$ = this.store.select(appState.getTableEntityState).pipe(filter<Entity>(x => x != null));
     this.autoCompleteState$ = this.store.select(appState.getAutoCompleteState).pipe(filter<appState.AutoCompleteState>(x => x != null));
     this.page$ = this.store.select(appState.getPageState);
+    this.table$ = this.page$.pipe(filter(p => isTablePage(p)));
+    this.form$ = this.page$.pipe(filter(p => isFormPage(p)));
+    this.pageData$ = this.store.select(appState.getPageDataState).pipe(filter<FeUser>(x => x != null));
     this.user$ = this.store.select(appState.getUser).pipe(filter<FeUser>(x => x != null));
 
     //TODO: remove these and use only ngrx Actions

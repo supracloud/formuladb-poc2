@@ -44,9 +44,7 @@ export const formInitialState: FormState = {
 
 
 export type FormActions =
-    | formServerActions.FormDataFromBackendAction
-    | formServerActions.ResetFormDataFromBackendAction
-    | formServerActions.FormFromBackendAction
+    | formServerActions.ResetPageDataFromBackendAction
     | formServerActions.FormNotifFromBackendAction
     | formServerActions.FormAutoCompleteOptionsFromBackendAction
     | formUserActions.FormDropAction
@@ -106,37 +104,11 @@ function addRecursive(tree: NodeElementWithChildren, movedEl: NodeElement, added
 export function formReducer(state = formInitialState, action: FormActions): FormState {
     let ret: FormState = state;
     switch (action.type) {
-        case formServerActions.ResetFormDataFromBackendActionN:
-            ret = {
-                ...state,
-                formData: action.obj
-            };
-            break;
         //changes from the server are coming: properties modified
-        case formServerActions.FormDataFromBackendActionN:
-            if (null == state.formData || state.formData._id === action.obj._id) ret = { ...state, formData: action.obj };
-            else {
-                let formData = {
-                    ...state.formData
-                };
-                mergeSubObj(formData, action.obj);
-                ret = {
-                    ...state,
-                    formData: formData,
-                };
-            }
-            break;
         case formServerActions.FormNotifFromBackendActionN:
             ret = {
                 ...state,
                 eventFromBackend: action.event,
-            };
-            break;
-        //user navigates to different forms
-        case formServerActions.FormFromBackendActionN:
-            ret = {
-                ...state,
-                form: action.form,
             };
             break;
         case formServerActions.FormAutoCompleteOptionsFromBackendActionN:

@@ -1,6 +1,6 @@
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { TablePage } from "@core/domain/uimetadata/table-page";
-import { NodeElement, FormDataGrid } from "@core/domain/uimetadata/node-elements";
+import { NodeElement, FormDataGrid } from "../components/node-element/node_modules/@core/domain/uimetadata/node-elements";
 
 export interface UserModifiedFormData {
     type: 'UserModifiedFormData';

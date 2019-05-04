@@ -31,7 +31,7 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
     ngOnInit(): void {
         console.debug("ngOnInit");
         this.frmdbStreams.entity$.pipe(untilDestroyed(this)).subscribe(e => this.currentEntity = e);
-        this.frmdbStreams.table$.pipe(untilDestroyed(this)).subscribe(t => 
+        this.frmdbStreams.page$.pipe(untilDestroyed(this)).subscribe(t => 
             this.currentTable = (t.childNodes||[]).find(cn => cn.nodeType == NodeType.form_data_grid) as FormDataGrid
         );
     }

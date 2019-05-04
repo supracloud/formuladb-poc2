@@ -29,7 +29,11 @@ export var Booking_Form: FormPage = {
     isEditable: true,
     layout: FrmdbLy.ly_fpattern,
     childNodes: [
+        { nodeType: NodeType.h_nav, _id: getTestUUID() },
         { nodeType: NodeType.grid_row, _id: getTestUUID(), childNodes: [
+            { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
+                { nodeType: NodeType.v_nav, _id: getTestUUID() },
+            ]},
             { nodeType: NodeType.grid_col, _id: getTestUUID(), childNodes: [
                 { nodeType: NodeType.date_range_picker, _id: getTestUUID(), startPropertyName: "start_date", endPropertyName: "end_date" },
             ]},

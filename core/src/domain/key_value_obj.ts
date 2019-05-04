@@ -10,6 +10,10 @@ export interface KeyValueObj {
     _id: string;
 }
 
+export interface HasId {
+    _id: string;
+}
+
 export interface SubObj extends KeyValueObj {
 
 }

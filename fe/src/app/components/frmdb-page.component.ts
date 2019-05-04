@@ -8,15 +8,15 @@ import {
     ChangeDetectionStrategy, Directive, OnDestroy, OnChanges, ChangeDetectorRef, HostBinding
 } from '@angular/core';
 
-import { Location } from '@angular/common';
+import { Location, KeyValue } from '@angular/common';
 
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 
 import { DataObj } from "@core/domain/metadata/data_obj";
 import { NodeElement, NodeType, getChildPath } from "@core/domain/uimetadata/node-elements";
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, merge, combineLatest } from 'rxjs';
 import { Entity } from "@core/domain/metadata/entity";
-import { filter, debounceTime, tap, combineLatest, map, merge } from 'rxjs/operators';
+import { filter, debounceTime, tap, map } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 import { ValidatorFn } from '@angular/forms';
@@ -26,9 +26,10 @@ import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { CircularJSON } from '@core/json-stringify';
-import { FormPage, isForm } from '@core/domain/uimetadata/form-page';
+import { isFormPage } from '@core/domain/uimetadata/form-page';
 import { Page } from '@core/domain/uimetadata/page';
 import { untilDestroyed } from 'ngx-take-until-destroy';
+import { KeyValueObj, HasId } from '@core/domain/key_value_obj';
 
 export class FrmdbFormControl extends FormControl {
     constructor(public name: string,
@@ -67,7 +68,6 @@ export class FrmdbPageComponent implements OnInit, OnDestroy, OnChanges {
     public isEditable?: boolean;
     protected subscriptions: Subscription[] = [];
     selectedEntity$: Observable<Entity | undefined>;
-    page$: Observable<Page>;
     page: Page | null;
 
     constructor(
@@ -83,15 +83,9 @@ export class FrmdbPageComponent implements OnInit, OnDestroy, OnChanges {
             console.error(ex);
         }
 
+        this.frmdbStreams.form$.subscribe(f => console.log(f));
         this.selectedEntity$ = this.formEditingService.frmdbStreams.entity$;
-        this.page$ = this.formEditingService.frmdbStreams.page$.pipe(
-            merge(this.formEditingService.frmdbStreams.table$),
-            merge(this.formEditingService.frmdbStreams.form$),
-            tap((x) => { if (isForm(x)) this.isEditable = x.isEditable }),
-            untilDestroyed(this)
-        );
-        this.page$.pipe(untilDestroyed(this)).subscribe(p => this.page = p);
-
+        this.frmdbStreams.page$.subscribe(p => console.log(p));
     }
 
     protected getChildPath(childEl: NodeElement) {
@@ -99,31 +93,36 @@ export class FrmdbPageComponent implements OnInit, OnDestroy, OnChanges {
     }
         
     ngOnInit() {
-
-        this.page$.pipe(
-            combineLatest(this.frmdbStreams.formData$, this.frmdbStreams.readonlyMode$),
+        combineLatest(this.frmdbStreams.page$, this.frmdbStreams.pageData$, this.frmdbStreams.readonlyMode$)
+        .pipe(
             untilDestroyed(this),
-        ).subscribe(([page, formData, rdonly]) => {
-            try {
-                if (this.formData && this.formData._id !== formData._id) {
-                    this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');
-                }
-                this.rdonly = rdonly || this.isEditable !== true;
-                this.syncReadonly(rdonly, this.theFormGroup);
-
-                this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, page.childNodes || [], this.rdonly);
-                this.updateFormGroupWithData(formData, this.theFormGroup, this.rdonly);
-                this.formData = formData;
-            } catch (ex) {
-                console.error(ex);
-            }
-            console.debug(page, this.page, this.formData, this.theFormGroup);
-            if (!this.changeDetectorRef['destroyed']) {
-                console.debug(page, this.page, this.formData);
-                this.changeDetectorRef.detectChanges();
-            }
-        });
+            tap(x => console.log(x)),
+        ).subscribe(([page, formData, rdonly]) => this.mergePageWithData(page, formData, rdonly));
     }
+
+    mergePageWithData(page: Page, formData: HasId, rdonly: boolean) {
+        try {
+            if (this.formData && this.formData._id !== formData._id) {
+                this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');
+            }
+            this.rdonly = rdonly || this.isEditable !== true;
+            this.syncReadonly(rdonly, this.theFormGroup);
+
+            this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, page.childNodes || [], this.rdonly);
+            this.updateFormGroupWithData(formData, this.theFormGroup, this.rdonly);
+            this.formData = formData;
+            this.page = page;
+        } catch (ex) {
+            console.error(ex);
+        }
+        console.debug(page, this.page, this.formData, this.theFormGroup);
+        
+        if (!this.changeDetectorRef['destroyed']) {
+            console.debug(page, this.page, this.formData);
+            this.changeDetectorRef.detectChanges();
+        }
+    }
+
     ngOnChanges() {
         console.debug(this.page, this.formData);
     }

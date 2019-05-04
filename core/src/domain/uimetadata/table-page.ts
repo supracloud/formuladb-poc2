@@ -13,6 +13,6 @@ import { FrmdbLy, Page } from './page';
 export interface TablePage extends Page {
     _id: string;
 }
-export function isTable(param: SubObj): param is TablePage {
-    return param != null && typeof param === 'object' && param._id.indexOf('TablePage:') === 0;
+export function isTablePage(param): param is TablePage {
+    return param != null && typeof param === 'object' && param._id != null && param._id.indexOf('TablePage:') === 0;
 }
