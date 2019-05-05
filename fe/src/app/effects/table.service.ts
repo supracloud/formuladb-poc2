@@ -1,5 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Injectable } from '@angular/core';
 
 import { BackendService } from './backend.service';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
@@ -14,9 +13,6 @@ export class TableService {
   constructor(
     private backendService: BackendService, 
     private frmdbStreams: FrmdbStreamsService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private _ngZone: NgZone
   ){
   }
 
@@ -61,18 +57,6 @@ export class TableService {
         // this block, so we can work out the exact row count
         let totalRowCount = startRow + rowCount;
         return totalRowCount;
-    }
-  }
-  
-  userSelectTableRow(dataObj: DataObj) {
-    this.frmdbStreams.userEvents$.next({ type: "UserSelectedRow", dataObj });
-  }
-
-  navigateToFormPage(dataObj: DataObj) {
-    if (dataObj._id) {
-      this._ngZone.run(() => {
-        this.router.navigate(['./' + dataObj._id], { relativeTo: this.route });
-      })
     }
   }
     

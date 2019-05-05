@@ -3,8 +3,9 @@
  * License TBD
  */
 
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import {
     GridApi, GridReadyEvent,
@@ -85,7 +86,11 @@ export class DataGridComponent extends BaseNodeComponent {
 
     constructor(public formEditingService: FormEditingService,
         private tableService: TableService,
-        private i18npipe: I18nPipe) {
+        private i18npipe: I18nPipe,
+        private router: Router,
+        private route: ActivatedRoute,
+        private _ngZone: NgZone        
+    ){
             
         super(formEditingService);
 
@@ -250,7 +255,7 @@ export class DataGridComponent extends BaseNodeComponent {
         if (this.dataGrid.clickAction == "autocomplete") {
             this.setAutocompleteProperties(event.data);
         } else if (this.dataGrid.clickAction == "select-table-row") {
-            this.tableService.userSelectTableRow(event.data);
+            this.userSelectTableRow(event.data);
         } else {
             console.warn("Unknown clickAction " + this.dataGrid.clickAction);
         }
@@ -258,7 +263,19 @@ export class DataGridComponent extends BaseNodeComponent {
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
         if (this.dataGrid.dblClickAction === "edit-row") {
-            this.tableService.navigateToFormPage(event.data);
+            this.navigateToFormPage(event.data);
+        }
+    }
+
+    userSelectTableRow(dataObj: DataObj) {
+        this.frmdbStreams.userEvents$.next({ type: "UserSelectedRow", dataObj });
+    }
+
+    navigateToFormPage(dataObj: DataObj) {
+        if (dataObj._id) {
+            this._ngZone.run(() => {
+                this.router.navigate(['./' + dataObj._id], { relativeTo: this.route });
+            })
         }
     }
 
