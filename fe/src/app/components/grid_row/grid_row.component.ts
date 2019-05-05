@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, HostBinding } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, OnDestroy } from '@angular/core';
 import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/node-elements";
 import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
 import { FormEditingService } from '../form-editing.service';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { FormEditingService } from '../form-editing.service';
     '[class.row]': 'true',
   }
 })
-export class GridRowComponent extends BaseNodeComponent implements OnInit {
+export class GridRowComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
   @Input()
   nodel: NodeElementWithChildren;
@@ -34,7 +35,7 @@ export class GridRowComponent extends BaseNodeComponent implements OnInit {
 
   constructor(formEditingService: FormEditingService) {
     super(formEditingService);
-    formEditingService.frmdbStreams.devMode$.subscribe(devMode => this.editMode = devMode);
+    formEditingService.frmdbStreams.devMode$.pipe(untilDestroyed(this)).subscribe(devMode => this.editMode = devMode);
   }
 
   ngOnInit() {

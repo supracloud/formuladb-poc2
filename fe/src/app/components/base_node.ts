@@ -14,10 +14,6 @@ import { FormEditingService } from './form-editing.service';
 import { NodeElement, getChildPath, NodeType } from '@core/domain/uimetadata/node-elements';
 
 export class BaseNodeComponent implements OnDestroy {
-    ngOnDestroy(): void {
-        throw new Error("Method not implemented.");
-    }
-
     @HostBinding('class.form-item-highlight') highlightId: boolean;
 
     @Input()
@@ -76,4 +72,6 @@ export class BaseNodeComponent implements OnDestroy {
         } else console.warn("Cannot add children to a scalar node element", this.nodel, this.formgrp, this.fullpath);
     }
 
+    ngOnDestroy(): void {
+    }
 }

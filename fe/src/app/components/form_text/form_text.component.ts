@@ -48,7 +48,7 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     get value(): string {
         if (this.ctrl) {
             if (this.inputElement.representation === '_id') {
-                return (this.ctrl.value || '').replace(/^.*~~/, '')
+                return (this.ctrl.value + '' || '').replace(/^.*~~/, '')
             } 
             else return this.ctrl.value;
         }
