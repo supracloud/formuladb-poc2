@@ -1,23 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+
 import { BackendService } from './backend.service';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 import { Entity } from '@core/domain/metadata/entity';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { waitUntilNotNull } from '@core/ts-utils';
+import { DataObj } from '@core/domain/metadata/data_obj';
 
 @Injectable()
 export class TableService {
-  currentEntity: Entity;
-  constructor(private backendService: BackendService, private frmdbStreams: FrmdbStreamsService) {
-    frmdbStreams.entity$.subscribe(e => this.currentEntity = e);
+  constructor(
+    private backendService: BackendService, 
+    private frmdbStreams: FrmdbStreamsService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private _ngZone: NgZone
+  ){
   }
 
-  public getDataSource(entityName?: string): IServerSideDatasource {
+  public getDataSource(entityId: string): IServerSideDatasource {
     return {
       getRows: async (params: IServerSideGetRowsParams): Promise<void> => {
-        await waitUntilNotNull(() => Promise.resolve(this.currentEntity));
-        let entityId = entityName || this.currentEntity._id;
         let req = params.request;
         this.backendService.simpleAdHocQuery(entityId, req as SimpleAddHocQuery)
           .then((data: any[]) => {
@@ -59,4 +64,16 @@ export class TableService {
     }
   }
   
+  userSelectTableRow(dataObj: DataObj) {
+    this.frmdbStreams.userEvents$.next({ type: "UserSelectedRow", dataObj });
+  }
+
+  navigateToFormPage(dataObj: DataObj) {
+    if (dataObj._id) {
+      this._ngZone.run(() => {
+        this.router.navigate(['./' + dataObj._id], { relativeTo: this.route });
+      })
+    }
+  }
+    
 }

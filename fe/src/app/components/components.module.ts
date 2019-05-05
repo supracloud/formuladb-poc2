@@ -66,7 +66,6 @@ import { TableFpatternRenderer } from './table/table-fpattern.component';
 import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 import { TableToolsComponent } from './table/table-tools.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
-import { TableContainerComponent } from './table-container/table_container.component';
 
 @NgModule({
     imports: [
@@ -130,7 +129,6 @@ import { TableContainerComponent } from './table-container/table_container.compo
         LyCoverComponent,
         LyCardsComponent,
         DateRangePickerComponent,
-        TableContainerComponent,
     ],
     entryComponents: [
         FormInputComponent,
@@ -176,7 +174,6 @@ import { TableContainerComponent } from './table-container/table_container.compo
         TableHeaderComponent,
         HeaderComponent,
         TableComponent,
-        TableContainerComponent,
         PageItemsDirective,
         FormAutocompleteComponent,
         FormTabsComponent,

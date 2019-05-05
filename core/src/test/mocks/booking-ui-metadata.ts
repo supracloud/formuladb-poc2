@@ -9,7 +9,7 @@ import { TablePage } from '@core/domain/uimetadata/table-page';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { BookingItem, Booking } from './booking-metadata';
 import { $User } from '@core/domain/metadata/default-metadata';
-import { NodeType, FormDataGrid } from '@core/domain/uimetadata/node-elements';
+import { NodeType, FormDataGrid, TableColumn } from '@core/domain/uimetadata/node-elements';
 
 let testUUID = 1;
 function getTestUUID() {
@@ -62,6 +62,19 @@ export var BookingItem_Table: TablePage = {
     _id: "TablePage:ALL^^" + BookingItem._id,
     nodeType: NodeType.root_node,
     layout: FrmdbLy.ly_fpattern,
+    childNodes: [
+        { nodeType: NodeType.h_nav, _id: getTestUUID() },
+        {
+            _id: getTestUUID(),  
+            nodeType: NodeType.form_data_grid,
+            refEntityName: BookingItem._id,
+            columns: Object.values(BookingItem.props).map(pn => ({
+                _id: getTestUUID(),
+                name: pn.name, 
+                type: pn.propType_
+            } as TableColumn))
+        }
+    ]
 };
 
 export var Booking_Table: TablePage = {

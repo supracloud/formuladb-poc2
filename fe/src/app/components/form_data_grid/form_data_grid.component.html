@@ -11,7 +11,7 @@
   </ng-container>
 </div>
 <frmdb-table
-  [tableObservable]="table$"
+  [table]="dataGridElement"
   (onDataObjSelected)="onRowClicked($event)"
   (onRowDblClicked)="navigateToFormPage($event)"
 ></frmdb-table>

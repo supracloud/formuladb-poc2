@@ -29,7 +29,6 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
     data: any;
     frameworkComponents: any;
     defaultColDef: any;
-    table$: Subject<TablePage> = new ReplaySubject();
 
     constructor(formEditingService: FormEditingService, private backendSevice: BackendService) {
         super(formEditingService);
@@ -60,7 +59,6 @@ export class FormDataGridComponent extends BaseNodeComponent implements OnInit, 
         console.debug(this.fullpath, this.nodel, this.formgrp);
         this.dataGridElement = this.nodel as FormDataGrid;
         let entity = await this.backendSevice.getEntity(this.dataGridElement.refEntityName);
-        this.table$.next(autoLayoutTable(null, entity, this.dataGridElement.layout));
     }
 
     ngOnChanges() {

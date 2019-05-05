@@ -26,6 +26,7 @@ import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
 import { ExcelStyles } from './excel-styles';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 @Component({
     selector: 'frmdb-table',
@@ -34,7 +35,7 @@ import { ExcelStyles } from './excel-styles';
 })
 export class TableComponent implements OnInit, OnDestroy {
 
-    @Input() tableObservable: Observable<FormDataGrid>;
+    @Input() table: FormDataGrid;
 
     @Output() onDataObjSelected: EventEmitter<DataObj> = new EventEmitter()
     @Output() onRowDblClicked: EventEmitter<DataObj> = new EventEmitter()
@@ -85,7 +86,6 @@ export class TableComponent implements OnInit, OnDestroy {
     public frameworkComponents;
     public defaultColDef;
     headerHeight = 50;
-    table: FormDataGrid;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
         private tableService: TableService,
@@ -106,13 +106,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
     }
 
-    entityId() {
-        if (!this.table || !this.table._id) return undefined;
-        return this.table._id.replace(/^TablePage:\w+[^][^]/, '');
-    }
 
     applyCellStyles(params) {
-        let entityName = this.entityId();
+        let entityName = this.table.refEntityName;
         if (entityName && this.highlightColumns[entityName]
             && this.highlightColumns[entityName][params.colDef.field]) {
             return { backgroundColor: this.highlightColumns[entityName][params.colDef.field].replace(/^c_/, '#') };
@@ -140,106 +136,88 @@ export class TableComponent implements OnInit, OnDestroy {
             return 250;
         } else return 25;
     }
-    
+
     ngOnInit(): void {
-        console.debug("ngOnInit", this.table);
+        console.debug("ngOnInit", this.table, this.gridApi);
+        this.intAgGrid();
+    }
 
-        this.tableObservable.subscribe(async (t) => {
-            console.debug('new table ', t, this.gridApi, Object.keys(t));
-            if (Object.keys(t).length == 0) return;
+    async intAgGrid() {
+        console.debug("ngOnInit", this.table, this.gridApi);
 
-            this.headerHeight = t.headerHeight || 50;
-            if (t.headerBackground) this.excelStyles.find(s => s.id === "header")!.interior = {
-                //FIXME: setting header background does not seem to work
-                color: t.headerBackground,
-                pattern: "Solid",
-            };
-            this.table = _.cloneDeep(t)
-            await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-            this.gridApi.setServerSideDatasource(this.tableService.getDataSource(this.entityId()));
-            console.debug('new table ', t);
-            if (!t.columns) { return; }
-            try {
-                if (t.layout === FrmdbLy.ly_fpattern) {
-                    this.headerHeight = 0;
-                    this.columns = [{
-                        headerName: "N/A",
-                        field: "picture",
-                        cellRenderer: "tableFpatternRenderer",
-                        editable: true,
-                        colId: "picture",
-                        width: 800,
-                    }];
-                    this.gridApi.setColumnDefs(this.columns);
-                    this.gridApi.setHeaderHeight(0);
-                    this.gridApi.sizeColumnsToFit();
-                    return;    
+        this.headerHeight = this.table.headerHeight || 50;
+        if (this.table.headerBackground) this.excelStyles.find(s => s.id === "header")!.interior = {
+            //FIXME: setting header background does not seem to work
+            color: this.table.headerBackground,
+            pattern: "Solid",
+        };
+        await waitUntilNotNull(() => Promise.resolve(this.gridApi));
+        this.gridApi.setServerSideDatasource(this.tableService.getDataSource(this.table.refEntityName));
+        try {
+
+            let cssClassRules: ColDef['cellClassRules'] = {};
+            let conditionalFormatting = this.table.conditionalFormatting || {};
+            for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
+                cssClassRules[cssClassName] = function(params) {
+                    return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                 }
+            }
+            let cols = this.table.columns || [];
 
-                let cssClassRules: ColDef['cellClassRules'] = {};
-                let conditionalFormatting = t.conditionalFormatting || {};
-                for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
-                    cssClassRules[cssClassName] = function(params) {
-                        return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
+            this.columns = cols.map(c => <ColDef>{
+                headerName: this.i18npipe.transform(c.name),
+                field: c.name,
+                width: c.width ? c.width : 100,
+                filter: this.agFilter(c.type),
+                filterParams: {
+                    newRowsAction: 'keep',
+                },
+                enableRowGroup: true,
+                enableValue: true,
+                resizable: true,
+                valueFormatter: (params) => this.valueFormatter(params),
+                cellStyle: (cp: any) => this.applyCellStyles(cp),
+                cellClassRules: cssClassRules,
+            });
+    
+            const fs = {};
+            cols.filter(c => c.filter)
+                .forEach(c => {
+                    if (c.filter) {
+                        fs[c.name] = { type: c.filter.operator, filter: c.filter.value, filterType: 'text' };
                     }
-                }
-
-                this.columns = t.columns.map(c => <ColDef>{
-                    headerName: this.i18npipe.transform(c.name),
-                    field: c.name,
-                    width: c.width ? c.width : 100,
-                    filter: this.agFilter(c.type),
-                    filterParams: {
-                        newRowsAction: 'keep',
-                    },
-                    enableRowGroup: true,
-                    enableValue: true,
-                    resizable: true,
-                    valueFormatter: (params) => this.valueFormatter(params),
-                    cellStyle: (cp: any) => this.applyCellStyles(cp),
-                    cellClassRules: cssClassRules,
                 });
-          
-                const fs = {};
-                t.columns.filter(c => c.filter)
-                    .forEach(c => {
-                        if (c.filter) {
-                            fs[c.name] = { type: c.filter.operator, filter: c.filter.value, filterType: 'text' };
-                        }
-                    });
 
-                this.gridApi.setColumnDefs(this.columns);
-                try {
-                    this.gridApi.setFilterModel(fs);
-                    this.gridApi.setSortModel(t.columns.filter(c => c.sort !== null)
-                        .map(c => <any>{ colId: c.name, sort: c.sort }));
-                    this.gridApi.setHeaderHeight(this.headerHeight);
-                } catch (err) {
-                    console.error(err);
-                }
+            this.gridApi.setColumnDefs(this.columns);
+            try {
+                this.gridApi.setFilterModel(fs);
+                this.gridApi.setSortModel(cols.filter(c => c.sort !== null)
+                    .map(c => <any>{ colId: c.name, sort: c.sort }));
+                this.gridApi.setHeaderHeight(this.headerHeight);
+            } catch (err) {
+                console.error(err);
+            }
 
-            } catch (ex) {
-                console.error(ex);
+        } catch (ex) {
+            console.error(ex);
+        }
+
+        this.frmdbStreams.formulaHighlightedColumns$.pipe(untilDestroyed(this))
+        .subscribe(h => {
+            this.highlightColumns = h || {};
+            if (this.gridApi) {
+                this.gridApi.refreshCells({ force: true });
             }
         });
-        this.subscriptions.push(this.frmdbStreams.formulaHighlightedColumns$
-            .subscribe(h => {
-                this.highlightColumns = h || {};
-                if (this.gridApi) {
-                    this.gridApi.refreshCells({ force: true });
-                }
-            })
-        );
 
-        this.subscriptions.push(this.frmdbStreams.serverEvents$.subscribe(serverEvent => {
+        this.frmdbStreams.serverEvents$.pipe(untilDestroyed(this)).subscribe(serverEvent => {
             if (!this.gridApi) return;
             if (serverEvent.type === "ServerDeletedFormData") {
                 this.gridApi.purgeServerSideCache()
             }
-        }));
+        });
     }
     ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     onGridSizeChanged() {

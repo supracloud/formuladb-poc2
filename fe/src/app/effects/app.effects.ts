@@ -244,11 +244,24 @@ export class AppEffects {
             this.currentUrl.entityName = entityName;
             if (entityName) {
                 await this.changeEntity(entityName);
+                if (!id) {
+                    this.store.dispatch(new ResetPageDataFromBackendAction({_id: entityName + '^~Table'}));
+                }
             }
         }
 
         if (id && entityName && id != this.currentUrl.id) {
             this.currentUrl.id = id;
+
+            let entity = await this.backendService.getEntity(entityName);
+            if (null == entity) throw new Error("Cannot find entity " + entityName);
+
+            let form: FormPage = (await this.backendService.getForm(entityName)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
+            if (!form.childNodes || form.childNodes.length == 0) {
+                autoLayoutForm(form, entity, this.cachedEntitiesMap);
+            }
+            this.store.dispatch(new PageFromBackendAction(form));
+
             if (id === entityName + '~~') {
                 this.store.dispatch(new ResetPageDataFromBackendAction({_id: id}));
             } else {
@@ -297,11 +310,6 @@ export class AppEffects {
             }
             this.store.dispatch(new PageFromBackendAction(table));
 
-            let form: FormPage = (await this.backendService.getForm(path)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
-            if (!form.childNodes || form.childNodes.length == 0) {
-                autoLayoutForm(form, entity, this.cachedEntitiesMap);
-            }
-            this.store.dispatch(new PageFromBackendAction(form));
 
         } catch (err) {
             console.error(err, err.stack);

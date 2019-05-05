@@ -105,6 +105,9 @@ export interface TableNodeElementBase extends SubObj {
     tableName?: string;
 
     childNodes?: NodeElement[];
+
+    clickAction?: "select-table-row" | "autocomplete";
+    dblClickAction?: "edit-row";
 }
 export type TableNodeElement = FormDataGrid | FormTable | FormTabs | CardContainer;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
