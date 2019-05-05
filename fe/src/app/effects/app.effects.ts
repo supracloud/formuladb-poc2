@@ -60,7 +60,8 @@ export const ActionsToBeSentToServerNames = [
 export class AppEffects {
     private currentUrl: { appName: string | null, entityName: string | null, id: string | null, entity: Entity | null } = { appName: null, entityName: null, id: null, entity: null };
     private cachedEntitiesMap: _.Dictionary<Entity> = {};
-    private page: Page;
+    private tablePage: TablePage;
+    private formPage: FormPage;
     private app: App;
     private user: FeUser;
 
@@ -79,8 +80,6 @@ export class AppEffects {
 
         //listen for new object creations
         this.listenForNewDataObjActions();
-
-        this.store.select(appState.getPageState).subscribe(p => this.page = p);
 
         waitUntilNotNull(async () => {
             let ret = await this.backendService.getApplications();
@@ -248,6 +247,8 @@ export class AppEffects {
                     this.store.dispatch(new ResetPageDataFromBackendAction({_id: entityName + '^~Table'}));
                 }
             }
+        } else if (!id && this.currentUrl.id) {
+            this.store.dispatch(new PageChangedAction(this.tablePage));
         }
 
         if (id && entityName && id != this.currentUrl.id) {
@@ -260,6 +261,7 @@ export class AppEffects {
             if (!form.childNodes || form.childNodes.length == 0) {
                 autoLayoutForm(form, entity, this.cachedEntitiesMap);
             }
+            this.formPage = form;
             this.store.dispatch(new PageFromBackendAction(form));
 
             if (id === entityName + '~~') {
@@ -308,6 +310,7 @@ export class AppEffects {
             if (!table.childNodes || table.childNodes.length == 0) {
                 table = autoLayoutTable(table, entity);
             }
+            this.tablePage = table;
             this.store.dispatch(new PageFromBackendAction(table));
 
 
