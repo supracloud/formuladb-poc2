@@ -19,7 +19,7 @@ export function autoLayoutTable(table: TablePage | null, entity: Entity, layout?
     retTable.layout = elvis(table).layout || FrmdbLy.ly_admin,
     retTable.childNodes = [{
         _id: generateUUID(),  
-        nodeType: NodeType.form_data_grid,
+        nodeType: NodeType.data_grid,
         refEntityName: entity._id,
         columns: _.values(entity.props).map(pn => ({
             _id: generateUUID(),

@@ -1,7 +1,7 @@
 import { Entity, EntityProperty } from "@core/domain/metadata/entity";
 import { Page, FrmdbLy } from "@core/domain/uimetadata/page";
 import { FormPage } from "@core/domain/uimetadata/form-page";
-import { NodeElementWithChildren, FormTable, FormTabs, FormAutocomplete, NodeType, FormDatepicker, FormText, FormInput, GridRow, NodeElement, isNodeElementWithChildren, Button, CardContainer, ScalarNodeElement, FormDataGrid } from "@core/domain/uimetadata/node-elements";
+import { NodeElementWithChildren, FormTable, FormTabs, FormAutocomplete, NodeType, FormDatepicker, FormText, FormInput, GridRow, NodeElement, isNodeElementWithChildren, Button, CardContainer, ScalarNodeElement, DataGrid } from "@core/domain/uimetadata/node-elements";
 
 import * as _ from "lodash";
 
@@ -26,7 +26,7 @@ export function autoLayoutForm(form: FormPage | null, entity: Entity, entitiesMa
 }
 
 export function autoLayoutChildren(layout: FrmdbLy, parentFormEl: NodeElementWithChildren, entity: Entity, entitiesMap: _.Dictionary<Entity>) {
-    let referenceToDataGrids: Map<string, FormDataGrid> = new Map();
+    let referenceToDataGrids: Map<string, DataGrid> = new Map();
     parentFormEl.childNodes = _.values(entity.props).map(pn => {
         let child: NodeElement;
 
@@ -60,7 +60,7 @@ export function autoLayoutChildren(layout: FrmdbLy, parentFormEl: NodeElementWit
             if (FrmdbLy.ly_fpattern === layout) {
                 child = referenceToDataGrids.get(pn.referencedEntityName) || {
                     _id: generateUUID(),
-                    nodeType: NodeType.form_data_grid,
+                    nodeType: NodeType.data_grid,
                     layout: layout,
                     autocompleteProperties: [],
                     refEntityName: pn.referencedEntityName,
@@ -103,7 +103,7 @@ export function autoLayoutChildren(layout: FrmdbLy, parentFormEl: NodeElementWit
         } else if (pn.propType_ === Pn.EXTENDS_ENTITY) {
             child = {
                 _id: generateUUID(),
-                nodeType: NodeType.form_data_grid,
+                nodeType: NodeType.data_grid,
                 refEntityName: pn.referencedEntityName,
             };
         } else if (pn.propType_ === Pn.ACTION) {

@@ -16,7 +16,7 @@ export enum NodeType {
     form_autocomplete = "form_autocomplete",
     form_tabs = "form_tabs",
     form_table = "form_table",
-    form_data_grid = "form_data_grid",
+    data_grid = "form_data_grid",
     form_chart = "form_chart",
     form_datepicker = "form_datepicker",
     form_timepicker = "form_timepicker",
@@ -50,7 +50,7 @@ export enum NodeType {
 export type ScalarNodeElement = 
     | FormInput
     | FormAutocomplete
-    | FormDataGrid
+    | DataGrid
     | FormDatepicker
     | FormTimepicker
     | DateRangePicker
@@ -109,9 +109,9 @@ export interface TableNodeElementBase extends SubObj {
     clickAction?: "select-table-row" | "autocomplete";
     dblClickAction?: "edit-row";
 }
-export type TableNodeElement = FormDataGrid | FormTable | FormTabs | CardContainer;
+export type TableNodeElement = DataGrid | FormTable | FormTabs | CardContainer;
 export function isTableNodeElement(nodeEl: NodeElement): nodeEl is TableNodeElement {
-    return nodeEl.nodeType === NodeType.form_data_grid
+    return nodeEl.nodeType === NodeType.data_grid
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
         || nodeEl.nodeType === NodeType.card_container;
@@ -211,8 +211,8 @@ export interface ColumnFilter {
     operator: string;
     value: string;
 }
-export interface FormDataGrid extends TableNodeElementBase {
-    nodeType: NodeType.form_data_grid;
+export interface DataGrid extends TableNodeElementBase {
+    nodeType: NodeType.data_grid;
     _id: string;
     conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
     headerHeight?: number;

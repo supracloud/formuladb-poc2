@@ -24,8 +24,7 @@ import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-edi
 import { FrmdbOnfocusDirective } from '@fe/app/dev-mode-overlay/frmdb-onfocus.directive';
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
 import { NotFoundComponent } from '@fe/app/components/not-found/not-found.component';
-import { TableHeaderComponent } from '@fe/app/components/table/table-header.component';
-import { TableComponent } from '@fe/app/components/table/table.component';
+import { TableHeaderComponent } from '@fe/app/components/data-grid/table-header.component';
 import { PageItemsDirective } from '@fe/app/components/page_items.directive';
 import { FormAutocompleteComponent } from '@fe/app/components/form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from '@fe/app/components/form_tabs/form_tabs.component';
@@ -39,7 +38,7 @@ import { ButtonGroupComponent } from '@fe/app/components/button_group/button_gro
 import { CalendarComponent } from '@fe/app/components/calendar/calendar.component';
 import { JumbotronComponent } from '@fe/app/components/jumbotron/jumbotron.component';
 import { DropdownComponent } from '@fe/app/components/dropdown/dropdown.component';
-import { FormDataGridComponent } from '@fe/app/components/form_data_grid/form_data_grid.component';
+import { DataGridComponent } from '@fe/app/components/data-grid/data-grid.component';
 import { FormEnumComponent } from '@fe/app/components/form_enum/form_enum.component';
 import { FormStateComponent } from '@fe/app/components/form_state/form_state.component';
 import { GalleryComponent } from '@fe/app/components/gallery/gallery.component';
@@ -62,9 +61,9 @@ import { RouterModule } from '@angular/router';
 import { LyAdminComponent } from './ly_admin/ly_admin.component';
 import { LyCoverComponent } from './ly_cover/ly_cover.component';
 import { LyCardsComponent } from './ly_cards/ly_cards.component';
-import { TableFpatternRenderer } from './table/table-fpattern.component';
+import { TableFpatternRenderer } from './data-grid/table-fpattern.component';
 import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
-import { TableToolsComponent } from './table/table-tools.component';
+import { TableToolsComponent } from './data-grid/table-tools.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
 
 @NgModule({
@@ -74,7 +73,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         FormsModule,
         ReactiveFormsModule,
         NgbModule,
-        AgGridModule.withComponents([TableComponent, TableHeaderComponent, TableFpatternRenderer, TableToolsComponent]),
+        AgGridModule.withComponents([DataGridComponent, TableHeaderComponent, TableFpatternRenderer, TableToolsComponent]),
         CrosscuttingModule,
         FontAwesomeModule,
         NgxChartsModule,
@@ -92,7 +91,6 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         TableFpatternRenderer,
         TableToolsComponent,
         HeaderComponent,
-        TableComponent,
         PageItemsDirective,
         FormAutocompleteComponent,
         FormTabsComponent,
@@ -107,7 +105,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         CardComponent,
         JumbotronComponent,
         DropdownComponent,
-        FormDataGridComponent,
+        DataGridComponent,
         FormEnumComponent,
         FormStateComponent,
         GalleryComponent,
@@ -147,7 +145,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         JumbotronComponent,
         HeaderComponent,
         DropdownComponent,
-        FormDataGridComponent,
+        DataGridComponent,
         FormEnumComponent,
         FormStateComponent,
         GalleryComponent,
@@ -173,7 +171,6 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         NotFoundComponent,
         TableHeaderComponent,
         HeaderComponent,
-        TableComponent,
         PageItemsDirective,
         FormAutocompleteComponent,
         FormTabsComponent,
@@ -188,7 +185,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         CardComponent,
         JumbotronComponent,
         DropdownComponent,
-        FormDataGridComponent,
+        DataGridComponent,
         FormEnumComponent,
         FormStateComponent,
         GalleryComponent,

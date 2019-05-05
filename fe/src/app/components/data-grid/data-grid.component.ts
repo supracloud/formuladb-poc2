@@ -7,7 +7,7 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { Observable, Subscription } from 'rxjs';
 
 import {
-    GridOptions, GridApi, GridReadyEvent,
+    GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
     RowClickedEvent, CellFocusedEvent, ColDef
 } from 'ag-grid-community';
@@ -15,30 +15,26 @@ import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
 import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
-import { FrmdbStreamsService } from '../../state/frmdb-streams.service';
 import { waitUntilNotNull } from '@core/ts-utils';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
-import { FormDataGrid, TableColumn } from '@core/domain/uimetadata/node-elements';
+import { DataGrid, TableColumn } from '@core/domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@core/domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
 import { ExcelStyles } from './excel-styles';
 import { untilDestroyed } from 'ngx-take-until-destroy';
+import { BaseNodeComponent } from '../base_node';
+import { FormEditingService } from '../form-editing.service';
 
 @Component({
-    selector: 'frmdb-table',
-    templateUrl: './table.component.html',
-    styleUrls: ['./table.component.scss']
+    selector: 'frmdb-data-grid',
+    templateUrl: './data-grid.component.html',
+    styleUrls: ['./data-grid.component.scss']
 })
-export class TableComponent implements OnInit, OnDestroy {
-
-    @Input() table: FormDataGrid;
-
-    @Output() onDataObjSelected: EventEmitter<DataObj> = new EventEmitter()
-    @Output() onRowDblClicked: EventEmitter<DataObj> = new EventEmitter()
+export class DataGridComponent extends BaseNodeComponent {
 
     statusBar = {
         statusPanels: [
@@ -80,16 +76,19 @@ export class TableComponent implements OnInit, OnDestroy {
     private columns: ColDef[] = [];
     private filters: any = {};
     private sort: any = {};
-    private subscriptions: Subscription[] = [];
     private highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
 
     public frameworkComponents;
     public defaultColDef;
     headerHeight = 50;
+    dataGrid: DataGrid;
 
-    constructor(public frmdbStreams: FrmdbStreamsService,
+    constructor(public formEditingService: FormEditingService,
         private tableService: TableService,
         private i18npipe: I18nPipe) {
+            
+        super(formEditingService);
+
         // tslint:disable-next-line:max-line-length
         // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
@@ -108,7 +107,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
 
     applyCellStyles(params) {
-        let entityName = this.table.refEntityName;
+        let entityName = this.dataGrid.refEntityName;
         if (entityName && this.highlightColumns[entityName]
             && this.highlightColumns[entityName][params.colDef.field]) {
             return { backgroundColor: this.highlightColumns[entityName][params.colDef.field].replace(/^c_/, '#') };
@@ -132,37 +131,40 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     getRowHeight = () => {
-        if (elvis(this.table).layout === FrmdbLy.ly_fpattern) {
+        if (elvis(this.dataGrid).layout === FrmdbLy.ly_fpattern) {
             return 250;
         } else return 25;
     }
 
     ngOnInit(): void {
-        console.debug("ngOnInit", this.table, this.gridApi);
+        console.debug(this.fullpath, this.nodel, this.formgrp);
+        this.dataGrid = this.nodel as DataGrid;
+
+        console.debug("ngOnInit", this.dataGrid, this.gridApi);
         this.intAgGrid();
     }
 
     async intAgGrid() {
-        console.debug("ngOnInit", this.table, this.gridApi);
+        console.debug("ngOnInit", this.dataGrid, this.gridApi);
 
-        this.headerHeight = this.table.headerHeight || 50;
-        if (this.table.headerBackground) this.excelStyles.find(s => s.id === "header")!.interior = {
+        this.headerHeight = this.dataGrid.headerHeight || 50;
+        if (this.dataGrid.headerBackground) this.excelStyles.find(s => s.id === "header")!.interior = {
             //FIXME: setting header background does not seem to work
-            color: this.table.headerBackground,
+            color: this.dataGrid.headerBackground,
             pattern: "Solid",
         };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-        this.gridApi.setServerSideDatasource(this.tableService.getDataSource(this.table.refEntityName));
+        this.gridApi.setServerSideDatasource(this.tableService.getDataSource(this.dataGrid.refEntityName));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.table.conditionalFormatting || {};
+            let conditionalFormatting = this.dataGrid.conditionalFormatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function(params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                 }
             }
-            let cols = this.table.columns || [];
+            let cols = this.dataGrid.columns || [];
 
             this.columns = cols.map(c => <ColDef>{
                 headerName: this.i18npipe.transform(c.name),
@@ -230,7 +232,7 @@ export class TableComponent implements OnInit, OnDestroy {
             this.gridColumnApi = params.columnApi;
             this.gridApi.closeToolPanel();
         }
-        console.debug("onGridReady", this.table, this.gridApi);
+        console.debug("onGridReady", this.dataGrid, this.gridApi);
     }
 
     valueFormatter(params) {
@@ -245,30 +247,53 @@ export class TableComponent implements OnInit, OnDestroy {
     }
 
     onRowClicked(event: RowClickedEvent) {
-        this.onDataObjSelected.emit(event.data);
+        if (this.dataGrid.clickAction == "autocomplete") {
+            this.setAutocompleteProperties(event.data);
+        } else if (this.dataGrid.clickAction == "select-table-row") {
+            this.tableService.userSelectTableRow(event.data);
+        } else {
+            console.warn("Unknown clickAction " + this.dataGrid.clickAction);
+        }
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
-        this.onRowDblClicked.emit(event.data);
+        if (this.dataGrid.dblClickAction === "edit-row") {
+            this.tableService.navigateToFormPage(event.data);
+        }
+    }
+
+    setAutocompleteProperties(dataObj: DataObj) {
+        if (!this.dataGrid) return;
+        for (let prop of this.dataGrid.autocompleteProperties || []) {
+            let ctrl = this.formgrp.get(this.getPropPath(prop));
+            if (ctrl) {
+                ctrl.markAsDirty();
+                ctrl.setValue(dataObj[prop.refPropertyName]);
+            }
+        }
+    }
+
+    getPropPath(prop: { propertyName: string }) {
+        return (this.fullpath ? this.fullpath + '.' : '') + prop.propertyName;
     }
 
     columnMoving(event: any) {
-        if (this.table) {
-            const colx: number = (this.table.columns||[]).findIndex(c => c.name === event.column.colId);
-            const col: TableColumn = (this.table.columns||[]).splice(colx, 1)[0];
-            (this.table.columns||[]).splice(event.toIndex, 0, col);
+        if (this.dataGrid) {
+            const colx: number = (this.dataGrid.columns||[]).findIndex(c => c.name === event.column.colId);
+            const col: TableColumn = (this.dataGrid.columns||[]).splice(colx, 1)[0];
+            (this.dataGrid.columns||[]).splice(event.toIndex, 0, col);
         }
     }
 
     columnMoved(event: ColumnMovedEvent) {
-        if (this.table) {
+        if (this.dataGrid) {
             // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         }
     }
 
     columnResized(event: ColumnResizedEvent) {
-        if (event.finished && this.table !== null && event && event.column) {
-            const col = (this.table.columns || [])
+        if (event.finished && this.dataGrid !== null && event && event.column) {
+            const col = (this.dataGrid.columns || [])
                 .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
             if (col) { col.width = event.column.getActualWidth(); }
             // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
@@ -278,14 +303,14 @@ export class TableComponent implements OnInit, OnDestroy {
     filterChanged(event: any) {
         if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
             const fs = this.gridApi.getFilterModel();
-            (this.table.columns||[]).forEach(c => {
+            (this.dataGrid.columns||[]).forEach(c => {
                 if (fs[c.name]) {
                     c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                 } else {
                     c.filter = undefined;
                 }
             });
-            this.frmdbStreams.userEvents$.next({ type: "UserModifiedTableUi", table: this.table });
+            this.frmdbStreams.userEvents$.next({ type: "UserModifiedTableUi", table: this.dataGrid });
         }
         this.filters = this.gridApi.getFilterModel();
     }
@@ -293,7 +318,7 @@ export class TableComponent implements OnInit, OnDestroy {
     sortChanged(event: any) {
         if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
             const srt = this.gridApi.getSortModel();
-            (this.table.columns||[]).forEach(c => {
+            (this.dataGrid.columns||[]).forEach(c => {
                 const s = srt.find(i => i.colId === c.name);
                 if (s) {
                     c.sort = s.sort;

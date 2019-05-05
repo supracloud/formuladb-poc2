@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Entity } from "@core/domain/metadata/entity";
 import { elvis_a } from "@core/elvis";
 import { untilDestroyed } from "ngx-take-until-destroy";
-import { FormDataGrid, NodeType } from "@core/domain/uimetadata/node-elements";
+import { DataGrid, NodeType } from "@core/domain/uimetadata/node-elements";
 import { calcBindingFlags } from "@angular/core/src/view/util";
 
 @Component({
@@ -19,7 +19,7 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
     private params: IToolPanelParams;
     private gridApi: GridApi;
     private currentEntity: Entity | undefined;
-    private currentTable: FormDataGrid | undefined;
+    private currentTable: DataGrid | undefined;
 
     constructor(public frmdbStreams: FrmdbStreamsService,
         private router: Router,
@@ -32,7 +32,7 @@ export class TableToolsComponent implements IToolPanel, OnInit, OnDestroy {
         console.debug("ngOnInit");
         this.frmdbStreams.entity$.pipe(untilDestroyed(this)).subscribe(e => this.currentEntity = e);
         this.frmdbStreams.page$.pipe(untilDestroyed(this)).subscribe(t => 
-            this.currentTable = (t.childNodes||[]).find(cn => cn.nodeType == NodeType.form_data_grid) as FormDataGrid
+            this.currentTable = (t.childNodes||[]).find(cn => cn.nodeType == NodeType.data_grid) as DataGrid
         );
     }
 

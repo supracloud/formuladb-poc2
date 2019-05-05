@@ -10,7 +10,7 @@ import { FormInputComponent } from './form_input/form_input.component';
 import { FormAutocompleteComponent } from './form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from './form_tabs/form_tabs.component';
 import { FormTableComponent } from './form_table/form_table.component';
-import { FormDataGridComponent } from './form_data_grid/form_data_grid.component';
+import { DataGridComponent } from './data-grid/data-grid.component';
 import { FormChartComponent } from './form_chart/form_chart.component';
 import { FormDatepickerComponent } from './form_datepicker/form_datepicker.component';
 import { FormTimepickerComponent } from './form_timepicker/form_timepicker.component';
@@ -55,7 +55,7 @@ export type PageItemComponents =
     | JumbotronComponent
     | HeaderComponent
     | DropdownComponent
-    | FormDataGridComponent
+    | DataGridComponent
     | FormEnumComponent
     | FormStateComponent
     | GalleryComponent
@@ -123,8 +123,8 @@ export class PageItemsDirective {
                 case NodeType.form_table:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormTableComponent)
                     break;
-                case NodeType.form_data_grid:
-                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormDataGridComponent)
+                case NodeType.data_grid:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(DataGridComponent)
                     break;
                 case NodeType.form_chart:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormChartComponent)

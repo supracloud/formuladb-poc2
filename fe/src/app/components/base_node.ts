@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Input, HostBinding } from '@angular/core';
+import { Input, HostBinding, OnDestroy } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
@@ -13,7 +13,10 @@ import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } fr
 import { FormEditingService } from './form-editing.service';
 import { NodeElement, getChildPath, NodeType } from '@core/domain/uimetadata/node-elements';
 
-export class BaseNodeComponent {
+export class BaseNodeComponent implements OnDestroy {
+    ngOnDestroy(): void {
+        throw new Error("Method not implemented.");
+    }
 
     @HostBinding('class.form-item-highlight') highlightId: boolean;
 

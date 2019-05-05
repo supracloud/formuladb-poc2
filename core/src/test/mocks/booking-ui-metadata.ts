@@ -9,7 +9,7 @@ import { TablePage } from '@core/domain/uimetadata/table-page';
 import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { BookingItem, Booking } from './booking-metadata';
 import { $User } from '@core/domain/metadata/default-metadata';
-import { NodeType, FormDataGrid, TableColumn } from '@core/domain/uimetadata/node-elements';
+import { NodeType, DataGrid, TableColumn } from '@core/domain/uimetadata/node-elements';
 
 let testUUID = 1;
 function getTestUUID() {
@@ -46,7 +46,7 @@ export var Booking_Form: FormPage = {
             ]},
         ]},
         { 
-            nodeType: NodeType.form_data_grid, _id: getTestUUID(), 
+            nodeType: NodeType.data_grid, _id: getTestUUID(), 
             layout: FrmdbLy.ly_fpattern,
             refEntityName: BookingItem._id,
             properties: [
@@ -54,7 +54,7 @@ export var Booking_Form: FormPage = {
                 { nodeType: NodeType.form_input, _id: getTestUUID(), propertyType: Pn.STRING, propertyName: "booking_item_name", refPropertyName: BookingItem.props.name.name },
                 { nodeType: NodeType.form_input, _id: getTestUUID(), propertyType: Pn.NUMBER, propertyName: "booking_item_price", refPropertyName: BookingItem.props.price.name },
             ]
-        } as FormDataGrid
+        } as DataGrid
     ]
 };
 
@@ -66,8 +66,9 @@ export var BookingItem_Table: TablePage = {
         { nodeType: NodeType.h_nav, _id: getTestUUID() },
         {
             _id: getTestUUID(),  
-            nodeType: NodeType.form_data_grid,
+            nodeType: NodeType.data_grid,
             refEntityName: BookingItem._id,
+            dblClickAction: "edit-row",
             columns: Object.values(BookingItem.props).map(pn => ({
                 _id: getTestUUID(),
                 name: pn.name, 
