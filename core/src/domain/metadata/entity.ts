@@ -65,6 +65,7 @@ export function isPropertyWithProperties(param): param is ChildTableProperty | E
 export function extendEntityProperties(extendedEntity: HasEntityProperties, newProperties: EntityProperties) {
     _.toPairs(newProperties).forEach(([propName, p]) => {
         if (isReservedPropName(propName)) return;
+        extendedEntity.props = extendedEntity.props || {};
         extendedEntity.props[propName] = p;
     });
 }
@@ -151,7 +152,7 @@ export interface ChildTableProperty {
     name: string;
     referencedEntityName: string;
     isLargeTable?: boolean;
-    props: EntityProperties;
+    props?: EntityProperties;
 }
 export function isSubTableProperty(param): param is ChildTableProperty {
     return param != null && typeof param === 'object' && param.propType_ === Pn.CHILD_TABLE;

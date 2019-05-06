@@ -16,22 +16,21 @@ import { Entity } from "@core/domain/metadata/entity";
 import * as events from "@core/domain/event";
 
 import { FeUser } from "@core/domain/user";
-import { TablePage } from "@core/domain/uimetadata/table-page";
-import { FormPage } from "@core/domain/uimetadata/form-page";
+import { TablePage, emptyTablePage } from "@core/domain/uimetadata/table-page";
+import { FormPage, emptyFormPage } from "@core/domain/uimetadata/form-page";
 
 import * as appState from '../state/app.state';
 import { generateUUID } from "@core/domain/uuid";
 import { BackendService } from "./backend.service";
 import { FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
-import { FormNotifFromBackendAction, ResetPageDataFromBackendAction, PageFromBackendAction, PageDataFromBackendActionN, PageDataFromBackendAction } from '../actions/form.backend.actions';
+import { FormNotifFromBackendAction, ResetPageDataFromBackendAction, PageFromBackendAction, PageDataFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
 import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
 import { App } from '@core/domain/app';
-import { autoLayoutForm } from '../components/auto-layout-form';
-import { autoLayoutTable } from '../components/auto-layout-table';
+import { AutoLayoutService } from '../components/auto-layout.service';
 import { Page } from '@core/domain/uimetadata/page';
 import { elvis } from '@core/elvis';
 import { PageChangedAction } from '../actions/page.user.actions';
@@ -59,7 +58,6 @@ export const ActionsToBeSentToServerNames = [
 @Injectable()
 export class AppEffects {
     private currentUrl: { appName: string | null, entityName: string | null, id: string | null, entity: Entity | null } = { appName: null, entityName: null, id: null, entity: null };
-    private cachedEntitiesMap: _.Dictionary<Entity> = {};
     private tablePage: TablePage;
     private formPage: FormPage;
     private app: App;
@@ -70,7 +68,8 @@ export class AppEffects {
         private store: Store<appState.AppState>,
         private backendService: BackendService,
         private router: Router,
-        private frmdbStreams: FrmdbStreamsService
+        private frmdbStreams: FrmdbStreamsService,
+        private autoLayoutService: AutoLayoutService
     ) {
         //change app state based on router actions
         this.listenForRouterChanges();
@@ -117,8 +116,6 @@ export class AppEffects {
             let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
 
             //load entities and remove readOnly flag
-            this.cachedEntitiesMap = {};
-            entities.forEach(entity => this.cachedEntitiesMap[entity._id] = entity);
             this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
             this.store.dispatch(new appState.CoreAppReadonlyAction(appState.NotReadonly));
         
@@ -257,9 +254,9 @@ export class AppEffects {
             let entity = await this.backendService.getEntity(entityName);
             if (null == entity) throw new Error("Cannot find entity " + entityName);
 
-            let form: FormPage = (await this.backendService.getForm(entityName)) || autoLayoutForm(null, entity, this.cachedEntitiesMap);
-            if (!form.childNodes || form.childNodes.length == 0) {
-                autoLayoutForm(form, entity, this.cachedEntitiesMap);
+            let form: FormPage | null = await this.backendService.getForm(entityName);
+            if (!form || !form.childNodes || form.childNodes.length == 0) {
+                form = this.autoLayoutService.autoLayoutFormPage(form||emptyFormPage(entity._id), entity);
             }
             this.formPage = form;
             this.store.dispatch(new PageFromBackendAction(form));
@@ -306,19 +303,16 @@ export class AppEffects {
             this.currentUrl.entity = entity;
             this.store.dispatch(new appState.SelectedEntityAction(entity));
 
-            let table: TablePage = (await this.backendService.getTable(path)) || autoLayoutTable(null, entity);
-            if (!table.childNodes || table.childNodes.length == 0) {
-                table = autoLayoutTable(table, entity);
+            let table: TablePage | null = await this.backendService.getTable(path);
+            if (!table || !table.childNodes || table.childNodes.length == 0) {
+                table = this.autoLayoutService.autoLayoutTable(table||emptyTablePage(entity._id), entity);
             }
             this.tablePage = table;
             this.store.dispatch(new PageFromBackendAction(table));
-
 
         } catch (err) {
             console.error(err, err.stack);
         }
     }
-
     // @Effect() newDataObj$: Observable<appState.ServerEventNewRow> = null;//TODO
-
 }

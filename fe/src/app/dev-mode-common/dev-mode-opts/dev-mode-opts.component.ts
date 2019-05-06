@@ -13,7 +13,7 @@ import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
 import { FrmdbLook, FrmdbLy, Page, FrmdbHeader } from '@core/domain/uimetadata/page';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
-import { PageChangedAction } from '@fe/app/actions/page.user.actions';
+import { PageChangedAction, AutoLayoutPageAction } from '@fe/app/actions/page.user.actions';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 
 @Component({
@@ -168,10 +168,7 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     switchLayout(layout: FrmdbLy) {
-        this.store.dispatch(new PageChangedAction({
-            ...this.page, 
-            layout,
-        }));
+        this.store.dispatch(new AutoLayoutPageAction(layout));
     }
 
     switchHeader(header: FrmdbHeader) {

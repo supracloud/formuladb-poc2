@@ -45,6 +45,8 @@ export class FrmdbStreamsService {
     this.formulaHighlightedColumns$ = this.store.select(appState.getFormulaHighlightedColumns);
     this.entity$ = this.store.select(appState.getTableEntityState).pipe(filter<Entity>(x => x != null));
     this.autoCompleteState$ = this.store.select(appState.getAutoCompleteState).pipe(filter<appState.AutoCompleteState>(x => x != null));
+    this.store.select(appState.getPageStateBase).subscribe(x => console.warn(x));
+    this.store.select(appState.getPageState).subscribe(x => console.warn(x));
     this.page$ = this.store.select(appState.getPageState);
     this.table$ = this.page$.pipe(filter(p => isTablePage(p)));
     this.form$ = this.page$.pipe(filter(p => isFormPage(p)));

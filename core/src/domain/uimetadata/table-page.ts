@@ -3,11 +3,9 @@
  * License TBD
  */
 
-import { KeyValueObj, SubObj } from '../key_value_obj';
-import { Entity, Pn, FormulaExpression } from "../metadata/entity";
-import { generateUUID } from '../uuid';
 import * as _ from 'lodash';
-import { FrmdbLy, Page } from './page';
+import { NodeType } from './node-elements';
+import { Page } from './page';
 
 
 export interface TablePage extends Page {
@@ -15,4 +13,10 @@ export interface TablePage extends Page {
 }
 export function isTablePage(param): param is TablePage {
     return param != null && typeof param === 'object' && param._id != null && param._id.indexOf('TablePage:') === 0;
+}
+export function getTablePageEntityId(TablePage: TablePage) {
+    return TablePage._id.replace(/^TablePage:.*\^\^/, '');
+}
+export function emptyTablePage(entityId: string, role?: string): TablePage {
+    return { _id: "TablePage:ALL^^" + entityId, nodeType: NodeType.root_node };
 }

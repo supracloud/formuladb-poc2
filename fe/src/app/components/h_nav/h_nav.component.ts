@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, ChangeDetectorRef, Component, DoCheck, Input } from '@angular/core';
+import { OnInit, OnDestroy, ChangeDetectorRef, Component, DoCheck, Input, HostBinding } from '@angular/core';
 
 import { FormEditingService } from '../form-editing.service';
 import { combineLatest, startWith, tap } from 'rxjs/operators';
@@ -12,6 +12,10 @@ import { Observable } from 'rxjs';
     selector: 'nav[frmdb-h_nav]',
     templateUrl: './h_nav.component.html',
     styleUrls: ['./h_nav.component.scss'],
+    host: {
+        '[class.navbar]': 'true',
+        '[class.navbar-expand-md]': 'true',
+    }
 })
 export class HNavComponent implements OnInit, OnDestroy, DoCheck {
     public navigationItemsTree: NavigationItem[] = [];

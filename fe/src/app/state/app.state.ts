@@ -149,7 +149,7 @@ export function appMetaReducer(reducer: ActionReducer<AppState>): ActionReducer<
     }
     console.log("%c " + action.type + " ACTION DISPATCHED.", 
       "color: blue; font-size: 135%; font-weight: bold; text-decoration: underline;", 
-      new Date(), action, state, newState, reducer); 
+      new Date(), action, state, newState, reducer, state == newState); 
     
     return newState;
   };

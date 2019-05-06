@@ -28,6 +28,7 @@ import { FormEffects } from './effects/form.effects';
 // import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 import { ComponentsModule } from './components/components.module';
 import { FrmdbPageComponent } from './components/frmdb-page.component';
+import { AutoLayoutService } from './components/auto-layout.service';
 
 export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
 
@@ -58,6 +59,7 @@ export function getReducers() {
   providers: [
     // InjectionService,
     BackendService,
+    AutoLayoutService,
     {
       provide: REDUCER_TOKEN,
       useFactory: getReducers,

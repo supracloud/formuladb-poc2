@@ -5,11 +5,14 @@
 
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import { Page, FrmdbLy, FrmdbLook } from '@core/domain/uimetadata/page';
-import { PageChangedAction, PageChangedActionN } from '../actions/page.user.actions';
+import { PageChangedAction, PageChangedActionN, AutoLayoutPageAction } from '../actions/page.user.actions';
 import { NodeType } from '@core/domain/uimetadata/node-elements';
 import { HasId } from '@core/domain/key_value_obj';
-import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, PageDataFromBackendActionN, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
+import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
 import { mergeSubObj } from '@core/domain/metadata/data_obj';
+import { isFormPage } from '@core/domain/uimetadata/form-page';
+import { autoLayoutFormPage, autoLayoutTablePage } from '../components/auto-layout.service';
+import { isTablePage } from '@core/domain/uimetadata/table-page';
 
 export interface PageState {
   page: Page;
@@ -37,6 +40,7 @@ export type PageActions =
   | PageFromBackendAction
   | PageDataFromBackendAction
   | ResetPageDataFromBackendAction
+  | AutoLayoutPageAction
   ;
 
 /**
@@ -59,7 +63,7 @@ export function pageReducer(state = pageInitialState, action: PageActions): Page
         page: action.page,
       };
       break;
-    case PageDataFromBackendActionN:
+    case "[page] PageDataFromBackendAction":
       if (null == state.pageData || state.pageData._id === action.obj._id) ret = { ...state, pageData: action.obj };
       else {
           let pageData = {
@@ -72,6 +76,14 @@ export function pageReducer(state = pageInitialState, action: PageActions): Page
           };
       }
       break;
+    case "[page] AutoLayoutPageAction":
+      ret = {
+        ...state,
+        page: isFormPage(state.page) ? autoLayoutFormPage(state.page, undefined, action.layout) : 
+              isTablePage(state.page) ? autoLayoutTablePage(state.page, undefined, action.layout) : 
+              state.page,
+      }
+      break;
     case ResetPageDataFromBackendActionN:
       ret = {
           ...state,
@@ -80,7 +92,7 @@ export function pageReducer(state = pageInitialState, action: PageActions): Page
       break;
   }
 
-  // if (action.type.match(/^\[page\]/)) console.log('[page] reducer:', state, action, ret);
+  if (action.type.match(/^\[page\]/)) console.log('[page] reducer:', state, action, ret, state == ret, state.page == ret.page);
   return ret;
 }
 
@@ -90,7 +102,7 @@ export function pageReducer(state = pageInitialState, action: PageActions): Page
 export const reducers = {
   'page': pageReducer
 };
-const getPageStateBase = createFeatureSelector<PageState>('page');
+export const getPageStateBase = createFeatureSelector<PageState>('page');
 export const getPageState = createSelector(
   getPageStateBase,
   (state: PageState) => state.page

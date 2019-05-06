@@ -18,10 +18,9 @@ export { FormPage };
 export { ChangeObj, applyChanges };
 
 
-export const ResetPageDataFromBackendActionN = "[form] ResetPageDataFromBackendAction";
-export const FormNotifFromBackendActionN = "[form] FormNotifFromBackendAction";
+export const ResetPageDataFromBackendActionN = "[page] ResetPageDataFromBackendAction";
+export const FormNotifFromBackendActionN = "[page] FormNotifFromBackendAction";
 export const PageFromBackendActionN = "[page] PageFromBackendAction";
-export const PageDataFromBackendActionN = "[page] PageDataFromBackendAction";
 
 
 export class PageFromBackendAction implements Action {
@@ -32,7 +31,7 @@ export class PageFromBackendAction implements Action {
 
 
 export class PageDataFromBackendAction implements Action {
-  readonly type = PageDataFromBackendActionN;
+  readonly type = "[page] PageDataFromBackendAction";
 
   constructor(public obj: HasId) { }
 }
