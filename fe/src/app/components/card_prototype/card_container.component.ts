@@ -1,7 +1,7 @@
 /**
- * © 2018 S.C. FORMULA DATABASE S.R.L.
- * License TBD
- */
+* © 2018 S.C. FORMULA DATABASE S.R.L.
+* License TBD
+*/
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
@@ -10,38 +10,45 @@ import { CardContainer } from '@core/domain/uimetadata/node-elements';
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';
 import { elvis } from '@core/elvis';
+import { FormArray, AbstractControl } from '@angular/forms';
+import { TableService } from '@fe/app/effects/table.service';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { FrmdbFormControl, FrmdbFormGroup } from '../frmdb-page.component';
+import { BaseTableComponent } from '../base-table.component';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'frmdb-card_container',
-  templateUrl: './card_container.component.html',
-  styleUrls: ['./card_container.component.scss']
+    // tslint:disable-next-line:component-selector
+    selector: 'frmdb-card_container',
+    templateUrl: './card_container.component.html',
+    styleUrls: ['./card_container.component.scss']
 })
-export class CardContainerComponent extends BaseNodeComponent implements OnInit, OnChanges, OnDestroy {
+export class CardContainerComponent extends BaseTableComponent implements OnInit, OnChanges, OnDestroy {
+    
+    cardContainer: CardContainer;
+    @HostBinding('class') tmp: string = elvis(this.cardContainer).layout || "";
+    
+    @Input()
+    horizontal: boolean = false;
+    
+    data: any;
+    frameworkComponents: any;
+    defaultColDef: any;
+    childControls: AbstractControl[];
+    
+    constructor(formEditingService: FormEditingService, tableService: TableService
+    ){
+        super(formEditingService, tableService);
+    }
+    
+    ngOnInit() {
+        this.cardContainer = this.nodel as CardContainer;
+        super.ngOnInit();
+    }
 
-  cardContainer: CardContainer;
-  @HostBinding('class') tmp: string = elvis(this.cardContainer).layout || "";
-  
-  @Input()
-  horizontal: boolean = false;
-  
-  data: any;
-  frameworkComponents: any;
-  defaultColDef: any;
-
-  constructor(public formEditingService: FormEditingService, private sanitizer: DomSanitizer) {
-    super(formEditingService);
-  }
-
-  ngOnInit() {
-    this.cardContainer = this.nodel as CardContainer;
-    console.log(this.fullpath, this.formgrp, this.nodel);
-  }
-
-  ngOnChanges() {
-  }
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
+    ngOnChanges() {
+    }
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub.unsubscribe());
+    }
+    
 }

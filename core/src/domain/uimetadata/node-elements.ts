@@ -86,13 +86,12 @@ export type NodeElement =
     | CardContainer
     ;
 
-export type NodeElementWithChildren = RootNode | GridRow | GridCol | FormTable | FormTabs | CardContainer;
+export type NodeElementWithChildren = RootNode | GridRow | GridCol | TableNodeElement;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.root_node
         || nodeEl.nodeType === NodeType.grid_row
         || nodeEl.nodeType === NodeType.grid_col
-        || nodeEl.nodeType === NodeType.form_table
-        || nodeEl.nodeType === NodeType.form_tabs
+        || isTableNodeElement(nodeEl)
     ;
 }
 
@@ -192,9 +191,8 @@ export interface Card extends CardBase {
     nodeType: NodeType.card;
 }
 
-export interface CardContainer extends TableNodeElementBase {
+export interface CardContainer extends TableNodeElementBase, CardBase {
     nodeType: NodeType.card_container;
-    tableName: string;
     layout?: FrmdbLy.ly_cards | FrmdbLy.ly_grid | FrmdbLy.ly_fpattern | FrmdbLy.ly_zigzagpattern | FrmdbLy.ly_mosaic;
 }
 

@@ -106,10 +106,10 @@ export class FrmdbPageComponent implements OnInit, OnDestroy, OnChanges {
                 this.theFormGroup = new FrmdbFormGroup('TOP_LEVEL');
             }
             this.rdonly = rdonly || this.isEditable !== true;
-            this.syncReadonly(rdonly, this.theFormGroup);
+            this.formEditingService.syncReadonly(rdonly, this.theFormGroup);
 
             this.formEditingService.updateFormGroup(this.theFormGroup, this.theFormGroup, page.childNodes || [], this.rdonly);
-            this.updateFormGroupWithData(formData, this.theFormGroup, this.rdonly);
+            this.formEditingService.updateFormGroupWithData(formData, this.theFormGroup, this.rdonly);
             this.formData = formData;
             this.page = page;
         } catch (ex) {
@@ -127,81 +127,11 @@ export class FrmdbPageComponent implements OnInit, OnDestroy, OnChanges {
         console.debug(this.page, this.formData);
     }
 
-    private syncReadonly(rdonly: boolean, control: AbstractControl) {
-        if (rdonly && !control.disabled) {
-            control.disable();
-        } else if (!rdonly && control.disabled) {
-            control.enable();
-        }
-    }
-
     private formulaFieldValidation(nameRe: RegExp): ValidatorFn {
         return (control: AbstractControl): { [key: string]: any } | null => {
             const forbidden = nameRe.test(control.value);
             return forbidden ? { 'forbiddenName': { value: control.value } } : null;
         };
-    }
-
-    private updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, rdonly: boolean) {
-
-        // TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
-        this.syncReadonly(rdonly, formGroup);
-
-        for (const key in objFromServer) {
-            if ('type_' === key) { continue; }
-            // if ('_rev' === key) continue;
-            // if ('_id' === key) continue;
-
-            const objVal = objFromServer[key];
-            let formVal = formGroup.get(key);
-            if (null === objVal) { continue; }
-
-            if (objVal instanceof Array) {
-                if (null == formVal) {
-                    formVal = new FormArray([]);
-                    formGroup.setControl(key, formVal);
-                }
-                if (!(formVal instanceof FormArray)) {
-                    throw new Error('key ' + key + ', objVal Array \'' + objVal + '\', but formVal not FormArray: \'' + formVal + '\'');
-                }
-
-                let formArray = formVal as FormArray;
-                for (let [i, o] of objVal.entries()) {
-                    if (formArray.length <= i) {
-                        formArray.push(new FormGroup({}));
-                    }
-                    this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, rdonly);
-                };
-                for (let i = objVal.length; i < formArray.length; i++) {
-                    formArray.removeAt(i);
-                }
-
-            } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
-                if (null == formVal) {
-                    formVal = this.formEditingService.makeFormControl(this.theFormGroup, key, { value: undefined, disabled: rdonly });
-                    formGroup.setControl(key, formVal);
-                }
-                if (!(formVal instanceof FormControl)) {
-                    throw new Error('key ' + key + ', objVal scalar \'' + objVal + '\', but formVal not FormControl: \'' + CircularJSON.stringify(formVal) + '\'');
-                }
-
-                formVal.reset(objVal);
-                this.syncReadonly(rdonly, formVal);
-            } else if ('object' === typeof objVal) {
-                if (null == formVal) {
-                    formVal = new FormGroup({});
-                    formGroup.setControl(key, formVal);
-                }
-                if (!(formVal instanceof FormGroup)) {
-                    throw new Error('key ' + key + ', objVal object \'' + objVal + '\', but formVal not FormGroup: \'' + formVal + '\'');
-                }
-
-                this.updateFormGroupWithData(objVal, formVal, rdonly);
-            } else {
-                throw new Error('unkown objVal type: \'' + objVal + '\'');
-            }
-
-        }
     }
 
     // ngAfterViewInit() {

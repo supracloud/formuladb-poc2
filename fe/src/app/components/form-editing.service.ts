@@ -14,6 +14,7 @@ import * as _ from 'lodash';
 import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/node-elements';
 import { SimpleAddHocQuery } from '@core/key_value_store_i';
 import { Entity } from '@core/domain/metadata/entity';
+import { CircularJSON } from '@core/json-stringify';
 
 export class RelatedAutoCompleteControls {
   controls: {[refPropertyName: string]: FormAutocomplete} = {};
@@ -74,7 +75,15 @@ export class FormEditingService {
 
     return ctrl;
   }
+  
 
+  public syncReadonly(rdonly: boolean, control: AbstractControl) {
+    if (rdonly && !control.disabled) {
+        control.disable();
+    } else if (!rdonly && control.disabled) {
+        control.enable();
+    }
+  }
 
   public updateFormGroup(formgrp: FormGroup, parentFormGroup: FormGroup, nodeElements: NodeElement[], rdonly: boolean) {
     let newParent = parentFormGroup;
@@ -119,6 +128,69 @@ export class FormEditingService {
       }
     }
   }
+
+  public updateFormGroupWithData(objFromServer: DataObj, formGroup: FormGroup, rdonly: boolean) {
+
+    // TODO: CONCURRENT-EDITING-CONFLICT-HANDLING (see edit_flow.puml)
+    this.syncReadonly(rdonly, formGroup);
+
+    for (const key in objFromServer) {
+        if ('type_' === key) { continue; }
+        // if ('_rev' === key) continue;
+        // if ('_id' === key) continue;
+
+        const objVal = objFromServer[key];
+        let formVal = formGroup.get(key);
+        if (null === objVal) { continue; }
+
+        if (objVal instanceof Array) {
+            if (null == formVal) {
+                formVal = new FormArray([]);
+                formGroup.setControl(key, formVal);
+            }
+            if (!(formVal instanceof FormArray)) {
+                throw new Error('key ' + key + ', objVal Array \'' + objVal + '\', but formVal not FormArray: \'' + formVal + '\'');
+            }
+
+            let formArray = formVal as FormArray;
+            for (let [i, o] of objVal.entries()) {
+                if (formArray.length <= i) {
+                    formArray.push(new FormGroup({}));
+                }
+                this.updateFormGroupWithData(o, formArray.at(i) as FormGroup, rdonly);
+            };
+            for (let i = objVal.length; i < formArray.length; i++) {
+                formArray.removeAt(i);
+            }
+
+        } else if (/string|boolean|number/.test(typeof objVal) || objVal instanceof Date) {
+            if (null == formVal) {
+                formVal = this.makeFormControl(formGroup, key, { value: undefined, disabled: rdonly });
+                formGroup.setControl(key, formVal);
+            }
+            if (!(formVal instanceof FormControl)) {
+                throw new Error('key ' + key + ', objVal scalar \'' + objVal + '\', but formVal not FormControl: \'' + CircularJSON.stringify(formVal) + '\'');
+            }
+
+            formVal.reset(objVal);
+            this.syncReadonly(rdonly, formVal);
+        } else if ('object' === typeof objVal) {
+            if (null == formVal) {
+                formVal = new FormGroup({});
+                formGroup.setControl(key, formVal);
+            }
+            if (!(formVal instanceof FormGroup)) {
+                throw new Error('key ' + key + ', objVal object \'' + objVal + '\', but formVal not FormGroup: \'' + formVal + '\'');
+            }
+
+            this.updateFormGroupWithData(objVal, formVal, rdonly);
+        } else {
+            throw new Error('unkown objVal type: \'' + objVal + '\'');
+        }
+
+    }
+  }
+
 
   public propertyValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {

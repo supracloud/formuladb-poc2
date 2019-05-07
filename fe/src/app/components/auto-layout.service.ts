@@ -208,9 +208,13 @@ export class AutoLayoutService {
                 } as TableColumn))
             }];
         } else {
-            this.autoLayoutChildren(retTable.layout!, retTable, {
-                [entity._id]: { name: entity._id, propType_: Pn.CHILD_TABLE, referencedEntityName: entity._id }
-            });
+            let cardContainer: CardContainer = {
+                _id: generateUUID(),  
+                nodeType: NodeType.card_container,
+                refEntityName: entity._id,
+            };
+            retTable.childNodes = [cardContainer];
+            this.autoLayoutChildren(retTable.layout!, cardContainer, entity.props);
         }
         
         return retTable;
