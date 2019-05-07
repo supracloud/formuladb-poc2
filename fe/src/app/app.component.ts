@@ -15,9 +15,11 @@ import { FeUser } from '@core/domain/user';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   host: {
-    '[style.padding]': 'bodyPadding',
+    '[style.width]': '"100vw"',
+    '[style.height]': '"100vh"',
     '[style.overflow]': '"hidden"',
     '[style.background]': '"none transparent"',
+    '[style.padding]': 'bodyPadding',
     '[class.frmdb-dev-mode-on]': 'devMode',
   }
 })

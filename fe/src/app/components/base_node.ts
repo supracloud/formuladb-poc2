@@ -12,6 +12,7 @@ import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } from '@core/domain/metadata/data_obj';
 import { FormEditingService } from './form-editing.service';
 import { NodeElement, getChildPath, NodeType } from '@core/domain/uimetadata/node-elements';
+import { elvis } from '@core/elvis';
 
 export class BaseNodeComponent implements OnDestroy {
     @HostBinding('class.form-item-highlight') highlightId: boolean;
@@ -27,6 +28,16 @@ export class BaseNodeComponent implements OnDestroy {
 
     @Input()
     rdonly: boolean;
+
+    @HostBinding('class.row') class_row = (elvis(this.nodel).misc||[]).includes("row");
+    @HostBinding('class.col-4') class_col_4 = elvis(this.nodel).wcol == "col-4";
+
+    //FIXME: how to se all the classes defined in BaseNode atomatically
+    // @HostBinding('class') classes = [
+    //     elvis(this.nodel).wcol, 
+    //     elvis(this.nodel).wrem, 
+    //     ...(elvis(this.nodel).misc||[])
+    // ].filter(x => x).join(" ");
 
     protected subscriptions: Subscription[] = [];
     public frmdbStreams: FrmdbStreamsService;

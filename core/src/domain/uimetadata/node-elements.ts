@@ -86,16 +86,18 @@ export type NodeElement =
     | CardContainer
     ;
 
-export type NodeElementWithChildren = RootNode | GridRow | GridCol | TableNodeElement;
+export type NodeElementWithChildren = RootNode | GridRow | GridCol | FormTable | FormTabs | Card;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.root_node
         || nodeEl.nodeType === NodeType.grid_row
         || nodeEl.nodeType === NodeType.grid_col
-        || isTableNodeElement(nodeEl)
+        || nodeEl.nodeType === NodeType.form_table
+        || nodeEl.nodeType === NodeType.form_tabs
+        || nodeEl.nodeType === NodeType.card
     ;
 }
 
-export interface TableNodeElementBase extends SubObj {
+export interface TableNodeElementBase extends BaseNode {
     refEntityAlias?: string;
     refEntityName: string;
     
@@ -123,6 +125,7 @@ export function isPropertyNodeElement(nodeEl: NodeElement): nodeEl is PropertyNo
         || nodeEl.nodeType === NodeType.form_datepicker
         || nodeEl.nodeType === NodeType.form_text
         || nodeEl.nodeType === NodeType.form_autocomplete
+        || nodeEl.nodeType === NodeType.image
     ;
 }
 
@@ -136,13 +139,19 @@ export function getChildPath(nodeEl: NodeElement) {
     return '';
 }
 
-export interface FormInput extends SubObj {
+export interface BaseNode extends SubObj {
+    wcol?: | "col-1" | "col-2"  | "col-3"  | "col-4" | "col-5" | "col-6" | "col-7" | "col-8" | "col-9" | "col-10" | "col-11" | "col-12";
+    wrem?: | "wrem-0" | "wrem-5" | "wrem-10" | "wrem-15" | "wrem-20" | "wrem-25" | "wrem-30" | "wrem-35" | "wrem-40" | "wrem-45" | "wrem-50" | "wrem-55" | "wrem-60" | "wrem-65" | "wrem-70" | "wrem-75" | "wrem-80" | "wrem-85" | "wrem-90" | "wrem-95" | "wrem-100";
+    misc?: ("row")[];
+}
+
+export interface FormInput extends BaseNode {
     nodeType: NodeType.form_input;
     noLabel?: boolean;
     propertyName: string;
     propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
 }
-export interface FormText extends SubObj {
+export interface FormText extends BaseNode {
     nodeType: NodeType.form_text;
     _id: string;
     noLabel?: boolean;
@@ -151,7 +160,7 @@ export interface FormText extends SubObj {
     representation: "title" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id" | "string";
     uppercase?: boolean;
 }
-export interface FormAutocomplete extends SubObj {
+export interface FormAutocomplete extends BaseNode {
     nodeType: NodeType.form_autocomplete;
     _id: string;
     noLabel?: boolean;
@@ -167,7 +176,7 @@ export interface FormTabs extends TableNodeElementBase {
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export interface FormCard extends SubObj {
+export interface FormCard extends BaseNode {
     nodeType: NodeType.form_tabs;
     _id: string;
     tableName: string;
@@ -181,22 +190,18 @@ export interface FormTable extends TableNodeElementBase {
     childNodes?: NodeElement[];
 }
 
-interface CardBase extends SubObj {
-    _id: string;
-    horizontal?: boolean;
+export interface Card extends BaseNode {
+    nodeType: NodeType.card;
     childNodes?: NodeElement[];
 }
 
-export interface Card extends CardBase {
-    nodeType: NodeType.card;
-}
-
-export interface CardContainer extends TableNodeElementBase, CardBase {
+export interface CardContainer extends TableNodeElementBase {
     nodeType: NodeType.card_container;
     layout?: FrmdbLy.ly_cards | FrmdbLy.ly_grid | FrmdbLy.ly_fpattern | FrmdbLy.ly_zigzagpattern | FrmdbLy.ly_mosaic;
+    card: Card;
 }
 
-export interface TableColumn extends SubObj {
+export interface TableColumn extends BaseNode {
     _id: string;
     width?: number;
     sort?: string;
@@ -219,27 +224,27 @@ export interface DataGrid extends TableNodeElementBase {
     layout?: FrmdbLy.ly_admin | FrmdbLy.ly_fpattern;
 }
 
-export interface FormDatepicker extends SubObj {
+export interface FormDatepicker extends BaseNode {
     nodeType: NodeType.form_datepicker;
     _id: string;
     propertyName: string;
 }
 
-export interface FormTimepicker extends SubObj {
+export interface FormTimepicker extends BaseNode {
     nodeType: NodeType.form_timepicker;
     _id: string;
     propertyName: string;
 }
 
 
-export interface DateRangePicker extends SubObj {
+export interface DateRangePicker extends BaseNode {
     nodeType: NodeType.date_range_picker;
     _id: string;
     startPropertyName: string;
     endPropertyName: string;
 }
 
-export interface FormChart extends SubObj {
+export interface FormChart extends BaseNode {
     nodeType: NodeType.form_chart;
     _id: string;
     tableName: string;
@@ -251,130 +256,131 @@ export interface FormChart extends SubObj {
     groupByPropertyName?: string;
 }
 
-export interface Button extends SubObj {
+export interface Button extends BaseNode {
     nodeType: NodeType.button;
     _id: string;
     propertyName: string;
 }
 
 
-export interface ButtonGroup extends SubObj {
+export interface ButtonGroup extends BaseNode {
     nodeType: NodeType.button_group;
     _id: string;
 }
 
 
-export interface Calendar extends SubObj {
+export interface Calendar extends BaseNode {
     nodeType: NodeType.calendar;
     _id: string;
 }
 
 
-export interface Header extends SubObj {
+export interface Header extends BaseNode {
     nodeType: NodeType.header;
     _id: string;
     childNodes?: NodeElement[];
 }
 
-export interface Jumbotron extends SubObj {
+export interface Jumbotron extends BaseNode {
     nodeType: NodeType.jumbotron;
     _id: string;
     childNodes?: NodeElement[];
 }
 
 
-export interface Dropdown extends SubObj {
+export interface Dropdown extends BaseNode {
     nodeType: NodeType.dropdown;
     _id: string;
 }
 
 
-export interface FormEnum extends SubObj {
+export interface FormEnum extends BaseNode {
     nodeType: NodeType.form_enum;
     _id: string;
 }
 
 
-export interface FormState extends SubObj {
+export interface FormState extends BaseNode {
     nodeType: NodeType.form_state;
     _id: string;
 }
 
 
-export interface Gallery extends SubObj {
+export interface Gallery extends BaseNode {
     nodeType: NodeType.gallery;
     _id: string;
 }
 
 
-export interface HFilters extends SubObj {
+export interface HFilters extends BaseNode {
     nodeType: NodeType.h_filters;
     _id: string;
 }
 
 
-export interface GridRow extends SubObj {
+export interface GridRow extends BaseNode {
     nodeType: NodeType.grid_row;
     _id: string;
     childNodes: NodeElement[];
 }
 
-export interface RootNode extends SubObj {
+export interface RootNode extends BaseNode {
     nodeType: NodeType.root_node;
     _id: string;
     childNodes?: NodeElement[];
 }
 
-export interface HNav extends SubObj {
+export interface HNav extends BaseNode {
     nodeType: NodeType.h_nav;
     _id: string;
 }
 
 
-export interface Icon extends SubObj {
+export interface Icon extends BaseNode {
     nodeType: NodeType.icon;
     _id: string;
 }
 
 
-export interface Image extends SubObj {
+export interface Image extends BaseNode {
     nodeType: NodeType.image;
     _id: string;
+    propertyName: string;
 }
 
 
-export interface List extends SubObj {
+export interface List extends BaseNode {
     nodeType: NodeType.list;
     _id: string;
 }
 
 
-export interface Media extends SubObj {
+export interface Media extends BaseNode {
     nodeType: NodeType.media;
     _id: string;
 }
 
 
-export interface Timeline extends SubObj {
+export interface Timeline extends BaseNode {
     nodeType: NodeType.timeline;
     _id: string;
 }
 
 
-export interface VFilters extends SubObj {
+export interface VFilters extends BaseNode {
     nodeType: NodeType.v_filters;
     _id: string;
 }
 
 
-export interface GridCol extends SubObj {
+export interface GridCol extends BaseNode {
     nodeType: NodeType.grid_col;
     _id: string;
     childNodes?: NodeElement[];
 }
 
 
-export interface VNav extends SubObj {
+export interface VNav extends BaseNode {
     nodeType: NodeType.v_nav;
     _id: string;
 }

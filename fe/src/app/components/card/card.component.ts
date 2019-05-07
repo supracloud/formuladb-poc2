@@ -12,12 +12,15 @@ import { Card } from '@core/domain/uimetadata/node-elements';
   host: {
     '[class.card]': 'true',
     '[class.mt-2]': 'true',
-    '[class.frmdb-card-horizontal]': 'card.horizontal'
   }
 })
 export class CardComponent extends BaseNodeComponent implements OnInit {
   theme: { [key: string]: string };
   card: Card;
+  get tmp() {
+    console.log("badasdfasdfasdf");
+    return true;
+  }
 
   constructor(formEditingService: FormEditingService, componentFactoryResolver: ComponentFactoryResolver, private sanitizer: DomSanitizer) {
     super(formEditingService);

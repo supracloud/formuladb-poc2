@@ -1,14 +1,12 @@
 <ng-container *ngIf="cardContainer?.tableName">
     <ng-container *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index">
-        <frmdb-card [nodel]="cardContainer" [formgrp]="formgrp" [fullpath]="fullpath + '.' + idx" [rdonly]="rdonly">
+        <frmdb-card [nodel]="cardContainer.card" [formgrp]="formgrp" [fullpath]="fullpath + '.' + idx" [rdonly]="rdonly">
         </frmdb-card>
     </ng-container>
 </ng-container>
 <ng-container *ngIf="!cardContainer?.tableName && cardContainer?.refEntityName">
-    HEREE
     <ng-container *ngFor="let childControl of referencedTableRowsAsFormGroups; let idx = index">
-        yep{{idx}}
-        <frmdb-card [nodel]="cardContainer" [formgrp]="childControl" [fullpath]="" [rdonly]="rdonly">
+        <frmdb-card [nodel]="cardContainer.card" [formgrp]="childControl" [fullpath]="''" [rdonly]="rdonly">
         </frmdb-card>
     </ng-container>
 </ng-container>

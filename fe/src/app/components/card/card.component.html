@@ -5,7 +5,7 @@
       <h2 class="h3 mb-0">Card Title</h2>
     </div>
   </div>
-</div> -->
+</div>
 <div [class.row]="card.horizontal">
   <div [class.col-md-4]="card.horizontal">
     <svg class="bd-placeholder-img card-img-top" width="100%" height="180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"
@@ -15,6 +15,8 @@
     </svg>
   </div>
   <div class="card-body" [class.col-md-8]="card.horizontal">
-    <ng-container [frmdbPageItems]="card.childNodes" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>
   </div>
 </div>
+-->
+
+<ng-container [frmdbPageItems]="card.childNodes" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>

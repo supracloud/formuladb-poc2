@@ -72,6 +72,10 @@ export class AutoLayoutService {
                         ...base,
                         nodeType: NodeType.card_container,
                         layout: layout,
+                        card: {
+                            _id: generateUUID(),
+                            nodeType: NodeType.card,
+                        }
                     };
                 } else if (pn.isLargeTable) {
                     child = {
@@ -86,7 +90,8 @@ export class AutoLayoutService {
                     }
                 }
 
-                if (pn.referencedEntityName) this.autoLayoutChildren(layout, child, this.cachedEntitiesMap[pn.referencedEntityName]!.props);
+                if (pn.referencedEntityName) this.autoLayoutChildren(layout, child.nodeType == NodeType.card_container ? child.card : child, 
+                    this.cachedEntitiesMap[pn.referencedEntityName]!.props);
             } else if (pn.propType_ === Pn.REFERENCE_TO) {
                 if (FrmdbLy.ly_fpattern === layout) {
                     child = referenceToDataGrids.get(pn.referencedEntityName) || {
@@ -125,11 +130,13 @@ export class AutoLayoutService {
                 child = {
                     _id: generateUUID(),
                     nodeType: NodeType.image,
+                    propertyName: pn.name,
                 };
             } else if (pn.propType_ === Pn.ATTACHMENT) {
                 child = {
                     _id: generateUUID(),
                     nodeType: NodeType.image,
+                    propertyName: pn.name,
                 };
             } else if (pn.propType_ === Pn.EXTENDS_ENTITY) {
                 child = {
@@ -174,18 +181,7 @@ export class AutoLayoutService {
                 }
             }
 
-            let ret;
-            if (parentFormEl.nodeType === NodeType.form_table) {
-                ret = child;
-            } else {
-                ret = {
-                    _id: generateUUID(),
-                    nodeType: NodeType.grid_row,
-                    childNodes: [child],
-                };
-            }
-
-            return ret;
+            return child;
         });
     }
 
@@ -209,12 +205,24 @@ export class AutoLayoutService {
             }];
         } else {
             let cardContainer: CardContainer = {
-                _id: generateUUID(),  
+                _id: generateUUID(),
                 nodeType: NodeType.card_container,
                 refEntityName: entity._id,
+                card: { _id: generateUUID(), nodeType: NodeType.card },
             };
             retTable.childNodes = [cardContainer];
-            this.autoLayoutChildren(retTable.layout!, cardContainer, entity.props);
+            this.autoLayoutChildren(retTable.layout!, cardContainer.card, entity.props);
+
+            if (retTable.layout === FrmdbLy.ly_fpattern) {
+                cardContainer.misc = ["row"];
+                cardContainer.card.wcol = "col-12";
+            } else if (retTable.layout === FrmdbLy.ly_grid) {
+                cardContainer.layout = retTable.layout; 
+            } else if (retTable.layout === FrmdbLy.ly_cards) {
+                cardContainer.layout = retTable.layout; 
+            } else if (retTable.layout === FrmdbLy.ly_mosaic) {
+                cardContainer.layout = retTable.layout; 
+            }
         }
         
         return retTable;
