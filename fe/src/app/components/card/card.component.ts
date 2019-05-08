@@ -9,10 +9,6 @@ import { Card } from '@core/domain/uimetadata/node-elements';
   selector: 'frmdb-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.scss'],
-  host: {
-    '[class.card]': 'true',
-    '[class.mt-2]': 'true',
-  }
 })
 export class CardComponent extends BaseNodeComponent implements OnInit {
   theme: { [key: string]: string };
@@ -30,6 +26,10 @@ export class CardComponent extends BaseNodeComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustStyle(
       Object.keys(this.theme).map(k => k + ':' + this.theme[k]).join(';')
     );
+  }
+
+  getCssClasses(): string {
+    return super.getCssClasses() + ' card mt-2';
   }
   
   ngOnInit() {

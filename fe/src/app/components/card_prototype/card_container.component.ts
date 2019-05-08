@@ -22,22 +22,22 @@ import { FrmdbLy } from '@core/domain/uimetadata/page';
     selector: 'frmdb-card_container',
     templateUrl: './card_container.component.html',
     styleUrls: ['./card_container.component.scss'],
-    host: {
-        '[class.card-group]': 'card_group',
-        '[class.card-deck]': 'card_deck',
-        '[class.card-columns]': 'card_columns',
-    }
 })
 export class CardContainerComponent extends BaseTableComponent implements OnInit, OnChanges, OnDestroy {
     
     cardContainer: CardContainer;
 
-    get card_group() { 
-        return elvis(this.cardContainer).layout == FrmdbLy.ly_grid;
+    getCssClasses() {
+        let ret = super.getCssClasses();
+        if (this.cardContainer.layout == FrmdbLy.ly_grid) {
+            return ret + ' card-group';
+        } else if (this.cardContainer.layout == FrmdbLy.ly_cards) {
+            return ret + ' card-deck';
+        } else if (this.cardContainer.layout == FrmdbLy.ly_mosaic) {
+            return ret + ' card-columns';
+        } else return ret;
     }
-    get card_deck() { return elvis(this.cardContainer).layout == FrmdbLy.ly_cards; }
-    get card_columns() { return elvis(this.cardContainer).layout == FrmdbLy.ly_mosaic; }
-    
+
     data: any;
     frameworkComponents: any;
     defaultColDef: any;

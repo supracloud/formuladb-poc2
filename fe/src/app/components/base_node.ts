@@ -15,8 +15,6 @@ import { NodeElement, getChildPath, NodeType } from '@core/domain/uimetadata/nod
 import { elvis } from '@core/elvis';
 
 export class BaseNodeComponent implements OnDestroy {
-    @HostBinding('class.form-item-highlight') highlightId: boolean;
-
     @Input()
     nodel: NodeElement;
 
@@ -29,8 +27,28 @@ export class BaseNodeComponent implements OnDestroy {
     @Input()
     rdonly: boolean;
 
-    @HostBinding('class.row') class_row = (elvis(this.nodel).misc||[]).includes("row");
-    @HostBinding('class.col-4') class_col_4 = elvis(this.nodel).wcol == "col-4";
+    highlightId: boolean;
+
+    @HostBinding('class')
+    get class() {
+        return this.getCssClasses();
+    }
+
+    protected getCssClasses(): string {
+        let ret: any[] = [];
+        for (let key of Object.keys(this.nodel)) {
+            if (key.match(/^css[A-X]/)) {
+                if (typeof this.nodel[key] === "string") {
+                    ret.push(this.nodel[key]);
+                } else if (this.nodel[key] instanceof Array) {
+                    for (let cssClass of this.nodel[key]) {
+                        ret.push(cssClass);
+                    }
+                }
+            }
+        }
+        return ret.join(" ");
+    }
 
     //FIXME: how to se all the classes defined in BaseNode atomatically
     // @HostBinding('class') classes = [

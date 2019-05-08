@@ -199,7 +199,7 @@ export function isFormulaProperty(param): param is FormulaProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.FORMULA;
 }
 
-export type EntityProperty =
+export type ScalarEntityProperty = 
     | NumberProperty
     | StringProperty
     | DocumentProperty
@@ -207,8 +207,12 @@ export type EntityProperty =
     | ActionProperty
     | AttachmentProperty
     | ImageProperty
+    | FormulaProperty
+;
+
+export type EntityProperty =
+    | ScalarEntityProperty
     | ChildTableProperty
     | ExtendsEntityProperty
     | ReferenceToProperty
-    | FormulaProperty
-    ;
+;

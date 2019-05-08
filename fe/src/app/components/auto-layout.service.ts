@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 
-import { Entity, EntityProperty, EntityProperties } from "@core/domain/metadata/entity";
+import { Entity, EntityProperty, EntityProperties, ImageProperty, StringProperty, ScalarEntityProperty } from "@core/domain/metadata/entity";
 import { Page, FrmdbLy } from "@core/domain/uimetadata/page";
 import { FormPage, getFormPageEntityId } from "@core/domain/uimetadata/form-page";
 import { TablePage, getTablePageEntityId } from "@core/domain/uimetadata/table-page";
@@ -56,9 +56,109 @@ export class AutoLayoutService {
         return retForm;
     }
 
-    public autoLayoutChildren(layout: FrmdbLy, parentFormEl: NodeElementWithChildren, entityProps: EntityProperties) {
+    private autoLayoutSpecialProperties(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
+        let specialPropNames: string[] = [];
+        parentNodeEl.childNodes = parentNodeEl.childNodes || [];
+
+        if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
+            let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
+            let imgPropName = "image";
+            if (imageProps.length > 0) {
+                imgPropName = imageProps[0].name;
+                specialPropNames.push(imgPropName);
+            }
+            parentNodeEl.childNodes.push({
+                _id: generateUUID(),
+                nodeType: NodeType.image,
+                propertyName: imgPropName,
+            });
+
+            let titleProp = entityProps["title"] || entityProps["name"];
+            parentNodeEl.childNodes.push({
+                _id: generateUUID(),
+                nodeType: NodeType.form_text,
+                propertyName: titleProp.name,
+                propertyType: titleProp.propType_ as FormText['propertyType'],
+                cssText: "h5",
+                cssMisc: ["card-title"],
+            });
+
+        }
+
+        // title?: StringProperty;
+        // subtitle?: StringProperty;
+        // lead?: StringProperty;
+    
+        return specialPropNames;
+    }
+
+    private autoLayoutScalarProperty(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, pn: ScalarEntityProperty): ScalarNodeElement {
+        let child: ScalarNodeElement;
+
+        if (pn.propType_ === Pn.DATETIME) {
+            child = {
+                _id: generateUUID(),
+                nodeType: NodeType.form_datepicker,
+                propertyName: pn.name,
+            };
+        } else if (pn.propType_ === Pn.IMAGE) {
+            child = {
+                _id: generateUUID(),
+                nodeType: NodeType.image,
+                propertyName: pn.name,
+            };
+        } else if (pn.propType_ === Pn.ATTACHMENT) {
+            child = {
+                _id: generateUUID(),
+                nodeType: NodeType.image,
+                propertyName: pn.name,
+            };
+        } else if (pn.propType_ === Pn.ACTION) {
+            child = {
+                _id: generateUUID(),
+                nodeType: NodeType.button,
+                propertyName: pn.name,
+            };
+        } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
+            child = {
+                _id: generateUUID(),
+                nodeType: NodeType.form_text,
+                propertyName: pn.name,
+                propertyType: pn.propType_,
+                cssText: "text-muted",
+            };
+        } else {
+            let propertyType = pn.propType_ === Pn.FORMULA ? Pn.STRING : pn.propType_;//FIXME: compute FORMULA return type
+
+            if (FrmdbLy.ly_admin === layout || FrmdbLy.ly_form === layout) {
+                child = {
+                    _id: generateUUID(),
+                    nodeType: NodeType.form_input,
+                    propertyName: pn.name,
+                    propertyType: propertyType,
+                    noLabel: parentNodeEl.nodeType === NodeType.form_table,
+                };
+            } else {
+                child = {
+                    _id: generateUUID(),
+                    nodeType: NodeType.form_text,
+                    propertyName: pn.name,
+                    propertyType: propertyType,
+                    noLabel: parentNodeEl.nodeType === NodeType.form_table,
+                };
+            }
+        }
+        
+        return child;
+    }
+
+    private autoLayoutChildren(layout: FrmdbLy, parentFormEl: NodeElementWithChildren, entityProps: EntityProperties) {
         let referenceToDataGrids: Map<string, DataGrid> = new Map();
-        parentFormEl.childNodes = _.values(entityProps).map(pn => {
+        parentFormEl.childNodes = parentFormEl.childNodes || [];
+        let specialProps = this.autoLayoutSpecialProperties(layout, parentFormEl, entityProps);
+
+        for (let pn of Object.values(entityProps)) {
+            if (specialProps.includes(pn.name)) continue;
             let child: NodeElement;
 
             if (pn.propType_ === Pn.CHILD_TABLE) {
@@ -120,69 +220,18 @@ export class AutoLayoutService {
                         refPropertyName: pn.referencedPropertyName,
                     }
                 }
-            } else if (pn.propType_ === Pn.DATETIME) {
-                child = {
-                    _id: generateUUID(),
-                    nodeType: NodeType.form_datepicker,
-                    propertyName: pn.name,
-                };
-            } else if (pn.propType_ === Pn.IMAGE) {
-                child = {
-                    _id: generateUUID(),
-                    nodeType: NodeType.image,
-                    propertyName: pn.name,
-                };
-            } else if (pn.propType_ === Pn.ATTACHMENT) {
-                child = {
-                    _id: generateUUID(),
-                    nodeType: NodeType.image,
-                    propertyName: pn.name,
-                };
             } else if (pn.propType_ === Pn.EXTENDS_ENTITY) {
                 child = {
                     _id: generateUUID(),
                     nodeType: NodeType.data_grid,
                     refEntityName: pn.referencedEntityName,
                 };
-            } else if (pn.propType_ === Pn.ACTION) {
-                child = {
-                    _id: generateUUID(),
-                    nodeType: NodeType.button,
-                    propertyName: pn.name,
-                };
-            } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
-                child = {
-                    _id: generateUUID(),
-                    nodeType: NodeType.form_text,
-                    propertyName: pn.name,
-                    propertyType: pn.propType_,
-                    representation: "_id",
-                };
             } else {
-                let propertyType = pn.propType_ === Pn.FORMULA ? Pn.STRING : pn.propType_;//FIXME: compute FORMULA return type
-
-                if (FrmdbLy.ly_admin === layout || FrmdbLy.ly_form === layout) {
-                    child = {
-                        _id: generateUUID(),
-                        nodeType: NodeType.form_input,
-                        propertyName: pn.name,
-                        propertyType: propertyType,
-                        noLabel: parentFormEl.nodeType === NodeType.form_table,
-                    };
-                } else {
-                    child = {
-                        _id: generateUUID(),
-                        nodeType: NodeType.form_text,
-                        propertyName: pn.name,
-                        propertyType: propertyType,
-                        representation: "_id",
-                        noLabel: parentFormEl.nodeType === NodeType.form_table,
-                    };
-                }
+                child = this.autoLayoutScalarProperty(layout, parentFormEl, pn);
             }
 
-            return child;
-        });
+            parentFormEl.childNodes.push(child);
+        };
     }
 
     public autoLayoutTable(table: TablePage, entity?: Entity, layout?: FrmdbLy): TablePage {
@@ -214,8 +263,8 @@ export class AutoLayoutService {
             this.autoLayoutChildren(retTable.layout!, cardContainer.card, entity.props);
 
             if (retTable.layout === FrmdbLy.ly_fpattern) {
-                cardContainer.misc = ["row"];
-                cardContainer.card.wcol = "col-12";
+                cardContainer.cssMisc = ["row"];
+                cardContainer.card.cssWithInCols = "col-12";
             } else if (retTable.layout === FrmdbLy.ly_grid) {
                 cardContainer.layout = retTable.layout; 
             } else if (retTable.layout === FrmdbLy.ly_cards) {

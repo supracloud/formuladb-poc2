@@ -50,7 +50,6 @@ export enum NodeType {
 export type ScalarNodeElement = 
     | FormInput
     | FormAutocomplete
-    | DataGrid
     | FormDatepicker
     | FormTimepicker
     | DateRangePicker
@@ -61,9 +60,8 @@ export type ScalarNodeElement =
 ;
 export type NodeElement =
     | ScalarNodeElement
+    | TableNodeElement
     | RootNode
-    | FormTabs
-    | FormTable
     | FormChart
     | ButtonGroup
     | Calendar
@@ -83,7 +81,6 @@ export type NodeElement =
     | VFilters
     | GridCol
     | VNav
-    | CardContainer
     ;
 
 export type NodeElementWithChildren = RootNode | GridRow | GridCol | FormTable | FormTabs | Card;
@@ -97,7 +94,7 @@ export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeEl
     ;
 }
 
-export interface TableNodeElementBase extends BaseNode {
+export interface TableNodeElementBase extends BaseNodeElement {
     refEntityAlias?: string;
     refEntityName: string;
     
@@ -139,28 +136,29 @@ export function getChildPath(nodeEl: NodeElement) {
     return '';
 }
 
-export interface BaseNode extends SubObj {
-    wcol?: | "col-1" | "col-2"  | "col-3"  | "col-4" | "col-5" | "col-6" | "col-7" | "col-8" | "col-9" | "col-10" | "col-11" | "col-12";
-    wrem?: | "wrem-0" | "wrem-5" | "wrem-10" | "wrem-15" | "wrem-20" | "wrem-25" | "wrem-30" | "wrem-35" | "wrem-40" | "wrem-45" | "wrem-50" | "wrem-55" | "wrem-60" | "wrem-65" | "wrem-70" | "wrem-75" | "wrem-80" | "wrem-85" | "wrem-90" | "wrem-95" | "wrem-100";
-    misc?: ("row")[];
+export interface BaseNodeElement extends SubObj {
+    cssWithInCols?: | "col-1" | "col-2"  | "col-3"  | "col-4" | "col-5" | "col-6" | "col-7" | "col-8" | "col-9" | "col-10" | "col-11" | "col-12";
+    cssWidthInChars?: | "wrem-0" | "wrem-5" | "wrem-10" | "wrem-15" | "wrem-20" | "wrem-25" | "wrem-30" | "wrem-35" | "wrem-40" | "wrem-45" | "wrem-50" | "wrem-55" | "wrem-60" | "wrem-65" | "wrem-70" | "wrem-75" | "wrem-80" | "wrem-85" | "wrem-90" | "wrem-95" | "wrem-100";
+    cssMisc?: ("row" | "card-title" | "card-subtitle")[];
+    cssText?: | "h1"| "h2"| "h3"| "h4"| "h5"| "h6"| "lead"| "text-muted"| "mark"| "small"| "blockquote";
+    cssTextAlign?: | "text-center"| "text-right";    
 }
 
-export interface FormInput extends BaseNode {
+export interface FormInput extends BaseNodeElement {
     nodeType: NodeType.form_input;
     noLabel?: boolean;
     propertyName: string;
     propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
 }
-export interface FormText extends BaseNode {
+export interface FormText extends BaseNodeElement {
     nodeType: NodeType.form_text;
     _id: string;
     noLabel?: boolean;
     propertyName: string;
     propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
-    representation: "title" | "h1" | "h2" | "h3" | "h4" | "paragraph" | "caption" | "jumbo" | "link" | "_id" | "string";
     uppercase?: boolean;
 }
-export interface FormAutocomplete extends BaseNode {
+export interface FormAutocomplete extends BaseNodeElement {
     nodeType: NodeType.form_autocomplete;
     _id: string;
     noLabel?: boolean;
@@ -176,7 +174,7 @@ export interface FormTabs extends TableNodeElementBase {
     tabNameFormPath: string;
     childNodes?: NodeElement[];
 }
-export interface FormCard extends BaseNode {
+export interface FormCard extends BaseNodeElement {
     nodeType: NodeType.form_tabs;
     _id: string;
     tableName: string;
@@ -190,7 +188,7 @@ export interface FormTable extends TableNodeElementBase {
     childNodes?: NodeElement[];
 }
 
-export interface Card extends BaseNode {
+export interface Card extends BaseNodeElement {
     nodeType: NodeType.card;
     childNodes?: NodeElement[];
 }
@@ -201,7 +199,7 @@ export interface CardContainer extends TableNodeElementBase {
     card: Card;
 }
 
-export interface TableColumn extends BaseNode {
+export interface TableColumn extends BaseNodeElement {
     _id: string;
     width?: number;
     sort?: string;
@@ -224,27 +222,27 @@ export interface DataGrid extends TableNodeElementBase {
     layout?: FrmdbLy.ly_admin | FrmdbLy.ly_fpattern;
 }
 
-export interface FormDatepicker extends BaseNode {
+export interface FormDatepicker extends BaseNodeElement {
     nodeType: NodeType.form_datepicker;
     _id: string;
     propertyName: string;
 }
 
-export interface FormTimepicker extends BaseNode {
+export interface FormTimepicker extends BaseNodeElement {
     nodeType: NodeType.form_timepicker;
     _id: string;
     propertyName: string;
 }
 
 
-export interface DateRangePicker extends BaseNode {
+export interface DateRangePicker extends BaseNodeElement {
     nodeType: NodeType.date_range_picker;
     _id: string;
     startPropertyName: string;
     endPropertyName: string;
 }
 
-export interface FormChart extends BaseNode {
+export interface FormChart extends BaseNodeElement {
     nodeType: NodeType.form_chart;
     _id: string;
     tableName: string;
@@ -256,131 +254,130 @@ export interface FormChart extends BaseNode {
     groupByPropertyName?: string;
 }
 
-export interface Button extends BaseNode {
+export interface Button extends BaseNodeElement {
     nodeType: NodeType.button;
     _id: string;
     propertyName: string;
 }
 
 
-export interface ButtonGroup extends BaseNode {
+export interface ButtonGroup extends BaseNodeElement {
     nodeType: NodeType.button_group;
     _id: string;
 }
 
 
-export interface Calendar extends BaseNode {
+export interface Calendar extends BaseNodeElement {
     nodeType: NodeType.calendar;
     _id: string;
 }
 
 
-export interface Header extends BaseNode {
+export interface Header extends BaseNodeElement {
     nodeType: NodeType.header;
     _id: string;
     childNodes?: NodeElement[];
 }
 
-export interface Jumbotron extends BaseNode {
+export interface Jumbotron extends BaseNodeElement {
     nodeType: NodeType.jumbotron;
     _id: string;
     childNodes?: NodeElement[];
 }
 
 
-export interface Dropdown extends BaseNode {
+export interface Dropdown extends BaseNodeElement {
     nodeType: NodeType.dropdown;
     _id: string;
 }
 
 
-export interface FormEnum extends BaseNode {
+export interface FormEnum extends BaseNodeElement {
     nodeType: NodeType.form_enum;
     _id: string;
 }
 
 
-export interface FormState extends BaseNode {
+export interface FormState extends BaseNodeElement {
     nodeType: NodeType.form_state;
     _id: string;
 }
 
 
-export interface Gallery extends BaseNode {
+export interface Gallery extends BaseNodeElement {
     nodeType: NodeType.gallery;
     _id: string;
 }
 
 
-export interface HFilters extends BaseNode {
+export interface HFilters extends BaseNodeElement {
     nodeType: NodeType.h_filters;
     _id: string;
 }
 
 
-export interface GridRow extends BaseNode {
+export interface GridRow extends BaseNodeElement {
     nodeType: NodeType.grid_row;
     _id: string;
     childNodes: NodeElement[];
 }
 
-export interface RootNode extends BaseNode {
+export interface RootNode extends BaseNodeElement {
     nodeType: NodeType.root_node;
     _id: string;
     childNodes?: NodeElement[];
 }
 
-export interface HNav extends BaseNode {
+export interface HNav extends BaseNodeElement {
     nodeType: NodeType.h_nav;
     _id: string;
 }
 
 
-export interface Icon extends BaseNode {
+export interface Icon extends BaseNodeElement {
     nodeType: NodeType.icon;
     _id: string;
 }
 
 
-export interface Image extends BaseNode {
+export interface Image extends BaseNodeElement {
     nodeType: NodeType.image;
     _id: string;
     propertyName: string;
 }
 
 
-export interface List extends BaseNode {
+export interface List extends BaseNodeElement {
     nodeType: NodeType.list;
     _id: string;
 }
 
 
-export interface Media extends BaseNode {
+export interface Media extends BaseNodeElement {
     nodeType: NodeType.media;
     _id: string;
 }
 
 
-export interface Timeline extends BaseNode {
+export interface Timeline extends BaseNodeElement {
     nodeType: NodeType.timeline;
     _id: string;
 }
 
 
-export interface VFilters extends BaseNode {
+export interface VFilters extends BaseNodeElement {
     nodeType: NodeType.v_filters;
     _id: string;
 }
 
 
-export interface GridCol extends BaseNode {
+export interface GridCol extends BaseNodeElement {
     nodeType: NodeType.grid_col;
     _id: string;
     childNodes?: NodeElement[];
 }
 
-
-export interface VNav extends BaseNode {
+export interface VNav extends BaseNodeElement {
     nodeType: NodeType.v_nav;
     _id: string;
 }

@@ -8,6 +8,7 @@ import { NodeElement, GridRow, RootNode } from "./node-elements";
 /**
  * Layouts (UX, "the feel"): 
  *     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/
+ *     https://www.smashingmagazine.com/2015/06/design-principles-compositional-balance-symmetry-asymmetry/
  *     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c
  * Themes (UI, "the look"): 
  *     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/

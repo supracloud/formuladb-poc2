@@ -40,14 +40,10 @@ export class FormTextComponent extends BaseNodeComponent implements OnInit, OnDe
     ngOnDestroy(): void {
         this.subscriptions.forEach(sub => sub.unsubscribe())
     }
-    get representation(): string {
-        if (this.nodel.nodeType != NodeType.form_text) throw new Error("form-text node element is wrong: " + CircularJSON.stringify(this.nodel));
-        return this.nodel.representation || "string";
-    }
 
     get value(): string {
         if (this.ctrl) {
-            if (this.inputElement.representation === '_id') {
+            if (this.fullpath.match(/\b_id$/)) {
                 return (this.ctrl.value + '' || '').replace(/^.*~~/, '')
             } 
             else return this.ctrl.value;
