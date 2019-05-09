@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, HostBinding } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/node-elements";
+import { NodeElementWithChildren, NodeElement, getChildPath, CssForNodeElement } from "@core/domain/uimetadata/node-elements";
 import * as _ from 'lodash';
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
@@ -12,9 +12,6 @@ import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons';
   selector: 'frmdb-grid_col',
   templateUrl: './grid_col.component.html',
   styleUrls: ['./grid_col.component.scss'],
-  host: {
-    '[class.col]': 'true',
-  }
 })
 export class GridColComponent extends BaseNodeComponent implements OnInit {
 
@@ -34,6 +31,10 @@ export class GridColComponent extends BaseNodeComponent implements OnInit {
 
   @HostBinding("class.outline")
   editMode: boolean;
+
+  getCssClasses(nodeEl: CssForNodeElement): string {
+    return super.getCssClasses(nodeEl) + ' col';
+  }
 
   constructor(formEditingService: FormEditingService) {
     super(formEditingService);

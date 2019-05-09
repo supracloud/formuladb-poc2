@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, HostBinding, OnDestroy } from '@angular/core';
-import { NodeElementWithChildren, NodeElement, getChildPath } from "@core/domain/uimetadata/node-elements";
+import { NodeElementWithChildren, NodeElement, getChildPath, CssForNodeElement } from "@core/domain/uimetadata/node-elements";
 import { BaseNodeComponent } from '../base_node';
 import { FormGroup } from '@angular/forms';
 import * as _ from 'lodash';
@@ -12,9 +12,6 @@ import { untilDestroyed } from 'ngx-take-until-destroy';
   selector: 'frmdb-grid_row',
   templateUrl: './grid_row.component.html',
   styleUrls: ['./grid_row.component.scss'],
-  host: {
-    '[class.row]': 'true',
-  }
 })
 export class GridRowComponent extends BaseNodeComponent implements OnInit, OnDestroy {
 
@@ -32,6 +29,10 @@ export class GridRowComponent extends BaseNodeComponent implements OnInit, OnDes
 
   @HostBinding("class.outline")
   editMode: boolean;
+
+  getCssClasses(nodeEl: CssForNodeElement): string {
+    return super.getCssClasses(nodeEl) + ' row';
+  }
 
   constructor(formEditingService: FormEditingService) {
     super(formEditingService);

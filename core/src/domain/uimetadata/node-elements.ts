@@ -7,6 +7,7 @@ import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph, FormulaExpression } from "../metadata/entity";
 import * as _ from 'lodash';
 import { FrmdbLy } from './page';
+import { PickOmit } from '@core/ts-utils';
 
 export enum NodeType {
     root_node = "root_node",
@@ -83,14 +84,14 @@ export type NodeElement =
     | VNav
     ;
 
-export type NodeElementWithChildren = RootNode | GridRow | GridCol | FormTable | FormTabs | Card;
+export type NodeElementWithChildren = RootNode | GridRow | GridCol | FormTable | FormTabs | CardContainer;
 export function isNodeElementWithChildren(nodeEl: NodeElement): nodeEl is NodeElementWithChildren {
     return nodeEl.nodeType === NodeType.root_node
         || nodeEl.nodeType === NodeType.grid_row
         || nodeEl.nodeType === NodeType.grid_col
         || nodeEl.nodeType === NodeType.form_table
         || nodeEl.nodeType === NodeType.form_tabs
-        || nodeEl.nodeType === NodeType.card
+        || nodeEl.nodeType === NodeType.card_container
     ;
 }
 
@@ -140,7 +141,7 @@ export function getChildPath(nodeEl: NodeElement) {
 export interface BaseNodeElement extends SubObj {
     cssWithInCols?: | "col-1" | "col-2"  | "col-3"  | "col-4" | "col-5" | "col-6" | "col-7" | "col-8" | "col-9" | "col-10" | "col-11" | "col-12";
     cssWidthInChars?: | "wrem-0" | "wrem-5" | "wrem-10" | "wrem-15" | "wrem-20" | "wrem-25" | "wrem-30" | "wrem-35" | "wrem-40" | "wrem-45" | "wrem-50" | "wrem-55" | "wrem-60" | "wrem-65" | "wrem-70" | "wrem-75" | "wrem-80" | "wrem-85" | "wrem-90" | "wrem-95" | "wrem-100";
-    cssMisc?: ("row" | "card-title" | "card-subtitle")[];
+    cssMisc?: ("w-100" | "row" | "card-title" | "card-subtitle")[];
     cssCards?: ("card-text" | "card-title" | "card-body" | "card-header" | "card-footer")[];
     cssText?: | "h1"| "h2"| "h3"| "h4"| "h5"| "h6"| "blockquote";
     cssTextEx?: | "lead"| "text-muted"| "mark"| "small";
@@ -148,6 +149,7 @@ export interface BaseNodeElement extends SubObj {
     cssPadding?: | "pt-0" | "pt-1" | "pt-2" | "pt-3" | "pt-4" | "pt-5" | "pt-auto" | "pb-0" | "pb-1" | "pb-2" | "pb-3" | "pb-4" | "pb-5" | "pb-auto" | "pl-0" | "pl-1" | "pl-2" | "pl-3" | "pl-4" | "pl-5" | "pl-auto" | "pr-0" | "pr-1" | "pr-2" | "pr-3" | "pr-4" | "pr-5" | "pr-auto" | "px-0" | "px-1" | "px-2" | "px-3" | "px-4" | "px-5" | "px-auto" | "py-0" | "py-1" | "py-2" | "py-3" | "py-4" | "py-5" | "py-auto" | "p-0" | "p-1" | "p-2" | "p-3" | "p-4" | "p-5" | "p-auto";
     cssTextAlign?: | "text-center"| "text-right";    
 }
+export type CssForNodeElement = PickOmit<BaseNodeElement, "_id">;
 
 export interface FormInput extends BaseNodeElement {
     nodeType: NodeType.form_input;
@@ -201,7 +203,8 @@ export interface Card extends BaseNodeElement {
 export interface CardContainer extends TableNodeElementBase {
     nodeType: NodeType.card_container;
     layout?: FrmdbLy.ly_cards | FrmdbLy.ly_grid | FrmdbLy.ly_fpattern | FrmdbLy.ly_zigzagpattern | FrmdbLy.ly_mosaic;
-    card: Card;
+    card: PickOmit<BaseNodeElement, "_id">;
+    childNodes?: NodeElement[];
 }
 
 export interface TableColumn extends BaseNodeElement {

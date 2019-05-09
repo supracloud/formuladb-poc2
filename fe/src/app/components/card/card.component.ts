@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
-import { Card } from '@core/domain/uimetadata/node-elements';
+import { Card, NodeElement, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
 
 @Component({
   selector: 'frmdb-card',
@@ -28,8 +28,8 @@ export class CardComponent extends BaseNodeComponent implements OnInit {
     );
   }
 
-  getCssClasses(): string {
-    return super.getCssClasses() + ' card mt-2';
+  getCssClasses(nodeEl: CssForNodeElement): string {
+    return super.getCssClasses(nodeEl) + ' card mt-2';
   }
   
   ngOnInit() {

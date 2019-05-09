@@ -47,54 +47,10 @@ export type FormActions =
     | formServerActions.ResetPageDataFromBackendAction
     | formServerActions.FormNotifFromBackendAction
     | formServerActions.FormAutoCompleteOptionsFromBackendAction
-    | formUserActions.FormDropAction
-    | formUserActions.FormDeleteAction
-    | formUserActions.FormSwitchTypeAction
     | formUserActions.FormAddAction
     | formUserActions.UserEnteredAutocompleteText
     | formUserActions.UserChoseAutocompleteOption
     ;
-
-
-function removeRecursive(tree: NodeElementWithChildren, removedFromNodeId: string, movedNodeId: string): NodeElement | null {
-    let ret: NodeElement | null = null;
-    if (tree.childNodes && tree._id === removedFromNodeId) {
-        let newChildNodes: NodeElement[] = [];
-        for (let child of tree.childNodes || []) {
-            if (child._id === movedNodeId) {
-                ret = child;
-            } else newChildNodes.push(child);
-        }
-        tree.childNodes = newChildNodes;
-    } else {
-        for (let child of tree.childNodes || []) {
-            if (isNodeElementWithChildren(child)) {
-                ret = removeRecursive(child, removedFromNodeId, movedNodeId);
-                if (ret) break;
-            }
-        }
-    }
-    return ret;
-}
-
-const modifyRecursive = (tree: NodeElement, filter: (each: NodeElement) => boolean, action: (found: NodeElement) => void) => {
-    if (filter(tree)) action(tree);
-    if (isNodeElementWithChildren(tree)) {
-        if (tree.childNodes && tree.childNodes.length > 0) {
-            tree.childNodes.forEach(c => modifyRecursive(c, filter, action));
-        }
-    }
-}
-
-function addRecursive(tree: NodeElementWithChildren, movedEl: NodeElement, addedToNodeId: string, pos: number) {
-    if (tree.childNodes && tree._id === addedToNodeId) {
-        tree.childNodes.splice(pos, 0, movedEl);
-    } else {
-        for (let child of tree.childNodes || []) {
-            if (isNodeElementWithChildren(child)) addRecursive(child, movedEl, addedToNodeId, pos);
-        }
-    }
-}
 
 /**
 * 
@@ -142,29 +98,6 @@ export function formReducer(state = formInitialState, action: FormActions): Form
             break;
         case formServerActions.FormAutoCompleteOptionsFromBackendActionN:
             break;
-
-        case formUserActions.FormDropActionN:
-            if (state.form) {
-                let newForm = _.cloneDeep(state.form);
-                let movedEl = removeRecursive(newForm, action.removedFromNodeId, action.movedNodeId);
-                if (!movedEl) {console.warn("Could not move not found element ", action); return state}
-                addRecursive(newForm, movedEl, action.addedToNodeId, action.addedToPos);
-                return { 
-                    ...state,
-                    form: newForm,
-                }
-            } else return state;
-
-        case formUserActions.FormDeleteActionN:
-            if (state.form) {
-                removeRecursive(state.form, action.removedFromNodeId, action.movedNodeId);
-            }
-            return state;
-        case formUserActions.FormSwitchTypeActionN:
-            if (state.form) {
-                modifyRecursive(state.form, n => n._id === action.payload.node._id, n => console.log(n))//TODO implement conversion
-            }
-            return state;
     }
 
     // if (action.type.match(/^\[form\]/)) console.log('[form] reducer:', state, action, ret);

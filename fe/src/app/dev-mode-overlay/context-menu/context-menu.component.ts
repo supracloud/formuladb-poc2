@@ -5,7 +5,7 @@ import * as fromForm from '../../state/form.state';
 import * as fromEntity from '../../state/entity-state';
 import { faEllipsisH, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { FormItemEditorComponent } from '../form-item-editor/form-item-editor.component';
-import { FormDeleteAction, FormSwitchTypeAction } from '@fe/app/actions/form.user.actions';
+import { NodeElementDeleteAction, NodeElementSwitchTypeAction } from '@fe/app/actions/page.user.actions';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -68,11 +68,11 @@ export class ContextMenuComponent implements OnInit {
   }
 
   delete() {
-    this.formStore.dispatch(new FormDeleteAction(this.parentEl._id, this.item._id));
+    this.formStore.dispatch(new NodeElementDeleteAction(this.parentEl._id, this.item._id));
   }
 
   switchTo(p: NodeType) {
-    this.formStore.dispatch(new FormSwitchTypeAction({ node: this.item, toType: p }));
+    this.formStore.dispatch(new NodeElementSwitchTypeAction({ node: this.item, toType: p }));
   }
 
   edit() {

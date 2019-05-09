@@ -59,6 +59,7 @@ export class AutoLayoutService {
     private autoLayoutSpecialProperties(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
         let specialPropNames: string[] = [];
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
+        let specialChildNodes: NodeElement[] = [];
 
         if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
             let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
@@ -67,15 +68,15 @@ export class AutoLayoutService {
                 imgPropName = imageProps[0].name;
                 specialPropNames.push(imgPropName);
             }
-            parentNodeEl.childNodes.push({
-                _id: generateUUID(),
+            specialChildNodes.push({
+                _id: parentNodeEl._id + "." + imgPropName,
                 nodeType: NodeType.image,
                 propertyName: imgPropName,
             });
 
             let titleProp = entityProps["title"] || entityProps["name"] || { name: "title", propType_: Pn.STRING};
-            parentNodeEl.childNodes.push({
-                _id: generateUUID(),
+            specialChildNodes.push({
+                _id: parentNodeEl._id + "." + titleProp.name,
                 nodeType: NodeType.form_text,
                 propertyName: titleProp.name,
                 propertyType: titleProp.propType_ as FormText['propertyType'],
@@ -86,8 +87,8 @@ export class AutoLayoutService {
 
 
             let descProp = entityProps["description"] || entityProps["summary"] || { name: "subtitle", propType_: Pn.STRING};
-            parentNodeEl.childNodes.push({
-                _id: generateUUID(),
+            specialChildNodes.push({
+                _id: parentNodeEl._id + "." + descProp.name,
                 nodeType: NodeType.form_text,
                 propertyName: descProp.name,
                 propertyType: descProp.propType_ as FormText['propertyType'],
@@ -99,9 +100,9 @@ export class AutoLayoutService {
             specialPropNames.push(descProp.name);
         }
 
-        // title?: StringProperty;
-        // subtitle?: StringProperty;
-        // lead?: StringProperty;
+        for (let child of specialChildNodes) {
+            parentNodeEl.childNodes.push(this.wrapChild(child));
+        }
     
         return specialPropNames;
     }
@@ -111,31 +112,31 @@ export class AutoLayoutService {
 
         if (pn.propType_ === Pn.DATETIME) {
             child = {
-                _id: generateUUID(),
+                _id: parentNodeEl._id + "." + pn.name,
                 nodeType: NodeType.form_datepicker,
                 propertyName: pn.name,
             };
         } else if (pn.propType_ === Pn.IMAGE) {
             child = {
-                _id: generateUUID(),
+                _id: parentNodeEl._id + "." + pn.name,
                 nodeType: NodeType.image,
                 propertyName: pn.name,
             };
         } else if (pn.propType_ === Pn.ATTACHMENT) {
             child = {
-                _id: generateUUID(),
+                _id: parentNodeEl._id + "." + pn.name,
                 nodeType: NodeType.image,
                 propertyName: pn.name,
             };
         } else if (pn.propType_ === Pn.ACTION) {
             child = {
-                _id: generateUUID(),
+                _id: parentNodeEl._id + "." + pn.name,
                 nodeType: NodeType.button,
                 propertyName: pn.name,
             };
         } else if (pn.propType_ === Pn.STRING && pn.name == '_id') {
             child = {
-                _id: generateUUID(),
+                _id: parentNodeEl._id + "." + pn.name,
                 nodeType: NodeType.form_text,
                 propertyName: pn.name,
                 propertyType: pn.propType_,
@@ -146,7 +147,7 @@ export class AutoLayoutService {
 
             if (FrmdbLy.ly_admin === layout || FrmdbLy.ly_form === layout) {
                 child = {
-                    _id: generateUUID(),
+                    _id: parentNodeEl._id + "." + pn.name,
                     nodeType: NodeType.form_input,
                     propertyName: pn.name,
                     propertyType: propertyType,
@@ -154,7 +155,7 @@ export class AutoLayoutService {
                 };
             } else {
                 child = {
-                    _id: generateUUID(),
+                    _id: parentNodeEl._id + "." + pn.name,
                     nodeType: NodeType.form_text,
                     propertyName: pn.name,
                     propertyType: propertyType,
@@ -170,10 +171,10 @@ export class AutoLayoutService {
         return child;
     }
 
-    private autoLayoutChildren(layout: FrmdbLy, parentFormEl: NodeElementWithChildren, entityProps: EntityProperties) {
+    private autoLayoutChildren(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties) {
         let referenceToDataGrids: Map<string, DataGrid> = new Map();
-        parentFormEl.childNodes = parentFormEl.childNodes || [];
-        let specialProps = this.autoLayoutSpecialProperties(layout, parentFormEl, entityProps);
+        parentNodeEl.childNodes = parentNodeEl.childNodes || [];
+        let specialProps = this.autoLayoutSpecialProperties(layout, parentNodeEl, entityProps);
 
         for (let pn of Object.values(entityProps)) {
             if (specialProps.includes(pn.name)) continue;
@@ -181,7 +182,7 @@ export class AutoLayoutService {
 
             if (pn.propType_ === Pn.CHILD_TABLE) {
                 let base = {
-                    _id: generateUUID(),
+                    _id: parentNodeEl._id + "." + pn.name,
                     tableName: pn.name,
                     refEntityName: pn.referencedEntityName,
                 }
@@ -190,10 +191,7 @@ export class AutoLayoutService {
                         ...base,
                         nodeType: NodeType.card_container,
                         layout: layout,
-                        card: {
-                            _id: generateUUID(),
-                            nodeType: NodeType.card,
-                        }
+                        card: {}
                     };
                 } else if (pn.isLargeTable) {
                     child = {
@@ -208,12 +206,11 @@ export class AutoLayoutService {
                     }
                 }
 
-                if (pn.referencedEntityName) this.autoLayoutChildren(layout, child.nodeType == NodeType.card_container ? child.card : child, 
-                    this.cachedEntitiesMap[pn.referencedEntityName]!.props);
+                if (pn.referencedEntityName) this.autoLayoutChildren(layout, child, this.cachedEntitiesMap[pn.referencedEntityName]!.props);
             } else if (pn.propType_ === Pn.REFERENCE_TO) {
                 if (FrmdbLy.ly_fpattern === layout) {
                     child = referenceToDataGrids.get(pn.referencedEntityName) || {
-                        _id: generateUUID(),
+                        _id: parentNodeEl._id + "." + pn.name,
                         nodeType: NodeType.data_grid,
                         layout: layout,
                         autocompleteProperties: [],
@@ -222,7 +219,7 @@ export class AutoLayoutService {
                     referenceToDataGrids.set(pn.referencedEntityName, child);
 
                     child.autocompleteProperties!.push({
-                        _id: generateUUID(),
+                        _id: parentNodeEl._id + "." + pn.name,
                         nodeType: NodeType.form_input,
                         refPropertyName: pn.referencedPropertyName,
                         propertyName: pn.name,
@@ -231,7 +228,7 @@ export class AutoLayoutService {
                     })
                 } else {
                     child = {
-                        _id: generateUUID(),
+                        _id: parentNodeEl._id + "." + pn.name,
                         nodeType: NodeType.form_autocomplete,
                         propertyName: pn.name,
                         refEntityName: pn.referencedEntityName,
@@ -240,15 +237,16 @@ export class AutoLayoutService {
                 }
             } else if (pn.propType_ === Pn.EXTENDS_ENTITY) {
                 child = {
-                    _id: generateUUID(),
+                    _id: parentNodeEl._id + "." + pn.name,
                     nodeType: NodeType.data_grid,
                     refEntityName: pn.referencedEntityName,
                 };
             } else {
-                child = this.autoLayoutScalarProperty(layout, parentFormEl, pn);
+                child = this.autoLayoutScalarProperty(layout, parentNodeEl, pn);
             }
 
-            parentFormEl.childNodes.push(child);
+            parentNodeEl.childNodes = parentNodeEl.childNodes || [];
+            parentNodeEl.childNodes.push(this.wrapChild(child));
         };
     }
 
@@ -256,43 +254,64 @@ export class AutoLayoutService {
         if (entity) this.cachedEntitiesMap[entity._id] = entity;
         const retTable: TablePage = {...table};
         entity = entity || this.cachedEntitiesMap[getTablePageEntityId(table)];
-    
+        let tableId = retTable._id + '.' + entity._id;
+
         retTable.layout = layout || elvis(table).layout || FrmdbLy.ly_admin;
         if (retTable.layout === FrmdbLy.ly_admin) {
-            
             retTable.childNodes = [{
-                _id: generateUUID(),  
+                _id: tableId,  
                 nodeType: NodeType.data_grid,
                 refEntityName: entity._id,
                 columns: _.values(entity.props).map(pn => ({
-                    _id: generateUUID(),
+                    _id: tableId + "." + pn.name,
                     name: pn.name, 
                     type: pn.propType_
                 } as TableColumn))
             }];
         } else {
             let cardContainer: CardContainer = {
-                _id: generateUUID(),
+                _id: tableId,
                 nodeType: NodeType.card_container,
                 refEntityName: entity._id,
-                card: { _id: generateUUID(), nodeType: NodeType.card },
+                card: {},
+                childNodes: []
             };
+            this.autoLayoutChildren(retTable.layout!, cardContainer, entity.props);
             retTable.childNodes = [cardContainer];
-            this.autoLayoutChildren(retTable.layout!, cardContainer.card, entity.props);
 
             if (retTable.layout === FrmdbLy.ly_fpattern) {
-                cardContainer.cssMisc = ["row"];
+                cardContainer.cssMisc = ["row", "w-100"];
                 cardContainer.card.cssWithInCols = "col-12";
             } else if (retTable.layout === FrmdbLy.ly_grid) {
-                cardContainer.layout = retTable.layout; 
+                cardContainer.cssMisc = ["row", "w-100"];
+                cardContainer.card.cssWithInCols = "col-4";
             } else if (retTable.layout === FrmdbLy.ly_cards) {
-                cardContainer.layout = retTable.layout; 
+                cardContainer.cssMisc = ["row", "w-100"];
+                cardContainer.card.cssWithInCols = "col-4";
             } else if (retTable.layout === FrmdbLy.ly_mosaic) {
-                cardContainer.layout = retTable.layout; 
+                cardContainer.cssMisc = ["row", "w-100"];
+                cardContainer.card.cssWithInCols = "col-4";
             }
         }
         
         return retTable;
     }
     
+    private wrapChild(child: NodeElement): NodeElement {
+        // return child;
+        return {
+            _id: child._id + '-col',
+            nodeType: NodeType.grid_col,
+            childNodes: [child],
+        }
+        return {
+            _id: child._id + "-row", 
+            nodeType: NodeType.grid_row,
+            childNodes: [{
+                _id: child._id + "-col",
+                nodeType: NodeType.grid_col,
+                childNodes: [child],
+            }],
+        }
+    }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, HostBinding, HostListener, OnDestroy, ChangeD
 import { NodeElement, isNodeElementWithChildren } from "@core/domain/uimetadata/node-elements";
 import { Store } from '@ngrx/store';
 import * as fromForm from '../../state/form.state';
-import { FormDropAction } from '@fe/app/actions/form.user.actions';
+import { PageDropAction } from '@fe/app/actions/page.user.actions';
 import { FormEditingService } from '@fe/app/components/form-editing.service';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { Subject, BehaviorSubject } from 'rxjs';
@@ -75,7 +75,7 @@ export class DropHandleComponent implements OnInit, OnDestroy {
     let addedToNodeId = this.addedToEl._id;
     let addedToPos = this.position;
 
-    this.store.dispatch(new FormDropAction(
+    this.store.dispatch(new PageDropAction(
       removedFromNodeId,
       removedFromPos,
       movedNodeId,

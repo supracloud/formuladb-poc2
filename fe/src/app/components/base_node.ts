@@ -11,7 +11,7 @@ import * as _ from 'lodash';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } from '@core/domain/metadata/data_obj';
 import { FormEditingService } from './form-editing.service';
-import { NodeElement, getChildPath, NodeType } from '@core/domain/uimetadata/node-elements';
+import { NodeElement, getChildPath, NodeType, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
 import { elvis } from '@core/elvis';
 
 export class BaseNodeComponent implements OnDestroy {
@@ -31,17 +31,17 @@ export class BaseNodeComponent implements OnDestroy {
 
     @HostBinding('class')
     get class() {
-        return this.getCssClasses();
+        return this.getCssClasses(this.nodel);
     }
 
-    protected getCssClasses(): string {
+    protected getCssClasses(nodel: CssForNodeElement): string {
         let ret: any[] = [];
-        for (let key of Object.keys(this.nodel)) {
+        for (let key of Object.keys(nodel)) {
             if (key.match(/^css[A-X]/)) {
-                if (typeof this.nodel[key] === "string") {
-                    ret.push(this.nodel[key]);
-                } else if (this.nodel[key] instanceof Array) {
-                    for (let cssClass of this.nodel[key]) {
+                if (typeof nodel[key] === "string") {
+                    ret.push(nodel[key]);
+                } else if (nodel[key] instanceof Array) {
+                    for (let cssClass of nodel[key]) {
                         ret.push(cssClass);
                     }
                 }

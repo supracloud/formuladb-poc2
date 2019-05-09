@@ -4,9 +4,10 @@
  */
 
 import { createSelector, createFeatureSelector } from '@ngrx/store';
+import * as _ from 'lodash';
 import { Page, FrmdbLy, FrmdbLook } from '@core/domain/uimetadata/page';
-import { PageChangedAction, PageChangedActionN, AutoLayoutPageAction } from '../actions/page.user.actions';
-import { NodeType } from '@core/domain/uimetadata/node-elements';
+import { PageChangedAction, PageChangedActionN, AutoLayoutPageAction, PageDropAction, NodeElementDeleteAction, NodeElementSwitchTypeAction } from '../actions/page.user.actions';
+import { NodeType, NodeElement, isNodeElementWithChildren, NodeElementWithChildren } from '@core/domain/uimetadata/node-elements';
 import { HasId } from '@core/domain/key_value_obj';
 import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
 import { mergeSubObj } from '@core/domain/metadata/data_obj';
@@ -41,6 +42,9 @@ export type PageActions =
   | PageDataFromBackendAction
   | ResetPageDataFromBackendAction
   | AutoLayoutPageAction
+  | PageDropAction
+  | NodeElementDeleteAction
+  | NodeElementSwitchTypeAction
   ;
 
 /**
@@ -90,10 +94,75 @@ export function pageReducer(state = pageInitialState, action: PageActions): Page
           pageData: action.obj
       };
       break;
+
+    case "[page] PageDropAction":
+      if (state.page) {
+          let newPage = _.cloneDeep(state.page);
+          let movedEl = removeRecursive(newPage, action.removedFromNodeId, action.movedNodeId);
+          if (!movedEl) {console.warn("Could not move not found element ", action); return state}
+          addRecursive(newPage, movedEl, action.addedToNodeId, action.addedToPos);
+          return { 
+              ...state,
+              page: newPage,
+          }
+      } else return state;
+
+    case "[page] NodeElementDeleteAction":
+      if (state.page) {
+        removeRecursive(state.page, action.removedFromNodeId, action.movedNodeId);
+      }
+      return state;
+    case "[page] NodeElementSwitchTypeAction":
+      if (state.page) {
+        modifyRecursive(state.page, n => n._id === action.payload.node._id, n => console.log(n))//TODO implement conversion
+      }
+      return state;
   }
 
   if (action.type.match(/^\[page\]/)) console.log('[page] reducer:', state, action, ret, state == ret, state.page == ret.page);
   return ret;
+}
+
+
+
+function removeRecursive(tree: NodeElementWithChildren, removedFromNodeId: string, movedNodeId: string): NodeElement | null {
+  let ret: NodeElement | null = null;
+  if (tree.childNodes && tree._id === removedFromNodeId) {
+      let newChildNodes: NodeElement[] = [];
+      for (let child of tree.childNodes || []) {
+          if (child._id === movedNodeId) {
+              ret = child;
+          } else newChildNodes.push(child);
+      }
+      tree.childNodes = newChildNodes;
+  } else {
+      for (let child of tree.childNodes || []) {
+          if (isNodeElementWithChildren(child)) {
+              ret = removeRecursive(child, removedFromNodeId, movedNodeId);
+              if (ret) break;
+          }
+      }
+  }
+  return ret;
+}
+
+const modifyRecursive = (tree: NodeElement, filter: (each: NodeElement) => boolean, action: (found: NodeElement) => void) => {
+  if (filter(tree)) action(tree);
+  if (isNodeElementWithChildren(tree)) {
+      if (tree.childNodes && tree.childNodes.length > 0) {
+          tree.childNodes.forEach(c => modifyRecursive(c, filter, action));
+      }
+  }
+}
+
+function addRecursive(tree: NodeElementWithChildren, movedEl: NodeElement, addedToNodeId: string, pos: number) {
+  if (tree.childNodes && tree._id === addedToNodeId) {
+      tree.childNodes.splice(pos, 0, movedEl);
+  } else {
+      for (let child of tree.childNodes || []) {
+          if (isNodeElementWithChildren(child)) addRecursive(child, movedEl, addedToNodeId, pos);
+      }
+  }
 }
 
 /**
