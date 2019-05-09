@@ -178,6 +178,10 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         }));
     }
 
+    get appName() {
+        return appState.parseUrl(this.router.url).appName;
+    }
+
     private applyTheme(page: Page) {
 
         if (this.themeStylesheetElement && this.themeStylesheetElement.href != page.cssUrl) {

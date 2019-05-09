@@ -73,7 +73,7 @@ export class AutoLayoutService {
                 propertyName: imgPropName,
             });
 
-            let titleProp = entityProps["title"] || entityProps["name"];
+            let titleProp = entityProps["title"] || entityProps["name"] || { name: "title", propType_: Pn.STRING};
             parentNodeEl.childNodes.push({
                 _id: generateUUID(),
                 nodeType: NodeType.form_text,
@@ -82,7 +82,21 @@ export class AutoLayoutService {
                 cssText: "h5",
                 cssMisc: ["card-title"],
             });
+            specialPropNames.push(titleProp.name);
 
+
+            let descProp = entityProps["description"] || entityProps["summary"] || { name: "subtitle", propType_: Pn.STRING};
+            parentNodeEl.childNodes.push({
+                _id: generateUUID(),
+                nodeType: NodeType.form_text,
+                propertyName: descProp.name,
+                propertyType: descProp.propType_ as FormText['propertyType'],
+                cssText: "h6",
+                cssTextEx: "text-muted",
+                cssMargin: "mb-3",
+                cssMisc: ["card-subtitle"],
+            });
+            specialPropNames.push(descProp.name);
         }
 
         // title?: StringProperty;
@@ -125,7 +139,7 @@ export class AutoLayoutService {
                 nodeType: NodeType.form_text,
                 propertyName: pn.name,
                 propertyType: pn.propType_,
-                cssText: "text-muted",
+                cssTextEx: "text-muted",
             };
         } else {
             let propertyType = pn.propType_ === Pn.FORMULA ? Pn.STRING : pn.propType_;//FIXME: compute FORMULA return type
@@ -146,6 +160,10 @@ export class AutoLayoutService {
                     propertyType: propertyType,
                     noLabel: parentNodeEl.nodeType === NodeType.form_table,
                 };
+            }
+
+            if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
+                child.cssCards = ["card-text"];
             }
         }
         
