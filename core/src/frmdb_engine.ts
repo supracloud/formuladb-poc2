@@ -81,8 +81,6 @@ export class FrmdbEngine {
         return this.frmdbEngineStore.getForm(event.form._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
-                if (frm) event.form._rev = frm._rev;
-
                 return this.frmdbEngineStore.putForm(event.form).catch(err => console.error(err));
             })
             .then(() => {

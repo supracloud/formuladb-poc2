@@ -25,7 +25,7 @@ import { FrmdbOnfocusDirective } from '@fe/app/dev-mode-overlay/frmdb-onfocus.di
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
 import { NotFoundComponent } from '@fe/app/components/not-found/not-found.component';
 import { TableHeaderComponent } from '@fe/app/components/data-grid/table-header.component';
-import { PageItemsDirective } from '@fe/app/components/page_items.directive';
+import { NodeElementsDirective } from '@fe/app/components/node-elements.directive';
 import { FormAutocompleteComponent } from '@fe/app/components/form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from '@fe/app/components/form_tabs/form_tabs.component';
 import { FormTableComponent } from '@fe/app/components/form_table/form_table.component';
@@ -54,7 +54,7 @@ import { VFiltersComponent } from '@fe/app/components/v_filters/v_filters.compon
 import { GridColComponent } from '@fe/app/components/grid_col/grid_col.component';
 import { VNavComponent } from '@fe/app/components/v_nav/v_nav.component';
 import { VNavSegmentComponent } from '@fe/app/components/v_nav/v_nav_segment.component';
-import { CardContainerComponent } from '@fe/app/components/card_prototype/card_container.component';
+import { CardContainerComponent } from '@fe/app/components/card_container/card_container.component';
 import { FormInputComponent } from '@fe/app/components/form_input/form_input.component';
 import { HeaderComponent } from '@fe/app/components/header/header.component';
 import { RouterModule } from '@angular/router';
@@ -65,6 +65,8 @@ import { TableFpatternRenderer } from './data-grid/table-fpattern.component';
 import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
 import { TableToolsComponent } from './data-grid/table-tools.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
+import { NodeElementDeleteAction } from '../actions/page.user.actions';
+import { MediaContainerComponent } from './media_container/media_container.component';
 
 @NgModule({
     imports: [
@@ -91,7 +93,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         TableFpatternRenderer,
         TableToolsComponent,
         HeaderComponent,
-        PageItemsDirective,
+        NodeElementsDirective,
         FormAutocompleteComponent,
         FormTabsComponent,
         FormTableComponent,
@@ -116,6 +118,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         ImageComponent,
         ListComponent,
         MediaComponent,
+        MediaContainerComponent,
         TimelineComponent,
         VFiltersComponent,
         GridColComponent,
@@ -129,6 +132,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         DateRangePickerComponent,
     ],
     entryComponents: [
+        DropHandleComponent,
         FormInputComponent,
         FormAutocompleteComponent,
         FormTabsComponent,
@@ -156,6 +160,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         ImageComponent,
         ListComponent,
         MediaComponent,
+        MediaContainerComponent,
         TimelineComponent,
         VFiltersComponent,
         GridColComponent,
@@ -171,7 +176,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         NotFoundComponent,
         TableHeaderComponent,
         HeaderComponent,
-        PageItemsDirective,
+        NodeElementsDirective,
         FormAutocompleteComponent,
         FormTabsComponent,
         FormTableComponent,
@@ -196,6 +201,7 @@ import { DateRangePickerComponent } from './date_range_picker/date_range_picker.
         ImageComponent,
         ListComponent,
         MediaComponent,
+        MediaContainerComponent,
         TimelineComponent,
         VFiltersComponent,
         GridColComponent,

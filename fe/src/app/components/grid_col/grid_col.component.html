@@ -1,14 +1,13 @@
 <ng-container *ngFor="let childEl of nodel.childNodes; let pos = index">
   <div draggable="true" style="position: relative" (dragstart)="dragStart($event, pos)" (dragend)="dragEnd($event)">
-    <fa-icon [icon]="dragIcon" *ngIf="editMode" class="drag-handle fa-xs" #dragHandle [id]="'frmdb-drag-handle-' + childEl._id" (mousedown)="setDragHandleId('frmdb-drag-handle-' + childEl._id)">
+    <fa-icon [icon]="dragIcon" *ngIf="devMode$|async" class="drag-handle fa-xs" #dragHandle [id]="'frmdb-drag-handle-' + childEl._id"
+      (mousedown)="setDragHandleId('frmdb-drag-handle-' + childEl._id)">
     </fa-icon>
     <!-- <form-context-menu [item]="childEl" [canDelete]="true" [availableChildren]="getAvailableChildren()"
       [availableTypes]="getAvailableTypes()" ></form-context-menu> -->
-    <form-context-menu [parentEl]="nodeEl" [item]="childEl" *ngIf="editMode" [canDelete]="true"></form-context-menu>
+    <form-context-menu [parentEl]="nodeEl" [item]="childEl" *ngIf="devMode$|async" [canDelete]="true"></form-context-menu>
 
+    <ng-container [frmdb-node-elements]="[childEl]" [parentnodel]="nodel" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>
     <drop-handle [position]="pos" [addedToEl]="nodel" orientation="horizontal"></drop-handle>
-    <ng-container [frmdbPageItems]="[childEl]" [formgrp]="formgrp" [fullpath]="fullpath"
-      [rdonly]="rdonly"></ng-container>
   </div>
 </ng-container>
-<drop-handle [position]="-1" [addedToEl]="nodel" orientation="horizontal"></drop-handle>

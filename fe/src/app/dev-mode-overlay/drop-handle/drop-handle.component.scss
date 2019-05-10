@@ -14,6 +14,10 @@
         left: 0;
         right: 0;
     }
+    &.child-order {
+        flex-basis: 5px;
+        flex-grow: 0;
+    }
 
     .drop-handle {
         border-style: solid !important;

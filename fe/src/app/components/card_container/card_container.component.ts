@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { CardContainer, NodeElement, BaseNodeElement, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
+import { CardContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType } from '@core/domain/uimetadata/node-elements';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';
@@ -28,25 +28,17 @@ export class CardContainerComponent extends BaseTableComponent implements OnInit
     
     cardContainer: CardContainer;
 
-    getCssClasses(nodeEl: CssForNodeElement): string {
-        let ret = super.getCssClasses(nodeEl);
-        if (this.cardContainer.layout == FrmdbLy.ly_grid) {
-            return ret + ' card-group';
-        } else if (this.cardContainer.layout == FrmdbLy.ly_cards) {
-            return ret + ' card-deck';
-        } else if (this.cardContainer.layout == FrmdbLy.ly_mosaic) {
-            return ret + ' card-columns';
-        } else return ret;
-    }
-
-    get cardCssClasses() {
-        return super.getCssClasses(this.cardContainer.card);
-    }
-
     data: any;
     frameworkComponents: any;
     defaultColDef: any;
     childControls: AbstractControl[];
+
+    get card() {
+        return {
+            ...this.cardContainer,
+            nodeType: NodeType.card,
+        } as Card;
+    }
     
     constructor(formEditingService: FormEditingService, tableService: TableService
     ){

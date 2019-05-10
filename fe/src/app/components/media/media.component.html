@@ -1,3 +1,6 @@
-<p>
-  media works!
-</p>
+<frmdb-image *ngIf="media?.imageNode" [nodel]="media?.imageNode" [formgrp]="formgrp" [fullpath]="getChildPath(media?.imageNode)" [rdonly]="rdonly"></frmdb-image>
+<div class="media-body">
+  <frmdb-form_text *ngIf="media?.titleNode" [nodel]="media?.titleNode" [formgrp]="formgrp" [fullpath]="getChildPath(media?.titleNode)" [rdonly]="rdonly"></frmdb-form_text>
+  <frmdb-form_text *ngIf="media?.subtitleNode" [nodel]="media?.subtitleNode" [formgrp]="formgrp" [fullpath]="getChildPath(media?.subtitleNode)" [rdonly]="rdonly"></frmdb-form_text>
+  <ng-container [frmdb-node-elements]="media.childNodes" [parentnodel]="nodel" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>
+</div>

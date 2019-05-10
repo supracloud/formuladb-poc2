@@ -51,14 +51,18 @@ export class BaseTableComponent extends BaseNodeComponent implements OnInit, OnC
                     sortModel: []
                 },
                 successCallback: (rowsThisPage: any[], lastRow: number) => {
-                    let controls: AbstractControl[] = [];
-                    rowsThisPage.forEach((row, idx) => {
-                        let rowCtrl = new FrmdbFormGroup('' + idx);
-                        this.formEditingService.updateFormGroupWithData(row, rowCtrl, this.rdonly);
-                        controls.push(rowCtrl);
-                    })
-                    this.referencedTableRowsAsFormGroups = controls;
-                    this.formEditingService.formChangeDetectorRef.detectChanges();
+                    try {
+                        let controls: AbstractControl[] = [];
+                        rowsThisPage.forEach((row, idx) => {
+                            let rowCtrl = new FrmdbFormGroup('' + idx);
+                            this.formEditingService.updateFormGroupWithData(row, rowCtrl, this.rdonly);
+                            controls.push(rowCtrl);
+                        })
+                        this.referencedTableRowsAsFormGroups = controls;
+                        this.formEditingService.formChangeDetectorRef.detectChanges();
+                    } catch (err) {
+                        console.warn(err); throw err;
+                    }
                 },
                 failCallback: () => {console.error("Failed to get data from server")},
             });

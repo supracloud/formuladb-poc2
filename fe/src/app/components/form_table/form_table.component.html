@@ -15,7 +15,7 @@
                 <fa-icon (click)="deleteRow(rowControl)" [icon]="delIcon" class="fa-sm"></fa-icon>
             </td>
             <td *ngFor="let child of tableElement.childNodes">
-                <ng-container [frmdbPageItems]="[child]"
+                <ng-container [frmdb-node-elements]="[child]" [parentnodel]="nodel"
                 [formgrp]="formgrp"
                 [fullpath]="fullpath + '.' + idx" 
                 [rdonly]="rdonly"></ng-container>

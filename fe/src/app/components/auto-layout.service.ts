@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 
-import { Entity, EntityProperty, EntityProperties, ImageProperty, StringProperty, ScalarEntityProperty } from "@core/domain/metadata/entity";
-import { Page, FrmdbLy } from "@core/domain/uimetadata/page";
+import { Entity, EntityProperties, ScalarEntityProperty } from "@core/domain/metadata/entity";
+import { FrmdbLy } from "@core/domain/uimetadata/page";
 import { FormPage, getFormPageEntityId } from "@core/domain/uimetadata/form-page";
 import { TablePage, getTablePageEntityId } from "@core/domain/uimetadata/table-page";
-import { NodeElementWithChildren, FormTable, FormTabs, FormAutocomplete, NodeType, FormDatepicker, FormText, FormInput, GridRow, NodeElement, isNodeElementWithChildren, Button, CardContainer, ScalarNodeElement, DataGrid, TableColumn } from "@core/domain/uimetadata/node-elements";
+import { NodeElementWithChildren, NodeType, FormText, NodeElement, CardContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer } from "@core/domain/uimetadata/node-elements";
 
 import * as _ from "lodash";
 
@@ -59,7 +59,8 @@ export class AutoLayoutService {
     private autoLayoutSpecialProperties(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
         let specialPropNames: string[] = [];
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
-        let specialChildNodes: NodeElement[] = [];
+        let isCard = parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container;
+        let isMediaObj = parentNodeEl.nodeType === NodeType.media || parentNodeEl.nodeType === NodeType.card_container;
 
         if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
             let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
@@ -68,26 +69,26 @@ export class AutoLayoutService {
                 imgPropName = imageProps[0].name;
                 specialPropNames.push(imgPropName);
             }
-            specialChildNodes.push({
+            let imgNodeEl: Image = {
                 _id: parentNodeEl._id + "." + imgPropName,
                 nodeType: NodeType.image,
                 propertyName: imgPropName,
-            });
+            };
 
             let titleProp = entityProps["title"] || entityProps["name"] || { name: "title", propType_: Pn.STRING};
-            specialChildNodes.push({
+            let titleNodeEl: FormText = {
                 _id: parentNodeEl._id + "." + titleProp.name,
                 nodeType: NodeType.form_text,
                 propertyName: titleProp.name,
                 propertyType: titleProp.propType_ as FormText['propertyType'],
                 cssText: "h5",
-                cssMisc: ["card-title"],
-            });
+                cssMisc: isCard ? ["card-title"] : [],
+            };
             specialPropNames.push(titleProp.name);
 
 
-            let descProp = entityProps["description"] || entityProps["summary"] || { name: "subtitle", propType_: Pn.STRING};
-            specialChildNodes.push({
+            let descProp = entityProps["subtitle"] || entityProps["description"] || entityProps["summary"] || { name: "subtitle", propType_: Pn.STRING};
+            let subtitleNodeEl: FormText = {
                 _id: parentNodeEl._id + "." + descProp.name,
                 nodeType: NodeType.form_text,
                 propertyName: descProp.name,
@@ -95,13 +96,15 @@ export class AutoLayoutService {
                 cssText: "h6",
                 cssTextEx: "text-muted",
                 cssMargin: "mb-3",
-                cssMisc: ["card-subtitle"],
-            });
+                cssMisc: isCard ? ["card-subtitle"] : [],
+            };
             specialPropNames.push(descProp.name);
-        }
 
-        for (let child of specialChildNodes) {
-            parentNodeEl.childNodes.push(this.wrapChild(child));
+            if (parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container|| parentNodeEl.nodeType === NodeType.media|| parentNodeEl.nodeType === NodeType.media_container) {
+                parentNodeEl.imageNode = imgNodeEl;
+                parentNodeEl.titleNode = titleNodeEl;
+                parentNodeEl.subtitleNode = subtitleNodeEl;
+            }
         }
     
         return specialPropNames;
@@ -186,12 +189,11 @@ export class AutoLayoutService {
                     tableName: pn.name,
                     refEntityName: pn.referencedEntityName,
                 }
-                if (FrmdbLy.ly_mosaic === layout || FrmdbLy.ly_fpattern === layout) {
+                if (FrmdbLy.ly_mosaic === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_grid === layout) {
                     child = {
                         ...base,
                         nodeType: NodeType.card_container,
-                        layout: layout,
-                        card: {}
+                        cssCardLayout: "card-group",
                     };
                 } else if (pn.isLargeTable) {
                     child = {
@@ -246,7 +248,7 @@ export class AutoLayoutService {
             }
 
             parentNodeEl.childNodes = parentNodeEl.childNodes || [];
-            parentNodeEl.childNodes.push(this.wrapChild(child));
+            parentNodeEl.childNodes.push(this.wrapGridCol(child));
         };
     }
 
@@ -268,49 +270,59 @@ export class AutoLayoutService {
                     type: pn.propType_
                 } as TableColumn))
             }];
-        } else {
+        } else if (retTable.layout === FrmdbLy.ly_cards || retTable.layout === FrmdbLy.ly_grid) {
             let cardContainer: CardContainer = {
                 _id: tableId,
                 nodeType: NodeType.card_container,
+                cssCardLayout: "card-group",
                 refEntityName: entity._id,
-                card: {},
                 childNodes: []
             };
             this.autoLayoutChildren(retTable.layout!, cardContainer, entity.props);
             retTable.childNodes = [cardContainer];
 
-            if (retTable.layout === FrmdbLy.ly_fpattern) {
-                cardContainer.cssMisc = ["row", "w-100"];
-                cardContainer.card.cssWithInCols = "col-12";
-            } else if (retTable.layout === FrmdbLy.ly_grid) {
-                cardContainer.cssMisc = ["row", "w-100"];
-                cardContainer.card.cssWithInCols = "col-4";
+            if (retTable.layout === FrmdbLy.ly_grid) {
+                cardContainer.cssCardLayout = "card-group";
             } else if (retTable.layout === FrmdbLy.ly_cards) {
-                cardContainer.cssMisc = ["row", "w-100"];
-                cardContainer.card.cssWithInCols = "col-4";
+                cardContainer.cssCardLayout = "card-deck";
             } else if (retTable.layout === FrmdbLy.ly_mosaic) {
+                cardContainer.cssCardLayout = "card-columns";
                 cardContainer.cssMisc = ["row", "w-100"];
-                cardContainer.card.cssWithInCols = "col-4";
+            }
+        } else if (retTable.layout === FrmdbLy.ly_fpattern || retTable.layout === FrmdbLy.ly_zigzagpattern) {
+            let mediaContainer: MediaContainer = {
+                _id: tableId,
+                nodeType: NodeType.media_container,
+                refEntityName: entity._id,
+                childNodes: []
+            };
+            this.autoLayoutChildren(retTable.layout!, mediaContainer, entity.props);
+            retTable.childNodes = [mediaContainer];
+
+            if (retTable.layout === FrmdbLy.ly_fpattern) {
+            } else if (retTable.layout === FrmdbLy.ly_zigzagpattern) {
+                //TODO: use flex ordering to obtain the zigzag patterna and make the rows higer than f-pattern
             }
         }
         
         return retTable;
     }
     
-    private wrapChild(child: NodeElement): NodeElement {
-        // return child;
+    private wrapGridCol(nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
         return {
-            _id: child._id + '-col',
+            _id: nodeEl._id + '-col',
             nodeType: NodeType.grid_col,
-            childNodes: [child],
+            childNodes: [nodeEl, ...extraNodeEls],
         }
+    }    
+    private wrapGridRow(nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
         return {
-            _id: child._id + "-row", 
+            _id: nodeEl._id + "-row", 
             nodeType: NodeType.grid_row,
             childNodes: [{
-                _id: child._id + "-col",
+                _id: nodeEl._id + "-col",
                 nodeType: NodeType.grid_col,
-                childNodes: [child],
+                childNodes: [nodeEl, ...extraNodeEls],
             }],
         }
     }

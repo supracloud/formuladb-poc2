@@ -1,5 +1,5 @@
 <!-- <frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state> -->
-<ng-container [frmdbPageItems]="page?.childNodes" [formgrp]="theFormGroup" [fullpath]="''" [rdonly]="rdonly"></ng-container>
+<ng-container [frmdb-node-elements]="page?.childNodes" [parentnodel]="nodel" [formgrp]="theFormGroup" [fullpath]="''" [rdonly]="rdonly"></ng-container>
 
 <!-- <div class="frmdb-form-status">
     <span class="frmdb-form-status-text badge-pill" [class.badge-success]="theFormGroup.status == 'VALID'"

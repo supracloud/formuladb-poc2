@@ -38,13 +38,16 @@ export class DropHandleComponent implements OnInit, OnDestroy {
   position: number = 0;
 
   @Input()
-  orientation: string;
+  orientation: "vertical" | "horizontal" | "child-order";
 
   @HostBinding("class.vertical")
   get vertical(): boolean { return this.orientation === 'vertical' }
 
   @HostBinding("class.horizontal")
   get horizontal(): boolean { return this.orientation === 'horizontal' }
+
+  @HostBinding("class.child-order")
+  get child_order(): boolean { return this.orientation === 'child-order' }
 
   @HostBinding("class.visible")
   visible: boolean = false;

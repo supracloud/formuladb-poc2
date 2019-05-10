@@ -178,19 +178,23 @@
         <div class="w-100"></div>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <fa-icon *ngIf="!(editorOn$ | async)" [icon]="editIcon" class="far fa-sm" style="visibility: hidden;" (click)="clickStartEdit$.next()">
-                </fa-icon>
-                <fa-icon *ngIf="editorOn$ | async" [icon]="discardChangesIcon" class="fa-sm" (click)="clickCancelEdits$.next()" style="color:orange"></fa-icon>
-            </li>
-            <li class="nav-item">        
-                <fa-icon *ngIf="!(editorOn$ | async)" [icon]="edit2Icon" class="far fa-sm" style="color: rgba(255, 255, 255, 0.5)" (click)="clickStartEdit$.next()">
-                </fa-icon>
-                <fa-icon *ngIf="editorOn$ | async" [icon]="applyChangesIcon" class="fa-sm" (click)="clickSaveEdits$.next()"
-                    [style.color]="(formulaEditorService.editorExprHasErrors$ | async) ? 'red' : 'green'"></fa-icon>
+                <a *ngIf="!(editorOn$ | async)" (click)="clickStartEdit$.next()" class="nav-link pr-1" title="Roles" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                    <fa-icon [icon]="edit2Icon" class="far fa-sm" style="color: rgba(255, 255, 255, 0.5)">
+                    </fa-icon>
+                </a>
+                <a *ngIf="editorOn$ | async" (click)="clickCancelEdits$.next()" class="nav-link pr-1" title="Roles" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                    <fa-icon *ngIf="editorOn$ | async" [icon]="discardChangesIcon" class="fa-sm" style="color:orange"></fa-icon>
+                </a>
             </li>
             <form class="form-inline my-2 my-lg-0">
                 <frmdb-formula-code-editor></frmdb-formula-code-editor>
             </form>
+            <li class="nav-item">
+                <fa-icon *ngIf="!(editorOn$ | async)" [icon]="editIcon" class="far fa-sm" style="visibility: hidden;" (click)="clickStartEdit$.next()">
+                </fa-icon>
+                <fa-icon *ngIf="editorOn$ | async" [icon]="applyChangesIcon" class="fa-sm" (click)="clickSaveEdits$.next()"
+                    [style.color]="(formulaEditorService.editorExprHasErrors$ | async) ? 'red' : 'green'"></fa-icon>
+            </li>
         </ul>
     </div>
 </nav>

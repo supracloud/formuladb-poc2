@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Directive, ComponentFactoryResolver, ViewContainerRef, ComponentFactory, Input } from '@angular/core';
+import { Directive, ComponentFactoryResolver, ViewContainerRef, ComponentFactory, Input, ComponentRef } from '@angular/core';
 
 import { BaseNodeComponent } from './base_node';
 import { NodeType, NodeElement, getChildPath } from '@core/domain/uimetadata/node-elements';
@@ -33,10 +33,12 @@ import { VFiltersComponent } from './v_filters/v_filters.component';
 import { HFiltersComponent } from './h_filters/h_filters.component';
 import { ButtonComponent } from './button/button.component';
 import { ButtonGroupComponent } from './button_group/button_group.component';
-import { CardContainerComponent } from './card_prototype/card_container.component';
+import { CardContainerComponent } from './card_container/card_container.component';
 import { FormGroup } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
+import { DropHandleComponent } from '../dev-mode-overlay/drop-handle/drop-handle.component';
+import { MediaContainerComponent } from './media_container/media_container.component';
 
 export type PageItemComponents =
     | FormInputComponent
@@ -66,6 +68,7 @@ export type PageItemComponents =
     | ImageComponent
     | ListComponent
     | MediaComponent
+    | MediaContainerComponent
     | TimelineComponent
     | VFiltersComponent
     | GridColComponent
@@ -74,9 +77,9 @@ export type PageItemComponents =
     ;
 
 @Directive({
-    selector: '[frmdbPageItems]'
+    selector: '[frmdb-node-elements]'
 })
-export class PageItemsDirective {
+export class NodeElementsDirective {
 
     @Input()
     formgrp: FormGroup;
@@ -87,16 +90,21 @@ export class PageItemsDirective {
     @Input()
     rdonly: boolean;
 
+    @Input()
+    parentnodel: NodeElement;
+
     constructor(public viewContainerRef: ViewContainerRef, private componentFactoryResolver: ComponentFactoryResolver) { }
 
 
-    @Input() set frmdbPageItems(childElements: NodeElement[]) {
+    @Input("frmdb-node-elements") set frmdbPageItems(childElements: NodeElement[]) {
         console.debug(this.fullpath, childElements);
         if (null == this.fullpath || null == childElements) return;
         let componentFactory: ComponentFactory<PageItemComponents>;
         let viewContainerRef = this.viewContainerRef;
         viewContainerRef.clear();
 
+        let dropHandlePos = 0;
+        // this.addDropHandle(dropHandlePos++);
         for (let nodel of childElements) {
 
             if (!nodel) {
@@ -174,6 +182,9 @@ export class PageItemsDirective {
                 case NodeType.media:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(MediaComponent)
                     break;
+                case NodeType.media_container:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(MediaContainerComponent)
+                    break;
                 case NodeType.v_nav:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(VNavComponent)
                     break;
@@ -210,7 +221,16 @@ export class PageItemsDirective {
             (<BaseNodeComponent>componentRef.instance).formgrp = this.formgrp;
             (<BaseNodeComponent>componentRef.instance).fullpath = this.getChildPath(nodel);
             (<BaseNodeComponent>componentRef.instance).rdonly = this.rdonly;
+            // this.addDropHandle(dropHandlePos++);
         }
+    }
+
+    addDropHandle(dropHandlePos: number) {
+        let componentFactory = this.componentFactoryResolver.resolveComponentFactory<DropHandleComponent>(DropHandleComponent)
+        let dropHandleComponentRef: ComponentRef<DropHandleComponent> = this.viewContainerRef.createComponent(componentFactory);
+        dropHandleComponentRef.instance.position = dropHandlePos;
+        dropHandleComponentRef.instance.addedToEl = this.parentnodel;
+        dropHandleComponentRef.instance.orientation = "child-order";
     }
 
     getChildPath(childEl: NodeElement) {
