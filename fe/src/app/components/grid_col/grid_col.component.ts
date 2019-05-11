@@ -31,7 +31,7 @@ export class GridColComponent extends BaseNodeComponent implements OnInit {
     rdonly: boolean;
     
     getCssClasses(nodeEl: CssForNodeElement): string {
-        return super.getCssClasses(nodeEl) + ' col';
+        return super.getCssClasses(nodeEl) + ' col d-flex flex-column overflow-auto';
     }
     
     devMode$: Observable<boolean>;

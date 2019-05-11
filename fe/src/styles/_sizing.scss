@@ -2,10 +2,16 @@
     $num: $i * 5;
 
     .h-#{$num} {
-        height: #{$num};
+        height: percentage($num/100);
+    }
+    .mh-#{$num} {
+        max-height: percentage($num/100);
     }
     .vh-#{$num} {
         height: #{$num}vh;
+    }
+    .mvh-#{$num} {
+        max-height: #{$num}vh;
     }
     .hrem-#{$i} {
         height: #{$i}rem;
@@ -23,7 +29,7 @@
     }
     
     .w-#{$num} {
-        width: #{$num};
+        width: percentage($num/100);
     }
     .vw-#{$num} {
         width: #{$num}vw;
@@ -33,7 +39,7 @@
     }
     .d-flex.flex-row, .media {
         .w-#{$num} {
-            flex: 0 0 #{$num};
+            flex: 0 0 percentage($num/100);
         }
         .vw-#{$num} {
             flex: 0 0 #{$num}vw;

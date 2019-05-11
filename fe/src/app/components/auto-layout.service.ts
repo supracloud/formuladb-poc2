@@ -59,8 +59,8 @@ export class AutoLayoutService {
     private autoLayoutSpecialProperties(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
         let specialPropNames: string[] = [];
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
-        let isCard = parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container;
-        let isMediaObj = parentNodeEl.nodeType === NodeType.media || parentNodeEl.nodeType === NodeType.media_container;
+        let isCard = this.isCard(parentNodeEl);
+        let isMediaObj = this.isMedia(parentNodeEl);
 
         if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
             let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
@@ -249,7 +249,7 @@ export class AutoLayoutService {
             }
 
             parentNodeEl.childNodes = parentNodeEl.childNodes || [];
-            parentNodeEl.childNodes.push(this.wrapGridCol(child));
+            parentNodeEl.childNodes.push(this.wrapChild(parentNodeEl, child));
         };
     }
 
@@ -309,12 +309,28 @@ export class AutoLayoutService {
         return retTable;
     }
     
-    private wrapGridCol(nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
-        return {
+    private isCard(nodel: NodeElement) {
+        return [NodeType.card, NodeType.card_container].includes(nodel.nodeType);
+    }
+    private isMedia(nodel: NodeElement) {
+        return [NodeType.media, NodeType.media_container].includes(nodel.nodeType);
+    }
+
+    private wrapChild(parentNodeEl: NodeElementWithChildren, nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
+        if (this.isCard(parentNodeEl)) {
+            let childNodes = [nodeEl, ...extraNodeEls];
+            return {
+                _id: nodeEl._id + '-col',
+                nodeType: NodeType.grid_col,
+                cssPadding: "px-0",
+                cssMaxHeightPercent: "mh-45",
+                childNodes: [nodeEl, ...extraNodeEls],
+            }
+        } else return {
             _id: nodeEl._id + '-col',
             nodeType: NodeType.grid_col,
             childNodes: [nodeEl, ...extraNodeEls],
-        }
+        }; 
     }    
     private wrapGridRow(nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
         return {

@@ -147,6 +147,7 @@ export interface BaseNodeElement extends SubObj {
     cssWithInCols?: | "col-1" | "col-2"  | "col-3"  | "col-4" | "col-5" | "col-6" | "col-7" | "col-8" | "col-9" | "col-10" | "col-11" | "col-12";
     cssWidthInChars?: | "wrem-0" | "wrem-5" | "wrem-10" | "wrem-15" | "wrem-20" | "wrem-25" | "wrem-30" | "wrem-35" | "wrem-40" | "wrem-45" | "wrem-50" | "wrem-55" | "wrem-60" | "wrem-65" | "wrem-70" | "wrem-75" | "wrem-80" | "wrem-85" | "wrem-90" | "wrem-95" | "wrem-100";
     cssWidthViewport?: | "vw-0" | "vw-5" | "vw-10" | "vw-15" | "vw-20" | "vw-25" | "vw-30" | "vw-35" | "vw-40" | "vw-45" | "vw-50" | "vw-55" | "vw-60" | "vw-65" | "vw-70" | "vw-75" | "vw-80" | "vw-85" | "vw-90" | "vw-95" | "vw-100";
+    cssMaxHeightPercent?: | "mh-0" | "mh-5" | "mh-10" | "mh-15" | "mh-20" | "mh-25" | "mh-30" | "mh-35" | "mh-40" | "mh-45" | "mh-50" | "mh-55" | "mh-60" | "mh-65" | "mh-70" | "mh-75" | "mh-80" | "mh-85" | "mh-90" | "mh-95" | "mh-100";
     cssMisc?: ("w-100" |"row" | "card-title" | "card-subtitle")[];
     cssCards?: ("card-text" | "card-title" | "card-body" | "card-header" | "card-footer")[];
     cssText?: | "h1"| "h2"| "h3"| "h4"| "h5"| "h6"| "blockquote";

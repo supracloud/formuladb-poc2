@@ -29,7 +29,7 @@ export class CardComponent extends BaseNodeComponent implements OnInit {
   }
 
   getCssClasses(nodeEl: CssForNodeElement): string {
-    return super.getCssClasses(nodeEl) + ' card mt-2';
+    return super.getCssClasses(nodeEl) + ' card mt-2 vh-60';
   }
   
   ngOnInit() {
