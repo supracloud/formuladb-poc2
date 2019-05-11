@@ -33,11 +33,12 @@ export class CardContainerComponent extends BaseTableComponent implements OnInit
     defaultColDef: any;
     childControls: AbstractControl[];
 
-    get card() {
+    get card(): Card {
+        let {cssCardLayout, ...cardProps} = this.cardContainer; 
         return {
-            ...this.cardContainer,
+            ...cardProps,
             nodeType: NodeType.card,
-        } as Card;
+        };
     }
     
     constructor(formEditingService: FormEditingService, tableService: TableService

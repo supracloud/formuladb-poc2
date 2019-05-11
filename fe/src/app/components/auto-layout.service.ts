@@ -60,7 +60,7 @@ export class AutoLayoutService {
         let specialPropNames: string[] = [];
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
         let isCard = parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container;
-        let isMediaObj = parentNodeEl.nodeType === NodeType.media || parentNodeEl.nodeType === NodeType.card_container;
+        let isMediaObj = parentNodeEl.nodeType === NodeType.media || parentNodeEl.nodeType === NodeType.media_container;
 
         if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
             let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
@@ -102,6 +102,7 @@ export class AutoLayoutService {
 
             if (parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container|| parentNodeEl.nodeType === NodeType.media|| parentNodeEl.nodeType === NodeType.media_container) {
                 parentNodeEl.imageNode = imgNodeEl;
+                if (isMediaObj) imgNodeEl.cssWidthViewport = "vw-35";
                 parentNodeEl.titleNode = titleNodeEl;
                 parentNodeEl.subtitleNode = subtitleNodeEl;
             }
