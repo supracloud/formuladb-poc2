@@ -202,6 +202,7 @@ export function isFormulaProperty(param): param is FormulaProperty {
 export type ScalarEntityProperty = 
     | NumberProperty
     | StringProperty
+    | BooleanProperty
     | DocumentProperty
     | DatetimeProperty
     | ActionProperty

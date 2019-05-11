@@ -46,6 +46,7 @@ export class FormInputComponent extends BaseNodeComponent implements OnInit, OnD
     getType(): string {
         if (this.nodel.nodeType != NodeType.form_input) throw new Error("form-input node element is wrong: " + CircularJSON.stringify(this.nodel));
         if (this.nodel.propertyType === Pn.NUMBER) return "number";
+        if (this.nodel.propertyType === Pn.BOOLEAN) return "checkbox";
         else return "text";
     }
 

@@ -38,7 +38,7 @@ export class DropHandleComponent implements OnInit, OnDestroy {
   position: number = 0;
 
   @Input()
-  orientation: "vertical" | "horizontal" | "child-order";
+  orientation: "vertical" | "horizontal" | "add-new-row";
 
   @HostBinding("class.vertical")
   get vertical(): boolean { return this.orientation === 'vertical' }
@@ -46,8 +46,8 @@ export class DropHandleComponent implements OnInit, OnDestroy {
   @HostBinding("class.horizontal")
   get horizontal(): boolean { return this.orientation === 'horizontal' }
 
-  @HostBinding("class.child-order")
-  get child_order(): boolean { return this.orientation === 'child-order' }
+  @HostBinding("class.add-new-row")
+  get child_order(): boolean { return this.orientation === 'add-new-row' }
 
   @HostBinding("class.visible")
   visible: boolean = false;

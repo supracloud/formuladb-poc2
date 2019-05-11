@@ -5,7 +5,7 @@ import { Entity, EntityProperties, ScalarEntityProperty } from "@core/domain/met
 import { FrmdbLy } from "@core/domain/uimetadata/page";
 import { FormPage, getFormPageEntityId } from "@core/domain/uimetadata/form-page";
 import { TablePage, getTablePageEntityId } from "@core/domain/uimetadata/table-page";
-import { NodeElementWithChildren, NodeType, FormText, NodeElement, CardContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer } from "@core/domain/uimetadata/node-elements";
+import { NodeElementWithChildren, NodeType, FormText, NodeElement, CardContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer, isCard, isMedia } from "@core/domain/uimetadata/node-elements";
 
 import * as _ from "lodash";
 
@@ -59,8 +59,6 @@ export class AutoLayoutService {
     private autoLayoutSpecialProperties(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
         let specialPropNames: string[] = [];
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
-        let isCard = this.isCard(parentNodeEl);
-        let isMediaObj = this.isMedia(parentNodeEl);
 
         if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
             let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
@@ -82,29 +80,47 @@ export class AutoLayoutService {
                 propertyName: titleProp.name,
                 propertyType: titleProp.propType_ as FormText['propertyType'],
                 cssText: "h5",
-                cssMisc: isCard ? ["card-title"] : [],
+                cssCards: isCard(parentNodeEl) ? ["card-title"] : [],
             };
             specialPropNames.push(titleProp.name);
 
 
-            let descProp = entityProps["subtitle"] || entityProps["description"] || entityProps["summary"] || { name: "subtitle", propType_: Pn.STRING};
+            let subtitleProp = entityProps["subtitle"] || entityProps["description"] || entityProps["summary"] || { name: "subtitle", propType_: Pn.STRING};
             let subtitleNodeEl: FormText = {
-                _id: parentNodeEl._id + "." + descProp.name,
+                _id: parentNodeEl._id + "." + subtitleProp.name,
                 nodeType: NodeType.form_text,
-                propertyName: descProp.name,
-                propertyType: descProp.propType_ as FormText['propertyType'],
+                propertyName: subtitleProp.name,
+                propertyType: subtitleProp.propType_ as FormText['propertyType'],
                 cssText: "h6",
                 cssTextEx: "text-muted",
                 cssMargin: "mb-3",
-                cssMisc: isCard ? ["card-subtitle"] : [],
+                cssCards: isCard(parentNodeEl) ? ["card-subtitle"] : [],
             };
-            specialPropNames.push(descProp.name);
+            specialPropNames.push(subtitleProp.name);
+
+
+            let textProp = entityProps["text"] || entityProps["long_description"];
+            let textNodeEl: FormText | null = null;
+            if (textProp) {
+                textNodeEl = {
+                    _id: parentNodeEl._id + "." + textProp.name,
+                    nodeType: NodeType.form_text,
+                    propertyName: textProp.name,
+                    propertyType: textProp.propType_ as FormText['propertyType'],
+                    cssMargin: "mb-3",
+                    cssCards: isCard(parentNodeEl) ? ["card-text"] : [],
+                };
+                specialPropNames.push(textProp.name);
+            }
 
             if (parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container|| parentNodeEl.nodeType === NodeType.media|| parentNodeEl.nodeType === NodeType.media_container) {
                 parentNodeEl.imageNode = imgNodeEl;
-                if (isMediaObj) imgNodeEl.cssWidthViewport = "vw-35";
+                if (isMedia(parentNodeEl)) imgNodeEl.cssWidthViewport = "vw-35";
                 parentNodeEl.titleNode = titleNodeEl;
                 parentNodeEl.subtitleNode = subtitleNodeEl;
+                if (null != textNodeEl) {
+                    parentNodeEl.textNode = textNodeEl;
+                }
             }
         }
     
@@ -308,22 +324,22 @@ export class AutoLayoutService {
         
         return retTable;
     }
-    
-    private isCard(nodel: NodeElement) {
-        return [NodeType.card, NodeType.card_container].includes(nodel.nodeType);
-    }
-    private isMedia(nodel: NodeElement) {
-        return [NodeType.media, NodeType.media_container].includes(nodel.nodeType);
-    }
 
     private wrapChild(parentNodeEl: NodeElementWithChildren, nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
-        if (this.isCard(parentNodeEl)) {
+        if (isCard(parentNodeEl)) {
             let childNodes = [nodeEl, ...extraNodeEls];
             return {
                 _id: nodeEl._id + '-col',
                 nodeType: NodeType.grid_col,
                 cssPadding: "px-0",
                 cssMaxHeightPercent: "mh-45",
+                childNodes: [nodeEl, ...extraNodeEls],
+            }
+        } else if (NodeType.grid_row === parentNodeEl.nodeType) {
+            return {
+                _id: nodeEl._id + '-col',
+                nodeType: NodeType.grid_col,
+                cssWithInCols: "col-4",
                 childNodes: [nodeEl, ...extraNodeEls],
             }
         } else return {

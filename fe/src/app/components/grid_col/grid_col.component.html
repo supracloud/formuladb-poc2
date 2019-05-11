@@ -7,7 +7,10 @@
       [availableTypes]="getAvailableTypes()" ></form-context-menu> -->
     <form-context-menu [parentEl]="nodeEl" [item]="childEl" *ngIf="devMode$|async" [canDelete]="true"></form-context-menu>
 
+    <drop-handle [position]="pos" [addedToEl]="childEl" orientation="add-new-row"></drop-handle>
+
     <ng-container [frmdb-node-elements]="[childEl]" [parentnodel]="nodel" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>
-    <drop-handle [position]="pos" [addedToEl]="nodel" orientation="horizontal"></drop-handle>
+
+    <drop-handle [position]="pos+1" [addedToEl]="nodel" orientation="horizontal"></drop-handle>
   </div>
 </ng-container>

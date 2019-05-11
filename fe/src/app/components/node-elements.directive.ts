@@ -230,7 +230,7 @@ export class NodeElementsDirective {
         let dropHandleComponentRef: ComponentRef<DropHandleComponent> = this.viewContainerRef.createComponent(componentFactory);
         dropHandleComponentRef.instance.position = dropHandlePos;
         dropHandleComponentRef.instance.addedToEl = this.parentnodel;
-        dropHandleComponentRef.instance.orientation = "child-order";
+        dropHandleComponentRef.instance.orientation = "add-new-row";
     }
 
     getChildPath(childEl: NodeElement) {

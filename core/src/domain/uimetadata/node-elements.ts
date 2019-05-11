@@ -148,8 +148,8 @@ export interface BaseNodeElement extends SubObj {
     cssWidthInChars?: | "wrem-0" | "wrem-5" | "wrem-10" | "wrem-15" | "wrem-20" | "wrem-25" | "wrem-30" | "wrem-35" | "wrem-40" | "wrem-45" | "wrem-50" | "wrem-55" | "wrem-60" | "wrem-65" | "wrem-70" | "wrem-75" | "wrem-80" | "wrem-85" | "wrem-90" | "wrem-95" | "wrem-100";
     cssWidthViewport?: | "vw-0" | "vw-5" | "vw-10" | "vw-15" | "vw-20" | "vw-25" | "vw-30" | "vw-35" | "vw-40" | "vw-45" | "vw-50" | "vw-55" | "vw-60" | "vw-65" | "vw-70" | "vw-75" | "vw-80" | "vw-85" | "vw-90" | "vw-95" | "vw-100";
     cssMaxHeightPercent?: | "mh-0" | "mh-5" | "mh-10" | "mh-15" | "mh-20" | "mh-25" | "mh-30" | "mh-35" | "mh-40" | "mh-45" | "mh-50" | "mh-55" | "mh-60" | "mh-65" | "mh-70" | "mh-75" | "mh-80" | "mh-85" | "mh-90" | "mh-95" | "mh-100";
-    cssMisc?: ("w-100" |"row" | "card-title" | "card-subtitle")[];
-    cssCards?: ("card-text" | "card-title" | "card-body" | "card-header" | "card-footer")[];
+    cssMisc?: ("w-100" |"row")[];
+    cssCards?: ("card-text" | "card-title" | "card-subtitle" | "card-body" | "card-header" | "card-footer")[];
     cssText?: | "h1"| "h2"| "h3"| "h4"| "h5"| "h6"| "blockquote";
     cssTextEx?: | "lead"| "text-muted"| "mark"| "small";
     cssMargin?: | "mt-0" | "mt-1" | "mt-2" | "mt-3" | "mt-4" | "mt-5" | "mt-auto" | "mb-0" | "mb-1" | "mb-2" | "mb-3" | "mb-4" | "mb-5" | "mb-auto" | "ml-0" | "ml-1" | "ml-2" | "ml-3" | "ml-4" | "ml-5" | "ml-auto" | "mr-0" | "mr-1" | "mr-2" | "mr-3" | "mr-4" | "mr-5" | "mr-auto" | "mx-0" | "mx-1" | "mx-2" | "mx-3" | "mx-4" | "mx-5" | "mx-auto" | "my-0" | "my-1" | "my-2" | "my-3" | "my-4" | "my-5" | "my-auto" | "m-0" | "m-1" | "m-2" | "m-3" | "m-4" | "m-5" | "m-auto";
@@ -163,16 +163,17 @@ export interface FormInput extends BaseNodeElement {
     nodeType: NodeType.form_input;
     noLabel?: boolean;
     propertyName: string;
-    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
+    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING | Pn.BOOLEAN;
 }
 export interface FormText extends BaseNodeElement {
     nodeType: NodeType.form_text;
     _id: string;
     noLabel?: boolean;
     propertyName: string;
-    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING;
+    propertyType: Pn.DOCUMENT | Pn.NUMBER | Pn.STRING | Pn.BOOLEAN;
     uppercase?: boolean;
 }
+
 export interface FormAutocomplete extends BaseNodeElement {
     nodeType: NodeType.form_autocomplete;
     _id: string;
@@ -208,6 +209,7 @@ interface CardBase extends BaseNodeElement {
     titleNode?: FormText;
     subtitleNode?: FormText; 
     childNodes?: NodeElement[];
+    textNode?: FormText; 
 }
 
 export interface Card extends CardBase {
@@ -217,6 +219,10 @@ export interface Card extends CardBase {
 export interface CardContainer extends TableNodeElementBase, CardBase {
     nodeType: NodeType.card_container;
     cssCardLayout: "card-group" | "card-deck" | "card-columns";
+}
+
+export function isCard(nodel: NodeElement): nodel is Card | CardContainer {
+    return [NodeType.card, NodeType.card_container].includes(nodel.nodeType);
 }
 
 export interface TableColumn extends BaseNodeElement {
@@ -377,7 +383,8 @@ export interface List extends BaseNodeElement {
 interface MediaBase extends BaseNodeElement {
     imageNode?: Image;
     titleNode?: FormText;
-    subtitleNode?: FormText; 
+    subtitleNode?: FormText;
+    textNode?: FormText; 
     childNodes?: NodeElement[];
 }
 
@@ -389,6 +396,10 @@ export interface Media extends MediaBase {
 export interface MediaContainer extends TableNodeElementBase, MediaBase {
     nodeType: NodeType.media_container;
     _id: string;
+}
+
+export function isMedia(nodel: NodeElement): nodel is Media | MediaContainer {
+    return [NodeType.media, NodeType.media_container].includes(nodel.nodeType);
 }
 
 export interface Timeline extends BaseNodeElement {

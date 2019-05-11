@@ -26,6 +26,8 @@ export const BookingItem = {
         picture: { name: "picture", propType_: Pn.IMAGE } as EntityProperty,
         long_description: { name: "long_description", propType_: Pn.STRING } as EntityProperty,
         price: { name: "price", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        wifi: { name: "wifi", propType_: Pn.BOOLEAN } as EntityProperty,
+        parking: { name: "parking", propType_: Pn.BOOLEAN } as EntityProperty,
         // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
         // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.cost, booking_item_id == @[_id])' } as EntityProperty,
         // booking_table: {
