@@ -362,6 +362,7 @@ export interface Image extends BaseNodeElement {
     nodeType: NodeType.image;
     _id: string;
     propertyName: string;
+    cssImageRatio?: "img-ratio-1-1" | "img-ratio-4-3" | "img-ratio-16-9";
 }
 
 

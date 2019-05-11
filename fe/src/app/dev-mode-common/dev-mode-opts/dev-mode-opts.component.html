@@ -121,7 +121,7 @@
                     </div>
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" title="Colors, Fonts, Artwork" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <fa-icon [icon]="styleIcon" class="fa-sm"></fa-icon>
                 </a>
@@ -173,7 +173,7 @@
                             style="margin-right: 4px" />
                     </a>
                 </div>
-            </li>
+            </li> -->
         </ul>
         <div class="w-100"></div>
         <ul class="navbar-nav mr-auto">
@@ -190,8 +190,11 @@
                 <frmdb-formula-code-editor></frmdb-formula-code-editor>
             </form>
             <li class="nav-item">
-                <fa-icon *ngIf="!(editorOn$ | async)" [icon]="editIcon" class="far fa-sm" style="visibility: hidden;" (click)="clickStartEdit$.next()">
-                </fa-icon>
+                <a *ngIf="!(editorOn$ | async)" (click)="clickStartEdit$.next()" class="nav-link pr-1" title="Roles" href="javascript:void(0)" id="userMenu"
+                    data-toggle="dropdown">
+                    <fa-icon [icon]="edit2Icon" class="far fa-sm" style="color: rgba(255, 255, 255, 0.5)">
+                    </fa-icon>
+                </a>
                 <fa-icon *ngIf="editorOn$ | async" [icon]="applyChangesIcon" class="fa-sm" (click)="clickSaveEdits$.next()"
                     [style.color]="(formulaEditorService.editorExprHasErrors$ | async) ? 'red' : 'green'"></fa-icon>
             </li>

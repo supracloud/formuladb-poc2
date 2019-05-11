@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import './styles/_sizing.css';
+@import './styles/nodes';
+@import './styles/misc';
+@import './styles/sizing';
 @import './assets/themes/basic.min.css';
 
 .frmdb-dev-mode-on .frmdb-fixed-top-0 {

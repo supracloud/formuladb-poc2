@@ -1,0 +1,45 @@
+@for $i from 0 through 20 {
+    $num: $i * 5;
+
+    .h-#{$num} {
+        height: #{$num};
+    }
+    .vh-#{$num} {
+        height: #{$num}vh;
+    }
+    .hrem-#{$i} {
+        height: #{$i}rem;
+    }
+    .d-flex.flex-column, .card {
+        .h-#{$num} {
+            flex: 0 0 #{$num};
+        }
+        .vh-#{$num} {
+            flex: 0 0 #{$num}vw;
+        }
+        .hrem-#{$i} {
+            flex: 0 0 #{$i}rem;
+        }
+    }
+    
+    .w-#{$num} {
+        width: #{$num};
+    }
+    .vw-#{$num} {
+        width: #{$num}vw;
+    }
+    .wrem-#{$i} {
+        width: #{$i}rem;
+    }
+    .d-flex.flex-row, .media {
+        .w-#{$num} {
+            flex: 0 0 #{$num};
+        }
+        .vw-#{$num} {
+            flex: 0 0 #{$num}vw;
+        }
+        .wrem-#{$i} {
+            flex: 0 0 #{$i}rem;
+        }
+    }
+}
