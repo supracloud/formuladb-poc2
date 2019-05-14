@@ -4,7 +4,7 @@ import { BaseNodeComponent } from '../base_node';
 import { Media, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
 
 @Component({
-  selector: '[frmdb-media]',
+  selector: 'frmdb-media',
   templateUrl: './media.component.html',
   styleUrls: ['./media.component.scss']
 })

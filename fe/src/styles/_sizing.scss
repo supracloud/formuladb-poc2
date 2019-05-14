@@ -30,6 +30,9 @@
     .hrem-#{$i} {
         height: #{$i}rem;
     }
+    .hem-#{$i} {
+        height: #{$i}em;
+    }
     .d-flex.flex-column, .card {
         .h-#{$num} {
             flex: 0 0 #{$num};

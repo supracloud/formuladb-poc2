@@ -1,16 +1,11 @@
-:host {
-
-::ng-deep {
-    
+:host ::ng-deep {
     @import "~bootstrap/scss/bootstrap.scss";
 
-    display: block;
-    height: 200px;
-    position: fixed;
-    top: 0;
-    z-index: 1031;
-    box-shadow: 0 1rem 2rem rgba(234,88,72,.15) !important;
-    background-color: rgb(234,88,72) !important;
+    .navbar.fixed-top {
+        z-index: 1031;
+        box-shadow: 0 1rem 2rem rgba(234,88,72,.15) !important;
+        background-color: rgb(234,88,72) !important;
+    }
 
     .frmdb-theme-dropdown .dropdown-item {
         width: auto;
@@ -61,5 +56,4 @@
             grid-template-columns: auto auto auto auto ;
         }
     }
-}
 }

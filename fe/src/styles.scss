@@ -3,6 +3,7 @@
 @import './styles/nodes';
 @import './styles/misc';
 @import './styles/sizing';
+@import './styles/layout';
 @import './assets/themes/basic.min.css';
 
 .frmdb-dev-mode-on .frmdb-fixed-top-0 {
@@ -22,4 +23,19 @@
 }
 ::-webkit-scrollbar-thumb:hover {
     background: darkgray; 
+}
+
+frmdb-form_text {
+    position: relative;
+}
+frmdb-form_text::after {
+    content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA/klEQVQ4jZXToU7cURTE4W/IpiGEkBVtJRKJ4gUqMdV1PAWPUFWJqsLyBrwBAoFEIKoIIelm05ANaRCdig2m3X/CPerm5tzfnZmck6p/6+eX4xneV99FVvj14eLyz3+NmG26xEHra2QurvENixHAfuKzdovM6fkUYGvj81dXiao2E/9MKCg/wkXbj0muxOMQIHGPM7KLh/I0BMBh+Z7YLdfhFPcjgHk4bCvJSu1NKdgYYnmpPmed3XP1ZdTCbeS0uhfuJA9DgPAbi4iyDIMK6qicY5a4wQnu3gyozsLO+pydTFudmMRkJVmu7XSB1ZgFbugnybZ2KSZDzKZ1Hqm//aZWh1HSA7kAAAAASUVORK5CYII=);
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    // width: 5px;
+    background-color: #dddddd;
+    display: block;
+    cursor: pointer;
 }

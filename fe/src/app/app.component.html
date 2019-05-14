@@ -1,4 +1,15 @@
 <frmdb-dev-mode-opts *ngIf="devMode && user?.isDeveloper"></frmdb-dev-mode-opts>
+
 <router-outlet></router-outlet>
+
 <img *ngIf="user?.isDeveloper" class="shadow-lg" (click)="toggleDevMode()" id="frmdb-toggle-dev-mode" [class.dev-mode-on]="devMode" width="16" height="16" alt="devMode-toggle"
     src="assets/formuladb16.png" />
+
+<ul class="w-100 fixed-bottom mb-0 frmdb-copy" style="height: 12px; list-style-type: none;">
+    <li style="font-size: 50%; color: lightgrey">
+        Powered by
+        <a href="http://formuladb.io" target="_blank">formuladb.io</a>
+        &copy; 2018 S.C. FORMULA DATABASE S.R.L.
+    </li>
+</ul>
+        

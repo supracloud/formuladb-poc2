@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Input, HostBinding, OnDestroy } from '@angular/core';
+import { Input, HostBinding, OnDestroy, HostListener } from '@angular/core';
 import { FormGroup, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
@@ -37,6 +37,26 @@ export class BaseNodeComponent implements OnDestroy {
         let cssWidth: string[] = []; 
         if (this.nodel.colspan) cssWidth.push("wcol-" + this.nodel.colspan);
         return this.getCssClasses(this.nodel).concat(this.classex||[]).concat(cssWidth).join(" ");
+    }
+
+    @HostBinding('attr.draggable')
+    allowDrag: boolean = true;
+    @HostBinding("attr.droppable")
+    allowDrop: boolean = true;
+
+    isEventOnContextMenu(event): boolean {
+        var target = event.target || event.srcElement || event.currentTarget;
+        return event.offsetX > target.offsetWidth - 16;
+    }
+
+    @HostListener('click', ['$event']) onClick(event) {
+        var target = event.target || event.srcElement || event.currentTarget;
+        console.log(event.offsetX, target.offsetWidth, event.offsetX > target.offsetWidth -10 ? "context-menu clicked" : "node element clicked");
+    }    
+    @HostListener('dragover', ['$event'])
+    onDragOver(event) {
+        if (this.isEventOnContextMenu(event)) console.log("dragover pseudo-element context menu");
+        event.preventDefault();
     }
 
     protected getCssClasses(nodel: CssForNodeElement): string[] {

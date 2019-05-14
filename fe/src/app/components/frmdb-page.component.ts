@@ -56,6 +56,7 @@ export class FrmdbFormGroup extends FormGroup {
     styleUrls: ['./frmdb-page.component.scss'],
     host: {
         "novalidate": "",
+        "[class.frmdb-d-grid]": "true",
     },
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
