@@ -1,5 +1,4 @@
 <ul class="list-unstyled">
-
     <ng-container *ngIf="mediaContainer?.tableName">
         <ng-container *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index">
             <li frmdb-media [nodel]="media" [formgrp]="formgrp" [fullpath]="fullpath + '.' + idx" [rdonly]="rdonly">

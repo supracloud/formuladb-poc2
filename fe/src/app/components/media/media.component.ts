@@ -11,8 +11,8 @@ import { Media, CssForNodeElement } from '@core/domain/uimetadata/node-elements'
 export class MediaComponent extends BaseNodeComponent implements OnInit {
   media: Media;
   
-  getCssClasses(nodeEl: CssForNodeElement): string {
-    return super.getCssClasses(nodeEl) + ' media';
+  getCssClasses(nodeEl: CssForNodeElement): string[] {
+    return super.getCssClasses(nodeEl).concat('media');
   }
 
   constructor(formEditingService: FormEditingService) {

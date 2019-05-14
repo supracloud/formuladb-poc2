@@ -32,7 +32,7 @@ export class AppComponent {
     this.store.select(appState.getDeveloperMode).subscribe(devMode => {
       this.devMode = devMode;
       if (devMode) {
-        this.bodyPadding = "71px 0 60px 0";
+        this.bodyPadding = "200px 0 60px 0";
       } else {
         this.bodyPadding = "0 0 60px 0";
       }

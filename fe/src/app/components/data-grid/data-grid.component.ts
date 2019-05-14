@@ -17,7 +17,7 @@ import * as _ from 'lodash';
 import { TableService } from '../../effects/table.service';
 import { I18nPipe } from '../../crosscutting/i18n/i18n.pipe';
 import { waitUntilNotNull } from '@core/ts-utils';
-import { FrmdbLy } from '@core/domain/uimetadata/page';
+
 import { TableFpatternRenderer } from './table-fpattern.component';
 import { elvis } from '@core/elvis';
 import { TableToolsComponent } from './table-tools.component';
@@ -136,7 +136,7 @@ export class DataGridComponent extends BaseNodeComponent {
     }
 
     getRowHeight = () => {
-        if (elvis(this.dataGrid).layout === FrmdbLy.ly_fpattern) {
+        if (elvis(this.dataGrid).layout === "frmdb-ly-fpattern") {
             return 250;
         } else return 25;
     }

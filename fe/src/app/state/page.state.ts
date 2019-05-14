@@ -5,9 +5,9 @@
 
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as _ from 'lodash';
-import { Page, FrmdbLy, FrmdbLook } from '@core/domain/uimetadata/page';
+import { Page, FrmdbLook } from '@core/domain/uimetadata/page';
 import { PageChangedAction, PageChangedActionN, AutoLayoutPageAction, PageDropAction, NodeElementDeleteAction, NodeElementSwitchTypeAction } from '../actions/page.user.actions';
-import { NodeType, NodeElement, isNodeElementWithChildren, NodeElementWithChildren, GridRow } from '@core/domain/uimetadata/node-elements';
+import { NodeType, NodeElement, isNodeElementWithChildren, NodeElementWithChildren, GridLayout } from '@core/domain/uimetadata/node-elements';
 import { HasId } from '@core/domain/key_value_obj';
 import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
 import { mergeSubObj } from '@core/domain/metadata/data_obj';
@@ -29,8 +29,8 @@ export const pageInitialState: PageState = {
         brandName: "FormulaDB",
         logoUrl: '/assets/logo7.png',
         cssUrl: null,
-        layout: FrmdbLy.ly_admin,
-        look: FrmdbLook.lk_Approachable,
+        layout: "frmdb-ly-admin",
+        look: "frmdb-lk-approachable",
     },
     pageData: null,
 };
@@ -162,35 +162,35 @@ function addRecursive(tree: NodeElementWithChildren, movedEl: NodeElement, added
     for (let child of tree.childNodes || []) {
 
         if (child._id === addedToNodeId) {
-            if (NodeType.grid_row === child.nodeType) {
+            if (NodeType.grid_layout === child.nodeType) {
                 child.childNodes.splice(pos, 0, {
                     _id: movedEl._id + '-col',
-                    nodeType: NodeType.grid_col,
+                    nodeType: NodeType.flex_layout, direction: "column",
                     childNodes: [movedEl],
                 });
                 newChildNodes.push(child);
-            } else if (NodeType.grid_col === child.nodeType) {
+            } else if (NodeType.flex_layout === child.nodeType) {
                 child.childNodes = child.childNodes || [];
                 child.childNodes.splice(pos, 0, movedEl);
                 newChildNodes.push(child);
             } else {
-                let newChild: GridRow = {
-                    _id: child._id + "-row",
-                    nodeType: NodeType.grid_row,
-                    childNodes: [
-                        {
-                            _id: child._id + "-row-col",
-                            nodeType: NodeType.grid_col,
-                            childNodes: [child],
-                        },
-                        {
-                            _id: child._id + "-row-col",
-                            nodeType: NodeType.grid_col,
-                            childNodes: [movedEl],
-                        }
-                    ]
-                }
-                newChildNodes.push(newChild);
+                // let newChild: GridLayout = {
+                //     _id: child._id + "-row",
+                //     nodeType: NodeType.grid_layout,
+                //     childNodes: [
+                //         {
+                //             _id: child._id + "-row-col",
+                //             nodeType: NodeType.flex_layout, direction: "column",
+                //             childNodes: [child],
+                //         },
+                //         {
+                //             _id: child._id + "-row-col",
+                //             nodeType: NodeType.flex_layout, direction: "column",
+                //             childNodes: [movedEl],
+                //         }
+                //     ]
+                // }
+                // newChildNodes.push(newChild);
             }
         } else {
             newChildNodes.push(child);
@@ -204,11 +204,11 @@ function addRecursive(tree: NodeElementWithChildren, movedEl: NodeElement, added
 function cleanupRowsAndCols(tree: NodeElementWithChildren) {
     let newChildNodes: NodeElement[] = [];
     for (let child of tree.childNodes || []) {
-        if ((NodeType.grid_row == child.nodeType 
+        if ((NodeType.grid_layout == child.nodeType 
                 && (!child.childNodes || child.childNodes.length == 0 
-                    || !child.childNodes.find(n => n.nodeType == NodeType.grid_col 
+                    || !child.childNodes.find(n => n.nodeType == NodeType.flex_layout 
                             && n.childNodes != null && n.childNodes.length > 0)))
-            || (NodeType.grid_col == child.nodeType && (!child.childNodes || child.childNodes.length == 0))
+            || (NodeType.flex_layout == child.nodeType && (!child.childNodes || child.childNodes.length == 0))
         ) {
             //remove empty rows and cols
         } else {

@@ -6,7 +6,7 @@
 import { OnInit, OnDestroy, Component } from '@angular/core';
 import * as _ from 'lodash';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement, getChildPath, GridCol, GridRow } from "@core/domain/uimetadata/node-elements";
+import { NodeElement, NodeType, isKnownNodeElement } from "@core/domain/uimetadata/node-elements";
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 
@@ -58,7 +58,7 @@ export class FormItemComponent extends BaseNodeComponent implements OnInit, OnDe
     switch (this.nodel.nodeType) {
       case NodeType.root_node:
         return [/*new GridRow()*/];
-      case NodeType.grid_row:
+      case NodeType.grid_layout:
       return [/*new GridCol()*/];
       default:
         return null;

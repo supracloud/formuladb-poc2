@@ -26,6 +26,9 @@ export class ContextMenuComponent implements OnInit {
   item: NodeElement;
 
   @Input()
+  position: number = 0;
+
+  @Input()
   canDelete?: boolean;
 
   @Input()

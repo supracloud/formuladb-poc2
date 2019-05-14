@@ -2,10 +2,9 @@ import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 
 import { Entity, EntityProperties, ScalarEntityProperty } from "@core/domain/metadata/entity";
-import { FrmdbLy } from "@core/domain/uimetadata/page";
 import { FormPage, getFormPageEntityId } from "@core/domain/uimetadata/form-page";
 import { TablePage, getTablePageEntityId } from "@core/domain/uimetadata/table-page";
-import { NodeElementWithChildren, NodeType, FormText, NodeElement, CardContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer, isCard, isMedia } from "@core/domain/uimetadata/node-elements";
+import { NodeElementWithChildren, NodeType, FormText, NodeElement, GridContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer, isCard, isMedia, Card, Media } from "@core/domain/uimetadata/node-elements";
 
 import * as _ from "lodash";
 
@@ -15,16 +14,17 @@ import { generateUUID } from "@core/domain/uuid";
 import { elvis } from "@core/elvis";
 
 import * as appState from '../state/app.state';
+import { FrmdbLayoutType } from "@core/domain/uimetadata/page";
 
 let AUTOLAYOUTSERVICE: AutoLayoutService | undefined = undefined;
 
-export function autoLayoutFormPage(formPage: FormPage, entity?: Entity, layout?: FrmdbLy): FormPage {
+export function autoLayoutFormPage(formPage: FormPage, entity?: Entity, layout?: FrmdbLayoutType): FormPage {
     if (AUTOLAYOUTSERVICE) {
         return AUTOLAYOUTSERVICE.autoLayoutFormPage(formPage, entity, layout);
     } else return formPage;
 }
 
-export function autoLayoutTablePage(tablePage: FormPage, entity?: Entity, layout?: FrmdbLy): TablePage {
+export function autoLayoutTablePage(tablePage: FormPage, entity?: Entity, layout?: FrmdbLayoutType): TablePage {
     if (AUTOLAYOUTSERVICE) {
         return AUTOLAYOUTSERVICE.autoLayoutTable(tablePage, entity, layout);
     } else return tablePage;
@@ -42,13 +42,13 @@ export class AutoLayoutService {
         AUTOLAYOUTSERVICE = this;
     }
 
-    public autoLayoutFormPage(formPage: FormPage, entity?: Entity, layout?: FrmdbLy): FormPage {
+    public autoLayoutFormPage(formPage: FormPage, entity?: Entity, layout?: FrmdbLayoutType): FormPage {
         if (entity) this.cachedEntitiesMap[entity._id] = entity;
         let retForm: FormPage = {...formPage};
 
         retForm.isEditable = elvis(entity).isEditable;
         retForm.stateGraph = elvis(entity).stateGraph;
-        retForm.layout = layout || retForm.layout || FrmdbLy.ly_admin;
+        retForm.layout = layout || retForm.layout || "frmdb-ly-admin";
 
         this.autoLayoutChildren(retForm.layout!, retForm, (entity || this.cachedEntitiesMap[getFormPageEntityId(formPage)]).props);
 
@@ -56,11 +56,11 @@ export class AutoLayoutService {
         return retForm;
     }
 
-    private autoLayoutSpecialProperties(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
+    private autoLayoutSpecialProperties(layout: FrmdbLayoutType, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties): string[] {
         let specialPropNames: string[] = [];
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
 
-        if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
+        if ("frmdb-ly-grid" === layout || "frmdb-ly-cards" === layout || "frmdb-ly-fpattern" === layout) {
             let imageProps = Object.values(entityProps).filter(pn => pn.propType_ === Pn.IMAGE);
             let imgPropName = "image";
             if (imageProps.length > 0) {
@@ -113,7 +113,7 @@ export class AutoLayoutService {
                 specialPropNames.push(textProp.name);
             }
 
-            if (parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.card_container|| parentNodeEl.nodeType === NodeType.media|| parentNodeEl.nodeType === NodeType.media_container) {
+            if (parentNodeEl.nodeType === NodeType.card || parentNodeEl.nodeType === NodeType.media) {
                 parentNodeEl.imageNode = imgNodeEl;
                 if (isMedia(parentNodeEl)) imgNodeEl.cssWidthViewport = "vw-35";
                 parentNodeEl.titleNode = titleNodeEl;
@@ -127,7 +127,7 @@ export class AutoLayoutService {
         return specialPropNames;
     }
 
-    private autoLayoutScalarProperty(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, pn: ScalarEntityProperty): ScalarNodeElement {
+    private autoLayoutScalarProperty(layout: FrmdbLayoutType, parentNodeEl: NodeElementWithChildren, pn: ScalarEntityProperty): ScalarNodeElement {
         let child: ScalarNodeElement;
 
         if (pn.propType_ === Pn.DATETIME) {
@@ -165,7 +165,7 @@ export class AutoLayoutService {
         } else {
             let propertyType = pn.propType_ === Pn.FORMULA ? Pn.STRING : pn.propType_;//FIXME: compute FORMULA return type
 
-            if (FrmdbLy.ly_admin === layout || FrmdbLy.ly_form === layout) {
+            if ("frmdb-ly-admin" === layout || "frmdb-ly-form" === layout) {
                 child = {
                     _id: parentNodeEl._id + "." + pn.name,
                     nodeType: NodeType.form_input,
@@ -183,7 +183,7 @@ export class AutoLayoutService {
                 };
             }
 
-            if (FrmdbLy.ly_grid === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_fpattern === layout) {
+            if ("frmdb-ly-grid" === layout || "frmdb-ly-cards" === layout || "frmdb-ly-fpattern" === layout) {
                 child.cssCards = ["card-text"];
             }
         }
@@ -191,7 +191,7 @@ export class AutoLayoutService {
         return child;
     }
 
-    private autoLayoutChildren(layout: FrmdbLy, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties) {
+    private autoLayoutChildren(layout: FrmdbLayoutType, parentNodeEl: NodeElementWithChildren, entityProps: EntityProperties) {
         let referenceToDataGrids: Map<string, DataGrid> = new Map();
         parentNodeEl.childNodes = parentNodeEl.childNodes || [];
         let specialProps = this.autoLayoutSpecialProperties(layout, parentNodeEl, entityProps);
@@ -206,11 +206,11 @@ export class AutoLayoutService {
                     tableName: pn.name,
                     refEntityName: pn.referencedEntityName,
                 }
-                if (FrmdbLy.ly_mosaic === layout || FrmdbLy.ly_cards === layout || FrmdbLy.ly_grid === layout) {
+                if ("frmdb-ly-mosaic" === layout || "frmdb-ly-cards" === layout || "frmdb-ly-grid" === layout) {
                     child = {
                         ...base,
-                        nodeType: NodeType.card_container,
-                        cssCardLayout: "card-group",
+                        nodeType: NodeType.grid_container,
+                        cssLayout: "frmdb-ly-cards",
                     };
                 } else if (pn.isLargeTable) {
                     child = {
@@ -227,7 +227,7 @@ export class AutoLayoutService {
 
                 if (pn.referencedEntityName) this.autoLayoutChildren(layout, child, this.cachedEntitiesMap[pn.referencedEntityName]!.props);
             } else if (pn.propType_ === Pn.REFERENCE_TO) {
-                if (FrmdbLy.ly_fpattern === layout) {
+                if ("frmdb-ly-fpattern" === layout) {
                     child = referenceToDataGrids.get(pn.referencedEntityName) || {
                         _id: parentNodeEl._id + "." + pn.name,
                         nodeType: NodeType.data_grid,
@@ -265,18 +265,18 @@ export class AutoLayoutService {
             }
 
             parentNodeEl.childNodes = parentNodeEl.childNodes || [];
-            parentNodeEl.childNodes.push(this.wrapChild(parentNodeEl, child));
+            parentNodeEl.childNodes.push(child);
         };
     }
 
-    public autoLayoutTable(table: TablePage, entity?: Entity, layout?: FrmdbLy): TablePage {
+    public autoLayoutTable(table: TablePage, entity?: Entity, layout?: FrmdbLayoutType): TablePage {
         if (entity) this.cachedEntitiesMap[entity._id] = entity;
         const retTable: TablePage = {...table};
         entity = entity || this.cachedEntitiesMap[getTablePageEntityId(table)];
         let tableId = retTable._id + '.' + entity._id;
 
-        retTable.layout = layout || elvis(table).layout || FrmdbLy.ly_admin;
-        if (retTable.layout === FrmdbLy.ly_admin) {
+        retTable.layout = layout || elvis(table).layout || "frmdb-ly-admin";
+        if (retTable.layout === "frmdb-ly-admin") {
             retTable.childNodes = [{
                 _id: tableId,  
                 nodeType: NodeType.data_grid,
@@ -287,37 +287,44 @@ export class AutoLayoutService {
                     type: pn.propType_
                 } as TableColumn))
             }];
-        } else if (retTable.layout === FrmdbLy.ly_cards || retTable.layout === FrmdbLy.ly_grid) {
-            let cardContainer: CardContainer = {
-                _id: tableId,
-                nodeType: NodeType.card_container,
-                cssCardLayout: "card-group",
-                refEntityName: entity._id,
-                childNodes: []
+        } else if (retTable.layout === "frmdb-ly-cards" || retTable.layout === "frmdb-ly-grid") {
+            let card: Card = {
+                _id: tableId + '-card',
+                nodeType: NodeType.card,
+                colspan: 4,
             };
-            this.autoLayoutChildren(retTable.layout!, cardContainer, entity.props);
-            retTable.childNodes = [cardContainer];
+            let gridContainer: GridContainer = {
+                _id: tableId,
+                nodeType: NodeType.grid_container,
+                cssLayout: retTable.layout,
+                refEntityName: entity._id,
+                childNodes: [card]
+            };
+            this.autoLayoutChildren(retTable.layout!, card, entity.props);
+            retTable.childNodes = [gridContainer];
 
-            if (retTable.layout === FrmdbLy.ly_grid) {
-                cardContainer.cssCardLayout = "card-group";
-            } else if (retTable.layout === FrmdbLy.ly_cards) {
-                cardContainer.cssCardLayout = "card-deck";
-            } else if (retTable.layout === FrmdbLy.ly_mosaic) {
-                cardContainer.cssCardLayout = "card-columns";
-                cardContainer.cssMisc = ["row", "w-100"];
+            if (retTable.layout === "frmdb-ly-grid") {
+            } else if (retTable.layout === "frmdb-ly-cards") {
+                card.cssMargin = "mx-2";
             }
-        } else if (retTable.layout === FrmdbLy.ly_fpattern || retTable.layout === FrmdbLy.ly_zigzagpattern) {
-            let mediaContainer: MediaContainer = {
-                _id: tableId,
-                nodeType: NodeType.media_container,
-                refEntityName: entity._id,
-                childNodes: []
+        } else if (retTable.layout === "frmdb-ly-fpattern" || retTable.layout === "frmdb-ly-zigzagpattern") {
+            let media: Media = {
+                _id: tableId + '-media',
+                nodeType: NodeType.media,
+                colspan: 12,
             };
-            this.autoLayoutChildren(retTable.layout!, mediaContainer, entity.props);
-            retTable.childNodes = [mediaContainer];
+            let gridContainer: GridContainer = {
+                _id: tableId,
+                nodeType: NodeType.grid_container,
+                cssLayout: retTable.layout,
+                refEntityName: entity._id,
+                childNodes: [media]
+            };
+            this.autoLayoutChildren(retTable.layout!, media, entity.props);
+            retTable.childNodes = [gridContainer];
 
-            if (retTable.layout === FrmdbLy.ly_fpattern) {
-            } else if (retTable.layout === FrmdbLy.ly_zigzagpattern) {
+            if (retTable.layout === "frmdb-ly-fpattern") {
+            } else if (retTable.layout === "frmdb-ly-zigzagpattern") {
                 //TODO: use flex ordering to obtain the zigzag patterna and make the rows higer than f-pattern
             }
         }
@@ -330,33 +337,23 @@ export class AutoLayoutService {
             let childNodes = [nodeEl, ...extraNodeEls];
             return {
                 _id: nodeEl._id + '-col',
-                nodeType: NodeType.grid_col,
+                nodeType: NodeType.flex_layout, direction: "column",
                 cssPadding: "px-0",
                 cssMaxHeightPercent: "mh-45",
                 childNodes: [nodeEl, ...extraNodeEls],
             }
-        } else if (NodeType.grid_row === parentNodeEl.nodeType) {
+        } else if (NodeType.grid_layout === parentNodeEl.nodeType) {
             return {
                 _id: nodeEl._id + '-col',
-                nodeType: NodeType.grid_col,
-                cssWithInCols: "col-4",
+                nodeType: NodeType.flex_layout, direction: "column",
+                cssWidth: "wcol-4",
                 childNodes: [nodeEl, ...extraNodeEls],
             }
         } else return {
             _id: nodeEl._id + '-col',
-            nodeType: NodeType.grid_col,
+            nodeType: NodeType.flex_layout, direction: "column",
             childNodes: [nodeEl, ...extraNodeEls],
         }; 
     }    
-    private wrapGridRow(nodeEl: NodeElement, ...extraNodeEls: NodeElement[]): NodeElement {
-        return {
-            _id: nodeEl._id + "-row", 
-            nodeType: NodeType.grid_row,
-            childNodes: [{
-                _id: nodeEl._id + "-col",
-                nodeType: NodeType.grid_col,
-                childNodes: [nodeEl, ...extraNodeEls],
-            }],
-        }
-    }
+
 }

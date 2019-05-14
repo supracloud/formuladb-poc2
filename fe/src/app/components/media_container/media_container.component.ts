@@ -15,7 +15,6 @@ import { TableService } from '@fe/app/effects/table.service';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FrmdbFormControl, FrmdbFormGroup } from '../frmdb-page.component';
 import { BaseTableComponent } from '../base-table.component';
-import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { PickOmit } from '@core/ts-utils';
 
 @Component({

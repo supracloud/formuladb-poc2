@@ -1,4 +1,4 @@
-import { NodeElement, GridRow, RootNode } from "./node-elements";
+import { NodeElement, RootNode } from "./node-elements";
 
 /**
 * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -17,50 +17,48 @@ import { NodeElement, GridRow, RootNode } from "./node-elements";
  */
 
 /** Auto-header styles */
-export enum FrmdbHeader {
-    hd_cover = "hd_cover",
-    hd_jumbotron = "hd_jumbotron",
-    hd_carousel = "hd_carousel",
-    hd_split = "hd_split",
-    hd_none = "hd_none",
-}
+export const FrmdbHeader = [
+    "frmdb-hd-cover",
+    "frmdb-hd-jumbotron",
+    "frmdb-hd-carousel",
+    "frmdb-hd-split",
+    "frmdb-hd-none",
+];
 
 /** Auto-layout options */
-export enum FrmdbLy {
-    ly_admin = "ly_admin",
-    ly_cards = "ly_cards",
-    ly_fpattern = "ly_fpattern", //same as ly_cards just with a different style for the cards
-    ly_zigzagpattern = "ly_zigzagpattern", //same as ly_cards just with a different style for the cards
-    ly_grid = "ly_grid", //same as ly_cards just with a different style for the cards
-
-    ly_landing = "ly_landing",
-    ly_dashboard = "ly_dashboard",
-    ly_spreadsheet = "ly_spreadsheet",
-    ly_form = "ly_form", //same with ly_admin for FormPage pages
-
-    ly_zpattern = "ly_zpattern",
-    ly_mosaic = "ly_mosaic",
-    ly_magazine = "ly_magazine",
-    ly_container_free = "ly_container_free",
-    ly_horizontal_symetry = "ly_horizontal_symetry",
-    ly_radial_symetry = "ly_radial_symetry",
-    ly_asymetry = "ly_asymetry",
+export const FrmdbLy = [
+    "frmdb-ly-admin",
+    "frmdb-ly-cards",
+    "frmdb-ly-fpattern", //same as frmdb-ly-cards just with a different style for the cards
+    "frmdb-ly-zigzagpattern", //same as frmdb-ly-cards just with a different style for the cards
+    "frmdb-ly-grid", //same as frmdb-ly-cards just with a different style for the cards
+    "frmdb-ly-landing",
+    "frmdb-ly-dashboard",
+    "frmdb-ly-spreadsheet",
+    "frmdb-ly-form", //same with frmdb-ly-admin for FormPage pages
+    "frmdb-ly-zpattern",
+    "frmdb-ly-mosaic",
+    "frmdb-ly-magazine",
+    "frmdb-ly-container_free",
+    "frmdb-ly-horizontal_symetry",
+    "frmdb-ly-radial_symetry",
+    "frmdb-ly-asymetry",
     // Other layouts ?
     // - tabs
     // - wizard
-}
-export enum FrmdbLook {
-    lk_Friendly = 'lk_Friendly',
-    lk_Approachable = 'lk_Approachable',
-    lk_Professional = 'lk_Professional',
-    lk_Experienced = 'lk_Experienced',//similar to Professional
-    lk_Upscale = 'lk_Upscale',//similar to Exclusive ?
-    lk_Exclusive = 'lk_Exclusive',
-    lk_CuttingEdge = 'lk_CuttingEdge',//similar to HighTech, but means new and shiny (and still with potential issues)
-    lk_Stylish = 'lk_Stylish',
-    lk_HighTech = 'lk_HighTech',
-    lk_Powerful = 'lk_Powerful',
-}
+];
+export const FrmdbLook = [
+    "frmdb-lk-friendly",
+    "frmdb-lk-approachable",
+    "frmdb-lk-professional",
+    "frmdb-lk-experienced",//similar to Professional
+    "frmdb-lk-upscale",//similar to Exclusive ?
+    "frmdb-lk-exclusive",
+    "frmdb-lk-cuttingEdge",//similar to HighTech, but means new and shiny (and still with potential issues)
+    "frmdb-lk-stylish",
+    "frmdb-lk-highTech",
+    "frmdb-lk-powerful",
+];
 
 export const BrandCharacteristics = [
     {left: "Conservative", right: "Progressive"},
@@ -87,9 +85,9 @@ export interface Page extends RootNode {
     topNavLook?: "tn_nav" | "tn_slim";
     sideNavLook?: "sn_nav" | "sn_none";
     footerLook?: "ft_nav" | "ft_none";
-    header?: FrmdbHeader;
-    layout?: FrmdbLy;
-    look?: FrmdbLook,
+    header?: | "frmdb-hd-cover"| "frmdb-hd-jumbotron"| "frmdb-hd-carousel"| "frmdb-hd-split"| "frmdb-hd-none" ;
+    layout?: | "frmdb-ly-admin"| "frmdb-ly-cards"| "frmdb-ly-fpattern"| "frmdb-ly-zigzagpattern"| "frmdb-ly-grid"| "frmdb-ly-landing"| "frmdb-ly-dashboard"| "frmdb-ly-spreadsheet"| "frmdb-ly-form"| "frmdb-ly-zpattern"| "frmdb-ly-mosaic"| "frmdb-ly-magazine"| "frmdb-ly-container_free"| "frmdb-ly-horizontal_symetry"| "frmdb-ly-radial_symetry"| "frmdb-ly-asymetry";
+    look?: | "frmdb-lk-friendly"| "frmdb-lk-approachable"| "frmdb-lk-professional"| "frmdb-lk-experienced"| "frmdb-lk-upscale"| "frmdb-lk-exclusive"| "frmdb-lk-cuttingEdge"| "frmdb-lk-stylish"| "frmdb-lk-highTech"| "frmdb-lk-powerful";
     // tbd1: string;
     // tbd2: string;
     // tbd3: string;
@@ -99,5 +97,5 @@ export interface Page extends RootNode {
     // tbd7: string;
 }
 
-export type Layouts = Page['layout'];
-
+export type FrmdbLayoutType = Exclude<Page['layout'], undefined>;
+export type FrmdbHeaderType = Exclude<Page['header'], undefined>;

@@ -13,6 +13,8 @@ import { FrmdbPopupDirective } from './frmdb-popup.directive';
 import { FormsModule } from '@angular/forms';
 import { DatetimePropEditorComponent } from './datetime-prop-editor/datetime-prop-editor.component';
 import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
+import { PageEditorComponent } from './page-editor/page-editor.component';
+import { NodeEditorComponent } from './page-editor/node-editor/node-editor.component';
 
 @NgModule({
   imports: [
@@ -30,6 +32,8 @@ import { I18nPipe } from '../crosscutting/i18n/i18n.pipe';
     CurrentFormulaDirective,
     FrmdbPopupDirective,
     DatetimePropEditorComponent,
+    PageEditorComponent,
+    NodeEditorComponent,
   ],
   exports: [
     DevModeOptsComponent,

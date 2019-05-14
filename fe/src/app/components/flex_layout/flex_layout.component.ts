@@ -10,11 +10,11 @@ import { Observable } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'frmdb-grid_col',
-    templateUrl: './grid_col.component.html',
-    styleUrls: ['./grid_col.component.scss'],
+    selector: 'frmdb-flex_layout',
+    templateUrl: './flex_layout.component.html',
+    styleUrls: ['./flex_layout.component.scss'],
 })
-export class GridColComponent extends BaseNodeComponent implements OnInit {
+export class FlexLayoutComponent extends BaseNodeComponent implements OnInit {
     
     dragIcon = faArrowsAlt;
     
@@ -30,8 +30,8 @@ export class GridColComponent extends BaseNodeComponent implements OnInit {
     @Input()
     rdonly: boolean;
     
-    getCssClasses(nodeEl: CssForNodeElement): string {
-        return super.getCssClasses(nodeEl) + ' col d-flex flex-column overflow-auto';
+    getCssClasses(nodeEl: CssForNodeElement): string[] {
+        return super.getCssClasses(nodeEl).concat(['col', 'd-flex', 'flex-column', 'overflow-auto']);
     }
     
     devMode$: Observable<boolean>;

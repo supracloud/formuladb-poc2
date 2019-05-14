@@ -1,5 +1,5 @@
 import { Action } from '@ngrx/store';
-import { Page } from "@core/domain/uimetadata/page";
+import { Page, FrmdbLayoutType } from "@core/domain/uimetadata/page";
 import { NodeElement, NodeType } from '@core/domain/uimetadata/node-elements';
 
 export const PageChangedActionN = "[page] PageChangedAction";
@@ -13,7 +13,7 @@ export class PageChangedAction implements Action {
 export class AutoLayoutPageAction implements Action {
   readonly type = "[page] AutoLayoutPageAction";
 
-  constructor(public layout: Exclude<Page['layout'], undefined>) { }
+  constructor(public layout: FrmdbLayoutType) { }
 }
 
 export class PageDropAction implements Action {

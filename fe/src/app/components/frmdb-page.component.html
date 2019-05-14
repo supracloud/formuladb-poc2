@@ -1,5 +1,5 @@
 <!-- <frmdb-form_state [stateGraph]="form?.stateGraph" *ngIf="form?.stateGraph"></frmdb-form_state> -->
-<ng-container [frmdb-node-elements]="page?.childNodes" [parentnodel]="page" [formgrp]="theFormGroup" [fullpath]="''" [rdonly]="rdonly"></ng-container>
+<frmdb-grid_layout *ngIf="page" [nodel]="page" [formgrp]="theFormGroup" [fullpath]="''" [rdonly]="rdonly"></frmdb-grid_layout>
 
 <!-- <div class="frmdb-form-status">
     <span class="frmdb-form-status-text badge-pill" [class.badge-success]="theFormGroup.status == 'VALID'"
@@ -10,7 +10,7 @@
 
 
 <!-- <div class="container-fluid" [attr.topnavlook]="page?.topNavLook || 'tn_nav'">
-    <div *ngIf="page?.header !== 'hd_none'">
+    <div *ngIf="page?.header !== '"frmdb-hd-none"'">
         <nav [class.p-0]="page?.topNavLook == 'slim'" frmdb-h_nav
             class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap navbar-expand-md shadow frmdb-fixed-top-0" [brandName]="page?.brandName"></nav>
     </div>

@@ -17,10 +17,10 @@ function getTestUUID() {
 export var LargeSalesReport_Form: FormPage = {
   _id: "FormPage:ALL^^LargeSalesReport",
   nodeType: NodeType.root_node,
-  layout: FrmdbLy.ly_admin,
+  layout: "frmdb-ly-admin",
   childNodes: [
     {
-      nodeType: NodeType.grid_row,
+      nodeType: NodeType.grid_layout,
       childNodes: [
         {
           nodeType: NodeType.form_text,
@@ -38,7 +38,7 @@ export var LargeSalesReport_Form: FormPage = {
       _id: "fVmzojRQqQSeAWJzQtjf9h"
     },
     {
-      nodeType: NodeType.grid_row,
+      nodeType: NodeType.grid_layout,
       childNodes: [
         {
           nodeType: NodeType.form_chart,
@@ -55,7 +55,7 @@ export var LargeSalesReport_Form: FormPage = {
       _id: "fVmzojRQqQSeAWJzQtjf9h"
     },
     {
-      nodeType: NodeType.grid_row,
+      nodeType: NodeType.grid_layout,
       childNodes: [
         {
           nodeType: NodeType.form_table,
@@ -93,7 +93,7 @@ export var LargeSalesReport_Form: FormPage = {
       _id: "6rHs2cBbzYNyfESXeVuqMn"
     },
     {
-      nodeType: NodeType.grid_row,
+      nodeType: NodeType.grid_layout,
       childNodes: [
         {
           nodeType: NodeType.form_input,

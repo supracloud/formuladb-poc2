@@ -18,8 +18,8 @@ export var HomePage_Form: FormPage = {
     _id: "FormPage:ALL^^" + Home._id,
     nodeType: NodeType.root_node,
     logoUrl: '/assets/icon2.128.png',
-    header: FrmdbHeader.hd_cover,
-    layout: FrmdbLy.ly_cards,
+    header: "frmdb-hd-cover",
+    layout: "frmdb-ly-cards",
     childNodes: [],
 };
 
@@ -27,8 +27,8 @@ export var HomePage_Table: TablePage = {
     _id: "TablePage:ALL^^" + Home._id,
     nodeType: NodeType.root_node,
     logoUrl: '/assets/icon2.128.png',
-    header: FrmdbHeader.hd_cover,
-    layout: FrmdbLy.ly_cards,
+    header: "frmdb-hd-cover",
+    layout: "frmdb-ly-cards",
     childNodes: [
         { nodeType: NodeType.data_grid, _id: getTestUUID(), refEntityName: Home._id },
     ]

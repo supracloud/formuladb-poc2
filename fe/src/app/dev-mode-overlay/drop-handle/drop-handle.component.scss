@@ -15,14 +15,8 @@
         right: 0;
     }
     &.add-new-row {
-        position: absolute;
-        right: .5rem;
-        top: 1rem;
-        color: rgb(234,88,72);
-        width: .75rem;
-        height: .4rem;
-        border-radius: 20%;
-        z-index: 999;
+        min-height: 1.5rem;
+        height: 100%;
     }
 
     .drop-handle {

@@ -1,8 +1,8 @@
-import { Layouts } from "./page";
+import { FrmdbLayoutType } from "./page";
 import { NodeType } from "./node-elements";
 
 export type ThemeCustomClasses = {
-    [layout in Exclude<Layouts, undefined>]?: {
+    [layout in Exclude<FrmdbLayoutType, undefined>]?: {
         [component in NodeType]?: string[];
     };
 }

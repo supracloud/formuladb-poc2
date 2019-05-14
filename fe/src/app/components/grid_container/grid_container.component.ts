@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { CardContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType } from '@core/domain/uimetadata/node-elements';
+import { GridContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType, GridLayout } from '@core/domain/uimetadata/node-elements';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';
@@ -15,31 +15,22 @@ import { TableService } from '@fe/app/effects/table.service';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
 import { FrmdbFormControl, FrmdbFormGroup } from '../frmdb-page.component';
 import { BaseTableComponent } from '../base-table.component';
-import { FrmdbLy } from '@core/domain/uimetadata/page';
 import { PickOmit } from '@core/ts-utils';
 
 @Component({
     // tslint:disable-next-line:component-selector
-    selector: 'frmdb-card_container',
-    templateUrl: './card_container.component.html',
-    styleUrls: ['./card_container.component.scss'],
+    selector: 'frmdb-grid_container',
+    templateUrl: './grid_container.component.html',
+    styleUrls: ['./grid_container.component.scss'],
 })
-export class CardContainerComponent extends BaseTableComponent implements OnInit, OnChanges, OnDestroy {
+export class GridContainerComponent extends BaseTableComponent implements OnInit, OnChanges, OnDestroy {
     
-    cardContainer: CardContainer;
+    gridContainer: GridContainer;
 
     data: any;
     frameworkComponents: any;
     defaultColDef: any;
     childControls: AbstractControl[];
-
-    get card(): Card {
-        let {cssCardLayout, ...cardProps} = this.cardContainer; 
-        return {
-            ...cardProps,
-            nodeType: NodeType.card,
-        };
-    }
     
     constructor(formEditingService: FormEditingService, tableService: TableService
     ){
@@ -47,7 +38,7 @@ export class CardContainerComponent extends BaseTableComponent implements OnInit
     }
     
     ngOnInit() {
-        this.cardContainer = this.nodel as CardContainer;
+        this.gridContainer = this.nodel as GridContainer;
         super.ngOnInit();
     }
 

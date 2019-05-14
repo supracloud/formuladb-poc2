@@ -27,14 +27,19 @@ export class BaseNodeComponent implements OnDestroy {
     @Input()
     rdonly: boolean;
 
+    @Input()
+    classex?: string[];
+
     highlightId: boolean;
 
     @HostBinding('class')
-    get class() {
-        return this.getCssClasses(this.nodel);
+    get class(): string {
+        let cssWidth: string[] = []; 
+        if (this.nodel.colspan) cssWidth.push("wcol-" + this.nodel.colspan);
+        return this.getCssClasses(this.nodel).concat(this.classex||[]).concat(cssWidth).join(" ");
     }
 
-    protected getCssClasses(nodel: CssForNodeElement): string {
+    protected getCssClasses(nodel: CssForNodeElement): string[] {
         let ret: any[] = [];
         for (let key of Object.keys(nodel)) {
             if (key.match(/^css[A-X]/)) {
@@ -47,7 +52,7 @@ export class BaseNodeComponent implements OnDestroy {
                 }
             }
         }
-        return ret.join(" ");
+        return ret;
     }
 
     //FIXME: how to se all the classes defined in BaseNode atomatically

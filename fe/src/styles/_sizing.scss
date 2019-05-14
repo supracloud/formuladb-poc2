@@ -1,3 +1,17 @@
+.wcol-0 {
+    display: none;
+}
+
+@for $i from 1 through 12 {
+    .wcol-#{$i} {
+        grid-column: auto / span $i;
+    }
+}
+
+.wcol-100 {
+    grid-column: 1 / -1;
+}
+
 @for $i from 0 through 20 {
     $num: $i * 5;
 

@@ -43,7 +43,6 @@ import { FormEnumComponent } from '@fe/app/components/form_enum/form_enum.compon
 import { FormStateComponent } from '@fe/app/components/form_state/form_state.component';
 import { GalleryComponent } from '@fe/app/components/gallery/gallery.component';
 import { HFiltersComponent } from '@fe/app/components/h_filters/h_filters.component';
-import { GridRowComponent } from '@fe/app/components/grid_row/grid_row.component';
 import { HNavComponent } from '@fe/app/components/h_nav/h_nav.component';
 import { IconComponent } from '@fe/app/components/icon/icon.component';
 import { ImageComponent } from '@fe/app/components/image/image.component';
@@ -51,10 +50,10 @@ import { ListComponent } from '@fe/app/components/list/list.component';
 import { MediaComponent } from '@fe/app/components/media/media.component';
 import { TimelineComponent } from '@fe/app/components/timeline/timeline.component';
 import { VFiltersComponent } from '@fe/app/components/v_filters/v_filters.component';
-import { GridColComponent } from '@fe/app/components/grid_col/grid_col.component';
+import { FlexLayoutComponent } from '@fe/app/components/flex_layout/flex_layout.component';
 import { VNavComponent } from '@fe/app/components/v_nav/v_nav.component';
 import { VNavSegmentComponent } from '@fe/app/components/v_nav/v_nav_segment.component';
-import { CardContainerComponent } from '@fe/app/components/card_container/card_container.component';
+import { GridContainerComponent } from '@fe/app/components/grid_container/grid_container.component';
 import { FormInputComponent } from '@fe/app/components/form_input/form_input.component';
 import { HeaderComponent } from '@fe/app/components/header/header.component';
 import { RouterModule } from '@angular/router';
@@ -67,6 +66,7 @@ import { TableToolsComponent } from './data-grid/table-tools.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
 import { NodeElementDeleteAction } from '../actions/page.user.actions';
 import { MediaContainerComponent } from './media_container/media_container.component';
+import { GridLayoutComponent } from './grid_layout/grid_layout.component';
 
 @NgModule({
     imports: [
@@ -112,7 +112,6 @@ import { MediaContainerComponent } from './media_container/media_container.compo
         FormStateComponent,
         GalleryComponent,
         HFiltersComponent,
-        GridRowComponent,
         HNavComponent,
         IconComponent,
         ImageComponent,
@@ -121,10 +120,11 @@ import { MediaContainerComponent } from './media_container/media_container.compo
         MediaContainerComponent,
         TimelineComponent,
         VFiltersComponent,
-        GridColComponent,
+        GridLayoutComponent,
+        FlexLayoutComponent,
         VNavComponent,
         VNavSegmentComponent,
-        CardContainerComponent,
+        GridContainerComponent,
         FormInputComponent,
         LyAdminComponent,
         LyCoverComponent,
@@ -154,7 +154,6 @@ import { MediaContainerComponent } from './media_container/media_container.compo
         FormStateComponent,
         GalleryComponent,
         HFiltersComponent,
-        GridRowComponent,
         HNavComponent,
         IconComponent,
         ImageComponent,
@@ -163,9 +162,10 @@ import { MediaContainerComponent } from './media_container/media_container.compo
         MediaContainerComponent,
         TimelineComponent,
         VFiltersComponent,
-        GridColComponent,
+        GridLayoutComponent,
+        FlexLayoutComponent,
         VNavComponent,
-        CardContainerComponent,
+        GridContainerComponent,
     ],
     exports: [
         ContextMenuComponent,
@@ -195,7 +195,6 @@ import { MediaContainerComponent } from './media_container/media_container.compo
         FormStateComponent,
         GalleryComponent,
         HFiltersComponent,
-        GridRowComponent,
         HNavComponent,
         IconComponent,
         ImageComponent,
@@ -204,10 +203,11 @@ import { MediaContainerComponent } from './media_container/media_container.compo
         MediaContainerComponent,
         TimelineComponent,
         VFiltersComponent,
-        GridColComponent,
+        GridLayoutComponent,
+        FlexLayoutComponent,
         VNavComponent,
         VNavSegmentComponent,
-        CardContainerComponent,
+        GridContainerComponent,
         FormInputComponent,
         LyAdminComponent,
         LyCoverComponent,

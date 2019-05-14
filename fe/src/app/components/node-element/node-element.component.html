@@ -8,8 +8,8 @@
     [rdonly]="rdonly"></div>
   <div frmdb-form_table *ngSwitchCase="'form_table'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
     [rdonly]="rdonly"></div>
-  <frmdb-card_container *ngSwitchCase="'card_container'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
-    [rdonly]="rdonly"></frmdb-card_container>
+  <frmdb-grid_container *ngSwitchCase="'grid_container'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
+    [rdonly]="rdonly"></frmdb-grid_container>
   <div frmdb-form_data_grid *ngSwitchCase="'form_data_grid'" [nodel]="nodel" [formgrp]="formgrp"
     [fullpath]="getChildPath(nodel)" [rdonly]="rdonly"></div>
   <frmdb-form_autocomplete *ngSwitchCase="'form_autocomplete'" [nodel]="nodel" [formgrp]="formgrp"
@@ -24,14 +24,14 @@
     [fullpath]="getChildPath(nodel)" [rdonly]="rdonly"></frmdb-form_timepicker>
   <frmdb-form_chart *ngSwitchCase="'form_chart'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
     [rdonly]="rdonly"></frmdb-form_chart>
-  <div frmdb-grid_row *ngSwitchCase="'grid_row'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
+  <div frmdb-grid_layout *ngSwitchCase="'grid_layout'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
     [rdonly]="rdonly"></div>
   <div frmdb-jumbotron *ngSwitchCase="'jumbotron'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
     [rdonly]="rdonly"></div>
-  <frmdb-grid_col *ngSwitchCase="'grid_col'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
-    [rdonly]="rdonly"></frmdb-grid_col>
-  <frmdb-grid_col *ngSwitchCase="'form_grid'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
-    [rdonly]="rdonly"></frmdb-grid_col>
+  <frmdb-flex_layout *ngSwitchCase="'flex_layout'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
+    [rdonly]="rdonly"></frmdb-flex_layout>
+  <frmdb-flex_layout *ngSwitchCase="'form_grid'" [nodel]="nodel" [formgrp]="formgrp" [fullpath]="getChildPath(nodel)"
+    [rdonly]="rdonly"></frmdb-flex_layout>
   <div *ngSwitchDefault style="border: 1px solid red;">Child Element NOT KNOWN '{{nodel.nodeType}}' !</div>
 
 </div>

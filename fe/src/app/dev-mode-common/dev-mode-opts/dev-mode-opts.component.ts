@@ -11,7 +11,7 @@ import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
-import { FrmdbLook, FrmdbLy, Page, FrmdbHeader } from '@core/domain/uimetadata/page';
+import { FrmdbLook, FrmdbLy, Page, FrmdbHeader, FrmdbLayoutType, FrmdbHeaderType } from '@core/domain/uimetadata/page';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import { PageChangedAction, AutoLayoutPageAction } from '@fe/app/actions/page.user.actions';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
@@ -124,30 +124,30 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
     }
 
     allThemes = [
-        {name: "Basic", look: "lk_Professional", img: "assets/img/themes/basic.png", css: ""},
-        {name: "Lux", look: "lk_Stylish", img: "assets/img/themes/lux.png", css: "/assets/themes/lux.min.css"},
-        {name: "Yeti", look: "lk_Friendly", img: "assets/img/themes/yeti.png", css: "/assets/themes/yeti.min.css"},
-        {name: "Material", look: "lk_Professional", img: "assets/img/themes/material.jpg", css: "/assets/themes/material/material-dashboard.min.css"},
-        {name: "Light", look: "lk_Professional", img: "assets/img/themes/light.jpg", css: "/assets/themes/light/bootstrap.min.css"},
-        {name: "Now-UI", look: "lk_Professional", img: "assets/img/themes/nowui.jpg", css: "/assets/themes/now-ui/bootstrap.min.css"},
+        {name: "Basic", look: "frmdb-ly-professional", img: "assets/img/themes/basic.png", css: ""},
+        {name: "Lux", look: "frmdb-ly-stylish", img: "assets/img/themes/lux.png", css: "/assets/themes/lux.min.css"},
+        {name: "Yeti", look: "frmdb-ly-friendly", img: "assets/img/themes/yeti.png", css: "/assets/themes/yeti.min.css"},
+        {name: "Material", look: "frmdb-ly-professional", img: "assets/img/themes/material.jpg", css: "/assets/themes/material/material-dashboard.min.css"},
+        {name: "Light", look: "frmdb-ly-professional", img: "assets/img/themes/light.jpg", css: "/assets/themes/light/bootstrap.min.css"},
+        {name: "Now-UI", look: "frmdb-ly-professional", img: "assets/img/themes/nowui.jpg", css: "/assets/themes/now-ui/bootstrap.min.css"},
     ];
 
     allHeaders = [
-        {header: "hd_cover", img: "assets/img/headers/hd_cover.png"},
-        {header: "hd_jumbotron", img: "assets/img/headers/hd_jumbotron.png"},
-        {header: "hd_carousel", img: "assets/img/headers/hd_carousel.png"},
-        {header: "hd_split", img: "assets/img/headers/hd_split.png"},
+        {header: "frmdb-hd-cover", img: "assets/img/headers/hd_cover.png"},
+        {header: "frmdb-hd-jumbotron", img: "assets/img/headers/hd_jumbotron.png"},
+        {header: "frmdb-hd-carousel", img: "assets/img/headers/hd_carousel.png"},
+        {header: "frmdb-hd-split", img: "assets/img/headers/hd_split.png"},
     ];
 
     allLayouts = [
-        {layout: "ly_admin", img: "assets/img/layouts/ly_admin.png"},
-        {layout: "ly_fpattern", img: "assets/img/layouts/ly_fpattern.png"},
-        {layout: "ly_grid", img: "assets/img/layouts/ly_grid.png"},
-        {layout: "ly_cards", img: "assets/img/layouts/ly_cards.png"},
-        {layout: "ly_mosaic", img: "assets/img/layouts/ly_mosaic.png"},
-        {layout: "ly_zigzagpattern", img: "assets/img/layouts/ly_zigzagpattern.png"},
-        {layout: "ly_dashboard", img: "assets/img/layouts/ly_dashboard.png"},
-        {layout: "ly_magazine", img: "assets/img/layouts/ly_magazine.png"},
+        {layout: "frmdb-ly-admin", img: "assets/img/layouts/ly_admin.png"},
+        {layout: "frmdb-ly-fpattern", img: "assets/img/layouts/ly_fpattern.png"},
+        {layout: "frmdb-ly-grid", img: "assets/img/layouts/ly_grid.png"},
+        {layout: "frmdb-ly-cards", img: "assets/img/layouts/ly_cards.png"},
+        {layout: "frmdb-ly-mosaic", img: "assets/img/layouts/ly_mosaic.png"},
+        {layout: "frmdb-ly-zigzagpattern", img: "assets/img/layouts/ly_zigzagpattern.png"},
+        {layout: "frmdb-ly-dashboard", img: "assets/img/layouts/ly_dashboard.png"},
+        {layout: "frmdb-ly-magazine", img: "assets/img/layouts/ly_magazine.png"},
     ];
 
 
@@ -167,11 +167,11 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         }));
     }
 
-    switchLayout(layout: FrmdbLy) {
+    switchLayout(layout: FrmdbLayoutType) {
         this.store.dispatch(new AutoLayoutPageAction(layout));
     }
 
-    switchHeader(header: FrmdbHeader) {
+    switchHeader(header: FrmdbHeaderType) {
         this.store.dispatch(new PageChangedAction({
             ...this.page, 
             header,

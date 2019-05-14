@@ -1,9 +1,12 @@
-.drag-handle {
+.frmdb-wrapper {
+    margin-right: 10px;
+}
+.frmdb-handle {
     position: absolute;
-    right: 0.5rem;
+    right: 0;
     top: 0;
     color: rgb(234,88,72);
-    width: .75rem;
+    width: 10px;
     height: .75rem;
     z-index: 1000;
     cursor: move;

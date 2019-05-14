@@ -2,10 +2,9 @@ import * as _ from 'lodash';
 import { Directive, ComponentFactoryResolver, ViewContainerRef, ComponentFactory, Input, ComponentRef } from '@angular/core';
 
 import { BaseNodeComponent } from './base_node';
-import { NodeType, NodeElement, getChildPath } from '@core/domain/uimetadata/node-elements';
+import { NodeType, NodeElement, getChildPath, GridContainer } from '@core/domain/uimetadata/node-elements';
 import { elvis } from '@core/elvis';
-import { GridRowComponent } from './grid_row/grid_row.component';
-import { GridColComponent } from './grid_col/grid_col.component';
+import { FlexLayoutComponent } from './flex_layout/flex_layout.component';
 import { FormInputComponent } from './form_input/form_input.component';
 import { FormAutocompleteComponent } from './form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from './form_tabs/form_tabs.component';
@@ -17,7 +16,6 @@ import { FormTimepickerComponent } from './form_timepicker/form_timepicker.compo
 import { FormTextComponent } from './form_text/form_text.component';
 import { FormEnumComponent } from './form_enum/form_enum.component';
 import { FormStateComponent } from './form_state/form_state.component';
-import { CardComponent } from '@swimlane/ngx-charts';
 import { JumbotronComponent } from './jumbotron/jumbotron.component';
 import { ListComponent } from './list/list.component';
 import { GalleryComponent } from './gallery/gallery.component';
@@ -33,12 +31,14 @@ import { VFiltersComponent } from './v_filters/v_filters.component';
 import { HFiltersComponent } from './h_filters/h_filters.component';
 import { ButtonComponent } from './button/button.component';
 import { ButtonGroupComponent } from './button_group/button_group.component';
-import { CardContainerComponent } from './card_container/card_container.component';
+import { GridContainerComponent } from './grid_container/grid_container.component';
 import { FormGroup } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
 import { DropHandleComponent } from '../dev-mode-overlay/drop-handle/drop-handle.component';
 import { MediaContainerComponent } from './media_container/media_container.component';
+import { GridLayoutComponent } from './grid_layout/grid_layout.component';
+import { CardComponent } from './card/card.component';
 
 export type PageItemComponents =
     | FormInputComponent
@@ -62,7 +62,6 @@ export type PageItemComponents =
     | FormStateComponent
     | GalleryComponent
     | HFiltersComponent
-    | GridRowComponent
     | HNavComponent
     | IconComponent
     | ImageComponent
@@ -71,9 +70,10 @@ export type PageItemComponents =
     | MediaContainerComponent
     | TimelineComponent
     | VFiltersComponent
-    | GridColComponent
+    | FlexLayoutComponent
+    | GridLayoutComponent
+    | GridContainerComponent
     | VNavComponent
-    | CardContainerComponent
     ;
 
 @Directive({
@@ -113,11 +113,11 @@ export class NodeElementsDirective {
             }
 
             switch (elvis(nodel).nodeType) {
-                case NodeType.grid_row:
-                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(GridRowComponent)
+                case NodeType.flex_layout:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FlexLayoutComponent)
                     break;
-                case NodeType.grid_col:
-                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(GridColComponent)
+                case NodeType.grid_layout:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(GridLayoutComponent)
                     break;
                 case NodeType.form_input:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(FormInputComponent)
@@ -209,8 +209,8 @@ export class NodeElementsDirective {
                 case NodeType.button_group:
                     componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(ButtonGroupComponent)
                     break;
-                case NodeType.card_container:
-                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(CardContainerComponent)
+                case NodeType.grid_container:
+                    componentFactory = this.componentFactoryResolver.resolveComponentFactory<PageItemComponents>(GridContainerComponent)
                     break;
                 default:
                     throw new Error("Unknown item type " + JSON.stringify(nodel));
