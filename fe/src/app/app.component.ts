@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { ObservedValueOf, Observable } from 'rxjs';
 import { FrmdbStreamsService } from './state/frmdb-streams.service';
 import { FeUser } from '@core/domain/user';
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'body',
@@ -28,11 +29,14 @@ export class AppComponent {
   public devMode: boolean;
   public user: FeUser | undefined;
   bodyPadding = "0 0 60px 0";
+
+  closeDevModeIcon = faTimesCircle;
+
   constructor(protected store: Store<appState.AppState>, public frmdbStreams: FrmdbStreamsService) {
     this.store.select(appState.getDeveloperMode).subscribe(devMode => {
       this.devMode = devMode;
       if (devMode) {
-        this.bodyPadding = "71px 0 60px 0";
+        this.bodyPadding = "210px 0 60px 0";
       } else {
         this.bodyPadding = "0 0 60px 0";
       }
