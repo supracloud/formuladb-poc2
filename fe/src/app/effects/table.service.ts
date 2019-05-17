@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { BackendService } from './backend.service';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
-import { SimpleAddHocQuery } from '@core/key_value_store_i';
+import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
 import { Entity } from '@core/domain/metadata/entity';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { waitUntilNotNull, PickOmit } from '@core/ts-utils';

@@ -12,7 +12,7 @@ import { CircularJSON } from "@core/json-stringify";
 import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@core/domain/metadata/data_obj";
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@core/domain/event";
-import { SimpleAddHocQuery } from "@core/key_value_store_i";
+import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
 import { TablePage, isTablePage } from "@core/domain/uimetadata/table-page";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
 import { FormPage, isFormPage } from "@core/domain/uimetadata/form-page";

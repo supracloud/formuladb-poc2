@@ -11,45 +11,7 @@ import { DataObj } from "./domain/metadata/data_obj";
 import { MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
 import { Expression } from "jsep";
 import { App } from "./domain/app";
-
-type NumberFilterT = 'equals' | 'notEqual' | 'greaterThan' | 'greaterThanOrEqual' | 'lessThan' | 'lessThanOrEqual' | 'inRange';
-type TextFilterT = 'equals' | 'notEqual' | 'contains' | 'notContains' | 'startsWith' | 'endsWith';
-
-export interface FilterItem {
-    filterType: 'text' | 'number';
-    type: NumberFilterT | TextFilterT;
-    filter: string;
-    filterTo?: string;
-}
-
-export interface SimpleAddHocQuery {
-    startRow: number;
-    endRow: number;
-    rowGroupCols: {field: string}[];
-    valueCols: ColumnParams[];
-    pivotCols: ColumnParams[];
-    pivotMode: boolean;
-    groupKeys: string[];
-    filterModel: {[x: string]: FilterItem};
-    sortModel: any;
-}
-export type AggFunc = 'sum' | 'count' | 'avg' | 'min' | 'max' | 'first' | 'last';
-export interface ColumnParams {
-    field: string;
-    aggFunc: AggFunc;
-}
-
-export interface QueryRequest {
-    startRow: number;
-    endRow: number;
-    rowGroupCols: ColumnParams[];
-    valueCols: ColumnParams[];
-    pivotCols: ColumnParams[];
-    pivotMode: boolean;
-    groupKeys: string[];
-    filterModel: any;
-    sortModel: SortModel[];
-}
+import { SimpleAddHocQuery } from "./domain/metadata/simple-add-hoc-query";
 
 export interface SortModel {
     colId: string,

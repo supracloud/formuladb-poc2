@@ -12,7 +12,7 @@ import { UserModifiedFormData } from '../state/frmdb-user-events';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import * as _ from 'lodash';
 import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/node-elements';
-import { SimpleAddHocQuery } from '@core/key_value_store_i';
+import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
 import { Entity } from '@core/domain/metadata/entity';
 import { CircularJSON } from '@core/json-stringify';
 

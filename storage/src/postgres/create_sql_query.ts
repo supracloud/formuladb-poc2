@@ -1,4 +1,5 @@
-import { SimpleAddHocQuery, ColumnParams, FilterItem, AggFunc } from "@core/key_value_store_i";
+import { FilterItem, AggFunc } from "@core/key_value_store_i";
+import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
 
 export class CreateSqlQuery {
 

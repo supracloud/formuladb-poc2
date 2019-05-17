@@ -71,6 +71,28 @@
             ]
         },
         {
+            "name": "GUI specs",
+            "type": "node",
+            "useWSL": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/d/code/metawiz/febe",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect=0.0.0.0:9232"
+            ],
+            "env": {},
+            "protocol": "inspector",
+            "port": 9232,
+            "request": "launch",
+            "cwd": "${workspaceRoot}/gui",
+            "program": "${workspaceRoot}/gui/src/tests/jasmine.ts",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/gui/dist/**/*.js"
+            ]
+        },        
+        {
             "type": "chrome",
             "request": "attach",
             "name": "FE specs",
