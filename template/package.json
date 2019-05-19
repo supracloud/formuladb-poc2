@@ -4,15 +4,17 @@
   "description": "An HTML templating system where both JSON data and the template itself can change at runtime",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jasmine dist/template/src/frmdb-template.spec.js",
     "compile:watch": "tsc --sourceMap -w -p src"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jasmine": "^3.3.12",
     "@types/jquery": "^3.3.29",
     "acorn": "^6.1.1",
-    "jest": "^24.8.0",
+    "jasmine": "^3.4.0",
+    "jasmine-spec-reporter": "^4.2.1",
     "typescript": "^3.4.5"
   },
   "_moduleAliases": {

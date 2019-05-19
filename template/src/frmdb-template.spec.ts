@@ -19,7 +19,8 @@ describe('FrmdbTemplate', () => {
     beforeEach(() => {
     });
 
-    fit('should update view when template OR data changes', () => {
+    it('should update view when template OR data changes', () => {
+        console.warn("HEREE");
 
     })
 });
