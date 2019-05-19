@@ -20,7 +20,5 @@ describe('FrmdbTemplate', () => {
     });
 
     it('should update view when template OR data changes', () => {
-        console.warn("HEREE");
-
     })
 });

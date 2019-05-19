@@ -2,7 +2,7 @@ import { DataObj } from "@domain/metadata/data_obj";
 import { Entity } from "@domain/metadata/entity";
 import { SimpleAddHocQuery, ValidationState } from "@domain/metadata/simple-add-hoc-query";
 
-export class IncrementalPageRenderer {
+export class FrmdbTemplate {
 
     state: {
         dataObj: DataObj;
