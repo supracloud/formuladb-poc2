@@ -10,10 +10,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jasmine": "^3.3.12",
     "@types/jquery": "^3.3.29",
-    "jasmine": "^3.0.0",
-    "jasmine-spec-reporter": "^4.2.1",
+    "acorn": "^6.1.1",
+    "jest": "^24.8.0",
     "typescript": "^3.4.5"
   },
   "_moduleAliases": {
@@ -23,9 +22,13 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "detect-node": "^2.0.4",
+    "formulajs": "git+https://github.com/acristu/formula.js.git",
     "jquery": "^3.4.1",
+    "jsep": "git+https://github.com/acristu/jsep.git",
     "lodash": "^4.17.11",
     "module-alias": "^2.2.0",
+    "moment": "^2.24.0",
+    "short-uuid": "^3.1.1",
     "source-map-support": "^0.5.12"
   }
 }

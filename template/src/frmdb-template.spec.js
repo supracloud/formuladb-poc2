@@ -15,6 +15,8 @@ let data = {
 describe('FrmdbTemplate', () => {
     beforeEach(() => {
     });
+
     fit('should update view when template OR data changes', () => {
+        
     });
 });

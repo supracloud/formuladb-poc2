@@ -75,7 +75,7 @@
             "type": "node",
             "useWSL": true,
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/d/code/metawiz/febe",
+            "remoteRoot": "/d/code/metawiz/febe/",
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
@@ -86,7 +86,7 @@
             "port": 9232,
             "request": "launch",
             "cwd": "${workspaceRoot}/template",
-            "program": "${workspaceRoot}/template/src/tests/jasmine.ts",
+            "program": "${workspaceRoot}/template/dist/template/src/tests/jasmine.js",
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/template/dist/**/*.js"
