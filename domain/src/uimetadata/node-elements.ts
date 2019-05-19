@@ -6,7 +6,7 @@
 import { KeyValueObj, SubObj } from '../key_value_obj';
 import { Pn, Entity, EntityStateGraph, FormulaExpression } from "../metadata/entity";
 import * as _ from 'lodash';
-import { PickOmit } from '@core/ts-utils';
+import { PickOmit } from '../ts-utils';
 import { FrmdbLayoutType } from './page';
 
 export enum NodeType {

@@ -5,17 +5,17 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
-import { TablePage } from "@core/domain/uimetadata/table-page";
-import { ChangeObj, applyChanges } from "@core/domain/change_obj";
+import { DataObj } from "@domain/metadata/data_obj";
+import { TablePage } from "@domain/uimetadata/table-page";
+import { ChangeObj, applyChanges } from "@domain/change_obj";
 
 
 export { DataObj };
 export { TablePage };
 export { ChangeObj, applyChanges };
 
-import * as events from "@core/domain/event";
-import { Entity } from "@core/domain/metadata/entity";
+import * as events from "@domain/event";
+import { Entity } from "@domain/metadata/entity";
 
 export interface FormulaHighlightedColumns {
   [tableName: string]: { 

@@ -7,16 +7,16 @@
 
 import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
 import * as _ from "lodash";
-import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
+import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
-import { Entity, EntityProperty, Pn, Schema } from "@core/domain/metadata/entity";
+import { Entity, EntityProperty, Pn, Schema } from "@domain/metadata/entity";
 import { waitUntilNotNull } from "@core/ts-utils";
-import { ReduceFun } from "@core/domain/metadata/reduce_functions";
+import { ReduceFun } from "@domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExpression } from "@core/map_reduce_utils";
-import { App } from "@core/domain/app";
+import { App } from "@domain/app";
 const calculateSlot = require('cluster-key-slot');
 
 /**

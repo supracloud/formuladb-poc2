@@ -1,7 +1,7 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { FormEditingService } from '../form-editing.service';
-import { Jumbotron } from '@core/domain/uimetadata/node-elements';
+import { Jumbotron } from '@domain/uimetadata/node-elements';
 import { elvis } from '@core/elvis';
 
 @Component({

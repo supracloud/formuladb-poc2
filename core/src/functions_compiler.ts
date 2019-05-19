@@ -38,10 +38,10 @@ import {
     CompiledScalar,
     MapKeyQuery,
     includesMapFunctionAndQuery,
-} from "@core/domain/metadata/execution_plan";
+} from "@domain/metadata/execution_plan";
 import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName, FormulaCompilerError } from './formula_compiler';
 import { _throw } from "./throw";
-import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     fc: FuncCommon,

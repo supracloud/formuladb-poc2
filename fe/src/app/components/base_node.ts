@@ -9,9 +9,9 @@ import { Subscription } from 'rxjs';
 import * as _ from 'lodash';
 
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
-import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } from '@core/domain/metadata/data_obj';
+import { getChildrenPrefix, childTableFieldNameToEntityName, parseDataObjId } from '@domain/metadata/data_obj';
 import { FormEditingService } from './form-editing.service';
-import { NodeElement, getChildPath, NodeType, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
+import { NodeElement, getChildPath, NodeType, CssForNodeElement } from '@domain/uimetadata/node-elements';
 import { elvis } from '@core/elvis';
 
 export class BaseNodeComponent implements OnDestroy {

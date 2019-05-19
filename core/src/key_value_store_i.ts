@@ -3,15 +3,15 @@
  * License TBD
  */
 
-import { KeyValueError, KeyValueObj } from "@core/domain/key_value_obj";
+import { KeyValueError, KeyValueObj } from "@domain/key_value_obj";
 import * as FormuladbCollate from './utils/collator';
-import { Entity, Schema } from "./domain/metadata/entity";
-import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "./domain/metadata/reduce_functions";
-import { DataObj } from "./domain/metadata/data_obj";
-import { MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
+import { Entity, Schema } from "@domain/metadata/entity";
+import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
+import { DataObj } from "@domain/metadata/data_obj";
+import { MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { Expression } from "jsep";
-import { App } from "./domain/app";
-import { SimpleAddHocQuery } from "./domain/metadata/simple-add-hoc-query";
+import { App } from "@domain/app";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export interface SortModel {
     colId: string,

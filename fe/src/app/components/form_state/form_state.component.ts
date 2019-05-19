@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as shape from 'd3-shape';
-import { EntityStateGraph } from "@core/domain/metadata/entity";
+import { EntityStateGraph } from "@domain/metadata/entity";
 import { FormEditingService } from '../form-editing.service';
 
 @Component({

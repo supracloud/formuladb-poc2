@@ -5,12 +5,12 @@
 
 import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, FilterItem, AggFunc, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
 import * as _ from "lodash";
-import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
-import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@core/domain/metadata/reduce_functions";
-import { Entity, Schema } from "@core/domain/metadata/entity";
+import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
+import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@domain/metadata/reduce_functions";
+import { Entity, Schema } from "@domain/metadata/entity";
 import { Expression } from "jsep";
 import { evalExpression } from "@core/map_reduce_utils";
-import { App } from "@core/domain/app";
+import { App } from "@domain/app";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));

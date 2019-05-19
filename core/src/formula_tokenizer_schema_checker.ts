@@ -1,7 +1,7 @@
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList, PropertyTypeFunctions } from "./functions_compiler";
 import { Token, TokenType, Suggestion } from "./formula_tokenizer";
 import * as Fuse from 'fuse.js';
-import { Schema, Entity } from "@core/domain/metadata/entity";
+import { Schema, Entity } from "@domain/metadata/entity";
 
 
 export class FormulaTokenizerSchemaChecker {

@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { MediaContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType, Media } from '@core/domain/uimetadata/node-elements';
+import { MediaContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType, Media } from '@domain/uimetadata/node-elements';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';

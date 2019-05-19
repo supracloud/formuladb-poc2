@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Header } from '@core/domain/uimetadata/node-elements';
+import { Header } from '@domain/uimetadata/node-elements';
 import { BaseNodeComponent } from '../base_node';
 import { FormEditingService } from '../form-editing.service';
 

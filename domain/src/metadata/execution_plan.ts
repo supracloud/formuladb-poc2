@@ -22,9 +22,21 @@ import {
     isMemberExpression,
     isCallExpression
 } from "jsep";
-import { PickOmit } from "../../ts-utils";
+import { PickOmit } from "../ts-utils";
 import { ReduceFun } from "./reduce_functions";
-import { ScalarFunctions } from "@core/functions_compiler";
+
+export const ScalarFunctions = {
+    TEXT: true,
+    REGEXREPLACE: true,
+    EOMONTH: true,
+    SQRT: true,
+    ROUND: true,
+    FACT: true,
+    HLOOKUP: true,
+    FLOOR: true,
+    DATEDIF: true,
+    OVERLAP: true,
+}
 
 export type ScalarCallExpression = CallExpression;
 export function isScalarCallExpression(param: Expression): param is ScalarCallExpression {

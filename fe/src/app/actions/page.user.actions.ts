@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
-import { Page, FrmdbLayoutType } from "@core/domain/uimetadata/page";
-import { NodeElement, NodeType } from '@core/domain/uimetadata/node-elements';
+import { Page, FrmdbLayoutType } from "@domain/uimetadata/page";
+import { NodeElement, NodeType } from '@domain/uimetadata/node-elements';
 
 export const PageChangedActionN = "[page] PageChangedAction";
 

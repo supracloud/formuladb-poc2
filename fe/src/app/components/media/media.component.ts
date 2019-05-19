@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
-import { Media, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
+import { Media, CssForNodeElement } from '@domain/uimetadata/node-elements';
 
 @Component({
   selector: 'frmdb-media',

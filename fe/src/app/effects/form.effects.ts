@@ -9,7 +9,7 @@ import { Actions, ofType } from '@ngrx/effects';
 
 import * as appState from '../state/app.state';
 import { BackendService } from "./backend.service";
-import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { UserEnteredAutocompleteText, UserEnteredAutocompleteTextN } from '../actions/form.user.actions';
 import { FormAutoCompleteOptionsFromBackendAction } from '../actions/form.backend.actions';
 

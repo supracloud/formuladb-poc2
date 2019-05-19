@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { Store } from '@ngrx/store';
 
-import { EntityProperty, Pn, FormulaProperty, Entity } from "@core/domain/metadata/entity";
+import { EntityProperty, Pn, FormulaProperty, Entity } from "@domain/metadata/entity";
 import * as appState from '@fe/app/state/app.state';
 import { map } from 'rxjs/operators';
 import { Token, TokenType, FormulaTokenizer, DEFAULT_TOKEN } from "@core/formula_tokenizer";

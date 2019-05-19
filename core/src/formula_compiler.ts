@@ -15,7 +15,7 @@ jsep.addLiteral('@', '@');
 
 import {
     FormulaExpression
-} from "@core/domain/metadata/entity";
+} from "@domain/metadata/entity";
 import {
     CompiledFormula, MapReduceTrigger, isMapFunctionAndQuery,
     isMapReduceTrigger, isCompiledFormula, MapReduceKeysAndQueries, ExecPlanN,
@@ -33,7 +33,7 @@ import {
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
     CompiledScalar,
-} from "@core/domain/metadata/execution_plan";
+} from "@domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
 import { logCompileFormula } from "./test/test_utils";
 import { parseFormula } from "./formula_parser";
@@ -355,12 +355,6 @@ function compileFormulaExpression(targetEntityName: string, propJsPath: string, 
     logCompileFormula(formulaAstNode.origExpr, ret);
 
     return ret;
-}
-
-
-export function $s2e(expr: string | Expression): Expression {
-    let parsedExpr = typeof expr === 'string' ? jsep.parse(expr) : expr;
-    return parsedExpr;
 }
 
 function encodeViewNameURIComponent(str: string): string {

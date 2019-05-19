@@ -1,4 +1,4 @@
-import { DataObj } from "@core/domain/metadata/data_obj";
+import { DataObj } from "@domain/metadata/data_obj";
 
 export interface ServerModifiedFormData {
     type: 'ServerModifiedFormData';

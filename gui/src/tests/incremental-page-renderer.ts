@@ -14,4 +14,7 @@ export class IncrementalPageRenderer {
     }
     currentDataObj: DataObj;
 
+    public updateViewWithNewTemplate() {
+        
+    }
 }

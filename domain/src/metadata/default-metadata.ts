@@ -1,4 +1,4 @@
-import { Entity, Pn, EntityProperty } from "@core/domain/metadata/entity";
+import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
 
 export const $User: Entity = {
     _id: "$User",

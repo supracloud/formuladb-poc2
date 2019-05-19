@@ -1,20 +1,20 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 
-import { Entity, EntityProperties, ScalarEntityProperty } from "@core/domain/metadata/entity";
-import { FormPage, getFormPageEntityId } from "@core/domain/uimetadata/form-page";
-import { TablePage, getTablePageEntityId } from "@core/domain/uimetadata/table-page";
-import { NodeElementWithChildren, NodeType, FormText, NodeElement, GridContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer, isCard, isMedia, Card, Media } from "@core/domain/uimetadata/node-elements";
+import { Entity, EntityProperties, ScalarEntityProperty } from "@domain/metadata/entity";
+import { FormPage, getFormPageEntityId } from "@domain/uimetadata/form-page";
+import { TablePage, getTablePageEntityId } from "@domain/uimetadata/table-page";
+import { NodeElementWithChildren, NodeType, FormText, NodeElement, GridContainer, ScalarNodeElement, DataGrid, TableColumn, Image, MediaContainer, isCard, isMedia, Card, Media } from "@domain/uimetadata/node-elements";
 
 import * as _ from "lodash";
 
-import { Pn } from "@core/domain/metadata/entity";
+import { Pn } from "@domain/metadata/entity";
 
-import { generateUUID } from "@core/domain/uuid";
+import { generateUUID } from "@domain/uuid";
 import { elvis } from "@core/elvis";
 
 import * as appState from '../state/app.state';
-import { FrmdbLayoutType } from "@core/domain/uimetadata/page";
+import { FrmdbLayoutType } from "@domain/uimetadata/page";
 
 let AUTOLAYOUTSERVICE: AutoLayoutService | undefined = undefined;
 

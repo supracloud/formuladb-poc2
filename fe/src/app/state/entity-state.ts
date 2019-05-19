@@ -6,16 +6,16 @@
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
-import { Entity, EntityProperty } from "@core/domain/metadata/entity";
-import { ChangeObj, applyChanges } from "@core/domain/change_obj";
+import { DataObj } from "@domain/metadata/data_obj";
+import { Entity, EntityProperty } from "@domain/metadata/entity";
+import { ChangeObj, applyChanges } from "@domain/change_obj";
 
 
 export { DataObj };
 export { Entity };
 export { ChangeObj, applyChanges };
 
-import * as events from "@core/domain/event";
+import * as events from "@domain/event";
 
 export interface EntityState {
     entities: Entity[];

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { ChangeObj } from "@core/domain/change_obj";
+import { ChangeObj } from "@domain/change_obj";
 
 import * as meta from './mocks/mock-metadata';
 import { MockData } from "./mocks/mock-data";

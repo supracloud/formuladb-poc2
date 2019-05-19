@@ -3,7 +3,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { FormEditingService } from '../form-editing.service';
 import { BaseNodeComponent } from '../base_node';
-import { Card, NodeElement, CssForNodeElement } from '@core/domain/uimetadata/node-elements';
+import { Card, NodeElement, CssForNodeElement } from '@domain/uimetadata/node-elements';
 
 @Component({
   selector: 'frmdb-card',

@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from './base_node';
-import { TableNodeElement } from '@core/domain/uimetadata/node-elements';
+import { TableNodeElement } from '@domain/uimetadata/node-elements';
 
 import { FormEditingService } from './form-editing.service';
 import { elvis } from '@core/elvis';

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { NodeElement } from '@core/domain/uimetadata/node-elements';
+import { NodeElement } from '@domain/uimetadata/node-elements';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 
 @Component({

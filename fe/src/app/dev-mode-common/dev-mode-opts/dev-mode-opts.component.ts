@@ -7,11 +7,11 @@ import { Subscription, Subject, Observable, merge, combineLatest } from 'rxjs';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import { faTable, faColumns, faPlusCircle, faMinusCircle, faPlus, faTools, faUserCircle, faImages, faCogs, faPalette, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglassHalf, faShareSquare, faEdit, faQuestionCircle, faQuestion, faCheckCircle, faTimesCircle, faSquare, faPen, faPenFancy, faNewspaper, faObjectGroup, faSignOutAlt, faCode } from '@fortawesome/free-solid-svg-icons';
-import { Pn, EntityProperty, Entity } from "@core/domain/metadata/entity";
+import { Pn, EntityProperty, Entity } from "@domain/metadata/entity";
 import { debounceTime, withLatestFrom, map, tap } from 'rxjs/operators';
 import { FormulaEditorService } from '../../effects/formula-editor.service';
 import { GridsterConfig, GridsterItem, DisplayGrid } from 'angular-gridster2';
-import { FrmdbLook, FrmdbLy, Page, FrmdbHeader, FrmdbLayoutType, FrmdbHeaderType } from '@core/domain/uimetadata/page';
+import { FrmdbLook, FrmdbLy, Page, FrmdbHeader, FrmdbLayoutType, FrmdbHeaderType } from '@domain/uimetadata/page';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
 import { PageChangedAction, AutoLayoutPageAction } from '@fe/app/actions/page.user.actions';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';

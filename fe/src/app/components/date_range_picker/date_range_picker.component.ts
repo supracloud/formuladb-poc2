@@ -6,10 +6,10 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { NgbDate, NgbCalendar, NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
-import { DateRangePicker, FormDatepicker, NodeType } from '@core/domain/uimetadata/node-elements';
+import { DateRangePicker, FormDatepicker, NodeType } from '@domain/uimetadata/node-elements';
 import { BaseNodeComponent } from '../base_node';
 import { FormEditingService } from '../form-editing.service';
-import { generateUUID } from '@core/domain/uuid';
+import { generateUUID } from '@domain/uuid';
 import { elvis } from '@core/elvis';
 
 @Component({

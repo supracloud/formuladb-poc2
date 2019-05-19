@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { Directive, ComponentFactoryResolver, ViewContainerRef, ComponentFactory, Input, ComponentRef } from '@angular/core';
 
 import { BaseNodeComponent } from './base_node';
-import { NodeType, NodeElement, getChildPath, GridContainer } from '@core/domain/uimetadata/node-elements';
+import { NodeType, NodeElement, getChildPath, GridContainer } from '@domain/uimetadata/node-elements';
 import { elvis } from '@core/elvis';
 import { FlexLayoutComponent } from './flex_layout/flex_layout.component';
 import { FormInputComponent } from './form_input/form_input.component';

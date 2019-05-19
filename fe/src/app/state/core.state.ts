@@ -5,7 +5,7 @@
 
 import { Params, RouterStateSnapshot } from '@angular/router';
 import { Action, ActionReducerMap, createSelector, createFeatureSelector } from '@ngrx/store';
-import { FeUser } from '@core/domain/user';
+import { FeUser } from '@domain/user';
 
 export const NotReadonly = '_NotReadonly_';
 

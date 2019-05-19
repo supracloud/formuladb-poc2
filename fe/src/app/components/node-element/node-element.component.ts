@@ -6,7 +6,7 @@
 import { OnInit, OnDestroy, Component } from '@angular/core';
 import * as _ from 'lodash';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, isKnownNodeElement } from "@core/domain/uimetadata/node-elements";
+import { NodeElement, NodeType, isKnownNodeElement } from "@domain/uimetadata/node-elements";
 import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons';
 import { FormEditingService } from '../form-editing.service';
 

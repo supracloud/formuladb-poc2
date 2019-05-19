@@ -12,26 +12,26 @@ import {
 } from '@ngrx/router-store';
 import { Router } from "@angular/router";
 
-import { Entity } from "@core/domain/metadata/entity";
-import * as events from "@core/domain/event";
+import { Entity } from "@domain/metadata/entity";
+import * as events from "@domain/event";
 
-import { FeUser } from "@core/domain/user";
-import { TablePage, emptyTablePage } from "@core/domain/uimetadata/table-page";
-import { FormPage, emptyFormPage } from "@core/domain/uimetadata/form-page";
+import { FeUser } from "@domain/user";
+import { TablePage, emptyTablePage } from "@domain/uimetadata/table-page";
+import { FormPage, emptyFormPage } from "@domain/uimetadata/form-page";
 
 import * as appState from '../state/app.state';
-import { generateUUID } from "@core/domain/uuid";
+import { generateUUID } from "@domain/uuid";
 import { BackendService } from "./backend.service";
 import { FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
 import { FormNotifFromBackendAction, ResetPageDataFromBackendAction, PageFromBackendAction, PageDataFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
 import { waitUntilNotNull } from "@core/ts-utils";
-import { isNewTopLevelDataObjId } from '@core/domain/metadata/data_obj';
+import { isNewTopLevelDataObjId } from '@domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
-import { App } from '@core/domain/app';
+import { App } from '@domain/app';
 import { AutoLayoutService } from '../components/auto-layout.service';
-import { Page } from '@core/domain/uimetadata/page';
+import { Page } from '@domain/uimetadata/page';
 import { elvis } from '@core/elvis';
 import { PageChangedAction } from '../actions/page.user.actions';
 

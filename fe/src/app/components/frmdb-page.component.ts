@@ -12,10 +12,10 @@ import { Location, KeyValue } from '@angular/common';
 
 import { FormControl, FormGroup, FormArray } from '@angular/forms';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
-import { NodeElement, NodeType, getChildPath } from "@core/domain/uimetadata/node-elements";
+import { DataObj } from "@domain/metadata/data_obj";
+import { NodeElement, NodeType, getChildPath } from "@domain/uimetadata/node-elements";
 import { Subscription, Observable, merge, combineLatest } from 'rxjs';
-import { Entity } from "@core/domain/metadata/entity";
+import { Entity } from "@domain/metadata/entity";
 import { filter, debounceTime, tap, map } from 'rxjs/operators';
 import * as _ from 'lodash';
 
@@ -26,10 +26,10 @@ import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { CircularJSON } from '@core/json-stringify';
-import { isFormPage } from '@core/domain/uimetadata/form-page';
-import { Page } from '@core/domain/uimetadata/page';
+import { isFormPage } from '@domain/uimetadata/form-page';
+import { Page } from '@domain/uimetadata/page';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import { KeyValueObj, HasId } from '@core/domain/key_value_obj';
+import { KeyValueObj, HasId } from '@domain/key_value_obj';
 
 export class FrmdbFormControl extends FormControl {
     constructor(public name: string,

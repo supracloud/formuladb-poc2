@@ -5,7 +5,7 @@
 
 import * as _ from 'lodash';
 import { FormulaTokenizer, Token, TokenType } from './formula_tokenizer';
-import { Schema, Pn, Entity, FormulaProperty } from "@core/domain/metadata/entity";
+import { Schema, Pn, Entity, FormulaProperty } from "@domain/metadata/entity";
 import { FormulaTokenizerSchemaChecker } from './formula_tokenizer_schema_checker';
 
 

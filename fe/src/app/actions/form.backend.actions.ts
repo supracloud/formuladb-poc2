@@ -5,13 +5,13 @@
 
 import { Action } from '@ngrx/store';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
-import { FormPage } from "@core/domain/uimetadata/form-page";
-import { NodeElement, NodeType, FormAutocomplete } from "@core/domain/uimetadata/node-elements";
-import { ChangeObj, applyChanges } from "@core/domain/change_obj";
-import * as events from "@core/domain/event";
-import { Page } from '@core/domain/uimetadata/page';
-import { HasId } from '@core/domain/key_value_obj';
+import { DataObj } from "@domain/metadata/data_obj";
+import { FormPage } from "@domain/uimetadata/form-page";
+import { NodeElement, NodeType, FormAutocomplete } from "@domain/uimetadata/node-elements";
+import { ChangeObj, applyChanges } from "@domain/change_obj";
+import * as events from "@domain/event";
+import { Page } from '@domain/uimetadata/page';
+import { HasId } from '@domain/key_value_obj';
 
 export { DataObj };
 export { FormPage };

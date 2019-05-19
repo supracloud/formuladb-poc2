@@ -1,4 +1,4 @@
-import { Entity, Pn } from "@core/domain/metadata/entity";
+import { Entity, Pn } from "@domain/metadata/entity";
 
 export interface NavigationItem extends Node {
     linkName: string;

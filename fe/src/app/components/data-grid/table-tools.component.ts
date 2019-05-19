@@ -3,10 +3,10 @@ import { Component, ViewChild, ViewContainerRef, NgZone, OnInit, OnDestroy } fro
 import { IToolPanel, IToolPanelParams, GridApi } from "ag-grid-community";
 import { FrmdbStreamsService } from "@fe/app/state/frmdb-streams.service";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Entity } from "@core/domain/metadata/entity";
+import { Entity } from "@domain/metadata/entity";
 import { elvis_a } from "@core/elvis";
 import { untilDestroyed } from "ngx-take-until-destroy";
-import { DataGrid, NodeType } from "@core/domain/uimetadata/node-elements";
+import { DataGrid, NodeType } from "@domain/uimetadata/node-elements";
 import { calcBindingFlags } from "@angular/core/src/view/util";
 
 @Component({

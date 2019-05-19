@@ -9,17 +9,17 @@ import * as _ from "lodash";
 import { catchError, map, tap } from 'rxjs/operators';
 import { CircularJSON } from "@core/json-stringify";
 
-import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@core/domain/metadata/data_obj";
-import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@core/domain/metadata/entity";
-import { MwzEvents, MwzEvent } from "@core/domain/event";
-import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
-import { TablePage, isTablePage } from "@core/domain/uimetadata/table-page";
+import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@domain/metadata/data_obj";
+import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@domain/metadata/entity";
+import { MwzEvents, MwzEvent } from "@domain/event";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { TablePage, isTablePage } from "@domain/uimetadata/table-page";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
-import { FormPage, isFormPage } from "@core/domain/uimetadata/form-page";
+import { FormPage, isFormPage } from "@domain/uimetadata/form-page";
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 import { Observable, of } from 'rxjs';
-import { App } from "@core/domain/app";
+import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
 
 

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Entity, Pn, Schema } from "@core/domain/metadata/entity";
+import { Entity, Pn, Schema } from "@domain/metadata/entity";
 import * as _ from "lodash";
 
 export function makeEntity(id: string, e: any): Entity {

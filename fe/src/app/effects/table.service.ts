@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 
 import { BackendService } from './backend.service';
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
-import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
-import { Entity } from '@core/domain/metadata/entity';
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { Entity } from '@domain/metadata/entity';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { waitUntilNotNull, PickOmit } from '@core/ts-utils';
-import { DataObj } from '@core/domain/metadata/data_obj';
+import { DataObj } from '@domain/metadata/data_obj';
 
 @Injectable()
 export class TableService {

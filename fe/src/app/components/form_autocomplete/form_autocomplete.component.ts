@@ -9,7 +9,7 @@ import {
 
 import { BaseNodeComponent } from '../base_node';
 
-import { FormAutocomplete } from "@core/domain/uimetadata/node-elements";
+import { FormAutocomplete } from "@domain/uimetadata/node-elements";
 import { FormEditingService } from '../form-editing.service';
 import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/app/actions/form.user.actions';
 import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';

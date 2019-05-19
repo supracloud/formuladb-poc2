@@ -1,5 +1,5 @@
 import { FilterItem, AggFunc } from "@core/key_value_store_i";
-import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export class CreateSqlQuery {
 

@@ -11,9 +11,9 @@ import { j2str } from '../crosscutting/utils/j2str';
 import { UserModifiedFormData } from '../state/frmdb-user-events';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import * as _ from 'lodash';
-import { NodeType, NodeElement, FormAutocomplete } from '@core/domain/uimetadata/node-elements';
-import { SimpleAddHocQuery } from "@core/domain/metadata/simple-add-hoc-query";
-import { Entity } from '@core/domain/metadata/entity';
+import { NodeType, NodeElement, FormAutocomplete } from '@domain/uimetadata/node-elements';
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { Entity } from '@domain/metadata/entity';
 import { CircularJSON } from '@core/json-stringify';
 
 export class RelatedAutoCompleteControls {

@@ -6,7 +6,7 @@
 import { Component, OnInit, forwardRef, OnDestroy } from '@angular/core';
 import { BaseNodeComponent } from "../base_node";
 
-import { FormTimepicker } from "@core/domain/uimetadata/node-elements";
+import { FormTimepicker } from "@domain/uimetadata/node-elements";
 import { FormEditingService } from '../form-editing.service';
 
 @Component({

@@ -6,7 +6,7 @@
 import { CircularJSON } from "@core/json-stringify";
 
 import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
-import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@core/domain/metadata/execution_plan";
+import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@domain/metadata/execution_plan";
 import { evalExpression } from "./map_reduce_utils";
 import { FrmdbStore } from './frmdb_store';
 import { _sum_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_sum';
@@ -17,11 +17,11 @@ import * as _ from 'lodash';
 import { TransactionManager } from './transaction_manager';
 import { Expression } from 'jsep';
 import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
-import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
-import { DataObj } from '@core/domain/metadata/data_obj';
-import { Entity, Schema } from '@core/domain/metadata/entity';
+import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
+import { DataObj } from '@domain/metadata/data_obj';
+import { Entity, Schema } from '@domain/metadata/entity';
 import { $s2e } from './formula_compiler';
-import { Pn } from '@core/domain/metadata/entity';
+import { Pn } from '@domain/metadata/entity';
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;

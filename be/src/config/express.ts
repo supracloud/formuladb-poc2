@@ -18,8 +18,8 @@ import * as path from 'path';
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { SimpleAddHocQuery, KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { $User } from "@core/domain/metadata/default-metadata";
-import { BeUser } from "@core/domain/user";
+import { $User } from "@domain/metadata/default-metadata";
+import { BeUser } from "@domain/user";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 

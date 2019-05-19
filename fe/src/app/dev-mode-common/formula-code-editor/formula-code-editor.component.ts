@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { TokenType, Token, Suggestion } from "@core/formula_tokenizer";
 import { faCheckCircle, faTimesCircle, faSortNumericDown, faTextHeight, faCalendarAlt, faHourglass, faHourglassHalf, faTable, faHandPointRight, faShareSquare } from '@fortawesome/free-solid-svg-icons';
 import { debounceTime } from 'rxjs/operators';
-import { Pn, EntityProperty } from '@core/domain/metadata/entity';
+import { Pn, EntityProperty } from '@domain/metadata/entity';
 
 @Component({
   selector: 'frmdb-formula-code-editor',

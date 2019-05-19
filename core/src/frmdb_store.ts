@@ -3,21 +3,21 @@
  * License TBD
  */
 
-import { Entity, Schema, isEntity } from "@core/domain/metadata/entity";
-import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data_obj";
-import { FormPage } from "@core/domain/uimetadata/form-page";
-import { TablePage } from "@core/domain/uimetadata/table-page";
-import { MwzEvents } from "@core/domain/event";
+import { Entity, Schema, isEntity } from "@domain/metadata/entity";
+import { DataObj, parseDataObjId, parsePrefix } from "@domain/metadata/data_obj";
+import { FormPage } from "@domain/uimetadata/form-page";
+import { TablePage } from "@domain/uimetadata/table-page";
+import { MwzEvents } from "@domain/event";
 import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
-import { KeyValueError } from "@core/domain/key_value_obj";
-import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
+import { KeyValueError } from "@domain/key_value_obj";
+import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
 import { evalExpression } from "./map_reduce_utils";
 import * as _ from "lodash";
 import { CircularJSON } from "@core/json-stringify";
 
-import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
-import { App } from "./domain/app";
-import { $User, $I18n } from "./domain/metadata/default-metadata";
+import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
+import { App } from "@domain/app";
+import { $User, $I18n } from "@domain/metadata/default-metadata";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Page } from '@core/domain/uimetadata/page';
+import { Page } from '@domain/uimetadata/page';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

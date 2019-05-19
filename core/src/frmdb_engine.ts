@@ -3,17 +3,17 @@
  * License TBD
  */
 
-import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@core/domain/metadata/entity";
-import { SchemaDAO } from "@core/domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
+import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@domain/metadata/entity";
+import { SchemaDAO } from "@domain/metadata/schema_dao";
+import { DataObj, parseDataObjId, isNewDataObjId } from "@domain/metadata/data_obj";
 import { CircularJSON } from "@core/json-stringify";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
-import * as events from "@core/domain/event";
+import * as events from "@domain/event";
 import * as _ from 'lodash';
 import { SchemaCompiler } from "./schema_compiler";
-import { generateUUID } from "@core/domain/uuid";
+import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 

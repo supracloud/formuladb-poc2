@@ -3,24 +3,24 @@
  * License TBD
  */
 
-import { SchemaDAO, FormulaTriggeredByObj } from "@core/domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix } from "@core/domain/metadata/data_obj";
+import { SchemaDAO, FormulaTriggeredByObj } from "@domain/metadata/schema_dao";
+import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix } from "@domain/metadata/data_obj";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
-import * as events from "@core/domain/event";
+import * as events from "@domain/event";
 import * as _ from 'lodash';
 import { CircularJSON } from "@core/json-stringify";
 
-import { isKeyValueError } from "@core/domain/key_value_obj";
-import { generateUUID } from "@core/domain/uuid";
-import { CompiledFormula } from "@core/domain/metadata/execution_plan";
+import { isKeyValueError } from "@domain/key_value_obj";
+import { generateUUID } from "@domain/uuid";
+import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { evalExpression } from "./map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "./key_value_store_i";
-import { Pn, FormulaProperty } from "./domain/metadata/entity";
+import { Pn, FormulaProperty } from "@domain/metadata/entity";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;

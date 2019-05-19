@@ -5,7 +5,7 @@
 
 import { OnChanges, OnInit, OnDestroy, Component, HostBinding, Input } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { GridContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType, GridLayout } from '@core/domain/uimetadata/node-elements';
+import { GridContainer, NodeElement, BaseNodeElement, CssForNodeElement, Card, NodeType, GridLayout } from '@domain/uimetadata/node-elements';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { FormEditingService } from '../form-editing.service';

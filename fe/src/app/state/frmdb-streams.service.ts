@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Subject, ReplaySubject, Observable } from 'rxjs';
-import { FormPage, isFormPage } from '@core/domain/uimetadata/form-page';
-import { DataObj } from '@core/domain/metadata/data_obj';
+import { FormPage, isFormPage } from '@domain/uimetadata/form-page';
+import { DataObj } from '@domain/metadata/data_obj';
 import { FrmdbUserEvent } from './frmdb-user-events';
-import { TablePage, isTablePage } from '@core/domain/uimetadata/table-page';
-import { Entity } from '@core/domain/metadata/entity';
+import { TablePage, isTablePage } from '@domain/uimetadata/table-page';
+import { Entity } from '@domain/metadata/entity';
 import { FormulaHighlightedColumns } from './table.state';
 import { FrmdbServerEvent } from './frmdb-server-events';
 import * as _ from 'lodash';
@@ -12,10 +12,10 @@ import { Store } from '@ngrx/store';
 import * as appState from '@fe/app/state/app.state';
 import { filter } from 'rxjs/operators';
 import { AppServerEventAction } from '../actions/app.actions';
-import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@core/domain/event';
-import { Page } from '@core/domain/uimetadata/page';
-import { FeUser } from '@core/domain/user';
-import { HasId } from '@core/domain/key_value_obj';
+import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@domain/event';
+import { Page } from '@domain/uimetadata/page';
+import { FeUser } from '@domain/user';
+import { HasId } from '@domain/key_value_obj';
 
 @Injectable({
   providedIn: 'root'

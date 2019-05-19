@@ -5,15 +5,15 @@
 
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as _ from 'lodash';
-import { Page, FrmdbLook } from '@core/domain/uimetadata/page';
+import { Page, FrmdbLook } from '@domain/uimetadata/page';
 import { PageChangedAction, PageChangedActionN, AutoLayoutPageAction, PageDropAction, NodeElementDeleteAction, NodeElementSwitchTypeAction } from '../actions/page.user.actions';
-import { NodeType, NodeElement, isNodeElementWithChildren, NodeElementWithChildren, GridLayout } from '@core/domain/uimetadata/node-elements';
-import { HasId } from '@core/domain/key_value_obj';
+import { NodeType, NodeElement, isNodeElementWithChildren, NodeElementWithChildren, GridLayout } from '@domain/uimetadata/node-elements';
+import { HasId } from '@domain/key_value_obj';
 import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
-import { mergeSubObj } from '@core/domain/metadata/data_obj';
-import { isFormPage } from '@core/domain/uimetadata/form-page';
+import { mergeSubObj } from '@domain/metadata/data_obj';
+import { isFormPage } from '@domain/uimetadata/form-page';
 import { autoLayoutFormPage, autoLayoutTablePage } from '../components/auto-layout.service';
-import { isTablePage } from '@core/domain/uimetadata/table-page';
+import { isTablePage } from '@domain/uimetadata/table-page';
 
 export interface PageState {
     page: Page;

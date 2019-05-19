@@ -4,7 +4,6 @@
  */
 
 import { KeyValueObj } from "../key_value_obj";
-import { parseDataObjIdES5 } from "../../map_reduce_utils";
 export interface DataObj extends KeyValueObj {
     _id: string;
 }
@@ -27,6 +26,17 @@ export function parseDataObjId(_id: string): DataObjId {
 }
 export function isDataObj(param): param is DataObj {
     return param != null && typeof param === 'object' && null != _parseDataObjId(param._id);
+}
+export function parseDataObjIdES5(_id) {
+    if (!_id) return null;
+    var m = _id.match(/^([$\w_]+)~~([-_\w~]+)$/);
+    if (null != m) {
+        return {
+            entityName: m[1]!,
+            id: m[0]!,
+            uid: m[2],
+        };
+    } else return null;
 }
 function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);

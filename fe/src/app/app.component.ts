@@ -8,7 +8,7 @@ import * as appState from '@fe/app/state/app.state';
 import { Store } from '@ngrx/store';
 import { ObservedValueOf, Observable } from 'rxjs';
 import { FrmdbStreamsService } from './state/frmdb-streams.service';
-import { FeUser } from '@core/domain/user';
+import { FeUser } from '@domain/user';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Pn } from '@core/domain/metadata/entity';
-import { FormInput, NodeElement } from '@core/domain/uimetadata/node-elements';
+import { Pn } from '@domain/metadata/entity';
+import { FormInput, NodeElement } from '@domain/uimetadata/node-elements';
 
 @Component({
   selector: 'frmdb-form-input-editor',

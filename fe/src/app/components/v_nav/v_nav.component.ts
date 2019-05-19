@@ -12,7 +12,7 @@ import { NavigationItem, entites2navItems } from './navigation.item';
 
 import { FormEditingService } from '../form-editing.service';
 import * as _ from 'lodash';
-import { Pn, Entity } from '@core/domain/metadata/entity';
+import { Pn, Entity } from '@domain/metadata/entity';
 import { Home } from '@core/default_pages/website-metadata';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 

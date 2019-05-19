@@ -5,10 +5,10 @@
 
 import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
-import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@core/domain/uimetadata/node-elements";
+import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@domain/uimetadata/node-elements";
 import { CircularJSON } from "@core/json-stringify";
 
-import { Pn } from "@core/domain/metadata/entity";
+import { Pn } from "@domain/metadata/entity";
 import { FormEditingService } from '../form-editing.service';
 import { faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FrmdbFormControl, FrmdbFormGroup } from '../frmdb-page.component';

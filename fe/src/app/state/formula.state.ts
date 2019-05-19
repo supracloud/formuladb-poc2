@@ -5,15 +5,15 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj } from "@core/domain/metadata/data_obj";
-import { ChangeObj, applyChanges } from "@core/domain/change_obj";
+import { DataObj } from "@domain/metadata/data_obj";
+import { ChangeObj, applyChanges } from "@domain/change_obj";
 
-import * as events from "@core/domain/event";
+import * as events from "@domain/event";
 
 export { DataObj };
 export { ChangeObj, applyChanges };
 
-import { EntityProperty, Pn, Entity } from "@core/domain/metadata/entity";
+import { EntityProperty, Pn, Entity } from "@domain/metadata/entity";
 
 export interface FormulaState {
   editorOn: boolean;

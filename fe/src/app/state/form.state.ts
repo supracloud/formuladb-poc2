@@ -5,11 +5,11 @@
 
 import { Action, createSelector, createFeatureSelector } from '@ngrx/store';
 
-import { DataObj, mergeSubObj } from "@core/domain/metadata/data_obj";
-import { FormPage } from "@core/domain/uimetadata/form-page";
-import { NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete, NodeElementWithChildren } from "@core/domain/uimetadata/node-elements";
-import { ChangeObj, applyChanges } from "@core/domain/change_obj";
-import * as events from "@core/domain/event";
+import { DataObj, mergeSubObj } from "@domain/metadata/data_obj";
+import { FormPage } from "@domain/uimetadata/form-page";
+import { NodeElement, isNodeElementWithChildren, NodeType, FormAutocomplete, NodeElementWithChildren } from "@domain/uimetadata/node-elements";
+import { ChangeObj, applyChanges } from "@domain/change_obj";
+import * as events from "@domain/event";
 import * as formUserActions from '../actions/form.user.actions';
 import * as formServerActions from '../actions/form.backend.actions';
 import * as _ from 'lodash';

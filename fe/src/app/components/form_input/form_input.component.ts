@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { NodeElement, NodeType, FormInput } from "@core/domain/uimetadata/node-elements";
+import { NodeElement, NodeType, FormInput } from "@domain/uimetadata/node-elements";
 import {
     Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild, NgZone,
     Input, Output, EventEmitter, ChangeDetectionStrategy, HostListener, HostBinding,
@@ -15,7 +15,7 @@ import { BaseNodeComponent } from "../base_node";
 import { AbstractControl } from '@angular/forms';
 import * as _ from "lodash";
 
-import { Pn } from "@core/domain/metadata/entity";
+import { Pn } from "@domain/metadata/entity";
 import { FormEditingService } from "../form-editing.service";
 
 @Component({
