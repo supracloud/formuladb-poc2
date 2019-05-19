@@ -6,7 +6,7 @@
 import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@domain/metadata/entity";
 import { SchemaDAO } from "@domain/metadata/schema_dao";
 import { DataObj, parseDataObjId, isNewDataObjId } from "@domain/metadata/data_obj";
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 

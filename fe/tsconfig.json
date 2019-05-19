@@ -20,6 +20,8 @@
       "dom"
     ],
     "paths": {
+      "@domain/*": ["../domain/src/*"],
+      "@functions/*": ["../functions/src/*"],
       "@core/*": ["../core/src/*"],
       "@storage/*": ["../storage/src/*"],
       "@fe/*": ["./src/*"]

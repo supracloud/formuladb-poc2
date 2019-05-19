@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
 import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "./key_value_store_i";
 import { MapFunctionT } from "@domain/metadata/execution_plan";

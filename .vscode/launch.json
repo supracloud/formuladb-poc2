@@ -71,7 +71,7 @@
             ]
         },
         {
-            "name": "GUI specs",
+            "name": "Template specs",
             "type": "node",
             "useWSL": true,
             "localRoot": "${workspaceFolder}",
@@ -85,11 +85,11 @@
             "protocol": "inspector",
             "port": 9232,
             "request": "launch",
-            "cwd": "${workspaceRoot}/gui",
-            "program": "${workspaceRoot}/gui/src/tests/jasmine.ts",
+            "cwd": "${workspaceRoot}/template",
+            "program": "${workspaceRoot}/template/src/tests/jasmine.ts",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/gui/dist/**/*.js"
+                "${workspaceRoot}/template/dist/**/*.js"
             ]
         },        
         {

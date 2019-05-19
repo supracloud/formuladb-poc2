@@ -19,6 +19,8 @@
             "*": [
                 "node_modules/*",
             ],
+            "@domain/*": ["../domain/src/*"],
+            "@functions/*": ["../functions/src/*"],
             "@core/*": ["../core/src/*"],
             "@storage/*": ["./src/*"],
         },
@@ -29,6 +31,8 @@
     },
     "include": [
         "src/**/*",
+        "../domain/src/**/*",
+        "../functions/src/**/*",
         "../core/src/**/*"
     ]
 }

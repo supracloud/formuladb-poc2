@@ -9,7 +9,7 @@ import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { compareKeys } from "../map_reduce_utils";
 import { preComputeAggForObserverAndObservableBase } from "./functions_common";
 import { TextjoinReduceFunN } from "@domain/metadata/reduce_functions";
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
 function prepareReturnValue(ret: any[], delimiter: string): string {
     return ret.map(x => {

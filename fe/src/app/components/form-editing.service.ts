@@ -14,7 +14,7 @@ import * as _ from 'lodash';
 import { NodeType, NodeElement, FormAutocomplete } from '@domain/uimetadata/node-elements';
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { Entity } from '@domain/metadata/entity';
-import { CircularJSON } from '@core/json-stringify';
+import { CircularJSON } from '@domain/json-stringify';
 
 export class RelatedAutoCompleteControls {
   controls: {[refPropertyName: string]: FormAutocomplete} = {};

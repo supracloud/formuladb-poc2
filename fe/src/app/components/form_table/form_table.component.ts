@@ -6,7 +6,7 @@
 import { OnChanges, OnInit, OnDestroy, Component } from '@angular/core';
 import { BaseNodeComponent } from '../base_node';
 import { NodeElement, NodeType, TableNodeElement, FormTabs, FormTable } from "@domain/uimetadata/node-elements";
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
 import { Pn } from "@domain/metadata/entity";
 import { FormEditingService } from '../form-editing.service';

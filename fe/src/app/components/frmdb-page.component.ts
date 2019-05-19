@@ -25,7 +25,7 @@ import { FormEditingService } from './form-editing.service';
 import { AbstractControlOptions } from '@angular/forms';
 import { AsyncValidatorFn } from '@angular/forms';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
-import { CircularJSON } from '@core/json-stringify';
+import { CircularJSON } from '@domain/json-stringify';
 import { isFormPage } from '@domain/uimetadata/form-page';
 import { Page } from '@domain/uimetadata/page';
 import { untilDestroyed } from 'ngx-take-until-destroy';

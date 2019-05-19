@@ -11,7 +11,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jasmine": "^3.3.12",
-    "cheerio": "^1.0.0-rc.3",
+    "@types/jquery": "^3.3.29",
     "jasmine": "^3.0.0",
     "jasmine-spec-reporter": "^4.2.1",
     "typescript": "^3.4.5"
@@ -21,8 +21,11 @@
     "@functions": "./dist/functions/src"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "detect-node": "^2.0.4",
     "jquery": "^3.4.1",
     "lodash": "^4.17.11",
-    "module-alias": "^2.2.0"
+    "module-alias": "^2.2.0",
+    "source-map-support": "^0.5.12"
   }
 }
