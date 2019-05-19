@@ -4,13 +4,13 @@
  */
 
 import * as _ from 'lodash';
-import { Entity } from "../../metadata/entity";
+import { Entity } from "@domain/metadata/entity";
 import { InventoryData } from './inventory-data';
-import { DataObj } from '../../metadata/data_obj';
+import { DataObj } from '@domain/metadata/data_obj';
 import { GeneralData } from './general-data';
 import { StaticPagesData } from '../../default_pages/website-data';
 import { BookingData } from './booking-data';
-import { DefaultData } from '../../metadata/default-data';
+import { DefaultData } from '@domain/metadata/default-data';
 
 
 export class MockData {

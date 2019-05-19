@@ -5,7 +5,7 @@
 
 import * as _ from 'lodash';
 
-import { Schema, Pn } from "../../metadata/entity";
+import { Schema, Pn } from "@domain/metadata/entity";
 
 import * as InventoryMetadata from "./inventory-metadata";
 import * as GeneralMetadata from "./general-metadata";
@@ -15,8 +15,8 @@ import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
-import { App } from '../../app';
-import { $User, $I18n } from '../../metadata/default-metadata';
+import { App } from '@domain/app';
+import { $User, $I18n } from '@domain/metadata/default-metadata';
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";

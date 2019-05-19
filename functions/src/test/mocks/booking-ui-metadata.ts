@@ -3,13 +3,13 @@
 * License TBD
 */
 
-import { FormPage } from '../../uimetadata/form-page'
-import { Pn } from '../../metadata/entity';
-import { TablePage } from '../../uimetadata/table-page';
+import { FormPage } from '@domain/uimetadata/form-page'
+import { Pn } from '@domain/metadata/entity';
+import { TablePage } from '@domain/uimetadata/table-page';
 
 import { BookingItem, Booking } from './booking-metadata';
-import { $User } from '../../metadata/default-metadata';
-import { NodeType, DataGrid, TableColumn } from '../../uimetadata/node-elements';
+import { $User } from '@domain/metadata/default-metadata';
+import { NodeType, DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 
 let testUUID = 1;
 function getTestUUID() {

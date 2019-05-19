@@ -3,10 +3,10 @@
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "../../metadata/entity";
+import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "@domain/metadata/entity";
 import { InventoryProduct, InventoryOrder, InventoryProductUnit } from './inventory-metadata';
 import { GEN__Client } from "./general-metadata";
-import { Fn } from "../../metadata/functions";
+import { Fn } from "@domain/metadata/functions";
 
 
 export const Forms__ServiceForm = {

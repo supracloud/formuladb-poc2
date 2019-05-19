@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty } from "../../metadata/entity";
+import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
 import { $s2e } from '../../s2e';
-import { $User, $I18n } from "../../metadata/default-metadata";
+import { $User, $I18n } from "@domain/metadata/default-metadata";
 
 
 export const GEN__Settings: Entity = {

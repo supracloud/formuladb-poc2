@@ -3,10 +3,9 @@
  * License TBD
  */
 
-import { Pn } from "../../metadata/entity";
-import { FormPage } from '../../uimetadata/form-page'
-import { FrmdbLy } from "../../uimetadata/page";
-import { NodeType } from "../../uimetadata/node-elements";
+import { Pn } from "@domain/metadata/entity";
+import { FormPage } from '@domain/uimetadata/form-page'
+import { NodeType } from "@domain/uimetadata/node-elements";
 import { LargeSalesReport } from "./inventory-metadata";
 
 let testUUID = 1;

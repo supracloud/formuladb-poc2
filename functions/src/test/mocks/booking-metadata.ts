@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph } from "../../metadata/entity";
+import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph } from "@domain/metadata/entity";
 import { $s2e } from "../../s2e";
-import { $User } from "../../metadata/default-metadata";
+import { $User } from "@domain/metadata/default-metadata";
 
 // export const HotelReport = {
 //     _id: "HotelReport",

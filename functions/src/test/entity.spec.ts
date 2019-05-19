@@ -6,7 +6,7 @@
 import * as _ from 'lodash';
 import { InventoryProduct, InventoryOrder } from "../test/mocks/inventory-metadata";
 import { Forms__ServiceForm } from "../test/mocks/forms-metadata";
-import { Entity, queryEntityWithDeepPath, extendEntityProperties, HasEntityProperties, ChildTableProperty, isSubTableProperty } from "./entity";
+import { Entity, queryEntityWithDeepPath, extendEntityProperties, HasEntityProperties, ChildTableProperty, isSubTableProperty } from "@domain/metadata/entity";
 
 describe('Entity', () => {
   beforeEach(() => {

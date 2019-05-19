@@ -1,7 +1,7 @@
 {
-  "name": "formuladb-domain",
+  "name": "formuladb-template",
   "version": "1.0.0",
-  "description": "FormulaDB domain model",
+  "description": "An HTML templating system where both JSON data and the template itself can change at runtime",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,17 +11,18 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jasmine": "^3.3.12",
-    "@types/virtual-dom": "^2.1.0",
+    "cheerio": "^1.0.0-rc.3",
     "jasmine": "^3.0.0",
     "jasmine-spec-reporter": "^4.2.1",
     "typescript": "^3.4.5"
   },
-  "dependencies": {
-    "jsep": "git+https://github.com/acristu/jsep.git",
-    "lodash": "^4.17.11",
-    "short-uuid": "^3.1.1"
-  },
   "_moduleAliases": {
-    "@domain": "./dist/domain/src"
+    "@domain": "./dist/domain/src",
+    "@functions": "./dist/functions/src"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1",
+    "lodash": "^4.17.11",
+    "module-alias": "^2.2.0"
   }
 }
