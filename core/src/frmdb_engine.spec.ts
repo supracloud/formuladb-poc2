@@ -7,12 +7,12 @@ import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
 import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula, ServerEventSetPropertyN, ServerEventDeletedFormDataEvent } from "@domain/event";
-import { $s2e } from './formula_compiler';
 import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema, EntityProperty, ChildTableProperty } from "@domain/metadata/entity";
 import { DataObj } from "@domain/metadata/data_obj";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { getFrmdbEngine, getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { $s2e } from "@functions/s2e";
 
 describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;

@@ -73,7 +73,7 @@ export function queryEntityWithDeepPath(entity: Entity, referencedEntityName: En
     let relativePath = referencedEntityName.replace(entity._id, '').replace(/^\//, '').replace(/\/@/g, '');
     if (null != relativePath && '' !== relativePath) {
         let pathInsideEntity = relativePath.replace(/\//, '.');
-        return _(eval(`entity.${pathInsideEntity}`)).omit(RESERVED_PROP_NAMES).extend({ _id: { name: "_id", propType_: Pn.STRING } }).value() as EntityProperties;
+        return _(eval(`entity.${pathInsideEntity}`) as {}).omit(RESERVED_PROP_NAMES).extend({ _id: { name: "_id", propType_: Pn.STRING } }).value() as EntityProperties;
     }
     return entity.props;
 }

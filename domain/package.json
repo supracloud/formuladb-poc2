@@ -11,11 +11,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jasmine": "^3.3.12",
-    "@types/lodash": "^4.14.130",
+    "@types/lodash": "^4.14.120",
     "@types/virtual-dom": "^2.1.0",
     "jasmine": "^3.0.0",
     "jasmine-spec-reporter": "^4.2.1",
-    "typescript": "^3.4.5"
+    "typescript": "^3.1.6"
   },
   "dependencies": {
     "jsep": "git+https://github.com/acristu/jsep.git",

@@ -6,7 +6,7 @@
 import { MapReduceTrigger } from "@domain/metadata/execution_plan";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
-import { evalExpression, includesKey } from "../map_reduce_utils";
+import { evalExpression, includesKey } from "@functions/map_reduce_utils";
 
 export interface PreComputeAggForObserverAndObservableOpts {
     newKeyMatches_oldKeyMatches: (oldKey, newKey, newValue, startkey, endkey) => Promise<string | number>,

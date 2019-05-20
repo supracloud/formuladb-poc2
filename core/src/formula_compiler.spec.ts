@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { BinaryExpression, LogicalExpression } from 'jsep';
 import * as jsep from "jsep";
 
-import { compileFormula, $ee2s, getQueryKeys, extractKeysAndQueriesFromBinaryExpression, extractKeysAndQueriesFromLogicalExpression, $s2e } from "./formula_compiler";
+import { compileFormula, $ee2s, getQueryKeys, extractKeysAndQueriesFromBinaryExpression, extractKeysAndQueriesFromLogicalExpression } from "./formula_compiler";
 import { CompiledFormula, MapReduceTrigger, ExecPlanN, 
     CompiledScalarN,
     MapKeyN,
@@ -21,6 +21,7 @@ import { CompiledFormula, MapReduceTrigger, ExecPlanN,
 import { matchesTypeES5, evalExpression, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from "@functions/map_reduce_utils";
 import { Fn } from "@domain/metadata/functions";
 import { SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
+import { $s2e } from '@functions/s2e';
 
 describe('FormulaCompiler', () => {
     let compiledExpr;

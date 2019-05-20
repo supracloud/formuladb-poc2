@@ -1,6 +1,6 @@
 import { Expression } from "jsep";
 import * as jsep from 'jsep';
-import { CircularJSON } from "./json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 jsep.addLiteral('@', '@');
 
 export function parseFormula(formula: string, forceParseIncompleteExpr: boolean = false): Expression {
