@@ -1,4 +1,4 @@
-import { ScalarFunctionsImplementations } from "./scalar_functions_implementations";
+import { ScalarFunctionsImplementations } from "@functions/scalar_functions_implementations";
 import { parseFormula, $e2s } from "./formula_parser";
 import { Expression, isIdentifier } from "jsep";
 

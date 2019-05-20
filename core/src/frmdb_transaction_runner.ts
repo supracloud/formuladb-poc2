@@ -15,7 +15,7 @@ import { CircularJSON } from "@domain/json-stringify";
 import { isKeyValueError } from "@domain/key_value_obj";
 import { generateUUID } from "@domain/uuid";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
-import { evalExpression } from "./map_reduce_utils";
+import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";

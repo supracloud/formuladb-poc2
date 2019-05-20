@@ -5,9 +5,10 @@
 
 import * as _ from 'lodash';
 
-import { KeyValueStoreArrayKeys, SimpleAddHocQuery, KeyTableStoreI, KeyValueStoreI } from "./key_value_store_i";
-import { Entity, EntityProperty, Pn } from './domain/metadata/entity';
+import { KeyValueStoreArrayKeys, KeyTableStoreI, KeyValueStoreI } from "./key_value_store_i";
+import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
 import { getKeyValueStoreFactory, KvsImplementation } from '@storage/key_value_store_impl_selector';
+import { SimpleAddHocQuery } from '@domain/metadata/simple-add-hoc-query';
 
 export interface KeyValueStoreSpecObjType {
     _id: string;

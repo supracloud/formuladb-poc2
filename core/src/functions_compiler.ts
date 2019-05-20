@@ -39,9 +39,10 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "@domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName, FormulaCompilerError } from './formula_compiler';
+import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError } from './formula_compiler';
 import { _throw } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
+import { $s2e } from "@functions/s2e";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     fc: FuncCommon,

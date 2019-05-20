@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { packFunction } from "./map_reduce_utils";
+import { packFunction } from "@functions/map_reduce_utils";
 import * as acorn from "acorn";
 declare var emit: any;
 

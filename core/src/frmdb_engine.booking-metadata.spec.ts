@@ -9,9 +9,9 @@ import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@domain/event";
-import { Schema_booking } from "./mock-metadata";
-import { Act_Wiza, Act_Collins } from "./general-data";
-import { BookingData, BkItem1 } from "./booking-data";
+import { Schema_booking } from "@functions/test/mocks/mock-metadata";
+import { Act_Wiza, Act_Collins } from "@functions/test/mocks/general-data";
+import { BookingData, BkItem1 } from "@functions/test/mocks/booking-data";
 
 describe('FrmdbEngine', () => {
     let frmdbTStore: FrmdbEngineStore;

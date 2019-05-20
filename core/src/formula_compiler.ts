@@ -37,6 +37,7 @@ import {
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
 import { logCompileFormula } from "./test/test_utils";
 import { parseFormula } from "./formula_parser";
+import { $s2e } from "@functions/s2e";
 
 
 export class FormulaCompilerContextType {

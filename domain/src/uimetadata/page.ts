@@ -20,6 +20,7 @@ import { NodeElement, RootNode } from "./node-elements";
  * Interesting stuff:
  * http://leonidas.github.io/transparency/ -> Valid HTML templating engine
  * https://github.com/givanz/VvvebJs -> bootstrap HTML visual builder
+ * https://github.com/dgraham/delegated-events: configure events globally
  */
 
 /** Auto-header styles */

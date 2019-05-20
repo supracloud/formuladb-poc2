@@ -9,7 +9,7 @@ import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { ServerEventModifiedFormDataN } from "@domain/event";
 import { Fn } from "@domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "@domain/metadata/execution_plan";
-import { compileFormula, $s2e } from "../formula_compiler";
+import { compileFormula } from "../formula_compiler";
 import { Entity, Pn } from "@domain/metadata/entity";
 import { getFrmdbEngineStore } from "@storage/key_value_store_impl_selector";
 import { Schema } from "@domain/metadata/entity";

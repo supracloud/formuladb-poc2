@@ -1,6 +1,6 @@
 import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { MapReduceView, MapReduceViewUpdates } from "./map_reduce_view";
-import { $s2e } from './formula_compiler';
+import { $s2e } from '@functions/s2e';
 import { SumReduceFunN } from "@domain/metadata/reduce_functions";
 import { KeyValueStoreFactoryI } from './key_value_store_i';
 import { MINCHAR, MAXCHAR } from './utils/collator';

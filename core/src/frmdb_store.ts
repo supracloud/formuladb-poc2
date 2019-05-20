@@ -8,16 +8,17 @@ import { DataObj, parseDataObjId, parsePrefix } from "@domain/metadata/data_obj"
 import { FormPage } from "@domain/uimetadata/form-page";
 import { TablePage } from "@domain/uimetadata/table-page";
 import { MwzEvents } from "@domain/event";
-import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
 import { KeyValueError } from "@domain/key_value_obj";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
-import { evalExpression } from "./map_reduce_utils";
+import { evalExpression } from "@functions/map_reduce_utils";
 import * as _ from "lodash";
 import { CircularJSON } from "@domain/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { App } from "@domain/app";
 import { $User, $I18n } from "@domain/metadata/default-metadata";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;

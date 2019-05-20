@@ -18,7 +18,7 @@ import { CompiledFormula, MapReduceTrigger, ExecPlanN,
     MapReduceTriggerN,
     CompiledFormulaN,
 } from "@domain/metadata/execution_plan";
-import { matchesTypeES5, evalExpression, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from "./map_reduce_utils";
+import { matchesTypeES5, evalExpression, packMapFunctionAndQuery, jsonPathMapGetterExpr, generateMapFunctionAndQuery } from "@functions/map_reduce_utils";
 import { Fn } from "@domain/metadata/functions";
 import { SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 

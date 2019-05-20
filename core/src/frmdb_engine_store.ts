@@ -7,7 +7,7 @@ import { CircularJSON } from "@domain/json-stringify";
 
 import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@domain/metadata/execution_plan";
-import { evalExpression } from "./map_reduce_utils";
+import { evalExpression } from "@functions/map_reduce_utils";
 import { FrmdbStore } from './frmdb_store';
 import { _sum_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_sum';
 import { _count_preComputeAggForObserverAndObservable } from './frmdb_engine_functions/_count';
@@ -20,7 +20,6 @@ import { MapReduceView, MapReduceViewUpdates } from './map_reduce_view';
 import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { DataObj } from '@domain/metadata/data_obj';
 import { Entity, Schema } from '@domain/metadata/entity';
-import { $s2e } from './formula_compiler';
 import { Pn } from '@domain/metadata/entity';
 
 function ll(eventId: string, retryNb: number | string): string {

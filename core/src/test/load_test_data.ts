@@ -7,15 +7,15 @@ import { getKeyValueStoreFactory } from "@storage/key_value_store_impl_selector"
 
 import { mockMetadata } from "./main_demo.flow";
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
-import { MockData } from "./mocks/mock-data";
+import { MockData } from "@functions/test/mocks/mock-data";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@domain/event";
-import { Forms__ServiceForm_Form_ } from "./mocks/forms-ui-metadata";
-import { LargeSalesReport_Form } from "./mocks/reports-ui-metadata";
-import { HomePage_Form, HomePage_Table } from "@core/default_pages/website-ui-metadata";
-import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "./mocks/booking-ui-metadata";
+import { Forms__ServiceForm_Form_ } from "@functions/test/mocks/forms-ui-metadata";
+import { LargeSalesReport_Form } from "@functions/test/mocks/reports-ui-metadata";
+import { HomePage_Form, HomePage_Table } from "@domain/default_pages/website-ui-metadata";
+import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "@functions/test/mocks/booking-ui-metadata";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
     return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));

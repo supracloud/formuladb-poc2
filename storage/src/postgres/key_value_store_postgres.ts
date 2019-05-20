@@ -5,7 +5,7 @@
  * https://github.com/vitaly-t/pg-promise/wiki/Common-Mistakes
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
 import * as pgPromise from "pg-promise";
@@ -15,8 +15,9 @@ import { Entity, EntityProperty, Pn, Schema } from "@domain/metadata/entity";
 import { waitUntilNotNull } from "@core/ts-utils";
 import { ReduceFun } from "@domain/metadata/reduce_functions";
 import { Expression } from "jsep";
-import { evalExpression } from "@core/map_reduce_utils";
+import { evalExpression } from "@functions/map_reduce_utils";
 import { App } from "@domain/app";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 const calculateSlot = require('cluster-key-slot');
 
 /**

@@ -4,7 +4,8 @@ import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict, Prope
 import * as _ from 'lodash';
 import { CircularJSON } from "@domain/json-stringify";
 
-import { isCompiledFormula, isScalarCallExpression } from './domain/metadata/execution_plan';
+import { isCompiledFormula, isScalarCallExpression } from '@domain/metadata/execution_plan';
+import { $s2e } from '@functions/s2e';
 
 
 export enum TokenType {
