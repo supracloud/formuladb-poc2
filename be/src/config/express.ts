@@ -16,10 +16,11 @@ import * as path from 'path';
 
 
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { SimpleAddHocQuery, KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { $User } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 

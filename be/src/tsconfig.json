@@ -6,8 +6,8 @@
         "module": "commonjs",
         "strictNullChecks": true,
         "paths": {
-            "@domain/*": ["../domain/src/*"],
-            "@functions/*": ["../functions/src/*"],
+            "@domain/*": ["../../domain/src/*"],
+            "@functions/*": ["../../functions/src/*"],
             "@core/*": ["../../core/src/*"],
             "@storage/*": ["../../storage/src/*"],
 	        "@fe/*": ["./*"],
@@ -15,8 +15,8 @@
     },
     "include": [
         "./**/*",
-        "../domain/src/**/*",
-        "../functions/src/**/*",
+        "../../domain/src/**/*",
+        "../../functions/src/**/*",
         "../../core/src/**/*",
         "../../storage/src/**/*"
     ]
