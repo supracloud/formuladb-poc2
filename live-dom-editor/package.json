@@ -1,0 +1,26 @@
+{
+  "name": "live-dom-editor",
+  "version": "1.0.0",
+  "description": "live editing of the DOM on the current page",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "concurrently --kill-others \"npm run compile:watch\" \"live-server --port=8081\"",
+    "compile:watch": "tsc --sourceMap -w -p .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.3.12",
+    "concurrently": "^4.1.0",
+    "dom-testing-library": "^4.1.0",
+    "jasmine": "^3.4.0",
+    "jsdom": "^15.1.0",
+    "jsdom-global": "^3.0.2",
+    "live-server": "^1.2.1",
+    "typescript": "3.1.6"
+  }
+}

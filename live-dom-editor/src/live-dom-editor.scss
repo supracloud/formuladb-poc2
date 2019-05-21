@@ -1,0 +1,16 @@
+#iframe-layer {
+    overflow: hidden;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+#highlight-box
+{
+    position:absolute;
+    border:1px solid $builder-background-color;
+    width:0px;
+    height:0px;
+    top:0px;
+    left:0px;
+    display:none;
+}

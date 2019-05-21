@@ -25,6 +25,7 @@ export function renderChild(newData: {}, path: string, el: Elem) {
     if (!targetEl) return;
     return render(newData, targetEl);
 }
+
 export function render(newData: {}, el: Elem) {
 
     for (const key in newData) {
@@ -33,7 +34,7 @@ export function render(newData: {}, el: Elem) {
         // if ('_id' === key) continue;
 
         const objValForKey = newData[key];
-        if (null === objValForKey) { 
+        if (null === objValForKey) {
             continue;
             //FIXME: here we have to delete elems...but we have to take care of the template
         }
@@ -75,4 +76,4 @@ export function render(newData: {}, el: Elem) {
             throw new Error('unkown objValForKey type: \'' + objValForKey + '\'');
         }
     }
-  }
+}

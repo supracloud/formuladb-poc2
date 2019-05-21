@@ -2,7 +2,7 @@ import { parseHTML, writeHTML } from "./dom-node";
 import { render } from "./live-dom-template";
 
 const template = `
-<div data-frmdb-foreach="tableName" data-frmdb-foreach-idx="0">
+<div data-frmdb-foreach="tableName">
     <ul>
         <li data-frmdb-valueof="name"><label data-frmdb-label></label></li>
         <li data-frmdb-valueof="description"><label data-frmdb-label></label></li>
@@ -27,7 +27,7 @@ describe('FrmdbTemplate', () => {
         let renderedHtml = writeHTML(el);
         expect(renderedHtml.replace(/\n\s*/g, '').replace(/\s+$/, '')).toEqual(`
             <body xmlns="http://www.w3.org/1999/xhtml">
-                <div data-frmdb-foreach="tableName" data-frmdb-foreach-idx="0">
+                <div data-frmdb-foreach="tableName">
                     <ul>
                         <li data-frmdb-valueof="name">row1</li>
                         <li data-frmdb-valueof="description">desc of row 1</li>
@@ -41,7 +41,7 @@ describe('FrmdbTemplate', () => {
                         </div>
                     </div>
                 </div>
-                <div data-frmdb-foreach="tableName" data-frmdb-foreach-idx="0">
+                <div data-frmdb-foreach="tableName">
                     <ul>
                         <li data-frmdb-valueof="name">row2</li>
                         <li data-frmdb-valueof="description">desc of row 2</li>
