@@ -18,9 +18,7 @@
         "paths": {
             "*": [
                 "node_modules/*",
-            ],
-            "@domain/*": ["../domain/src/*"],
-            "@functions/*": ["../domain/src/*"]
+            ]
         },
         "lib": [
             "es2018",
@@ -28,8 +26,6 @@
         ]
     },
     "include": [
-        "../domain/src/**/*",
-        "../functions/src/**/*",
         "src/**/*"
     ]
 }

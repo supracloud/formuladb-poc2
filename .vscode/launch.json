@@ -71,7 +71,7 @@
             ]
         },
         {
-            "name": "Template specs",
+            "name": "live-dom-template specs",
             "type": "node",
             "useWSL": true,
             "localRoot": "${workspaceFolder}",
@@ -85,11 +85,12 @@
             "protocol": "inspector",
             "port": 9232,
             "request": "launch",
-            "cwd": "${workspaceRoot}/template",
-            "program": "${workspaceRoot}/template/dist/template/src/tests/jasmine.js",
+            "cwd": "${workspaceRoot}/live-dom-template",
+            "program": "${workspaceRoot}/live-dom-template/dist/tests/jasmine.js",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/template/dist/**/*.js"
+                "${workspaceRoot}/live-dom-template/dist/*.js",
+                "${workspaceRoot}/live-dom-template/dist/**/*.js",
             ]
         },        
         {
