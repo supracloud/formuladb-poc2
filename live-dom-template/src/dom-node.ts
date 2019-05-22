@@ -10,7 +10,7 @@ if (isNode) {
     parser = new DOMParser();
     serializer = new XMLSerializer();
 }
-export type Elem = Element;
+export type Elem = HTMLElement;
 export class ElemList {
     constructor(private key: string, private parentEl: Elem) {}
 
@@ -31,7 +31,7 @@ export class ElemList {
     public at(idx: number): Elem | null{
         let list = this.parentEl.querySelectorAll(`[data-frmdb-foreach="${this.key}"]`);
         if (list.length < idx) return null;
-        else return list[idx];
+        else return list[idx] as Elem;
     }
 
     public removeAt(idx: number) {
@@ -78,7 +78,7 @@ export function findElem(el: Elem, path: string): Elem | null {
 }
 
 export function getElem(el: Elem, key: string): Elem | null {
-    return el.querySelector(`[data-frmdb-valueof="${key}"]`);
+    return el.querySelector(`[data-frmdb-valueof="${key}"]`) || el.querySelector(`[data-frmdb-attr^="${key}:"]`);
 }
 
 export function getElemList(el: Elem, key: string): ElemList | null {
@@ -92,8 +92,33 @@ export function addElem(el: Elem, childEl: Elem) {
     el.appendChild(childEl);
 }
 
-export function setElemValue(el: Elem, value: string|boolean|number|Date) {
-    el.textContent = "" + value;
+export function setElemValue(el: Elem, key: string, value: string|boolean|number|Date) {
+    let dataAttr = el.getAttribute('data-frmdb-attr');
+    if (dataAttr && dataAttr.indexOf(key + ':') === 0) {
+        let attrName = dataAttr.replace(/^.*:/, '');
+        if (attrName.indexOf("class.") == 0) {
+            let className = attrName.replace(/^class\./, '');
+            el.classList.toggle(className, value == true );
+        } else if (attrName.indexOf("style.") == 0) {
+            let styleName = attrName.replace(/^style\./, '');
+            el.style.setProperty(styleName, value + '');
+        } else {
+            el.setAttribute(attrName, value + '');
+        }
+    } else if (el.getAttribute('data-frmdb-valueof') == key) {
+        let textNodeFound: boolean = false;
+        el.childNodes.forEach(child => {
+            if (child.nodeType === Node.TEXT_NODE) {
+                child.nodeValue = value + '';
+                textNodeFound = true;
+            }
+        })
+        if (!textNodeFound) {
+            let textNode = document.createTextNode(value + '');
+            el.appendChild(textNode);
+        }
+    } else throw new Error("El " + el + " does not have data binding for key " + key);
+
     //FIXME: form inputs have different ways of setting the value
 }
 

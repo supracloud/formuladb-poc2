@@ -63,7 +63,7 @@ export function render(newData: {}, el: Elem) {
                 setElem(el, key, elemForKey);
             }
 
-            setElemValue(elemForKey, objValForKey);
+            setElemValue(elemForKey, key, objValForKey);
         } else if ('object' === typeof objValForKey) {
             let elemForKey = getElem(el, key);
             if (null == elemForKey) {
