@@ -23,6 +23,7 @@
     "@functions": "./dist/functions/src"
   },
   "dependencies": {
+    "delegated-events": "^1.0.10",
     "detect-node": "^2.0.4",
     "lodash": "^4.17.11",
     "module-alias": "^2.2.0",

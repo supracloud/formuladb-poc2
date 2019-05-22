@@ -1,14 +1,45 @@
 {
   "name": "formuladb",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.10",
+  "description": "FormulaDB low code platform",
+  "main": "index.js",
   "scripts": {
-    "prestart": "rm -rf dist && tsc --inlineSourceMap -p src",
-    "start": "node dist/be/src/server.js",
-    "db": "(docker rm -f formuladb-pg || true) && docker-compose up -d db"
+    "start": "rimraf dist && concurrently --kill-others \"npm run sass:watch\" \"npm run build:watch\" \"npm run serve\"",
+    "xserve": "live-server --ignore=*/node_modules,*/src --port=8081",
+    "serve": "webpack-dev-server",
+    "compile:watch": "tsc --sourceMap -w -p .",
+    "build:watch": "webpack --watch --progress --colors",
+    "sass:watch": "sass --style compressed --watch . live-dom-editor/src/live-dom-editor.scss:dist/live-dom-editor.min.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.3.12",
+    "@types/node": "^12.0.2",
+    "concurrently": "^4.1.0",
+    "dom-testing-library": "^4.1.0",
+    "install": "^0.12.2",
+    "jasmine": "^3.4.0",
+    "jsdom": "^15.1.0",
+    "jsdom-global": "^3.0.2",
+    "live-server": "^1.2.1",
+    "npm": "^6.9.0",
+    "rimraf": "^2.6.3",
+    "sass": "^1.20.1",
+    "terser-webpack-plugin": "^1.2.4",
+    "testem": "^2.16.0",
+    "ts-loader": "^6.0.1",
+    "typescript": "3.1.6",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.4.1",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "circular-json": "^0.5.9"
+    "delegated-events": "^1.0.10"
   },
-  "devDependencies": {}
+  "alias": {
+    "@live-dom-template/*": "./live-dom-template/src/*"
+  }
 }

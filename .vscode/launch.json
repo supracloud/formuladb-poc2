@@ -3,6 +3,20 @@
     "configurations": [
 
         {
+            "name": "GUI serve",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8081/live-dom-editor/index.html",
+            "webRoot": "${workspaceFolder}",
+            "sourceMapPathOverrides": {
+                "webpack:/./*": "${webRoot}/*",
+                "webpack:///./*": "${webRoot}/*",
+                "webpack:///./src/*": "${webRoot}/src/*",
+                "webpack:/*": "*",
+                "webpack:/./~/*": "${webRoot}/node_modules/*"
+            }
+        },
+        {
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",

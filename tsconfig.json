@@ -12,6 +12,9 @@
             "node_modules/@types"
         ],
         "paths": {
+            "@domain/*": ["domain/src/*"],
+            "@functions/*": ["functions/src/*"],
+            "@live-dom-template/*": ["live-dom-template/src/*"],
             "@core/*": ["core/src/*"],
             "@storage/*": ["storage/src/*"],
         },
