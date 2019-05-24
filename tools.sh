@@ -139,3 +139,9 @@ startFrmdb() {
 ssh-ci() {
     ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
 }
+
+upload-asset() {
+    curl -v --upload-file $1 -H \
+    "Authorization: Bearer ya29.Gl0TB7Z8AeVxAq27_2sv1XmXuRA5MmLjmc_SXmBcxw3E5qC96Ygf8tISlEZcnedszTSn9yUw8dx-2NohyUqAfUTc7Z2JyzLMCJndBzix5zIwrsn9d5F-DC9v_N6qMKg" \
+    https://storage.googleapis.com/formuladb-static-assets/$1
+}
