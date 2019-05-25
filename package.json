@@ -34,7 +34,8 @@
     "webpack": "^4.29.0",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.4.1",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "@google-cloud/storage": "^2.5.0"
   },
   "dependencies": {
     "delegated-events": "^1.0.10"

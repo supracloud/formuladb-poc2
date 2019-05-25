@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "seismic-plexus-232506",
+  "private_key_id": "b4c9c7a0faa7d155ce1811a22fdf824d730ecd68",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDCFT9WJiVHosxA\nsd/vcBN5nMNO+M8eOmJ1fl3oQsD53Sk52P8dO5pKZX3yRjouv0FWipEUv47XQIsN\nC8mhf5s4b+6oxgcu48Ce/hJIQ/TCBhtIQws7cvvZIM5TYfCgalbfCxauN/nV0B+E\nH0SLnYE2ZyonKXQr7xukNSieZ/5albU8tyyfykXf6/995xahfpQkDCV7+CwLVOF9\nm8aDFB3Whm0YzdwpL3WSDx6QDTp0uN5gvbx+DrrAppkA079BVCJgaWKTP7ii7TS/\nAnIrNvs05J3+Z3YqIXFTw8YJGP29oMJ5tkyi1c4swE9RBaf1JW/2wU02BQTrgRUf\nGFQz012/AgMBAAECggEAA4YrPj83EhPsrYgNTuW0FNM54Kc3646X1xZSUjNUGbVg\nWEKOb1Nzu8IYBVwtFkg2wYGGnN/VkicD31rFcH9GrEGsDbh6zOkpyDlIz7McMKG3\nwRomjA/MbubfmDgBDIihxy8GXGd7y9wZlmaS8g4MGJbK9ycTivCuic7FTAsLXU2u\ngB+bXX4eEA1WTNASusvsa+nMmjoU2A8q/ih5BDvCbZP2b/EgcKstlJObDrlraPsV\n1v2KROZndtyztgU0o5jAJF2Tew7LLwIbipymDA2MCMvW+YibNnj0HAd6W4wWwkeR\ndUN/EjiowXbSnKxISXiUNLZEfJ0GQUFdE/VBaBd50QKBgQDp1DZSfi4CH8yY6Zf2\nGK5Xx81qckVIYLyAjn9nGbMXvG2SxHDOgpJx4MVJg3nSTZoMRU3HJw23p4xVCY4U\nXauHUIDEtE1SU9MmZtogHPX3SruR5xOJWariHRVISKqLYob7E0OzlHmPwwrsbVgt\nzwkJatZcKJPDcJ/xeWClU/c7LQKBgQDUfEWWWF0c/ccfjjSMxVakhDYDvrAT0wlP\nAigqxNsSuMar4gKeQnJdqwJ9NOq4F/R6v+1SLfwzcbLhtomBaZksP0wJulEAz+ZO\nujbOrYjZPvJ0WND3xM9/FTXv+mtefCjk6JvUfdqHGVeTL6POGeCqP6lJEI8vx4vg\nrIehrVSgGwKBgQC8Mv117/D/7LAz8u9IOB06san3nvl8g7+0iPyp8tlepV5b3pgc\n3qMX3R1tSdDnH2Z5sd4kCJ7Vzpj4aLReV/YS9wxtReFl/enY4rd1WVnvK8tEZ4Ql\n7HHJhDb48uOxRB/4PU0kYMBmoUlNecSbOiO/3Kmji1VC3IcfR94tsyMuEQKBgQCn\nXDZnI7Q7WHuVFCm50tjafbQZoQEIrEkBrP48KY8voNACo+JSCp4PvtkYCyzw0RVj\n9XWUK9ogHua5N0/42Vam7jgS1WhlzlplGfB/O1m1WwoWr7nv3VldjDROjxwwcHS5\nT6klZfdQP5qluHk5pVI6ZigM/3j4NiCrVtkBdAdajwKBgG50g3CFLZTDlYE/IigL\noE/HScmkzDZ3+5P0PmZIhZagi07aX2p0Fp2IABOilMjX5o8NsB/EE61JCvPGrEoL\n1IbKEFnxiK/zUdOzQ4ytnG0MAVV83SU+DO3dqmHIJ57OCV7cC7rcApNxekwVjONX\ndDkz/yc+fl1ezEG4jN9xOzYL\n-----END PRIVATE KEY-----\n",
+  "client_email": "formuladb-static-assets@seismic-plexus-232506.iam.gserviceaccount.com",
+  "client_id": "106623269980007194201",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/formuladb-static-assets%40seismic-plexus-232506.iam.gserviceaccount.com"
+}

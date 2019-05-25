@@ -8,7 +8,12 @@ export BASEDIR=/d/code/metawiz/febe
 export FRMDB_RELEASE=${1:not_set_FRMDB_RELEASE}
 export FRMDB_DEPLOYMENT_DIR=${2:EXAMPLES}
 export PS1="(${FRMDB_DEPLOYMENT_DIR}) ${PS1}"
-
+if [ `pwd -W 2>/dev/null` ]
+then
+    export GCLOUD_BASEDIR=`pwd -W`/gcloud/
+else
+    export GCLOUD_BASEDIR=`pwd`/gcloud/
+fi
 create-docker-env() {
 
     (
@@ -138,4 +143,16 @@ startFrmdb() {
 
 ssh-ci() {
     ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
+}
+
+upload-asset() {
+    node -e "const {Storage} = require('@google-cloud/storage');\
+             const storage = new Storage({keyFilename: '"$GCLOUD_BASEDIR"FormulaDB-storage-full.json'});\
+             storage.bucket('formuladb-static-assets').upload('"$1"', {destination: '"$1"'}, function(err, file) {\
+               if (!err) {\
+                 console.log(file.name)\
+               } else {\
+                 console.log('error ', err.message)\
+               }\
+             })"
 }
