@@ -8,7 +8,12 @@ export BASEDIR=/d/code/metawiz/febe
 export FRMDB_RELEASE=${1:not_set_FRMDB_RELEASE}
 export FRMDB_DEPLOYMENT_DIR=${2:EXAMPLES}
 export PS1="(${FRMDB_DEPLOYMENT_DIR}) ${PS1}"
-
+if [ `pwd -W 2>/dev/null` ]
+then
+    export GCLOUD_BASEDIR=`pwd -W`/gcloud/
+else
+    export GCLOUD_BASEDIR=`pwd`/gcloud/
+fi
 create-docker-env() {
 
     (
@@ -141,8 +146,13 @@ ssh-ci() {
 }
 
 upload-asset() {
-    mime=`node -e 'var mime = require("mime-types");console.log(mime.lookup("'$1'"))'`
-    curl -v --upload-file $1 -H "Authorization: Bearer ya29.Gl0UB4pDodzw2qiUfhP_E5e4dzRkBBPvWwChG7WV3lvhSmh8zLtKP0QugoAKmEm37byWl9DXZEfTp5kQ3NLAGZdqarWg12_Z1VNGJzAH2reW6wfYWW6CAjUNCrnkhaI" \
-    -H "Content-Type: $mime" \
-    https://storage.googleapis.com/formuladb-static-assets/$1
+    node -e "const {Storage} = require('@google-cloud/storage');\
+             const storage = new Storage({keyFilename: '"$GCLOUD_BASEDIR"FormulaDB-storage-full.json'});\
+             storage.bucket('formuladb-static-assets').upload('"$1"', {destination: '"$1"'}, function(err, file) {\
+               if (!err) {\
+                 console.log(file.name)\
+               } else {\
+                 console.log('error ', err.message)\
+               }\
+             })"
 }
