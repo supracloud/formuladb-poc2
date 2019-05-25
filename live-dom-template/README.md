@@ -22,4 +22,6 @@
 * https://github.com/wix/react-templates
 * https://github.com/Polymer/lit-html
 * https://github.com/Polymer/lit-element
-* many more...
+* https://blog.angular-university.io/how-does-angular-2-change-detection-really-work/
+* https://csswizardry.com/2011/09/writing-efficient-css-selectors/
+* and many more...

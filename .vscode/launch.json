@@ -1,7 +1,29 @@
 {
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "jasmine node",
+            "type": "node",
+            "useWSL": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "${workspaceFolder}",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect=0.0.0.0:9232"
+            ],
+            "env": {},
+            "protocol": "inspector",
+            "port": 9232,
+            "request": "launch",
+            "cwd": "${workspaceRoot}/live-dom-template",
+            "program": "${workspaceRoot}/live-dom-template/dist/tests/jasmine.js",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/live-dom-template/dist/*.js",
+                "${workspaceRoot}/live-dom-template/dist/**/*.js",
+            ]
+        },        
         {
             "name": "GUI serve",
             "type": "chrome",
@@ -84,29 +106,6 @@
                 "${workspaceRoot}/be/dist/**/*.js"
             ]
         },
-        {
-            "name": "live-dom-template specs",
-            "type": "node",
-            "useWSL": true,
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/d/code/metawiz/febe/",
-            "runtimeArgs": [
-                "--trace-warnings",
-                "--debug-brk",
-                "--inspect=0.0.0.0:9232"
-            ],
-            "env": {},
-            "protocol": "inspector",
-            "port": 9232,
-            "request": "launch",
-            "cwd": "${workspaceRoot}/live-dom-template",
-            "program": "${workspaceRoot}/live-dom-template/dist/tests/jasmine.js",
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/live-dom-template/dist/*.js",
-                "${workspaceRoot}/live-dom-template/dist/**/*.js",
-            ]
-        },        
         {
             "type": "chrome",
             "request": "attach",
