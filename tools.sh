@@ -141,8 +141,8 @@ ssh-ci() {
 }
 
 upload-asset() {
-    mime=`python -c "import mimetypes;mimetypes.init();print(mimetypes.guess_type(\"$1\")[0])"`
-    curl -v --upload-file $1 -H "Authorization: Bearer ya29.Gl0TB5w09ee09Kr9ATnZmJegpPywF_EHzZEXqLKsLkaSs0hpNuIzNamrkpOTzPLCj806gpL1VUrsUjqXjwttM0-LemrLYQi610E2_yUIa0wMbFMx_7oZT1L9hEn26yg" \
+    mime=`node -e 'var mime = require("mime-types");console.log(mime.lookup("'$1'"))'`
+    curl -v --upload-file $1 -H "Authorization: Bearer ya29.Gl0UB4pDodzw2qiUfhP_E5e4dzRkBBPvWwChG7WV3lvhSmh8zLtKP0QugoAKmEm37byWl9DXZEfTp5kQ3NLAGZdqarWg12_Z1VNGJzAH2reW6wfYWW6CAjUNCrnkhaI" \
     -H "Content-Type: $mime" \
     https://storage.googleapis.com/formuladb-static-assets/$1
 }
