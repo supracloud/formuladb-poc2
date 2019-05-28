@@ -15,42 +15,50 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
   * [ ]  Delete `DataObj`
 
 ```
-+---------------------------------------------+                   +----------------------------------------------------------------+
-|                                           BE|                   |                         User Events                            |
-|   +---+                                     |                   +----------------------------------------------------------------+
-|   |   |                                     |
-|   | M |                                     |                   +----------------------------------------------------------------+
-|   | o |                                     |                   |                                                                |  +---+
-|   | n |   +--------------------+            | DataObj(JSON)     |    +----------------+                                       FE |  |BE |
-|   | i |   | Tokenizer          |            +----------------------->+ FrmdbTemplate  |                                          |  +---+
-|   | t |   +--------------------+            | Page(HTML)        |    +-+--------------+                                          |  |   |
-|   | o |                                     |                   |      |                                                         |  | R |
-|   | r |   +--------------------+            |                   |      |   +---------------+   PUT/DELETE Entity(JSON)           |  | E |
-|   | i |   | StaticTypeChecker  |            |                   |      |   | EntityEditor  +--------------------------------------->+ S |
-|   | n |   +--------------------+            |                   |      |   +---------------+                                     |  | T |
-|   | g |                                     |                   |      |                          +---------------+              |  |   |
-|   |   |   +--------------------+            |                   |    +-v--------------------+     | FormulaEditor |              |  | A |
-|   +---+   | Compiler           |            |                   |    |                      |     +---------------+              |  | P |
-|           +--------------------+            |                   |    |        HTML DOM      |                                    |  | I |
-|   +---+                                     |                   |    |                      |                                    |  |   |
-|   |   |   +--------------------+            |                   |    +----------------------+                                    |  |   |
-|   | S |   | TransactionRunner  |            |                   |                      |change,click,mouseover                   |  |   |
-|   | e |   +--------------------+            |                   |                      |                                         |  |   |
-|   | a |                                     |                   |                +-----v---------+    PUT/DELETE DataObj(JSON)   |  |   |
-|   | r |   +--------------------+            |                   |                | DataObjEditor +--------------------------------->+   |
-|   | c |   | Engine             |            |                   |                +---------------+                               |  |   |
-|   | h |   +--------------------+            |                   |                                                                |  |   |
-|   |   |                                     |                   |            +------------+       cleanup HTML, PUT Page(HTML)   |  |   |
-|   +---+   +--------------------+            |                   |            | PageEditor +---------------------------------------->+   |
-|           | StorageInterface   |            |                   |            +------------+                                      |  |   |
-|           +--------------------+            |                   |                                                                |  |   |
-|                                             |                   |    +--------------+                                            |  |   |
-|     +-----------+       +-----------+       |                   |    | EntityEditor |                                            |  |   |
-|     | Postgres  |       | Cassandra |       |                   |    +--------------+                                            |  |   |
-|     +-----------+       +-----------+       |                   |                                                                |  |   |
-|                                             |                   |                                                                |  |   |
-+---------------------------------------------+                   +----------------------------------------------------------------+  +---+
-
+       +------------+                      +--------------+                                           +-------------------------------------------------+
+       |            |                      |              |                                           |                                                 |
+       |  Other FEs +<--------+------------+ Other Actors |                                           |                     Users                       |
+       |            |         |            |              |                                           |                                                 |
+       +-----+------+         |            +--------------+                                           +-+----------+--------+-------------+-------------+
+             |                |                                                                         |          |        |             |
+             |                |                                                                         |User      |User    |Webdesigner  |Developer
+             |                |                                                                         |Navigate  |Edit    |Edit         |Edit
+             <----------------+                                                                         |To Page   |Form    |Page         |Schema
+             |                                                                                          |          |Data    |HTML         |Entities/props
+             |                                                                                          |          |        |             |
+             v         GET (HTML) /formuladb/applications                                               v          v        v             v
++------------+------+  GET (HTML) /formuladb/:app/:page                                               +-+----------+--------+-------------+-------------+
+|                 BE+---------------------------------------------------------------------------------+                                               FE|
+|                   |                                                                                 |      User Events (HTML5 and web components)     |
+| Tokenizer         |  GET (JSON) /formuladb-api/:app -> App                                          |                                                 |
+|                   |  GET (JSON) /formuladb|api/:app/schema -> Schema                                |   +-----------------------------+-----------+---+
+| StaticTypeChecker |  GET (JSON) /formuladb|api/:app/byprefix/:prefix -> DataObj[]                   |   |                             |           ^   |
+|                   |  GET (JSON) /formuladb|api/:app/:table~~:uid -> DataObj                         |   +--------+                    |           |   |
+| Compiler          +---------------------------------------------------------------------------------+   |        v                    v           |   |
+|                   |                                                                                 | S |   +----+------+         +---+-------+   |   |
+| TransactionRunner |  POST (JSON) /formuladb-api/login <- ? TBD ?                                    | e |   |           |         |           |   |   |
+|                   |  POST (JSON) /formuladb|api/:app/:table/SimpleAddHocQuery <- SimpleAddHocQuery  | r |   |  Effects  +<--------+  Actions  |   |   |
+| Engine            |  POST (JSON) /formuladb|api/:app/e^ent <- Ser^erE^entModifiedFormData           | v |   |           |         |           |   |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeletedFormData            | e |   +----+------+         +-----+-----+   |   |
+| StorageInterface  |  POST (JSON) /formuladb|api/:app/event <| ServerEventModifiedPage               | r |        |                      |         |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventNewEntity                  |   |        |                      |         |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeleteEntity               | E |        v                      v         |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventPreviewFormula             | v |   +----+----------------------+-----+   |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventSetProperty                | e |   |                                 |   |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeleteProperty             | n |   |             State               |   |   |
+|                   +---------------------------------------------------------------------------------+ t |   |                                 |   |   |
+|                   |                                                                                 | s |   +----+----------------------------+   |   |
+|                   |  PUT (JSON) /formuladb-api/:app                                                 |   |        |                                |   |
+|                   |  PUT (JSON) /formuladb|api/:app/schema                                          |   |        |                                |   |
+|                   |  PUT (HTML) /formuladb|api/:app/page                                            |   |        v                                |   |
+|                   |  PUT (JSON) /formuladb|api/:app/bulk                                            |   |   +----+--------------+       +-----+   |   |
+|                   +---------------------------------------------------------------------------------+   |   |                   |       |     |   |   |
+|                   |                                                                                 |   |   | live-dom-template +<----->+ DOM +---+   |
+|                   |                                                                                 |   |   |                   |       |     |       |
+|                   |                                                                                 |   |   +-------------------+       +-----+       |
+|                   |  Long polling for current page data TBD                                         |   |                                             |
+|                   +---------------------------------------------------------------------------------+   |                                             |
++-------------------+                                                                                 +---+---------------------------------------------+
 ```
 
 

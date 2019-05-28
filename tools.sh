@@ -156,3 +156,9 @@ upload-asset() {
                }\
              })"
 }
+
+upload-all() {
+    find vvvebjs/ -type f|egrep -v '\.git|./demo/|\.scss$|\.php$|\.map$|bootstrap.js' | while read i; do
+        upload-asset "$i"
+    done    
+}

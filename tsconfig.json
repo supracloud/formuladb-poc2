@@ -1,8 +1,10 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-        "sourceMap": false,
+        "outDir": "./tsc-out",
+        "sourceMap": true,
         "declaration": false,
+        "module": "commonjs",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -11,16 +13,26 @@
         "typeRoots": [
             "node_modules/@types"
         ],
+        "baseUrl": ".",
         "paths": {
-            "@domain/*": ["domain/src/*"],
-            "@functions/*": ["functions/src/*"],
-            "@live-dom-template/*": ["live-dom-template/src/*"],
-            "@core/*": ["core/src/*"],
-            "@storage/*": ["storage/src/*"],
-        },
+            "@live-dom-template/*": ["./live-dom-template/src/*"],
+            "@domain/*": ["./domain/src/*"],
+            "@functions/*": ["./functions/src/*"],
+            "@core/*": ["./core/src/*"],
+            "@storage/*": ["./storage/src/*"]
+        },        
         "lib": [
             "es2018",
             "dom"
         ]
-    }
+    },
+    "include": [
+        "./live-dom-template/src/**/*",
+        "./domain/src/**/*",
+        "./functions/src/**/*",
+        "./core/src/**/*",
+        "./storage/src/**/*",
+        "./be/src/**/*",
+        "./fe2/src/**/*"
+    ]
 }

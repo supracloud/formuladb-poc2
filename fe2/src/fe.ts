@@ -1,3 +1,4 @@
+import * as LiveDomTemplate from "@live-dom-template/live-dom-template";
 import { LiveDomHtmlElement } from "@live-dom-template/live-dom-html-element";
 import * as _ from "lodash";
 

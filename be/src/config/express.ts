@@ -109,6 +109,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
+    app.use(/.*\.(css)$/, (req, res, next) => {
+        let httpProxy = proxy({ target: 'https://storage.googleapis.com/formuladb-static-assets' });
+        httpProxy(req, res, next);
+    });
+
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -148,56 +153,56 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         res.json(apps);
     });
 
-    app.post('/formuladb-api/:appname/:entityName/simpleadhocquery', async function(req, res) {
+    app.post('/formuladb-api/:app/:table/SimpleAddHocQuery', async function(req, res) {
         let query = req.body as SimpleAddHocQuery;
-        let ret = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.simpleAdHocQuery(req.params.entityName, query);
+        let ret = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
         res.json(ret);
     });
 
-    app.get('/formuladb-api/:appname/byprefix/:prefix', async function(req, res) {
-        let ret = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getDataListByPrefix(req.params.prefix);
+    app.get('/formuladb-api/:app/byprefix/:prefix', async function(req, res) {
+        let ret = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getDataListByPrefix(req.params.prefix);
         res.json(ret);
     });
-    app.get('/formuladb-api/:appname/obj/:id', async function(req, res) {
-        let obj = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getDataObj(req.params.id);
+    app.get('/formuladb-api/:app/obj/:id', async function(req, res) {
+        let obj = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getDataObj(req.params.id);
         res.json(obj);
     });
-    app.get('/formuladb-api/:appname/table/:id', async function(req, res) {
-        let table = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getTable(req.params.id);
+    app.get('/formuladb-api/:app/table/:id', async function(req, res) {
+        let table = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getTable(req.params.id);
         res.json(table);
     });
-    app.get('/formuladb-api/:appname/form/:id', async function(req, res) {
-        let form = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getForm(req.params.id);
+    app.get('/formuladb-api/:app/form/:id', async function(req, res) {
+        let form = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getForm(req.params.id);
         res.json(form);
     });
-    app.get('/formuladb-api/:appname/schema', async function(req, res) {
-        let schema = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getSchema('FRMDB_SCHEMA~~' + req.params.appname);
+    app.get('/formuladb-api/:app/schema', async function(req, res) {
+        let schema = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getSchema('FRMDB_SCHEMA~~' + req.params.app);
         res.json(schema);
     });
-    app.get('/formuladb-api/:appname/entity/:id', async function(req, res) {
-        let entity = await (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.getEntity(req.params.id);
+    app.get('/formuladb-api/:app/entity/:id', async function(req, res) {
+        let entity = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.getEntity(req.params.id);
         res.json(entity);
     });
 
     //all write operations are handled via events
-    app.post('/formuladb-api/:appname/event', async function (req, res) {
-        return (await getFrmdbEngine(req.params.appname)).processEvent(req.body)
+    app.post('/formuladb-api/:app/event', async function (req, res) {
+        return (await getFrmdbEngine(req.params.app)).processEvent(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
     });
 
-    app.patch('/formuladb-api/:appname/:id', async function (req, res) {
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.patchDataObj(req.body)
+    app.patch('/formuladb-api/:app/:id', async function (req, res) {
+        return (await getFrmdbEngine(req.params.app)).frmdbEngineStore.patchDataObj(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
     });
 
-    app.put('/formuladb-api/:appname', async function(req, res) {
+    app.put('/formuladb-api/:app', async function(req, res) {
         return kvsFactory.putApp(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:appname/schema', async function(req, res) {
+    app.put('/formuladb-api/:app/schema', async function(req, res) {
         if (req.user.role !== 'ADMIN') {res.status(403); return;}
         let schema = req.body;
         let existingSchema = await kvsFactory.getSchema(req.body._id);
@@ -205,22 +210,22 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             await kvsFactory.putSchema(schema);
         }
 
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.init(schema)
+        return (await getFrmdbEngine(req.params.app)).frmdbEngineStore.init(schema)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:appname/table', async function(req, res) {
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putTable(req.body)
+    app.put('/formuladb-api/:app/table', async function(req, res) {
+        return (await getFrmdbEngine(req.params.app)).frmdbEngineStore.putTable(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:appname/form', async function(req, res) {
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putForm(req.body)
+    app.put('/formuladb-api/:app/form', async function(req, res) {
+        return (await getFrmdbEngine(req.params.app)).frmdbEngineStore.putForm(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:appname/bulk', async function(req, res) {
-        return (await getFrmdbEngine(req.params.appname)).frmdbEngineStore.putBulk(req.body)
+    app.put('/formuladb-api/:app/bulk', async function(req, res) {
+        return (await getFrmdbEngine(req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });

@@ -6,7 +6,6 @@
 require('source-map-support').install();
 require('module-alias/register')
 
-import "reflect-metadata";
 import * as http from "http";
 
 //FIXME: use this only for dev/test environment

@@ -1,7 +1,0 @@
-node_modules
-public
-node
-dist
-pouch_db_*
-tmp.log
-log

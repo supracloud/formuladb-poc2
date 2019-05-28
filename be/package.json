@@ -3,14 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "e2e_serve": "rm -rf dist && tsc --sourceMap -p src && concurrently --kill-others \"./node_modules/.bin/pouchdb-server --in-memory --port 5984\" \"sleep 15 && node dist/be/src/server.js\"",
-    "preserve": "rm -rf dist && tsc --sourceMap -p src",
-    "inspect": "kill-port 9231 && concurrently \"DEBUG=express:* node --inspect=0.0.0.0:9231 dist/be/src/server.js\" \"npm run test-data\" ",
+    "preserve": "rm -rf dist",
+    "inspect": "kill-port 9231 && concurrently --kill-others \"npm start || true\" \"npm run test-data\" ",
     "nodemon-inspect": "nodemon --delay 200ms --watch dist --exec \"npm run inspect\"",
-    "serve": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"tsc --sourceMap -w -p src\" \"sleep 10 && npm run nodemon-inspect\"",
-    "start": "node --inspect dist/be/src/server.js",
-    "compile": "tsc --sourceMap -p src",
-    "compile:watch": "tsc --sourceMap -w -p src",
+    "serve": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"npm run compile:watch\" \"sleep 10 && npm run nodemon-inspect\"",
+    "start": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"node --inspect=0.0.0.0:9231 dist/be/src/server.js\"",
+    "compile": "tsc --sourceMap -p .",
+    "compile:watch": "tsc --sourceMap -w -p .",
     "pretest": "npm run compile",
     "test": "node dist/be/src/tests/jasmine.js",
     "TODOOO": "filter test|serve|compile|inspect tasks from Dockerfile, just to be on the safe side in production",
@@ -84,6 +83,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "_moduleAliases": {
+    "@domain": "./dist/domain/src",
+    "@functions": "./dist/functions/src",
     "@storage": "./dist/storage/src",
     "@core": "./dist/core/src"
   }

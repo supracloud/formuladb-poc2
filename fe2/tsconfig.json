@@ -2,9 +2,9 @@
     "compileOnSave": false,
     "compilerOptions": {
         "outDir": "./dist",
-        "sourceMap": true,
+        "baseUrl": ".",
+        "sourceMap": false,
         "declaration": false,
-        "module": "commonjs",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -13,23 +13,19 @@
         "typeRoots": [
             "node_modules/@types"
         ],
-        "baseUrl": ".",
         "paths": {
-            "@domain/*": ["../domain/src/*"],
-            "@functions/*": ["../functions/src/*"],
-            "@core/*": ["../core/src/*"],
-            "@storage/*": ["../storage/src/*"]
-        },        
+            "*": [
+                "node_modules/*",
+            ],
+            "@live-dom-template/*": ["../live-dom-template/src/*"],
+        },
         "lib": [
             "es2018",
             "dom"
         ]
     },
     "include": [
-        "./src/**/*",
-        "../domain/src/**/*",
-        "../functions/src/**/*",
-        "../core/src/**/*",
-        "../storage/src/**/*"
+        "src/**/*",
+        "../live-dom-template/src/**/*",
     ]
 }
