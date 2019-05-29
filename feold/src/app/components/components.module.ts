@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
-import { AgGridModule } from 'ag-grid-angular';
 
 import { CrosscuttingModule } from '@fe/app/crosscutting/crosscutting.module';
 import { FormEditingService } from '@fe/app/components/form-editing.service';
@@ -24,7 +23,6 @@ import { FormInputEditorComponent } from '@fe/app/dev-mode-overlay/form-item-edi
 import { FrmdbOnfocusDirective } from '@fe/app/dev-mode-overlay/frmdb-onfocus.directive';
 import { DropHandleComponent } from '@fe/app/dev-mode-overlay/drop-handle/drop-handle.component';
 import { NotFoundComponent } from '@fe/app/components/not-found/not-found.component';
-import { TableHeaderComponent } from '@fe/app/components/data-grid/table-header.component';
 import { NodeElementsDirective } from '@fe/app/components/node-elements.directive';
 import { FormAutocompleteComponent } from '@fe/app/components/form_autocomplete/form_autocomplete.component';
 import { FormTabsComponent } from '@fe/app/components/form_tabs/form_tabs.component';
@@ -38,7 +36,6 @@ import { ButtonGroupComponent } from '@fe/app/components/button_group/button_gro
 import { CalendarComponent } from '@fe/app/components/calendar/calendar.component';
 import { JumbotronComponent } from '@fe/app/components/jumbotron/jumbotron.component';
 import { DropdownComponent } from '@fe/app/components/dropdown/dropdown.component';
-import { DataGridComponent } from '@fe/app/components/data-grid/data-grid.component';
 import { FormEnumComponent } from '@fe/app/components/form_enum/form_enum.component';
 import { FormStateComponent } from '@fe/app/components/form_state/form_state.component';
 import { GalleryComponent } from '@fe/app/components/gallery/gallery.component';
@@ -60,9 +57,7 @@ import { RouterModule } from '@angular/router';
 import { LyAdminComponent } from './ly_admin/ly_admin.component';
 import { LyCoverComponent } from './ly_cover/ly_cover.component';
 import { LyCardsComponent } from './ly_cards/ly_cards.component';
-import { TableFpatternRenderer } from './data-grid/table-fpattern.component';
 import { InjectionService } from '@swimlane/ngx-charts/release/common/tooltip/injection.service';
-import { TableToolsComponent } from './data-grid/table-tools.component';
 import { DateRangePickerComponent } from './date_range_picker/date_range_picker.component';
 import { NodeElementDeleteAction } from '../actions/page.user.actions';
 import { MediaContainerComponent } from './media_container/media_container.component';
@@ -75,7 +70,6 @@ import { GridLayoutComponent } from './grid_layout/grid_layout.component';
         FormsModule,
         ReactiveFormsModule,
         NgbModule,
-        AgGridModule.withComponents([DataGridComponent, TableHeaderComponent, TableFpatternRenderer, TableToolsComponent]),
         CrosscuttingModule,
         FontAwesomeModule,
         NgxChartsModule,
@@ -89,9 +83,6 @@ import { GridLayoutComponent } from './grid_layout/grid_layout.component';
         FrmdbOnfocusDirective,
         DropHandleComponent,
         NotFoundComponent,
-        TableHeaderComponent,
-        TableFpatternRenderer,
-        TableToolsComponent,
         HeaderComponent,
         NodeElementsDirective,
         FormAutocompleteComponent,
@@ -107,7 +98,6 @@ import { GridLayoutComponent } from './grid_layout/grid_layout.component';
         CardComponent,
         JumbotronComponent,
         DropdownComponent,
-        DataGridComponent,
         FormEnumComponent,
         FormStateComponent,
         GalleryComponent,
@@ -149,7 +139,6 @@ import { GridLayoutComponent } from './grid_layout/grid_layout.component';
         JumbotronComponent,
         HeaderComponent,
         DropdownComponent,
-        DataGridComponent,
         FormEnumComponent,
         FormStateComponent,
         GalleryComponent,
@@ -174,7 +163,6 @@ import { GridLayoutComponent } from './grid_layout/grid_layout.component';
         FrmdbOnfocusDirective,
         DropHandleComponent,
         NotFoundComponent,
-        TableHeaderComponent,
         HeaderComponent,
         NodeElementsDirective,
         FormAutocompleteComponent,
@@ -190,7 +178,6 @@ import { GridLayoutComponent } from './grid_layout/grid_layout.component';
         CardComponent,
         JumbotronComponent,
         DropdownComponent,
-        DataGridComponent,
         FormEnumComponent,
         FormStateComponent,
         GalleryComponent,

@@ -30,8 +30,7 @@ import { isNewTopLevelDataObjId } from '@domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
 import { App } from '@domain/app';
-import { AutoLayoutService } from '../components/auto-layout.service';
-import { Page } from '@domain/uimetadata/page';
+import { AutoLayoutService } from '../elements/auto-layout.service';
 import { elvis } from '@core/elvis';
 import { PageChangedAction } from '../actions/page.user.actions';
 

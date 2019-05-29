@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import { AppState, AppActions } from "./app.state";
 import { PageChangedActionN } from "../actions/page.user.actions";
-import { autoLayoutFormPage } from "../components/auto-layout.service";
 
 export function autoLayoutReducer(state: AppState, action: AppActions): AppState {
     let ret: AppState = state;

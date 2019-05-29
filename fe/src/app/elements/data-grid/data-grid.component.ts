@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone, ViewEncapsulation, ElementRef } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -27,15 +27,20 @@ import { DataObj } from '@domain/metadata/data_obj';
 import { tableInitialState } from '@fe/app/state/app.state';
 import { ExcelStyles } from './excel-styles';
 import { untilDestroyed } from 'ngx-take-until-destroy';
-import { BaseNodeComponent } from '../base_node';
-import { FormEditingService } from '../form-editing.service';
+import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
+import { BaseElement } from '../base-element';
 
 @Component({
     selector: 'frmdb-data-grid',
     templateUrl: './data-grid.component.html',
-    styleUrls: ['./data-grid.component.scss']
+    styleUrls: ['./data-grid.component.scss'],
+    encapsulation: ViewEncapsulation.ShadowDom
 })
-export class DataGridComponent extends BaseNodeComponent {
+export class DataGridComponent extends BaseElement {
+    
+    @Input() dataGrid: DataGrid;
+
+    @Output() rowSelectEvent = new EventEmitter<DataObj>();
 
     statusBar = {
         statusPanels: [
@@ -82,17 +87,18 @@ export class DataGridComponent extends BaseNodeComponent {
     public frameworkComponents;
     public defaultColDef;
     headerHeight = 50;
-    dataGrid: DataGrid;
 
-    constructor(public formEditingService: FormEditingService,
+    constructor(
+        el: ElementRef,
+        private frmdbStreams: FrmdbStreamsService,
         private tableService: TableService,
         private i18npipe: I18nPipe,
         private router: Router,
         private route: ActivatedRoute,
         private _ngZone: NgZone        
     ){
-            
-        super(formEditingService);
+
+        super(el);
 
         // tslint:disable-next-line:max-line-length
         // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
@@ -142,8 +148,6 @@ export class DataGridComponent extends BaseNodeComponent {
     }
 
     ngOnInit(): void {
-        console.debug(this.fullpath, this.nodel, this.formgrp);
-        this.dataGrid = this.nodel as DataGrid;
 
         console.debug("ngOnInit", this.dataGrid, this.gridApi);
         this.intAgGrid();
@@ -253,7 +257,7 @@ export class DataGridComponent extends BaseNodeComponent {
 
     onRowClicked(event: RowClickedEvent) {
         if (this.dataGrid.clickAction == "autocomplete") {
-            this.setAutocompleteProperties(event.data);
+            this.emit("rowSelectEvent", this.rowSelectEvent, event.data);
         } else if (this.dataGrid.clickAction == "select-table-row") {
             this.userSelectTableRow(event.data);
         } else {
@@ -277,21 +281,6 @@ export class DataGridComponent extends BaseNodeComponent {
                 this.router.navigate(['./' + dataObj._id], { relativeTo: this.route });
             })
         }
-    }
-
-    setAutocompleteProperties(dataObj: DataObj) {
-        if (!this.dataGrid) return;
-        for (let prop of this.dataGrid.autocompleteProperties || []) {
-            let ctrl = this.formgrp.get(this.getPropPath(prop));
-            if (ctrl) {
-                ctrl.markAsDirty();
-                ctrl.setValue(dataObj[prop.refPropertyName]);
-            }
-        }
-    }
-
-    getPropPath(prop: { propertyName: string }) {
-        return (this.fullpath ? this.fullpath + '.' : '') + prop.propertyName;
     }
 
     columnMoving(event: any) {

@@ -35,6 +35,12 @@
               "src/styles.scss"
             ],
             "scripts": [
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              },
+              {
+                "input": "node_modules/document-register-element/build/document-register-element.js"
+              }
             ]
           },
           "configurations": {
@@ -90,8 +96,7 @@
               "./node_modules/ag-grid-community/dist/styles/ag-theme-balham.css",
               "src/styles.scss"
             ],
-            "scripts": [
-            ],
+            "scripts": [],
             "assets": [
               "src/favicon.png",
               "src/assets"

@@ -12,7 +12,7 @@ import { HasId } from '@domain/key_value_obj';
 import { PageFromBackendActionN, PageFromBackendAction, PageDataFromBackendAction, ResetPageDataFromBackendAction, ResetPageDataFromBackendActionN } from '../actions/form.backend.actions';
 import { mergeSubObj } from '@domain/metadata/data_obj';
 import { isFormPage } from '@domain/uimetadata/form-page';
-import { autoLayoutFormPage, autoLayoutTablePage } from '../components/auto-layout.service';
+import { autoLayoutFormPage, autoLayoutTablePage } from '../elements/auto-layout.service';
 import { isTablePage } from '@domain/uimetadata/table-page';
 
 export interface PageState {
