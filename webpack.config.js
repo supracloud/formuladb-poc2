@@ -7,6 +7,7 @@ module.exports = {
     entry: './tsc-out/be/src/server.js',
     target: "node",
     externals: [nodeExternals()],
+    devtool: "source-map",
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'be.js'

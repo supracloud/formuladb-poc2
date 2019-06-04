@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone, ViewEncapsulation, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, NgZone, ViewEncapsulation, ElementRef, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -29,6 +29,7 @@ import { ExcelStyles } from './excel-styles';
 import { untilDestroyed } from 'ngx-take-until-destroy';
 import { FrmdbStreamsService } from '@fe/app/state/frmdb-streams.service';
 import { BaseElement } from '../base-element';
+import { SmartChanges } from '@fe/app/utils';
 
 @Component({
     selector: 'frmdb-data-grid',
@@ -37,10 +38,9 @@ import { BaseElement } from '../base-element';
     encapsulation: ViewEncapsulation.ShadowDom
 })
 export class DataGridComponent extends BaseElement {
-    
-    @Input() dataGrid: DataGrid;
 
-    @Output() rowSelectEvent = new EventEmitter<DataObj>();
+    @Input() dataGrid: DataGrid;
+    @Input() highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
 
     statusBar = {
         statusPanels: [
@@ -60,7 +60,7 @@ export class DataGridComponent extends BaseElement {
                 labelKey: "tableActions",
                 iconKey: "table-actions",
                 toolPanel: "tableActionsToolPanel"
-            },            
+            },
             {
                 id: 'columns',
                 labelDefault: 'Columns',
@@ -82,7 +82,6 @@ export class DataGridComponent extends BaseElement {
     private columns: ColDef[] = [];
     private filters: any = {};
     private sort: any = {};
-    private highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
 
     public frameworkComponents;
     public defaultColDef;
@@ -90,21 +89,18 @@ export class DataGridComponent extends BaseElement {
 
     constructor(
         el: ElementRef,
-        private frmdbStreams: FrmdbStreamsService,
         private tableService: TableService,
         private i18npipe: I18nPipe,
-        private router: Router,
-        private route: ActivatedRoute,
-        private _ngZone: NgZone        
-    ){
+        private _ngZone: NgZone
+    ) {
 
         super(el);
 
         // tslint:disable-next-line:max-line-length
         // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
-        
-        this.frameworkComponents = { 
+
+        this.frameworkComponents = {
             // agColumnHeader: TableHeaderComponent,
             tableFpatternRenderer: TableFpatternRenderer,
             tableActionsToolPanel: TableToolsComponent,
@@ -116,6 +112,16 @@ export class DataGridComponent extends BaseElement {
 
     }
 
+    smartChanges(changes: SmartChanges<this>) {
+        if (!this.gridApi) return;
+        if (changes['highlightColumns']) {
+            if (this.gridApi) {
+                this.gridApi.refreshCells({ force: true });
+            }
+        } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
+            this.gridApi.purgeServerSideCache()
+        }
+    }
 
     applyCellStyles(params) {
         let entityName = this.dataGrid.refEntityName;
@@ -169,7 +175,7 @@ export class DataGridComponent extends BaseElement {
             let cssClassRules: ColDef['cellClassRules'] = {};
             let conditionalFormatting = this.dataGrid.conditionalFormatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
-                cssClassRules[cssClassName] = function(params) {
+                cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                 }
             }
@@ -190,7 +196,7 @@ export class DataGridComponent extends BaseElement {
                 cellStyle: (cp: any) => this.applyCellStyles(cp),
                 cellClassRules: cssClassRules,
             });
-    
+
             const fs = {};
             cols.filter(c => c.filter)
                 .forEach(c => {
@@ -212,21 +218,6 @@ export class DataGridComponent extends BaseElement {
         } catch (ex) {
             console.error(ex);
         }
-
-        this.frmdbStreams.formulaHighlightedColumns$.pipe(untilDestroyed(this))
-        .subscribe(h => {
-            this.highlightColumns = h || {};
-            if (this.gridApi) {
-                this.gridApi.refreshCells({ force: true });
-            }
-        });
-
-        this.frmdbStreams.serverEvents$.pipe(untilDestroyed(this)).subscribe(serverEvent => {
-            if (!this.gridApi) return;
-            if (serverEvent.type === "ServerDeletedFormData") {
-                this.gridApi.purgeServerSideCache()
-            }
-        });
     }
     ngOnDestroy(): void {
     }
@@ -245,19 +236,19 @@ export class DataGridComponent extends BaseElement {
     }
 
     valueFormatter(params) {
-        if (params.colDef.field === '_id') return (params.value||'').replace(/^.*~~/, '');
+        if (params.colDef.field === '_id') return (params.value || '').replace(/^.*~~/, '');
         else return params.value;
     }
 
     onCellFocused(event: CellFocusedEvent) {
         if (event.column && event.column.getColDef() && event.column.getColDef().field) {
-            this.frmdbStreams.userEvents$.next({ type: "UserSelectedCell", columnName: event.column.getColDef().field! });
+            this.emit({ type: "UserSelectedCell", columnName: event.column.getColDef().field! });
         }
     }
 
     onRowClicked(event: RowClickedEvent) {
         if (this.dataGrid.clickAction == "autocomplete") {
-            this.emit("rowSelectEvent", this.rowSelectEvent, event.data);
+            this.emit({ type: "UserSelectedRow", dataObj: event.data} );
         } else if (this.dataGrid.clickAction == "select-table-row") {
             this.userSelectTableRow(event.data);
         } else {
@@ -266,28 +257,18 @@ export class DataGridComponent extends BaseElement {
     }
 
     onRowDoubleClicked(event: RowDoubleClickedEvent) {
-        if (this.dataGrid.dblClickAction === "edit-row") {
-            this.navigateToFormPage(event.data);
-        }
+        this.emit({ type: "UserDblClickRow", dataObj: event.data } );
     }
 
     userSelectTableRow(dataObj: DataObj) {
-        this.frmdbStreams.userEvents$.next({ type: "UserSelectedRow", dataObj });
-    }
-
-    navigateToFormPage(dataObj: DataObj) {
-        if (dataObj._id) {
-            this._ngZone.run(() => {
-                this.router.navigate(['./' + dataObj._id], { relativeTo: this.route });
-            })
-        }
+        this.emit({ type: "UserSelectedRow", dataObj } );
     }
 
     columnMoving(event: any) {
         if (this.dataGrid) {
-            const colx: number = (this.dataGrid.columns||[]).findIndex(c => c.name === event.column.colId);
-            const col: TableColumn = (this.dataGrid.columns||[]).splice(colx, 1)[0];
-            (this.dataGrid.columns||[]).splice(event.toIndex, 0, col);
+            const colx: number = (this.dataGrid.columns || []).findIndex(c => c.name === event.column.colId);
+            const col: TableColumn = (this.dataGrid.columns || []).splice(colx, 1)[0];
+            (this.dataGrid.columns || []).splice(event.toIndex, 0, col);
         }
     }
 
@@ -309,14 +290,14 @@ export class DataGridComponent extends BaseElement {
     filterChanged(event: any) {
         if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
             const fs = this.gridApi.getFilterModel();
-            (this.dataGrid.columns||[]).forEach(c => {
+            (this.dataGrid.columns || []).forEach(c => {
                 if (fs[c.name]) {
                     c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                 } else {
                     c.filter = undefined;
                 }
             });
-            this.frmdbStreams.userEvents$.next({ type: "UserModifiedTableUi", table: this.dataGrid });
+            this.emit({ type: "UserModifiedTableUi", table: this.dataGrid });
         }
         this.filters = this.gridApi.getFilterModel();
     }
@@ -324,7 +305,7 @@ export class DataGridComponent extends BaseElement {
     sortChanged(event: any) {
         if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
             const srt = this.gridApi.getSortModel();
-            (this.dataGrid.columns||[]).forEach(c => {
+            (this.dataGrid.columns || []).forEach(c => {
                 const s = srt.find(i => i.colId === c.name);
                 if (s) {
                     c.sort = s.sort;

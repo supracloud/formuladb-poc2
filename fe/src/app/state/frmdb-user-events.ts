@@ -22,6 +22,10 @@ export interface UserSelectedRow {
     type: 'UserSelectedRow';
     dataObj: DataObj;
 }
+export interface UserDblClickRow {
+    type: 'UserDblClickRow';
+    dataObj: DataObj;
+}
 export interface UserModifiedTableUi {
     type: 'UserModifiedTableUi';
     table: DataGrid;
@@ -33,12 +37,13 @@ export interface UserCollapsedNavItem {
 }
 
 
-export type FrmdbUserEvent = 
+export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
     | UserDraggedFormElement
     | UserSelectedCell
     | UserSelectedRow
+    | UserDblClickRow
     | UserModifiedTableUi
     | UserCollapsedNavItem
-;
+    ;
