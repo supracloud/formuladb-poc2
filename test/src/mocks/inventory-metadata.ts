@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty } from "@domain/metadata/entity";
-import { $s2e } from "../../s2e";
+import { $s2e } from "@functions/s2e";
 
 export const ProductLocation = {
     _id: 'ProductLocation',

@@ -13,6 +13,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import * as proxy from 'http-proxy-middleware';
 import * as path from 'path';
+import * as yaml from 'js-yaml';
+import * as csv from 'csv';
 
 
 import { FrmdbEngine } from "@core/frmdb_engine";
@@ -116,6 +118,23 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.text({type: ['text/yaml', 'text/csv'], verify: (req, res, buf, encoding) => {
+        console.log("TTTTT", buf, encoding, buf.toString(encoding));
+    }}));    
+    app.use((req, res, next) => {
+        if (req.headers['content-type'] === 'text/yaml') {
+            req.body = yaml.safeLoad(req.body);
+            next();
+        } else if (req.headers['content-type'] === 'text/csv') {
+            csv.parse(req.body, {columns: true}, (err, data) => {
+                if (err) next(err);
+                else {
+                    req.body = data;
+                    next();    
+                }
+            })
+        }
+    });
 
     if (process.env.FRMDB_AUTH_ENABLED === "true") {
         app.use(passport.initialize());

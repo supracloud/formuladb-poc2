@@ -60,13 +60,8 @@ export const App_inventory: App = {
 export const Schema_inventory: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_inventory._id.replace(/^App~~/, ''),
     entities: {
-        [StaticPagesMetadata.Home._id]: StaticPagesMetadata.Home,
-        [StaticPagesMetadata.ProductFeature._id]: StaticPagesMetadata.ProductFeature,
-        [StaticPagesMetadata.Components._id]: StaticPagesMetadata.Components,
-        [StaticPagesMetadata.WebsiteStatistic._id]: StaticPagesMetadata.WebsiteStatistic,
-        [StaticPagesMetadata.Pages._id]: StaticPagesMetadata.Pages,
-        [StaticPagesMetadata.Ecommerce._id]: StaticPagesMetadata.Ecommerce,
-        [StaticPagesMetadata.Blog._id]: StaticPagesMetadata.Blog,
+        [GeneralMetadata.GEN__Currency._id]: GeneralMetadata.GEN__Currency,
+        [GeneralMetadata.GEN__Client._id]: GeneralMetadata.GEN__Client,
         [InventoryMetadata.Inventory._id]: InventoryMetadata.Inventory,
         [InventoryMetadata.InventoryOrder._id]: InventoryMetadata.InventoryOrder,
         [InventoryMetadata.OrderItem._id]: InventoryMetadata.OrderItem,
@@ -182,10 +177,10 @@ export class MockMetadata {
         GeneralMetadata.General,
         $User,
         $I18n,
-        GeneralMetadata.GEN__Currency,
-        GeneralMetadata.GEN__Client,
-        StaticPagesMetadata.Home,
-        StaticPagesMetadata.ProductFeature,
+        // GeneralMetadata.GEN__Currency,
+        // GeneralMetadata.GEN__Client,
+        // StaticPagesMetadata.Home,
+        // StaticPagesMetadata.ProductFeature,
     ];
 
     public constructor() {

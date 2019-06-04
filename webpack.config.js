@@ -8,6 +8,15 @@ module.exports = {
     target: "node",
     externals: [nodeExternals()],
     devtool: "source-map",
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: ["source-map-loader"],
+                enforce: "pre"
+            }
+        ]
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'be.js'

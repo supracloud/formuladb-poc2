@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
-import { $s2e } from '../../s2e';
+import { $s2e } from '@functions/s2e';
 import { $User, $I18n } from "@domain/metadata/default-metadata";
 
 
