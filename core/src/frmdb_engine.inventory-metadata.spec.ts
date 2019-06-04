@@ -8,7 +8,7 @@ import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 
 import { compileFormula } from '@core/formula_compiler';
 import { evalExpression } from "@functions/map_reduce_utils";
-import { ProductLocation, ReceiptItem, OrderItem } from "@functions/test/mocks/mock-metadata";
+import { ProductLocation, ReceiptItem, OrderItem } from "@test/mocks/mock-metadata";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormula, ServerEventSetPropertyN } from "@domain/event";
 import { FrmdbEngine } from "@core/frmdb_engine";

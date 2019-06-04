@@ -33,6 +33,7 @@ import { TableFpatternRenderer } from './elements/data-grid/table-fpattern.compo
 import { TableToolsComponent } from './elements/data-grid/table-tools.component';
 import { I18nPipe } from './crosscutting/i18n/i18n.pipe';
 import { CrosscuttingModule } from './crosscutting/crosscutting.module';
+import { AutoLayoutService } from './elements/auto-layout.service';
 
 export const REDUCER_TOKEN = new InjectionToken<ActionReducerMap<appState.AppState>>('Registered Reducers');
 
@@ -66,7 +67,8 @@ export function getReducers() {
     {
       provide: REDUCER_TOKEN,
       useFactory: getReducers,
-    }
+    },
+    AutoLayoutService,
   ],
   bootstrap: [AppComponent]
 })

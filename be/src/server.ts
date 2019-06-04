@@ -34,7 +34,7 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
     console.log("Server started on port " + 3000);
   });
 })
-.catch(ex => {console.error('cannot load test data', ex), process.exit(1);})
+.catch(ex => {console.error('error', ex), process.exit(1);})
 
 // import { FrmdbEngine } from "./frmdb_engine";
 

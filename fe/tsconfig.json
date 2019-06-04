@@ -24,6 +24,7 @@
       "@functions/*": ["../functions/src/*"],
       "@core/*": ["../core/src/*"],
       "@storage/*": ["../storage/src/*"],
+      "@test/*": ["../test/src/*"],
       "@fe/*": ["./src/*"]
     }
   }

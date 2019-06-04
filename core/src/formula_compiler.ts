@@ -35,7 +35,7 @@ import {
     CompiledScalar,
 } from "@domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
-import { logCompileFormula } from "./test/test_utils";
+import { logCompileFormula } from "../../test/src/test_utils";
 import { parseFormula } from "./formula_parser";
 import { $s2e } from "@functions/s2e";
 

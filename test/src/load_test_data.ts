@@ -5,21 +5,23 @@
 
 import { getKeyValueStoreFactory } from "@storage/key_value_store_impl_selector";
 
-import { mockMetadata } from "./main_demo.flow";
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
-import { MockData } from "@functions/test/mocks/mock-data";
+import { MockData } from "@test/mocks/mock-data";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@domain/event";
-import { Forms__ServiceForm_Form_ } from "@functions/test/mocks/forms-ui-metadata";
-import { LargeSalesReport_Form } from "@functions/test/mocks/reports-ui-metadata";
+import { Forms__ServiceForm_Form_ } from "@test/mocks/forms-ui-metadata";
+import { LargeSalesReport_Form } from "@test/mocks/reports-ui-metadata";
 import { HomePage_Form, HomePage_Table } from "@domain/default_pages/website-ui-metadata";
-import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "@functions/test/mocks/booking-ui-metadata";
+import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "@test/mocks/booking-ui-metadata";
+import { MockMetadata } from "@test/mocks/mock-metadata";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
     return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
 }
+
+const mockMetadata = new MockMetadata();
 
 export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
     try {
@@ -38,6 +40,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, {_id: "FRMDB_SCHEMA", entities: mockData.entitiesMap});
             for (let entityId of commonEntitiesIds) {
                 for (let obj of mockData.getAllForPath(entityId)) {
+                    // console.log("PUTTTTTT22", obj);
                     await frmdbEngineStore.putDataObj(obj);
                     // await putObj(frmdbEngine, obj);
                 }
@@ -51,7 +54,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
             for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
                 for (let obj of mockData.getAllForPath(entityId)) {
-                    console.log("PUTTTTTT", obj);
+                    // console.log("PUTTTTTT", obj);
                     await frmdbEngineStore.putDataObj(obj);
                     // await putObj(frmdbEngine, obj);
                 }

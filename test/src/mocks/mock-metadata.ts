@@ -13,7 +13,7 @@ import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
 import * as ReportsMetadata from "./reports-metadata";
 import * as MusicBookingMetadata from "./musicbooking-metadata";
-import * as StaticPagesMetadata from "../../default_pages/website-metadata";
+import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
 import { $User, $I18n } from '@domain/metadata/default-metadata';

@@ -29,6 +29,6 @@
     },
     "include": [
         "src/**/*",
-        "../domain/src/**/*"
+        "../domain/src/**/*", "../test/src/mocks"
     ]
 }

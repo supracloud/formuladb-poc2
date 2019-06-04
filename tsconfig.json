@@ -19,7 +19,8 @@
             "@domain/*": ["./domain/src/*"],
             "@functions/*": ["./functions/src/*"],
             "@core/*": ["./core/src/*"],
-            "@storage/*": ["./storage/src/*"]
+            "@storage/*": ["./storage/src/*"],
+            "@test/*": ["./test/src/*"],
         },        
         "lib": [
             "es2018",
@@ -32,6 +33,7 @@
         "./functions/src/**/*",
         "./core/src/**/*",
         "./storage/src/**/*",
+        "./test/src/**/*",
         "./be/src/**/*",
         "./fe2/src/**/*"
     ]
