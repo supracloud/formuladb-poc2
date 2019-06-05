@@ -1,5 +1,6 @@
 import { on } from "delegated-events";
 import { render } from "./live-dom-template";
+import { FrmdbUserEvent } from "@web/frmdb-user-events";
 
 interface FrmdbElementConfig {
     tag:string;
@@ -9,8 +10,8 @@ interface FrmdbElementConfig {
 }
 
 
-export function FrmdbElement<ELEM extends HTMLElement>(config: FrmdbElementConfig) {
-    return function(cls: ELEM) {
+export function FrmdbElementTODO(config: FrmdbElementConfig) {
+    return function(cls: any) {
         validateSelector(config.tag);
         if (!config.template) {
             throw new Error('You need to pass a template for the element');
@@ -42,15 +43,7 @@ const validateSelector = (selector: string) => {
     }
 };
 
-function on(eventType: string | string[], selector: string | string[], fn: (e) => void) {
-    let events = eventType instanceof Array ? eventType : [eventType];
-    let selectors = selector instanceof Array ? selector : [selector];
-    for (let ev of events) {
-        for (let sel of selectors) {
-            on(ev, sel, fn);
-        }
-    }
-}
+export type EventType = "click" | "blur" | FrmdbUserEvent['type'];
 
 export abstract class FrmdbElementBase extends HTMLElement {
 
@@ -58,8 +51,21 @@ export abstract class FrmdbElementBase extends HTMLElement {
         render(data, this);
     }
 
-    /** Web Component standard method */
+    /** when component is attached to the DOM */
     abstract connectedCallback();
+    /** You must define static observedAttributes with the list of attributes to be observed */
+    abstract attributeChangedCallback(name, oldVal, newVal);
 
+    protected emit(event: FrmdbUserEvent) {
+    }
 
+    protected on(eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+        let events = eventType instanceof Array ? eventType : [eventType];
+        let selectors = selector instanceof Array ? selector : [selector];
+        for (let ev of events) {
+            for (let sel of selectors) {
+                on(ev, [this.tagName, ...this.className.split(/\s+/)].join('.') + ' ' + sel, fn);
+            }
+        }
+    }
 }

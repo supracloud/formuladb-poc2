@@ -122,6 +122,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         console.log("TTTTT", buf, encoding, buf.toString(encoding));
     }}));    
     app.use((req, res, next) => {
+        console.log("HEREEEEE2");
+        next();
+    });
+    app.use((req, res, next) => {
         if (req.headers['content-type'] === 'text/yaml') {
             req.body = yaml.safeLoad(req.body);
             next();
@@ -133,7 +137,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
                     next();    
                 }
             })
-        }
+        } else next();
     });
 
     if (process.env.FRMDB_AUTH_ENABLED === "true") {

@@ -12,7 +12,7 @@ import { FeUser } from '@domain/user';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'body',
+  selector: 'frmdb-app',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   host: {

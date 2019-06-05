@@ -12,7 +12,7 @@ import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
 import { Entity, EntityProperty, Pn, Schema } from "@domain/metadata/entity";
-import { waitUntilNotNull } from "@core/ts-utils";
+import { waitUntilNotNull } from "@domain/ts-utils";
 import { ReduceFun } from "@domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";

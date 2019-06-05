@@ -9,6 +9,7 @@
     "inspect": "kill-port 9231 && concurrently --kill-others \"npm start || true\" \"npm run test-data\" ",
     "serve": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"npm run compile:watch\" \"npm run bundle:watch\" \"npm run serve:be\" ",
     "serve:be": "nodemon --delay 200ms --watch dist --exec \"npm run start:be\"",
+    "serve:fe": "cd fe && npm start",
     "compile:watch": "tsc --sourceMap -w -p .",
     "bundle:watch": "webpack --progress --watch --mode development",
     "sass:watch": "sass --style compressed --watch . live-dom-editor/src/live-dom-editor.scss:dist/live-dom-editor.min.css",
@@ -25,6 +26,7 @@
     "@types/js-yaml": "^3.12.1",
     "@types/node": "^12.0.2",
     "concurrently": "^4.1.0",
+    "css-loader": "^2.1.1",
     "dom-testing-library": "^4.1.0",
     "glob": "^7.1.4",
     "install": "^0.12.2",
@@ -33,11 +35,14 @@
     "jsdom": "^15.1.0",
     "jsdom-global": "^3.0.2",
     "live-server": "^1.2.1",
+    "node-sass": "^4.12.0",
     "nodemon": "^1.19.1",
     "npm": "^6.9.0",
     "parallel-webpack": "^2.3.0",
+    "raw-loader": "^3.0.0",
     "rimraf": "^2.6.3",
     "sass": "^1.20.1",
+    "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",
     "terser-webpack-plugin": "^1.2.4",
     "testem": "^2.16.0",
@@ -45,12 +50,14 @@
     "ts-node": "^8.2.0",
     "tsconfig-paths": "^3.8.0",
     "typescript": "3.1.6",
-    "webpack": "^4.29.0",
+    "webpack": "^4.33.0",
     "webpack-cli": "^3.3.2",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "acorn": "^5.4.1",
+    "ag-grid-community": "^21.0.0",
+    "ag-grid-enterprise": "^21.0.0",
     "body-parser": "~1.13.2",
     "cluster-key-slot": "^1.0.12",
     "connect-ensure-login": "^0.1.1",
@@ -90,7 +97,9 @@
     "@domain": "./tsc-out/domain/src",
     "@functions": "./tsc-out/functions/src",
     "@storage": "./tsc-out/storage/src",
+    "@web": "./tsc-out/web/src",
     "@test": "./tsc-out/test/src",
-    "@core": "./tsc-out/core/src"
+    "@core": "./tsc-out/core/src",
+    "@data-grid": "./data-grid/src"
   }
 }

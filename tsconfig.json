@@ -21,6 +21,7 @@
             "@core/*": ["./core/src/*"],
             "@storage/*": ["./storage/src/*"],
             "@test/*": ["./test/src/*"],
+            "@web/*": ["./web/src/*"],
         },        
         "lib": [
             "es2018",
@@ -35,6 +36,7 @@
         "./storage/src/**/*",
         "./test/src/**/*",
         "./be/src/**/*",
-        "./fe2/src/**/*"
+        "./web/web/**/*",
+        "./data-grid/src/**/*",
     ]
 }
