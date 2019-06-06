@@ -2,11 +2,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "jasmine node",
+            "name": "jasmine",
             "type": "node",
             "useWSL": true,
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": "${workspaceFolder}",
+            "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
@@ -16,20 +16,20 @@
             "protocol": "inspector",
             "port": 9232,
             "request": "launch",
-            "cwd": "${workspaceRoot}/live-dom-template",
-            "program": "${workspaceRoot}/live-dom-template/dist/tests/jasmine.js",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceFolder}/jasmine.js",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceRoot}/live-dom-template/dist/*.js",
-                "${workspaceRoot}/live-dom-template/dist/**/*.js",
+                "${workspaceRoot}/tsc-out/**/*.js",
+                "${workspaceRoot}/dist/**/*.js",
             ]
         },
         {
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:4200/#",
-            "webRoot": "${workspaceFolder}/fe",
+            "url": "file:///D:/code/metawiz/febe/data-grid/index.html",
+            "webRoot": "/d/code/metawiz/febe",
             "sourceMapPathOverrides": {
                 "webpack:/./*": "${webRoot}/*",
                 "webpack:///./src/*": "${webRoot}/src/*",

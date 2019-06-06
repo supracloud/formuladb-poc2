@@ -52,27 +52,31 @@ export type EventType = "click" | "blur" | FrmdbUserEvent['type'];
  */
 export function val2attr<T>(val: {[name: string]: T}, ...keyList: (keyof T)[]): string {
     return Object.entries(val).map(([name, tObj]) => {
-        return `${name}: ${keyList.map(k => tObj[k]).join(" ")}`
+        return `${name}: ${keyList.map(k => tObj[k]).filter(x => x != null).join(" ")}`
     }).join("; ");
 }
 
 /** 
  * Convert HTML "style" attribute syntax to complex attribute value
- *    e.g {a: {x:1, y: "gigi"}, b: {x: 3, y: "gogu"}} 
- *    converted to attr="a: 1 gigi; b: 3 gogu"
+ * 
+ * keys "name" and "_id" are special, e.g. "a; b" converts to {a: {name: "a"}, b: {name: "b"}} if keyList contains "name"
  */
 export function attr2val<T>(attr: string, example: T, ...keyList: (keyof T)[]): {[name: string]: T} {
     let ret: any = {};
     attr.split(/\s*;\s*/).map(x => {
         let [name, valuesStr] = x.split(/\s*:\s*/);
         let obj: any = {};
-        let values = valuesStr.split(/\s+/);
+        let values = valuesStr ? valuesStr.split(/\s+/) : [];
         for (const [i, k] of keyList.entries()) {
             if (typeof example[k] === "number") {
                 obj[k] = parseInt(values[i]);
             } else if (typeof example[k] === "boolean") {
                 obj[k] = ("true" == values[i]);
-            } else obj[k] = values[i];
+            } else {
+                if (null == values[i] && ("name" === k || "_id" === k)) {
+                    obj[k] = name;
+                } else obj[k] = values[i];
+            }
         }
         ret[name] = obj;
     })

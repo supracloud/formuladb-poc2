@@ -15,9 +15,9 @@ try {
     let j = new Jasmine();
 
     j.loadConfig({
-        "spec_dir": "dist",
+        "spec_dir": ".",
         "spec_files": [
-            "**/*.spec.js",
+            "tsc-out/**/*.spec.js",
             // "fe/src/app/common/key_value_store_i.spec.js"
         ],
     });
