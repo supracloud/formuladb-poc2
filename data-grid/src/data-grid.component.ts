@@ -14,48 +14,34 @@ import * as _ from 'lodash';
 import { waitUntilNotNull } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
-import { TableToolsComponent } from './table-tools.component';
+import { DataGridToolsComponent } from './data-grid-tools.component';
 import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
-import { FrmdbElementBase } from '@live-dom-template/frmdb-element';
+import { FrmdbElementMixin } from '@live-dom-template/frmdb-element';
 import { I18N } from '@web/i18n.service';
 import { TABLE_SERVICE } from '@web/table.service';
+import { Pn } from '@domain/metadata/entity';
 
 const html: string = require('raw-loader!@data-grid/data-grid.component.html').default;
 const css: string = require('raw-loader!sass-loader?sourceMap!@data-grid/data-grid.component.scss').default;
 
+export class DataGridComponent extends HTMLElement implements FrmdbElementMixin {
 
-
-
-function CustomStatsToolPanel() {
-}
-CustomStatsToolPanel.prototype.init = function (params) {
-    this.eGui = document.createElement('div');
-    this.eGui.innerHTML = "CustomStatsToolPanel";
-};
-CustomStatsToolPanel.prototype.getGui = function () {
-    return this.eGui;
-};
-const rowData = [
-    {product: 'Product 1'},
-    {product: 'Product 2'},
-    {product: 'Product 3'},
-    {product: 'Product 4'},
-    {product: 'Product 5'},
-    {product: 'Product 6'}
-];
-const columnDefs = [
-    {headerName: 'Product', field: 'product', width: 150},
-];
-
-export class DataGridComponent extends FrmdbElementBase {
+    on = FrmdbElementMixin.prototype.on.bind(this);
+    emit = FrmdbElementMixin.prototype.emit.bind(this);
+    render = FrmdbElementMixin.prototype.render.bind(this);
 
     dataGrid: DataGrid;
+    
+    tableName: string;
+    _gridColumns: TableColumn[];
+    get gridColumns(): string { return JSON.stringify(this._gridColumns) };
+    set gridColumns(val: string) { this._gridColumns = JSON.parse(val) }
     highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
     static get observedAttributes(): (keyof DataGridComponent)[] {
-        return ['dataGrid', 'highlightColumns'];
+        return ['tableName','gridColumns', 'highlightColumns'];
     }
 
     private gridApi: GridApi;
@@ -66,17 +52,12 @@ export class DataGridComponent extends FrmdbElementBase {
 
     private gridOptions: GridOptions = {
 
-        columnDefs: columnDefs,
-        rowData: rowData,
-        
-        
         headerHeight: 50,
         suppressContextMenu: true,
         onGridSizeChanged: this.onGridSizeChanged.bind(this),
         components: {
             // agColumnHeader: TableHeaderComponent,
-            // tableActionsToolPanel: TableToolsComponent,
-            tableActionsToolPanel: CustomStatsToolPanel,
+            tableActionsToolPanel: DataGridToolsComponent,
         },
         defaultColDef: {
             width: 100,
@@ -115,7 +96,7 @@ export class DataGridComponent extends FrmdbElementBase {
         },
         onColumnResized: (event: ColumnResizedEvent) => {
             if (event.finished && this.dataGrid !== null && event && event.column) {
-                const col = (this.dataGrid.columns || [])
+                const col = (this._gridColumns || [])
                     .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
                 if (col) { col.width = event.column.getActualWidth(); }
                 // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
@@ -124,7 +105,7 @@ export class DataGridComponent extends FrmdbElementBase {
         onFilterChanged: (event: any) => {
             if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
                 const fs = this.gridApi.getFilterModel();
-                (this.dataGrid.columns || []).forEach(c => {
+                (this._gridColumns || []).forEach(c => {
                     if (fs[c.name]) {
                         c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                     } else {
@@ -138,7 +119,7 @@ export class DataGridComponent extends FrmdbElementBase {
         onSortChanged: (event: any) => {
             if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
                 const srt = this.gridApi.getSortModel();
-                (this.dataGrid.columns || []).forEach(c => {
+                (this._gridColumns || []).forEach(c => {
                     const s = srt.find(i => i.colId === c.name);
                     if (s) {
                         c.sort = s.sort;
@@ -192,18 +173,18 @@ export class DataGridComponent extends FrmdbElementBase {
             defaultToolPanel: 'tableActions'
         },
         excelStyles: _.cloneDeep(ExcelStyles),
-    }
+    };
 
     _shadowRoot: ShadowRoot;
     constructor() {
         super();
-        // this._shadowRoot = this.attachShadow({ 'mode': 'open' });
+        this._shadowRoot = this.attachShadow({ 'mode': 'open' });
 
         this.style.minWidth = "28vw";
         this.style.minHeight = "25vh";
         this.style.display = "block";
 
-        this.innerHTML = /*html*/ `
+        this._shadowRoot.innerHTML = /*html*/ `
             <style>${css}</style>
             ${html}
         `;
@@ -215,7 +196,7 @@ export class DataGridComponent extends FrmdbElementBase {
 
     
     connectedCallback() {
-        new Grid(this.querySelector("#myGrid") as HTMLElement, this.gridOptions);
+        new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);
     }
     
     attributeChangedCallback(name: keyof DataGridComponent, oldVal, newVal) {
@@ -225,7 +206,7 @@ export class DataGridComponent extends FrmdbElementBase {
                 this.gridApi.refreshCells({ force: true });
             }
         } else if (name == 'dataGrid') {
-            this.intAgGrid();
+            this.initAgGrid();
         } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
             this.gridApi.purgeServerSideCache()
         }
@@ -257,13 +238,13 @@ export class DataGridComponent extends FrmdbElementBase {
 
     columnMoving(event: any) {
         if (this.dataGrid) {
-            const colx: number = (this.dataGrid.columns || []).findIndex(c => c.name === event.column.colId);
-            const col: TableColumn = (this.dataGrid.columns || []).splice(colx, 1)[0];
-            (this.dataGrid.columns || []).splice(event.toIndex, 0, col);
+            const colx: number = (this._gridColumns || []).findIndex(c => c.name === event.column.colId);
+            const col: TableColumn = (this._gridColumns || []).splice(colx, 1)[0];
+            (this._gridColumns || []).splice(event.toIndex, 0, col);
         }
     }
 
-    async intAgGrid() {
+    async initAgGrid() {
         console.debug("ngOnInit", this.dataGrid, this.gridApi);
 
         this.gridOptions.context = this.dataGrid;
@@ -274,7 +255,7 @@ export class DataGridComponent extends FrmdbElementBase {
             pattern: "Solid",
         };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-        // this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.dataGrid.refEntityName));
+        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.dataGrid.refEntityName));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
@@ -284,13 +265,13 @@ export class DataGridComponent extends FrmdbElementBase {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                 }
             }
-            let cols = this.dataGrid.columns || [];
+            let cols = this._gridColumns || [];
 
             this.columns = cols.map(c => <ColDef>{
                 headerName: I18N.tt(c.name),
                 field: c.name,
                 width: c.width ? c.width : 100,
-                filter: this.agFilter(c.type),
+                filter: this.agFilter(c.type || Pn.STRING),
                 filterParams: {
                     newRowsAction: 'keep',
                 },

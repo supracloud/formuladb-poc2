@@ -15,7 +15,7 @@
     "sass:watch": "sass --style compressed --watch . live-dom-editor/src/live-dom-editor.scss:dist/live-dom-editor.min.css",
     "build": "webpack",
     "be-spec": "jasmine --helper=./jasmine.helpers.js tsc-out/core/src/frmdb_engine.spec.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "find tsc-out/live-dom-template/ tsc-out/core/ dist/ -name '*.spec.js' | xargs jasmine --helper=./jasmine.helpers.js"
   },
   "author": "",
   "license": "ISC",

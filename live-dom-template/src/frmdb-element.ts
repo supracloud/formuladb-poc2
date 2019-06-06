@@ -45,21 +45,50 @@ const validateSelector = (selector: string) => {
 
 export type EventType = "click" | "blur" | FrmdbUserEvent['type'];
 
-export abstract class FrmdbElementBase extends HTMLElement {
+/** 
+ * Convert complex attribute values to a syntax borrowed from the HTML "style" attribute 
+ *    e.g {a: {x:1, y: "gigi"}, b: {x: 3, y: "gogu"}} 
+ *    converted to attr="a: 1 gigi; b: 3 gogu"
+ */
+export function val2attr<T>(val: {[name: string]: T}, ...keyList: (keyof T)[]): string {
+    return Object.entries(val).map(([name, tObj]) => {
+        return `${name}: ${keyList.map(k => tObj[k]).join(" ")}`
+    }).join("; ");
+}
+
+/** 
+ * Convert HTML "style" attribute syntax to complex attribute value
+ *    e.g {a: {x:1, y: "gigi"}, b: {x: 3, y: "gogu"}} 
+ *    converted to attr="a: 1 gigi; b: 3 gogu"
+ */
+export function attr2val<T>(attr: string, example: T, ...keyList: (keyof T)[]): {[name: string]: T} {
+    let ret: any = {};
+    attr.split(/\s*;\s*/).map(x => {
+        let [name, valuesStr] = x.split(/\s*:\s*/);
+        let obj: any = {};
+        let values = valuesStr.split(/\s+/);
+        for (const [i, k] of keyList.entries()) {
+            if (typeof example[k] === "number") {
+                obj[k] = parseInt(values[i]);
+            } else if (typeof example[k] === "boolean") {
+                obj[k] = ("true" == values[i]);
+            } else obj[k] = values[i];
+        }
+        ret[name] = obj;
+    })
+    return ret;
+}
+
+export abstract class FrmdbElementMixin extends HTMLElement {
 
     public render(data: any) {
         render(data, this);
     }
 
-    /** when component is attached to the DOM */
-    abstract connectedCallback();
-    /** You must define static observedAttributes with the list of attributes to be observed */
-    abstract attributeChangedCallback(name, oldVal, newVal);
-
-    protected emit(event: FrmdbUserEvent) {
+    public emit(event: FrmdbUserEvent) {
     }
 
-    protected on(eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+    public on(eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
         let events = eventType instanceof Array ? eventType : [eventType];
         let selectors = selector instanceof Array ? selector : [selector];
         for (let ev of events) {

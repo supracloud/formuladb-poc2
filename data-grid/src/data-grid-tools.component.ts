@@ -1,13 +1,17 @@
 import { IToolPanelParams, GridApi, IToolPanelComp } from "ag-grid-community";
-import { FrmdbElementBase } from "@live-dom-template/frmdb-element";
+import { FrmdbElementMixin } from "@live-dom-template/frmdb-element";
 
-const html = require('raw-loader!@data-grid/table-tools.component.html').toString();
-const css = require('raw-loader!sass-loader?sourceMap!@data-grid/table-tools.component.scss').default;
+const html = require('raw-loader!@data-grid/data-grid-tools.component.html').toString();
+const css = require('raw-loader!sass-loader?sourceMap!@data-grid/data-grid-tools.component.scss').default;
 
-export class TableToolsComponent extends FrmdbElementBase implements IToolPanelComp {
+export class DataGridToolsComponent implements IToolPanelComp {
     private params: IToolPanelParams;
     private gridApi: GridApi;
     
+    el = document.createElement('div');
+    on = FrmdbElementMixin.prototype.on.bind(this.el);
+    emit = FrmdbElementMixin.prototype.on.bind(this.el);
+
     init(params: IToolPanelParams): void {
         console.warn((params as any).context);
         this.params = params;
@@ -18,7 +22,7 @@ export class TableToolsComponent extends FrmdbElementBase implements IToolPanelC
         this.on('click', '.add-row', () => this.emit({type: "UserAddRow", entityId: "TBD"}));
         this.on('click', '.delete-row', () => this.emit({type: "UserDeleteRow", dataObj: {_id: "TBD"}}));
 
-        this.innerHTML = /*html*/ `
+        this.el.innerHTML = /*html*/ `
             <style>${css}</style>
             ${html}
         `;
@@ -31,7 +35,7 @@ export class TableToolsComponent extends FrmdbElementBase implements IToolPanelC
     observedAttributes: any;
 
     getGui(): HTMLElement {
-        return this;
+        return this.el;
     }
 
     refresh(): void {
@@ -46,3 +50,5 @@ export class TableToolsComponent extends FrmdbElementBase implements IToolPanelC
         });
     }
 }
+
+window.customElements.define('frmdb-data-grid-tools', DataGridToolsComponent);

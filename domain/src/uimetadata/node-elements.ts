@@ -231,7 +231,7 @@ export interface TableColumn extends BaseNodeElement {
     filter?: ColumnFilter;
     skipExportExcel?: boolean;
     name: string;
-    type: Pn;
+    type?: Pn;
 }
 export interface ColumnFilter {
     operator: string;
