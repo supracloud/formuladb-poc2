@@ -5,16 +5,27 @@ describe('FrmdbElement', () => {
     });
 
     fit('reflectProp2Attr/reflectAttr2Prop should convert correctly', () => {
-        let val = {a: {x:1, y: "gigi", z: false}, b: {x: 3, y: "gogu", z: true}};
-        expect(reflectProp2Attr(val, 'x', 'y')).toEqual("a: 1 gigi; b: 3 gogu");
-        expect(reflectAttr2Prop("a: 1 gigi; b: 3 gogu", {x: 0, y: 'str'}, 'x', 'y')).toEqual({a: {x:1, y: "gigi"}, b: {x: 3, y: "gogu"}});
-        expect(reflectProp2Attr(val, 'x')).toEqual("a: 1; b: 3");
-        expect(reflectProp2Attr(val, 'x', 'y', 'z')).toEqual("a: 1 gigi false; b: 3 gogu true");
-        expect(reflectAttr2Prop("a: 1 gigi false; b: 3 gogu true", {x: 0, y: 'str', z: true}, 'x', 'y', 'z')).toEqual(val);
+        let example = {a: {x: 0, y: "str", z: true}, b: {bb: 0, bc: "str"}, c: true, d: 0};
+        let prop = {a: {x:1, y: "gigi", z: false}, b: {bb: 3, bc: "gogu"}, c: false, d: 123};
+        let attr = "a: 1 gigi false; b: 3 gogu; c: false; d: 123";
 
-        let valWithOptional: {[name: string]: {x: number, y?: string}} = {a: {x: 1}, b: {x: 2, y: "bla"}};
-        expect(reflectProp2Attr(valWithOptional, 'x', 'y')).toEqual("a: 1; b: 2 bla");
+        expect(reflectProp2Attr(prop, example)).toEqual("a: 1 gigi false; b: 3 gogu; c: false; d: 123");
+        expect(reflectAttr2Prop(attr, example)).toEqual(prop);
+        expect(reflectAttr2Prop("a: 1 gigi; b: 3", example) as any).toEqual({a: {x:1, y: "gigi"}, b: {bb: 3}});
 
-        expect(reflectAttr2Prop("a; b; c", {name: "string"}, "name")).toEqual({a: {name: 'a'}, b: {name: 'b'}, c: {name: 'c'}})
+        let smallExample = {a: {x: 0}, b: {bb: 0}};
+        let smallProp = {a: {x: 1}, b: {bb: 3}};;
+        let smallAttr = "a: 1; b: 3";
+        
+        expect(reflectProp2Attr(smallProp, smallExample)).toEqual(smallAttr);
+        expect(reflectAttr2Prop(smallAttr, smallExample)).toEqual(smallProp);
+        expect(reflectProp2Attr(prop, smallExample)).toEqual(smallAttr);
+        expect(reflectAttr2Prop(smallAttr, example) as any).toEqual(smallProp);
+        expect(reflectProp2Attr(smallProp, example)).toEqual(smallAttr);
+
+        expect(reflectAttr2Prop("a; b; c", ["str"])).toEqual(["a", "b", "c"]);
+        expect(reflectAttr2Prop("abc", "str")).toEqual("abc");
+        expect(reflectAttr2Prop("123", 0)).toEqual(123);
+        expect(reflectAttr2Prop("true", false)).toEqual(true);
     })
 });

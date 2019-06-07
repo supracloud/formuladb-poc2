@@ -23,7 +23,7 @@ try {
     j.loadConfig({
         "spec_dir": ".",
         "spec_files": [
-            "tsc-out/live-dom-template/**/*.spec.js",
+            "tsc-out/fe/src/live-dom-template/**/*.spec.js",
             // "tsc-out/core/**/*.spec.js",
             // "dist/**/*.spec.js",
         ],
