@@ -15,13 +15,13 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@live-dom-template/*": ["./live-dom-template/src/*"],
             "@domain/*": ["./domain/src/*"],
             "@functions/*": ["./functions/src/*"],
             "@core/*": ["./core/src/*"],
             "@storage/*": ["./storage/src/*"],
             "@test/*": ["./test/src/*"],
-            "@web/*": ["./web/src/*"],
+            "@be/*": ["./fe/src/*"],
+            "@fe/*": ["./fe/src/*"],
         },        
         "lib": [
             "es2018",
@@ -29,14 +29,12 @@
         ]
     },
     "include": [
-        "./live-dom-template/src/**/*",
         "./domain/src/**/*",
         "./functions/src/**/*",
         "./core/src/**/*",
         "./storage/src/**/*",
         "./test/src/**/*",
         "./be/src/**/*",
-        "./web/web/**/*",
-        "./data-grid/src/**/*",
+        "./fe/src/**/*"
     ]
 }

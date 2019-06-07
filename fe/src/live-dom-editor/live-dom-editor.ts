@@ -1,4 +1,4 @@
-import { LiveDomHtmlElement } from "@live-dom-template/live-dom-html-element";
+import { FrmdbElementMixin } from "@fe/live-dom-template/frmdb-element";
 import * as _ from "lodash";
 
 const HTML = /*html*/`
@@ -13,8 +13,11 @@ const HTML = /*html*/`
 </div>
 `;
 
-class MyComponent extends LiveDomHtmlElement {
-
+class MyComponent extends HTMLElement {
+    on = FrmdbElementMixin.prototype.on.bind(this);
+    emit = FrmdbElementMixin.prototype.emit.bind(this);
+    render = FrmdbElementMixin.prototype.render.bind(this);
+    
     connectedCallback() {
         this.innerHTML = HTML;
         this.render({});

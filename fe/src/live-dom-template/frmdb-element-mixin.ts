@@ -1,6 +1,6 @@
 import { on } from "delegated-events";
 import { render } from "./live-dom-template";
-import { FrmdbUserEvent } from "@web/frmdb-user-events";
+import { FrmdbUserEvent } from "@fe/frmdb-user-events";
 
 interface FrmdbElementConfig {
     tag:string;

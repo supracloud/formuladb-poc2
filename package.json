@@ -93,13 +93,13 @@
     "wait-on": "^3.2.0"
   },
   "_moduleAliases": {
-    "@live-dom-template": "./tsc-out/live-dom-template/src",
     "@domain": "./tsc-out/domain/src",
     "@functions": "./tsc-out/functions/src",
-    "@storage": "./tsc-out/storage/src",
-    "@web": "./tsc-out/web/src",
-    "@test": "./tsc-out/test/src",
     "@core": "./tsc-out/core/src",
-    "@data-grid": "./data-grid/src"
+    "@storage": "./tsc-out/storage/src",
+    "@test": "./tsc-out/test/src",
+    "@be": "./tsc-out/be/src",
+    "@fe": "./tsc-out/fe/src",
+    "@fe-assets": "./fe/src"
   }
 }

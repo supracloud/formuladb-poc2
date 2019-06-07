@@ -19,14 +19,14 @@ import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
-import { FrmdbElementMixin, reflectProp2Attr, reflectAttr2Prop } from '@live-dom-template/frmdb-element';
-import { I18N } from '@web/i18n.service';
-import { TABLE_SERVICE } from '@web/table.service';
+import { FrmdbElementMixin, reflectProp2Attr, reflectAttr2Prop } from '@fe/live-dom-template/frmdb-element';
+import { I18N } from '@fe/i18n.service';
+import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn, FormulaExpression } from '@domain/metadata/entity';
 
 
-const HTML: string = require('raw-loader!@data-grid/data-grid.component.html').default;
-const CSS: string = require('raw-loader!sass-loader?sourceMap!@data-grid/data-grid.component.scss').default;
+const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
+const CSS: string = require('raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 const ATTRS = {
     tableName: "str",
     columns: [{name: "str"}],

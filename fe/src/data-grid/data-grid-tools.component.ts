@@ -1,8 +1,8 @@
 import { IToolPanelParams, GridApi, IToolPanelComp } from "ag-grid-community";
-import { FrmdbElementMixin } from "@live-dom-template/frmdb-element";
+import { FrmdbElementMixin } from "@fe/live-dom-template/frmdb-element";
 
-const html = require('raw-loader!@data-grid/data-grid-tools.component.html').toString();
-const css = require('raw-loader!sass-loader?sourceMap!@data-grid/data-grid-tools.component.scss').default;
+const html = require('raw-loader!@fe-assets/data-grid/data-grid-tools.component.html').toString();
+const css = require('raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid-tools.component.scss').default;
 
 export class DataGridToolsComponent implements IToolPanelComp {
     private params: IToolPanelParams;

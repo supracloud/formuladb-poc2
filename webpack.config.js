@@ -58,7 +58,7 @@ configBe = {
 
 configDataGrid = {
     ...configBase,
-    entry: './tsc-out/data-grid/src/data-grid.component.js',
+    entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
     target: "web",
     output: {
         path: path.resolve(__dirname, 'dist'),
