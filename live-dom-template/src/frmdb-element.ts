@@ -10,7 +10,7 @@ interface FrmdbElementConfig {
 }
 
 
-export function FrmdbElementTODO(config: FrmdbElementConfig) {
+export function FrmdbElementDecoratorTODO(config: FrmdbElementConfig) {
     return function(cls: any) {
         validateSelector(config.tag);
         if (!config.template) {
@@ -45,12 +45,18 @@ const validateSelector = (selector: string) => {
 
 export type EventType = "click" | "blur" | FrmdbUserEvent['type'];
 
+export function Attr() {
+    return function(target: Object, key: string | symbol) {
+    }
+}  
+
+
 /** 
  * Convert complex attribute values to a syntax borrowed from the HTML "style" attribute 
  *    e.g {a: {x:1, y: "gigi"}, b: {x: 3, y: "gogu"}} 
  *    converted to attr="a: 1 gigi; b: 3 gogu"
  */
-export function val2attr<T>(val: {[name: string]: T}, ...keyList: (keyof T)[]): string {
+export function reflectProp2Attr<T>(val: {[name: string]: T}, ...keyList: (keyof T)[]): string {
     return Object.entries(val).map(([name, tObj]) => {
         return `${name}: ${keyList.map(k => tObj[k]).filter(x => x != null).join(" ")}`
     }).join("; ");
@@ -61,7 +67,7 @@ export function val2attr<T>(val: {[name: string]: T}, ...keyList: (keyof T)[]): 
  * 
  * keys "name" and "_id" are special, e.g. "a; b" converts to {a: {name: "a"}, b: {name: "b"}} if keyList contains "name"
  */
-export function attr2val<T>(attr: string, example: T, ...keyList: (keyof T)[]): {[name: string]: T} {
+export function reflectAttr2Prop<T>(attr: string, example: T, ...keyList: (keyof T)[]): {[name: string]: T} {
     let ret: any = {};
     attr.split(/\s*;\s*/).map(x => {
         let [name, valuesStr] = x.split(/\s*:\s*/);

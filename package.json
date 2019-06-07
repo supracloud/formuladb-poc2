@@ -9,7 +9,7 @@
     "inspect": "kill-port 9231 && concurrently --kill-others \"npm start || true\" \"npm run test-data\" ",
     "serve": "cross-env FRMDB_STORAGE=postgres concurrently --kill-others \"npm run compile:watch\" \"npm run bundle:watch\" \"npm run serve:be\" ",
     "serve:be": "nodemon --delay 200ms --watch dist --exec \"npm run start:be\"",
-    "serve:fe": "cd fe && npm start",
+    "serve:fe": "live-server --watch=\"dist,data-grid/index.html\" --port=8081 --ignore=\"*/node_modules,*/src\" --no-browser -V",
     "compile:watch": "tsc --sourceMap -w -p .",
     "bundle:watch": "webpack --progress --watch --mode development",
     "sass:watch": "sass --style compressed --watch . live-dom-editor/src/live-dom-editor.scss:dist/live-dom-editor.min.css",

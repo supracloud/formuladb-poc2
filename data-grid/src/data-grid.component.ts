@@ -7,11 +7,11 @@ import {
     Grid, GridOptions,
     GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellFocusedEvent, ColDef
+    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
-import { waitUntilNotNull, PickOmit } from '@domain/ts-utils';
+import { waitUntilNotNull, PickOmit, objKeysTyped } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
 import { DataGridToolsComponent } from './data-grid-tools.component';
@@ -19,13 +19,21 @@ import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
-import { FrmdbElementMixin, val2attr, attr2val } from '@live-dom-template/frmdb-element';
+import { FrmdbElementMixin, reflectProp2Attr, reflectAttr2Prop } from '@live-dom-template/frmdb-element';
 import { I18N } from '@web/i18n.service';
 import { TABLE_SERVICE } from '@web/table.service';
-import { Pn } from '@domain/metadata/entity';
+import { Pn, FormulaExpression } from '@domain/metadata/entity';
 
-const html: string = require('raw-loader!@data-grid/data-grid.component.html').default;
-const css: string = require('raw-loader!sass-loader?sourceMap!@data-grid/data-grid.component.scss').default;
+
+const HTML: string = require('raw-loader!@data-grid/data-grid.component.html').default;
+const CSS: string = require('raw-loader!sass-loader?sourceMap!@data-grid/data-grid.component.scss').default;
+const ATTRS = {
+    tableName: "str",
+    columns: [{name: "str"}],
+    // highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {}
+    // headerHeight: number;
+    // conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
+}
 
 export class DataGridComponent extends HTMLElement implements FrmdbElementMixin {
 
@@ -36,19 +44,31 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
 
     /** Component attributes */
     tableName: string;
-    _gridColumns: TableColumn[];
-    __gridColumns: {[name: string]: PickOmit<TableColumn, "_id" >};
-    get gridColumns(): string { return val2attr(this.__gridColumns, "name") };
-    set gridColumns(attr: string) { this.__gridColumns = attr2val(attr, {name: "str"}, "name") }
+    _columns: typeof ATTRS.columns;
+    get columns(): string | null { return this.getAttribute("columns") };
+    set columns(val: string | null) { reflectAttr2Prop(this._columns) }
     highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
     headerHeight: number;
-    static get observedAttributes(): (keyof DataGridComponent)[] {
-        return ['tableName','gridColumns', 'highlightColumns', 'headerHeight'];
+    conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
+        
+    /** web components API */
+    static observedAttributes: (keyof DataGridComponent)[] = objKeysTyped(ATTRS);
+    attributeChangedCallback(name: keyof DataGridComponent, oldVal, newVal) {
+        if (!this.gridApi) return;
+        if (name == 'highlightColumns') {
+            if (this.gridApi) {
+                this.gridApi.refreshCells({ force: true });
+            }
+        } else if (name == 'tableName' || name == "columns") {
+            this.initAgGrid();
+        } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
+            this.gridApi.purgeServerSideCache()
+        }
     }
 
     private gridApi: GridApi;
     private gridColumnApi;
-    private columns: ColDef[] = [];
+    private agGridColumns: ColDef[] = [];
     private filters: any = {};
     private sort: any = {};
 
@@ -69,13 +89,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
             this.emit({ type: "UserDblClickRow", dataObj: event.data } );
         },
         onRowClicked: (event: RowClickedEvent) => {
-            if (this.dataGrid.clickAction == "autocomplete") {
-                this.emit({ type: "UserSelectedRow", dataObj: event.data} );
-            } else if (this.dataGrid.clickAction == "select-table-row") {
-                this.userSelectTableRow(event.data);
-            } else {
-                console.warn("Unknown clickAction " + this.dataGrid.clickAction);
-            }
+            this.emit({ type: "UserSelectedRow", dataObj: event.data} );
         },
         onCellFocused: (event: CellFocusedEvent) => {
             if (event.column && event.column.getColDef() && event.column.getColDef().field) {
@@ -89,16 +103,14 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
                 this.gridColumnApi = params.columnApi;
                 this.gridApi.closeToolPanel();
             }
-            console.debug("onGridReady", this.dataGrid, this.gridApi);
+            console.debug("onGridReady", this.columns, this.gridApi);
         },
         onColumnMoved: (event: ColumnMovedEvent) => {
-            if (this.dataGrid) {
-                // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
-            }
+            // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
         },
         onColumnResized: (event: ColumnResizedEvent) => {
-            if (event.finished && this.dataGrid !== null && event && event.column) {
-                const col = (this._gridColumns || [])
+            if (event.finished && event && event.column) {
+                const col = (this._columns || [])
                     .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
                 if (col) { col.width = event.column.getActualWidth(); }
                 // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
@@ -107,21 +119,21 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         onFilterChanged: (event: any) => {
             if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
                 const fs = this.gridApi.getFilterModel();
-                (this._gridColumns || []).forEach(c => {
+                (this._columns || []).forEach(c => {
                     if (fs[c.name]) {
                         c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                     } else {
                         c.filter = undefined;
                     }
                 });
-                this.emit({ type: "UserModifiedTableUi", table: this.dataGrid });
+                // this.emit({ type: "UserModifiedTableUi", table: this.dataGrid });
             }
             this.filters = this.gridApi.getFilterModel();
         },
         onSortChanged: (event: any) => {
             if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
                 const srt = this.gridApi.getSortModel();
-                (this._gridColumns || []).forEach(c => {
+                (this._columns || []).forEach(c => {
                     const s = srt.find(i => i.colId === c.name);
                     if (s) {
                         c.sort = s.sort;
@@ -187,8 +199,8 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         this.style.display = "block";
 
         this._shadowRoot.innerHTML = /*html*/ `
-            <style>${css}</style>
-            ${html}
+            <style>${CSS}</style>
+            ${HTML}
         `;
 
         // tslint:disable-next-line:max-line-length
@@ -201,22 +213,9 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);
         this.initAgGrid();
     }
-    
-    attributeChangedCallback(name: keyof DataGridComponent, oldVal, newVal) {
-        if (!this.gridApi) return;
-        if (name == 'highlightColumns') {
-            if (this.gridApi) {
-                this.gridApi.refreshCells({ force: true });
-            }
-        } else if (name == 'tableName' || name == "gridColumns") {
-            this.initAgGrid();
-        } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
-            this.gridApi.purgeServerSideCache()
-        }
-    }
 
     applyCellStyles(params) {
-        let entityName = this.dataGrid.refEntityName;
+        let entityName = this.tableName;
         if (entityName && this.highlightColumns[entityName]
             && this.highlightColumns[entityName][params.colDef.field]) {
             return { backgroundColor: this.highlightColumns[entityName][params.colDef.field].replace(/^c_/, '#') };
@@ -239,38 +238,30 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         }
     }
 
-    columnMoving(event: any) {
-        if (this.dataGrid) {
-            const colx: number = (this._gridColumns || []).findIndex(c => c.name === event.column.colId);
-            const col: TableColumn = (this._gridColumns || []).splice(colx, 1)[0];
-            (this._gridColumns || []).splice(event.toIndex, 0, col);
-        }
-    }
-
     async initAgGrid() {
-        console.debug("ngOnInit", this.dataGrid, this.gridApi);
+        console.debug("ngOnInit", this, this.gridApi);
 
-        this.gridOptions.context = this.dataGrid;
-        this.gridOptions.headerHeight = this.dataGrid.headerHeight || 50;
-        if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
-            //FIXME: setting header background does not seem to work
-            color: this.dataGrid.headerBackground,
-            pattern: "Solid",
-        };
+        this.gridOptions.context = this.columns;
+        this.gridOptions.headerHeight = this.headerHeight || 50;
+        // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
+        //     //FIXME: setting header background does not seem to work
+        //     color: this.dataGrid.headerBackground,
+        //     pattern: "Solid",
+        // };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
         this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.tableName));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.dataGrid.conditionalFormatting || {};
+            let conditionalFormatting = this.conditionalFormatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                 }
             }
-            let cols = this._gridColumns || [];
+            let cols = this._columns || [];
 
-            this.columns = cols.map(c => <ColDef>{
+            this.agGridColumns = cols.map(c => <ColDef>{
                 headerName: I18N.tt(c.name),
                 field: c.name,
                 width: c.width ? c.width : 100,
@@ -294,7 +285,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
                     }
                 });
 
-            this.gridApi.setColumnDefs(this.columns);
+            this.gridApi.setColumnDefs(this.agGridColumns);
             try {
                 this.gridApi.setFilterModel(fs);
                 this.gridApi.setSortModel(cols.filter(c => c.sort !== null)
