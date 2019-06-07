@@ -29,48 +29,61 @@ const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.componen
 const CSS: string = require('raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 const ATTRS = {
     tableName: "str",
-    columns: [{name: "str"}],
-    // highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {}
-    // headerHeight: number;
+    highlightColumns: [{ tableName: "str", columnName: "str" }],
+    headerHeight: 0,
     // conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
 }
 
 export class DataGridComponent extends HTMLElement implements FrmdbElementMixin {
 
-    /** frmdb utilities for web components */
+    /** frmdb utilities for web components **********************************/
     on = FrmdbElementMixin.prototype.on.bind(this);
     emit = FrmdbElementMixin.prototype.emit.bind(this);
     render = FrmdbElementMixin.prototype.render.bind(this);
 
-    /** Component attributes */
+    /** Component attributes ************************************************/
     tableName: string;
-    _columns: typeof ATTRS.columns;
-    get columns(): string | null { return this.getAttribute("columns") };
-    set columns(val: string | null) { reflectAttr2Prop(this._columns) }
-    highlightColumns: { [tableName: string]: { [columnName: string]: string } } = {};
+    highlightColumns: typeof ATTRS.highlightColumns;
     headerHeight: number;
-    conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
-        
-    /** web components API */
-    static observedAttributes: (keyof DataGridComponent)[] = objKeysTyped(ATTRS);
-    attributeChangedCallback(name: keyof DataGridComponent, oldVal, newVal) {
+    conditionalFormatting?: { [cssClassName: string]: FormulaExpression };
+
+    /** web components API **************************************************/
+    static observedAttributes: (keyof DataGridComponent & keyof typeof ATTRS)[] = objKeysTyped(ATTRS);
+    attributeChangedCallback(attrName: keyof DataGridComponent & keyof typeof ATTRS, oldVal, newVal) {
+        this[attrName] = reflectAttr2Prop(newVal, ATTRS[attrName]);
+
         if (!this.gridApi) return;
-        if (name == 'highlightColumns') {
+        if (attrName == 'highlightColumns') {
             if (this.gridApi) {
                 this.gridApi.refreshCells({ force: true });
             }
-        } else if (name == 'tableName' || name == "columns") {
+        } else if (attrName == 'tableName') {
             this.initAgGrid();
         } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
             this.gridApi.purgeServerSideCache()
         }
     }
 
+    connectedCallback() {
+        for (let attrName of DataGridComponent.observedAttributes) {
+            this[attrName] = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]);
+        }
+
+        new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);
+        TABLE_SERVICE.getColumns(this.tableName)
+            .then(columns => this.columns = columns)
+            .then(() => this.initAgGrid())
+        ;
+    }
+
+    /** component internals *************************************************/
+
     private gridApi: GridApi;
     private gridColumnApi;
     private agGridColumns: ColDef[] = [];
     private filters: any = {};
     private sort: any = {};
+    private columns: TableColumn[] = [];
 
     private gridOptions: GridOptions = {
 
@@ -86,10 +99,10 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
             headerComponentParams: { menuIcon: 'fa-bars' }
         },
         onRowDoubleClicked: (event: RowDoubleClickedEvent) => {
-            this.emit({ type: "UserDblClickRow", dataObj: event.data } );
+            this.emit({ type: "UserDblClickRow", dataObj: event.data });
         },
         onRowClicked: (event: RowClickedEvent) => {
-            this.emit({ type: "UserSelectedRow", dataObj: event.data} );
+            this.emit({ type: "UserSelectedRow", dataObj: event.data });
         },
         onCellFocused: (event: CellFocusedEvent) => {
             if (event.column && event.column.getColDef() && event.column.getColDef().field) {
@@ -110,7 +123,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         },
         onColumnResized: (event: ColumnResizedEvent) => {
             if (event.finished && event && event.column) {
-                const col = (this._columns || [])
+                const col = (this.columns || [])
                     .find(c => c.name !== null && event !== null && event.column !== null && c.name === event.column.getId());
                 if (col) { col.width = event.column.getActualWidth(); }
                 // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
@@ -119,7 +132,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         onFilterChanged: (event: any) => {
             if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
                 const fs = this.gridApi.getFilterModel();
-                (this._columns || []).forEach(c => {
+                (this.columns || []).forEach(c => {
                     if (fs[c.name]) {
                         c.filter = { operator: fs[c.name].type, value: fs[c.name].filter };
                     } else {
@@ -133,7 +146,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         onSortChanged: (event: any) => {
             if (!_.isEqual(this.sort, this.gridApi.getSortModel())) {
                 const srt = this.gridApi.getSortModel();
-                (this._columns || []).forEach(c => {
+                (this.columns || []).forEach(c => {
                     const s = srt.find(i => i.colId === c.name);
                     if (s) {
                         c.sort = s.sort;
@@ -154,7 +167,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         },
         suppressClipboardPaste: true,
         rowModelType: "serverSide",
-        enableRangeSelection: true, 
+        enableRangeSelection: true,
         statusBar: {
             statusPanels: [
                 { statusPanel: 'agTotalRowCountComponent', align: 'left' },
@@ -208,12 +221,6 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
     }
 
-    
-    connectedCallback() {
-        new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);
-        this.initAgGrid();
-    }
-
     applyCellStyles(params) {
         let entityName = this.tableName;
         if (entityName && this.highlightColumns[entityName]
@@ -259,7 +266,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
                 }
             }
-            let cols = this._columns || [];
+            let cols = this.columns || [];
 
             this.agGridColumns = cols.map(c => <ColDef>{
                 headerName: I18N.tt(c.name),
@@ -313,7 +320,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     }
 
     userSelectTableRow(dataObj: DataObj) {
-        this.emit({ type: "UserSelectedRow", dataObj } );
+        this.emit({ type: "UserSelectedRow", dataObj });
     }
 
 }

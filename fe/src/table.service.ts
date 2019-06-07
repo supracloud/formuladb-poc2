@@ -1,7 +1,11 @@
+
 import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
+import * as _ from "lodash";
+
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { PickOmit } from '@domain/ts-utils';
 import { BACKEND_SERVICE } from './backend.service';
+import { TableColumn } from '@domain/uimetadata/node-elements';
 
 
 export class TableService {
@@ -13,6 +17,14 @@ export class TableService {
         }
     };
 
+    public async getColumns(entityId: string): Promise<TableColumn[]> {
+        let entity = await BACKEND_SERVICE.getEntity(entityId);
+        return _.values(entity.props).map(pn => ({
+            _id: entityId + "." + pn.name,
+            name: pn.name, 
+            type: pn.propType_
+        } as TableColumn));
+    } 
 
     public getTableRows(entityId: string, params: PickOmit<IServerSideGetRowsParams, 'parentNode'>) {
         let req = params.request;

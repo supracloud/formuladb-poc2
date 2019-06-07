@@ -5,7 +5,7 @@
 
 export type PickOmit<O, K extends keyof O> = Pick<O, Exclude<keyof O, K>>;
 export function objKeysTyped<T extends {}>(obj: T): (keyof T)[] {
-    return Object.keys(obj) as any as keyof T;
+    return Object.keys(obj) as any as (keyof T)[];
 }
 
 export function obj2MapES5<V>(o: { [x: string]: V }): Map<string, V> {

@@ -62,7 +62,7 @@ export function Attr() {
  *    true CONVERTED TO "true"
  *    "str" CONVERTED TO "str"
  */
-export function reflectProp2Attr<T extends {} | any[]>(prop: T, example: T): string {
+export function reflectProp2Attr<T>(prop: T, example: T): string {
     if (example instanceof Array) {
         return example.map((v, i) => reflectPropValue(prop[i], v)).join("; ");    
     } else if (typeof example === "object" ) {
@@ -113,10 +113,10 @@ function reflectAttrVal(attrVal: string, example) {
 /** 
  * Convert HTML "style" attribute syntax to complex attribute value
  */
-export function reflectAttr2Prop(attr: string, example) {
+export function reflectAttr2Prop<T>(attr: string, example: T): T {
     let attrValuesStr = attr.split(/; /);
     if (example instanceof Array) {
-        return attrValuesStr.map((v, i) => reflectAttrVal(v, example[0]));    
+        return attrValuesStr.map((v, i) => reflectAttrVal(v, example[0])) as any as T;    
     } else if (typeof example === "object" ) {
         let ret: any = {};
         for (let val of attrValuesStr) {

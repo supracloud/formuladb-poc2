@@ -34,9 +34,8 @@
                 "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
                 "webpack:///./functions/src/*": "${webRoot}/functions/src/*",
                 "webpack:///./core/src/*": "${webRoot}/core/src/*",
-                "webpack:///./web/src/*": "${webRoot}/web/src/*",
-                "webpack:///./live-dom-template/src/*": "${webRoot}/live-dom-template/src/*",
-                "webpack:///./data-grid/src/*": "${webRoot}/data-grid/src/*"
+                "webpack:///./test/src/*": "${webRoot}/test/src/*",
+                "webpack:///./fe/src/*": "${webRoot}/fe/src/*",
             }
         },
         {
