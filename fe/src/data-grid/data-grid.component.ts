@@ -24,7 +24,7 @@ import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn, FormulaExpression } from '@domain/metadata/entity';
 
-
+/** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
 const CSS: string = require('raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 const ATTRS = {

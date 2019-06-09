@@ -21,7 +21,7 @@
             "@storage/*": ["./storage/src/*"],
             "@test/*": ["./test/src/*"],
             "@be/*": ["./fe/src/*"],
-            "@fe/*": ["./fe/src/*"],
+            "@fe/*": ["./fe/src/*"]
         },        
         "lib": [
             "es2018",

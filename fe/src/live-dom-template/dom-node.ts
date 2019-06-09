@@ -1,7 +1,7 @@
 import * as isNode from 'detect-node';
 
 let parser, serializer;
-console.error(isNode);
+// console.error(isNode);
 if (isNode) {
     require('jsdom-global')();
     parser = new (window as any).DOMParser();
