@@ -1,5 +1,3 @@
 *
-!fe/dist
-!fe/src/assets
-!be/dist
-!be/package.json
+!dist
+!package.json

@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const TerserPlugin = require('terser-webpack-plugin');
 const npm_package = require('./package.json');
 const _ = require("lodash");
 
@@ -17,19 +18,26 @@ configBase = {
     resolve: {
         alias: _.mapValues(npm_package._moduleAliases || {},
             v => path.resolve(__dirname, v)),
-    }
+    },
+    optimization: {
+        minimizer: [
+            new TerserPlugin({
+                sourceMap: true,
+                cache: true,
+            }),
+        ],
+    },
 };
 
 configBaseNode = {
     ...configBase,
     target: "node",
-    externals: [nodeExternals()],
+    // externals: [nodeExternals()],
 }
 
 configBaseWeb = {
     ...configBase,
     target: "web",
-    externals: [nodeExternals()],
     module: {
         ...configBase.module,
         rules: [
@@ -37,22 +45,21 @@ configBaseWeb = {
             {
                 test: /\.scss$/,
                 use: [
-                    "css-loader", 
+                    "css-loader",
                     "sass-loader",
                 ],
             },
-        ]        
-    },    
+        ]
+    },
 }
 
 configBe = {
     ...configBase,
     entry: './tsc-out/be/src/server.js',
     target: "node",
-    externals: [nodeExternals()],
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'be.js'
+        filename: 'frmdb-be.js'
     },
 };
 
@@ -66,4 +73,14 @@ configDataGrid = {
     },
 };
 
-module.exports = [configBe, configDataGrid];
+configFe = {
+    ...configBase,
+    entry: './tsc-out/fe/src/fe.js',
+    target: "web",
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'frmdb-fe.js'
+    },
+};
+
+module.exports = [configBe, configDataGrid, configFe];

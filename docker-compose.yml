@@ -9,7 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - pg-persistence:/var/lib/postgresql/data
-  febe:
+  be:
     image: registry.gitlab.com/metawiz/febe/formuladb-febe:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     depends_on:
       - db

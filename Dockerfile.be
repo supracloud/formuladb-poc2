@@ -11,13 +11,11 @@ FROM node:lts-alpine
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git
 
-COPY be/package.json /package.json
+COPY package.json /package.json
 
 RUN npm install --only=production
 
-COPY be/dist/be/src/server.js /dist/be/src/server.js
-
-COPY fe/dist/fe /public/
+COPY dist/frmdb-be.js /dist/frmdb-be.js
 
 EXPOSE 3000
 

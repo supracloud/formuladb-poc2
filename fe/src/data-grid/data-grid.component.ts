@@ -209,6 +209,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
 
         this.style.minWidth = "28vw";
         this.style.minHeight = "25vh";
+        this.style.height = "100%";
         this.style.display = "block";
 
         this._shadowRoot.innerHTML = /*html*/ `

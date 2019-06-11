@@ -30,18 +30,12 @@ buildprodimages:
     - docker build -t formuladb-minio -f Dockerfile.minio .
     - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
     - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-    - cd be
-    - npm run build-prod
-    - cd ../fe
-    - npm run build-high-memory -- --prod --source-map --deploy-url=/formuladb/ --base-href=/formuladb/
-    - cd ..
     - docker build -t formuladb-sourcemaps -f Dockerfile.map .
     - docker tag formuladb-sourcemaps registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
     - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
-    - rm fe/dist/fe/*.js.map
-    - docker build -t formuladb-febe -f Dockerfile.febe .
-    - docker tag formuladb-febe registry.gitlab.com/metawiz/febe/formuladb-febe:${CI_COMMIT_TAG}
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-febe:${CI_COMMIT_TAG}
+    - docker build -t formuladb-be -f Dockerfile.be .
+    - docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:

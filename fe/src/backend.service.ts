@@ -18,6 +18,7 @@ import { FormPage, isFormPage } from "@domain/uimetadata/form-page";
 import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
 import { Schema_inventory, App_inventory } from "@test/mocks/mock-metadata";
+import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 
 function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
     // Default options are marked with *
@@ -46,11 +47,17 @@ export class BackendService {
 
     public applications: Map<string, App> = new Map();
     private frmdbEngineTools: FrmdbEngineTools;
-    private appName: string;
 
-    constructor(appId: string, schema: Schema) {
-        this.appName = appId.replace(/^App~~/, '');
-        this.frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(schema).compileSchema());
+    constructor(private appName: string) {
+        getData<Schema | null>('/formuladb-api/' + appName + '/schema')
+        .then(schema => {
+            if (!schema) throw new Error("Schema " + appName + " not found");
+            this.frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(schema).compileSchema())
+        });
+    }
+
+    public setAppName(appName: string) {
+        this.appName = appName;
     }
 
     public getFrmdbEngineTools() {
@@ -188,4 +195,9 @@ export class BackendService {
     }
 }
 
-export const BACKEND_SERVICE = new BackendService(App_inventory._id, Schema_inventory);
+let appRootEl = document.querySelector('[data-frmdb-app]');
+let APP_NAME = "unknown-app";
+if (appRootEl) {
+    APP_NAME = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
+}
+export const BACKEND_SERVICE = new BackendService(APP_NAME);
