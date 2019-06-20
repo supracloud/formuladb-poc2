@@ -26,7 +26,7 @@ import { Pn, FormulaExpression } from '@domain/metadata/entity';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
-const CSS: string = require('raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
+const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 const ATTRS = {
     tableName: "str",
     highlightColumns: [{ tableName: "str", columnName: "str" }],
@@ -50,7 +50,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     /** web components API **************************************************/
     static observedAttributes: (keyof DataGridComponent & keyof typeof ATTRS)[] = objKeysTyped(ATTRS);
     attributeChangedCallback(attrName: keyof DataGridComponent & keyof typeof ATTRS, oldVal, newVal) {
-        this[attrName] = reflectAttr2Prop(newVal, ATTRS[attrName]);
+        this[attrName] = reflectAttr2Prop(newVal, ATTRS[attrName]) as any;
 
         if (!this.gridApi) return;
         if (attrName == 'highlightColumns') {
@@ -66,7 +66,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
 
     connectedCallback() {
         for (let attrName of DataGridComponent.observedAttributes) {
-            this[attrName] = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]);
+            this[attrName] = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]) as any;
         }
 
         new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);

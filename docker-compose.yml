@@ -9,7 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - pg-persistence:/var/lib/postgresql/data
-  be:
+  febe:
     image: registry.gitlab.com/metawiz/febe/formuladb-febe:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     depends_on:
       - db
@@ -22,6 +22,11 @@ services:
       # To debug, run `socat -d tcp-listen:9229,reuseaddr,fork,bind=`hostname -i` tcp:127.0.0.1:9229 &` from inside the BE container
       # source maps not working in chrome for node ? https://github.com/webpack/webpack/issues/2612
       - "9229:9229"
+  maps:
+    image: registry.gitlab.com/metawiz/febe/formuladb-maps:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    command: nginx-debug -g 'daemon off;'
+    ports:
+      - "8085:80"
   minio:
     image: registry.gitlab.com/metawiz/febe/formuladb-minio:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
     ports:

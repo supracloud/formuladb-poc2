@@ -1,6 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const TerserPlugin = require('terser-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 const npm_package = require('./package.json');
 const _ = require("lodash");
 
@@ -19,20 +19,20 @@ configBase = {
         alias: _.mapValues(npm_package._moduleAliases || {},
             v => path.resolve(__dirname, v)),
     },
-    optimization: {
-        minimizer: [
-            new TerserPlugin({
-                sourceMap: true,
-                cache: true,
-            }),
-        ],
-    },
+    // optimization: {
+    //     minimizer: [
+    //         new TerserPlugin({
+    //             sourceMap: true,
+    //             cache: true,
+    //         }),
+    //     ],
+    // },
 };
 
 configBaseNode = {
     ...configBase,
     target: "node",
-    // externals: [nodeExternals()],
+    externals: [nodeExternals()],
 }
 
 configBaseWeb = {
@@ -54,9 +54,8 @@ configBaseWeb = {
 }
 
 configBe = {
-    ...configBase,
+    ...configBaseNode,
     entry: './tsc-out/be/src/server.js',
-    target: "node",
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'frmdb-be.js'
@@ -64,23 +63,25 @@ configBe = {
 };
 
 configDataGrid = {
-    ...configBase,
+    ...configBaseWeb,
     entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
-    target: "web",
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'dist') + '/formuladb',
         filename: 'frmdb-data-grid.js'
     },
 };
 
 configFe = {
-    ...configBase,
+    ...configBaseWeb,
     entry: './tsc-out/fe/src/fe.js',
-    target: "web",
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'dist') + '/formuladb',
         filename: 'frmdb-fe.js'
     },
 };
 
-module.exports = [configBe, configDataGrid, configFe];
+module.exports = [
+    configBe, 
+    configDataGrid, 
+    configFe
+];

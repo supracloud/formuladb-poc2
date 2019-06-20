@@ -14,7 +14,7 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
   * [ ]  Add `DataObj`
   * [ ]  Delete `DataObj`
 
-```
+```ditaa
        +------------+                      +--------------+                                           +-------------------------------------------------+
        |            |                      |              |                                           |                                                 |
        |  Other FEs +<--------+------------+ Other Actors |                                           |                     Users                       |
@@ -28,17 +28,17 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
              |                                                                                          |          |        |             |
              v         GET (HTML) /formuladb/applications                                               v          v        v             v
 +------------+------+  GET (HTML) /formuladb/:app/:page                                               +-+----------+--------+-------------+-------------+
-|                 BE+---------------------------------------------------------------------------------+                                               FE|
+|                 BE+<--------------------------------------------------------------------------------+                                               FE|
 |                   |                                                                                 |      User Events (HTML5 and web components)     |
 | Tokenizer         |  GET (JSON) /formuladb-api/:app -> App                                          |                                                 |
 |                   |  GET (JSON) /formuladb|api/:app/schema -> Schema                                |   +-----------------------------+-----------+---+
 | StaticTypeChecker |  GET (JSON) /formuladb|api/:app/byprefix/:prefix -> DataObj[]                   |   |                             |           ^   |
 |                   |  GET (JSON) /formuladb|api/:app/:table~~:uid -> DataObj                         |   +--------+                    |           |   |
-| Compiler          +---------------------------------------------------------------------------------+   |        v                    v           |   |
+| Compiler          +<--------------------------------------------------------------------------------+   |        v                    v           |   |
 |                   |                                                                                 | S |   +----+------+         +---+-------+   |   |
 | TransactionRunner |  POST (JSON) /formuladb-api/login <- ? TBD ?                                    | e |   |           |         |           |   |   |
 |                   |  POST (JSON) /formuladb|api/:app/:table/SimpleAddHocQuery <- SimpleAddHocQuery  | r |   |  Effects  +<--------+  Actions  |   |   |
-| Engine            |  POST (JSON) /formuladb|api/:app/e^ent <- Ser^erE^entModifiedFormData           | v |   |           |         |           |   |   |
+| Engine            |  POST (JSON) /formuladb|api/:app/event <- Ser^erE^entModifiedFormData           | v |   |           |         |           |   |   |
 |                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeletedFormData            | e |   +----+------+         +-----+-----+   |   |
 | StorageInterface  |  POST (JSON) /formuladb|api/:app/event <| ServerEventModifiedPage               | r |        |                      |         |   |
 |                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventNewEntity                  |   |        |                      |         |   |
@@ -46,21 +46,52 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
 |                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventPreviewFormula             | v |   +----+----------------------+-----+   |   |
 |                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventSetProperty                | e |   |                                 |   |   |
 |                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeleteProperty             | n |   |             State               |   |   |
-|                   +---------------------------------------------------------------------------------+ t |   |                                 |   |   |
+|                   +<------------------------------------------------------------------------------->+ t |   |                                 |   |   |
 |                   |                                                                                 | s |   +----+----------------------------+   |   |
 |                   |  PUT (JSON) /formuladb-api/:app                                                 |   |        |                                |   |
 |                   |  PUT (JSON) /formuladb|api/:app/schema                                          |   |        |                                |   |
 |                   |  PUT (HTML) /formuladb|api/:app/page                                            |   |        v                                |   |
 |                   |  PUT (JSON) /formuladb|api/:app/bulk                                            |   |   +----+--------------+       +-----+   |   |
-|                   +---------------------------------------------------------------------------------+   |   |                   |       |     |   |   |
+|                   +<--------------------------------------------------------------------------------+   |   |                   |       |     |   |   |
 |                   |                                                                                 |   |   | live-dom-template +<----->+ DOM +---+   |
 |                   |                                                                                 |   |   |                   |       |     |       |
 |                   |                                                                                 |   |   +-------------------+       +-----+       |
 |                   |  Long polling for current page data TBD                                         |   |                                             |
-|                   +---------------------------------------------------------------------------------+   |                                             |
+|                   +<--------------------------------------------------------------------------------+   |                                             |
 +-------------------+                                                                                 +---+---------------------------------------------+
 ```
 
+## Deployment
+
+```ditaa
+
+TODOooo
+                              +---------+       +--------+     +-------------+
+                              |         |       |        |     |             |
+                              |  minio  |       |  febe  |     |             |
+                              |         |       |        |     |             |
+                              +---------+       +--------+     |             |
++---------------+                                              |             |
+|               |             +---------+       +--------+     |             |
+|  Central Obj  |             |         |       |        |     |             |
+|  Storage      |             |   db    |       |  maps  |     |   Portal    |
+|               |             |         |       |        |     |             |
++---------------+             +---------+       +--------+     |   Manage    |    /:tenant/:app/index.html
+                                                               |             |
+                                                               |   Tenants   |    /:tenant/:app/index.css
++---------------+                                              |             |
+|               |             +---------+       +--------+     |             |
+|               |             |         |       |        |     |             |
+|  Central ELK  |             |  minio  |       |  febe  |     |             |    /:tenant/formuladb-api/:app/**
+|               |             |         |       |        |     |             |
+|               |             +---------+       +--------+     |             |    /:tenant/formuladb/*.js
++---------------+                                              |             |
+                              +---------+       +--------+     |             |    /:tenant/formuladb/*.js.map
+                              |         |       |        |     |             |
+                              |   db    |       |  maps  |     |             |
+                              |         |       |        |     |             |
+                              +---------+       +--------+     +-------------+
+```
 
 # "febe" internal Development
 

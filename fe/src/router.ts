@@ -1,6 +1,6 @@
 import { on } from "delegated-events";
 
-let linkCache= new Set<string>();
+let linkCache = new Set<string>();
 
 on('click', '[data-frmdb-link]', function (event) {
     event.preventDefault();
@@ -35,3 +35,9 @@ window.onpopstate = () => {
         render(path);
     }
 }
+window.onload = function () {
+    let path = window.location.pathname;
+    if (path && path != '/') {
+        render(path);
+    }
+};

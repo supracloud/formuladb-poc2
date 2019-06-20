@@ -18,7 +18,9 @@ import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { FrmdbLogger } from "@domain/frmdb-logger";
 const calculateSlot = require('cluster-key-slot');
+const logger = new FrmdbLogger("kvs:pg");
 
 /**
  * Key Value Store with optimistic locking functionality
@@ -38,11 +40,12 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             host: process.env.PGHOST || "localhost",
             port: parseInt(process.env.PGPORT || "5432"),
             user: process.env.PGUSER || "postgres",
-            password: process.env.PGPASSWORD || "postgres"
+            password: process.env.PGPASSWORD || "postgres",
+        
         };
         if (KeyValueStorePostgres.db == null) {
             console.info("Connecting to", config);
-            KeyValueStorePostgres.db = pgPromise()(config);
+            KeyValueStorePostgres.db = pgPromise({pgNative: false})(config);
         }
 
         this.table_id = this.getTableName(name);
@@ -91,9 +94,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 this.getDB().oneOrNone<VALUET>(query, [this.pgSpecialChars(_id)]).then((res) => {
                     resolve(res != null ? res['val'] : undefined);
                 }).catch((err) => {
-                    console.log(err);
+                    logger.error("%o", err);
                 })
-
             })
         });
     }

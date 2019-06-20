@@ -42,11 +42,13 @@ create-docker-env() {
         
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "maps,tcp,,8085,,8085"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "minio,tcp,,9000,,9000"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "orbico-nginx,tcp,,8990,,8990"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "be-debug,tcp,,9231,,9231"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "be-debug2,tcp,,5858,,5858"
 
         docker-machine stop docker1
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' sharedfolder add "docker1" --name "d" --hostpath "d:/" --automount

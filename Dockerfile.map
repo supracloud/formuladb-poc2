@@ -1,3 +1,0 @@
-FROM nginx:1.14
-
-COPY dist/*.js.map /usr/share/nginx/html/dist/

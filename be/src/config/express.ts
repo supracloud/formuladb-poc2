@@ -106,15 +106,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             if (/\/formuladb.*/.test(req.path)) {
                 next();
             } else {
-                httpProxy(req, res, next);
+                // httpProxy(req, res, next);
             }
         });
     }
-
-    app.use(/.*\.(css)$/, (req, res, next) => {
-        let httpProxy = proxy({ target: 'https://storage.googleapis.com/formuladb-static-assets' });
-        httpProxy(req, res, next);
-    });
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -160,15 +155,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next();
         });
     }
-    
-
-    app.get('/formuladb/*', (req, res) => {
-        if (STATIC_EXT.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-            res.sendFile(path.resolve(`public/${req.url.replace(/^\/?formuladb\//, '')}`));
-        } else {
-            res.sendFile(path.resolve('public/index.html'));
-        }
-    });
 
 
     app.get('/formuladb-api/applications', async function (req, res) {
@@ -251,6 +237,19 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return (await getFrmdbEngine(req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
+    });
+
+    app.get('/formuladb/*', (req, res) => {
+        if (STATIC_EXT.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
+            res.sendFile(path.resolve(`dist/formuladb/${req.url.replace(/^\/?formuladb\//, '')}`));
+        } else {
+            res.sendFile(path.resolve('dist/formuladb/index.html'));
+        }
+    });
+
+    app.use(/.*\.(css)$/, (req, res, next) => {
+        let httpProxy = proxy({ target: 'https://storage.googleapis.com/formuladb-static-assets' });
+        httpProxy(req, res, next);
     });
 
     // catch 404 and forward to error handler

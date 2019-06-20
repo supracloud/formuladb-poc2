@@ -43,11 +43,20 @@
             "type": "node",
             "request": "attach",
             "address": "localhost",
-            "protocol": "inspector",
+            "protocol": "auto",
             "restart": true,
             "port": 9231,
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/d/code/metawiz/febe"         
+            "localRoot": "${workspaceFolder}/dist",
+            "remoteRoot": "/dist",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "skipFiles": [
+                "<eval>/**/*.js",
+                "<node_internals>/**/*.js",
+            ],
+            "trace": true
         },
         {
             "name": "BE specs mem",
@@ -140,14 +149,13 @@
             "port": 9229,
             "trace": "sm",
             "sourceMaps": true,
-//            "restart": true,
-//            "outFiles": ["${workspaceRoot}/be/dist/be/src/"],
-//            "localRoot": "${workspaceRoot}/be/dist/be/src/",
-//            "remoteRoot": "/dist/be/src",
-//            "sourceMapPathOverrides": {
-//                "webpack:///*": "${workspaceRoot}/be/*"
-//            }
-
+            //            "restart": true,
+            //            "outFiles": ["${workspaceRoot}/be/dist/be/src/"],
+            //            "localRoot": "${workspaceRoot}/be/dist/be/src/",
+            //            "remoteRoot": "/dist/be/src",
+            //            "sourceMapPathOverrides": {
+            //                "webpack:///*": "${workspaceRoot}/be/*"
+            //            }
         }
     ]
 }

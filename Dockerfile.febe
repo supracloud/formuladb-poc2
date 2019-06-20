@@ -16,6 +16,7 @@ COPY package.json /package.json
 RUN npm install --only=production
 
 COPY dist/frmdb-be.js /dist/frmdb-be.js
+COPY dist/formuladb/*.js /dist/formuladb/
 
 EXPOSE 3000
 
