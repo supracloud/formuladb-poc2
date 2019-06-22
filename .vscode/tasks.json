@@ -5,30 +5,35 @@
     "_runner": "terminal",
     "tasks": [
         {
-            "label": "echo",
+            "label": "serve:maps",
+            "command": "npm run serve:maps",
             "type": "shell",
-            "command": ". ~/.bashrc && env && echo Hello && ps -ef"
-        },
-        {
-            "label": "FE serve",
-            "command": "npm start",
-            "type": "shell",
-            "options": {
-                "cwd": "./fe"
-            },
-            "terminalGroup": "run_febe",
-            "presentation": {
-                "echo": true,
-                "reveal": "never",
-                "focus": false,
-                "panel": "shared"
-            },
-            "isBackground": false,
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": []
+            "dependsOn":["docker:watch"]
+        },
+        {
+            "label": "docker:watch",
+            "command": "npm run docker:watch",
+            "type": "shell",
+            "group": "build",
+            "dependsOn":["bundle:watch"]
+        },
+        {
+            "label": "bundle:watch",
+            "command": "npm run bundle:watch",
+            "type": "shell",
+            "group": "build",
+            "dependsOn":["compile:watch"]
+        },
+        {
+            "label": "compile:watch",
+            "command": "npm run compile:watch",
+            "type": "shell",
+            "group": "build",
+            "problemMatcher": "$tsc",
         },
         {
             "label": "BE serve",

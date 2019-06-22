@@ -4,7 +4,7 @@
  */
 
 require('source-map-support').install();
-require('module-alias/register')
+require('module-alias/register');
 
 import * as http from "http";
 

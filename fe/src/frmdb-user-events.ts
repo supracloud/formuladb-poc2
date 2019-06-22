@@ -44,6 +44,10 @@ export interface UserCollapsedNavItem {
     collapsed: boolean;
 }
 
+export interface UserNavigation {
+    type: 'frmdbUserNavigation';
+    path: string;
+}
 
 export type FrmdbUserEvent =
     | UserModifiedFormData
@@ -56,4 +60,5 @@ export type FrmdbUserEvent =
     | UserDeleteRow
     | UserModifiedTableUi
     | UserCollapsedNavItem
+    | UserNavigation
     ;

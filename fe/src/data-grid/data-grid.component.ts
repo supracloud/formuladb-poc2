@@ -23,6 +23,8 @@ import { FrmdbElementMixin, reflectProp2Attr, reflectAttr2Prop } from '@fe/live-
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn, FormulaExpression } from '@domain/metadata/entity';
+import { translateClicksToNavigationEvents } from '@fe/event-translator';
+import { on, emit } from '@fe/delegated-events';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -31,14 +33,15 @@ const ATTRS = {
     tableName: "str",
     highlightColumns: [{ tableName: "str", columnName: "str" }],
     headerHeight: 0,
+    expandRow: true,
     // conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
 }
 
 export class DataGridComponent extends HTMLElement implements FrmdbElementMixin {
 
     /** frmdb utilities for web components **********************************/
-    on = FrmdbElementMixin.prototype.on.bind(this);
-    emit = FrmdbElementMixin.prototype.emit.bind(this);
+    on = on.bind(null, this);
+    emit = emit.bind(null, this);
     render = FrmdbElementMixin.prototype.render.bind(this);
 
     /** Component attributes ************************************************/
@@ -46,11 +49,12 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     highlightColumns: typeof ATTRS.highlightColumns;
     headerHeight: number;
     conditionalFormatting?: { [cssClassName: string]: FormulaExpression };
+    expandRow: boolean;
 
     /** web components API **************************************************/
     static observedAttributes: (keyof DataGridComponent & keyof typeof ATTRS)[] = objKeysTyped(ATTRS);
     attributeChangedCallback(attrName: keyof DataGridComponent & keyof typeof ATTRS, oldVal, newVal) {
-        this[attrName] = reflectAttr2Prop(newVal, ATTRS[attrName]) as any;
+        (this[attrName] as any) = reflectAttr2Prop(newVal, ATTRS[attrName]) as any;
 
         if (!this.gridApi) return;
         if (attrName == 'highlightColumns') {
@@ -66,7 +70,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
 
     connectedCallback() {
         for (let attrName of DataGridComponent.observedAttributes) {
-            this[attrName] = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]) as any;
+            (this[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]) as any;
         }
 
         new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);
@@ -74,8 +78,31 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
             .then(columns => this.columns = columns)
             .then(() => this.initAgGrid())
         ;
+
+        translateClicksToNavigationEvents(this._shadowRoot);
     }
 
+
+    _shadowRoot: ShadowRoot;
+    constructor() {
+        super();
+        this._shadowRoot = this.attachShadow({ 'mode': 'open' });
+
+        this.style.minWidth = "28vw";
+        this.style.minHeight = "25vh";
+        this.style.height = "100%";
+        this.style.display = "block";
+
+        this._shadowRoot.innerHTML = /*html*/ `
+            <style>${CSS}</style>
+            ${HTML}
+        `;
+
+        // tslint:disable-next-line:max-line-length
+        // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
+        LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
+    }
+        
     /** component internals *************************************************/
 
     private gridApi: GridApi;
@@ -129,6 +156,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
                 // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
             }
         },
+        floatingFilter: true,
         onFilterChanged: (event: any) => {
             if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
                 const fs = this.gridApi.getFilterModel();
@@ -170,8 +198,6 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         enableRangeSelection: true,
         statusBar: {
             statusPanels: [
-                { statusPanel: 'agTotalRowCountComponent', align: 'left' },
-                { statusPanel: 'agFilteredRowCountComponent' },
                 { statusPanel: 'agSelectedRowCountComponent' },
                 { statusPanel: 'agAggregationComponent' }
             ],
@@ -202,26 +228,6 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         excelStyles: _.cloneDeep(ExcelStyles),
     };
 
-    _shadowRoot: ShadowRoot;
-    constructor() {
-        super();
-        this._shadowRoot = this.attachShadow({ 'mode': 'open' });
-
-        this.style.minWidth = "28vw";
-        this.style.minHeight = "25vh";
-        this.style.height = "100%";
-        this.style.display = "block";
-
-        this._shadowRoot.innerHTML = /*html*/ `
-            <style>${CSS}</style>
-            ${HTML}
-        `;
-
-        // tslint:disable-next-line:max-line-length
-        // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
-        LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
-    }
-
     applyCellStyles(params) {
         let entityName = this.tableName;
         if (entityName && this.highlightColumns[entityName]
@@ -250,7 +256,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         console.debug("ngOnInit", this, this.gridApi);
 
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.headerHeight || 50;
+        this.gridOptions.headerHeight = this.headerHeight || 25;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,
@@ -281,6 +287,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
                 enableValue: true,
                 resizable: true,
                 valueFormatter: (params) => this.valueFormatter(params),
+                cellRenderer: this.getCellRenderer(c),
                 cellStyle: (cp: any) => this.applyCellStyles(cp),
                 cellClassRules: cssClassRules,
             });
@@ -316,7 +323,7 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     }
 
     valueFormatter(params) {
-        if (params.colDef.field === '_id') return (params.value || '').replace(/^.*~~/, '');
+        if (params.colDef.field === '_id') return ((params.value || '')+'').replace(/^.*~~/, '');
         else return params.value;
     }
 
@@ -324,6 +331,13 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         this.emit({ type: "UserSelectedRow", dataObj });
     }
 
+    getCellRenderer(col: TableColumn) {
+        if (this.expandRow && col.name === '_id') {
+            return (params) => {
+                return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
+            }
+        } else return null;
+    }
 }
 
 window.customElements.define('frmdb-data-grid', DataGridComponent);

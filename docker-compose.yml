@@ -16,6 +16,7 @@ services:
     environment:
       FRMDB_STORAGE: "postgres"
       PGHOST: "db"
+      DEBUG: "express:*"
     ports:
       - "8084:3000"
       # publish node inspector port. By default the V8 inspector listens on 127.0.0.1 only.

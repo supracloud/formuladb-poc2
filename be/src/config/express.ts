@@ -91,7 +91,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     }); 
 
-    app.use(logger("dev"));
+    // app.use(logger("dev"));
     app.use(cookieParser(SECRET));
     app.use(require('express-session')({
         secret: SECRET,

@@ -1,5 +1,6 @@
 import { IToolPanelParams, GridApi, IToolPanelComp } from "ag-grid-community";
 import { FrmdbElementMixin } from "@fe/live-dom-template/frmdb-element";
+import { on, emit } from '@fe/delegated-events';
 
 const html = require('raw-loader!@fe-assets/data-grid/data-grid-tools.component.html').default;
 const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid-tools.component.scss').default;
@@ -9,8 +10,8 @@ export class DataGridToolsComponent implements IToolPanelComp {
     private gridApi: GridApi;
     
     el = document.createElement('div');
-    on = FrmdbElementMixin.prototype.on.bind(this.el);
-    emit = FrmdbElementMixin.prototype.on.bind(this.el);
+    on = on.bind(null, this.el);
+    emit = on.bind(null, this.el);
 
     init(params: IToolPanelParams): void {
         console.warn((params as any).context);

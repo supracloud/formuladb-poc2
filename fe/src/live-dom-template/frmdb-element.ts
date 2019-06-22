@@ -1,4 +1,4 @@
-import { on } from "delegated-events";
+import { on, emit } from "../delegated-events";
 import { render } from "./live-dom-template";
 import { FrmdbUserEvent } from "@fe/frmdb-user-events";
 
@@ -44,8 +44,6 @@ const validateSelector = (selector: string) => {
         throw new Error('You need at least 1 dash in the custom element name!');
     }
 };
-
-export type EventType = "click" | "blur" | FrmdbUserEvent['type'];
 
 export function Attr() {
     return function(target: Object, key: string | symbol) {
@@ -131,19 +129,5 @@ export abstract class FrmdbElementMixin extends HTMLElement {
 
     public render(data: any) {
         render(data, this);
-    }
-
-    public emit(event: FrmdbUserEvent) {
-        //TODO!
-    }
-
-    public on(eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
-        let events = eventType instanceof Array ? eventType : [eventType];
-        let selectors = selector instanceof Array ? selector : [selector];
-        for (let ev of events) {
-            for (let sel of selectors) {
-                on(ev, [this.tagName, ...this.className.split(/\s+/)].join('.') + ' ' + sel, fn);
-            }
-        }
     }
 }

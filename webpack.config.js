@@ -71,6 +71,15 @@ configDataGrid = {
     },
 };
 
+configForm = {
+    ...configBaseWeb,
+    entry: './tsc-out/fe/src/form/form.component.js',
+    output: {
+        path: path.resolve(__dirname, 'dist') + '/formuladb',
+        filename: 'frmdb-form.js'
+    },
+};
+
 configFe = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/fe.js',
@@ -83,5 +92,6 @@ configFe = {
 module.exports = [
     configBe, 
     configDataGrid, 
+    configForm, 
     configFe
 ];

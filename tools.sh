@@ -43,6 +43,8 @@ create-docker-env() {
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "docker,tcp,,2376,,2376"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "frmdb,tcp,,8084,,8084"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "maps,tcp,,8085,,8085"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "frmdb2,tcp,,8086,,8086"
+        'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "maps2,tcp,,8088,,8088"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres,tcp,,5432,,5432"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "postgres2,tcp,,5433,,5433"
         'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe' controlvm "docker1" natpf1 "minio,tcp,,9000,,9000"
