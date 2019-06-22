@@ -42,7 +42,7 @@ export class FormComponent extends HTMLElement implements FrmdbElementMixin {
             (this[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]) as any;
         }
 
-
+        this.initForm();
     }
 
     constructor() {

@@ -1,5 +1,7 @@
 import { onDoc } from "./delegated-events";
 import { translateClicksToNavigationEvents } from "./event-translator";
+import { FrmdbLogger } from "@domain/frmdb-logger";
+const LOG = new FrmdbLogger('frmdb:router');
 
 export interface FrmdbRoute {
     route: string;
@@ -51,6 +53,11 @@ $( document ).ready(function() {
             params,
         });
     });
+    console.log(ROUTES);
+    let path = window.location.pathname;
+    if (path && path != '/') {
+        render(path);
+    }
 });
 
 
@@ -60,7 +67,7 @@ function render(pathName: string, routerOutletName: string = "main") {
     let matchedParams: RegExpExecArray | null = null;
     for (let route of ROUTES) {
         matchedParams = route.regex.exec(path);
-        console.log(path, route, matchedParams);
+        LOG.debug("%o %o %o", path, route, matchedParams);
         if (null != matchedParams) {
             matchedRoute = route;
             break;
@@ -80,6 +87,9 @@ function render(pathName: string, routerOutletName: string = "main") {
     if (!template) throw new Error("render called and template does not exist " + path);
 
     window['FrmdbActivatedRoute'] = {params};
+    while (routerOutlet.firstChild) {
+        routerOutlet.removeChild(routerOutlet.firstChild);
+    }
     routerOutlet.appendChild(template.content.cloneNode(true))
 }
 
@@ -89,9 +99,3 @@ window.onpopstate = () => {
         render(path);
     }
 }
-window.onload = function () {
-    let path = window.location.pathname;
-    if (path && path != '/') {
-        render(path);
-    }
-};

@@ -14,8 +14,7 @@
     "docker": "mkdir -p docker-img && concurrently \"npm run docker:maps && touch docker-img/maps.t\" \"npm run docker:febe && touch docker-img/febe.t\"",
     "docker:watch": "nodemon --delay 200ms --watch dist --exec \"npm run docker\"",
     "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'npm run docker:watch' ';' select-layout even-horizontal",
-    "serve": "cross-env FRMDB_RELEASE=${npm_package_version} nodemon --delay 200ms --watch docker-img --exec \"docker-compose up -d && touch docker-img/docker-compose-start-time\"",
-    "serve:apps": "live-server --watch=\"docker-img/docker-compose-start-time,apps\" --port=8081 TODO proxy to febe ",
+    "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'npm run docker:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
     "spec:be": "jasmine --helper=./jasmine.helpers.js tsc-out/core/src/frmdb_engine.spec.js",
     "test": "npm run spec:be"
   },
