@@ -11,6 +11,7 @@ import { I18N } from '@fe/i18n.service';
 import { on, emit } from '@fe/delegated-events';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { Entity, EntityProperty } from '@domain/metadata/entity';
 const LOG = new FrmdbLogger('frmdb-form');
 
 
@@ -49,17 +50,22 @@ export class FormComponent extends FrmdbElementBase<typeof ATTRS> {
         if (!form) throw new Error("Form elem not found");
 
         for (let prop of Object.values(entity.props)) {
+            let disabled = this.getDisabled(entity, prop);
             let formField = document.createElement('div');
             formField.classList.add("form-group");
             formField.innerHTML = /*html*/`
                 <label for="${prop.name}">${I18N.tt(prop.name)}</label>
-                <input type="text" class="form-control" data-frmdb-valueof="${prop.name}" id="${prop.name}">
+                <input type="text" class="form-control" data-frmdb-valueof="${prop.name}" id="${prop.name}" ${disabled}>
             `;
             form.appendChild(formField);
         }
 
         let dataObj = await BACKEND_SERVICE.getDataObj(this.attr.rowid);
         this.renderTemplate(dataObj);
+    }
+
+    private getDisabled(entity: Entity, prop: EntityProperty): "" | "disabled" {
+        return entity.isEditable && '_id' != prop.name ? "" : "disabled";
     }
 }
 
