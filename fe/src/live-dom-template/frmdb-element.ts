@@ -1,18 +1,20 @@
 import { on, emit } from "../delegated-events";
 import { render } from "./live-dom-template";
-import { FrmdbUserEvent } from "@fe/frmdb-user-events";
+import { FrmdbLogger } from "@domain/frmdb-logger";
 
 import * as _ from "lodash";
+import { objKeysTyped } from "@domain/ts-utils";
 
-interface FrmdbElementConfig {
+interface FrmdbElementConfig<T> {
     tag:string;
+    attributeExamples: T,
     template: string;
     style?: string;
     noShadow?: boolean;
 }
 
 
-export function FrmdbElementDecoratorTODO(config: FrmdbElementConfig) {
+export function FrmdbElementDecorator<T>(config: FrmdbElementConfig<T>) {
     return function(cls: any) {
         validateSelector(config.tag);
         if (!config.template) {
@@ -24,8 +26,15 @@ export function FrmdbElementDecoratorTODO(config: FrmdbElementConfig) {
         }
         template.innerHTML = config.template;
 
+        const LOG = new FrmdbLogger(cls.name);
+
+        const observedAttributes = objKeysTyped(config.attributeExamples);
         const connectedCallback = cls.prototype.connectedCallback || function () {};
-        cls.prototype.connectedCallback = function() {
+        const connectedCallbackNew = function() {
+            for (let attrName of observedAttributes) {
+                (this.attr[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName) || '', config.attributeExamples[attrName]) as any;
+            }
+
             const clone = document.importNode(template.content, true);
             if (config.noShadow) {
                 this.appendChild(clone);
@@ -35,6 +44,25 @@ export function FrmdbElementDecoratorTODO(config: FrmdbElementConfig) {
             connectedCallback.call(this);
         };
 
+        const attributeChangedCallback = cls.prototype.attributeChangedCallback || function () {};
+        const attributeChangedCallbackNew = function(attrName, oldVal, newVal) {
+            let typedVal: any = reflectAttr2Prop(newVal, config.attributeExamples[attrName]);
+            LOG.debug("%o %o %o", attrName, oldVal, newVal, typedVal);
+            this.attr[attrName] =  typedVal;
+            attributeChangedCallback.call(this, attrName, oldVal, newVal);
+        }
+
+
+        //Web Components APIs
+        cls.prototype.connectedCallback = connectedCallbackNew;
+        cls.prototype.attributeChangedCallback = attributeChangedCallbackNew;
+        cls.observedAttributes = observedAttributes;
+
+        // custom formuladb properties
+        cls.prototype.attr = config.attributeExamples;
+        LOG.info("FrmdbElementDecorator", "%O", cls);
+
+        //define custom element
         window.customElements.define(config.tag, cls);
     }
 }
@@ -119,15 +147,22 @@ export function reflectAttr2Prop<T>(attr: string, example: T): T {
         let ret: any = {};
         for (let val of attrValuesStr) {
             let [name, valuesStr] = val.split(/: /);
-            ret[name] = reflectAttrVal(valuesStr, example[name]);
+            if (name != null && example[name] != null) {
+                ret[name] = reflectAttrVal(valuesStr, example[name]);
+            }
         }
         return ret;
     } else return reflectAttrVal(attr, example);
 }
 
-export abstract class FrmdbElementMixin extends HTMLElement {
+export abstract class FrmdbElementBase<T> extends HTMLElement {
+    attr: T;
+    observedAttributes: (keyof T)[];
 
-    public render(data: any) {
+    on = on.bind(null, this);
+    emit = emit.bind(null, this);
+
+    renderTemplate(data: any) {
         render(data, this);
     }
 }

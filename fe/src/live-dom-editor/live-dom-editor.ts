@@ -1,6 +1,5 @@
-import { FrmdbElementMixin } from "@fe/live-dom-template/frmdb-element";
+import { FrmdbElementBase } from "@fe/live-dom-template/frmdb-element";
 import * as _ from "lodash";
-import { on, emit } from '@fe/delegated-events';
 
 const HTML = /*html*/`
 <div class="live-dom-editor">
@@ -15,9 +14,9 @@ const HTML = /*html*/`
 `;
 
 class MyComponent extends HTMLElement {
-    on = on.bind(this);
-    emit = emit.bind(this);
-    render = FrmdbElementMixin.prototype.render.bind(this);
+    on = FrmdbElementBase.prototype.on.bind(this);
+    emit = FrmdbElementBase.prototype.emit.bind(this);
+    render = FrmdbElementBase.prototype.renderTemplate.bind(this);
     
     connectedCallback() {
         this.innerHTML = HTML;

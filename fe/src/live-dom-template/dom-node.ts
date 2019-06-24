@@ -106,16 +106,20 @@ export function setElemValue(el: Elem, key: string, value: string|boolean|number
             el.setAttribute(attrName, value + '');
         }
     } else if (el.getAttribute('data-frmdb-valueof') == key) {
-        let textNodeFound: boolean = false;
-        el.childNodes.forEach(child => {
-            if (child.nodeType === Node.TEXT_NODE) {
-                child.nodeValue = value + '';
-                textNodeFound = true;
+        if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
+            (el as HTMLInputElement).value = value + '';
+        } else {
+            let textNodeFound: boolean = false;
+            el.childNodes.forEach(child => {
+                if (child.nodeType === Node.TEXT_NODE) {
+                    child.nodeValue = value + '';
+                    textNodeFound = true;
+                }
+            })
+            if (!textNodeFound) {
+                let textNode = document.createTextNode(value + '');
+                el.appendChild(textNode);
             }
-        })
-        if (!textNodeFound) {
-            let textNode = document.createTextNode(value + '');
-            el.appendChild(textNode);
         }
     } else throw new Error("El " + el + " does not have data binding for key " + key);
 

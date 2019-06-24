@@ -59,21 +59,23 @@ export function render(newData: {}, el: Elem) {
         } else if (/string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date) {
             let elemForKey = getElem(el, key);
             if (null == elemForKey) {
-                elemForKey = createElem('div', key);
-                setElem(el, key, elemForKey);
+                //create missing elements only for Arrays
+                // elemForKey = createElem('div', key);
+                // setElem(el, key, elemForKey);
+            } else {
+                setElemValue(elemForKey, key, objValForKey);
             }
-
-            setElemValue(elemForKey, key, objValForKey);
         } else if ('object' === typeof objValForKey) {
             let elemForKey = getElem(el, key);
             if (null == elemForKey) {
-                elemForKey = createElem('div', key);
-                setElem(el, key, elemForKey);
+                //create missing elements only for Arrays
+                // elemForKey = createElem('div', key);
+                // setElem(el, key, elemForKey);
+            } else {
+                render(objValForKey, elemForKey);
             }
-
-            render(objValForKey, elemForKey);
         } else {
-            throw new Error('unkown objValForKey type: \'' + objValForKey + '\'');
+            throw new Error('unknown objValForKey type: \'' + objValForKey + '\'');
         }
     }
 }

@@ -1,7 +1,9 @@
 import { onDoc } from "./delegated-events";
 import { translateClicksToNavigationEvents } from "./event-translator";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-const LOG = new FrmdbLogger('frmdb:router');
+import { render as renderTemplate } from "@fe/live-dom-template/live-dom-template"
+import { Logger } from "ag-grid-community";
+const LOG = new FrmdbLogger('router');
 
 export interface FrmdbRoute {
     route: string;
@@ -13,20 +15,18 @@ export interface FrmdbActiveRoute {
     params: {[x: string]: string},
 }
 
-let LINK_CACHE = new Set<string>();
 let ROUTES: FrmdbRoute[] = [];
 
 translateClicksToNavigationEvents(document);
 
 onDoc('frmdbUserNavigation', '*', function (event) {
-    console.log("frmdbUserNavigation on", event);
+    LOG.debug("onDoc", event);
     let path = event.detail.path;
     window.history.pushState(
         {},
         path,
         window.location.origin + path
     );
-    LINK_CACHE.add(path);
     render(path);
 });
 
@@ -61,7 +61,7 @@ $( document ).ready(function() {
 });
 
 
-function render(pathName: string, routerOutletName: string = "main") {
+function render(pathName: string, routerOutletName: string = "main", allowMissingRoute?: boolean) {
     let path = pathName.replace(/^\//, '');
     let matchedRoute: FrmdbRoute | null = null;
     let matchedParams: RegExpExecArray | null = null;
@@ -73,7 +73,10 @@ function render(pathName: string, routerOutletName: string = "main") {
             break;
         }
     }
-    if (null == matchedRoute || null == matchedParams) throw new Error("path " + path + " does not match any route");
+    if (null == matchedRoute || null == matchedParams) {
+        if (allowMissingRoute) return;
+        else throw new Error("path " + path + " does not match any route");
+    }
 
     let params = {};
     for (let [i, paramValue] of matchedParams.entries()) {
@@ -84,18 +87,16 @@ function render(pathName: string, routerOutletName: string = "main") {
     if (!routerOutlet) throw new Error("render called and router outlet does not exists " + routerOutletName);
 
     let template: HTMLTemplateElement | null = document.querySelector(`template[data-frmdb-template="${matchedRoute.route}"]`);
-    if (!template) throw new Error("render called and template does not exist " + path);
+    if (!template) throw new Error("render called and template does not exist: " + path);
 
-    window['FrmdbActivatedRoute'] = {params};
     while (routerOutlet.firstChild) {
         routerOutlet.removeChild(routerOutlet.firstChild);
     }
     routerOutlet.appendChild(template.content.cloneNode(true))
+    renderTemplate({...params}, routerOutlet as HTMLElement);
 }
 
 window.onpopstate = () => {
     let path = window.location.pathname;
-    if (LINK_CACHE.has(path)) {
-        render(path);
-    }
+    render(path, "main", true);
 }

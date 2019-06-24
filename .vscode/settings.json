@@ -18,6 +18,7 @@
         "TEXTJOIN",
         "VLOOKUP",
         "endkey",
+        "formuladb",
         "jsep",
         "objs",
         "startkey"

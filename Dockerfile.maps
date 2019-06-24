@@ -3,5 +3,4 @@ FROM nginx:1.14
 COPY dist/*.js.map /usr/share/nginx/html/
 COPY dist/formuladb/*.js.map /usr/share/nginx/html/formuladb/
 
-# use http://host/path to obtain rewrite with an absolute path 
-RUN perl -pi -e 's!server \{!server {\nlocation ~ ^/(.+).js.map/\$ {try_files /\$1.js.map /\$1.js.map;}\n\n!' /etc/nginx/conf.d/default.conf
+COPY maps.nginx.default.conf /etc/nginx/conf.d/default.conf

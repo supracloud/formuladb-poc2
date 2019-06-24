@@ -1,7 +1,7 @@
 import { FrmdbUserEvent } from "./frmdb-user-events";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 
-const LOG = new FrmdbLogger('frmdb:delegated-events');
+const LOG = new FrmdbLogger('delegated-events');
 
 export type EventType = "click" | "blur" | FrmdbUserEvent['type'];
 
@@ -11,7 +11,7 @@ export function on(el: HTMLElement | Document | ShadowRoot, eventType: EventType
     for (let ev of events) {
         //@ts-ignore
         el.addEventListener(ev, (event: any) => {
-            LOG.debug("%o, %o", ev, event);
+            LOG.debug("on", "%o, %o,", ev, event);
             if (!event || !event.target) {console.warn("received incorrect event:", event); return};
             for (let sel of selectors) {
                 if (event.target.matches(sel)) {

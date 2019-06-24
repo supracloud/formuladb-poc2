@@ -1,3 +1,4 @@
 *
 !dist
 !package.json
+!maps.nginx.default.conf

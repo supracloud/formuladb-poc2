@@ -28,7 +28,6 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "preLaunchTask": "",
             "url": "http://localhost:8081",
             "webRoot": "${workspaceFolder}",
             "sourceMapPathOverrides": {

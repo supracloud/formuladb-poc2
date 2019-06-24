@@ -19,7 +19,7 @@ import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
-import { FrmdbElementMixin, reflectProp2Attr, reflectAttr2Prop } from '@fe/live-dom-template/frmdb-element';
+import { FrmdbElementBase, reflectProp2Attr, reflectAttr2Prop, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn, FormulaExpression } from '@domain/metadata/entity';
@@ -30,38 +30,29 @@ import { on, emit } from '@fe/delegated-events';
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 const ATTRS = {
-    tableName: "str",
-    highlightColumns: [{ tableName: "str", columnName: "str" }],
-    headerHeight: 0,
-    expandRow: true,
-    // conditionalFormatting?: {[cssClassName: string]: FormulaExpression};
+    table_name: "str",
+    highlight_columns: [{ table_name: "str", column_name: "str" }],
+    header_height: 25,
+    expand_row: true,
+    conditional_formatting: { tbdCssClassName: "str FORMULA" },
 }
 
-export class DataGridComponent extends HTMLElement implements FrmdbElementMixin {
-
-    /** frmdb utilities for web components **********************************/
-    on = on.bind(null, this);
-    emit = emit.bind(null, this);
-    render = FrmdbElementMixin.prototype.render.bind(this);
-
-    /** Component attributes ************************************************/
-    tableName: string;
-    highlightColumns: typeof ATTRS.highlightColumns;
-    headerHeight: number;
-    conditionalFormatting?: { [cssClassName: string]: FormulaExpression };
-    expandRow: boolean;
+@FrmdbElementDecorator({
+    tag: 'frmdb-data-grid',
+    attributeExamples: ATTRS,
+    template: HTML,
+    style: CSS,
+})
+export class DataGridComponent extends FrmdbElementBase<typeof ATTRS> {
 
     /** web components API **************************************************/
-    static observedAttributes: (keyof DataGridComponent & keyof typeof ATTRS)[] = objKeysTyped(ATTRS);
-    attributeChangedCallback(attrName: keyof DataGridComponent & keyof typeof ATTRS, oldVal, newVal) {
-        (this[attrName] as any) = reflectAttr2Prop(newVal, ATTRS[attrName]) as any;
-
+    attributeChangedCallback(attrName: keyof typeof ATTRS, oldVal, newVal) {
         if (!this.gridApi) return;
-        if (attrName == 'highlightColumns') {
+        if (attrName == 'highlight_columns') {
             if (this.gridApi) {
                 this.gridApi.refreshCells({ force: true });
             }
-        } else if (attrName == 'tableName') {
+        } else if (attrName == 'table_name') {
             this.initAgGrid();
         } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
             this.gridApi.purgeServerSideCache()
@@ -69,34 +60,23 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     }
 
     connectedCallback() {
-        for (let attrName of DataGridComponent.observedAttributes) {
-            (this[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName) || '', ATTRS[attrName]) as any;
-        }
-
-        new Grid(this._shadowRoot.querySelector("#myGrid") as HTMLElement, this.gridOptions);
-        TABLE_SERVICE.getColumns(this.tableName)
-            .then(columns => this.columns = columns)
-            .then(() => this.initAgGrid())
-        ;
-
-        translateClicksToNavigationEvents(this._shadowRoot);
-    }
-
-
-    _shadowRoot: ShadowRoot;
-    constructor() {
-        super();
-        this._shadowRoot = this.attachShadow({ 'mode': 'open' });
-
         this.style.minWidth = "28vw";
         this.style.minHeight = "25vh";
         this.style.height = "100%";
         this.style.display = "block";
 
-        this._shadowRoot.innerHTML = /*html*/ `
-            <style>${CSS}</style>
-            ${HTML}
-        `;
+        new Grid(this.shadowRoot!.querySelector("#myGrid") as HTMLElement, this.gridOptions);
+        TABLE_SERVICE.getColumns(this.attr.table_name)
+            .then(columns => this.columns = columns)
+            .then(() => this.initAgGrid())
+        ;
+
+        translateClicksToNavigationEvents(this.shadowRoot!);
+    }
+
+
+    constructor() {
+        super();
 
         // tslint:disable-next-line:max-line-length
         // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
@@ -229,10 +209,10 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     };
 
     applyCellStyles(params) {
-        let entityName = this.tableName;
-        if (entityName && this.highlightColumns[entityName]
-            && this.highlightColumns[entityName][params.colDef.field]) {
-            return { backgroundColor: this.highlightColumns[entityName][params.colDef.field].replace(/^c_/, '#') };
+        let entityName = this.attr.table_name;
+        if (entityName && this.attr.highlight_columns[entityName]
+            && this.attr.highlight_columns[entityName][params.colDef.field]) {
+            return { backgroundColor: this.attr.highlight_columns[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
     }
@@ -256,18 +236,18 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
         console.debug("ngOnInit", this, this.gridApi);
 
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.headerHeight || 25;
+        this.gridOptions.headerHeight = this.attr.header_height || 25;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,
         //     pattern: "Solid",
         // };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.tableName));
+        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.attr.table_name));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.conditionalFormatting || {};
+            let conditionalFormatting = this.attr.conditional_formatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
@@ -332,12 +312,10 @@ export class DataGridComponent extends HTMLElement implements FrmdbElementMixin 
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.expandRow && col.name === '_id') {
+        if (this.attr.expand_row && col.name === '_id') {
             return (params) => {
                 return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
     }
 }
-
-window.customElements.define('frmdb-data-grid', DataGridComponent);
