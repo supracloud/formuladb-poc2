@@ -3,35 +3,32 @@
  * License TBD
  */
 
-import {
-    OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, Component
-} from '@angular/core';
-
-import { BaseNodeComponent } from '../base_node';
-
-import { FormAutocomplete } from "@domain/uimetadata/node-elements";
-import { FormEditingService } from '../form-editing.service';
-import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/app/actions/form.user.actions';
-import { I18nPipe } from '@fe/app/crosscutting/i18n/i18n.pipe';
+ 
+import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/frmdb-user-events';
 import * as _ from 'lodash';
-import { ValidatorFn, AbstractControl } from '@angular/forms';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { debounceTime, map, tap, combineLatest, zip, distinctUntilChanged, filter } from 'rxjs/operators';
-import { AutoCompleteState } from '@fe/app/state/app.state';
 import { elvis, elvis_a } from '@core/elvis';
+import { FrmdbElementBase, FrmdbElementDecorator } from '@be/live-dom-template/frmdb-element';
 
-@Component({
-    // tslint:disable-next-line:component-selector
-    selector: 'frmdb-form_autocomplete',
-    templateUrl: './form_autocomplete.component.html',
-    styleUrls: [
-        '../form_input/form_input.component.scss',
-        './form_autocomplete.component.scss',
-    ]
+const HTML: string = require('raw-loader!@fe-assets/autocomplete/autocomplete.component.html').default;
+const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/autocomplete/autocomplete.component.scss').default;
+const ATTRS = {
+    ref_entity_name: "string",
+    ref_property_name: "string",
+    property_name: "string",
+    ref_entity_alias: "string",
+    no_label: "string",
+}
+export type AutocompleteAttrs = Partial<typeof ATTRS>;
+
+@FrmdbElementDecorator({
+    tag: 'frmdb-autocomplete',
+    attributeExamples: ATTRS,
+    stateExample: {},
+    template: HTML,
+    style: CSS,
 })
-export class FormAutocompleteComponent extends BaseNodeComponent implements OnInit, OnDestroy {
+export class AutocompleteComponent extends FrmdbElementBase<typeof ATTRS, {}> {
 
-    inputElement: FormAutocomplete;
     public text$: Subject<string> = new BehaviorSubject('');
     // public formatedStrOptions: string[] = [];
     private control: AbstractControl | null;
@@ -40,8 +37,8 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     public currentSearchTxt: string | null;
     public popupOpened: boolean = false;
 
-    constructor(formEditingService: FormEditingService, private i18npipe: I18nPipe, private changeDetectorRef: ChangeDetectorRef) {
-        super(formEditingService);
+    constructor() {
+        super();
     }
 
     getControl() {
@@ -54,7 +51,7 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
                     if (!this.autoCompleteState) return null;
                     let validSelection = false;
                     for (let opt of this.autoCompleteState.options) {
-                        if (opt[this.inputElement.refPropertyName] === control.value) {
+                        if (opt[this.inputElement.ref_property_name] === control.value) {
                             validSelection = true;
                         }
                     }
@@ -89,11 +86,11 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
                 let ctrl = this.getControl();
                 if (!ctrl) console.warn("Control not found for autocomplete ", this.formgrp, this.fullpath);
                 else {
-                    ctrl.setValue(autoCompleteState.selectedOption[this.inputElement.refPropertyName]);
+                    ctrl.setValue(autoCompleteState.selectedOption[this.inputElement.ref_property_name]);
                 }
             }
             this.popupOpened = this.currentSearchTxt != null
-                && (autoCompleteState.currentControl.propertyName === this.inputElement.propertyName);
+                && (autoCompleteState.currentControl.property_name === this.inputElement.property_name);
             console.debug(this.parentObjId, (this.control as any).name, autoCompleteState, this.popupOpened, this.currentSearchTxt);
             if (!this.changeDetectorRef['destroyed']) {
                 this.changeDetectorRef.detectChanges();
@@ -116,13 +113,13 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
     }
 
     highlightOption(option: {}) {
-        return option[this.inputElement.refPropertyName].replace(this.currentSearchTxt + '', '<strong>' + this.currentSearchTxt + '</strong>');
+        return option[this.inputElement.ref_property_name].replace(this.currentSearchTxt + '', '<strong>' + this.currentSearchTxt + '</strong>');
     }
 
     isAutocompleteStateMatching(autoCompleteState: AutoCompleteState): boolean {
         if (!this.control) return false;
         if (!this.parentObjId || this.parentObjId !== autoCompleteState.currentObjId
-            || (this.inputElement.refEntityAlias || this.inputElement.refEntityName) !== autoCompleteState.entityAlias) return false;
+            || (this.inputElement.ref_entity_alias || this.inputElement.ref_entity_name) !== autoCompleteState.entityAlias) return false;
         return true;
     }
 
@@ -132,12 +129,12 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
 
     getOptionValue(row): string {
         if (!this.autoCompleteState) return '';
-        let valueForCurrentControl = row[this.inputElement.refPropertyName];
+        let valueForCurrentControl = row[this.inputElement.ref_property_name];
         let relatedControlsValues: string[] = [];
         for (let relatedControl of Object.values(this.autoCompleteState.controls)) {
-            if (relatedControl.propertyName === this.inputElement.propertyName) continue;
-            relatedControlsValues.push(this.i18npipe.transform(relatedControl.propertyName) + ': '
-                + row[relatedControl.propertyName]);
+            if (relatedControl.property_name === this.inputElement.property_name) continue;
+            relatedControlsValues.push(this.i18npipe.transform(relatedControl.property_name) + ': '
+                + row[relatedControl.property_name]);
         }
 
         return valueForCurrentControl + " (" + relatedControlsValues.join(", ") + ")";
@@ -164,5 +161,12 @@ export class FormAutocompleteComponent extends BaseNodeComponent implements OnIn
         if (this.currentOptionIdx > 0) {
             this.currentOptionIdx--;
         }
+    }
+
+    manageSelection() {
+        //TODO
+        // (keydown.enter)="selectCurrentOption()" 
+        // (keydown.arrowdown)="nextSuggestion()" 
+        // (keydown.arrowup)="prevSuggestion()"    
     }
 }

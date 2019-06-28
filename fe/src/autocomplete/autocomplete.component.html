@@ -1,13 +1,9 @@
-<label [for]="fullpath" *ngIf="!inputElement.noLabel">
+<label data-frmdb-attr="for:property_name" data-frmdb-if="no_label">
     {{inputElement.refEntityName | i18n}}/{{inputElement.refPropertyName | i18n}}
 </label>
-<input #input [id]="fullpath" class="form-control" type="text" [name]="fullpath" autocomplete="off"
-    *ngIf="hasControl(fullpath)"
-    [formControl]="control"
-    (input)="text$.next($event.target.value)"
-    (keydown.enter)="selectCurrentOption()" 
-    (keydown.arrowdown)="nextSuggestion()" 
-    (keydown.arrowup)="prevSuggestion()"
+<input [id]="fullpath" class="form-control" type="text" autocomplete="off"
+    oninput="this.$cmp.text$.next($event.target.value)"
+    onkeydown="this.$cmp.manageSelection()"
 />
 <div class="position-relative">
     <div class="card frmdb-autocomplete_popup" [class.visible]="popupOpened">
@@ -20,7 +16,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let option of autoCompleteState?.options; let idx = index" (click)="selectOption(option)">
+                <tr *ngFor="autoCompleteState.options; let idx = index" onclick="this.$cmp.selectOption(this)">
                     <td [class.selected]="currentOptionIdx == idx" *ngFor="let relatedCtrl of relatedControls">
                         <span *ngIf="relatedCtrl.propertyName === inputElement.propertyName" [innerHtml]="highlightOption(option)"></span>
                         <span *ngIf="relatedCtrl.propertyName !== inputElement.propertyName">{{option[relatedCtrl.propertyName]}}</span>

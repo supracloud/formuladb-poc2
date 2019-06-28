@@ -1,4 +1,5 @@
 import * as isNode from 'detect-node';
+import * as _ from "lodash";//TODO: optimization include only the needed functions
 
 let parser, serializer;
 // console.error(isNode);
@@ -19,7 +20,7 @@ export class ElemList {
     }
 
     public addElem() {
-        let firstEl = this.parentEl.firstChild;
+        let firstEl = this.parentEl.querySelector(`[data-frmdb-foreach="${this.key}"]`);
         if (!firstEl) firstEl = createElem('div', this.key);
         this.parentEl.appendChild(firstEl.cloneNode(true));
     }
@@ -50,7 +51,7 @@ export function writeHTML(el: Elem): string {
 
 export function createElem(tagName: string, key: string): Elem {
     let el = document.createElement(tagName);
-    let attr = document.createAttribute("data-frmdb-valueof");
+    let attr = document.createAttribute("data-frmdb-value");
     attr.value = key;
     el.setAttributeNode(attr);
     
@@ -69,16 +70,8 @@ export function createElemList(tagName: string, key: string, length: number): El
     return new ElemList(key, dummy);
 }
 
-export function path2css(path: string): string {
-    return path.replace(/\//g, " ");
-}
-
-export function findElem(el: Elem, path: string): Elem | null {
-    return el.querySelector(path2css(path));
-}
-
-export function getElem(el: Elem, key: string): Elem | null {
-    return el.querySelector(`[data-frmdb-valueof="${key}"]`) || el.querySelector(`[data-frmdb-attr^="${key}:"]`);
+export function getElem(el: Elem, key: string): Elem[] {
+    return Array.from(el.querySelectorAll(`[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"]`));
 }
 
 export function getElemList(el: Elem, key: string): ElemList | null {
@@ -92,46 +85,54 @@ export function addElem(el: Elem, childEl: Elem) {
     el.appendChild(childEl);
 }
 
-export function setElemValue(el: Elem, key: string, value: string|boolean|number|Date) {
-    let dataAttr = el.getAttribute('data-frmdb-attr');
-    if (dataAttr && dataAttr.indexOf(key + ':') === 0) {
-        let attrName = dataAttr.replace(/^.*:/, '');
-        if (attrName.indexOf("class.") == 0) {
-            let className = attrName.replace(/^class\./, '');
-            el.classList.toggle(className, value == true );
-        } else if (attrName.indexOf("style.") == 0) {
-            let styleName = attrName.replace(/^style\./, '');
-            el.style.setProperty(styleName, value + '');
-        } else {
-            el.setAttribute(attrName, value + '');
-        }
-    } else if (el.getAttribute('data-frmdb-valueof') == key) {
-        if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
-            (el as HTMLInputElement).value = value + '';
-        } else {
-            let textNodeFound: boolean = false;
-            el.childNodes.forEach(child => {
-                if (child.nodeType === Node.TEXT_NODE) {
-                    child.nodeValue = value + '';
-                    textNodeFound = true;
-                }
-            })
-            if (!textNodeFound) {
-                let textNode = document.createTextNode(value + '');
-                el.appendChild(textNode);
-            }
-        }
-    } else throw new Error("El " + el + " does not have data binding for key " + key);
 
-    //FIXME: form inputs have different ways of setting the value
+function getValueForDomKey(domKey: string, context: {}, arrayIndexes: number[]) {
+    let arrayIdx = 0;
+    return _.get(context,
+        domKey.split(/(\[\])/).map(x => x == '[]' ? `[${arrayIndexes[arrayIdx++]}]` : x).join('')
+    );
 }
 
-export function setElem(el: Elem, key: string, childEl: Elem) {
-    let existingChildEl = getElem(el, key);
-    if (existingChildEl) { 
-        el.replaceChild(existingChildEl, childEl);
-    } else {
-        el.appendChild(childEl);
+export function setElemValue(elems: Elem[], key: string, context: {}, arrayIndexes: number[]) {
+    let value: string|boolean|number|Date = getValueForDomKey(key, context, arrayIndexes);
+    for (let el of elems) {
+        let dataAttrs: string[] = [
+            el.getAttribute('data-frmdb-attr'), 
+            el.getAttribute('data-frmdb-attr2'), 
+            el.getAttribute('data-frmdb-attr3'), 
+            el.getAttribute('data-frmdb-attr4')
+        ].filter(x => null != x && x.indexOf(':' + key) > 0) as string[];
+
+        if (dataAttrs.length > 0) {
+            for (let dataAttr of dataAttrs) {
+                let attrName = dataAttr.replace(/:.*$/, '');
+                if (attrName.indexOf("class.") == 0) {
+                    let className = attrName.replace(/^class\./, '');
+                    el.classList.toggle(className, value == true );
+                } else if (attrName.indexOf("style.") == 0) {
+                    let styleName = attrName.replace(/^style\./, '');
+                    el.style.setProperty(styleName, value + '');
+                } else {
+                    el.setAttribute(attrName, value + '');
+                }
+            }
+        } else if (el.getAttribute('data-frmdb-value') == key) {
+            if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
+                (el as HTMLInputElement).value = value + '';
+            } else {
+                let textNodeFound: boolean = false;
+                el.childNodes.forEach(child => {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        child.nodeValue = value + '';
+                        textNodeFound = true;
+                    }
+                })
+                if (!textNodeFound) {
+                    let textNode = document.createTextNode(value + '');
+                    el.appendChild(textNode);
+                }
+            }
+        } else throw new Error("El " + el + " does not have data binding for key " + key);
     }
 }
 
