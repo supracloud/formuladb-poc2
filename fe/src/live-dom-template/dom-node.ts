@@ -71,7 +71,9 @@ export function createElemList(tagName: string, key: string, length: number): El
 }
 
 export function getElem(el: Elem, key: string): Elem[] {
-    return Array.from(el.querySelectorAll(`[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"]`));
+    return Array.from(el.querySelectorAll(
+        `[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"],[data-frmdb-meta-value$="${key}"],[data-frmdb-meta-attr$=":${key}"],[data-frmdb-meta-attr2$=":${key}"],[data-frmdb-meta-attr3$=":${key}"],[data-frmdb-meta-attr4$=":${key}"]`
+    ));
 }
 
 export function getElemList(el: Elem, key: string): ElemList | null {
@@ -86,37 +88,70 @@ export function addElem(el: Elem, childEl: Elem) {
 }
 
 
-function getValueForDomKey(domKey: string, context: {}, arrayIndexes: number[]) {
+function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: number[]) {
     let arrayIdx = 0;
     return _.get(context,
-        domKey.split(/(\[\])/).map(x => x == '[]' ? `[${arrayIndexes[arrayIdx++]}]` : x).join('')
+        domKey.split(/(\[\])/).map(x => x == '[]' ? `[${arrayCurrentIndexes[arrayIdx++]}]` : x).join('')
     );
 }
 
-export function setElemValue(elems: Elem[], key: string, context: {}, arrayIndexes: number[]) {
-    let value: string|boolean|number|Date = getValueForDomKey(key, context, arrayIndexes);
+export function setElemValue(elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[]) {
     for (let el of elems) {
-        let dataAttrs: string[] = [
-            el.getAttribute('data-frmdb-attr'), 
-            el.getAttribute('data-frmdb-attr2'), 
-            el.getAttribute('data-frmdb-attr3'), 
-            el.getAttribute('data-frmdb-attr4')
-        ].filter(x => null != x && x.indexOf(':' + key) > 0) as string[];
+        let foundDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes, "")
+            || _setElemValue(el, key, context, arrayCurrentIndexes, "-meta")
+        if (!foundDataBinding) throw new Error("El " + el + " does not have data binding for key " + key);
+    }
+}
 
-        if (dataAttrs.length > 0) {
-            for (let dataAttr of dataAttrs) {
-                let attrName = dataAttr.replace(/:.*$/, '');
-                if (attrName.indexOf("class.") == 0) {
-                    let className = attrName.replace(/^class\./, '');
-                    el.classList.toggle(className, value == true );
-                } else if (attrName.indexOf("style.") == 0) {
-                    let styleName = attrName.replace(/^style\./, '');
-                    el.style.setProperty(styleName, value + '');
-                } else {
-                    el.setAttribute(attrName, value + '');
-                }
+function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: number[], meta: "-meta" | ""): boolean {
+
+    let dataAttrs: string[] = [
+        el.getAttribute(`data-frmdb${meta}-attr`), 
+        el.getAttribute(`data-frmdb${meta}-attr2`), 
+        el.getAttribute(`data-frmdb${meta}-attr3`), 
+        el.getAttribute(`data-frmdb${meta}-attr4`)
+    ].filter(x => null != x && x.indexOf(':' + key) > 0) as string[];
+
+    if (dataAttrs.length > 0) {
+        for (let dataAttr of dataAttrs) {
+            let arr = dataAttr.split(":");
+            let attrName = arr[0];
+            let value;
+            if ("" === meta) {
+                if (arr.length != 2 || arr[1] != key) throw new Error("Expected attrName:domKey but found " + dataAttr + " for key " + key);
+                value = getValueForDomKey(key, context, arrayCurrentIndexes);
+            } else {
+                if (arr.length != 3 || arr[2] != key) throw new Error("Expected attrName:metaObjKey:domKey but found " + dataAttr + " for key " + key);
+                let metaCtx = getValueForDomKey(arr[1], context, arrayCurrentIndexes);
+                let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
+                value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
             }
-        } else if (el.getAttribute('data-frmdb-value') == key) {
+            dataAttr.replace(/:.*$/, '');
+            if (attrName.indexOf("class.") == 0) {
+                let className = attrName.replace(/^class\./, '');
+                el.classList.toggle(className, value == true );
+            } else if (attrName.indexOf("style.") == 0) {
+                let styleName = attrName.replace(/^style\./, '');
+                el.style.setProperty(styleName, value + '');
+            } else {
+                el.setAttribute(attrName, value + '');
+            }
+        }
+        return true;
+    } else {
+        let valueAttr = el.getAttribute(`data-frmdb${meta}-value`)||'';
+        if (valueAttr.replace(/^.*:/, '') == key) {
+            let value;
+            if ("" == meta) {
+                value = getValueForDomKey(key, context, arrayCurrentIndexes);
+            } else {
+                let [metaCtxKey, domKey] = valueAttr.split(":");
+                if (!metaCtxKey || domKey != key) throw new Error("Expected metaObjKey:domKey but found " + valueAttr + " for key " + key);
+                let metaCtx = getValueForDomKey(metaCtxKey, context, arrayCurrentIndexes);
+                let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
+                value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
+            }
+
             if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
                 (el as HTMLInputElement).value = value + '';
             } else {
@@ -132,7 +167,8 @@ export function setElemValue(elems: Elem[], key: string, context: {}, arrayIndex
                     el.appendChild(textNode);
                 }
             }
-        } else throw new Error("El " + el + " does not have data binding for key " + key);
+            return true;
+        } else return false;
     }
 }
 

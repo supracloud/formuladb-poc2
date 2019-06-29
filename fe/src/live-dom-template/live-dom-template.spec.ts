@@ -10,17 +10,28 @@ const template = /*html*/`
         <li data-frmdb-attr="class.my-class:tableName[].cls" data-frmdb-value="tableName[].description"><label data-frmdb-label></label></li>
     </ul>
     <div data-frmdb-foreach="tableName[].childTable[]">
-        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr="attr-from-parent:topObj.a" data-frmdb-attr2="second-attr:my-attr:tableName[].atr">blabla</div>
+        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr="attr-from-parent:topObj.a" 
+            data-frmdb-attr2="second-attr:tableName[].atr">blabla</div>
+        <div data-frmdb-meta-value="topObj:secondTopObj.f1" data-frmdb-meta-attr="at1:topObj:secondTopObj.f2"
+            data-frmdb-meta-attr3="at2:secondTopObj:tableName[].childTable[].x"></div>
     </div>    
 </div>
 `;
 
 let data = {
-    topObj: {a: 12},
+    topObj: {a: 12, b: 15},
     tableName: [
         { name: "row1", description: "desc of row 1", bg: "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
-        { name: "row2", description: "desc of row 2", bg: "blue", cls: false, atr: "attr2", childTable: [{x: "2.1"}, {x: "2.1"}] },
-    ]
+        { name: "row2", description: "desc of row 2", bg: "blue", cls: false, atr: "attr2", childTable: [{x: "2.1"}, {x: "2.2"}] },
+    ],
+    secondTopObj: {
+        f1: "b", 
+        f2: "a",
+        "1.1": "F1.1",
+        "1.2": "F1.2",
+        "2.1": "F2.1",
+        "2.2": "F2.2",
+    }
 };
 
 function normalizeHTML(html: string): string[] {
@@ -43,10 +54,12 @@ describe('FrmdbTemplate', () => {
                         <li data-frmdb-attr="class.my-class:tableName[].cls" data-frmdb-value="tableName[].description" class="my-class"><label data-frmdb-label=""></label>desc of row 1</li>
                     </ul>
                     <div data-frmdb-foreach="tableName[].childTable[]">
-                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr2="second-attr:my-attr:tableName[].atr" data-frmdb-attr="attr-with-value-from-parent:topObj.a" attr-from-parent="12" second-attr="attr1">1.1</div>
+                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr="attr-from-parent:topObj.a" data-frmdb-attr2="second-attr:tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</div>
+                        <div data-frmdb-meta-value="topObj:secondTopObj.f1" data-frmdb-meta-attr="at1:topObj:secondTopObj.f2" data-frmdb-meta-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.1" at1="12">15</div>
                     </div>
                     <div data-frmdb-foreach="tableName[].childTable[]">
-                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr2="second-attr:my-attr:tableName[].atr" data-frmdb-attr="attr-with-value-from-parent:topObj.a" attr-from-parent="12" second-attr="attr1">1.2</div>
+                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr="attr-from-parent:topObj.a" data-frmdb-attr2="second-attr:tableName[].atr" attr-from-parent="12" second-attr="attr1">1.2</div>
+                        <div data-frmdb-meta-value="topObj:secondTopObj.f1" data-frmdb-meta-attr="at1:topObj:secondTopObj.f2" data-frmdb-meta-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.2" at1="12">15</div>
                     </div>
                 </div>
                 <div data-frmdb-foreach="tableName[]">
@@ -55,10 +68,12 @@ describe('FrmdbTemplate', () => {
                         <li data-frmdb-attr="class.my-class:tableName[].cls" data-frmdb-value="tableName[].description" class=""><label data-frmdb-label=""></label>desc of row 2</li>
                     </ul>
                     <div data-frmdb-foreach="tableName[].childTable[]">
-                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr2="second-attr:my-attr:tableName[].atr" data-frmdb-attr="attr-with-value-from-parent:topObj.a" attr-from-parent="12" second-attr="attr2">2.1</div>
+                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr="attr-from-parent:topObj.a" data-frmdb-attr2="second-attr:tableName[].atr" attr-from-parent="12" second-attr="attr2">2.1</div>
+                        <div data-frmdb-meta-value="topObj:secondTopObj.f1" data-frmdb-meta-attr="at1:topObj:secondTopObj.f2" data-frmdb-meta-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.1" at1="12">15</div>
                     </div>
                     <div data-frmdb-foreach="tableName[].childTable[]">
-                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr2="second-attr:my-attr:tableName[].atr" data-frmdb-attr="attr-with-value-from-parent:topObj.a" attr-from-parent="12" second-attr="attr2">2.1</div>
+                        <div data-frmdb-value="tableName[].childTable[].x" data-frmdb-attr="attr-from-parent:topObj.a" data-frmdb-attr2="second-attr:tableName[].atr" attr-from-parent="12" second-attr="attr2">2.2</div>
+                        <div data-frmdb-meta-value="topObj:secondTopObj.f1" data-frmdb-meta-attr="at1:topObj:secondTopObj.f2" data-frmdb-meta-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.2" at1="12">15</div>
                     </div>
                 </div>
             </body> 

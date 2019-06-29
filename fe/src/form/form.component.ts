@@ -21,51 +21,47 @@ const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/form/
 const ATTRS = {
     table_name: "str",
     rowid: "str"
-}
-
+};
+const STATE = {
+    props: [{
+        name: "string",
+        nameI18n: "string",
+        value: "string",
+        disabled: false,
+        dataObjPath: "string",
+    }],
+    dataObj: {},
+};
 
 @FrmdbElementDecorator({
     tag: 'frmdb-form',
     attributeExamples: ATTRS,
+    stateExample: STATE,
     template: HTML,
     style: CSS,
     noShadow: true,
 })
-export class FormComponent extends FrmdbElementBase<typeof ATTRS> {
+export class FormComponent extends FrmdbElementBase<typeof ATTRS, typeof STATE> {
 
-    /** web components API **************************************************/
-    connectedCallback() {
-        this.initForm();
-    }
-
-    constructor() {
-        super();
-    }
-
-    /** component internals *************************************************/
-
-    private async initForm() {
+    async updateStateWhenAttributesChange() {
         let entity = await BACKEND_SERVICE.getEntity(this.attr.table_name);
         let form = this.querySelector('form');
         if (!form) throw new Error("Form elem not found");
 
         for (let prop of Object.values(entity.props)) {
-            let disabled = this.getDisabled(entity, prop);
-            let formField = document.createElement('div');
-            formField.classList.add("form-group");
-            formField.innerHTML = /*html*/`
-                <label for="${prop.name}">${I18N.tt(prop.name)}</label>
-                <input type="text" class="form-control" data-frmdb-valueof="${prop.name}" id="${prop.name}" ${disabled}>
-            `;
-            form.appendChild(formField);
+            this.state.props.push({
+                name: "string",
+                nameI18n: "string",
+                value: "string",
+                disabled: this.getDisabled(entity, prop),                
+            });
         }
 
         let dataObj = await BACKEND_SERVICE.getDataObj(this.attr.rowid);
-        this.renderTemplate(dataObj);
     }
 
-    private getDisabled(entity: Entity, prop: EntityProperty): "" | "disabled" {
-        return entity.isEditable && '_id' != prop.name ? "" : "disabled";
+    private getDisabled(entity: Entity, prop: EntityProperty): boolean {
+        return entity.isEditable == true && '_id' != prop.name;
     }
 }
 

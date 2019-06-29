@@ -21,25 +21,29 @@ export function deleteElem(el: Elem) {
 }
 
 /**
- * Nested variable scopes will require 2 passes: 
- *  - first pass will ensure all array elements are instantiated
- *  - second pass will ensure all new array elements are updated with values from the upper scopes
- * TODO: micro-benchmarks and perhaps find a more performing solution (e.g. stop diffing with the DOM and diff with the previous version of the object)
+ * Nested variable scopes will not require 2 passes: 
+ *  - IF arrays are instantiated first, then all the instances will be bound with the valued from the parent scope
+ *  - IF the parent scope is bound first, it will modify the DOM and when arrays clone the first element the clones will inherit the correct values
+ *
+ * TODO: micro-benchmarks and perhaps find a more performing solution (e.g. diff with the previous version of the object and update the DOM with only the differences)
  * 
  * <div data-frmdb-foreach="tableName">
  *     <span data-frmdb-value="tableName[].field"></span>
  *     <span data-frmdb-value="topLevelObj.someField"></span>
  * </div>
  * 
+ * Meta-value(s) and meta-attr(s) are like bash's ${!VAR}
+ * LIMITATION: meta-values cannot use an array key from a different scope because the data binding will be evaluated outside the array and the current indexes will be unknown
+ * 
  * @param newData 
  * @param el 
  */
 export function updateDOM(newData: {}, el: Elem): void {
     _updateDOM(newData, el, newData, '', []);
-    _updateDOM(newData, el, newData, '', []);
+    // _updateDOM(newData, el, newData, '', []);
 }
 
-function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: string, arrayIndexes: number[]) {
+function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[]) {
     let domKeySep = currentScopePrefix ? '.' : '';
 
     for (const key in newData) {
@@ -62,7 +66,7 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
                 if (elemListForKey.length <= i) {
                     elemListForKey.addElem();
                 }
-                _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayIndexes.concat(i));
+                _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
             };
             for (let i = objValForKey.length; i < elemListForKey.length; i++) {
                 elemListForKey.removeAt(i);
@@ -72,23 +76,17 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
             let elemsForKey = getElem(el, domKey);
             if (0 == elemsForKey.length) {
-                //create missing elements only for Arrays
-                // elemForKey = createElem('div', key);
-                // setElem(el, key, elemForKey);
             } else {
-                setElemValue(elemsForKey, domKey, context, arrayIndexes);
+                setElemValue(elemsForKey, domKey, context, arrayCurrentIndexes);
             }
         } else if ('object' === typeof objValForKey) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
             let elemsForKey = getElem(el, domKey);
             if (0 == elemsForKey.length) {
-                //create missing elements only for Arrays
-                // elemForKey = createElem('div', key);
-                // setElem(el, key, elemForKey);
-            } else {
-                for (let elForKey of elemsForKey) {
-                    _updateDOM(objValForKey, elForKey, context, domKey, arrayIndexes);
-                }
+                elemsForKey.push(el);
+            }
+            for (let elForKey of elemsForKey) {
+                _updateDOM(objValForKey, elForKey, context, domKey, arrayCurrentIndexes);
             }
         } else {
             throw new Error('unknown objValForKey type: \'' + objValForKey + '\'');
