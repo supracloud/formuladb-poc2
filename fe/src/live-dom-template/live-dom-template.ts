@@ -47,14 +47,10 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
     let domKeySep = currentScopePrefix ? '.' : '';
 
     for (const key in newData) {
-        if ('type_' === key) { continue; }
-        // if ('_rev' === key) continue;
-        // if ('_id' === key) continue;
 
         const objValForKey = newData[key];
-        if (null === objValForKey) {
+        if (null == objValForKey) {
             continue;
-            //FIXME: here we have to delete elems...but we have to take care of the template
         }
 
         if (objValForKey instanceof Array) {

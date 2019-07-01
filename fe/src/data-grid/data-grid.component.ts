@@ -19,7 +19,7 @@ import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
-import { FrmdbElementBase, reflectProp2Attr, reflectAttr2Prop, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
+import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn, FormulaExpression } from '@domain/metadata/entity';
@@ -29,24 +29,25 @@ import { on, emit } from '@fe/delegated-events';
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
-const ATTRS = {
-    table_name: "str",
-    highlight_columns: [{ table_name: "str", column_name: "str" }],
-    header_height: 25,
-    expand_row: true,
-    conditional_formatting: { tbdCssClassName: "str FORMULA" },
+export interface DataGridComponentAttr {
+    table_name: string;
+    highlight_columns?: [{ table_name: string, column_name: string }];
+    header_height?: number;
+    expand_row?: boolean;
+    conditional_formatting?: { tbdCssClassName: string };
 }
 
 @FrmdbElementDecorator({
     tag: 'frmdb-data-grid',
-    attributeExamples: ATTRS,
+    observedAttributes: ["table_name" , "highlight_columns" , "header_height" , "expand_row" , "conditional_formatting"],
+    initialState: {},
     template: HTML,
     style: CSS,
 })
-export class DataGridComponent extends FrmdbElementBase<typeof ATTRS> {
+export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, {}> {
 
     /** web components API **************************************************/
-    attributeChangedCallback(attrName: keyof typeof ATTRS, oldVal, newVal) {
+    attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
         if (!this.gridApi) return;
         if (attrName == 'highlight_columns') {
             if (this.gridApi) {
@@ -66,12 +67,8 @@ export class DataGridComponent extends FrmdbElementBase<typeof ATTRS> {
         this.style.display = "block";
 
         new Grid(this.shadowRoot!.querySelector("#myGrid") as HTMLElement, this.gridOptions);
-        TABLE_SERVICE.getColumns(this.attr.table_name)
-            .then(columns => this.columns = columns)
-            .then(() => this.initAgGrid())
-        ;
-
         translateClicksToNavigationEvents(this.shadowRoot!);
+        this.initAgGrid();
     }
 
 
@@ -210,9 +207,9 @@ export class DataGridComponent extends FrmdbElementBase<typeof ATTRS> {
 
     applyCellStyles(params) {
         let entityName = this.attr.table_name;
-        if (entityName && this.attr.highlight_columns[entityName]
-            && this.attr.highlight_columns[entityName][params.colDef.field]) {
-            return { backgroundColor: this.attr.highlight_columns[entityName][params.colDef.field].replace(/^c_/, '#') };
+        let hc = this.attr.highlight_columns||{};
+        if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
+            return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
         return null;
     }
@@ -234,6 +231,9 @@ export class DataGridComponent extends FrmdbElementBase<typeof ATTRS> {
 
     async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
+        if (!this.attr.table_name) return;
+
+        this.columns = await TABLE_SERVICE.getColumns(this.attr.table_name);
 
         this.gridOptions.context = this.columns;
         this.gridOptions.headerHeight = this.attr.header_height || 25;

@@ -57,7 +57,7 @@ configBe = {
     ...configBaseNode,
     entry: './tsc-out/be/src/server.js',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'dist-be'),
         filename: 'frmdb-be.js'
     },
 };
@@ -66,7 +66,7 @@ configDataGrid = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
     output: {
-        path: path.resolve(__dirname, 'dist') + '/formuladb',
+        path: path.resolve(__dirname, 'dist-fe'),
         filename: 'frmdb-data-grid.js'
     },
 };
@@ -75,7 +75,7 @@ configForm = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/form/form.component.js',
     output: {
-        path: path.resolve(__dirname, 'dist') + '/formuladb',
+        path: path.resolve(__dirname, 'dist-fe'),
         filename: 'frmdb-form.js'
     },
 };
@@ -84,7 +84,7 @@ configFe = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/fe.js',
     output: {
-        path: path.resolve(__dirname, 'dist') + '/formuladb',
+        path: path.resolve(__dirname, 'dist-fe'),
         filename: 'frmdb-fe.js'
     },
 };

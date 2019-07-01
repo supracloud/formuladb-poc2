@@ -1,6 +1,5 @@
 import { DataObj } from "@domain/metadata/data_obj";
-import { TablePage } from "@domain/uimetadata/table-page";
-import { NodeElement, DataGrid } from "@domain/uimetadata/node-elements";
+import { AutocompleteAttrs } from "./autocomplete/autocomplete.component";
 
 export interface UserModifiedFormData {
     type: 'UserModifiedFormData';
@@ -12,7 +11,7 @@ export interface UserDeletedFormData {
 }
 export interface UserDraggedFormElement {
     type: 'UserDraggedFormElement';
-    nodel: NodeElement | null;
+    // nodel: NodeElement | null;
 }
 export interface UserSelectedCell {
     type: 'UserSelectedCell';
@@ -36,7 +35,7 @@ export interface UserDeleteRow {
 }
 export interface UserModifiedTableUi {
     type: 'UserModifiedTableUi';
-    table: DataGrid;
+    // table: DataGrid;
 }
 export interface UserCollapsedNavItem {
     type: 'UserCollapsedNavItem';
@@ -47,6 +46,20 @@ export interface UserCollapsedNavItem {
 export interface UserNavigation {
     type: 'frmdbUserNavigation';
     path: string;
+}
+
+export interface UserEnteredAutocompleteText {
+    type: "frmdbUserEnteredAutocompleteText";
+    currentObjId: string;
+    text: string;
+    referencedObj
+    targetAttrs: AutocompleteAttrs;
+}
+
+export interface UserChoseAutocompleteOption {
+    type: "frmdbUserChoseAutocompleteOption";
+    option: {};
+    targetAttrs: AutocompleteAttrs;
 }
 
 export type FrmdbUserEvent =
@@ -61,4 +74,6 @@ export type FrmdbUserEvent =
     | UserModifiedTableUi
     | UserCollapsedNavItem
     | UserNavigation
+    | UserEnteredAutocompleteText
+    | UserChoseAutocompleteOption
     ;

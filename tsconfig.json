@@ -20,7 +20,7 @@
             "@core/*": ["./core/src/*"],
             "@storage/*": ["./storage/src/*"],
             "@test/*": ["./test/src/*"],
-            "@be/*": ["./fe/src/*"],
+            "@be/*": ["./be/src/*"],
             "@fe/*": ["./fe/src/*"]
         },        
         "lib": [

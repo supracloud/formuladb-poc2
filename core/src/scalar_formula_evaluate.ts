@@ -10,6 +10,13 @@ interface CompiledScalarFormula {
     functionBoundToContext: Function;
 }
 
+/**
+ * FIXME/TODO WARNING !!! naive implementation with regards to security
+ * 
+ * It is very difficult to sandbox the JS code, a Function can always access the global object with 'this' keyword:
+ * https://stackoverflow.com/questions/23595880/restrict-access-to-global-context-with-javascript
+ * https://github.com/asvd/jailed
+ */
 function compileScalarFormula(scalarFormula: string): CompiledScalarFormula {
     let ast = parseFormula(scalarFormula);
     preProcessAst(ast);

@@ -1,3 +1,5 @@
+set -x
+
 handleErr () {
     errcode=$?
     set +x
@@ -6,24 +8,42 @@ handleErr () {
 }
 trap handleErr ERR
 
-if [ ! -d '../febe/docker-img' ]; then
-     echo "you need febe project in order to serve/debug this app";
-     exit 1;
-fi
+FEBEDIR=$PWD
+while true; do
+  . .env.dev
 
-if ! (command nodemon || command nc); then
-     echo "run npm install -g nodemon && apt-get install -y netcat in order to serve/debug this app";
-     exit 1;
-fi
+  if [ ! -d "$APPDIR" ]; then
+    echo "$APPDIR is not a directory, please set the APPDIR var in .env.dev, waiting..."
+    continue
+  fi
 
-FRMDB_RELEASE=0.0.12 nodemon --verbose --delay 200ms --watch docker-img -e t --exec "docker-compose up -d db febe maps && nc -zvw3 localhost 8084 && nc -zvw3 localhost 8085 && touch docker-img/compose.t" &
+  if [ ! -f "${APPDIR}/docker-compose.yml" ]; then
+      echo "docker-compose not found in $APPDIR, waiting..."
+      continue
+  fi
 
-sleep 1
+  if [ ! -f "${APPDIR}/index.html" ]; then
+      echo "index.html not found in $APPDIR, waiting..."
+      continue
+  fi
 
-cd formuladb && live-server --watch=apps,docker-img/compose.t \
-     --entry-file=index.html --wait=200 --port=8081 -V --no-browser \
+  if ! (command nodemon -h || command nc); then
+      echo "run npm install -g nodemon && apt-get install -y netcat in order to serve/debug this app, waiting..."
+      continue
+  fi
+
+  break
+done
+
+
+FRMDB_RELEASE=0.0.12 nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
+  "npm run docker:be && docker-compose -f ${APPDIR}/docker-compose.yml up -d db be && nc -zvw3 localhost 8084 && touch ${APPDIR}/index.html" &
+
+sleep 2
+
+cd "${APPDIR}"
+live-server --watch="${APPDIR}","$FEBEDIR/dist" \
+     --entry-file="index.html" --wait=200 --port=8081 -V --no-browser \
      --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
-     --proxy=/formuladb:http://localhost:8084/formuladb \
-     --proxy=/formuladb/frmdb-fe.js.map:http://localhost:8085/formuladb/frmdb-fe.js.map \
-     --proxy=/formuladb/frmdb-data-grid.js.map:http://localhost:8085/formuladb/frmdb-data-grid.js.map \
-     --entry-file=index.html
+     --mount=/formuladb/:"$FEBEDIR/dist-fe/"
+    "${APPDIR}"

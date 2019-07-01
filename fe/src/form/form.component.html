@@ -1,8 +1,11 @@
-<form>
-    <div class="" data-frmdb-foreach="state.props">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<form class="row">
+    <div class="form-group row" data-frmdb-foreach="state.props[]" data-frmdb-attr="class[col|col-1|col-2|col-3|col-4|col-5|col-6|col-7|col-8|col-9|col-10|col-11|col-12]:state.props[].cssWidth">
         <label data-frmdb-attr="for:state.props[].name" class="col-form-label col-3" data-frmdb-value="state.props[].nameI18n"></label>
         <div class="col-9">
-            <input type="text" class="form-control" data-frmdb-meta-value="dataObj:state.props[].dataObjPath" name="name" data-frmdb-attr-toggle="disabled:state.props[].disabled">
+            <input type="text" class="form-control" data-frmdb-meta-value="state.dataObj:state.props[].name" name="name" data-frmdb-attr-toggle="disabled:state.props[].disabled">
         </div>
     </div>
 </form>

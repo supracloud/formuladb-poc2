@@ -1,7 +1,7 @@
 import { onDoc } from "./delegated-events";
 import { translateClicksToNavigationEvents } from "./event-translator";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { render as renderTemplate } from "@fe/live-dom-template/live-dom-template"
+import { updateDOM as renderTemplate } from "@fe/live-dom-template/live-dom-template"
 import { Logger } from "ag-grid-community";
 const LOG = new FrmdbLogger('router');
 

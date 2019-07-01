@@ -122,7 +122,6 @@ export interface DatetimeProperty {
     allowNull?: boolean;
 }
 
-
 export interface AttachmentProperty {
     propType_: Pn.ATTACHMENT;
     name: string;
@@ -177,6 +176,10 @@ export interface ReferenceToProperty {
     name: string;
     referencedEntityName: string;
     referencedPropertyName: string;
+    joinReferenceEntityName?: string;
+    joinReferencedPropertyName?: string;
+    joinReferenceEntityName2?: string;
+    joinReferencedPropertyName2?: string;
 }
 export function isBelongsToProperty(param): param is ReferenceToProperty {
     return param != null && typeof param === 'object' && param.propType_ == Pn.REFERENCE_TO;

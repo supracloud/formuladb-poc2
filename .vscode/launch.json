@@ -21,7 +21,6 @@
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/tsc-out/**/*.js",
-                "${workspaceRoot}/dist/**/*.js",
             ]
         },
         {

@@ -4,7 +4,7 @@
  */
 
 export type PickOmit<O, K extends keyof O> = Pick<O, Exclude<keyof O, K>>;
-export function objKeysTyped<T extends {}>(obj: T): (keyof T)[] {
+export function objKeysTyped<T extends {[x: string]: any}>(obj: T): (keyof T)[] {
     return Object.keys(obj) as any as (keyof T)[];
 }
 

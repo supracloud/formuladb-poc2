@@ -13,7 +13,6 @@ export class DataGridToolsComponent implements IToolPanelComp {
     emit = emit.bind(null, this.el);
 
     init(params: IToolPanelParams): void {
-        console.warn((params as any).context);
         this.params = params;
         this.gridApi = this.params.api;
         // calculate stats when new rows loaded, i.e. onModelUpdated

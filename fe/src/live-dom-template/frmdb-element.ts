@@ -1,21 +1,26 @@
-import { on, emit } from "../delegated-events";
-import { render } from "./live-dom-template";
-import { FrmdbLogger } from "@domain/frmdb-logger";
-
+import * as yaml from 'js-yaml';
 import * as _ from "lodash";
+
+import { on, emit } from "../delegated-events";
+import { updateDOM } from "./live-dom-template";
+import { FrmdbLogger } from "@domain/frmdb-logger";
+const LOGGER = new FrmdbLogger('frmdb-element');
+
 import { objKeysTyped } from "@domain/ts-utils";
 
-interface FrmdbElementConfig<T> {
+interface FrmdbElementConfig<ATTR, STATE> {
     tag:string;
-    attributeExamples: T,
+    observedAttributes: (keyof ATTR)[],
+    initialState?: STATE,
     template: string;
     style?: string;
     noShadow?: boolean;
 }
 
 
-export function FrmdbElementDecorator<T>(config: FrmdbElementConfig<T>) {
-    return function(cls: any) {
+export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<ATTR, STATE>) {
+    return function(cls: { new(): FrmdbElementBase<ATTR, STATE> }) {
+        LOGGER.info("FrmdbElementDecorator", "Decorating component " + cls.name);
         validateSelector(config.tag);
         if (!config.template) {
             throw new Error('You need to pass a template for the element');
@@ -28,11 +33,10 @@ export function FrmdbElementDecorator<T>(config: FrmdbElementConfig<T>) {
 
         const LOG = new FrmdbLogger(cls.name);
 
-        const observedAttributes = objKeysTyped(config.attributeExamples);
         const connectedCallback = cls.prototype.connectedCallback || function () {};
-        const connectedCallbackNew = function() {
-            for (let attrName of observedAttributes) {
-                (this.attr[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName) || '', config.attributeExamples[attrName]) as any;
+        const connectedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>) {
+            for (let attrName of config.observedAttributes) {
+                (this.attr[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName as string) || '') as any;
             }
 
             const clone = document.importNode(template.content, true);
@@ -42,24 +46,27 @@ export function FrmdbElementDecorator<T>(config: FrmdbElementConfig<T>) {
                 this.attachShadow({mode: 'open'}).appendChild(clone);
             }
             connectedCallback.call(this);
+            this.updateStateWhenAttributesChange().then(() => updateDOM({attr: this.attr || {}, state: this.state || {}}, config.noShadow ? this : this.shadowRoot as any as HTMLElement));
         };
 
         const attributeChangedCallback = cls.prototype.attributeChangedCallback || function () {};
         const attributeChangedCallbackNew = function(attrName, oldVal, newVal) {
-            let typedVal: any = reflectAttr2Prop(newVal, config.attributeExamples[attrName]);
+            let typedVal: any = reflectAttr2Prop(newVal);
             LOG.debug("%o %o %o", attrName, oldVal, newVal, typedVal);
             this.attr[attrName] =  typedVal;
             attributeChangedCallback.call(this, attrName, oldVal, newVal);
+            updateDOM({...this.attr, ...this.state}, this);
         }
 
 
         //Web Components APIs
         cls.prototype.connectedCallback = connectedCallbackNew;
         cls.prototype.attributeChangedCallback = attributeChangedCallbackNew;
-        cls.observedAttributes = observedAttributes;
+        (cls as any).observedAttributes = config.observedAttributes;
 
         // custom formuladb properties
-        cls.prototype.attr = config.attributeExamples;
+        cls.prototype.attr = {};
+        cls.prototype.state = config.initialState || {};
         LOG.info("FrmdbElementDecorator", "%O", cls);
 
         //define custom element
@@ -80,89 +87,27 @@ export function Attr() {
 
 
 /** 
- * Convert complex attribute values to a syntax borrowed from the HTML "style" attribute 
- *    {a: {x:1, y: "gigi"}, b: {x: 3, y: "gogu"}, c: true} CONVERTED TO "a: 1 gigi; b: 3 gogu; c: true"
- *    [{x:1, y: "gigi"}, {x: 3, y: "gogu"}] CONVERTED TO "1 gigi; 3 gogu"
- *    ["a", "b"] CONVERTED TO "a; b"
- *    1 CONVERTED TO "1"
- *    true CONVERTED TO "true"
- *    "str" CONVERTED TO "str"
+ * Convert complex attribute values to a syntax inspired the HTML "style" attribute 
+ *   but syntax is actually "flow" yaml syntax
  */
-export function reflectProp2Attr<T>(prop: T, example: T): string {
-    if (example instanceof Array) {
-        return example.map((v, i) => reflectPropValue(prop[i], v)).join("; ");    
-    } else if (typeof example === "object" ) {
-        return Object.keys(example).filter(name => prop[name] != null).map(name => {
-            return `${name}: ${reflectPropValue(prop[name], example[name])}`
-        }).join("; ");    
-    } else return reflectPropValue(prop, example);
-}
-
-function reflectPropValue(propValue, example): string {
-    if (typeof propValue === "object") {
-        return _.chain(example)
-            .entries()
-            .map(([k, v]) => propValue[k] != null ? "" + propValue[k] : '')
-            .dropRightWhile(v => !v)
-            .join(" ");
-    } else if (["string", "number", "boolean"].includes(typeof propValue)) {
-        return "" + propValue;
-    } else throw new Error("Unsupported property type " + (typeof propValue) + ", " + JSON.stringify(propValue) + ", " + JSON.stringify(example));
-}
-
-function parseAttrVal<T extends (number | string | boolean)>(attrVal: string, example: T): T {
-    if (typeof example === "number") {
-        return parseInt(attrVal) as T;
-    } else if (typeof example === "boolean") {
-        return ("true" == attrVal) as T;
-    } else if (typeof example === "string") {
-        return attrVal as T;
-    } else return '' as T;
-}
-
-function reflectAttrVal(attrVal: string, example) {
-    if (typeof example === "object") {
-        let values = attrVal.split(/ /);
-        let ret = {};
-        for (let [i, k] of Object.keys(example).entries()) {
-            if (null == values[i]) break;
-            ret[k] = parseAttrVal(values[i], example[k]);
-        }
-        return ret;
-    } else if (["string", "number", "boolean"].includes(typeof attrVal)) {
-        return parseAttrVal(attrVal, example);
-    } else {
-        throw new Error("Unsupported property type " + (typeof attrVal) + ", " + JSON.stringify(attrVal) + ", " + JSON.stringify(example));
-    }
+export function reflectProp2Attr<T>(prop: T): string {
+    return yaml.safeDump(prop, {flowLevel: 0, lineWidth: 10000}).replace(/\n$/, '');
 }
 
 /** 
- * Convert HTML "style" attribute syntax to complex attribute value
+ * Convert HTML "complex" attribute syntax to complex attribute value
  */
-export function reflectAttr2Prop<T>(attr: string, example: T): T {
-    let attrValuesStr = attr.split(/; /);
-    if (example instanceof Array) {
-        return attrValuesStr.map((v, i) => reflectAttrVal(v, example[0])) as any as T;    
-    } else if (typeof example === "object" ) {
-        let ret: any = {};
-        for (let val of attrValuesStr) {
-            let [name, valuesStr] = val.split(/: /);
-            if (name != null && example[name] != null) {
-                ret[name] = reflectAttrVal(valuesStr, example[name]);
-            }
-        }
-        return ret;
-    } else return reflectAttrVal(attr, example);
+export function reflectAttr2Prop<T>(attr: string): T {
+    return yaml.safeLoad(attr);
 }
 
-export abstract class FrmdbElementBase<T> extends HTMLElement {
-    attr: T;
-    observedAttributes: (keyof T)[];
+export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
+    attr: Partial<ATTR>;
+    state: Partial<STATE>;
 
-    on = on.bind(null, this);
     emit = emit.bind(null, this);
 
-    renderTemplate(data: any) {
-        render(data, this);
+    async updateStateWhenAttributesChange(): Promise<void> {
+        return Promise.resolve();
     }
 }

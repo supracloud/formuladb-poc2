@@ -32,8 +32,10 @@ buildprodimages:
     - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
     # - npm run docker:maps
     # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
-    - npm run docker:febe
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-febe:${CI_COMMIT_TAG}
+    - npm run docker:be
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
+    - npm run docker:fe
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:${CI_COMMIT_TAG}
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:

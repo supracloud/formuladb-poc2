@@ -1,5 +1,6 @@
-import { FrmdbElementBase } from "@fe/live-dom-template/frmdb-element";
+import { FrmdbElementBase, FrmdbElementDecorator } from "@fe/live-dom-template/frmdb-element";
 import * as _ from "lodash";
+import { on } from "@fe/delegated-events";
 
 const HTML = /*html*/`
 <div class="live-dom-editor">
@@ -13,14 +14,18 @@ const HTML = /*html*/`
 </div>
 `;
 
-class MyComponent extends HTMLElement {
-    on = FrmdbElementBase.prototype.on.bind(this);
+@FrmdbElementDecorator({
+    tag: 'frmdb-live-dom-editor',
+    attributeExamples: {},
+    initialState: {},
+    template: HTML,
+    style: '',
+})
+class LiveDomEditor extends FrmdbElementBase<{}, {}> {
+    on = on.bind(null, this);
     emit = FrmdbElementBase.prototype.emit.bind(this);
-    render = FrmdbElementBase.prototype.renderTemplate.bind(this);
     
     connectedCallback() {
-        this.innerHTML = HTML;
-        this.render({});
 
         this.on('mousemove', '*', _.debounce((event) => {
             console.log(event.target);
@@ -41,4 +46,4 @@ class MyComponent extends HTMLElement {
     }
 }
 
-customElements.define('frdb-live-dom-editor', MyComponent);
+customElements.define('frmdb-live-dom-editor', LiveDomEditor);

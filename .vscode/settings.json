@@ -21,6 +21,7 @@
         "formuladb",
         "jsep",
         "objs",
+        "rowid",
         "startkey"
     ],
     "cSpell.enabledLanguageIds": [

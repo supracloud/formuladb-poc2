@@ -1,4 +1,3 @@
 *
-!dist
+!dist-be/frmdb-be.js
 !package.json
-!maps.nginx.default.conf

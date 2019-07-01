@@ -73,7 +73,7 @@ export function createElemList(tagName: string, key: string, length: number): El
 export function getElem(el: Elem, key: string): Elem[] {
     let sel = `[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"],[data-frmdb-meta-value$="${key}"],[data-frmdb-meta-attr$=":${key}"],[data-frmdb-meta-attr2$=":${key}"],[data-frmdb-meta-attr3$=":${key}"],[data-frmdb-meta-attr4$=":${key}"]`;
     let ret: Elem[] = [];
-    if (el.matches(sel)) ret.push(el);
+    if (el.matches /* ShadowRoot does not have matches method */ && el.matches(sel)) ret.push(el);
     return ret.concat(Array.from(el.querySelectorAll(sel)));
 }
 

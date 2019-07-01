@@ -17,23 +17,28 @@ const ATTRS = {
     property_name: "string",
     ref_entity_alias: "string",
     no_label: "string",
-}
+};
 export type AutocompleteAttrs = Partial<typeof ATTRS>;
+
+const STATE = null;
+class AutoCompleteSharedState {
+    controls: {[refPropertyName: string]: AutocompleteAttrs} = {};
+    options: {}[] = [];
+    selectedOption: {} | null;
+
+    constructor(public currentObjId: string, public entityAlias: string, public currentControl: AutocompleteAttrs) {}
+}
 
 @FrmdbElementDecorator({
     tag: 'frmdb-autocomplete',
     attributeExamples: ATTRS,
-    stateExample: {},
+    initialState: {},
     template: HTML,
     style: CSS,
 })
-export class AutocompleteComponent extends FrmdbElementBase<typeof ATTRS, {}> {
+export class AutocompleteComponent extends FrmdbElementBase<typeof ATTRS, typeof AutoCompleteState> {
 
-    public text$: Subject<string> = new BehaviorSubject('');
-    // public formatedStrOptions: string[] = [];
-    private control: AbstractControl | null;
     private parentObjId: string | undefined;
-    public autoCompleteState: AutoCompleteState | null;
     public currentSearchTxt: string | null;
     public popupOpened: boolean = false;
 
