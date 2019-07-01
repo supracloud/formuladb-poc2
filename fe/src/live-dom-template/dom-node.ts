@@ -71,9 +71,10 @@ export function createElemList(tagName: string, key: string, length: number): El
 }
 
 export function getElem(el: Elem, key: string): Elem[] {
-    return Array.from(el.querySelectorAll(
-        `[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"],[data-frmdb-meta-value$="${key}"],[data-frmdb-meta-attr$=":${key}"],[data-frmdb-meta-attr2$=":${key}"],[data-frmdb-meta-attr3$=":${key}"],[data-frmdb-meta-attr4$=":${key}"]`
-    ));
+    let sel = `[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"],[data-frmdb-meta-value$="${key}"],[data-frmdb-meta-attr$=":${key}"],[data-frmdb-meta-attr2$=":${key}"],[data-frmdb-meta-attr3$=":${key}"],[data-frmdb-meta-attr4$=":${key}"]`;
+    let ret: Elem[] = [];
+    if (el.matches(sel)) ret.push(el);
+    return ret.concat(Array.from(el.querySelectorAll(sel)));
 }
 
 export function getElemList(el: Elem, key: string): ElemList | null {
@@ -126,10 +127,23 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
                 let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
                 value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
             }
-            dataAttr.replace(/:.*$/, '');
+            if (undefined == value) value = '';
+
             if (attrName.indexOf("class.") == 0) {
                 let className = attrName.replace(/^class\./, '');
                 el.classList.toggle(className, value == true );
+            } else if (attrName.indexOf("class[") == 0) {
+                let options = attrName.replace(/^class\[/, '').replace(/\]$/, '').split('|');
+                let className = value + '';
+                if (options.includes(className) || className === '') {
+                    for (let clsName of options) {
+                        if (clsName === className) {
+                            el.classList.add(className);
+                        } else {
+                            el.classList.remove(clsName);
+                        }
+                    }
+                } else console.warn(className + " is not a valid class name option: " + options.join(','));
             } else if (attrName.indexOf("style.") == 0) {
                 let styleName = attrName.replace(/^style\./, '');
                 el.style.setProperty(styleName, value + '');
@@ -151,6 +165,7 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
                 let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
                 value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
             }
+            if (undefined == value) value = '';
 
             if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
                 (el as HTMLInputElement).value = value + '';
