@@ -19,6 +19,8 @@ import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
 import { Schema_inventory, App_inventory } from "@test/mocks/mock-metadata";
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
+import { FrmdbLogger } from "@domain/frmdb-logger";
+const LOG = new FrmdbLogger('backend-service');
 
 function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
     // Default options are marked with *
@@ -40,7 +42,10 @@ function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
 
 function getData<OUT>(url: string): Promise<OUT> {
     return fetch(url)
-        .then(response => response.json());
+        .then(response => {
+            LOG.debug("getData", "%o", response);
+            return response.json();
+        });
 }
 
 export class BackendService {

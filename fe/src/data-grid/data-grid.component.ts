@@ -40,11 +40,10 @@ export interface DataGridComponentAttr {
 @FrmdbElementDecorator({
     tag: 'frmdb-data-grid',
     observedAttributes: ["table_name" , "highlight_columns" , "header_height" , "expand_row" , "conditional_formatting"],
-    initialState: {},
     template: HTML,
     style: CSS,
 })
-export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, {}> {
+export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentAttr> {
 
     /** web components API **************************************************/
     attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
@@ -206,8 +205,8 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, {
     };
 
     applyCellStyles(params) {
-        let entityName = this.attr.table_name;
-        let hc = this.attr.highlight_columns||{};
+        let entityName = this.immutableState.table_name;
+        let hc = this.immutableState.highlight_columns||{};
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
@@ -231,23 +230,23 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, {
 
     async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
-        if (!this.attr.table_name) return;
+        if (!this.immutableState.table_name) return;
 
-        this.columns = await TABLE_SERVICE.getColumns(this.attr.table_name);
+        this.columns = await TABLE_SERVICE.getColumns(this.immutableState.table_name);
 
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.attr.header_height || 25;
+        this.gridOptions.headerHeight = this.immutableState.header_height || 25;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,
         //     pattern: "Solid",
         // };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.attr.table_name));
+        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.immutableState.table_name));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.attr.conditional_formatting || {};
+            let conditionalFormatting = this.immutableState.conditional_formatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
@@ -312,7 +311,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, {
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.attr.expand_row && col.name === '_id') {
+        if (this.immutableState.expand_row && col.name === '_id') {
             return (params) => {
                 return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
             }

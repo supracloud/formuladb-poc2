@@ -23,7 +23,7 @@ export interface FormComponentAttr {
     fields: { [name: string]: { width: CssWidth } };
     rowid: string;
 };
-export interface FormComponentState {
+export interface FormComponentState extends FormComponentAttr {
     props: {
         name: string,
         nameI18n: string,
@@ -42,22 +42,42 @@ export interface FormComponentState {
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
 
-    async updateStateWhenAttributesChange() {
-        if (!this.attr.table_name) return;
-
-        let entity = await BACKEND_SERVICE.getEntity(this.attr.table_name);
-        this.state.props = [];
-        for (let prop of Object.values(entity.props)) {
-            this.state.props.push({
-                name: prop.name,
-                nameI18n: I18N.tt(prop.name),
-                disabled: this.getDisabled(entity, prop),
-                cssWidth: elvis(elvis(this.attr.fields)[prop.name]).width || "col-12",
-            });
+    async effectsOnAttributeChange<T extends keyof FormComponentAttr>(attrName: T, oldVal: FormComponentAttr[T], newVal: FormComponentAttr[T]) {
+        if (attrName === "table_name") {
+            let entity = await BACKEND_SERVICE.getEntity(newVal as FormComponentAttr["table_name"]);
+            let props: FormComponentState["props"] = [];
+            for (let prop of Object.values(entity.props)) {
+                props.push({
+                    name: prop.name,
+                    nameI18n: I18N.tt(prop.name),
+                    disabled: this.getDisabled(entity, prop),
+                    cssWidth: elvis(elvis(this.immutableState.fields)[prop.name]).width || "col-12",
+                });
+            }
+            this.immutableState = {
+                ...this.immutableState,
+                table_name: newVal as FormComponentAttr["table_name"],
+                props,
+            };
+        } else if (attrName === "rowid") {
+            let dataObj = await BACKEND_SERVICE.getDataObj(newVal as FormComponentAttr["rowid"]);
+            this.immutableState = {
+                ...this.immutableState,
+                rowid: newVal as FormComponentAttr["rowid"],
+                dataObj
+            };
+        } else if (attrName === "fields") {
+            if (this.immutableState.props && this.immutableState.props.length > 0) {
+                let props = [...this.immutableState.props];
+                for (let prop of Object.values(props)) {
+                    prop.cssWidth = elvis(elvis(this.immutableState.fields)[prop.name]).width || "col-12";
+                }
+                this.immutableState = {
+                    ...this.immutableState,
+                    props,
+                };  
+            }
         }
-
-        if (!this.attr.rowid) return;
-        this.state.dataObj = await BACKEND_SERVICE.getDataObj(this.attr.rowid);
     }
 
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {
@@ -65,5 +85,5 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
     }
 }
 
-document.createElement('frmdb-form').setAttribute('rowid', "test-rowid");
-console.log((FormComponent as any).observedAttributes);
+// document.createElement('frmdb-form').setAttribute('rowid', "test-rowid");
+// console.log((FormComponent as any).observedAttributes);

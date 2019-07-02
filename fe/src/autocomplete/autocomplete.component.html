@@ -1,9 +1,5 @@
-<label data-frmdb-attr="for:property_name" data-frmdb-if="no_label">
-    {{inputElement.refEntityName | i18n}}/{{inputElement.refPropertyName | i18n}}
-</label>
-<input [id]="fullpath" class="form-control" type="text" autocomplete="off"
-    oninput="this.$cmp.text$.next($event.target.value)"
-    onkeydown="this.$cmp.manageSelection()"
+<input data-frmdb-attr="name:attr.property_name" class="form-control" type="text" autocomplete="off"
+    oninput="frmdbAction(event)" onkeydown="frmdbAction(event)"
 />
 <div class="position-relative">
     <div class="card frmdb-autocomplete_popup" data-frmdb-attr="class.visible:state.popupOpened">
@@ -16,10 +12,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="autoCompleteState.options; let idx = index" onclick="this.$cmp.selectOption(this)">
-                    <td [class.selected]="currentOptionIdx == idx" *ngFor="let relatedCtrl of relatedControls">
-                        <span *ngIf="relatedCtrl.propertyName === inputElement.propertyName" [innerHtml]="highlightOption(option)"></span>
-                        <span *ngIf="relatedCtrl.propertyName !== inputElement.propertyName">{{option[relatedCtrl.propertyName]}}</span>
+                <tr data-frmdb-foreach="state.options[]" onclick="this.$cmp.selectOption(this)">
+                    <td data-frmdb-foreach="state.options[].relatedControls[]" 
+                        data-frmdb-attr="class.selected:state.options[].isSelected"
+                        data-frmdb-value="state.options[].relatedControls[].optionWithHighlight">
                     </td>
                 </tr>
             </tbody>

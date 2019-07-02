@@ -99,13 +99,13 @@ function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: num
 export function setElemValue(elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[]) {
     for (let el of elems) {
         let foundDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes, "")
-            || _setElemValue(el, key, context, arrayCurrentIndexes, "-meta")
-        if (!foundDataBinding) throw new Error("El " + el + " does not have data binding for key " + key);
+        let foundMetaDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes, "-meta")
+        if (!foundDataBinding && !foundMetaDataBinding) throw new Error("El " + el + " does not have data binding for key " + key);
     }
 }
 
 function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: number[], meta: "-meta" | ""): boolean {
-
+    let ret = false;
     let dataAttrs: string[] = [
         el.getAttribute(`data-frmdb${meta}-attr`), 
         el.getAttribute(`data-frmdb${meta}-attr2`), 
@@ -155,40 +155,41 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
                 el.setAttribute(attrName, value + '');
             }
         }
-        return true;
-    } else {
-        let valueAttr = el.getAttribute(`data-frmdb${meta}-value`)||'';
-        if (valueAttr.replace(/^.*:/, '') == key) {
-            let value;
-            if ("" == meta) {
-                value = getValueForDomKey(key, context, arrayCurrentIndexes);
-            } else {
-                let [metaCtxKey, domKey] = valueAttr.split(":");
-                if (!metaCtxKey || domKey != key) throw new Error("Expected metaObjKey:domKey but found " + valueAttr + " for key " + key);
-                let metaCtx = getValueForDomKey(metaCtxKey, context, arrayCurrentIndexes);
-                let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
-                value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
-            }
-            if (undefined == value) value = '';
-
-            if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
-                (el as HTMLInputElement).value = value + '';
-            } else {
-                let textNodeFound: boolean = false;
-                el.childNodes.forEach(child => {
-                    if (child.nodeType === Node.TEXT_NODE) {
-                        child.nodeValue = value + '';
-                        textNodeFound = true;
-                    }
-                })
-                if (!textNodeFound) {
-                    let textNode = document.createTextNode(value + '');
-                    el.appendChild(textNode);
-                }
-            }
-            return true;
-        } else return false;
+        ret = true;
     }
+
+    let valueAttr = el.getAttribute(`data-frmdb${meta}-value`)||'';
+    if (valueAttr.replace(/^.*:/, '') == key) {
+        let value;
+        if ("" == meta) {
+            value = getValueForDomKey(key, context, arrayCurrentIndexes);
+        } else {
+            let [metaCtxKey, domKey] = valueAttr.split(":");
+            if (!metaCtxKey || domKey != key) throw new Error("Expected metaObjKey:domKey but found " + valueAttr + " for key " + key);
+            let metaCtx = getValueForDomKey(metaCtxKey, context, arrayCurrentIndexes);
+            let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
+            value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
+        }
+        if (undefined == value) value = '';
+
+        if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
+            (el as HTMLInputElement).value = value + '';
+        } else {
+            let textNodeFound: boolean = false;
+            el.childNodes.forEach(child => {
+                if (child.nodeType === Node.TEXT_NODE) {
+                    child.nodeValue = value + '';
+                    textNodeFound = true;
+                }
+            })
+            if (!textNodeFound) {
+                let textNode = document.createTextNode(value + '');
+                el.appendChild(textNode);
+            }
+        }
+        ret = true;
+    }
+    return ret;
 }
 
 export function isList(el: Elem): boolean {

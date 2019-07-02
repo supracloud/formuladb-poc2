@@ -7,8 +7,9 @@ import { FrmdbLogger } from "@domain/frmdb-logger";
 const LOGGER = new FrmdbLogger('frmdb-element');
 
 import { objKeysTyped } from "@domain/ts-utils";
+import { FrmdbUserEvent } from '@be/frmdb-user-events';
 
-interface FrmdbElementConfig<ATTR, STATE> {
+interface FrmdbElementConfig<ATTR, STATE extends ATTR> {
     tag:string;
     observedAttributes: (keyof ATTR)[],
     initialState?: STATE,
@@ -18,7 +19,7 @@ interface FrmdbElementConfig<ATTR, STATE> {
 }
 
 
-export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<ATTR, STATE>) {
+export function FrmdbElementDecorator<ATTR, STATE extends ATTR>(config: FrmdbElementConfig<ATTR, STATE>) {
     return function(cls: { new(): FrmdbElementBase<ATTR, STATE> }) {
         LOGGER.info("FrmdbElementDecorator", "Decorating component " + cls.name);
         validateSelector(config.tag);
@@ -35,10 +36,6 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
 
         const connectedCallback = cls.prototype.connectedCallback || function () {};
         const connectedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>) {
-            for (let attrName of config.observedAttributes) {
-                (this.attr[attrName] as any) = reflectAttr2Prop(this.getAttribute(attrName as string) || '') as any;
-            }
-
             const clone = document.importNode(template.content, true);
             if (config.noShadow) {
                 this.appendChild(clone);
@@ -46,16 +43,23 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
                 this.attachShadow({mode: 'open'}).appendChild(clone);
             }
             connectedCallback.call(this);
-            this.updateStateWhenAttributesChange().then(() => updateDOM({attr: this.attr || {}, state: this.state || {}}, config.noShadow ? this : this.shadowRoot as any as HTMLElement));
         };
 
         const attributeChangedCallback = cls.prototype.attributeChangedCallback || function () {};
-        const attributeChangedCallbackNew = function(attrName, oldVal, newVal) {
-            let typedVal: any = reflectAttr2Prop(newVal);
-            LOG.debug("%o %o %o", attrName, oldVal, newVal, typedVal);
-            this.attr[attrName] =  typedVal;
+        const attributeChangedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>, attrName: keyof ATTR, oldVal, newVal) {
+            let oldParsedVal = reflectAttr2Prop(attrName, oldVal);
+            let newParsedVal = reflectAttr2Prop(attrName, newVal);
+            LOG.debug("%o %o %o", attrName as string, oldVal, newVal, newParsedVal);
             attributeChangedCallback.call(this, attrName, oldVal, newVal);
-            updateDOM({...this.attr, ...this.state}, this);
+            let previousState = this.immutableState;
+            this.actionsOnAttributeChange(attrName, oldParsedVal, newParsedVal);
+            this.effectsOnAttributeChange(attrName, oldParsedVal, newParsedVal).then(() => {
+                if (this.immutableState != previousState) {
+                    // _.debounce(() => 
+                        updateDOM(this.immutableState, config.noShadow ? this : this.shadowRoot as any as HTMLElement)
+                    // );
+                }
+            });
         }
 
 
@@ -65,8 +69,7 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
         (cls as any).observedAttributes = config.observedAttributes;
 
         // custom formuladb properties
-        cls.prototype.attr = {};
-        cls.prototype.state = config.initialState || {};
+        cls.prototype.immutableState = config.initialState || {};
         LOG.info("FrmdbElementDecorator", "%O", cls);
 
         //define custom element
@@ -97,17 +100,26 @@ export function reflectProp2Attr<T>(prop: T): string {
 /** 
  * Convert HTML "complex" attribute syntax to complex attribute value
  */
-export function reflectAttr2Prop<T>(attr: string): T {
+export function reflectAttr2Prop<ATTR>(attrName: keyof ATTR, attr: string): ATTR[typeof attrName] {
     return yaml.safeLoad(attr);
 }
 
-export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
-    attr: Partial<ATTR>;
-    state: Partial<STATE>;
+export abstract class FrmdbElementBase<ATTR, STATE extends ATTR> extends HTMLElement {
+    immutableState: Partial<STATE>;
 
     emit = emit.bind(null, this);
 
-    async updateStateWhenAttributesChange(): Promise<void> {
+    actionsOnAttributeChange<T extends keyof ATTR>(attrName: T, oldVal: ATTR[T], newVal: ATTR[T]): void {
+
+    }
+    async effectsOnAttributeChange<T extends keyof ATTR>(attrName: T, oldVal: ATTR[T], newVal: ATTR[T]): Promise<void> {
         return Promise.resolve();
+    }
+
+    async effectsOnEvent(event: Event): Promise<void> {
+        return Promise.resolve();
+    }
+    actionsOnEvent(event: Event): void {
+
     }
 }
