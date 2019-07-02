@@ -4,7 +4,7 @@ describe('FrmdbElement', () => {
     beforeEach(() => {
     });
 
-    fit('reflectProp2Attr/reflectAttr2Prop should convert correctly', () => {
+    it('reflectProp2Attr/reflectAttr2Prop should convert correctly', () => {
         let prop = {a: {x:1, y: "gigi", z: false}, b: {bb: 3, bc: "gogu"}, c: false, d: 123};
         let attr = `{a: {x: 1, 'y': gigi, z: false}, b: {bb: 3, bc: gogu}, c: false, d: 123}`;
 

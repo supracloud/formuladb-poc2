@@ -147,6 +147,10 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
             } else if (attrName.indexOf("style.") == 0) {
                 let styleName = attrName.replace(/^style\./, '');
                 el.style.setProperty(styleName, value + '');
+            } else if (attrName.indexOf("!") == 0) {
+                let an = attrName.replace(/^[!]/, '');
+                if (value == true) el.setAttribute(an, an);
+                else el.removeAttribute(an);
             } else {
                 el.setAttribute(attrName, value + '');
             }
