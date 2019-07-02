@@ -31,6 +31,7 @@ function organizeBottomPanel() {
 
     let $leftPanelBtns = $('#undo-btn').parent();
     $leftPanelBtns.append($('#preview-btn'));
+    $leftPanelBtns.append($('#fullscreen-btn'));
     $leftPanelBtns.addClass('w-100');
     let $rightPanelBtns = $('#mobile-view').parent();
     $rightPanelBtns.prepend($('#save-btn'));
@@ -40,7 +41,29 @@ function organizeBottomPanel() {
     $('#right-panel').prepend($rightPanelBtns).css({ top: 0 });
     $('#top-panel').remove();
     $('#canvas').css({top: '0'});
-    document.documentElement.style.setProperty('--builder-header-top-height', '0');
+    document.body.style.setProperty('--builder-header-top-height', '0px');
+
+    $('body').append(/*html*/`
+        <style>
+            #preview-btn.preview {
+                position: fixed;
+                top: 0;
+                left: 0;
+                box-shadow: 2px 2px 2px 2px grey;
+                z-index: 2000;
+            }
+        </style>
+    `);
+    let origPreviewFunc = Vvveb.Gui.preview;
+    Vvveb.Gui.preview = function () {
+        origPreviewFunc();
+        $('#preview-btn').toggleClass('preview');
+        if ($('#preview-btn').hasClass('preview')) {
+            $('#preview-btn').prependTo('body');
+        } else {
+            $('#fullscreen-btn').before($('#preview-btn'));
+        }
+    }
 
     Vvveb.Gui.toggleDatabaseEditor = function () {
         $("#vvveb-builder").toggleClass("bottom-panel-expand");
