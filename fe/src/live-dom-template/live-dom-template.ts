@@ -21,9 +21,14 @@ export function deleteElem(el: Elem) {
 }
 
 /**
+ * Vision:
+ * - The HTML itself is the template, data attributes define the data mapping
+ * - Properties are DOM (no part of HTML) so dynamic data should use data-frmdb-prop (e.g. object id of an object represented by a form)
+ * - Attributes are part of HTML so each modification to an attribute means modifications to the template, data-frmdb-attr should be used only when properties cannot be used (e.g. classes, styles)
+ * 
  * Nested variable scopes will not require 2 passes: 
- *  - IF arrays are instantiated first, then all the instances will be bound with the valued from the parent scope
- *  - IF the parent scope is bound first, it will modify the DOM and when arrays clone the first element the clones will inherit the correct values
+ * - IF arrays are instantiated first, then all the instances will be bound with the valued from the parent scope
+ * - IF the parent scope is bound first, it will modify the DOM and when arrays clone the first element the clones will inherit the correct values
  *
  * TODO: micro-benchmarks and perhaps find a more performing solution (e.g. diff with the previous version of the object and update the DOM with only the differences)
  * 

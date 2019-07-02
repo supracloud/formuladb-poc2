@@ -61,7 +61,7 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
     }
 
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {
-        return entity.isEditable == true && '_id' != prop.name;
+        return entity.isEditable != true || '_id' == prop.name;
     }
 }
 

@@ -6,11 +6,11 @@
     onkeydown="this.$cmp.manageSelection()"
 />
 <div class="position-relative">
-    <div class="card frmdb-autocomplete_popup" data-frmdb-attr="class.visible:popupOpened">
+    <div class="card frmdb-autocomplete_popup" data-frmdb-attr="class.visible:state.popupOpened">
         <table class="table table-striped table-sm">
             <thead>
                 <tr>
-                    <th *ngFor="let relatedCtrl of relatedControls" class="border-top-0">
+                    <th data-frmdb-foreach="state.relatedControls[]" class="border-top-0">
                         {{relatedCtrl.refPropertyName | i18n}}
                     </th>
                 </tr>

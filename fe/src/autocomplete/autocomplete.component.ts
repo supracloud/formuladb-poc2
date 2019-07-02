@@ -8,19 +8,25 @@ import { UserEnteredAutocompleteText, UserChoseAutocompleteOption } from '@fe/fr
 import * as _ from 'lodash';
 import { elvis, elvis_a } from '@core/elvis';
 import { FrmdbElementBase, FrmdbElementDecorator } from '@be/live-dom-template/frmdb-element';
+import { objKeysTyped } from '@domain/ts-utils';
 
 const HTML: string = require('raw-loader!@fe-assets/autocomplete/autocomplete.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/autocomplete/autocomplete.component.scss').default;
-const ATTRS = {
-    ref_entity_name: "string",
-    ref_property_name: "string",
-    property_name: "string",
-    ref_entity_alias: "string",
-    no_label: "string",
+export interface AutocompleteAttrs {
+    ref_entity_name: string;
+    ref_property_name: string;
+    property_name: string;
+    ref_entity_alias: string;
+    no_label: string;
+    join_reference_entity_name?: string;
+    join_referenced_property_name?: string;
+    join_reference_entity_name2?: string;
+    join_referenced_property_name2?: string;
 };
-export type AutocompleteAttrs = Partial<typeof ATTRS>;
 
-const STATE = null;
+export interface AutoCompleteState {
+    popupOpened: boolean;
+}
 class AutoCompleteSharedState {
     controls: {[refPropertyName: string]: AutocompleteAttrs} = {};
     options: {}[] = [];
@@ -31,12 +37,22 @@ class AutoCompleteSharedState {
 
 @FrmdbElementDecorator({
     tag: 'frmdb-autocomplete',
-    attributeExamples: ATTRS,
+    observedAttributes: [
+        "ref_entity_name",
+        "ref_property_name",
+        "property_name",
+        "ref_entity_alias",
+        "no_label",
+        "join_reference_entity_name",
+        "join_referenced_property_name",
+        "join_reference_entity_name2",
+        "join_referenced_property_name2"
+    ],
     initialState: {},
     template: HTML,
     style: CSS,
 })
-export class AutocompleteComponent extends FrmdbElementBase<typeof ATTRS, typeof AutoCompleteState> {
+export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, AutoCompleteState> {
 
     private parentObjId: string | undefined;
     public currentSearchTxt: string | null;
