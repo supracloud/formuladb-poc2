@@ -6,7 +6,7 @@
     position: relative;
 }
 
-.frmdb-autocomplete_popup {
+.frmdb-autocomplete-popup {
     position: absolute;
     top: 5px;
     left: 0;
@@ -14,14 +14,14 @@
     z-index: 9123;
 }
 
-.frmdb-autocomplete_popup td {
+.frmdb-autocomplete-popup td {
     cursor: pointer;
 }
 
-.frmdb-autocomplete_popup td.selected {
+.frmdb-autocomplete-popup td.selected {
     background-color: lightblue;
 }
 
-.frmdb-autocomplete_popup.visible {
+.frmdb-autocomplete-popup.visible {
     display: block;
 }

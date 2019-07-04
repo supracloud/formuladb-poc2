@@ -8,6 +8,7 @@ const LOGGER = new FrmdbLogger('frmdb-element');
 
 import { objKeysTyped } from "@domain/ts-utils";
 import { FrmdbUserEvent } from '@be/frmdb-user-events';
+import { Subscription, Subject } from 'rxjs';
 
 interface FrmdbElementConfig<ATTR, STATE> {
     tag:string;
@@ -51,17 +52,7 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
             let newParsedVal = reflectAttr2Prop(attrName, newVal);
             LOG.debug("attributeChangedCallbackNew", "%o %o %o %o %o", attrName as string, oldVal, newVal, oldParsedVal, newParsedVal);
             // attributeChangedCallback.call(this, attrName, oldVal, newVal);
-            this.updateDomWhenStateChanges(this.frmdbAttributeChangedCallback(attrName, oldParsedVal, newParsedVal));
-        }
-        
-        const frmdbPropertyChangedCallback = cls.prototype.frmdbPropertyChangedCallback;
-        if (frmdbPropertyChangedCallback) {
-            const frmdbPropertyChangedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>, propName: keyof STATE, oldPropVal: STATE[typeof  propName], newPropVal: STATE[typeof  propName]) {
-                LOG.debug("frmdbPropertyChangedCallback", "%o %o %o", propName as string, oldPropVal, newPropVal);
-                let previousState = this.frmdbState;
-                this.updateDomWhenStateChanges(frmdbPropertyChangedCallback.call(this, propName, oldPropVal, newPropVal));
-            }
-            cls.prototype.frmdbPropertyChangedCallback = frmdbPropertyChangedCallbackNew;
+            this.setFrmdbPropertyAndUpdateDOM(attrName as any, newParsedVal as any);
         }
 
 
@@ -116,18 +107,19 @@ export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
 
     emit = emit.bind(null, this);
 
-    frmdbAttributeChangedCallback<T extends keyof ATTR>(attrName: T, oldVal: ATTR[T], newVal: ATTR[T]): Partial<STATE> | Promise<Partial<STATE>> {
-        return this.frmdbState;
-    }
-    frmdbPropertyChangedCallback<T extends keyof STATE>(attrName: T, oldVal: STATE[T], newVal: STATE[T]): Partial<STATE> | Promise<Partial<STATE>> {
-        return this.frmdbState;
-    }
-
-    public setFrmdbProperty(propName: keyof STATE, propValue: STATE[typeof  propName]) {
-        this.frmdbState[propName] = propValue;
+    frmdbPropertyChangedCallback<T extends keyof STATE>(propName: T, oldVal: STATE[T] | undefined, newVal: STATE[T]): Partial<STATE> | Promise<Partial<STATE>> {
+        return {
+            ...this.frmdbState,
+            [propName]: newVal,
+        };
     }
 
-    public updateDomWhenStateChanges(change: Partial<STATE> | Promise<Partial<STATE>>) {
+    public setFrmdbPropertyAndUpdateDOM(propName: keyof STATE, propValue: STATE[typeof  propName]) {
+        LOGGER.debug("setFrmdbPropertyAndUpdateDOM", "%o %o %o", propName as string, this.frmdbState[propName], propValue);
+        this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, this.frmdbState[propName], propValue));
+    }
+
+    protected updateDomWhenStateChanges(change: Partial<STATE> | Promise<Partial<STATE>>) {
         let p = change instanceof Promise ? change : Promise.resolve(change);
         p.then((newState) => {
             if (this.frmdbState != newState) {
@@ -137,12 +129,28 @@ export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
                 // );
             }
         });
-    }
+    }    
 }
 
-if ((Element.prototype as any).$frmdb$ == null) {
-    (Element.prototype as any).$frmdb = function (this: Element) {
-        let rootNode = this.getRootNode();
-        return rootNode instanceof ShadowRoot ? rootNode.host : (rootNode as Document).body;
+export abstract class FrmdbElementBaseWithRxjs<ATTR, STATE> extends FrmdbElementBase<ATTR, STATE> {
+    protected internalStateChanges$: Subject<Partial<STATE>> = new Subject();
+    constructor() {
+        super();
+        this.sub(this.internalStateChanges$.subscribe(state => this.updateDomWhenStateChanges(state)));
+    }
+
+    protected propertyChanges$: Subject<{propName: keyof STATE, oldVal: STATE[keyof STATE] | undefined, newVal: STATE[keyof STATE]}> = new Subject();
+    public setFrmdbPropertyAndUpdateDOM(propName: keyof STATE, propValue: STATE[typeof  propName]) {
+        this.propertyChanges$.next({propName, oldVal: this.frmdbState[propName], newVal: propValue});
+        super.setFrmdbPropertyAndUpdateDOM(propName, propValue);
+    }
+
+    private subscriptions: Subscription[] = [];
+    protected sub(s: Subscription) {
+        this.subscriptions.push(s);
+    }
+
+    disconnectedCallback() {
+        this.subscriptions.forEach(s => s.unsubscribe());
     }
 }

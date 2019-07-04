@@ -1,5 +1,5 @@
 <div class="position-relative">
-    <div class="card frmdb-autocomplete_popup" data-frmdb-attr="class.visible:state.popupOpened">
+    <div class="card frmdb-autocomplete_popup" data-frmdb-attr="class.visible::state.popupOpened">
         <table class="table table-striped table-sm">
             <thead>
                 <tr>
@@ -9,9 +9,9 @@
                 </tr>
             </thead>
             <tbody>
-                <tr data-frmdb-foreach="state.options[]" onclick="this.$frmdb.selectOption(event)">
+                <tr data-frmdb-foreach="state.options[]">
                     <td data-frmdb-foreach="state.options[].relatedControls[]" 
-                        data-frmdb-attr="class.selected:state.options[].isSelected"
+                        data-frmdb-attr="class.selected::state.options[]._isSelected"
                         data-frmdb-value=":state.options[].relatedControls[].optionWithHighlight">
                     </td>
                 </tr>

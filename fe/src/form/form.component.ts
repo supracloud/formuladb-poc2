@@ -42,7 +42,7 @@ export interface FormComponentState extends FormComponentAttr {
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
 
-    async frmdbAttributeChangedCallback<T extends keyof FormComponentAttr>(attrName: T, oldVal: FormComponentAttr[T], newVal: FormComponentAttr[T]): Promise<Partial<FormComponentState>> {
+    async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]): Promise<Partial<FormComponentState>> {
         if (attrName === "table_name") {
             let entity = await BACKEND_SERVICE.getEntity(newVal as FormComponentAttr["table_name"]);
             let props: FormComponentState["props"] = [];
