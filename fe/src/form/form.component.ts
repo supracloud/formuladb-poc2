@@ -42,7 +42,7 @@ export interface FormComponentState extends FormComponentAttr {
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
 
-    async effectsOnAttributeChange<T extends keyof FormComponentAttr>(attrName: T, oldVal: FormComponentAttr[T], newVal: FormComponentAttr[T]) {
+    async frmdbAttributeChangedCallback<T extends keyof FormComponentAttr>(attrName: T, oldVal: FormComponentAttr[T], newVal: FormComponentAttr[T]): Promise<Partial<FormComponentState>> {
         if (attrName === "table_name") {
             let entity = await BACKEND_SERVICE.getEntity(newVal as FormComponentAttr["table_name"]);
             let props: FormComponentState["props"] = [];
@@ -51,33 +51,38 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
                     name: prop.name,
                     nameI18n: I18N.tt(prop.name),
                     disabled: this.getDisabled(entity, prop),
-                    cssWidth: elvis(elvis(this.immutableState.fields)[prop.name]).width || "col-12",
+                    cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
                 });
             }
-            this.immutableState = {
-                ...this.immutableState,
+            return {
+                ...this.frmdbState,
                 table_name: newVal as FormComponentAttr["table_name"],
                 props,
             };
         } else if (attrName === "rowid") {
             let dataObj = await BACKEND_SERVICE.getDataObj(newVal as FormComponentAttr["rowid"]);
-            this.immutableState = {
-                ...this.immutableState,
+            return {
+                ...this.frmdbState,
                 rowid: newVal as FormComponentAttr["rowid"],
                 dataObj
             };
         } else if (attrName === "fields") {
-            if (this.immutableState.props && this.immutableState.props.length > 0) {
-                let props = [...this.immutableState.props];
+            if (this.frmdbState.props && this.frmdbState.props.length > 0) {
+                let props = [...this.frmdbState.props];
                 for (let prop of Object.values(props)) {
-                    prop.cssWidth = elvis(elvis(this.immutableState.fields)[prop.name]).width || "col-12";
+                    prop.cssWidth = elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12";
                 }
-                this.immutableState = {
-                    ...this.immutableState,
+                return {
+                    ...this.frmdbState,
                     props,
                 };  
+            } else {
+                return {
+                    ...this.frmdbState,
+                    fields: newVal as FormComponentState["fields"],
+                }; 
             }
-        }
+        } else return this.frmdbState;
     }
 
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {

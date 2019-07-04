@@ -205,8 +205,8 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     };
 
     applyCellStyles(params) {
-        let entityName = this.immutableState.table_name;
-        let hc = this.immutableState.highlight_columns||{};
+        let entityName = this.frmdbState.table_name;
+        let hc = this.frmdbState.highlight_columns||{};
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
@@ -230,23 +230,23 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
-        if (!this.immutableState.table_name) return;
+        if (!this.frmdbState.table_name) return;
 
-        this.columns = await TABLE_SERVICE.getColumns(this.immutableState.table_name);
+        this.columns = await TABLE_SERVICE.getColumns(this.frmdbState.table_name);
 
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.immutableState.header_height || 25;
+        this.gridOptions.headerHeight = this.frmdbState.header_height || 25;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,
         //     pattern: "Solid",
         // };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.immutableState.table_name));
+        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.frmdbState.table_name));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.immutableState.conditional_formatting || {};
+            let conditionalFormatting = this.frmdbState.conditional_formatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
@@ -311,7 +311,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.immutableState.expand_row && col.name === '_id') {
+        if (this.frmdbState.expand_row && col.name === '_id') {
             return (params) => {
                 return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
             }

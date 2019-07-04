@@ -1,5 +1,6 @@
 import * as isNode from 'detect-node';
 import * as _ from "lodash";//TODO: optimization include only the needed functions
+import { stringify } from 'querystring';
 
 let parser, serializer;
 // console.error(isNode);
@@ -71,7 +72,7 @@ export function createElemList(tagName: string, key: string, length: number): El
 }
 
 export function getElem(el: Elem, key: string): Elem[] {
-    let sel = `[data-frmdb-value="${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"],[data-frmdb-meta-value$="${key}"],[data-frmdb-meta-attr$=":${key}"],[data-frmdb-meta-attr2$=":${key}"],[data-frmdb-meta-attr3$=":${key}"],[data-frmdb-meta-attr4$=":${key}"]`;
+    let sel = `[data-frmdb-value$=":${key}"],[data-frmdb-attr$=":${key}"],[data-frmdb-attr2$=":${key}"],[data-frmdb-attr3$=":${key}"],[data-frmdb-attr4$=":${key}"],[data-frmdb-prop$=":${key}"],[data-frmdb-prop2$=":${key}"],[data-frmdb-prop3$=":${key}"],[data-frmdb-prop4$=":${key}"]`;
     let ret: Elem[] = [];
     if (el.matches /* ShadowRoot does not have matches method */ && el.matches(sel)) ret.push(el);
     return ret.concat(Array.from(el.querySelectorAll(sel)));
@@ -98,36 +99,35 @@ function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: num
 
 export function setElemValue(elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[]) {
     for (let el of elems) {
-        let foundDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes, "")
-        let foundMetaDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes, "-meta")
-        if (!foundDataBinding && !foundMetaDataBinding) throw new Error("El " + el + " does not have data binding for key " + key);
+        let foundDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes)
+        if (!foundDataBinding) throw new Error("Internal Error: " + el + " does not have data binding for key " + key);
     }
 }
 
-function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: number[], meta: "-meta" | ""): boolean {
+function getValue(metaKey: string, key: string, context: {}, arrayCurrentIndexes: number[]) {
+    if (metaKey === '') {
+        return getValueForDomKey(key, context, arrayCurrentIndexes) || '';
+    } else {
+        let metaCtx = getValueForDomKey(metaKey, context, arrayCurrentIndexes);
+        let metaCtxKey = getValueForDomKey(key, context, arrayCurrentIndexes);
+        return getValueForDomKey(metaCtxKey, metaCtx, arrayCurrentIndexes) || '';
+    }
+}
+
+function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): boolean {
     let ret = false;
     let dataAttrs: string[] = [
-        el.getAttribute(`data-frmdb${meta}-attr`), 
-        el.getAttribute(`data-frmdb${meta}-attr2`), 
-        el.getAttribute(`data-frmdb${meta}-attr3`), 
-        el.getAttribute(`data-frmdb${meta}-attr4`)
+        el.getAttribute(`data-frmdb-attr`), 
+        el.getAttribute(`data-frmdb-attr2`), 
+        el.getAttribute(`data-frmdb-attr3`), 
+        el.getAttribute(`data-frmdb-attr4`)
     ].filter(x => null != x && x.indexOf(':' + key) > 0) as string[];
 
     if (dataAttrs.length > 0) {
         for (let dataAttr of dataAttrs) {
-            let arr = dataAttr.split(":");
-            let attrName = arr[0];
-            let value;
-            if ("" === meta) {
-                if (arr.length != 2 || arr[1] != key) throw new Error("Expected attrName:domKey but found " + dataAttr + " for key " + key);
-                value = getValueForDomKey(key, context, arrayCurrentIndexes);
-            } else {
-                if (arr.length != 3 || arr[2] != key) throw new Error("Expected attrName:metaObjKey:domKey but found " + dataAttr + " for key " + key);
-                let metaCtx = getValueForDomKey(arr[1], context, arrayCurrentIndexes);
-                let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
-                value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
-            }
-            if (undefined == value) value = '';
+            let [attrName, metaKey, ctxKey] = dataAttr.split(":");
+            if (ctxKey != key) throw new Error("Expected attrName:[metaObjKey]:domKey but found " + dataAttr + " for key " + key);
+            let value = getValue(metaKey, key, context, arrayCurrentIndexes);
 
             if (attrName.indexOf("class.") == 0) {
                 let className = attrName.replace(/^class\./, '');
@@ -158,19 +158,11 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
         ret = true;
     }
 
-    let valueAttr = el.getAttribute(`data-frmdb${meta}-value`)||'';
+    let valueAttr = el.getAttribute(`data-frmdb-value`)||'';
     if (valueAttr.replace(/^.*:/, '') == key) {
-        let value;
-        if ("" == meta) {
-            value = getValueForDomKey(key, context, arrayCurrentIndexes);
-        } else {
-            let [metaCtxKey, domKey] = valueAttr.split(":");
-            if (!metaCtxKey || domKey != key) throw new Error("Expected metaObjKey:domKey but found " + valueAttr + " for key " + key);
-            let metaCtx = getValueForDomKey(metaCtxKey, context, arrayCurrentIndexes);
-            let metaKey = getValueForDomKey(key, context, arrayCurrentIndexes);
-            value = getValueForDomKey(metaKey, metaCtx, arrayCurrentIndexes);
-        }
-        if (undefined == value) value = '';
+        let [metaKey, ctxKey] = valueAttr.split(":");
+        if (ctxKey != key) throw new Error("Expected [metaObjKey]:domKey but found " + valueAttr + " for key " + key);
+        let value = getValue(metaKey, key, context, arrayCurrentIndexes);
 
         if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
             (el as HTMLInputElement).value = value + '';

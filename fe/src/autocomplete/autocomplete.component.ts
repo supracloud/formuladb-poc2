@@ -24,8 +24,9 @@ export interface AutocompleteAttrs {
     join_referenced_property_name2?: string;
 };
 
-export interface AutoCompleteState {
+export interface AutoCompleteState extends AutocompleteAttrs {
     popupOpened: boolean;
+    relatedControls: AutocompleteAttrs[];
 }
 class AutoCompleteSharedState {
     controls: {[refPropertyName: string]: AutocompleteAttrs} = {};
@@ -48,7 +49,6 @@ class AutoCompleteSharedState {
         "join_reference_entity_name2",
         "join_referenced_property_name2"
     ],
-    initialState: {},
     template: HTML,
     style: CSS,
 })
@@ -60,6 +60,14 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
 
     constructor() {
         super();
+    }
+
+    private input: HTMLInputElement | null = null;
+    connectedCallback() {
+        if (this.previousSibling && (this.previousSibling as Element).tagName === 'input') {
+            this.input = this.previousSibling as HTMLInputElement;
+        }
+        //TODO se event handlers
     }
 
     getControl() {
