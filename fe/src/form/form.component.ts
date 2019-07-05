@@ -9,7 +9,7 @@ import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/f
 import { I18N } from '@fe/i18n.service';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { Entity, EntityProperty } from '@domain/metadata/entity';
+import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
 import { CssWidth } from '@domain/uimetadata/css-classes';
 import { elvis } from '@core/elvis';
 const LOG = new FrmdbLogger('frmdb-form');
@@ -26,6 +26,7 @@ export interface FormComponentAttr {
 export interface FormComponentState extends FormComponentAttr {
     props: {
         name: string,
+        isAutocomplete: boolean,
         nameI18n: string,
         disabled: boolean,
         cssWidth: CssWidth,
@@ -38,7 +39,7 @@ export interface FormComponentState extends FormComponentAttr {
     observedAttributes: ['table_name', 'fields', 'rowid'],
     template: HTML,
     style: CSS,
-    // noShadow: true,
+    noShadow: true,
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
 
@@ -49,6 +50,7 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
             for (let prop of Object.values(entity.props)) {
                 props.push({
                     name: prop.name,
+                    isAutocomplete: prop.propType_ == Pn.REFERENCE_TO,
                     nameI18n: I18N.tt(prop.name),
                     disabled: this.getDisabled(entity, prop),
                     cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",

@@ -124,33 +124,10 @@ export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
         p.then((newState) => {
             if (this.frmdbState != newState) {
                 this.frmdbState = newState;
-                // _.debounce(() => 
+                _.debounce(() => 
                     updateDOM(this.frmdbState, this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement)
-                // );
+                );
             }
         });
-    }    
-}
-
-export abstract class FrmdbElementBaseWithRxjs<ATTR, STATE> extends FrmdbElementBase<ATTR, STATE> {
-    protected internalStateChanges$: Subject<Partial<STATE>> = new Subject();
-    constructor() {
-        super();
-        this.sub(this.internalStateChanges$.subscribe(state => this.updateDomWhenStateChanges(state)));
-    }
-
-    protected propertyChanges$: Subject<{propName: keyof STATE, oldVal: STATE[keyof STATE] | undefined, newVal: STATE[keyof STATE]}> = new Subject();
-    public setFrmdbPropertyAndUpdateDOM(propName: keyof STATE, propValue: STATE[typeof  propName]) {
-        this.propertyChanges$.next({propName, oldVal: this.frmdbState[propName], newVal: propValue});
-        super.setFrmdbPropertyAndUpdateDOM(propName, propValue);
-    }
-
-    private subscriptions: Subscription[] = [];
-    protected sub(s: Subscription) {
-        this.subscriptions.push(s);
-    }
-
-    disconnectedCallback() {
-        this.subscriptions.forEach(s => s.unsubscribe());
     }
 }

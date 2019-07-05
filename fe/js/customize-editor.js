@@ -91,3 +91,12 @@ $(document).ready(function () {
     // organizeTopPanel();
     organizeBottomPanel();
 });
+
+/** Any widgets that show/hide DOM elements must stop auto-play in order to let the user edit */
+function stopAutoplayForEditing() {
+    $('.owl-carousel').trigger('stop.owl.autoplay');
+}
+
+function resumeAutoplayForPreview() {
+    $('.owl-carousel').trigger('play.owl.autoplay',[500]);
+}

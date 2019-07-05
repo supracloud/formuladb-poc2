@@ -33,8 +33,8 @@ export function deleteElem(el: Elem) {
  * TODO: micro-benchmarks and perhaps find a more performing solution (e.g. diff with the previous version of the object and update the DOM with only the differences)
  * 
  * <div data-frmdb-foreach="tableName">
- *     <span data-frmdb-value=":tableName[].field"></span>
- *     <span data-frmdb-value=":topLevelObj.someField"></span>
+ *     <span data-frmdb-value=":::tableName[].field"></span>
+ *     <span data-frmdb-value=":::topLevelObj.someField"></span>
  * </div>
  * 
  * Meta-value(s) and meta-attr(s) are like bash's ${!VAR}
