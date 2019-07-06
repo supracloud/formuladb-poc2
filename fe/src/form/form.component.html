@@ -3,10 +3,12 @@ integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw
 
 <form class="row">
     <div class="form-group row" data-frmdb-foreach="props[]" data-frmdb-attr="class[col|col-1|col-2|col-3|col-4|col-5|col-6|col-7|col-8|col-9|col-10|col-11|col-12]::props[].cssWidth">
-        <label data-frmdb-attr="for::props[].name" class="col-form-label col-3" data-frmdb-value=":props[].nameI18n"></label>
+        <label data-frmdb-attr="for::props[].name" class="col-form-label col-3" data-frmdb-value="::props[].nameI18n"></label>
         <div class="col-9">
-            <input type="text" class="form-control" data-frmdb-value="dataObj:props[].name" data-frmdb-attr="name::props[].name" data-frmdb-attr2="!disabled::props[].disabled">
-            <frmdb-autocomplete data-frmdb-if="props[].isAutocomplete"></frmdb-autocomplete>
+            <input type="text" class="form-control" data-frmdb-value=":dataObj:props[].name" data-frmdb-attr="name::props[].name" data-frmdb-attr2="!disabled::props[].disabled">
+            <frmdb-autocomplete data-frmdb-if="::props[].isAutocomplete" 
+                data-frmdb-attr="ref_entity_name::props[].referencedEntityName"
+                data-frmdb-attr2="ref_property_name::props[].referencedPropertyName"></frmdb-autocomplete>
         </div>
     </div>
 </form>

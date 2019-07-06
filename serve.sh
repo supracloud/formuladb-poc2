@@ -42,8 +42,7 @@ FRMDB_RELEASE=0.0.12 nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js
 sleep 2
 
 cd "${APPDIR}"
-live-server --watch="${APPDIR}","$FEBEDIR/dist" \
-     --entry-file="index.html" --wait=200 --port=8081 -V --no-browser \
+live-server --entry-file="index.html" --wait=200 --port=8081 -V --no-browser \
      --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
      --mount=/formuladb/:"$FEBEDIR/dist-fe/"
     "${APPDIR}"

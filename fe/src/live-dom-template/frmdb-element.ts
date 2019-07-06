@@ -4,11 +4,6 @@ import * as _ from "lodash";
 import { on, emit } from "../delegated-events";
 import { updateDOM } from "./live-dom-template";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-const LOGGER = new FrmdbLogger('frmdb-element');
-
-import { objKeysTyped } from "@domain/ts-utils";
-import { FrmdbUserEvent } from '@be/frmdb-user-events';
-import { Subscription, Subject } from 'rxjs';
 
 interface FrmdbElementConfig<ATTR, STATE> {
     tag:string;
@@ -22,7 +17,9 @@ interface FrmdbElementConfig<ATTR, STATE> {
 
 export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<ATTR, STATE>) {
     return function(cls: { new(): FrmdbElementBase<ATTR, STATE> }) {
-        LOGGER.info("FrmdbElementDecorator", "Decorating component " + cls.name);
+        const LOG = new FrmdbLogger(cls.name);
+        cls.prototype.LOG = LOG;
+        LOG.info("FrmdbElementDecorator", "Decorating component " + cls.name);
         validateSelector(config.tag);
         if (!config.template) {
             throw new Error('You need to pass a template for the element');
@@ -32,8 +29,6 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
             config.template = `<style>${config.style}</style> ${config.template}`;
         }
         template.innerHTML = config.template;
-
-        const LOG = new FrmdbLogger(cls.name);
 
         const connectedCallback = cls.prototype.connectedCallback || function () {};
         const connectedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>) {
@@ -102,31 +97,40 @@ export function reflectAttr2Prop<ATTR>(attrName: keyof ATTR, attr: string): ATTR
  * An element is
  */
 export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
+    protected LOG: FrmdbLogger;
     frmdbState: Partial<STATE>;
     frmdbConfig: FrmdbElementConfig<ATTR, STATE>;
 
     emit = emit.bind(null, this);
 
     frmdbPropertyChangedCallback<T extends keyof STATE>(propName: T, oldVal: STATE[T] | undefined, newVal: STATE[T]): Partial<STATE> | Promise<Partial<STATE>> {
-        return {
-            ...this.frmdbState,
-            [propName]: newVal,
-        };
+        return this.frmdbState;
     }
 
     public setFrmdbPropertyAndUpdateDOM(propName: keyof STATE, propValue: STATE[typeof  propName]) {
-        LOGGER.debug("setFrmdbPropertyAndUpdateDOM", "%o %o %o", propName as string, this.frmdbState[propName], propValue);
+        this.LOG.debug("setFrmdbPropertyAndUpdateDOM", "%o %o %o", propName as string, this.frmdbState[propName], propValue);
+        if (this.frmdbState[propName] !== propValue) {
+            this.frmdbState = {
+                ...this.frmdbState,
+                [propName]: propValue,
+            };
+            this.debouncedUpdateDOM();
+        }
         this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, this.frmdbState[propName], propValue));
     }
+
+    private debouncedUpdateDOM = _.debounce(() => {
+        let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
+        this.LOG.debug("updateDOM", "%o %o", this.frmdbState, el);
+        updateDOM(this.frmdbState, el);
+    }, 100);
 
     protected updateDomWhenStateChanges(change: Partial<STATE> | Promise<Partial<STATE>>) {
         let p = change instanceof Promise ? change : Promise.resolve(change);
         p.then((newState) => {
             if (this.frmdbState != newState) {
                 this.frmdbState = newState;
-                _.debounce(() => 
-                    updateDOM(this.frmdbState, this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement)
-                );
+                this.debouncedUpdateDOM();
             }
         });
     }

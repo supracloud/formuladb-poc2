@@ -1,31 +1,34 @@
 import * as Debug from "debug";
 
 export class FrmdbLogger {
-    private debugLogger;
-    private infoLogger;
-    private warnLogger;
-    private errorLogger;
+    private loggers: Map<string,any> = new Map();
     
-    constructor(name: string) {
-        this.debugLogger = Debug("formuladb:" + name + ":debug");
-        this.infoLogger = Debug("formuladb:" + name + ":info");
-        this.warnLogger = Debug("formuladb:" + name + ":warn");
-        this.errorLogger = Debug("formuladb:" + name + ":err");
+    constructor(private name: string) {
+    }
+
+    private getLogger(func: string, level: string) {
+        let key = `formuladb:${this.name}:${func}:${level}`;
+        let ret = this.loggers.get(key);
+        if (!ret) {
+            ret = Debug(key);
+            this.loggers.set(key, ret);
+        }
+        return ret;
     }
 
     public debug(func: string, msg: string, ...params) {
-        this.debugLogger(func, msg, ...params);
+        this.getLogger(func, "debug")(msg, ...params);
     }
     public log(func: string, msg: string, ...params) {
-        this.infoLogger(func, msg, ...params);
+        this.getLogger(func, "info")(msg, ...params);
     }
     public info(func: string, msg: string, ...params) {
-        this.infoLogger(func, msg, ...params);
+        this.getLogger(func, "info")(msg, ...params);
     }
     public warn(func: string, msg: string, ...params) {
-        this.warnLogger(func, msg, ...params);
+        this.getLogger(func, "warn")(msg, ...params);
     }
     public error(func: string, msg: string, ...params) {
-        this.errorLogger(func, msg, ...params);
+        this.getLogger(func, "error")(msg, ...params);
     }
 }

@@ -1,4 +1,6 @@
 import { getElem, Elem, getElemList, setElemValue } from "./dom-node";
+import { FrmdbLogger } from "@domain/frmdb-logger";
+const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
     throw new Error("TBD");
@@ -60,17 +62,19 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
 
         if (objValForKey instanceof Array) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}[]`;
-            let elemListForKey = getElemList(el, domKey);
-            if (null == elemListForKey) continue;
+            let elemListsForKey = getElemList(el, domKey);
+            if (0 == elemListsForKey.length) continue;
 
-            for (let [i, o] of objValForKey.entries()) {
-                if (elemListForKey.length <= i) {
-                    elemListForKey.addElem();
+            for (let elemListForKey of elemListsForKey) {
+                for (let [i, o] of objValForKey.entries()) {
+                    if (elemListForKey.length <= i) {
+                        elemListForKey.addElem();
+                    }
+                    _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
+                };
+                for (let i = objValForKey.length; i < elemListForKey.length; i++) {
+                    elemListForKey.removeAt(i);
                 }
-                _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
-            };
-            for (let i = objValForKey.length; i < elemListForKey.length; i++) {
-                elemListForKey.removeAt(i);
             }
 
         } else if (/string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date) {

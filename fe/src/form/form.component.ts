@@ -5,6 +5,8 @@
 
 import * as _ from 'lodash';
 
+import '../autocomplete/autocomplete.component';
+
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { I18N } from '@fe/i18n.service';
 import { BACKEND_SERVICE } from '@fe/backend.service';
@@ -13,7 +15,6 @@ import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
 import { CssWidth } from '@domain/uimetadata/css-classes';
 import { elvis } from '@core/elvis';
 const LOG = new FrmdbLogger('frmdb-form');
-
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/form/form.component.html').default;
@@ -24,13 +25,13 @@ export interface FormComponentAttr {
     rowid: string;
 };
 export interface FormComponentState extends FormComponentAttr {
-    props: {
+    props: (EntityProperty & {
         name: string,
         isAutocomplete: boolean,
         nameI18n: string,
         disabled: boolean,
         cssWidth: CssWidth,
-    }[];
+    })[];
     dataObj: {},
 };
 
@@ -49,8 +50,8 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
             let props: FormComponentState["props"] = [];
             for (let prop of Object.values(entity.props)) {
                 props.push({
-                    name: prop.name,
-                    isAutocomplete: prop.propType_ == Pn.REFERENCE_TO,
+                    ...prop,
+                    isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
                     nameI18n: I18N.tt(prop.name),
                     disabled: this.getDisabled(entity, prop),
                     cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",

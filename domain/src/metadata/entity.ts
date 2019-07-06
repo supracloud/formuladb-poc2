@@ -176,6 +176,7 @@ export interface ReferenceToProperty {
     name: string;
     referencedEntityName: string;
     referencedPropertyName: string;
+    referencedEntityAlias?: string;
     joinReferenceEntityName?: string;
     joinReferencedPropertyName?: string;
     joinReferenceEntityName2?: string;

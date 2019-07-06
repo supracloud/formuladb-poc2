@@ -5,9 +5,8 @@
 
  
 import * as _ from 'lodash';
-import { elvis, elvis_a } from '@core/elvis';
-import { FrmdbElementBase, FrmdbElementDecorator, FrmdbElementBaseWithRxjs } from '@be/live-dom-template/frmdb-element';
-import { BACKEND_SERVICE } from '@be/backend.service';
+import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
+import { BACKEND_SERVICE } from '@fe/backend.service';
 import { KeyEvent } from '@fe/key-event';
 import { SimpleAddHocQuery, FilterItem } from '@domain/metadata/simple-add-hoc-query';
 
@@ -16,7 +15,6 @@ const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/autoc
 export interface AutocompleteAttrs {
     ref_entity_name: string;
     ref_property_name: string;
-    property_name: string;
     ref_entity_alias: string;
     no_label: string;
     join_reference_entity_name?: string;
@@ -25,9 +23,10 @@ export interface AutocompleteAttrs {
     join_referenced_property_name2?: string;
 };
 
-export interface frmdbState extends AutocompleteAttrs {
+export interface AutocompleteState extends AutocompleteAttrs {
     parentObjId: string;
     popupOpened: boolean;
+    relatedControls: {ref_property_name: string, fieldValue: string}[];
     options: {[x: string]: any}[];
     selectedOption: {} | null;
 }
@@ -37,7 +36,6 @@ export interface frmdbState extends AutocompleteAttrs {
     observedAttributes: [
         "ref_entity_name",
         "ref_property_name",
-        "property_name",
         "ref_entity_alias",
         "no_label",
         "join_reference_entity_name",
@@ -48,7 +46,7 @@ export interface frmdbState extends AutocompleteAttrs {
     template: HTML,
     style: CSS,
 })
-export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, frmdbState> {
+export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, AutocompleteState> {
 
     private parentObjId: string | undefined;
     public currentSearchTxt: string | null;
@@ -56,9 +54,10 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, f
 
     input: HTMLInputElement | undefined;
     connectedCallback() {
-        if (this.previousSibling && (this.previousSibling as Element).tagName === 'input') {
-            this.input = this.previousSibling as HTMLInputElement;
-            this.input.onchange = _.debounce(() => this.userEnteredAutocompleteTxt(), 200);
+        if (this.previousElementSibling && this.previousElementSibling.tagName.toLocaleLowerCase() === 'input') {
+            this.input = this.previousElementSibling as HTMLInputElement;
+            this.input.autocomplete = "off";
+            this.input.oninput = _.debounce(() => this.userEnteredAutocompleteTxt(), 500);
             this.input.onkeydown = (event: KeyboardEvent) => this.manageSelection(event.keyCode);
         }
     }
@@ -69,17 +68,16 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, f
 
     async userEnteredAutocompleteTxt() {
         if (!this.input) return;
-        if (!this.referencedEntityAlias || !this.frmdbState.property_name || !this.input) return;
+        if (!this.referencedEntityAlias || !this.frmdbState.ref_property_name || !this.input) return;
 
         let val = this.input.value;
         if (val.length >= 2) {
-            let currentCtrl = {fieldName: this.frmdbState.property_name, fieldValue: this.input.value};
-            let relatedCtrls = this.getRelatedControls().concat(currentCtrl);
+            this.frmdbState.relatedControls = this.getRelatedControls();
             let filterModel: {
                 [x: string]: FilterItem;
             } = {};
-            for (let ctrl of relatedCtrls) {
-                filterModel[ctrl.fieldName] = {
+            for (let ctrl of this.frmdbState.relatedControls) {
+                filterModel[ctrl.ref_property_name] = {
                     type: "contains",
                     filter: ctrl.fieldValue,
                     filterType: "text"
@@ -103,22 +101,23 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, f
             let opts: {}[] = [];
             for (let row of rows) {
                 let opt = {};
-                for (let {fieldName, fieldValue} of relatedCtrls) {
-                    opt[fieldName] = this.highlightOption(row[fieldName], fieldValue, fieldName == currentCtrl.fieldName);
+                for (let {ref_property_name: fieldName, fieldValue} of this.frmdbState.relatedControls) {
+                    opt[fieldName] = this.highlightOption(row[fieldName], fieldValue, fieldName == this.frmdbState.ref_property_name);
                 }
                 opts.push(opt);
+                this.frmdbState.popupOpened = true;
             }
             this.setFrmdbPropertyAndUpdateDOM("options", opts);
         }
     }
 
-    getRelatedControls(): {fieldName: string, fieldValue: string}[] {
-        let ret: {fieldName: string, fieldValue: string}[] = [];
+    getRelatedControls(): AutocompleteState['relatedControls'] {
+        let ret: AutocompleteState['relatedControls'] = [];
         let form = this.closest('frmdb-form');
         if (!form) return ret;
         form.querySelectorAll('frmdb-autocomplete').forEach((relatedCtrl: AutocompleteComponent) => {
-            if (this.referencedEntityAlias == relatedCtrl.referencedEntityAlias && relatedCtrl.frmdbState.property_name && relatedCtrl.input) {
-                ret.push({fieldName: relatedCtrl.frmdbState.property_name, fieldValue: relatedCtrl.input.value});
+            if (this.referencedEntityAlias == relatedCtrl.referencedEntityAlias && relatedCtrl.frmdbState.ref_property_name && relatedCtrl.input) {
+                ret.push({ref_property_name: relatedCtrl.frmdbState.ref_property_name, fieldValue: relatedCtrl.input.value});
             }
         });
         return ret;

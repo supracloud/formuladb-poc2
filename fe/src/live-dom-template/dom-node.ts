@@ -1,6 +1,6 @@
 import * as isNode from 'detect-node';
 import * as _ from "lodash";//TODO: optimization include only the needed functions
-import { EnterpriseMenuFactory } from 'ag-grid-enterprise/dist/lib/menu/enterpriseMenu';
+import * as DOMPurify from "dompurify";
 
 let parser, serializer;
 // console.error(isNode);
@@ -87,14 +87,20 @@ export function getElem(el: Elem, key: string): Elem[] {
     let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"]`).join(',');
     let ret: Elem[] = [];
     if (el.matches /* ShadowRoot does not have matches method */ && el.matches(sel)) ret.push(el);
-    return ret.concat(Array.from(el.querySelectorAll(sel)));
+    return ret
+        .concat(Array.from(el.querySelectorAll(sel)))
+        .concat(_.flatMap(el.querySelectorAll('template'), 
+            tmpl => Array.from(tmpl.content.querySelectorAll(sel))));
 }
 
-export function getElemList(el: Elem, key: string): ElemList | null {
-    let firstEl = el.querySelector(`[data-frmdb-foreach="${key}"]`);
-    if (!firstEl) return null;
-    if (!firstEl.parentElement) throw new Error("Elem " + firstEl + " has no parent !?!?");
-    return new ElemList(key, firstEl.parentElement);
+export function getElemList(el: Elem, key: string): ElemList[] {
+    let listElems = Array.from(el.querySelectorAll(`[data-frmdb-foreach="${key}"]`));
+    let parents: Set<HTMLElement> = new Set();
+    for (let listEl of listElems) {
+        if (!listEl.parentElement) throw {err: new Error("found data-frmdb-foreach without parent"), key, listEl};
+        parents.add(listEl.parentElement);
+    }
+    return Array.from(parents.values()).map(parent => new ElemList(key, parent));
 }
 
 export function addElem(el: Elem, childEl: Elem) {
@@ -151,7 +157,7 @@ function getDataBindingAttrs(el: Elem, key: string, context: {}, arrayCurrentInd
     let ret: ElemDataAttrs = new ElemDataAttrs();
     for (let i = 0; i < el.attributes.length; i++) {
         let attrib = el.attributes[i];
-        if (attrib.value && attrib.name.indexOf('data-frmdb') == 0 && attrib.value.indexOf(':' + key) > 0) {
+        if (attrib.value && attrib.name.indexOf('data-frmdb') == 0 && attrib.value.endsWith(':' + key)) {
             let [valueName, metaKey, ctxKey] = attrib.value.split(":");
             if (ctxKey != key) throw new Error("Expected if [valueName]:[metaObjKey]:domKey but found " + attrib.name + "=" + attrib.value + " for key " + key);
             
@@ -247,19 +253,23 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
     if (dataAttrsForEl.value) {
         let value = dataAttrsForEl.value.value;
 
-        if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
-            (el as HTMLInputElement).value = value + '';
+        if ("html" === dataAttrsForEl.value.valueName) {
+            el.innerHTML = DOMPurify.sanitize(value);
         } else {
-            let textNodeFound: boolean = false;
-            el.childNodes.forEach(child => {
-                if (child.nodeType === Node.TEXT_NODE) {
-                    child.nodeValue = value + '';
-                    textNodeFound = true;
+            if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
+                (el as HTMLInputElement).value = value + '';
+            } else {
+                let textNodeFound: boolean = false;
+                el.childNodes.forEach(child => {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        child.nodeValue = value + '';
+                        textNodeFound = true;
+                    }
+                })
+                if (!textNodeFound) {
+                    let textNode = document.createTextNode(value + '');
+                    el.appendChild(textNode);
                 }
-            })
-            if (!textNodeFound) {
-                let textNode = document.createTextNode(value + '');
-                el.appendChild(textNode);
             }
         }
         ret = true;

@@ -67,6 +67,7 @@
     "csv": "^5.1.1",
     "debug": "^4.1.1",
     "detect-node": "^2.0.4",
+    "dompurify": "^1.0.11",
     "dotenv": "^6.2.0",
     "express": "~4.13.1",
     "express-session": "^1.15.6",
