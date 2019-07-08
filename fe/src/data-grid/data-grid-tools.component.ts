@@ -1,5 +1,5 @@
 import { IToolPanelParams, GridApi, IToolPanelComp } from "ag-grid-community";
-import { on, emit } from '@fe/delegated-events';
+import { onEvent, emit } from '@fe/delegated-events';
 
 const html = require('raw-loader!@fe-assets/data-grid/data-grid-tools.component.html').default;
 const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid-tools.component.scss').default;
@@ -9,7 +9,7 @@ export class DataGridToolsComponent implements IToolPanelComp {
     private gridApi: GridApi;
     
     el = document.createElement('div');
-    on = on.bind(null, this.el);
+    on = onEvent.bind(null, this.el);
     emit = emit.bind(null, this.el);
 
     init(params: IToolPanelParams): void {

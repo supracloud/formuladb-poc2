@@ -16,7 +16,7 @@ export type Elem = HTMLElement;
 export class ElemList {
     constructor(private key: string, private parentEl: Elem) {}
 
-    get length() {
+    public length() {
         return this.parentEl.querySelectorAll(`[data-frmdb-foreach="${this.key}"]`).length;
     }
 

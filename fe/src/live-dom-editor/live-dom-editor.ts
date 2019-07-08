@@ -1,6 +1,6 @@
 import { FrmdbElementBase, FrmdbElementDecorator } from "@fe/live-dom-template/frmdb-element";
 import * as _ from "lodash";
-import { on } from "@fe/delegated-events";
+import { onEvent } from "@fe/delegated-events";
 
 const HTML = /*html*/`
 <div class="live-dom-editor">
@@ -22,7 +22,7 @@ const HTML = /*html*/`
     style: '',
 })
 class LiveDomEditor extends FrmdbElementBase<{}, {}> {
-    on = on.bind(null, this);
+    on = onEvent.bind(null, this);
     emit = FrmdbElementBase.prototype.emit.bind(this);
     
     connectedCallback() {

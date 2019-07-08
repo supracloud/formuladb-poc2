@@ -24,7 +24,7 @@ import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn, FormulaExpression } from '@domain/metadata/entity';
 import { translateClicksToNavigationEvents } from '@fe/event-translator';
-import { on, emit } from '@fe/delegated-events';
+import { onEvent, emit } from '@fe/delegated-events';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;

@@ -1,7 +1,7 @@
 import * as yaml from 'js-yaml';
 import * as _ from "lodash";
 
-import { on, emit } from "../delegated-events";
+import { onEvent, emit } from "../delegated-events";
 import { updateDOM } from "./live-dom-template";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 

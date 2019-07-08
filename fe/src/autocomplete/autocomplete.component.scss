@@ -12,6 +12,9 @@
     left: 0;
     display: none;
     z-index: 9123;
+    background-color: var(--light, white);
+    border-radius: 5px;
+    border: 1px solid #ced4da;
 }
 
 .frmdb-autocomplete-popup td {

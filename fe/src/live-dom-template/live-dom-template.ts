@@ -60,26 +60,30 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
             continue;
         }
 
+
         if (objValForKey instanceof Array) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}[]`;
             let elemListsForKey = getElemList(el, domKey);
+            LOG.debug("_updateDOM", "", key, objValForKey, domKey,elemListsForKey);
             if (0 == elemListsForKey.length) continue;
 
             for (let elemListForKey of elemListsForKey) {
                 for (let [i, o] of objValForKey.entries()) {
-                    if (elemListForKey.length <= i) {
+                    if (elemListForKey.length() <= i) {
                         elemListForKey.addElem();
                     }
+                    elemListForKey.at(i)!['data-frmdb-obj'] = o;
                     _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
                 };
-                for (let i = objValForKey.length; i < elemListForKey.length; i++) {
-                    elemListForKey.removeAt(i);
+                while (elemListForKey.length() > objValForKey.length) {
+                    elemListForKey.removeAt(objValForKey.length);
                 }
             }
 
         } else if (/string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
             let elemsForKey = getElem(el, domKey);
+            LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
             if (0 == elemsForKey.length) {
             } else {
                 setElemValue(elemsForKey, domKey, context, arrayCurrentIndexes);
@@ -87,10 +91,12 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
         } else if ('object' === typeof objValForKey) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
             let elemsForKey = getElem(el, domKey);
+            LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
             if (0 == elemsForKey.length) {
                 elemsForKey.push(el);
             }
             for (let elForKey of elemsForKey) {
+                elForKey['data-frmdb-obj'] = objValForKey;
                 _updateDOM(objValForKey, elForKey, context, domKey, arrayCurrentIndexes);
             }
         } else {
