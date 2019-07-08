@@ -142,6 +142,7 @@ export class BackendService {
     }
 
     public simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {
+        LOG.debug("simpleAdHocQuery", entityName + " %o", query);
         return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.appName + '/' + entityName + '/SimpleAddHocQuery',
             query);
     }

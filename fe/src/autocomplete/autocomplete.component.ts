@@ -23,10 +23,15 @@ export interface AutocompleteAttrs {
     join_referenced_property_name2?: string;
 };
 
+interface RelatedControl {
+    ref_property_name: string;
+    fieldValue: string;
+}
+
 export interface AutocompleteState extends AutocompleteAttrs {
     parentObjId: string;
     popupOpened: boolean;
-    relatedControls: {ref_property_name: string, fieldValue: string}[];
+    relatedControls: RelatedControl[];
     options: {[x: string]: any}[];
     selectedOption: {} | null;
 }
@@ -54,6 +59,7 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
 
     input: HTMLInputElement | undefined;
     connectedCallback() {
+        this.style.display = 'block';
         if (this.previousElementSibling && this.previousElementSibling.tagName.toLocaleLowerCase() === 'input') {
             this.input = this.previousElementSibling as HTMLInputElement;
             this.input.autocomplete = "off";
@@ -71,6 +77,7 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
         if (!this.referencedEntityAlias || !this.frmdbState.ref_property_name || !this.input) return;
 
         let val = this.input.value;
+        this.LOG.debug("userEnteredAutocompleteTxt", val);
         if (val.length >= 2) {
             this.frmdbState.relatedControls = this.getRelatedControls();
             let filterModel: {
@@ -104,10 +111,11 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
                 for (let {ref_property_name: fieldName, fieldValue} of this.frmdbState.relatedControls) {
                     opt[fieldName] = this.highlightOption(row[fieldName], fieldValue, fieldName == this.frmdbState.ref_property_name);
                 }
+                opt['_relatedControls'] = this.frmdbState.relatedControls;
                 opts.push(opt);
                 this.frmdbState.popupOpened = true;
             }
-            this.setFrmdbPropertyAndUpdateDOM("options", opts);
+            this.frmdbState.options = opts;
         }
     }
 

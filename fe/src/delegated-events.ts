@@ -11,10 +11,10 @@ export function on(el: HTMLElement | Document | ShadowRoot, eventType: EventType
     for (let ev of events) {
         //@ts-ignore
         el.addEventListener(ev, (event: any) => {
-            LOG.debug("on", "%o, %o,", ev, event);
             if (!event || !event.target) {console.warn("received incorrect event:", event); return};
             for (let sel of selectors) {
                 if (event.target.matches(sel)) {
+                    LOG.debug("on", "%o, %o,", ev, event);
                     fn(event);
                     break;
                 }

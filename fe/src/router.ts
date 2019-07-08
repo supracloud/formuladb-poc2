@@ -1,7 +1,7 @@
 import { onDoc } from "./delegated-events";
 import { translateClicksToNavigationEvents } from "./event-translator";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { updateDOM as renderTemplate } from "@fe/live-dom-template/live-dom-template"
+import { updateDOM } from "@fe/live-dom-template/live-dom-template"
 import { Logger } from "ag-grid-community";
 const LOG = new FrmdbLogger('router');
 
@@ -93,7 +93,7 @@ function render(pathName: string, routerOutletName: string = "main", allowMissin
         routerOutlet.removeChild(routerOutlet.firstChild);
     }
     routerOutlet.appendChild(template.content.cloneNode(true))
-    renderTemplate({...params}, routerOutlet as HTMLElement);
+    updateDOM({...params}, routerOutlet as HTMLElement);
 }
 
 window.onpopstate = () => {

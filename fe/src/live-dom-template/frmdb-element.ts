@@ -41,19 +41,8 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
             connectedCallback.call(this);
         };
 
-        // const attributeChangedCallback = cls.prototype.attributeChangedCallback || function () {};
-        const attributeChangedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>, attrName: keyof ATTR, oldVal, newVal) {
-            let oldParsedVal = reflectAttr2Prop(attrName, oldVal);
-            let newParsedVal = reflectAttr2Prop(attrName, newVal);
-            LOG.debug("attributeChangedCallbackNew", "%o %o %o %o %o", attrName as string, oldVal, newVal, oldParsedVal, newParsedVal);
-            // attributeChangedCallback.call(this, attrName, oldVal, newVal);
-            this.setFrmdbPropertyAndUpdateDOM(attrName as any, newParsedVal as any);
-        }
-
-
         //Web Components APIs
         cls.prototype.connectedCallback = connectedCallbackNew;
-        cls.prototype.attributeChangedCallback = attributeChangedCallbackNew;
         (cls as any).observedAttributes = config.observedAttributes;
 
         // custom formuladb properties
@@ -98,25 +87,31 @@ export function reflectAttr2Prop<ATTR>(attrName: keyof ATTR, attr: string): ATTR
  */
 export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     protected LOG: FrmdbLogger;
-    frmdbState: Partial<STATE>;
     frmdbConfig: FrmdbElementConfig<ATTR, STATE>;
 
+    frmdbState: Partial<STATE> = new Proxy({}, {
+        set: (obj, propName: keyof STATE, propValue, receiver) => {
+            let ret = true;
+            if (this.frmdbState[propName] !== propValue) {
+                ret = Reflect.set(obj, propName, propValue);
+                this.debouncedUpdateDOM();
+            }
+            this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, this.frmdbState[propName], propValue));
+            return ret;
+        }
+    });
+
     emit = emit.bind(null, this);
+    
+    protected attributeChangedCallback(attrName: keyof ATTR, oldVal, newVal) {
+        let oldParsedVal = reflectAttr2Prop(attrName, oldVal);
+        let newParsedVal = reflectAttr2Prop(attrName, newVal);
+        this.LOG.debug("attributeChangedCallback", "%o %o %o %o %o", attrName as string, oldVal, newVal, oldParsedVal, newParsedVal);
+        this.frmdbState[attrName as any] = newParsedVal;
+    }
 
     frmdbPropertyChangedCallback<T extends keyof STATE>(propName: T, oldVal: STATE[T] | undefined, newVal: STATE[T]): Partial<STATE> | Promise<Partial<STATE>> {
         return this.frmdbState;
-    }
-
-    public setFrmdbPropertyAndUpdateDOM(propName: keyof STATE, propValue: STATE[typeof  propName]) {
-        this.LOG.debug("setFrmdbPropertyAndUpdateDOM", "%o %o %o", propName as string, this.frmdbState[propName], propValue);
-        if (this.frmdbState[propName] !== propValue) {
-            this.frmdbState = {
-                ...this.frmdbState,
-                [propName]: propValue,
-            };
-            this.debouncedUpdateDOM();
-        }
-        this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, this.frmdbState[propName], propValue));
     }
 
     private debouncedUpdateDOM = _.debounce(() => {

@@ -10,8 +10,8 @@
             </thead>
             <tbody>
                 <tr data-frmdb-foreach="options[]" data-frmdb-attr="class.selected::options[]._isSelected">
-                    <td data-frmdb-foreach="relatedControls[]"
-                        data-frmdb-value="html:options[]:relatedControls[].ref_property_name">
+                    <td data-frmdb-foreach="options[]._relatedControls[]"
+                        data-frmdb-value="html:options[]:options[]._relatedControls[].ref_property_name">
                     </td>
                 </tr>
             </tbody>
