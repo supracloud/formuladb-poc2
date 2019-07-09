@@ -10,6 +10,7 @@ import { BACKEND_SERVICE } from '@fe/backend.service';
 import { KeyEvent } from '@fe/key-event';
 import { SimpleAddHocQuery, FilterItem } from '@domain/metadata/simple-add-hoc-query';
 import { onEvent } from '@fe/delegated-events';
+import { elvis } from '@core/elvis';
 
 const HTML: string = require('raw-loader!@fe-assets/autocomplete/autocomplete.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/autocomplete/autocomplete.component.scss').default;
@@ -77,7 +78,7 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
         onEvent(this.shadowRoot!, 'mouseover', 'tr[data-frmdb-foreach="options[]"] *', (ev: MouseEvent) => {
             let opt = (ev.target! as Element).closest('tr')!['data-frmdb-obj'];
             this.frmdbState.options![this.frmdbState.currentOptionIdx!]._isSelected = false;
-            this.frmdbState.options![opt._idx]._isSelected = true;
+            elvis(elvis(this.frmdbState.options)[opt._idx])._isSelected = true;
             this.frmdbState.currentOptionIdx! = opt._idx;
         })
         onEvent(this.shadowRoot!, 'click', 'tr[data-frmdb-foreach="options[]"] *', (ev: MouseEvent) => {
@@ -102,11 +103,14 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
                 [x: string]: FilterItem;
             } = {};
             for (let ctrl of this.frmdbState.relatedControls) {
-                filterModel[ctrl.ref_property_name] = {
-                    type: "contains",
-                    filter: ctrl.fieldValue,
-                    filterType: "text"
-                };
+                if (this.frmdbState.ref_property_name === ctrl.ref_property_name) {
+                    //TODO: add filtered_by complex attribute to allow restricting the search space by other related controls
+                    filterModel[ctrl.ref_property_name] = {
+                        type: "contains",
+                        filter: ctrl.fieldValue,
+                        filterType: "text"
+                    };
+                }
             }
 
             let rows = await BACKEND_SERVICE.simpleAdHocQuery(this.referencedEntityAlias, {
