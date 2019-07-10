@@ -191,6 +191,7 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
 
     if (dataAttrsForEl.if) {
         let value = dataAttrsForEl.if.value;
+        if ('!' === dataAttrsForEl.if.valueName) value = !value;
 
         if ((el as HTMLElement).tagName.toLowerCase() === 'template') {
             if (true === value) {

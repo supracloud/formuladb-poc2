@@ -1,10 +1,13 @@
 import { Entity, Pn } from "@domain/metadata/entity";
+import { I18N } from "@fe/i18n.service";
 
 export interface NavigationItem extends Node {
     linkName: string;
+    linkNameI18n: string;
     path: string;
     active: boolean;
     collapsed: boolean;
+    hasChildren?: boolean;
     onPath?: boolean;
     isNotRootNavItem?: boolean;
     isPureNavGroupingChildren?: boolean;
@@ -13,15 +16,6 @@ export interface NavigationItem extends Node {
 export interface Node {
     id: string;
     children: Node[];
-}
-
-export const unflatten = <T extends Node>(flat: T[], parentOf: (n1: T, n2: T) => boolean) => {
-    flat.forEach(f => {
-        f.children = flat.filter(fc => parentOf(f, fc));
-    });
-    let unflat: T[] = flat.filter(fp => flat.every(fo => fo.children.every(fc => fc.id !== fp.id)));
-    unflat.forEach(u => u.children = unflatten(u.children, parentOf));
-    return unflat;
 }
 
 export function entites2navItems(entitiesList: Entity[], selectedEntity: Entity, onlyPresentaiontPages?: boolean) {
@@ -47,6 +41,11 @@ export function entites2navItems(entitiesList: Entity[], selectedEntity: Entity,
         }
     }
 
+    for (let navItem of navItemsTree.values()) {
+        navItem.collapsed = navItem.children.length > 0 && navItem.collapsed && !navItem.onPath;
+        navItem.hasChildren = navItem.children.length > 0;
+    }
+
     return Array.from(navItemsTree.values()).filter(item => !item.isNotRootNavItem);
 }
 
@@ -54,6 +53,7 @@ export function entity2NavSegment(entity: Entity, selectedEntity: Entity): Navig
     return {
         id: entity._id,
         linkName: entity._id,
+        linkNameI18n: I18N.tt(entity._id),
         path: entity.isPresentationPage ? entity._id + '/' + entity._id + '~~' + entity._id : entity._id,
         active: selectedEntity._id === entity._id,
         children: [],

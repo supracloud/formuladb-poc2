@@ -6,3 +6,25 @@
 
 @import "~ag-grid-community/dist/styles/ag-grid";
 @import "~ag-grid-community/dist/styles/ag-theme-balham";
+
+.ag-theme-balham .ag-cell {
+  line-height: var(--frmdb-data-grid-row-lh, 26px) !important;
+}
+.ag-theme-balham .ag-name-value {
+  padding: 0 !important;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 2px lightgrey; 
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background: grey; 
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: darkgray; 
+}

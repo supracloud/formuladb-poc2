@@ -1,3 +1,8 @@
+/**
+* © 2018 S.C. FORMULA DATABASE S.R.L.
+* License TBD
+*/
+
 const pretty = require('pretty');
 
 import { parseHTML, writeHTML, getValueForDomExpandedKey } from "./dom-node";
@@ -43,7 +48,7 @@ describe('FrmdbTemplate', () => {
     beforeEach(() => {
     });
 
-    fit('should update view when template OR data changes', () => {
+    it('should update view when template OR data changes', () => {
         let el = parseHTML(template);
         updateDOM(data, el)
         let renderedHtml = writeHTML(el);

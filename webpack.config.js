@@ -89,9 +89,19 @@ configFe = {
     },
 };
 
+configFrmdbEditor = {
+    ...configBaseWeb,
+    entry: './tsc-out/fe/src/frmdb-editor.js',
+    output: {
+        path: path.resolve(__dirname, 'dist-fe'),
+        filename: 'frmdb-editor.js'
+    },
+};
+
 module.exports = [
     configBe, 
     configDataGrid, 
     configForm, 
-    configFe
+    configFe,
+    configFrmdbEditor
 ];
