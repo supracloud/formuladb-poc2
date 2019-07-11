@@ -1,4 +1,4 @@
-<ul>
+<ul class="nav flex-column" >
     <li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
         <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link"
             data-frmdb-attr="class.collapsed::nav[].collapsed" data-toggle="collapse">
@@ -11,8 +11,8 @@
                 <i data-frmdb-if="::nav[].hasChildren">&nbsp;</i>
             </p>
         </a>
-        <script type="text/html" data-frmdb-if="!::nav[].collapsed">
-            <frmdb-v-nav-segment class="nav flex-column" data-frmdb-prop="nav::nav[].children"></frmdb-v-nav-segment>
-        </script>
+        <template data-frmdb-if="!::nav[].collapsed">
+            <frmdb-v-nav-segment data-frmdb-prop="nav::nav[].children"></frmdb-v-nav-segment>
+        </template>
     </li>
 </ul>

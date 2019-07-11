@@ -33,6 +33,7 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
 
         const connectedCallback = cls.prototype.connectedCallback || function () {};
         const connectedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>) {
+            if (this.closest('template[data-frmdb-if]')) {console.debug("Not rendering hidden element", this); return;}
             const clone = document.importNode(template.content, true);
             if (config.noShadow) {
                 // this.appendChild(clone);//does not trigger connectedCallback in jsdom

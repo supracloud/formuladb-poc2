@@ -193,15 +193,13 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
         let value = dataAttrsForEl.if.value;
         if ('!' === dataAttrsForEl.if.valueName) value = !value;
 
-        if ((el as HTMLElement).matches('script[type="text/html"]')) {
+        if (isHidden(el)) {
             if (true === value) {
-                // unwrap(el);
-                showFromTemplate(el);
+                show(el);
             } else return true;//no checking for further data binding for hidden element
         } else {
             if (false == value) {
-                // wrap(el, 'template').setAttribute('data-frmdb-if', dataAttrsForEl.if.attrValue);
-                hideAsTemplate(el).setAttribute('data-frmdb-if', dataAttrsForEl.if.attrValue);
+                hide(el, dataAttrsForEl.if);
             }
         }
         ret = true;
@@ -333,7 +331,27 @@ export function unwrap(el: Element): Element {
     return parent;
 }
 
-export function hideAsTemplate(el: Element): Element {
+const USE_TEMPLATE = true;
+function isHidden(el: Element): boolean {
+    if (USE_TEMPLATE) return el.matches('template[data-frmdb-if]');
+    else return el.matches('script[type="text/html"][data-frmdb-if]');
+}
+function hide(el: Element, ifDataAttr: DataAttr) {
+    if (USE_TEMPLATE) {
+        wrap(el, 'template').setAttribute('data-frmdb-if', ifDataAttr.attrValue);
+    } else {
+        hideAsTemplate(el).setAttribute('data-frmdb-if', ifDataAttr.attrValue);
+    }
+}
+function show(el: Element) {
+    if (USE_TEMPLATE) {
+        unwrap(el);
+    } else {
+        showFromTemplate(el);
+    }
+}
+
+function hideAsTemplate(el: Element): Element {
     if (!el.parentNode) {console.error("wrap called and parent not found", el); return el;}
     let script: any = document.createElement('script');
     script.setAttribute("type", "text/html");
@@ -343,7 +361,7 @@ export function hideAsTemplate(el: Element): Element {
 
     return script;
 }
-export function showFromTemplate(el: Element): Element {
+function showFromTemplate(el: Element): Element {
     if (!el.parentNode) {console.error("wrap called and parent not found", el); return el;}
     if (!el.matches('script[type="text/html"]')) throw new Error("hide called on a non-hidden element " + el);
     let htmlText = (el as any).text;//get text from script tag
