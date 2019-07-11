@@ -5,7 +5,7 @@
 
 const pretty = require('pretty');
 
-import { parseHTML, writeHTML, getValueForDomExpandedKey } from "./dom-node";
+import { parseHTML, writeHTML } from "./dom-node";
 import { updateDOM } from "./live-dom-template";
 
 const template = /*html*/`
@@ -21,6 +21,7 @@ const template = /*html*/`
             data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x"></div>
         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
     </div>
+    <span data-frmdb-prop="complex::tableName[].childTable"></span>
 </div>
 `;
 
@@ -64,6 +65,7 @@ describe('FrmdbTemplate', () => {
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.1" at1="12">15</div>
                         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
                     </div>
+                    <span data-frmdb-prop="complex::tableName[].childTable"></span>
                     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.2</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.2" at1="12">15</div>
@@ -80,6 +82,7 @@ describe('FrmdbTemplate', () => {
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.1" at1="12">15</div>
                         <template data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></template>
                     </div>
+                    <span data-frmdb-prop="complex::tableName[].childTable"></span>
                     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.2</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.2" at1="12">15</div>
@@ -95,6 +98,13 @@ describe('FrmdbTemplate', () => {
         expect(elemsWithProps).toEqual([
             {gigi: '1.1', attrExpandedVal: 'gigi::tableName[0].childTable[0].x'},
             {gigi: '1.2', attrExpandedVal: 'gigi::tableName[0].childTable[1].x'},
+        ]);
+
+        let elemsWithComplexProps = Array.from(el.querySelectorAll('span[data-frmdb-prop="complex::tableName[].childTable"]'))
+            .map(el => ({complex: el['complex'], attrExpandedVal: el['data-frmdb-prop']}));
+        expect(elemsWithComplexProps).toEqual([
+            {complex: [{x: "1.1"}, {x: "1.2"}], attrExpandedVal: 'complex::tableName[0].childTable'},
+            {complex: [{x: "2.1"}, {x: "2.2"}], attrExpandedVal: 'complex::tableName[1].childTable'},
         ]);
     })
 });

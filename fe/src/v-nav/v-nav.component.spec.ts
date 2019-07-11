@@ -16,7 +16,7 @@ describe('VNavComponent', () => {
 
     afterEach(fetchMock.restore)
 
-    fit('should render', async (done) => { 
+    it('should render', async (done) => { 
         document.body.innerHTML = '<frmdb-v-nav></frmdb-v-nav>';
         let el: VNavComponent = document.querySelector('frmdb-v-nav') as VNavComponent;
         expect(el instanceof VNavComponent).toEqual(true);

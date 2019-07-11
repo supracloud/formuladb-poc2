@@ -36,6 +36,14 @@ global.fetch = fetch;
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const Jasmine = require("jasmine");
 
+console.log(process.argv);
+let specificJsFile = null;
+let specificTsFile = process.argv[2];
+if (specificTsFile && specificTsFile.match(/\.spec\.ts$/)) {
+    specificJsFile = `tsc-out/${specificTsFile.replace(/\\/g, '/').replace(/\.ts$/, '.js')}`;
+    console.log("Running just one spec file ", specificJsFile)
+} 
+
 try {
     global['FRMDB_TRACE_COMPILE_FORMULA'] = true;
 
@@ -43,7 +51,7 @@ try {
 
     j.loadConfig({
         "spec_dir": ".",
-        "spec_files": [
+        "spec_files": specificJsFile ? [specificJsFile] : [
             "tsc-out/fe/**/*.spec.js",
             // "tsc-out/core/**/*.spec.js",
             // "dist/**/*.spec.js",

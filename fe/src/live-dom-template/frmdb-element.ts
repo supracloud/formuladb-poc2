@@ -85,7 +85,7 @@ export function reflectAttr2Prop<ATTR>(attrName: keyof ATTR, attr: string): ATTR
 /**
  * An element is
  */
-export abstract class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
+export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     protected LOG: FrmdbLogger;
     frmdbConfig: FrmdbElementConfig<ATTR, STATE>;
 

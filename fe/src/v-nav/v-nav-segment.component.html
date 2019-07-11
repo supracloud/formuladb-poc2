@@ -10,5 +10,5 @@
             <i data-frmdb-if="::nav[].hasChildren">&nbsp;</i>
         </p>
     </a>
+    <frmdb-v-nav-segment class="nav flex-column" data-frmdb-prop="nav::nav[].children" data-frmdb-if="!::nav[].collapsed"></frmdb-v-nav-segment>
 </li>
-<ul class="nav flex-column" frmdb-v_nav_segment [nav]="entity.children" *ngIf="!entity.collapsed || entity.onPath"></ul>

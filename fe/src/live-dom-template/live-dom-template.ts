@@ -1,4 +1,4 @@
-import { getElem, Elem, getElemList, setElemValue } from "./dom-node";
+import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 const LOG = new FrmdbLogger('live-dom-template');
 
@@ -60,6 +60,11 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
             continue;
         }
 
+        if (objValForKey instanceof Array || 'object' === typeof objValForKey) {
+            let complexPropDomKey = `${currentScopePrefix}${domKeySep}${key}`;
+            let complexPropElems = getElemWithComplexPropertyDataBinding(el, complexPropDomKey);
+            setElemValue(complexPropElems, complexPropDomKey, context, arrayCurrentIndexes);
+        }
 
         if (objValForKey instanceof Array) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}[]`;
@@ -79,10 +84,9 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
                     elemListForKey.removeAt(objValForKey.length);
                 }
             }
-
         } else if (/string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
-            let elemsForKey = getElem(el, domKey);
+            let elemsForKey = getElemForKey(el, domKey);
             LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
             if (0 == elemsForKey.length) {
             } else {
@@ -90,7 +94,7 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
             }
         } else if ('object' === typeof objValForKey) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
-            let elemsForKey = getElem(el, domKey);
+            let elemsForKey = getElemForKey(el, domKey);
             LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
             if (0 == elemsForKey.length) {
                 elemsForKey.push(el);

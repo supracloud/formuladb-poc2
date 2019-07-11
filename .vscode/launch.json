@@ -18,6 +18,9 @@
             "request": "launch",
             "cwd": "${workspaceRoot}",
             "program": "${workspaceFolder}/jasmine.js",
+            "args": [
+                "'${relativeFile}'"
+            ],
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/tsc-out/**/*.js",

@@ -15,7 +15,7 @@ const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/v-nav
 
 interface VNavComponentState {
     navigationItemsTree: NavigationItem[];
-    selectedEntity: Entity;
+    selectedEntityId: string;
 }
 
 @FrmdbElementDecorator<{}, VNavComponentState>({
@@ -30,8 +30,8 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
     connectedCallback() {
         
         BACKEND_SERVICE().getEntities().then(entities => {
-            this.frmdbState.selectedEntity = entities[0];
-            this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntity);
+            this.frmdbState.selectedEntityId = entities[0]._id;
+            this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
         })
     }
     

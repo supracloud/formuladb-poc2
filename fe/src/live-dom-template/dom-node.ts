@@ -74,8 +74,20 @@ enum DATA_FRMDB_ATTRS_Enum {
     'data-frmdb-prop4' = 'data-frmdb-prop4',
     'data-frmdb-if' = 'data-frmdb-if',
 };
-export function getElem(el: Elem, key: string): Elem[] {
+export function getElemForKey(el: Elem, key: string): Elem[] {
     let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"]`).join(',');
+    return _getElemForKey(el, sel);
+}
+export function getElemWithComplexPropertyDataBinding(el: Elem, key: string): Elem[] {
+    let sel = [
+        DATA_FRMDB_ATTRS_Enum["data-frmdb-prop"],
+        DATA_FRMDB_ATTRS_Enum["data-frmdb-prop2"],
+        DATA_FRMDB_ATTRS_Enum["data-frmdb-prop3"],
+        DATA_FRMDB_ATTRS_Enum["data-frmdb-prop4"],
+        ].map(a => `[${a}$=":${key}"]`).join(',');
+    return _getElemForKey(el, sel);
+}
+function _getElemForKey(el: Elem, sel: string): Elem[] {
     let ret: Elem[] = [];
     if (el.matches /* ShadowRoot does not have matches method */ && el.matches(sel)) ret.push(el);
     return ret
@@ -235,8 +247,8 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
             let value = dataAttr.value;
             let propName = dataAttr.valueName;
 
-            if ((el as any).setFrmdbPropertyAndUpdateDOM) {
-                (el as any).setFrmdbPropertyAndUpdateDOM(propName, value);
+            if ((el as any).frmdbState) {
+                (el as any).frmdbState[propName] = value;
             } else el[propName] = value;
         }
         ret = true;
