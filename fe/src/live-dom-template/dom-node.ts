@@ -1,17 +1,8 @@
-import * as isNode from 'detect-node';
 import * as _ from "lodash";//TODO: optimization include only the needed functions
 import * as DOMPurify from "dompurify";
 
-let parser, serializer;
-// console.error(isNode);
-if (isNode) {
-    require('jsdom-global')();
-    parser = new (window as any).DOMParser();
-    serializer = new (window as any).XMLSerializer();
-} else {
-    parser = new DOMParser();
-    serializer = new XMLSerializer();
-}
+let parser = new DOMParser(), serializer = new XMLSerializer();
+
 export type Elem = HTMLElement;
 export class ElemList {
     constructor(private key: string, private parentEl: Elem) {}

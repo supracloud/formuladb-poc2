@@ -7,8 +7,8 @@ import { NavigationItem } from './navigation.item';
 import { FrmdbElementDecorator, FrmdbElementBase } from '@fe/live-dom-template/frmdb-element';
 import { onEvent } from '@fe/delegated-events';
 
-const HTML: string = require('raw-loader!@fe-assets/v-nav-segment/v-nav-segment.component.html').default;
-const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/v-nav-segment/v-nav-segment.component.scss').default;
+const HTML: string = require('raw-loader!@fe-assets/v-nav/v-nav-segment.component.html').default;
+const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/v-nav/v-nav-segment.component.scss').default;
 
 interface VNavSegmentState {
     nav: NavigationItem[];
