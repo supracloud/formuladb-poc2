@@ -16,16 +16,15 @@ describe('VNavComponent', () => {
 
     afterEach(fetchMock.restore)
 
-    it('should render', async (done) => { 
+    fit('should render', async (done) => { 
         document.body.innerHTML = '<frmdb-v-nav></frmdb-v-nav>';
         let el: VNavComponent = document.querySelector('frmdb-v-nav') as VNavComponent;
         expect(el instanceof VNavComponent).toEqual(true);
         expect(el.firstChild instanceof VNavSegmentComponent).toEqual(true);
         expect((el.firstChild as VNavSegmentComponent).frmdbState).toEqual({});
-        console.log(el.outerHTML);
 
-        await new Promise(resolve => setTimeout(resolve, 200));
-        expect((el.firstChild as VNavSegmentComponent).frmdbState).toEqual({nav: []});
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        expect((el.firstChild as VNavSegmentComponent).frmdbState.nav!.length).toEqual(4);
         console.log(el.outerHTML);
         done();
     });

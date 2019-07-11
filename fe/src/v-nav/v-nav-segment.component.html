@@ -1,14 +1,18 @@
-<li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
-    <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link"
-        [class.collapsed]="entity.children.length>0 && entity.collapsed && !entity.onPath" [attr.data-toggle]="'collapse'">
-        <p>
-            <span class="frmdb-nav-segment-text" data-frmdb-value="::nav[].linkNameI18n">
-                <span class="frmdb-nav-segment-dev-mode-identifier" data-frmdb-value="::nav[].id"></span>
-            </span>
-            <i data-frmdb-if="::nav[].collapsed" class="icon-expand nc-icon nc-stre-right"></i>
-            <i data-frmdb-if="!::nav[].collapsed" class="icon-collapse nc-icon nc-stre-down"></i>
-            <i data-frmdb-if="::nav[].hasChildren">&nbsp;</i>
-        </p>
-    </a>
-    <frmdb-v-nav-segment class="nav flex-column" data-frmdb-prop="nav::nav[].children" data-frmdb-if="!::nav[].collapsed"></frmdb-v-nav-segment>
-</li>
+<ul>
+    <li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
+        <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link"
+            data-frmdb-attr="class.collapsed::nav[].collapsed" data-toggle="collapse">
+            <p>
+                <span class="frmdb-nav-segment-text" data-frmdb-value="::nav[].linkNameI18n">
+                    <span class="frmdb-nav-segment-dev-mode-identifier" data-frmdb-value="::nav[].id"></span>
+                </span>
+                <i data-frmdb-if="::nav[].collapsed" class="icon-expand nc-icon nc-stre-right"></i>
+                <i data-frmdb-if="!::nav[].collapsed" class="icon-collapse nc-icon nc-stre-down"></i>
+                <i data-frmdb-if="::nav[].hasChildren">&nbsp;</i>
+            </p>
+        </a>
+        <script type="text/html" data-frmdb-if="!::nav[].collapsed">
+            <frmdb-v-nav-segment class="nav flex-column" data-frmdb-prop="nav::nav[].children"></frmdb-v-nav-segment>
+        </script>
+    </li>
+</ul>

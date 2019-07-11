@@ -12,7 +12,9 @@
                 "--debug-brk",
                 "--inspect=0.0.0.0:9232"
             ],
-            "env": {},
+            "env": {
+                "DEBUG": "formuladb:*"
+            },
             "protocol": "inspector",
             "port": 9232,
             "request": "launch",

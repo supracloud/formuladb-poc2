@@ -12,6 +12,7 @@ interface FrmdbElementConfig<ATTR, STATE> {
     template: string;
     style?: string;
     noShadow?: boolean;
+    extends?: 'ul' | 'button' | 'input';
 }
 
 
@@ -34,7 +35,8 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
         const connectedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>) {
             const clone = document.importNode(template.content, true);
             if (config.noShadow) {
-                this.appendChild(clone);
+                // this.appendChild(clone);//does not trigger connectedCallback in jsdom
+                this.innerHTML = template.innerHTML;//works with jsdom
             } else {
                 this.attachShadow({mode: 'open'}).appendChild(clone);
             }
@@ -51,7 +53,7 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
         LOG.info("FrmdbElementDecorator", "%O", cls);
 
         //define custom element
-        window.customElements.define(config.tag, cls);
+        window.customElements.define(config.tag, cls, config.extends ? {extends: config.extends} : undefined);
     }
 }
 
@@ -114,11 +116,13 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
         return this.frmdbState;
     }
 
-    private debouncedUpdateDOM = _.debounce(() => {
+    private updateDOM() {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
         this.LOG.debug("updateDOM", "%o %o", this.frmdbState, el);
         updateDOM(this.frmdbState, el);
-    }, 100);
+    }
+
+    private debouncedUpdateDOM = _.debounce(() => this.updateDOM(), 100);
 
     protected updateDomWhenStateChanges(change: Partial<STATE> | Promise<Partial<STATE>>) {
         let p = change instanceof Promise ? change : Promise.resolve(change);

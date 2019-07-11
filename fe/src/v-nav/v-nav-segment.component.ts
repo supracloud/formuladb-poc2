@@ -23,6 +23,10 @@ interface VNavSegmentState {
 })
 export class VNavSegmentComponent extends FrmdbElementBase<{}, VNavSegmentState> {
 
+    constructor() {
+        super();
+    }
+
     connectedCallback() {
         onEvent(this, 'click', '.icon-expand,.icon-collapse', (ev: MouseEvent) => {
             ev.preventDefault();
@@ -36,11 +40,10 @@ export class VNavSegmentComponent extends FrmdbElementBase<{}, VNavSegmentState>
         })
     }
     expand(id: string) {
-        this.frmdbStreams.userEvents$.next({type: "UserCollapsedNavItem", id, collapsed: false});
+        // this.frmdbStreams.userEvents$.next({type: "UserCollapsedNavItem", id, collapsed: false});
     }
 
     collapse(id: string) {
-        this.frmdbStreams.userEvents$.next({type: "UserCollapsedNavItem", id, collapsed: true});
+        // this.frmdbStreams.userEvents$.next({type: "UserCollapsedNavItem", id, collapsed: true});
     }
-
 }

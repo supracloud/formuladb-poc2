@@ -37,9 +37,6 @@ export class ElemList {
 export function parseHTML(html: string): Elem {
     return parser.parseFromString(html, "text/html").body;
 }
-export function writeHTML(el: Elem): string {
-    return serializer.serializeToString(el);
-}
 
 export function createElem(tagName: string, key: string): Elem {
     let el = document.createElement(tagName);
@@ -196,13 +193,15 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
         let value = dataAttrsForEl.if.value;
         if ('!' === dataAttrsForEl.if.valueName) value = !value;
 
-        if ((el as HTMLElement).tagName.toLowerCase() === 'template') {
+        if ((el as HTMLElement).matches('script[type="text/html"]')) {
             if (true === value) {
-                unwrap(el);
+                // unwrap(el);
+                showFromTemplate(el);
             } else return true;//no checking for further data binding for hidden element
         } else {
             if (false == value) {
-                wrap(el, 'template').setAttribute('data-frmdb-if', dataAttrsForEl.if.attrValue);
+                // wrap(el, 'template').setAttribute('data-frmdb-if', dataAttrsForEl.if.attrValue);
+                hideAsTemplate(el).setAttribute('data-frmdb-if', dataAttrsForEl.if.attrValue);
             }
         }
         ret = true;
@@ -332,4 +331,27 @@ export function unwrap(el: Element): Element {
     parent.removeChild(el);
 
     return parent;
+}
+
+export function hideAsTemplate(el: Element): Element {
+    if (!el.parentNode) {console.error("wrap called and parent not found", el); return el;}
+    let script: any = document.createElement('script');
+    script.setAttribute("type", "text/html");
+    script.text = el.outerHTML;
+    el.parentNode.insertBefore(script, el);
+    el.parentNode.removeChild(el);
+
+    return script;
+}
+export function showFromTemplate(el: Element): Element {
+    if (!el.parentNode) {console.error("wrap called and parent not found", el); return el;}
+    if (!el.matches('script[type="text/html"]')) throw new Error("hide called on a non-hidden element " + el);
+    let htmlText = (el as any).text;//get text from script tag
+    let newEl = document.createElement('div');
+    el.parentNode.insertBefore(newEl, el);
+    newEl.outerHTML = htmlText;
+    newEl.setAttribute("data-frmdb-if", el.getAttribute("data-frmdb-if") || 'InternalErr!');
+    el.parentNode.removeChild(el);
+
+    return newEl;
 }

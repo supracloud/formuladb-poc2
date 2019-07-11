@@ -5,7 +5,7 @@
 
 const pretty = require('pretty');
 
-import { parseHTML, writeHTML } from "./dom-node";
+import { parseHTML } from "./dom-node";
 import { updateDOM } from "./live-dom-template";
 
 const template = /*html*/`
@@ -52,9 +52,9 @@ describe('FrmdbTemplate', () => {
     it('should update view when template OR data changes', () => {
         let el = parseHTML(template);
         updateDOM(data, el)
-        let renderedHtml = writeHTML(el);
+        let renderedHtml = el.outerHTML;
         expect(normalizeHTML(renderedHtml)).toEqual(normalizeHTML(/*html*/`
-            <body xmlns="http://www.w3.org/1999/xhtml">
+            <body>
                 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
                     <ul data-frmdb-attr="style.background-color::tableName[].bg" style="background-color: red;">
                         <li data-frmdb-attr="my-attr::tableName[].atr" data-frmdb-value="::tableName[].name" my-attr="attr1"><label data-frmdb-label=""></label>row1</li>
@@ -80,13 +80,13 @@ describe('FrmdbTemplate', () => {
                     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.1</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.1" at1="12">15</div>
-                        <template data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></template>
+                        <script type="text/html" data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></script>
                     </div>
                     <span data-frmdb-prop="complex::tableName[].childTable"></span>
                     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.2</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.2" at1="12">15</div>
-                        <template data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></template>
+                        <script type="text/html" data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></script>
                     </div>
                 </div>
             </body> 
