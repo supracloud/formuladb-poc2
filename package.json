@@ -20,7 +20,7 @@
   "license": "ISC",
   "devDependencies": {
     "@google-cloud/storage": "^2.5.0",
-    "@tbranyen/jsdom": "git=https://github.com/tbranyen/jsdom.git",
+    "@tbranyen/jsdom": "^13.0.0",
     "@types/jasmine": "^3.3.12",
     "@types/jquery": "^3.3.29",
     "@types/js-yaml": "^3.12.1",
@@ -29,6 +29,7 @@
     "browser-sync": "^2.26.7",
     "concurrently": "^4.1.0",
     "document-register-element": "^1.13.2",
+    "fetch-mock": "^7.3.6",
     "glob": "^7.1.4",
     "install": "^0.12.2",
     "jasmine": "^3.4.0",
@@ -36,6 +37,7 @@
     "jsdom": "^15.1.0",
     "jsdom-global": "^3.0.2",
     "live-server": "^1.2.1",
+    "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
     "nodemon": "^1.19.1",
     "npm": "^6.9.0",
@@ -104,6 +106,8 @@
     "@test": "./tsc-out/test/src",
     "@be": "./tsc-out/be/src",
     "@fe": "./tsc-out/fe/src",
-    "@fe-assets": "./fe/src"
+    "@fe-assets": "./fe/src",
+    "raw-loader!@fe-assets": "./fe/src",
+    "!!raw-loader!sass-loader?sourceMap!@fe-assets": "./fe/src"
   }
 }

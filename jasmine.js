@@ -5,16 +5,14 @@
 
 require('source-map-support').install();
 require('module-alias/register');
+var fs = require('fs');
 
 require.extensions['.html'] = function (module, filename) {
-    console.error(filename);
-    console.error(filename);
-    console.error(filename);
-    console.error(filename);
-    module.exports = "BLABLA";
-    return module;
-    // var content = fs.readFileSync(filename, 'utf8');
-    // module._compile(internalModule.stripBOM(content), filename);
+    let html = fs.readFileSync(filename, 'utf8');
+    module.exports = {default: html};
+}
+require.extensions['.scss'] = function (module, filename) {
+    module.exports = '';//we would need to run sass to make this work
 }
 
 //JSDOM for fe specs
@@ -31,6 +29,9 @@ global.Node = window.Node;
 global.Event = window.Event;
 global.Attr = window.Attr;
 global.customElements = window.customElements;
+
+const fetch = require('node-fetch');
+global.fetch = fetch;
 
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const Jasmine = require("jasmine");

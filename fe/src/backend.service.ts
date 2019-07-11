@@ -201,9 +201,16 @@ export class BackendService {
     }
 }
 
-let appRootEl = document.querySelector('[data-frmdb-app]');
-let APP_NAME = "unknown-app";
-if (appRootEl) {
-    APP_NAME = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
+let _backendService: BackendService | null = null;
+export function BACKEND_SERVICE(): BackendService {
+    if (_backendService == null) {
+        let appRootEl = document.querySelector('[data-frmdb-app]');
+        let APP_NAME = "unknown-app";
+        if (appRootEl) {
+            APP_NAME = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
+        }
+        
+        _backendService = new BackendService(APP_NAME);
+    }
+    return _backendService;
 }
-export const BACKEND_SERVICE = new BackendService(APP_NAME);

@@ -3,60 +3,30 @@
 * License TBD
 */
 
-class Gigi { }
+const fetchMock = require('fetch-mock');
 
-class WebComponent extends HTMLElement {
-    constructor(props = { someMessage: 'From innerHTML' }) {
-        super();
-
-        this.attachShadow({ mode: 'open' });
-        this.shadowRoot!.innerHTML = `<span>Hello ${props.someMessage}</span>`;
-    }
-
-    connectedCallback() {
-        console.log('connectedCallback Called from innerHTML code path');
-    }
-
-    attributeChangedCallback(...args) {
-        console.log("attributeChangedCallback", args);
-    }
-}
-(WebComponent as any).observedAttributes = ["test"];
-
-// Define into the internal JSDOM CustomElementsRegistry
-console.log(customElements, window.customElements);
-customElements.define('web-component', WebComponent);
-
-const el = document.createElement('web-component');
-
-console.log(el, el.outerHTML, el.shadowRoot);
-el.setAttribute('test', 'attributeChangedCallback');
-console.log(el, el.outerHTML, el.shadowRoot);
-el.removeAttribute('test');
-
-console.log(el.outerHTML);
-
+import { VNavComponent } from './v-nav.component';
+import { VNavSegmentComponent } from './v-nav-segment.component';
+import { Schema_inventory } from '@test/mocks/mock-metadata';
 
 describe('VNavComponent', () => {
     beforeEach(() => {
+        fetchMock.get('/formuladb-api/unknown-app/schema', Schema_inventory);
     });
 
-    it('should render', () => {
-        document.body.innerHTML = '<web-component></web-component>';
-        console.log(document.body.innerHTML);
-        console.log(document.querySelector('web-component'));
-        console.log("instanceof WebComponent = ", document.querySelector('web-component') instanceof WebComponent, document.querySelector('web-component') instanceof Gigi);
-        console.log(document.querySelector('web-component')!.shadowRoot);
-        console.log(document.querySelector('web-component')!.shadowRoot!.innerHTML);
+    afterEach(fetchMock.restore)
+
+    fit('should render', async (done) => { 
+        document.body.innerHTML = '<frmdb-v-nav></frmdb-v-nav>';
+        let el: VNavComponent = document.querySelector('frmdb-v-nav') as VNavComponent;
+        expect(el instanceof VNavComponent).toEqual(true);
+        expect(el.firstChild instanceof VNavSegmentComponent).toEqual(true);
+        expect((el.firstChild as VNavSegmentComponent).frmdbState).toEqual({});
+        console.log(el.outerHTML);
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+        expect((el.firstChild as VNavSegmentComponent).frmdbState).toEqual({nav: []});
+        console.log(el.outerHTML);
+        done();
     });
-
-    it('should render', () => {
-        document.body.innerHTML = /* html */`
-            <frmdb-v-nav></frmdb-v-nav>
-            <script src="dist-fe/frmdb-editor.js"></script>
-        `;
-
-        let cmp = document.querySelector('frmdb-v-nav');
-        console.error(cmp, cmp!.innerHTML);
-    })
 });

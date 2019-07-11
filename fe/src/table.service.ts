@@ -18,7 +18,7 @@ export class TableService {
     };
 
     public async getColumns(entityId: string): Promise<TableColumn[]> {
-        let entity = await BACKEND_SERVICE.getEntity(entityId);
+        let entity = await BACKEND_SERVICE().getEntity(entityId);
         return _.values(entity.props).map(pn => ({
             _id: entityId + "." + pn.name,
             name: pn.name, 
@@ -28,7 +28,7 @@ export class TableService {
 
     public getTableRows(entityId: string, params: PickOmit<IServerSideGetRowsParams, 'parentNode'>) {
         let req = params.request;
-        BACKEND_SERVICE.simpleAdHocQuery(entityId, req as SimpleAddHocQuery)
+        BACKEND_SERVICE().simpleAdHocQuery(entityId, req as SimpleAddHocQuery)
             .then((data: any[]) => {
                 console.log("%c <---- simpleAdHocQuery: ",
                     "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", data);

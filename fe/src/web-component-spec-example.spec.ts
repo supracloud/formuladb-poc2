@@ -32,7 +32,7 @@ describe('WebComponentExample Spec Example', () => {
     beforeEach(() => {
     });
 
-    fit('should render', () => { 
+    it('should render', () => { 
         const el: WebComponentExample = document.createElement('web-component-example') as WebComponentExample;
         expect(el.connectedCallbackCalled).toEqual(false);
         expect(el.attributeChangedCallbackCalled).toEqual(false);

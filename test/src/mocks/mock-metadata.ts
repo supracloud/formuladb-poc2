@@ -169,19 +169,43 @@ export const Schema_reporting: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_reporting._id.replace(/^App~~/, ''),
     entities: {},
 }
+
+const CommonEntities = [
+    GeneralMetadata.General,
+    $User,
+    $I18n,
+    // GeneralMetadata.GEN__Currency,
+    // GeneralMetadata.GEN__Client,
+    // StaticPagesMetadata.Home,
+    // StaticPagesMetadata.ProductFeature,
+];
+
+const Schemas = [
+    Schema_test,
+    Schema_inventory,
+    Schema_booking,
+    Schema_expenses,
+    Schema_ticketing,
+    Schema_planning,
+    Schema_ecommerce,
+    Schema_service,
+    Schema_reporting,
+];
+
+for (let sch of Schemas) {
+    for (let commonEntity of CommonEntities) {
+        sch.entities[commonEntity._id] = commonEntity;    
+    }
+
+    for (let ent of Object.values(sch.entities)) {
+        ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
+        ent.isEditable = true;    
+    }
+}
+
 export class MockMetadata {
     public apps: App[];
-    public schemas: Schema[];
-
-    public commonEntities = [
-        GeneralMetadata.General,
-        $User,
-        $I18n,
-        // GeneralMetadata.GEN__Currency,
-        // GeneralMetadata.GEN__Client,
-        // StaticPagesMetadata.Home,
-        // StaticPagesMetadata.ProductFeature,
-    ];
+    public schemas = Schemas;
 
     public constructor() {
 
@@ -196,28 +220,5 @@ export class MockMetadata {
             App_service,
             App_reporting,
         ];
-
-        this.schemas = [
-            Schema_test,
-            Schema_inventory,
-            Schema_booking,
-            Schema_expenses,
-            Schema_ticketing,
-            Schema_planning,
-            Schema_ecommerce,
-            Schema_service,
-            Schema_reporting,
-        ];
-
-        for (let sch of this.schemas) {
-            for (let commonEntity of this.commonEntities) {
-                sch.entities[commonEntity._id] = commonEntity;    
-            }
-
-            for (let ent of Object.values(sch.entities)) {
-                ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
-                ent.isEditable = true;    
-            }
-        }
     }
 }

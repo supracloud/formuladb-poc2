@@ -29,7 +29,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
     
     connectedCallback() {
         
-        BACKEND_SERVICE.getEntities().then(entities => {
+        BACKEND_SERVICE().getEntities().then(entities => {
             this.frmdbState.selectedEntity = entities[0];
             this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntity);
         })

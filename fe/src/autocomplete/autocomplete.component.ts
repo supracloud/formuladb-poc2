@@ -113,7 +113,7 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
                 }
             }
 
-            let rows = await BACKEND_SERVICE.simpleAdHocQuery(this.referencedEntityAlias, {
+            let rows = await BACKEND_SERVICE().simpleAdHocQuery(this.referencedEntityAlias, {
                 startRow: 0,
                 endRow: 25,
                 rowGroupCols: [],

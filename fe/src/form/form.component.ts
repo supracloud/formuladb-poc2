@@ -46,7 +46,7 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
 
     async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]): Promise<Partial<FormComponentState>> {
         if (attrName === "table_name") {
-            let entity = await BACKEND_SERVICE.getEntity(newVal as FormComponentAttr["table_name"]);
+            let entity = await BACKEND_SERVICE().getEntity(newVal as FormComponentAttr["table_name"]);
             let props: FormComponentState["props"] = [];
             for (let prop of Object.values(entity.props)) {
                 props.push({
@@ -63,7 +63,7 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
                 props,
             };
         } else if (attrName === "rowid") {
-            let dataObj = await BACKEND_SERVICE.getDataObj(newVal as FormComponentAttr["rowid"]);
+            let dataObj = await BACKEND_SERVICE().getDataObj(newVal as FormComponentAttr["rowid"]);
             return {
                 ...this.frmdbState,
                 rowid: newVal as FormComponentAttr["rowid"],
