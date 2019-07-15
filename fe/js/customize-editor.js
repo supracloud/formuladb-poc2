@@ -1,7 +1,7 @@
 function loadExternalScript(scriptUrl) {
     const scriptElement = document.createElement('script');
     scriptElement.src = scriptUrl;
-    scriptElement.onload = resolve;
+    // scriptElement.onload = resolve;
     document.body.appendChild(scriptElement);
 }
 
@@ -24,65 +24,29 @@ function customizeEditor() {
     $rightPanelBtns.prepend($('#save-btn'));
     $rightPanelBtns.addClass('w-100');
 
-    let dbEditorHeight = 200;
-    $('body').append(/*html*/`
-        <style>
-            :root {
-                --db-panel-height: ${dbEditorHeight}px;
-            }
-            #preview-btn.preview {
-                position: fixed;
-                top: 5px;
-                left: 5px;
-                box-shadow: 2px 2px 2px 2px grey;
-                z-index: 2000;
-                padding: 0; width: 32px; height: 32px; border-radius: 30%;
-            }
-
-            #db-left-panel { width: var(--builder-left-panel-width); }
-            #db-main { 
-                left: var(--builder-left-panel-width);
-                width: calc( 100vw - (var(--builder-left-panel-width) + var(--builder-right-panel-width) + var(--builder-canvas-margin))); 
-            }
-            #db-right-panel { 
-                width: var(--builder-right-panel-width); 
-                left: calc( 100vw - var(--builder-right-panel-width));
-            }
-            #db-left-panel, #db-main, #db-right-panel {
-                height: var(--db-panel-height); 
-                position: fixed; 
-                top: 0; 
-                background-color: white; 
-                z-index: 9456;
-            }
-        </style>
-    `);
-
+    document.body.style.setProperty('--db-panel-height', `220px`);
     $('#left-panel').prepend($leftPanelBtns).css({ top: 'var(--db-panel-height)' });
     $('#right-panel').prepend($rightPanelBtns).css({ top: 'var(--db-panel-height)' });
     $('#top-panel').remove();
     $('#canvas').css({top: 'var(--db-panel-height)'});
     document.body.style.setProperty('--builder-header-top-height', '0px');
-
-
-    $('#vvveb-builder').prepend(/* html */`
-        <div id="db-left-panel"></div>
-        <div id="db-main"></div>
-        <div id="db-right-panel"></div>
-    `);
+    
+    $('#vvveb-builder').prepend(/* html */`<frmdb-db-editor></frmdb-db-editor>`);
 
     let origPreviewFunc = Vvveb.Gui.preview;
+    let prevPanelHeight = document.body.style.getPropertyValue('--db-panel-height');
     Vvveb.Gui.preview = function () {
         origPreviewFunc();
         $('#preview-btn').toggleClass('preview');
         if ($('#preview-btn').hasClass('preview')) {
             $('#preview-btn').prependTo('body');
             $('#db-left-panel, #db-main, #db-right-panel').hide();
+            prevPanelHeight = document.body.style.getPropertyValue('--db-panel-height');
             document.body.style.setProperty('--db-panel-height', '0px');
         } else {
             $('#fullscreen-btn').before($('#preview-btn'));
             $('#db-left-panel, #db-main, #db-right-panel').show();
-            document.body.style.setProperty('--db-panel-height', `${dbEditorHeight}px`);
+            document.body.style.setProperty('--db-panel-height', `${prevPanelHeight}`);
         }
     }
 
@@ -106,6 +70,9 @@ function customizeEditor() {
             <textarea style="width: 100%; height: calc(var(--builder-bottom-panel-height) - 5px)">asdcascdasnlk  asdcnasncdladsc</textarea>
         </div>
     `)
+
+    loadExternalScript('/formuladb/frmdb-data-grid.js');
+    loadExternalScript('/formuladb/frmdb-editor.js');
 }
 
 $(document).ready(function () {

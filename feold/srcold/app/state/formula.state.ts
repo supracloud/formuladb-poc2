@@ -15,17 +15,6 @@ export { ChangeObj, applyChanges };
 
 import { EntityProperty, Pn, Entity } from "@domain/metadata/entity";
 
-export interface FormulaState {
-  editorOn: boolean;
-  selectedFormula: string | undefined;
-  editorExpr: string | undefined;
-  selectedProperty: EntityProperty | undefined;
-  editedEntity: Entity | undefined;
-  editedDataObj: DataObj | undefined;
-  editedProperty: EntityProperty | undefined;
-  previewEditedDataObj: DataObj | undefined;
-  formulaHighlightedColumns: {[tableName: string]: {[columnName: string]: string}};
-}
 
 export const formulaEditorInitialState: FormulaState = {
   editorOn: false,

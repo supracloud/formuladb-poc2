@@ -1,20 +1,8 @@
-<div class="formula-code-editor">
+<div class="formula-code-editor d-flex">
     <div style="margin: 5px 5px 0 5px;">
       <textarea class="editor-textarea" 
-        [disabled]="!editorOn"
-        #editor 
-        spellcheck="false" 
-        [(ngModel)]="editorExpr" 
-        (keydown.tab)="onAutoComplete($event)" 
-        (keydown.enter)="onAutoComplete($event)" 
-        (keyup)="keyup(editor, $event)"
-        (click)="click(editor, $event)" 
-        (keydown.arrowdown)="nextSuggestion($event)" 
-        (keydown.arrowup)="prevSuggestion($event)">
-      </textarea>
-      <div class="editor-formatted-overlay" [innerHtml]="ftext"></div>
+        disabled
+        spellcheck="false"></textarea>
+      <div class="editor-formatted-overlay" data-frmdb-value="html::ftext"></div>
     </div>
-</div>
-<div frmdb-popup *ngIf="editorOn">
-  {{formulaEditorService?.formulaState?.editedProperty?.name}} = {{formulaEditorService?.formulaState?.previewEditedDataObj? formulaEditorService?.formulaState?.previewEditedDataObj[formulaEditorService?.formulaState?.editedProperty?.name] : ''}}
 </div>

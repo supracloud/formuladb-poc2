@@ -117,7 +117,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         console.log("TTTTT", buf, encoding, buf.toString(encoding));
     }}));    
     app.use((req, res, next) => {
-        console.log("HEREEEEE2");
+        console.log("HEREEEEE2", req.url);
         next();
     });
     app.use((req, res, next) => {
@@ -241,14 +241,36 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb/*', (req, res) => {
         if (STATIC_EXT.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-            res.sendFile(path.resolve(`dist/formuladb/${req.url.replace(/^\/?formuladb\//, '')}`));
+            res.sendFile(path.resolve(`dist/formuladb/${req.path.replace(/^\/?formuladb\//, '')}`));
         } else {
             res.sendFile(path.resolve('dist/formuladb/index.html'));
         }
     });
 
-    app.use(/.*\.(css)$/, (req, res, next) => {
-        let httpProxy = proxy({ target: 'https://storage.googleapis.com/formuladb-static-assets' });
+    function app2theme(path: string) {
+        //TODO: read app metadata and replace app name with theme
+        return path
+            .replace(/^royal-hotel\//, 'royal-master/')
+        ;
+    }
+    function removeTenant(path: string) {
+        //TODO: read tenant metadata and check that tenant exists
+        return path.replace(/^\/?([-_\w]+)\//, '');
+    }
+    app.use((req, res, next) => {
+        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg)$/);
+        if (!path) {
+            next();
+            return;
+        }
+        let httpProxy = proxy({ 
+            target: 'https://storage.googleapis.com/formuladb-static-assets/',
+            changeOrigin: true,
+            pathRewrite: function (path, req) { 
+                return app2theme(removeTenant(path));
+            },
+            logLevel: "debug",
+        });
         httpProxy(req, res, next);
     });
 

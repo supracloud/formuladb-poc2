@@ -31,28 +31,27 @@ const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.componen
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 export interface DataGridComponentAttr {
     table_name: string;
-    highlight_columns?: [{ table_name: string, column_name: string }];
     header_height?: number;
     expand_row?: boolean;
-    conditional_formatting?: { tbdCssClassName: string };
+}
+
+export interface DataGridComponentState extends DataGridComponentAttr {
+    highlightColumns?: [{ tableName: string, columnName: string }];
+    conditionalFormatting?: { tbdCssClassName: string };
 }
 
 @FrmdbElementDecorator({
     tag: 'frmdb-data-grid',
-    observedAttributes: ["table_name" , "highlight_columns" , "header_height" , "expand_row" , "conditional_formatting"],
+    observedAttributes: ["table_name", "header_height" , "expand_row"],
     template: HTML,
     style: CSS,
 })
-export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentAttr> {
+export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentState> {
 
     /** web components API **************************************************/
     attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
         if (!this.gridApi) return;
-        if (attrName == 'highlight_columns') {
-            if (this.gridApi) {
-                this.gridApi.refreshCells({ force: true });
-            }
-        } else if (attrName == 'table_name') {
+        if (attrName == 'table_name') {
             this.initAgGrid();
         } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
             this.gridApi.purgeServerSideCache()
@@ -78,7 +77,17 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
     }
-        
+
+    /** frmdb components API **************************************************/
+    frmdbPropertyChangedCallback<T extends keyof DataGridComponentState>(propName: keyof DataGridComponentState, oldVal: DataGridComponentState[T] | undefined, newVal: DataGridComponentState[T]): Partial<DataGridComponentState> | Promise<Partial<DataGridComponentState>> {
+        if (propName === "highlightColumns" || propName === "conditionalFormatting") {
+            if (this.gridApi) {
+                this.gridApi.refreshCells({ force: true });
+            }
+        }
+        return this.frmdbState;
+    }
+
     /** component internals *************************************************/
 
     private gridApi: GridApi;
@@ -206,7 +215,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     applyCellStyles(params) {
         let entityName = this.frmdbState.table_name;
-        let hc = this.frmdbState.highlight_columns||{};
+        let hc = this.frmdbState.highlightColumns||{};
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
@@ -246,7 +255,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.frmdbState.conditional_formatting || {};
+            let conditionalFormatting = this.frmdbState.conditionalFormatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);

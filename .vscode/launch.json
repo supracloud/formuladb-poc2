@@ -50,11 +50,11 @@
             "protocol": "auto",
             "restart": true,
             "port": 9231,
-            "localRoot": "${workspaceFolder}/dist",
+            "localRoot": "${workspaceFolder}/dist-be",
             "remoteRoot": "/dist",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
+                "${workspaceFolder}/dist-be/**/*.js"
             ],
             "skipFiles": [
                 "<eval>/**/*.js",

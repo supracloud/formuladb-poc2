@@ -1,0 +1,24 @@
+:root {
+    --db-navbar-height: 26px;
+}
+#preview-btn.preview {
+    position: fixed;
+    top: 5px;
+    left: 5px;
+    box-shadow: 2px 2px 2px 2px grey;
+    z-index: 2000;
+    padding: 0; width: 32px; height: 32px; border-radius: 30%;
+}
+
+#db-left-panel { width: var(--builder-left-panel-width); }
+#db-main { 
+    left: var(--builder-left-panel-width);
+    width: calc( 100vw - var(--builder-left-panel-width)); 
+}
+#db-left-panel, #db-main {
+    height: calc(var(--db-panel-height) - var(--db-navbar-height)); 
+    position: fixed; 
+    top: var(--db-navbar-height); 
+    background-color: white; 
+    z-index: 9456;
+}

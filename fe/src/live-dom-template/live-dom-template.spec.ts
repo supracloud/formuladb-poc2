@@ -13,10 +13,6 @@ import { updateDOM } from "./live-dom-template";
 
 const template = /*html*/`
 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
-    <ul data-frmdb-attr="style.background-color::tableName[].bg">
-        <li data-frmdb-attr="my-attr::tableName[].atr" data-frmdb-value="::tableName[].name"><label data-frmdb-label></label></li>
-        <li data-frmdb-attr="class.my-class::tableName[].cls" data-frmdb-value="::tableName[].description" data-frmdb-attr2="class[row1|row2]::tableName[].name"><label data-frmdb-label></label></li>
-    </ul>
     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" 
             data-frmdb-attr2="second-attr::tableName[].atr">blabla</div>
@@ -24,6 +20,10 @@ const template = /*html*/`
             data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x"></div>
         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
     </div>
+    <ul data-frmdb-attr="style.background-color::tableName[].bg">
+        <li data-frmdb-attr="my-attr::tableName[].atr" data-frmdb-value="::tableName[].name"><label data-frmdb-label></label></li>
+        <li data-frmdb-attr="class.my-class::tableName[].cls" data-frmdb-value="::tableName[].description" data-frmdb-attr2="class[row1|row2]::tableName[].name"><label data-frmdb-label></label></li>
+    </ul>
     <span data-frmdb-prop="complex::tableName[].childTable"></span>
 </div>
 `;
@@ -56,10 +56,6 @@ describe('FrmdbTemplate', () => {
         expect(normalizeHTML(renderedHtml)).toEqual(normalizeHTML(/*html*/`
             <body>
                 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
-                    <ul data-frmdb-attr="style.background-color::tableName[].bg" style="background-color: red;">
-                        <li data-frmdb-attr="my-attr::tableName[].atr" data-frmdb-value="::tableName[].name" my-attr="attr1"><label data-frmdb-label=""></label>row1</li>
-                        <li data-frmdb-attr="class.my-class::tableName[].cls" data-frmdb-value="::tableName[].description"  data-frmdb-attr2="class[row1|row2]::tableName[].name" class="row1 my-class"><label data-frmdb-label=""></label>desc of row 1</li>
-                    </ul>
                     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.1" at1="12">15</div>
@@ -71,6 +67,10 @@ describe('FrmdbTemplate', () => {
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.2" at1="12">15</div>
                         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
                     </div>
+                    <ul data-frmdb-attr="style.background-color::tableName[].bg" style="background-color: red;">
+                        <li data-frmdb-attr="my-attr::tableName[].atr" data-frmdb-value="::tableName[].name" my-attr="attr1"><label data-frmdb-label=""></label>row1</li>
+                        <li data-frmdb-attr="class.my-class::tableName[].cls" data-frmdb-value="::tableName[].description"  data-frmdb-attr2="class[row1|row2]::tableName[].name" class="row1 my-class"><label data-frmdb-label=""></label>desc of row 1</li>
+                    </ul>
                 </div>
                 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row2">
                     <ul data-frmdb-attr="style.background-color::tableName[].bg" style="background-color: blue;">

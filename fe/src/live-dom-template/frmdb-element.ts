@@ -1,12 +1,13 @@
 import * as yaml from 'js-yaml';
 import * as _ from "lodash";
 
-import { onEvent, emit } from "../delegated-events";
+import { emit, emitFrmdbChange } from "../delegated-events";
 import { updateDOM } from "./live-dom-template";
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { FrmdbUserEvent } from '@fe/frmdb-user-events';
 
 interface FrmdbElementConfig<ATTR, STATE> {
-    tag:string;
+    tag: string;
     observedAttributes: (keyof ATTR)[],
     initialState?: STATE,
     template: string;
@@ -17,7 +18,7 @@ interface FrmdbElementConfig<ATTR, STATE> {
 
 
 export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<ATTR, STATE>) {
-    return function(cls: { new(): FrmdbElementBase<ATTR, STATE> }) {
+    return function (cls: { new(): FrmdbElementBase<ATTR, STATE> }) {
         const LOG = new FrmdbLogger(cls.name);
         cls.prototype.LOG = LOG;
         LOG.info("FrmdbElementDecorator", "Decorating component " + cls.name);
@@ -31,15 +32,15 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
         }
         template.innerHTML = config.template;
 
-        const connectedCallback = cls.prototype.connectedCallback || function () {};
-        const connectedCallbackNew = function(this: FrmdbElementBase<ATTR, STATE>) {
-            if (this.closest('template[data-frmdb-if]')) {console.debug("Not rendering hidden element", this); return;}
+        const connectedCallback = cls.prototype.connectedCallback || function () { };
+        const connectedCallbackNew = function (this: FrmdbElementBase<ATTR, STATE>) {
+            if (this.closest('template[data-frmdb-if]')) { console.debug("Not rendering hidden element", this); return; }
             const clone = document.importNode(template.content, true);
             if (config.noShadow) {
                 // this.appendChild(clone);//does not trigger connectedCallback in jsdom
                 this.innerHTML = template.innerHTML;//works with jsdom
             } else {
-                this.attachShadow({mode: 'open'}).appendChild(clone);
+                this.attachShadow({ mode: 'open' }).appendChild(clone);
             }
             connectedCallback.call(this);
         };
@@ -49,12 +50,12 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
         (cls as any).observedAttributes = config.observedAttributes;
 
         // custom formuladb properties
-        cls.prototype.frmdbConfig = config; 
+        cls.prototype.frmdbConfig = config;
         cls.prototype.frmdbState = config.initialState || {};
         LOG.info("FrmdbElementDecorator", "%O", cls);
 
         //define custom element
-        window.customElements.define(config.tag, cls, config.extends ? {extends: config.extends} : undefined);
+        window.customElements.define(config.tag, cls, config.extends ? { extends: config.extends } : undefined);
     }
 }
 
@@ -65,9 +66,9 @@ const validateSelector = (selector: string) => {
 };
 
 export function Attr() {
-    return function(target: Object, key: string | symbol) {
+    return function (target: Object, key: string | symbol) {
     }
-}  
+}
 
 
 /** 
@@ -75,7 +76,7 @@ export function Attr() {
  *   but syntax is actually "flow" yaml syntax
  */
 export function reflectProp2Attr<T>(prop: T): string {
-    return yaml.safeDump(prop, {flowLevel: 0, lineWidth: 10000}).replace(/\n$/, '');
+    return yaml.safeDump(prop, { flowLevel: 0, lineWidth: 10000 }).replace(/\n$/, '');
 }
 
 /** 
@@ -95,17 +96,18 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     frmdbState: Partial<STATE> = new Proxy({}, {
         set: (obj, propName: keyof STATE, propValue, receiver) => {
             let ret = true;
-            if (this.frmdbState[propName] !== propValue) {
+            let oldValue = this.frmdbState[propName];
+            if (oldValue !== propValue) {
                 ret = Reflect.set(obj, propName, propValue);
                 this.debouncedUpdateDOM();
             }
-            this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, this.frmdbState[propName], propValue));
+            this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, oldValue, propValue));
             return ret;
         }
     });
 
-    emit = emit.bind(null, this);
-    
+    emit: (event: FrmdbUserEvent) => void = emit.bind(null, this);
+
     protected attributeChangedCallback(attrName: keyof ATTR, oldVal, newVal) {
         let oldParsedVal = reflectAttr2Prop(attrName, oldVal);
         let newParsedVal = reflectAttr2Prop(attrName, newVal);
@@ -119,8 +121,8 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
 
     private updateDOM() {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
-        this.LOG.debug("updateDOM", "%o %o", this.frmdbState, el);
         updateDOM(this.frmdbState, el);
+        emitFrmdbChange(this);
     }
 
     private debouncedUpdateDOM = _.debounce(() => this.updateDOM(), 100);
@@ -134,4 +136,35 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
             }
         });
     }
+}
+
+// (<any>Element.prototype).debugStr = function () {
+//     return toDebugStr({}, this);
+// }
+function toDebugStr(parent: {}, el: Element | ShadowRoot) {
+    let name = el instanceof ShadowRoot ? "#shadowRoot" : 
+        '<' + el.tagName + Array.from(el.attributes).map(a => `${a.name}="${a.value}"`).join(" ") + '>';
+    let children: any = {};
+    let childNodes = el instanceof Element && el.shadowRoot ? [el.shadowRoot] : el.childNodes;
+
+    for (let i = 0; i < childNodes.length; i++) {
+        const child = childNodes[i];
+
+        switch (child.nodeType) {
+            case 1: // element
+            case 11: // document fragment
+                toDebugStr(children, child as Element);
+                break;
+
+            case 3: // text
+                children['text'] += (child as any).nodeValue.trim();
+                break;
+
+            case 8: // comment
+                break;
+        }
+    }
+
+    parent[name] = children;
+    return parent;
 }

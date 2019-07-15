@@ -64,33 +64,50 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
 ## Deployment
 
 ```ditaa
++-----------------------------------------------+
+|          FormulaDB multi tenant deployment    |
+|                                               |
+|  +------------+   +---------+    +--------+   |
+|  |            |   |         |    |        |   |
+|  |            |   |   db    +<---+   be   +<-------------------+  /:tenant/formuladb-api/:app/**
+|  |            |   |         |    |        |   |
+|  |            |   +---------+    |        |   |
+|  |  Third     |                  |        |   |
+|  |  Party     |                  |        |   |
+|  |  External  +<-----------------+        |   |
+|  |  Apps      |                  |        |   |
+|  |            |                  |        |   |
+|  |            |   +---------+    |        |   |
+|  |            |   |         |    |        |   |                   /:tenant/:app/index.html
+|  |            |   |  minio  +<---+        |   |
+|  +------------+   |         |    |        |   |                   /:tenant/:app/<page-name>.html
+|                   +---------+    +--------+   |
+|                                               |                   /:tenant/:app/<name>.<js|css|jpg|png|svg|etc.>
++-----------------------------------------------+
 
-TODOooo
-                              +---------+       +--------+     +-------------+
-                              |         |       |        |     |             |
-                              |  minio  |       |  febe  |     |             |
-                              |         |       |        |     |             |
-                              +---------+       +--------+     |             |
-+---------------+                                              |             |
-|               |             +---------+       +--------+     |             |
-|  Central Obj  |             |         |       |        |     |             |
-|  Storage      |             |   db    |       |  maps  |     |   Portal    |
-|               |             |         |       |        |     |             |
-+---------------+             +---------+       +--------+     |   Manage    |    /:tenant/:app/index.html
-                                                               |             |
-                                                               |   Tenants   |    /:tenant/:app/index.css
-+---------------+                                              |             |
-|               |             +---------+       +--------+     |             |
-|               |             |         |       |        |     |             |
-|  Central ELK  |             |  minio  |       |  febe  |     |             |    /:tenant/formuladb-api/:app/**
-|               |             |         |       |        |     |             |
-|               |             +---------+       +--------+     |             |    /:tenant/formuladb/*.js
-+---------------+                                              |             |
-                              +---------+       +--------+     |             |    /:tenant/formuladb/*.js.map
-                              |         |       |        |     |             |
-                              |   db    |       |  maps  |     |             |
-                              |         |       |        |     |             |
-                              +---------+       +--------+     +-------------+
+                              +-----------------+
+                              |                 |                   /:tenant/formuladb/*.js
+                              |     Portal      |
+                              |     Manage      |                   /:tenant/formuladb/*.js.map
+                              |     Tenants     |
+                              |                 |
+                              +-----------------+
+                                                                    /:tenant/formuladb-editor/<page-name>/<param>
+
+                              +-----------------+
+                              |                 |
+                              |  Central Obj    |
+                              |  Storage & CDN  |
+                              |                 |
+                              +-----------------+
+
+
+
+            +---------------+
+            |               |
+            |  Central ELK  |
+            |               |
+            +---------------+
 ```
 
 # "febe" internal Development

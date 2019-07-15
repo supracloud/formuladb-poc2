@@ -26,12 +26,20 @@ global.HTMLElement = window.HTMLElement;
 global.Document = window.Document;
 global.Element = window.Element;
 global.Node = window.Node;
-global.Event = window.Event;
 global.Attr = window.Attr;
+global.Event = window.Event;
+global.CustomEvent = window.CustomEvent;
 global.customElements = window.customElements;
+global.ShadowRoot = window.ShadowRoot;
+
 
 const fetch = require('node-fetch');
 global.fetch = fetch;
+
+
+const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
+jsdomDevtoolsFormatter.install();
+
 
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const Jasmine = require("jasmine");

@@ -3,7 +3,7 @@ import { FrmdbLogger } from "@domain/frmdb-logger";
 
 const LOG = new FrmdbLogger('delegated-events');
 
-export type EventType = "click" | "mouseover" | "blur" | FrmdbUserEvent['type'];
+export type EventType = "click" | "mouseover" | "blur" | "frmdbchange" | FrmdbUserEvent['type'];
 
 export function onEvent(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
     let events = eventType instanceof Array ? eventType : [eventType];
@@ -29,4 +29,8 @@ export function onDoc(eventType: EventType | EventType[], selector: string | str
 
 export function emit(target: HTMLElement | Document, event: FrmdbUserEvent, bubbles: boolean = true) {
     target.dispatchEvent(new CustomEvent(event.type, {detail: event, bubbles}));
+}
+
+export function emitFrmdbChange(target: HTMLElement | Document) {
+    target.dispatchEvent(new CustomEvent("frmdbchange", {bubbles: true}));
 }
