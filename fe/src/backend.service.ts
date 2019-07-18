@@ -22,7 +22,7 @@ import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_eng
 import { FrmdbLogger } from "@domain/frmdb-logger";
 const LOG = new FrmdbLogger('backend-service');
 
-function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
+export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
     // Default options are marked with *
     return fetch(url, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -40,7 +40,7 @@ function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
         .then(response => response.json());
 }
 
-function getData<OUT>(url: string): Promise<OUT> {
+export function getData<OUT>(url: string): Promise<OUT> {
     return fetch(url)
         .then(response => {
             LOG.debug("getData", "%o", response);

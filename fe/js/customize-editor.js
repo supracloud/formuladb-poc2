@@ -1,9 +1,3 @@
-function loadExternalScript(scriptUrl) {
-    const scriptElement = document.createElement('script');
-    scriptElement.src = scriptUrl;
-    // scriptElement.onload = resolve;
-    document.body.appendChild(scriptElement);
-}
 
 function customizeEditor() {
     $('.drag-elements').hide();
@@ -71,8 +65,18 @@ function customizeEditor() {
         </div>
     `)
 
-    loadExternalScript('/formuladb/frmdb-data-grid.js');
-    loadExternalScript('/formuladb/frmdb-editor.js');
+    Promise.all([
+        loadExternalScript('/formuladb/frmdb-editor.js'),
+        loadExternalScript('/formuladb/frmdb-data-grid.js'),
+    ]).then(() => {
+        let p = new URLSearchParams(window.location.search);
+        let [tenantName, appName] = [p.get('t'), p.get('a')];
+        console.info("Loading pages for ", tenantName, appName);
+        let appBackend = new FrmdbAppBackend(tenantName, appName);
+    
+        loadPages(appBackend);            
+    });
+
 }
 
 $(document).ready(function () {
@@ -87,4 +91,22 @@ function stopAutoplayForEditing() {
 
 function resumeAutoplayForPreview() {
     $('.owl-carousel').trigger('play.owl.autoplay',[500]);
+}
+
+function loadExternalScript(scriptUrl) {
+    return new Promise(resolve => {
+        const scriptElement = document.createElement('script');
+        scriptElement.src = scriptUrl;
+        scriptElement.onload = resolve;
+        document.body.appendChild(scriptElement);
+    });
+}
+
+async function loadPages(appBackend) {
+    let app = await appBackend.getApp();
+    for (let page of app.pages) {
+        Vvveb.FileManager.addPage(page.name, 
+            {name: page.name, title: page.name, url: `/${appBackend.tenantName}/${appBackend.appName}/${page.html}`});
+    }
+    Vvveb.FileManager.loadPage("index");
 }

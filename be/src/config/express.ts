@@ -23,6 +23,7 @@ import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { $User } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { App } from "@domain/app";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
@@ -156,10 +157,32 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
-
-    app.get('/formuladb-api/applications', async function (req, res) {
+    
+    app.get('/formuladb-api/:tenant/applications', async function (req, res) {
         let apps = await kvsFactory.getAllApps();
         res.json(apps);
+    });
+
+    app.get('/formuladb-api/:tenant/:app', async function (req, res) {
+        let app: App | null = null;
+        //TODO: get this information from object storage using MetadataStorage generic interface
+        if ("royal-hotel" === req.params.app) {
+            app = {
+                _id: "royal-hotel",
+                description: "Booking app for Royal Hotel",
+                pages: [
+                    { name: "index", html: "index.html" },
+                    { name: "about", html: "about.html" },
+                    { name: "accomodation", html: "accomodation.html" },
+                    { name: "blog-single", html: "blog-single.html" },
+                    { name: "blog", html: "blog.html" },
+                    { name: "contact", html: "contact.html" },
+                    { name: "elements", html: "elements.html" },
+                    { name: "gallery", html: "gallery.html" },
+                ],
+            };
+        }
+        res.json(app);
     });
 
     app.post('/formuladb-api/:app/:table/SimpleAddHocQuery', async function(req, res) {
