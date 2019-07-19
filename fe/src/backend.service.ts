@@ -194,10 +194,8 @@ export class BackendService {
     }
 
     public async getEntity(path: string): Promise<Entity> {
-        let http = await getData<Entity>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/entity/' + encodeURIComponent(path));
-        if (!http) throw new Error("missing Entity " + path);
-        if (!isEntity(http)) throw new Error("response is not Entity " + CircularJSON.stringify(http));
-        return http;
+        let schema = await this.getSchema();
+        return schema.entities[path];
     }
 }
 

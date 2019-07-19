@@ -54,7 +54,7 @@
             "remoteRoot": "/dist",
             "sourceMaps": true,
             "outFiles": [
-                "${workspaceFolder}/dist-be/**/*.js"
+                "${workspaceFolder}/dist-be/*.js"
             ],
             "skipFiles": [
                 "<eval>/**/*.js",

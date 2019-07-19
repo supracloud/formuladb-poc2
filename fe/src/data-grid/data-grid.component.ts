@@ -66,7 +66,6 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
         new Grid(this.shadowRoot!.querySelector("#myGrid") as HTMLElement, this.gridOptions);
         translateClicksToNavigationEvents(this.shadowRoot!);
-        this.initAgGrid();
     }
 
 
@@ -214,7 +213,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     };
 
     applyCellStyles(params) {
-        let entityName = this.frmdbState.table_name;
+        let entityName = this.getAttribute('table_name');
         let hc = this.frmdbState.highlightColumns||{};
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
@@ -239,9 +238,10 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
-        if (!this.frmdbState.table_name) return;
+        let tableName = this.getAttribute('table_name');
+        if (!tableName) return;
 
-        this.columns = await TABLE_SERVICE.getColumns(this.frmdbState.table_name);
+        this.columns = await TABLE_SERVICE.getColumns(tableName);
 
         this.gridOptions.context = this.columns;
         this.gridOptions.headerHeight = this.frmdbState.header_height || 25;
@@ -251,7 +251,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         //     pattern: "Solid",
         // };
         await waitUntilNotNull(() => Promise.resolve(this.gridApi));
-        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(this.frmdbState.table_name));
+        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(tableName));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};

@@ -1,0 +1,29 @@
+.nav-link{
+    position:relative;
+    p{
+        i{
+            position:absolute;
+            font-size:.7rem;
+            font-weight: 700;
+            right:.3rem;
+            top:1.2rem;
+        }
+    }
+}
+
+.nav{
+    padding-left:1rem;
+}
+
+.frmdb-nav-segment-text {
+    position: relative
+}
+.frmdb-nav-segment-dev-mode-identifier {
+    position: absolute;
+    top: 1.5em;
+    left: 0;
+    font-size: 0.75em;
+    color: lightgrey;
+    // text-decoration: underline;
+    text-transform: none;
+}

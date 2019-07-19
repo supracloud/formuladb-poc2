@@ -101,7 +101,6 @@ export const App_booking: App = {
 export const Schema_booking: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_booking._id.replace(/^App~~/, ''),
     entities: {
-        [Booking.BookingApp._id]: Booking.BookingApp,
         [Booking.BookingItem._id]: Booking.BookingItem,
         [Booking.Booking._id]: Booking.Booking,
     },
@@ -170,8 +169,7 @@ export const Schema_reporting: Schema = {
     entities: {},
 }
 
-const CommonEntities = [
-    GeneralMetadata.General,
+export const CommonEntities = [
     $User,
     $I18n,
     // GeneralMetadata.GEN__Currency,

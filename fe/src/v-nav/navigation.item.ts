@@ -1,7 +1,7 @@
 import { Entity, Pn } from "@domain/metadata/entity";
 import { I18N } from "@fe/i18n.service";
 
-export interface NavigationItem extends Node {
+export interface NavigationItem {
     linkName: string;
     linkNameI18n: string;
     path: string;
@@ -10,13 +10,11 @@ export interface NavigationItem extends Node {
     hasChildren?: boolean;
     onPath?: boolean;
     isNotRootNavItem?: boolean;
+    id: string;
+    children: NavigationItem[];
     isPureNavGroupingChildren?: boolean;
 }
 
-export interface Node {
-    id: string;
-    children: Node[];
-}
 
 export function entites2navItems(entitiesList: Entity[], selectedEntityId: string, onlyPresentaiontPages?: boolean) {
     let entities = entitiesList.filter(e => onlyPresentaiontPages ? e.isPresentationPage : !e.isPresentationPage);

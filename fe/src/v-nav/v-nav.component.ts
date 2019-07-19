@@ -10,7 +10,7 @@ import { FrmdbElementDecorator, FrmdbElementBase } from '@fe/live-dom-template/f
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { Entity } from '@domain/metadata/entity';
 
-const HTML: string = require('raw-loader!@fe-assets/v-nav/v-nav.component.html').default;
+const HTML: string = ' ';
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/v-nav/v-nav.component.scss').default;
 
 interface VNavComponentState {
@@ -33,6 +33,29 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
             this.frmdbState.selectedEntityId = entities[0]._id;
             this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
         })
+    }
+
+    updateDOM() {
+        let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
+        el.innerHTML = `<style>${CSS}</style>` + this.render(this.frmdbState.navigationItemsTree || []);
+    }
+
+    render(navItems: NavigationItem[]) {
+        return /*html*/`
+        <ul class="nav flex-column" >
+            ${navItems.map(nav => /*html*/`
+            <li class="nav-item">
+                <a class="nav-link position-relative" data-toggle="collapse">
+                    <span class="frmdb-nav-segment-text">
+                        <span>${nav.linkNameI18n}</span>
+                        <span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>
+                    </span>
+                </a>
+                ${this.render(nav.children || [])}
+            </li>
+            `).join('')}
+        </ul>
+        `        
     }
     
     private setCollapsed(entities: any[], route: string[]): any[] {

@@ -119,7 +119,7 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
         return this.frmdbState;
     }
 
-    private updateDOM() {
+    protected updateDOM() {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
         updateDOM(this.frmdbState, el);
         emitFrmdbChange(this);
