@@ -25,8 +25,6 @@ function customizeEditor() {
     $('#canvas').css({top: 'var(--db-panel-height)'});
     document.body.style.setProperty('--builder-header-top-height', '0px');
     
-    $('#vvveb-builder').prepend(/* html */`<frmdb-db-editor></frmdb-db-editor>`);
-
     let origPreviewFunc = Vvveb.Gui.preview;
     let prevPanelHeight = document.body.style.getPropertyValue('--db-panel-height');
     Vvveb.Gui.preview = function () {
@@ -74,7 +72,9 @@ function customizeEditor() {
         console.info("Loading pages for ", tenantName, appName);
         let appBackend = new FrmdbAppBackend(tenantName, appName);
     
-        loadPages(appBackend);            
+        loadPages(appBackend);
+        
+        $('#vvveb-builder').prepend(/* html */`<frmdb-db-editor data-frmdb-tenant="${tenantName}" data-frmdb-app="${appName}"></frmdb-db-editor>`);
     });
 
 }

@@ -53,8 +53,8 @@ export class BackendService {
     public applications: Map<string, App> = new Map();
     private frmdbEngineTools: FrmdbEngineTools;
 
-    constructor(private appName: string) {
-        getData<Schema | null>('/formuladb-api/' + appName + '/schema')
+    constructor(private tenantName: string, private appName: string) {
+        getData<Schema | null>(`/formuladb-api/${tenantName}/${appName}/schema`)
         .then(schema => {
             if (!schema) throw new Error("Schema " + appName + " not found");
             this.frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(schema).compileSchema())
@@ -111,7 +111,7 @@ export class BackendService {
     // }
 
     public putEvent(event: MwzEvents): Promise<MwzEvents> {
-        return postData<MwzEvents, MwzEvents>('/formuladb-api/' + this.appName + '/event', event);
+        return postData<MwzEvents, MwzEvents>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/event', event);
     }
 
     public async getApplications(): Promise<Map<string, App> | null> {
@@ -128,7 +128,7 @@ export class BackendService {
     }
 
     public async getTableData(prefix: string): Promise<DataObj[]> {
-        let ret = await getData<DataObj[]>('/formuladb-api/' + this.appName + '/byprefix/' + encodeURIComponent(prefix));
+        let ret = await getData<DataObj[]>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/byprefix/' + encodeURIComponent(prefix));
         return ret || [];
     }
 
@@ -143,12 +143,12 @@ export class BackendService {
 
     public simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {
         LOG.debug("simpleAdHocQuery", entityName + " %o", query);
-        return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.appName + '/' + entityName + '/SimpleAddHocQuery',
+        return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/' + entityName + '/SimpleAddHocQuery',
             query);
     }
 
     public async getDataObj(id: string): Promise<DataObj> {
-        let http = await getData<DataObj | null>('/formuladb-api/' + this.appName + '/obj/' + encodeURIComponent(id));
+        let http = await getData<DataObj | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/obj/' + encodeURIComponent(id));
         if (!http) throw new Error('Asked for non-existent object ' + id + '.');
         let dataObj = http;
         if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
@@ -166,7 +166,7 @@ export class BackendService {
     }
 
     public async getTable(path: string): Promise<TablePage | null> {
-        let http = await getData<TablePage | null>('/formuladb-api/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path));
+        let http = await getData<TablePage | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path));
         if (!http) return null;
         let ti = http;
         if (!isTablePage(ti)) throw new Error("response is not TablePage " + CircularJSON.stringify(ti));
@@ -174,7 +174,7 @@ export class BackendService {
     }
 
     public async getForm(path: string): Promise<FormPage | null> {
-        let http = await getData<FormPage | null>('/formuladb-api/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path));
+        let http = await getData<FormPage | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path));
         if (!http) return null;
         let fi = http;
         if (!isFormPage(fi)) throw new Error("response is not FormPage " + CircularJSON.stringify(fi));
@@ -187,14 +187,14 @@ export class BackendService {
     }
 
     public async getSchema(): Promise<Schema> {
-        let http = await getData<Schema | null>('/formuladb-api/' + this.appName + '/schema');
+        let http = await getData<Schema | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/schema');
         if (!http) throw new Error("empty schema !");
         if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));
         return http;
     }
 
     public async getEntity(path: string): Promise<Entity> {
-        let http = await getData<Entity>('/formuladb-api/' + this.appName + '/entity/' + encodeURIComponent(path));
+        let http = await getData<Entity>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/entity/' + encodeURIComponent(path));
         if (!http) throw new Error("missing Entity " + path);
         if (!isEntity(http)) throw new Error("response is not Entity " + CircularJSON.stringify(http));
         return http;
@@ -206,11 +206,13 @@ export function BACKEND_SERVICE(): BackendService {
     if (_backendService == null) {
         let appRootEl = document.querySelector('[data-frmdb-app]');
         let APP_NAME = "unknown-app";
+        let TENANT_NAME = "unknown-tenant";
         if (appRootEl) {
             APP_NAME = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
+            TENANT_NAME = appRootEl.getAttribute("data-frmdb-tenant") || "unknown-tenant";
         }
         
-        _backendService = new BackendService(APP_NAME);
+        _backendService = new BackendService(TENANT_NAME, APP_NAME);
     }
     return _backendService;
 }
