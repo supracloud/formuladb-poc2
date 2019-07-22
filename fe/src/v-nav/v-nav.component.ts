@@ -9,6 +9,8 @@ import * as _ from 'lodash';
 import { FrmdbElementDecorator, FrmdbElementBase } from '@fe/live-dom-template/frmdb-element';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { Entity } from '@domain/metadata/entity';
+import { onEvent } from '@fe/delegated-events';
+import { elvis_el } from '@fe/live-dom-template/dom-node';
 
 const HTML: string = ' ';
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/v-nav/v-nav.component.scss').default;
@@ -32,29 +34,45 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
         BACKEND_SERVICE().getEntities().then(entities => {
             this.frmdbState.selectedEntityId = entities[0]._id;
             this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
+            this.emitFrmdbChange();
         })
+
+        onEvent(this, 'click', '*', (event) => {
+            let link: HTMLAnchorElement = event.target.closest('.nav-link');
+            if (!link || link.dataset.id == null) return;
+            this.frmdbState.selectedEntityId = link.dataset.id;
+            elvis_el(this.querySelector('li.active')).classList.remove('active');
+            elvis_el(link.parentElement).classList.add('active');
+            this.emitFrmdbChange();
+        });
     }
 
     updateDOM() {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
-        el.innerHTML = `<style>${CSS}</style>` + this.render(this.frmdbState.navigationItemsTree || []);
+        el.innerHTML = /*html*/`
+            <style>${CSS}</style>
+            <div class="tree" style="height: 100%;">
+                ${this.render(this.frmdbState.navigationItemsTree || [])}
+            </div>
+        `;
     }
 
     render(navItems: NavigationItem[]) {
         return /*html*/`
-        <ul class="nav flex-column" >
+        <ol>
             ${navItems.map(nav => /*html*/`
-            <li class="nav-item">
-                <a class="nav-link position-relative" data-toggle="collapse">
-                    <span class="frmdb-nav-segment-text">
-                        <span>${nav.linkNameI18n}</span>
-                        <span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>
-                    </span>
-                </a>
-                ${this.render(nav.children || [])}
-            </li>
+                <li class="nav-item  ${this.frmdbState.selectedEntityId === nav.id ? 'active' : ''}">
+                    <a class="nav-link position-relative py-0" data-id="${nav.id}">
+                        <span class="frmdb-nav-segment-text">
+                            <span>${nav.linkNameI18n}</span>
+                            <span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>
+                        </span>
+                    </a>
+                    ${nav.children && nav.children.length > 0 ? /*html*/`<input type="checkbox" checked="">` : ''}
+                    ${this.render(nav.children || [])}
+                </li>
             `).join('')}
-        </ul>
+        </ol>
         `        
     }
     

@@ -326,4 +326,8 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             }
         } else return null;
     }
+
+    public setTableName(tableName: string) {
+        this.setAttribute("table_name", tableName);
+    }
 }

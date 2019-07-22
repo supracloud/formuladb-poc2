@@ -373,3 +373,9 @@ function showFromTemplate(el: Element): Element {
 
     return newEl;
 }
+
+
+const EMPTY_HTML_EL = document.createElement('div');
+export function elvis_el(val): HTMLElement {
+    return null == val ? EMPTY_HTML_EL : val;
+}
