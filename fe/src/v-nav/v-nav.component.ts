@@ -50,7 +50,6 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
     updateDOM() {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
         el.innerHTML = /*html*/`
-            <style>${CSS}</style>
             <div class="tree" style="height: 100%;">
                 ${this.render(this.frmdbState.navigationItemsTree || [])}
             </div>
@@ -65,7 +64,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
                     <a class="nav-link position-relative py-0" data-id="${nav.id}">
                         <span class="frmdb-nav-segment-text">
                             <span>${nav.linkNameI18n}</span>
-                            <span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>
+                            <!--<span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>-->
                         </span>
                     </a>
                     ${nav.children && nav.children.length > 0 ? /*html*/`<input type="checkbox" checked="">` : ''}

@@ -45,9 +45,6 @@ function customizeEditor() {
     $topBtnGroup.siblings('.btn-group').remove();
     
     $('#top-panel').prepend(/*html*/`
-        <button id="toggle-formula-editor" class="btn btn-light" title="Formula Editor">
-            <i class="la la-facebook-square"></i>
-        </button>  
         <frmdb-formula-editor></frmdb-formula-editor>
     `).css({
         display: "flex",
@@ -66,21 +63,18 @@ function customizeEditor() {
     $('#left-panel').css({ top: 'calc(var(--db-panel-height) + var(--builder-header-top-height))' });
     $('#canvas').css({top: 'calc(var(--db-panel-height) + var(--builder-header-top-height))'});
     
-    let origPreviewFunc = Vvveb.Gui.preview;
     let prevPanelHeight = document.body.style.getPropertyValue('--db-panel-height');
+    let origPreviewFunc = Vvveb.Gui.preview;
     Vvveb.Gui.preview = function () {
         origPreviewFunc();
-        $('#preview-btn').toggleClass('preview');
-        if ($('#preview-btn').hasClass('preview')) {
-            $('#preview-btn').prependTo('body');
-            $('#db-left-panel, #db-main, #db-right-panel').hide();
+        let dbEditor = $("frmdb-db-editor");
+        if (dbEditor.hasClass("preview")) {
+            document.body.style.setProperty('--db-panel-height', `${prevPanelHeight}`);
+        } else {
             prevPanelHeight = document.body.style.getPropertyValue('--db-panel-height');
             document.body.style.setProperty('--db-panel-height', '0px');
-        } else {
-            $('#fullscreen-btn').before($('#preview-btn'));
-            $('#db-left-panel, #db-main, #db-right-panel').show();
-            document.body.style.setProperty('--db-panel-height', `${prevPanelHeight}`);
         }
+        dbEditor.toggleClass("preview");
     }
 
     Vvveb.Gui.toggleDatabaseEditor = function () {
@@ -108,7 +102,6 @@ function customizeEditor() {
 
     Promise.all([
         loadExternalScript('/formuladb/frmdb-editor.js'),
-        loadExternalScript('/formuladb/frmdb-data-grid.js'),
     ]).then(() => {
         let p = new URLSearchParams(window.location.search);
         let [tenantName, appName] = [p.get('t'), p.get('a')];

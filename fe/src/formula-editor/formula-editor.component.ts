@@ -5,8 +5,10 @@ import { FrmdbElementDecorator, FrmdbElementBase } from "@fe/live-dom-template/f
 import { DataObj } from "@domain/metadata/data_obj";
 import { elvis } from "@core/elvis";
 import { BACKEND_SERVICE } from "@fe/backend.service";
-import { ServerEventPreviewFormula } from "@domain/event";
+import { ServerEventPreviewFormula, ServerEventSetProperty } from "@domain/event";
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
+import { KeyEvent } from "@fe/key-event";
+import { onEvent } from "@fe/delegated-events";
 
 const HTML: string = require('raw-loader!@fe-assets/formula-editor/formula-editor.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/formula-editor/formula-editor.component.scss').default;
@@ -33,24 +35,14 @@ const DEFAULT_UITOKEN: UiToken = {
 };
 
 interface FormulaEditorState {
-    editorDisabled: boolean;
-    editorExpr: string;
-    ftext: string;
-    currentTokens: UiToken[];
-    hasErrors: boolean;
     currentTokenAtCaret: UiToken | undefined;
     tableNameAtCaret: string | undefined;
-    editorOn: boolean;
-    selectedFormula: string | undefined;
-    selectedProperty: EntityProperty | undefined;
     editedEntity: Entity | undefined;
     editedDataObj: DataObj | undefined;
     editedProperty: EntityProperty | undefined;
     newProperty: EntityProperty | undefined;
     previewEditedDataObj: DataObj | undefined;
     formulaHighlightedColumns: { [tableName: string]: { [columnName: string]: string } };
-    currentSuggestions: Suggestion[];
-    activeSuggestion: number;
 }
 
 @FrmdbElementDecorator({
@@ -58,42 +50,96 @@ interface FormulaEditorState {
     observedAttributes: [],
     template: HTML,
     style: CSS,
+    noShadow: true,
 })
 export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorState> {
 
     private noEditKeys: string[] = ['Tab', 'ArrowDown', 'ArrowUp', 'Enter', 'ArrowLeft', 'ArrowRight'];
 
     private textarea: HTMLTextAreaElement;
+    overlay: HTMLDivElement;
+    toggleEditorBtn: HTMLButtonElement;
+    applyChangesBtn: HTMLButtonElement;
 
-    editorExprHasErrors: boolean = false;
+    dirty: boolean;
+    hasErrors: boolean;
+    currentTokens: UiToken[];
+    currentSuggestions: Suggestion[];
+    activeSuggestion: number;
 
     suggestion?: (string) => string[];
 
     validation?: (string) => { [key: string]: number[] };
-
+    
     connectedCallback() {
-        // (keydown.tab)="onAutoComplete($event)" 
-        // (keydown.enter)="onAutoComplete($event)" 
-        // (keyup)="keyup(editor, $event)"
-        // (click)="click(editor, $event)" 
-        // (keydown.arrowdown)="nextSuggestion($event)" 
-        // (keydown.arrowup)="prevSuggestion($event)"
+        this.textarea = this.elem.querySelector('textarea') as HTMLTextAreaElement;
+        this.overlay = this.elem.querySelector('.editor-formatted-overlay') as HTMLDivElement;
+        this.toggleEditorBtn = this.elem.querySelector('#toggle-formula-editor') as HTMLButtonElement;
+        this.applyChangesBtn = this.elem.querySelector('#apply-formula-changes') as HTMLButtonElement;
+
+        onEvent(this, 'keydown', '*', e => this.keydown(e));
+        onEvent(this, 'keyup', '*', e => this.keyup(e));
+        onEvent(this, 'click', '.editor *', e => this.click());
+        onEvent(this, 'click', '#toggle-formula-editor *', e => this.toggleEditor());
+        onEvent(this, 'click', '#apply-formula-changes:enabled *', e => this.applyChanges());
     }
 
     frmdbPropertyChangedCallback<T extends keyof FormulaEditorState>(propName: T, oldVal: FormulaEditorState[T] | undefined, newVal: FormulaEditorState[T]): Partial<FormulaEditorState> | Promise<Partial<FormulaEditorState>> {
-        if (propName === "editorOn") {
-            if (oldVal && !newVal) {
-                this.frmdbState.ftext = '';
-            } else if (!oldVal && newVal) {
-                this.debouncedOnEdit();
-            }
+        if ("editedProperty" === propName || "editedEntity" === propName) {
+            let prop = this.frmdbState.editedProperty;
+            this.textarea.value = prop ? (
+                prop.propType_ === Pn.FORMULA ? prop.formula : prop.propType_
+            ) : 'empty type';
+            this.debouncedOnEdit();
         }
         return this.frmdbState;
     }
 
+    get editorOn() {
+        return this.toggleEditorBtn.classList.contains("active");
+    }
+    set editorOn(val: boolean) {
+        if (val) {
+            this.toggleEditorBtn.classList.add("active");
+            this.applyChangesBtn.disabled = false;
+        } else {
+            this.toggleEditorBtn.classList.remove("active");
+            this.applyChangesBtn.disabled = true;
+        }
+        this.toggleEditorBtn.querySelector('i')!.classList.toggle("la-facebook-square");
+        this.toggleEditorBtn.querySelector('i')!.classList.toggle("la-times-circle");
+    }
+
+    toggleEditor() {
+        if (this.editorOn) {
+            if (this.dirty && !confirm("discard changes ?")) return;
+            this.editorOn = false;
+            this.textarea.readOnly = true;
+            this.dirty = false;
+        } else {
+            this.performOnEdit();
+            this.dirty = false;
+            this.textarea.readOnly = false;
+            this.editorOn = true;
+        }
+    }
+
+
+    applyChanges() {
+        if (!this.dirty) return;
+        if (!this.frmdbState.editedEntity || !this.frmdbState.editedProperty) return;
+        if (this.hasErrors) {
+            alert("formula has errors"); return;
+        }
+        if (confirm("Please confirm, apply modifications to DB ?")) {
+            BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, this.frmdbState.editedProperty));
+            this.toggleEditor();
+        }
+    }
+    
     cursorMove(cursorPos: number) {
-        if (!this.frmdbState.currentTokens) return;
-        let tokenAtCursor = this.frmdbState.currentTokens.find(x => x.pstart <= cursorPos && cursorPos <= x.pend)
+        if (!this.currentTokens) return;
+        let tokenAtCursor = this.currentTokens.find(x => x.pstart <= cursorPos && cursorPos <= x.pend)
         if (tokenAtCursor && tokenAtCursor.tableName && tokenAtCursor.errors.length === 0) {
             this.st.tableNameAtCaret = tokenAtCursor.tableName;
         }
@@ -103,17 +149,32 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         return this.frmdbState as FormulaEditorState;
     }
 
-    onAutoComplete(event: any): void {
-        event.stopPropagation();
-        event.preventDefault();
-        if (this.st.currentTokenAtCaret && this.st.currentSuggestions && this.st.currentSuggestions.length > 0 && this.st.activeSuggestion >= 0 && this.st.activeSuggestion < this.st.currentSuggestions.length) {
-            this.st.currentTokenAtCaret.value = this.st.currentSuggestions[this.st.activeSuggestion].suggestion;
-            this.st.editorExpr = this.st.currentTokens.map(t => t.value).join('');
-            this.st.currentSuggestions = [];
-            this.st.activeSuggestion = 0;
+    onAutoComplete(): void {
+        if (this.st.currentTokenAtCaret && this.currentSuggestions && this.currentSuggestions.length > 0 && this.activeSuggestion >= 0 && this.activeSuggestion < this.currentSuggestions.length) {
+            this.st.currentTokenAtCaret.value = this.currentSuggestions[this.activeSuggestion].suggestion;
+            this.textarea.value = this.currentTokens.map(t => t.value).join('');
+            this.currentSuggestions = [];
+            this.activeSuggestion = 0;
             this.st.currentTokenAtCaret = undefined;
             this.st.tableNameAtCaret = undefined;
             this.debouncedOnEdit();
+        }
+    }
+
+    keydown(event: KeyboardEvent) {
+        if (KeyEvent.DOM_VK_UP == event.keyCode) {
+            event.preventDefault();
+            this.prevSuggestion(); 
+        }
+
+        if (KeyEvent.DOM_VK_DOWN == event.keyCode) {
+            event.preventDefault();
+            this.nextSuggestion();
+        }
+
+        if (KeyEvent.DOM_VK_ENTER == event.keyCode || KeyEvent.DOM_VK_RETURN == event.keyCode || KeyEvent.DOM_VK_TAB == event.keyCode) {
+            event.preventDefault();
+            this.onAutoComplete();
         }
     }
 
@@ -126,7 +187,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         }
     }
     click() {
-        if (this.st.currentTokens.length == 0) {
+        if (this.currentTokens.length == 0) {
             this.debouncedOnEdit();
         } else if (this.textarea.selectionStart != null) {
             this.cursorMove(this.textarea.selectionStart);
@@ -136,12 +197,14 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     private debouncedOnEdit = _.debounce(() => this.performOnEdit(), 200);
     performOnEdit(): void {
         let ftext = "";
-        if (this.st.editorExpr) {
+        this.dirty = true;
+        let editorExpr = this.textarea.value;
+        if (editorExpr) {
             let errors;
             if (this.validation) {
-                errors = this.validation(this.st.editorExpr);
+                errors = this.validation(editorExpr);
             }
-            let tokens: UiToken[] = this.tokenize(this.st.editorExpr, this.textarea.selectionStart);
+            let tokens: UiToken[] = this.tokenize(editorExpr, this.textarea.selectionStart);
             console.log(tokens);
             let hasErrors: boolean = false;
             for (let i: number = 0; i < tokens.length; i++) {
@@ -159,9 +222,10 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             }
             this.cursorMove(this.textarea.selectionStart);
 
-            this.st.ftext = ftext;
-            this.st.hasErrors = hasErrors;
-            this.frmdbState.currentTokens = tokens;
+            this.overlay.innerHTML = ftext;
+            this.hasErrors = hasErrors;
+            this.applyChangesBtn.classList.toggle("bg-danger", hasErrors);
+            this.applyChangesBtn.classList.toggle("bg-success", !hasErrors);
             this.st.newProperty = this.getEntityPropertyFromTokens(tokens);
         }
     }
@@ -175,7 +239,8 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
 
         if (tokens.length <= 0) return undefined;
 
-        if (this.st.editorExpr.indexOf(Pn.REFERENCE_TO) === 0) {
+        let editorExpr = this.textarea.value;
+        if (editorExpr.indexOf(Pn.REFERENCE_TO) === 0) {
             let entityNameToken = tokens[2];
             let propertyNameToken = tokens[4];
             if (!entityNameToken) {
@@ -205,29 +270,21 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             return {
                 name: elvis(this.st.editedProperty).name!,
                 propType_: Pn.FORMULA,
-                formula: this.st.editorExpr,
+                formula: editorExpr,
             };
         }
     }
 
-    nextSuggestion(event: any): void {
-        if (this.st.currentSuggestions && this.st.currentSuggestions.length > 0) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-        if (this.st.activeSuggestion < this.st.currentSuggestions.length - 1) {
-            this.st.activeSuggestion++;
+    nextSuggestion(): void {
+        if (this.activeSuggestion < this.currentSuggestions.length - 1) {
+            this.activeSuggestion++;
             this.debouncedOnEdit();
         }
     }
 
-    prevSuggestion(event: any): void {
-        if (this.st.currentSuggestions && this.st.currentSuggestions.length > 0) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-        if (this.st.activeSuggestion > 0) {
-            this.st.activeSuggestion--;
+    prevSuggestion(): void {
+        if (this.activeSuggestion > 0) {
+            this.activeSuggestion--;
             this.debouncedOnEdit();
         }
     }
@@ -251,9 +308,10 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
     private buildSuggestionBox(): string {
+        if (!this.editorOn) return '';
         let re: string = "<div class='suggestion'>";
-        this.st.currentSuggestions.forEach((s, i) => {
-            re += "<div class='suggestion-element" + (i === this.frmdbState.activeSuggestion ? " suggestion-active" : "") + "'>";
+        this.currentSuggestions.forEach((s, i) => {
+            re += "<div class='suggestion-element" + (i === this.activeSuggestion ? " suggestion-active" : "") + "'>";
             re += s.suggestion;
             re += "</div>";
         });
@@ -262,6 +320,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
     private buildErrorBox(errors: string[]): string {
+        if (!this.editorOn) return '';
         return "<div class='error-note-holder'><div class='error-note'>" + errors.slice(0, 1).join("</div><div class='error-note'>") + "</div></div>";
     }
 
@@ -272,12 +331,12 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         this.checkTokenForErrors(token);
         let hasErrors = token.errors && token.errors.length > 0;
 
-        ret.push("<span class='" + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
+        ret.push("<span class='rounded-pill " + cls + " " + (hasErrors ? 'editor-error' : '') + "'>" + token.value + "</span>");
 
         if (token.caret) {
-            this.st.currentSuggestions = this.getSuggestionsForToken(token);
+            this.currentSuggestions = this.getSuggestionsForToken(token);
             this.st.currentTokenAtCaret = token;
-            if (this.st.currentSuggestions && this.st.currentSuggestions.length > 0) {
+            if (this.currentSuggestions && this.currentSuggestions.length > 0) {
                 ret.push(this.buildSuggestionBox());
             }
         }
@@ -287,10 +346,6 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         }
 
         return ret.join('');
-    }
-
-    public toggleFormulaEditor() {
-        this.st.editorOn = true;
     }
 
     public tokenize(editorTxt: string, caretPos: number): UiToken[] {

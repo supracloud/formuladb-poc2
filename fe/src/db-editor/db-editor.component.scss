@@ -18,6 +18,10 @@
     padding: 0rem 0rem 0.5rem 1rem;    
 }
 
+frmdb-db-editor.preview {
+    display: none;
+}
+
 frmdb-db-editor {
     height: calc(var(--db-panel-height) - var(--db-navbar-height)); 
     position: fixed; 

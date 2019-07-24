@@ -7,20 +7,15 @@ import { FormulaEditorComponent, queryFormulaEditor } from './formula-editor/for
 import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { elvis } from '@core/elvis';
-import { EntityProperty, Pn } from '@domain/metadata/entity';
+import { EntityProperty, Pn, Entity } from '@domain/metadata/entity';
 
-
-onDoc("click", "#toggle-formula-editor", (event) => {
-    let formulaEditor = queryFormulaEditor(document);
-    //TODO enable formula editor
-});
 
 onDoc("frmdbchange", "frmdb-data-grid", async (event) => {
     let formulaEditor = queryFormulaEditor(document);
     let dataGrid = event.target as DataGridComponent;
 
-    let prop: EntityProperty | undefined = elvis(elvis(BACKEND_SERVICE().currentSchema.entities[dataGrid.getAttributeTyped("table_name") || '']).props)[dataGrid.frmdbState.selectedColumnName || ''];
-    formulaEditor.frmdbState.ftext = prop ? (
-            prop.propType_ === Pn.FORMULA ? prop.formula : prop.propType_
-        ) : 'empty type';
+    let entity: Entity = BACKEND_SERVICE().currentSchema.entities[dataGrid.getAttributeTyped("table_name") || ''];
+    let prop: EntityProperty | undefined = entity.props[dataGrid.frmdbState.selectedColumnName || ''];
+    formulaEditor.frmdbState.editedEntity = entity;
+    formulaEditor.frmdbState.editedProperty = prop;
 });

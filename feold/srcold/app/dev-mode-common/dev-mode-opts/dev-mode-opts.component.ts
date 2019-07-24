@@ -313,20 +313,4 @@ export class DevModeOptsComponent implements OnInit, OnDestroy {
         }
     }
 
-
-    applyChanges(editorExprHasErrors: boolean, editedEntity: Entity, editedProperty: EntityProperty) {
-        if (!editorExprHasErrors) {
-            if (confirm("Please confirm, apply modifications to DB ?")) {
-                this.store.dispatch(new appState.ServerEventSetProperty(editedEntity, editedProperty));
-                this.formulaEditorService.toggleFormulaEditor();
-            }
-        } else {
-            alert("Expression has errors, cannot apply on DB");
-        }
-    }
-    discardChanges() {
-        if (confirm("Please confirm, dicard changes ?")) {
-            this.formulaEditorService.toggleFormulaEditor();
-        }
-    }
 }

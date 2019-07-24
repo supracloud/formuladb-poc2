@@ -1,5 +1,5 @@
 .formula-code-editor {
-    height: var(--formula-editor-height, 3rem);
+    height: 1.5rem;
     min-width: 50vw;
     white-space: nowrap;
 }
@@ -12,6 +12,8 @@
     left: 0;
     border: 1px solid #ccc;
     border-radius: 5px;
+    height: 1.5rem;
+    margin: 5px 5px 0 5px;
 }
 
 .formula-code-editor > a > img {
@@ -39,7 +41,7 @@
     resize: none;
     overflow: hidden;
     opacity: 0.6;
-    margin: -2px 0 0 -2px;
+    margin-left: 2px;
     z-index: 1;
     height: 22px;
     -webkit-overflow-scrolling: touch;
@@ -51,19 +53,22 @@
     left: 0;
     z-index: 10;
     pointer-events: none;
+    padding-top: 2px;
+    padding-left: 4px;
     // overflow: hidden;
     margin: 0;
     height:100%;
+    text-align: left;
 }
 
-::ng-deep .c_b6d0f988 { background-color: #99adce88 }
-::ng-deep .c_f9ccf988 { background-color: #f9ccf988 }
-::ng-deep .c_fcd9e188 { background-color: #fcd9e188 }
-::ng-deep .c_d9f9e588 { background-color: #d9f9e588 }
-::ng-deep .c_f5f9d988 { background-color: #f8f3c588 }
+.formula-code-editor .c_b6d0f988 { background-color: #99adce88 }
+.formula-code-editor .c_f9ccf988 { background-color: #f9ccf988 }
+.formula-code-editor .c_fcd9e188 { background-color: #fcd9e188 }
+.formula-code-editor .c_d9f9e588 { background-color: #d9f9e588 }
+.formula-code-editor .c_f5f9d988 { background-color: #f8f3c588 }
 
 /*https://stackoverflow.com/questions/36265026/angular-2-innerhtml-styling*/
-:host ::ng-deep .suggestion{
+.formula-code-editor .suggestion{
     top:1.2rem;
     width:0;
     position: relative;
@@ -73,23 +78,23 @@
     overflow:visible;
 }
 
-:host ::ng-deep .suggestion-element{
+.formula-code-editor .suggestion-element{
     background-color:lightgrey;
     color:black;
     padding-left:4px;
     width:25em;
 }
 
-:host ::ng-deep .suggestion-element.suggestion-active{
+.formula-code-editor .suggestion-element.suggestion-active{
     background-color:rgb(95, 95, 255);
     color:white;
 }
 
-:host ::ng-deep .editor-error{
+.formula-code-editor .editor-error{
     text-decoration: underline red dotted;
 }
 
-:host ::ng-deep .error-note-holder{
+.formula-code-editor .error-note-holder{
     top:-0.45rem;
     width:0;
     position: relative;
@@ -100,7 +105,7 @@
 }
 
 
-:host ::ng-deep .error-note{
+.formula-code-editor .error-note{
     color:darkred;
     padding-left:4px;
     width:25rem;
@@ -111,11 +116,11 @@
     overflow: hidden;
 }
 
-:host ::ng-deep .color-red{
+.formula-code-editor .color-red{
     color:red;
 }
 
-:host ::ng-deep .color-blue{
+.formula-code-editor .color-blue{
     color: blue;
 }
 

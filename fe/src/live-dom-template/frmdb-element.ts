@@ -109,6 +109,10 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     emit: (event: FrmdbUserEvent) => void = emit.bind(null, this);
     emitFrmdbChange: () => void = emitFrmdbChange.bind(null, this);
 
+    get elem() {
+        return this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
+    }
+
     protected attributeChangedCallback(attrName: keyof ATTR, oldVal, newVal) {
         let oldParsedVal = reflectAttr2Prop(attrName, oldVal);
         let newParsedVal = reflectAttr2Prop(attrName, newVal);
