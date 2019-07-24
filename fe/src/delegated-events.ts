@@ -39,6 +39,6 @@ export function emit(target: HTMLElement | Document, event: FrmdbUserEvent, bubb
     target.dispatchEvent(new CustomEvent(event.type, {detail: event, bubbles}));
 }
 
-export function emitFrmdbChange(target: HTMLElement | Document) {
-    target.dispatchEvent(new CustomEvent("frmdbchange", {bubbles: true}));
+export function emitFrmdbChange(target: HTMLElement | Document, propName?: string, oldVal?: any, newVal?: any) {
+    target.dispatchEvent(new CustomEvent("frmdbchange", {detail: {propName, oldVal, newVal}, bubbles: true}));
 }

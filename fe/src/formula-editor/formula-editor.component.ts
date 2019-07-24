@@ -133,6 +133,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         }
         if (confirm("Please confirm, apply modifications to DB ?")) {
             BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, this.frmdbState.editedProperty));
+            this.dirty = false;
             this.toggleEditor();
         }
     }
@@ -205,7 +206,6 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 errors = this.validation(editorExpr);
             }
             let tokens: UiToken[] = this.tokenize(editorExpr, this.textarea.selectionStart);
-            console.log(tokens);
             let hasErrors: boolean = false;
             for (let i: number = 0; i < tokens.length; i++) {
                 switch (tokens[i].type) {

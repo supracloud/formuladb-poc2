@@ -37,7 +37,7 @@ export interface DataGridComponentAttr {
 }
 
 export interface DataGridComponentState {
-    highlightColumns?: [{ tableName: string, columnName: string }];
+    highlightColumns?: { [tableName: string]: { [columnName: string]: string } };
     conditionalFormatting?: { tbdCssClassName: string };
     selectedRow: DataObj;
     selectedColumnName: string;
@@ -117,12 +117,10 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         },
         onRowClicked: (event: RowClickedEvent) => {
             this.frmdbState.selectedRow = event.data;
-            this.emitFrmdbChange();
         },
         onCellFocused: (event: CellFocusedEvent) => {
             if (event.column && event.column.getColDef() && event.column.getColDef().field) {
                 this.frmdbState.selectedColumnName = event.column.getColDef().field!;
-                this.emitFrmdbChange();
             }
         },
         autoGroupColumnDef: { width: 150 },
@@ -223,7 +221,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
         }
-        return null;
+        return { backgroundColor: '#00000000'};
     }
 
     agFilter(ctype: string) {

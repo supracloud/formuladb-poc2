@@ -97,17 +97,17 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
         set: (obj, propName: keyof STATE, propValue, receiver) => {
             let ret = true;
             let oldValue = this.frmdbState[propName];
-            if (oldValue !== propValue) {
+            if (!_.isEqual(oldValue, propValue)) {
                 ret = Reflect.set(obj, propName, propValue);
+                emitFrmdbChange(this, propName as string, oldValue, propValue);
                 this.debouncedUpdateDOM();
             }
-            this.updateDomWhenStateChanges(this.frmdbPropertyChangedCallback(propName, oldValue, propValue));
+            this.frmdbPropertyChangedCallback(propName, oldValue, propValue);
             return ret;
         }
     });
 
     emit: (event: FrmdbUserEvent) => void = emit.bind(null, this);
-    emitFrmdbChange: () => void = emitFrmdbChange.bind(null, this);
 
     get elem() {
         return this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
@@ -127,20 +127,9 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     protected updateDOM() {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
         updateDOM(this.frmdbState, el);
-        emitFrmdbChange(this);
     }
 
     private debouncedUpdateDOM = _.debounce(() => this.updateDOM(), 100);
-
-    protected updateDomWhenStateChanges(change: Partial<STATE> | Promise<Partial<STATE>>) {
-        let p = change instanceof Promise ? change : Promise.resolve(change);
-        p.then((newState) => {
-            if (this.frmdbState != newState) {
-                this.frmdbState = newState;
-                this.debouncedUpdateDOM();
-            }
-        });
-    }
 
     public setAttributeTyped<T extends keyof ATTR>(qualifiedName: T, value: string) {
         super.setAttribute(qualifiedName as string, value);

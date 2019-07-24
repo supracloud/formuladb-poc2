@@ -19,3 +19,9 @@ onDoc("frmdbchange", "frmdb-data-grid", async (event) => {
     formulaEditor.frmdbState.editedEntity = entity;
     formulaEditor.frmdbState.editedProperty = prop;
 });
+
+onDoc("frmdbchange", "frmdb-formula-editor", async (event) => {
+    let formulaEditor = queryFormulaEditor(document);
+    let dataGrid = queryDataGrid(document);
+    dataGrid.frmdbState.highlightColumns = formulaEditor.frmdbState.formulaHighlightedColumns;
+});

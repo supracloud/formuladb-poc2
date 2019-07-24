@@ -34,7 +34,6 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
         BACKEND_SERVICE().getEntities().then(entities => {
             this.frmdbState.selectedEntityId = entities[0]._id;
             this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
-            this.emitFrmdbChange();
         })
 
         onEvent(this, 'click', '*', (event) => {
@@ -43,7 +42,6 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
             this.frmdbState.selectedEntityId = link.dataset.id;
             elvis_el(this.querySelector('li.active')).classList.remove('active');
             elvis_el(link.parentElement).classList.add('active');
-            this.emitFrmdbChange();
         });
     }
 
