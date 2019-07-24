@@ -100,9 +100,9 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
             if (!_.isEqual(oldValue, propValue)) {
                 ret = Reflect.set(obj, propName, propValue);
                 emitFrmdbChange(this, propName as string, oldValue, propValue);
+                this.frmdbPropertyChangedCallback(propName, oldValue, propValue);
                 this.debouncedUpdateDOM();
             }
-            this.frmdbPropertyChangedCallback(propName, oldValue, propValue);
             return ret;
         }
     });

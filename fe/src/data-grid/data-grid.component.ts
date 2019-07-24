@@ -7,7 +7,7 @@ import {
     Grid, GridOptions,
     GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides
+    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
@@ -98,6 +98,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     private filters: any = {};
     private sort: any = {};
     private columns: TableColumn[] = [];
+    private selectedRowIdx: number;
 
     private gridOptions: GridOptions = {
 
@@ -119,8 +120,29 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             this.frmdbState.selectedRow = event.data;
         },
         onCellFocused: (event: CellFocusedEvent) => {
+            let newSelectedRowIdx = event.rowIndex;
+            let newSelectedColumnName: string | null = null;
             if (event.column && event.column.getColDef() && event.column.getColDef().field) {
-                this.frmdbState.selectedColumnName = event.column.getColDef().field!;
+                newSelectedColumnName = event.column.getColDef().field!;
+            }
+            let refreshCellsParams: RefreshCellsParams | null = null;
+            if (this.selectedRowIdx != newSelectedRowIdx || this.frmdbState.selectedColumnName != newSelectedColumnName) {
+                refreshCellsParams = {
+                    rowNodes: [
+                        this.gridApi.getDisplayedRowAtIndex(this.selectedRowIdx || 0), 
+                        this.gridApi.getDisplayedRowAtIndex(newSelectedRowIdx)
+                    ],
+                    columns: [this.frmdbState.selectedColumnName || '_id', newSelectedColumnName || '_id'],
+                    force: true,
+                };
+            }
+            this.frmdbState.selectedColumnName = newSelectedColumnName || this.frmdbState.selectedColumnName;
+            this.selectedRowIdx = event.rowIndex;
+            
+            if (refreshCellsParams && this.gridApi) {
+                // this.gridApi.refreshCells(refreshCellsParams);
+                //FIXME: the targeted cell refresh does not call the applyCellStyles method
+                this.gridApi.refreshCells({force: true});
             }
         },
         autoGroupColumnDef: { width: 150 },
@@ -195,7 +217,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
                     id: "tableActions",
                     labelDefault: "Optiuni Tabel",
                     labelKey: "tableActions",
-                    iconKey: "table-actions",
+                    iconKey: "menu",
                     toolPanel: "tableActionsToolPanel"
                 },
                 {
@@ -220,8 +242,10 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         let hc = this.frmdbState.highlightColumns||{};
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
+        } else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
+            return { "border-color": "blue" };
         }
-        return { backgroundColor: '#00000000'};
+        return { backgroundColor: '#00000000', "border-color": "transparent"};
     }
 
     agFilter(ctype: string) {

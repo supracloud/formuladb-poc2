@@ -40,7 +40,6 @@ interface FormulaEditorState {
     editedEntity: Entity | undefined;
     editedDataObj: DataObj | undefined;
     editedProperty: EntityProperty | undefined;
-    newProperty: EntityProperty | undefined;
     previewEditedDataObj: DataObj | undefined;
     formulaHighlightedColumns: { [tableName: string]: { [columnName: string]: string } };
 }
@@ -131,8 +130,10 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         if (this.hasErrors) {
             alert("formula has errors"); return;
         }
+        let newProp = this.getEntityPropertyFromTokens(this.currentTokens);
+        if (!newProp) {alert("formula has error tokens"); return;}
         if (confirm("Please confirm, apply modifications to DB ?")) {
-            BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, this.frmdbState.editedProperty));
+            BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, newProp));
             this.dirty = false;
             this.toggleEditor();
         }
@@ -226,7 +227,6 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             this.hasErrors = hasErrors;
             this.applyChangesBtn.classList.toggle("bg-danger", hasErrors);
             this.applyChangesBtn.classList.toggle("bg-success", !hasErrors);
-            this.st.newProperty = this.getEntityPropertyFromTokens(tokens);
         }
     }
 
@@ -419,6 +419,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             }
         }
 
+        this.currentTokens = ret;
         return ret;
     }
 
