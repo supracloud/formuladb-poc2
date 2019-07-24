@@ -52,11 +52,12 @@ export class BackendService {
 
     public applications: Map<string, App> = new Map();
     private frmdbEngineTools: FrmdbEngineTools;
+    public currentSchema: Schema;
 
     constructor(private tenantName: string, private appName: string) {
-        getData<Schema | null>(`/formuladb-api/${tenantName}/${appName}/schema`)
-        .then(schema => {
+        this.getSchema().then(schema => {
             if (!schema) throw new Error("Schema " + appName + " not found");
+            this.currentSchema = schema;
             this.frmdbEngineTools = new FrmdbEngineTools(new SchemaCompiler(schema).compileSchema())
         });
     }
@@ -188,8 +189,9 @@ export class BackendService {
 
     public async getSchema(): Promise<Schema> {
         let http = await getData<Schema | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/schema');
-        if (!http) throw new Error("empty schema !");
+        if (!http) throw new Error("no schema for " + this.tenantName + "/" + this.appName);
         if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));
+        this.currentSchema = http;
         return http;
     }
 

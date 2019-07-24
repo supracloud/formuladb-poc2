@@ -1,6 +1,35 @@
 :root {
-    --db-navbar-height: 26px;
+    --db-navbar-height: 0px;
 }
+
+.header {
+    font-size: 11px;
+    font-weight: 600;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    line-height: 2rem;
+    text-align: left;
+    padding-left: 1rem;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0rem;
+    padding: 0.0rem 0.5rem;
+    padding: 0rem 0rem 0.5rem 1rem;    
+}
+
+frmdb-db-editor {
+    height: calc(var(--db-panel-height) - var(--db-navbar-height)); 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    display: flex;
+    // border-bottom: 4px solid var(--primary);
+}
+frmdb-v-nav {
+    display: block;
+}
+
 #preview-btn.preview {
     position: fixed;
     top: 5px;
@@ -10,15 +39,14 @@
     padding: 0; width: 32px; height: 32px; border-radius: 30%;
 }
 
-#db-left-panel { width: var(--builder-left-panel-width); }
+#db-left-panel { 
+    width: var(--builder-left-panel-width);
+}
 #db-main { 
-    left: var(--builder-left-panel-width);
     width: calc( 100vw - var(--builder-left-panel-width)); 
 }
 #db-left-panel, #db-main {
-    height: calc(var(--db-panel-height) - var(--db-navbar-height)); 
-    position: fixed; 
-    top: var(--db-navbar-height); 
+    margin-top: var(--db-navbar-height); 
     background-color: white; 
     z-index: 9456;
 }

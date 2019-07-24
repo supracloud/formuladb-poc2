@@ -33,11 +33,14 @@ export interface DataGridComponentAttr {
     table_name: string;
     header_height?: number;
     expand_row?: boolean;
+    no_floating_filter?: boolean;
 }
 
-export interface DataGridComponentState extends DataGridComponentAttr {
+export interface DataGridComponentState {
     highlightColumns?: [{ tableName: string, columnName: string }];
     conditionalFormatting?: { tbdCssClassName: string };
+    selectedRow: DataObj;
+    selectedColumnName: string;
 }
 
 @FrmdbElementDecorator({
@@ -113,11 +116,13 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             this.emit({ type: "UserDblClickRow", dataObj: event.data });
         },
         onRowClicked: (event: RowClickedEvent) => {
-            this.emit({ type: "UserSelectedRow", dataObj: event.data });
+            this.frmdbState.selectedRow = event.data;
+            this.emitFrmdbChange();
         },
         onCellFocused: (event: CellFocusedEvent) => {
             if (event.column && event.column.getColDef() && event.column.getColDef().field) {
-                this.emit({ type: "UserSelectedCell", columnName: event.column.getColDef().field! });
+                this.frmdbState.selectedColumnName = event.column.getColDef().field!;
+                this.emitFrmdbChange();
             }
         },
         autoGroupColumnDef: { width: 150 },
@@ -140,7 +145,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
                 // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
             }
         },
-        floatingFilter: true,
+        floatingFilter: true,   
         onFilterChanged: (event: any) => {
             if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
                 const fs = this.gridApi.getFilterModel();
@@ -243,8 +248,9 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
         this.columns = await TABLE_SERVICE.getColumns(tableName);
 
+        this.gridOptions.floatingFilter = !this.getAttributeTyped("no_floating_filter", true);
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.frmdbState.header_height || 25;
+        this.gridOptions.headerHeight = this.getAttributeTyped("header_height", 1) || 25;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,
@@ -320,14 +326,16 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.frmdbState.expand_row && col.name === '_id') {
+        if (this.getAttributeTyped("expand_row") && col.name === '_id') {
             return (params) => {
                 return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
     }
+}
 
-    public setTableName(tableName: string) {
-        this.setAttribute("table_name", tableName);
-    }
+export function queryDataGrid(el: Document | HTMLElement): DataGridComponent {
+    let dataGrid: DataGridComponent = el.querySelector("frmdb-data-grid") as DataGridComponent;
+    if (!dataGrid) throw new Error("data-grid not found");
+    return dataGrid;
 }

@@ -85,3 +85,10 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
         });
     }
 }
+
+
+export function queryVNav(el: Document | HTMLElement): VNavComponent {
+    let nav: VNavComponent = el.querySelector("frmdb-v-nav") as VNavComponent;
+    if (!nav) throw new Error("v-nav not found");
+    return nav;
+}

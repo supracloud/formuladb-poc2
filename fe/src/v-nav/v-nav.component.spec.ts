@@ -10,7 +10,6 @@ function normalizeHTML(html: string): string[] {
 }
 
 import { VNavComponent } from './v-nav.component';
-import { VNavSegmentComponent } from './v-nav-segment.component';
 import { Schema_inventory } from '@test/mocks/mock-metadata';
 
 export const InventoryVNavHtml = normalizeHTML(/* html */`

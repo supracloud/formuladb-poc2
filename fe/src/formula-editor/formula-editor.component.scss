@@ -1,15 +1,17 @@
 .formula-code-editor {
-    // height: 22px;
-    min-width: 60vw;
+    height: var(--formula-editor-height, 3rem);
+    min-width: 50vw;
     white-space: nowrap;
 }
 
 .formula-code-editor > div {
+    width: 98%;
     display: inline-block; 
-    width: 100%;
     position: relative;
     top: 0;
     left: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .formula-code-editor > a > img {

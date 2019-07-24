@@ -137,6 +137,19 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
             }
         });
     }
+
+    public setAttributeTyped<T extends keyof ATTR>(qualifiedName: T, value: string) {
+        super.setAttribute(qualifiedName as string, value);
+    }
+    public getAttributeTyped<T extends keyof ATTR>(qualifiedName: T, example?: ATTR[T]): ATTR[T] | null {
+        let strValue = this.getAttribute(qualifiedName as string);
+        if (null == strValue) return strValue;
+        if (typeof example === 'boolean') {
+            return ('true' === strValue.toLowerCase()) as any as ATTR[T];
+        } else if (typeof example === 'number') {
+            return parseInt(strValue) as any as ATTR[T];
+        } else return strValue as any as ATTR[T];
+    }
 }
 
 // (<any>Element.prototype).debugStr = function () {

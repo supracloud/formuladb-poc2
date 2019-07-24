@@ -368,3 +368,9 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     }
 
 }
+
+export function queryFormulaEditor(el: Document | HTMLElement): FormulaEditorComponent {
+    let formulaEditor: FormulaEditorComponent =  el.querySelector('frmdb-formula-editor') as FormulaEditorComponent;
+    if (!formulaEditor) throw new Error("formula editor not found");
+    return formulaEditor;
+}

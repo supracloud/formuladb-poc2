@@ -14,11 +14,10 @@ import { FormulaEditorComponent } from '../formula-editor/formula-editor.compone
 import { Schema_inventory } from '@test/mocks/mock-metadata';
 import { InventoryVNavHtml } from '@fe/v-nav/v-nav.component.spec';
 import { VNavComponent } from '@fe/v-nav/v-nav.component';
-import { VNavSegmentComponent } from '@fe/v-nav/v-nav-segment.component';
 
 describe('FormulaEditorComponent', () => {
     beforeEach(() => {
-        fetchMock.get('/formuladb-api/unknown-app/schema', Schema_inventory);
+        fetchMock.get('/formuladb-api/unknown-tenant/unknown-app/schema', Schema_inventory);
     });
 
     afterEach(fetchMock.restore)
@@ -31,8 +30,11 @@ describe('FormulaEditorComponent', () => {
         await new Promise(resolve => setTimeout(resolve, 1000));
         let vnav: Element = el.querySelector('frmdb-v-nav')!;
         expect(vnav instanceof VNavComponent).toEqual(true);
-        expect(vnav.firstChild instanceof VNavSegmentComponent).toEqual(true);        
-        expect(normalizeHTML(vnav.outerHTML)).toEqual(InventoryVNavHtml);
+        // expect(normalizeHTML(vnav.outerHTML)).toEqual(InventoryVNavHtml);
+
+        let feditor: Element = el.querySelector('frmdb-formula-editor')!;
+        expect(feditor instanceof FormulaEditorComponent).toEqual(true);
+        expect(feditor.shadowRoot!.innerHTML).toContain('textarea class="editor-textarea"');
 
         // expect(normalizeHTML(el.shadowRoot!.innerHTML)).toEqual(normalizeHTML(/* html */`
         // <div class="formula-code-editor d-flex">

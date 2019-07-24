@@ -1,33 +1,70 @@
 
+function removeRightColumn() {
+    Vvveb.Gui.togglePanel("#right-panel", "--builder-right-panel-width");
+
+    $("#vvveb-builder").toggleClass("no-right-panel");
+    $(".component-properties-tab").toggle();
+    
+    Vvveb.Components.componentPropertiesElement = "#left-panel.component-properties";
+    if ($("#properties").is(":visible")) $('.component-tab a').show().tab('show'); 
+
+}
+
 function customizeEditor() {
-    $('.drag-elements').hide();
-    $('#filemanager').css({height: '100%'});
-    $('#filemanager .tree').css({height: '100%'});
-    $('#preview-btn').toggleClass('bg-light');
 
     $('#logo').remove();
     $('#toggle-file-manager-btn').parent().remove();
     $('#designer-mode-btn').remove();
     $('#download-btn').remove();
 
-    let $leftPanelBtns = $('#undo-btn').parent();
-    $leftPanelBtns.append($('#preview-btn').css({'z-index': 9678}));
-    $leftPanelBtns.append($('#fullscreen-btn'));
-    $leftPanelBtns.append($('#save-btn'));
-    $leftPanelBtns.append($('#mobile-view'));
-    $leftPanelBtns.addClass('w-100');
-    // let $rightPanelBtns = $('#mobile-view').parent();
-    // $rightPanelBtns.prepend($('#save-btn'));
-    // $rightPanelBtns.addClass('w-100');
+    removeRightColumn();
+
+    // $('.drag-elements').hide();
+    $('#filemanager').css({height: '100%'});
+    $('#filemanager .tree').css({height: '100%'});
+    $('#preview-btn').toggleClass('bg-light');
+
+    let $topBtnGroup = $('#mobile-view').parent();
+    $topBtnGroup.removeClass('responsive-btns')
+        .prepend($('#save-btn'))
+        .prepend($('#fullscreen-btn'))
+        .prepend($('#preview-btn'))
+        .prepend($('#undo-btn'))
+        .prepend($('#redo-btn'))
+        .prepend(
+            /*html*/`
+            <button id="db-editor" class="btn btn-light" title="Database Editor" data-vvveb-action="viewport">
+                <i class="la la-database"></i>
+            </button>
+            <button id="html-editor" class="btn btn-light" title="HTML Editor" data-vvveb-action="viewport">
+                <i class="la la-code"></i>
+            </button>
+            `)
+        .children('button.btn').addClass('py-0')
+    ;
+    $topBtnGroup.siblings('.btn-group').remove();
+    
+    $('#top-panel').prepend(/*html*/`
+        <button id="toggle-formula-editor" class="btn btn-light" title="Formula Editor">
+            <i class="la la-facebook-square"></i>
+        </button>  
+        <frmdb-formula-editor></frmdb-formula-editor>
+    `).css({
+        display: "flex",
+        'box-shadow': '0px 0px 4px #ccc',
+    });
 
     document.body.style.setProperty('--db-panel-height', `220px`);
     document.body.style.setProperty('--builder-right-panel-width', '0px');
     
-    $('#left-panel').prepend($leftPanelBtns).css({ top: 'var(--db-panel-height)' });
-    $('#right-panel').css({ top: 'var(--db-panel-height)' });
-    $('#top-panel').remove();
-    $('#canvas').css({top: 'var(--db-panel-height)'});
-    document.body.style.setProperty('--builder-header-top-height', '0px');
+    $('#top-panel').css({
+        top: 'var(--db-panel-height)', 
+        position: "fixed", 
+        width: "100%",
+        "border-top": "1px solid #ccc",
+    });
+    $('#left-panel').css({ top: 'calc(var(--db-panel-height) + var(--builder-header-top-height))' });
+    $('#canvas').css({top: 'calc(var(--db-panel-height) + var(--builder-header-top-height))'});
     
     let origPreviewFunc = Vvveb.Gui.preview;
     let prevPanelHeight = document.body.style.getPropertyValue('--db-panel-height');
