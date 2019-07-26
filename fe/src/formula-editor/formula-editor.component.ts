@@ -189,7 +189,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         }
     }
     click() {
-        if (this.currentTokens.length == 0) {
+        if (this.currentTokens && this.currentTokens.length == 0) {
             this.debouncedOnEdit();
         } else if (this.textarea.selectionStart != null) {
             this.cursorMove(this.textarea.selectionStart);

@@ -259,12 +259,15 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .replace(/^royal-hotel\//, 'royal-master/')
         ;
     }
+    function handleTemplate(path: string) {
+        return path.replace(/_template_\./, '');
+    }
     function removeTenant(path: string) {
         //TODO: read tenant metadata and check that tenant exists
         return path.replace(/^\/?([-_\w]+)\//, '');
     }
     app.use((req, res, next) => {
-        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg)$/);
+        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|_template_\.html)$/);
         if (!path) {
             next();
             return;
@@ -273,7 +276,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
             pathRewrite: function (path, req) { 
-                return app2theme(removeTenant(path));
+                return app2theme(handleTemplate(removeTenant(path));
             },
             logLevel: "debug",
         });

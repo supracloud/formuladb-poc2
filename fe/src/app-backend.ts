@@ -9,5 +9,15 @@ export class AppBackend {
     }
 }
 
+let _appBackend: AppBackend | null = null;
+export function APP_BACKEND(): AppBackend {
+    if (!_appBackend) {
+        let [tenantName, appName] = window.location.pathname.split('/').filter(x => x);
+        if (!tenantName || !appName) throw new Error("Cannot find tenant and app in path " + window.location.pathname);
+        _appBackend = new AppBackend(tenantName, appName);
+    }
+    return _appBackend;
+}
+
 //WARNING: global scope modification!
 (window as any).FrmdbAppBackend = AppBackend;

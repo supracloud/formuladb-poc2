@@ -11,17 +11,16 @@ export class MetadataStore {
                 description: "Booking app for Royal Hotel",
                 pages: [
                     { name: "index", html: "index.html" },
-                    { name: "about", html: "about.html" },
-                    { name: "accomodation", html: "accomodation.html" },
-                    { name: "blog-single", html: "blog-single.html" },
-                    { name: "blog", html: "blog.html" },
-                    { name: "contact", html: "contact.html" },
-                    { name: "elements", html: "elements.html" },
-                    { name: "gallery", html: "gallery.html" },
+                    { name: "booking", html: "booking.html" },
+                    { name: "footer [Fragment]", html: "footer._fragment_.html" },
+                    { name: "index [Template]", html: "index._template_.html" },
+                    { name: "accommodation [Template]", html: "accommodation._template_.html" },
+                    { name: "contact [Template]", html: "contact._template_.html" },
+                    { name: "gallery [Template]", html: "gallery._template_.html" },
                 ],
             });
         }
-        return Promise.resolve(null);  
+        return Promise.resolve(null);
     }
 
     getSchema(tenantName: string, appName: string): Promise<Schema | null> {
