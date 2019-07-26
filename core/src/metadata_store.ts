@@ -12,11 +12,11 @@ export class MetadataStore {
                 pages: [
                     { name: "index", html: "index.html" },
                     { name: "booking", html: "booking.html" },
-                    { name: "footer [Fragment]", html: "footer._fragment_.html" },
-                    { name: "index [Template]", html: "index._template_.html" },
-                    { name: "accommodation [Template]", html: "accommodation._template_.html" },
-                    { name: "contact [Template]", html: "contact._template_.html" },
-                    { name: "gallery [Template]", html: "gallery._template_.html" },
+                    { name: "footer [F]", html: "footer._fragment_.html" },
+                    { name: "index [T]", html: "index._template_.html" },
+                    { name: "accommodation [T]", html: "accommodation._template_.html" },
+                    { name: "contact [T]", html: "contact._template_.html" },
+                    { name: "gallery [T]", html: "gallery._template_.html" },
                 ],
             });
         }
