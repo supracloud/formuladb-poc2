@@ -15,8 +15,6 @@ import { AppPage } from '@domain/app';
 const LOG = new FrmdbLogger('frmdb-fragment');
 
 /** Component constants (loaded by webpack) **********************************/
-const HTML: string = require('raw-loader!@fe-assets/form/form.component.html').default;
-const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/form/form.component.scss').default;
 export interface FragmentComponentAttr {
     name: string;
 };

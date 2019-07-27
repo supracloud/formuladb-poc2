@@ -61,7 +61,7 @@ $( document ).ready(function() {
 });
 
 
-function render(pathName: string, routerOutletName: string = "main", allowMissingRoute?: boolean) {
+function render(pathName: string, routerOutletName: string = "main", allowMissingRoute: boolean = true) {
     let path = pathName.replace(/^\//, '');
     let matchedRoute: FrmdbRoute | null = null;
     let matchedParams: RegExpExecArray | null = null;

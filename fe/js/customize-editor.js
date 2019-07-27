@@ -1,7 +1,11 @@
+$('#logo').remove();
+document.title = "FormulaDB Editor";
+
 function customizeEditor() {
 
     //// Layout ///////////////////////////////////////////////////////////
     $('#logo').remove();
+    document.title = "FormulaDB Editor";
     $('#toggle-file-manager-btn').parent().remove();
     $('#designer-mode-btn').remove();
     $('#download-btn').remove();

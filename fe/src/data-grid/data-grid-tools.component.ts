@@ -21,6 +21,7 @@ export class DataGridToolsComponent implements IToolPanelComp {
         this.on('click', '.add-row', () => this.emit({type: "UserAddRow", entityId: "TBD"}));
         this.on('click', '.delete-row', () => this.emit({type: "UserDeleteRow", dataObj: {_id: "TBD"}}));
 
+        this.el.style.width = "100%";
         this.el.innerHTML = /*html*/ `
             <style>${css}</style>
             ${html}

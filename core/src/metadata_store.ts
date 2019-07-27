@@ -13,6 +13,8 @@ export class MetadataStore {
                     { name: "index", html: "index.html" },
                     { name: "booking", html: "booking.html" },
                     { name: "footer [F]", html: "footer._fragment_.html" },
+                    { name: "nav [F]", html: "nav._fragment_.html" },
+                    { name: "booking [F]", html: "booking._fragment_.html" },
                     { name: "index [T]", html: "index._template_.html" },
                     { name: "accommodation [T]", html: "accommodation._template_.html" },
                     { name: "contact [T]", html: "contact._template_.html" },

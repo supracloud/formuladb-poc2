@@ -404,7 +404,6 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             ret.push(uiToken);
         }
 
-        this.frmdbState.formulaHighlightedColumns = newformulaHighlightedColumns;
         for (let uiToken of todoStyleForTokens) {
             for (let style of STYLES) {
                 if (existingStyles.has(style.bgColor)) continue;
@@ -412,12 +411,14 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 let tableName = uiToken.tableName;
                 let columnName = uiToken.columnName;
                 if (tableName && columnName) {
-                    this.frmdbState.formulaHighlightedColumns[tableName][columnName] = style.bgColor;
+                    newformulaHighlightedColumns[tableName] = newformulaHighlightedColumns[tableName] || {};
+                    newformulaHighlightedColumns[tableName][columnName] = style.bgColor;
                     uiToken.class = style.bgColor.replace(/^#/, 'c_');
                 }
                 break;
             }
         }
+        this.frmdbState.formulaHighlightedColumns = newformulaHighlightedColumns;
 
         this.currentTokens = ret;
         return ret;

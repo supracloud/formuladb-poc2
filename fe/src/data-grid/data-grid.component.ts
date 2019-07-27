@@ -215,7 +215,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             toolPanels: [
                 {
                     id: "tableActions",
-                    labelDefault: "Optiuni Tabel",
+                    labelDefault: "",
                     labelKey: "tableActions",
                     iconKey: "menu",
                     toolPanel: "tableActionsToolPanel"
@@ -245,7 +245,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         } else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
             return { "border-color": "blue" };
         }
-        return { backgroundColor: '#00000000', "border-color": "transparent"};
+        return { backgroundColor: null, "border-color": null};
     }
 
     agFilter(ctype: string) {
