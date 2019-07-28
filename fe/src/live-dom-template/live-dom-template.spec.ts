@@ -45,11 +45,11 @@ let data = {
 };
 
 
-describe('FrmdbTemplate', () => {
+describe('[FE] FrmdbTemplate', () => {
     beforeEach(() => {
     });
 
-    it('should update view when template OR data changes', () => {
+    fit('should update view when template OR data changes', () => {
         let el = parseHTML(template);
         updateDOM(data, el)
         let renderedHtml = el.outerHTML;

@@ -1,41 +1,32 @@
 stages:
   - npminstall
-  - buildprodimages
+  # - buildprodimages
   - build
   - test
-  - cleanup
-  - videos
+  # - cleanup
+  # - videos
 
 npminstall:
   stage: npminstall
   script:
-    - cd storage && npm install 
-    - cd ..
-    - cd core && npm install 
-    - cd ..
-    - cd be && npm install
-    - cd ..
-    - cd fe && npm install
+    - npm install 
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - core/node_modules/
-      - storage/node_modules/
-      - be/node_modules/
-      - fe/node_modules/
+      - node_modules/
 
 buildprodimages:
   stage: buildprodimages
   script:
-    - docker build -t formuladb-minio -f Dockerfile.minio .
-    - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
+    # - docker build -t formuladb-minio -f Dockerfile.minio .
+    # - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
+    # - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
     # - npm run docker:maps
     # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
     - npm run docker:be
     - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
-    - npm run docker:fe
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:${CI_COMMIT_TAG}
+    # - npm run docker:fe
+    # - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:${CI_COMMIT_TAG}
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -49,35 +40,21 @@ buildprodimages:
 build:
   stage: build
   script:
-    - npm run db
-    - cd be
     - npm run compile
-    - cd ..
-    - cd fe
-    - npm run build
-    - cd ..
+    - npm run bundle
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - core/node_modules/
-      - storage/node_modules/
-      - be/node_modules/
-      - be/dist/
-      - fe/node_modules/
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
   
 test:
   stage: test
   script:
     - docker-compose up -d db
-    - cd be
-    - true || npm test
-    - FRMDB_STORAGE=postgres true || npm test
-    - npm run start &
-    - while ! nc -z localhost 3000 </dev/null; do echo "Waiting for BE ..."; sleep 1; done
-    - cd ..
-    - cd fe
-    - true || npm run e2e
-    - killall node --quiet || true
+    - npm test
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:

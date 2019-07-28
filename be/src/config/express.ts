@@ -276,7 +276,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
             pathRewrite: function (path, req) { 
-                return app2theme(handleTemplate(removeTenant(path));
+                return app2theme(handleTemplate(removeTenant(path)));
             },
             logLevel: "debug",
         });

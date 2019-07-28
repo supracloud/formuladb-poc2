@@ -27,10 +27,11 @@ export interface FragmentComponentState extends FragmentComponentAttr {
     template: ' ',
     style: `
         :host { display: block }
-    `
+    `,
+    noShadow: true,
 })
 export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, FragmentComponentState> {
-    importHTML(html: string) {
+    importHTML_not_using_shadowDom_anymore(html: string) {
         const template = document.createElement('template');
         template.innerHTML = html;
         //FIXME: DOMPurify.sanitize(html) removes <link rel="stylesheet", we need to manually use the purifier and add back the stylesheet
@@ -54,7 +55,7 @@ export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, F
             fetch(`/${appBackend.tenantName}/${appBackend.appName}/${fragmentPage.html}`)
             .then(async (response) => {
                 let html = await response.text();
-                this.importHTML(html);
+                this.innerHTML = DOMPurify.sanitize(html);
             });
             
             return this.frmdbState;

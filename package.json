@@ -13,8 +13,7 @@
     "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
     "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
     "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'npm run docker:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
-    "spec:be": "jasmine --helper=./jasmine.helpers.js tsc-out/core/src/frmdb_engine.spec.js",
-    "test": "npm run spec:be"
+    "test": "node jasmine.js"
   },
   "author": "",
   "license": "ISC",

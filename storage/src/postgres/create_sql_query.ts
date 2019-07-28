@@ -132,7 +132,7 @@ export class CreateSqlQuery {
         if (sortParts.length > 0) {
             return ' order by ' + sortParts.join(', ');
         } else {
-            return ' order by _id desc';
+            return ' order by 1 desc';
         }
     }
 

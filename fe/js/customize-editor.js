@@ -11,9 +11,9 @@ function customizeEditor() {
     $('#download-btn').remove();
     $('#drag-elements').hide();
     $('#bottom-panel').hide();
-    document.body.style.setProperty('--db-panel-height', `220px`);
-    document.body.style.setProperty('--builder-left-panel-width', '15vw');
-    document.body.style.setProperty('--builder-right-panel-width', '0vw');
+    document.body.style.setProperty('--db-panel-height', `200px`);
+    document.body.style.setProperty('--builder-left-panel-width', '14vw');
+    document.body.style.setProperty('--builder-right-panel-width', '14vw');
     document.body.style.setProperty('--builder-bottom-panel-height', '0px');
 
     $('#filemanager').css({height: '100%'});
@@ -87,10 +87,13 @@ function loadFonts() {
 }
 
 $(document).ready(async function () {
-    $("#vvveb-builder").addClass("no-right-panel");
-    $(".component-properties-tab").show();
-    Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";
-    
+	if (false /* no right panel */) { 
+		$("#vvveb-builder").addClass("no-right-panel");
+		$(".component-properties-tab").show();
+		Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";
+	} else {
+		$(".component-properties-tab").hide();
+	}
     customizeEditor();
     
     await loadExternalScript('/formuladb/frmdb-editor.js');
