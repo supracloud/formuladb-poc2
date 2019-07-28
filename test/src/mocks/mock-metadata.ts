@@ -17,6 +17,7 @@ import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
 import { $User, $I18n } from '@domain/metadata/default-metadata';
+import { HotelBookingSchema } from './hotel-booking-metadata';
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";
@@ -179,15 +180,15 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    Schema_test,
-    Schema_inventory,
-    Schema_booking,
-    Schema_expenses,
-    Schema_ticketing,
-    Schema_planning,
-    Schema_ecommerce,
-    Schema_service,
-    Schema_reporting,
+    // Schema_test,
+    // Schema_inventory,
+    HotelBookingSchema,
+    // Schema_expenses,
+    // Schema_ticketing,
+    // Schema_planning,
+    // Schema_ecommerce,
+    // Schema_service,
+    // Schema_reporting,
 ];
 
 for (let sch of Schemas) {

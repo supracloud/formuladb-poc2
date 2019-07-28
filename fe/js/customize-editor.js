@@ -16,8 +16,8 @@ function customizeEditor() {
     document.body.style.setProperty('--builder-right-panel-width', '14vw');
     document.body.style.setProperty('--builder-bottom-panel-height', '0px');
 
-    $('#filemanager').css({height: '100%'});
-    $('#filemanager .tree').css({height: '100%'});
+    // $('#filemanager').css({height: '100%'});
+    // $('#filemanager .tree').css({height: '100%'});
 
     $('#top-panel').css({
         top: 'var(--db-panel-height)', 

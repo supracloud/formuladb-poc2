@@ -29,9 +29,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
     try {
         let kvsFactory = await getKeyValueStoreFactory();
         await kvsFactory.clearAll();
-        for (let app of mockMetadata.apps) {
-            await kvsFactory.putApp(app);
-        }
+
         
         let uiMetaLoaded = false;
         let commonEntitiesIds = CommonEntities.map(e => e._id);
@@ -40,37 +38,26 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
                 acc[e._id] = e; return acc;
             }, {}));
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, {_id: "FRMDB_SCHEMA", entities: mockData.entitiesMap});
+            let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
             for (let entityId of commonEntitiesIds) {
                 for (let obj of mockData.getAllForPath(entityId)) {
                     console.log("PUTTTTTT22", obj);
-                    await frmdbEngineStore.putDataObj(obj);
-                    // await putObj(frmdbEngine, obj);
+                    // await frmdbEngineStore.putDataObj(obj);
+                    await putObj(frmdbEngine, obj);
                 }
             }    
         }
 
         for (let schema of mockMetadata.schemas) {
-            await kvsFactory.putSchema(schema);
             let mockData = new MockData(schema.entities);
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
             for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
                 for (let obj of mockData.getAllForPath(entityId)) {
                     console.log("PUTTTTTT", obj);
-                    await frmdbEngineStore.putDataObj(obj);
-                    // await putObj(frmdbEngine, obj);
+                    // await frmdbEngineStore.putDataObj(obj);
+                    await putObj(frmdbEngine, obj);
                 }
-            }
-            if (!uiMetaLoaded) {
-                for (let formUiMeta of [
-                    Forms__ServiceForm_Form_, LargeSalesReport_Form, HomePage_Form, BookingItem_Form, Booking_Form
-                ]) {
-                    await frmdbEngine.frmdbEngineStore.putForm(formUiMeta);
-                };
-                for (let tbl of [HomePage_Table, BookingItem_Table, Booking_Table]) {
-                    await frmdbEngine.frmdbEngineStore.putTable(tbl);
-                };
-                uiMetaLoaded = true;
             }
         }
 

@@ -34,7 +34,7 @@ export const RoomType = {
 };
 
 export const Room = {
-    _id: "RoomT",
+    _id: "Room",
     isEditable: true,
     props: {
         nb: { name: "nb", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
@@ -54,8 +54,8 @@ export const Booking = {
         ]
     } as EntityStateGraph,    
     props: {
-        user: { name: "user_id", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: '_id' } as EntityProperty,
-        room: { name: "booking_item_id", propType_: Pn.REFERENCE_TO, referencedEntityName: Room._id, referencedPropertyName: '_id' } as EntityProperty,
+        guest: { name: "guest", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: '_id' } as EntityProperty,
+        room: { name: "room", propType_: Pn.REFERENCE_TO, referencedEntityName: Room._id, referencedPropertyName: '_id' } as EntityProperty,
         start_date: { name: "start_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         end_date: { name: "end_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
