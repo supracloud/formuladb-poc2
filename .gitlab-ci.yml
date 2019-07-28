@@ -15,27 +15,27 @@ npminstall:
     paths:
       - node_modules/
 
-buildprodimages:
-  stage: buildprodimages
-  script:
-    # - docker build -t formuladb-minio -f Dockerfile.minio .
-    # - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-    # - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-    # - npm run docker:maps
-    # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
-    - npm run docker:be
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
-    # - npm run docker:fe
-    # - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:${CI_COMMIT_TAG}
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - core/node_modules/
-      - storage/node_modules/
-      - be/node_modules/
-      - fe/node_modules/
-  only:
-    - tags
+# buildprodimages:
+#   stage: buildprodimages
+#   script:
+#     # - docker build -t formuladb-minio -f Dockerfile.minio .
+#     # - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
+#     # - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
+#     # - npm run docker:maps
+#     # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
+#     - npm run docker:be
+#     - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
+#     # - npm run docker:fe
+#     # - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:${CI_COMMIT_TAG}
+#   cache:
+#     key: ${CI_COMMIT_SHORT_SHA}
+#     paths:
+#       - core/node_modules/
+#       - storage/node_modules/
+#       - be/node_modules/
+#       - fe/node_modules/
+#   only:
+#     - tags
 
 build:
   stage: build
@@ -64,23 +64,23 @@ test:
       - be/dist/
       - fe/node_modules/
 
-videos:
-  stage: videos
-  script:
-    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.1 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
-  artifacts:
-    expire_in: 1 week
-    paths:
-      - fe/e2e/protractor_videos/
-  only:
-    refs:
-      - master
+# videos:
+#   stage: videos
+#   script:
+#     - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.1 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
+#   artifacts:
+#     expire_in: 1 week
+#     paths:
+#       - fe/e2e/protractor_videos/
+#   only:
+#     refs:
+#       - master
 
-cleanup:
-  stage: cleanup
-  script:
-    - docker-compose down
-    - docker image prune --all -f
-    - killall node --quiet || true
-    - rm -rf /home/gitlab-runner/cache/metawiz/febe/*
-  when: always
+# cleanup:
+#   stage: cleanup
+#   script:
+#     - docker-compose down
+#     - docker image prune --all -f
+#     - killall node --quiet || true
+#     - rm -rf /home/gitlab-runner/cache/metawiz/febe/*
+#   when: always
