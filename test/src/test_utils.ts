@@ -8,7 +8,8 @@ export function toStringCompiledFormula(formula: string, compiledFormula: Compil
         return '[' + value.map(x => x.origExpr).join(', ') + ']';
     }
 	function toString(object) {
-		return _.transform(object, function(result, value, key: string | number) {
+		return _.transform(object, function(resultt, value, key: string | number) {
+            let result: any = resultt;
             if (isExpression(value)) {
                 result[key] = value.origExpr;
             } 

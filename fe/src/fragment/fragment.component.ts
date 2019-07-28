@@ -56,9 +56,9 @@ export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, F
             .then(async (response) => {
                 let html = await response.text();
                 this.innerHTML = DOMPurify.sanitize(html);
-            });
-            
-            return this.frmdbState;
+            });            
         }
+
+        return this.frmdbState;
     }
 }

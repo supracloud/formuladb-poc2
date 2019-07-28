@@ -99,11 +99,8 @@ describe('VNavComponent', () => {
         document.body.innerHTML = '<frmdb-v-nav></frmdb-v-nav>';
         let el: VNavComponent = document.querySelector('frmdb-v-nav') as VNavComponent;
         expect(el instanceof VNavComponent).toEqual(true);
-        expect(el.firstChild instanceof VNavSegmentComponent).toEqual(true);
-        expect((el.firstChild as VNavSegmentComponent).frmdbState).toEqual({});
 
         await new Promise(resolve => setTimeout(resolve, 1000));
-        expect((el.firstChild as VNavSegmentComponent).frmdbState.nav!.length).toEqual(4);
         expect(normalizeHTML(el.outerHTML)).toEqual(InventoryVNavHtml);
 
         done();

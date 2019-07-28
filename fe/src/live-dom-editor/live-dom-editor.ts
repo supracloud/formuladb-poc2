@@ -16,15 +16,15 @@ const HTML = /*html*/`
 
 @FrmdbElementDecorator({
     tag: 'frmdb-live-dom-editor',
-    attributeExamples: {},
-    initialState: {},
     template: HTML,
-    style: '',
+    observedAttributes: [],
 })
-class LiveDomEditor extends FrmdbElementBase<{}, {}> {
+class LiveDomEditor extends FrmdbElementBase<any, {}> {
     on = onEvent.bind(null, this);
     emit = FrmdbElementBase.prototype.emit.bind(this);
-    
+    constructor() {
+        super();
+    }
     connectedCallback() {
 
         this.on('mousemove', '*', _.debounce((event) => {

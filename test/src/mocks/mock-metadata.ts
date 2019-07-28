@@ -27,7 +27,7 @@ export * from "./financial-metadata";
 export const App_test: App = {
     _id: "App~~test",
     description: "Test many types of entities",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_test: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_test._id.replace(/^App~~/, ''),
@@ -55,7 +55,7 @@ export const Schema_test: Schema = {
 export const App_inventory: App = {
     _id: "App~~inventory",
     description: "Basic Inventory, Single Warehouse",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_inventory: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_inventory._id.replace(/^App~~/, ''),
@@ -78,7 +78,7 @@ export const Schema_inventory: Schema = {
 export const App_musicbooking: App = {
     _id: "App~~musicbooking",
     description: "Music Studio Booking",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_musicbooking: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_musicbooking._id.replace(/^App~~/, ''),
@@ -96,7 +96,7 @@ export const Schema_musicbooking: Schema = {
 export const App_booking: App = {
     _id: "App~~booking",
     description: "Booking Items (e.g. rooms, events, cars)",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_booking: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_booking._id.replace(/^App~~/, ''),
@@ -108,7 +108,7 @@ export const Schema_booking: Schema = {
 export const App_expenses: App = {
     _id: "App~~expenses",
     description: "Expenses, Accounts, Transactions, Budgets",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_expenses: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_expenses._id.replace(/^App~~/, ''),
@@ -121,7 +121,7 @@ export const Schema_expenses: Schema = {
 export const App_ticketing: App = {
     _id: "App~~ticketing",
     description: "Ticketing, Issues",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_ticketing: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_ticketing._id.replace(/^App~~/, ''),
@@ -130,7 +130,7 @@ export const Schema_ticketing: Schema = {
 export const App_planning: App = {
     _id: "App~~planning",
     description: "Planning, Meetings, Sessions",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_planning: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_planning._id.replace(/^App~~/, ''),
@@ -139,7 +139,7 @@ export const Schema_planning: Schema = {
 export const App_ecommerce: App = {
     _id: "App~~ecommerce",
     description: "Basic eCommerce",
-    page: { layout: "frmdb-ly-admin" },
+    pages: [],
 };
 export const Schema_ecommerce: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_ecommerce._id.replace(/^App~~/, ''),
@@ -148,7 +148,7 @@ export const Schema_ecommerce: Schema = {
 export const App_service: App = {
     _id: "App~~service",
     description: "Bike/Car Service",
-    page: { layout: "frmdb-ly-admin" },
+    pages: []
 };
 export const Schema_service: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_service._id.replace(/^App~~/, ''),
@@ -162,7 +162,7 @@ export const Schema_service: Schema = {
 export const App_reporting: App = {
     _id: "App~~reporting",
     description: "Reporting",
-    page: { layout: "frmdb-ly-admin" },
+    pages: []
 };
 export const Schema_reporting: Schema = {
     _id: 'FRMDB_SCHEMA~~' + App_reporting._id.replace(/^App~~/, ''),

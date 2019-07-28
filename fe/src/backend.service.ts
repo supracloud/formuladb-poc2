@@ -133,7 +133,7 @@ export class BackendService {
         return ret || [];
     }
 
-    public async getDictionary(locale: Exclude<App['locale'], undefined>) {
+    public async getDictionary(locale: Exclude<App['defaultLocale'], undefined>) {
         let i18nList = await this.getTableData("$I18n~~");
         let dictionary = {};
         for (let i18n of i18nList) {
