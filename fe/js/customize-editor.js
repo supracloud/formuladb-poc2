@@ -20,7 +20,7 @@ function customizeEditor() {
     $('#download-btn').remove();
     $('#drag-elements').hide();
     $('#bottom-panel').hide();
-    document.body.style.setProperty('--db-panel-height', `200px`);
+    document.body.style.setProperty('--db-panel-height', `180px`);
     document.body.style.setProperty('--builder-left-panel-width', '14vw');
     document.body.style.setProperty('--builder-right-panel-width', '14vw');
     document.body.style.setProperty('--builder-bottom-panel-height', '0px');
@@ -97,12 +97,11 @@ function loadFonts() {
     </style>`)
 }
 
-$(document).ready(async function () {
-    customizeEditor();
-    
+async function customLoadPages() {
+
     await loadExternalScript('/formuladb/frmdb-editor.js');
-    let p = new URLSearchParams(window.location.search);
-    let [tenantName, appName] = [p.get('t'), p.get('a')];
+    let params = new URLSearchParams(window.location.search);
+    let [tenantName, appName, pageName] = [params.get('t'), params.get('a'), params.get('p')];
     console.info("Loading pages for ", tenantName, appName);
     let appBackend = new FrmdbAppBackend(tenantName, appName);
         
@@ -121,12 +120,24 @@ $(document).ready(async function () {
         vvvebPages.push({name: page.name, title: page.name, url});
     }
 
-    Vvveb.Builder.init(indexUrl, function() {
+    //overwrite loadPage
+    let orig_loadPage = Vvveb.FileManager.loadPage;
+    Vvveb.FileManager.loadPage = function(name, allowedComponents = false, disableCache = true) {
+        window.location.href = window.location.href.replace(/p=.*/, `p=${name}`);
+    }
+
+    let url = (vvvebPages.find(p => p.name == pageName) || {url: indexUrl}).url;
+    Vvveb.Builder.init(url, function() {
         //run code after page/iframe is loaded
     });
 
     Vvveb.Gui.init();
     Vvveb.FileManager.init();
     Vvveb.FileManager.addPages(vvvebPages);
+}
 
+// load customized editor
+$(document).ready(async function () {
+    customizeEditor();
+    await customLoadPages();
 });
