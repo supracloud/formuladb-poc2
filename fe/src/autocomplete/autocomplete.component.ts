@@ -63,7 +63,6 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
 
     input: HTMLInputElement | undefined;
     connectedCallback() {
-        this.style.display = 'block';
         if (this.previousElementSibling && this.previousElementSibling.tagName.toLocaleLowerCase() === 'input') {
             this.input = this.previousElementSibling as HTMLInputElement;
             this.input.autocomplete = "off";

@@ -1,36 +1,9 @@
-import { Injectable, ChangeDetectorRef } from '@angular/core';
-import { BackendService } from '../effects/backend.service';
-import { ValidatorFn, AsyncValidatorFn, ValidationErrors, FormControl, FormArray } from '@angular/forms';
-import { AbstractControl } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { FrmdbFormControl, FrmdbFormGroup } from './frmdb-page.component';
-import { DataObj } from '../state/form.state';
-import { Observable, Subject, of, from, BehaviorSubject } from 'rxjs';
-import { take, catchError, delay, map, filter, debounceTime, tap } from 'rxjs/operators';
-import { j2str } from '../crosscutting/utils/j2str';
-import { UserModifiedFormData } from '../state/frmdb-user-events';
-import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import * as _ from 'lodash';
-import { NodeType, NodeElement, FormAutocomplete } from '@domain/uimetadata/node-elements';
-import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
-import { Entity } from '@domain/metadata/entity';
-import { CircularJSON } from '@domain/json-stringify';
 
-export class RelatedAutoCompleteControls {
-  controls: {[refPropertyName: string]: FormAutocomplete} = {};
-  options: {}[] = [];
-  selectedOption: {} | null;
-}
+import { DataObj } from '@domain/metadata/data_obj';
 
-@Injectable()
+
 export class FormEditingService {
-  public formChangeDetectorRef: ChangeDetectorRef;
-
-  constructor(
-    private backendService: BackendService, 
-    public frmdbStreams: FrmdbStreamsService,
-  ) {
-  }
 
   private tst$: Subject<ValidationErrors | null> = new Subject();
 
