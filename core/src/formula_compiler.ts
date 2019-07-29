@@ -381,7 +381,7 @@ export function getViewName(isAggs: boolean, entityName, rawExpr: Expression): s
 export function $ee2s(obj) {
     if (!_.isObject(obj)) return obj;
     if (isExpression(obj)) return obj.origExpr;
-    return _.transform(obj, function (result, value, key) {
+    return _.transform(obj as any, function (result: any, value, key) {
         if (isExpression(value)) {
             result[key] = value.origExpr;
         } else if (_.isObject(value)) {
