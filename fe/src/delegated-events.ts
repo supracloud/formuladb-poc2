@@ -10,6 +10,8 @@ export type EventType =
     | "keydown" 
     | "keyup" 
     | "frmdbchange" 
+    | "change"
+    | "input"
     | FrmdbUserEvent['type']
 ;
 
