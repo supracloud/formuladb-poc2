@@ -17,7 +17,7 @@ import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
 import { $User, $I18n } from '@domain/metadata/default-metadata';
-import { HotelBookingSchema } from './hotel-booking-metadata';
+import { HotelBookingSchema } from '../hotel-booking/metadata';
 
 export * from "./inventory-metadata";
 export * from "./general-metadata";

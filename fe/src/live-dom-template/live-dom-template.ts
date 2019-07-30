@@ -1,5 +1,6 @@
-import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding } from "./dom-node";
+import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllDataBindingAttrs } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { InventoryProductUnit } from "@test/mocks/mock-metadata";
 const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
@@ -107,4 +108,32 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
             throw new Error('unknown objValForKey type: \'' + objValForKey + '\'');
         }
     }
+}
+
+export function serializeElemToObj(rootEl: HTMLElement): {} {
+    let ret: any = {};
+    let prefix = rootEl.getAttribute('data-frmdb-foreach') || '';
+    for(let elem of getAllDataBindingAttrs(rootEl)) {
+        for (let i = 0; i < elem.attributes.length; i++) {
+            let attr = elem.attributes[i];
+            let value: string | number | boolean | null = null;
+            if ('data-frmdb-value' === attr.name) {
+                if (elem.tagName === "INPUT") {
+                    let input: HTMLInputElement = elem as HTMLInputElement;
+                    if (input.type == "number") value = parseInt(input.value);
+                    else if (input.type == "checkbox") value = input.checked;
+                    else value = input.value;
+                } else value = elem.textContent;
+            } else continue;//TODO: classes/styles/attributes/properties
+            if (value != null) {
+                let jsonKey = attr.value.replace(/.*:/, '');
+                if (jsonKey.indexOf(prefix + '.') != 0) throw new Error("prefix not correct for key " + jsonKey + " attr " + attr.name + "=" + attr.value);
+                jsonKey = jsonKey.slice(prefix.length + 1);
+                if (jsonKey.indexOf('[]') >= 0) continue;
+                ret[jsonKey] = value;
+            }
+        }
+    }
+
+    return ret;
 }

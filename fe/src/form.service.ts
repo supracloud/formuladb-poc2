@@ -3,13 +3,14 @@ import * as _ from 'lodash';
 import { DataObj } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
 import { BACKEND_SERVICE } from './backend.service';
+import { serializeElemToObj } from './live-dom-template/live-dom-template';
 
-type FormEl = 
+type InputEl = 
  | HTMLInputElement
  | HTMLSelectElement
  | HTMLTextAreaElement
 ;
-function isFormEl(el: Element): el is FormEl {
+function isFormEl(el: Element): el is InputEl {
     return el instanceof HTMLInputElement
         || el instanceof HTMLSelectElement
         || el instanceof HTMLTextAreaElement
@@ -20,32 +21,32 @@ export class FormService {
     
     constructor(private appRoot: HTMLElement) {
         onEvent(appRoot, ["change", "input"], "*", async (event) => {
-            let formEl = event.target;
-            if (!isFormEl(formEl)) throw new Error("input event came from " + event.target);
-            this.debounced_manageInput(formEl);
+            let inputEl = event.target;
+            if (!isFormEl(inputEl)) throw new Error("input event came from " + event.target);
+            this.debounced_manageInput(inputEl);
         });
     }
     
-    private debounced_manageInput = _.debounce((formEl: FormEl) => this.manageInput(formEl), 500);
+    private debounced_manageInput = _.debounce((inputEl: InputEl) => this.manageInput(inputEl), 500);
 
-    manageInput(formEl: FormEl) {
+    manageInput(inputEl: InputEl) {
+        this.validateOnClient(inputEl);
+
+        let dataObj = this.getParentObj(inputEl);
         //TODO: check validity on client side
         //TODO: send to backend
         //TODO: check validity from server
     }
     
     public getParentObj(control: HTMLElement): DataObj {
-        let parentObjEl = control.closest('[data-frmdb-foreach],[data-frmdb-obj]');
+        let parentObjEl = control.closest('[data-frmdb-record],[data-frmdb-foreach]');
         if (!parentObjEl) throw new Error("Could not get parent of " + control);
-        return this.el2Obj(parentObjEl);
-    }
-
-    public el2Obj(el: Element): DataObj {
-        return {_id: "TODO: must scan all data bindings and construct DataObj"}
+        let obj = serializeElemToObj(parentObjEl as HTMLElement) as DataObj;
+        if (!obj._id) throw new Error("Cannot find obj id for " + control);
+        return obj;
     }
     
-    
-    public validateonClient(control: FormEl) {
+    public validateOnClient(control: InputEl) {
         const parentObj = this.getParentObj(control);
         if (null === parentObj) { return null; }
         
@@ -53,10 +54,10 @@ export class FormService {
         const ret: { [key: string]: any } = {};
         
         const failedTypeValidations = tools.validateObjPropertyType(parentObj, control.name, control.value);
-        for (const failedValid of failedTypeValidations) {
-            ret.failedTypeValidation = failedValid;
+        if (failedTypeValidations) {
+            control.setCustomValidity(failedTypeValidations); 
+            return;
         }
-        if (failedTypeValidations.length > 0) { return ret; }
         
         const failedValidations = tools.validateObj(parentObj);
         if (failedValidations.length === 0) { return null; } // no errors

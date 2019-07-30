@@ -10,8 +10,8 @@ import '../autocomplete/autocomplete.component';
 
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
-import { APP_BACKEND } from '@fe/app-backend';
 import { AppPage } from '@domain/app';
+import { BACKEND_SERVICE } from '@fe/backend.service';
 const LOG = new FrmdbLogger('frmdb-fragment');
 
 /** Component constants (loaded by webpack) **********************************/
@@ -46,7 +46,7 @@ export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, F
 
     async frmdbPropertyChangedCallback<T extends keyof FragmentComponentState>(attrName: T, oldVal: FragmentComponentState[T], newVal: FragmentComponentState[T]): Promise<Partial<FragmentComponentState>> {
         if (attrName === "name") {
-            let appBackend = APP_BACKEND();
+            let appBackend = BACKEND_SERVICE();
             let app = await appBackend.getApp();
             if (!app) throw new Error("App not found");
             let fragmentPage: AppPage | undefined = app.pages.find(p => p.name == newVal as string); 

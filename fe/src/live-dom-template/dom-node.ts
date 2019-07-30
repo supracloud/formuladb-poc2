@@ -34,9 +34,6 @@ export class ElemList {
     }
 }
 
-export function parseHTML(html: string): Elem {
-    return parser.parseFromString(html, "text/html").body;
-}
 
 export function createElem(tagName: string, key: string): Elem {
     let el = document.createElement(tagName);
@@ -75,6 +72,13 @@ export function getElemForKey(el: Elem, key: string): Elem[] {
     let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"]`).join(',');
     return _getElemForKey(el, sel);
 }
+export function getAllDataBindingAttrs(el: Elem): Elem[] {
+    let ret: Elem[] = [];
+    let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}]`).join(',');
+    if (el.matches(sel)) ret.push(el);
+    return ret.concat(Array.from(el.querySelectorAll(sel)));
+}
+
 export function getElemWithComplexPropertyDataBinding(el: Elem, key: string): Elem[] {
     let sel = [
         DATA_FRMDB_ATTRS_Enum["data-frmdb-prop"],

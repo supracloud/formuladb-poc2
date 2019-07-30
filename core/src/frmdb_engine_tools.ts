@@ -17,13 +17,6 @@ export interface FailedValidation {
     obsObj: DataObj;
 }
 
-export interface FailedTypeValidation {
-    entityName: string,
-    propertyName: string,
-    obj: DataObj,
-    propertyValue: any
-}
-
 export class FrmdbEngineTools {
 
     constructor(public schemaDAO: SchemaDAO) {
@@ -49,21 +42,21 @@ export class FrmdbEngineTools {
         return obj;
     }
 
-    public validateObjPropertyType(obj: DataObj, propertyName: string, propertyValue: string): FailedTypeValidation[] {
-        if (propertyName === '_id' || propertyName === '_rev') return [];
-        if (propertyValue == null) return [];
+    public validateObjPropertyType(obj: DataObj, propertyName: string, propertyValue: string): string | null {
+        if (propertyName === '_id' || propertyName === '_rev') return null;
+        if (propertyValue == null) return null;
 
         let entityName = entityNameFromDataObjId(obj._id);
         let property = this.schemaDAO.getProperty(entityName, propertyName);
-        if (!property) return [];
+        if (!property) return null;
         switch (property.propType_) {
             case Pn.NUMBER:
                 if ((propertyValue + '').match(/^[\d.]+$/) == null) {
-                    return [{ entityName, propertyName, obj, propertyValue }];
+                    return `Number expected for ${entityName}.${propertyName} = ${propertyValue}`;
                 }
                 break;
         }
-        return [];
+        return null;
     }
 
     public validateObj(obsNew: DataObj): FailedValidation[] {

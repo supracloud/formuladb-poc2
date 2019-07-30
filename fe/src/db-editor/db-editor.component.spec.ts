@@ -4,10 +4,6 @@
 */
 
 const fetchMock = require('fetch-mock');
-const pretty = require('pretty');
-function normalizeHTML(html: string): string[] {
-    return pretty(html.replace(/\n\s*/g, ' ')).replace(/^\s+</, '<').split(/\n\s*/);
-}
 
 import { DbEditorComponent } from './db-editor.component';
 import { FormulaEditorComponent } from '../formula-editor/formula-editor.component';

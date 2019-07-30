@@ -17,7 +17,7 @@ require.extensions['.scss'] = function (module, filename) {
 
 //JSDOM for fe specs
 const { JSDOM } = require('@tbranyen/jsdom');
-const jsdom = new JSDOM('<!doctype html>')
+const jsdom = new JSDOM('<!doctype html>', {url: "http://localhost"})
 global.window = jsdom.window;
 global.Window = jsdom.window;
 global.document = jsdom.window.document;
@@ -32,7 +32,10 @@ global.Event = window.Event;
 global.CustomEvent = window.CustomEvent;
 global.customElements = window.customElements;
 global.ShadowRoot = window.ShadowRoot;
-
+global.HTMLInputElement = window.HTMLInputElement;
+global.HTMLSelectElement = window.HTMLSelectElement;
+global.HTMLTextAreaElement = window.HTMLTextAreaElement;
+global.localStorage = window.localStorage;
 
 const fetch = require('node-fetch');
 global.fetch = fetch;
