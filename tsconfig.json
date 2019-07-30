@@ -1,8 +1,10 @@
 {
     "compileOnSave": false,
     "compilerOptions": {
-        "sourceMap": false,
+        "outDir": "./tsc-out",
+        "sourceMap": true,
         "declaration": false,
+        "module": "commonjs",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -11,13 +13,28 @@
         "typeRoots": [
             "node_modules/@types"
         ],
+        "baseUrl": ".",
         "paths": {
-            "@core/*": ["core/src/*"],
-            "@storage/*": ["storage/src/*"],
-        },
+            "@domain/*": ["./domain/src/*"],
+            "@functions/*": ["./functions/src/*"],
+            "@core/*": ["./core/src/*"],
+            "@storage/*": ["./storage/src/*"],
+            "@test/*": ["./test/src/*"],
+            "@be/*": ["./be/src/*"],
+            "@fe/*": ["./fe/src/*"]
+        },        
         "lib": [
             "es2018",
             "dom"
         ]
-    }
+    },
+    "include": [
+        "./domain/src/**/*",
+        "./functions/src/**/*",
+        "./core/src/**/*",
+        "./storage/src/**/*",
+        "./test/src/**/*",
+        "./be/src/**/*",
+        "./fe/src/**/*"
+    ]
 }

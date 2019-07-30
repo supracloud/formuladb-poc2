@@ -4,7 +4,7 @@
  */
 
 import * as _ from "lodash";
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 import {
     Expression, LogicalExpression, StringLiteral, NumberLiteral, isExpression,
     isMemberExpression, isCallExpression, BinaryExpression, CallExpression, MemberExpression,
@@ -38,10 +38,11 @@ import {
     CompiledScalar,
     MapKeyQuery,
     includesMapFunctionAndQuery,
-} from "@core/domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, $s2e, getViewName, FormulaCompilerError } from './formula_compiler';
+} from "@domain/metadata/execution_plan";
+import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError } from './formula_compiler';
 import { _throw } from "./throw";
-import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@core/domain/metadata/reduce_functions";
+import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
+import { $s2e } from "@functions/s2e";
 
 function compileArg<IN extends Expression, OUT extends ExecPlanBase>(
     fc: FuncCommon,
@@ -391,9 +392,7 @@ function STRING(fc: FuncCommon) {
 function DATETIME(fc: FuncCommon) {
     return propertyTypeFunction(fc);
 }
-function DURATION(fc: FuncCommon) {
-    return propertyTypeFunction(fc);
-}
+
 
 function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
@@ -554,6 +553,12 @@ function HLOOKUP(fc: FuncCommon, expr: Expression): CompiledScalar {
 function FLOOR(fc: FuncCommon, expr: Expression, significance: NumberLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function DATEDIF(fc: FuncCommon, start_date: Expression, end_date: Expression, unit: StringLiteral): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
+function OVERLAP(fc: FuncCommon, start_date_1: Expression, end_date_1: Expression, start_date_2: Expression, end_date_2: Expression, max_interval: StringLiteral): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 
 export const ScalarFunctions = {
     TEXT: TEXT,
@@ -564,6 +569,8 @@ export const ScalarFunctions = {
     FACT: FACT,
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
+    DATEDIF: DATEDIF,
+    OVERLAP: OVERLAP,
 }
 
 export const PropertyTypeFunctions = {
@@ -571,7 +578,6 @@ export const PropertyTypeFunctions = {
     STRING: STRING,
     TEXT: TEXT,
     DATETIME: DATETIME,
-    DURATION: DURATION,
     REFERENCE_TO: REFERENCE_TO,
 }
 

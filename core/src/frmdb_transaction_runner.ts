@@ -3,24 +3,24 @@
  * License TBD
  */
 
-import { SchemaDAO, FormulaTriggeredByObj } from "@core/domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix } from "@core/domain/metadata/data_obj";
+import { SchemaDAO, FormulaTriggeredByObj } from "@domain/metadata/schema_dao";
+import { DataObj, parseDataObjId, isNewDataObjId, getChildrenPrefix } from "@domain/metadata/data_obj";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
-import * as events from "@core/domain/event";
+import * as events from "@domain/event";
 import * as _ from 'lodash';
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
-import { isKeyValueError } from "@core/domain/key_value_obj";
-import { generateUUID } from "@core/domain/uuid";
-import { CompiledFormula } from "@core/domain/metadata/execution_plan";
-import { evalExpression } from "./map_reduce_utils";
+import { isKeyValueError } from "@domain/key_value_obj";
+import { generateUUID } from "@domain/uuid";
+import { CompiledFormula } from "@domain/metadata/execution_plan";
+import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "./key_value_store_i";
-import { Pn, FormulaProperty } from "./domain/metadata/entity";
+import { Pn, FormulaProperty } from "@domain/metadata/entity";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -44,6 +44,16 @@ class TransactionDAG {
     currentLevel: number = 0;
     haveFailedValidations: boolean = false;
     finished: boolean = false;
+
+    public clear(eventId: string, retry: string) {
+        this.eventId = eventId;
+        this.retry = retry;
+        this.levels.length = 0;
+        this.objs = {};
+        this.currentLevel = 0;
+        this.haveFailedValidations = false;
+        this.finished = false;
+    }
 
     constructor(public eventId: string, public retry: string) {
     }
@@ -80,6 +90,9 @@ class TransactionDAG {
         let ret = this.objs[id];
         if (null == ret) throw new Error("Obj id " + id + " does not exist in transaction " + CircularJSON.stringify(this, null, 4));
         return ret;
+    }
+    public hasObj(id: string) {
+        return this.objs[id] != null;
     }
     public incrementLevel() {
         this.currentLevel++;
@@ -279,11 +292,11 @@ export class FrmdbTransactionRunner {
         | events.ServerEventDeletedFormDataEvent, transacDAG: TransactionDAG,
         originalObj: DataObj, isNewObj: boolean) 
     {
-        transacDAG
         Object.assign(event.obj, originalObj);
 
         for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
-            transacDAG.retry = '|' + failedValidationRetry;
+            transacDAG.clear(event._id, '|' + failedValidationRetry);
+
             let oldObj: DataObj | null = null;
             if (!isNewObj) {
                 oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
@@ -300,6 +313,7 @@ export class FrmdbTransactionRunner {
                     obsViewUpdates.push.apply(obsViewUpdates, 
                         await this.preComputeNonSelfFormulaOfTransactionRootObj(event.obj, null, compiledFormula));
                 }
+                //TODO: this is not transactional
                 for (let childObj of (await this.getChildObjects(event.obj))) {
                     let childDelEvent = new events.ServerEventDeletedFormDataEvent(childObj);
                     childDelEvent._id = event._id + '__';
@@ -506,6 +520,10 @@ export class FrmdbTransactionRunner {
                 }
             }
             for (let obsTrgByObj of Array.from(observersTriggeredByObj.values())) {
+                if (transactionDAG.hasObj(obsTrgByObj.obs._id)) {
+                    console.warn(ll(transactionDAG) + "|preComputeNextTransactionDAGLevel| obj " + obsTrgByObj.obs._id + "already computed by this transaction");
+                    continue;
+                }
                 let obsNew = _.cloneDeep(obsTrgByObj.obs);
                 await this.preComputeFormula(trObj.objId, transactionDAG, trObj.OLD, trObj.NEW, obsTrgByObj.formulaTriggeredByObj.formula, obsTrgByObj.obs, obsNew);
             }

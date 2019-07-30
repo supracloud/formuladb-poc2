@@ -3,17 +3,17 @@
  * License TBD
  */
 
-import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@core/domain/metadata/entity";
-import { SchemaDAO } from "@core/domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, isNewDataObjId } from "@core/domain/metadata/data_obj";
-import { CircularJSON } from "@core/json-stringify";
+import { Entity, isFormulaProperty, Schema, FormulaValidation, Pn } from "@domain/metadata/entity";
+import { SchemaDAO } from "@domain/metadata/schema_dao";
+import { DataObj, parseDataObjId, isNewDataObjId } from "@domain/metadata/data_obj";
+import { CircularJSON } from "@domain/json-stringify";
 
 import { FrmdbEngineStore, RetryableError } from "./frmdb_engine_store";
 
-import * as events from "@core/domain/event";
+import * as events from "@domain/event";
 import * as _ from 'lodash';
 import { SchemaCompiler } from "./schema_compiler";
-import { generateUUID } from "@core/domain/uuid";
+import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 
@@ -81,8 +81,6 @@ export class FrmdbEngine {
         return this.frmdbEngineStore.getForm(event.form._id)
             .catch(err => { console.log(err); return; })
             .then(frm => {
-                if (frm) event.form._rev = frm._rev;
-
                 return this.frmdbEngineStore.putForm(event.form).catch(err => console.error(err));
             })
             .then(() => {
@@ -99,7 +97,7 @@ export class FrmdbEngine {
         return this.frmdbEngineStore.getTable(event.table._id)
             .catch(err => { console.log(err); return; })
             .then(tbl => {
-                if (tbl) event.table._rev = tbl._rev;
+                // if (tbl) event.table._rev = tbl._rev;
 
                 return this.frmdbEngineStore.putTable(event.table).catch(err => console.error(err));
             })

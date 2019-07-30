@@ -1,0 +1,25 @@
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>
+                <fa-icon (click)="addRow()" [icon]="addIcon" class="fa-sm"></fa-icon>
+            </th>
+            <th *ngFor="let child of tableElement.childNodes">
+                {{child.propertyName | i18n}}
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let rowControl of formgrp.get(fullpath)?.controls; let idx = index">
+            <td>
+                <fa-icon (click)="deleteRow(rowControl)" [icon]="delIcon" class="fa-sm"></fa-icon>
+            </td>
+            <td *ngFor="let child of tableElement.childNodes">
+                <ng-container [frmdb-node-elements]="[child]" [parentnodel]="nodel"
+                [formgrp]="formgrp"
+                [fullpath]="fullpath + '.' + idx" 
+                [rdonly]="rdonly"></ng-container>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -1,0 +1,20 @@
+<div class="position-relative">
+    <div class="card frmdb-autocomplete-popup" data-frmdb-attr="class.visible::popupOpened">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th data-frmdb-foreach="relatedControls[]" data-frmdb-value="::relatedControls[].ref_property_name" 
+                        class="border-top-0">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-frmdb-foreach="options[]" data-frmdb-attr="class.selected::options[]._isSelected">
+                    <td data-frmdb-foreach="options[]._relatedControls[]"
+                        data-frmdb-value="html:options[]:options[]._relatedControls[].ref_property_name">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

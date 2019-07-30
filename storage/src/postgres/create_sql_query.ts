@@ -1,4 +1,5 @@
-import { SimpleAddHocQuery, ColumnParams, FilterItem, AggFunc } from "@core/key_value_store_i";
+import { FilterItem, AggFunc } from "@domain/metadata/simple-add-hoc-query";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export class CreateSqlQuery {
 
@@ -131,7 +132,7 @@ export class CreateSqlQuery {
         if (sortParts.length > 0) {
             return ' order by ' + sortParts.join(', ');
         } else {
-            return '';
+            return ' order by 1 desc';
         }
     }
 

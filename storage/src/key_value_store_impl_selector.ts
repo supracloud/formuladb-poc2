@@ -4,7 +4,7 @@
  */
 import * as isNode from 'detect-node';
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
-import { Schema } from '@core/domain/metadata/entity';
+import { Schema } from '@domain/metadata/entity';
 import { FrmdbEngine } from '@core/frmdb_engine';
 import { FrmdbEngineStore } from '@core/frmdb_engine_store';
 
@@ -28,6 +28,7 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
 
 export async function getFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
+    kvsFactory.putSchema(schema);
     return new FrmdbEngineStore(kvsFactory, schema);
 }
 

@@ -5,19 +5,22 @@
  * https://github.com/vitaly-t/pg-promise/wiki/Common-Mistakes
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, SimpleAddHocQuery, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
 import * as _ from "lodash";
-import { KeyValueObj, KeyValueError } from "@core/domain/key_value_obj";
+import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
 import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
-import { Entity, EntityProperty, Pn, Schema } from "@core/domain/metadata/entity";
-import { waitUntilNotNull } from "@core/ts-utils";
-import { ReduceFun } from "@core/domain/metadata/reduce_functions";
+import { Entity, EntityProperty, Pn, Schema } from "@domain/metadata/entity";
+import { waitUntilNotNull } from "@domain/ts-utils";
+import { ReduceFun } from "@domain/metadata/reduce_functions";
 import { Expression } from "jsep";
-import { evalExpression } from "@core/map_reduce_utils";
-import { App } from "@core/domain/app";
+import { evalExpression } from "@functions/map_reduce_utils";
+import { App } from "@domain/app";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { FrmdbLogger } from "@domain/frmdb-logger";
 const calculateSlot = require('cluster-key-slot');
+const logger = new FrmdbLogger("kvs:pg");
 
 /**
  * Key Value Store with optimistic locking functionality
@@ -37,11 +40,12 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             host: process.env.PGHOST || "localhost",
             port: parseInt(process.env.PGPORT || "5432"),
             user: process.env.PGUSER || "postgres",
-            password: process.env.PGPASSWORD || "postgres"
+            password: process.env.PGPASSWORD || "postgres",
+        
         };
         if (KeyValueStorePostgres.db == null) {
             console.info("Connecting to", config);
-            KeyValueStorePostgres.db = pgPromise()(config);
+            KeyValueStorePostgres.db = pgPromise({pgNative: false})(config);
         }
 
         this.table_id = this.getTableName(name);
@@ -61,7 +65,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     protected async createTable() {
         try {
-            let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR NOT NULL PRIMARY KEY, val json)';
+            let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR COLLATE "C" NOT NULL PRIMARY KEY, val json)';
             await this.getDB().any(query);
         } catch (err) {
             // When 2 or more workers are trying to create table on the same session
@@ -90,9 +94,8 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
                 this.getDB().oneOrNone<VALUET>(query, [this.pgSpecialChars(_id)]).then((res) => {
                     resolve(res != null ? res['val'] : undefined);
                 }).catch((err) => {
-                    console.log(err);
+                    logger.error("%o", err);
                 })
-
             })
         });
     }
@@ -286,7 +289,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             default: 
                 type = "varchar";
         }
-        if (prop.name === '_id') type = type + ' NOT NULL PRIMARY KEY';
+        if (prop.name === '_id') type = type + ' COLLATE "C" NOT NULL PRIMARY KEY';
         return prop.name + ' ' + type;
     }
 

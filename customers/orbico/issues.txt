@@ -1,5 +1,0 @@
-* [ ]  Duplicare comanda scade stocul doar dupa un refresh
-* [ ]  sincronizari automate clienti/produse/stocuri
-* [ ]  Locatie noua: SPA
-* [ ]  Editare multiple comenzi: coloana Detalii
-* [ ]  Editare multiple comenzi: revenire la starea Noua

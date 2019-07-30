@@ -1,7 +1,7 @@
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsList, PropertyTypeFunctions } from "./functions_compiler";
 import { Token, TokenType, Suggestion } from "./formula_tokenizer";
 import * as Fuse from 'fuse.js';
-import { Schema, Entity } from "@core/domain/metadata/entity";
+import { Schema, Entity } from "@domain/metadata/entity";
 
 
 export class FormulaTokenizerSchemaChecker {
@@ -19,6 +19,7 @@ export class FormulaTokenizerSchemaChecker {
   constructor(private schema: Schema) {
   }
 
+  FORBIDDEN_COLUMN_NAMES = ['user', 'table'];
   public checkToken(token: Token) {
 
     if (TokenType.FUNCTION_NAME === token.type) {
@@ -37,6 +38,9 @@ export class FormulaTokenizerSchemaChecker {
       if (!Object.keys((this.schema.entities['' + token.tableName] ||{} as Entity).props || {}).find(p => p == token.columnName)) {
         token.errors.push("Unknown column " + token.columnName + " for table " + token.tableName);
         token.foundInSchema = false;
+      } else if (this.FORBIDDEN_COLUMN_NAMES.includes(token.columnName||'')) {
+        //FIXME: implement this validation on the backend also
+        token.errors.push("Column name " + token.columnName + " is not valid");
       }
     }
   }

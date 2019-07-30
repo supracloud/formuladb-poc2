@@ -1,0 +1,198 @@
+<div class="frmdb-subnav fixed-top"></div>
+<nav class="navbar fixed-top pl-0 navbar-expand-md navbar-dark bg-danger shadow-sm">
+    <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse flex-wrap" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link pr-0" title="Roles" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                    BookingItem
+                </a>
+                <div class="dropdown-menu" aria-labelledby="userMenu">
+                    <a class="dropdown-item" href="javascript:void(0)">Home</a>
+                    <a class="dropdown-item" href="javascript:void(0)">TBD1</a>
+                    <a class="dropdown-item" href="javascript:void(0)">TBD2</a>
+                </div>
+            </li>
+            <li class="nav-item"><a class="nav-link disabled p-0" href="#" tabindex="-1" aria-disabled="true">/</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link pl-0" title="Roles" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                    price
+                </a>
+                <div class="dropdown-menu" aria-labelledby="userMenu">
+                    <a class="dropdown-item" href="javascript:void(0)">tbd 1</a>
+                    <a class="dropdown-item" href="javascript:void(0)">tbd 2</a>
+                    <a class="dropdown-item" href="javascript:void(0)">tbd 3</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a *ngIf="!(editorOn$ | async)" (click)="clickStartEdit$.next()" class="nav-link pr-1" title="Roles" href="javascript:void(0)" id="userMenu"
+                    data-toggle="dropdown">
+                    <img src="assets/formuladb24.png" />                
+                </a>
+                <a *ngIf="editorOn$ | async" (click)="clickCancelEdits$.next()" class="nav-link pr-1" title="Roles" href="javascript:void(0)" id="userMenu"
+                    data-toggle="dropdown">
+                    <fa-icon *ngIf="editorOn$ | async" [icon]="discardChangesIcon" class="fa-sm" style="color:orange"></fa-icon>
+                </a>
+            </li>
+            <form class="form-inline my-2 my-lg-0" style="position: relative">
+                <frmdb-formula-code-editor></frmdb-formula-code-editor>
+                <fa-icon *ngIf="editorOn$ | async" [icon]="applyChangesIcon" class="fa-sm" (click)="clickSaveEdits$.next()"
+                    style="position: absolute; top: 1em; right: 0"
+                    [style.color]="(formulaEditorService.editorExprHasErrors$ | async) ? 'red' : 'green'"></fa-icon>
+            </form>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link" title="TablePage Data" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <!-- <fa-icon [icon]="dataIcon" class="fa-sm"></fa-icon> -->
+                    Data
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <span (click)="addTable(tableName)">
+                            <fa-icon [icon]="addIcon" class="fa-sm"></fa-icon>
+                            {{ addTableLabel }}
+                        </span>
+                        <input style="width: 25ch" #tableName type="text" (click)="stopPropagation($event)" placeholder="NewTableName" />
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <span (click)="addColumnToCurrentTable(columnName)">
+                            <fa-icon [icon]="addIcon" class="fa-sm"></fa-icon>
+                            {{ addColumnLabel }}
+                        </span>
+                        <input style="width: 25ch" #columnName type="text" (click)="stopPropagation($event)" placeholder="new_column_name" />
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="delTable()">
+                        <fa-icon [icon]="delIcon" class="fa-sm"></fa-icon>
+                        {{'del-table' | i18n}} {{currentEntity?._id}}
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="delColumnFromCurrentTable()">
+                        <fa-icon [icon]="delIcon" class="fa-sm"></fa-icon>
+                        {{'del-column' | i18n}} {{currentProperty?.name}}
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link pr-0" title="Choose Theme" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <!-- <fa-icon [icon]="themeIcon" class="fa-sm"></fa-icon> -->
+                    Look
+                </a>
+                <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown vw-75 text-center" aria-labelledby="dropdown01">
+                    <div class="row frmdb-look-filters">
+                        <div class="form-check form-check-inline" *ngFor="let look of objectKeys(looks)">
+                            <input class="form-check-input" type="checkbox" [id]="look" [(ngModel)]="looks[look]">
+                            <label class="form-check-label" [for]="look">{{look | i18n}}</label>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="frmdb-themes">
+                        <a class="dropdown-item" *ngFor="let theme of themes" href="javascript:void(0)">
+                            <img class="frmdb-theme" height="90" width="150" [src]="theme.img" (click)="switchTheme(theme.css)" />
+                            <br />{{theme.name}}
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item"><a class="nav-link disabled p-0" href="#" tabindex="-1" aria-disabled="true">&</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link pl-0" title="Auto-Layout" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <!-- <fa-icon [icon]="layoutIcon" class="fa-sm"></fa-icon> -->
+                    Feel
+                </a>
+                <div class="dropdown-menu dropdown-menu-right frmdb-theme-dropdown vw-75 text-center" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="javascript:void(0)">Headers</a>
+                    <div class="frmdb-themes">
+                        <a class="dropdown-item" *ngFor="let hd of allHeaders" href="javascript:void(0)">
+                            <img class="frmdb-theme" height="90" width="150" [src]="hd.img" (click)="switchHeader(hd.header)" />
+                        </a>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void(0)">Layouts</a>
+                    <div class="frmdb-themes">
+                        <a class="dropdown-item" *ngFor="let ly of allLayouts" href="javascript:void(0)">
+                            <img class="frmdb-theme" height="90" width="150" [src]="ly.img" (click)="switchLayout(ly.layout)" />
+                        </a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled p-0" href="#" tabindex="-1" aria-disabled="true">
+                        <fa-icon [icon]="codeIcon"></fa-icon>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link pr-1" title="Roles" href="javascript:void(0)" id="userMenu" data-toggle="dropdown">
+                    <fa-icon [icon]="userIcon"></fa-icon> Admin
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userMenu">
+                    <a class="dropdown-item" href="javascript:void(0)">Admin</a>
+                    <a class="dropdown-item" href="javascript:void(0)">User</a>
+                    <a class="dropdown-item" href="javascript:void(0)">Partner</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="javascript:void(0)" (click)="goToAppList()">
+                        <fa-icon title="'Change app' | i18n" [icon]="changeAppIcon" class="fa-sm"></fa-icon>
+                    </a>            
+                </div>
+            </li>
+            <!-- <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" title="Colors, Fonts, Artwork" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <fa-icon [icon]="styleIcon" class="fa-sm"></fa-icon>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <img src="assets/flags/us.png" (click)="switchLanguage('us')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/de.png" (click)="switchLanguage('de')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/fr.png" (click)="switchLanguage('fr')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/es.png" (click)="switchLanguage('es')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/gr.png" (click)="switchLanguage('gr')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/it.png" (click)="switchLanguage('it')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/pl.png" (click)="switchLanguage('pl')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/pt.png" (click)="switchLanguage('pt')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/ro.png" (click)="switchLanguage('ro')" style="margin-right: 5px; cursor: pointer" />
+                        <img src="assets/flags/sv.png" (click)="switchLanguage('sv')" style="margin-right: 5px; cursor: pointer" />
+                        &nbsp;
+                    </a>
+                    <div class="divider"></div>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('red')" style="color: red; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('green')" style="color: green; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('blue')" style="color: blue; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('purple')" style="color: purple; cursor: pointer"></fa-icon>&nbsp;
+                        <fa-icon [icon]="collorPaletteIcon" (click)="switchcolorPalette('orange')" style="color: orange; cursor: pointer"></fa-icon>&nbsp;
+                    </a>
+                    <div class="divider"></div>
+                    <a class="dropdown-item" disabled href="javascript:void(0)">
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-4.jpg')" src="assets/img/sidebar/sidebar-4.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-1.jpg')" src="assets/img/sidebar/sidebar-1.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-2.jpg')" src="assets/img/sidebar/sidebar-2.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-3.jpg')" src="assets/img/sidebar/sidebar-3.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-5.jpg')" src="assets/img/sidebar/sidebar-5.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-6.jpg')" src="assets/img/sidebar/sidebar-6.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-7.jpg')" src="assets/img/sidebar/sidebar-7.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-8.jpg')" src="assets/img/sidebar/sidebar-8.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-9.jpg')" src="assets/img/sidebar/sidebar-9.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-10.jpg')" src="assets/img/sidebar/sidebar-10.jpg"
+                            style="margin-right: 4px" />
+                        <img height="50" width="30" (click)="switchSideBarImage('assets/img/sidebar/sidebar-11.jpg')" src="assets/img/sidebar/sidebar-11.jpg"
+                            style="margin-right: 4px" />
+                    </a>
+                </div>
+            </li> -->
+        </ul>
+    </div>
+</nav>

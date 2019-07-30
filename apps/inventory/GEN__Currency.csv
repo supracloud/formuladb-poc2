@@ -1,0 +1,4 @@
+_id,code,rate1,rate2,rate3,rate4,rate5
+GEN__Currency~~1,RON,1,1,1,1,1
+GEN__Currency~~2,EUR,101,102,103,104,105
+GEN__Currency~~3,USD,101,102,103,104,105

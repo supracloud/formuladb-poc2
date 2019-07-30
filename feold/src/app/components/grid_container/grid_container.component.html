@@ -1,0 +1,10 @@
+<ng-container *ngIf="gridContainer?.tableName">
+    <ng-container *ngFor="let childControl of formgrp.get(fullpath)?.controls; let idx = index">
+        <ng-container [frmdb-node-elements]="nodel?.childNodes" [parentnodel]="nodel" [formgrp]="formgrp" [fullpath]="fullpath + '.' + idx" [rdonly]="rdonly"></ng-container>
+    </ng-container>
+</ng-container>
+<ng-container *ngIf="!gridContainer?.tableName && gridContainer?.refEntityName">
+    <ng-container *ngFor="let childControl of referencedTableRowsAsFormGroups; let idx = index">
+        <ng-container [frmdb-node-elements]="nodel?.childNodes" [parentnodel]="nodel" [formgrp]="childControl" [fullpath]="''" [rdonly]="rdonly"></ng-container>
+    </ng-container>
+</ng-container>

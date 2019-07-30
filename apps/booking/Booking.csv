@@ -1,0 +1,7 @@
+_id,booking_item_id,start_date,end_date,booking_item_name,booking_item_price,user_id,user_name
+Booking~~1__1,BookingItem~~1,2019-04-03,2019-04-08,Practical Room,100,$User~~4,Keyon Wolf
+Booking~~1__2,BookingItem~~1,2019-04-19,2019-04-24,Practical Room,100,$User~~1,Rhianna Johns
+Booking~~2__3,BookingItem~~2,2019-04-10,2019-04-15,Gorgeous Room,200,$User~~2,Monserrat Simonis
+Booking~~2__4,BookingItem~~2,2019-04-24,2019-04-28,Gorgeous Room,200,$User~~3,Vergie Stracke Sr.
+Booking~~3__5,BookingItem~~3,2019-04-06,2019-04-09,Fantastic Room,300,$User~~5,Jerad Buckridge
+Booking~~3__6,BookingItem~~3,2019-04-26,2019-04-30,Fantastic Room,300,$User~~7,Hobart MacGyver

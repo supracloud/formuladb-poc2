@@ -1,9 +1,10 @@
 {
-    "extends": "../tsconfig.json",
     "compileOnSave": false,
     "compilerOptions": {
-        "sourceMap": false,
+        "outDir": "./dist",
+        "sourceMap": true,
         "declaration": false,
+        "module": "commonjs",
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
@@ -12,9 +13,23 @@
         "typeRoots": [
             "node_modules/@types"
         ],
+        "baseUrl": ".",
+        "paths": {
+            "@domain/*": ["../domain/src/*"],
+            "@functions/*": ["../functions/src/*"],
+            "@core/*": ["../core/src/*"],
+            "@storage/*": ["../storage/src/*"]
+        },        
         "lib": [
             "es2018",
             "dom"
         ]
-    }
+    },
+    "include": [
+        "./src/**/*",
+        "../domain/src/**/*",
+        "../functions/src/**/*",
+        "../core/src/**/*",
+        "../storage/src/**/*"
+    ]
 }

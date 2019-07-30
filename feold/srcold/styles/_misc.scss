@@ -1,0 +1,9 @@
+input.frmdb-vertical-range-old[type=range][orient=vertical] {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    /*Firefox needs orient=vertical attribute in HTML*/
+}
+
+.frmdb-rotate-270 {
+    transform: rotate(270deg);
+}

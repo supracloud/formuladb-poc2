@@ -1,0 +1,117 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "Partial<Page>": {
+            "description": "Make all properties in T optional",
+            "properties": {
+                "brandName": {
+                    "type": "string"
+                },
+                "colorPalette": {
+                    "type": "string"
+                },
+                "cssUrl": {
+                    "type": [
+                        "null",
+                        "string"
+                    ]
+                },
+                "footerLook": {
+                    "enum": [
+                        "ft_nav",
+                        "ft_none"
+                    ],
+                    "type": "string"
+                },
+                "header": {
+                    "description": "© 2018 S.C. FORMULA DATABASE S.R.L.\nLicense TBD\nLayouts (UX, \"the feel\"): \n     https://www.uxpin.com/studio/blog/web-layout-best-practices-12-timeless-ui-patterns-explained/\n     https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c\nThemes (UI, \"the look\"): \n     https://3.7designs.co/blog/2017/12/using-design-adjectives-determine-look-feel/\n     https://www.bopdesign.com/bop-blog/2013/11/what-is-the-look-and-feel-of-a-website-and-why-its-important/\n     https://thenextweb.com/dd/2017/11/08/psychology-web-design/\nAuto-header styles",
+                    "enum": [
+                        "hd_carousel",
+                        "hd_cover",
+                        "hd_jumbotron",
+                        "hd_none",
+                        "hd_split"
+                    ],
+                    "type": "string"
+                },
+                "layout": {
+                    "description": "Auto-layout options",
+                    "enum": [
+                        "ly_admin",
+                        "ly_asymetry",
+                        "ly_cards",
+                        "ly_container_free",
+                        "ly_dashboard",
+                        "ly_form",
+                        "ly_fpattern",
+                        "ly_grid",
+                        "ly_horizontal_symetry",
+                        "ly_landing",
+                        "ly_magazine",
+                        "ly_mosaic",
+                        "ly_radial_symetry",
+                        "ly_spreadsheet",
+                        "ly_zigzagpattern",
+                        "ly_zpattern"
+                    ],
+                    "type": "string"
+                },
+                "logoUrl": {
+                    "type": "string"
+                },
+                "look": {
+                    "enum": [
+                        "lk_Approachable",
+                        "lk_CuttingEdge",
+                        "lk_Exclusive",
+                        "lk_Experienced",
+                        "lk_Friendly",
+                        "lk_HighTech",
+                        "lk_Powerful",
+                        "lk_Professional",
+                        "lk_Stylish",
+                        "lk_Upscale"
+                    ],
+                    "type": "string"
+                },
+                "sidebarImageUrl": {
+                    "type": "string"
+                },
+                "sidebarOff": {
+                    "type": "boolean"
+                },
+                "topNavLook": {
+                    "enum": [
+                        "tn_nav",
+                        "tn_slim"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "properties": {
+        "_id": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "homePage": {
+            "type": "string"
+        },
+        "locale": {
+            "enum": [
+                "en",
+                "ro"
+            ],
+            "type": "string"
+        },
+        "page": {
+            "$ref": "#/definitions/Partial<Page>"
+        }
+    },
+    "type": "object"
+}
+

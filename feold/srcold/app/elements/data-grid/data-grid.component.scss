@@ -1,0 +1,70 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+:host {
+    // display: flex;
+    // overflow: hidden;
+    width: 100%;
+    height: calc(100% - 150px);
+    position: absolute; 
+}
+
+
+.frmdb-table-wrapper {
+    width: 100%;
+    min-height: 70vh;
+    // @include make-col(8);
+    // position: fixed;
+    // margin-top: .5rem;
+}
+
+.frmdb-table-action {
+    position: absolute;
+    display: block;
+    left: 0;
+    margin-top: -.25rem;
+    background-color: $gray-200;
+    &:hover {
+        background-color: $gray-600;
+        color: white;
+    }
+}
+
+::ng-deep {
+    ag-grid-angular {
+        height: 85vh;
+        width: 100%;
+    }
+
+    .ag-theme-balham .ag-header-cell-label .ag-header-cell-text {
+        line-height: 1em;
+        word-break: break-all;
+        white-space: pre-wrap;
+    }
+
+    ag-grid-angular>div {
+        width: 100%;
+        height: 100%;
+    }
+
+    .frmdb-table-wrapper .ag-cell {
+        line-height: 25px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .frmdb-table-wrapper .ag-header .ag-header-cell {
+        font-weight: bold;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
+    .frmdb-table-wrapper .ag-theme-balham .ag-root {
+        border: 0px;
+    }
+
+    .yellowBackground {
+        background-color:#fffb16;
+    }
+
+}

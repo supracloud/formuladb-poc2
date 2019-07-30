@@ -1,12 +1,18 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
-/tmp
-/out-tsc
+live-server-wwwroot
+dist-be
+dist-fe
+index.html
+index.css
+tsc-out
+tmp
+out-tsc
+docker-img
 
 # dependencies
-/node_modules
+node_modules
 /node
 
 #data

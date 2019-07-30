@@ -1,0 +1,4 @@
+_id: App~~inventory
+description: 'Basic Inventory, Single Warehouse'
+page:
+  layout: frmdb-ly-admin

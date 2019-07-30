@@ -4,7 +4,7 @@
  */
 
 import * as _ from "lodash";
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
 import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
@@ -15,7 +15,7 @@ jsep.addLiteral('@', '@');
 
 import {
     FormulaExpression
-} from "@core/domain/metadata/entity";
+} from "@domain/metadata/entity";
 import {
     CompiledFormula, MapReduceTrigger, isMapFunctionAndQuery,
     isMapReduceTrigger, isCompiledFormula, MapReduceKeysAndQueries, ExecPlanN,
@@ -33,9 +33,11 @@ import {
     isMapKeyAndQuery,
     includesMapFunctionAndQuery,
     CompiledScalar,
-} from "@core/domain/metadata/execution_plan";
+} from "@domain/metadata/execution_plan";
 import { ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions } from "./functions_compiler";
-import { logCompileFormula } from "./test/test_utils";
+import { logCompileFormula } from "../../test/src/test_utils";
+import { parseFormula } from "./formula_parser";
+import { $s2e } from "@functions/s2e";
 
 
 export class FormulaCompilerContextType {
@@ -68,7 +70,6 @@ function isLogicalOpBinaryExpression(expr: Expression): expr is BinaryExpression
 
 
 export function getQueryKeys(op: string, node: Expression, reverse?: boolean): MapQuery {
-    //FIXME: CouchDB does not have inclusive_start ... should emulate it by adding something to the end of the key
     switch (op) {
         case '==':
             return { startkeyExpr: [node], endkeyExpr: [node], inclusive_start: true, inclusive_end: true };
@@ -118,13 +119,30 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
     };
 }
 
+function specialLogicalExpressions(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries | null {
+    let node = logicalExpr;
+    if (!isLogicalOpBinaryExpression(logicalExpr.left))
+        throw new FormulaCompilerError(node, "Only logical operators are currently allowed in left LogicalExpession, at: " + logicalExpr.origExpr);
+    
+    if (jsep.isCallExpression(logicalExpr.right) && isIdentifier(logicalExpr.right.callee) && 'OVERLAP' === logicalExpr.right.callee.name) {
+        let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
+        return left;
+    } else return null;
+}
+
 export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
     let node = logicalExpr;
     if (logicalExpr.operator !== '&&') throw new FormulaCompilerError(node, `Only && operator is supported currently. 
             If you need ||, please create 2 different properties and combine them with another formula. 
             For example SUMIF(..., x < @[someVal] || y > @[otherVal]) can be: p1=SUMIF(..., x < @[someVal]), p2=SUMIF(y > @[otherVal]), p3 = p1 + p2
             At ` + logicalExpr.origExpr);
-    if (!isLogicalOpBinaryExpression(logicalExpr.left) || !isLogicalOpBinaryExpression(logicalExpr.right))
+    if (!isLogicalOpBinaryExpression(logicalExpr.left))
+        throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
+    
+    let specialNode = specialLogicalExpressions(logicalExpr, context);
+    if (specialNode) return specialNode;
+
+    if (!isLogicalOpBinaryExpression(logicalExpr.right)) 
         throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
     let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
     let right = extractKeysAndQueriesFromBinaryExpression(logicalExpr.right, context);
@@ -292,10 +310,6 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
     }
 }
 
-function parseFormula(formula: FormulaExpression, forceParseIncompleteExpr: boolean = false): Expression {
-    return jsep.parse(formula, forceParseIncompleteExpr);
-}
-
 export function compileFormulaForce(targetEntityName: string, propJsPath: string, formula: FormulaExpression): CompiledFormula | {ast: Expression, err: FormulaCompilerError} {
     let ast = parseFormula(formula, true);
     try {
@@ -344,69 +358,6 @@ function compileFormulaExpression(targetEntityName: string, propJsPath: string, 
     return ret;
 }
 
-
-export function $s2e(expr: string | Expression): Expression {
-    let parsedExpr = typeof expr === 'string' ? jsep.parse(expr) : expr;
-    return parsedExpr;
-}
-
-export function _rem_$e2s_(node: Expression, strict: boolean = false): string {
-    let lP = strict ? '(' : '', rP = strict ? ')' : '';
-    switch (node.type) {
-
-        case 'ArrayExpression':
-            return '[' + node.elements.map(e => _rem_$e2s_(e, strict)).join(',') + ']';
-
-        case 'BinaryExpression':
-            return lP + _rem_$e2s_(node.left, strict) + node.operator + _rem_$e2s_(node.right, strict) + rP;
-
-        case 'CallExpression':
-            let ret: string[] = [];
-            if (isIdentifier(node.callee)) ret.push(node.callee.name)
-            else ret.push(lP + _rem_$e2s_(node.callee, strict) + rP)
-            ret.push('(');
-            ret.push(node.arguments.map(a => _rem_$e2s_(a, strict)).join(','));
-            ret.push(')');
-            return ret.join('');
-
-        case 'ConditionalExpression':
-            return lP + _rem_$e2s_(node.test, strict) + rP +
-                '?' + lP + _rem_$e2s_(node.consequent, strict) + rP +
-                ':' + lP + _rem_$e2s_(node.alternate, strict) + rP;
-
-        case 'Identifier':
-            return node.name;
-
-        case 'NumberLiteral':
-            return node.raw;
-
-        case 'StringLiteral':
-            return node.raw;
-
-        case 'Literal':
-            return node.raw;
-
-        case 'LogicalExpression':
-            return lP + _rem_$e2s_(node.left, strict) + node.operator + _rem_$e2s_(node.right, strict) + rP;
-
-        case 'MemberExpression':
-            return (isIdentifier(node.object) ? node.object.name : lP + _rem_$e2s_(node.object, strict) + rP) +
-                '.' + (isIdentifier(node.property) ? node.property.name : lP + _rem_$e2s_(node.property, strict) + rP)
-
-        case 'ThisExpression':
-            return 'this';
-
-        case 'UnaryExpression':
-            return lP + node.operator + _rem_$e2s_(node.argument, strict) + rP;
-
-        case 'Compound':
-            throw new FormulaCompilerError(node, "Compound expr are not supported: " + node.origExpr);
-
-        default:
-            throw new FormulaCompilerError(node, "Unknown expression: " + CircularJSON.stringify(node));
-    }
-}
-
 function encodeViewNameURIComponent(str: string): string {
     return encodeURIComponent(
         str.replace(/ /g, "__")
@@ -429,8 +380,8 @@ export function getViewName(isAggs: boolean, entityName, rawExpr: Expression): s
 
 export function $ee2s(obj) {
     if (!_.isObject(obj)) return obj;
-    if (isExpression(obj)) return obj.origExpr
-    return _.transform(obj, function (result, value, key) {
+    if (isExpression(obj)) return obj.origExpr;
+    return _.transform(obj as any, function (result: any, value, key) {
         if (isExpression(value)) {
             result[key] = value.origExpr;
         } else if (_.isObject(value)) {

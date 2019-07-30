@@ -1,0 +1,31 @@
+.frmdb-form-autocomplete {
+    margin-left: 25px;
+}
+
+:host {
+    position: relative;
+    display: block;
+}
+
+.frmdb-autocomplete-popup {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    display: none;
+    z-index: 9123;
+    background-color: var(--light, white);
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.frmdb-autocomplete-popup td {
+    cursor: pointer;
+}
+
+.frmdb-autocomplete-popup tr.selected {
+    background-color: lightblue;
+}
+
+.frmdb-autocomplete-popup.visible {
+    display: block;
+}

@@ -1,0 +1,29 @@
+:host {
+	position: relative;
+    width: 100%;
+    display: block;
+}
+
+:host:before{
+	content: "";
+	display: block;
+	padding-top: 56.25%;
+}
+
+:host > .frmdb-img {
+	position:  absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+:host.img-ratio-1-1:before{
+	padding-top: 100%;
+}
+:host.img-ratio-4-3:before{
+	padding-top: 75%;
+}
+:host.img-ratio-16-9:before{
+	padding-top: 56.25%;
+}

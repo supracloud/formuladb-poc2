@@ -6,7 +6,7 @@
 import * as _ from "../frmdb_lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 
-import { MapFunctionN, CompiledFormula } from "@core/domain/metadata/execution_plan";
+import { MapFunctionN, CompiledFormula } from "@domain/metadata/execution_plan";
 import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 
 describe('FrmdbEngineStore _sum', () => {

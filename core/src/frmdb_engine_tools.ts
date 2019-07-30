@@ -3,12 +3,12 @@
  * License TBD
  */
 
-import { FormulaValidation, Pn } from "@core/domain/metadata/entity";
-import { SchemaDAO } from "@core/domain/metadata/schema_dao";
-import { DataObj, parseDataObjId, entityNameFromDataObjId } from "@core/domain/metadata/data_obj";
+import { FormulaValidation, Pn } from "@domain/metadata/entity";
+import { SchemaDAO } from "@domain/metadata/schema_dao";
+import { DataObj, parseDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 
 import * as _ from 'lodash';
-import { evalExpression } from "./map_reduce_utils";
+import { evalExpression } from "@functions/map_reduce_utils";
 
 
 export interface FailedValidation {

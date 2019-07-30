@@ -4,27 +4,19 @@
  */
 
 require('source-map-support').install();
-require('module-alias/register')
+require('module-alias/register');
 
-import "reflect-metadata";
 import * as http from "http";
 
 //FIXME: use this only for dev/test environment
-import { loadTestData } from "@core/test/load_test_data";
-import { getFrmdbEngine, getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
-import { App } from "@core/domain/app";
+import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
 
 let kvsFactory: KeyValueStoreFactoryI;
-const devMode = true;
 
 new Promise(resolve => setTimeout(() => resolve(), 5000))
 .then(async () => {
-  if (devMode) {
-    kvsFactory = await loadTestData();
-  } else {
-    kvsFactory = await getKeyValueStoreFactory();
-  }
+  kvsFactory = await getKeyValueStoreFactory();
 })
 .then(() => {
   // Init the express application
@@ -42,7 +34,7 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
     console.log("Server started on port " + 3000);
   });
 })
-.catch(ex => {console.error('cannot load test data', ex), process.exit(1);})
+.catch(ex => {console.error('error', ex), process.exit(1);})
 
 // import { FrmdbEngine } from "./frmdb_engine";
 

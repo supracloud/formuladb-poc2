@@ -1,0 +1,28 @@
+{
+  "name": "formuladb-domain",
+  "version": "1.0.0",
+  "description": "FormulaDB domain model",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile:watch": "tsc --sourceMap -w -p src"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.3.12",
+    "@types/lodash": "^4.14.120",
+    "@types/virtual-dom": "^2.1.0",
+    "jasmine": "^3.0.0",
+    "jasmine-spec-reporter": "^4.2.1",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "jsep": "git+https://github.com/acristu/jsep.git",
+    "lodash": "^4.17.11",
+    "short-uuid": "^3.1.1"
+  },
+  "_moduleAliases": {
+    "@domain": "./dist/domain/src"
+  }
+}

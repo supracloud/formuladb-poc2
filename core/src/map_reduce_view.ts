@@ -1,11 +1,11 @@
 import * as _ from 'lodash';
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
 import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "./key_value_store_i";
-import { MapFunctionT } from "@core/domain/metadata/execution_plan";
-import { evalExpression } from "./map_reduce_utils";
-import { KeyValueObj } from '@core/domain/key_value_obj';
-import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
+import { MapFunctionT } from "@domain/metadata/execution_plan";
+import { evalExpression } from "@functions/map_reduce_utils";
+import { KeyValueObj } from '@domain/key_value_obj';
+import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
 import { MINCHAR, MAXCHAR } from './utils/collator';
 
 

@@ -3,24 +3,26 @@
  * License TBD
  */
 
-import { Entity, Schema, isEntity } from "@core/domain/metadata/entity";
-import { DataObj, parseDataObjId, parsePrefix } from "@core/domain/metadata/data_obj";
-import { Form } from "@core/domain/uimetadata/form";
-import { Table } from "@core/domain/uimetadata/table";
-import { MwzEvents } from "@core/domain/event";
-import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, SimpleAddHocQuery, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
-import { KeyValueError } from "@core/domain/key_value_obj";
-import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@core/domain/metadata/reduce_functions";
-import { evalExpression } from "./map_reduce_utils";
+import { Entity, Schema, isEntity } from "@domain/metadata/entity";
+import { DataObj, parseDataObjId, parsePrefix } from "@domain/metadata/data_obj";
+import { FormPage } from "@domain/uimetadata/form-page";
+import { TablePage } from "@domain/uimetadata/table-page";
+import { MwzEvents } from "@domain/event";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
+import { KeyValueError } from "@domain/key_value_obj";
+import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
+import { evalExpression } from "@functions/map_reduce_utils";
 import * as _ from "lodash";
-import { CircularJSON } from "@core/json-stringify";
+import { CircularJSON } from "@domain/json-stringify";
 
-import { MapFunction, MapFunctionAndQueryT } from "./domain/metadata/execution_plan";
-import { App } from "./domain/app";
+import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
+import { App } from "@domain/app";
+import { $User, $I18n } from "@domain/metadata/default-metadata";
+import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
-    protected metadataKvs: KeyObjStoreI<App | Schema | Form | Table>;
+    protected metadataKvs: KeyObjStoreI<App | Schema | FormPage | TablePage>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
 
     constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
@@ -42,7 +44,7 @@ export class FrmdbStore {
 
     private async getMetadataKvs() {
         if (!this.metadataKvs) {
-            this.metadataKvs = await this.kvsFactory.createKeyObjS<App | Schema | Form | Table>('metadata');
+            this.metadataKvs = await this.kvsFactory.createKeyObjS<App | Schema | FormPage | TablePage>('metadata');
         }
         return this.metadataKvs;
     }
@@ -50,7 +52,7 @@ export class FrmdbStore {
     private async getDataKvs(entityName: string) {
         let ret = this.dataKVSMap.get(entityName);
         if (!ret) {
-            let entity = this.schema.entities[entityName];
+            let entity = this.getDefaultEntity(entityName) || this.schema.entities[entityName];
             if (!entity) {
                 console.error("getDataKvs unknown entity " + entityName, this.schema.entities);
                 throw new Error("getDataKvs unknown entity " + entityName);
@@ -86,7 +88,21 @@ export class FrmdbStore {
         return this.getSchema(this.schema._id).then(s => s ? Object.values(s.entities) : []);
     }
 
+    private getDefaultEntity(path: string): Entity | null {
+        switch(path) {
+            case $User._id:
+                return $User;
+            case $I18n._id:
+                return $I18n;
+            default:
+                return null;
+        }
+    }
+
     public async getEntity(path: string): Promise<Entity | null> {
+        let defaultEntity = this.getDefaultEntity(path);
+        if (defaultEntity) return Promise.resolve(defaultEntity);
+
         let schema = await this.getSchema(this.schema._id);
         //the Entity's _id is the path
         return schema ? schema.entities[path] : null;
@@ -116,20 +132,20 @@ export class FrmdbStore {
         return this.kvsFactory.putApp(app);
     }
 
-    public async getTable(path: string): Promise<Table | null> {
-        return (await this.getMetadataKvs()).get('Table_:' + path) as Promise<Table | null>;
+    public async getTable(path: string): Promise<TablePage | null> {
+        return (await this.getMetadataKvs()).get('TablePage:' + path) as Promise<TablePage | null>;
     }
 
-    public async putTable(table: Table): Promise<Table | null> {
-        return (await this.getMetadataKvs()).put(table) as Promise<Table | null>;
+    public async putTable(table: TablePage): Promise<TablePage | null> {
+        return (await this.getMetadataKvs()).put(table) as Promise<TablePage | null>;
     }
 
-    public async getForm(path: string): Promise<Form | null> {
-        return (await this.getMetadataKvs()).get('Form_:' + path) as Promise<Form | null>;
+    public async getForm(path: string): Promise<FormPage | null> {
+        return (await this.getMetadataKvs()).get('FormPage:' + path) as Promise<FormPage | null>;
     }
 
-    public async putForm(form: Form): Promise<Form | null> {
-        return (await this.getMetadataKvs()).put(form) as Promise<Form | null>;
+    public async putForm(form: FormPage): Promise<FormPage | null> {
+        return (await this.getMetadataKvs()).put(form) as Promise<FormPage | null>;
     }
 
     public async getDataObj(id: string): Promise<DataObj | null> {
@@ -145,6 +161,13 @@ export class FrmdbStore {
     public async putDataObj(obj: DataObj): Promise<DataObj> {
         let entityName = parseDataObjId(obj._id).entityName;
         return (await this.getDataKvs(entityName)).put(obj);
+    }
+
+    public async patchDataObj(obj: DataObj): Promise<DataObj> {
+        let existingObj = await this.getDataObj(obj._id) || {_id: obj._id};
+        Object.assign(existingObj, obj);
+        let entityName = parseDataObjId(obj._id).entityName;
+        return (await this.getDataKvs(entityName)).put(existingObj);
     }
 
     public async putBulk(objs: DataObj[]): Promise<(DataObj | KeyValueError)[]> {
