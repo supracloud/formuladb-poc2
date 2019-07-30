@@ -3,6 +3,7 @@ stages:
   # - buildprodimages
   - build
   - test
+  - bundle
   # - cleanup
   # - videos
 
@@ -41,15 +42,23 @@ build:
   stage: build
   script:
     - npm run compile
-    - npm run bundle
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
+
+bundle:
+  stage: bundle
+  script:
+    - npm run bundle
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
       - dist-be/
       - dist-fe/
-  
+      
 test:
   stage: test
   script:
