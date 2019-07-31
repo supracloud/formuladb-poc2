@@ -38,14 +38,14 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
 |                   |                                                                                 | S |   +----+------+         +---+-------+   |   |
 | TransactionRunner |  POST (JSON) /formuladb-api/login <- ? TBD ?                                    | e |   |           |         |           |   |   |
 |                   |  POST (JSON) /formuladb|api/:app/:table/SimpleAddHocQuery <- SimpleAddHocQuery  | r |   |  Effects  +<--------+  Actions  |   |   |
-| Engine            |  POST (JSON) /formuladb|api/:app/event <- Ser^erE^entModifiedFormData           | v |   |           |         |           |   |   |
-|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeletedFormData            | e |   +----+------+         +-----+-----+   |   |
-| StorageInterface  |  POST (JSON) /formuladb|api/:app/event <| ServerEventModifiedPage               | r |        |                      |         |   |
-|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventNewEntity                  |   |        |                      |         |   |
-|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeleteEntity               | E |        v                      v         |   |
-|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventPreviewFormula             | v |   +----+----------------------+-----+   |   |
-|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventSetProperty                | e |   |                                 |   |   |
-|                   |  POST (JSON) /formuladb|api/:app/event <| ServerEventDeleteProperty             | n |   |             State               |   |   |
+| Engine            |  POST (JSON) /formuladb|api/:app/event <- ServerEventModifiedFormData           | v |   |           |         |           |   |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <- ServerEventDeletedFormData            | e |   +----+------+         +-----+-----+   |   |
+| StorageInterface  |  POST (JSON) /formuladb|api/:app/event <- ServerEventModifiedPage               | r |        |                      |         |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <- ServerEventNewEntity                  |   |        |                      |         |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <- ServerEventDeleteEntity               | E |        v                      v         |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <- ServerEventPreviewFormula             | v |   +----+----------------------+-----+   |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <- ServerEventSetProperty                | e |   |                                 |   |   |
+|                   |  POST (JSON) /formuladb|api/:app/event <- ServerEventDeleteProperty             | n |   |             State               |   |   |
 |                   +<------------------------------------------------------------------------------->+ t |   |                                 |   |   |
 |                   |                                                                                 | s |   +----+----------------------------+   |   |
 |                   |  PUT (JSON) /formuladb-api/:app                                                 |   |        |                                |   |

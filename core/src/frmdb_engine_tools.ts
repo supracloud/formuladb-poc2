@@ -59,21 +59,16 @@ export class FrmdbEngineTools {
         return null;
     }
 
-    public validateObj(obsNew: DataObj): FailedValidation[] {
+    public validateObj(obsNew: DataObj): string | null {
         let obsEntityName = entityNameFromDataObjId(obsNew._id);
-        let failedValidations: FailedValidation[] = [];
         let validations = this.schemaDAO.getValidationsForEntity(obsEntityName);
         for (let vEntry of _.entries(validations)) {
             let [validationName, validation] = vEntry;
             if (evalExpression(obsNew, validation.conditionExpr) == false) {
-                failedValidations.push({
-                    obsObj: obsNew,
-                    validation: validation,
-                    validationFullName: obsEntityName + '!' + validationName,
-                });
+                return `Validation ${validationName} failed! Table ${obsEntityName}, expression ${validation.conditionExpr} `
             }
         }
-        return failedValidations;
+        return null;
     }
 
 }

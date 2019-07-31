@@ -151,6 +151,10 @@ ssh-ci() {
     ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
 }
 
+ssh-demo() {
+    ssh -i ./ssh/frmdb.id_rsa root@formuladb.online
+}
+
 upload-asset() {
     node -e "const {Storage} = require('@google-cloud/storage');\
              const storage = new Storage({keyFilename: '"$GCLOUD_BASEDIR"FormulaDB-storage-full.json'});\
