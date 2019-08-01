@@ -36,6 +36,8 @@ global.HTMLInputElement = window.HTMLInputElement;
 global.HTMLSelectElement = window.HTMLSelectElement;
 global.HTMLTextAreaElement = window.HTMLTextAreaElement;
 global.localStorage = window.localStorage;
+delete window.location;
+window.location = { replace: function() {throw new Error("w.loc.replace not implemented!")} };
 
 const fetch = require('node-fetch');
 global.fetch = fetch;
@@ -68,6 +70,7 @@ try {
             "tsc-out/fe/src/db-editor/db-editor.component.spec.js",
             "tsc-out/fe/src/live-dom-template/live-dom-template.spec.js",
             "tsc-out/fe/src/web-component-spec-example.spec.js",
+            "tsc-out/fe/src/form.service.spec.js",
             // "tsc-out/fe/**/*.spec.js",
             // "tsc-out/core/**/*.spec.js",
             // "dist/**/*.spec.js",

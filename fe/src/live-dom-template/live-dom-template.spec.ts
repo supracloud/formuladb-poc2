@@ -55,7 +55,7 @@ describe('[FE] FrmdbTemplate', () => {
     beforeEach(() => {
     });
 
-    fit('should update view when template OR data changes', () => {
+    it('should update view when template OR data changes', () => {
         let el = wrapHTML(template);
         updateDOM(data, el)
 

@@ -20,15 +20,15 @@ function isFormEl(el: Element): el is InputEl {
 
 export class FormService {
     
-    constructor(private appRoot: HTMLElement) {
-        onEvent(appRoot, ["change", "input"], "*", async (event) => {
+    constructor(private appRootEl: HTMLElement) {
+        onEvent(appRootEl, ["change", "input"], "*", async (event) => {
             let inputEl = event.target;
             if (!isFormEl(inputEl)) throw new Error("input event came from " + event.target);
             this.debounced_manageInput(inputEl);
         });
     }
     
-    private debounced_manageInput = _.debounce((inputEl: InputEl) => this.manageInput(inputEl), 500);
+    private debounced_manageInput = _.debounce((inputEl: InputEl) => this.manageInput(inputEl), 350);
 
     async manageInput(inputEl: InputEl) {
         let {parentEl, parentObj} = this.getParentObj(inputEl);
@@ -36,7 +36,9 @@ export class FormService {
 
         this.validateOnClient(parentObj, inputEl);
         if (inputEl.validity.valid) {
+            inputEl.dataset.frmdPending = "";
             let event: ServerEventModifiedFormDataEvent = await BACKEND_SERVICE().putEvent(new ServerEventModifiedFormDataEvent(parentObj)) as ServerEventModifiedFormDataEvent;
+            inputEl.dataset.frmdbPending = undefined;
             if (event.state_ === "ABORT") {
                 inputEl.setCustomValidity(event.reason_ || event.notifMsg_ || 'Internal Server Err');
                 return;
@@ -51,10 +53,19 @@ export class FormService {
         }
     }
     
+    public updateRecordDOM<T extends DataObj>(obj: T) {
+        let recordEls = this.appRootEl.querySelectorAll(`[data-frmdb-record="${obj._id}"]`);
+        recordEls.forEach(el => {
+            updateDOM(obj, el as HTMLElement);
+        })
+
+    }
+
     public getParentObj(control: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} {
-        let parentEl: HTMLElement = control.closest('[data-frmdb-record],[data-frmdb-foreach]') as HTMLElement;
+        let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
         if (!parentEl) throw new Error("Could not get parent of " + control);
         let parentObj = serializeElemToObj(parentEl) as DataObj;
+        if (!parentObj._id) parentObj._id = parentEl.getAttribute('data-frmdb-record') || '';
         if (!parentObj._id) throw new Error("Cannot find obj id for " + control);
         return {parentEl, parentObj};
     }
