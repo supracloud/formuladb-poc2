@@ -71,6 +71,7 @@ try {
             "tsc-out/fe/src/live-dom-template/live-dom-template.spec.js",
             "tsc-out/fe/src/web-component-spec-example.spec.js",
             "tsc-out/fe/src/form.service.spec.js",
+            "tsc-out/test/src/hotel-booking/hotel-booking.spec.js",
             // "tsc-out/fe/**/*.spec.js",
             // "tsc-out/core/**/*.spec.js",
             // "dist/**/*.spec.js",

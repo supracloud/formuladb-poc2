@@ -20,7 +20,7 @@ import { SchemaCompiler } from '@core/schema_compiler';
 import { Schema_inventory, App_inventory } from "@test/mocks/mock-metadata";
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { APP_AND_TENANT } from "./app.service";
+import { APP_AND_TENANT_ROOT } from "./app.service";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -205,9 +205,14 @@ export class BackendService {
 let _backendService: BackendService | null = null;
 export function BACKEND_SERVICE(): BackendService {
     if (_backendService == null) {
-        _backendService = new BackendService(...APP_AND_TENANT());
+        let [tenantName, appName] = APP_AND_TENANT_ROOT();
+        _backendService = new BackendService(tenantName, appName);
     }
     return _backendService;
 }
 
 (window as any).FrmdbAppBackend = BackendService;
+
+export function _testResetBackendService() {
+    _backendService = null;
+}

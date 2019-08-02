@@ -1,7 +1,11 @@
+import * as lolex from "lolex";
+
 import { Entity, Pn } from "@domain/metadata/entity";
 import { FormService } from "./form.service";
 import { waitUntilNotNull } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
+import { ServerEventModifiedFormDataN } from "@domain/event";
+import { setValue, navigate } from "./fe-test-urils.spec";
 
 /**
 * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -12,12 +16,16 @@ const fetchMock = require('fetch-mock');
 
 const HTML = /*html*/`
     <div data-frmdb-record="A~~">
-        <input type="text" name="f1" data-frmdb-value="::f1" />
+        <input type="text" data-frmdb-value="::f1" />
     </div>
 `;
 
 describe('FormService', () => {
+    let clock;
+
     beforeEach(() => {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+
         fetchMock.get('/formuladb-api/test-tenant/test-app', {
             _id: "test-app", description: "test-app-desc",
             pages: [
@@ -38,11 +46,13 @@ describe('FormService', () => {
         });
     });
 
-    afterEach(fetchMock.restore)
+    afterEach(() => {
+        fetchMock.restore();
+        if (clock) clock.uninstall();
+    })
 
-    fit('should allow creation of new records', async (done) => {
-        window.location.pathname = '/test-tenant/test-app';
-        document.write(HTML);
+    it('should allow editing of records', async (done) => {
+        navigate('/test-tenant/test-app', HTML);
 
         let input: HTMLInputElement = document.querySelector('[data-frmdb-value]') as HTMLInputElement;
         expect(input instanceof HTMLInputElement).toEqual(true);
@@ -54,25 +64,25 @@ describe('FormService', () => {
 
         await waitUntilNotNull(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
 
-        input.value = "f1-NaN";
-        input.dispatchEvent(new Event("change", {bubbles: true}));
-        await new Promise(resolve => setTimeout(resolve, 500));
+        clock = lolex.install();
+
+        setValue(input, "f1-NaN");
+        clock.tick(351);
         expect(input.validationMessage).toEqual('Number expected for A.f1 = f1-NaN');
 
         fetchMock.post('/formuladb-api/test-tenant/test-app/event', {
-            _id: 'A~~blabla', f1: 14
+            type: ServerEventModifiedFormDataN,
+            obj: { _id: 'A~~blabla', f1: 14 },
         });
 
-        input.value = "13";
-        input.dispatchEvent(new Event("change", {bubbles: true}));
-        await new Promise(resolve => setTimeout(resolve, 500));
-        // expect(input.value).toEqual('14');
+        setValue(input, "13");
+        clock.tick(351);
+        expect(input.dataset.frmdbPending).toEqual('');
+
+        await new Promise(resolve => process.nextTick(resolve));
+        expect(input.value).toEqual('14');
 
         done();
     });
 
-    it('should allow updating of records', async (done) => {
-
-        done();
-    });
 });

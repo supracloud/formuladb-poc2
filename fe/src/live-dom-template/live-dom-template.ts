@@ -128,7 +128,7 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
             if (value != null) {
                 let jsonKey = attr.value.replace(/.*:/, '');
                 if (jsonKey.indexOf(prefix ? prefix + '.' : '') != 0) throw new Error("prefix not correct for key " + jsonKey + " attr " + attr.name + "=" + attr.value);
-                jsonKey = jsonKey.slice(prefix.length + 1);
+                jsonKey = jsonKey.slice(prefix ? prefix.length + 1 : 0);
                 if (jsonKey.indexOf('[]') >= 0) continue;
                 ret[jsonKey] = value;
             }
@@ -136,4 +136,20 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
     }
 
     return ret;
+}
+
+export function getEntityPropertyNameFromEl(el: InputElem): string {
+    return (el.getAttribute('data-frmdb-value') || '').replace(/.*:/, '');
+}
+
+export type InputElem = 
+ | HTMLInputElement
+ | HTMLSelectElement
+ | HTMLTextAreaElement
+;
+export function isFormEl(el: Element): el is InputElem {
+    return el instanceof HTMLInputElement
+        || el instanceof HTMLSelectElement
+        || el instanceof HTMLTextAreaElement
+    ;
 }

@@ -3,20 +3,8 @@ import * as _ from 'lodash';
 import { DataObj, isNewDataObjId } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
 import { BACKEND_SERVICE } from './backend.service';
-import { serializeElemToObj, updateDOM } from './live-dom-template/live-dom-template';
+import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem } from './live-dom-template/live-dom-template';
 import { ServerEventModifiedFormDataEvent } from '@domain/event';
-
-type InputEl = 
- | HTMLInputElement
- | HTMLSelectElement
- | HTMLTextAreaElement
-;
-function isFormEl(el: Element): el is InputEl {
-    return el instanceof HTMLInputElement
-        || el instanceof HTMLSelectElement
-        || el instanceof HTMLTextAreaElement
-    ;
-}
 
 export class FormService {
     
@@ -28,15 +16,17 @@ export class FormService {
         });
     }
     
-    private debounced_manageInput = _.debounce((inputEl: InputEl) => this.manageInput(inputEl), 350);
+    private debounced_manageInput = _.debounce((inputEl: InputElem) => this.manageInput(inputEl), 350);
 
-    async manageInput(inputEl: InputEl) {
+    async manageInput(inputEl: InputElem) {
         let {parentEl, parentObj} = this.getParentObj(inputEl);
         if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
 
+        this.putObjInCache(parentObj);
+
         this.validateOnClient(parentObj, inputEl);
         if (inputEl.validity.valid) {
-            inputEl.dataset.frmdPending = "";
+            inputEl.dataset.frmdbPending = "";
             let event: ServerEventModifiedFormDataEvent = await BACKEND_SERVICE().putEvent(new ServerEventModifiedFormDataEvent(parentObj)) as ServerEventModifiedFormDataEvent;
             inputEl.dataset.frmdbPending = undefined;
             if (event.state_ === "ABORT") {
@@ -48,9 +38,31 @@ export class FormService {
             }
         }
 
-        if (isNewDataObjId(parentObj._id) && !inputEl.validity.valid) {
-            localStorage.setItem(parentObj._id, JSON.stringify(parentObj));
-        }
+    }
+
+    private putObjInCache(obj: DataObj) {
+        localStorage.setItem(obj._id.replace(/~~.*/, '~~'), JSON.stringify({
+            ...obj,
+            formCacheTimestamp: new Date().getTime()
+        }));
+    }
+    private getObjFromCache(objId: string): {_id: string, formCacheTimestamp: number} | null {
+        let objStr = localStorage.getItem(objId.replace(/~~.*/, '~~'));
+        if (!objStr) return null;
+        let obj = JSON.parse(objStr);
+        if (obj.formCacheTimestamp < new Date().getTime() - 20000) return null;
+        return obj;
+    }
+
+    public initFormsFromCache() {
+        let recordEls = this.appRootEl.querySelectorAll(`[data-frmdb-record]`);
+        recordEls.forEach(el => {
+            let objId = el.getAttribute('data-frmdb-record') || '';
+            if (isNewDataObjId(objId)) {
+                let cachedObj = this.getObjFromCache(objId);
+                if (cachedObj) updateDOM(cachedObj, el as HTMLElement);
+            }
+        })
     }
     
     public updateRecordDOM<T extends DataObj>(obj: T) {
@@ -58,7 +70,6 @@ export class FormService {
         recordEls.forEach(el => {
             updateDOM(obj, el as HTMLElement);
         })
-
     }
 
     public getParentObj(control: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} {
@@ -69,12 +80,13 @@ export class FormService {
         if (!parentObj._id) throw new Error("Cannot find obj id for " + control);
         return {parentEl, parentObj};
     }
-    
-    public validateOnClient(parentObj: DataObj, control: InputEl) {
+
+    public validateOnClient(parentObj: DataObj, control: InputElem) {
         const tools = BACKEND_SERVICE().getFrmdbEngineTools();
         
-        let err = tools.validateObjPropertyType(parentObj, control.name, control.value);
+        let err = tools.validateObjPropertyType(parentObj, getEntityPropertyNameFromEl(control), control.value);
         if (err) { control.setCustomValidity(err); return;}
+        else control.setCustomValidity("");
         
         err = tools.validateObj(parentObj);
         if (err) { control.setCustomValidity(err); return;}
