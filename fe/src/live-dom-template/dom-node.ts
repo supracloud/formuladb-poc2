@@ -72,7 +72,7 @@ export function getElemForKey(el: Elem, key: string): Elem[] {
     let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"]`).join(',');
     return _getElemForKey(el, sel);
 }
-export function getAllDataBindingAttrs(el: Elem): Elem[] {
+export function getAllElemsWithDataBindingAttrs(el: Elem): Elem[] {
     let ret: Elem[] = [];
     let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}]`).join(',');
     if (el.matches(sel)) ret.push(el);

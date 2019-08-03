@@ -17,6 +17,7 @@
         "SUMIF",
         "TEXTJOIN",
         "VLOOKUP",
+        "debounced",
         "endkey",
         "formuladb",
         "frmdbchange",

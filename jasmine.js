@@ -64,6 +64,7 @@ try {
     let j = new Jasmine();
 
     j.loadConfig({
+        random: false,
         "spec_dir": ".",
         "spec_files": specificJsFile ? [specificJsFile] : [
             "tsc-out/fe/src/autocomplete/autocomplete.component.spec.js",

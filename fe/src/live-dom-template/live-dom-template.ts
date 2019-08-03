@@ -1,4 +1,4 @@
-import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllDataBindingAttrs } from "./dom-node";
+import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { InventoryProductUnit } from "@test/mocks/mock-metadata";
 const LOG = new FrmdbLogger('live-dom-template');
@@ -110,10 +110,12 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
     }
 }
 
+export { getAllElemsWithDataBindingAttrs } from './dom-node';
+
 export function serializeElemToObj(rootEl: HTMLElement): {} {
     let ret: any = {};
     let prefix = rootEl.getAttribute('data-frmdb-foreach') || '';
-    for(let elem of getAllDataBindingAttrs(rootEl)) {
+    for(let elem of getAllElemsWithDataBindingAttrs(rootEl)) {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];
             let value: string | number | boolean | null = null;

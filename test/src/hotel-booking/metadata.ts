@@ -71,6 +71,9 @@ export const Booking = {
         //     isLargeTable: true,
         // } as EntityProperty,
     },
+    validations: {
+        maxDays: { conditionExpr: $s2e('days < 100') }
+    }
 }
 
 export const HotelBookingApp = {

@@ -18,3 +18,7 @@ export function setValue(el: HTMLInputElement, val: string): HTMLInputElement {
     el.dispatchEvent(new Event("change", {bubbles: true}));
     return el;
 }
+
+export async function testSleep(ms: number, message: string = "") {
+    await new Promise(resolve => setTimeout(resolve, ms));
+}

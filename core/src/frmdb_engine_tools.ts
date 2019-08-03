@@ -65,7 +65,10 @@ export class FrmdbEngineTools {
         for (let vEntry of _.entries(validations)) {
             let [validationName, validation] = vEntry;
             if (evalExpression(obsNew, validation.conditionExpr) == false) {
-                return `Validation ${validationName} failed! Table ${obsEntityName}, expression ${validation.conditionExpr} `
+                //THIS is not ok for computed columns since the correct values may not be available on the client side, they must be computed on the server first 
+                //return `Validation ${validationName} failed! Table ${obsEntityName}, expression ${validation.conditionExpr} `;
+
+                return null;
             }
         }
         return null;
