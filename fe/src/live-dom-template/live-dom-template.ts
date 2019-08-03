@@ -125,6 +125,7 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
                     else value = input.value;
                 } else value = elem.textContent;
             } else continue;//TODO: classes/styles/attributes/properties
+            
             if (value != null) {
                 let jsonKey = attr.value.replace(/.*:/, '');
                 if (jsonKey.indexOf(prefix ? prefix + '.' : '') != 0) throw new Error("prefix not correct for key " + jsonKey + " attr " + attr.name + "=" + attr.value);

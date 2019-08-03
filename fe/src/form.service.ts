@@ -6,6 +6,18 @@ import { BACKEND_SERVICE } from './backend.service';
 import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem } from './live-dom-template/live-dom-template';
 import { ServerEventModifiedFormDataEvent } from '@domain/event';
 
+function currentTimestamp() {
+    let d = new Date();
+    return d.getMilliseconds() 
+        + d.getSeconds() * 1000 
+        + d.getMinutes() * 1000*100 
+        + d.getHours() * 1000*100*100 
+        + d.getDay() * 1000*100*100*100 
+        + d.getMonth() * 1000*100*100*100
+        + d.getFullYear() * 1000*100*100*100*10000
+    ;
+}
+
 export class FormService {
     
     constructor(private appRootEl: HTMLElement) {
@@ -46,6 +58,7 @@ export class FormService {
             formCacheTimestamp: new Date().getTime()
         }));
     }
+
     private getObjFromCache(objId: string): {_id: string, formCacheTimestamp: number} | null {
         let objStr = localStorage.getItem(objId.replace(/~~.*/, '~~'));
         if (!objStr) return null;
