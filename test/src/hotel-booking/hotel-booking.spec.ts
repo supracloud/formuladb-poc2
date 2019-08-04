@@ -82,7 +82,7 @@ describe('[fe] Hotel Booking', () => {
             setValue(nb_adults_El, "2");
             setValue(nb_children_El, "2");
     
-            testSleep(110, "wait for new record cache to fill");
+            await testSleep(110, "wait for new record cache to fill");
             
             done();
         });
