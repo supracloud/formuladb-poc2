@@ -256,7 +256,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
-            .replace(/^royal-hotel\//, 'royal-master/')
+            .replace(/^hotel-booking\//, 'royal-master/')
         ;
     }
     function handleTemplate(path: string) {

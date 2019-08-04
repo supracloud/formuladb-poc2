@@ -20,7 +20,6 @@ export function isType<K extends keyof typeof NN, T>(t: K, p: any): p is T {
     return p !== null && p.frmdbt_ === t;
 }
 
-
 export async function waitUntilNotNull<T>(callback: () => Promise<T>, sleepTime = 250): Promise<Exclude<T, null | undefined>> {
     let ret: T = await callback();
     if (ret) return Promise.resolve(ret as Exclude<T, null | undefined>);

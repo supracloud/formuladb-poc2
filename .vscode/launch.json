@@ -51,7 +51,7 @@
             "restart": true,
             "port": 9231,
             "localRoot": "${workspaceFolder}/dist-be",
-            "remoteRoot": "/dist",
+            "remoteRoot": "/dist-be",
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceFolder}/dist-be/*.js"

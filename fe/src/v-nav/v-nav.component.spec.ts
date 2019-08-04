@@ -4,13 +4,10 @@
 */
 
 const fetchMock = require('fetch-mock');
-const pretty = require('pretty');
-function normalizeHTML(html: string): string[] {
-    return pretty(html.replace(/\n\s*/g, ' ')).replace(/^\s+</, '<').split(/\n\s*/);
-}
 
 import { VNavComponent } from './v-nav.component';
 import { Schema_inventory } from '@test/mocks/mock-metadata';
+import { normalizeHTML } from '@fe/live-dom-template/live-dom-template.spec';
 
 export const InventoryVNavHtml = normalizeHTML(/* html */`
 <frmdb-v-nav>
