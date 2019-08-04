@@ -49,7 +49,7 @@ export class FormService {
                     control.dataset.frmdbPending = undefined;
                 }
                 if (event.state_ === "ABORT") {
-                    inputEl.setCustomValidity(event.reason_ || event.notifMsg_ || 'Internal Server Err');
+                    inputEl.setCustomValidity(event.error_ || 'Internal Server Err');
                     return;
                 } else {
                     updateDOM(event.obj, parentEl);

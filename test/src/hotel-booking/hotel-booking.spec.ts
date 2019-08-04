@@ -35,7 +35,7 @@ const booking_html = /*html*/`
 import { FragmentComponent } from '@fe/fragment/fragment.component';
 import { ServerEventModifiedFormDataN } from "@domain/event";
 
-describe('[fe] Hotel Booking', () => {
+describe('[FE] Hotel Booking', () => {
     let clock;
 
     beforeEach(() => {
@@ -118,11 +118,9 @@ describe('[fe] Hotel Booking', () => {
                 },
             });
     
-            //TODO
-            // setValue(end_date_El, '2019-08-01');
-            // testSleep(500, "wait for debounced onchange handlers to fire");
-            // await new Promise(resolve => setTimeout(resolve, 500));
-            // expect(days_El.value).toEqual('8');
+            setValue(end_date_El, '2019-08-01');
+            await testSleep(500, "wait for debounced onchange handlers to fire");
+            expect(end_date_El.validationMessage).toEqual('Validations failed: maxDays');
 
             done();
         });
@@ -136,7 +134,13 @@ describe('[fe] Hotel Booking', () => {
             setValue(end_date_El, '2019-01-08');
             testSleep(500, "wait for debounced onchange handlers to fire");
             await new Promise(resolve => setTimeout(resolve, 500));
+            
             expect(days_El.value).toEqual('8');
+            expect(start_date_El.validity.valid).toEqual(true);
+            expect(end_date_El.validity.valid).toEqual(true);
+            expect(nb_adults_El.validity.valid).toEqual(true);
+            expect(nb_children_El.validity.valid).toEqual(true);
+            expect(days_El.validity.valid).toEqual(true);
 
             done();
         });        
