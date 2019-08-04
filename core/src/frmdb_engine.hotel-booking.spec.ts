@@ -11,7 +11,7 @@ import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@domain/event";
 import { Schema_booking } from "@test/mocks/mock-metadata";
 import { Act_Wiza, Act_Collins } from "@test/mocks/general-data";
-import { Room_DoubleDeluxe1, HotelBookingData, RoomType_DoubleDeluxe } from "@test/mocks/hotel-booking-data";
+import { Room_DoubleDeluxe1, HotelBookingData, RoomType_DoubleDeluxe } from "@test/hotel-booking/data";
 
 describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STORAGE}]`, () => {
     let frmdbTStore: FrmdbEngineStore;

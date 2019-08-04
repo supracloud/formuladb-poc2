@@ -17,7 +17,7 @@ require.extensions['.scss'] = function (module, filename) {
 
 //JSDOM for fe specs
 const { JSDOM } = require('@tbranyen/jsdom');
-const jsdom = new JSDOM('<!doctype html>')
+const jsdom = new JSDOM('<!doctype html>', {url: "http://localhost"})
 global.window = jsdom.window;
 global.Window = jsdom.window;
 global.document = jsdom.window.document;
@@ -32,7 +32,12 @@ global.Event = window.Event;
 global.CustomEvent = window.CustomEvent;
 global.customElements = window.customElements;
 global.ShadowRoot = window.ShadowRoot;
-
+global.HTMLInputElement = window.HTMLInputElement;
+global.HTMLSelectElement = window.HTMLSelectElement;
+global.HTMLTextAreaElement = window.HTMLTextAreaElement;
+global.localStorage = window.localStorage;
+delete window.location;
+window.location = { replace: function() {throw new Error("w.loc.replace not implemented!")} };
 
 const fetch = require('node-fetch');
 global.fetch = fetch;
@@ -59,12 +64,15 @@ try {
     let j = new Jasmine();
 
     j.loadConfig({
+        random: false,
         "spec_dir": ".",
         "spec_files": specificJsFile ? [specificJsFile] : [
             "tsc-out/fe/src/autocomplete/autocomplete.component.spec.js",
             "tsc-out/fe/src/db-editor/db-editor.component.spec.js",
             "tsc-out/fe/src/live-dom-template/live-dom-template.spec.js",
             "tsc-out/fe/src/web-component-spec-example.spec.js",
+            "tsc-out/fe/src/form.service.spec.js",
+            "tsc-out/test/src/hotel-booking/hotel-booking.spec.js",
             // "tsc-out/fe/**/*.spec.js",
             // "tsc-out/core/**/*.spec.js",
             // "dist/**/*.spec.js",

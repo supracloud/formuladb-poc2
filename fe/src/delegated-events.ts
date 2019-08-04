@@ -44,3 +44,25 @@ export function emit(target: HTMLElement | Document, event: FrmdbUserEvent, bubb
 export function emitFrmdbChange(target: HTMLElement | Document, propName?: string, oldVal?: any, newVal?: any) {
     target.dispatchEvent(new CustomEvent("frmdbchange", {detail: {propName, oldVal, newVal}, bubbles: true}));
 }
+
+export function listenForDOMChanges(targetNode: HTMLElement) {
+    const config = { attributes: true, childList: true, subtree: true };
+
+    // Callback function to execute when mutations are observed
+    const callback = function(mutationsList, observer) {
+        for(let mutation of mutationsList) {
+            if (mutation.type === 'childList') {
+                console.log('A child node has been added or removed.');
+            }
+            else if (mutation.type === 'attributes') {
+                console.log('The ' + mutation.attributeName + ' attribute was modified.');
+            }
+        }
+    };
+    
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(callback);
+    
+    // Start observing the target node for configured mutations
+    observer.observe(targetNode, config);        
+}

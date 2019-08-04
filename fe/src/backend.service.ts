@@ -20,6 +20,7 @@ import { SchemaCompiler } from '@core/schema_compiler';
 import { Schema_inventory, App_inventory } from "@test/mocks/mock-metadata";
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { APP_AND_TENANT_ROOT } from "./app.service";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -54,7 +55,7 @@ export class BackendService {
     private frmdbEngineTools: FrmdbEngineTools;
     public currentSchema: Schema;
 
-    constructor(private tenantName: string, private appName: string) {
+    constructor(public tenantName: string, public appName: string) {
         this.getSchema().then(schema => {
             if (!schema) throw new Error("Schema " + appName + " not found");
             this.currentSchema = schema;
@@ -62,12 +63,12 @@ export class BackendService {
         });
     }
 
-    public setAppName(appName: string) {
-        this.appName = appName;
-    }
-
     public getFrmdbEngineTools() {
         return this.frmdbEngineTools;
+    }
+
+    async getApp(): Promise<App | null> {
+        return getData<App | null>(`/formuladb-api/${this.tenantName}/${this.appName}`);
     }
 
     // // tslint:disable-next-line:member-ordering
@@ -204,15 +205,14 @@ export class BackendService {
 let _backendService: BackendService | null = null;
 export function BACKEND_SERVICE(): BackendService {
     if (_backendService == null) {
-        let appRootEl = document.querySelector('[data-frmdb-app]');
-        let APP_NAME = "unknown-app";
-        let TENANT_NAME = "unknown-tenant";
-        if (appRootEl) {
-            APP_NAME = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
-            TENANT_NAME = appRootEl.getAttribute("data-frmdb-tenant") || "unknown-tenant";
-        }
-        
-        _backendService = new BackendService(TENANT_NAME, APP_NAME);
+        let [tenantName, appName] = APP_AND_TENANT_ROOT();
+        _backendService = new BackendService(tenantName, appName);
     }
     return _backendService;
+}
+
+(window as any).FrmdbAppBackend = BackendService;
+
+export function _testResetBackendService() {
+    _backendService = null;
 }

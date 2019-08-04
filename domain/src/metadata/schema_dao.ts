@@ -28,7 +28,7 @@ export class SchemaDAO {
         let entity = this.getEntityForDataObj(objId);
         _.values(entity.props).forEach(pr => {
             if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
-                ret.push(pr.compiledFormula_);
+                if (pr.compiledFormula_.triggers && pr.compiledFormula_.triggers.length > 0) ret.push(pr.compiledFormula_);
             }
         })
         return ret;

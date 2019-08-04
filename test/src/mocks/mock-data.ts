@@ -10,7 +10,7 @@ import { DataObj } from '@domain/metadata/data_obj';
 import { GeneralData } from './general-data';
 import { BookingData } from './booking-data';
 import { DefaultData } from '@domain/metadata/default-data';
-import { HotelBookingData } from './hotel-booking-data';
+import { HotelBookingData } from '../hotel-booking/data';
 
 
 export class MockData {

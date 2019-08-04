@@ -330,6 +330,10 @@ export class FrmdbTransactionRunner {
                     event.obj[selfFormula.targetPropertyName] = evalExpression(event.obj, selfFormula.finalExpression);
                     console.log(new Date().toISOString() + "|" + event._id + "||computeFormulasAndSave| - selfFormula: " + event.obj._id + "[" + selfFormula.targetPropertyName + "] = [" + selfFormula.finalExpression.origExpr + "] = " + event.obj[selfFormula.targetPropertyName]);
                 }
+                let failedValidations = this.validateObj(event.obj);
+                if (failedValidations.length > 0) {
+                    throw new FailedValidationsError(failedValidations);
+                }        
                 transacDAG.addObj(event.obj, oldObj, [], obsViewUpdates);
             }
 
@@ -405,8 +409,13 @@ export class FrmdbTransactionRunner {
 
         } catch (ex) {
             event.state_ = 'ABORT';
-            event.reason_ = 'ABORT_ON_ERROR';
-            event.error_ = CircularJSON.stringify(ex) + '. Stack:' + ex.stack;
+            if (ex instanceof FailedValidationsError) {
+                event.reason_ = 'ABORTED_FAILED_VALIDATIONS_RETRIES_EXCEEDED';
+                event.error_ = "Failed Validations: " + ex.failedValidations.map(v => v.validationFullName).join(", ");
+            } else {
+                event.reason_ = 'ABORT_ON_ERROR';
+                event.error_ = CircularJSON.stringify(ex) + '. Stack:' + ex.stack;
+            }
             this.handleError(new TransactionAbortedError(event));//no await
         }
 
@@ -471,7 +480,6 @@ export class FrmdbTransactionRunner {
         }
 
         let failedValidations = this.validateObj(obsNew);
-
         if (failedValidations.length > 0) {
             throw new FailedValidationsError(failedValidations);
         }

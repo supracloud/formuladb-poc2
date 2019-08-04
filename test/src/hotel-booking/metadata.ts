@@ -11,6 +11,7 @@ export const RoomType = {
     _id: "RoomType",
     isEditable: true,
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         name: { name: "name", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         picture: { name: "picture", propType_: Pn.IMAGE } as EntityProperty,
@@ -37,6 +38,7 @@ export const Room = {
     _id: "Room",
     isEditable: true,
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         nb: { name: "nb", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         room_type: { name: "room_type", propType_: Pn.REFERENCE_TO, referencedEntityName: RoomType._id, referencedPropertyName: '_id' } as EntityProperty,
     }
@@ -54,12 +56,15 @@ export const Booking = {
         ]
     } as EntityStateGraph,    
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         guest: { name: "guest", propType_: Pn.REFERENCE_TO, referencedEntityName: $User._id, referencedPropertyName: '_id' } as EntityProperty,
         room: { name: "room", propType_: Pn.REFERENCE_TO, referencedEntityName: Room._id, referencedPropertyName: '_id' } as EntityProperty,
         start_date: { name: "start_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
         end_date: { name: "end_date", propType_: Pn.DATETIME, "allowNull": false } as EntityProperty,
+        nb_adults: { name: "nb_adults", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        nb_children: { name: "nb_children", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         days: { name: "days", propType_: Pn.FORMULA, formula: 'DATEDIF(start_date, end_date, "D") + 1' } as EntityProperty,
-        cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * booking_item_price' } as EntityProperty,
+        cost: { name: "cost", propType_: Pn.FORMULA, formula: 'days * 100' } as EntityProperty,
         bookings_for_the_same_room: { name: "bookings_for_the_same_room", propType_: Pn.FORMULA, formula: '"FILTER(Booking, @[booking_item_id] == booking_item_id)"' } as EntityProperty,
         // booking_day_table: {
         //     name: 'booking_day_table',
@@ -69,10 +74,13 @@ export const Booking = {
         //     isLargeTable: true,
         // } as EntityProperty,
     },
+    validations: {
+        maxBooking: { conditionExpr: $s2e('days < 20 && cost < 2000') }
+    }
 }
 
 export const HotelBookingApp = {
-    _id: "royal-hotel",
+    _id: "hotel-booking",
     description: "Booking app for Royal Hotel",
     pages: [
         { name: "index", html: "index.html" },

@@ -4,12 +4,18 @@
 */
 
 const pretty = require('pretty');
-function normalizeHTML(html: string): string[] {
+export function normalizeHTML(html: string): string[] {
     return pretty(html, {ocd: true}).split(/\n/);
 }
 
-import { parseHTML } from "./dom-node";
-import { updateDOM } from "./live-dom-template";
+export function wrapHTML(html: string): HTMLElement {
+    let div = document.createElement('div');
+    div.innerHTML = html;
+
+    return div;
+}
+
+import { updateDOM, serializeElemToObj } from "./live-dom-template";
 
 const template = /*html*/`
 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
@@ -50,14 +56,14 @@ describe('[FE] FrmdbTemplate', () => {
     });
 
     it('should update view when template OR data changes', () => {
-        let el = parseHTML(template);
+        let el = wrapHTML(template);
         updateDOM(data, el)
 
         let renderedHtml = el.outerHTML;
         let normalizedHtml = normalizeHTML(renderedHtml);
         expect(normalizedHtml).toEqual(normalizeHTML(    
             /*html*/`
-            <body>
+            <div>
                 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
                     <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</div>
@@ -92,7 +98,7 @@ describe('[FE] FrmdbTemplate', () => {
                         <template data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></template>
                     </div>
                 </div>
-            </body> 
+            </div> 
         `));
 
         //check data-frmdb-prop data bindings
@@ -109,5 +115,24 @@ describe('[FE] FrmdbTemplate', () => {
             {complex: [{x: "1.1"}, {x: "1.2"}], attrExpandedVal: 'complex::tableName[0].childTable'},
             {complex: [{x: "2.1"}, {x: "2.2"}], attrExpandedVal: 'complex::tableName[1].childTable'},
         ]);
-    })
+    });
+
+    it('should serialize element to DataObj', () => {
+        let el = wrapHTML(/*html*/`
+            <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
+                <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
+                    <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a">
+                    </div>
+                </div>
+                <input type="text" data-frmdb-value="::tableName[].atr" />
+            </div>
+        `);
+        updateDOM(data, el);
+
+        let rootEl = el.querySelector('[data-frmdb-foreach="tableName[]"]');
+        let obj = serializeElemToObj(rootEl as HTMLElement);
+        expect(obj).toEqual({
+            atr: "attr1",
+        });
+    });
 });

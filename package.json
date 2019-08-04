@@ -13,7 +13,8 @@
     "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
     "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
     "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'npm run docker:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
-    "test": "node jasmine.js"
+    "test": "node jasmine.js",
+    "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js"
   },
   "author": "",
   "license": "ISC",
@@ -37,6 +38,7 @@
     "jsdom-devtools-formatter": "^1.0.0",
     "jsdom-global": "^3.0.2",
     "live-server": "^1.2.1",
+    "lolex": "^4.1.0",
     "node-fetch": "^2.6.0",
     "node-sass": "^4.12.0",
     "nodemon": "^1.19.1",
@@ -107,6 +109,7 @@
     "@fe": "./tsc-out/fe/src",
     "@fe-assets": "./fe/src",
     "raw-loader!@fe-assets": "./fe/src",
-    "!!raw-loader!sass-loader?sourceMap!@fe-assets": "./fe/src"
+    "!!raw-loader!sass-loader?sourceMap!@fe-assets": "./fe/src",
+    "raw-loader!@test-assets": "./test/src"
   }
 }
