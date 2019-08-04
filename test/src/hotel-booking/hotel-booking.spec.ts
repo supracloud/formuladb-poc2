@@ -111,7 +111,7 @@ describe('[FE] Hotel Booking', () => {
                 type: ServerEventModifiedFormDataN,
                 state_: "ABORT",
                 reason_: "ABORTED_FAILED_VALIDATIONS_RETRIES_EXCEEDED",
-                error_: "Validations failed: maxDays",
+                error_: "Validations failed: maxBooking",
                 obj: {
                     ...bookingObjFromServer,
                     _id: "Booking~~", //still a new object, not saved because of validation failure
@@ -120,7 +120,7 @@ describe('[FE] Hotel Booking', () => {
     
             setValue(end_date_El, '2019-08-01');
             await testSleep(500, "wait for debounced onchange handlers to fire");
-            expect(end_date_El.validationMessage).toEqual('Validations failed: maxDays');
+            expect(end_date_El.validationMessage).toEqual('Validations failed: maxBooking');
 
             done();
         });

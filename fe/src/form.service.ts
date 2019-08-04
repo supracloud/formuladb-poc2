@@ -49,7 +49,7 @@ export class FormService {
                     control.dataset.frmdbPending = undefined;
                 }
                 if (event.state_ === "ABORT") {
-                    inputEl.setCustomValidity(event.error_ || 'Internal Server Err');
+                    this.markInvalid(inputEl, event.error_ || 'Internal Server Err');
                     return;
                 } else {
                     updateDOM(event.obj, parentEl);
@@ -80,8 +80,8 @@ export class FormService {
         let objStr = localStorage.getItem(objId);
         if (!objStr) return null;
         let obj = JSON.parse(objStr);
-        if (obj.formNewRecordCacheTimestamp < new Date().getTime() - 20000) return null;
-        return obj;
+        if (obj.formNewRecordCacheTimestamp < new Date().getTime() - 20000) return null; 
+        return obj; 
     }
 
     public initFormsFromNewRecordCache() {
@@ -124,14 +124,24 @@ export class FormService {
         return {parentEl, parentObj};
     }
 
+    private markInvalid(el: InputElem, err: string) {
+        el.setCustomValidity(err);
+        el.title = el.title + "VALIDATION-ERRORS: " + err;
+    }
+
+    private markValid(el: InputElem) {
+        el.setCustomValidity("");
+        el.title = el.title.replace(/VALIDATION-ERRORS: .*/, '');
+    }
+
     public validateOnClient(parentEl: HTMLElement, parentObj: DataObj): boolean {
         const tools = BACKEND_SERVICE().getFrmdbEngineTools();
         
         for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
             if (!isFormEl(control)) throw new Error("Elem is not know as a form element " + control.outerHTML);
             let err = tools.validateObjPropertyType(parentObj, getEntityPropertyNameFromEl(control), control.value);
-            if (err) { control.setCustomValidity(err); return false;}
-            else control.setCustomValidity("");
+            if (err) { this.markInvalid(control, err); return false;}
+            else this.markValid(control);
 
             if (!control.validity.valid) return false;
             
