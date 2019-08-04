@@ -8,33 +8,6 @@ handleErr () {
 }
 trap handleErr ERR
 
-FEBEDIR=$PWD
-while true; do
-  . .env.dev
-
-  if [ ! -d "$APPDIR" ]; then
-    echo "$APPDIR is not a directory, please set the APPDIR var in .env.dev, waiting..."
-    continue
-  fi
-
-  if [ ! -f "${APPDIR}/docker-compose.yml" ]; then
-      echo "docker-compose not found in $APPDIR, waiting..."
-      continue
-  fi
-
-  if [ ! -f "${APPDIR}/index.html" ]; then
-      echo "index.html not found in $APPDIR, waiting..."
-      continue
-  fi
-
-  if ! (command nodemon -h || command nc); then
-      echo "run npm install -g nodemon && apt-get install -y netcat in order to serve/debug this app, waiting..."
-      continue
-  fi
-
-  break
-done
-
 
 FRMDB_RELEASE=0.0.12 nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
   "npm run docker:be && docker-compose up -d db be && nc -zvw3 localhost 8084 && touch dist-fe/frmdb-fe.js" &
