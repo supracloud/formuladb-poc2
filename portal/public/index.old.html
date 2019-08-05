@@ -1,0 +1,1141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>FormulaDB - Instant Web Applications</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="assets/css/all.min.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	<nav id="navbar-main" class="navbar navbar-main fixed-top navbar-expand-lg navbar-transparent navbar-light headroom headroom--not-bottom headroom--pinned headroom--top">
+		<div class="container">
+			<a class="navbar-brand mr-lg-5" href="../index.html"><img src="../assets/img/brand/white.png"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="navbar-collapse collapse" id="navbar_global">
+				<button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar_global" aria-controls="navbar_global" aria-expanded="false" aria-label="Toggle navigation">
+					<span></span>
+					<span></span>
+				</button>
+				<ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link" data-toggle="dropdown" role="button">
+							<i class="ni ni-ui-04 d-lg-none"></i>
+							<span class="nav-link-inner--text">Components</span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-xl">
+							<div class="dropdown-menu-inner">
+								<a href="../docs/getting-started/overview.html" class="media d-flex align-items-center">
+									<div class="icon icon-shape bg-gradient-primary rounded-circle text-white">
+										<i class="ni ni-spaceship"></i>
+									</div>
+									<div class="media-body ml-3">
+										<h6 class="heading text-primary mb-md-1">Getting started</h6>
+										<p class="description d-none d-md-inline-block mb-0">Learn how to use Argon compiling Scss, change brand colors and more.</p>
+									</div>
+								</a>
+								<a href="../docs/foundation/colors.html" class="media d-flex align-items-center">
+									<div class="icon icon-shape bg-gradient-success rounded-circle text-white">
+										<i class="ni ni-palette"></i>
+									</div>
+									<div class="media-body ml-3">
+										<h6 class="heading text-primary mb-md-1">Foundation</h6>
+										<p class="description d-none d-md-inline-block mb-0">Learn more about colors, typography, icons and the grid system we used for Argon.</p>
+									</div>
+								</a>
+								<a href="../docs/components/alerts.html" class="media d-flex align-items-center">
+									<div class="icon icon-shape bg-gradient-warning rounded-circle text-white">
+										<i class="ni ni-ui-04"></i>
+									</div>
+									<div class="media-body ml-3">
+										<h5 class="heading text-warning mb-md-1">Components</h5>
+										<p class="description d-none d-md-inline-block mb-0">Browse our 50 beautiful handcrafted components offered in the Free version.</p>
+									</div>
+								</a>
+							</div>
+						</div>
+					</li>
+					<li class="nav-item dropdown">
+						<a href="#" class="nav-link" data-toggle="dropdown" role="button">
+							<i class="ni ni-collection d-lg-none"></i>
+							<span class="nav-link-inner--text">Examples</span>
+						</a>
+						<div class="dropdown-menu">
+							<a href="../examples/landing.html" class="dropdown-item">Landing</a>
+							<a href="../examples/profile.html" class="dropdown-item">Profile</a>
+							<a href="../examples/login.html" class="dropdown-item">Login</a>
+							<a href="../examples/register.html" class="dropdown-item">Register</a>
+						</div>
+					</li>
+				</ul>
+				<ul class="navbar-nav align-items-lg-center ml-lg-auto">
+					<li class="nav-item">
+						<a class="nav-link nav-link-icon" href="https://www.facebook.com/creativetim" target="_blank" data-toggle="tooltip" title=""
+							data-original-title="Like us on Facebook">
+							<i class="fa fa-facebook-square"></i>
+							<span class="nav-link-inner--text d-lg-none">Facebook</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link nav-link-icon" href="https://www.instagram.com/creativetimofficial" target="_blank" data-toggle="tooltip" title=""
+							data-original-title="Follow us on Instagram">
+							<i class="fa fa-instagram"></i>
+							<span class="nav-link-inner--text d-lg-none">Instagram</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link nav-link-icon" href="https://twitter.com/creativetim" target="_blank" data-toggle="tooltip" title=""
+							data-original-title="Follow us on Twitter">
+							<i class="fa fa-twitter-square"></i>
+							<span class="nav-link-inner--text d-lg-none">Twitter</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link nav-link-icon" href="https://github.com/creativetimofficial/argon-design-system" target="_blank" data-toggle="tooltip" title=""
+							data-original-title="Star us on Github">
+							<i class="fa fa-github"></i>
+							<span class="nav-link-inner--text d-lg-none">Github</span>
+						</a>
+					</li>
+					<li class="nav-item d-none d-lg-block ml-lg-4">
+						<a href="https://www.creative-tim.com/product/argon-design-system" target="_blank" class="btn btn-neutral btn-icon">
+							<span class="btn-inner--icon">
+								<i class="fa fa-cloud-download mr-2"></i>
+							</span>
+							<span class="nav-link-inner--text">Download</span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="header flex-column">
+		<div class="shape skew position-absolute h-100 w-100">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		<div class="header-content position-relative">
+			<div class="container">
+				<h1 class="site-name display-2 text-white font-weight-bold text-center text-md-left">Instant Web Apps</h1>
+				<h2 class="header-title text-white text-center text-md-left">
+					No Coding! Everyone is Welcome!
+				</h2>
+				<h5 class="header-sub-title mt-2 text-center text-md-left">
+					100+ free templates to get you started in minutes
+				</h5>
+				<a href="https://themewagon.com/themes/template-collection-2019/" class="btn btn-download text-white mt-3 mt-md-5" style="text-transform: none" target="_blank">
+					It's Easy ! Start Now <i class="fal fa-hand-point-down"></i> 
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid content py-4 clearfix">
+		<nav class="navbar navbar-light navbar-expand bg-light mb-4 p-2 rounded">
+			<ul class="navbar-nav">
+				<li class="nav-item ">
+					<a href="#" class="nav-link active" data-filter="*">All Categories</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".admin">Admin & Dashboard</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".business">Business & Corporate</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".landing">Landing Pages</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".ecommerce">E-commerce</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".food">Food & Restaurant</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".medical">Medical & Health Care</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".travel">Travel & Booking</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".multipurpose">Multipurpose</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".personal">Personal</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".portfolio">Portfolio</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".event">Events & Wedding</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".photography">Photography</a>
+				</li>
+				<li class="nav-item">
+					<a href="#" class="nav-link" data-filter=".coming">Coming Soon</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#" data-filter=".other">Other</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						More 
+					</a>
+					<div class="dropdown-menu category-list" aria-labelledby="navbarDropdown">
+
+					</div>
+				</li>
+			</ul>
+	</nav>
+	<div class="grid">
+		<a href="http://www.bootstrapdash.com/demo/star-admin-free/jquery/" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Star Admin</div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/1-star-admin.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/iconic/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Iconic</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/2-iconic.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/watch/" class="ecommerce item" target="_blank" data-category="E-commerce">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Watch</div>
+					<div class="item-category">E-commerce</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/3-watch.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://tabler.github.io/tabler/index.html" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Tabler</div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/4-tabler.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/unapp/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Unapp</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/5-unapp.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/exclusivity/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Exclusive</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/6-exclusive.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://themewagon.github.io/Ready-Bootstrap-Dashboard/" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Ready Dashboard</div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/7-ready-dashboard.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/infinity/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Infinity</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/8-infinity.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/elate/" class="multipurpose item" target="_blank" data-category="Multipurpose">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Elate</div>
+					<div class="item-category">Multipurpose</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/9-elate.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/consult/index.html" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Consult</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/10-consult.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/material-lite/" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Material Lite</div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/11-material-lite.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/fancy/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Fancy</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/12-fancy.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/avilon/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Avilon</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/13-avilon.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/travelista/" class="travel item" target="_blank" data-category="Travel &amp; Booking">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Travelista</div>
+					<div class="item-category">Travel &amp; Booking</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/14-travelista.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/vex-Bootstrap-4-Free-product-landing-page-template/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Vex</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/15-vex.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/Datarc/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Datarc</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/16-datarc.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/known/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Known</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/17-known.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/mobiapp/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Mobiapp</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/18-mobiapp.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://markup.themewagon.com/vira/index.html" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Vira</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/19-vira.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/Osteriax/" class="food item" target="_blank" data-category="Food &amp; Restaurant">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Osteriax</div>
+					<div class="item-category">Food &amp; Restaurant</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/20-osteriax.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/reveal/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Reveal</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/21-reveal.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/wedding/" class="event item" target="_blank" data-category="Events &amp; Wedding">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Wedding</div>
+					<div class="item-category">Events &amp; Wedding</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/22-wedding.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/Photography-CL/" class="photography item" target="_blank" data-category="Photography">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Photography</div>
+					<div class="item-category">Photography</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/23-photography.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/book/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Book</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/24-book.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/job-listing/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Job Listing</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/25-job-listing.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/awesome-landing-page/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Awesome Landing Page</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/26-awesome-landing-page.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/course/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Course</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/27-course.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/apex_app/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Apex App</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/28-apex-app.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/essence/" class="ecommerce item" target="_blank" data-category="E-commerce">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Essence</div>
+					<div class="item-category">E-commerce</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/29-essence.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/comply/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Comply</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/30-comply.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/imperial/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Imperial</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/31-imperial.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/classimax/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Classimax</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/32-classimax.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/maze/" class="portfolio item" target="_blank" data-category="Portfolio">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Maze</div>
+					<div class="item-category">Portfolio</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/33-maze.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/creativeagency/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Creative Agency</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/34-creative-agency.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/evie1/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Evie</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/35-evie.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/adventure/" class="travel item" target="_blank" data-category="Travel &amp; Booking">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Adventure</div>
+					<div class="item-category">Travel &amp; Booking</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/36-adventure.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/diner/" class="food item" target="_blank" data-category="Food &amp; Restaurant">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Diner</div>
+					<div class="item-category">Food &amp; Restaurant</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/37-diner.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/ebusiness/" class="multipurpose item" target="_blank" data-category="Multipurpose">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">eBusiness</div>
+					<div class="item-category">Multipurpose</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/38-ebusiness.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/traveler/" class="travel item" target="_blank" data-category="Travel &amp; Booking">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Traveler</div>
+					<div class="item-category">Travel &amp; Booking</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/39-traveler.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/bizpage/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">BizPage</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/40-bizpage.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/shop/" class="ecommerce item" target="_blank" data-category="E-commerce">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Shop</div>
+					<div class="item-category">E-commerce</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/41-shop.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/taste/" class="food item" target="_blank" data-category="Food &amp; Restaurant">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Taste</div>
+					<div class="item-category">Food &amp; Restaurant</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/42-taste.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/neat/" class="personal item" target="_blank" data-category="Personal">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Neat</div>
+					<div class="item-category">Personal</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/43-neat.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/law/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Law</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/44-law.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://bootstrapthemes.co/demo/html/soft-tech-html-landing-page-template/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Soft-Tech</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/45-soft-tech.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/health-center/" class="medical item" target="_blank" data-category="Medical &amp; Health Care">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Health Center</div>
+					<div class="item-category">Medical &amp; Health Care</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/46-health-center.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/burnout/" class="medical item" target="_blank" data-category="Medical &amp; Health Care">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Burnout</div>
+					<div class="item-category">Medical &amp; Health Care</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/47-burnout.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://demo.themefisher.com/themefisher/fame/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Fame</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/48-fame.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/armando/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Armando</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/49-armando.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/interior/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Interior</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/50-interior.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/kindle/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Kindle</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/51-kindle.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/Mind-Craft/" class="landing item" target="_blank" data-category="Landing Pages">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Mind Craft</div>
+					<div class="item-category">Landing Pages</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/52-mind-craft.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/flameonepage/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Flame</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/53-flame.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/caviar/" class="food item" target="_blank" data-category="Food &amp; Restaurant">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Cavier</div>
+					<div class="item-category">Food &amp; Restaurant</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/54-cavier.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/ruby/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Ruby</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/55-ruby.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/enlight/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Enlight</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/56-enlight.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/touche/" class="food item" target="_blank" data-category="Food &amp; Restaurant">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Touche</div>
+					<div class="item-category">Food &amp; Restaurant</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/57-touche.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/bell/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Bell</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/58-bell.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/rango/" class="multipurpose item" target="_blank" data-category="Multipurpose">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">RanGo</div>
+					<div class="item-category">Multipurpose</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/59-rango.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://markup.themewagon.com/PurpleAdmin-Free-Admin-Template/index.html" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Purple Admin</div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/60-purple-admin.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/medlife/" class="medical item" target="_blank" data-category="Medical &amp; Health Care">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Medi Life</div>
+					<div class="item-category">Medical &amp; Health Care</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/61-medi-life.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/xman/" class="personal item" target="_blank" data-category="Personal">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">X-Man</div>
+					<div class="item-category">Personal</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/62-x-man.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://uicookies.com/demo/theme/aside/" class="personal item" target="_blank" data-category="Personal">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Aside</div>
+					<div class="item-category">Personal</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/63-aside.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/b-hero/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">B-Hero</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/64-b-hero.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/businessbox/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Businessbox</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/65-businessbox.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/caremed/" class="medical item" target="_blank" data-category="Medical &amp; Health Care">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">CareMed</div>
+					<div class="item-category">Medical &amp; Health Care</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/66-caremed.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/real-wedding/" class="event item" target="_blank" data-category="Events &amp; Wedding">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">The Real Wedding</div>
+					<div class="item-category">Events &amp; Wedding</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/67-the-real-wedding.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/magnum/" class="portfolio item" target="_blank" data-category="Portfolio">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Magnum</div>
+					<div class="item-category">Portfolio</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/68-magnum.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/dolphin/" class="multipurpose item" target="_blank" data-category="Multipurpose">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Dolphin</div>
+					<div class="item-category">Multipurpose</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/69-dolphin.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/Savory/" class="personal item" target="_blank" data-category="Personal">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Savory</div>
+					<div class="item-category">Personal</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/70-savory.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/raising/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Raising</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/71-raising.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/razor/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Razor</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/72-razor.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/wired_ui_kit/" class="other item" target="_blank" data-category="UI Kit">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Wired UI Kit</div>
+					<div class="item-category">UI Kit</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/73-wired-ui-kit.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/ezuca/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Ezuca</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/74-ezuca.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/startup/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Startup</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/75-startup.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/pato/" class="food item" target="_blank" data-category="Food &amp; Restaurant">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Pato</div>
+					<div class="item-category">Food &amp; Restaurant</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/76-pato.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/elisa-template-demo/" class="multipurpose item" target="_blank" data-category="Multipurpose">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Elisa</div>
+					<div class="item-category">Multipurpose</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/77-elisa.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://akveo.com/ngx-admin/#/pages/dashboard" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">NGX-Admin</div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/78-ngx-admin.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/bizpro/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">BizPro</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/79-bizpro.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://www.createwebsite.net/freebies/atlas/landing.html" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Atlas</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/80-atlas.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://markup.themewagon.com/titan/index.html" class="multipurpose item" target="_blank" data-category="Multipurpose">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Titan</div>
+					<div class="item-category">Multipurpose</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/81-titan.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/skwela/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Skewla</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/82-skewla.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/royal/" class="travel item" target="_blank" data-category="Travel &amp; Booking">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Royal Hotel</div>
+					<div class="item-category">Travel &amp; Booking</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/83-royal-hotel.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/nitro/" class="portfolio item" target="_blank" data-category="Portfolio">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Nitro</div>
+					<div class="item-category">Portfolio</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/84-nitro.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/vacayhome/" class="travel item" target="_blank" data-category="Travel &amp; Booking">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Vacay Home</div>
+					<div class="item-category">Travel &amp; Booking</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/85-vacay-home.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://www.templatemo.com/templates/templatemo_450_awesome/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Awesome</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/86-awesome.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/dentist/" class="medical item" target="_blank" data-category="Medical &amp; Health Care">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Dentist</div>
+					<div class="item-category">Medical &amp; Health Care</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/87-dentist.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/AdminBSBMaterialDesign/" class="admin item" target="_blank" data-category="Admin &amp; Dashboard">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Admin bsb </div>
+					<div class="item-category">Admin &amp; Dashboard</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/88-admin-bsb-.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/stisla/" class="portfolio item" target="_blank" data-category="Portfolio">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Stisla</div>
+					<div class="item-category">Portfolio</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/89-stisla.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/south/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">South</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/90-south.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/codrops-scribbler/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Scribbler</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/91-scribbler.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/world/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">World</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/92-world.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/lifecare/" class="medical item" target="_blank" data-category="Medical &amp; Health Care">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Life Care</div>
+					<div class="item-category">Medical &amp; Health Care</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/94-life-care.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/gazette/" class="other item" target="_blank" data-category="Miscellaneous">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">The Gazette</div>
+					<div class="item-category">Miscellaneous</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/95-the-gazette.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/profile-bootstrap/" class="portfolio item" target="_blank" data-category="Portfolio">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Profile</div>
+					<div class="item-category">Portfolio</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/98-profile.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="http://designstub.com/demos/avana/index.html" class="portfolio item" target="_blank" data-category="Portfolio">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Avana</div>
+					<div class="item-category">Portfolio</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/96-avana.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/count/" class="coming item" target="_blank" data-category="E-commerce">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Count</div>
+					<div class="item-category">Coming Soon</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/93-count.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/seo/" class="business item" target="_blank" data-category="Business &amp; Corporate">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Seo</div>
+					<div class="item-category">Business &amp; Corporate</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/97-seo.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/blanca/" class="personal item" target="_blank" data-category="Personal">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Blanca</div>
+					<div class="item-category">Personal</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/100-blanca.png" alt="Card image cap">
+			</div>
+		</a>
+		<a href="https://technext.github.io/electro/" class="ecommerce item" target="_blank" data-category="E-commerce">
+			<div class="card">
+				<div class="card-header text-center">
+					<div class="item-name">Electro</div>
+					<div class="item-category">E-commerce</div>
+				</div>
+				<img class="card-img-bottom" src="assets/images/99-electro.png" alt="Card image cap">
+			</div>
+		</a>
+	</div>
+
+</div>
+<footer class="footer w-100">
+	<div class="container footer-content">
+		<div class="row">
+			<div class="col-md-8">
+				<h2 class="footer-caption text-primary mb-2 ">Ready to get started</h2>
+				<h3 class="footer-slogan">
+					Get the entire collection in your inbox
+				</h3>
+			</div>
+			<div class="col-md-4 text-md-right">
+				<a href="https://themewagon.com/themes/template-collection-2019/" class="btn btn-download px-4 text-white my-3" target="_blank">
+					<i class="fas fa-cloud-download-alt"></i> Download Free
+				</a>
+			</div>
+		</div>
+	</div>
+	<hr class="mt-5 mb-4">
+	<div class="text-center my-5 footer-bottom">
+		<p>Brought to you with love by <a href="https://themewagon.com">ThemeWagon</a></p>
+	</div>
+</footer>
+
+<a href="#" class="back-to-top bg-primary">
+	<i class="fas fa-angle-double-up"></i>
+</a>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.min.js"></script>
+<script src="assets/js/bootstrap.min.js"></script>
+<script src="assets/js/isotope.pkgd.min.js"></script>
+<script src="assets/js/script.js"></script>
+</body>
+</html>
