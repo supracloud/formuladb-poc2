@@ -8,7 +8,7 @@
         "compile:watch": "npm run compile -- -w",
         "bundle": "webpack",
         "bundle:watch": "webpack --watch --progress --mode development",
-        "docker:be": "docker build -t formuladb-be -f Dockerfile.be . && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:${npm_package_version}",
+        "docker:be": "docker build -t formuladb-be -f Dockerfile.be . && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:${npm_package_version} && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:latest",
         "docker:fe": "docker build -t formuladb-maps -f Dockerfile.fe . && docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:${npm_package_version}",
         "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
         "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
