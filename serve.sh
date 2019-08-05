@@ -37,6 +37,6 @@ live-server --wait=200 --port=8081 -V --no-browser \
     --mount=/formuladb/frmdb-editor.js.map:./../dist-fe/frmdb-editor.js.map \
     --mount=/formuladb-apps/:../../../frmdb-apps/ \
     --mount=/formuladb-themes/:../../../frmdb-themes/ \
-    --mount=/:../../portal/public \
+    --mount=/:../portal/public \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
     --proxy=/:http://localhost:8084/ \
