@@ -1320,9 +1320,11 @@ Vvveb.Builder = {
          html = this.removeHelpers(html, keepHelperAttributes);
          
          var filter = $(window).triggerHandler("vvveb.getHtml.after", html);
-         if (filter) return filter;
+		 if (filter) return filter;
+		 
+		 html = html.replace(/\s*<!-- Code injected by live-server(.|\n)+<\/body>/, '</body>');
          
-         return html;
+         return html_beautify(html);
 	},
 	
 	setHtml: function(html) 
