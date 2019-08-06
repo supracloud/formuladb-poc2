@@ -26,8 +26,7 @@ sleep 2
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed
 live-server --wait=200 --port=8081 -V --no-browser \
-    --mount=/formuladb-editor/:../../VvvebJs/ \
-    --mount=/customize-editor.js:./../fe/js/customize-editor.js \
+    --mount=/formuladb-editor/:../vvvebjs/ \
     --mount=/formuladb/frmdb-fe.js:./../dist-fe/frmdb-fe.js \
     --mount=/formuladb/frmdb-fe.js.map:./../dist-fe/frmdb-fe.js.map \
     --mount=/formuladb/frmdb-data-grid.js:./../dist-fe/frmdb-data-grid.js \
