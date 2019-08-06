@@ -32,9 +32,9 @@ function customizeEditor() {
     });
 
     //// Code Editor ///////////////////////////////////////////////////////////
-    Vvveb.Gui.toggleEditor = function () {
+    Vvveb.Gui.toggleEditor = function (isTable) {
 		$("#bottom-panel").toggle();
-		Vvveb.CodeEditor.toggle();
+		Vvveb.CodeEditor.toggle(isTable);
 	};
     $('#bottom-panel').css({
         top: '0px', 
@@ -107,7 +107,8 @@ async function customLoadPages() {
     let params = new URLSearchParams(window.location.search);
     let [tenantName, appName, pageName] = [params.get('t'), params.get('a'), params.get('p')];
     console.info("Loading pages for ", tenantName, appName);
-    let appBackend = new FrmdbAppBackend(tenantName, appName);
+    let appBackend = new FrmdbBackendService(tenantName, appName);
+    Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
         
     $('#vvveb-builder').prepend(/* html */`
         <frmdb-db-editor data-frmdb-tenant="${tenantName}" data-frmdb-app="${appName}">

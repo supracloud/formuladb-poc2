@@ -60,9 +60,13 @@
 							<i class="la la-arrows"></i>
 						</button>
 					
-						<button id="code-editor-btn" data-view="mobile" class="btn btn-sm btn-light btn-sm" title="Code editor" data-vvveb-action="toggleEditor">
-							<i class="la la-code"></i>
+						<button id="code-editor-btn" data-view="mobile" class="btn btn-sm btn-light btn-sm" title="Page Code Editor" data-vvveb-action="togglePageEditor">
+							<i class="la la-file-code-o"></i>
 						</button>
+					
+						<button id="table-code-editor-btn" data-view="mobile" class="btn btn-sm btn-light btn-sm" title="Table Code Viewer" data-vvveb-action="toggleTableEditor">
+							<i class="la la-code-fork"></i>
+						</button>						
 					</div>
 
 					<div class="btn-group mr-3" role="group">
@@ -909,11 +913,13 @@
 <script src="libs/codemirror/lib/codemirror.js"></script>
 <script src="libs/codemirror/lib/xml.js"></script>
 <script src="libs/codemirror/lib/formatting.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.2/mode/yaml/yaml.min.js" integrity="sha256-G1Y7WHjmBIbgQctjcuj64V2zVyIS6EVUj4PaIneJcDc=" crossorigin="anonymous"></script>
 <script src="libs/builder/plugin-codemirror.js"></script>	
 
 <script src="libs/customize-editor.js"></script>	
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.1/beautify-html.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js" integrity="sha256-ry6nlLQ1JmRl5RUPQ4eSuaSp/rGNPvl144WHHs7BiNE=" crossorigin="anonymous"></script>
 
 </script>
 </body>

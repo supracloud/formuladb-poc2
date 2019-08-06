@@ -1,29 +1,35 @@
 Vvveb.CodeEditor = {
 	
 	isActive: false,
+	isTableEditor: false,
 	oldValue: '',
 	doc:false,
 	codemirror:false,
 	
-	init: function(doc) {
+	init: function(isTableEditor) {
+		this.isTableEditor = isTableEditor;
 
-		if (this.codemirror == false)		
-		{
-			this.codemirror = CodeMirror.fromTextArea(document.querySelector("#vvveb-code-editor textarea"), {
-				mode: 'text/html',
-				lineNumbers: true,
-				autofocus: true,
-				lineWrapping: true,
-				//viewportMargin:Infinity,
-				theme: 'material'
-			});
-			
-			this.isActive = true;
+		if (this.codemirror != false) {
+			this.codemirror.toTextArea(document.querySelector("#vvveb-code-editor textarea"));
+		}
+
+		this.codemirror = CodeMirror.fromTextArea(document.querySelector("#vvveb-code-editor textarea"), {
+			mode: this.isTableEditor ? 'text/x-yaml' : 'text/html',
+			lineNumbers: true,
+			autofocus: true,
+			lineWrapping: true,
+			//viewportMargin:Infinity,
+			theme: 'material'
+		});
+		
+		this.isActive = true;
+		if (!this.isTableEditor) {
 			this.codemirror.getDoc().on("change", function (e, v) { 
 				if (v.origin != "setValue")
 				delay(Vvveb.Builder.setHtml(e.getValue()), 1000);
 			});
 		}
+		
 		
 		
 		//_self = this;
@@ -41,7 +47,15 @@ Vvveb.CodeEditor = {
 		if (this.isActive == true)
 		{
 			var scrollInfo = this.codemirror.getScrollInfo();
-			this.codemirror.setValue(Vvveb.Builder.getHtml());
+			if (this.isTableEditor) {
+				let entity = Vvveb.Gui.FRMDB_BACKEND_SERVICE.currentSchema.entities[Vvveb.Gui.CurrentTableId];
+				this.codemirror.setValue(jsyaml.safeDump(entity, {
+					indent: 4,
+					flowLevel: 4,
+				}));
+			} else {
+				this.codemirror.setValue(Vvveb.Builder.getHtml());
+			}
 			this.codemirror.scrollTo(scrollInfo.left, scrollInfo.top);
 		}
 	},
@@ -55,11 +69,11 @@ Vvveb.CodeEditor = {
 		this.isActive = false;
 	},
 
-	toggle: function() {
+	toggle: function(isTable) {
 		if (this.isActive != true)
 		{
 			this.isActive = true;
-			return this.init();
+			return this.init(isTable);
 		}
 		this.isActive = false;
 		this.destroy();
