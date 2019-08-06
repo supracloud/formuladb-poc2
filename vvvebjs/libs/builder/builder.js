@@ -1295,6 +1295,7 @@ Vvveb.Builder = {
 
 	getHtml: function(keepHelperAttributes = true) 
 	{
+		/** @type {Document} */
 		var doc = window.FrameDocument;
 		var hasDoctpe = (doc.doctype !== null);
 		var html = "";
@@ -1308,8 +1309,13 @@ Vvveb.Builder = {
          + (!doc.doctype.publicId && doc.doctype.systemId ? ' SYSTEM' : '') 
          + (doc.doctype.systemId ? ' "' + doc.doctype.systemId + '"' : '')
          + ">\n";
-          
-         html +=  doc.documentElement.innerHTML + "\n</html>";
+		 
+		 /** @type {Element} */
+		 let cleanedUpDOM = doc.documentElement.cloneNode(true);
+		 for (let frmdbFragment of Array.from(cleanedUpDOM.querySelectorAll('frmdb-fragment'))) {
+			frmdbFragment.innerHTML = '';
+		 }
+         html +=  cleanedUpDOM.innerHTML + "\n</html>";
          
          html = this.removeHelpers(html, keepHelperAttributes);
          

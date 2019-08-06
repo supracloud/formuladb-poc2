@@ -12,16 +12,20 @@
     <title>VvvebJs</title>
     
     <link href="css/editor.css" rel="stylesheet">
-    <link href="css/line-awesome.css" rel="stylesheet">
+	<link href="css/line-awesome.css" rel="stylesheet">
+	
+	<style>
+		#vvveb-code-editor .CodeMirror {
+			height: 100%;
+		}
+	</style>
   </head>
 <body>
 
 
 	<div id="vvveb-builder">
 				
-				<div id="top-panel">
-					<img src="img/logo.png" alt="Vvveb" class="float-left" id="logo">
-					
+				<div id="top-panel">					
 					
 					<div class="btn-group float-left" role="group">
 					  <button class="btn btn-light" title="Toggle file manager" id="toggle-file-manager-btn" data-vvveb-action="toggleFileManager" data-toggle="button" aria-pressed="false">
@@ -47,29 +51,23 @@
 					  </button>
 					</div>
 										
-					
 					<div class="btn-group mr-3" role="group">
-					  <button class="btn btn-light" title="Designer Mode (Free component dragging)" id="designer-mode-btn" data-toggle="button" aria-pressed="false" data-vvveb-action="setDesignerMode">
-						  <i class="la la-hand-grab-o"></i>
-					  </button>
-
-					  <button class="btn btn-light" title="Preview" id="preview-btn" type="button" data-toggle="button" aria-pressed="false" data-vvveb-action="preview">
-						  <i class="la la-eye"></i>
-					  </button>
-
-					  <button class="btn btn-light" title="Fullscreen (F11)" id="fullscreen-btn" data-toggle="button" aria-pressed="false" data-vvveb-action="fullscreen">
-						  <i class="la la-arrows"></i>
-					  </button>
-
-					</div>
+						<button class="btn btn-light" title="Preview" id="preview-btn" type="button" data-toggle="button" aria-pressed="false" data-vvveb-action="preview">
+							<i class="la la-eye"></i>
+						</button>
 					
+						<button class="btn btn-light" title="Fullscreen (F11)" id="fullscreen-btn" data-toggle="button" aria-pressed="false" data-vvveb-action="fullscreen">
+							<i class="la la-arrows"></i>
+						</button>
+					
+						<button id="code-editor-btn" data-view="mobile" class="btn btn-sm btn-light btn-sm" title="Code editor" data-vvveb-action="toggleEditor">
+							<i class="la la-code"></i>
+						</button>
+					</div>
+
 					<div class="btn-group mr-3" role="group">
 					  <button class="btn btn-light" title="Export (Ctrl + E)" id="save-btn" data-vvveb-action="saveAjax" data-vvveb-shortcut="ctrl+e">
 						  <i class="la la-save"></i>
-					  </button>
-					  
-					  <button class="btn btn-light" title="Download" id="download-btn" data-vvveb-action="download" data-download="index.html">
-						  <i class="la la-download"></i>
 					  </button>
 					</div>	
 
@@ -117,7 +115,7 @@
 					  </div>
 					  
 					  
-					  <div class="drag-elements">
+					  <div class="drag-elements d-none">
 
 						<div class="header">							
 							<ul class="nav nav-tabs" id="elements-tabs" role="tablist">
@@ -380,18 +378,6 @@
 				</div>
 
 				<div id="bottom-panel">
-
-				<div class="btn-group" role="group">
-
-		 			 <button id="code-editor-btn" data-view="mobile" class="btn btn-sm btn-light btn-sm"  title="Code editor" data-vvveb-action="toggleEditor">
-						  <i class="la la-code"></i> Code editor
-					  </button>
-					 
-						<div id="toggleEditorJsExecute" class="custom-control custom-checkbox mt-1" style="display:none">
-							<input type="checkbox" class="custom-control-input" id="customCheck" name="example1" data-vvveb-action="toggleEditorJsExecute">
-							<label class="custom-control-label" for="customCheck"><small>Run javascript code on edit</small></label>
-						</div>
-					</div>
 					
 					<div id="vvveb-code-editor">
 						<textarea class="form-control"></textarea>
