@@ -1,52 +1,38 @@
 stages:
-  - npminstall
-  # - buildprodimages
   - build
   - test
   - bundle
+  - buildprodimages
+  - deploy
   # - cleanup
   # - videos
-
-npminstall:
-  stage: npminstall
-  script:
-    - npm install 
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - node_modules/
-
-# buildprodimages:
-#   stage: buildprodimages
-#   script:
-#     # - docker build -t formuladb-minio -f Dockerfile.minio .
-#     # - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-#     # - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-#     # - npm run docker:maps
-#     # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
-#     - npm run docker:be
-#     - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG}
-#     # - npm run docker:fe
-#     # - docker push registry.gitlab.com/metawiz/febe/formuladb-fe:${CI_COMMIT_TAG}
-#   cache:
-#     key: ${CI_COMMIT_SHORT_SHA}
-#     paths:
-#       - core/node_modules/
-#       - storage/node_modules/
-#       - be/node_modules/
-#       - fe/node_modules/
-#   only:
-#     - tags
 
 build:
   stage: build
   script:
+    - npm install
     - npm run compile
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+test:
+  stage: test
+  script:
+    - docker-compose up -d db
+    - npm test
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - be/dist/
+      - dist-be/
+      - dist-fe/
 
 bundle:
   stage: bundle
@@ -58,20 +44,55 @@ bundle:
       - node_modules/
       - dist-be/
       - dist-fe/
-      
-test:
-  stage: test
+
+buildprodimages:
+  stage: buildprodimages
   script:
-    - docker-compose up -d db
-    - npm test
+    # - docker build -t formuladb-minio -f Dockerfile.minio .
+    # - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
+    # - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
+    # - npm run docker:maps
+    # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
+    - npm run docker:be
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG:-latest}
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
-      - core/node_modules/
-      - storage/node_modules/
-      - be/node_modules/
-      - be/dist/
-      - fe/node_modules/
+      - node_modules/
+      - dist-be/
+      - dist-fe/
+  only:
+    - master
+
+deploy:
+  stage: deploy
+  script:
+    # publish FE on object storage
+    - mkdir -p dist/fe
+    - cp fe/js/customize-editor.js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-form.js dist-fe/frmdb-editor.js dist/fe
+    - source tools.sh
+    - cd dist
+    - for i in `find -type f -printf '%P\n'` ; do upload-asset $i; done
+    - cd ..
+    # remote ssh on demo VM and refresh containers from latest images
+    - chmod 600 ssh/frmdb.id_rsa
+    # stop old compose stack (run it against existing compose.yaml to make sure we don't leave dangling containers)
+    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "docker-compose down"
+    # copy new compose config
+    - scp -i ssh/frmdb.id_rsa docker-compose.yml demo@formuladb.online:/home/demo/docker-compose.yml
+    # get latest "latest" for be
+    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose pull be"
+    # bring up new stack
+    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose up -d db be"
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - dist-be/
+      - dist-fe/
+  only:
+    refs:
+      - master
 
 # videos:
 #   stage: videos
