@@ -80,6 +80,7 @@
         "expression-eval": "git+https://github.com/acristu/expression-eval.git",
         "formulajs": "git+https://github.com/acristu/formula.js.git",
         "fuse.js": "^3.3.0",
+        "gitlab": "^10.1.0",
         "http-proxy-middleware": "^0.19.1",
         "js-yaml": "^3.13.1",
         "jsep": "git+https://github.com/acristu/jsep.git",

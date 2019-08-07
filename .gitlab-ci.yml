@@ -2,8 +2,10 @@ stages:
   - build
   - test
   - bundle
+  - e2e_dev_env
   - buildprodimages
   - deploy
+  # - e2e_example_apps
   # - cleanup
   # - videos
 
@@ -44,6 +46,11 @@ bundle:
       - node_modules/
       - dist-be/
       - dist-fe/
+
+e2e_dev_env:
+  stage: e2e
+  script:
+    - npm run e2e || true
 
 buildprodimages:
   stage: buildprodimages
@@ -93,6 +100,10 @@ deploy:
   only:
     refs:
       - master
+
+# e2e_example_apps:
+#   script:
+#     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/metawiz/e2e.git
 
 # videos:
 #   stage: videos

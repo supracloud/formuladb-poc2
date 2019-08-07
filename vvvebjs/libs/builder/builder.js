@@ -1362,9 +1362,10 @@ Vvveb.Builder = {
 		}
 
 		$.ajax({
-			type: "POST",
-			url: 'save.php',//set your server side save script url
-			data: data,
+			type: "PUT",
+			url: `/formuladb-api/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/${data.fileName}`,
+			data: data.html,
+			contentType: "text/html",
 			cache: false,
 			success: function (data) {
 				
