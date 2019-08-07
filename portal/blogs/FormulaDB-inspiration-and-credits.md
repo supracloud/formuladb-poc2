@@ -10,7 +10,7 @@ Ideas and existing technologies that contributed to FormulaDB's architecture:
  - Spreadsheets formula engines, Recursion
  - Stream processing (Storm, Spark Streaming, Kafka Streams)
  - DDD aggregates with eventual consistency using events
- - Cassandra seamless massive scaling and constraints imposed on CQL to maintain predictable performance, tunable consistency, timeuuid, LWT
+ - Cassandra seamless massive scaling and constraints imposed on CQL to maintain predictable performance (e.g. partition key), tunable consistency, timeuuid, LWT
  - Kafka consumer groups fail-over and load-balancing, Kafka Streams State Stores
  - Kappa architecture (Jay Kreps)
  - Turning database inside out (Martin Kleppmann), duality table-stream

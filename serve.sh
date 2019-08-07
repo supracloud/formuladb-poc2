@@ -18,7 +18,7 @@ fctCheckDir ../../frmdb-themes/startbootstrap-sb-admin-2 #git clone https://gith
 fctCheckDir ../../frmdb-apps/hotel-booking #git clone https://gitlab.com/frmdb-apps/royal-hotel.git
 # fctCheckDir ../../frmdb-apps/basic-inventory
 
-FRMDB_RELEASE=0.0.12 nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
+FRMDB_RELEASE=0.0.12 DEV_MODE=true DEFAULT_USER=$USER nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
   "npm run docker:be && docker-compose up -d db be && nc -zvw3 localhost 8084 && touch dist-fe/frmdb-fe.js" &
 
 sleep 2
@@ -26,8 +26,7 @@ sleep 2
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed
 live-server --wait=200 --port=8081 -V --no-browser \
-    --mount=/formuladb-editor/:../../VvvebJs/ \
-    --mount=/customize-editor.js:./../fe/js/customize-editor.js \
+    --mount=/formuladb-editor/:../vvvebjs/ \
     --mount=/formuladb/frmdb-fe.js:./../dist-fe/frmdb-fe.js \
     --mount=/formuladb/frmdb-fe.js.map:./../dist-fe/frmdb-fe.js.map \
     --mount=/formuladb/frmdb-data-grid.js:./../dist-fe/frmdb-data-grid.js \
@@ -35,8 +34,9 @@ live-server --wait=200 --port=8081 -V --no-browser \
     --mount=/formuladb/frmdb-form.js:./../dist-fe/frmdb-form.js \
     --mount=/formuladb/frmdb-editor.js:./../dist-fe/frmdb-editor.js \
     --mount=/formuladb/frmdb-editor.js.map:./../dist-fe/frmdb-editor.js.map \
-    --mount=/formuladb-apps/:../../../frmdb-apps/ \
-    --mount=/formuladb-themes/:../../../frmdb-themes/ \
+    --mount=/frmdb-apps/:../../../frmdb-apps/ \
+    --mount=/frmdb-apps/hotel-booking:../../../frmdb-themes/royal-master \
+    --mount=/frmdb-apps/inventory:../../../frmdb-themes/startbootstrap-sb-admin-2 \
     --mount=/:../portal/public \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
     --proxy=/:http://localhost:8084/ \

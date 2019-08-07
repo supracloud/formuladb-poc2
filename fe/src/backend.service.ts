@@ -211,7 +211,7 @@ export function BACKEND_SERVICE(): BackendService {
     return _backendService;
 }
 
-(window as any).FrmdbAppBackend = BackendService;
+(window as any).FrmdbBackendService = BackendService;
 
 export function _testResetBackendService() {
     _backendService = null;

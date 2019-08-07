@@ -88,10 +88,9 @@ export const HotelBookingApp = {
         { name: "footer [F]", html: "footer._fragment_.html" },
         { name: "nav [F]", html: "nav._fragment_.html" },
         { name: "booking [F]", html: "booking._fragment_.html" },
-        { name: "index [T]", html: "index._template_.html" },
-        { name: "accommodation [T]", html: "accommodation._template_.html" },
-        { name: "contact [T]", html: "contact._template_.html" },
-        { name: "gallery [T]", html: "gallery._template_.html" },
+        { name: "contact", html: "contact.html" },
+        { name: "gallery", html: "gallery.html" },
+        { name: "tmp", html: "tmp.html" },
     ],
 };
 

@@ -3,11 +3,7 @@ document.title = "FormulaDB Editor";
 
 function customizeEditor() {
 
-    //// Layout ///////////////////////////////////////////////////////////
-    $('#logo').remove();
-    document.title = "FormulaDB Editor";
-
-	if (false /* no right panel */) { 
+	if (true /* no right panel */) { 
 		$("#vvveb-builder").addClass("no-right-panel");
 		$(".component-properties-tab").show();
 		Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";
@@ -16,10 +12,6 @@ function customizeEditor() {
     }
         
     $('#toggle-file-manager-btn').parent().remove();
-    $('#designer-mode-btn').remove();
-    $('#download-btn').remove();
-    $('#drag-elements').hide();
-    $('#bottom-panel').hide();
     document.body.style.setProperty('--db-panel-height', `180px`);
     document.body.style.setProperty('--builder-left-panel-width', '14vw');
     document.body.style.setProperty('--builder-right-panel-width', '14vw');
@@ -37,6 +29,18 @@ function customizeEditor() {
     $('#left-panel,#right-panel,#canvas').css({
         top: 'calc(var(--db-panel-height) + var(--builder-header-top-height))',
         height: 'calc( 100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)) - var(--db-panel-height))',
+    });
+
+    //// Code Editor ///////////////////////////////////////////////////////////
+    Vvveb.Gui.toggleEditor = function (isTable) {
+		$("#bottom-panel").toggle();
+		Vvveb.CodeEditor.toggle(isTable);
+	};
+    $('#bottom-panel').css({
+        top: '0px', 
+        bottom: 'initial', 
+        height: 'var(--db-panel-height)',
+        display: 'none',
     });
     
     $('#preview-btn').toggleClass('bg-light');
@@ -103,7 +107,8 @@ async function customLoadPages() {
     let params = new URLSearchParams(window.location.search);
     let [tenantName, appName, pageName] = [params.get('t'), params.get('a'), params.get('p')];
     console.info("Loading pages for ", tenantName, appName);
-    let appBackend = new FrmdbAppBackend(tenantName, appName);
+    let appBackend = new FrmdbBackendService(tenantName, appName);
+    Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
         
     $('#vvveb-builder').prepend(/* html */`
         <frmdb-db-editor data-frmdb-tenant="${tenantName}" data-frmdb-app="${appName}">

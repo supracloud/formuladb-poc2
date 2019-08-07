@@ -15,6 +15,8 @@ import * as proxy from 'http-proxy-middleware';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as csv from 'csv';
+import * as mime from 'mime';
+
 
 
 import { FrmdbEngine } from "@core/frmdb_engine";
@@ -26,6 +28,7 @@ import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { MetadataStore } from "@core/metadata_store";
 import { Schema } from "@domain/metadata/entity";
+import { savePage, getFile } from "@be/git-storage";
 
 let frmdbEngines: Map<string, FrmdbEngine> = new Map();
 
@@ -212,10 +215,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => console.error(err));
     });
 
-    app.put('/formuladb-api/:app', async function(req, res) {
+    app.put('/formuladb-api/:tenant/:app', async function(req, res) {
         return kvsFactory.putApp(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
+    });
+    app.put('/formuladb-api/:tenant/:app/:page', async function(req, res, next) {
+        if (req.headers['content-type'] !== 'text/html') {
+            next(); return;
+        }
+
+        savePage(req.params.tenant, req.params.app, req.params.page, req.body);
     });
     app.put('/formuladb-api/:tenant/:app/schema', async function(req, res) {
         if (req.user.role !== 'ADMIN') {res.status(403); return;}
@@ -253,35 +263,45 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
-    function app2theme(path: string) {
-        //TODO: read app metadata and replace app name with theme
-        return path
-            .replace(/^hotel-booking\//, 'royal-master/')
-        ;
-    }
-    function handleTemplate(path: string) {
-        return path.replace(/_template_\./, '');
-    }
-    function removeTenant(path: string) {
-        //TODO: read tenant metadata and check that tenant exists
-        return path.replace(/^\/?([-_\w]+)\//, '');
-    }
-    app.use((req, res, next) => {
-        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|_template_\.html)$/);
-        if (!path) {
-            next();
-            return;
-        }
-        let httpProxy = proxy({ 
-            target: 'https://storage.googleapis.com/formuladb-static-assets/',
-            changeOrigin: true,
-            pathRewrite: function (path, req) { 
-                return app2theme(handleTemplate(removeTenant(path)));
-            },
-            logLevel: "debug",
+    if (process.env.DEV_MODE) {
+        //serve content from gitlab
+        const app2themeMap = {
+            'hotel-booking': 'royal-master', //FIXME: store this in the App object and remove hardcoding
+        };
+        
+        app.use(async (req, res, next) => {
+            let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/(.*)\.((?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html))$/);
+            if (!path) {
+                next(); return;
+            }
+
+            let [fullPath, tenantName, appName, filePath, fileExtension] = path;
+            let tryThemeRepo: boolean = false;
+
+            if (fileExtension === 'html') {
+                try {
+                    let fetchRes = await getFile(path[1], path[2], path[3] + '.' + path[4]);
+                    res.type(mime.getType(fileExtension));
+                    fetchRes.body.pipe(res);
+                } catch (err) {
+                    if (err && err.response && 404 === err.response.status) tryThemeRepo = true;
+                    else { next(); return }
+                }
+            } else {
+                tryThemeRepo = true;
+            }
+
+            if (tryThemeRepo) {
+                try {
+                    let fetchRes = await getFile('frmdb-themes', app2themeMap[path[2]], path[3] + '.' + path[4]);
+                    res.type(mime.getType(fileExtension));
+                    fetchRes.body.pipe(res);
+                } catch (err) {
+                    next(); return;
+                }                
+            }
         });
-        httpProxy(req, res, next);
-    });
+    }
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {

@@ -20,6 +20,8 @@ interface VNavComponentState {
     selectedEntityId: string;
 }
 
+declare var Vvveb: any;
+
 @FrmdbElementDecorator<{}, VNavComponentState>({
     tag: 'frmdb-v-nav',
     observedAttributes: [],
@@ -33,6 +35,8 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
         
         BACKEND_SERVICE().getEntities().then(entities => {
             this.frmdbState.selectedEntityId = entities[0]._id;
+            setTimeout(() => Vvveb.Gui.CurrentTableId = entities[0]._id, 500);
+            
             this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
         })
 
@@ -40,6 +44,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
             let link: HTMLAnchorElement = event.target.closest('.nav-link');
             if (!link || link.dataset.id == null) return;
             this.frmdbState.selectedEntityId = link.dataset.id;
+            Vvveb.Gui.CurrentTableId = link.dataset.id;
             elvis_el(this.querySelector('li.active')).classList.remove('active');
             elvis_el(link.parentElement).classList.add('active');
         });
