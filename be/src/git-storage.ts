@@ -1,22 +1,32 @@
+/**
+ * © 2018 S.C. FORMULA DATABASE S.R.L.
+ * License TBD
+ */
+
+import * as fetch from 'node-fetch';
+
 const TOKEN = "T8fpbohTXHdsE9yVsL1s";
 
-import { RepositoryFiles, Projects } from 'gitlab';
-
-const repositoryFiles = new RepositoryFiles({
-    host: 'http://gitlab.com',
-    token: TOKEN,
-});
-
 export async function savePage(tenantName: string, appName: string, pageName: string, html: string) {
-    return repositoryFiles.edit(`${tenantName}/${appName}`, `${pageName}.html`, 'master', html, "n/a");
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}.html?ref=master`, {
+        method: 'PUT',
+        body: html,
+        headers: {'PRIVATE-TOKEN': TOKEN}
+    });
 }
 
 export async function getPage(tenantName: string, appName: string, pageName: string) {
-    return repositoryFiles.showRaw(`${tenantName}/${appName}`, `${pageName}.html`, 'master');
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}.html?ref=master`, {
+        method: 'GET',
+        headers: {'PRIVATE-TOKEN': TOKEN}
+    });
 }
 
 export async function getFile(tenantName: string, appName: string, filePath: string) {
-    return repositoryFiles.showRaw(`${tenantName}/${appName}`, filePath, 'master');
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${encodeURIComponent(filePath)}/raw?ref=master`, {
+        method: 'GET',
+        headers: {'PRIVATE-TOKEN': TOKEN}
+    });
 }
 
 // Examples:

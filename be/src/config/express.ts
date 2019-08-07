@@ -280,9 +280,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
             if (fileExtension === 'html') {
                 try {
-                    let htmlContent = await getFile(path[1], path[2], path[3] + '.' + path[4]);
+                    let fetchRes = await getFile(path[1], path[2], path[3] + '.' + path[4]);
                     res.type(mime.getType(fileExtension));
-                    res.send(htmlContent);
+                    fetchRes.body.pipe(res);
                 } catch (err) {
                     if (err && err.response && 404 === err.response.status) tryThemeRepo = true;
                     else { next(); return }
@@ -293,9 +293,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
             if (tryThemeRepo) {
                 try {
-                    let fileContent = await getFile('frmdb-themes', app2themeMap[path[2]], path[3] + '.' + path[4]);
+                    let fetchRes = await getFile('frmdb-themes', app2themeMap[path[2]], path[3] + '.' + path[4]);
                     res.type(mime.getType(fileExtension));
-                    res.send(fileContent);
+                    fetchRes.body.pipe(res);
                 } catch (err) {
                     next(); return;
                 }                
