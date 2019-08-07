@@ -4,8 +4,6 @@
 live-server-wwwroot
 dist-be
 dist-fe
-index.html
-index.css
 tsc-out
 tmp
 out-tsc
