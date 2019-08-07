@@ -86,6 +86,7 @@
         "jsep": "git+https://github.com/acristu/jsep.git",
         "lodash": "^4.17.11",
         "md5": "^2.2.1",
+        "mime": "^2.4.4",
         "module-alias": "^2.1.0",
         "moment": "^2.24.0",
         "morgan": "^1.6.1",

@@ -48,7 +48,7 @@ bundle:
       - dist-fe/
 
 e2e_dev_env:
-  stage: e2e
+  stage: e2e_dev_env
   script:
     - npm run e2e || true
 

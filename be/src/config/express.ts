@@ -15,6 +15,8 @@ import * as proxy from 'http-proxy-middleware';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as csv from 'csv';
+import * as mime from 'mime';
+
 
 
 import { FrmdbEngine } from "@core/frmdb_engine";
@@ -268,16 +270,18 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         };
         
         app.use(async (req, res, next) => {
-            let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/(.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html))$/);
+            let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/(.*)\.((?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html))$/);
             if (!path) {
                 next(); return;
             }
-            
+
+            let [fullPath, tenantName, appName, filePath, fileExtension] = path;
             let tryThemeRepo: boolean = false;
 
-            if (path.match(/\.html$/)) {
+            if (fileExtension === 'html') {
                 try {
-                    let htmlContent = await getFile(path[1], path[2], path[3]);
+                    let htmlContent = await getFile(path[1], path[2], path[3] + '.' + path[4]);
+                    res.type(mime.getType(fileExtension));
                     res.send(htmlContent);
                 } catch (err) {
                     if (err && err.response && 404 === err.response.status) tryThemeRepo = true;
@@ -289,7 +293,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
             if (tryThemeRepo) {
                 try {
-                    let fileContent = await getFile('frmdb-themes', app2themeMap[path[2]], path[3]);
+                    let fileContent = await getFile('frmdb-themes', app2themeMap[path[2]], path[3] + '.' + path[4]);
+                    res.type(mime.getType(fileExtension));
                     res.send(fileContent);
                 } catch (err) {
                     next(); return;
