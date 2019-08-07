@@ -35,7 +35,8 @@ live-server --wait=200 --port=8081 -V --no-browser \
     --mount=/formuladb/frmdb-editor.js:./../dist-fe/frmdb-editor.js \
     --mount=/formuladb/frmdb-editor.js.map:./../dist-fe/frmdb-editor.js.map \
     --mount=/frmdb-apps/:../../../frmdb-apps/ \
-    --mount=/formuladb-themes/:../../../frmdb-themes/ \
+    --mount=/frmdb-apps/hotel-booking:../../../frmdb-themes/royal-master \
+    --mount=/frmdb-apps/inventory:../../../frmdb-themes/startbootstrap-sb-admin-2 \
     --mount=/:../portal/public \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
     --proxy=/:http://localhost:8084/ \
