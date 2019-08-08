@@ -283,7 +283,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
             pathRewrite: function (path, req) { 
-                return app2theme(removeTenant(path));
+                return req.path.match(/\.html$/) ? path : app2theme(removeTenant(path));
             },
             logLevel: "debug",
         });
