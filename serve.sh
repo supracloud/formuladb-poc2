@@ -12,14 +12,14 @@ fctCheckDir() {
   test -d $1 || (echo "Dir not found ${1}"; exit 1) 
 }
 
-FRMDB_RELEASE=0.0.12 DEV_MODE=true DEFAULT_USER=$USER nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
+FRMDB_RELEASE=0.0.12 DEV_MODE=true DEFAULT_USER=$USER ./node_modules/.bin/nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
   "npm run docker:be && docker-compose up -d db be && nc -zvw3 localhost 8084 && touch dist-fe/frmdb-fe.js" &
 
 sleep 2
 
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed
-live-server --wait=200 --port=8081 -V --no-browser \
+../node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \
     --mount=/formuladb-editor/:../vvvebjs/ \
     --mount=/formuladb/frmdb-fe.js:./../dist-fe/frmdb-fe.js \
     --mount=/formuladb/frmdb-fe.js.map:./../dist-fe/frmdb-fe.js.map \
