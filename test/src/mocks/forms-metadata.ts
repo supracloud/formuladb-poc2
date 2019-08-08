@@ -4,7 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, ChildTableProperty } from "@domain/metadata/entity";
-import { InventoryProduct, InventoryOrder, InventoryProductUnit } from './inventory-metadata';
+import { InventoryProduct, InventoryOrder, InventoryProductUnit } from '../inventory/metadata';
 import { GEN__Client } from "./general-metadata";
 import { Sn } from '@domain/metadata/stored_procedure';
 import { Fn } from "@domain/metadata/functions";

@@ -7,13 +7,13 @@ const fetchMock = require('fetch-mock');
 
 import { DbEditorComponent } from './db-editor.component';
 import { FormulaEditorComponent } from '../formula-editor/formula-editor.component';
-import { Schema_inventory } from '@test/mocks/mock-metadata';
 import { InventoryVNavHtml } from '@fe/v-nav/v-nav.component.spec';
 import { VNavComponent } from '@fe/v-nav/v-nav.component';
+import { InventorySchema } from '@test/inventory/metadata';
 
 describe('DbEditorComponent', () => {
     beforeEach(() => {
-        fetchMock.get('/formuladb-api/unknown-tenant/unknown-app/schema', Schema_inventory);
+        fetchMock.get('/formuladb-api/unknown-tenant/unknown-app/schema', InventorySchema);
     });
 
     afterEach(fetchMock.restore)

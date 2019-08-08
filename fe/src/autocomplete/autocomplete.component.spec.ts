@@ -10,11 +10,11 @@ function normalizeHTML(html: string): string[] {
 }
 
 import { AutocompleteComponent } from './autocomplete.component';
-import { Schema_inventory } from '@test/mocks/mock-metadata';
+import { InventorySchema } from '@test/inventory/metadata';
 
 describe('AutocompleteComponent', () => {
     beforeEach(() => {
-        fetchMock.get('/formuladb-api/unknown-app/schema', Schema_inventory);
+        fetchMock.get('/formuladb-api/unknown-app/schema', InventorySchema);
     });
 
     afterEach(fetchMock.restore)
