@@ -7,7 +7,7 @@ import { Pn } from "@domain/metadata/entity";
 import { FormPage } from '@domain/uimetadata/form-page';
 import { Forms__ServiceForm } from './forms-metadata';
 import { NodeType } from "@domain/uimetadata/node-elements";
-import { ProductLocation } from "./inventory-metadata";
+import { ProductLocation } from "../inventory/metadata";
 
 let testUUID = 1;
 function getTestUUID() {

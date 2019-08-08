@@ -3,8 +3,9 @@
  * License TBD
  */
 
-import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty } from "@domain/metadata/entity";
+import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
+import * as GeneralMetadata from "@test/mocks/general-metadata";
 
 export const ProductLocation = {
     _id: 'ProductLocation',
@@ -175,8 +176,6 @@ export const Inventory = {
     props: {},
 };
 
-export { Reports } from './reports-metadata';
-
 export const LargeSalesReport = {
     _id: "LargeSalesReport",
     props: {
@@ -202,5 +201,32 @@ export const LargeSalesProduct = {
             propType_: Pn.FORMULA,
             formula: `SUMIF(OrderItem.quantity, product_id == @[product_id] && quantity > 100)`,
         } as FormulaProperty,
+    }
+}
+
+export const InventoryApp = {
+    _id: "inventory",
+    description: "Basic Inventory with positive stock",
+    pages: [
+        { name: "index", html: "index.html" },
+    ],
+};
+
+
+export const InventorySchema: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + InventoryApp._id,
+    entities: {
+        [GeneralMetadata.GEN__Currency._id]: GeneralMetadata.GEN__Currency,
+        [GeneralMetadata.GEN__Client._id]: GeneralMetadata.GEN__Client,
+        [Inventory._id]: Inventory,
+        [InventoryOrder._id]: InventoryOrder,
+        [OrderItem._id]: OrderItem,
+        [InventoryReceipt._id]: InventoryReceipt,
+        [ReceiptItem._id]: ReceiptItem,
+        [InventoryProduct._id]: InventoryProduct,
+        [ProductLocation._id]: ProductLocation,
+        [InventoryProductUnit._id]: InventoryProductUnit,
+        [LargeSalesReport._id]: LargeSalesReport,
+        [LargeSalesProduct._id]: LargeSalesProduct,
     }
 }

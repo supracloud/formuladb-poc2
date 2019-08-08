@@ -25,7 +25,7 @@
         "@types/jquery": "^3.3.29",
         "@types/js-yaml": "^3.12.1",
         "@types/lodash": "^4.14.135",
-        "@types/node": "^12.0.2",
+        "@types/node": "^12.7.1",
         "browser-sync": "^2.26.7",
         "concurrently": "^4.1.0",
         "document-register-element": "^1.13.2",

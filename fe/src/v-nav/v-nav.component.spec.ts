@@ -6,8 +6,8 @@
 const fetchMock = require('fetch-mock');
 
 import { VNavComponent } from './v-nav.component';
-import { Schema_inventory } from '@test/mocks/mock-metadata';
 import { normalizeHTML } from '@fe/live-dom-template/live-dom-template.spec';
+import { InventorySchema } from '@test/inventory/metadata';
 
 export const InventoryVNavHtml = normalizeHTML(/* html */`
 <frmdb-v-nav>
@@ -87,7 +87,7 @@ export const InventoryVNavHtml = normalizeHTML(/* html */`
 
 describe('VNavComponent', () => {
     beforeEach(() => {
-        fetchMock.get('/formuladb-api/unknown-app/schema', Schema_inventory);
+        fetchMock.get('/formuladb-api/unknown-app/schema', InventorySchema);
     });
 
     afterEach(fetchMock.restore)

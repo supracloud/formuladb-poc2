@@ -1,4 +1,4 @@
-import { ProductLocation1, ProductLocation1a, InventoryOrder1 } from "./inventory-data";
+import { ProductLocation1, ProductLocation1a, InventoryOrder1 } from "../inventory/data";
 
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.

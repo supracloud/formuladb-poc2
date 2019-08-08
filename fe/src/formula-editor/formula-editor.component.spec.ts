@@ -6,12 +6,12 @@
 const fetchMock = require('fetch-mock');
 
 import { FormulaEditorComponent } from './formula-editor.component';
-import { Schema_inventory } from '@test/mocks/mock-metadata';
 import { normalizeHTML } from '@fe/live-dom-template/live-dom-template.spec';
+import { InventorySchema } from '@test/inventory/metadata';
 
 describe('FormulaEditorComponent', () => {
     beforeEach(() => {
-        fetchMock.get('/formuladb-api/unknown-app/schema', Schema_inventory);
+        fetchMock.get('/formuladb-api/unknown-app/schema', InventorySchema);
     });
 
     afterEach(fetchMock.restore)

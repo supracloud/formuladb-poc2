@@ -5,7 +5,7 @@
 
 import * as _ from 'lodash';
 import { Entity } from "@domain/metadata/entity";
-import { InventoryData } from './inventory-data';
+import { InventoryData } from '../inventory/data';
 import { DataObj } from '@domain/metadata/data_obj';
 import { GeneralData } from './general-data';
 import { BookingData } from './booking-data';
