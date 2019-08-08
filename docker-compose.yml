@@ -1,6 +1,13 @@
 version: "3.0"
 
 services:
+  lb: 
+    image: registry.gitlab.com/metawiz/febe/formuladb-lb:${FRMDB_RELEASE:-unknown_FRMDB_RELEASE}
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - be
   db:
     image: postgres:11
     environment:

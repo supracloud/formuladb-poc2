@@ -62,24 +62,35 @@ buildprodimages:
     # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
     - npm run docker:be
     - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG:-latest}
+    - docker build -t formuladb-lb -f docker/Dockerfile.lb docker
+    - docker tag formuladb-lb registry.gitlab.com/metawiz/febe/formuladb-lb:${CI_COMMIT_TAG:-latest}
+    - docker push registry.gitlab.com/metawiz/febe/formuladb-lb:${CI_COMMIT_TAG:-latest}
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - dist-be/
       - dist-fe/
-  only:
-    - master
+#  only:
+#    - master
 
 deploy:
   stage: deploy
   script:
-    # publish FE on object storage
-    - mkdir -p dist/fe
-    - cp fe/js/customize-editor.js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-form.js dist-fe/frmdb-editor.js dist/fe
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/frmdb-apps/ci-tools.git
+    - cd ci-tools
+    - npm install
     - source tools.sh
+    - cd ..
+    # publish vvvebj on GCloud
+    - NODE_PATH=ci-tools/node_modules upload-assets `find vvvebjs -type f -print`
+    # publish portal on GCloud
+    - NODE_PATH=ci-tools/node_modules upload-assets `find portal/public/ -type f -print`
+    # publish FE on GCloud
+    - mkdir -p dist/fe
+    - cp dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-form.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
-    - for i in `find -type f -printf '%P\n'` ; do upload-asset $i; done
+    - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
     - cd ..
     # remote ssh on demo VM and refresh containers from latest images
     - chmod 600 ssh/frmdb.id_rsa
@@ -88,18 +99,17 @@ deploy:
     # copy new compose config
     - scp -i ssh/frmdb.id_rsa docker-compose.yml demo@formuladb.online:/home/demo/docker-compose.yml
     # get latest "latest" for be
-    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose pull be"
+    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose pull be lb"
     # bring up new stack
-    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose up -d db be"
+    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose up -d db be lb"
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - dist-be/
       - dist-fe/
-  only:
-    refs:
-      - master
+#  only:
+#    - master
 
 # e2e_example_apps:
 #   script:
