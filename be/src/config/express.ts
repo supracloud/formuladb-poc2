@@ -263,45 +263,32 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
-    if (process.env.DEV_MODE) {
-        //serve content from gitlab
-        const app2themeMap = {
-            'hotel-booking': 'royal-master', //FIXME: store this in the App object and remove hardcoding
-        };
-        
-        app.use(async (req, res, next) => {
-            let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/(.*)\.((?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html))$/);
-            if (!path) {
-                next(); return;
-            }
-
-            let [fullPath, tenantName, appName, filePath, fileExtension] = path;
-            let tryThemeRepo: boolean = false;
-
-            if (fileExtension === 'html') {
-                try {
-                    let fetchRes = await getFile(path[1], path[2], path[3] + '.' + path[4]);
-                    res.type(mime.getType(fileExtension));
-                    fetchRes.body.pipe(res);
-                } catch (err) {
-                    if (err && err.response && 404 === err.response.status) tryThemeRepo = true;
-                    else { next(); return }
-                }
-            } else {
-                tryThemeRepo = true;
-            }
-
-            if (tryThemeRepo) {
-                try {
-                    let fetchRes = await getFile('frmdb-themes', app2themeMap[path[2]], path[3] + '.' + path[4]);
-                    res.type(mime.getType(fileExtension));
-                    fetchRes.body.pipe(res);
-                } catch (err) {
-                    next(); return;
-                }                
-            }
-        });
+    function app2theme(path: string) {
+        //TODO: read app metadata and replace app name with theme
+        return path
+            .replace(/^hotel-booking\//, 'royal-master/')
+        ;
     }
+    function removeTenant(path: string) {
+        //TODO: read tenant metadata and check that tenant exists
+        return path.replace(/^\/?([-_\w]+)\//, '');
+    }
+    app.use((req, res, next) => {
+        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
+        if (!path) {
+            next();
+            return;
+        }
+        let httpProxy = proxy({ 
+            target: 'https://storage.googleapis.com/formuladb-static-assets/',
+            changeOrigin: true,
+            pathRewrite: function (path, req) { 
+                return req.path.match(/\.html$/) ? path : app2theme(removeTenant(path));
+            },
+            logLevel: "debug",
+        });
+        httpProxy(req, res, next);
+    });
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {
