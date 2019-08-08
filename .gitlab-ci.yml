@@ -71,8 +71,8 @@ buildprodimages:
       - node_modules/
       - dist-be/
       - dist-fe/
-#  only:
-#    - master
+  only:
+    - master
 
 deploy:
   stage: deploy
@@ -108,8 +108,8 @@ deploy:
       - node_modules/
       - dist-be/
       - dist-fe/
-#  only:
-#    - master
+  only:
+    - master
 
 # e2e_example_apps:
 #   script:
