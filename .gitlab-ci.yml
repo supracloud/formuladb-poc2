@@ -7,7 +7,7 @@ stages:
   - deploy
   - e2e_demo_env
   # - e2e_example_apps
-  # - cleanup
+  - cleanup
   # - videos
 
 build:
@@ -113,9 +113,9 @@ deploy:
     - master
 
 e2e_demo_env:
-  stage: e2e_dev_env
+  stage: e2e_demo_env
   script:
-    - true
+    - echo "Not Implemented"
   only:
     - master
 
