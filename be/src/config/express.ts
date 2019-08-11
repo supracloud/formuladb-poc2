@@ -264,12 +264,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
-            .replace(/^hotel-booking\//, 'royal-master/')
+            .replace(/^\/?([-_\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
+            .replace(/^\/?([-_\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
         ;
-    }
-    function removeTenant(path: string) {
-        //TODO: read tenant metadata and check that tenant exists
-        return path.replace(/^\/?([-_\w]+)\//, '');
     }
     app.use((req, res, next) => {
         let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
@@ -281,7 +278,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
             pathRewrite: function (path, req) { 
-                return req.path.match(/\.html$/) ? path : app2theme(removeTenant(path));
+                return req.path.match(/\.html$/) ? path : app2theme(path);
             },
             logLevel: "debug",
         });

@@ -29,9 +29,9 @@ export const RoomType = {
         //     isLargeTable: true,
         // } as EntityProperty,
     },
-    validations: {
-        noOverlap: { conditionExpr: $s2e('overlapping <= 10') }
-    },
+    // validations: {
+    //     noOverlap: { conditionExpr: $s2e('overlapping <= 10') }
+    // },
 };
 
 export const Room = {

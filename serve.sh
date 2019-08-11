@@ -23,8 +23,6 @@ cd live-server-wwwroot #optimize speed
     --mount=/formuladb-editor/:../vvvebjs/ \
     --mount=/formuladb/:./../dist-fe/ \
     --mount=/frmdb-apps/:../../../frmdb-apps/ \
-    --mount=/frmdb-apps/hotel-booking:../../../frmdb-themes/royal-master \
-    --mount=/frmdb-apps/inventory:../../../frmdb-themes/startbootstrap-sb-admin-2 \
     --mount=/:../portal/public \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
     --proxy=/:http://localhost:8084/ \

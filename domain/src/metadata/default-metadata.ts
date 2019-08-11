@@ -19,3 +19,11 @@ export const $I18n: Entity = {
         ro: { name: "ro", propType_: Pn.STRING } as EntityProperty,
     }
 };
+
+export const $Currency: Entity = {
+    _id: "$Currency",
+    props: {
+
+        code: { name: "code", propType_: Pn.STRING } as EntityProperty,
+    },
+};

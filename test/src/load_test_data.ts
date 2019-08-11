@@ -48,6 +48,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             let mockData = new MockData(schema.entities);
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
+            await frmdbEngine.init(true);
             for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
                 for (let obj of mockData.getAllForPath(entityId)) {
                     console.log("PUTTTTTT", obj);

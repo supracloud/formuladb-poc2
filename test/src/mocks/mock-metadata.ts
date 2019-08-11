@@ -16,7 +16,7 @@ import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
-import { $User, $I18n } from '@domain/metadata/default-metadata';
+import { $User, $I18n, $Currency } from '@domain/metadata/default-metadata';
 import { HotelBookingSchema } from '../hotel-booking/metadata';
 import { InventorySchema } from '../inventory/metadata';
 
@@ -41,7 +41,6 @@ export const Schema_test: Schema = {
         [StaticPagesMetadata.Pages._id]: StaticPagesMetadata.Pages,
         [StaticPagesMetadata.Ecommerce._id]: StaticPagesMetadata.Ecommerce,
         [StaticPagesMetadata.Blog._id]: StaticPagesMetadata.Blog,
-        [InventoryMetadata.Inventory._id]: InventoryMetadata.Inventory,
         [InventoryMetadata.InventoryOrder._id]: InventoryMetadata.InventoryOrder,
         [InventoryMetadata.OrderItem._id]: InventoryMetadata.OrderItem,
         [InventoryMetadata.InventoryReceipt._id]: InventoryMetadata.InventoryReceipt,
@@ -151,6 +150,7 @@ export const Schema_reporting: Schema = {
 export const CommonEntities = [
     $User,
     $I18n,
+    $Currency,
     // GeneralMetadata.GEN__Currency,
     // GeneralMetadata.GEN__Client,
     // StaticPagesMetadata.Home,
