@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1beta13
+kind: Config
+build:
+  artifacts:
+  - image: registry.gitlab.com/metawiz/febe/formuladb-be
+    context: .
+    sync:
+      manual:
+      # Sync all the javascript files that are in the fost-be folder
+      # with the container src folder
+      - src: 'dist-be/**/*.js'
+        dest: /dist-be
+    docker:
+      dockerfile: Dockerfile.be
