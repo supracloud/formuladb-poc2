@@ -13,11 +13,13 @@ spec:
         service: lb
     spec:
       containers:
-      - image: registry.gitlab.com/metawiz/febe/formuladb-lb:0.0.12
+      - image: registry.gitlab.com/metawiz/febe/formuladb-lb:latest
         name: lb
         ports:
         - containerPort: 80
         - containerPort: 443
         resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
 status: {}
