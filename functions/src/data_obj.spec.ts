@@ -4,9 +4,9 @@
  */
 
 import * as _ from 'lodash';
-import { Inventory, ReceiptItem, InventoryReceipt } from "@test/inventory/metadata";
+import { ReceiptItem, InventoryReceipt } from "@test/inventory/metadata";
 import { parseDataObjId, mergeSubObj, getChildrenPrefix, DataObj } from '@domain/metadata/data_obj';
-import { InventoryReceipt1, ReceiptItem1_1, ReceiptItem1_2, ProductLocation12, ProductLocation1 } from '@test/inventory/data';
+import { ReceiptItem1_1, ReceiptItem1_2, ProductLocation12, ProductLocation1 } from '@test/inventory/data';
 
 describe('DataObj', () => {
   beforeEach(() => {

@@ -81,24 +81,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
         `        
     }
     
-    _old_render(navItems: NavigationItem[]) {
-        return /*html*/`
-        <ol>
-            ${navItems.map(nav => /*html*/`
-                <li class="nav-item  ${this.frmdbState.selectedEntityId === nav.id ? 'active' : ''}">
-                    <a class="nav-link position-relative py-0" data-id="${nav.id}">
-                        <span class="frmdb-nav-segment-text">
-                            <span>${nav.linkNameI18n}</span>
-                            <!--<span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>-->
-                        </span>
-                    </a>
-                    ${nav.children && nav.children.length > 0 ? /*html*/`<input type="checkbox" checked="">` : ''}
-                    ${this.render(nav.children || [])}
-                </li>
-            `).join('')}
-        </ol>
-        `        
-    }
+z
     
     private setCollapsed(entities: any[], route: string[]): any[] {
         return entities.map(e => {
