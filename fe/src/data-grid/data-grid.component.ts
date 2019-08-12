@@ -53,12 +53,15 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     /** web components API **************************************************/
     attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
-        if (!this.gridApi) return;
-        if (attrName == 'table_name') {
-            this.initAgGrid();
-        } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
-            this.gridApi.purgeServerSideCache()
-        }
+        waitUntilNotNull(() => Promise.resolve(this.gridApi), 2500)
+        .then(() => {
+            if (!this.gridApi) throw new Error("Timeout during initialization");
+            if (attrName == 'table_name') {
+                this.initAgGrid();
+            } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
+                this.gridApi.purgeServerSideCache()
+            }    
+        });
     }
 
     connectedCallback() {
