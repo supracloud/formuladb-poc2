@@ -9,6 +9,6 @@ build:
       # Sync all the javascript files that are in the fost-be folder
       # with the container src folder
       - src: 'dist-be/**/*.js'
-        dest: /
+        dest: .
     docker:
       dockerfile: Dockerfile.be
