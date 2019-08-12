@@ -14,7 +14,7 @@
         "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
         "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'npm run docker:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
         "test:unit": "node jasmine.js",
-        "test:e2e": "protractor test/e2e/protractor.conf.js",
+        "test:e2e": "protractor e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js"
     },
     "author": "",
@@ -59,7 +59,9 @@
         "webpack": "^4.33.0",
         "webpack-cli": "^3.3.2",
         "webpack-node-externals": "^1.7.2",
-        "whatwg-fetch": "^3.0.0"
+        "whatwg-fetch": "^3.0.0",
+        "is-wsl": "^2.1.0",
+        "protractor": "^5.4.2"
     },
     "dependencies": {
         "acorn": "^5.4.1",
@@ -100,8 +102,7 @@
         "short-uuid": "^3.1.0",
         "source-map-support": "^0.5.12",
         "tslib": "^1.9.3",
-        "wait-on": "^3.2.0",
-        "is-wsl": "^2.1.0"
+        "wait-on": "^3.2.0"
     },
     "_moduleAliases": {
         "@domain": "./tsc-out/domain/src",
@@ -109,6 +110,7 @@
         "@core": "./tsc-out/core/src",
         "@storage": "./tsc-out/storage/src",
         "@test": "./tsc-out/test/src",
+        "@e2e": "./tsc-out/test/src",
         "@be": "./tsc-out/be/src",
         "@fe": "./tsc-out/fe/src",
         "@fe-assets": "./fe/src",

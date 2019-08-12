@@ -20,6 +20,7 @@
             "@core/*": ["./core/src/*"],
             "@storage/*": ["./storage/src/*"],
             "@test/*": ["./test/src/*"],
+            "@e2e/*": ["./e2e/src/*"],
             "@be/*": ["./be/src/*"],
             "@fe/*": ["./fe/src/*"]
         },        
@@ -34,6 +35,7 @@
         "./core/src/**/*",
         "./storage/src/**/*",
         "./test/src/**/*",
+        "./e2e/src/**/*",
         "./be/src/**/*",
         "./fe/src/**/*"
     ]
