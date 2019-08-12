@@ -351,9 +351,12 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.getAttributeTyped("expand_row") && col.name === '_id') {
+        let entityName = this.getAttribute("table_name");
+        let expandRowTarget = this.getAttributeTyped("expand_row");
+        if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
+                let rowId = this.valueFormatter(params);
+                return `<a href="javascript:void(0)" onclick="this.ownerDocument.defaultView.$('${expandRowTarget}').attr('data-frmdb-record', '${rowId}').modal('toggle')">${rowId}</a>`;
             }
         } else return null;
     }

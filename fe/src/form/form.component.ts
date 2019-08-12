@@ -14,13 +14,14 @@ import { FrmdbLogger } from "@domain/frmdb-logger";
 import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
 import { CssWidth } from '@domain/uimetadata/css-classes';
 import { elvis } from '@core/elvis';
+import { FORM_SERVICE } from '@fe/form.service';
 const LOG = new FrmdbLogger('frmdb-form');
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/form/form.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/form/form.component.scss').default;
 export interface FormComponentAttr {
-    table_name: "string";
+    table_name: string;
     fields: { [name: string]: { width: CssWidth } };
     rowid: string;
 };
@@ -43,49 +44,49 @@ export interface FormComponentState extends FormComponentAttr {
     noShadow: true,
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
+    attributeChangedCallback(attrName: keyof FormComponentAttr, oldVal, newVal) {
+        if (attrName == 'table_name') {
+            this.renderForm();
+        }
+    }
 
-    async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]): Promise<Partial<FormComponentState>> {
-        if (attrName === "table_name") {
-            let entity = await BACKEND_SERVICE().getEntity(newVal as FormComponentAttr["table_name"]);
-            let props: FormComponentState["props"] = [];
-            for (let prop of Object.values(entity.props)) {
-                props.push({
-                    ...prop,
-                    isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
-                    nameI18n: I18N.tt(prop.name),
-                    disabled: this.getDisabled(entity, prop),
-                    cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
-                });
-            }
-            return {
-                ...this.frmdbState,
-                table_name: newVal as FormComponentAttr["table_name"],
-                props,
-            };
-        } else if (attrName === "rowid") {
+    async renderForm() {
+        let entityName = this.getAttribute("table_name") || 'n/a';
+        let entity = await BACKEND_SERVICE().getEntity(entityName);
+        let props: FormComponentState["props"] = [];
+        for (let prop of Object.values(entity.props)) {
+            props.push({
+                ...prop,
+                isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
+                nameI18n: I18N.tt(prop.name),
+                disabled: this.getDisabled(entity, prop),
+                cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
+            });
+        }
+
+        let dataObj = await BACKEND_SERVICE().getDataObj(FORM_SERVICE.instance!.getParentObjId(this));
+
+        this.frmdbState = {
+            props,
+            dataObj,
+        };
+
+        this.updateDOM();
+    }
+
+    async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]) {
+        if (attrName === "rowid") {
             let dataObj = await BACKEND_SERVICE().getDataObj(newVal as FormComponentAttr["rowid"]);
-            return {
-                ...this.frmdbState,
-                rowid: newVal as FormComponentAttr["rowid"],
-                dataObj
-            };
+            this.frmdbState.dataObj = dataObj;
         } else if (attrName === "fields") {
             if (this.frmdbState.props && this.frmdbState.props.length > 0) {
                 let props = [...this.frmdbState.props];
                 for (let prop of Object.values(props)) {
                     prop.cssWidth = elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12";
                 }
-                return {
-                    ...this.frmdbState,
-                    props,
-                };  
-            } else {
-                return {
-                    ...this.frmdbState,
-                    fields: newVal as FormComponentState["fields"],
-                }; 
+                this.frmdbState.props = props;
             }
-        } else return this.frmdbState;
+        }
     }
 
     private getDisabled(entity: Entity, prop: EntityProperty): boolean {

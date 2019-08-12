@@ -6,8 +6,6 @@
 import * as _ from 'lodash';
 import * as DOMPurify from "dompurify";
 
-import '../autocomplete/autocomplete.component';
-
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { AppPage } from '@domain/app';

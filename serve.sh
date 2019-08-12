@@ -22,6 +22,7 @@ cd live-server-wwwroot #optimize speed
 ../node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \
     --mount=/formuladb-editor/:../vvvebjs/ \
     --mount=/formuladb/:./../dist-fe/ \
+    --mount=/formuladb/frmdb-runtime-utils.js:./../fe/js/frmdb-runtime-utils.js \
     --mount=/frmdb-apps/:../../../frmdb-apps/ \
     --mount=/:../portal/public \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
