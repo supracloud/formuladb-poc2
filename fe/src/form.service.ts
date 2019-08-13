@@ -108,7 +108,7 @@ export class FormService {
         return parentEl;
     }
 
-    private getParentObjId(control: HTMLElement): string {
+    public getParentObjId(control: HTMLElement): string {
         let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
         if (!parentEl) throw new Error("Could not get parent of " + control.outerHTML);
         let ret = parentEl.getAttribute('data-frmdb-record');
@@ -152,3 +152,7 @@ export class FormService {
         return true;
     }
 }
+
+export const FORM_SERVICE: {instance: FormService | null} = {
+    instance: null
+};

@@ -3,7 +3,7 @@ document.title = "FormulaDB Editor";
 
 function customizeEditor() {
 
-	if (true /* no right panel */) { 
+	if (false /* no right panel */) { 
 		$("#vvveb-builder").addClass("no-right-panel");
 		$(".component-properties-tab").show();
 		Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";

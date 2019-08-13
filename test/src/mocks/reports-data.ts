@@ -1,4 +1,4 @@
-import { ProductLocation9a, ProductLocation10, Prd_9a, Prd_10, ProductLocation11, ProductLocation12, Prd_11, Prd_12 } from "./inventory-data";
+import { ProductLocation9a, ProductLocation10, Prd_9a, Prd_10, ProductLocation11, ProductLocation12, Prd_11, Prd_12 } from "../inventory/data";
 
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.

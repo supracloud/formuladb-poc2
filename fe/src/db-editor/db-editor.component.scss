@@ -30,8 +30,11 @@ frmdb-db-editor {
     display: flex;
     // border-bottom: 4px solid var(--primary);
 }
+
 frmdb-v-nav {
     display: block;
+    height: calc(100% - 32px);
+    overflow: auto;
 }
 
 #preview-btn.preview {

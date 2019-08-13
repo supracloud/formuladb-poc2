@@ -22,9 +22,9 @@ export const Act_Ondricka = { _id: "$User~~8", firstName: "Brandon", lastName: "
 export const Act_Collins = { _id: "$User~~9", firstName: "Bonita", lastName: "Collins", code: "act120", username: "Bonita33", email: "Bonita_Collins@yahoo.com", avatar: "https://s3.amazonaws.com/uifaces/faces/twitter/michaelbrooksjr/128.jpg", name: "Bonita Collins", role: "USER", password: "c9d9b8cab32214716ee1b44b3aae2502", details: "Central Identity Analyst", state: "ACTIVE_" };
 export const Act_Wiza = { _id: "$User~~10", firstName: "Lonie", lastName: "Wiza", code: "act121", username: "Lonie_Wiza", email: "Lonie_Wiza50@gmail.com", avatar: "https://s3.amazonaws.com/uifaces/faces/twitter/loganjlambert/128.jpg", name: "Lonie Wiza", role: "USER", password: "c9d9b8cab32214716ee1b44b3aae2502", details: "Customer Division Coordinator", state: "ACTIVE_" };
 
-const Cur_RON = { _id: "GEN__Currency~~1", code: "RON", rate1: 1, rate2: 1, rate3: 1, rate4: 1, rate5: 1 };
-const Cur_EUR = { _id: "GEN__Currency~~2", code: "EUR", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
-const Cur_USD = { _id: "GEN__Currency~~3", code: "USD", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
+const Cur_RON = { _id: "$Currency~~1", code: "RON", rate1: 1, rate2: 1, rate3: 1, rate4: 1, rate5: 1 };
+const Cur_EUR = { _id: "$Currency~~2", code: "EUR", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
+const Cur_USD = { _id: "$Currency~~3", code: "USD", rate1: 101, rate2: 102, rate3: 103, rate4: 104, rate5: 105 };
 
 const Cln_Ratke = { _id: "GEN__Client~~1", name: "Ratke Inc", email: "Sheldon.Barton2@yahoo.com", bs: "world-class benchmark e-business", catchPhrase: "Virtual high-level function" };
 const Cln_Gibson = { _id: "GEN__Client~~2", name: "Gibson Group", email: "Laverna.Von21@yahoo.com", bs: "e-business innovate infomediaries", catchPhrase: "Switchable fresh-thinking synergy" };

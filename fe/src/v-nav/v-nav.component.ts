@@ -3,6 +3,7 @@
 * License TBD
 */
 
+import { I18N } from "@fe/i18n.service";
 import { NavigationItem, entites2navItems } from './navigation.item';
 
 import * as _ from 'lodash';
@@ -30,14 +31,18 @@ declare var Vvveb: any;
     noShadow: true,
 })
 export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
+
+    entities: Entity[] = [];
     
     connectedCallback() {
         
         BACKEND_SERVICE().getEntities().then(entities => {
             this.frmdbState.selectedEntityId = entities[0]._id;
             setTimeout(() => Vvveb.Gui.CurrentTableId = entities[0]._id, 500);
+
+            this.entities = entities;
             
-            this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
+            // this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
         })
 
         onEvent(this, 'click', '*', (event) => {
@@ -54,29 +59,46 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
         let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
         el.innerHTML = /*html*/`
             <div class="tree" style="height: 100%;">
-                ${this.render(this.frmdbState.navigationItemsTree || [])}
+                ${this.render()}
             </div>
         `;
     }
 
-    render(navItems: NavigationItem[]) {
+    render() {
         return /*html*/`
         <ol>
-            ${navItems.map(nav => /*html*/`
-                <li class="nav-item  ${this.frmdbState.selectedEntityId === nav.id ? 'active' : ''}">
-                    <a class="nav-link position-relative py-0" data-id="${nav.id}">
+            ${this.entities.map(ent => /*html*/`
+                <li class="nav-item  ${this.frmdbState.selectedEntityId === ent._id ? 'active' : ''}">
+                    <a class="nav-link position-relative py-0" data-id="${ent._id}">
                         <span class="frmdb-nav-segment-text">
-                            <span>${nav.linkNameI18n}</span>
-                            <!--<span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>-->
+                            <span>${I18N.tt(ent._id)}</span>
+                            <!--<span class="frmdb-nav-segment-dev-mode-identifier">${ent._id}</span>-->
                         </span>
                     </a>
-                    ${nav.children && nav.children.length > 0 ? /*html*/`<input type="checkbox" checked="">` : ''}
-                    ${this.render(nav.children || [])}
                 </li>
             `).join('')}
         </ol>
         `        
     }
+    
+    // _old_render(navItems: NavigationItem[]) {
+    //     return /*html*/`
+    //     <ol>
+    //         ${navItems.map(nav => /*html*/`
+    //             <li class="nav-item  ${this.frmdbState.selectedEntityId === nav.id ? 'active' : ''}">
+    //                 <a class="nav-link position-relative py-0" data-id="${nav.id}">
+    //                     <span class="frmdb-nav-segment-text">
+    //                         <span>${nav.linkNameI18n}</span>
+    //                         <!--<span class="frmdb-nav-segment-dev-mode-identifier">${nav.id}</span>-->
+    //                     </span>
+    //                 </a>
+    //                 ${nav.children && nav.children.length > 0 ? /*html*/`<input type="checkbox" checked="">` : ''}
+    //                 ${this.render(nav.children || [])}
+    //             </li>
+    //         `).join('')}
+    //     </ol>
+    //     `        
+    // }
     
     private setCollapsed(entities: any[], route: string[]): any[] {
         return entities.map(e => {
