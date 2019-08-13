@@ -44,39 +44,25 @@ export interface FormComponentState extends FormComponentAttr {
     noShadow: true,
 })
 export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormComponentState> {
-    attributeChangedCallback(attrName: keyof FormComponentAttr, oldVal, newVal) {
-        if (attrName == 'table_name') {
-            this.renderForm();
-        }
-    }
-
-    async renderForm() {
-        let entityName = this.getAttribute("table_name") || 'n/a';
-        let entity = await BACKEND_SERVICE().getEntity(entityName);
-        let props: FormComponentState["props"] = [];
-        for (let prop of Object.values(entity.props)) {
-            props.push({
-                ...prop,
-                isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
-                nameI18n: I18N.tt(prop.name),
-                disabled: this.getDisabled(entity, prop),
-                cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
-            });
-        }
-
-        let dataObj = await BACKEND_SERVICE().getDataObj(FORM_SERVICE.instance!.getParentObjId(this));
-
-        this.frmdbState = {
-            props,
-            dataObj,
-        };
-
-        this.updateDOM();
-    }
 
     async frmdbPropertyChangedCallback<T extends keyof FormComponentState>(attrName: T, oldVal: FormComponentState[T], newVal: FormComponentState[T]) {
-        if (attrName === "rowid") {
-            let dataObj = await BACKEND_SERVICE().getDataObj(newVal as FormComponentAttr["rowid"]);
+        if (attrName === "table_name") {
+            let entityName = this.frmdbState.table_name || 'n/a';
+            let entity = await BACKEND_SERVICE().getEntity(entityName);
+            let props: FormComponentState["props"] = [];
+            for (let prop of Object.values(entity.props)) {
+                props.push({
+                    ...prop,
+                    isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
+                    nameI18n: I18N.tt(prop.name),
+                    disabled: this.getDisabled(entity, prop),
+                    cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
+                });
+            }
+
+            this.frmdbState.props = props;
+        } else if (attrName === "rowid") {
+            let dataObj = await BACKEND_SERVICE().getDataObj(this.frmdbState.rowid!);
             this.frmdbState.dataObj = dataObj;
         } else if (attrName === "fields") {
             if (this.frmdbState.props && this.frmdbState.props.length > 0) {

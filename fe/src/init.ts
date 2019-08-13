@@ -2,6 +2,7 @@ import { FormService, FORM_SERVICE } from "./form.service";
 import { APP_AND_TENANT_ROOT } from "./app.service";
 import { waitUntilNotNull } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
+import { initRoutes } from "./router";
 
 export async function initFrmdb() {
     let [tenantName, appName, appRootEl] = APP_AND_TENANT_ROOT();
@@ -9,4 +10,5 @@ export async function initFrmdb() {
     FORM_SERVICE.instance = formService;
     await waitUntilNotNull(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
     formService.initFormsFromNewRecordCache();
+    initRoutes();
 }
