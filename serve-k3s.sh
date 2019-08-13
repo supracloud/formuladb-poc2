@@ -14,6 +14,7 @@ trap handleErr ERR
 hash kubectl &>/dev/null || { echo "kubectl not found! See https://kubernetes.io/docs/tasks/tools/install-kubectl/"; exit 1; }
 hash k3d &>/dev/null || { echo "k3d not found! See https://github.com/rancher/k3d/"; exit $ERRCODE; }
 hash skaffold &>/dev/null || { echo "skaffold not found! See https://skaffold.dev/docs/getting-started/#installing-skaffold"; exit $ERRCODE; }
+[ -f "$HOME/.docker/config.json" ] || { echo "Not logged in to docker registry. Run docker login registry.gitlab.com"; exit $ERRCODE; }
 
 # To completely erase the dev environment execute: k3d delete
 if ! k3d get-kubeconfig &>/dev/null

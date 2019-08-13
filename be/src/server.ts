@@ -43,6 +43,12 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
 
 // new FrmdbEngine().init();
 // https://codeburst.io/dont-use-nodemon-there-are-better-ways-fc016b50b45e
-var watcher = chokidar.watch('./dist-be/frmdb-be.js').on('change', (event, path) => {
-    console.log(event, path);
+var watcher = chokidar.watch('.', {
+    persistent: true,
+    cwd: '/dist-be'
+}).on('change', (path) => {
+    console.log('change detected on', path, '. Clearing cache ...');
+    Object.keys(require.cache).forEach(function(id) {
+        delete require.cache[id];
+    })
 });
