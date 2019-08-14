@@ -68,7 +68,7 @@ describe('Inventory Metadata', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    it("Basic stock operations", async (done) => {
+    fit("Basic stock operations", async (done) => {
         cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
         cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
         cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);
