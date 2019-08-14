@@ -34,7 +34,7 @@ describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STOR
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
 
-    it("Should allow non-overlapping bookings to be created", async (done) => {
+    xit("Should allow non-overlapping bookings to be created", async (done) => {
         let newBooking = { 
             _id: "Booking~~", 
             room: Room_DoubleDeluxe1._id, 

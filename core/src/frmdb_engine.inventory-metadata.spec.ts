@@ -27,11 +27,11 @@ describe('Inventory Metadata', () => {
     let cf1: CompiledFormula;
     let cf2: CompiledFormula;
     let cf3: CompiledFormula;
-    let pl1 = { _id: "ProductLocation~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
-    let ri1_1 = { _id: "ReceiptItem~~1__1", product_id: "ProductLocation~~1", quantity: 10}; 
-    let ri1_2 = { _id: "ReceiptItem~~1__2", product_id: "ProductLocation~~1", quantity: 5}; 
-    let oi1_1 = { _id: "OrderItem~~1__1", product_id: "ProductLocation~~1", quantity: 10};
-    let oi1_2 = { _id: "OrderItem~~1__2", product_id: "ProductLocation~~1", quantity: 4};
+    let pl1;
+    let ri1_1;
+    let ri1_2;
+    let oi1_1;
+    let oi1_2;
 
     const InventorySchema: Schema = {
         _id: "FRMDB_SCHEMA",
@@ -43,6 +43,13 @@ describe('Inventory Metadata', () => {
     };
 
     beforeEach(async (done) => {
+        pl1 = { _id: "ProductLocation~~1", received_stock__: -1, ordered_stock__: -1, available_stock__: -1};
+        ri1_1 = { _id: "ReceiptItem~~1__1", product_id: "ProductLocation~~1", quantity: 10}; 
+        ri1_2 = { _id: "ReceiptItem~~1__2", product_id: "ProductLocation~~1", quantity: 5}; 
+        oi1_1 = { _id: "OrderItem~~1__1", product_id: "ProductLocation~~1", quantity: 10};
+        oi1_2 = { _id: "OrderItem~~1__2", product_id: "ProductLocation~~1", quantity: 4};
+    
+
         frmdbEngine = await getFrmdbEngine(InventorySchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.kvsFactory.clearAll();

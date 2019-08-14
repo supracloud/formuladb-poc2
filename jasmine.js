@@ -67,12 +67,10 @@ try {
         random: false,
         "spec_dir": ".",
         "spec_files": specificJsFile ? [specificJsFile] : [
-            "tsc-out/fe/src/autocomplete/autocomplete.component.spec.js",
-            "tsc-out/fe/src/db-editor/db-editor.component.spec.js",
-            "tsc-out/fe/src/live-dom-template/live-dom-template.spec.js",
-            "tsc-out/fe/src/web-component-spec-example.spec.js",
-            "tsc-out/fe/src/form.service.spec.js",
-            "tsc-out/test/src/hotel-booking/hotel-booking.spec.js",
+            "tsc-out/fe/**/*.spec.js",
+            "tsc-out/core/**/*.spec.js",
+            "!tsc-out/core/**/*.stress.spec.js",
+            "!tsc-out/core/**/*.rem.spec.js",
             // "tsc-out/fe/**/*.spec.js",
             // "tsc-out/core/**/*.spec.js",
             // "dist/**/*.spec.js",
@@ -89,6 +87,9 @@ try {
         summary: {
             displayDuration: false,
             displayPending: false,
+            displaySuccessful: true,
+            displayFailed: true,
+            displayErrorMessages: false,
         }
     }));
 
