@@ -8,22 +8,22 @@ exports.config = {
   params: {
     recordings: false,
     audio: false
-  },  
+  },
   specs: [
     './src/**/*.spec.ts'
   ],
-  
+
   capabilities: {
     'browserName': 'chrome'
   },
-  
+
   directConnect: true,
   baseUrl: 'http://localhost:8081',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
     defaultTimeoutInterval: 30000,
-    print: function() {}
+    print: function () { }
   },
 
   // Use native async/await browser support
@@ -34,7 +34,17 @@ exports.config = {
       project: require('path').join(__dirname, '../tsconfig.json')
     });
 
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
+    jasmine.getEnv().addReporter(new SpecReporter({  // add jasmine-spec-reporter
+      spec: {
+        displayPending: false,
+        displayStacktrace: true,
+        displayDuration: true,
+      },
+      summary: {
+        displayDuration: false,
+        displayPending: false,
+      }
+    }));
     browser.manage().window().maximize();
     browser.waitForAngularEnabled(false);
   }
@@ -43,7 +53,7 @@ exports.config = {
 // special handling when running within WSL
 if (isWsl) {
   exports.config.directConnect = false;
-  
+
   // Selenium standalone server should be started in Windows, expecting port 4445
-  exports.config.seleniumAddress ='http://localhost:4445/wd/hub';
+  exports.config.seleniumAddress = 'http://localhost:4445/wd/hub';
 }

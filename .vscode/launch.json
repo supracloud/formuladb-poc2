@@ -120,13 +120,14 @@
             }
         },
         {
-            "name": "ng e2e",
+            "name": "e2e",
+            "useWSL": true,
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/fe/node_modules/protractor/bin/protractor",
+            "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
             "protocol": "inspector",
             "args": [
-                "${workspaceFolder}/fe/e2e/protractor.conf.js"
+                "e2e/protractor.conf.js"
             ]
         },
         {
