@@ -13,6 +13,7 @@ import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 import { SumReduceFunN } from "@domain/metadata/reduce_functions";
 import { Pn, Entity, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
+import { frmdbxit } from "@fe/fe-test-urils.spec";
 
 const TestSchema: Schema = {
     _id: "FRMDB_SCHEMA",
@@ -85,7 +86,7 @@ describe('frmdb_engine_store', () => {
         done();
     });
 
-    xit("Should replay crashed CAS transactions correctly", async (done) => {
+    frmdbxit("Should replay crashed CAS transactions correctly", async (done) => {
         //TODO: only one worker should get the lock and finish processing the crashed transaction
     });
 

@@ -27,3 +27,5 @@ const pretty = require('pretty');
 export function normalizeHTML(html: string): string[] {
     return pretty(html, {ocd: true}).split(/\n/);
 }
+
+export function frmdbxit(str, callback) {}

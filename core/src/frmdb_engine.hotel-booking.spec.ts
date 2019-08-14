@@ -12,6 +12,7 @@ import { ServerEventModifiedFormDataEvent } from "@domain/event";
 import { Schema_booking } from "@test/mocks/mock-metadata";
 import { Act_Wiza, Act_Collins } from "@test/mocks/general-data";
 import { Room_DoubleDeluxe1, HotelBookingData, RoomType_DoubleDeluxe } from "@test/hotel-booking/data";
+import { frmdbxit } from "@fe/fe-test-urils.spec";
 
 describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STORAGE}]`, () => {
     let frmdbTStore: FrmdbEngineStore;
@@ -34,7 +35,7 @@ describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STOR
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
     }
 
-    xit("Should allow non-overlapping bookings to be created", async (done) => {
+    frmdbxit("Should allow non-overlapping bookings to be created", async (done) => {
         let newBooking = { 
             _id: "Booking~~", 
             room: Room_DoubleDeluxe1._id, 
