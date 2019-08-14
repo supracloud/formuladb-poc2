@@ -88,7 +88,7 @@ deploy:
     - NODE_PATH=ci-tools/node_modules upload-assets `find portal/public/ -type f -print`
     # publish FE on GCloud
     - mkdir -p dist/fe
-    - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-form.js dist-fe/frmdb-editor.js dist/fe
+    - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
     - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
     - cd ..
