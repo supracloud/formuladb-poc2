@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - stress
   - bundle
   - e2e_dev_env
   - buildprodimages
@@ -25,16 +26,26 @@ build:
 test:
   stage: test
   script:
-    - docker-compose up -d db
     - npm test
+    - docker-compose up -d db
+    - FRMDB_STORAGE=postgres npm test
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
-      - be/dist/
-      - dist-be/
-      - dist-fe/
+
+stress:
+  stage: stress
+  script:
+    - npm test -- core/src/frmdb_engine.stress.spec.ts
+    - docker-compose up -d db
+    - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
 
 bundle:
   stage: bundle

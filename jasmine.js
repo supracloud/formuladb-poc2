@@ -85,8 +85,8 @@ try {
             displayDuration: true,
         },
         summary: {
-            displayDuration: false,
-            displayPending: false,
+            displayDuration: true,
+            displayPending: true,
             displaySuccessful: true,
             displayFailed: true,
             displayErrorMessages: false,
