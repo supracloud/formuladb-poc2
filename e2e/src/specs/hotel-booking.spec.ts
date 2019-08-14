@@ -9,21 +9,22 @@ import { HotelBooking } from '../po/hotel-booking.po';
 
 const hotelBooking = new HotelBooking();
 
-describe('display hotel booking page', () => {
+describe('hotel-booking view mode testing', () => {
   it('should display the home page', async () => {
+    // check that page loads and title is as expected
     await hotelBooking.navigateToHome();
-
     expect(await hotelBooking.getTitle()).toEqual('Relax Your Mind');
-    //element(by.model('todoList.todoText')).sendKeys('write first protractor test');
-    //element(by.css('[value="add"]')).click();
+  });
+    
+  it('should load the booking tables', async () => {
+    // check that all hotel booking tables are displayed (left menu)
+    let bookingTables: Array<string> = await hotelBooking.getTables();
+    expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
+  });
 
-    //var todoList = element.all(by.repeater('todo in todoList.todos'));
-    //expect(todoList.count()).toEqual(3);
-    //expect(todoList.get(2).getText()).toEqual('write first protractor test');
-
-    // You wrote your first test, cross it off the list
-    //todoList.get(2).element(by.css('input')).click();
-    //var completedAmount = element.all(by.css('.done-true'));
-    //expect(completedAmount.count()).toEqual(2);
+  it('should load the rooms list', async () => {
+    // check that rooms list is correctly displayed after clicking on Room table
+    let bookingTables: Array<string> = await hotelBooking.getTables();
+    expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
   });
 });
