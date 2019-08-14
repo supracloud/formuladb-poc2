@@ -1,6 +1,7 @@
 stages:
   - build
-  - test
+  - test_mem
+  - test_postgres
   - stress
   - bundle
   - e2e_dev_env
@@ -23,10 +24,20 @@ build:
       - dist-be/
       - dist-fe/
 
-test:
-  stage: test
+test_mem:
+  stage: test_mem
   script:
     - npm test
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+
+
+test_postgres:
+  stage: test_postgres
+  script:
     - docker-compose up -d db
     - FRMDB_STORAGE=postgres npm test
   cache:
