@@ -3,7 +3,7 @@
     "version": "0.0.12",
     "description": "FormulaDB low code platform",
     "scripts": {
-        "start": "nodemon dist-be/frmdb-be.js",
+        "start": "nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "compile": "tsc --sourceMap -p .",
         "compile:watch": "npm run compile -- -w",
         "bundle": "webpack",
@@ -12,7 +12,7 @@
         "docker:fe": "docker build -t formuladb-maps -f Dockerfile.fe . && docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:${npm_package_version}",
         "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
         "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
-        "serve": "tmux new-session 'npm run compile:watch' ';' split-window -v 'npm run bundle:watch' ';' split-window -h 'bash serve-k3s.sh' ';' select-layout even-vertical",
+        "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve-k3s.sh' ';' split-window -h 'KUBECONFIG=`k3d get-kubeconfig` skaffold dev --port-forward=true' ';' select-layout even-vertical",
         "test": "node jasmine.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js"
     },
