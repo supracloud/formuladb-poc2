@@ -39,7 +39,7 @@ test_mem:
 test_postgres:
   stage: test_postgres
   script:
-    - [[ $(docker ps -f "name=postgres-for-unit-tests" --format '{{.Names}}') == 'postgres-for-unit-tests' ]] || docker run --name postgres-for-unit-tests --rm -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v pg-persistence:/var/lib/postgresql/data -d postgres:11
+    - \[\[ $(docker ps -f "name=postgres-for-unit-tests" --format '{{.Names}}') == 'postgres-for-unit-tests' \]\] || docker run --name postgres-for-unit-tests --rm -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v pg-persistence:/var/lib/postgresql/data -d postgres:11
     - FRMDB_STORAGE=postgres npm test || true
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -51,7 +51,7 @@ stress:
   stage: stress
   script:
     - npm test -- core/src/frmdb_engine.stress.spec.ts
-    - [[ $(docker ps -f "name=postgres-for-unit-tests" --format '{{.Names}}') == 'postgres-for-unit-tests' ]] || docker run --name postgres-for-unit-tests --rm -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v pg-persistence:/var/lib/postgresql/data -d postgres:11
+    - \[\[ $(docker ps -f "name=postgres-for-unit-tests" --format '{{.Names}}') == 'postgres-for-unit-tests' \]\] || docker run --name postgres-for-unit-tests --rm -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v pg-persistence:/var/lib/postgresql/data -d postgres:11
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
