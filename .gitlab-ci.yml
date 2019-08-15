@@ -6,7 +6,7 @@ stages:
   - buildprodimages
   - deploy
   # - e2e_example_apps
-  # - cleanup
+  - cleanup
   # - videos
 
 build:
@@ -127,11 +127,11 @@ deploy:
 #     refs:
 #       - master
 
-# cleanup:
-#   stage: cleanup
-#   script:
-#     - docker-compose down
-#     - docker image prune --all -f
-#     - killall node --quiet || true
-#     - rm -rf /home/gitlab-runner/cache/metawiz/febe/*
-#   when: always
+cleanup:
+  stage: cleanup
+  script:
+#    - docker-compose down
+    - docker system prune -af
+#    - killall node --quiet || true
+    - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
+  when: always
