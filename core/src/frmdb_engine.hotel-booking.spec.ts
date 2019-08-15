@@ -21,7 +21,7 @@ describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STOR
     beforeEach(async (done) => {
         frmdbEngine = await getFrmdbEngine(Schema_booking);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
-        await frmdbTStore.kvsFactory.clearAll();
+        await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         await frmdbEngine.init();
 
         for (let obj of HotelBookingData) {

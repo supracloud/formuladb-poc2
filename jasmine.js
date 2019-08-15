@@ -69,6 +69,7 @@ try {
         "spec_files": specificJsFile ? [specificJsFile] : [
             "tsc-out/fe/**/*.spec.js",
             "tsc-out/core/**/*.spec.js",
+            "tsc-out/storage/**/*.spec.js",
             "!tsc-out/core/**/*.stress.spec.js",
             "!tsc-out/core/**/*.rem.spec.js",
             // "tsc-out/fe/**/*.spec.js",

@@ -43,7 +43,7 @@ describe('frmdb_engine_store', () => {
 
     beforeEach(async (done) => {
         frmdbEngineStore = await getFrmdbEngineStore(TestSchema);
-        await frmdbEngineStore.kvsFactory.clearAll();
+        await frmdbEngineStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         done();

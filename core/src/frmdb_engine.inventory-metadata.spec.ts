@@ -50,7 +50,7 @@ describe('Inventory Metadata', () => {
 
         frmdbEngine = await getFrmdbEngine(InventorySchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
-        await frmdbTStore.kvsFactory.clearAll();
+        await frmdbTStore.clearAllForTestingPurposes();
         await frmdbEngine.init();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
@@ -137,16 +137,17 @@ describe('Inventory Metadata', () => {
         await putObj(ri1_1);
         await putObj(ri1_2);
         await putObj(oi1_1);
+        await putObj(oi1_2);
 
         let pl1After = await frmdbTStore.getDataObj(pl1._id) as any;
-        expect(pl1After).toEqual(jasmine.objectContaining({received_stock__: ri1_1.quantity + ri1_2.quantity}));
+        expect(pl1After).toEqual(jasmine.objectContaining({ordered_stock__: oi1_1.quantity + oi1_2.quantity}));
 
         let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
             _id: 'ABC123',
             type_: ServerEventSetPropertyN,
             targetEntity: _.cloneDeep(ProductLocation),
             property: {
-                name: 'received_stock__',
+                name: 'ordered_stock__',
                 propType_: Pn.FORMULA,
                 formula: 'COUNTIF(ReceiptItem.quantity, product_id == @[_id])',
             } as FormulaProperty,
@@ -155,7 +156,7 @@ describe('Inventory Metadata', () => {
         }) as ServerEventPreviewFormula;
         
         pl1After = await frmdbTStore.getDataObj(pl1._id) as any;
-        expect(pl1After).toEqual(jasmine.objectContaining({received_stock__: 2}));
+        expect(pl1After).toEqual(jasmine.objectContaining({ordered_stock__: 2}));
         
         done();
     })

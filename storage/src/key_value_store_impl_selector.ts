@@ -28,7 +28,6 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
 
 export async function getFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
-    kvsFactory.putSchema(schema);
     return new FrmdbEngineStore(kvsFactory, schema);
 }
 

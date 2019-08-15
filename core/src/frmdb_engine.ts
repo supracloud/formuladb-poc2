@@ -28,6 +28,8 @@ export class FrmdbEngine {
     }
 
     public async init(installFormulas: boolean = true) {
+        console.log("init store...");
+        await this.frmdbEngineStore.init(this.frmdbEngineStore.schema);
         console.log("Starting FormulaDBEngine...");
 
         for (let ent of this.schemaDAO.entities()) {

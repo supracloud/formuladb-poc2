@@ -241,7 +241,7 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
         return new KeyTableStoreMem<OBJT>(entity);
     }
 
-    async clearAll() {
+    async clearAllForTestingPurposes() {
         // Mem KV store is ephemeral so nothing to clear
     };
 

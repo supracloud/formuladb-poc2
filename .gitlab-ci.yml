@@ -39,7 +39,7 @@ test_postgres:
   stage: test_postgres
   script:
     - docker-compose up -d db
-    - FRMDB_STORAGE=postgres npm test || true
+    - FRMDB_STORAGE=postgres npm test
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:

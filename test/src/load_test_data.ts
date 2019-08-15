@@ -24,7 +24,7 @@ const mockMetadata = new MockMetadata();
 export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
     try {
         let kvsFactory = await getKeyValueStoreFactory();
-        await kvsFactory.clearAll();
+        await kvsFactory.clearAllForTestingPurposes();
 
         
         let uiMetaLoaded = false;

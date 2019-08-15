@@ -277,4 +277,9 @@ export class FrmdbEngineStore extends FrmdbStore {
         lockAcquiredCallback: () => Promise<any>) {
         return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
     }
+
+    public async clearAllForTestingPurposes() {
+        await this.kvsFactory.clearAllForTestingPurposes();
+        await this.kvsFactory.putSchema(this.schema);
+    }
 }

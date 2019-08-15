@@ -16,7 +16,7 @@ describe('MapReduceView', () => {
     
     beforeEach(async (done) => {
         kvsFactory = await getKeyValueStoreFactory();
-        await kvsFactory.clearAll();
+        await kvsFactory.clearAllForTestingPurposes();
         done();
     });
 
