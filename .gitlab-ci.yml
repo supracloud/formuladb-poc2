@@ -73,7 +73,7 @@ bundle:
 deploy_cluster:
   stage: deploy_cluster
   script:
-    - ./deploy-k3s.sh
+    - sh deploy-k3s.sh
 
 build_and_deploy:
   stage: build_and_deploy
