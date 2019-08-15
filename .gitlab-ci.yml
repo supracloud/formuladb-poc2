@@ -78,7 +78,7 @@ deploy_cluster:
 build_and_deploy:
   stage: build_and_deploy
   script:
-    - skaffold run
+    - KUBECONFIG=`k3d get-kubeconfig` skaffold run
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
