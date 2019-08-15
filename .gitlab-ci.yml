@@ -5,7 +5,6 @@ stages:
   - e2e_dev_env
   - buildprodimages
   - deploy
-  - e2e_demo_env
   # - e2e_example_apps
   - cleanup
   # - videos
@@ -109,13 +108,6 @@ deploy:
       - node_modules/
       - dist-be/
       - dist-fe/
-  only:
-    - master
-
-e2e_demo_env:
-  stage: e2e_demo_env
-  script:
-    - echo "Not Implemented"
   only:
     - master
 
