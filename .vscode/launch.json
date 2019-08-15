@@ -29,6 +29,35 @@
             ]
         },
         {
+            "name": "jasmine postgres",
+            "type": "node",
+            "useWSL": true,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/d/code/metawiz/febe",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect=0.0.0.0:9232"
+            ],
+            "env": {
+                "DEBUG": "formuladb:*",
+                "FRMDB_STORAGE": "postgres",
+                "WSLENV": "FRMDB_STORAGE"
+            },
+            "protocol": "inspector",
+            "port": 9232,
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceFolder}/jasmine.js",
+            "args": [
+                "'${relativeFile}'"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/tsc-out/**/*.js",
+            ]
+        },        
+        {
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
@@ -63,103 +92,15 @@
             "trace": true
         },
         {
-            "name": "BE specs mem",
-            "type": "node",
+            "name": "e2e",
             "useWSL": true,
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/d/code/metawiz/febe",
-            "runtimeArgs": [
-                "--trace-warnings",
-                "--debug-brk",
-                "--inspect=0.0.0.0:9232"
-            ],
-            "env": {},
-            "protocol": "inspector",
-            "port": 9232,
-            "request": "launch",
-            "cwd": "${workspaceRoot}/be",
-            "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/be/dist/**/*.js"
-            ]
-        },
-        {
-            "name": "BE specs postgres",
-            "type": "node",
-            "useWSL": true,
-            "runtimeArgs": [
-                "--trace-warnings",
-                "--debug-brk",
-                "--inspect=0.0.0.0:9232"
-            ],
-            "env": {
-                "FRMDB_STORAGE": "postgres"
-            },
-            "protocol": "inspector",
-            "port": 9232,
-            "request": "launch",
-            "cwd": "${workspaceRoot}/be",
-            "program": "${workspaceRoot}/be/src/tests/jasmine.ts",
-            "sourceMaps": true,
-            "outFiles": [
-                "${workspaceRoot}/be/dist/**/*.js"
-            ]
-        },
-        {
-            "type": "chrome",
-            "request": "attach",
-            "name": "FE specs",
-            "address": "localhost",
-            "port": 9369,
-            "sourceMaps": true,
-            "restart": "true",
-            "pathMapping": {
-                "/": "${workspaceRoot}/febe",
-                "/base/": "${workspaceRoot}/febe"
-            }
-        },
-        {
-            "name": "ng e2e",
             "type": "node",
             "request": "launch",
-            "program": "${workspaceFolder}/fe/node_modules/protractor/bin/protractor",
+            "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",
             "protocol": "inspector",
             "args": [
-                "${workspaceFolder}/fe/e2e/protractor.conf.js"
+                "e2e/protractor.conf.js"
             ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "node-current-file",
-            "protocol": "inspector",
-            "args": [
-                "${relativeFile}"
-            ],
-            "cwd": "${workspaceRoot}",
-            "runtimeArgs": [
-                "-r",
-                "ts-node/register"
-            ],
-            "internalConsoleOptions": "openOnSessionStart"
-        },
-        {
-            "type": "node",
-            "protocol": "inspector",
-            "request": "attach",
-            "name": "Attach to Remote BE",
-            "address": "127.0.0.1",
-            "port": 9229,
-            "trace": "sm",
-            "sourceMaps": true,
-            //            "restart": true,
-            //            "outFiles": ["${workspaceRoot}/be/dist/be/src/"],
-            //            "localRoot": "${workspaceRoot}/be/dist/be/src/",
-            //            "remoteRoot": "/dist/be/src",
-            //            "sourceMapPathOverrides": {
-            //                "webpack:///*": "${workspaceRoot}/be/*"
-            //            }
         }
     ]
 }

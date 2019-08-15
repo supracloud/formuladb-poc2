@@ -6,7 +6,7 @@
 import { Pn } from "@domain/metadata/entity";
 import { FormPage } from '@domain/uimetadata/form-page'
 import { NodeType } from "@domain/uimetadata/node-elements";
-import { LargeSalesReport } from "./inventory-metadata";
+import { LargeSalesReport } from "../inventory/metadata";
 
 let testUUID = 1;
 function getTestUUID() {

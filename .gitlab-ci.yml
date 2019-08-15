@@ -1,6 +1,8 @@
 stages:
   - build
-  - test
+  - test_mem
+  - test_postgres
+  - stress
   - bundle
   - e2e_dev_env
   - buildprodimages
@@ -22,19 +24,39 @@ build:
       - dist-be/
       - dist-fe/
 
-test:
-  stage: test
+test_mem:
+  stage: test_mem
   script:
-    - docker-compose up -d db
     - npm test
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
-      - be/dist/
-      - dist-be/
-      - dist-fe/
+
+
+test_postgres:
+  stage: test_postgres
+  script:
+    - docker-compose up -d db
+    - FRMDB_STORAGE=postgres npm test
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+
+stress:
+  stage: stress
+  script:
+    - npm test -- core/src/frmdb_engine.stress.spec.ts
+    - docker-compose up -d db
+    - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
 
 bundle:
   stage: bundle
@@ -88,7 +110,7 @@ deploy:
     - NODE_PATH=ci-tools/node_modules upload-assets `find portal/public/ -type f -print`
     # publish FE on GCloud
     - mkdir -p dist/fe
-    - cp dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-form.js dist-fe/frmdb-editor.js dist/fe
+    - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
     - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
     - cd ..

@@ -19,7 +19,7 @@ describe('FrmdbEngine', () => {
     let frmdbEngine: FrmdbEngine;
     let originalTimeout;
 
-    const stockReservationSchema: Schema = {
+    const _stockReservationSchema: Schema = {
         _id: "FRMDB_SCHEMA",
         entities: {
             A: {
@@ -58,7 +58,8 @@ describe('FrmdbEngine', () => {
             } as Entity,
         }
     };
-    const accountTransferSchema: Schema = {
+    let stockReservationSchema: Schema = _stockReservationSchema;
+    const _accountTransferSchema: Schema = {
         _id: "FRMDB_SCHEMA",
         entities: {
             Tr: {
@@ -85,8 +86,26 @@ describe('FrmdbEngine', () => {
             } as Entity,
         }
     };
+    let accountTransferSchema: Schema = _accountTransferSchema;
+
+    let b1 = { _id: "B~~1", sum__: 1, x__: 7};
+    let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
+    let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
+    async function testDataStockReservationSchema() {
+        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
+        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
+
+    }
 
     beforeEach(async (done) => {
+        stockReservationSchema = _.cloneDeep(_stockReservationSchema);
+        accountTransferSchema = _.cloneDeep(_accountTransferSchema);
+
+        b1 = { _id: "B~~1", sum__: 1, x__: 7};
+        a1 = { _id: "A~~1", b: 'B~~1', val: 1};
+        a2 = { _id: "A~~2", b: 'B~~1', val: 2};
+    
         frmdbEngine = await getFrmdbEngine(stockReservationSchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.kvsFactory.clearAll();
@@ -98,16 +117,6 @@ describe('FrmdbEngine', () => {
         console.log("stockReservationSchema.entities.B.props.x__.formula=", (stockReservationSchema as any).entities.B.props.x__.formula);
         done();
     });
-
-    let b1 = { _id: "B~~1", sum__: 1, x__: 7};
-    let a1 = { _id: "A~~1", b: 'B~~1', val: 1};
-    let a2 = { _id: "A~~2", b: 'B~~1', val: 2};
-    async function testDataStockReservationSchema() {
-        await frmdbEngine.putDataObjAndUpdateViews(null, b1);
-        await frmdbEngine.putDataObjAndUpdateViews(null, a1);
-        await frmdbEngine.putDataObjAndUpdateViews(null, a2);
-
-    }
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
         return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
@@ -281,7 +290,7 @@ describe('FrmdbEngine', () => {
         done();
     });
     
-    it("Should update views and compute new values of Observer when Observer field chande", async (done) => {
+    it("Should update views and compute new values of Observer when Observer field change", async (done) => {
         let schema = _.cloneDeep(stockReservationSchema);
         (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
         frmdbTStore = await getFrmdbEngineStore(schema);

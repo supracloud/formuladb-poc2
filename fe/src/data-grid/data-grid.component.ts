@@ -22,9 +22,7 @@ import { ExcelStyles } from './excel-styles';
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
-import { Pn, FormulaExpression } from '@domain/metadata/entity';
-import { translateClicksToNavigationEvents } from '@fe/event-translator';
-import { onEvent, emit } from '@fe/delegated-events';
+import { Pn } from '@domain/metadata/entity';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -53,12 +51,15 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     /** web components API **************************************************/
     attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
-        if (!this.gridApi) return;
-        if (attrName == 'table_name') {
-            this.initAgGrid();
-        } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
-            this.gridApi.purgeServerSideCache()
-        }
+        waitUntilNotNull(() => Promise.resolve(this.gridApi), 2500)
+        .then(() => {
+            if (!this.gridApi) throw new Error("Timeout during initialization");
+            if (attrName == 'table_name') {
+                this.initAgGrid();
+            } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
+                this.gridApi.purgeServerSideCache()
+            }    
+        });
     }
 
     connectedCallback() {
@@ -68,7 +69,6 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         this.style.display = "block";
 
         new Grid(this.shadowRoot!.querySelector("#myGrid") as HTMLElement, this.gridOptions);
-        translateClicksToNavigationEvents(this.shadowRoot!);
     }
 
 
@@ -348,9 +348,11 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.getAttributeTyped("expand_row") && col.name === '_id') {
+        let entityName = this.getAttribute("table_name");
+        let expandRowTarget = this.getAttributeTyped("expand_row");
+        if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
+                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.defaultView.$('${expandRowTarget}'); s=m.find('frmdb-form')[0].frmdbState; s.rowid='${params.value}'; s.table_name='${entityName}'; m.modal('toggle')">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
     }

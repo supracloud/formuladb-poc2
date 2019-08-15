@@ -22,6 +22,7 @@ import { matchesTypeES5, evalExpression, packMapFunctionAndQuery, jsonPathMapGet
 import { Fn } from "@domain/metadata/functions";
 import { SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { $s2e } from '@functions/s2e';
+import { frmdbxit } from '@fe/fe-test-urils.spec';
 
 describe('FormulaCompiler', () => {
     let compiledExpr;
@@ -242,7 +243,7 @@ describe('FormulaCompiler', () => {
         expect(expectedCompiledExpr).toEqual(compiledExpr);
     });
 
-    xit('should compile test complex formula', () => {
+    frmdbxit('should compile test complex formula', () => {
         let test_subFormula1 =
             Fn.SUMIF(`R_A.num`, `a_y == @[b_y] && ` + Fn.FACT(`aZ`) + ` < ` + Fn.ROUND(Fn.SQRT(`@[bZ]`) + ` + 1`));
         trigger1 = {

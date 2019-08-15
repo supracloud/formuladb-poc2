@@ -17,7 +17,6 @@ import { FormPage, isFormPage } from "@domain/uimetadata/form-page";
 
 import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
-import { Schema_inventory, App_inventory } from "@test/mocks/mock-metadata";
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { APP_AND_TENANT_ROOT } from "./app.service";

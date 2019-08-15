@@ -22,3 +22,10 @@ export function setValue(el: HTMLInputElement, val: string): HTMLInputElement {
 export async function testSleep(ms: number, message: string = "") {
     await new Promise(resolve => setTimeout(resolve, ms));
 }
+
+const pretty = require('pretty');
+export function normalizeHTML(html: string): string[] {
+    return pretty(html, {ocd: true}).split(/\n/);
+}
+
+export function frmdbxit(str, callback) {}

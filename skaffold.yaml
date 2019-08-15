@@ -6,9 +6,18 @@ build:
     context: .
     sync:
       manual:
-      # Sync all the javascript files that are in the fost-be folder
-      # with the container src folder
+      # Sync all the javascript files that are in the dist-be folder
+      # with the container's root
       - src: 'dist-be/**/*.js'
         dest: .
     docker:
       dockerfile: Dockerfile.be
+      buildArgs: {}
+
+profiles:
+  - name: dev
+    patches:
+      - op: add
+        path: /build/artifacts/0/docker/buildArgs
+        value:
+          BUILD_DEVELOPMENT: 1

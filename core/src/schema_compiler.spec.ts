@@ -6,10 +6,11 @@
 import * as _ from 'lodash';
 import { Entity, Schema, Pn, FormulaProperty } from "@domain/metadata/entity";
 import { SchemaCompiler } from "./schema_compiler";
+import { frmdbxit } from '@fe/fe-test-urils.spec';
 
 describe('SchemaCompiler', () => {
 
-    xit('should create a formula DAG correctly', async (done) => {
+    frmdbxit('should create a formula DAG correctly', async (done) => {
         let schema = {
             _id: "FRMDB_SCHEMA",
             entities: {

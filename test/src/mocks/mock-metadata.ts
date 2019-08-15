@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 
 import { Schema, Pn } from "@domain/metadata/entity";
 
-import * as InventoryMetadata from "./inventory-metadata";
+import * as InventoryMetadata from "../inventory/metadata";
 import * as GeneralMetadata from "./general-metadata";
 import * as FinancialMetadata from "./financial-metadata";
 import * as FormsMetadata from "./forms-metadata";
@@ -16,10 +16,11 @@ import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
-import { $User, $I18n } from '@domain/metadata/default-metadata';
+import { $User, $I18n, $Currency } from '@domain/metadata/default-metadata';
 import { HotelBookingSchema } from '../hotel-booking/metadata';
+import { InventorySchema } from '../inventory/metadata';
 
-export * from "./inventory-metadata";
+export * from "../inventory/metadata";
 export * from "./general-metadata";
 export * from "./forms-metadata";
 export * from "./reports-metadata";
@@ -40,7 +41,6 @@ export const Schema_test: Schema = {
         [StaticPagesMetadata.Pages._id]: StaticPagesMetadata.Pages,
         [StaticPagesMetadata.Ecommerce._id]: StaticPagesMetadata.Ecommerce,
         [StaticPagesMetadata.Blog._id]: StaticPagesMetadata.Blog,
-        [InventoryMetadata.Inventory._id]: InventoryMetadata.Inventory,
         [InventoryMetadata.InventoryOrder._id]: InventoryMetadata.InventoryOrder,
         [InventoryMetadata.OrderItem._id]: InventoryMetadata.OrderItem,
         [InventoryMetadata.InventoryReceipt._id]: InventoryMetadata.InventoryReceipt,
@@ -48,34 +48,11 @@ export const Schema_test: Schema = {
         [InventoryMetadata.InventoryProduct._id]: InventoryMetadata.InventoryProduct,
         [InventoryMetadata.ProductLocation._id]: InventoryMetadata.ProductLocation,
         [InventoryMetadata.InventoryProductUnit._id]: InventoryMetadata.InventoryProductUnit,
-        [InventoryMetadata.Reports._id]: InventoryMetadata.Reports,
         [InventoryMetadata.LargeSalesReport._id]: InventoryMetadata.LargeSalesReport,
         [InventoryMetadata.LargeSalesProduct._id]: InventoryMetadata.LargeSalesProduct,
     }
 }
-export const App_inventory: App = {
-    _id: "App~~inventory",
-    description: "Basic Inventory, Single Warehouse",
-    pages: [],
-};
-export const Schema_inventory: Schema = {
-    _id: 'FRMDB_SCHEMA~~' + App_inventory._id.replace(/^App~~/, ''),
-    entities: {
-        [GeneralMetadata.GEN__Currency._id]: GeneralMetadata.GEN__Currency,
-        [GeneralMetadata.GEN__Client._id]: GeneralMetadata.GEN__Client,
-        [InventoryMetadata.Inventory._id]: InventoryMetadata.Inventory,
-        [InventoryMetadata.InventoryOrder._id]: InventoryMetadata.InventoryOrder,
-        [InventoryMetadata.OrderItem._id]: InventoryMetadata.OrderItem,
-        [InventoryMetadata.InventoryReceipt._id]: InventoryMetadata.InventoryReceipt,
-        [InventoryMetadata.ReceiptItem._id]: InventoryMetadata.ReceiptItem,
-        [InventoryMetadata.InventoryProduct._id]: InventoryMetadata.InventoryProduct,
-        [InventoryMetadata.ProductLocation._id]: InventoryMetadata.ProductLocation,
-        [InventoryMetadata.InventoryProductUnit._id]: InventoryMetadata.InventoryProductUnit,
-        [InventoryMetadata.Reports._id]: InventoryMetadata.Reports,
-        [InventoryMetadata.LargeSalesReport._id]: InventoryMetadata.LargeSalesReport,
-        [InventoryMetadata.LargeSalesProduct._id]: InventoryMetadata.LargeSalesProduct,
-    }
-}
+
 export const App_musicbooking: App = {
     _id: "App~~musicbooking",
     description: "Music Studio Booking",
@@ -173,6 +150,7 @@ export const Schema_reporting: Schema = {
 export const CommonEntities = [
     $User,
     $I18n,
+    $Currency,
     // GeneralMetadata.GEN__Currency,
     // GeneralMetadata.GEN__Client,
     // StaticPagesMetadata.Home,
@@ -180,15 +158,8 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    // Schema_test,
-    // Schema_inventory,
+    InventorySchema,
     HotelBookingSchema,
-    // Schema_expenses,
-    // Schema_ticketing,
-    // Schema_planning,
-    // Schema_ecommerce,
-    // Schema_service,
-    // Schema_reporting,
 ];
 
 for (let sch of Schemas) {
@@ -210,7 +181,6 @@ export class MockMetadata {
 
         this.apps = [
             App_test,
-            App_inventory,
             App_booking,
             App_expenses,
             App_ticketing,

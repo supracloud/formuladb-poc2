@@ -6,8 +6,6 @@
 import * as _ from 'lodash';
 import * as DOMPurify from "dompurify";
 
-import '../autocomplete/autocomplete.component';
-
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { AppPage } from '@domain/app';
@@ -19,7 +17,15 @@ export interface FragmentComponentAttr {
     name: string;
 };
 export interface FragmentComponentState extends FragmentComponentAttr {
+    params: {}
 };
+
+DOMPurify.addHook('uponSanitizeElement', function (node, data) {
+    if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
+        && !data.allowedTags[data.tagName]) {
+        data.allowedTags[data.tagName] = true;
+    }
+});
 
 @FrmdbElementDecorator({
     tag: 'frmdb-fragment',
@@ -49,16 +55,21 @@ export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, F
             let appBackend = BACKEND_SERVICE();
             let app = await appBackend.getApp();
             if (!app) throw new Error("App not found");
-            let fragmentPage: AppPage | undefined = app.pages.find(p => p.name == newVal as string); 
+            let fragmentPage: AppPage | undefined = app.pages.find(p => p.name == newVal as string);
             if (!fragmentPage) throw new Error("App not found");
-            
+
             fetch(`/${appBackend.tenantName}/${appBackend.appName}/${fragmentPage.html}`)
-            .then(async (response) => {
-                let html = await response.text();
-                this.innerHTML = DOMPurify.sanitize(html);
-            });            
+                .then(async (response) => {
+                    let html = await response.text();
+                    this.innerHTML = DOMPurify.sanitize(html);
+                    this.updateDOM();
+                });
         }
 
         return this.frmdbState;
+    }
+
+    public setParams(params: {}) {
+        this.frmdbState.params = params;
     }
 }

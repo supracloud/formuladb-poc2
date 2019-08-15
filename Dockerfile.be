@@ -1,5 +1,9 @@
 FROM node:lts-alpine
 
+ARG BUILD_DEVELOPMENT
+ENV NPM_SCRIPT=${BUILD_DEVELOPMENT:+start_dev}
+ENV NPM_SCRIPT=${NPM_SCRIPT:-start}
+
 RUN apk update --no-cache && apk upgrade --no-cache && \
     apk add --no-cache bash git
 
@@ -11,4 +15,4 @@ COPY dist-be/frmdb-be.js /dist-be/frmdb-be.js
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD npm run $NPM_SCRIPT
