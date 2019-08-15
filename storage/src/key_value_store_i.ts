@@ -4,7 +4,7 @@
  */
 
 import { KeyValueError, KeyValueObj } from "@domain/key_value_obj";
-import * as FormuladbCollate from './utils/collator';
+import * as FormuladbCollate from '@storage/collator';
 import { Entity, Schema } from "@domain/metadata/entity";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
 import { DataObj } from "@domain/metadata/data_obj";

@@ -17,8 +17,6 @@ import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
 
 
-
-
 describe('Inventory Metadata', () => {
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
@@ -68,7 +66,7 @@ describe('Inventory Metadata', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    fit("Basic stock operations", async (done) => {
+    it("Basic stock operations", async (done) => {
         cf1 = compileFormula(ProductLocation._id, 'received_stock__', ProductLocation.props.received_stock__.formula);
         cf2 = compileFormula(ProductLocation._id, 'ordered_stock__', ProductLocation.props.ordered_stock__.formula);
         cf3 = compileFormula(ProductLocation._id, 'available_stock__', ProductLocation.props.available_stock__.formula);

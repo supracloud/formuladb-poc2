@@ -18,7 +18,7 @@ import * as csv from 'csv';
 import * as mime from 'mime';
 
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { $User } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";

@@ -10,7 +10,7 @@ import * as http from "http";
 
 //FIXME: use this only for dev/test environment
 import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
-import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 
 let kvsFactory: KeyValueStoreFactoryI;
 
