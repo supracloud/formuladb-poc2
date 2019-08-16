@@ -1575,6 +1575,20 @@ Vvveb.Gui = {
 		});
 		
 	},
+
+	newTable: function(callback) {
+		var newTableModal = $('#new-table-modal');
+		
+		newTableModal.modal("show").find("form").off("submit").submit(function( event ) {
+
+			var name = $("input[name=tableName]", newTableModal).val();
+			event.preventDefault();
+
+			callback(name);			
+
+		});
+		
+	},
 	
 	deletePage : function () {
 		

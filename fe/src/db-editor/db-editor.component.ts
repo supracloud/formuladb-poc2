@@ -19,6 +19,8 @@ interface DbEditorAttrs {
 export interface DbEditorState extends DbEditorAttrs {
 }
 
+declare var Vvveb: any;
+
 @FrmdbElementDecorator<DbEditorAttrs, DbEditorState>({
     tag: 'frmdb-db-editor',
     observedAttributes: [],
@@ -31,6 +33,11 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
         onEvent(this, 'frmdbchange', 'frmdb-v-nav', (event) => {
             this.setActiveTable();
         });
+        onEvent(this, 'click', '#new-table-btn *', (event) => {
+            Vvveb.Gui.newTable(newTableName => {
+                alert(`Creating table ${newTableName}`);
+            });
+        });    
     }
     
     setActiveTable() {
