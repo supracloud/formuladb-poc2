@@ -9,6 +9,8 @@ import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/f
 import { VNavComponent, queryVNav } from '@fe/v-nav/v-nav.component';
 import { DataGridComponent, queryDataGrid } from '@fe/data-grid/data-grid.component';
 import { onEvent } from '@fe/delegated-events';
+import { ServerEventNewEntityN, ServerEventNewEntity } from '@domain/event';
+import { BACKEND_SERVICE } from '@fe/backend.service';
 
 const HTML: string = require('raw-loader!@fe-assets/db-editor/db-editor.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/db-editor/db-editor.component.scss').default;
@@ -34,9 +36,8 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
             this.setActiveTable();
         });
         onEvent(this, 'click', '#new-table-btn *', (event) => {
-            Vvveb.Gui.newTable(newTableName => {
-                alert(`Creating table ${newTableName}`);
-            });
+            Vvveb.Gui.newTable(newTableName => 
+                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName)));
         });    
     }
     

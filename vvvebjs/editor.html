@@ -945,7 +945,12 @@
 								<label class="col-sm-3 control-label">Table name</label>
 								<div class="col-sm-9 input">
 									<div>
-										<input name="tableName" type="text" class="form-control" placeholder="New_Table_Name" required>
+										<input name="tableName" type="text" class="form-control" placeholder="New_Table_Name" required pattern="[a-zA-Z_]+"
+											oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+									</div>
+
+									<div class="alert alert-danger" role="alert" style="display: none">
+										A simple danger alert—check it out!
 									</div>
 								</div>
 							</div>
@@ -961,7 +966,7 @@
 				</form>
 
 			</div>
-		</div>		
+		</div>
 
 	</div>
 

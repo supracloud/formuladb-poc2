@@ -1577,14 +1577,22 @@ Vvveb.Gui = {
 	},
 
 	newTable: function(callback) {
-		var newTableModal = $('#new-table-modal');
-		
-		newTableModal.modal("show").find("form").off("submit").submit(function( event ) {
+		var $newTableModal = $('#new-table-modal');
+		$newTableModal.find('.alert').hide();
 
-			var name = $("input[name=tableName]", newTableModal).val();
+		$newTableModal.modal("show").find("form").off("submit").submit(function( event ) {
+
+			var name = $("input[name=tableName]", $newTableModal).val();
 			event.preventDefault();
 
-			callback(name);			
+			callback(name).then(errMsg => {
+				if (errMsg) {
+					$newTableModal.find('.alert').show().text(errMsg);
+				} else {
+					$newTableModal.find('.alert').hide();
+					$newTableModal.modal("hide");
+				}
+			});
 
 		});
 		

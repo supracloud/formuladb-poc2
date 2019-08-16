@@ -56,6 +56,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             let schema = await metadataStore.getSchema(tenantName, appName);
             if (!schema) throw new Error("The app does not exist " + tenantName + "/" + appName);
             frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
+            await frmdbEngine.init();
             frmdbEngines.set(appName, frmdbEngine);
         }
         return frmdbEngine;

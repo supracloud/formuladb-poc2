@@ -69,6 +69,7 @@
                 "webpack:///./core/src/*": "${webRoot}/core/src/*",
                 "webpack:///./test/src/*": "${webRoot}/test/src/*",
                 "webpack:///./fe/src/*": "${webRoot}/fe/src/*",
+                "http://localhost:8081/formuladb-editor/libs/*": "${workspaceRoot}/vvvebjs/libs/*",
             }
         },
         {
