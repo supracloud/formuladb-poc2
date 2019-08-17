@@ -203,7 +203,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     //all write operations are handled via events
     app.post('/formuladb-api/:tenant/:app/event', async function (req, res) {
-        return (await getFrmdbEngine(req.params.tenant, req.params.app)).processEvent(req.body)
+        return (await getFrmdbEngine(req.params.tenant, req.params.app))
+            .processEvent(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
     });

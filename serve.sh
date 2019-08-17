@@ -8,14 +8,7 @@ handleErr () {
 }
 trap handleErr ERR
 
-fctCheckDir() {
-  test -d $1 || (echo "Dir not found ${1}"; exit 1) 
-}
-
-FRMDB_RELEASE=0.0.12 DEV_MODE=true DEFAULT_USER=$USER ./node_modules/.bin/nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
-  "npm run docker:be && docker-compose up -d db be && nc -zvw3 localhost 8084 && touch dist-fe/frmdb-fe.js" &
-
-sleep 2
+./deploy-k3s.sh
 
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed
