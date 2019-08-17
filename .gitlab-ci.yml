@@ -33,6 +33,7 @@ bundle:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
+      - tsc-out/
       - dist-be/
       - dist-fe/
 
@@ -40,6 +41,13 @@ deploy_cluster:
   stage: deploy_cluster
   script:
     - sh deploy-k3s.sh
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 build_and_deploy:
   stage: build_and_deploy
@@ -50,6 +58,7 @@ build_and_deploy:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
+      - tsc-out/
       - dist-be/
       - dist-fe/
 
@@ -62,6 +71,8 @@ test_mem:
     paths:
       - node_modules/
       - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 test_postgres:
   stage: test_postgres
@@ -72,6 +83,8 @@ test_postgres:
     paths:
       - node_modules/
       - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 stress:
   stage: stress
@@ -83,11 +96,17 @@ stress:
     paths:
       - node_modules/
       - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 e2e_dev_env:
   stage: e2e_dev_env
   script:
     - npm run e2e || true
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 deploy:
   stage: deploy
