@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: formuladb
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  tls:
+  - hosts:
+    - formuladb.online
+    secretName: formuladb-online
+  - hosts:
+    - formuladb.io
+    secretName: formuladb-online
+  rules:
+  - host: formuladb.online
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lb
+          servicePort: 80
+  - host: formuladb.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lb
+          servicePort: 80
