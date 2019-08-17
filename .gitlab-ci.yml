@@ -159,5 +159,4 @@ cleanup:
     - docker system prune -af
 #    - killall node --quiet || true
     - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
-    - pkill kubectl -9
   when: always
