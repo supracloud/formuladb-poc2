@@ -21,11 +21,14 @@ services:
     depends_on:
       - db
     environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /google_credentials.json
       FRMDB_STORAGE: "postgres"
       PGHOST: "db"
       DEBUG: "express:*"
       DEV_MODE: "${DEV_MODE}"
       DEFAULT_USER: "${DEFAULT_USER}"
+    volumes: 
+      - $PWD/google_credentials.json:/google_credentials.json
     ports:
       - "8084:3000"
       # publish node inspector port. By default the V8 inspector listens on 127.0.0.1 only.

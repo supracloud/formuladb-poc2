@@ -9618,6 +9618,12 @@ body {
   padding: 0px 0px;
   border-radius: 3px 3px 0px 0px; }
 
+
+  #select-actions a.selected {
+    background-color:#fff;
+    color:#4285f4!important;
+  }
+
 #vvveb-builder #wysiwyg-editor {
   top: -22px;
   right: auto;

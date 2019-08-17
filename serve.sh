@@ -13,7 +13,7 @@ fctCheckDir() {
 }
 
 FRMDB_RELEASE=0.0.12 DEV_MODE=true DEFAULT_USER=$USER ./node_modules/.bin/nodemon --verbose --delay 200ms --watch dist-be/frmdb-be.js --exec \
-  "npm run docker:be && docker-compose up -d db be && nc -zvw3 localhost 8084 && touch dist-fe/frmdb-fe.js" &
+  "npm run docker:be && docker-compose up -d db be && touch dist-fe/frmdb-fe.js" &
 
 sleep 2
 
