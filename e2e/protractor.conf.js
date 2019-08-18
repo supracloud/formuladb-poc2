@@ -18,7 +18,7 @@ exports.config = {
   },
 
   directConnect: true,
-  baseUrl: 'http://localhost:8081',
+  baseUrl: 'https://formuladb.online',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,

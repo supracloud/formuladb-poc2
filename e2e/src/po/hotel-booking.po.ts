@@ -7,7 +7,10 @@ export class HotelBooking {
     await browser.get('formuladb-editor/editor.html?t=frmdb-apps&a=hotel-booking&p=index');
   }
 
-  async getTitle() {
+  /**
+   * Get page title from iframe
+   */
+  async getPageTitle() {
     let EC = ExpectedConditions;
 
     // wait for iframe to be loaded
@@ -18,6 +21,9 @@ export class HotelBooking {
     return element(by.css('h2')).getText();
   }
 
+  /**
+   * Get tables in left navigation bar
+   */
   async getTables() {
     // switch back to page content
     await browser.switchTo().defaultContent();
@@ -29,5 +35,29 @@ export class HotelBooking {
     }
 
     return tables;
+  }
+
+  /**
+   * Get first room data from ag-grid table
+   */
+  async getFirstRoomData() {
+    // switch back to page content
+    await browser.switchTo().defaultContent();
+
+    // get header columns
+    // document.querySelector('#db-main > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-header div.ag-header-cell span.ag-header-cell-text')
+    // get first row columns
+    // document.querySelector('#db-main > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-row[row-index="0"] div.ag-cell')
+    let firstRowCells: Array<ElementFinder> = await element.all(by.deepCss('#myGrid div.ag-row[row-index="0"] div.ag-cell'));
+    
+    let firstRoomData: { id: string, value: string }[] = [];
+    for (var i = 0; i < firstRowCells.length; i++) {
+      firstRoomData.push({
+        id: await firstRowCells[i].getAttribute('col-id'),
+        value: await firstRowCells[i].getText()
+      });
+    }
+
+    return firstRoomData;
   }
 }
