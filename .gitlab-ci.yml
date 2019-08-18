@@ -103,7 +103,10 @@ stress:
 e2e_dev_env:
   stage: e2e_dev_env
   script:
-    - nc -z localhost 8081 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 8081:80 &
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
+    - echo $KUBECONFIG $POD
+    - nc -z localhost 8081 || kubectl port-forward $POD 8081:80 &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
