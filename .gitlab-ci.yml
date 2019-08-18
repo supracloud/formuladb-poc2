@@ -8,6 +8,7 @@ stages:
   - stress
   - e2e_dev_env
   - deploy
+  - e2e_demo_env
   # - e2e_example_apps
   - cleanup
   # - videos
@@ -53,7 +54,7 @@ build_and_deploy:
   stage: build_and_deploy
   script:
     - KUBECONFIG=`k3d get-kubeconfig` skaffold run
-    - nc -z localhost 5432 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l app=my-app -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 5432:5432 &
+    - nc -z localhost 5432 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 5432:5432 &
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -102,7 +103,11 @@ stress:
 e2e_dev_env:
   stage: e2e_dev_env
   script:
-    - npm run e2e || true
+    - nc -z localhost 8081 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 8081:80 &
+    - npm run test:e2e:dev:headless
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
       - node_modules/
       - tsc-out/
       - dist-be/
@@ -127,14 +132,30 @@ deploy:
     - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
     - cd ..
     - KUBECONFIG=k8s/demo-kube-config.conf skaffold deploy
+    - pkill -9 kubectl || true # kill any previous tunnels
+    - nc -z localhost 5433 || KUBECONFIG=k8s/demo-kube-config.conf POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 5433:5432 &
+    - PGPORT=5433 npm run e2e:data
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
+      - tsc-out/
       - dist-be/
       - dist-fe/
   only:
     - master
+
+e2e_demo_env:
+  stage: e2e_demo_env
+  script:
+    - npm run test:e2e:demo:headless
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+  only:
+    - master
+
 
 # e2e_example_apps:
 #   script:
