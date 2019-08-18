@@ -13,12 +13,22 @@ spec:
         service: lb
     spec:
       containers:
-      - image: registry.gitlab.com/metawiz/febe/formuladb-lb:latest
+      - image: nginx
         name: lb
         ports:
         - containerPort: 80
-        - containerPort: 443
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d
+          readOnly: true
+          name: nginx-conf
         resources: {}
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: nginx-conf
+          items:
+            - key: nginx.conf
+              path: nginx.conf
       restartPolicy: Always
       imagePullSecrets:
         - name: regcred

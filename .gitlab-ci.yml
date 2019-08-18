@@ -1,15 +1,15 @@
 stages:
   - build
-  - test_mem
-  - test_postgres
-  - stress
   - bundle
   - deploy_cluster
   - build_and_deploy
+  - test_mem
+  - test_postgres
+  - stress
   - e2e_dev_env
   - deploy
   # - e2e_example_apps
-  # - cleanup
+  - cleanup
   # - videos
 
 build:
@@ -17,6 +17,43 @@ build:
   script:
     - npm install
     - npm run compile
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+bundle:
+  stage: bundle
+  script:
+    - npm run bundle
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+deploy_cluster:
+  stage: deploy_cluster
+  script:
+    - sh deploy-k3s.sh
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+build_and_deploy:
+  stage: build_and_deploy
+  script:
+    - KUBECONFIG=`k3d get-kubeconfig` skaffold run
+    - nc -z localhost 5432 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l app=my-app -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 5432:5432 &
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -34,55 +71,31 @@ test_mem:
     paths:
       - node_modules/
       - tsc-out/
-
+      - dist-be/
+      - dist-fe/
 
 test_postgres:
   stage: test_postgres
   script:
-    - docker start postgres-for-unit-tests || docker run --name postgres-for-unit-tests --rm -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v pg-persistence:/var/lib/postgresql/data -d postgres:11
     - FRMDB_STORAGE=postgres npm test || true
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 stress:
   stage: stress
   script:
     - npm test -- core/src/frmdb_engine.stress.spec.ts
-    - docker start postgres-for-unit-tests || docker run --name postgres-for-unit-tests --rm -p 5432:5432 -e POSTGRES_PASSWORD=postgres -v pg-persistence:/var/lib/postgresql/data -d postgres:11
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
-
-bundle:
-  stage: bundle
-  script:
-    - npm run bundle
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - node_modules/
-      - dist-be/
-      - dist-fe/
-
-deploy_cluster:
-  stage: deploy_cluster
-  script:
-    - sh deploy-k3s.sh
-
-build_and_deploy:
-  stage: build_and_deploy
-  script:
-    - KUBECONFIG=`k3d get-kubeconfig` skaffold run
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - node_modules/
       - dist-be/
       - dist-fe/
 
@@ -90,6 +103,10 @@ e2e_dev_env:
   stage: e2e_dev_env
   script:
     - npm run e2e || true
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
 
 deploy:
   stage: deploy
@@ -135,11 +152,13 @@ deploy:
 #     refs:
 #       - master
 
-# cleanup:
-#   stage: cleanup
-#   script:
-#     - docker-compose down
-#     - docker image prune --all -f
-#     - killall node --quiet || true
-#     - rm -rf /home/gitlab-runner/cache/metawiz/febe/*
-#   when: always
+cleanup:
+  stage: cleanup
+  script:
+#    - docker-compose down
+    - docker system prune -af
+#    - killall node --quiet || true
+    - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
+    # cleanup registry: BE development images in febe project
+    - curl --request DELETE --data 'name_regex=.+-[0-9]+-[0-9a-z]{8}.+' --data 'keep_n=5' --data 'older_than=5d' --header "PRIVATE-TOKEN:mfDqKQ6zwhZaszaNpUys" "https://gitlab.com/api/v4/projects/4245551/registry/repositories/398919/tags"
+  when: always
