@@ -304,7 +304,19 @@ body {
         border-bottom: 1px solid #ccc;
         text-align: center;
         background-color: #fafafa;
-        overflow: hidden;
+        // overflow: hidden;
+        z-index: 10000;
+
+        .dropdown-item.flag-icon {
+            display: block;
+            margin-left: -1rem;
+            padding-left: 4rem;
+            margin-top: 0.5rem;
+            &:hover,&:focus,&:active{
+                background-color:transparent;
+                font-weight: bold;
+            }
+        }
 
         .btn-group {
             .btn {

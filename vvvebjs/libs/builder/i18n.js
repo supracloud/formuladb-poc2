@@ -13,8 +13,8 @@ const i18n = {
 
     get languages() {
         return [
-            { tag: 'en-UK', full: 'English', short: 'EN', flag: '/formuladb-editor/img/GB.png' },
-            { tag: 'fr-FR', full: 'Francais', short: 'FR', flag: '/formuladb-editor/img/FR.png' }
+            { tag: 'en-UK', full: 'English', short: 'gb', flag: '/formuladb-editor/img/GB.png' },
+            { tag: 'fr-FR', full: 'Francais', short: 'fr', flag: '/formuladb-editor/img/FR.png' }
         ]
     },
 

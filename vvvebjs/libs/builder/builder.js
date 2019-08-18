@@ -1355,18 +1355,24 @@ Vvveb.Gui = {
 
 
 		// i18n section
-		const i18nSelect = jQuery('#frmdb-editor-i18n-select');
-		const lang = localStorage.getItem('editor-lang') || i18n.getDefaultLanguage().tag;
-		i18nSelect.attr('data-i18n', lang);
-		i18n.languages.forEach(lang => i18nSelect.append(`<option style="background-image:url(${lang.flag});" value="${lang.tag}">${lang.full}</option>`));
-		i18nSelect.val(lang);
-		i18nSelect.change((event) => {
-			const prev = i18nSelect.attr('data-i18n');
-			const next = event.target.value;
-			localStorage.setItem('editor-lang', next);
-			i18nSelect.attr('data-i18n', next);
-			i18n.translateAll(window.FrameDocument, prev, next);
-		});
+		const i18nSelect = jQuery('#frmdb-editor-i18n-select')
+		const i18nOptions = jQuery('[aria-labelledby="frmdb-editor-i18n-select"]');
+		const currentLanguage = i18n.getLanguage(localStorage.getItem('editor-lang')) || i18n.getDefaultLanguage();
+		i18nSelect.attr('data-i18n', currentLanguage.tag);
+		i18nSelect.html(currentLanguage.full);
+		i18n.languages.forEach(lang =>
+			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.short}">${lang.full}</a>`)
+				.click(event => {
+					const prev = i18nSelect.attr('data-i18n');
+					const next = lang.tag;
+					localStorage.setItem('editor-lang', next);
+					i18nSelect.attr('data-i18n', next);
+					i18nSelect.html(lang.full);
+					i18n.translateAll(window.FrameDocument, prev, next);
+					event.preventDefault();
+					return false;
+				}).appendTo(i18nOptions)
+		);
 	},
 
 	undo: function () {
