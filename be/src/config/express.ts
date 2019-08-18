@@ -35,6 +35,7 @@ const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\
 const SECRET = 'bla-bla-secret';
 const translationClient = new v3beta1.TranslationServiceClient();
 const projectId = 'codemancy';
+const translateBatchSize = 128;
 
 const STATIC_EXT = [
     '.js',
@@ -72,19 +73,26 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     }
 
     async function translateText(texts: string[], from: string, to: string) {
-        // Construct request
-        const request = {
-            parent: translationClient.locationPath(projectId, 'global'),
-            contents: texts,
-            mimeType: 'text/plain', // mime types: text/plain, text/html
-            sourceLanguageCode: from,
-            targetLanguageCode: to,
-        };
+        const batches: string[][] = [];
 
-        // Run request
-        const [response] = await translationClient.translateText(request);
-        return response.translations
-            .map(tr => tr.translatedText);
+        for (let i = 0; i < texts.length; i += translateBatchSize) {
+            batches.push(texts.slice(i, i + translateBatchSize));
+        }
+        const translations = await Promise.all(batches.map(batch => {
+            // Construct request
+            const request = {
+                parent: translationClient.locationPath(projectId, 'global'),
+                contents: batch,
+                mimeType: 'text/html', // mime types: text/plain, text/html
+                sourceLanguageCode: from,
+                targetLanguageCode: to,
+            };
+            return translationClient.translateText(request);
+        }));
+        return translations.reduce((p,c)=>{
+            const [response]=c;
+            return [...p,...response.translations.map(tr=>tr.translatedText)]
+        },[]);
     }
 
     passport.use("user-pass", new LocalStrategy(

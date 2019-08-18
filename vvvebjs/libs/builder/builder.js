@@ -693,8 +693,6 @@ Vvveb.Builder = {
 		self._initHighlight();
 
 		$(window).triggerHandler("vvveb.iframe.loaded", self.frameDoc);
-
-		i18n.init(self.frameBody[0]);
 	},
 
 	_getElementType: function (el) {
