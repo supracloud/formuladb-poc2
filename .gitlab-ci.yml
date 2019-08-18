@@ -53,8 +53,8 @@ deploy_cluster:
 build_and_deploy:
   stage: build_and_deploy
   script:
-    - KUBECONFIG=`k3d get-kubeconfig` skaffold run
-    - nc -z localhost 5432 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 5432:5432 &
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - skaffold run
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -78,7 +78,11 @@ test_mem:
 test_postgres:
   stage: test_postgres
   script:
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
     - FRMDB_STORAGE=postgres npm test || true
+    - pkill -9 kubectl || true # kill the tunnel to allow the job to finish
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -91,7 +95,11 @@ stress:
   stage: stress
   script:
     - npm test -- core/src/frmdb_engine.stress.spec.ts
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+    - pkill -9 kubectl || true # kill the tunnel to allow the job to finish
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -105,9 +113,9 @@ e2e_dev_env:
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    - echo $KUBECONFIG $POD
     - nc -z localhost 8081 || kubectl port-forward $POD 8081:80 &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
+    - pkill -9 kubectl || true # kill the tunnel to allow the job to finish
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -134,10 +142,12 @@ deploy:
     - cd dist
     - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
     - cd ..
-    - KUBECONFIG=k8s/demo-kube-config.conf skaffold deploy
-    - pkill -9 kubectl || true # kill any previous tunnels
-    - nc -z localhost 5433 || KUBECONFIG=k8s/demo-kube-config.conf POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 5433:5432 &
+    - export KUBECONFIG=k8s/demo-kube-config.conf
+    - skaffold deploy
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
     - PGPORT=5433 npm run e2e:data
+    - pkill -9 kubectl || true # kill any previous tunnels
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
