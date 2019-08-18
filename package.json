@@ -17,8 +17,6 @@
         "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' split-window -h 'npm run dev:watch' ';' select-layout even-vertical",
         "test": "node jasmine.js",
         "test:e2e": "protractor e2e/protractor.conf.js",
-        "test:e2e:demo:headless": "TARGET=headless protractor --baseUrl='https://formuladb.online' e2e/protractor.conf.js",
-        "test:e2e:dev:headless": "TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js"
     },
     "author": "",

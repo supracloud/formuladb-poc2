@@ -104,7 +104,7 @@ e2e_dev_env:
   stage: e2e_dev_env
   script:
     - nc -z localhost 8081 || KUBECONFIG=`k3d get-kubeconfig` POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'` kubectl port-forward $POD 8081:80 &
-    - npm run test:e2e:dev:headless
+    - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -148,7 +148,10 @@ deploy:
 e2e_demo_env:
   stage: e2e_demo_env
   script:
-    - npm run test:e2e:demo:headless
+    - TARGET=headless protractor --baseUrl='https://formuladb.online' e2e/protractor.conf.js
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
       - node_modules/
       - tsc-out/
       - dist-be/
