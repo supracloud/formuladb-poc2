@@ -37,8 +37,17 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
         });
         onEvent(this, 'click', '#new-table-btn *', (event) => {
             Vvveb.Gui.newTable(newTableName => 
-                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName)));
-        });    
+                BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
+                .then(async (ev: ServerEventNewEntity) => {
+                    if (ev.state_ != 'ABORT') {
+                        let nav = queryVNav(this);
+                        await nav.loadTables(ev.path);    
+                    }
+                    return ev;
+                })
+                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
+            )
+        });
     }
     
     setActiveTable() {

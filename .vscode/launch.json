@@ -63,13 +63,15 @@
             "request": "launch",
             "url": "http://localhost:8081",
             "webRoot": "${workspaceFolder}",
+            "pathMapping": {
+                "/formuladb-editor": "${workspaceFolder}/vvvebjs"
+            },
             "sourceMapPathOverrides": {
                 "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
                 "webpack:///./functions/src/*": "${webRoot}/functions/src/*",
                 "webpack:///./core/src/*": "${webRoot}/core/src/*",
                 "webpack:///./test/src/*": "${webRoot}/test/src/*",
                 "webpack:///./fe/src/*": "${webRoot}/fe/src/*",
-                "http://localhost:8081/formuladb-editor/libs/*": "${workspaceRoot}/vvvebjs/libs/*",
             }
         },
         {

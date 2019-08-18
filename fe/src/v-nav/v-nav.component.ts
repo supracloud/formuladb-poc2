@@ -36,15 +36,8 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
     entities: Entity[] = [];
     
     connectedCallback() {
-        
-        BACKEND_SERVICE().getEntities().then(entities => {
-            this.frmdbState.selectedEntityId = entities[0]._id;
-            setTimeout(() => elvis(elvis((window as any).Vvveb).Gui).CurrentTableId = entities[0]._id, 500);
 
-            this.entities = entities;
-            
-            // this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
-        })
+        this.loadTables();
 
         onEvent(this, 'click', '*', (event) => {
             let link: HTMLAnchorElement = event.target.closest('.nav-link');
@@ -54,6 +47,19 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
             elvis_el(this.querySelector('li.active')).classList.remove('active');
             elvis_el(link.parentElement).classList.add('active');
         });
+    }
+
+    loadTables(selectedTable?: string) {
+        
+        return BACKEND_SERVICE().getEntities().then(entities => {
+            this.frmdbState.selectedEntityId = selectedTable || entities[0]._id;
+            setTimeout(() => elvis(elvis((window as any).Vvveb).Gui).CurrentTableId = entities[0]._id, 500);
+
+            this.entities = entities;
+            
+            // this.frmdbState.navigationItemsTree = entites2navItems(entities, this.frmdbState.selectedEntityId);
+        })
+
     }
 
     updateDOM() {

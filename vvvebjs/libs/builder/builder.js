@@ -1579,6 +1579,7 @@ Vvveb.Gui = {
 	newTable: function(callback) {
 		var $newTableModal = $('#new-table-modal');
 		$newTableModal.find('.alert').hide();
+		$("input[name=tableName]", $newTableModal).val('');
 
 		$newTableModal.modal("show").find("form").off("submit").submit(function( event ) {
 
