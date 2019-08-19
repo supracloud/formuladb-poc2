@@ -8,8 +8,8 @@ import * as _ from 'lodash';
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { VNavComponent, queryVNav } from '@fe/v-nav/v-nav.component';
 import { DataGridComponent, queryDataGrid } from '@fe/data-grid/data-grid.component';
-import { onEvent } from '@fe/delegated-events';
-import { ServerEventNewEntityN, ServerEventNewEntity } from '@domain/event';
+import { onEvent, onDoc } from '@fe/delegated-events';
+import { ServerEventNewEntityN, ServerEventNewEntity, ServerEventDeleteEntity } from '@domain/event';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 
 const HTML: string = require('raw-loader!@fe-assets/db-editor/db-editor.component.html').default;
@@ -48,6 +48,22 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
                 .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
             )
         });
+
+        onDoc('click', '.popover .delete-table-btn *', (event) => {
+            let link: HTMLAnchorElement = event.target.closest('a');
+            event.preventDefault();
+            if (!link.dataset.id) return;
+
+            BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(link.dataset.id))
+            .then(async (ev: ServerEventNewEntity) => {
+                if (ev.state_ != 'ABORT') {
+                    let nav = queryVNav(this);
+                    await nav.loadTables(ev.path);    
+                }
+                return ev;
+            })
+
+        });        
     }
     
     setActiveTable() {

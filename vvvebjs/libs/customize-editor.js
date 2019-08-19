@@ -145,4 +145,6 @@ async function customLoadPages() {
 $(document).ready(async function () {
     customizeEditor();
     await customLoadPages();
+
+    $.fn.tooltip.Constructor.Default.whiteList.a = ['data-id', 'href'];
 });
