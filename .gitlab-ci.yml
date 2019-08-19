@@ -132,7 +132,7 @@ deploy:
     - npm install
     - source tools.sh
     - cd ..
-    - export NODE_PATH=ci-tools/node_modules
+    - export NODE_PATH=`pwd`/ci-tools/node_modules
     # publish vvvebj on GCloud
     - upload-assets `find vvvebjs -type f -print`
     # publish portal on GCloud
@@ -141,10 +141,10 @@ deploy:
     - mkdir -p dist/fe
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
-    - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
+    - upload-assets `find -type f -printf '%P\n'`
     - cd ..
     - export KUBECONFIG=k8s/demo-kube-config.conf
-    - skaffold deploy
+    - skaffold run
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
     - PGPORT=5433 npm run e2e:data
