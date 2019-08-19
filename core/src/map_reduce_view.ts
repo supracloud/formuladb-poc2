@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 import { CircularJSON } from "@domain/json-stringify";
 
-import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "./key_value_store_i";
+import { KeyValueStoreArrayKeys, KeyValueStoreFactoryI, RangeQueryOptsArrayKeysI, KVSArrayKeyType, kvsKey2Str, kvsReduceValues } from "@storage/key_value_store_i";
 import { MapFunctionT } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { KeyValueObj } from '@domain/key_value_obj';
 import { ReduceFun, SumReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, TextjoinReduceFun, CountReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
-import { MINCHAR, MAXCHAR } from './utils/collator';
+import { MINCHAR, MAXCHAR } from '@storage/collator';
 
 
 export interface MapViewUpdates<VALUET> {
@@ -258,7 +258,7 @@ export class MapReduceView {
                 let { ret, newMapKey, newMapValue, oldMapKey, oldMapValue, otherMapValueWithOldKeyExist } = 
                     await this.preComputeMap(oldObj, newObj, ReduceFunDefaultValue[rFun.name]);
 
-                //WARNING: this reduce precomputation works only for unique keys
+                //WARNING: this reduce pre-computation works only for unique keys
                 if (null != oldMapKey && null != oldMapValue && !_.isEqual(oldMapKey, newMapKey) && !otherMapValueWithOldKeyExist) {
                     ret.reduceDelete.push(oldMapKey);
                 }

@@ -5,7 +5,7 @@
 
 import { CircularJSON } from "@domain/json-stringify";
 
-import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "./key_value_store_i";
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "@storage/key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { FrmdbStore } from './frmdb_store';
@@ -276,5 +276,10 @@ export class FrmdbEngineStore extends FrmdbStore {
         getIds: () => Promise<string[]>,
         lockAcquiredCallback: () => Promise<any>) {
         return this.transactionManager.runTransaction(eventId, getIds, lockAcquiredCallback);
+    }
+
+    public async clearAllForTestingPurposes() {
+        await this.kvsFactory.clearAllForTestingPurposes();
+        await this.kvsFactory.putSchema(this.schema);
     }
 }

@@ -3,10 +3,8 @@
 * License TBD
 */
 
-const pretty = require('pretty');
-export function normalizeHTML(html: string): string[] {
-    return pretty(html, {ocd: true}).split(/\n/);
-}
+import { updateDOM, serializeElemToObj } from "./live-dom-template";
+import { normalizeHTML } from "@fe/fe-test-urils.spec";
 
 export function wrapHTML(html: string): HTMLElement {
     let div = document.createElement('div');
@@ -14,8 +12,6 @@ export function wrapHTML(html: string): HTMLElement {
 
     return div;
 }
-
-import { updateDOM, serializeElemToObj } from "./live-dom-template";
 
 const template = /*html*/`
 <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">

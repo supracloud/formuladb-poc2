@@ -1575,6 +1575,52 @@ Vvveb.Gui = {
 		});
 		
 	},
+
+	newTable: function(callback) {
+		var $newTableModal = $('#new-table-modal');
+		$newTableModal.find('.alert').hide();
+		$("input[name=tableName]", $newTableModal).val('');
+
+		$newTableModal.modal("show").find("form").off("submit").submit(function( event ) {
+
+			var name = $("input[name=tableName]", $newTableModal).val();
+			event.preventDefault();
+
+			callback(name).then(errMsg => {
+				if (errMsg) {
+					$newTableModal.find('.alert').show().text(errMsg);
+				} else {
+					$newTableModal.find('.alert').hide();
+					$newTableModal.modal("hide");
+				}
+			});
+
+		});
+		
+	},
+
+
+	newColumn: function(tableName, callback) {
+		var $newColumnModal = $('#new-column-modal');
+		$newColumnModal.find('.alert').hide();
+		$newColumnModal.find('[data-frmdb-value="selectedTableName"]').text(tableName);
+		$("input[name=columnName]", $newColumnModal).val('');
+
+		$newColumnModal.modal("show").find("form").off("submit").submit(function( event ) {
+
+			var name = $("input[name=columnName]", $newColumnModal).val();
+			event.preventDefault();
+
+			callback(name).then(errMsg => {
+				if (errMsg) {
+					$newColumnModal.find('.alert').show().text(errMsg);
+				} else {
+					$newColumnModal.find('.alert').hide();
+					$newColumnModal.modal("hide");
+				}
+			});
+		});
+	},	
 	
 	deletePage : function () {
 		

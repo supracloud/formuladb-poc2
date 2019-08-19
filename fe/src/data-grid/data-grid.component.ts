@@ -7,7 +7,7 @@ import {
     Grid, GridOptions,
     GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams
+    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
@@ -46,6 +46,7 @@ export interface DataGridComponentState {
     observedAttributes: ["table_name", "header_height" , "expand_row"],
     template: HTML,
     style: CSS,
+    noShadow: true,
 })
 export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentState> {
 
@@ -68,7 +69,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         this.style.height = "100%";
         this.style.display = "block";
 
-        new Grid(this.shadowRoot!.querySelector("#myGrid") as HTMLElement, this.gridOptions);
+        new Grid(this.elem.querySelector("#myGrid") as HTMLElement, this.gridOptions);
     }
 
 
@@ -104,6 +105,23 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
         headerHeight: 50,
         suppressContextMenu: true,
+        getMainMenuItems: (params: GetMainMenuItemsParams) => {
+            let defaults: (string | MenuItemDef)[] = params.defaultItems.slice(0);
+            defaults.push('separator')
+            defaults.push({
+                name: 'Delete Column',
+                action: () => {
+                    this.emit({
+                        type: "UserDeleteColumn", 
+                        tableName: this.getAttribute("table_name") || 'n/a/tbl', 
+                        columnName: params.column.getColDef().field || 'n/a/col',
+                    });
+                },
+                icon: '<i class="la la-minus-circle"></i>'                
+            });
+
+            return defaults;
+        },
         onGridSizeChanged: this.onGridSizeChanged.bind(this),
         components: {
             // agColumnHeader: TableHeaderComponent,
@@ -263,7 +281,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         }
     }
 
-    async initAgGrid() {
+    public async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
         let tableName = this.getAttribute('table_name');
         if (!tableName) return;

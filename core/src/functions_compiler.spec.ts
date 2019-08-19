@@ -1,3 +1,5 @@
+import { frmdbxit } from "@fe/fe-test-urils.spec";
+
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
@@ -13,7 +15,7 @@ describe('functions_compiler', () => {
     ];
 
     for (let testFormula of formulas) {
-        xit(' should compile ' + testFormula.testName + ': ' + testFormula.formula, () => {
+        frmdbxit(' should compile ' + testFormula.testName + ': ' + testFormula.formula, () => {
         });
     }
 });

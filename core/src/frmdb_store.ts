@@ -8,7 +8,7 @@ import { DataObj, parseDataObjId, parsePrefix } from "@domain/metadata/data_obj"
 import { FormPage } from "@domain/uimetadata/form-page";
 import { TablePage } from "@domain/uimetadata/table-page";
 import { MwzEvents } from "@domain/event";
-import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "./key_value_store_i";
+import { KeyObjStoreI, kvsKey2Str, KeyValueStoreFactoryI, KeyTableStoreI, RangeQueryOptsArrayKeysI } from "@storage/key_value_store_i";
 import { KeyValueError } from "@domain/key_value_obj";
 import { SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
 import { evalExpression } from "@functions/map_reduce_utils";

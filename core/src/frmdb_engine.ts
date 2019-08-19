@@ -28,6 +28,8 @@ export class FrmdbEngine {
     }
 
     public async init(installFormulas: boolean = true) {
+        console.log("init store...");
+        await this.frmdbEngineStore.init(this.frmdbEngineStore.schema);
         console.log("Starting FormulaDBEngine...");
 
         for (let ent of this.schemaDAO.entities()) {
@@ -110,6 +112,7 @@ export class FrmdbEngine {
     }
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
+        if (!event.path.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
         let newEntity: Entity = { _id: event.path, props: {} };
 
         return this.frmdbEngineStore.putEntity(newEntity)
@@ -118,7 +121,7 @@ export class FrmdbEngine {
                 delete event._rev;
                 return event;
             })
-            ;
+        ;
     }
 
     private deleteEntity(event: events.ServerEventDeleteEntity): Promise<events.MwzEvents> {

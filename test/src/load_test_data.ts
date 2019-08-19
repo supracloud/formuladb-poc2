@@ -7,7 +7,7 @@ require('module-alias/register');
 
 import { getKeyValueStoreFactory } from "@storage/key_value_store_impl_selector";
 
-import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { MockData } from "@test/mocks/mock-data";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { FrmdbEngine } from "@core/frmdb_engine";
@@ -24,7 +24,7 @@ const mockMetadata = new MockMetadata();
 export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
     try {
         let kvsFactory = await getKeyValueStoreFactory();
-        await kvsFactory.clearAll();
+        await kvsFactory.clearAllForTestingPurposes();
 
         
         let uiMetaLoaded = false;

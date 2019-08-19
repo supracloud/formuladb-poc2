@@ -4,6 +4,7 @@
     "description": "FormulaDB low code platform",
     "scripts": {
         "start": "node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
+        "start_dev": "nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "compile": "tsc --sourceMap -p .",
         "compile:watch": "npm run compile -- -w",
         "bundle": "webpack",
@@ -11,8 +12,8 @@
         "docker:be": "docker build -t formuladb-be -f Dockerfile.be . && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:${npm_package_version} && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:latest",
         "docker:fe": "docker build -t formuladb-maps -f Dockerfile.fe . && docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:${npm_package_version}",
         "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
-        "build:watch": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
-        "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window -h 'npm run docker:watch' ';' split-window -h 'bash serve.sh' ';' select-layout even-horizontal",
+        "dev:watch": "while ! k3d get-kubeconfig 2>/dev/null; do sleep 1; done; KUBECONFIG=`k3d get-kubeconfig` skaffold dev -p dev --port-forward=true",
+        "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window 'bash serve.sh' ';' select-layout tiled ';' split-window -h 'npm run dev:watch' ';' select-layout tiled",
         "test": "node jasmine.js",
         "test:e2e": "protractor e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js"
@@ -20,7 +21,6 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@google-cloud/storage": "^2.5.0",
         "@tbranyen/jsdom": "^13.0.0",
         "@types/jasmine": "^3.3.12",
         "@types/jquery": "^3.3.29",
@@ -41,7 +41,6 @@
         "live-server": "^1.2.1",
         "lolex": "^4.1.0",
         "node-sass": "^4.12.0",
-        "nodemon": "^1.19.1",
         "npm": "^6.9.0",
         "parallel-webpack": "^2.3.0",
         "pretty": "^2.0.0",
@@ -93,6 +92,7 @@
         "moment": "^2.24.0",
         "morgan": "^1.6.1",
         "node-fetch": "^2.6.0",
+        "nodemon": "^1.19.1",
         "passport": "^0.4.0",
         "passport-local": "^1.0.0",
         "pg": "^7.8.0",

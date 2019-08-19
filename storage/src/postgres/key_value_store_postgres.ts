@@ -5,7 +5,7 @@
  * https://github.com/vitaly-t/pg-promise/wiki/Common-Mistakes
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@storage/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
 import * as pgPromise from "pg-promise";
@@ -78,8 +78,23 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             await this.createTable();
             this.tableCreated = true;
         } else {
-            await waitUntilNotNull(() => Promise.resolve(this.tableCreated), 50);
+            await waitUntilNotNull(() => Promise.resolve(this.tableCreated), 500);
+            let tableExists = await this.checkIfTableExists();
+            if (!tableExists) throw new Error(`Table creation timeout ${this.table_id}`);
         }
+    }
+
+    public async checkIfTableExists(): Promise<boolean> {
+        let schema = 'public';//TODO: this must be the app name
+
+        return this.getDB().any(`SELECT * FROM information_schema.tables
+                WHERE table_name = '${this.table_id}' AND table_schema = '${schema}'`)
+            .then((res) => {
+                return res[0].table_name == this.table_id;
+            }).catch((err) => {
+                logger.error("%o", err);
+                return false;
+            });
     }
 
     protected getSQL() {
@@ -174,7 +189,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         })
     }
 
-    public async clearAll() {
+    public async clearAllForTestingPurposes() {
         console.log("Droping all tables");
         let query: string = 'DROP SCHEMA public CASCADE;CREATE SCHEMA public;';
         await this.getDB().any(query);
@@ -355,9 +370,9 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
         return new KeyTableStorePostgres<OBJT>(entity);
     }
 
-    async clearAll() {
+    async clearAllForTestingPurposes() {
         let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
-        await forCleanup.clearAll();
+        await forCleanup.clearAllForTestingPurposes();
     }
 
     
