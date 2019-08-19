@@ -1,7 +1,7 @@
 stages:
   - build
   - bundle
-  - deploy_cluster
+  - deploy_k3s_cluster
   - build_and_deploy
   - test_mem
   - test_postgres
@@ -38,8 +38,8 @@ bundle:
       - dist-be/
       - dist-fe/
 
-deploy_cluster:
-  stage: deploy_cluster
+deploy_k3s_cluster:
+  stage: deploy_k3s_cluster
   script:
     - sh deploy-k3s.sh
   cache:
@@ -82,7 +82,6 @@ test_postgres:
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5432 || setsid kubectl port-forward $POD 5432:5432 &
     - FRMDB_STORAGE=postgres npm test || true
-    - pkill -9 kubectl || true # kill the tunnel to allow the job to finish
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -99,7 +98,6 @@ stress:
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5432 || setsid kubectl port-forward $POD 5432:5432 &
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
-    - pkill -9 kubectl || true # kill the tunnel to allow the job to finish
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -115,7 +113,6 @@ e2e_dev_env:
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 8081 || setsid kubectl port-forward $POD 8081:80 &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
-    - pkill -9 kubectl || true # kill the tunnel to allow the job to finish
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -132,10 +129,11 @@ deploy:
     - npm install
     - source tools.sh
     - cd ..
+    - export NODE_PATH=ci-tools/node_modules
     # publish vvvebj on GCloud
-    - NODE_PATH=ci-tools/node_modules upload-assets `find vvvebjs -type f -print`
+    - upload-assets `find vvvebjs -type f -print`
     # publish portal on GCloud
-    - NODE_PATH=ci-tools/node_modules upload-assets `find portal/public/ -type f -print`
+    - upload-assets `find portal/public/ -type f -print`
     # publish FE on GCloud
     - mkdir -p dist/fe
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
@@ -147,7 +145,6 @@ deploy:
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5433 || setsid kubectl port-forward $POD 5433:5432 &
     - PGPORT=5433 npm run e2e:data
-    - pkill -9 kubectl || true # kill any previous tunnels
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -198,4 +195,5 @@ cleanup:
     - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     - curl --request DELETE --data 'name_regex=.+-[0-9]+-[0-9a-z]{8}.+' --data 'keep_n=5' --data 'older_than=5d' --header "PRIVATE-TOKEN:mfDqKQ6zwhZaszaNpUys" "https://gitlab.com/api/v4/projects/4245551/registry/repositories/398919/tags"
+    - pkill -9 kubectl || true # kill any previous tunnels
   when: always
