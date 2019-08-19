@@ -77,19 +77,20 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
             let entity: Entity = currentEntity;
 
             Vvveb.Gui.newColumn(entity._id, newColumnName => {
-                BACKEND_SERVICE().putEvent(new ServerEventSetProperty(entity, {
+                return BACKEND_SERVICE().putEvent(new ServerEventSetProperty(entity, {
                     propType_: Pn.STRING,
                     name: newColumnName,
                 }))
                 .then(async (ev: ServerEventSetProperty) => {
                     if (ev.state_ != 'ABORT') {
                         let dataGrid = queryDataGrid(this);
-                        await dataGrid.initAgGrid();    
+                        await dataGrid.initAgGrid();
+                        let nav = queryVNav(this);
+                        await nav.loadTables(nav.frmdbState.selectedEntityId);                            
                     }
                     return ev;
                 })
                 .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
-
             })
         });
         
@@ -106,6 +107,8 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
                     if (ev.state_ != 'ABORT') {
                         let dataGrid = queryDataGrid(this);
                         await dataGrid.initAgGrid();    
+                        let nav = queryVNav(this);
+                        await nav.loadTables(nav.frmdbState.selectedEntityId);                            
                     }
                     return ev;
                 });
