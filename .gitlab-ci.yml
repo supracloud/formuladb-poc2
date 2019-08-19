@@ -80,8 +80,10 @@ test_postgres:
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5432 || (setsid nohup kubectl port-forward $POD 5432:5432 > nohup.out &)
+    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
     - FRMDB_STORAGE=postgres npm test || true
+  after_script:
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -96,8 +98,10 @@ stress:
     - npm test -- core/src/frmdb_engine.stress.spec.ts
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5432 || (setsid nohup kubectl port-forward $POD 5432:5432 > nohup.out &)
+    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+  after_script:
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -111,8 +115,10 @@ e2e_dev_env:
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 8081 || (setsid nohup kubectl port-forward $POD 8081:80 > nohup.out &)
+    - nc -z localhost 8081 || kubectl port-forward $POD 8081:80 &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
+  after_script:
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -143,8 +149,10 @@ deploy:
     - export KUBECONFIG=k8s/demo-kube-config.conf
     - skaffold deploy
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5433 || (setsid nohup kubectl port-forward $POD 5433:5432 > nohup.out &)
+    - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
     - PGPORT=5433 npm run e2e:data
+  after_script:
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -195,5 +203,5 @@ cleanup:
     - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     - curl --request DELETE --data 'name_regex=.+-[0-9]+-[0-9a-z]{8}.+' --data 'keep_n=5' --data 'older_than=5d' --header "PRIVATE-TOKEN:mfDqKQ6zwhZaszaNpUys" "https://gitlab.com/api/v4/projects/4245551/registry/repositories/398919/tags"
-    - pkill -9 kubectl || true # kill any previous tunnels
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   when: always
