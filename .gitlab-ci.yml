@@ -80,7 +80,7 @@ test_postgres:
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5432 || (setsid kubectl port-forward $POD 5432:5432 &)
+    - nc -z localhost 5432 || (setsid nohup kubectl port-forward $POD 5432:5432 > nohup.out &)
     - FRMDB_STORAGE=postgres npm test || true
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -96,7 +96,7 @@ stress:
     - npm test -- core/src/frmdb_engine.stress.spec.ts
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5432 || (setsid kubectl port-forward $POD 5432:5432 &)
+    - nc -z localhost 5432 || (setsid nohup kubectl port-forward $POD 5432:5432 > nohup.out &)
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -111,7 +111,7 @@ e2e_dev_env:
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 8081 || (setsid kubectl port-forward $POD 8081:80 &)
+    - nc -z localhost 8081 || (setsid nohup kubectl port-forward $POD 8081:80 > nohup.out &)
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
@@ -143,7 +143,7 @@ deploy:
     - export KUBECONFIG=k8s/demo-kube-config.conf
     - skaffold deploy
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5433 || (setsid kubectl port-forward $POD 5433:5432 &)
+    - nc -z localhost 5433 || (setsid nohup kubectl port-forward $POD 5433:5432 > nohup.out &)
     - PGPORT=5433 npm run e2e:data
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
