@@ -968,12 +968,59 @@
 			</div>
 		</div>
 
+
+		<!-- new Column modal-->
+		<div class="modal fade" id="new-column-modal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+
+				<form>
+
+					<div class="modal-content">
+						<div class="modal-header">
+							<p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Column for table <span data-frmdb-value="selectedTableName"></p>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+							</button>
+						</div>
+
+						<div class="modal-body text">
+
+							<div class="form-group row" data-key="href">
+								<label class="col-sm-3 control-label">Column name</label>
+								<div class="col-sm-9 input">
+									<div>
+										<input name="columnName" type="text" class="form-control" placeholder="new_column_name" required pattern="[a-zA-Z_]+"
+											oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+									</div>
+
+									<div class="alert alert-danger" role="alert" style="display: none">
+										A simple danger alert—check it out!
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+						<div class="modal-footer">
+							<button class="btn btn-primary btn-lg" type="submit"><i class="la la-check"></i> Add Column</button>
+							<button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="la la-close"></i> Cancel</button>
+						</div>
+					</div>
+
+				</form>
+
+			</div>
+		</div>
+
 	</div>
 
 	<!-- bootstrap -->
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 	<script src="js/jquery.hotkeys.js"></script>
 

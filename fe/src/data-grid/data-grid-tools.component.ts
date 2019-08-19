@@ -17,7 +17,7 @@ export class DataGridToolsComponent implements IToolPanelComp {
         this.gridApi = this.params.api;
         // calculate stats when new rows loaded, i.e. onModelUpdated
         // this.params.api.addEventListener('modelUpdated', this.updateTotals.bind(this));
-        this.on('click', '.excel-export', () => this.excel());
+        this.on('click', '.excel-export', (e) => {this.excel(); e.preventDefault()});
         this.on('click', '.add-row', () => this.emit({type: "UserAddRow", entityId: "TBD"}));
         this.on('click', '.delete-row', () => this.emit({type: "UserDeleteRow", dataObj: {_id: "TBD"}}));
 

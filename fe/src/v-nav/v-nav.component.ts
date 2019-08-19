@@ -34,13 +34,13 @@ declare var $: any;
 })
 export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
 
-    entities: Entity[] = [];
+    public entities: Entity[] = [];
 
     connectedCallback() {
 
         this.loadTables();
 
-        onEvent(this, 'click', 'a.nav-link *', (event) => {
+        onEvent(this, 'click', 'a.nav-link,a.nav-link *', (event) => {
             let link: HTMLAnchorElement = event.target.closest('.nav-link');
             if (!link || link.dataset.id == null) return;
             this.frmdbState.selectedEntityId = link.dataset.id;
@@ -53,7 +53,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
 
     showButtons(link: HTMLAnchorElement) {
         //WTF: cannot get this shit to work ! the first 'show' creates a zombie popover that never hides !! ugly workaround
-        $('.popover').hide();
+        $('.popover').remove();
 
         let span: HTMLElement = link.children[0] as HTMLElement;
         if (!$(span).data("bs.popover") || !$(span).attr('data-popover-attached')) {
@@ -63,7 +63,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
                 html:true,
                 template: /*html*/`
                     <div class="popover border-0 p-0 m-0" role="tooltip">
-                        <div class="popover-body p-0 ml-4"></div>
+                        <div class="popover-body p-0 ml-2"></div>
                     </div>                    
                 `
             })

@@ -1598,6 +1598,29 @@ Vvveb.Gui = {
 		});
 		
 	},
+
+
+	newColumn: function(tableName, callback) {
+		var $newColumnModal = $('#new-column-modal');
+		$newColumnModal.find('.alert').hide();
+		$newColumnModal.find('[data-frmdb-value="selectedTableName"]').text(tableName);
+		$("input[name=columnName]", $newColumnModal).val('');
+
+		$newColumnModal.modal("show").find("form").off("submit").submit(function( event ) {
+
+			var name = $("input[name=columnName]", $newColumnModal).val();
+			event.preventDefault();
+
+			callback(name).then(errMsg => {
+				if (errMsg) {
+					$newColumnModal.find('.alert').show().text(errMsg);
+				} else {
+					$newColumnModal.find('.alert').hide();
+					$newColumnModal.modal("hide");
+				}
+			});
+		});
+	},	
 	
 	deletePage : function () {
 		

@@ -12,7 +12,7 @@ function customizeEditor() {
     }
         
     $('#toggle-file-manager-btn').parent().remove();
-    document.body.style.setProperty('--db-panel-height', `180px`);
+    document.body.style.setProperty('--db-panel-height', `250px`);
     document.body.style.setProperty('--builder-left-panel-width', '14vw');
     document.body.style.setProperty('--builder-right-panel-width', '14vw');
     document.body.style.setProperty('--builder-bottom-panel-height', '0px');
