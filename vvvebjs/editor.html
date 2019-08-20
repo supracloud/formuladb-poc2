@@ -93,47 +93,76 @@
 				</div>
 			</div>
 
-			<div class="btn-group float-right responsive-btns" role="group">
-				<button id="mobile-view" data-view="mobile" class="btn btn-light" title="Mobile view" data-vvveb-action="viewport">
-					<i class="la la-mobile-phone"></i>
-				</button>
-
-				<button id="tablet-view" data-view="tablet" class="btn btn-light" title="Tablet view" data-vvveb-action="viewport">
-					<i class="la la-tablet"></i>
-				</button>
-
-				<button id="desktop-view" data-view="" class="btn btn-light" title="Desktop view" data-vvveb-action="viewport">
+			<div class="btn-group" role="menu">
+				<button class="btn btn-sm dropdown-toggle" id="screen-size-dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">
 					<i class="la la-laptop"></i>
 				</button>
-
+				<div class="dropdown-menu" aria-labelledby="screen-size-dropdown-toggle">
+					<a class="dropdown-item" id="mobile-view" data-view="mobile" title="Mobile view" data-vvveb-action="viewport"
+						onclick="$(this).closest('.btn-group').find('.dropdown-toggle i').attr('class', 'la la-mobile-phone')"><i
+							class="la la-mobile-phone"></i> Mobile</a>
+					<a class="dropdown-item" id="tablet-view" data-view="tablet" title="Tablet view" data-vvveb-action="viewport"
+						onclick="$(this).closest('.btn-group').find('.dropdown-toggle i').attr('class', 'la la-tablet')"><i class="la la-tablet"></i> Tablet</a>
+					<a class="dropdown-item" id="desktop-view" data-view="" title="Desktop view" data-vvveb-action="viewport"
+						onclick="$(this).closest('.btn-group').find('.dropdown-toggle i').attr('class', 'la la-laptop')"><i class="la la-laptop"></i>
+						Desktop</a>
+				</div>
 			</div>
 
 		</div>
 
 		<div id="left-panel">
 
-			<div id="filemanager">
-				<div class="header">
-					<a href="#" class="text-secondary">Pages</a>
-
-					<div class="btn-group responsive-btns mr-4 float-right" role="group">
-						<button class="btn btn-link btn-sm" title="New file" id="new-file-btn" data-vvveb-action="newPage" data-vvveb-shortcut="">
-							<i class="la la-file"></i> <small>New page</small>
-						</button>
-
-						<!--  &ensp;
-									  <button class="btn btn-link text-dark p-0"  title="Delete file" id="delete-file-btn" data-vvveb-action="deletePage" data-vvveb-shortcut="">
-										  <i class="la la-trash"></i> <small>Delete</small>
-									  </button> -->
+			<ul class="nav nav-tabs flex-row pl-1">
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Table</a>
+				</li>
+				<li class="nav-item dropdown flex-grow-1">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Table
+						1</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="#">Table 1</a>
+						<a class="dropdown-item" href="#">Table 2</a>
+						<a class="dropdown-item" href="#">Table 3</a>
 					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link" id="table-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="la la-ellipsis-v"></i>
+					</a>
+					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+						<a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Table</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" id="TBD" title="New Table"><i class="la la-trash"></i> Delete Current Table</a>
+					</div>
+				</li>
+			</ul>
 
-				</div>
 
-				<div class="tree">
-					<ol>
-					</ol>
-				</div>
-			</div>
+			<ul class="nav nav-tabs flex-row pl-1">
+					<li class="nav-item">
+							<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Page</a>
+						</li>				
+				<li class="nav-item dropdown flex-grow-1">
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">page_1</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="#">page_1</a>
+						<a class="dropdown-item" href="#">page_2</a>
+						<a class="dropdown-item" href="#">page_3</a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link" id="table-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="la la-ellipsis-v"></i>
+					</a>
+					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+						<a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Page</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" id="TBD" title="New Table"><i class="la la-trash"></i> Delete Current Page</a>
+					</div>
+				</li>
+			</ul>
 
 
 			<div class="drag-elements">
@@ -987,7 +1016,8 @@
 
 					<div class="modal-content">
 						<div class="modal-header">
-							<p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Column for table <span data-frmdb-value="selectedTableName"></p>
+							<p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Column for table <span
+									data-frmdb-value="selectedTableName"></p>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true"><small><i class="la la-close"></i></small></span>
 							</button>
