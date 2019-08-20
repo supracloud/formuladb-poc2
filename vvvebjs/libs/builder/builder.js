@@ -1359,7 +1359,7 @@ Vvveb.Gui = {
 		const i18nOptions = jQuery('[aria-labelledby="frmdb-editor-i18n-select"]');
 		const currentLanguage = i18n.getLanguage(localStorage.getItem('editor-lang')) || i18n.getDefaultLanguage();
 		i18nSelect.attr('data-i18n', currentLanguage.tag);
-		i18nSelect.html(currentLanguage.full);
+		i18nSelect.html(`<i class="flag-icon flag-icon-${currentLanguage.short}"></i>`);
 		i18n.languages.forEach(lang =>
 			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.short}">${lang.full}</a>`)
 				.click(event => {
@@ -1367,7 +1367,7 @@ Vvveb.Gui = {
 					const next = lang.tag;
 					localStorage.setItem('editor-lang', next);
 					i18nSelect.attr('data-i18n', next);
-					i18nSelect.html(lang.full);
+					i18nSelect.html(`<i class="flag-icon flag-icon-${lang.short}"></i>`);
 					i18n.translateAll(window.FrameDocument, prev, next);
 					event.preventDefault();
 					return false;
