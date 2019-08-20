@@ -62,3 +62,5 @@ server/log.txt
 couchdb_data
 $Recycle.Bin
 debug.log
+
+google_credentials.json

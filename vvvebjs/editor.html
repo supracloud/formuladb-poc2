@@ -84,6 +84,14 @@
 				</button>
 			</div>
 
+			<div class="btn-group mr-3" role="menu">
+				<button class="btn btn-sm dropdown-toggle" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">
+					Language
+				</button>
+				<div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
+				</div>
+			</div>
 
 			<div class="btn-group float-right responsive-btns" role="group">
 				<button id="mobile-view" data-view="mobile" class="btn btn-light" title="Mobile view" data-vvveb-action="viewport">
@@ -261,6 +269,7 @@
 
 					<div id="select-box">
 
+						<!-- 
 						<div id="wysiwyg-editor">
 							<a id="bold-btn" href="" title="Bold"><i><strong>B</strong></i></a>
 							<a id="italic-btn" href="" title="Italic"><i>I</i></a>
@@ -268,6 +277,7 @@
 							<a id="strike-btn" href="" title="Strikeout"><del>S</del></a>
 							<a id="link-btn" href="" title="Create link"><strong>a</strong></a>
 						</div>
+						-->
 
 						<div id="select-actions">
 							<a id="drag-btn" href="" title="Drag element"><i class="la la-arrows"></i></a>
@@ -1025,6 +1035,7 @@
 	<script src="js/jquery.hotkeys.js"></script>
 
 	<!-- builder code-->
+	<script src="libs/builder/i18n.js"></script>
 	<script src="libs/builder/builder.js"></script>
 	<!-- undo manager-->
 	<script src="libs/builder/undo.js"></script>
@@ -1051,6 +1062,7 @@
 	<!-- code mirror - code editor syntax highlight -->
 	<link href="libs/codemirror/lib/codemirror.css" rel="stylesheet" />
 	<link href="libs/codemirror/theme/material.css" rel="stylesheet" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.3.0/css/flag-icon.min.css" rel="stylesheet" />
 	<script src="libs/codemirror/lib/codemirror.js"></script>
 	<script src="libs/codemirror/lib/xml.js"></script>
 	<script src="libs/codemirror/lib/formatting.js"></script>
