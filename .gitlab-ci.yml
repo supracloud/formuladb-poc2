@@ -1,9 +1,9 @@
 stages:
   - build
+  - test_mem
   - bundle
   - deploy_k3s_cluster
   - build_and_deploy
-  - test_mem
   - test_postgres
   - stress
   - e2e_dev_env
