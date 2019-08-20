@@ -142,6 +142,7 @@ deploy:
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
     - upload-assets `find -type f -printf '%P\n'`
+    - unset DOCKER_HOST
     - cd ..
     - export KUBECONFIG=k8s/demo-kube-config.conf
     - skaffold run
