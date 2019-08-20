@@ -10,10 +10,10 @@ export class HotelBooking {
     let EC = ExpectedConditions;
 
     // wait for iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 5000);
+    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 50000);
     await browser.switchTo().frame(0);
     // wait for the document inside the iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('h2'))), 5000);
+    await browser.wait(EC.presenceOf(element(by.css('h2'))), 50000);
     return element(by.css('h2')).getText();
   }
 }

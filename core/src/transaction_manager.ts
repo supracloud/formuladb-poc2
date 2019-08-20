@@ -1,4 +1,4 @@
-import { KeyValueStoreFactoryI } from "./key_value_store_i";
+import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { CircularJSON } from "@domain/json-stringify";
 
 function ll(eventId: string, retryNb: number | string): string {

@@ -7,12 +7,13 @@
 
 
 import * as _ from "./frmdb_lodash";
+import { frmdbxit } from "@fe/fe-test-urils.spec";
 
-xdescribe('frmdb_lodash', () => {
+describe('frmdb_lodash', () => {
     beforeEach(() => {
     });
 
-    it('mapProp should work correctly', () => {
+    frmdbxit('mapProp should work correctly', () => {
         // expect(_.mapProp([{}, {}, {}], 'i', 'index')).toEqual([{i:0},{i:1},{i:2}]);
         // expect(_([{}, {}, {}]).mapProp('i', 'index').value()).toEqual([{i:0},{i:1},{i:2}]);
     });

@@ -162,3 +162,15 @@ alexandru.cristu@ACR MINGW64 /d/code/metawiz/febe
 
 # TBD TBD
 ```
+
+# Links
+
+## images
+
+https://pixabay.com/
+
+https://www.123rf.com/photo_102144600_stock-vector-creative-website-and-landing-page-template-design-with-hand-drawing-people-vector-illustration.html
+
+## icons
+
+https://thenounproject.com/

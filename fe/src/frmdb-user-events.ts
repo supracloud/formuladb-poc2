@@ -48,18 +48,10 @@ export interface UserNavigation {
     path: string;
 }
 
-export interface UserEnteredAutocompleteText {
-    type: "frmdbUserEnteredAutocompleteText";
-    currentObjId: string;
-    text: string;
-    referencedObj
-    targetAttrs: AutocompleteAttrs;
-}
-
-export interface UserChoseAutocompleteOption {
-    type: "frmdbUserChoseAutocompleteOption";
-    option: {};
-    targetAttrs: AutocompleteAttrs;
+export interface UserDeleteColumn {
+    type: 'UserDeleteColumn';
+    tableName: string;
+    columnName: string;
 }
 
 export type FrmdbUserEvent =
@@ -74,6 +66,5 @@ export type FrmdbUserEvent =
     | UserModifiedTableUi
     | UserCollapsedNavItem
     | UserNavigation
-    | UserEnteredAutocompleteText
-    | UserChoseAutocompleteOption
+    | UserDeleteColumn
     ;

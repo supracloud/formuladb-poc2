@@ -93,10 +93,10 @@ describe('KeyObjStoreI', () => {
             sortModel: []
         };
         let objs = await kvt.simpleAdHocQuery(query1);
-        expect(objs).toEqual([{
+        expect(objs).toEqual([jasmine.objectContaining({
             categ: 'C1',
             val: 3
-        }]);
+        })]);
 
         done();
     });

@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@core/key_value_store_i";
+import { RangeQueryOptsI, KeyValueStoreFactoryI, KeyValueStoreI, KeyObjStoreI, kvsKey2Str, KeyTableStoreI, ScalarType, kvsReduceValues } from "@storage/key_value_store_i";
 import * as _ from "lodash";
 import { KeyValueObj, KeyValueError } from "@domain/key_value_obj";
 import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFun } from "@domain/metadata/reduce_functions";
@@ -241,7 +241,7 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
         return new KeyTableStoreMem<OBJT>(entity);
     }
 
-    async clearAll() {
+    async clearAllForTestingPurposes() {
         // Mem KV store is ephemeral so nothing to clear
     };
 

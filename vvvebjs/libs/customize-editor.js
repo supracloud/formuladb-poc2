@@ -3,7 +3,7 @@ document.title = "FormulaDB Editor";
 
 function customizeEditor() {
 
-	if (false /* no right panel */) { 
+	if (true /* no right panel */) { 
 		$("#vvveb-builder").addClass("no-right-panel");
 		$(".component-properties-tab").show();
 		Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";
@@ -12,7 +12,7 @@ function customizeEditor() {
     }
         
     $('#toggle-file-manager-btn').parent().remove();
-    document.body.style.setProperty('--db-panel-height', `180px`);
+    document.body.style.setProperty('--db-panel-height', `250px`);
     document.body.style.setProperty('--builder-left-panel-width', '14vw');
     document.body.style.setProperty('--builder-right-panel-width', '14vw');
     document.body.style.setProperty('--builder-bottom-panel-height', '0px');
@@ -145,4 +145,6 @@ async function customLoadPages() {
 $(document).ready(async function () {
     customizeEditor();
     await customLoadPages();
+
+    $.fn.tooltip.Constructor.Default.whiteList.a = ['data-id', 'href'];
 });

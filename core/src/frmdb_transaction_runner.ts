@@ -19,7 +19,7 @@ import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
 import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduce_view";
 import { compileFormula } from "./formula_compiler";
-import { ScalarType } from "./key_value_store_i";
+import { ScalarType } from "@storage/key_value_store_i";
 import { Pn, FormulaProperty } from "@domain/metadata/entity";
 
 function ll(transacDAG: TransactionDAG): string {

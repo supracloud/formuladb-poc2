@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: be
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        service: be
+    spec:
+      containers:
+      - env:
+        - name: DEBUG
+          value: express:*
+        - name: DEFAULT_USER
+        - name: DEV_MODE
+        - name: FRMDB_STORAGE
+          value: postgres
+        - name: PGHOST
+          value: db
+        image: registry.gitlab.com/metawiz/febe/formuladb-be
+        name: be
+        ports:
+        - containerPort: 3000
+        - containerPort: 9231
+        resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}

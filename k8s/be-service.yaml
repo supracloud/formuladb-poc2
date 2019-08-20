@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: be
+spec:
+  ports:
+  - name: "api"
+    port: 8084
+    targetPort: 3000
+  - name: "inspector"
+    port: 9231
+    targetPort: 9231
+  selector:
+    service: be
+status:
+  loadBalancer: {}

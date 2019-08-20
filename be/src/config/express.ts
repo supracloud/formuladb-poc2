@@ -18,7 +18,7 @@ import * as csv from 'csv';
 import * as mime from 'mime';
 
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { $User } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
@@ -28,8 +28,9 @@ import { MetadataStore } from "@core/metadata_store";
 import { Schema } from "@domain/metadata/entity";
 import { savePage, getFile } from "@be/git-storage";
 import { v3beta1 } from "@google-cloud/translate";
+import { LazyInit } from "@domain/ts-utils";
 
-let frmdbEngines: Map<string, FrmdbEngine> = new Map();
+let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const SECRET = 'bla-bla-secret';
@@ -54,15 +55,21 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     var kvs$User: KeyTableStoreI<BeUser>;
     var metadataStore = new MetadataStore();
 
-    async function getFrmdbEngine(tenantName: string, appName: string) {
-        let frmdbEngine = frmdbEngines.get(appName);
-        if (!frmdbEngine) {
-            let schema = await metadataStore.getSchema(tenantName, appName);
-            if (!schema) throw new Error("The app does not exist " + tenantName + "/" + appName);
-            frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
-            frmdbEngines.set(appName, frmdbEngine);
+    async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
+        let frmdbEngineInit = frmdbEngines.get(appName);
+        if (!frmdbEngineInit) {
+            frmdbEngineInit = new LazyInit(async () => {
+                let schema = await kvsFactory.getSchema(`FRMDB_SCHEMA~~${appName}`)
+                    || await metadataStore.getSchema(tenantName, appName)
+                ;
+                if (!schema) throw new Error("The app does not exist " + tenantName + "/" + appName);
+                let engine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
+                await engine.init();
+                return engine;
+            })
+            frmdbEngines.set(appName, frmdbEngineInit);
         }
-        return frmdbEngine;
+        return frmdbEngineInit.get();
     }
 
     async function getUserKvs() {
@@ -151,7 +158,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     }));
     app.use((req, res, next) => {
-        console.log("HEREEEEE2", req.url);
+        console.log("HEREEEEE3", req.url);
         next();
     });
     app.use((req, res, next) => {
@@ -204,8 +211,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         res.json(app);
     });
 
-    app.get('/formuladb-api/:tenant/:app/schema', async function (req, res) {
-        let schema: Schema | null = await metadataStore.getSchema(req.params.tenant, req.params.app);
+    app.get('/formuladb-api/:tenant/:app/schema', async function(req, res) {
+        let schema: Schema | null = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getSchema(`FRMDB_SCHEMA~~${req.params.app}`);
         res.json(schema);
     });
 
@@ -234,7 +241,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     //all write operations are handled via events
     app.post('/formuladb-api/:tenant/:app/event', async function (req, res) {
-        return (await getFrmdbEngine(req.params.tenant, req.params.app)).processEvent(req.body)
+        return (await getFrmdbEngine(req.params.tenant, req.params.app))
+            .processEvent(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
     });

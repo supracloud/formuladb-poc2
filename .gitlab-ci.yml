@@ -1,10 +1,14 @@
 stages:
   - build
-  - test
   - bundle
+  - deploy_k3s_cluster
+  - build_and_deploy
+  - test_mem
+  - test_postgres
+  - stress
   - e2e_dev_env
-  - buildprodimages
   - deploy
+  - e2e_demo_env
   # - e2e_example_apps
   - cleanup
   # - videos
@@ -22,20 +26,6 @@ build:
       - dist-be/
       - dist-fe/
 
-test:
-  stage: test
-  script:
-    - docker-compose up -d db
-    - npm test
-  cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - be/dist/
-      - dist-be/
-      - dist-fe/
-
 bundle:
   stage: bundle
   script:
@@ -44,35 +34,95 @@ bundle:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+deploy_k3s_cluster:
+  stage: deploy_k3s_cluster
+  script:
+    - sh deploy-k3s.sh
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+build_and_deploy:
+  stage: build_and_deploy
+  script:
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - skaffold run
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+test_mem:
+  stage: test_mem
+  script:
+    - npm test || true
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+test_postgres:
+  stage: test_postgres
+  script:
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
+    - FRMDB_STORAGE=postgres npm test || true
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+
+stress:
+  stage: stress
+  script:
+    - npm test -- core/src/frmdb_engine.stress.spec.ts
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
+    - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
       - dist-be/
       - dist-fe/
 
 e2e_dev_env:
   stage: e2e_dev_env
   script:
-    - npm run e2e || true
-
-buildprodimages:
-  stage: buildprodimages
-  script:
-    # - docker build -t formuladb-minio -f Dockerfile.minio .
-    # - docker tag formuladb-minio registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-    # - docker push registry.gitlab.com/metawiz/febe/formuladb-minio:${CI_COMMIT_TAG}
-    # - npm run docker:maps
-    # - docker push registry.gitlab.com/metawiz/febe/formuladb-sourcemaps:${CI_COMMIT_TAG}
-    - npm run docker:be
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-be:${CI_COMMIT_TAG:-latest}
-    - docker build -t formuladb-lb -f docker/Dockerfile.lb docker
-    - docker tag formuladb-lb registry.gitlab.com/metawiz/febe/formuladb-lb:${CI_COMMIT_TAG:-latest}
-    - docker push registry.gitlab.com/metawiz/febe/formuladb-lb:${CI_COMMIT_TAG:-latest}
+    - export KUBECONFIG=`k3d get-kubeconfig`
+    - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 8081 || kubectl port-forward $POD 8081:80 &
+    - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
+      - tsc-out/
       - dist-be/
       - dist-fe/
-  only:
-    - master
 
 deploy:
   stage: deploy
@@ -82,34 +132,48 @@ deploy:
     - npm install
     - source tools.sh
     - cd ..
+    - export NODE_PATH=`pwd`/ci-tools/node_modules
     # publish vvvebj on GCloud
-    - NODE_PATH=ci-tools/node_modules upload-assets `find vvvebjs -type f -print`
+    - upload-assets `find vvvebjs -type f -print`
     # publish portal on GCloud
-    - NODE_PATH=ci-tools/node_modules upload-assets `find portal/public/ -type f -print`
+    - upload-assets `find portal/public/ -type f -print`
     # publish FE on GCloud
     - mkdir -p dist/fe
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
-    - for i in `find -type f -printf '%P\n'` ; do NODE_PATH=ci-tools/node_modules upload-asset $i; done
+    - upload-assets `find -type f -printf '%P\n'`
+    - unset DOCKER_HOST
     - cd ..
-    # remote ssh on demo VM and refresh containers from latest images
-    - chmod 600 ssh/frmdb.id_rsa
-    # stop old compose stack (run it against existing compose.yaml to make sure we don't leave dangling containers)
-    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "docker-compose down"
-    # copy new compose config
-    - scp -i ssh/frmdb.id_rsa docker-compose.yml demo@formuladb.online:/home/demo/docker-compose.yml
-    # get latest "latest" for be
-    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose pull be lb"
-    # bring up new stack
-    - ssh -i ssh/frmdb.id_rsa demo@formuladb.online "FRMDB_RELEASE=${CI_COMMIT_TAG:-latest} docker-compose up -d db be lb"
+    - export KUBECONFIG=k8s/demo-kube-config.conf
+    - skaffold run
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
+    - PGPORT=5433 npm run e2e:data
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
+      - tsc-out/
       - dist-be/
       - dist-fe/
   only:
     - master
+
+e2e_demo_env:
+  stage: e2e_demo_env
+  script:
+    - TARGET=headless protractor --baseUrl='https://formuladb.online' e2e/protractor.conf.js
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+  only:
+    - master
+
 
 # e2e_example_apps:
 #   script:
@@ -134,4 +198,7 @@ cleanup:
     - docker system prune -af
 #    - killall node --quiet || true
     - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
+    # cleanup registry: BE development images in febe project
+    - curl --request DELETE --data 'name_regex=.+-[0-9]+-[0-9a-z]{8}.+' --data 'keep_n=5' --data 'older_than=5d' --header "PRIVATE-TOKEN:mfDqKQ6zwhZaszaNpUys" "https://gitlab.com/api/v4/projects/4245551/registry/repositories/398919/tags"
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   when: always

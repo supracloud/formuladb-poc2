@@ -34,6 +34,20 @@ export async function waitUntilNotNull<T>(callback: () => Promise<T>, sleepTime 
     });
 }
 
+export class LazyInit<T> {
+    private value: T | null = null;
+
+    constructor(private callback: () => Promise<T>) {
+        callback().then(v => this.value = v);
+    }
+
+    public async get(): Promise<T> {
+        if (null == this.value) await waitUntilNotNull(() => Promise.resolve(this.value), 500);
+        if (!this.value) throw new Error(`Timeout initializing ` + this.callback);
+        return this.value;
+    }
+}
+
 export function applyMixins(derivedCtor: any, baseCtors: any[]) {
     baseCtors.forEach(baseCtor => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
