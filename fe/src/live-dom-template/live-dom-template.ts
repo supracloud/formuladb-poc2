@@ -34,7 +34,7 @@ export function deleteElem(el: Elem) {
  *
  * TODO: micro-benchmarks and perhaps find a more performing solution (e.g. diff with the previous version of the object and update the DOM with only the differences)
  * 
- * <div data-frmdb-foreach="tableName">
+ * <div data-frmdb-table="tableName">
  *     <span data-frmdb-value=":::tableName[].field"></span>
  *     <span data-frmdb-value=":::topLevelObj.someField"></span>
  * </div>
@@ -78,20 +78,16 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
                         elemListForKey.addElem();
                     }
                     elemListForKey.at(i)!['data-frmdb-obj'] = o;
-                    _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
+                    if (isScalar(o)) {
+                        updateDOMForScalarValue(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
+                    } else _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
                 };
                 while (elemListForKey.length() > objValForKey.length) {
                     elemListForKey.removeAt(objValForKey.length);
                 }
             }
-        } else if (/string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date) {
-            let domKey = `${currentScopePrefix}${domKeySep}${key}`;
-            let elemsForKey = getElemForKey(el, domKey);
-            LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
-            if (0 == elemsForKey.length) {
-            } else {
-                setElemValue(elemsForKey, domKey, context, arrayCurrentIndexes);
-            }
+        } else if (isScalar(objValForKey)) {
+            updateDOMForScalarValue(objValForKey, el, context, currentScopePrefix, arrayCurrentIndexes, domKeySep, key);
         } else if ('object' === typeof objValForKey) {
             let domKey = `${currentScopePrefix}${domKeySep}${key}`;
             let elemsForKey = getElemForKey(el, domKey);
@@ -109,11 +105,25 @@ function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: stri
     }
 }
 
+function isScalar(objValForKey) {
+    return /string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date;
+}
+
+function updateDOMForScalarValue(objValForKey: string|boolean|number|Date, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[], domKeySep: string, key: string) {
+    let domKey = `${currentScopePrefix}${domKeySep}${key}`;
+    let elemsForKey = getElemForKey(el, domKey);
+    LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
+    if (0 == elemsForKey.length) {
+    } else {
+        setElemValue(elemsForKey, domKey, context, arrayCurrentIndexes);
+    }
+}
+
 export { getAllElemsWithDataBindingAttrs } from './dom-node';
 
 export function serializeElemToObj(rootEl: HTMLElement): {} {
     let ret: any = {};
-    let prefix = rootEl.getAttribute('data-frmdb-foreach') || '';
+    let prefix = rootEl.getAttribute('data-frmdb-table') || '';
     for(let elem of getAllElemsWithDataBindingAttrs(rootEl)) {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];
