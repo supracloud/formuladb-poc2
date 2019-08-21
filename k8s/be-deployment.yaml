@@ -20,12 +20,25 @@ spec:
           value: postgres
         - name: PGHOST
           value: db
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/gcp/sa_credentials.json
         image: registry.gitlab.com/metawiz/febe/formuladb-be
         name: be
         ports:
         - containerPort: 3000
         - containerPort: 9231
         resources: {}
+        volumeMounts:
+        - name: service-account-credentials
+          mountPath: /etc/gcp
+          readOnly: true
+      volumes:
+      - name: service-account-credentials
+        secret:
+          secretName: service-account-credentials
+          items:
+          - key: sa_json
+            path: sa_credentials.json
       restartPolicy: Always
       imagePullSecrets:
         - name: regcred
