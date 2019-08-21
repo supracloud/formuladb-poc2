@@ -35,7 +35,7 @@ let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const SECRET = 'bla-bla-secret';
 const translationClient = new v3beta1.TranslationServiceClient();
-const projectId = 'codemancy';
+const projectId = 'seismic-plexus-232506';
 const translateBatchSize = 128;
 
 const STATIC_EXT = [
