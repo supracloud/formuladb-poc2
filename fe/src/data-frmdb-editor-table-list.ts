@@ -12,7 +12,7 @@ import { elvis_el } from '@fe/live-dom-template/dom-node';
 import { elvis } from "@core/elvis";
 import { FrmdbSelectChange } from './frmdb-user-events';
 import { updateDOM } from './live-dom-template/live-dom-template';
-import { FrmdbSelect } from './data-frmdb-select';
+import { FrmdbSelect } from './directives/data-frmdb-select';
 
 declare var Vvveb: any;
 

@@ -4,7 +4,7 @@ import { queryFormulaEditor } from './formula-editor/formula-editor.component';
 import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Pn, Entity } from '@domain/metadata/entity';
-import './data-frmdb-select';
+import './directives/data-frmdb-select';
 
 onDoc("frmdbchange", "frmdb-data-grid", async (event) => {
     let formulaEditor = queryFormulaEditor(document);
