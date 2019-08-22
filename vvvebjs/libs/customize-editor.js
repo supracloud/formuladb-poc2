@@ -3,7 +3,7 @@ document.title = "FormulaDB Editor";
 
 function customizeEditor() {
 
-	if (true /* no right panel */) { 
+	if (false /* no right panel */) { 
 		$("#vvveb-builder").addClass("no-right-panel");
 		$(".component-properties-tab").show();
 		Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";
@@ -14,7 +14,7 @@ function customizeEditor() {
     $('#toggle-file-manager-btn').parent().remove();
     document.body.style.setProperty('--db-panel-height', `250px`);
     document.body.style.setProperty('--builder-left-panel-width', '14vw');
-    document.body.style.setProperty('--builder-right-panel-width', '14vw');
+    document.body.style.setProperty('--builder-right-panel-width', '12vw');
     document.body.style.setProperty('--builder-bottom-panel-height', '0px');
 
     // $('#filemanager').css({height: '100%'});
@@ -22,11 +22,13 @@ function customizeEditor() {
 
     $('#top-panel').css({
         top: 'var(--db-panel-height)', 
+        left: 'var(--builder-left-panel-width)',
         position: "fixed", 
         width: "100%",
         "border-top": "1px solid #ccc",
     });
-    $('#left-panel,#right-panel,#canvas').css({
+    $('#left-panel').css({ top: "0px" });
+    $('#right-panel,#canvas').css({
         top: 'calc(var(--db-panel-height) + var(--builder-header-top-height))',
         height: 'calc( 100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)) - var(--db-panel-height))',
     });
@@ -107,6 +109,10 @@ function loadCss() {
         padding: 0rem 0rem 0.5rem 1rem;    
     }
 
+    #left-panel .nav input {
+        height
+    }
+
     #left-panel .nav .nav-link {
         padding: 0 2px 0 2px;
         text-align: initial;
@@ -127,7 +133,6 @@ function loadCss() {
 
 async function customLoadPages() {
 
-    await loadExternalScript('/formuladb/frmdb-editor.js');
     let params = new URLSearchParams(window.location.search);
     let [tenantName, appName, pageName] = [params.get('t'), params.get('a'), params.get('p')];
     console.info("Loading pages for ", tenantName, appName);

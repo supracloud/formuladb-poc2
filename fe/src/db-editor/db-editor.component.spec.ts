@@ -6,9 +6,6 @@
 const fetchMock = require('fetch-mock');
 
 import { DbEditorComponent } from './db-editor.component';
-import { FormulaEditorComponent } from '../formula-editor/formula-editor.component';
-import { InventoryVNavHtml } from '@fe/v-nav/v-nav.component.spec';
-import { VNavComponent } from '@fe/v-nav/v-nav.component';
 import { InventorySchema } from '@test/inventory/metadata';
 
 describe('DbEditorComponent', () => {
@@ -25,7 +22,6 @@ describe('DbEditorComponent', () => {
 
         await new Promise(resolve => setTimeout(resolve, 1500));
         let vnav: Element = el.querySelector('frmdb-v-nav')!;
-        expect(vnav instanceof VNavComponent).toEqual(true);
         // expect(normalizeHTML(vnav.outerHTML)).toEqual(InventoryVNavHtml);
 
         // expect(normalizeHTML(el.shadowRoot!.innerHTML)).toEqual(normalizeHTML(/* html */`

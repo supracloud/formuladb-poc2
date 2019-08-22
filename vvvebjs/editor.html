@@ -85,9 +85,20 @@
 			</div>
 
 			<div class="btn-group mr-3" role="menu">
-				<button class="btn btn-sm dropdown-toggle" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">
-					Language
+				<button class="btn btn-sm" id="color-palette-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="la la-square text-success"></i>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="color-palette-select">
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-success"></i></a>
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-danger"></i></a>
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-warning"></i></a>
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-info"></i></a>
+				</div>
+			</div>
+
+			<div class="btn-group mr-3" role="menu">
+				<button class="btn btn-sm" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="flag-icon flag-icon-gb"></i>
 				</button>
 				<div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
 				</div>
@@ -114,17 +125,17 @@
 
 		<div id="left-panel">
 
-			<ul class="nav nav-tabs flex-row pl-1">
+			<ul class="nav flex-row pl-1">
 				<li class="nav-item">
 					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Table</a>
 				</li>
-				<li class="nav-item dropdown flex-grow-1">
-					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Table
-						1</a>
+				<li class="nav-item dropdown flex-grow-1" data-frmdb-select data-frmdb-editor-table-list>
+					<a class="nav-link dropdown-toggle" data-frmdb-value="frmdbSelect.selectedOption" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+					</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="#">Table 1</a>
-						<a class="dropdown-item" href="#">Table 2</a>
-						<a class="dropdown-item" href="#">Table 3</a>
+						<a class="dropdown-item" data-frmdb-action="select"
+							data-frmdb-for-each="frmdbSelect.options[]" 
+							data-frmdb-value="frmdbSelect.options[]._id" href="#">table 1</a>
 					</div>
 				</li>
 				<li class="nav-item dropdown">
@@ -134,16 +145,16 @@
 					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
 						<a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Table</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" id="TBD" title="New Table"><i class="la la-trash"></i> Delete Current Table</a>
+						<a class="dropdown-item" id="delete-table-btn" title="New Table"><i class="la la-trash"></i> Delete <span></span></a>
 					</div>
 				</li>
 			</ul>
 
 
-			<ul class="nav nav-tabs flex-row pl-1">
-					<li class="nav-item">
-							<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Page</a>
-						</li>				
+			<ul class="nav flex-row pl-1">
+				<li class="nav-item">
+					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Page</a>
+				</li>
 				<li class="nav-item dropdown flex-grow-1">
 					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">page_1</a>
 					<div class="dropdown-menu">
@@ -1100,6 +1111,7 @@
 		crossorigin="anonymous"></script>
 	<script src="libs/builder/plugin-codemirror.js"></script>
 
+	<script src="/formuladb/frmdb-editor.js"></script>
 	<script src="libs/customize-editor.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.1/beautify-html.js"></script>

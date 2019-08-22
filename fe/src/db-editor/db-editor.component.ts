@@ -6,13 +6,13 @@
 
 import * as _ from 'lodash';
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
-import { VNavComponent, queryVNav } from '@fe/v-nav/v-nav.component';
-import { DataGridComponent, queryDataGrid } from '@fe/data-grid/data-grid.component';
+import { queryDataGrid } from '@fe/data-grid/data-grid.component';
 import { onEvent, onDoc } from '@fe/delegated-events';
-import { ServerEventNewEntityN, ServerEventNewEntity, ServerEventDeleteEntity, ServerEventSetProperty, ServerEventDeleteProperty } from '@domain/event';
+import { ServerEventNewEntity, ServerEventDeleteEntity, ServerEventSetProperty, ServerEventDeleteProperty } from '@domain/event';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { Entity, Pn } from '@domain/metadata/entity';
 import { UserDeleteColumn } from '@fe/frmdb-user-events';
+import { queryFrmdbEditorTableList } from '@fe/data-frmdb-editor-table-list';
 
 const HTML: string = require('raw-loader!@fe-assets/db-editor/db-editor.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/db-editor/db-editor.component.scss').default;
@@ -35,6 +35,8 @@ declare var Vvveb: any;
 export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorState> {
     
     connectedCallback() {
+        queryFrmdbEditorTableList();//init :(
+
         onEvent(this, 'frmdbchange', 'frmdb-v-nav', (event) => {
             this.setActiveTable();
         });
@@ -43,8 +45,8 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
                 BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
                 .then(async (ev: ServerEventNewEntity) => {
                     if (ev.state_ != 'ABORT') {
-                        let nav = queryVNav(this);
-                        await nav.loadTables(ev.path);    
+                        let tablesEl = queryFrmdbEditorTableList();
+                        await tablesEl.frmdbEditorTableList.loadTables(ev.path);    
                     }
                     return ev;
                 })
@@ -62,8 +64,8 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
                 BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(link.dataset.id))
                 .then(async (ev: ServerEventNewEntity) => {
                     if (ev.state_ != 'ABORT') {
-                        let nav = queryVNav(this);
-                        await nav.loadTables(ev.path);    
+                        let tablesEl = queryFrmdbEditorTableList();
+                        await tablesEl.frmdbEditorTableList.loadTables(ev.path);
                     }
                     return ev;
                 });
@@ -71,9 +73,9 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
         });
         
         onEvent(this, 'click', '.add-column-to-table-btn,.add-column-to-table-btn *', (event) => {
-            let nav = queryVNav(this);
-            let currentEntity: Entity | undefined = nav.entities.find(e => e._id == nav.frmdbState.selectedEntityId);
-            if (!currentEntity) {console.warn(`Entity ${nav.frmdbState.selectedEntityId} does not exist`); return;}
+            let tablesEl = queryFrmdbEditorTableList();
+            let currentEntity: Entity | undefined = tablesEl.frmdbEditorTableList.tables.find(e => e._id == tablesEl.frmdbEditorTableList.selectedTableId);
+            if (!currentEntity) {console.warn(`Entity ${tablesEl.frmdbEditorTableList.selectedTableId} does not exist`); return;}
             let entity: Entity = currentEntity;
 
             Vvveb.Gui.newColumn(entity._id, newColumnName => {
@@ -85,8 +87,8 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
                     if (ev.state_ != 'ABORT') {
                         let dataGrid = queryDataGrid(this);
                         await dataGrid.initAgGrid();
-                        let nav = queryVNav(this);
-                        await nav.loadTables(nav.frmdbState.selectedEntityId);                            
+                        let tablesEl = queryFrmdbEditorTableList();
+                        await tablesEl.frmdbEditorTableList.loadTables(tablesEl.frmdbEditorTableList.selectedTableId);                            
                     }
                     return ev;
                 })
@@ -95,9 +97,9 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
         });
         
         onEvent(this, 'UserDeleteColumn', '*', (event: {detail: UserDeleteColumn}) => {
-            let nav = queryVNav(this);
-            let currentEntity: Entity | undefined = nav.entities.find(e => e._id == nav.frmdbState.selectedEntityId);
-            if (!currentEntity) {console.warn(`Entity ${nav.frmdbState.selectedEntityId} does not exist`); return;}
+            let tablesEl = queryFrmdbEditorTableList();
+            let currentEntity: Entity | undefined = tablesEl.frmdbEditorTableList.tables.find(e => e._id == tablesEl.frmdbEditorTableList.selectedTableId);
+            if (!currentEntity) {console.warn(`Entity ${tablesEl.frmdbEditorTableList.selectedTableId} does not exist`); return;}
             let entity: Entity = currentEntity;
 
             if (confirm(`Please confirm deletion of table ${event.detail.tableName}.${event.detail.columnName} ?`)) {
@@ -107,8 +109,8 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
                     if (ev.state_ != 'ABORT') {
                         let dataGrid = queryDataGrid(this);
                         await dataGrid.initAgGrid();    
-                        let nav = queryVNav(this);
-                        await nav.loadTables(nav.frmdbState.selectedEntityId);                            
+                        let tablesEl = queryFrmdbEditorTableList();
+                        await tablesEl.frmdbEditorTableList.loadTables(tablesEl.frmdbEditorTableList.selectedTableId);                            
                     }
                     return ev;
                 });
@@ -118,9 +120,9 @@ export class DbEditorComponent extends FrmdbElementBase<DbEditorAttrs, DbEditorS
     }
     
     setActiveTable() {
-        let nav = queryVNav(this);
+        let tablesEl = queryFrmdbEditorTableList();
         let dataGrid = queryDataGrid(this);
 
-        dataGrid.setAttributeTyped("table_name", nav.frmdbState.selectedEntityId || '');
+        dataGrid.setAttributeTyped("table_name", tablesEl.frmdbEditorTableList.selectedTableId || '');
     }
 }

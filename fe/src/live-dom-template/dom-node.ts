@@ -8,11 +8,11 @@ export class ElemList {
     constructor(private key: string, private parentEl: Elem) {}
 
     public length() {
-        return this.parentEl.querySelectorAll(`[data-frmdb-foreach="${this.key}"]`).length;
+        return this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`).length;
     }
 
     public addElem() {
-        let firstEl = this.parentEl.querySelector(`[data-frmdb-foreach="${this.key}"]`);
+        let firstEl = this.parentEl.querySelector(`[data-frmdb-table="${this.key}"]`);
         if (!firstEl) firstEl = createElem('div', this.key);
         this.parentEl.appendChild(firstEl.cloneNode(true));
     }
@@ -22,7 +22,7 @@ export class ElemList {
     }
 
     public at(idx: number): Elem | null{
-        let list = this.parentEl.querySelectorAll(`[data-frmdb-foreach="${this.key}"]`);
+        let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
         if (list.length < idx) return null;
         else return list[idx] as Elem;
     }
@@ -48,7 +48,7 @@ export function createElemList(tagName: string, key: string, length: number): El
     let dummy = document.createElement('div');
     for (let i = 0; i < length; i++) {
         let el = document.createElement(tagName);
-        let attr = document.createAttribute("data-frmdb-foreach");
+        let attr = document.createAttribute("data-frmdb-table");
         attr.value = key;
         el.setAttributeNode(attr);
         dummy.appendChild(el);
@@ -98,10 +98,10 @@ function _getElemForKey(el: Elem, sel: string): Elem[] {
 }
 
 export function getElemList(el: Elem, key: string): ElemList[] {
-    let listElems = Array.from(el.querySelectorAll(`[data-frmdb-foreach="${key}"]`));
+    let listElems = Array.from(el.querySelectorAll(`[data-frmdb-table="${key}"]`));
     let parents: Set<HTMLElement> = new Set();
     for (let listEl of listElems) {
-        if (!listEl.parentElement) throw {err: new Error("found data-frmdb-foreach without parent"), key, listEl};
+        if (!listEl.parentElement) throw {err: new Error("found data-frmdb-table without parent"), key, listEl};
         parents.add(listEl.parentElement);
     }
     return Array.from(parents.values()).map(parent => new ElemList(key, parent));
@@ -284,7 +284,7 @@ function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: 
 }
 
 export function isList(el: Elem): boolean {
-    let attr = el.getAttribute('data-frmdb-foreach');
+    let attr = el.getAttribute('data-frmdb-table');
     if (!attr) return false;
     else return true;
 }

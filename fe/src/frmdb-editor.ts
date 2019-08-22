@@ -1,13 +1,10 @@
-import './v-nav/v-nav.component';
-import './formula-editor/formula-editor.component';
 import './db-editor/db-editor.component';
 import { onDoc } from './delegated-events';
-import { FormulaEditorComponent, queryFormulaEditor } from './formula-editor/formula-editor.component';
+import { queryFormulaEditor } from './formula-editor/formula-editor.component';
 import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
 import { BACKEND_SERVICE } from './backend.service';
-import { elvis } from '@core/elvis';
 import { EntityProperty, Pn, Entity } from '@domain/metadata/entity';
-
+import './data-frmdb-select';
 
 onDoc("frmdbchange", "frmdb-data-grid", async (event) => {
     let formulaEditor = queryFormulaEditor(document);

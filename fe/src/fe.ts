@@ -4,4 +4,6 @@ import './globals';
 import { initFrmdb } from './init';
 import './form/form.component';
 
+import './data-frmdb-select';
+
 initFrmdb();
