@@ -1,5 +1,6 @@
 import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { instance } from "gaxios";
 const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
@@ -46,63 +47,77 @@ export function deleteElem(el: Elem) {
  * @param el 
  */
 export function updateDOM(newData: {}, el: Elem): void {
-    _updateDOM(newData, el, newData, '', []);
-    // _updateDOM(newData, el, newData, '', []);
+    updateDOMForScope(newData, el, newData, '', []);
 }
 
-function _updateDOM(newData: {}, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[]) {
+function updateDOMForScope(newData: {}, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[]) {
     let domKeySep = currentScopePrefix ? '.' : '';
 
     for (const key of Object.getOwnPropertyNames(newData)) {
-
         const objValForKey = newData[key];
+
         if (null == objValForKey) {
             continue;
         }
 
-        if (objValForKey instanceof Array || 'object' === typeof objValForKey) {
-            let complexPropDomKey = `${currentScopePrefix}${domKeySep}${key}`;
-            let complexPropElems = getElemWithComplexPropertyDataBinding(el, complexPropDomKey);
-            setElemValue(complexPropElems, complexPropDomKey, context, arrayCurrentIndexes);
-        }
+        updateDOMForKey(domKeySep, key, objValForKey, newData, el, context, currentScopePrefix, arrayCurrentIndexes);
+    }
+}
 
-        if (objValForKey instanceof Array) {
-            let domKey = `${currentScopePrefix}${domKeySep}${key}[]`;
-            let elemListsForKey = getElemList(el, domKey);
-            LOG.debug("_updateDOM", "", key, objValForKey, domKey,elemListsForKey);
-            if (0 == elemListsForKey.length) continue;
+function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newData: {}, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[]) {
 
-            for (let elemListForKey of elemListsForKey) {
-                for (let [i, o] of objValForKey.entries()) {
-                    if (elemListForKey.length() <= i) {
-                        elemListForKey.addElem();
-                    }
-                    elemListForKey.at(i)!['data-frmdb-obj'] = o;
-                    if (isScalar(o)) {
-                        updateDOMForScalarValue(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
-                    } else _updateDOM(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
-                };
-                while (elemListForKey.length() > objValForKey.length) {
-                    elemListForKey.removeAt(objValForKey.length);
-                }
-            }
-        } else if (isScalar(objValForKey)) {
-            updateDOMForScalarValue(objValForKey, el, context, currentScopePrefix, arrayCurrentIndexes, domKeySep, key);
-        } else if ('object' === typeof objValForKey) {
-            let domKey = `${currentScopePrefix}${domKeySep}${key}`;
-            let elemsForKey = getElemForKey(el, domKey);
-            LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
-            if (0 == elemsForKey.length) {
-                elemsForKey.push(el);
-            }
-            for (let elForKey of elemsForKey) {
-                elForKey['data-frmdb-obj'] = objValForKey;
-                _updateDOM(objValForKey, elForKey, context, domKey, arrayCurrentIndexes);
-            }
-        } else {
-            throw new Error('unknown objValForKey type: \'' + objValForKey + '\'');
+    if (typeof objValForKey === "function") {
+        objValForKey = objValForKey.call();
+        if (objValForKey instanceof Promise) {
+            objValForKey.then(val => 
+                updateDOMForKey(domKeySep, key, val, newData, el, context, currentScopePrefix, arrayCurrentIndexes));
+            return;
         }
     }
+
+    if (objValForKey instanceof Array || 'object' === typeof objValForKey) {
+        let complexPropDomKey = `${currentScopePrefix}${domKeySep}${key}`;
+        let complexPropElems = getElemWithComplexPropertyDataBinding(el, complexPropDomKey);
+        setElemValue(objValForKey, complexPropElems, complexPropDomKey, context, arrayCurrentIndexes);
+    }
+
+    if (objValForKey instanceof Array) {
+        let domKey = `${currentScopePrefix}${domKeySep}${key}[]`;
+        let elemListsForKey = getElemList(el, domKey);
+        LOG.debug("updateDOMForScope", "", key, objValForKey, domKey,elemListsForKey);
+        if (0 == elemListsForKey.length) return;
+
+        for (let elemListForKey of elemListsForKey) {
+            for (let [i, o] of objValForKey.entries()) {
+                if (elemListForKey.length() <= i) {
+                    elemListForKey.addElem();
+                }
+                elemListForKey.at(i)!['data-frmdb-obj'] = o;
+                if (isScalar(o)) {
+                    updateDOMForScalarValue(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
+                } else updateDOMForScope(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
+            };
+            while (elemListForKey.length() > objValForKey.length) {
+                elemListForKey.removeAt(objValForKey.length);
+            }
+        }
+    } else if (isScalar(objValForKey)) {
+        updateDOMForScalarValue(objValForKey, el, context, currentScopePrefix, arrayCurrentIndexes, domKeySep, key);
+    } else if ('object' === typeof objValForKey) {
+        let domKey = `${currentScopePrefix}${domKeySep}${key}`;
+        let elemsForKey = getElemForKey(el, domKey);
+        LOG.debug("updateDOMForScope", "", key, objValForKey, domKey, elemsForKey);
+        if (0 == elemsForKey.length) {
+            elemsForKey.push(el);
+        }
+        for (let elForKey of elemsForKey) {
+            elForKey['data-frmdb-obj'] = objValForKey;
+            updateDOMForScope(objValForKey, elForKey, context, domKey, arrayCurrentIndexes);
+        }
+    } else {
+        throw new Error('unknown objValForKey type: \'' + objValForKey + '\'');
+    }
+
 }
 
 function isScalar(objValForKey) {
@@ -112,10 +127,10 @@ function isScalar(objValForKey) {
 function updateDOMForScalarValue(objValForKey: string|boolean|number|Date, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[], domKeySep: string, key: string) {
     let domKey = `${currentScopePrefix}${domKeySep}${key}`;
     let elemsForKey = getElemForKey(el, domKey);
-    LOG.debug("_updateDOM", "", key, objValForKey, domKey, elemsForKey);
+    LOG.debug("updateDOMForScope", "", key, objValForKey, domKey, elemsForKey);
     if (0 == elemsForKey.length) {
     } else {
-        setElemValue(elemsForKey, domKey, context, arrayCurrentIndexes);
+        setElemValue(objValForKey, elemsForKey, domKey, context, arrayCurrentIndexes);
     }
 }
 

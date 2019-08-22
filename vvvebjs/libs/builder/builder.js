@@ -1452,7 +1452,7 @@ Vvveb.Gui = {
 	preview: function () {
 		(Vvveb.Builder.isPreview == true) ? Vvveb.Builder.isPreview = false : Vvveb.Builder.isPreview = true;
 		$("#iframe-layer").toggle();
-		$("#vvveb-builder").toggleClass("preview");
+		$("#vvveb-builder").toggleClass("preview");  		
 	},
 
 	fullscreen: function () {

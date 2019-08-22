@@ -13,8 +13,12 @@ export function wrapHTML(html: string): HTMLElement {
     return div;
 }
 
+function fakeAsync<T>(x: T): Promise<T> {
+    return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
+}
+
 const template = /*html*/`
-<i data-frmdb-table="array[]" data-frmdb-value="::array[]"></i>
+<i data-frmdb-table="array[]" data-frmdb-value="array[]"></i>
 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
     <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" 
@@ -35,8 +39,8 @@ let data = {
     topObj: {a: 12, b: 15},
     array: ['a', 'b', 'c', 'd'],
     tableName: [
-        { name: "row1", description: "desc of row 1", bg: "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
-        { name: "row2", description: "desc of row 2", bg: "blue", cls: false, atr: "attr2", childTable: [{x: "2.1"}, {x: "2.2"}] },
+        { name: "row1", description: "desc of row 1", bg: () => "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
+        { name: "row2", description: "desc of row 2", bg: () => "blue", cls: false, atr: "attr2", childTable: [{x: "2.1"}, {x: "2.2"}] },
     ],
     secondTopObj: {
         f1: "b", 
@@ -62,7 +66,7 @@ describe('[FE] FrmdbTemplate', () => {
         expect(normalizedHtml).toEqual(normalizeHTML(    
             /*html*/`
             <div>
-                <i data-frmdb-table="array[]" data-frmdb-value="::array[]">a</i>
+                <i data-frmdb-table="array[]" data-frmdb-value="array[]">a</i>
                 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
                     <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</div>
@@ -80,7 +84,7 @@ describe('[FE] FrmdbTemplate', () => {
                         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
                     </div>
                 </div>
-                <i data-frmdb-table="array[]" data-frmdb-value="::array[]">b</i><i data-frmdb-table="array[]" data-frmdb-value="::array[]">c</i><i data-frmdb-table="array[]" data-frmdb-value="::array[]">d</i>
+                <i data-frmdb-table="array[]" data-frmdb-value="array[]">b</i><i data-frmdb-table="array[]" data-frmdb-value="array[]">c</i><i data-frmdb-table="array[]" data-frmdb-value="array[]">d</i>
                 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row2">
                     <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.1</div>
@@ -134,5 +138,28 @@ describe('[FE] FrmdbTemplate', () => {
         expect(obj).toEqual({
             atr: "attr1",
         });
+    });
+
+    it('should support binding to async funcyions', async (done) => {
+        let el = wrapHTML(/*html*/`
+            <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]"></a>
+        `);
+        updateDOM({asyncFunc: () => fakeAsync([1, 2, 3, 4])}, el);
+
+        setTimeout(() => {
+            let renderedHtml = el.outerHTML;
+            let normalizedHtml = normalizeHTML(renderedHtml);
+            expect(normalizedHtml).toEqual(normalizeHTML(    
+                /*html*/`
+                <div>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">1</a>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">2</a>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">3</a>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">4</a>
+                </div>`));
+            done();
+    
+        }, 500);
+
     });
 });

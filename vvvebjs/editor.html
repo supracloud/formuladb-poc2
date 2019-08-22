@@ -27,24 +27,12 @@
 
 	<div id="vvveb-builder">
 
+		<div id="data-grid">
+			<frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" no_floating_filter="true"></frmdb-data-grid>
+		</div>		
+
 		<div id="top-panel">
-
-			<div class="btn-group float-left" role="group">
-				<button class="btn btn-light" title="Toggle file manager" id="toggle-file-manager-btn" data-vvveb-action="toggleFileManager"
-					data-toggle="button" aria-pressed="false">
-					<img src="libs/builder/icons/file-manager-layout.svg" width="20px" height="20px">
-				</button>
-
-				<button class="btn btn-light" title="Toggle left column" id="toggle-left-column-btn" data-vvveb-action="toggleLeftColumn" data-toggle="button"
-					aria-pressed="false">
-					<img src="libs/builder/icons/left-column-layout.svg" width="20px" height="20px">
-				</button>
-
-				<button class="btn btn-light" title="Toggle right column" id="toggle-right-column-btn" data-vvveb-action="toggleRightColumn"
-					data-toggle="button" aria-pressed="false">
-					<img src="libs/builder/icons/right-column-layout.svg" width="20px" height="20px">
-				</button>
-			</div>
+	        <frmdb-formula-editor></frmdb-formula-editor>
 
 			<div class="btn-group mr-3" role="group">
 				<button class="btn btn-light" title="Undo (Ctrl/Cmd + Z)" id="undo-btn" data-vvveb-action="undo" data-vvveb-shortcut="ctrl+z">
@@ -127,15 +115,15 @@
 
 			<ul class="nav flex-row pl-1">
 				<li class="nav-item">
-					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Table</a>
+					<a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">Table</a>
 				</li>
-				<li class="nav-item dropdown flex-grow-1" data-frmdb-select data-frmdb-editor-table-list>
-					<a class="nav-link dropdown-toggle" data-frmdb-value="frmdbSelect.selectedOption" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+				<li class="nav-item dropdown flex-grow-1" data-frmdb-select id="frmdb-editor-table-list">
+					<a class="nav-link dropdown-toggle" id="frmdb-editor-selected-table" data-toggle="dropdown" href="javascript:void(0)" aria-haspopup="true"
+						aria-expanded="false" data-frmdb-value="$frmdb.selectedTableId">
 					</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" data-frmdb-action="select"
-							data-frmdb-for-each="frmdbSelect.options[]" 
-							data-frmdb-value="frmdbSelect.options[]._id" href="#">table 1</a>
+						<a class="dropdown-item" data-frmdb-select-value data-frmdb-action="select" data-frmdb-table="$frmdb.tables[]" data-frmdb-value="$frmdb.tables[]._id"
+							href="javascript:void(0)">table 1</a>
 					</div>
 				</li>
 				<li class="nav-item dropdown">
@@ -153,14 +141,17 @@
 
 			<ul class="nav flex-row pl-1">
 				<li class="nav-item">
-					<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Page</a>
+					<a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">Page</a>
 				</li>
-				<li class="nav-item dropdown flex-grow-1">
-					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">page_1</a>
+				<li class="nav-item dropdown flex-grow-1" data-frmdb-select>
+					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)" 
+						role="button" aria-haspopup="true" aria-expanded="false"
+						data-frmdb-select-value data-frmdb-value="$frmdb.selectedPageName">
+					</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="#">page_1</a>
-						<a class="dropdown-item" href="#">page_2</a>
-						<a class="dropdown-item" href="#">page_3</a>
+						<a class="dropdown-item" href="javascript:void(0)" data-frmdb-action="select"
+						data-frmdb-table="$frmdb.app.pages[]" data-frmdb-value="$frmdb.app.pages[].name"
+						></a>
 					</div>
 				</li>
 				<li class="nav-item dropdown">
@@ -1112,12 +1103,22 @@
 	<script src="libs/builder/plugin-codemirror.js"></script>
 
 	<script src="/formuladb/frmdb-editor.js"></script>
-	<script src="libs/customize-editor.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.1/beautify-html.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js" integrity="sha256-ry6nlLQ1JmRl5RUPQ4eSuaSp/rGNPvl144WHHs7BiNE="
 		crossorigin="anonymous"></script>
 
+	</script>
+
+	<script>
+		/** Any widgets that show/hide DOM elements must stop auto-play in order to let the user edit */
+		function stopAutoplayForEditing() {
+			$('.owl-carousel').trigger('stop.owl.autoplay');
+		}
+
+		function resumeAutoplayForPreview() {
+			$('.owl-carousel').trigger('play.owl.autoplay', [500]);
+		}
 	</script>
 </body>
 

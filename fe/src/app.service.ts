@@ -8,7 +8,9 @@ function findTenantAndApp() {
         appName = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
         tenantName = appRootEl.getAttribute("data-frmdb-tenant") || "unknown-tenant";
     } else {
-        let [t, a] = window.location.pathname.split('/').filter(x => x);
+        let path = window.location.pathname;
+        if (window.location.pathname === '/formuladb-editor/editor.html') path = window.location.hash.replace(/^#/, '');
+        let [t, a] = path.split('/').filter(x => x);
         if (!t || !a) throw new Error("Cannot find tenant and app in path " + window.location.pathname);
         [tenantName, appName] = [t, a];
         appRootEl = document.body;

@@ -69,7 +69,7 @@ enum DATA_FRMDB_ATTRS_Enum {
     'data-frmdb-if' = 'data-frmdb-if',
 };
 export function getElemForKey(el: Elem, key: string): Elem[] {
-    let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"]`).join(',');
+    let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"],[${a}="${key}"]`).join(',');
     return _getElemForKey(el, sel);
 }
 export function getAllElemsWithDataBindingAttrs(el: Elem): Elem[] {
@@ -123,7 +123,9 @@ function domExpandedKey(domKey: string, arrayCurrentIndexes: number[]) {
 }
 
 function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: number[]) {
-    return _.get(context, domExpandedKey(domKey, arrayCurrentIndexes));
+    let value = _.get(context, domExpandedKey(domKey, arrayCurrentIndexes));
+    if (value == 'function') return value.call()
+    else return value;
 }
 
 /**
@@ -133,12 +135,14 @@ function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: num
  * @returns deep value from object as defined by key
  */
 export function getValueForDomExpandedKey(domExpandedKey: string, context: {}) {
-    return _.get(context, domExpandedKey);
+    let val = _.get(context, domExpandedKey);
+    if (typeof val === "function") return val.call()
+    else return val;
 }
 
-export function setElemValue(elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[]) {
+export function setElemValue(objValForKey: any, elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[]) {
     for (let el of elems) {
-        let foundDataBinding = _setElemValue(el, key, context, arrayCurrentIndexes)
+        let foundDataBinding = _setElemValue(objValForKey, el, key, context, arrayCurrentIndexes)
         if (!foundDataBinding) throw new Error("Internal Error: " + el + " does not have data binding for key " + key);
     }
 }
@@ -157,21 +161,30 @@ class ElemDataAttrs {
     attr: DataAttr[] = [];
     prop: DataAttr[] = [];
 }
-function getDataBindingAttrs(el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): ElemDataAttrs {
+function getDataBindingAttrs(objValForKey: any, el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): ElemDataAttrs {
     let ret: ElemDataAttrs = new ElemDataAttrs();
     for (let i = 0; i < el.attributes.length; i++) {
         let attrib = el.attributes[i];
-        if (attrib.value && attrib.name.indexOf('data-frmdb') == 0 && attrib.value.endsWith(':' + key)) {
-            let [valueName, metaKey, ctxKey] = attrib.value.split(":");
+        if (attrib.value && attrib.name.indexOf('data-frmdb') == 0 && (attrib.value == key || attrib.value.endsWith(':' + key))) {
+            let v = attrib.value.split(":");
+            let valueName, metaKey, ctxKey;
+            if (v.length == 3) {
+                [valueName, metaKey, ctxKey] = v;
+            } else if (v.length == 2) {
+                [valueName, metaKey, ctxKey] = [v[0], '', v[1]];
+            } else {
+                [valueName, metaKey, ctxKey] = ['', '', v[0]];
+            }
+            
             if (ctxKey != key) throw new Error("Expected if [valueName]:[metaObjKey]:domKey but found " + attrib.name + "=" + attrib.value + " for key " + key);
             
             let value, metaKeyExpanded = '', ctxKeyExpanded = domExpandedKey(ctxKey, arrayCurrentIndexes);
             if (metaKey === '') {
-                value = getValueForDomExpandedKey(ctxKeyExpanded, context) || '';
+                value = objValForKey;
             } else {
                 metaKeyExpanded = domExpandedKey(metaKey, arrayCurrentIndexes);
                 let metaCtx = getValueForDomExpandedKey(metaKeyExpanded, context);
-                let keyForSearchingInMetaContext = getValueForDomExpandedKey(ctxKeyExpanded, context);
+                let keyForSearchingInMetaContext = objValForKey;
                 value = getValueForDomKey(keyForSearchingInMetaContext, metaCtx, arrayCurrentIndexes) || '';
             }
 
@@ -179,9 +192,15 @@ function getDataBindingAttrs(el: Elem, key: string, context: {}, arrayCurrentInd
             let dataAttr: DataAttr = { attrName: attrib.name, attrValue: attrib.value, valueName, metaKey, ctxKey, value };
             if ("if" === type) ret.if = dataAttr;
             else if ("value" === type) ret.value = dataAttr;
-            else if ("attr" === type) ret.attr.push(dataAttr);
-            else if ("prop" === type) ret.prop.push(dataAttr);
-            else throw new Error("Unknown type " + type + "for " + attrib.name + " " + attrib.value + " " + key);
+            else if ("attr" === type) {
+                if (!valueName) { console.warn(`Skipping attribute binding without attr name ${attrib.name}="${attrib.value}"`) }
+                else ret.attr.push(dataAttr);
+            } else if ("prop" === type) {
+                if (!valueName) { console.warn(`Skipping property binding without prop name ${attrib.name}="${attrib.value}"`) }
+                else ret.prop.push(dataAttr);
+            } else if ("table" === type) {
+                //ignore this type for setValue
+            } else throw new Error("Unknown type " + type + " for " + attrib.name + " " + attrib.value + " " + key);
             
             el[attrib.name] = `${valueName}:${metaKeyExpanded}:${ctxKeyExpanded}`;//save expanded keys for debugging purposes
         }
@@ -189,9 +208,9 @@ function getDataBindingAttrs(el: Elem, key: string, context: {}, arrayCurrentInd
     return ret;
 }
 
-function _setElemValue(el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): boolean {
+function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): boolean {
     let ret = false;
-    let dataAttrsForEl = getDataBindingAttrs(el, key, context, arrayCurrentIndexes);
+    let dataAttrsForEl = getDataBindingAttrs(objValForKey, el, key, context, arrayCurrentIndexes);
 
     if (dataAttrsForEl.if) {
         let value = dataAttrsForEl.if.value;

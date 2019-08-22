@@ -33,7 +33,7 @@ declare var $: any;
     style: CSS,
     noShadow: true,
 })
-/** @deprecated {@link data-frmdb-editor-table-list.ts} */
+/** @deprecated {@link frmdb-editor.ts} */
 export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
 
     public entities: Entity[] = [];
