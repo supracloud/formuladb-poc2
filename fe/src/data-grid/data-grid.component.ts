@@ -7,7 +7,7 @@ import {
     Grid, GridOptions,
     GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams
+    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
@@ -22,9 +22,7 @@ import { ExcelStyles } from './excel-styles';
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
-import { Pn, FormulaExpression } from '@domain/metadata/entity';
-import { translateClicksToNavigationEvents } from '@fe/event-translator';
-import { onEvent, emit } from '@fe/delegated-events';
+import { Pn } from '@domain/metadata/entity';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -48,17 +46,21 @@ export interface DataGridComponentState {
     observedAttributes: ["table_name", "header_height" , "expand_row"],
     template: HTML,
     style: CSS,
+    noShadow: true,
 })
 export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentState> {
 
     /** web components API **************************************************/
     attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
-        if (!this.gridApi) return;
-        if (attrName == 'table_name') {
-            this.initAgGrid();
-        } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
-            this.gridApi.purgeServerSideCache()
-        }
+        waitUntilNotNull(() => Promise.resolve(this.gridApi), 2500)
+        .then(() => {
+            if (!this.gridApi) throw new Error("Timeout during initialization");
+            if (attrName == 'table_name') {
+                this.initAgGrid();
+            } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
+                this.gridApi.purgeServerSideCache()
+            }    
+        });
     }
 
     connectedCallback() {
@@ -67,8 +69,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         this.style.height = "100%";
         this.style.display = "block";
 
-        new Grid(this.shadowRoot!.querySelector("#myGrid") as HTMLElement, this.gridOptions);
-        translateClicksToNavigationEvents(this.shadowRoot!);
+        new Grid(this.elem.querySelector("#myGrid") as HTMLElement, this.gridOptions);
     }
 
 
@@ -104,6 +105,23 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
         headerHeight: 50,
         suppressContextMenu: true,
+        getMainMenuItems: (params: GetMainMenuItemsParams) => {
+            let defaults: (string | MenuItemDef)[] = params.defaultItems.slice(0);
+            defaults.push('separator')
+            defaults.push({
+                name: 'Delete Column',
+                action: () => {
+                    this.emit({
+                        type: "UserDeleteColumn", 
+                        tableName: this.getAttribute("table_name") || 'n/a/tbl', 
+                        columnName: params.column.getColDef().field || 'n/a/col',
+                    });
+                },
+                icon: '<i class="la la-minus-circle"></i>'                
+            });
+
+            return defaults;
+        },
         onGridSizeChanged: this.onGridSizeChanged.bind(this),
         components: {
             // agColumnHeader: TableHeaderComponent,
@@ -263,7 +281,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         }
     }
 
-    async initAgGrid() {
+    public async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
         let tableName = this.getAttribute('table_name');
         if (!tableName) return;
@@ -348,9 +366,11 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     getCellRenderer(col: TableColumn) {
-        if (this.getAttributeTyped("expand_row") && col.name === '_id') {
+        let entityName = this.getAttribute("table_name");
+        let expandRowTarget = this.getAttributeTyped("expand_row");
+        if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="${window.location.pathname}/../${params.data._id}" data-frmdb-link="main">${this.valueFormatter(params)}</a>`;
+                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.defaultView.$('${expandRowTarget}'); s=m.find('frmdb-form')[0].frmdbState; s.rowid='${params.value}'; s.table_name='${entityName}'; m.modal('toggle')">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
     }

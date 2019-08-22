@@ -12,11 +12,27 @@ exports.config = {
   specs: [
     './src/**/*.spec.ts'
   ],
+  getMultiCapabilities: function () {
 
-  capabilities: {
-    'browserName': 'chrome'
+    var extra_args = [];
+
+    if (target == 'headless') {
+      extra_args.push("--headless")
+    }
+
+    var multiCapabilities =
+      [{
+          name: 'Chrome headless',
+          browserName: 'chrome',
+          chromeOptions: {
+            args: [
+              '--window-size=1920,1080'
+            ].concat(extra_args)
+          }
+      }];
+
+    return multiCapabilities;
   },
-
   directConnect: true,
   baseUrl: 'https://formuladb.online',
   framework: 'jasmine',

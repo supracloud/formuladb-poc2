@@ -1,14 +1,12 @@
-import { onDoc } from "./delegated-events";
-import { translateClicksToNavigationEvents } from "./event-translator";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { updateDOM } from "@fe/live-dom-template/live-dom-template"
-import { Logger } from "ag-grid-community";
+import { FragmentComponent } from "./fragment/fragment.component";
 const LOG = new FrmdbLogger('router');
 
 export interface FrmdbRoute {
     route: string;
     regex: RegExp;
     params: string[];
+    fragment: FragmentComponent;
 }
 
 export interface FrmdbActiveRoute {
@@ -17,23 +15,9 @@ export interface FrmdbActiveRoute {
 
 let ROUTES: FrmdbRoute[] = [];
 
-translateClicksToNavigationEvents(document);
-
-onDoc('frmdbUserNavigation', '*', function (event) {
-    LOG.debug("onDoc", event);
-    let path = event.detail.path;
-    window.history.pushState(
-        {},
-        path,
-        window.location.origin + path
-    );
-    render(path);
-});
-
-/** get the list of routes */
-$( document ).ready(function() {
-    document.querySelectorAll('template[data-frmdb-template]').forEach((tmpl) => {
-        let route = tmpl.getAttribute("data-frmdb-template");
+export function initRoutes() {
+    document.querySelectorAll('frmdb-fragment[path]').forEach((fragment: FragmentComponent) => {
+        let route = fragment.getAttribute("path");
         if (!route) throw new Error("Found template with empty route");
         let regexStr: string[] = [];
         let params: string[] = [];
@@ -51,17 +35,18 @@ $( document ).ready(function() {
             route: route,
             regex: new RegExp(regexStr.join('')),
             params,
+            fragment,
         });
     });
     console.log(ROUTES);
-    let path = window.location.pathname;
+    let path = window.location.hash;
     if (path && path != '/') {
         render(path);
     }
-});
+}
 
 
-function render(pathName: string, routerOutletName: string = "main", allowMissingRoute: boolean = true) {
+function render(pathName: string, allowMissingRoute: boolean = true) {
     let path = pathName.replace(/^\//, '');
     let matchedRoute: FrmdbRoute | null = null;
     let matchedParams: RegExpExecArray | null = null;
@@ -83,20 +68,17 @@ function render(pathName: string, routerOutletName: string = "main", allowMissin
         params[matchedRoute.params[i]] = paramValue;
     }
 
-    let routerOutlet = document.querySelector(`[data-frmdb-router-outlet="${routerOutletName}"]`);
-    if (!routerOutlet) throw new Error("render called and router outlet does not exists " + routerOutletName);
+    let fragment: FragmentComponent | null = document.querySelector(`frmdb-fragment[path="${matchedRoute.route}"]`);
+    if (!fragment) throw new Error("render called and template does not exist: " + path);
 
-    let template: HTMLTemplateElement | null = document.querySelector(`template[data-frmdb-template="${matchedRoute.route}"]`);
-    if (!template) throw new Error("render called and template does not exist: " + path);
-
-    while (routerOutlet.firstChild) {
-        routerOutlet.removeChild(routerOutlet.firstChild);
+    for (let r of ROUTES) {
+        r.fragment.style.display = "none";
     }
-    routerOutlet.appendChild(template.content.cloneNode(true))
-    updateDOM({...params}, routerOutlet as HTMLElement);
+    fragment.style.display = "block";
+    fragment.setParams(params);
 }
 
 window.onpopstate = () => {
-    let path = window.location.pathname;
-    render(path, "main", true);
+    let path = window.location.hash;
+    render(path, true);
 }

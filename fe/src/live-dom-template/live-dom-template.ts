@@ -1,6 +1,5 @@
 import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { InventoryProductUnit } from "@test/mocks/mock-metadata";
 const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {

@@ -120,8 +120,7 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
         this.frmdbState[attrName as any] = newParsedVal;
     }
 
-    frmdbPropertyChangedCallback<T extends keyof STATE>(propName: T, oldVal: STATE[T] | undefined, newVal: STATE[T]): Partial<STATE> | Promise<Partial<STATE>> {
-        return this.frmdbState;
+    frmdbPropertyChangedCallback<T extends keyof STATE>(propName: T, oldVal: STATE[T] | undefined, newVal: STATE[T]) {
     }
 
     protected updateDOM() {

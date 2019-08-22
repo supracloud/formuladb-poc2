@@ -89,7 +89,7 @@ describe('FrmdbEngine', () => {
     beforeEach(async (done) => {
         frmdbEngine = await getFrmdbEngine(stockReservationSchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
-        await frmdbTStore.kvsFactory.clearAll();
+        await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
         console.log("frmdbEngine.frmdbEngineStore.mapReduceViews.size=", (frmdbEngine.frmdbEngineStore as any).mapReduceViews.size);

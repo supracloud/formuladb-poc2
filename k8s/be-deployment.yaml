@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: be
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        service: be
+    spec:
+      containers:
+      - env:
+        - name: DEBUG
+          value: express:*
+        - name: DEFAULT_USER
+        - name: DEV_MODE
+        - name: FRMDB_STORAGE
+          value: postgres
+        - name: PGHOST
+          value: db
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/gcp/sa_credentials.json
+        image: registry.gitlab.com/metawiz/febe/formuladb-be
+        name: be
+        ports:
+        - containerPort: 3000
+        - containerPort: 9231
+        resources: {}
+        volumeMounts:
+        - name: service-account-credentials
+          mountPath: /etc/gcp
+          readOnly: true
+      volumes:
+      - name: service-account-credentials
+        secret:
+          secretName: service-account-credentials
+          items:
+          - key: sa_json
+            path: sa_credentials.json
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}

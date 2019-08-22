@@ -4,7 +4,7 @@
  */
 
 import { KeyValueError, KeyValueObj } from "@domain/key_value_obj";
-import * as FormuladbCollate from './utils/collator';
+import * as FormuladbCollate from '@storage/collator';
 import { Entity, Schema } from "@domain/metadata/entity";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
 import { DataObj } from "@domain/metadata/data_obj";
@@ -120,7 +120,7 @@ export interface KeyValueStoreFactoryI {
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
-    clearAll(): Promise<void>;
+    clearAllForTestingPurposes(): Promise<void>;
     getAllApps(): Promise<App[]>;
     putApp(app: App): Promise<App>;
     getSchema(schemaId: string): Promise<Schema | null>;

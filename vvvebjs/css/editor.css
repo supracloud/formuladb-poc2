@@ -9186,8 +9186,6 @@ https://github.com/givanz/VvvebJs
 
 body {
   background: #eee;
-  --builder-left-panel-width: 18vw;
-  --builder-right-panel-width: 0vw;
   --builder-filemanager-height: 200px;
   --builder-canvas-margin: 0px;
   --builder-header-top-height:40px;
@@ -9235,7 +9233,8 @@ body {
 .modal-footer .btn {
   font-size: .875rem; }
 
-#vvveb-builder #left-panel, #vvveb-builder #right-panel {
+#vvveb-builder #left-panel,
+#vvveb-builder #right-panel {
   border-color: #ddd;
   border-style: solid;
   border-width: 0px;
@@ -9266,7 +9265,7 @@ body {
     height: 200px;
     width: 15vw;
     height: var(--builder-filemanager-height);
-    width: calc( var(--builder-left-panel-width));
+    width: calc(var(--builder-left-panel-width));
     border-bottom: 1px solid #ddd; }
     #vvveb-builder #left-panel #filemanager .header {
       font-size: 11px;
@@ -9286,7 +9285,7 @@ body {
         color: #007bff; }
     #vvveb-builder #left-panel #filemanager .tree {
       height: 160px;
-      height: calc( var(--builder-filemanager-height) - 40px);
+      height: calc(var(--builder-filemanager-height) - 40px);
       padding: 0.5rem 0rem;
       overflow-y: hidden;
       overflow-x: hidden; }
@@ -9301,7 +9300,9 @@ body {
       #vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar-thumb {
         background-color: rgba(0, 0, 0, 0.15);
         outline: 1px solid slategrey; }
-  #vvveb-builder #left-panel .components-list, #vvveb-builder #left-panel .blocks-list, #vvveb-builder #left-panel .component-properties {
+  #vvveb-builder #left-panel .components-list,
+  #vvveb-builder #left-panel .blocks-list,
+  #vvveb-builder #left-panel .component-properties {
     width: var(--builder-left-panel-width); }
 
 #vvveb-builder #right-panel {
@@ -9318,7 +9319,9 @@ body {
   box-shadow: 1px -2px 2px #f3f3f3 inset;
   width: 0vw;
   width: var(--builder-right-panel-width); }
-  #vvveb-builder #right-panel .components-list, #vvveb-builder #right-panel .blocks-list, #vvveb-builder #right-panel .component-properties {
+  #vvveb-builder #right-panel .components-list,
+  #vvveb-builder #right-panel .blocks-list,
+  #vvveb-builder #right-panel .component-properties {
     width: var(--builder-right-panel-width); }
 
 #vvveb-builder #top-panel {
@@ -9326,7 +9329,15 @@ body {
   border-bottom: 1px solid #ccc;
   text-align: center;
   background-color: #fafafa;
-  overflow: hidden; }
+  z-index: 10000; }
+  #vvveb-builder #top-panel .dropdown-item.flag-icon {
+    display: block;
+    margin-left: -1rem;
+    padding-left: 4rem;
+    margin-top: 0.5rem; }
+    #vvveb-builder #top-panel .dropdown-item.flag-icon:hover, #vvveb-builder #top-panel .dropdown-item.flag-icon:focus, #vvveb-builder #top-panel .dropdown-item.flag-icon:active {
+      background-color: transparent;
+      font-weight: bold; }
   #vvveb-builder #top-panel .btn-group .btn {
     padding: 0.25rem 0.5rem;
     font-size: 1.25rem; }
@@ -9341,8 +9352,8 @@ body {
   position: fixed;
   border-top: 1px solid #ddd;
   left: 18vw;
-  left: calc($builder-left-panel-width +  $builder-canvas-margin);
-  left: calc( var(--builder-left-panel-width) + var(--builder-canvas-margin));
+  left: calc($builder-left-panel-width + $builder-canvas-margin);
+  left: calc(var(--builder-left-panel-width) + var(--builder-canvas-margin));
   right: 0vw;
   right: var(--builder-right-panel-width);
   background-color: #fff; }
@@ -9408,7 +9419,9 @@ body {
   #vvveb-builder .drag-elements#add-section-box .nav-item:first-child .nav-link {
     border-left: none; }
 
-#vvveb-builder .components-list, #vvveb-builder .blocks-list, #vvveb-builder .component-properties {
+#vvveb-builder .components-list,
+#vvveb-builder .blocks-list,
+#vvveb-builder .component-properties {
   height: 98%;
   height: calc(100% - 200px - 90px - 40px);
   height: calc(100% - var(--builder-filemanager-height) - 90px - 40px);
@@ -9416,15 +9429,23 @@ body {
   list-style: none;
   background: #fafbfc;
   overflow-y: hidden; }
-  #vvveb-builder .components-list:hover, #vvveb-builder .blocks-list:hover, #vvveb-builder .component-properties:hover {
+  #vvveb-builder .components-list:hover,
+  #vvveb-builder .blocks-list:hover,
+  #vvveb-builder .component-properties:hover {
     overflow-y: auto; }
-  #vvveb-builder .components-list::-webkit-scrollbar, #vvveb-builder .blocks-list::-webkit-scrollbar, #vvveb-builder .component-properties::-webkit-scrollbar {
+  #vvveb-builder .components-list::-webkit-scrollbar,
+  #vvveb-builder .blocks-list::-webkit-scrollbar,
+  #vvveb-builder .component-properties::-webkit-scrollbar {
     width: 0.5rem;
     background-color: rgba(255, 255, 255, 0.1);
     -webkit-box-shadow: none; }
-  #vvveb-builder .components-list::-webkit-scrollbar-track, #vvveb-builder .blocks-list::-webkit-scrollbar-track, #vvveb-builder .component-properties::-webkit-scrollbar-track {
+  #vvveb-builder .components-list::-webkit-scrollbar-track,
+  #vvveb-builder .blocks-list::-webkit-scrollbar-track,
+  #vvveb-builder .component-properties::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.05); }
-  #vvveb-builder .components-list::-webkit-scrollbar-thumb, #vvveb-builder .blocks-list::-webkit-scrollbar-thumb, #vvveb-builder .component-properties::-webkit-scrollbar-thumb {
+  #vvveb-builder .components-list::-webkit-scrollbar-thumb,
+  #vvveb-builder .blocks-list::-webkit-scrollbar-thumb,
+  #vvveb-builder .component-properties::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.15);
     outline: 1px solid slategrey; }
 
@@ -9436,19 +9457,27 @@ body {
   top: 1rem;
   right: 1rem; }
 
-#vvveb-builder #add-section-box .components-list, #vvveb-builder #add-section-box .blocks-list, #vvveb-builder #add-section-box .component-properties {
+#vvveb-builder #add-section-box .components-list,
+#vvveb-builder #add-section-box .blocks-list,
+#vvveb-builder #add-section-box .component-properties {
   width: auto;
   height: auto;
   padding: 0px;
   height: 200px; }
-  #vvveb-builder #add-section-box .components-list ol, #vvveb-builder #add-section-box .blocks-list ol, #vvveb-builder #add-section-box .component-properties ol {
+  #vvveb-builder #add-section-box .components-list ol,
+  #vvveb-builder #add-section-box .blocks-list ol,
+  #vvveb-builder #add-section-box .component-properties ol {
     padding: 0rem 0rem 0rem 1rem; }
-    #vvveb-builder #add-section-box .components-list ol li, #vvveb-builder #add-section-box .blocks-list ol li, #vvveb-builder #add-section-box .component-properties ol li {
+    #vvveb-builder #add-section-box .components-list ol li,
+    #vvveb-builder #add-section-box .blocks-list ol li,
+    #vvveb-builder #add-section-box .component-properties ol li {
       width: 14%;
       min-width: 90px;
       float: left;
       margin: 0% 1% 1% 1%; }
-      #vvveb-builder #add-section-box .components-list ol li a, #vvveb-builder #add-section-box .blocks-list ol li a, #vvveb-builder #add-section-box .component-properties ol li a {
+      #vvveb-builder #add-section-box .components-list ol li a,
+      #vvveb-builder #add-section-box .blocks-list ol li a,
+      #vvveb-builder #add-section-box .component-properties ol li a {
         display: block;
         color: #333;
         text-decoration: none;
@@ -9513,13 +9542,16 @@ body {
   height: calc(100% - 40px); }
   #vvveb-builder .component-properties #right-panel {
     color: #777; }
-  #vvveb-builder .component-properties, #vvveb-builder .component-properties select, #vvveb-builder .component-properties input {
+  #vvveb-builder .component-properties,
+  #vvveb-builder .component-properties select,
+  #vvveb-builder .component-properties input {
     font-size: 12px; }
   #vvveb-builder .component-properties label {
     margin-top: 4px; }
   #vvveb-builder .component-properties .custom-select {
     height: auto; }
-  #vvveb-builder .component-properties .form-control, #vvveb-builder .component-properties .custom-select {
+  #vvveb-builder .component-properties .form-control,
+  #vvveb-builder .component-properties .custom-select {
     padding: .275rem 0.25rem; }
   #vvveb-builder .component-properties .form-group {
     margin-right: 0px;
@@ -9546,15 +9578,17 @@ body {
   margin-left: var(--builder-left-panel-width);
   width: 100%;
   height: 100%;
-  width: calc( 100vw - 600px);
-  height: calc( 100vh - 75px);
+  width: calc(100vw - 600px);
+  height: calc(100vh - 75px);
   top: 40px;
-  width: calc( 100vw - (var(--builder-left-panel-width) + var(--builder-right-panel-width) + var(--builder-canvas-margin)));
-  height: calc( 100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)));
+  width: calc(100vw - (var(--builder-left-panel-width) + var(--builder-right-panel-width) + var(--builder-canvas-margin)));
+  height: calc(100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)));
   top: var(--builder-header-top-height);
   position: fixed;
   transition: width 0.35s, left 0.35s; }
-  #vvveb-builder #canvas #iframe-wrapper, #vvveb-builder #canvas iframe, #vvveb-builder #canvas iframe body {
+  #vvveb-builder #canvas #iframe-wrapper,
+  #vvveb-builder #canvas iframe,
+  #vvveb-builder #canvas iframe body {
     width: 100%;
     height: 100%;
     border: none; }
@@ -9572,11 +9606,12 @@ body {
   margin-left: 0px;
   margin-right: 0px; }
 
-#vvveb-builder.preview #left-panel, #vvveb-builder.preview #right-panel {
+#vvveb-builder.preview #left-panel,
+#vvveb-builder.preview #right-panel {
   display: none; }
 
 #vvveb-builder.no-right-panel {
-  --builder-right-panel-width:0px; }
+  --builder-right-panel-width: 0px; }
   #vvveb-builder.no-right-panel #right-panel {
     display: none; }
 
@@ -9609,7 +9644,8 @@ body {
   left: 0px;
   display: none; }
 
-#vvveb-builder #select-actions, #vvveb-builder #wysiwyg-editor {
+#vvveb-builder #select-actions,
+#vvveb-builder #wysiwyg-editor {
   position: absolute;
   right: -1px;
   top: -25px;
@@ -9624,15 +9660,23 @@ body {
   left: -1px;
   display: none; }
 
-#vvveb-builder #select-actions a, #vvveb-builder #wysiwyg-editor a, #vvveb-builder #section-actions a#add-section-btn {
+#vvveb-builder #select-actions a,
+#vvveb-builder #wysiwyg-editor a,
+#vvveb-builder #section-actions a#add-section-btn {
   pointer-events: auto;
   color: #fff;
   font-size: 16px;
   padding-right: 2px;
   padding: 2px 5px; }
-  #vvveb-builder #select-actions a:hover, #vvveb-builder #wysiwyg-editor a:hover, #vvveb-builder #section-actions a#add-section-btn:hover {
+  #vvveb-builder #select-actions a:hover,
+  #vvveb-builder #wysiwyg-editor a:hover,
+  #vvveb-builder #section-actions a#add-section-btn:hover {
     text-decoration: none;
     background: #1266f1; }
+
+#vvveb-builder #select-actions a.selected {
+  background-color: #fff;
+  color: #4285f4; }
 
 #vvveb-builder #section-actions {
   bottom: 0px;
@@ -9641,10 +9685,8 @@ body {
   bottom: -10px;
   left: 50%;
   left: calc(50% - 12px); }
-  
- #vvveb-builder #section-actions.outside { 
- bottom:-25px;
- } 
+  #vvveb-builder #section-actions.outside {
+    bottom: -25px; }
   #vvveb-builder #section-actions a#add-section-btn {
     position: relative;
     bottom: 0px;
@@ -9698,7 +9740,8 @@ body {
 #vvveb-builder .nav-tabs .nav-link {
   text-align: center; }
 
-#vvveb-builder .nav-tabs .nav-link.active, #vvveb-builder .nav-tabs .nav-item.show .nav-link {
+#vvveb-builder .nav-tabs .nav-link.active,
+#vvveb-builder .nav-tabs .nav-item.show .nav-link {
   color: #495057;
   background-color: #fff;
   border-color: #fff #dee2e6 #fff #dee2e6;
@@ -9929,7 +9972,8 @@ input.header_check:checked + div.section,
 li.header > input.header_check:checked + ol {
   display: block; }
 
-div.section, .header > ol {
+div.section,
+.header > ol {
   display: none; }
 
 #right-panel label.header .header-arrow {
@@ -9958,7 +10002,8 @@ div.section, .header > ol {
   margin-left: -100%;
   transition: margin 0.3s ease-in 0s; }
 
-.toggle-inner:before, .toggle-inner:after {
+.toggle-inner:before,
+.toggle-inner:after {
   display: block;
   float: left;
   width: 50%;
@@ -10096,5 +10141,3 @@ ul.autocomplete li.selected {
 .nav-fill .nav-link {
   padding-left: 0rem;
   padding-right: 0rem; }
-
-/*# sourceMappingURL=editor.css.map */

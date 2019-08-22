@@ -19,6 +19,7 @@ export class TableService {
 
     public async getColumns(entityId: string): Promise<TableColumn[]> {
         let entity = await BACKEND_SERVICE().getEntity(entityId);
+        if (!entity) throw new Error("Entity " + entityId + " not found!");
         return _.values(entity.props).map(pn => ({
             _id: entityId + "." + pn.name,
             name: pn.name, 

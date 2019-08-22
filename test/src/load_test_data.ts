@@ -7,16 +7,12 @@ require('module-alias/register');
 
 import { getKeyValueStoreFactory } from "@storage/key_value_store_impl_selector";
 
-import { KeyValueStoreFactoryI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { MockData } from "@test/mocks/mock-data";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormDataEvent } from "@domain/event";
-import { Forms__ServiceForm_Form_ } from "@test/mocks/forms-ui-metadata";
-import { LargeSalesReport_Form } from "@test/mocks/reports-ui-metadata";
-import { HomePage_Form, HomePage_Table } from "@domain/default_pages/website-ui-metadata";
-import { BookingItem_Form, Booking_Form, BookingItem_Table, Booking_Table } from "@test/mocks/booking-ui-metadata";
 import { MockMetadata, CommonEntities } from "@test/mocks/mock-metadata";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
@@ -28,7 +24,7 @@ const mockMetadata = new MockMetadata();
 export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
     try {
         let kvsFactory = await getKeyValueStoreFactory();
-        await kvsFactory.clearAll();
+        await kvsFactory.clearAllForTestingPurposes();
 
         
         let uiMetaLoaded = false;
@@ -52,6 +48,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             let mockData = new MockData(schema.entities);
             let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
+            await frmdbEngine.init(true);
             for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
                 for (let obj of mockData.getAllForPath(entityId)) {
                     console.log("PUTTTTTT", obj);

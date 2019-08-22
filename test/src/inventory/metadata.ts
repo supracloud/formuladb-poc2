@@ -3,8 +3,9 @@
  * License TBD
  */
 
-import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty } from "@domain/metadata/entity";
+import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
+import { $Currency } from "@domain/metadata/default-metadata";
 
 export const ProductLocation = {
     _id: 'ProductLocation',
@@ -48,6 +49,7 @@ const eeee: Entity = ProductLocation as Entity;
 export const InventoryProduct = {
     _id: 'InventoryProduct',
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         barcode: { name: 'barcode', propType_: Pn.STRING } as EntityProperty,
         name: { name: 'name', propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -62,7 +64,7 @@ export const InventoryProduct = {
 export const InventoryProductUnit = {
     _id: 'InventoryProductUnit',
     props: {
-
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         code: { name: 'code', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         productCode: {
             propType_: Pn.REFERENCE_TO,
@@ -97,6 +99,7 @@ export const InventoryReceipt = {
     _id: 'InventoryReceipt',
     isEditable: true,
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         receipt_item_table: {
             name: 'receipt_item_table', propType_: Pn.CHILD_TABLE,
             referencedEntityName: 'ReceiptItem', props: {}, isLargeTable: true
@@ -157,6 +160,7 @@ export const InventoryOrder = {
         ]
     } as EntityStateGraph,
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         sales_agent: { name: 'sales_agent', propType_: Pn.STRING, allowNull: false } as EntityProperty,
         creation_date: { name: 'creation_date', propType_: Pn.DATETIME, allowNull: false } as EntityProperty,
         order_item_table: {
@@ -169,17 +173,10 @@ export const InventoryOrder = {
     }
 };
 
-export const Inventory = {
-    _id: 'Inventory',
-    pureNavGroupingChildren: [InventoryProduct._id, InventoryOrder._id, InventoryReceipt._id, InventoryProductUnit._id],
-    props: {},
-};
-
-export { Reports } from './reports-metadata';
-
 export const LargeSalesReport = {
     _id: "LargeSalesReport",
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         client: { name: "client", propType_: Pn.STRING, "allowNull": false } as EntityProperty,
         month: { name: "month", propType_: Pn.DATETIME } as EntityProperty,
         large_sales_product_table: {
@@ -195,6 +192,7 @@ export const LargeSalesReport = {
 export const LargeSalesProduct = {
     _id: "LargeSalesProduct",
     props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_id: { name: "product_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         product_name: { name: "product_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         large_sales_value: {
@@ -202,5 +200,30 @@ export const LargeSalesProduct = {
             propType_: Pn.FORMULA,
             formula: `SUMIF(OrderItem.quantity, product_id == @[product_id] && quantity > 100)`,
         } as FormulaProperty,
+    }
+}
+
+export const InventoryApp = {
+    _id: "inventory",
+    description: "Basic Inventory with positive stock",
+    pages: [
+        { name: "index", html: "index.html" },
+    ],
+};
+
+
+export const InventorySchema: Schema = {
+    _id: 'FRMDB_SCHEMA~~' + InventoryApp._id,
+    entities: {
+        [InventoryOrder._id]: InventoryOrder,
+        [OrderItem._id]: OrderItem,
+        [InventoryReceipt._id]: InventoryReceipt,
+        [ReceiptItem._id]: ReceiptItem,
+        [InventoryProduct._id]: InventoryProduct,
+        [ProductLocation._id]: ProductLocation,
+        [InventoryProductUnit._id]: InventoryProductUnit,
+        [LargeSalesReport._id]: LargeSalesReport,
+        [LargeSalesProduct._id]: LargeSalesProduct,
+        [$Currency._id]: $Currency,
     }
 }

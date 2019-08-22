@@ -53,8 +53,9 @@
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "server/**/*.js": true,
-        "src/**/*.js": true,
+        "dist-be/**/*": true,
+        "dist-fe/**/*": true,
+        "tsc-out/**/*": true,
     },
     "zenMode.hideTabs": false,
     "editor.minimap.enabled": true,
@@ -62,6 +63,5 @@
     "typescript.reportStyleChecksAsWarnings": false,
     "git.ignoreLimitWarning": true,
     "files.eol": "\n",
-    "search.usePCRE2": true,
     "html.format.wrapLineLength": 160
 }

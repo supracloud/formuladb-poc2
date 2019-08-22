@@ -17,10 +17,8 @@ import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
 
-
-
 import { FrmdbEngine } from "@core/frmdb_engine";
-import { KeyValueStoreFactoryI, KeyTableStoreI } from "@core/key_value_store_i";
+import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { $User } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
@@ -29,11 +27,16 @@ import { App } from "@domain/app";
 import { MetadataStore } from "@core/metadata_store";
 import { Schema } from "@domain/metadata/entity";
 import { savePage, getFile } from "@be/git-storage";
+import { v3beta1 } from "@google-cloud/translate";
+import { LazyInit } from "@domain/ts-utils";
 
-let frmdbEngines: Map<string, FrmdbEngine> = new Map();
+let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const SECRET = 'bla-bla-secret';
+const translationClient = new v3beta1.TranslationServiceClient();
+const projectId = 'seismic-plexus-232506';
+const translateBatchSize = 128;
 
 const STATIC_EXT = [
     '.js',
@@ -45,29 +48,58 @@ const STATIC_EXT = [
     '.woff',
     '.ttf',
     '.svg',
-  ];
+];
 
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
     var kvs$User: KeyTableStoreI<BeUser>;
     var metadataStore = new MetadataStore();
 
-    async function getFrmdbEngine(tenantName: string, appName: string) {
-        let frmdbEngine = frmdbEngines.get(appName);
-        if (!frmdbEngine) {
-            let schema = await metadataStore.getSchema(tenantName, appName);
-            if (!schema) throw new Error("The app does not exist " + tenantName + "/" + appName);
-            frmdbEngine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
-            frmdbEngines.set(appName, frmdbEngine);
+    async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
+        let frmdbEngineInit = frmdbEngines.get(appName);
+        if (!frmdbEngineInit) {
+            frmdbEngineInit = new LazyInit(async () => {
+                let schema = await kvsFactory.getSchema(`FRMDB_SCHEMA~~${appName}`)
+                    || await metadataStore.getSchema(tenantName, appName)
+                ;
+                if (!schema) throw new Error("The app does not exist " + tenantName + "/" + appName);
+                let engine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
+                await engine.init();
+                return engine;
+            })
+            frmdbEngines.set(appName, frmdbEngineInit);
         }
-        return frmdbEngine;
+        return frmdbEngineInit.get();
     }
 
     async function getUserKvs() {
         if (!kvs$User) {
             kvs$User = await kvsFactory.createKeyTableS<BeUser>($User);
-        } 
+        }
         return Promise.resolve(kvs$User);
+    }
+
+    async function translateText(texts: string[], from: string, to: string) {
+        const batches: string[][] = [];
+
+        for (let i = 0; i < texts.length; i += translateBatchSize) {
+            batches.push(texts.slice(i, i + translateBatchSize));
+        }
+        const translations = await Promise.all(batches.map(batch => {
+            // Construct request
+            const request = {
+                parent: translationClient.locationPath(projectId, 'global'),
+                contents: batch,
+                mimeType: 'text/html', // mime types: text/plain, text/html
+                sourceLanguageCode: from,
+                targetLanguageCode: to,
+            };
+            return translationClient.translateText(request);
+        }));
+        return translations.reduce((p,c)=>{
+            const [response]=c;
+            return [...p,...response.translations.map(tr=>tr.translatedText)]
+        },[]);
     }
 
     passport.use("user-pass", new LocalStrategy(
@@ -96,7 +128,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } catch (err) {
             return cb(err);
         }
-    }); 
+    });
 
     // app.use(logger("dev"));
     app.use(cookieParser(SECRET));
@@ -120,11 +152,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(bodyParser.text({type: ['text/yaml', 'text/csv'], verify: (req, res, buf, encoding) => {
-        console.log("TTTTT", buf, encoding, buf.toString(encoding));
-    }}));    
+    app.use(bodyParser.text({
+        type: ['text/yaml', 'text/csv'], verify: (req, res, buf, encoding) => {
+            console.log("TTTTT", buf, encoding, buf.toString(encoding));
+        }
+    }));
     app.use((req, res, next) => {
-        console.log("HEREEEEE2", req.url);
+        console.log("HEREEEEE3", req.url);
         next();
     });
     app.use((req, res, next) => {
@@ -132,11 +166,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             req.body = yaml.safeLoad(req.body);
             next();
         } else if (req.headers['content-type'] === 'text/csv') {
-            csv.parse(req.body, {columns: true}, (err, data) => {
+            csv.parse(req.body, { columns: true }, (err, data) => {
                 if (err) next(err);
                 else {
                     req.body = data;
-                    next();    
+                    next();
                 }
             })
         } else next();
@@ -158,12 +192,15 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         );
     } else {
         app.use(function (req, res, next) {
-            req.user = {role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN'};
+            req.user = { role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN' };
             next();
         });
     }
 
-    
+    app.post('/formuladb-api/translate', async (req, res) => {
+        res.json(await translateText(req.body.texts, req.body.from, req.body.to));
+    });
+
     app.get('/formuladb-api/:tenant/applications', async function (req, res) {
         let apps = await kvsFactory.getAllApps();
         res.json(apps);
@@ -175,36 +212,37 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     app.get('/formuladb-api/:tenant/:app/schema', async function(req, res) {
-        let schema: Schema | null = await metadataStore.getSchema(req.params.tenant, req.params.app);
+        let schema: Schema | null = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getSchema(`FRMDB_SCHEMA~~${req.params.app}`);
         res.json(schema);
     });
 
-    app.post('/formuladb-api/:tenant/:app/:table/SimpleAddHocQuery', async function(req, res) {
+    app.post('/formuladb-api/:tenant/:app/:table/SimpleAddHocQuery', async function (req, res) {
         let query = req.body as SimpleAddHocQuery;
         let ret = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
         res.json(ret);
     });
 
-    app.get('/formuladb-api/:tenant/:app/byprefix/:prefix', async function(req, res) {
+    app.get('/formuladb-api/:tenant/:app/byprefix/:prefix', async function (req, res) {
         let ret = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getDataListByPrefix(req.params.prefix);
         res.json(ret);
     });
-    app.get('/formuladb-api/:tenant/:app/obj/:id', async function(req, res) {
+    app.get('/formuladb-api/:tenant/:app/obj/:id', async function (req, res) {
         let obj = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getDataObj(req.params.id);
         res.json(obj);
     });
-    app.get('/formuladb-api/:tenant/:app/table/:id', async function(req, res) {
+    app.get('/formuladb-api/:tenant/:app/table/:id', async function (req, res) {
         let table = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getTable(req.params.id);
         res.json(table);
     });
-    app.get('/formuladb-api/:tenant/:app/form/:id', async function(req, res) {
+    app.get('/formuladb-api/:tenant/:app/form/:id', async function (req, res) {
         let form = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getForm(req.params.id);
         res.json(form);
     });
 
     //all write operations are handled via events
     app.post('/formuladb-api/:tenant/:app/event', async function (req, res) {
-        return (await getFrmdbEngine(req.params.tenant, req.params.app)).processEvent(req.body)
+        return (await getFrmdbEngine(req.params.tenant, req.params.app))
+            .processEvent(req.body)
             .then(notif => res.json(notif))
             .catch(err => console.error(err));
     });
@@ -215,20 +253,20 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => console.error(err));
     });
 
-    app.put('/formuladb-api/:tenant/:app', async function(req, res) {
+    app.put('/formuladb-api/:tenant/:app', async function (req, res) {
         return kvsFactory.putApp(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:tenant/:app/:page', async function(req, res, next) {
+    app.put('/formuladb-api/:tenant/:app/:page', async function (req, res, next) {
         if (req.headers['content-type'] !== 'text/html') {
             next(); return;
         }
 
         savePage(req.params.tenant, req.params.app, req.params.page, req.body);
     });
-    app.put('/formuladb-api/:tenant/:app/schema', async function(req, res) {
-        if (req.user.role !== 'ADMIN') {res.status(403); return;}
+    app.put('/formuladb-api/:tenant/:app/schema', async function (req, res) {
+        if (req.user.role !== 'ADMIN') { res.status(403); return; }
         let schema = req.body;
         let existingSchema = await kvsFactory.getSchema(req.body._id);
         if (!existingSchema) {
@@ -239,17 +277,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:tenant/:app/table', async function(req, res) {
+    app.put('/formuladb-api/:tenant/:app/table', async function (req, res) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putTable(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:tenant/:app/form', async function(req, res) {
+    app.put('/formuladb-api/:tenant/:app/form', async function (req, res) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putForm(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:tenant/:app/bulk', async function(req, res) {
+    app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
@@ -266,12 +304,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
-            .replace(/^hotel-booking\//, 'royal-master/')
-        ;
-    }
-    function removeTenant(path: string) {
-        //TODO: read tenant metadata and check that tenant exists
-        return path.replace(/^\/?([-_\w]+)\//, '');
+            .replace(/^\/?([-_\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
+            .replace(/^\/?([-_\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
+            ;
     }
     app.use((req, res, next) => {
         let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
@@ -279,11 +314,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next();
             return;
         }
-        let httpProxy = proxy({ 
+        let httpProxy = proxy({
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
-            pathRewrite: function (path, req) { 
-                return req.path.match(/\.html$/) ? path : app2theme(removeTenant(path));
+            pathRewrite: function (path, req) {
+                return req.path.match(/\.html$/) ? path : app2theme(path);
             },
             logLevel: "debug",
         });
