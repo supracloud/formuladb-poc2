@@ -2,8 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: formuladb
-  annotations:
-    kubernetes.io/ingress.class: traefik
 spec:
   tls:
   - hosts:

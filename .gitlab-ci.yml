@@ -2,13 +2,16 @@ stages:
   - build
   - test_mem
   - bundle
-  - deploy_k3s_cluster
+  - deploy_dev_k3s_cluster
   - build_and_deploy
   - test_postgres
   - stress
   - e2e_dev_env
-  - deploy
+  - publish_static_assets
+  - deploy_demo
   - e2e_demo_env
+  - deploy_production
+  - e2e_production_env
   # - e2e_example_apps
   - cleanup
   # - videos
@@ -38,8 +41,8 @@ bundle:
       - dist-be/
       - dist-fe/
 
-deploy_k3s_cluster:
-  stage: deploy_k3s_cluster
+deploy_dev_k3s_cluster:
+  stage: deploy_dev_k3s_cluster
   script:
     - sh deploy-k3s.sh
   cache:
@@ -124,8 +127,8 @@ e2e_dev_env:
       - dist-be/
       - dist-fe/
 
-deploy:
-  stage: deploy
+publish_static_assets:
+  stage: publish_static_assets
   script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/frmdb-apps/ci-tools.git
     - cd ci-tools
@@ -140,8 +143,19 @@ deploy:
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
     - cd dist
     - upload-assets `find -type f -printf '%P\n'`
-    - unset DOCKER_HOST
-    - cd ..
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+  only:
+    - master
+
+deploy_demo:
+  stage: deploy_demo
+  script:
     - export KUBECONFIG=k8s/demo-kube-config.conf
     - skaffold run
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
@@ -172,6 +186,38 @@ e2e_demo_env:
   only:
     - master
 
+deploy_production:
+  stage: deploy_production
+  script:
+    - export KUBECONFIG=k8s/production-kube-config.conf
+    - skaffold run
+    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
+    - PGPORT=5433 npm run e2e:data
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+#  only:
+#    - master
+
+e2e_production_env:
+  stage: e2e_production_env
+  script:
+    - TARGET=headless protractor --baseUrl='https://formuladb.io' e2e/protractor.conf.js
+  cache:
+    key: ${CI_COMMIT_SHORT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - dist-fe/
+#  only:
+#    - master
 
 # e2e_example_apps:
 #   script:
