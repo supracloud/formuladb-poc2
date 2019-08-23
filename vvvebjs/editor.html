@@ -27,24 +27,12 @@
 
 	<div id="vvveb-builder">
 
+		<div id="data-grid">
+			<frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" no_floating_filter="true"></frmdb-data-grid>
+		</div>		
+
 		<div id="top-panel">
-
-			<div class="btn-group float-left" role="group">
-				<button class="btn btn-light" title="Toggle file manager" id="toggle-file-manager-btn" data-vvveb-action="toggleFileManager"
-					data-toggle="button" aria-pressed="false">
-					<img src="libs/builder/icons/file-manager-layout.svg" width="20px" height="20px">
-				</button>
-
-				<button class="btn btn-light" title="Toggle left column" id="toggle-left-column-btn" data-vvveb-action="toggleLeftColumn" data-toggle="button"
-					aria-pressed="false">
-					<img src="libs/builder/icons/left-column-layout.svg" width="20px" height="20px">
-				</button>
-
-				<button class="btn btn-light" title="Toggle right column" id="toggle-right-column-btn" data-vvveb-action="toggleRightColumn"
-					data-toggle="button" aria-pressed="false">
-					<img src="libs/builder/icons/right-column-layout.svg" width="20px" height="20px">
-				</button>
-			</div>
+	        <frmdb-formula-editor></frmdb-formula-editor>
 
 			<div class="btn-group mr-3" role="group">
 				<button class="btn btn-light" title="Undo (Ctrl/Cmd + Z)" id="undo-btn" data-vvveb-action="undo" data-vvveb-shortcut="ctrl+z">
@@ -85,56 +73,110 @@
 			</div>
 
 			<div class="btn-group mr-3" role="menu">
-				<button class="btn btn-sm dropdown-toggle" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false">
-					Language
+				<button class="btn btn-sm" id="color-palette-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="la la-square text-success"></i>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="color-palette-select">
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-success"></i></a>
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-danger"></i></a>
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-warning"></i></a>
+					<a class="dropdown-item" title="Comming Soon"><i class="la la-square text-info"></i></a>
+				</div>
+			</div>
+
+			<div class="btn-group mr-3" role="menu">
+				<button class="btn btn-sm" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="flag-icon flag-icon-gb"></i>
 				</button>
 				<div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
 				</div>
 			</div>
 
-			<div class="btn-group float-right responsive-btns" role="group">
-				<button id="mobile-view" data-view="mobile" class="btn btn-light" title="Mobile view" data-vvveb-action="viewport">
-					<i class="la la-mobile-phone"></i>
-				</button>
-
-				<button id="tablet-view" data-view="tablet" class="btn btn-light" title="Tablet view" data-vvveb-action="viewport">
-					<i class="la la-tablet"></i>
-				</button>
-
-				<button id="desktop-view" data-view="" class="btn btn-light" title="Desktop view" data-vvveb-action="viewport">
+			<div class="btn-group" role="menu">
+				<button class="btn btn-sm dropdown-toggle" id="screen-size-dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false">
 					<i class="la la-laptop"></i>
 				</button>
-
+				<div class="dropdown-menu" aria-labelledby="screen-size-dropdown-toggle">
+					<a class="dropdown-item" id="mobile-view" data-view="mobile" title="Mobile view" data-vvveb-action="viewport"
+						onclick="$(this).closest('.btn-group').find('.dropdown-toggle i').attr('class', 'la la-mobile-phone')"><i
+							class="la la-mobile-phone"></i> Mobile</a>
+					<a class="dropdown-item" id="tablet-view" data-view="tablet" title="Tablet view" data-vvveb-action="viewport"
+						onclick="$(this).closest('.btn-group').find('.dropdown-toggle i').attr('class', 'la la-tablet')"><i class="la la-tablet"></i> Tablet</a>
+					<a class="dropdown-item" id="desktop-view" data-view="" title="Desktop view" data-vvveb-action="viewport"
+						onclick="$(this).closest('.btn-group').find('.dropdown-toggle i').attr('class', 'la la-laptop')"><i class="la la-laptop"></i>
+						Desktop</a>
+				</div>
 			</div>
 
 		</div>
 
 		<div id="left-panel">
 
-			<div id="filemanager">
-				<div class="header">
-					<a href="#" class="text-secondary">Pages</a>
-
-					<div class="btn-group responsive-btns mr-4 float-right" role="group">
-						<button class="btn btn-link btn-sm" title="New file" id="new-file-btn" data-vvveb-action="newPage" data-vvveb-shortcut="">
-							<i class="la la-file"></i> <small>New page</small>
-						</button>
-
-						<!--  &ensp;
-									  <button class="btn btn-link text-dark p-0"  title="Delete file" id="delete-file-btn" data-vvveb-action="deletePage" data-vvveb-shortcut="">
-										  <i class="la la-trash"></i> <small>Delete</small>
-									  </button> -->
+			<ul class="nav flex-row pl-1">
+				<li class="nav-item">
+					<a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">Table</a>
+				</li>
+				<li class="nav-item dropdown flex-grow-1"  id="frmdb-editor-table-list">
+					<a class="nav-link dropdown-toggle text-center" id="frmdb-editor-selected-table" data-toggle="dropdown" href="javascript:void(0)" aria-haspopup="true"
+						aria-expanded="false" data-frmdb-value="$frmdb.selectedTableId">
+					</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" data-frmdb-table="$frmdb.tables[]" data-frmdb-value="$frmdb.tables[]._id"
+							href="javascript:void(0)">table 1</a>
 					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link" id="table-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="la la-ellipsis-v"></i>
+					</a>
+					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+						<a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Table</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" id="delete-table-btn" title="New Table"><i class="la la-trash"></i> Delete <span></span></a>
+					</div>
+				</li>
+			</ul>
 
+
+			<ul class="nav flex-row pl-1">
+				<li class="nav-item">
+					<a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">Page</a>
+				</li>
+				<li class="nav-item dropdown flex-grow-1">
+					<a class="nav-link dropdown-toggle text-center" data-toggle="dropdown" href="javascript:void(0)" 
+						role="button" aria-haspopup="true" aria-expanded="false"
+						data-frmdb-value="$frmdb.selectedPageName">
+					</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" data-frmdb-table="$frmdb.pages[]"
+						data-frmdb-value="$frmdb.pages[].name"
+						data-frmdb-attr="href::$frmdb.pages[].url"
+						></a>
+					</div>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link" id="table-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="la la-ellipsis-v"></i>
+					</a>
+					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+						<a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Page</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item" id="TBD" title="New Table"><i class="la la-trash"></i> Delete Current Page</a>
+					</div>
+				</li>
+			</ul>
+
+			<div id="components-tree"> 
+				<div class="header pl-1">
+					<a class="text-secondary" style="padding-left: 2px">
+						Components Layers
+					</a>
 				</div>
 
 				<div class="tree">
-					<ol>
-					</ol>
 				</div>
-			</div>
-
+			</div>		
 
 			<div class="drag-elements">
 
@@ -143,13 +185,13 @@
 						<li class="nav-item component-tab">
 							<a class="nav-link active" id="components-tab" data-toggle="tab" href="#components" role="tab" aria-controls="components"
 								aria-selected="true"><i class="la la-lg la-cube"></i>
-								<div><small>Components</small></div>
+								Components
 							</a>
 						</li>
 						<li class="nav-item blocks-tab">
 							<a class="nav-link" id="blocks-tab" data-toggle="tab" href="#blocks" role="tab" aria-controls="blocks" aria-selected="false"><i
 									class="la la-lg la-image"></i>
-								<div><small>Blocks</small></div>
+								Blocks
 							</a>
 						</li>
 						<li class="nav-item component-properties-tab" style="display:none">
@@ -987,7 +1029,8 @@
 
 					<div class="modal-content">
 						<div class="modal-header">
-							<p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Column for table <span data-frmdb-value="selectedTableName"></p>
+							<p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Column for table <span
+									data-frmdb-value="selectedTableName"></p>
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true"><small><i class="la la-close"></i></small></span>
 							</button>
@@ -1025,8 +1068,7 @@
 	</div>
 
 	<!-- bootstrap -->
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
 		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
@@ -1070,12 +1112,23 @@
 		crossorigin="anonymous"></script>
 	<script src="libs/builder/plugin-codemirror.js"></script>
 
-	<script src="libs/customize-editor.js"></script>
+	<script src="/formuladb/frmdb-editor.js"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.1/beautify-html.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js" integrity="sha256-ry6nlLQ1JmRl5RUPQ4eSuaSp/rGNPvl144WHHs7BiNE="
 		crossorigin="anonymous"></script>
 
+	</script>
+
+	<script>
+		/** Any widgets that show/hide DOM elements must stop auto-play in order to let the user edit */
+		function stopAutoplayForEditing() {
+			$('.owl-carousel').trigger('stop.owl.autoplay');
+		}
+
+		function resumeAutoplayForPreview() {
+			$('.owl-carousel').trigger('play.owl.autoplay', [500]);
+		}
 	</script>
 </body>
 

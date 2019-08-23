@@ -25,6 +25,7 @@ interface VNavComponentState {
 declare var Vvveb: any;
 declare var $: any;
 
+
 @FrmdbElementDecorator<{}, VNavComponentState>({
     tag: 'frmdb-v-nav',
     observedAttributes: [],
@@ -32,6 +33,7 @@ declare var $: any;
     style: CSS,
     noShadow: true,
 })
+/** @deprecated {@link frmdb-editor.ts} */
 export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
 
     public entities: Entity[] = [];
@@ -142,7 +144,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
 }
 
 
-export function queryVNav(el: Document | HTMLElement): VNavComponent {
+export function _rem_queryVNav(el: Document | HTMLElement): VNavComponent {
     let nav: VNavComponent = el.querySelector("frmdb-v-nav") as VNavComponent;
     if (!nav) throw new Error("v-nav not found");
     return nav;

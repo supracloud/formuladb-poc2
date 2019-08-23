@@ -5,7 +5,7 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
-import { $User } from "@domain/metadata/default-metadata";
+import { $User, $I18n } from "@domain/metadata/default-metadata";
 
 export const RoomType = {
     _id: "RoomType",
@@ -100,5 +100,7 @@ export const HotelBookingSchema: Schema = {
         [RoomType._id]: RoomType,
         [Room._id]: Room,
         [Booking._id]: Booking,
+        [$User._id]: $User,
+        [$I18n._id]: $I18n,
     },
 }

@@ -54,6 +54,12 @@ export interface UserDeleteColumn {
     columnName: string;
 }
 
+export interface FrmdbSelectChange {
+    type: 'FrmdbSelectChange';
+    oldValue: string;
+    newValue: string;
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -67,4 +73,5 @@ export type FrmdbUserEvent =
     | UserCollapsedNavItem
     | UserNavigation
     | UserDeleteColumn
+    | FrmdbSelectChange
     ;

@@ -13,9 +13,14 @@ export function wrapHTML(html: string): HTMLElement {
     return div;
 }
 
+function fakeAsync<T>(x: T): Promise<T> {
+    return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
+}
+
 const template = /*html*/`
-<div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
-    <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
+<i data-frmdb-table="array[]" data-frmdb-value="array[]"></i>
+<div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
+    <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" 
             data-frmdb-attr2="second-attr::tableName[].atr">blabla</div>
         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2"
@@ -32,9 +37,10 @@ const template = /*html*/`
 
 let data = {
     topObj: {a: 12, b: 15},
+    array: ['a', 'b', 'c', 'd'],
     tableName: [
-        { name: "row1", description: "desc of row 1", bg: "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
-        { name: "row2", description: "desc of row 2", bg: "blue", cls: false, atr: "attr2", childTable: [{x: "2.1"}, {x: "2.2"}] },
+        { name: "row1", description: "desc of row 1", bg: () => "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
+        { name: "row2", description: "desc of row 2", bg: () => "blue", cls: false, atr: "attr2", childTable: [{x: "2.1"}, {x: "2.2"}] },
     ],
     secondTopObj: {
         f1: "b", 
@@ -60,8 +66,9 @@ describe('[FE] FrmdbTemplate', () => {
         expect(normalizedHtml).toEqual(normalizeHTML(    
             /*html*/`
             <div>
-                <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
-                    <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
+                <i data-frmdb-table="array[]" data-frmdb-value="array[]">a</i>
+                <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
+                    <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.1" at1="12">15</div>
                         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
@@ -71,14 +78,15 @@ describe('[FE] FrmdbTemplate', () => {
                         <li data-frmdb-attr="class.my-class::tableName[].cls" data-frmdb-value="::tableName[].description"  data-frmdb-attr2="class[row1|row2]::tableName[].name" class="row1 my-class"><label data-frmdb-label=""></label>desc of row 1</li>
                     </ul>
                     <span data-frmdb-prop="complex::tableName[].childTable"></span>
-                    <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
+                    <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.2</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.2" at1="12">15</div>
                         <i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i>
                     </div>
                 </div>
-                <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row2">
-                    <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
+                <i data-frmdb-table="array[]" data-frmdb-value="array[]">b</i><i data-frmdb-table="array[]" data-frmdb-value="array[]">c</i><i data-frmdb-table="array[]" data-frmdb-value="array[]">d</i>
+                <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row2">
+                    <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.1</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.1" at1="12">15</div>
                         <template data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></template>
@@ -88,7 +96,7 @@ describe('[FE] FrmdbTemplate', () => {
                         <li data-frmdb-attr="class.my-class::tableName[].cls" data-frmdb-value="::tableName[].description" data-frmdb-attr2="class[row1|row2]::tableName[].name" class="row2"><label data-frmdb-label=""></label>desc of row 2</li>
                     </ul>
                     <span data-frmdb-prop="complex::tableName[].childTable"></span>
-                    <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
+                    <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.2</div>
                         <div data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.2" at1="12">15</div>
                         <template data-frmdb-if="::tableName[].cls"><i data-frmdb-if="::tableName[].cls" data-frmdb-prop="gigi::tableName[].childTable[].x"></i></template>
@@ -115,8 +123,8 @@ describe('[FE] FrmdbTemplate', () => {
 
     it('should serialize element to DataObj', () => {
         let el = wrapHTML(/*html*/`
-            <div data-frmdb-foreach="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
-                <div data-frmdb-foreach="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
+            <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
+                <div data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                     <div data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a">
                     </div>
                 </div>
@@ -125,10 +133,33 @@ describe('[FE] FrmdbTemplate', () => {
         `);
         updateDOM(data, el);
 
-        let rootEl = el.querySelector('[data-frmdb-foreach="tableName[]"]');
+        let rootEl = el.querySelector('[data-frmdb-table="tableName[]"]');
         let obj = serializeElemToObj(rootEl as HTMLElement);
         expect(obj).toEqual({
             atr: "attr1",
         });
+    });
+
+    it('should support binding to async funcyions', async (done) => {
+        let el = wrapHTML(/*html*/`
+            <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]"></a>
+        `);
+        updateDOM({asyncFunc: () => fakeAsync([1, 2, 3, 4])}, el);
+
+        setTimeout(() => {
+            let renderedHtml = el.outerHTML;
+            let normalizedHtml = normalizeHTML(renderedHtml);
+            expect(normalizedHtml).toEqual(normalizeHTML(    
+                /*html*/`
+                <div>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">1</a>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">2</a>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">3</a>
+                    <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">4</a>
+                </div>`));
+            done();
+    
+        }, 500);
+
     });
 });

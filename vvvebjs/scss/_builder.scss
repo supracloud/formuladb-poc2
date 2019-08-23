@@ -17,13 +17,13 @@ https://github.com/givanz/VvvebJs
 */
 
 $builder-header-top-height:40px !default;
-$builder-bottom-panel-height:35px !default;
+$builder-bottom-panel-height:0px !default;
 $builder-border-color: #ddd !default;
 
 $builder-left-panel-width:300px !default;
 $builder-right-panel-width:300px !default;
 $builder-canvas-margin:0px !default;
-$builder-filemanager-height:200px !default;
+$builder-filemanager-height:250px !default;
 $drag-items-tabs-height:90px !default;
 $builder-background-color: #4285f4 !default;
 
@@ -31,20 +31,20 @@ $canvas-width-substract: $builder-left-panel-width+$builder-right-panel-width+$b
 $canvas-no-right-width-substract: $builder-left-panel-width+$builder-canvas-margin;
 $canvas-height-substract: $builder-header-top-height+$builder-bottom-panel-height;
 
-$builder-left-panel-width:18vw;
-$builder-right-panel-width:0vw;
+$builder-left-panel-width:14vw;
+$builder-right-panel-width:12vw;
 
-$builder-left-panel-width-sm:25vw;
-$builder-right-panel-width-sm:25vw;
+$builder-left-panel-width-sm:14vw;
+$builder-right-panel-width-sm:12vw;
 
-$builder-left-panel-width-md:20vw;
-$builder-right-panel-width-md:20vw;
+$builder-left-panel-width-md:14vw;
+$builder-right-panel-width-md:12vw;
 
-$builder-left-panel-width-lg:20vw;
-$builder-right-panel-width-lg:20vw;
+$builder-left-panel-width-lg:14vw;
+$builder-right-panel-width-lg:12vw;
 
-$builder-left-panel-width-xl:15vw;
-$builder-right-panel-width-xl:15vw;
+$builder-left-panel-width-xl:14vw;
+$builder-right-panel-width-xl:12vw;
 
 
 
@@ -85,14 +85,14 @@ $font-size-base: .875rem;
 }
 
 @mixin block-list-element() {
-    width: 90%;
-    height: 180px;
+    width: 80%;
+    height: 80px;
     text-align: center;
     font-weight: normal;
     font-size: 11px;
     color: #000;
     background-repeat: no-repeat;
-    padding-top: 150px;
+    padding-top: 60px;
     margin-bottom: 14px;
 
     border-color: #ddd;
@@ -139,35 +139,35 @@ body {
     --builder-header-top-height:#{$builder-header-top-height};
     --builder-bottom-panel-height:#{$builder-bottom-panel-height};
     --drag-items-tabs-height:#{$drag-items-tabs-height};
-
+    --db-panel-height: 220px;
 
     @include media-breakpoint-up(sm) {
-        --builder-left-panel-width: 25vw;
-        --builder-right-panel-width: 25vw;
+        --builder-left-panel-width: 14vw;
+        --builder-right-panel-width: 12vw;
     }
 
     @include media-breakpoint-up(md) {
-        --builder-left-panel-width: 25vw;
-        --builder-right-panel-width: 25vw;
+        --builder-left-panel-width: 14vw;
+        --builder-right-panel-width: 12vw;
     }
 
     @include media-breakpoint-up(lg) {
-        --builder-left-panel-width: 25vw;
-        --builder-right-panel-width: 25vw;
+        --builder-left-panel-width: 14vw;
+        --builder-right-panel-width: 12vw;
     }
 
     @include media-breakpoint-up(xl) {
-        --builder-left-panel-width: 20vw;
-        --builder-right-panel-width: 20vw;
+        --builder-left-panel-width: 14vw;
+        --builder-right-panel-width: 12vw;
     }
 
     @media (min-width: 1600px) {
-        --builder-left-panel-width: 15vw;
-        --builder-right-panel-width: 15vw;
+        --builder-left-panel-width: 14vw;
+        --builder-right-panel-width: 12vw;
     }
 
     @media (min-width: 2000px) {
-        --builder-left-panel-width: 12vw;
+        --builder-left-panel-width: 14vw;
         --builder-right-panel-width: 12vw;
     }
 
@@ -197,11 +197,11 @@ body {
         height: 100%;
 
         position: fixed;
-        top: $builder-header-top-height;
         z-index: 10;
     }
 
     #left-panel {
+        top: 0px;
         float: left;
 
         border-right-width: 1px;
@@ -222,7 +222,7 @@ body {
         height: 100%;
         max-height: 100%;
 
-        #filemanager {
+        #filemanager,#components-tree {
             height: $builder-filemanager-height;
             width: $builder-right-panel-width + 15;
             height: var(--builder-filemanager-height);
@@ -272,6 +272,7 @@ body {
     }
 
     #right-panel {
+        top: calc(var(--db-panel-height) + var(--builder-header-top-height));
         float: right;
         right: 0px;
 
@@ -288,9 +289,8 @@ body {
         background: linear-gradient(right, #fff 85%, #fafbfc 100%);
         box-shadow: 1px -2px 2px #f3f3f3 inset;
 
-
-        width: $builder-right-panel-width;
         width: var(--builder-right-panel-width);
+        height: calc( 100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)) - var(--db-panel-height));
 
         .components-list,
         .blocks-list,
@@ -306,6 +306,13 @@ body {
         background-color: #fafafa;
         // overflow: hidden;
         z-index: 10000;
+        top: var(--db-panel-height); 
+        left: var(--builder-left-panel-width);
+        position: fixed;
+        width: 100%;
+        border-top: 1px solid #ccc;
+        display: flex;
+        box-shadow: 0px 0px 4px #ccc;
 
         .dropdown-item.flag-icon {
             display: block;
@@ -607,6 +614,9 @@ body {
         }
     }
 
+    #data-grid {
+        height: var(--db-panel-height);
+    }
 
     // canvas
     #canvas {
@@ -618,10 +628,9 @@ body {
         height: 100%;
         width: calc(100vw - #{$canvas-width-substract});
         height: calc(100vh - #{$canvas-height-substract});
-        top: $builder-header-top-height;
+        top: calc(var(--db-panel-height) + var(--builder-header-top-height));
         width: calc(100vw - (var(--builder-left-panel-width) + var(--builder-right-panel-width) + var(--builder-canvas-margin)));
-        height: calc(100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)));
-        top: var(--builder-header-top-height);
+        height: calc( 100vh - (var(--builder-header-top-height) + var(--builder-bottom-panel-height)) - var(--db-panel-height));
         position: fixed;
         transition: width 0.35s, left 0.35s;
         //border-top: 1px solid $builder-border-color;	
@@ -648,12 +657,15 @@ body {
     }
 
     &.preview {
+        --db-panel-height: 0px;
+
         #canvas {
             width: 100%;
             margin-left: 0px;
             margin-right: 0px;
         }
 
+        #data-grid,
         #left-panel,
         #right-panel {
             display: none;
@@ -1271,4 +1283,29 @@ ul.autocomplete li.selected {
 .nav-fill .nav-link {
     padding-left: 0rem;
     padding-right: 0rem;
+}
+
+#left-panel .nav {
+    font-size: 11px;
+    font-weight: 600;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    line-height: 2rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 0rem;
+    padding: 0rem 0rem 0.5rem 1rem;    
+}
+
+
+#left-panel .nav .nav-link {
+    padding: 0 2px 0 2px;
+    text-align: initial;
+}
+
+#left-panel .dropdown-menu {
+    font-size: 11px;
+    line-height: initial;
 }

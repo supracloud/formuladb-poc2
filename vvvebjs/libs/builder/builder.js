@@ -1359,7 +1359,7 @@ Vvveb.Gui = {
 		const i18nOptions = jQuery('[aria-labelledby="frmdb-editor-i18n-select"]');
 		const currentLanguage = i18n.getLanguage(localStorage.getItem('editor-lang')) || i18n.getDefaultLanguage();
 		i18nSelect.attr('data-i18n', currentLanguage.tag);
-		i18nSelect.html(currentLanguage.full);
+		i18nSelect.html(`<i class="flag-icon flag-icon-${currentLanguage.short}"></i>`);
 		i18n.languages.forEach(lang =>
 			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.short}">${lang.full}</a>`)
 				.click(event => {
@@ -1367,7 +1367,7 @@ Vvveb.Gui = {
 					const next = lang.tag;
 					localStorage.setItem('editor-lang', next);
 					i18nSelect.attr('data-i18n', next);
-					i18nSelect.html(lang.full);
+					i18nSelect.html(`<i class="flag-icon flag-icon-${lang.short}"></i>`);
 					i18n.translateAll(window.FrameDocument, prev, next);
 					event.preventDefault();
 					return false;
@@ -1452,7 +1452,7 @@ Vvveb.Gui = {
 	preview: function () {
 		(Vvveb.Builder.isPreview == true) ? Vvveb.Builder.isPreview = false : Vvveb.Builder.isPreview = true;
 		$("#iframe-layer").toggle();
-		$("#vvveb-builder").toggleClass("preview");
+		$("#vvveb-builder").toggleClass("preview");  		
 	},
 
 	fullscreen: function () {
@@ -1616,10 +1616,6 @@ Vvveb.Gui = {
 		}
 	},
 
-	toggleFileManager: function () {
-		Vvveb.Gui.togglePanel("#filemanager", "--builder-filemanager-height");
-	},
-
 	toggleLeftColumn: function () {
 		Vvveb.Gui.togglePanel("#left-panel", "--builder-left-panel-width");
 	},
@@ -1691,19 +1687,12 @@ Vvveb.FileManager = {
 	currentPage: false,
 
 	init: function () {
-		this.tree = $("#filemanager .tree > ol").html("");
+		this.tree = $("#components-tree .tree").html("");
 
 		$(this.tree).on("click", "a", function (e) {
 			e.preventDefault();
 			return false;
 		});
-
-		$(this.tree).on("click", "li[data-page] label", function (e) {
-			var page = $(this.parentNode).data("page");
-
-			if (page) Vvveb.FileManager.loadPage(page);
-			return false;
-		})
 
 		$(this.tree).on("click", "li[data-component] label ", function (e) {
 			node = $(e.currentTarget.parentNode).data("node");
@@ -1786,8 +1775,8 @@ Vvveb.FileManager = {
 	loadComponents: function (allowedComponents = {}) {
 
 		var tree = this.getComponents(allowedComponents);
-		var html = drawComponentsTree(tree);
 		var j = 0;
+		var html = drawComponentsTree(tree);
 
 		function drawComponentsTree(tree) {
 			var html = $("<ol></ol>");
@@ -1816,7 +1805,7 @@ Vvveb.FileManager = {
 			return html;
 		}
 
-		$("[data-page='" + this.currentPage + "'] > ol", this.tree).replaceWith(html);
+		$("#components-tree .tree").html(html);
 	},
 
 	getCurrentUrl: function () {

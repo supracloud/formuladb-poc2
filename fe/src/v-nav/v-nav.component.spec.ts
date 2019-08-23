@@ -13,7 +13,7 @@ export const InventoryVNavHtml = normalizeHTML(/* html */`
 <frmdb-v-nav>
     <frmdb-v-nav-segment data-frmdb-prop="nav::navigationItemsTree" class="nav flex-column">
         <ul class="nav flex-column">
-            <li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
+            <li class="nav-item" data-frmdb-table="nav[]" data-frmdb-prop="entityId::nav[].id">
                 <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link collapsed" data-frmdb-attr="class.collapsed::nav[].collapsed"
                     data-toggle="collapse">
                     <p>
@@ -29,7 +29,7 @@ export const InventoryVNavHtml = normalizeHTML(/* html */`
                     <frmdb-v-nav-segment data-frmdb-prop="nav::nav[].children"></frmdb-v-nav-segment>
                 </template>
             </li>
-            <li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
+            <li class="nav-item" data-frmdb-table="nav[]" data-frmdb-prop="entityId::nav[].id">
                 <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link" data-frmdb-attr="class.collapsed::nav[].collapsed" data-toggle="collapse">
                     <p>
                         <span class="frmdb-nav-segment-text" data-frmdb-value="::nav[].linkNameI18n">REP<span class="frmdb-nav-segment-dev-mode-identifier"
@@ -43,7 +43,7 @@ export const InventoryVNavHtml = normalizeHTML(/* html */`
 
                 <frmdb-v-nav-segment data-frmdb-prop="nav::nav[].children">
                     <ul class="nav flex-column">
-                        <li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
+                        <li class="nav-item" data-frmdb-table="nav[]" data-frmdb-prop="entityId::nav[].id">
                             <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link collapsed" data-frmdb-attr="class.collapsed::nav[].collapsed"
                                 data-toggle="collapse">
                                 <p>
@@ -64,7 +64,7 @@ export const InventoryVNavHtml = normalizeHTML(/* html */`
                 </frmdb-v-nav-segment>
 
             </li>
-            <li class="nav-item" data-frmdb-foreach="nav[]" data-frmdb-prop="entityId::nav[].id">
+            <li class="nav-item" data-frmdb-table="nav[]" data-frmdb-prop="entityId::nav[].id">
                 <a style="padding: 10px 10px 10px 10px; margin: 3px" class="nav-link collapsed" data-frmdb-attr="class.collapsed::nav[].collapsed"
                     data-toggle="collapse">
                     <p>

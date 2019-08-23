@@ -74,13 +74,13 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
                 }
             }
         }
-        onEvent(this.shadowRoot!, 'mouseover', 'tr[data-frmdb-foreach="options[]"] *', (ev: MouseEvent) => {
+        onEvent(this.shadowRoot!, 'mouseover', 'tr[data-frmdb-table="options[]"] *', (ev: MouseEvent) => {
             let opt = (ev.target! as Element).closest('tr')!['data-frmdb-obj'];
             this.frmdbState.options![this.frmdbState.currentOptionIdx!]._isSelected = false;
             elvis(elvis(this.frmdbState.options)[opt._idx])._isSelected = true;
             this.frmdbState.currentOptionIdx! = opt._idx;
         })
-        onEvent(this.shadowRoot!, 'click', 'tr[data-frmdb-foreach="options[]"] *', (ev: MouseEvent) => {
+        onEvent(this.shadowRoot!, 'click', 'tr[data-frmdb-table="options[]"] *', (ev: MouseEvent) => {
             let opt = (ev.target! as Element).closest('tr')!['data-frmdb-obj'];
             this.selectOption(opt);
         })
