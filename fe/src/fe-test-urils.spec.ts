@@ -1,10 +1,10 @@
 import { _testResetBackendService } from "./backend.service";
-import { _testResetAppAndTenant } from "./app.service";
+import { _resetAppAndTenant } from "./app.service";
 import { initFrmdb } from "./init";
 
 export async function navigate(path: string, html: string) {
     _testResetBackendService();
-    _testResetAppAndTenant();
+    _resetAppAndTenant();
     window.location.pathname = path;
     document.body.innerHTML = html;
 

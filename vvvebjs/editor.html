@@ -117,12 +117,12 @@
 				<li class="nav-item">
 					<a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">Table</a>
 				</li>
-				<li class="nav-item dropdown flex-grow-1" data-frmdb-select id="frmdb-editor-table-list">
-					<a class="nav-link dropdown-toggle" id="frmdb-editor-selected-table" data-toggle="dropdown" href="javascript:void(0)" aria-haspopup="true"
+				<li class="nav-item dropdown flex-grow-1"  id="frmdb-editor-table-list">
+					<a class="nav-link dropdown-toggle text-center" id="frmdb-editor-selected-table" data-toggle="dropdown" href="javascript:void(0)" aria-haspopup="true"
 						aria-expanded="false" data-frmdb-value="$frmdb.selectedTableId">
 					</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" data-frmdb-select-value data-frmdb-action="select" data-frmdb-table="$frmdb.tables[]" data-frmdb-value="$frmdb.tables[]._id"
+						<a class="dropdown-item" data-frmdb-table="$frmdb.tables[]" data-frmdb-value="$frmdb.tables[]._id"
 							href="javascript:void(0)">table 1</a>
 					</div>
 				</li>
@@ -143,14 +143,15 @@
 				<li class="nav-item">
 					<a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">Page</a>
 				</li>
-				<li class="nav-item dropdown flex-grow-1" data-frmdb-select>
-					<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)" 
+				<li class="nav-item dropdown flex-grow-1">
+					<a class="nav-link dropdown-toggle text-center" data-toggle="dropdown" href="javascript:void(0)" 
 						role="button" aria-haspopup="true" aria-expanded="false"
-						data-frmdb-select-value data-frmdb-value="$frmdb.selectedPageName">
+						data-frmdb-value="$frmdb.selectedPageName">
 					</a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="javascript:void(0)" data-frmdb-action="select"
-						data-frmdb-table="$frmdb.app.pages[]" data-frmdb-value="$frmdb.app.pages[].name"
+						<a class="dropdown-item" data-frmdb-table="$frmdb.pages[]"
+						data-frmdb-value="$frmdb.pages[].name"
+						data-frmdb-attr="href::$frmdb.pages[].url"
 						></a>
 					</div>
 				</li>
@@ -166,6 +167,16 @@
 				</li>
 			</ul>
 
+			<div id="components-tree"> 
+				<div class="header pl-1">
+					<a class="text-secondary" style="padding-left: 2px">
+						Components Layers
+					</a>
+				</div>
+
+				<div class="tree">
+				</div>
+			</div>		
 
 			<div class="drag-elements">
 
@@ -174,13 +185,13 @@
 						<li class="nav-item component-tab">
 							<a class="nav-link active" id="components-tab" data-toggle="tab" href="#components" role="tab" aria-controls="components"
 								aria-selected="true"><i class="la la-lg la-cube"></i>
-								<div><small>Components</small></div>
+								Components
 							</a>
 						</li>
 						<li class="nav-item blocks-tab">
 							<a class="nav-link" id="blocks-tab" data-toggle="tab" href="#blocks" role="tab" aria-controls="blocks" aria-selected="false"><i
 									class="la la-lg la-image"></i>
-								<div><small>Blocks</small></div>
+								Blocks
 							</a>
 						</li>
 						<li class="nav-item component-properties-tab" style="display:none">
@@ -1057,8 +1068,7 @@
 	</div>
 
 	<!-- bootstrap -->
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-		crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
 		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"

@@ -9,31 +9,41 @@ import { UserDeleteColumn, FrmdbSelectChange } from './frmdb-user-events';
 import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
 import { App } from '@domain/app';
+import { _resetAppAndTenant } from './app.service';
 
 declare var Vvveb: any;
 
 interface FrmdbEditorState {
     tables: Entity[];
     selectedTableId: string;
-    app: App;
+    pages: {name: string, url: string }[];
     selectedPageName: string;
 }
 
 const EditorState: FrmdbEditorState = {
     tables: [],
     selectedTableId: '',
-    app: null as any as App,
+    pages: [],
     selectedPageName: '',
 }
 
+window.onpopstate = () => {
+    _resetAppAndTenant();
+    initEditor();
+}
 
-window.addEventListener('DOMContentLoaded', async (event) => {
+window.addEventListener('DOMContentLoaded', (event) => {
+    initEditor();
+});
+
+async function initEditor() {
+
     let appBackend = BACKEND_SERVICE();
     Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.app = app;
+    EditorState.pages = app.pages.map(p => ({name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.html}`}));
     let indexUrl;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
@@ -53,7 +63,7 @@ window.addEventListener('DOMContentLoaded', async (event) => {
     EditorState.selectedPageName = pageName;
     let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
     Vvveb.Builder.init(url, function () {
-        //run code after page/iframe is loaded
+        Vvveb.FileManager.loadComponents();
     });
 
     Vvveb.Gui.init();
@@ -63,13 +73,13 @@ window.addEventListener('DOMContentLoaded', async (event) => {
     ($.fn as any).tooltip.Constructor.Default.whiteList.a = ['data-id', 'href'];
 
     loadTables();
-});
+}
 
 function tableManagementFlows() {
 
-    onEvent(document.body, 'FrmdbSelectChange', '#frmdb-editor-table-list', (event: {detail: FrmdbSelectChange}) => {
-        EditorState.selectedTableId = event.detail.newValue;
-        updateDOM({$frmdb: {tables: EditorState.tables, selectedTableId: EditorState.selectedTableId}}, document.body);
+    onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
+        EditorState.selectedTableId = (event.target as any).innerHTML;
+        updateDOM({$frmdb: {selectedTableId: EditorState.selectedTableId}}, document.body);
     });
 
     onEvent(document.body, 'click', '#new-table-btn *', (event) => {

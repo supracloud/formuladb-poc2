@@ -1616,10 +1616,6 @@ Vvveb.Gui = {
 		}
 	},
 
-	toggleFileManager: function () {
-		Vvveb.Gui.togglePanel("#filemanager", "--builder-filemanager-height");
-	},
-
 	toggleLeftColumn: function () {
 		Vvveb.Gui.togglePanel("#left-panel", "--builder-left-panel-width");
 	},
@@ -1691,19 +1687,12 @@ Vvveb.FileManager = {
 	currentPage: false,
 
 	init: function () {
-		this.tree = $("#filemanager .tree > ol").html("");
+		this.tree = $("#components-tree .tree").html("");
 
 		$(this.tree).on("click", "a", function (e) {
 			e.preventDefault();
 			return false;
 		});
-
-		$(this.tree).on("click", "li[data-page] label", function (e) {
-			var page = $(this.parentNode).data("page");
-
-			if (page) Vvveb.FileManager.loadPage(page);
-			return false;
-		})
 
 		$(this.tree).on("click", "li[data-component] label ", function (e) {
 			node = $(e.currentTarget.parentNode).data("node");
@@ -1786,8 +1775,8 @@ Vvveb.FileManager = {
 	loadComponents: function (allowedComponents = {}) {
 
 		var tree = this.getComponents(allowedComponents);
-		var html = drawComponentsTree(tree);
 		var j = 0;
+		var html = drawComponentsTree(tree);
 
 		function drawComponentsTree(tree) {
 			var html = $("<ol></ol>");
@@ -1816,7 +1805,7 @@ Vvveb.FileManager = {
 			return html;
 		}
 
-		$("[data-page='" + this.currentPage + "'] > ol", this.tree).replaceWith(html);
+		$("#components-tree .tree").html(html);
 	},
 
 	getCurrentUrl: function () {

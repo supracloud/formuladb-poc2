@@ -12479,7 +12479,7 @@ https://github.com/givanz/VvvebJs
 
 body {
   background: #eee;
-  --builder-filemanager-height: 200px;
+  --builder-filemanager-height: 250px;
   --builder-canvas-margin: 0px;
   --builder-header-top-height:40px;
   --builder-bottom-panel-height:0px;
@@ -12574,14 +12574,14 @@ body::-webkit-scrollbar-thumb {
   height: 100%;
   max-height: 100%;
 }
-#vvveb-builder #left-panel #filemanager {
-  height: 200px;
+#vvveb-builder #left-panel #filemanager, #vvveb-builder #left-panel #components-tree {
+  height: 250px;
   width: 27vw;
   height: var(--builder-filemanager-height);
   width: calc(var(--builder-left-panel-width));
   border-bottom: 1px solid #ddd;
 }
-#vvveb-builder #left-panel #filemanager .header {
+#vvveb-builder #left-panel #filemanager .header, #vvveb-builder #left-panel #components-tree .header {
   font-size: 11px;
   font-weight: 600;
   height: 2rem;
@@ -12596,28 +12596,28 @@ body::-webkit-scrollbar-thumb {
   padding: 0rem 0.5rem;
   padding: 0rem 0rem 0.5rem 1rem;
 }
-#vvveb-builder #left-panel #filemanager .header a {
+#vvveb-builder #left-panel #filemanager .header a, #vvveb-builder #left-panel #components-tree .header a {
   color: #007bff;
 }
-#vvveb-builder #left-panel #filemanager .tree {
-  height: 160px;
+#vvveb-builder #left-panel #filemanager .tree, #vvveb-builder #left-panel #components-tree .tree {
+  height: 210px;
   height: calc(var(--builder-filemanager-height) - 40px);
   padding: 0.5rem 0rem;
   overflow-y: hidden;
   overflow-x: hidden;
 }
-#vvveb-builder #left-panel #filemanager .tree:hover {
+#vvveb-builder #left-panel #filemanager .tree:hover, #vvveb-builder #left-panel #components-tree .tree:hover {
   overflow-y: auto;
 }
-#vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar {
+#vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar, #vvveb-builder #left-panel #components-tree .tree::-webkit-scrollbar {
   width: 0.5rem;
   background-color: rgba(255, 255, 255, 0.1);
   -webkit-box-shadow: none;
 }
-#vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar-track {
+#vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar-track, #vvveb-builder #left-panel #components-tree .tree::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.05);
 }
-#vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar-thumb {
+#vvveb-builder #left-panel #filemanager .tree::-webkit-scrollbar-thumb, #vvveb-builder #left-panel #components-tree .tree::-webkit-scrollbar-thumb {
   background-color: rgba(0, 0, 0, 0.15);
   outline: 1px solid slategrey;
 }
@@ -12773,7 +12773,7 @@ body::-webkit-scrollbar-thumb {
 #vvveb-builder .blocks-list,
 #vvveb-builder .component-properties {
   height: 98%;
-  height: calc(100% - 200px - 90px - 40px);
+  height: calc(100% - 250px - 90px - 40px);
   height: calc(100% - var(--builder-filemanager-height) - 90px - 40px);
   overflow-x: hidden;
   list-style: none;
@@ -12842,14 +12842,14 @@ body::-webkit-scrollbar-thumb {
   margin-top: 5px;
 }
 #vvveb-builder #add-section-box .blocks-list ol li {
-  width: 90%;
-  height: 180px;
+  width: 80%;
+  height: 80px;
   text-align: center;
   font-weight: normal;
   font-size: 11px;
   color: #000;
   background-repeat: no-repeat;
-  padding-top: 150px;
+  padding-top: 60px;
   margin-bottom: 14px;
   border-color: #ddd;
   border-style: solid;
@@ -13272,14 +13272,14 @@ li[data-type] a {
 }
 
 #blocks .drag-elements-sidepane li[data-type] {
-  width: 90%;
-  height: 180px;
+  width: 80%;
+  height: 80px;
   text-align: center;
   font-weight: normal;
   font-size: 11px;
   color: #000;
   background-repeat: no-repeat;
-  padding-top: 150px;
+  padding-top: 60px;
   margin-bottom: 14px;
   border-color: #ddd;
   border-style: solid;
