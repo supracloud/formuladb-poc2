@@ -42,7 +42,7 @@ const i18n = {
                     return true;
                 }
                 if (el.childNodes && [...el.childNodes]
-                    .some(cn => cn.nodeType !== 3 && allowedInnerTags.indexOf(cn.tagName.toLowerCase()) < 0)) {
+                    .some(cn => cn.nodeType !== 3 && cn.tagName && allowedInnerTags.indexOf(cn.tagName.toLowerCase()) < 0)) {
                     return false;
                 }
                 if (el.textContent.trim().length === 0) {

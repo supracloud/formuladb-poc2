@@ -17,7 +17,7 @@ import { CircularJSON } from "@domain/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { App } from "@domain/app";
-import { $User, $I18n } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export class FrmdbStore {
@@ -92,8 +92,8 @@ export class FrmdbStore {
         switch(path) {
             case $User._id:
                 return $User;
-            case $I18n._id:
-                return $I18n;
+            case $Dictionary._id:
+                return $Dictionary;
             default:
                 return null;
         }

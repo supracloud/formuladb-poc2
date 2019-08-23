@@ -46,7 +46,7 @@ export interface DataGridComponentState {
     observedAttributes: ["table_name", "header_height" , "expand_row"],
     template: HTML,
     style: CSS,
-    noShadow: true,
+    // noShadow: true,
 })
 export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentState> {
 

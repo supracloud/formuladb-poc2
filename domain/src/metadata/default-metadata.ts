@@ -11,8 +11,8 @@ export const $User: Entity = {
     }
 };
 
-export const $I18n: Entity = {
-    _id: "$I18n",
+export const $Dictionary: Entity = {
+    _id: "$Dictionary",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         en: { name: "en", propType_: Pn.STRING } as EntityProperty,

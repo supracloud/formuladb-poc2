@@ -5,7 +5,7 @@
 
 import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
 import { $s2e } from '@functions/s2e';
-import { $User, $I18n } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
 
 export const GEN__Settings: Entity = {
@@ -74,6 +74,6 @@ export const GEN__Client: Entity = {
 
 export const General: Entity = {
     _id: "GEN",
-    pureNavGroupingChildren: [$User._id, $I18n._id, GEN__Client._id, GEN__Currency._id, GEN__Person._id],
+    pureNavGroupingChildren: [$User._id, $Dictionary._id, GEN__Client._id, GEN__Currency._id, GEN__Person._id],
     props: {},
 };

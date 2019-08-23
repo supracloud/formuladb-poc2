@@ -16,7 +16,7 @@ import * as MusicBookingMetadata from "./musicbooking-metadata";
 import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
-import { $User, $I18n, $Currency } from '@domain/metadata/default-metadata';
+import { $User, $Dictionary, $Currency } from '@domain/metadata/default-metadata';
 import { HotelBookingSchema } from '../hotel-booking/metadata';
 import { InventorySchema } from '../inventory/metadata';
 
@@ -149,7 +149,7 @@ export const Schema_reporting: Schema = {
 
 export const CommonEntities = [
     $User,
-    $I18n,
+    $Dictionary,
     $Currency,
     // GeneralMetadata.GEN__Currency,
     // GeneralMetadata.GEN__Client,
