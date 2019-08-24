@@ -185,7 +185,10 @@ body {
 }
 
 #vvveb-builder {
-
+    #data-grid {
+        margin-left: var(--builder-left-panel-width);
+    }
+    
     // panels
     #left-panel,
     #right-panel {
