@@ -12545,6 +12545,9 @@ body::-webkit-scrollbar-thumb {
   font-size: 0.875rem;
 }
 
+#vvveb-builder #data-grid {
+  margin-left: var(--builder-left-panel-width);
+}
 #vvveb-builder #left-panel,
 #vvveb-builder #right-panel {
   border-color: #ddd;
