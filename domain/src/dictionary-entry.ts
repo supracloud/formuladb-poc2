@@ -6,7 +6,7 @@ export interface DictionaryEntry {
     it: string;
     es: string;
     pt: string;
-    gr: string;
+    el: string;
     ro: string;
     bg: string;
     da: string;

@@ -2,8 +2,36 @@ const translatableSelector = 'p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,[pl
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
 const DEFAULT_LANGUAGE = 'en';
 
-class I18nFe {
-    
+export function getTranslationKey(el) {
+    return el.hasAttribute('data-i18n-key') ? el.getAttribute('data-i18n-key') : (
+        el.hasAttribute('placeholder') ? el.getAttribute('placeholder') : el.innerHTML)
+}
+
+export function getTextValue(el: HTMLElement) {
+    if (el.hasAttribute('placeholder')) {
+        return el.getAttribute('placeholder');
+    } else {
+        return el.innerHTML;
+    }
+}
+
+export function isElementWithTextContent(el: any) {
+    if (el.hasAttribute('placeholder')) {
+        return true;
+    }
+    if (el.childNodes && [...el.childNodes]
+        .some(cn => cn.nodeType !== 3 && cn.tagName && allowedInnerTags.indexOf(cn.tagName.toLowerCase()) < 0)) {
+        return false;
+    }
+    if (el.textContent.trim().length === 0) {
+        return false;
+    }
+    return true;
+}
+
+
+export class I18nFe {
+
     get defaultLanguage() { return DEFAULT_LANGUAGE; }
 
     public getLangDesc(lang: string) {
@@ -14,16 +42,16 @@ class I18nFe {
         return [
             { flag: 'gb', full: 'English', lang: 'en' },
             { flag: 'fr', full: 'Francais', lang: 'fr' },
-            { flag: 'de', full: 'German', lang: 'de'},
-            { flag: 'it', full: 'Italian', lang: 'it'},
-            { flag: 'es', full: 'Spanish', lang: 'es'},
-            { flag: 'pt', full: 'Portuguese', lang: 'pt'},
-            { flag: 'gr', full: 'Greek', lang: 'el'},
-            { flag: 'ro', full: 'Romanian', lang: 'ro'},
-            { flag: 'pl', full: 'Polish', lang: 'pl'},
-            { flag: 'bg', full: 'Bulgarian', lang: 'bg'},
-            { flag: 'nl', full: 'Dutch', lang: 'nl'},
-            { flag: 'sv', full: 'Swedish', lang: 'sv'},
+            { flag: 'de', full: 'German', lang: 'de' },
+            { flag: 'it', full: 'Italian', lang: 'it' },
+            { flag: 'es', full: 'Spanish', lang: 'es' },
+            { flag: 'pt', full: 'Portuguese', lang: 'pt' },
+            { flag: 'gr', full: 'Greek', lang: 'el' },
+            { flag: 'ro', full: 'Romanian', lang: 'ro' },
+            { flag: 'pl', full: 'Polish', lang: 'pl' },
+            { flag: 'bg', full: 'Bulgarian', lang: 'bg' },
+            { flag: 'nl', full: 'Dutch', lang: 'nl' },
+            { flag: 'sv', full: 'Swedish', lang: 'sv' },
         ]
     };
 
@@ -35,13 +63,6 @@ class I18nFe {
         return sourceValue;
     };
 
-    getTextValue(el: HTMLElement) {
-        if (el.hasAttribute('placeholder')) {
-            return el.getAttribute('placeholder');
-        } else {
-            return el.innerHTML;
-        }
-    }
     setTextValue(el: HTMLElement, text: string) {
         if (el.hasAttribute('placeholder')) {
             el.setAttribute('placeholder', text);
@@ -54,29 +75,16 @@ class I18nFe {
         if (!rootElement) return;
 
         const toTranslateElems = [...rootElement.querySelectorAll(translatableSelector)]
-            .filter(el => {
-                if (el.hasAttribute('placeholder')) {
-                    return true;
-                }
-                if (el.childNodes && [...el.childNodes]
-                    .some(cn => cn.nodeType !== 3 && cn.tagName && allowedInnerTags.indexOf(cn.tagName.toLowerCase()) < 0)) {
-                    return false;
-                }
-                if (el.textContent.trim().length === 0) {
-                    return false;
-                }
-                return true;
-            });
+            .filter(el => isElementWithTextContent(el));
         const toTranslateMap = toTranslateElems.reduce((acc, c) => {
-            let translationKey = c.hasAttribute('data-i18n-key') ? c.getAttribute('data-i18n-key') : (
-                c.hasAttribute('placeholder') ? c.getAttribute('placeholder') : c.innerHTML);
+            let translationKey = getTranslationKey(c);
 
             if (acc[translationKey]) {
                 acc[translationKey].push(c);
             } else {
                 acc[translationKey] = [c];
             }
-            
+
             return acc;
         }, {});
         const request = {
@@ -84,7 +92,7 @@ class I18nFe {
             texts: Object.keys(toTranslateMap)
         };
 
-        
+
         if (DEFAULT_LANGUAGE === targetLang) {
             for (let els of Object.values(toTranslateMap)) {
                 for (let el of (els as HTMLElement[])) {
@@ -106,7 +114,7 @@ class I18nFe {
                 Object.keys(toTranslateMap).forEach((k, ix) => {
                     toTranslateMap[k].forEach(el => {
                         if (targetLang != DEFAULT_LANGUAGE && !el.hasAttribute('data-i18n-key')) {
-                            el.setAttribute('data-i18n-key', this.getTextValue(el));
+                            el.setAttribute('data-i18n-key', getTextValue(el));
                         }
                         this.setTextValue(el, t[ix]);
                     });

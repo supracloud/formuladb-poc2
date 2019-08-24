@@ -10,7 +10,8 @@ import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
 import { App } from '@domain/app';
 import { _resetAppAndTenant } from './app.service';
-import { I18N_FE } from './i18n-fe';
+import { I18N_FE, isElementWithTextContent, getTranslationKey } from './i18n-fe';
+import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
 
 declare var Vvveb: any;
 
@@ -193,6 +194,42 @@ async function loadTables(selectedTable?: string) {
     })
     .catch(err => console.error(err));
 }
+
+function getCellFromEl(el: HTMLElement): {recordId: string, columnId: string} | null {
+    let hasDataBinding = false;
+    for (let i = 0; i < el.attributes.length; i++) {
+        let attrib = el.attributes[i];
+        if (attrib.value && attrib.name.indexOf('data-frmdb') == 0) {
+            //TODO data binding for records
+            hasDataBinding = false;
+        }
+    }
+
+    if (hasDataBinding) {
+        return null;
+    }
+    else if (isElementWithTextContent(el)) {
+        let recordId = `$Dictionary~~${getTranslationKey(el)}`;
+        let columnId = document.querySelector('#frmdb-editor-i18n-select')!.getAttribute('data-i18n') || 'n/a';
+        return {recordId, columnId};
+    }
+
+    return null;
+}
+
+function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
+    let dataGrid = queryDataGrid(document);
+    let cell = getCellFromEl(el);
+    if (!cell) return;
+    let {recordId, columnId} = cell;
+    let tableName = entityNameFromDataObjId(recordId);
+    dataGrid.frmdbState.highlightColumns = {
+        [tableName]: {
+            [columnId]: 'c_03d7fc',
+        }
+    };
+}
+(window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
 
 tableManagementFlows();
 tableColumnManagementFlows();

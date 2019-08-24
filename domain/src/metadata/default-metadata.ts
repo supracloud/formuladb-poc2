@@ -21,7 +21,7 @@ export const $Dictionary: Entity = {
         it: { name: "it", propType_: Pn.STRING } as EntityProperty,
         es: { name: "es", propType_: Pn.STRING } as EntityProperty,
         pt: { name: "pt", propType_: Pn.STRING } as EntityProperty,
-        gr: { name: "gr", propType_: Pn.STRING } as EntityProperty,
+        gr: { name: "el", propType_: Pn.STRING } as EntityProperty,
         ro: { name: "ro", propType_: Pn.STRING } as EntityProperty,
         bg: { name: "bg", propType_: Pn.STRING } as EntityProperty,
         da: { name: "da", propType_: Pn.STRING } as EntityProperty,
