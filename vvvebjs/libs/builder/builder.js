@@ -1373,6 +1373,22 @@ Vvveb.Gui = {
 					return false;
 				}).appendTo(i18nOptions)
 		);
+
+		//theme section
+		const appName = 'hotel-booking';
+		const cssDeclaration = jQuery("#frmdb-theme-css");
+		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
+		fetch(`/frmdb-apps/${appName}/theme.json`).then(re=>re.json().then(themes =>{			
+			themes.forEach(t=>{
+				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i></a>`)
+				.click(event => {
+					cssDeclaration.attr('href',`css/${t.css}?refresh=${new Date().getTime()}`);
+					event.preventDefault();
+					return false;
+				})
+				.appendTo(themeOptions);
+			});
+		}));
 	},
 
 	undo: function () {
