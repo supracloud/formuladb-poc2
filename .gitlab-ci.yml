@@ -86,7 +86,9 @@ test_postgres:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
+    - while ! nc -z localhost 5432; do sleep 1; done
     - FRMDB_STORAGE=postgres npm test || true
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -104,7 +106,9 @@ stress:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
+    - while ! nc -z localhost 5432; do sleep 1; done
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -121,7 +125,9 @@ e2e_dev_env:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 8081 || kubectl port-forward $POD 8081:80 &
+    - while ! nc -z localhost 8081; do sleep 1; done
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -165,7 +171,9 @@ deploy_demo:
     - skaffold run
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
+    - while ! nc -z localhost 5433; do sleep 1; done
     - PGPORT=5433 npm run e2e:data
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -199,7 +207,9 @@ deploy_production:
     - skaffold run
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
+    - while ! nc -z localhost 5433; do sleep 1; done
     - PGPORT=5433 npm run e2e:data
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
