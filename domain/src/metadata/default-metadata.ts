@@ -15,8 +15,19 @@ export const $Dictionary: Entity = {
     _id: "$Dictionary",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        en: { name: "en", propType_: Pn.STRING } as EntityProperty,
+        gb: { name: "gb", propType_: Pn.STRING } as EntityProperty,
+        fr: { name: "fr", propType_: Pn.STRING } as EntityProperty,
+        de: { name: "de", propType_: Pn.STRING } as EntityProperty,
+        it: { name: "it", propType_: Pn.STRING } as EntityProperty,
+        es: { name: "es", propType_: Pn.STRING } as EntityProperty,
+        pt: { name: "pt", propType_: Pn.STRING } as EntityProperty,
+        gr: { name: "gr", propType_: Pn.STRING } as EntityProperty,
         ro: { name: "ro", propType_: Pn.STRING } as EntityProperty,
+        bg: { name: "bg", propType_: Pn.STRING } as EntityProperty,
+        da: { name: "da", propType_: Pn.STRING } as EntityProperty,
+        sv: { name: "sv", propType_: Pn.STRING } as EntityProperty,
+        no: { name: "no", propType_: Pn.STRING } as EntityProperty,
+        nl: { name: "nl", propType_: Pn.STRING } as EntityProperty,
     }
 };
 

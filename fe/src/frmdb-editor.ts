@@ -10,6 +10,7 @@ import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
 import { App } from '@domain/app';
 import { _resetAppAndTenant } from './app.service';
+import { I18N_FE } from './i18n-fe';
 
 declare var Vvveb: any;
 
@@ -64,6 +65,13 @@ async function initEditor() {
     let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
     Vvveb.Builder.init(url, function () {
         Vvveb.FileManager.loadComponents();
+
+        const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
+        if (currentLanguage.lang != I18N_FE.defaultLanguage) {
+            setTimeout(() => 
+                I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
+            );
+        }        
     });
 
     Vvveb.Gui.init();
