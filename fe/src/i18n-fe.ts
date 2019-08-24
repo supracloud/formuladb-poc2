@@ -52,6 +52,7 @@ class I18nFe {
 
     translateAll(rootElement, prevLang, targetLang) {
         if (!rootElement) return;
+
         const toTranslateElems = [...rootElement.querySelectorAll(translatableSelector)]
             .filter(el => {
                 if (el.hasAttribute('placeholder')) {
@@ -83,7 +84,18 @@ class I18nFe {
             texts: Object.keys(toTranslateMap)
         };
 
-        console.log("Parsed HTML, sending translations");
+        
+        if (DEFAULT_LANGUAGE === targetLang) {
+            for (let els of Object.values(toTranslateMap)) {
+                for (let el of (els as HTMLElement[])) {
+                    let defaultText = el.getAttribute('data-i18n-key');
+                    this.setTextValue(el, defaultText || 'n/a-1');
+                }
+            }
+            return;
+        }
+
+        console.log("Parsed HTML, sending translations", request);
         fetch('/formuladb-api/translate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
