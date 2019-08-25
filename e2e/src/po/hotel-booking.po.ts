@@ -4,7 +4,7 @@ import {Room, Booking} from '@test/hotel-booking/metadata';
 export class HotelBooking {
  
   async navigateToHome() {
-    await browser.get('formuladb-editor/editor.html?t=frmdb-apps&a=hotel-booking&p=index');
+    await browser.get('formuladb-editor/editor.html#/frmdb-apps/hotel-booking/index.html');
   }
 
   /**
@@ -27,28 +27,30 @@ export class HotelBooking {
   async getTables() {
     // switch back to page content
     await browser.switchTo().defaultContent();
-    let menuItems: Array<ElementFinder> = await element.all(by.css('frmdb-db-editor frmdb-v-nav li.nav-item'));
+    let menuItems: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.tables[]._id"]'));
     
     let tables: Array<string> = [];
+    // Using getAttribute('innerText') hack to get the link text, as explained here https://stackoverflow.com/questions/20888592/gettext-method-of-selenium-chrome-driver-sometimes-returns-an-empty-string
     for (var i = 0; i < menuItems.length; i++) {
-      tables.push(await menuItems[i].getText());
+      tables.push(await menuItems[i].getAttribute('innerText'));
     }
 
     return tables;
   }
 
   /**
-   * Get first room data from ag-grid table
+   * Get first room type data from ag-grid table
    */
-  async getFirstRoomData() {
+  async getFirstRoomTypeData() {
     // switch back to page content
     await browser.switchTo().defaultContent();
 
     // get header columns
-    // document.querySelector('#db-main > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-header div.ag-header-cell span.ag-header-cell-text')
+    // document.querySelector('#data-grid > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-header div.ag-header-cell span.ag-header-cell-text')
     // get first row columns
-    // document.querySelector('#db-main > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-row[row-index="0"] div.ag-cell')
-    let firstRowCells: Array<ElementFinder> = await element.all(by.deepCss('#myGrid div.ag-row[row-index="0"] div.ag-cell'));
+    // document.querySelector('#data-grid > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-row[row-index="0"] div.ag-cell')
+    // let firstRowCells: Array<any> = await element.all(by.js(() => {document.querySelector('#data-grid > frmdb-data-grid').shadowRoot.querySelectorAll('#myGrid div.ag-row[row-index="0"] div.ag-cell')}));
+    let firstRowCells: Array<any> = [];
     
     let firstRoomData: { id: string, value: string }[] = [];
     for (var i = 0; i < firstRowCells.length; i++) {
