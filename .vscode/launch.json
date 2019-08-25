@@ -4,7 +4,6 @@
         {
             "name": "jasmine",
             "type": "node",
-            "useWSL": true,
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [
@@ -31,7 +30,6 @@
         {
             "name": "jasmine postgres",
             "type": "node",
-            "useWSL": true,
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [
@@ -96,7 +94,6 @@
         },
         {
             "name": "e2e",
-            "useWSL": true,
             "type": "node",
             "request": "launch",
             "program": "${workspaceFolder}/node_modules/protractor/bin/protractor",

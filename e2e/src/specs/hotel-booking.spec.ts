@@ -9,21 +9,23 @@ import { HotelBooking } from '../po/hotel-booking.po';
 
 const hotelBooking = new HotelBooking();
 
-describe('display hotel booking page', () => {
+describe('hotel-booking view mode testing', () => {
   it('should display the home page', async () => {
+    // check that page loads and title is as expected
     await hotelBooking.navigateToHome();
+    expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
+  });
+    
+  it('should load the booking tables: RoomType, Room, Booking', async () => {
+    // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
+    let bookingTables: Array<string> = await hotelBooking.getTables();
+    ['RoomType', 'Room', 'Booking'].forEach(x => expect(bookingTables.indexOf(x)).toBeGreaterThan(-1));
+  });
 
-    expect(await hotelBooking.getTitle()).toEqual('Relax Your Mind');
-    //element(by.model('todoList.todoText')).sendKeys('write first protractor test');
-    //element(by.css('[value="add"]')).click();
-
-    //var todoList = element.all(by.repeater('todo in todoList.todos'));
-    //expect(todoList.count()).toEqual(3);
-    //expect(todoList.get(2).getText()).toEqual('write first protractor test');
-
-    // You wrote your first test, cross it off the list
-    //todoList.get(2).element(by.css('input')).click();
-    //var completedAmount = element.all(by.css('.done-true'));
-    //expect(completedAmount.count()).toEqual(2);
+  it('should load the room types list', async () => {
+    // check that room types list is correctly displayed; verify the first row against the e2e data
+    let roomTypes: { id: string, value: string }[] = await hotelBooking.getFirstRoomTypeData();
+    console.log(roomTypes);
+    //expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
   });
 });
