@@ -20,23 +20,21 @@ import * as mime from 'mime';
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { $User } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { MetadataStore } from "@core/metadata_store";
 import { Schema } from "@domain/metadata/entity";
 import { savePage, getFile } from "@be/git-storage";
-import { v3beta1 } from "@google-cloud/translate";
 import { LazyInit } from "@domain/ts-utils";
+import { DictionaryEntry } from "@domain/dictionary-entry";
+import { I18nBe } from "@be/i18n-be";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const SECRET = 'bla-bla-secret';
-const translationClient = new v3beta1.TranslationServiceClient();
-const projectId = 'seismic-plexus-232506';
-const translateBatchSize = 128;
 
 const STATIC_EXT = [
     '.js',
@@ -54,6 +52,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
     var kvs$User: KeyTableStoreI<BeUser>;
     var metadataStore = new MetadataStore();
+    var i18nBe = new I18nBe(kvsFactory);
 
     async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
         let frmdbEngineInit = frmdbEngines.get(appName);
@@ -72,34 +71,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return frmdbEngineInit.get();
     }
 
-    async function getUserKvs() {
+    async function getUserKvs(): Promise<KeyTableStoreI<BeUser>> {
         if (!kvs$User) {
             kvs$User = await kvsFactory.createKeyTableS<BeUser>($User);
         }
         return Promise.resolve(kvs$User);
-    }
-
-    async function translateText(texts: string[], from: string, to: string) {
-        const batches: string[][] = [];
-
-        for (let i = 0; i < texts.length; i += translateBatchSize) {
-            batches.push(texts.slice(i, i + translateBatchSize));
-        }
-        const translations = await Promise.all(batches.map(batch => {
-            // Construct request
-            const request = {
-                parent: translationClient.locationPath(projectId, 'global'),
-                contents: batch,
-                mimeType: 'text/html', // mime types: text/plain, text/html
-                sourceLanguageCode: from,
-                targetLanguageCode: to,
-            };
-            return translationClient.translateText(request);
-        }));
-        return translations.reduce((p,c)=>{
-            const [response]=c;
-            return [...p,...response.translations.map(tr=>tr.translatedText)]
-        },[]);
     }
 
     passport.use("user-pass", new LocalStrategy(
@@ -198,7 +174,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     }
 
     app.post('/formuladb-api/translate', async (req, res) => {
-        res.json(await translateText(req.body.texts, req.body.from, req.body.to));
+        res.json(await i18nBe.translateText(req.body.texts, req.body.to));
     });
 
     app.get('/formuladb-api/:tenant/applications', async function (req, res) {

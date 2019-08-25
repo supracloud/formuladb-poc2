@@ -729,6 +729,8 @@ Vvveb.Builder = {
 	selectNode: function (node) {
 		var self = this;
 
+		window.frmdbEditorHighlightDataGridCell(node);
+
 		if (!node) {
 			jQuery("#select-box").hide();
 			return;
@@ -903,7 +905,7 @@ Vvveb.Builder = {
 						jQuery(self.texteditEl).attr('data-i18n', i18n.getDefaultLanguage().tag);
 						nodeLanguage = i18n.getDefaultLanguage().tag;
 					}
-					i18n.updateNode(nodeLanguage, nodeLanguage, Vvveb.WysiwygEditor.oldValue, nodeValue);
+					i18n.updateNode(self.texteditEl, nodeLanguage, nodeLanguage, Vvveb.WysiwygEditor.oldValue, nodeValue);
 
 					jQuery("#select-box").css({
 						"width": self.texteditEl.outerWidth(),
@@ -1357,22 +1359,23 @@ Vvveb.Gui = {
 		// i18n section
 		const i18nSelect = jQuery('#frmdb-editor-i18n-select')
 		const i18nOptions = jQuery('[aria-labelledby="frmdb-editor-i18n-select"]');
-		const currentLanguage = i18n.getLanguage(localStorage.getItem('editor-lang')) || i18n.getDefaultLanguage();
-		i18nSelect.attr('data-i18n', currentLanguage.tag);
-		i18nSelect.html(`<i class="flag-icon flag-icon-${currentLanguage.short}"></i>`);
+		const currentLanguage = i18n.getLangDesc(localStorage.getItem('editor-lang') || i18n.defaultLanguage);
+		i18nSelect.attr('data-i18n', currentLanguage.lang);
+		i18nSelect.html(`<i class="flag-icon flag-icon-${currentLanguage.flag}"></i>`);
 		i18n.languages.forEach(lang =>
-			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.short}">${lang.full}</a>`)
+			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.flag}">${lang.full}</a>`)
 				.click(event => {
 					const prev = i18nSelect.attr('data-i18n');
-					const next = lang.tag;
+					const next = lang.lang;
 					localStorage.setItem('editor-lang', next);
 					i18nSelect.attr('data-i18n', next);
-					i18nSelect.html(`<i class="flag-icon flag-icon-${lang.short}"></i>`);
+					i18nSelect.html(`<i class="flag-icon flag-icon-${lang.flag}"></i>`);
 					i18n.translateAll(window.FrameDocument, prev, next);
-					event.preventDefault();
-					return false;
+					// event.preventDefault();
+					// return false;
 				}).appendTo(i18nOptions)
 		);
+
 	},
 
 	undo: function () {

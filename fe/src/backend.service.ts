@@ -134,10 +134,10 @@ export class BackendService {
     }
 
     public async getDictionary(locale: Exclude<App['defaultLocale'], undefined>) {
-        let i18nList = await this.getTableData("$I18n~~");
+        let i18nList = await this.getTableData("$Dictionary~~");
         let dictionary = {};
         for (let i18n of i18nList) {
-            dictionary[i18n._id.replace('$I18n~~', '')] = i18n[locale];
+            dictionary[i18n._id.replace('$Dictionary~~', '')] = i18n[locale];
         }
         return dictionary;
     }

@@ -18,6 +18,15 @@ function currentTimestamp() {
     ;
 }
 
+
+export function getParentObjId(control: HTMLElement): string {
+    let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
+    if (!parentEl) throw new Error("Could not get parent of " + control.outerHTML);
+    let ret = parentEl.getAttribute('data-frmdb-record');
+    if (!ret) throw new Error("Could not get obj id of parent " + parentEl.outerHTML + " for " + control.outerHTML);
+    return ret;
+}
+
 export class FormService {
     
     dirtyFieldsCache = new Map<string, InputElem>();
@@ -26,7 +35,7 @@ export class FormService {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
             let inputEl = event.target;
             if (!isFormEl(inputEl)) throw new Error("input event came from " + event.target);
-            this.dirtyFieldsCache.set(this.getParentObjId + '.' + getEntityPropertyNameFromEl(inputEl), inputEl);
+            this.dirtyFieldsCache.set(getParentObjId + '.' + getEntityPropertyNameFromEl(inputEl), inputEl);
             this.debounced_newRecordCache(inputEl);
             this.debounced_manageInput(inputEl);
         });
@@ -106,14 +115,6 @@ export class FormService {
         let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
         if (!parentEl) throw new Error("Could not get parent of " + control);
         return parentEl;
-    }
-
-    public getParentObjId(control: HTMLElement): string {
-        let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
-        if (!parentEl) throw new Error("Could not get parent of " + control.outerHTML);
-        let ret = parentEl.getAttribute('data-frmdb-record');
-        if (!ret) throw new Error("Could not get obj id of parent " + parentEl.outerHTML + " for " + control.outerHTML);
-        return ret;
     }
 
     public getParentObj(control: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} {

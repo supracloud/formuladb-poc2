@@ -5,7 +5,7 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
-import { $User, $I18n } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
 export const RoomType = {
     _id: "RoomType",
@@ -85,9 +85,9 @@ export const HotelBookingApp = {
     pages: [
         { name: "index", html: "index.html" },
         { name: "booking", html: "booking.html" },
-        { name: "footer [F]", html: "footer._fragment_.html" },
-        { name: "nav [F]", html: "nav._fragment_.html" },
-        { name: "booking [F]", html: "booking._fragment_.html" },
+        { name: "footer-F", html: "footer._fragment_.html" },
+        { name: "nav-F", html: "nav._fragment_.html" },
+        { name: "booking-F", html: "booking._fragment_.html" },
         { name: "contact", html: "contact.html" },
         { name: "gallery", html: "gallery.html" },
         { name: "tmp", html: "tmp.html" },
@@ -101,6 +101,6 @@ export const HotelBookingSchema: Schema = {
         [Room._id]: Room,
         [Booking._id]: Booking,
         [$User._id]: $User,
-        [$I18n._id]: $I18n,
+        [$Dictionary._id]: $Dictionary,
     },
 }

@@ -56,7 +56,7 @@ export function createElemList(tagName: string, key: string, length: number): El
     return new ElemList(key, dummy);
 }
 
-enum DATA_FRMDB_ATTRS_Enum {
+export enum DATA_FRMDB_ATTRS_Enum {
     'data-frmdb-value' = 'data-frmdb-value',
     'data-frmdb-attr' = 'data-frmdb-attr',
     'data-frmdb-attr2' = 'data-frmdb-attr2',

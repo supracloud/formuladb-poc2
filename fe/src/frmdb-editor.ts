@@ -10,6 +10,10 @@ import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
 import { App } from '@domain/app';
 import { _resetAppAndTenant } from './app.service';
+import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from './i18n-fe';
+import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
+import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
+import { getParentObjId } from './form.service';
 
 declare var Vvveb: any;
 
@@ -43,7 +47,7 @@ async function initEditor() {
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.pages = app.pages.map(p => ({name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.html}`}));
+    EditorState.pages = app.pages.map(p => ({name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}`}));
     let indexUrl;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
@@ -64,6 +68,13 @@ async function initEditor() {
     let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
     Vvveb.Builder.init(url, function () {
         Vvveb.FileManager.loadComponents();
+
+        const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
+        if (currentLanguage.lang != I18N_FE.defaultLanguage) {
+            setTimeout(() => 
+                I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
+            );
+        }        
     });
 
     Vvveb.Gui.init();
@@ -75,11 +86,16 @@ async function initEditor() {
     loadTables();
 }
 
+function changeSelectedTableIdIfDifferent(tableName: string) {
+    if (tableName === EditorState.selectedTableId) return;
+    EditorState.selectedTableId = tableName;
+    updateDOM({$frmdb: {selectedTableId: EditorState.selectedTableId}}, document.body);
+}
+
 function tableManagementFlows() {
 
     onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
-        EditorState.selectedTableId = (event.target as any).innerHTML;
-        updateDOM({$frmdb: {selectedTableId: EditorState.selectedTableId}}, document.body);
+        changeSelectedTableIdIfDifferent((event.target as any).innerHTML);
     });
 
     onEvent(document.body, 'click', '#new-table-btn *', (event) => {
@@ -185,6 +201,47 @@ async function loadTables(selectedTable?: string) {
     })
     .catch(err => console.error(err));
 }
+
+function getCellFromEl(el: HTMLElement): {recordId: string, columnId: string} | null {
+    for (let i = 0; i < el.attributes.length; i++) {
+        let attrib = el.attributes[i];
+        console.warn(DATA_FRMDB_ATTRS_Enum);
+        if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name)) {
+            let recordId = getParentObjId(el);
+            let tableName = entityNameFromDataObjId(recordId);
+            let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');
+            return {recordId, columnId};
+        }
+    }
+
+    if (isElementWithTextContent(el)) {
+        let recordId = `$Dictionary~~${getTranslationKey(el)}`;
+        let columnId = document.querySelector('#frmdb-editor-i18n-select')!.getAttribute('data-i18n') || 'n/a';
+        if (columnId == DEFAULT_LANGUAGE) columnId = '_id';
+        return {recordId, columnId};
+    }
+
+    return null;
+}
+
+function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
+    let dataGrid = queryDataGrid(document);
+    let cell = getCellFromEl(el);
+    if (!cell) return;
+    let {recordId, columnId} = cell;
+    let tableName = entityNameFromDataObjId(recordId);
+    dataGrid.frmdbState.highlightColumns = {
+        [tableName]: {
+            [columnId]: {
+                'background-image': 'linear-gradient(45deg, #d6efff 25%, #f5fbff 25%, #f5fbff 50%, #d6efff 50%, #d6efff 75%, #f5fbff 75%, #f5fbff 100%)',
+                'background-size': '28.28px 28.28px',
+            },
+        }
+    };
+    changeSelectedTableIdIfDifferent(tableName);
+    dataGrid.forceCellRefresh();
+}
+(window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
 
 tableManagementFlows();
 tableColumnManagementFlows();
