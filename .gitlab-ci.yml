@@ -135,8 +135,6 @@ deploy:
     - export NODE_PATH=`pwd`/ci-tools/node_modules
     # publish vvvebj on GCloud
     - upload-assets `find vvvebjs -type f -print`
-    # publish portal on GCloud
-    - upload-assets `find portal/public/ -type f -print`
     # publish FE on GCloud
     - mkdir -p dist/fe
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe

@@ -12,6 +12,12 @@ spec:
   - hosts:
     - formuladb.io
     secretName: formuladb-online
+  - hosts:
+    - www.formuladb.online
+    secretName: formuladb-online
+  - hosts:
+    - www.formuladb.io
+    secretName: formuladb-online
   rules:
   - host: formuladb.online
     http:
@@ -21,6 +27,20 @@ spec:
           serviceName: lb
           servicePort: 80
   - host: formuladb.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lb
+          servicePort: 80
+  - host: www.formuladb.online
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: lb
+          servicePort: 80
+  - host: www.formuladb.io
     http:
       paths:
       - path: /
