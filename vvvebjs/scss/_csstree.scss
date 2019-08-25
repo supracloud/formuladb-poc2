@@ -33,6 +33,16 @@
 					//font-weight:600;
 				}
 			}
+			&.highlighted
+			{
+				//background-color:$primary;
+				//color:#fff;
+				> label > span, > a > span  
+				{
+					color:#ff7bff;
+					//font-weight:600;
+				}
+			}
 		}
 		
 		li.file
