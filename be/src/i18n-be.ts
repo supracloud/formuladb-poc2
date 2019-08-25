@@ -34,14 +34,14 @@ export class I18nBe {
         let toLang = toLangAndCountry.slice(0, 2);
         const batches: string[][] = [];
         let dictionaryKVS = await this.getDictionaryKvs();
-        let translationsViaDB: string[] = [];
         let dirtyDictionaryEntries: Map<string, DictionaryEntry> = new Map();
+        let returnedTranslations: {[key: string]: string} = {};
 
         let i = 0;
         let batch: string[] = [];
         for (let text of texts) {
             if ((this.dictionaryCache.get(text) || {})[toLang]) {
-                translationsViaDB.push(this.dictionaryCache.get(text)![toLang]);
+                returnedTranslations[text] = this.dictionaryCache.get(text)![toLang];
             } else {
                 batch.push(text)
                 i++;
@@ -51,6 +51,8 @@ export class I18nBe {
                 batch = [];
             }
         }
+        if (batch.length > 0) batches.push(batch);
+
         const translations = await Promise.all(batches.map(batch => {
             // Construct request
             const request = {
@@ -69,6 +71,7 @@ export class I18nBe {
                         let dictEntry: DictionaryEntry = this.dictionaryCache.get(defaultText) || {_id: defaultText} as DictionaryEntry;
                         dictEntry[toLang] = translatedText;
                         dirtyDictionaryEntries.set(defaultText, dictEntry);
+                        returnedTranslations[defaultText] = translatedText;
                     }
                     console.log(x);
                     return x;
@@ -78,18 +81,13 @@ export class I18nBe {
                     throw err;
                 });
         }));
-        let translationsViaAPI = translations.reduce((p,c)=>{
-            const [response]=c;
-            return [...p,...response.translations.map(tr => {
-                return tr.translatedText;
-            })]
-        },[]);
 
         for (let dirtyDictEntry of dirtyDictionaryEntries.values()) {
+            this.dictionaryCache.set(dirtyDictEntry._id, dirtyDictEntry);
             /*no-await*/ dictionaryKVS.put(dirtyDictEntry);
         }
 
-        return [...translationsViaAPI, ...translationsViaDB];
+        return returnedTranslations;
     }
 
 }

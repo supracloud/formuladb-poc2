@@ -1,6 +1,6 @@
 const translatableSelector = 'p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,[placeholder]';
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
-const DEFAULT_LANGUAGE = 'en';
+export const DEFAULT_LANGUAGE = 'en';
 
 export function getTranslationKey(el) {
     return el.hasAttribute('data-i18n-key') ? el.getAttribute('data-i18n-key') : (
@@ -55,7 +55,12 @@ export class I18nFe {
         ]
     };
 
-    updateNode(sourceLang, targetLang, sourceValue, targetValue) {
+    updateNode(el: HTMLElement, sourceLang, targetLang, sourceValue, targetValue) {
+        //FIXME:updateNode
+        //get translation key (text in the default language)
+        //translate current text to default language and update key
+        //translate key to other languages
+        //strategies for cleanup un-used keys
         console.log(`Updating i18n [${sourceLang}]"${sourceValue}"->[${targetLang}]"${targetValue}"`);
     };
 
@@ -76,13 +81,13 @@ export class I18nFe {
 
         const toTranslateElems = [...rootElement.querySelectorAll(translatableSelector)]
             .filter(el => isElementWithTextContent(el));
-        const toTranslateMap = toTranslateElems.reduce((acc, c) => {
-            let translationKey = getTranslationKey(c);
+        const toTranslateMap = toTranslateElems.reduce((acc, el) => {
+            let translationKey = getTranslationKey(el);
 
             if (acc[translationKey]) {
-                acc[translationKey].push(c);
+                acc[translationKey].push(el);
             } else {
-                acc[translationKey] = [c];
+                acc[translationKey] = [el];
             }
 
             return acc;
@@ -97,7 +102,7 @@ export class I18nFe {
             for (let els of Object.values(toTranslateMap)) {
                 for (let el of (els as HTMLElement[])) {
                     let defaultText = el.getAttribute('data-i18n-key');
-                    this.setTextValue(el, defaultText || 'n/a-1');
+                    if (defaultText) this.setTextValue(el, defaultText);
                 }
             }
             return;
@@ -110,13 +115,13 @@ export class I18nFe {
             body: JSON.stringify(request)
         }).then(re => {
             console.log("translation done, updating html");
-            re.json().then(t => {
+            re.json().then(returnedTranslations => {
                 Object.keys(toTranslateMap).forEach((k, ix) => {
                     toTranslateMap[k].forEach(el => {
                         if (targetLang != DEFAULT_LANGUAGE && !el.hasAttribute('data-i18n-key')) {
                             el.setAttribute('data-i18n-key', getTextValue(el));
                         }
-                        this.setTextValue(el, t[ix]);
+                        this.setTextValue(el, returnedTranslations[k]);
                     });
                 });
             });

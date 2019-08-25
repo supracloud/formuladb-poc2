@@ -905,7 +905,7 @@ Vvveb.Builder = {
 						jQuery(self.texteditEl).attr('data-i18n', i18n.getDefaultLanguage().tag);
 						nodeLanguage = i18n.getDefaultLanguage().tag;
 					}
-					i18n.updateNode(nodeLanguage, nodeLanguage, Vvveb.WysiwygEditor.oldValue, nodeValue);
+					i18n.updateNode(self.texteditEl, nodeLanguage, nodeLanguage, Vvveb.WysiwygEditor.oldValue, nodeValue);
 
 					jQuery("#select-box").css({
 						"width": self.texteditEl.outerWidth(),

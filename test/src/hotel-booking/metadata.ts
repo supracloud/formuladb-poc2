@@ -85,9 +85,9 @@ export const HotelBookingApp = {
     pages: [
         { name: "index", html: "index.html" },
         { name: "booking", html: "booking.html" },
-        { name: "footer [F]", html: "footer._fragment_.html" },
-        { name: "nav [F]", html: "nav._fragment_.html" },
-        { name: "booking [F]", html: "booking._fragment_.html" },
+        { name: "footer-F", html: "footer._fragment_.html" },
+        { name: "nav-F", html: "nav._fragment_.html" },
+        { name: "booking-F", html: "booking._fragment_.html" },
         { name: "contact", html: "contact.html" },
         { name: "gallery", html: "gallery.html" },
         { name: "tmp", html: "tmp.html" },

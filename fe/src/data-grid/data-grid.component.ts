@@ -35,7 +35,14 @@ export interface DataGridComponentAttr {
 }
 
 export interface DataGridComponentState {
-    highlightColumns?: { [tableName: string]: { [columnName: string]: string } };
+    highlightColumns?: { 
+        [tableName: string]: { 
+            [columnName: string]: string | {
+                'background-image': string,
+                'background-size': string,
+            }
+        } 
+    };
     conditionalFormatting?: { tbdCssClassName: string };
     selectedRow: DataObj;
     selectedColumnName: string;
@@ -82,16 +89,19 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     /** frmdb components API **************************************************/
-    frmdbPropertyChangedCallback<T extends keyof DataGridComponentState>(propName: keyof DataGridComponentState, oldVal: DataGridComponentState[T] | undefined, newVal: DataGridComponentState[T]): Partial<DataGridComponentState> | Promise<Partial<DataGridComponentState>> {
+    frmdbPropertyChangedCallback<T extends keyof DataGridComponentState>(propName: keyof DataGridComponentState, oldVal: DataGridComponentState[T] | undefined, newVal: DataGridComponentState[T]) {
         if (propName === "highlightColumns" || propName === "conditionalFormatting") {
-            if (this.gridApi) {
-                this.gridApi.refreshCells({ force: true });
-            }
+            this.forceCellRefresh();
         }
-        return this.frmdbState;
     }
 
     /** component internals *************************************************/
+
+    public forceCellRefresh() {
+        if (this.gridApi) {
+            this.gridApi.refreshView();
+        }
+    }
 
     private gridApi: GridApi;
     private gridColumnApi;
@@ -259,7 +269,19 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         let entityName = this.getAttribute('table_name');
         let hc = this.frmdbState.highlightColumns||{};
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
-            return { backgroundColor: hc[entityName][params.colDef.field].replace(/^c_/, '#') };
+            let highightColor = hc[entityName][params.colDef.field];
+            if (typeof highightColor === "string") {
+                return { 
+                    backgroundColor: highightColor.replace(/^c_/, '#'),
+                    'background-image': null,
+                    'background-size': null,
+                };
+            } else {
+                return {
+                    ...highightColor,
+                    backgroundColor: null,
+                };
+            }
         } else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
             return { "border-color": "blue" };
         }
@@ -373,6 +395,10 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
                 return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.defaultView.$('${expandRowTarget}'); s=m.find('frmdb-form')[0].frmdbState; s.rowid='${params.value}'; s.table_name='${entityName}'; m.modal('toggle')">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
+    }
+
+    public setTableName(tableName: string) {
+        this.setAttribute('table_name', tableName);
     }
 }
 
