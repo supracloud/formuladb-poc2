@@ -262,6 +262,6 @@ cleanup:
 #    - killall node --quiet || true
     - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
-    - curl --request DELETE --data 'name_regex=.+-[0-9]+-[0-9a-z]{8}.+' --data 'keep_n=5' --data 'older_than=5d' --header "PRIVATE-TOKEN:mfDqKQ6zwhZaszaNpUys" "https://gitlab.com/api/v4/projects/4245551/registry/repositories/398919/tags"
+    - curl --request DELETE --data 'name_regex=.+-[0-9]+-[0-9a-z]{8}.*' --data 'keep_n=5' --data 'older_than=5d' --header "PRIVATE-TOKEN:mfDqKQ6zwhZaszaNpUys" "https://gitlab.com/api/v4/projects/4245551/registry/repositories/398919/tags"
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   when: always
