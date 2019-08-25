@@ -102,6 +102,11 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             this.gridApi.refreshView();
         }
     }
+    public forceReloadData() {
+        if (this.gridApi) {
+            this.gridApi.purgeServerSideCache();
+        }
+    }
 
     private gridApi: GridApi;
     private gridColumnApi;
@@ -268,24 +273,40 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     applyCellStyles(params) {
         let entityName = this.getAttribute('table_name');
         let hc = this.frmdbState.highlightColumns||{};
+
+        let backgroundStyles: {[k: string]: string | null} = {
+            backgroundColor: null,
+            'background-image': null,
+            'background-size': null,    
+        };
+
+        let borderStyles: {[k: string]: string | null} = {
+            "border-color": null,
+        }
+
         if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
             let highightColor = hc[entityName][params.colDef.field];
             if (typeof highightColor === "string") {
-                return { 
+                backgroundStyles = { 
+                    ...backgroundStyles,
                     backgroundColor: highightColor.replace(/^c_/, '#'),
-                    'background-image': null,
-                    'background-size': null,
                 };
             } else {
-                return {
+                backgroundStyles = {
+                    ...backgroundStyles,
                     ...highightColor,
-                    backgroundColor: null,
                 };
             }
-        } else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
-            return { "border-color": "blue" };
         }
-        return { backgroundColor: null, "border-color": null};
+        else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
+            borderStyles = { "border-color": "blue" };
+        } else if (params.node.rowIndex != this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
+            backgroundStyles = {
+                ...CURRENT_COLUMN_HIGHLIGHT_STYLE,
+                backgroundColor: null,
+            };
+    }
+        return { ...backgroundStyles, ...borderStyles};
     }
 
     agFilter(ctype: string) {
@@ -401,6 +422,11 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         this.setAttribute('table_name', tableName);
     }
 }
+
+export const CURRENT_COLUMN_HIGHLIGHT_STYLE = {
+    'background-image': 'linear-gradient(45deg, #d6efff 25%, #f5fbff 25%, #f5fbff 50%, #d6efff 50%, #d6efff 75%, #f5fbff 75%, #f5fbff 100%)',
+    'background-size': '28.28px 28.28px',
+};
 
 export function queryDataGrid(el: Document | HTMLElement): DataGridComponent {
     let dataGrid: DataGridComponent = el.querySelector("frmdb-data-grid") as DataGridComponent;

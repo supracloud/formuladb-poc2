@@ -1,6 +1,6 @@
 import { onDoc, onEvent } from './delegated-events';
 import { queryFormulaEditor } from './formula-editor/formula-editor.component';
-import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
+import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from './data-grid/data-grid.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
@@ -127,6 +127,12 @@ function tableManagementFlows() {
             });
         }
     });
+
+    
+    onDoc('FrmdbColumnChanged', '*', (event) => {
+        let dataGrid = queryDataGrid(document);
+        dataGrid.forceReloadData();
+    });
     
 }
 
@@ -232,10 +238,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     let tableName = entityNameFromDataObjId(recordId);
     dataGrid.frmdbState.highlightColumns = {
         [tableName]: {
-            [columnId]: {
-                'background-image': 'linear-gradient(45deg, #d6efff 25%, #f5fbff 25%, #f5fbff 50%, #d6efff 50%, #d6efff 75%, #f5fbff 75%, #f5fbff 100%)',
-                'background-size': '28.28px 28.28px',
-            },
+            [columnId]: CURRENT_COLUMN_HIGHLIGHT_STYLE,
         }
     };
     changeSelectedTableIdIfDifferent(tableName);

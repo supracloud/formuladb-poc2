@@ -133,7 +133,16 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         let newProp = this.getEntityPropertyFromTokens(this.currentTokens);
         if (!newProp) {alert("formula has error tokens"); return;}
         if (confirm("Please confirm, apply modifications to DB ?")) {
-            BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, newProp));
+            BACKEND_SERVICE().putEvent(new ServerEventSetProperty(this.frmdbState.editedEntity, newProp))
+            .then(async (ev: ServerEventSetProperty) => {
+                if (ev.state_ != 'ABORT') {
+                    this.emit({type: "FrmdbColumnChanged", table: this.frmdbState.editedEntity!, newColumn: newProp!});
+                } else {
+                    alert(ev.notifMsg_ || ev.error_);
+                }
+                return ev;
+            });
+
             this.dirty = false;
             this.toggleEditor();
         }

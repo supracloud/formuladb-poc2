@@ -213,6 +213,7 @@ export class FrmdbTransactionRunner {
 
                 event.property.compiledFormula_ = compiledFormula;
                 modifiedEntity.props[event.property.name] = event.property;
+                //FIXME: formula and objects must be part of a transaction
                 await this.frmdbEngineStore.putEntity(modifiedEntity);
 
                 if (oldCompiledFormula) {
