@@ -1805,8 +1805,6 @@ Vvveb.FileManager = {
 						treeComp.animate({
 							scrollTop: Math.max(0,li.offset().top-treeComp.offset().top + treeComp.scrollTop())
 						});
-						event.preventDefault();
-						return false;
 					});
 				}
 				else {
