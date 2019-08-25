@@ -182,7 +182,10 @@ deploy_demo:
       - dist-be/
       - dist-fe/
   only:
+    - tags
     - master
+except:
+    - branches
 
 e2e_demo_env:
   stage: e2e_demo_env
@@ -196,8 +199,11 @@ e2e_demo_env:
       - dist-be/
       - dist-fe/
   only:
+    - tags
     - master
-
+except:
+    - branches
+ 
 deploy_production:
   stage: deploy_production
   before_script:
