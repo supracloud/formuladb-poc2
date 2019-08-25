@@ -1,5 +1,6 @@
 import { DataObj } from "@domain/metadata/data_obj";
 import { AutocompleteAttrs } from "./autocomplete/autocomplete.component";
+import { Entity, EntityProperty } from "@domain/metadata/entity";
 
 export interface UserModifiedFormData {
     type: 'UserModifiedFormData';
@@ -60,6 +61,12 @@ export interface FrmdbSelectChange {
     newValue: string;
 }
 
+export interface FrmdbColumnChanged {
+    type: 'FrmdbColumnChanged';
+    table: Entity;
+    newColumn: EntityProperty;
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -74,4 +81,5 @@ export type FrmdbUserEvent =
     | UserNavigation
     | UserDeleteColumn
     | FrmdbSelectChange
+    | FrmdbColumnChanged
     ;
