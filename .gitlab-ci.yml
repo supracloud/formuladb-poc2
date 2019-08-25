@@ -184,7 +184,7 @@ deploy_demo:
   only:
     - tags
     - master
-except:
+  except:
     - branches
 
 e2e_demo_env:
@@ -201,7 +201,7 @@ e2e_demo_env:
   only:
     - tags
     - master
-except:
+  except:
     - branches
  
 deploy_production:
