@@ -3,7 +3,7 @@ import {browser, element, by, ExpectedConditions} from 'protractor';
 export class HotelBooking {
  
   async navigateToHome() {
-    await browser.get('formuladb-editor/editor.html?t=frmdb-apps&a=hotel-booking&p=index');
+    await browser.get('formuladb-editor/editor.html#/frmdb-apps/hotel-booking/index.html');
   }
 
   async getTitle() {
