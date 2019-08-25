@@ -1455,7 +1455,7 @@ Vvveb.Gui = {
 	preview: function () {
 		(Vvveb.Builder.isPreview == true) ? Vvveb.Builder.isPreview = false : Vvveb.Builder.isPreview = true;
 		$("#iframe-layer").toggle();
-		$("#vvveb-builder").toggleClass("preview");  		
+		$("#vvveb-builder").toggleClass("preview");
 	},
 
 	fullscreen: function () {
@@ -1547,12 +1547,12 @@ Vvveb.Gui = {
 
 	},
 
-	newTable: function(callback) {
+	newTable: function (callback) {
 		var $newTableModal = $('#new-table-modal');
 		$newTableModal.find('.alert').hide();
 		$("input[name=tableName]", $newTableModal).val('');
 
-		$newTableModal.modal("show").find("form").off("submit").submit(function( event ) {
+		$newTableModal.modal("show").find("form").off("submit").submit(function (event) {
 
 			var name = $("input[name=tableName]", $newTableModal).val();
 			event.preventDefault();
@@ -1567,17 +1567,17 @@ Vvveb.Gui = {
 			});
 
 		});
-		
+
 	},
 
 
-	newColumn: function(tableName, callback) {
+	newColumn: function (tableName, callback) {
 		var $newColumnModal = $('#new-column-modal');
 		$newColumnModal.find('.alert').hide();
 		$newColumnModal.find('[data-frmdb-value="selectedTableName"]').text(tableName);
 		$("input[name=columnName]", $newColumnModal).val('');
 
-		$newColumnModal.modal("show").find("form").off("submit").submit(function( event ) {
+		$newColumnModal.modal("show").find("form").off("submit").submit(function (event) {
 
 			var name = $("input[name=columnName]", $newColumnModal).val();
 			event.preventDefault();
@@ -1591,10 +1591,10 @@ Vvveb.Gui = {
 				}
 			});
 		});
-	},	
-	
-	deletePage : function () {
-		
+	},
+
+	deletePage: function () {
+
 	},
 
 	setDesignerMode: function () {
@@ -1795,6 +1795,19 @@ Vvveb.FileManager = {
 					li.data("node", node.node);
 					li.append(drawComponentsTree(node.children));
 					html.append(li);
+					$(node.node).click((event) => {
+						const treeComp = $("#components-tree .tree");
+						treeComp.find('input').prop('checked', false);
+						treeComp.find('.highlighted').removeClass('highlighted');
+						li.find('input').prop('checked', true);
+						li.addClass('highlighted');
+						li.parents().children('input').prop('checked', true);
+						treeComp.animate({
+							scrollTop: Math.max(0,li.offset().top-treeComp.offset().top + treeComp.scrollTop())
+						});
+						event.preventDefault();
+						return false;
+					});
 				}
 				else {
 					var li = $('<li data-component="' + node.name + '" class="file">\
