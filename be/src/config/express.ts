@@ -280,12 +280,12 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
-            .replace(/^\/?([-_\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
-            .replace(/^\/?([-_\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
+            .replace(/^\/?([-._\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
+            .replace(/^\/?([-._\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
             ;
     }
     app.use((req, res, next) => {
-        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
+        let path = req.path.match(/^\/?([-._\w]+)\/([-._\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
         if (!path) {
             next();
             return;

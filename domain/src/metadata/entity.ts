@@ -132,8 +132,6 @@ export interface AttachmentProperty {
 export interface ImageProperty {
     propType_: Pn.IMAGE;
     name: string;
-    url: string;
-    urls?: string[];
 }
 
 export interface ActionProperty {
