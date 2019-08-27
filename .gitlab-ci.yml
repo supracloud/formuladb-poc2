@@ -3,7 +3,7 @@ stages:
   - test_mem
   - bundle
   - deploy_dev_k3s_cluster
-  - build_images_and_deploy
+  - build_images_and_deploy_dev
   - test_postgres
   - stress
   - e2e_dev_env
@@ -53,8 +53,8 @@ deploy_dev_k3s_cluster:
       - dist-be/
       - dist-fe/
 
-build_images_and_deploy:
-  stage: build_images_and_deploy
+build_images_and_deploy_dev:
+  stage: build_images_and_deploy_dev
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - skaffold run
@@ -161,6 +161,7 @@ publish_static_assets:
       - dist-fe/
   only:
     - master
+    - tags
 
 deploy_demo:
   stage: deploy_demo
