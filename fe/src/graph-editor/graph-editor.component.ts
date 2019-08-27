@@ -288,7 +288,7 @@ class GraphEditor extends HTMLElement {
             // insert new node at point
             const point = d3.mouse(this);
             const node = { id: ++lastNodeId, reflexive: false, x: point[0], y: point[1] };
-            nodes.push(node);
+            nodes.push(node as any);
 
             restart();
         }
