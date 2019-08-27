@@ -184,6 +184,7 @@ deploy_demo:
       - dist-fe/
   only:
     - master
+    - tags
 
 e2e_demo_env:
   stage: e2e_demo_env
@@ -198,6 +199,7 @@ e2e_demo_env:
       - dist-fe/
   only:
     - master
+    - tags
 
 deploy_production:
   stage: deploy_production
