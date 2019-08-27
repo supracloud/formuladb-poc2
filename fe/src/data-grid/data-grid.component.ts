@@ -333,7 +333,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
         this.gridOptions.floatingFilter = !this.getAttributeTyped("no_floating_filter", true);
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.getAttributeTyped("header_height", 1) || 25;
+        this.gridOptions.headerHeight = this.getAttributeTyped("header_height", 1) || 32;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,

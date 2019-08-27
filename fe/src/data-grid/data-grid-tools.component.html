@@ -1,8 +1,51 @@
-<ul class="nav flex-column">
-    <li class="nav-item"><a href="#" class="nav-link add-column-to-table-btn "><i class="la la-plus-square"></i> Add Column</a></li>
-    <li class="nav-divider"></li>
-    <li class="nav-item"><a href="#" class="nav-link add-row "><i class="la la-plus-circle"></i> Add Row</a></li>
-    <li class="nav-item"><a href="#" class="nav-link delete-row "><i class="la la-minus-circle"></i> Delete Row</a></li>
-    <li class="nav-divider"></li>
-    <li class="nav-item"><a href="#" class="nav-link excel-export "><i class="la la-file-excel-o"></i> Export Excel</a></li>
-</ul>
+<div class="data-grid-tools">
+    <ul class="nav nav-pills">
+        <li class="nav-item">
+            <a class="nav-link active" role="tab" href="#options"><i class="la la-gear"></i> Options</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" role="tab" href="#state">State</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" role="tab" href="#integrations">Integrations</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane show active" id="options" role="tabpanel" aria-labelledby="home-tab">
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="#" class="nav-link add-column-to-table-btn "><i class="la la-plus-square"></i> Add Column</a></li>
+                <li class="nav-divider"></li>
+                <li class="nav-item"><a href="#" class="nav-link add-row "><i class="la la-plus-circle"></i> Add Row</a></li>
+                <li class="nav-item"><a href="#" class="nav-link delete-row "><i class="la la-minus-circle"></i> Delete Row</a></li>
+                <li class="nav-divider"></li>
+                <li class="nav-item"><a href="#" class="nav-link excel-export "><i class="la la-file-excel-o"></i> Export Excel</a></li>
+            </ul>
+        </div>
+        <div class="tab-pane" id="state" role="tabpanel" aria-labelledby="home-tab">
+            <frmdb-graph-editor></frmdb-graph-editor>
+        </div>
+        <div class="tab-pane" id="integrations" role="tabpanel" aria-labelledby="home-tab">
+            <div class="card-deck">
+                <div class="card">
+                    <img src="/formuladb/img/integrations/postgres-icon-27.jpg" class="card-img-top" alt="postgresql">
+                    <div class="card-body">
+                        <p class="card-text"></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="/formuladb/img/integrations/soap-rest.jpg" class="card-img-top" alt="postgresql">
+                    <div class="card-body">
+                        <p class="card-text">SOAP/REST</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="/formuladb/img/integrations/ms-dynamics.png" class="card-img-top" alt="Dynamics NAV">
+                    <div class="card-body">
+                        <p class="card-text">Dynamics NAV</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

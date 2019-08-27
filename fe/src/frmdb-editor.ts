@@ -154,7 +154,7 @@ function tableColumnManagementFlows() {
         dataGrid.frmdbState.highlightColumns = formulaEditor.frmdbState.formulaHighlightedColumns;
     });
 
-    onEvent(document.body, 'click', '.add-column-to-table-btn,.add-column-to-table-btn *', (event) => {
+    onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
         let currentEntity: Entity | undefined = EditorState.tables.find(e => e._id == EditorState.selectedTableId);
         if (!currentEntity) {console.warn(`Entity ${EditorState.selectedTableId} does not exist`); return;}
         let entity: Entity = currentEntity;
