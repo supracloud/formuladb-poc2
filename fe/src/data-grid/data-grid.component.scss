@@ -30,3 +30,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: darkgray; 
 }
+
+:host .ag-tool-panel-wrapper {
+  width: 320px;
+}

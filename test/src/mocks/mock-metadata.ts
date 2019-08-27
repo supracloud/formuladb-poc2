@@ -19,6 +19,7 @@ import { App } from '@domain/app';
 import { $User, $Dictionary, $Currency } from '@domain/metadata/default-metadata';
 import { HotelBookingSchema } from '../hotel-booking/metadata';
 import { InventorySchema } from '../inventory/metadata';
+import { FormuladbIoSchema } from '@test/formuladb.io/metadata';
 
 export * from "../inventory/metadata";
 export * from "./general-metadata";
@@ -160,6 +161,7 @@ export const CommonEntities = [
 const Schemas = [
     InventorySchema,
     HotelBookingSchema,
+    FormuladbIoSchema,
 ];
 
 for (let sch of Schemas) {

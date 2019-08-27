@@ -11,6 +11,7 @@ import { GeneralData } from './general-data';
 import { BookingData } from './booking-data';
 import { DefaultData } from '@domain/metadata/default-data';
 import { HotelBookingData } from '../hotel-booking/data';
+import { FormuladbIoData } from '@test/formuladb.io/data';
 
 
 export class MockData {
@@ -23,6 +24,7 @@ export class MockData {
         // .concat(FormsData)
         // .concat(ReportsData)
         .concat(InventoryData)
+        .concat(FormuladbIoData)
     ;
 
     constructor(public entitiesMap: _.Dictionary<Entity>) {

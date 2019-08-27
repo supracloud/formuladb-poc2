@@ -26,6 +26,7 @@ export interface UserDblClickRow {
     type: 'UserDblClickRow';
     dataObj: DataObj;
 }
+
 export interface UserAddRow {
     type: 'UserAddRow';
     entityId: string;
@@ -67,6 +68,10 @@ export interface FrmdbColumnChanged {
     newColumn: EntityProperty;
 }
 
+export interface FrmdbAddColumn {
+    type: 'FrmdbAddColumn';
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -82,4 +87,5 @@ export type FrmdbUserEvent =
     | UserDeleteColumn
     | FrmdbSelectChange
     | FrmdbColumnChanged
+    | FrmdbAddColumn
     ;

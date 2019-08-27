@@ -150,6 +150,7 @@ publish_static_assets:
     # publish FE on GCloud
     - mkdir -p dist/fe
     - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
+    - cp -ar fe/img dist/fe/
     - cd dist
     - upload-assets `find -type f -printf '%P\n'`
   cache:
