@@ -190,7 +190,7 @@ deploy_demo:
 e2e_demo_env:
   stage: e2e_demo_env
   script:
-    - TARGET=headless protractor --baseUrl='https://formuladb.online' e2e/protractor.conf.js
+    - TARGET=headless protractor --baseUrl='https://demo.formuladb.io' e2e/protractor.conf.js
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
