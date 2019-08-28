@@ -12,7 +12,7 @@ project_id=$2
 repository_id=$3
 max_age=$(( 86400*$4 ))
 
-tags=`curl --header "PRIVATE-TOKEN: $token" "https://gitlab.com/api/v4/projects/$project_id/registry/repositories/$repository_id/tags"|jq ".[] | .name"`
+tags=`curl --header "PRIVATE-TOKEN: $token" "https://gitlab.com/api/v4/projects/$project_id/registry/repositories/$repository_id/tags?per_page=100"|jq ".[] | .name"`
 devel_version_regex="-[0-9]+-[0-9a-z]{8}"
 for tag in $tags
 do
