@@ -1379,14 +1379,18 @@ Vvveb.Gui = {
 		//theme section
 		const appName = 'hotel-booking';
 		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
+		let themeChangeButton = null;
 		fetch(`/frmdb-apps/${appName}/theme.json`).then(re => re.json().then(themes => {
 			themes.forEach(t => {
-				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i>${t.name}</a>`)
+				if (!themeChangeButton) {
+					themeChangeButton = jQuery('#frmdb-editor-color-palette-select');
+					themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
+				}
+				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i> ${t.name}</a>`)
 					.click(event => {
 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
 							.attr('href', `css/${t.css}?refresh=${new Date().getTime()}`);
-						event.preventDefault();
-						return false;
+						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
 					})
 					.appendTo(themeOptions);
 			});
