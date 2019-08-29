@@ -47,13 +47,13 @@ async function initEditor() {
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.pages = app.pages.map(p => ({name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}`}));
+    EditorState.pages = app.pages.map(p => ({name: p, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p}`}));
     let indexUrl;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
-        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.html}`;
-        if (page.name === "index") indexUrl = url;
-        vvvebPages.push({ name: page.name, title: page.name, url });
+        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page}.html`;
+        if (page === "index") indexUrl = url;
+        vvvebPages.push({ name: page, title: page, url });
     }
 
     //overwrite loadPage

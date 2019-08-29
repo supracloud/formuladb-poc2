@@ -11,9 +11,7 @@ import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@domain/m
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@domain/metadata/entity";
 import { MwzEvents, MwzEvent } from "@domain/event";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
-import { TablePage, isTablePage } from "@domain/uimetadata/table-page";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
-import { FormPage, isFormPage } from "@domain/uimetadata/form-page";
 
 import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
@@ -164,22 +162,6 @@ export class BackendService {
             }
         }
         return dataObj;
-    }
-
-    public async getTable(path: string): Promise<TablePage | null> {
-        let http = await getData<TablePage | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/table/' + encodeURIComponent('ALL^^' + path));
-        if (!http) return null;
-        let ti = http;
-        if (!isTablePage(ti)) throw new Error("response is not TablePage " + CircularJSON.stringify(ti));
-        return ti;
-    }
-
-    public async getForm(path: string): Promise<FormPage | null> {
-        let http = await getData<FormPage | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/form/' + encodeURIComponent('ALL^^' + path));
-        if (!http) return null;
-        let fi = http;
-        if (!isFormPage(fi)) throw new Error("response is not FormPage " + CircularJSON.stringify(fi));
-        return fi;
     }
 
     public async getEntities(): Promise<Entity[]> {

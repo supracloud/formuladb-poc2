@@ -7,25 +7,39 @@ import * as fetch from 'node-fetch';
 
 const TOKEN = "T8fpbohTXHdsE9yVsL1s";
 
+export async function getFiles(tenantName: string, appName: string) {
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/tree?ref=master`, {
+        method: 'GET',
+        headers: { 'PRIVATE-TOKEN': TOKEN }
+    })
+        .then(function (response) {
+            return response.json();
+        });
+}
+
+export async function getPages(tenantName: string, appName: string): Promise<string[]> {
+    return getFiles(tenantName, appName).then(files => files.map(f => f.name));
+}
+
 export async function savePage(tenantName: string, appName: string, pageName: string, html: string) {
     return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}.html?ref=master`, {
         method: 'PUT',
         body: html,
-        headers: {'PRIVATE-TOKEN': TOKEN}
+        headers: { 'PRIVATE-TOKEN': TOKEN }
     });
 }
 
-export async function getPage(tenantName: string, appName: string, pageName: string) {
+export async function getPage(tenantName: string, appName: string, pageName: string): Promise<{name: string, content: string}> {
     return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}.html?ref=master`, {
         method: 'GET',
-        headers: {'PRIVATE-TOKEN': TOKEN}
+        headers: { 'PRIVATE-TOKEN': TOKEN }
     });
 }
 
 export async function getFile(tenantName: string, appName: string, filePath: string) {
     return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${encodeURIComponent(filePath)}/raw?ref=master`, {
         method: 'GET',
-        headers: {'PRIVATE-TOKEN': TOKEN}
+        headers: { 'PRIVATE-TOKEN': TOKEN }
     });
 }
 

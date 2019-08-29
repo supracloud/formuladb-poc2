@@ -26,10 +26,10 @@ import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { MetadataStore } from "@core/metadata_store";
 import { Schema } from "@domain/metadata/entity";
-import { savePage, getFile } from "@be/git-storage";
 import { LazyInit } from "@domain/ts-utils";
 import { DictionaryEntry } from "@domain/dictionary-entry";
 import { I18nBe } from "@be/i18n-be";
+import { html } from "d3";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -51,7 +51,7 @@ const STATIC_EXT = [
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
     var kvs$User: KeyTableStoreI<BeUser>;
-    var metadataStore = new MetadataStore();
+    var metadataStore = new MetadataStore(kvsFactory);
     var i18nBe = new I18nBe(kvsFactory);
 
     async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
@@ -129,7 +129,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.text({
-        type: ['text/yaml', 'text/csv'], verify: (req, res, buf, encoding) => {
+        type: ['text/yaml', 'text/csv', 'text/html'], verify: (req, res, buf, encoding) => {
             console.log("TTTTT", buf, encoding, buf.toString(encoding));
         }
     }));
@@ -184,6 +184,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb-api/:tenant/:app', async function (req, res) {
         let app: App | null = await metadataStore.getApp(req.params.tenant, req.params.app);
+        if (!app) throw new Error(`App ${req.params.tenant}/${req.params.app} not found`);
         res.json(app);
     });
 
@@ -205,14 +206,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/formuladb-api/:tenant/:app/obj/:id', async function (req, res) {
         let obj = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getDataObj(req.params.id);
         res.json(obj);
-    });
-    app.get('/formuladb-api/:tenant/:app/table/:id', async function (req, res) {
-        let table = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getTable(req.params.id);
-        res.json(table);
-    });
-    app.get('/formuladb-api/:tenant/:app/form/:id', async function (req, res) {
-        let form = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getForm(req.params.id);
-        res.json(form);
     });
 
     //all write operations are handled via events
@@ -239,7 +232,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next(); return;
         }
 
-        savePage(req.params.tenant, req.params.app, req.params.page, req.body);
+        metadataStore.savePage(req.params.tenant, req.params.app, req.params.page, req.body);
     });
     app.put('/formuladb-api/:tenant/:app/schema', async function (req, res) {
         if (req.user.role !== 'ADMIN') { res.status(403); return; }
@@ -253,16 +246,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
     });
-    app.put('/formuladb-api/:tenant/:app/table', async function (req, res) {
-        return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putTable(req.body)
-            .then(ret => res.json(ret))
-            .catch(err => console.error(err));
-    });
-    app.put('/formuladb-api/:tenant/:app/form', async function (req, res) {
-        return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putForm(req.body)
-            .then(ret => res.json(ret))
-            .catch(err => console.error(err));
-    });
+
     app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
@@ -277,6 +261,16 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
+    app.get('/formuladb-api/:tenant/:app/:page', async function (req, res, next) {
+        if (req.headers['content-type'] !== 'text/html') {
+            next(); return;
+        }
+
+        let page = await metadataStore.getPage(req.params.tenant, req.params.app, req.params.page);
+        res.set('Content-Type', 'text/html');
+        res.send(new Buffer(page.html));
+    });
+
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
@@ -285,8 +279,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             ;
     }
     app.use((req, res, next) => {
-        let path = req.path.match(/^\/?([-._\w]+)\/([-._\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
-        if (!path) {
+        
+        let path = req.path.match(/^\/?([-._\w]+)\/([-._\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg)$/);
+        if (!path || req.method != 'GET') {
             next();
             return;
         }

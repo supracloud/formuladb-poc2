@@ -12,6 +12,7 @@ import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { App } from "@domain/app";
 import { FilterItem, AggFunc, SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { Page } from "@domain/uimetadata/page";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -264,4 +265,14 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
         this.schemas.set(schema._id, schema);
         return simulateIO(schema);
     }
+
+    pages: Map<string, Page> = new Map();
+    getPage(pageId: string): Promise<Page | null> {
+        return simulateIO(this.pages.get(pageId) || null);
+    }
+
+    putPage(page: Page): Promise<Page> {
+        this.pages.set(page._id, page);
+        return simulateIO(page);
+    }    
 }

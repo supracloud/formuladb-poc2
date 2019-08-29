@@ -80,7 +80,12 @@ export const BrandCharacteristics = [
     {left: "Young", right: "Old"},
 ];
 
-export interface Page extends RootNode {
+export interface Page {
+    _id: string;
+    html: string;
+}
+
+export interface _old_Page extends RootNode {
     _id: string;
     childNodes?: NodeElement[];
 
@@ -104,5 +109,5 @@ export interface Page extends RootNode {
     // tbd7: string;
 }
 
-export type FrmdbLayoutType = Exclude<Page['layout'], undefined>;
-export type FrmdbHeaderType = Exclude<Page['header'], undefined>;
+export type FrmdbLayoutType = Exclude<_old_Page['layout'], undefined>;
+export type FrmdbHeaderType = Exclude<_old_Page['header'], undefined>;

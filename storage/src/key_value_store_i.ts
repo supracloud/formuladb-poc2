@@ -12,6 +12,7 @@ import { MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { Expression } from "jsep";
 import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { Page } from "@domain/uimetadata/page";
 
 export interface SortModel {
     colId: string,
@@ -125,6 +126,8 @@ export interface KeyValueStoreFactoryI {
     putApp(app: App): Promise<App>;
     getSchema(schemaId: string): Promise<Schema | null>;
     putSchema(schema: Schema): Promise<Schema>;
+    getPage(pageId: string): Promise<Page | null>;
+    putPage(page: Page): Promise<Page>;
 }
 
 export type ScalarType = string | number | boolean;

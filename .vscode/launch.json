@@ -4,6 +4,7 @@
         {
             "name": "jasmine",
             "type": "node",
+            "useWSL": "true",
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [

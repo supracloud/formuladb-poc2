@@ -19,6 +19,7 @@ import { evalExpression } from "@functions/map_reduce_utils";
 import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { Page } from "@domain/uimetadata/page";
 const calculateSlot = require('cluster-key-slot');
 const logger = new FrmdbLogger("kvs:pg");
 
@@ -376,10 +377,10 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     }
 
     
-    metadataKOS: KeyObjStoreI<App | Schema>;
+    metadataKOS: KeyObjStoreI<App | Schema | Page>;
     private getMetadataKOS() {
         if (!this.metadataKOS) {
-            this.metadataKOS = new KeyObjStorePostgres<App | Schema>('metadata');
+            this.metadataKOS = new KeyObjStorePostgres<App | Schema | Page>('metadata');
         }
         return this.metadataKOS;
     }
@@ -395,4 +396,10 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     async getSchema(schemaId: string): Promise<Schema> {
         return this.getMetadataKOS().get(schemaId) as Promise<Schema>;
     }
+    getPage(pageId: string): Promise<Page | null> {
+        return this.getMetadataKOS().get(pageId) as Promise<Page>;
+    }
+    putPage(page: Page): Promise<Page> {
+        return this.getMetadataKOS().put(page) as Promise<Page>;
+    }    
 }

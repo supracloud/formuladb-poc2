@@ -6,6 +6,7 @@
 import { Entity, Pn, FormulaProperty, EntityProperty, ReferenceToProperty, EntityStateGraph, ChildTableProperty, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
 import { $Currency } from "@domain/metadata/default-metadata";
+import { App } from "@domain/app";
 
 export const ProductLocation = {
     _id: 'ProductLocation',
@@ -203,11 +204,12 @@ export const LargeSalesProduct = {
     }
 }
 
-export const InventoryApp = {
+export const InventoryApp: App = {
     _id: "inventory",
     description: "Basic Inventory with positive stock",
+    theme: "frmdb-themes/startbootstrap-sb-admin-2",
     pages: [
-        { name: "index", html: "index.html" },
+        "index",
     ],
 };
 
