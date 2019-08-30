@@ -209,7 +209,7 @@ export const InventoryApp: App = {
     description: "Basic Inventory with positive stock",
     theme: "frmdb-themes/startbootstrap-sb-admin-2",
     pages: [
-        "index",
+        {name: "index.html", title: "Inventory"},
     ],
 };
 

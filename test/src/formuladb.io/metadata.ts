@@ -26,10 +26,10 @@ export const FormuladbIoApp: App = {
     description: "formuladb.io",
     theme: "frmdb-apps/formuladb.io",
     pages: [
-        "index",
-        "no_code",
-        "low_code",
-        "pricing",
+        { name: "index.html", title: "FormulaDB" },
+        { name: "no_code.html", title: "FormulaDB" },
+        { name: "low_code.html", title: "FormulaDB" },
+        { name: "pricing.html", title: "FormulaDB" },
     ],
 };
 

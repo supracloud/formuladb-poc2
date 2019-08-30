@@ -22,17 +22,22 @@ export async function getPages(tenantName: string, appName: string): Promise<str
 }
 
 export async function savePage(tenantName: string, appName: string, pageName: string, html: string) {
-    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}.html?ref=master`, {
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=master`, {
         method: 'PUT',
         body: html,
         headers: { 'PRIVATE-TOKEN': TOKEN }
     });
 }
 
-export async function getPage(tenantName: string, appName: string, pageName: string): Promise<{name: string, content: string}> {
-    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}.html?ref=master`, {
+export async function getPageContent(tenantName: string, appName: string, pageName: string): Promise<string> {
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=master`, {
         method: 'GET',
         headers: { 'PRIVATE-TOKEN': TOKEN }
+    }).then((response) => {
+        return response.json();
+    }).then(res => {
+        if (res.encoding != 'base64') throw new Error(`Unknown encoding ${res.encoding} for ${tenantName}/${appName}/${pageName}`)
+        return Buffer.from(res.content, 'base64').toString();
     });
 }
 

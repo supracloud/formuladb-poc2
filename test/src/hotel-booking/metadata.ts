@@ -84,13 +84,15 @@ export const HotelBookingApp: App = {
     description: "Booking app for Royal Hotel",
     theme: "frmdb-themes/royal-master",
     pages: [
-        "index",
-        "booking",
-        "footer-F",
-        "nav-F",
-        "booking-F",
-        "contact",
-        "gallery",
+        { name: "index.html", title: "Relax Your Mind" },
+        { name: "booking.html", title: "Relax Your Mind" },
+        { name: "footer-F.html", title: "Relax Your Mind" },
+        { name: "nav-F.html", title: "Relax Your Mind" },
+        { name: "booking-F.html", title: "Relax Your Mind" },
+        { name: "contact.html", title: "Relax Your Mind" },
+        { name: "gallery.html", title: "Relax Your Mind" },
+        { name: "_head.html", title: "" },
+        { name: "_script.html", title: "" },
     ],
 };
 

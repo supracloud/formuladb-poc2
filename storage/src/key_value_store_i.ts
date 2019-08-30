@@ -117,7 +117,7 @@ class KeyValueStoreBase<KEYT, VALUET> {
 }
 
 export interface KeyValueStoreFactoryI {
-    name: "KeyValueStoreFactoryMem" | "KeyValueStoreFactoryPostgres";
+    type: "KeyValueStoreFactoryMem" | "KeyValueStoreFactoryPostgres";
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;

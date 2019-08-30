@@ -228,7 +228,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
     }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
-    readonly name = "KeyValueStoreFactoryMem";
+    readonly type = "KeyValueStoreFactoryMem";
 
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();

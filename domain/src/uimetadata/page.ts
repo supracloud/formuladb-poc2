@@ -82,6 +82,8 @@ export const BrandCharacteristics = [
 
 export interface Page {
     _id: string;
+    name: string;
+    title: string;
     html: string;
 }
 

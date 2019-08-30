@@ -24,7 +24,7 @@ import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
-import { MetadataStore } from "@core/metadata_store";
+import { MetadataStore } from "../metadata-store";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { DictionaryEntry } from "@domain/dictionary-entry";
@@ -228,11 +228,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => console.error(err));
     });
     app.put('/formuladb-api/:tenant/:app/:page', async function (req, res, next) {
-        if (req.headers['content-type'] !== 'text/html') {
-            next(); return;
-        }
-
-        metadataStore.savePage(req.params.tenant, req.params.app, req.params.page, req.body);
+        metadataStore.savePageHtml(req.params.tenant, req.params.app, req.params.page, req.body);
     });
     app.put('/formuladb-api/:tenant/:app/schema', async function (req, res) {
         if (req.user.role !== 'ADMIN') { res.status(403); return; }
@@ -261,14 +257,18 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
-    app.get('/formuladb-api/:tenant/:app/:page', async function (req, res, next) {
-        if (req.headers['content-type'] !== 'text/html') {
-            next(); return;
-        }
+    app.get('/:tenant/:app/:page', async function (req, res, next) {
+        try {
+            if (req.headers['accept'].indexOf('text/html') < 0) {
+                next(); return;
+            }
 
-        let page = await metadataStore.getPage(req.params.tenant, req.params.app, req.params.page);
-        res.set('Content-Type', 'text/html');
-        res.send(new Buffer(page.html));
+            let pageHtml = await metadataStore.getPageHtml(req.params.tenant, req.params.app, req.params.page);
+            res.set('Content-Type', 'text/html');
+            res.send(new Buffer(pageHtml));
+        } catch (err) {
+            next(err);   
+        }
     });
 
     function app2theme(path: string) {

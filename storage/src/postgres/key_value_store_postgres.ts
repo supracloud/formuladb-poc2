@@ -357,7 +357,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
-    readonly name = "KeyValueStoreFactoryPostgres";
+    readonly type = "KeyValueStoreFactoryPostgres";
     
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
