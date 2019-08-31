@@ -28,26 +28,16 @@ export class MwzEvent implements KeyValueObj {
     }
 }
 
-export const ServerEventModifiedFormDataN = "[form] ServerEventModifiedFormData";
-export const ServerEventDeletedFormDataN = "[form] ServerEventDeletedFormDataEvent";
-export const ServerEventModifiedFormN = "[form] ServerEventModifiedForm";
-export const ServerEventModifiedTableN = "[table] ServerEventModifiedTable";
-export const ServerEventNewEntityN = "[entity] ServerEventNewEntity";
-export const ServerEventDeleteEntityN = "[entity] ServerEventDeleteEntity";
-export const ServerEventPreviewFormulaN = "[entity] ServerEventPreviewFormula";
-export const ServerEventSetPropertyN = "[entity] ServerEventSetProperty";
-export const ServerEventDeletePropertyN = "[entity] ServerEventDeleteProperty";
-
-export class ServerEventModifiedFormDataEvent extends MwzEvent {
-    readonly type_ = ServerEventModifiedFormDataN;
+export class ServerEventModifiedFormData extends MwzEvent {
+    readonly type_ = "ServerEventModifiedFormData";
 
     constructor(public obj: DataObj) {
         super();
     }
 }
 
-export class ServerEventDeletedFormDataEvent extends MwzEvent {
-    readonly type_ = ServerEventDeletedFormDataN;
+export class ServerEventDeletedFormData extends MwzEvent {
+    readonly type_ = "ServerEventDeletedFormData";
 
     constructor(public obj: DataObj) {
         super();
@@ -55,7 +45,7 @@ export class ServerEventDeletedFormDataEvent extends MwzEvent {
 }
 
 export class ServerEventNewEntity extends MwzEvent {
-    readonly type_ = ServerEventNewEntityN;
+    readonly type_ = "ServerEventNewEntity";
 
     constructor(public path: string) {
         super();
@@ -63,7 +53,7 @@ export class ServerEventNewEntity extends MwzEvent {
 }
 
 export class ServerEventDeleteEntity extends MwzEvent {
-    readonly type_ = ServerEventDeleteEntityN;
+    readonly type_ = "ServerEventDeleteEntity";
 
     constructor(public entityId: string) {
         super();
@@ -71,7 +61,7 @@ export class ServerEventDeleteEntity extends MwzEvent {
 }
 
 export class ServerEventPreviewFormula extends MwzEvent {
-    readonly type_ = ServerEventPreviewFormulaN;
+    readonly type_ = "ServerEventPreviewFormula";
 
     constructor(public targetEntity: Entity, public targetPropertyName: string, public currentDataObj: DataObj, public formula: string) {
         super();
@@ -79,15 +69,23 @@ export class ServerEventPreviewFormula extends MwzEvent {
 }
 
 export class ServerEventSetProperty extends MwzEvent {
-    readonly type_ = ServerEventSetPropertyN;
+    readonly type_ = "ServerEventSetProperty";
 
     constructor(public targetEntity: Entity, public property: EntityProperty) {
         super();
     }
 }
 
+export class ServerEventPutPageHtml extends MwzEvent {
+    readonly type_ = "ServerEventPutPageHtml";
+
+    constructor(public pageId: string, public pageHtml: string) {
+        super();
+    }
+}
+
 export class ServerEventDeleteProperty extends MwzEvent {
-    readonly type_ = ServerEventDeletePropertyN;
+    readonly type_ = "ServerEventDeleteProperty";
 
     constructor(public targetEntity: Entity, public propertyName: string) {
         super();
@@ -95,11 +93,12 @@ export class ServerEventDeleteProperty extends MwzEvent {
 }
 
 export type MwzEvents = 
-    | ServerEventModifiedFormDataEvent
-    | ServerEventDeletedFormDataEvent
+    | ServerEventModifiedFormData
+    | ServerEventDeletedFormData
     | ServerEventNewEntity
     | ServerEventDeleteEntity
     | ServerEventPreviewFormula
     | ServerEventSetProperty
     | ServerEventDeleteProperty
+    | ServerEventPutPageHtml
     ;

@@ -56,19 +56,19 @@ export class FrmdbEngine {
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 
         switch (event.type_) {
-            case events.ServerEventModifiedFormDataN:
+            case "ServerEventModifiedFormData":
                 return this.transactionRunner.computeFormulasAndSave(event);
-            case events.ServerEventDeletedFormDataN:
+            case "ServerEventDeletedFormData":
                 return this.transactionRunner.computeFormulasAndSave(event);
-            case events.ServerEventNewEntityN:
+            case "ServerEventNewEntity":
                 return this.newEntity(event)
-            case events.ServerEventDeleteEntityN:
+            case "ServerEventDeleteEntity":
                 return this.deleteEntity(event);
-            case events.ServerEventPreviewFormulaN:
+            case "ServerEventPreviewFormula":
                 return this.transactionRunner.previewFormula(event);
-            case events.ServerEventSetPropertyN:
+            case "ServerEventSetProperty":
                 return this.transactionRunner.setEntityProperty(event);
-            case events.ServerEventDeletePropertyN:
+            case "ServerEventDeleteProperty":
                 return this.transactionRunner.deleteEntityProperty(event);
             default:
                 return Promise.reject("n/a event");

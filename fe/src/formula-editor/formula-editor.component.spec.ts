@@ -6,7 +6,7 @@
 const fetchMock = require('fetch-mock');
 
 import { FormulaEditorComponent } from './formula-editor.component';
-import { normalizeHTML } from "@fe/fe-test-urils.spec";
+import { normalizeHTML } from "@core/normalize-html";
 import { InventorySchema } from '@test/inventory/metadata';
 
 describe('FormulaEditorComponent', () => {

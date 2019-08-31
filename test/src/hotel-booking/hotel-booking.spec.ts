@@ -33,7 +33,7 @@ const booking_html = /*html*/`
 `;
 
 import { FragmentComponent } from '@fe/fragment/fragment.component';
-import { ServerEventModifiedFormDataN } from "@domain/event";
+import { ServerEventModifiedFormData } from "@domain/event";
 
 describe('[FE] Hotel Booking', () => {
     let clock;
@@ -108,7 +108,7 @@ describe('[FE] Hotel Booking', () => {
         it("User updates the booking but server validation fails", async (done) => {
 
             fetchMock.post('/formuladb-api/test-tenant/hotel-booking/event', {
-                type: ServerEventModifiedFormDataN,
+                type: "ServerEventModifiedFormData",
                 state_: "ABORT",
                 reason_: "ABORTED_FAILED_VALIDATIONS_RETRIES_EXCEEDED",
                 error_: "Validations failed: maxBooking",
@@ -127,7 +127,7 @@ describe('[FE] Hotel Booking', () => {
 
         it("User updates the booking and it is saved successfully", async (done) => {
             fetchMock.post('/formuladb-api/test-tenant/hotel-booking/event', {
-                type: ServerEventModifiedFormDataN,
+                type: "ServerEventModifiedFormData",
                 obj: bookingObjFromServer,
             });
 

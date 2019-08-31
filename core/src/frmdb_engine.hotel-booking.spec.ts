@@ -8,7 +8,7 @@ import { FrmdbEngine } from "@core/frmdb_engine";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
 import { KeyValueObj } from "@domain/key_value_obj";
-import { ServerEventModifiedFormDataEvent } from "@domain/event";
+import { ServerEventModifiedFormData } from "@domain/event";
 import { Schema_booking } from "@test/mocks/mock-metadata";
 import { Act_Wiza, Act_Collins } from "@test/mocks/general-data";
 import { Room_DoubleDeluxe1, HotelBookingData, RoomType_DoubleDeluxe } from "@test/hotel-booking/data";
@@ -31,8 +31,8 @@ describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STOR
         done();
     });
 
-    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
+    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
+        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
 
     frmdbxit("Should allow non-overlapping bookings to be created", async (done) => {

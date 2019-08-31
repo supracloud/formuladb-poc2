@@ -12,7 +12,7 @@ import { MockData } from "@test/mocks/mock-data";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueObj } from "@domain/key_value_obj";
-import { ServerEventModifiedFormDataEvent } from "@domain/event";
+import { ServerEventModifiedFormData } from "@domain/event";
 import { MockMetadata, CommonEntities } from "@test/mocks/mock-metadata";
 import { DictionaryEntry } from "@domain/dictionary-entry";
 import { $Dictionary } from "@domain/metadata/default-metadata";
@@ -20,7 +20,7 @@ import { HotelBookingDictionary } from "./hotel-booking/data";
 import { DataObj } from "@domain/metadata/data_obj";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
-    return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
+    return frmdbEngine.processEvent(new ServerEventModifiedFormData(obj));
 }
 
 const mockMetadata = new MockMetadata();

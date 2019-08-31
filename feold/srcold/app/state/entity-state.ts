@@ -54,7 +54,7 @@ export class CollapsedEntityAction implements Action {
 }
 
 export class ServerEventNewEntity implements Action {
-    readonly type = events.ServerEventNewEntityN;
+    readonly type = "ServerEventNewEntity";
     public event: events.ServerEventNewEntity;
 
     constructor(path: string) {
@@ -63,7 +63,7 @@ export class ServerEventNewEntity implements Action {
 }
 
 export class ServerEventDeleteEntity implements Action {
-    readonly type = events.ServerEventDeleteEntityN;
+    readonly type = "ServerEventDeleteEntity";
     public event: events.ServerEventDeleteEntity;
 
     constructor(entityId: string) {
@@ -72,7 +72,7 @@ export class ServerEventDeleteEntity implements Action {
 }
 
 export class ServerEventSetProperty implements Action {
-    readonly type = events.ServerEventSetPropertyN;
+    readonly type = "ServerEventSetProperty";
     public event: events.ServerEventSetProperty;
 
     constructor(entity: Entity, public property: EntityProperty) {
@@ -81,7 +81,7 @@ export class ServerEventSetProperty implements Action {
 }
 
 export class ServerEventDeleteProperty implements Action {
-    readonly type = events.ServerEventDeletePropertyN;
+    readonly type = "ServerEventDeleteProperty";
     public event: events.ServerEventDeleteProperty;
 
     constructor(entity: Entity, public propertyName: string) {
@@ -90,7 +90,7 @@ export class ServerEventDeleteProperty implements Action {
 }
 
 export class ServerEventPreviewFormula implements Action {
-    readonly type = events.ServerEventPreviewFormulaN;
+    readonly type = "ServerEventPreviewFormula";
     public event: events.ServerEventPreviewFormula;
 
     constructor(public targetEntity: Entity, public targetPropertyName: string, public currentDataObj: DataObj, public formula: string) {

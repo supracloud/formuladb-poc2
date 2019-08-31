@@ -4,7 +4,7 @@ import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
-import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity } from '@domain/event';
+import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml } from '@domain/event';
 import { UserDeleteColumn, FrmdbSelectChange } from './frmdb-user-events';
 import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
@@ -245,6 +245,17 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     dataGrid.forceCellRefresh();
 }
 (window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
+
+(window as any).frmdbPutServerEventPutPageHtml = function (pageId: string, pageHtml: string, templateId: string) {
+    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pageId, pageHtml))
+    .then(async (ev: ServerEventPutPageHtml) => {
+        if (ev.state_ != 'ABORT') {
+        }
+        return ev;
+    })
+    .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
+}
+
 
 tableManagementFlows();
 tableColumnManagementFlows();

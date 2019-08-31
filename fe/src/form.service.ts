@@ -4,7 +4,7 @@ import { DataObj, isNewDataObjId } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
 import { BACKEND_SERVICE } from './backend.service';
 import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
-import { ServerEventModifiedFormDataEvent } from '@domain/event';
+import { ServerEventModifiedFormData } from '@domain/event';
 
 function currentTimestamp() {
     let d = new Date();
@@ -53,7 +53,7 @@ export class FormService {
                 control.dataset.frmdbPending = "";//TODO: set this only on dirty controls
             }
             if (undefined == parentEl.getAttribute('data-frmdb-record-no-autosave')) {
-                let event: ServerEventModifiedFormDataEvent = await BACKEND_SERVICE().putEvent(new ServerEventModifiedFormDataEvent(parentObj)) as ServerEventModifiedFormDataEvent;
+                let event: ServerEventModifiedFormData = await BACKEND_SERVICE().putEvent(new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
                 for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
                     control.dataset.frmdbPending = undefined;
                 }

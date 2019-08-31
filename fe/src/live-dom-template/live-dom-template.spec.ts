@@ -4,7 +4,7 @@
 */
 
 import { updateDOM, serializeElemToObj } from "./live-dom-template";
-import { normalizeHTML } from "@fe/fe-test-urils.spec";
+import { normalizeHTML } from "@core/normalize-html";
 
 export function wrapHTML(html: string): HTMLElement {
     let div = document.createElement('div');

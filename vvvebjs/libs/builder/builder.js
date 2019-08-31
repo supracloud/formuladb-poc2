@@ -1311,28 +1311,16 @@ Vvveb.Builder = {
 	},
 
 	saveAjax: function (fileName, startTemplateUrl, callback) {
-		var data = {};
-		data["fileName"] = (fileName && fileName != "") ? fileName : Vvveb.FileManager.getCurrentUrl();
-		data["startTemplateUrl"] = startTemplateUrl;
+		let pageName = (fileName && fileName != "") ? fileName : Vvveb.FileManager.getCurrentUrl();
+		let html = this.getHtml();
 		if (!startTemplateUrl || startTemplateUrl == null) {
-			data["html"] = this.getHtml();
 		}
 
-		$.ajax({
-			type: "PUT",
-			url: `/formuladb-api/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/${data.fileName}`,
-			data: data.html,
-			contentType: "text/html",
-			cache: false,
-			success: function (data) {
-
-				if (callback) callback(data);
-
-			},
-			error: function (data) {
-				alert(data.responseText);
-			}
-		});
+		frmdbPutServerEventPutPageHtml(
+			`${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/${pageName}`,
+			html
+		).then(() => callback())
+		.catch(err => alert(err));
 	},
 
 	setDesignerMode: function (designerMode = false) {
@@ -1557,7 +1545,7 @@ Vvveb.Gui = {
 			Vvveb.FileManager.addPage(name, title, url);
 			event.preventDefault();
 
-			return Vvveb.Builder.saveAjax(url, startTemplateUrl, function (data) {
+			return Vvveb.Builder.saveAjax(url, startTemplateUrl, function () {
 				Vvveb.FileManager.loadPage(name);
 				Vvveb.FileManager.scrollBottom();
 				newPageModal.modal("hide");
