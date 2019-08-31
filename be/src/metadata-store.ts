@@ -52,25 +52,7 @@ export class MetadataStore {
             page = {_id: `${tenantName}/${appName}/${pageName}`, name: appPage.name, title: appPage.title, html: pageHtml};
             await this.kvsFactory.putPage(page);
         }
-
-        if ('_head.html' == pageName || '_script.html' == pageName) {
-            return page.html;
-        }
-
-        let headPageHtml = await this.getPageHtml(tenantName, appName, '_head.html');
-        let scriptPageHtml = await this.getPageHtml(tenantName, appName, '_script.html');
-
-        return `
-<!DOCTYPE html>
-<html>
-${headPageHtml}
-<body>
-${page.html}
-
-${scriptPageHtml}
-</body>
-</html>
-        `;
+        return page.html;
     }
 
     async savePageHtml(tenantName: string, appName: string, pageName: string, html: string): Promise<void> {

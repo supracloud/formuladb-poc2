@@ -22,7 +22,7 @@ export async function getPages(tenantName: string, appName: string): Promise<str
 }
 
 export async function savePage(tenantName: string, appName: string, pageName: string, html: string) {
-    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=master`, {
+    return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=demo`, {
         method: 'PUT',
         body: html,
         headers: { 'PRIVATE-TOKEN': TOKEN }

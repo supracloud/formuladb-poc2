@@ -18,9 +18,7 @@ cd live-server-wwwroot #optimize speed
     --mount=/formuladb/img/:./../fe/img/ \
     --mount=/formuladb/frmdb-runtime-utils.js:./../fe/js/frmdb-runtime-utils.js \
     --mount=/frmdb-apps/inventory:../../../frmdb-themes/startbootstrap-sb-admin-2 \
-    --proxy=/frmdb-apps/inventory:http://localhost:8084/frmdb-apps/inventory \
     --mount=/frmdb-apps/hotel-booking:../../../frmdb-themes/royal-master \
-    --proxy=/frmdb-apps/hotel-booking:http://localhost:8084/frmdb-apps/hotel-booking \
     --mount=/:../../../frmdb-apps/formuladb.io \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
     --proxy=/:http://localhost:8084/ \

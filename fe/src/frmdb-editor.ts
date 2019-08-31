@@ -52,12 +52,12 @@ async function initEditor() {
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
         let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
-        if (page.name === "index") indexUrl = url;
+        if (page.name === app.homePage) indexUrl = url;
         vvvebPages.push({ name: page.name, title: page.title, url });
     }
 
     //overwrite loadPage
-    indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].name : "index-page-not-found";
+    indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].url : "index-page-not-found";
     Vvveb.FileManager.loadPage = function (name, allowedComponents = false, disableCache = true) {
         window.location.href = window.location.href.replace(/p=.*/, `p=${name}`);
     }
