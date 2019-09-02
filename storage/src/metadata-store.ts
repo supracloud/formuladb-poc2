@@ -1,14 +1,13 @@
 import { App, AppPage } from "@domain/app";
-import { Schema } from "@domain/metadata/entity";
+import { Schema, isSchema } from "@domain/metadata/entity";
 import { HotelBookingApp, HotelBookingSchema } from "@test/hotel-booking/metadata";
 import { InventoryApp, InventorySchema } from "@test/inventory/metadata";
 import { FormuladbIoApp, FormuladbIoSchema } from "@test/formuladb.io/metadata";
 import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
-import { MetadataStoreI } from "./metadata-store-i";
 import { Page } from "@domain/uimetadata/page";
 import { GitStorageI } from "./git-storage-i";
 
-export class MetadataStore implements MetadataStoreI {
+export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
 
     constructor(private gitStorage: GitStorageI, public kvsFactory: KeyValueStoreFactoryI) {}
@@ -27,7 +26,10 @@ export class MetadataStore implements MetadataStoreI {
     }
     async putSchema(tenantName: string, appName: string, schema: Schema): Promise<Schema> {
         let metadataKOS = await this.getMetadataKOS();
-        return metadataKOS.put(schema) as Promise<Schema>;
+        return metadataKOS.put({
+            ...schema,
+            _id: `FRMDB_SCHEMA~~${tenantName}--${appName}`,
+        }) as Promise<Schema>;
     }
     async getPage(pageId: string): Promise<Page | null> {
         let metadataKOS = await this.getMetadataKOS();
@@ -54,16 +56,19 @@ export class MetadataStore implements MetadataStoreI {
 
     async getSchema(tenantName: string, appName: string): Promise<Schema | null> {
         let metadataKOS = await this.getMetadataKOS();
+        let schema = await metadataKOS.get(`FRMDB_SCHEMA~~${tenantName}--${appName}`);
 
-        //TODO: get this information from persistent storage using a MetadataStorage generic interface (e.g. git storage, object storage)
-        if ("formuladb.io" === appName) {
-            return Promise.resolve(FormuladbIoSchema);
-        } else if ("hotel-booking" === appName) {
-            return Promise.resolve(HotelBookingSchema);
-        } else if ("inventory" === appName) {
-            return Promise.resolve(InventorySchema);
-        }
-        return Promise.resolve(null);
+        if (!schema) {
+            //TODO: get this information from persistent storage using a MetadataStorage generic interface (e.g. git storage, object storage)
+            if ("formuladb.io" === appName) {
+                return Promise.resolve(FormuladbIoSchema);
+            } else if ("hotel-booking" === appName) {
+                return Promise.resolve(HotelBookingSchema);
+            } else if ("inventory" === appName) {
+                return Promise.resolve(InventorySchema);
+            } else return null;
+        } else if (!isSchema(schema)) throw new Error("Not a schema " + JSON.stringify(schema));
+        else return schema;
     }
 
     async getAppPage(tenantName: string, appName: string, pageName: string): Promise<AppPage | undefined> {

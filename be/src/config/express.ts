@@ -179,7 +179,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     app.get('/formuladb-api/:tenant/:app/schema', async function(req, res) {
-        let schema: Schema | null = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getSchema(`FRMDB_SCHEMA~~${req.params.app}`);
+        let schema: Schema | null = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getSchema();
         res.json(schema);
     });
 

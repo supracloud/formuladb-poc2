@@ -7,7 +7,6 @@ import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { Schema } from '@domain/metadata/entity';
 import { FrmdbEngine } from '@core/frmdb_engine';
 import { FrmdbEngineStore } from '@core/frmdb_engine_store';
-import { MetadataStoreI } from './metadata-store-i';
 
 export const KvsImplementation = process.env.FRMDB_STORAGE || "mem";
 

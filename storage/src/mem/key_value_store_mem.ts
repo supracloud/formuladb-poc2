@@ -10,10 +10,9 @@ import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFu
 import { Entity, Schema } from "@domain/metadata/entity";
 import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
-import { App } from "@domain/app";
 import { FilterItem, AggFunc, SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
-import { Page } from "@domain/uimetadata/page";
-import { MetadataStoreNop } from "@storage/metadata-store-nop";
+import { MetadataStore } from "@storage/metadata-store";
+import { GitStorageMem } from "@storage/git-storage-mem";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -230,7 +229,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryMem";
-    metadataStore = new MetadataStoreNop(this);
+    metadataStore = new MetadataStore(new GitStorageMem(), this);
 
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();

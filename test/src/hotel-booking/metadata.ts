@@ -80,7 +80,7 @@ export const Booking = {
 }
 
 export const HotelBookingApp: App = {
-    _id: "hotel-booking",
+    _id: "/frmdb-apps/hotel-booking",
     description: "Booking app for Royal Hotel",
     theme: "frmdb-themes/royal-master",
     homePage: "new-booking.html",

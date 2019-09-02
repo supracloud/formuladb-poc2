@@ -16,12 +16,10 @@ import { CircularJSON } from "@domain/json-stringify";
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
-import { MetadataStoreI } from "@storage/metadata-store-i";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
-    metadataStore: MetadataStoreI
 
     constructor(public tenantName: string, public appName: string, public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
 
@@ -64,7 +62,7 @@ export class FrmdbStore {
         return (await this.getTransactionsDB()).put(event);
     }
 
-    public async getSchema(schemaId: string): Promise<Schema | null> {
+    public async getSchema(): Promise<Schema | null> {
         return this.kvsFactory.metadataStore.getSchema(this.tenantName, this.appName);
     }
     public async putSchema(schema: Schema): Promise<Schema> {
@@ -77,7 +75,7 @@ export class FrmdbStore {
     }
 
     public getEntities(): Promise<Entity[]> {
-        return this.getSchema(this.schema._id).then(s => s ? Object.values(s.entities) : []);
+        return this.getSchema().then(s => s ? Object.values(s.entities) : []);
     }
 
     private getDefaultEntity(path: string): Entity | null {
@@ -95,13 +93,13 @@ export class FrmdbStore {
         let defaultEntity = this.getDefaultEntity(path);
         if (defaultEntity) return Promise.resolve(defaultEntity);
 
-        let schema = await this.getSchema(this.schema._id);
+        let schema = await this.getSchema();
         //the Entity's _id is the path
         return schema ? schema.entities[path] : null;
     }
 
     public async putEntity(entity: Entity): Promise<Entity> {
-        let schema = await this.getSchema(this.schema._id);
+        let schema = await this.getSchema();
         if (!schema) throw new Error("Attempt to put entity in an empty schema " + CircularJSON.stringify(entity));
         schema.entities[entity._id] = entity;
         //the Entity's _id is the path
@@ -110,7 +108,7 @@ export class FrmdbStore {
     }
 
     public async delEntity(entityId: string): Promise<Entity> {
-        let schema = await this.getSchema(this.schema._id);
+        let schema = await this.getSchema();
         if (!schema) throw new Error("Attempt to del entity " + entityId + " from empty schema");
         let ret = schema.entities[entityId];
         if (!ret) throw new Error("Attempt to del non existent entity " + entityId);

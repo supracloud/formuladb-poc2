@@ -21,6 +21,7 @@ import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { Page } from "@domain/uimetadata/page";
 import { MetadataStore } from "@storage/metadata-store";
+import { GitStorage } from "@storage/git-storage";
 const calculateSlot = require('cluster-key-slot');
 const logger = new FrmdbLogger("kvs:pg");
 
@@ -359,7 +360,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryPostgres";
-    metadataStore = new MetadataStore(this);
+    metadataStore = new MetadataStore(new GitStorage(), this);
     
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
