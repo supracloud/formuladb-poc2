@@ -25,7 +25,7 @@ describe('FormulaEditorComponent', () => {
         console.log(el.innerHTML);
         let normalizedHtml = normalizeHTML(el.innerHTML);
 
-        expect(normalizedHtml[0]).toEqual('<div class="formula-code-editor d-flex">');
+        expect(normalizedHtml[1]).toEqual('<div class="formula-code-editor d-flex">');
 
         done();
     });

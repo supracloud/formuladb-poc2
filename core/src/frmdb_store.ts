@@ -16,12 +16,14 @@ import { CircularJSON } from "@domain/json-stringify";
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { MetadataStoreI } from "@storage/metadata-store-i";
 
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
+    metadataStore: MetadataStoreI
 
-    constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
+    constructor(public tenantName: string, public appName: string, public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
 
     }
 
@@ -63,10 +65,10 @@ export class FrmdbStore {
     }
 
     public async getSchema(schemaId: string): Promise<Schema | null> {
-        return this.kvsFactory.getSchema(schemaId);
+        return this.kvsFactory.metadataStore.getSchema(this.tenantName, this.appName);
     }
     public async putSchema(schema: Schema): Promise<Schema> {
-        let ret: Schema = await this.kvsFactory.putSchema(schema);
+        let ret: Schema = await this.kvsFactory.metadataStore.putSchema(this.tenantName, this.appName, schema);
         Object.assign(this.schema, ret);
         return ret;
     }

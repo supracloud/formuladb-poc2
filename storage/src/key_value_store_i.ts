@@ -13,6 +13,7 @@ import { Expression } from "jsep";
 import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { Page } from "@domain/uimetadata/page";
+import { MetadataStoreI } from "./metadata-store-i";
 
 export interface SortModel {
     colId: string,
@@ -122,12 +123,7 @@ export interface KeyValueStoreFactoryI {
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
     clearAllForTestingPurposes(): Promise<void>;
-    getAllApps(): Promise<App[]>;
-    putApp(app: App): Promise<App>;
-    getSchema(schemaId: string): Promise<Schema | null>;
-    putSchema(schema: Schema): Promise<Schema>;
-    getPage(pageId: string): Promise<Page | null>;
-    putPage(page: Page): Promise<Page>;
+    metadataStore: MetadataStoreI;
 }
 
 export type ScalarType = string | number | boolean;

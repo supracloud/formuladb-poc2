@@ -70,11 +70,18 @@ export class FrmdbEngine {
                 return this.transactionRunner.setEntityProperty(event);
             case "ServerEventDeleteProperty":
                 return this.transactionRunner.deleteEntityProperty(event);
+            case "ServerEventPutPageHtml":
+                return this.putPageHtml(event);
             default:
                 return Promise.reject("n/a event");
         }
     }
 
+    private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
+        this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
+            this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, event.pageName, event.pageHtml);
+        return event;
+    }
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
         if (!event.path.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});

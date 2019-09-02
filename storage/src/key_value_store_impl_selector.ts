@@ -7,6 +7,7 @@ import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { Schema } from '@domain/metadata/entity';
 import { FrmdbEngine } from '@core/frmdb_engine';
 import { FrmdbEngineStore } from '@core/frmdb_engine_store';
+import { MetadataStoreI } from './metadata-store-i';
 
 export const KvsImplementation = process.env.FRMDB_STORAGE || "mem";
 
@@ -26,11 +27,11 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
     }
 }
 
-export async function getFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
+export async function getFrmdbEngineStore(schema: Schema, tenantName = 'testTenant', appName = 'testApp'): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
-    return new FrmdbEngineStore(kvsFactory, schema);
+    return new FrmdbEngineStore(tenantName, appName, kvsFactory, schema);
 }
 
-export async function getFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
-    return new FrmdbEngine(await getFrmdbEngineStore(schema));
+export async function getFrmdbEngine(schema: Schema, tenantName = 'testTenant', appName = 'testApp'): Promise<FrmdbEngine> {
+    return new FrmdbEngine(await getFrmdbEngineStore(schema, tenantName, appName));
 }

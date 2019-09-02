@@ -23,7 +23,6 @@ import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { BeUser } from "@domain/user";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
-import { MetadataStore } from "../metadata-store";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { DictionaryEntry } from "@domain/dictionary-entry";
@@ -50,18 +49,15 @@ const STATIC_EXT = [
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
     var kvs$User: KeyTableStoreI<BeUser>;
-    var metadataStore = new MetadataStore(kvsFactory);
     var i18nBe = new I18nBe(kvsFactory);
 
     async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
         let frmdbEngineInit = frmdbEngines.get(appName);
         if (!frmdbEngineInit) {
             frmdbEngineInit = new LazyInit(async () => {
-                let schema = await kvsFactory.getSchema(`FRMDB_SCHEMA~~${appName}`)
-                    || await metadataStore.getSchema(tenantName, appName)
-                ;
+                let schema = await kvsFactory.metadataStore.getSchema(tenantName, appName);
                 if (!schema) throw new Error("The app does not exist " + tenantName + "/" + appName);
-                let engine = new FrmdbEngine(new FrmdbEngineStore(kvsFactory, schema));
+                let engine = new FrmdbEngine(new FrmdbEngineStore(tenantName, appName, kvsFactory, schema));
                 await engine.init();
                 return engine;
             })
@@ -176,13 +172,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         res.json(await i18nBe.translateText(req.body.texts, req.body.to));
     });
 
-    app.get('/formuladb-api/:tenant/applications', async function (req, res) {
-        let apps = await kvsFactory.getAllApps();
-        res.json(apps);
-    });
-
     app.get('/formuladb-api/:tenant/:app', async function (req, res) {
-        let app: App | null = await metadataStore.getApp(req.params.tenant, req.params.app);
+        let app: App | null = await kvsFactory.metadataStore.getApp(req.params.tenant, req.params.app);
         if (!app) throw new Error(`App ${req.params.tenant}/${req.params.app} not found`);
         res.json(app);
     });
@@ -222,19 +213,16 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     app.put('/formuladb-api/:tenant/:app', async function (req, res) {
-        return kvsFactory.putApp(req.body)
+        return kvsFactory.metadataStore.putApp(req.params.tenant, req.params.app, req.body)
             .then(ret => res.json(ret))
             .catch(err => console.error(err));
-    });
-    app.put('/formuladb-api/:tenant/:app/:page', async function (req, res, next) {
-        metadataStore.savePageHtml(req.params.tenant, req.params.app, req.params.page, req.body);
     });
     app.put('/formuladb-api/:tenant/:app/schema', async function (req, res) {
         if (req.user.role !== 'ADMIN') { res.status(403); return; }
         let schema = req.body;
-        let existingSchema = await kvsFactory.getSchema(req.body._id);
+        let existingSchema = await kvsFactory.metadataStore.getSchema(req.params.tenant, req.params.app);
         if (!existingSchema) {
-            await kvsFactory.putSchema(schema);
+            await kvsFactory.metadataStore.putSchema(req.params.tenant, req.params.app, schema);
         }
 
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.init(schema)
@@ -262,7 +250,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
                 next(); return;
             }
 
-            let pageHtml = await metadataStore.getPageHtml(req.params.tenant, req.params.app, req.params.page);
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml(req.params.tenant, req.params.app, req.params.page);
+            if (!pageHtml) pageHtml = '<span>not found</span>'
             res.set('Content-Type', 'text/html');
             res.send(new Buffer(pageHtml));
         } catch (err) {
