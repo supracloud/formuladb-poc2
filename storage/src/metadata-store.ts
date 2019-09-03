@@ -94,14 +94,15 @@ export class MetadataStore {
         return page.html;
     }
 
-    async savePageHtml(tenantName: string, appName: string, pageName: string, html: string): Promise<void> {
+    async savePageHtml(pagePath: string, html: string): Promise<void> {
         let metadataKOS = await this.getMetadataKOS();
+        let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
 
         let appPage = await this.getAppPage(tenantName, appName, pageName);
         if (!appPage) throw new Error(`Cannot find app page for ${tenantName}/${appName}/${pageName}`);
         let page = {_id: `${tenantName}/${appName}/${pageName}`, name: appPage.name, title: appPage.title, html: html};
         await metadataKOS.put(page);
-
+        
         return this.gitStorage.savePage(tenantName, appName, pageName, html);
     }
 }

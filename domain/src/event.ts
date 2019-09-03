@@ -79,7 +79,7 @@ export class ServerEventSetProperty extends MwzEvent {
 export class ServerEventPutPageHtml extends MwzEvent {
     readonly type_ = "ServerEventPutPageHtml";
 
-    constructor(public pageName: string, public pageHtml: string) {
+    constructor(public pagePath: string, public pageHtml: string) {
         super();
     }
 }

@@ -78,8 +78,7 @@ export class FrmdbEngine {
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
-        this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
-            this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, event.pageName, event.pageHtml);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pagePath, event.pageHtml);
         return event;
     }
 

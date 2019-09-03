@@ -1275,7 +1275,7 @@ Vvveb.Builder = {
 		for (let frmdbFragment of Array.from(cleanedUpDOM.querySelectorAll('frmdb-fragment'))) {
 			frmdbFragment.innerHTML = '';
 		}
-		html += cleanedUpDOM.innerHTML + "\n</html>";
+		html += frmdbNormalizeHTMLStr(cleanedUpDOM.innerHTML) + "\n</html>";
 
 		html = this.removeHelpers(html, keepHelperAttributes);
 
@@ -1311,13 +1311,13 @@ Vvveb.Builder = {
 	},
 
 	saveAjax: function (fileName, startTemplateUrl, callback) {
-		let pageName = (fileName && fileName != "") ? fileName : Vvveb.FileManager.getCurrentUrl();
+		let pagePath = fileName ? fileName : window.location.hash.replace(/^#/, '');
 		let html = this.getHtml();
 		if (!startTemplateUrl || startTemplateUrl == null) {
 		}
 
 		frmdbPutServerEventPutPageHtml(
-			`${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/${pageName}`,
+			pagePath,
 			html
 		).then(() => callback())
 		.catch(err => alert(err));

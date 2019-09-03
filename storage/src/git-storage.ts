@@ -10,7 +10,7 @@ const TOKEN = "T8fpbohTXHdsE9yVsL1s";
 
 export class GitStorage implements GitStorageI {
     async getFiles(tenantName: string, appName: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/tree?ref=master`, {
+        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/tree?ref=develop`, {
             method: 'GET',
             headers: { 'PRIVATE-TOKEN': TOKEN }
         })
@@ -24,15 +24,30 @@ export class GitStorage implements GitStorageI {
     }
 
     async savePage(tenantName: string, appName: string, pageName: string, html: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=demo`, {
+        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}`, {
             method: 'PUT',
-            body: html,
-            headers: { 'PRIVATE-TOKEN': TOKEN }
+            body: JSON.stringify({
+                branch: "develop",
+                // author_email: "cristualexandru@gmail.com",
+                content: html,
+                commit_message: "update via frmdb-editor"
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'PRIVATE-TOKEN': TOKEN,
+            }
+        }).catch(err => {
+            console.error(err);
+            throw err;
+        }).then(x => {
+            console.warn(x);
+            return x;
         });
     }
 
+
     async getPageContent(tenantName: string, appName: string, pageName: string): Promise<string> {
-        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=master`, {
+        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${pageName}?ref=develop`, {
             method: 'GET',
             headers: { 'PRIVATE-TOKEN': TOKEN }
         }).then((response) => {
@@ -44,15 +59,21 @@ export class GitStorage implements GitStorageI {
     }
 
     async getFile(tenantName: string, appName: string, filePath: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${encodeURIComponent(filePath)}/raw?ref=master`, {
+        return fetch(`https://gitlab.com/api/v4/projects/${tenantName}%2F${appName}/repository/files/${encodeURIComponent(filePath)}/raw?ref=develop`, {
             method: 'GET',
             headers: { 'PRIVATE-TOKEN': TOKEN }
         });
     }
 }
 
-// Examples:
-// curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking | jq
-// curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking/repository/files/index.html?ref=master | jq
-// curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking/repository/files/index.html/raw?ref=master | jq
-// curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-themes%2Froyal-master/repository/files/js%2Fstellar.js/raw?ref=master | jq
+/*
+Examples:
+curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking | jq
+curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking/repository/files/index.html?ref=develop | jq
+curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking/repository/files/index.html/raw?ref=develop | jq
+curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/api/v4/projects/frmdb-themes%2Froyal-master/repository/files/js%2Fstellar.js/raw?ref=develop | jq
+
+curl -v --request PUT --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' --header "Content-Type: application/json" \
+    --data '{"branch": "develop", "author_email": "cristualexandru@gmail.com", "content": "<html>blasdaa bla</html>", "commit_message": "update file"}' \
+    'https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking/repository/files/tst'
+*/

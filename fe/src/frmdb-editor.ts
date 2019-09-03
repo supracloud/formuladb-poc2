@@ -14,6 +14,7 @@ import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE 
 import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
 import { getParentObjId } from './form.service';
+import { normalizeHTMLStr } from '@core/normalize-html';
 
 declare var Vvveb: any;
 
@@ -246,7 +247,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
 }
 (window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
 
-async function frmdbPutServerEventPutPageHtml(pageName: string, pageHtml: string, templateId?: string) {
+async function frmdbPutServerEventPutPageHtml(pagePath: string, pageHtml: string, templateId?: string) {
     let html = pageHtml;
 
     if (templateId) {
@@ -258,7 +259,7 @@ async function frmdbPutServerEventPutPageHtml(pageName: string, pageHtml: string
             html = await response.text();
         });
     }
-    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pageName, html))
+    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
         .then(async (ev: ServerEventPutPageHtml) => {
             if (ev.state_ != 'ABORT') {
             }
@@ -267,6 +268,8 @@ async function frmdbPutServerEventPutPageHtml(pageName: string, pageHtml: string
         .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
 }
 (window as any).frmdbPutServerEventPutPageHtml = frmdbPutServerEventPutPageHtml;
+
+(window as any).frmdbNormalizeHTMLStr = normalizeHTMLStr;
 
 tableManagementFlows();
 tableColumnManagementFlows();

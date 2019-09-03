@@ -3,6 +3,10 @@ export function normalizeHTML(html: string): string[] {
     return prettyHtml(html).split(/\n/);
 }
 
+export function normalizeHTMLStr(html: string): string {
+    return prettyHtml(html);
+}
+
 function prettyHtml(str) {
 
     var div = document.createElement('div');
