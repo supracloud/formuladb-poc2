@@ -23,7 +23,7 @@ interface VNavComponentState {
 }
 
 declare var Vvveb: any;
-declare var $: any;
+// declare var $: any;
 
 
 @FrmdbElementDecorator<{}, VNavComponentState>({
@@ -55,24 +55,24 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
 
     showButtons(link: HTMLAnchorElement) {
         //WTF: cannot get this shit to work ! the first 'show' creates a zombie popover that never hides !! ugly workaround
-        $('.popover').remove();
+        // $('.popover').remove();
 
         let span: HTMLElement = link.children[0] as HTMLElement;
-        if (!$(span).data("bs.popover") || !$(span).attr('data-popover-attached')) {
-            $(span).popover('dispose').popover({
-                placement:'right',
-                trigger:'manual',
-                html:true,
-                template: /*html*/`
-                    <div class="popover border-0 p-0 m-0" role="tooltip">
-                        <div class="popover-body p-0 ml-2"></div>
-                    </div>                    
-                `
-            })
-            .attr('data-popover-attached', true)
-            .popover('show');
+        // if (!$(span).data("bs.popover") || !$(span).attr('data-popover-attached')) {
+        //     $(span).popover('dispose').popover({
+        //         placement:'right',
+        //         trigger:'manual',
+        //         html:true,
+        //         template: /*html*/`
+        //             <div class="popover border-0 p-0 m-0" role="tooltip">
+        //                 <div class="popover-body p-0 ml-2"></div>
+        //             </div>                    
+        //         `
+        //     })
+        //     .attr('data-popover-attached', true)
+        //     .popover('show');
 
-        } else $(span).popover('show'); 
+        // } else $(span).popover('show'); 
     }
 
     loadTables(selectedTable?: string) {
