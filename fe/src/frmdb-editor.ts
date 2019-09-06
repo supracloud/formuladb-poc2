@@ -99,8 +99,21 @@ function tableManagementFlows() {
         changeSelectedTableIdIfDifferent((event.target as any).innerHTML);
     });
 
-    onEvent(document.body, 'click', '#new-table-btn *', (event) => {
+    onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {
         Vvveb.Gui.newTable(newTableName =>
+            BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
+                .then(async (ev: ServerEventNewEntity) => {
+                    if (ev.state_ != 'ABORT') {
+                        await loadTables(ev.path);
+                    }
+                    return ev;
+                })
+                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
+        )
+    });
+
+    onEvent(document.body, 'click', '#new-page-btn, #new-page-btn *', (event) => {
+        Vvveb.Gui.newPage(newTableName =>
             BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
                 .then(async (ev: ServerEventNewEntity) => {
                     if (ev.state_ != 'ABORT') {
@@ -128,7 +141,6 @@ function tableManagementFlows() {
                 });
         }
     });
-
 
     onDoc('FrmdbColumnChanged', '*', (event) => {
         let dataGrid = queryDataGrid(document);
