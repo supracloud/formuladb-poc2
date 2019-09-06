@@ -142,7 +142,7 @@ class FailedValidationsError {
 }
 
 class TransactionAbortedError {
-    constructor(public event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormDataEvent) { }
+    constructor(public event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData) { }
 }
 
 export class FrmdbTransactionRunner {
@@ -229,7 +229,7 @@ export class FrmdbTransactionRunner {
                     i++;
                     await this.computeFormulasAndSave({
                         _id: event._id + '-' + i,
-                        type_: events.ServerEventModifiedFormDataN,
+                        type_: "ServerEventModifiedFormData",
                         state_: "BEGIN",
                         clientId_: event.clientId_,
                         obj: obj,
@@ -289,8 +289,8 @@ export class FrmdbTransactionRunner {
         return ret;
     }
 
-    private async prepareTransaction(event: events.ServerEventModifiedFormDataEvent
-        | events.ServerEventDeletedFormDataEvent, transacDAG: TransactionDAG,
+    private async prepareTransaction(event: events.ServerEventModifiedFormData
+        | events.ServerEventDeletedFormData, transacDAG: TransactionDAG,
         originalObj: DataObj, isNewObj: boolean) 
     {
         Object.assign(event.obj, originalObj);
@@ -308,7 +308,7 @@ export class FrmdbTransactionRunner {
                     // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
                 }
             }
-            if (event.type_ === events.ServerEventDeletedFormDataN) {
+            if (event.type_ === "ServerEventDeletedFormData") {
                 let obsViewUpdates: MapViewUpdates<string | number>[] = [];
                 for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
                     obsViewUpdates.push.apply(obsViewUpdates, 
@@ -316,7 +316,7 @@ export class FrmdbTransactionRunner {
                 }
                 //TODO: this is not transactional
                 for (let childObj of (await this.getChildObjects(event.obj))) {
-                    let childDelEvent = new events.ServerEventDeletedFormDataEvent(childObj);
+                    let childDelEvent = new events.ServerEventDeletedFormData(childObj);
                     childDelEvent._id = event._id + '__';
                     await this.computeFormulasAndSave(childDelEvent);
                 }
@@ -357,14 +357,14 @@ export class FrmdbTransactionRunner {
     }
 
     public async computeFormulasAndSave(
-        event: events.ServerEventModifiedFormDataEvent | events.ServerEventDeletedFormDataEvent): Promise<events.MwzEvents> {
+        event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData): Promise<events.MwzEvents> {
 
         let transacDAG;
         try {
 
             let isNewObj: boolean = false;
             if (isNewDataObjId(event.obj._id)) {
-                if (event.type_ === events.ServerEventDeletedFormDataN) throw new Error("Deleting a new object is not possible " + event.obj._id);
+                if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
                 event.obj._id = event.obj._id + generateUUID();
                 isNewObj = true;
             }
@@ -378,7 +378,7 @@ export class FrmdbTransactionRunner {
             let saveObjects = async () => {
                 let objsToSave = transacDAG.getAllObjectsToSave();
                 console.log(ll(transacDAG) + "|computeFormulasAndSave|saveObjects: " + stringifyObj(objsToSave));
-                if (event.type_ === events.ServerEventDeletedFormDataN) {
+                if (event.type_ === "ServerEventDeletedFormData") {
                     await this.frmdbEngineStore.delDataObj(event.obj._id);
                 }
                 let results = await this.frmdbEngineStore.putBulk(objsToSave);

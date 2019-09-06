@@ -10,7 +10,7 @@ import { compileFormula } from '@core/formula_compiler';
 import { evalExpression } from "@functions/map_reduce_utils";
 import { ProductLocation, ReceiptItem, OrderItem } from "@test/mocks/mock-metadata";
 import { KeyValueObj } from "@domain/key_value_obj";
-import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormula, ServerEventSetPropertyN } from "@domain/event";
+import { ServerEventModifiedFormData, ServerEventPreviewFormula } from "@domain/event";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { Schema, Pn, FormulaProperty } from "@domain/metadata/entity";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
@@ -58,8 +58,8 @@ describe('Inventory Metadata', () => {
         done();
     });
 
-    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
+    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
+        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
 
     afterEach(function() {
@@ -144,7 +144,7 @@ describe('Inventory Metadata', () => {
 
         let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
             _id: 'ABC123',
-            type_: ServerEventSetPropertyN,
+            type_: "ServerEventSetProperty",
             targetEntity: _.cloneDeep(ProductLocation),
             property: {
                 name: 'ordered_stock__',

@@ -12,7 +12,7 @@ import { Store } from '@ngrx/store';
 import * as appState from '@fe/app/state/app.state';
 import { filter } from 'rxjs/operators';
 import { AppServerEventAction } from '../actions/app.actions';
-import { ServerEventModifiedFormDataEvent, ServerEventDeletedFormDataEvent, ServerEventModifiedTableEvent } from '@domain/event';
+import { ServerEventModifiedFormData, ServerEventDeletedFormData, ServerEventModifiedTableEvent } from '@domain/event';
 import { Page } from '@domain/uimetadata/page';
 import { FeUser } from '@domain/user';
 import { HasId } from '@domain/key_value_obj';
@@ -57,10 +57,10 @@ export class FrmdbStreamsService {
     this.userEvents$.subscribe(userEvent => {
       switch (userEvent.type) {
         case "UserModifiedFormData":
-          this.store.dispatch(new AppServerEventAction(new ServerEventModifiedFormDataEvent(userEvent.obj)));
+          this.store.dispatch(new AppServerEventAction(new ServerEventModifiedFormData(userEvent.obj)));
           break;
         case "UserDeletedFormData":
-          this.store.dispatch(new AppServerEventAction(new ServerEventDeletedFormDataEvent(userEvent.obj)));
+          this.store.dispatch(new AppServerEventAction(new ServerEventDeletedFormData(userEvent.obj)));
           break;
         case "UserSelectedCell":
           this.store.dispatch(new appState.UserSelectCell(userEvent.columnName));

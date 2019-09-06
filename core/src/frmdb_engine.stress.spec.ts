@@ -6,7 +6,7 @@
 import * as _ from "lodash";
 import { FrmdbEngineStore } from "./frmdb_engine_store";
 
-import { ServerEventModifiedFormDataEvent, ServerEventPreviewFormulaN, ServerEventPreviewFormula, ServerEventSetPropertyN, ServerEventDeletedFormDataEvent } from "@domain/event";
+import { ServerEventModifiedFormData, ServerEventDeletedFormData } from "@domain/event";
 import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema, EntityProperty, ChildTableProperty } from "@domain/metadata/entity";
 import { DataObj } from "@domain/metadata/data_obj";
@@ -109,11 +109,11 @@ describe('FrmdbEngine', () => {
 
     }
 
-    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormDataEvent> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj)) as ServerEventModifiedFormDataEvent;
+    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
+        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
-    async function delObj(obj: KeyValueObj): Promise<ServerEventDeletedFormDataEvent> {
-        return await frmdbEngine.processEvent(new ServerEventDeletedFormDataEvent(obj)) as ServerEventDeletedFormDataEvent;
+    async function delObj(obj: KeyValueObj): Promise<ServerEventDeletedFormData> {
+        return await frmdbEngine.processEvent(new ServerEventDeletedFormData(obj)) as ServerEventDeletedFormData;
     }
 
     afterEach(function () {
@@ -163,7 +163,7 @@ describe('FrmdbEngine', () => {
         });
 
         it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
-            frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
+            frmdbTStore = await getFrmdbEngineStore(accountTransferSchema, '', '');
             frmdbEngine = new FrmdbEngine(frmdbTStore);
             await frmdbEngine.init();
 

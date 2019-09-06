@@ -10,8 +10,9 @@ import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFu
 import { Entity, Schema } from "@domain/metadata/entity";
 import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
-import { App } from "@domain/app";
 import { FilterItem, AggFunc, SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { MetadataStore } from "@storage/metadata-store";
+import { GitStorageMem } from "@storage/git-storage-mem";
 
 function simulateIO<T>(x: T): Promise<T> {
     return new Promise(resolve => setTimeout(() => resolve(x), Math.random() * 10));
@@ -227,7 +228,8 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
     }
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
-    readonly name = "KeyValueStoreFactoryMem";
+    readonly type = "KeyValueStoreFactoryMem";
+    metadataStore = new MetadataStore(new GitStorageMem(), this);
 
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();
@@ -244,24 +246,4 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     async clearAllForTestingPurposes() {
         // Mem KV store is ephemeral so nothing to clear
     };
-
-    apps: Map<string, App> = new Map();
-    getAllApps(): Promise<App[]> {
-        return simulateIO(Array.from(this.apps.values()));
-    }
-
-    putApp(app: App): Promise<App> {
-        this.apps.set(app._id, app);
-        return simulateIO(app);
-    }
-
-    schemas: Map<string, Schema> = new Map();
-    getSchema(schemaId: string): Promise<Schema | null> {
-        return simulateIO(this.schemas.get(schemaId) || null);
-    }
-
-    putSchema(schema: Schema): Promise<Schema> {
-        this.schemas.set(schema._id, schema);
-        return simulateIO(schema);
-    }
 }

@@ -7,11 +7,9 @@ import { KeyValueError, KeyValueObj } from "@domain/key_value_obj";
 import * as FormuladbCollate from '@storage/collator';
 import { Entity, Schema } from "@domain/metadata/entity";
 import { ReduceFun, SumReduceFunN, CountReduceFunN, TextjoinReduceFunN, ReduceFunDefaultValue } from "@domain/metadata/reduce_functions";
-import { DataObj } from "@domain/metadata/data_obj";
-import { MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
 import { Expression } from "jsep";
-import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { MetadataStore } from "./metadata-store";
 
 export interface SortModel {
     colId: string,
@@ -116,15 +114,12 @@ class KeyValueStoreBase<KEYT, VALUET> {
 }
 
 export interface KeyValueStoreFactoryI {
-    name: "KeyValueStoreFactoryMem" | "KeyValueStoreFactoryPostgres";
+    type: "KeyValueStoreFactoryMem" | "KeyValueStoreFactoryPostgres";
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET>;
     createKeyObjS<OBJT extends KeyValueObj>(name: string): KeyObjStoreI<OBJT>;
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
     clearAllForTestingPurposes(): Promise<void>;
-    getAllApps(): Promise<App[]>;
-    putApp(app: App): Promise<App>;
-    getSchema(schemaId: string): Promise<Schema | null>;
-    putSchema(schema: Schema): Promise<Schema>;
+    metadataStore: MetadataStore;
 }
 
 export type ScalarType = string | number | boolean;

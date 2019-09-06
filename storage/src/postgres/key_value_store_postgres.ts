@@ -19,6 +19,9 @@ import { evalExpression } from "@functions/map_reduce_utils";
 import { App } from "@domain/app";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { FrmdbLogger } from "@domain/frmdb-logger";
+import { Page } from "@domain/uimetadata/page";
+import { MetadataStore } from "@storage/metadata-store";
+import { GitStorage } from "@storage/git-storage";
 const calculateSlot = require('cluster-key-slot');
 const logger = new FrmdbLogger("kvs:pg");
 
@@ -356,7 +359,8 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
-    readonly name = "KeyValueStoreFactoryPostgres";
+    readonly type = "KeyValueStoreFactoryPostgres";
+    metadataStore = new MetadataStore(new GitStorage(), this);
     
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);
@@ -373,26 +377,5 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     async clearAllForTestingPurposes() {
         let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
         await forCleanup.clearAllForTestingPurposes();
-    }
-
-    
-    metadataKOS: KeyObjStoreI<App | Schema>;
-    private getMetadataKOS() {
-        if (!this.metadataKOS) {
-            this.metadataKOS = new KeyObjStorePostgres<App | Schema>('metadata');
-        }
-        return this.metadataKOS;
-    }
-    async getAllApps(): Promise<App[]> {
-        return this.getMetadataKOS().findByPrefix('App~~') as Promise<App[]>;
-    }
-    async putApp(app: App): Promise<App> {
-        return this.getMetadataKOS().put(app) as Promise<App>;
-    }
-    async putSchema(schema: Schema): Promise<Schema> {
-        return this.getMetadataKOS().put(schema) as Promise<Schema>;
-    }
-    async getSchema(schemaId: string): Promise<Schema> {
-        return this.getMetadataKOS().get(schemaId) as Promise<Schema>;
     }
 }

@@ -4,6 +4,7 @@
  */
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
+import { App } from "@domain/app";
 
 export const SampleApp = {
     _id: "SampleApp",
@@ -20,14 +21,15 @@ export const SampleApp = {
     }
 };
 
-export const FormuladbIoApp = {
+export const FormuladbIoApp: App = {
     _id: "formuladb.io",
     description: "formuladb.io",
+    theme: "frmdb-apps/formuladb.io",
     pages: [
-        { name: "index", html: "index.html" },
-        { name: "no_code", html: "no_code.html" },
-        { name: "low_code", html: "low_code.html" },
-        { name: "pricing", html: "pricing.html" },
+        { name: "index.html", title: "FormulaDB" },
+        { name: "no_code.html", title: "FormulaDB" },
+        { name: "low_code.html", title: "FormulaDB" },
+        { name: "pricing.html", title: "FormulaDB" },
     ],
 };
 

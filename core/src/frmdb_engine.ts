@@ -56,59 +56,30 @@ export class FrmdbEngine {
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 
         switch (event.type_) {
-            case events.ServerEventModifiedFormDataN:
+            case "ServerEventModifiedFormData":
                 return this.transactionRunner.computeFormulasAndSave(event);
-            case events.ServerEventDeletedFormDataN:
+            case "ServerEventDeletedFormData":
                 return this.transactionRunner.computeFormulasAndSave(event);
-            case events.ServerEventModifiedFormN:
-                return this.processForm(event);
-            case events.ServerEventModifiedTableN:
-                return this.processTable(event);
-            case events.ServerEventNewEntityN:
+            case "ServerEventNewEntity":
                 return this.newEntity(event)
-            case events.ServerEventDeleteEntityN:
+            case "ServerEventDeleteEntity":
                 return this.deleteEntity(event);
-            case events.ServerEventPreviewFormulaN:
+            case "ServerEventPreviewFormula":
                 return this.transactionRunner.previewFormula(event);
-            case events.ServerEventSetPropertyN:
+            case "ServerEventSetProperty":
                 return this.transactionRunner.setEntityProperty(event);
-            case events.ServerEventDeletePropertyN:
+            case "ServerEventDeleteProperty":
                 return this.transactionRunner.deleteEntityProperty(event);
+            case "ServerEventPutPageHtml":
+                return this.putPageHtml(event);
             default:
                 return Promise.reject("n/a event");
         }
     }
 
-    private processForm(event: events.ServerEventModifiedFormEvent): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.getForm(event.form._id)
-            .catch(err => { console.log(err); return; })
-            .then(frm => {
-                return this.frmdbEngineStore.putForm(event.form).catch(err => console.error(err));
-            })
-            .then(() => {
-                console.log("form save started");
-                //TODO: validations; if there are errors, update the notif accordingly
-                event.notifMsg_ = 'OK';
-                delete event._rev;
-                return event;
-            })
-            ;
-    }
-
-    private processTable(event: events.ServerEventModifiedTableEvent): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.getTable(event.table._id)
-            .catch(err => { console.log(err); return; })
-            .then(tbl => {
-                // if (tbl) event.table._rev = tbl._rev;
-
-                return this.frmdbEngineStore.putTable(event.table).catch(err => console.error(err));
-            })
-            .then(() => {
-                event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
-                delete event._rev;
-                return event;
-            })
-            ;
+    private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
+        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pagePath, event.pageHtml);
+        return event;
     }
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {

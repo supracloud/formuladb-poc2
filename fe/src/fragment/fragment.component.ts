@@ -58,7 +58,11 @@ export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, F
             let fragmentPage: AppPage | undefined = app.pages.find(p => p.name == newVal as string);
             if (!fragmentPage) throw new Error("App not found");
 
-            fetch(`/${appBackend.tenantName}/${appBackend.appName}/${fragmentPage.html}`)
+            fetch(`/${appBackend.tenantName}/${appBackend.appName}/${fragmentPage.name}`, {
+                headers: {
+                    'accept': 'text/html',
+                },
+            })
                 .then(async (response) => {
                     let html = await response.text();
                     this.innerHTML = DOMPurify.sanitize(html);

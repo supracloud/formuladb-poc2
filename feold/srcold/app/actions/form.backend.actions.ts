@@ -45,7 +45,7 @@ export class ResetPageDataFromBackendAction implements Action {
 export class FormNotifFromBackendAction implements Action {
   readonly type = FormNotifFromBackendActionN;
 
-  constructor(public event: events.ServerEventModifiedFormEvent | events.ServerEventModifiedFormDataEvent) { }
+  constructor(public event: events.ServerEventModifiedFormEvent | events.ServerEventModifiedFormData) { }
 }
 
 
@@ -57,7 +57,7 @@ export class FormAutoCompleteOptionsFromBackendAction implements Action {
 }
 
 export class ServerEventModifiedForm implements Action {
-  readonly type = events.ServerEventModifiedFormN;
+  readonly type = "ServerEventModifiedForm";
   public event: events.ServerEventModifiedFormEvent;
 
   constructor(public form: FormPage) {
@@ -66,11 +66,11 @@ export class ServerEventModifiedForm implements Action {
 }
 
 export class ServerEventModifiedFormData implements Action {
-  readonly type = events.ServerEventModifiedFormDataN;
-  public event: events.ServerEventModifiedFormDataEvent;
+  readonly type = "ServerEventModifiedFormData";
+  public event: events.ServerEventModifiedFormData;
 
   constructor(obj: DataObj) {
-    this.event = new events.ServerEventModifiedFormDataEvent(obj);
+    this.event = new events.ServerEventModifiedFormData(obj);
   }
 }
 

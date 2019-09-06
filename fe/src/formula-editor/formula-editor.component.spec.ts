@@ -6,7 +6,7 @@
 const fetchMock = require('fetch-mock');
 
 import { FormulaEditorComponent } from './formula-editor.component';
-import { normalizeHTML } from "@fe/fe-test-urils.spec";
+import { normalizeHTML } from "@core/normalize-html";
 import { InventorySchema } from '@test/inventory/metadata';
 
 describe('FormulaEditorComponent', () => {
@@ -25,7 +25,7 @@ describe('FormulaEditorComponent', () => {
         console.log(el.innerHTML);
         let normalizedHtml = normalizeHTML(el.innerHTML);
 
-        expect(normalizedHtml[0]).toEqual('<div class="formula-code-editor d-flex">');
+        expect(normalizedHtml[1]).toEqual('<div class="formula-code-editor d-flex">');
 
         done();
     });

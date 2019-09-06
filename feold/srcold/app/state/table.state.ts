@@ -37,7 +37,7 @@ export const tableInitialState: TableState = {
   formulaHighlightedColumns: {},
 };
 
-export const ServerEventModifiedTableN = events.ServerEventModifiedTableN;
+export const ServerEventModifiedTableN = "ServerEventModifiedTable";
 export const UserSelectRowN = "[table] UserSelectRow";
 export const ServerEventNewRowN = "[table] ServerEventNewRow";
 export const UserSelectCellN = "[table] UserSelectCell";

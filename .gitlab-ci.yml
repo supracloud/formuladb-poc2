@@ -69,7 +69,7 @@ build_images_and_deploy_dev:
 test_mem:
   stage: test_mem
   script:
-    - npm test || true
+    - npm test
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -87,7 +87,7 @@ test_postgres:
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
     - while ! nc -z localhost 5432; do sleep 1; done
-    - FRMDB_STORAGE=postgres npm test || true
+    - FRMDB_STORAGE=postgres npm test
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
     key: ${CI_COMMIT_SHORT_SHA}

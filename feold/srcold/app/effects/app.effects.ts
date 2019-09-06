@@ -43,15 +43,15 @@ export type ActionsToBeSentToServer =
     | appState.ServerEventPreviewFormula
     ;
 export const ActionsToBeSentToServerNames = [
-    events.ServerEventModifiedFormDataN,
-    events.ServerEventDeletedFormDataN,
-    events.ServerEventModifiedFormN,
-    events.ServerEventModifiedTableN,
-    events.ServerEventNewEntityN,
-    events.ServerEventDeleteEntityN,
-    events.ServerEventSetPropertyN,
-    events.ServerEventDeletePropertyN,
-    events.ServerEventPreviewFormulaN
+    "ServerEventModifiedFormData",
+    "ServerEventDeletedFormData",
+    "ServerEventModifiedForm",
+    "ServerEventModifiedTable",
+    "ServerEventNewEntity",
+    "ServerEventDeleteEntity",
+    "ServerEventSetProperty",
+    "ServerEventDeleteProperty",
+    "ServerEventPreviewFormula"
 ];
 
 @Injectable()
@@ -129,15 +129,15 @@ export class AppEffects {
         if (!eventFromBe) return;
 
         switch (eventFromBe.type_) {
-            case events.ServerEventModifiedFormN:
+            case "ServerEventModifiedForm":
                 this.store.dispatch(new FormNotifFromBackendAction(eventFromBe));
                 break;
-            case events.ServerEventModifiedTableN: {
+            case "ServerEventModifiedTable": {
                 // this.store.dispatch(new appState.FormNotifFromBackendAction(event));
                 //TODO: display loading indicator, not currently used
                 break;
             }
-            case events.ServerEventModifiedFormDataN: {
+            case "ServerEventModifiedFormData": {
                 let { appName, entityName: path, id } = appState.parseUrl(this.router.url);
                 if (!id) {
                     console.error("Modify object for non-object url: " + this.router.url);
@@ -154,7 +154,7 @@ export class AppEffects {
                 }
                 break;
             }
-            case events.ServerEventDeletedFormDataN: {
+            case "ServerEventDeletedFormData": {
                 let { appName, entityName: path, id } = appState.parseUrl(this.router.url);
                 if (null == id) {
                     this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
@@ -164,26 +164,26 @@ export class AppEffects {
                 }
                 break;
             }
-            case events.ServerEventModifiedFormN: {
+            case "ServerEventModifiedForm": {
                 break;
             }
-            case events.ServerEventModifiedTableN: {
+            case "ServerEventModifiedTable": {
                 this.store.dispatch(new PageFromBackendAction(eventFromBe.table));
                 break;
             }
-            case events.ServerEventNewEntityN: {
+            case "ServerEventNewEntity": {
                 let entities = await this.backendService.getEntities();
                 this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
                 this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.path)]);
                 break;
             }
-            case events.ServerEventDeleteEntityN: {
+            case "ServerEventDeleteEntity": {
                 let entities = await this.backendService.getEntities();
                 this.store.dispatch(new EntitiesFromBackendFullLoadAction(entities));
                 this.router.navigate([this.router.url.replace(/\w+$/, eventFromBe.entityId.replace(/__\w+$/, ''))]);
                 break;
             }
-            case events.ServerEventSetPropertyN: {
+            case "ServerEventSetProperty": {
                 if (this.router.url.indexOf(eventFromBe.targetEntity._id) >= 0) {
                     this.changeEntity(eventFromBe.targetEntity._id);
                 } else {
@@ -191,11 +191,11 @@ export class AppEffects {
                 }
                 break;
             }
-            case events.ServerEventDeletePropertyN: {
+            case "ServerEventDeleteProperty": {
                 this.changeEntity(eventFromBe.targetEntity._id);
                 break;
             }
-            case events.ServerEventPreviewFormulaN: {
+            case "ServerEventPreviewFormula": {
                 this.store.dispatch(new FormulaPreviewFromBackend(eventFromBe));
                 break;
             }

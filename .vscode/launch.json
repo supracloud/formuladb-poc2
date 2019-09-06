@@ -4,8 +4,6 @@
         {
             "name": "jasmine",
             "type": "node",
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
@@ -20,7 +18,7 @@
             "cwd": "${workspaceRoot}",
             "program": "${workspaceFolder}/jasmine.js",
             "args": [
-                "'${relativeFile}'"
+                "${relativeFile}"
             ],
             "sourceMaps": true,
             "outFiles": [
@@ -30,8 +28,6 @@
         {
             "name": "jasmine postgres",
             "type": "node",
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/d/code/metawiz/febe",
             "runtimeArgs": [
                 "--trace-warnings",
                 "--debug-brk",
@@ -48,7 +44,7 @@
             "cwd": "${workspaceRoot}",
             "program": "${workspaceFolder}/jasmine.js",
             "args": [
-                "'${relativeFile}'"
+                "${relativeFile}"
             ],
             "sourceMaps": true,
             "outFiles": [

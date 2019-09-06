@@ -10,8 +10,8 @@ import { Entity, Pn } from "@domain/metadata/entity";
 import { FormService } from "./form.service";
 import { waitUntilNotNull } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
-import { ServerEventModifiedFormDataN } from "@domain/event";
 import { setValue, navigate } from "./fe-test-urils.spec";
+import { ServerEventModifiedFormData } from '@domain/event';
 
 const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;
@@ -107,7 +107,7 @@ describe('FormService', () => {
         expect(f2Input.validationMessage).toMatch(/123|constraints/i);
 
         fetchMock.post('/formuladb-api/test-tenant/test-app/event', {
-            type: ServerEventModifiedFormDataN,
+            type: "ServerEventModifiedFormData",
             obj: { _id: 'A~~blabla', f1: 14 },
         });
 

@@ -1,4 +1,4 @@
-import { normalizeHTML } from "./fe-test-urils.spec";
+import { normalizeHTML } from "@core/normalize-html";
 
 describe('normalizeHtml', () => {
     beforeEach(() => {

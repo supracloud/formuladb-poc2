@@ -1,7 +1,14 @@
 .formula-code-editor {
-    height: 1.5rem;
     min-width: 50vw;
     white-space: nowrap;
+}
+
+.formula-code-editor #toggle-formula-editor.active {
+    background-color: var(--primary);
+}
+
+.formula-code-editor #toggle-formula-editor:focus {
+    box-shadow: none;
 }
 
 .formula-code-editor > div {

@@ -19,7 +19,7 @@ const booking_fragment_html = /*html*/`
 const index_html = /*html*/`
     <div class="container">
         <div data-frmdb-record="Booking~~" data-frmdb-record-no-autosave>
-            <frmdb-fragment name="booking [F]" data-vvveb-disabled></frmdb-fragment>
+            <frmdb-fragment name="booking-F.html" data-vvveb-disabled></frmdb-fragment>
         </div>
     </div>
 `;
@@ -27,13 +27,12 @@ const index_html = /*html*/`
 const booking_html = /*html*/`
 <div class="container">
     <div data-frmdb-record="Booking~~">
-        <frmdb-fragment name="booking [F]" data-vvveb-disabled></frmdb-fragment>
+        <frmdb-fragment name="booking-F.html" data-vvveb-disabled></frmdb-fragment>
     </div>
 </div>
 `;
 
 import { FragmentComponent } from '@fe/fragment/fragment.component';
-import { ServerEventModifiedFormDataN } from "@domain/event";
 
 describe('[FE] Hotel Booking', () => {
     let clock;
@@ -43,7 +42,7 @@ describe('[FE] Hotel Booking', () => {
 
         fetchMock.get('/formuladb-api/test-tenant/hotel-booking', HotelBookingApp);
         fetchMock.get('/formuladb-api/test-tenant/hotel-booking/schema', HotelBookingSchema);
-        fetchMock.get('/test-tenant/hotel-booking/booking._fragment_.html', booking_fragment_html);
+        fetchMock.get('/test-tenant/hotel-booking/booking-F.html', booking_fragment_html);
     });
 
     afterEach(() => {
@@ -108,7 +107,7 @@ describe('[FE] Hotel Booking', () => {
         it("User updates the booking but server validation fails", async (done) => {
 
             fetchMock.post('/formuladb-api/test-tenant/hotel-booking/event', {
-                type: ServerEventModifiedFormDataN,
+                type: "ServerEventModifiedFormData",
                 state_: "ABORT",
                 reason_: "ABORTED_FAILED_VALIDATIONS_RETRIES_EXCEEDED",
                 error_: "Validations failed: maxBooking",
@@ -127,7 +126,7 @@ describe('[FE] Hotel Booking', () => {
 
         it("User updates the booking and it is saved successfully", async (done) => {
             fetchMock.post('/formuladb-api/test-tenant/hotel-booking/event', {
-                type: ServerEventModifiedFormDataN,
+                type: "ServerEventModifiedFormData",
                 obj: bookingObjFromServer,
             });
 

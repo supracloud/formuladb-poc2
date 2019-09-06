@@ -4,7 +4,7 @@ import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
-import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity } from '@domain/event';
+import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml } from '@domain/event';
 import { UserDeleteColumn, FrmdbSelectChange } from './frmdb-user-events';
 import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
@@ -14,13 +14,14 @@ import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE 
 import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
 import { getParentObjId } from './form.service';
+import { normalizeHTMLStr } from '@core/normalize-html';
 
 declare var Vvveb: any;
 
 interface FrmdbEditorState {
     tables: Entity[];
     selectedTableId: string;
-    pages: {name: string, url: string }[];
+    pages: { name: string, url: string }[];
     selectedPageName: string;
 }
 
@@ -47,17 +48,17 @@ async function initEditor() {
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.pages = app.pages.map(p => ({name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}`}));
+    EditorState.pages = app.pages.map(p => ({ name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}` }));
     let indexUrl;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
-        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.html}`;
-        if (page.name === "index") indexUrl = url;
-        vvvebPages.push({ name: page.name, title: page.name, url });
+        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
+        if (page.name === app.homePage) indexUrl = url;
+        vvvebPages.push({ name: page.name, title: page.title, url });
     }
 
     //overwrite loadPage
-    indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].name : "index-page-not-found";
+    indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].url : "index-page-not-found";
     Vvveb.FileManager.loadPage = function (name, allowedComponents = false, disableCache = true) {
         window.location.href = window.location.href.replace(/p=.*/, `p=${name}`);
     }
@@ -71,10 +72,10 @@ async function initEditor() {
 
         const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
         if (currentLanguage.lang != I18N_FE.defaultLanguage) {
-            setTimeout(() => 
+            setTimeout(() =>
                 I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
             );
-        }        
+        }
     });
 
     Vvveb.Gui.init();
@@ -89,7 +90,7 @@ async function initEditor() {
 function changeSelectedTableIdIfDifferent(tableName: string) {
     if (tableName === EditorState.selectedTableId) return;
     EditorState.selectedTableId = tableName;
-    updateDOM({$frmdb: {selectedTableId: EditorState.selectedTableId}}, document.body);
+    updateDOM({ $frmdb: { selectedTableId: EditorState.selectedTableId } }, document.body);
 }
 
 function tableManagementFlows() {
@@ -99,41 +100,41 @@ function tableManagementFlows() {
     });
 
     onEvent(document.body, 'click', '#new-table-btn *', (event) => {
-        Vvveb.Gui.newTable(newTableName => 
+        Vvveb.Gui.newTable(newTableName =>
             BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
-            .then(async (ev: ServerEventNewEntity) => {
-                if (ev.state_ != 'ABORT') {
-                    await loadTables(ev.path);    
-                }
-                return ev;
-            })
-            .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
+                .then(async (ev: ServerEventNewEntity) => {
+                    if (ev.state_ != 'ABORT') {
+                        await loadTables(ev.path);
+                    }
+                    return ev;
+                })
+                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
         )
     });
-    
+
     onDoc('click', '#delete-table-btn *', (event) => {
         let link: HTMLAnchorElement = event.target.closest('a');
         event.preventDefault();
         if (!link.dataset.id) return;
-    
+
         if (confirm(`Please confirm deletion of table ${link.dataset.id} ?`)) {
-    
+
             BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(link.dataset.id))
-            .then(async (ev: ServerEventDeleteEntity) => {
-                if (ev.state_ != 'ABORT') {
-                    await loadTables(ev.entityId);
-                }
-                return ev;
-            });
+                .then(async (ev: ServerEventDeleteEntity) => {
+                    if (ev.state_ != 'ABORT') {
+                        await loadTables(ev.entityId);
+                    }
+                    return ev;
+                });
         }
     });
 
-    
+
     onDoc('FrmdbColumnChanged', '*', (event) => {
         let dataGrid = queryDataGrid(document);
         dataGrid.forceReloadData();
     });
-    
+
 }
 
 function tableColumnManagementFlows() {
@@ -156,7 +157,7 @@ function tableColumnManagementFlows() {
 
     onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
         let currentEntity: Entity | undefined = EditorState.tables.find(e => e._id == EditorState.selectedTableId);
-        if (!currentEntity) {console.warn(`Entity ${EditorState.selectedTableId} does not exist`); return;}
+        if (!currentEntity) { console.warn(`Entity ${EditorState.selectedTableId} does not exist`); return; }
         let entity: Entity = currentEntity;
 
         Vvveb.Gui.newColumn(entity._id, newColumnName => {
@@ -164,34 +165,34 @@ function tableColumnManagementFlows() {
                 propType_: Pn.STRING,
                 name: newColumnName,
             }))
-            .then(async (ev: ServerEventSetProperty) => {
-                if (ev.state_ != 'ABORT') {
-                    let dataGrid = queryDataGrid(document.body);
-                    await dataGrid.initAgGrid();
-                    await loadTables(EditorState.selectedTableId);                            
-                }
-                return ev;
-            })
-            .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
+                .then(async (ev: ServerEventSetProperty) => {
+                    if (ev.state_ != 'ABORT') {
+                        let dataGrid = queryDataGrid(document.body);
+                        await dataGrid.initAgGrid();
+                        await loadTables(EditorState.selectedTableId);
+                    }
+                    return ev;
+                })
+                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
         })
     });
 
-    onEvent(document.body, 'UserDeleteColumn', '*', (event: {detail: UserDeleteColumn}) => {
+    onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
         let currentEntity: Entity | undefined = EditorState.tables.find(e => e._id == EditorState.selectedTableId);
-        if (!currentEntity) {console.warn(`Entity ${EditorState.selectedTableId} does not exist`); return;}
+        if (!currentEntity) { console.warn(`Entity ${EditorState.selectedTableId} does not exist`); return; }
         let entity: Entity = currentEntity;
 
         if (confirm(`Please confirm deletion of table ${event.detail.tableName}.${event.detail.columnName} ?`)) {
-            if (entity._id != event.detail.tableName) {console.warn(`ERR ${entity._id} != ${event.detail.tableName}`); return;}
+            if (entity._id != event.detail.tableName) { console.warn(`ERR ${entity._id} != ${event.detail.tableName}`); return; }
             BACKEND_SERVICE().putEvent(new ServerEventDeleteProperty(entity, event.detail.columnName))
-            .then(async (ev: ServerEventDeleteProperty) => {
-                if (ev.state_ != 'ABORT') {
-                    let dataGrid = queryDataGrid(document.body);
-                    await dataGrid.initAgGrid();    
-                    await loadTables(EditorState.selectedTableId);                            
-                }
-                return ev;
-            });
+                .then(async (ev: ServerEventDeleteProperty) => {
+                    if (ev.state_ != 'ABORT') {
+                        let dataGrid = queryDataGrid(document.body);
+                        await dataGrid.initAgGrid();
+                        await loadTables(EditorState.selectedTableId);
+                    }
+                    return ev;
+                });
         }
 
     });
@@ -203,12 +204,12 @@ async function loadTables(selectedTable?: string) {
         EditorState.tables = entities;
         EditorState.selectedTableId = selectedTable || entities[0]._id;
         setTimeout(() => elvis(elvis((window as any).Vvveb).Gui).CurrentTableId = entities[0]._id, 500);
-        updateDOM({$frmdb: EditorState}, document.body);
+        updateDOM({ $frmdb: EditorState }, document.body);
     })
-    .catch(err => console.error(err));
+        .catch(err => console.error(err));
 }
 
-function getCellFromEl(el: HTMLElement): {recordId: string, columnId: string} | null {
+function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
     for (let i = 0; i < el.attributes.length; i++) {
         let attrib = el.attributes[i];
         console.warn(DATA_FRMDB_ATTRS_Enum);
@@ -216,7 +217,7 @@ function getCellFromEl(el: HTMLElement): {recordId: string, columnId: string} | 
             let recordId = getParentObjId(el);
             let tableName = entityNameFromDataObjId(recordId);
             let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');
-            return {recordId, columnId};
+            return { recordId, columnId };
         }
     }
 
@@ -224,7 +225,7 @@ function getCellFromEl(el: HTMLElement): {recordId: string, columnId: string} | 
         let recordId = `$Dictionary~~${getTranslationKey(el)}`;
         let columnId = document.querySelector('#frmdb-editor-i18n-select')!.getAttribute('data-i18n') || 'n/a';
         if (columnId == DEFAULT_LANGUAGE) columnId = '_id';
-        return {recordId, columnId};
+        return { recordId, columnId };
     }
 
     return null;
@@ -234,7 +235,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     let dataGrid = queryDataGrid(document);
     let cell = getCellFromEl(el);
     if (!cell) return;
-    let {recordId, columnId} = cell;
+    let { recordId, columnId } = cell;
     let tableName = entityNameFromDataObjId(recordId);
     dataGrid.frmdbState.highlightColumns = {
         [tableName]: {
@@ -245,6 +246,30 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     dataGrid.forceCellRefresh();
 }
 (window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
+
+async function frmdbPutServerEventPutPageHtml(pagePath: string, pageHtml: string, templateId?: string) {
+    let html = pageHtml;
+
+    if (templateId) {
+        await fetch(templateId, {
+            headers: {
+                'accept': 'text/html',
+            },
+        }).then(async (response) => {
+            html = await response.text();
+        });
+    }
+    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
+        .then(async (ev: ServerEventPutPageHtml) => {
+            if (ev.state_ != 'ABORT') {
+            }
+            return ev;
+        })
+        .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
+}
+(window as any).frmdbPutServerEventPutPageHtml = frmdbPutServerEventPutPageHtml;
+
+(window as any).frmdbNormalizeHTMLStr = normalizeHTMLStr;
 
 tableManagementFlows();
 tableColumnManagementFlows();

@@ -12,7 +12,7 @@ import { MockData } from "@test/mocks/mock-data";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueObj } from "@domain/key_value_obj";
-import { ServerEventModifiedFormDataEvent } from "@domain/event";
+import { ServerEventModifiedFormData } from "@domain/event";
 import { MockMetadata, CommonEntities } from "@test/mocks/mock-metadata";
 import { DictionaryEntry } from "@domain/dictionary-entry";
 import { $Dictionary } from "@domain/metadata/default-metadata";
@@ -20,7 +20,7 @@ import { HotelBookingDictionary } from "./hotel-booking/data";
 import { DataObj } from "@domain/metadata/data_obj";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
-    return frmdbEngine.processEvent(new ServerEventModifiedFormDataEvent(obj));
+    return frmdbEngine.processEvent(new ServerEventModifiedFormData(obj));
 }
 
 const mockMetadata = new MockMetadata();
@@ -37,7 +37,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             let mockData = new MockData(CommonEntities.reduce((acc, e) => {
                 acc[e._id] = e; return acc;
             }, {}));
-            let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, {_id: "FRMDB_SCHEMA", entities: mockData.entitiesMap});
+            let frmdbEngineStore = new FrmdbEngineStore('', '', kvsFactory, {_id: "FRMDB_SCHEMA", entities: mockData.entitiesMap});
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
             for (let entityId of commonEntitiesIds) {
                 for (let obj of mockData.getAllForPath(entityId)) {
@@ -50,7 +50,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
 
         for (let schema of mockMetadata.schemas) {
             let mockData = new MockData(schema.entities);
-            let frmdbEngineStore = new FrmdbEngineStore(kvsFactory, schema);
+            let frmdbEngineStore = new FrmdbEngineStore('', '', kvsFactory, schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
             await frmdbEngine.init(true);
             for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {

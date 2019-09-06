@@ -79,7 +79,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         onEvent(this, 'keydown', '*', e => this.keydown(e));
         onEvent(this, 'keyup', '*', e => this.keyup(e));
         onEvent(this, 'click', '.editor *', e => this.click());
-        onEvent(this, 'click', '#toggle-formula-editor *', e => this.toggleEditor());
+        onEvent(this, 'click', '#toggle-formula-editor,#toggle-formula-editor *', e => this.toggleEditor());
         onEvent(this, 'click', '#apply-formula-changes:enabled *', e => this.applyChanges());
     }
 

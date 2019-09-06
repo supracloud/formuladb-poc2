@@ -3,9 +3,9 @@
  * License TBD
  */
 
-import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
-import { $s2e } from "@functions/s2e";
+import { Pn, EntityProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
+import { App } from "@domain/app";
 
 export const RoomType = {
     _id: "RoomType",
@@ -79,18 +79,19 @@ export const Booking = {
     // }
 }
 
-export const HotelBookingApp = {
-    _id: "hotel-booking",
+export const HotelBookingApp: App = {
+    _id: "/frmdb-apps/hotel-booking",
     description: "Booking app for Royal Hotel",
+    theme: "frmdb-themes/royal-master",
+    homePage: "new-booking.html",
     pages: [
-        { name: "index", html: "index.html" },
-        { name: "booking", html: "booking.html" },
-        { name: "footer-F", html: "footer._fragment_.html" },
-        { name: "nav-F", html: "nav._fragment_.html" },
-        { name: "booking-F", html: "booking._fragment_.html" },
-        { name: "contact", html: "contact.html" },
-        { name: "gallery", html: "gallery.html" },
-        { name: "tmp", html: "tmp.html" },
+        { name: "new-booking.html", title: "Relax Your Mind" },
+        { name: "booking.html", title: "Relax Your Mind" },
+        { name: "footer-F.html", title: "Relax Your Mind" },
+        { name: "nav-F.html", title: "Relax Your Mind" },
+        { name: "booking-F.html", title: "Relax Your Mind" },
+        { name: "contact.html", title: "Relax Your Mind" },
+        { name: "gallery.html", title: "Relax Your Mind" },
     ],
 };
 
