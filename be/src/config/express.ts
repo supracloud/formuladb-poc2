@@ -262,6 +262,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
+            .replace(/^\/?([-._\w]+)\/formuladb.io\//, 'portal/public/')
             .replace(/^\/?([-._\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
             .replace(/^\/?([-._\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
             ;

@@ -24,7 +24,7 @@ export const SampleApp = {
 export const FormuladbIoApp: App = {
     _id: "formuladb.io",
     description: "formuladb.io",
-    theme: "frmdb-apps/formuladb.io",
+    theme: "portal/public",
     pages: [
         { name: "index.html", title: "FormulaDB" },
         { name: "no_code.html", title: "FormulaDB" },

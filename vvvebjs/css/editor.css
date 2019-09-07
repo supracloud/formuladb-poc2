@@ -12658,6 +12658,7 @@ body::-webkit-scrollbar-thumb {
   border-bottom: 1px solid #ccc;
   text-align: center;
   background-color: #fafafa;
+  z-index: 11;
   top: var(--db-panel-height);
   left: var(--builder-left-panel-width);
   position: fixed;

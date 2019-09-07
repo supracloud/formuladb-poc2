@@ -64,7 +64,7 @@ async function initEditor() {
     }
 
     let pageName = window.location.hash.replace(new RegExp(`/?${appBackend.tenantName}/${appBackend.appName}/?`), '')
-        .replace(/^#/, '').replace(/\.html$/, '');
+        .replace(/^#/, '');
     EditorState.selectedPageName = pageName;
     let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
     Vvveb.Builder.init(url, function () {
