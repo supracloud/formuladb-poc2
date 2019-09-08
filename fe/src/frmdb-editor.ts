@@ -54,17 +54,14 @@ async function initEditor() {
     for (let page of app.pages) {
         let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
         if (page.name === app.homePage) indexUrl = url;
-        vvvebPages.push({ name: page.name, title: page.title, url });
+        vvvebPages.push({ name: page.name.replace(/\.html$/, ''), title: page.title, url });
     }
 
     //overwrite loadPage
     indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].url : "index-page-not-found";
-    Vvveb.FileManager.loadPage = function (name, allowedComponents = false, disableCache = true) {
-        window.location.href = window.location.href.replace(/p=.*/, `p=${name}`);
-    }
 
     let pageName = window.location.hash.replace(new RegExp(`/?${appBackend.tenantName}/${appBackend.appName}/?`), '')
-        .replace(/^#/, '');
+        .replace(/^#/, '').replace(/\.html$/, '');
     EditorState.selectedPageName = pageName;
     let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
     Vvveb.Builder.init(url, function () {
@@ -225,7 +222,7 @@ function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } 
     for (let i = 0; i < el.attributes.length; i++) {
         let attrib = el.attributes[i];
         console.warn(DATA_FRMDB_ATTRS_Enum);
-        if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name)) {
+        if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
             let recordId = getParentObjId(el);
             let tableName = entityNameFromDataObjId(recordId);
             let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');

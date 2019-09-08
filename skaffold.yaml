@@ -13,7 +13,6 @@ build:
     docker:
       dockerfile: Dockerfile.be
       buildArgs: {}
-
 profiles:
   - name: dev
     patches:
@@ -21,3 +20,12 @@ profiles:
         path: /build/artifacts/0/docker/buildArgs
         value:
           BUILD_DEVELOPMENT: 1
+      - op: add
+        path: /portForward
+        value:
+          - resourceType: service
+            resourceName: lb
+            namespace: default
+            port: 80
+            localPort: 8085
+

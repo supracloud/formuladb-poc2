@@ -35,10 +35,6 @@ export class MetadataStore {
         let metadataKOS = await this.getMetadataKOS();
         return metadataKOS.get(pageId) as Promise<Page>;
     }
-    async putPage(page: Page): Promise<Page> {
-        let metadataKOS = await this.getMetadataKOS();
-        return metadataKOS.put(page) as Promise<Page>;
-    }
         
     async getApp(tenantName: string, appName: string): Promise<App | null> {
         let metadataKOS = await this.getMetadataKOS();
@@ -80,28 +76,8 @@ export class MetadataStore {
         return appPage;
     }
 
-    async getPageHtml(tenantName: string, appName: string, pageName: string): Promise<string> {
-        let metadataKOS = await this.getMetadataKOS();
-
-        let page: Page | null = await metadataKOS.get(`${tenantName}/${appName}/${pageName}`) as Page | null;
-        if (!page) {
-            let appPage = await this.getAppPage(tenantName, appName, pageName);
-            if (!appPage) throw new Error(`Cannot find app page for ${tenantName}/${appName}/${pageName}`);
-            let pageHtml = (await this.gitStorage.getPageContent(tenantName, appName, pageName));
-            page = {_id: `${tenantName}/${appName}/${pageName}`, name: appPage.name, title: appPage.title, html: pageHtml};
-            await metadataKOS.put(page);
-        }
-        return page.html;
-    }
-
     async savePageHtml(pagePath: string, html: string): Promise<void> {
-        let metadataKOS = await this.getMetadataKOS();
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
-
-        let appPage = await this.getAppPage(tenantName, appName, pageName);
-        if (!appPage) throw new Error(`Cannot find app page for ${tenantName}/${appName}/${pageName}`);
-        let page = {_id: `${tenantName}/${appName}/${pageName}`, name: appPage.name, title: appPage.title, html: html};
-        await metadataKOS.put(page);
         
         return this.gitStorage.savePage(tenantName, appName, pageName, html);
     }

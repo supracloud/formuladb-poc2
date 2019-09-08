@@ -244,6 +244,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
+    app.get('/', async function (req, res, next) {
+        try {
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml('frmdb-apps', 'formuladb.io', 'index.html');
+            if (!pageHtml) pageHtml = '<span>not found /</span>'
+            res.set('Content-Type', 'text/html');
+            res.send(new Buffer(pageHtml));
+        } catch (err) {
+            next(err);   
+        }
+    });
+
     app.get('/:tenant/:app/:page', async function (req, res, next) {
         try {
             if (req.headers['accept'].indexOf('text/html') < 0) {
@@ -265,7 +276,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .replace(/^\/?([-._\w]+)\/formuladb.io\//, 'portal/public/')
             .replace(/^\/?([-._\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
             .replace(/^\/?([-._\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
-            ;
+        ;
     }
     app.use((req, res, next) => {
         
