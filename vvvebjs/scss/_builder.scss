@@ -308,7 +308,7 @@ body {
         text-align: center;
         background-color: #fafafa;
         // overflow: hidden;
-        // z-index: 10000;
+        z-index: 11;
         top: var(--db-panel-height); 
         left: var(--builder-left-panel-width);
         position: fixed;

@@ -244,27 +244,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
-    app.get('/:tenant/:app/:page', async function (req, res, next) {
-        try {
-            if (req.headers['accept'].indexOf('text/html') < 0) {
-                next(); return;
-            }
-
-            let pageHtml = await kvsFactory.metadataStore.getPageHtml(req.params.tenant, req.params.app, req.params.page);
-            if (!pageHtml) pageHtml = '<span>not found</span>'
-            res.set('Content-Type', 'text/html');
-            res.send(new Buffer(pageHtml));
-        } catch (err) {
-            next(err);   
-        }
-    });
-
     function app2theme(path: string) {
         //TODO: read app metadata and replace app name with theme
         return path
+            .replace(/^\/?([-._\w]+)\/formuladb.io\//, 'portal/public/')
             .replace(/^\/?([-._\w]+)\/hotel-booking\//, 'frmdb-themes/royal-master/')
             .replace(/^\/?([-._\w]+)\/inventory\//, 'frmdb-themes/startbootstrap-sb-admin-2/')
-            ;
+        ;
     }
     app.use((req, res, next) => {
         

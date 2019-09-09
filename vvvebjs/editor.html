@@ -953,9 +953,8 @@
 								<div class="col-sm-9 input">
 									<div>
 										<select class="form-control custom-select" name="startTemplateUrl">
-											<option value="new-page-blank-template.html">Blank Template</option>
-											<option value="demo/narrow-jumbotron/index.html">Narrow jumbotron</option>
-											<option value="demo/album/index.html">Album</option>
+											<option class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
+											data-frmdb-attr="value::$frmdb.pages[].name"></option>
 										</select>
 									</div>
 								</div>
@@ -965,7 +964,9 @@
 								<label class="col-sm-3 control-label">Page name</label>
 								<div class="col-sm-9 input">
 									<div>
-										<input name="title" type="text" class="form-control" placeholder="My page" required>
+										<input name="title" type="text" class="form-control" placeholder="new-page-name" required pattern="[-a-zA-Z]+"
+										oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '-'); 
+											this.closest('.modal-body').querySelector('.page-file-name').value = this.value">
 									</div>
 								</div>
 							</div>
@@ -974,7 +975,7 @@
 								<label class="col-sm-3 control-label">File name</label>
 								<div class="col-sm-9 input">
 									<div>
-										<input name="fileName" type="text" class="form-control" placeholder="my-page.html" required>
+										<input name="fileName" type="text" class="form-control page-file-name" placeholder="new-page-name.html" disabled required>
 									</div>
 								</div>
 							</div>
