@@ -83,9 +83,9 @@ export const HotelBookingApp: App = {
     _id: "/frmdb-apps/hotel-booking",
     description: "Booking app for Royal Hotel",
     theme: "frmdb-themes/royal-master",
-    homePage: "new-booking.html",
+    homePage: "index.html",
     pages: [
-        { name: "new-booking.html", title: "Relax Your Mind" },
+        { name: "index.html", title: "Relax Your Mind" },
         { name: "booking.html", title: "Relax Your Mind" },
         { name: "footer-F.html", title: "Relax Your Mind" },
         { name: "nav-F.html", title: "Relax Your Mind" },

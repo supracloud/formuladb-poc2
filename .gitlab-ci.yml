@@ -124,10 +124,11 @@ e2e_dev_env:
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 8081 || kubectl port-forward $POD 8081:80 &
-    - while ! nc -z localhost 8081; do sleep 1; done
+    - nc -z localhost 8085 || kubectl port-forward $POD 8085:80 &
+    - bash serve.sh &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
+    - ps -ef|grep 'bash serve.sh'|awk '{print $2}'|xargs kill
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:

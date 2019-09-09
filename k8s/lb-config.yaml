@@ -15,7 +15,7 @@ data:
 
         location / {
             #todo parameterize branch name "develop"
-            proxy_pass https://storage.googleapis.com/formuladb-static-assets/develop;
+            proxy_pass https://storage.googleapis.com/formuladb-static-assets/develop/;
             error_page 404 = @root_fallback;
             proxy_intercept_errors on;
         }
