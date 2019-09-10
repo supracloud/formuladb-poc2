@@ -129,6 +129,7 @@ e2e_dev_env:
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
     - ps -ef|grep 'bash serve.sh'|awk '{print $2}'|xargs kill
+    - /bin/bash -c '/usr/bin/killall -q node; exit 0'
     - skaffold delete
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
