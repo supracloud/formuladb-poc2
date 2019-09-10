@@ -127,9 +127,8 @@ e2e_dev_env:
     - nc -z localhost 8085 || kubectl port-forward $POD 8085:80 &
     - bash serve.sh &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-    - ps -ef|grep 'bash serve.sh'|awk '{print $2}'|xargs kill
     - ps -ef|grep 'live-server'|grep -v grep|awk '{print $2}'|xargs kill
+    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
     - skaffold delete
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
