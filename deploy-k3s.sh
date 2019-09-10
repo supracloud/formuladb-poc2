@@ -48,7 +48,7 @@ hash kustomize &>/dev/null || { echo "kustomize not found! See https://github.co
 # To completely erase the dev environment execute: k3d delete
 if ! k3d get-kubeconfig &>/dev/null
 then
-  k3d create # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
+  k3d create --wait 0 --volume /etc/resolv.conf:/etc/resolv.conf.k3s --server-arg=--resolv-conf=/etc/resolv.conf.k3s # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
   while ! k3d get-kubeconfig --name='k3s-default' 2> /dev/null
   do
     sleep 5
@@ -61,9 +61,15 @@ then
     sleep 5
   done
 
-  kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+  while ! kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+  do
+    sleep 5
+  done
 
-  kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
+  while ! kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
+  do
+    sleep 5
+  done
 else
   export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
 fi

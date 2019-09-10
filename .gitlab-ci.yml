@@ -57,7 +57,7 @@ build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
   script:
     - export KUBECONFIG=`k3d get-kubeconfig`
-    - skaffold run
+    - skaffold run -p dev
   cache:
     key: ${CI_COMMIT_SHORT_SHA}
     paths:
@@ -172,7 +172,7 @@ deploy_demo:
     - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
   script:
     - export KUBECONFIG=k8s/demo-kube-config.conf
-    - skaffold run
+    - skaffold run -p dev
     - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
     - while ! nc -z localhost 5433; do sleep 1; done
