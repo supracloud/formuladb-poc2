@@ -119,9 +119,9 @@ stress:
 
 e2e_dev_env:
   stage: e2e_dev_env
-  before_script:
-    - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
   script:
+    - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
+    - trap 'kill $(jobs -p) 2> /dev/null || true' ERR
     - export KUBECONFIG=`k3d get-kubeconfig`
     - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     - nc -z localhost 8085 || kubectl port-forward $POD 8085:80 &
