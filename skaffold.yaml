@@ -13,6 +13,9 @@ build:
     docker:
       dockerfile: Dockerfile.be
       buildArgs: {}
+deploy:
+  kustomize:
+    path: k8s/overlays/production
 profiles:
   - name: dev
     patches:
@@ -28,4 +31,6 @@ profiles:
             namespace: default
             port: 80
             localPort: 8085
-
+      - op: replace
+        path: /deploy/kustomize/path
+        value: k8s/overlays/development

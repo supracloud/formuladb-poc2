@@ -14,8 +14,8 @@ data:
         include /etc/nginx/default.d/*.conf;
 
         location / {
-            #todo parameterize branch name "develop"
-            proxy_pass https://storage.googleapis.com/formuladb-static-assets/develop/;
+            set_by_lua $branch_name 'return os.getenv("BRANCH_NAME")';
+            proxy_pass https://storage.googleapis.com/formuladb-static-assets/${brach_name};
             error_page 404 = @root_fallback;
             proxy_intercept_errors on;
         }
