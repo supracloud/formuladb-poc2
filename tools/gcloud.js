@@ -3,17 +3,16 @@ const storage = new Storage({
     projectId: "seismic-plexus-232506",
 });
 
-async function uploadAssets(pathPrefix) {
-    var array = process.env.ASSETS.split(' ');
-    for (var assetid = 0; assetid < array.length; assetid++) {
-        storage.bucket('formuladb-static-assets').upload(array[assetid], { destination: `${pathPrefix}/${array[assetid]}` }, function (err, file) {
-            if (!err) {
-                console.log(file.name)
-            } else {
-                throw err;
-            }
-        });
-        console.log(array[assetid]);
+async function uploadAssets(tenantName) {
+    var array = process.env.ASSETS.split(/\s+/);
+    for (let fileName of array) {
+        storage.bucket('formuladb-static-assets')
+            .upload(fileName, { 
+                destination: `${tenantName}/production/${fileName.replace(/apps\//, '')}`,
+            })
+            .then(res => console.log(res))
+            .catch(err => console.error(err))
+        ;  
     }
 }
 
