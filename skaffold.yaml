@@ -28,4 +28,8 @@ profiles:
             namespace: default
             port: 80
             localPort: 8085
-
+          - resourceType: service
+            resourceName: git
+            namespace: default
+            port: 80
+            localPort: 8086

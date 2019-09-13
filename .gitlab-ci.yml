@@ -19,10 +19,11 @@ stages:
 build:
   stage: build
   script:
+    - env
     - npm install
     - npm run compile
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -34,7 +35,7 @@ bundle:
   script:
     - npm run bundle
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -46,7 +47,7 @@ deploy_dev_k3s_cluster:
   script:
     - sh deploy-k3s.sh
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -59,7 +60,7 @@ build_images_and_deploy_dev:
     - export KUBECONFIG=`k3d get-kubeconfig`
     - skaffold run
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -71,7 +72,7 @@ test_mem:
   script:
     - npm test
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -90,7 +91,7 @@ test_postgres:
     - FRMDB_STORAGE=postgres npm test
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -110,7 +111,7 @@ stress:
     - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -128,15 +129,19 @@ e2e_dev_env:
     - bash serve.sh &
     - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-    - ps -ef|grep 'bash serve.sh'|awk '{print $2}'|xargs kill
+    - ps -ef|grep '[b]ash serve.sh'|awk '{print $2}'|xargs kill
     - skaffold delete
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
       - dist-be/
       - dist-fe/
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - e2e/reports/
 
 publish_static_assets:
   stage: publish_static_assets
@@ -156,7 +161,7 @@ publish_static_assets:
     - cd dist
     - upload-assets `find -type f -printf '%P\n'`
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -179,7 +184,7 @@ deploy_demo:
     - PGPORT=5433 npm run e2e:data
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -194,7 +199,7 @@ e2e_demo_env:
   script:
     - TARGET=headless protractor --baseUrl='https://demo.formuladb.io' e2e/protractor.conf.js
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -217,7 +222,7 @@ deploy_production:
     - PGPORT=5433 npm run e2e:data
     - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -231,7 +236,7 @@ e2e_production_env:
   script:
     - TARGET=headless protractor --baseUrl='https://formuladb.io' e2e/protractor.conf.js
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/

@@ -8,7 +8,7 @@ handleErr () {
 }
 trap handleErr ERR
 
-./deploy-k3s.sh
+./tools/prepare-dev-tenant.sh
 
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed

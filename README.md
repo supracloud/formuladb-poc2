@@ -14,6 +14,15 @@ FormulaDB apps could be plain HTML/CSS/JS web apps:
   * [ ]  Add `DataObj`
   * [ ]  Delete `DataObj`
 
+```mermaid
+graph LR
+  git_febe --gitlab-ci--> docker:be
+  git_febe --gitlab-ci--> obj:frmdb-fe.js
+  git_febe --gitlab-ci--> obj:frmdb-editor.js
+  git_febe --gitlab-ci--> obj:frmdb-data-grid.js
+```
+
+
 ```ditaa
        +------------+                      +--------------+                                           +-------------------------------------------------+
        |            |                      |              |                                           |                                                 |

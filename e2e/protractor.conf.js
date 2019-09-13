@@ -3,6 +3,8 @@ const isWsl = require('is-wsl');
 
 var target = process.env.TARGET;
 
+var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+
 exports.config = {
   allScriptsTimeout: 11000,
   params: {
@@ -22,13 +24,13 @@ exports.config = {
 
     var multiCapabilities =
       [{
-          name: 'Chrome headless',
-          browserName: 'chrome',
-          chromeOptions: {
-            args: [
-              '--window-size=1920,1080'
-            ].concat(extra_args)
-          }
+        name: 'Chrome headless',
+        browserName: 'chrome',
+        chromeOptions: {
+          args: [
+            '--window-size=1920,1080'
+          ].concat(extra_args)
+        }
       }];
 
     return multiCapabilities;
@@ -61,7 +63,19 @@ exports.config = {
         displayPending: false,
       }
     }));
+
+    jasmine.getEnv().addReporter(new HtmlScreenshotReporter({
+      dest: 'e2e/reports',
+      filename: 'e2e-report.html',
+      captureOnlyFailedSpecs: true
+    }));
+
     browser.manage().window().maximize();
+    browser.manage().logs()
+      .get('browser').then(function (browserLog) {
+        console.log('log: ' +
+          require('util').inspect(browserLog));
+      });
     browser.waitForAngularEnabled(false);
   }
 };

@@ -36,7 +36,7 @@ hash skaffold &>/dev/null || { echo "skaffold not found! See https://skaffold.de
 # To completely erase the dev environment execute: k3d delete
 if ! k3d get-kubeconfig &>/dev/null
 then
-  k3d create # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
+  k3d create --api-port 6550 # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
   while ! k3d get-kubeconfig --name='k3s-default' 2> /dev/null
   do
     sleep 5

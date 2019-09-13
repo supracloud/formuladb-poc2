@@ -8,6 +8,8 @@ tsc-out
 tmp
 out-tsc
 docker-img
+cache
+builds
 
 # dependencies
 node_modules

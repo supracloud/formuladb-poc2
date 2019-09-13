@@ -20,6 +20,8 @@ spec:
           value: postgres
         - name: PGHOST
           value: db
+        - name: GITHOST
+          value: git
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /etc/gcp/sa_credentials.json
         image: registry.gitlab.com/metawiz/febe/formuladb-be
