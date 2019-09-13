@@ -1,8 +1,21 @@
 const { Storage } = require('@google-cloud/storage');
-const storage = new Storage({ 
-    keyFilename: `${process.env.FRMDB_TOOLS_DIR}/FormulaDB-storage-full.json`,
+const storage = new Storage({
     projectId: "seismic-plexus-232506",
 });
+
+async function uploadAssets(tenantName, pathPrefix) {
+    var array = process.env.ASSETS.split(' ');
+    for (var assetid = 0; assetid < array.length; assetid++) {
+        storage.bucket(tenantName).upload(array[assetid], { destination: `${pathPrefix}/${array[assetid]}` }, function (err, file) {
+            if (!err) {
+                console.log(file.name)
+            } else {
+                throw err;
+            }
+        });
+        console.log(array[assetid]);
+    }
+}
 
 async function listBuckets() {
     const [buckets] = await storage.getBuckets();
@@ -17,14 +30,15 @@ async function createBucketIfNotExists(bucketName) {
         location: 'eu',
         multiRegional: true,
     })
-    .catch(err => {
-        if (err.code === 409) {
-            console.log("Bucket already exists");
-        } else {
-            console.log(JSON.stringify(err, null, 4)); 
-            throw err;
-        }
-    });
+        .catch(err => {
+            if (err.code === 409) {
+                console.log(JSON.stringify(err, null, 4));
+                console.log("Bucket already exists");
+            } else {
+                console.log(JSON.stringify(err, null, 4));
+                throw err;
+            }
+        });
 }
 
 eval(process.argv[2]);
