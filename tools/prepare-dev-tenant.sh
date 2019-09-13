@@ -17,7 +17,7 @@ while ! k3d get-kubeconfig 2>/dev/null; do echo "waiting for k8s ..."; sleep 1; 
 # Second dependency: obj storage
 # -------------------------------------------------------------------------
 
-node $FRMDB_TOOLS_DIR/gcloud.js 'createBucketIfNotExists("'$TENANT_NAME'")'
+# node $FRMDB_TOOLS_DIR/gcloud.js 'createBucketIfNotExists("'$TENANT_NAME'")'
 
-ASSETS=`git ls-files | grep apps/hotel-booking/` node $FRMDB_TOOLS_DIR/gcloud.js \
-    'uploadAssets("'$TENANT_NAME'", "/hotel-booking")'
+ASSETS=`git ls-files apps/hotel-booking/ | sed -e 's!apps/!!'` node $FRMDB_TOOLS_DIR/gcloud.js \
+    'uploadAssets("'$TENANT_NAME'")'

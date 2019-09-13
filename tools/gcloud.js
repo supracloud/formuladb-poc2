@@ -3,10 +3,10 @@ const storage = new Storage({
     projectId: "seismic-plexus-232506",
 });
 
-async function uploadAssets(tenantName, pathPrefix) {
+async function uploadAssets(pathPrefix) {
     var array = process.env.ASSETS.split(' ');
     for (var assetid = 0; assetid < array.length; assetid++) {
-        storage.bucket(tenantName).upload(array[assetid], { destination: `${pathPrefix}/${array[assetid]}` }, function (err, file) {
+        storage.bucket('formuladb-static-assets').upload(array[assetid], { destination: `${pathPrefix}/${array[assetid]}` }, function (err, file) {
             if (!err) {
                 console.log(file.name)
             } else {
