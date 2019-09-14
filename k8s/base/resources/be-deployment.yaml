@@ -10,6 +10,12 @@ spec:
       labels:
         service: be
     spec:
+      initContainers:
+      - name: check-db-ready
+        image: postgres:11
+        command: ['sh', '-c', 
+          'until pg_isready -h db -p 5432; 
+          do echo waiting for database; sleep 2; done;']
       containers:
       - env:
         - name: DEBUG

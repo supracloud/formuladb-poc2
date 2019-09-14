@@ -13,12 +13,13 @@ spec:
         service: lb
     spec:
       containers:
-      - image: nginx
+      - image: nginx:alpine-perl
         name: lb
         ports:
         - containerPort: 80
         volumeMounts:
-        - mountPath: /etc/nginx/conf.d
+        - mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
           readOnly: true
           name: nginx-conf
         resources: {}

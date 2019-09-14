@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+data:
+  nginx.conf: |
+    worker_processes  2;
+    load_module /usr/lib/nginx/modules/ngx_http_perl_module.so;
+
+    env BRANCH_NAME;
+
+    events {
+        worker_connections  10240;
+    }
+
+    http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+
+        sendfile        on;
+
+        keepalive_timeout  65;
+
+        perl_set $branchname 'sub { return $ENV{"BRANCH_NAME"}; }';
+
+        upstream googlestorage {
+            server storage.googleapis.com:443;
+            keepalive 128;
+        }
+
+        server {
+            listen         80;
+            server_name  formuladb.online www.formuladb.online formuladb.io www.formuladb.io;
+            root         /usr/share/nginx/html;
+            rewrite  ^/$  /index.html  last;
+
+            location / {
+                proxy_set_header    Host storage.googleapis.com;
+                proxy_pass https://googlestorage/formuladb-static-assets/$branchname$uri;
+                proxy_intercept_errors on;
+
+                error_page 404 = @root_fallback;
+            }
+
+            location /formuladb-api {
+                proxy_pass http://be:8084/formuladb-api;
+            }
+
+            location @root_fallback {
+                proxy_pass http://be:8084;
+            }
+
+            # case-insensitive matching
+            location ~* /formuladb-editor/(.*)$ {
+                proxy_set_header    Host storage.googleapis.com;
+                proxy_pass https://googlestorage/formuladb-static-assets/vvvebjs/$1;
+            }
+
+            location ~* /formuladb/(.*)$ {
+                proxy_set_header    Host storage.googleapis.com;
+                proxy_pass https://googlestorage/formuladb-static-assets/fe/$1;
+            }
+
+            error_page 404 /404.html;
+                location = /40x.html {
+            }
+
+            error_page 500 502 503 504 /50x.html;
+                location = /50x.html {
+            }
+        }
+    }
