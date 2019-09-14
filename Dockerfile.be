@@ -11,7 +11,7 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
-COPY dist-be/frmdb-be.js /dist-be/frmdb-be.js
+COPY dist-be/frmdb-be* /dist-be/
 
 EXPOSE 3000
 

@@ -32,39 +32,39 @@ spec:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 80
+          servicePort: 8085
   - host: formuladb.io
     http:
       paths:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 80
+          servicePort: 8085
   - host: www.formuladb.online
     http:
       paths:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 80
+          servicePort: 8085
   - host: www.formuladb.io
     http:
       paths:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 80
+          servicePort: 8085
   - host: staging.formuladb.io
     http:
       paths:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 80
+          servicePort: 8085
   - host: demo.formuladb.io
     http:
       paths:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 80
+          servicePort: 8085

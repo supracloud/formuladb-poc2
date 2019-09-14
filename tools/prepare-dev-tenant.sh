@@ -1,3 +1,4 @@
+#!/bin/bash
 TENANT_NAME=$1
 if [ -z "$TENANT_NAME" ]; then echo "please supply tenant name"; exit 1; fi
 
@@ -26,5 +27,3 @@ node $FRMDB_TOOLS_DIR/gcloud.js
 # curl -v --request PUT --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' --header "Content-Type: application/json" \
 #     --data '{"name": "'$TENANT_NAME'", "path": "'$TENANT_NAME'", "visibility": "private"}' \
 #     'https://gitlab.com/api/v4/groups'
-
-

@@ -3,6 +3,17 @@
  * License TBD
  */
 
+ // Add this to the VERY top of the first file loaded in your app
+var apm = require('elastic-apm-node').start({
+    // Override service name from package.json
+    serviceName: 'formuladb-be',
+    // Use if APM Server requires a token
+    //secretToken: '',
+    serverUrl: 'https://apmserver.formuladb.io',
+    // for now send events for both dev and prod. Update in the future to disable dev
+    active: process.env.NODE_ENV != ''
+  })
+
 require('source-map-support').install();
 require('module-alias/register');
 
