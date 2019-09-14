@@ -45,7 +45,7 @@ bundle:
 deploy_dev_k3s_cluster:
   stage: deploy_dev_k3s_cluster
   script:
-    - sh deploy-k3s.sh
+    - sh tools/deploy-k3s.sh
   cache:
     key: ${CI_COMMIT_SHA}
     paths:

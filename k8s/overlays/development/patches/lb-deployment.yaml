@@ -9,4 +9,4 @@ spec:
       - name: lb
         env:
         - name: BRANCH_NAME
-          value: 0d52e11246b61c8273fa52de99351d9c38b677c3 #TBD_CI_COMMIT_SHA
+          value: aeafeb1f61d78ff9e21e5ec33c8559044e6d4ed0/v1 #TBD_CI_COMMIT_SHA

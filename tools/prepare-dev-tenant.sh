@@ -2,6 +2,7 @@ TENANT_NAME=$CI_COMMIT_SHA
 if [ -z "$TENANT_NAME" ]; then 
     TENANT_NAME=`git rev-parse HEAD`
 fi
+TENANT_NAME="${TENANT_NAME}/v1"
 
 export FRMDB_TOOLS_DIR=`dirname $0`
 export GOOGLE_APPLICATION_CREDENTIALS=$FRMDB_TOOLS_DIR/FormulaDB-storage-full.json
@@ -10,9 +11,7 @@ export GOOGLE_APPLICATION_CREDENTIALS=$FRMDB_TOOLS_DIR/FormulaDB-storage-full.js
 # First dependency: k8s
 # -------------------------------------------------------------------------
 
-if ! k3d get-kubeconfig &>/dev/null; then
-    . deploy-k3s.sh
-fi
+. $FRMDB_TOOLS_DIR/deploy-k3s.sh
 while ! k3d get-kubeconfig 2>/dev/null; do echo "waiting for k8s ..."; sleep 1; done;
 
 # -------------------------------------------------------------------------
@@ -32,5 +31,8 @@ hash gsutil || {
 # ASSETS="`git ls-files apps/hotel-booking/`" node $FRMDB_TOOLS_DIR/gcloud.js \
 #     'uploadAssets("'$TENANT_NAME'")'
 
-gsutil -m rsync -r apps/hotel-booking gs://formuladb-static-assets/$TENANT_NAME/production/hotel-booking
-perl -p -i -e 's/value.*#TBD_CI_COMMIT_SHA/value: '$TENANT_NAME' #TBD_CI_COMMIT_SHA/' k8s/overlays/development/patches/lb-deployment.yaml
+gsutil -m rsync -r apps/formuladb.io gs://formuladb-static-assets/$TENANT_NAME/
+gsutil -m rsync -r apps/hotel-booking gs://formuladb-static-assets/$TENANT_NAME/examples/hotel-booking
+gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$TENANT_NAME/frmdb-editor
+gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$TENANT_NAME/formuladb
+perl -p -i -e 's!value.*#TBD_CI_COMMIT_SHA!value: '$TENANT_NAME' #TBD_CI_COMMIT_SHA!' k8s/overlays/development/patches/lb-deployment.yaml

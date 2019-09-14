@@ -6,6 +6,7 @@ data:
   nginx.conf: |
     worker_processes  2;
     load_module /usr/lib/nginx/modules/ngx_http_perl_module.so;
+    error_log stderr;
 
     env BRANCH_NAME;
 
@@ -21,7 +22,7 @@ data:
                         '$status $body_bytes_sent "$http_referer" '
                         '"$http_user_agent" "$http_x_forwarded_for"';
 
-        access_log  /var/log/nginx/access.log  main;
+        access_log  /dev/stdout  main;
 
         sendfile        on;
 
@@ -54,17 +55,6 @@ data:
 
             location @root_fallback {
                 proxy_pass http://be:8084;
-            }
-
-            # case-insensitive matching
-            location ~* /formuladb-editor/(.*)$ {
-                proxy_set_header    Host storage.googleapis.com;
-                proxy_pass https://googlestorage/formuladb-static-assets/vvvebjs/$1;
-            }
-
-            location ~* /formuladb/(.*)$ {
-                proxy_set_header    Host storage.googleapis.com;
-                proxy_pass https://googlestorage/formuladb-static-assets/fe/$1;
             }
 
             error_page 404 /404.html;
