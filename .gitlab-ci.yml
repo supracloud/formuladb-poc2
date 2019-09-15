@@ -17,12 +17,12 @@ stages:
 
 .cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+  #   key: ${CI_COMMIT_SHA}
+  #   paths:
+  #     - node_modules/
+  #     - tsc-out/
+  #     - dist-be/
+  #     - dist-fe/
 
 .only_for_staging_and_production: &only_for_staging_and_production
   only:

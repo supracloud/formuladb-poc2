@@ -5,7 +5,6 @@ import { InventoryApp, InventorySchema } from "@test/inventory/metadata";
 import { FormuladbIoApp, FormuladbIoSchema } from "@test/formuladb.io/metadata";
 import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
 import { Page } from "@domain/uimetadata/page";
-import { GitStorageI } from "./git-storage-i";
 
 import { Storage } from '@google-cloud/storage';
 const STORAGE = new Storage({
@@ -15,7 +14,7 @@ const STORAGE = new Storage({
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
 
-    constructor(private gitStorage: GitStorageI, public kvsFactory: KeyValueStoreFactoryI) {}
+    constructor(public kvsFactory: KeyValueStoreFactoryI) {}
    
     async getMetadataKOS() {
         if (!this.metadataKOS) {
@@ -84,6 +83,6 @@ export class MetadataStore {
     async savePageHtml(pagePath: string, html: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
         
-        return this.gitStorage.savePage(tenantName, appName, pageName, html);
+        return STORAGE. ;
     }
 }
