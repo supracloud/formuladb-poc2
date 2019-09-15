@@ -4,7 +4,7 @@ import {Room, Booking} from '@test/hotel-booking/metadata';
 export class HotelBooking {
  
   async navigateToHome() {
-    await browser.get('formuladb-editor/editor.html#/frmdb-apps/hotel-booking/index.html');
+    await browser.get('formuladb-editor/editor.html#/examples/hotel-booking/index.html');
   }
 
   /**
