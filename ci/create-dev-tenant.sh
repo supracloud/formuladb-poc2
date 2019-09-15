@@ -1,0 +1,45 @@
+TENANT_NAME=$1
+if [ -z "$TENANT_NAME" ]; then echo "Usage: create_tenant.sh TENANT_NAME"; exit 1; fi
+
+export BASEDIR=`dirname $0`
+export GOOGLE_APPLICATION_CREDENTIALS=$BASEDIR/FormulaDB-storage-full.json
+export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
+
+# -------------------------------------------------------------------------
+# External dependency: obj storage
+# -------------------------------------------------------------------------
+
+hash gsutil || {
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    sudo apt-get install -y apt-transport-https ca-certificates
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+    sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+    gcloud auth activate-service-account --key-file=tools/FormulaDB-storage-full.json
+}
+
+# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$TENANT_NAME'")'
+
+# ASSETS="`git ls-files apps/hotel-booking/`" node $BASEDIR/gcloud.js \
+#     'uploadAssets("'$TENANT_NAME'")'
+
+gsutil -m rsync -r apps/formuladb.io gs://formuladb-static-assets/$TENANT_NAME/
+gsutil -m rsync -r apps/hotel-booking gs://formuladb-static-assets/$TENANT_NAME/examples/hotel-booking
+gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$TENANT_NAME/frmdb-editor
+gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$TENANT_NAME/formuladb
+perl -p -i -e 's!value.*#TBD_TENANT_NAME!value: '$TENANT_NAME' #TBD_TENANT_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
+
+# -------------------------------------------------------------------------
+# External dependency: Elastic stack
+# -------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------
+# External dependency: k8s
+# -------------------------------------------------------------------------
+
+if ! kubectl get namespaces|grep "\b${TENANT_NAME}\b"; then 
+    kubectl create namespace "${TENANT_NAME}" 
+fi
+
+if ! kubectl -n "${TENANT_NAME}" get secrets | grep "\bregcred\b"; then 
+    kubectl -n "${TENANT_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+fi

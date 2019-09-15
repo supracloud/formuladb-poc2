@@ -10,6 +10,7 @@ out-tsc
 docker-img
 cache
 builds
+/e2e/reports
 
 # dependencies
 node_modules

@@ -26,14 +26,6 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/development
-      - op: add
-        path: /portForward
-        value:
-          - resourceType: service
-            resourceName: git
-            namespace: default
-            port: 8085
-            localPort: 8086
   - name: staging
     patches:
       - op: replace
