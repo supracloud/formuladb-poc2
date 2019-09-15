@@ -1,6 +1,6 @@
 set -x
 
-handleErr () {
+handleErr() {
     errcode=$?
     set +x
     echo "ERR on line ${BASH_LINENO[0]}: $BASH_COMMAND RETURNED $errcode"
@@ -46,7 +46,7 @@ hash kustomize &>/dev/null || { echo "kustomize not found! See https://github.co
 [ -f "$HOME/.docker/config.json" ] || { echo "Not logged in to docker registry. Run docker login registry.gitlab.com"; exit $ERRCODE; }
 
 # To completely erase the dev environment execute: k3d delete
-if ! k3d get-kubeconfig &>/dev/null
+if ! k3d get-kubeconfig
 then
   k3d create --api-port 6550 # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
   while ! k3d get-kubeconfig --name='k3s-default' 2> /dev/null
@@ -66,10 +66,11 @@ then
     sleep 5
   done
 
-  while ! kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
-  do
-    sleep 5
-  done
+  if ! kubectl get secrets | grep "\bregcred\b"; then 
+    echo "regcred already creatd"
+  else
+    kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
+  fi
 else
   export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
 fi

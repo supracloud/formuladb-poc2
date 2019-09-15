@@ -7,6 +7,11 @@ import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i"
 import { Page } from "@domain/uimetadata/page";
 import { GitStorageI } from "./git-storage-i";
 
+import { Storage } from '@google-cloud/storage';
+const STORAGE = new Storage({
+    projectId: "seismic-plexus-232506",
+});
+
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
 
