@@ -4,11 +4,11 @@ set -Ee
 trap _cleanup ERR
 trap _cleanup EXIT
 
-TENANT_NAME="t$CI_COMMIT_SHA"
-if [ -z "$TENANT_NAME" ]; then 
-    TENANT_NAME="t`git rev-parse HEAD`"
+ENV_NAME="t$CI_COMMIT_SHA"
+if [ -z "$ENV_NAME" ]; then 
+    ENV_NAME="t`git rev-parse HEAD`"
 fi
-export TENANT_NAME
+export ENV_NAME
 export KUBECONFIG=k8s/production-kube-config.conf
 export BASEDIR=`dirname $0`
 
@@ -18,32 +18,32 @@ function _cleanup {
 }
 
 function build_images_and_deploy_dev {
-    bash $BASEDIR/create-dev-tenant.sh "$TENANT_NAME"
+    bash $BASEDIR/create-dev-tenant.sh "$ENV_NAME"
     skaffold run -p dev
-    POD=`kubectl -n $TENANT_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5432 || kubectl -n $TENANT_NAME port-forward $POD 5432:5432 &
+    POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 5432 || kubectl -n $ENV_NAME port-forward $POD 5432:5432 &
     while ! nc -z localhost 5432; do sleep 1; done
     npm run e2e:data
 }
 
 function test_postgres {
-    POD=`kubectl -n $TENANT_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5432 || kubectl -n $TENANT_NAME port-forward $POD 5432:5432 &
+    POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 5432 || kubectl -n $ENV_NAME port-forward $POD 5432:5432 &
     while ! nc -z localhost 5432; do sleep 1; done
     FRMDB_STORAGE=postgres npm test
 }
 
 function test_stress {
     npm test -- core/src/frmdb_engine.stress.spec.ts
-    POD=`kubectl -n $TENANT_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5432 || kubectl -n $TENANT_NAME port-forward $POD 5432:5432 &
+    POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 5432 || kubectl -n $ENV_NAME port-forward $POD 5432:5432 &
     while ! nc -z localhost 5432; do sleep 1; done
     FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
 }
 
 function e2e_dev_env {
-    POD=`kubectl -n $TENANT_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 8085 || kubectl -n $TENANT_NAME port-forward $POD 8085:80 &
+    POD=`kubectl -n $ENV_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 8085 || kubectl -n $ENV_NAME port-forward $POD 8085:80 &
     bash serve.sh &
     TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
 #    - skaffold delete
@@ -70,9 +70,9 @@ function publish_static_assets {
 }
 
 function deploy_staging {
-    skaffold -n $TENANT_NAME run -p staging
-    POD=`kubectl -n $TENANT_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5433 || kubectl -n $TENANT_NAME port-forward $POD 5433:5432 &
+    skaffold -n $ENV_NAME run -p staging
+    POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 5433 || kubectl -n $ENV_NAME port-forward $POD 5433:5432 &
     while ! nc -z localhost 5433; do sleep 1; done
     PGPORT=5433 npm run e2e:data
 }
@@ -82,9 +82,9 @@ function e2e_demo_env {
 }
 
 function deploy_production {
-    skaffold -n $TENANT_NAME run
-    POD=`kubectl -n $TENANT_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5433 || kubectl -n $TENANT_NAME port-forward $POD 5433:5432 &
+    skaffold -n $ENV_NAME run
+    POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 5433 || kubectl -n $ENV_NAME port-forward $POD 5433:5432 &
     while ! nc -z localhost 5433; do sleep 1; done
     PGPORT=5433 npm run e2e:data
 }

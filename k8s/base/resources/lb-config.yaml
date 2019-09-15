@@ -8,7 +8,7 @@ data:
     load_module /usr/lib/nginx/modules/ngx_http_perl_module.so;
     error_log stderr;
 
-    env BRANCH_NAME;
+    env ENV_NAME;
 
     events {
         worker_connections  10240;
@@ -28,7 +28,7 @@ data:
 
         keepalive_timeout  65;
 
-        perl_set $branchname 'sub { return $ENV{"BRANCH_NAME"}; }';
+        perl_set $envname 'sub { return $ENV{"ENV_NAME"}; }';
 
         upstream googlestorage {
             server storage.googleapis.com:443;
@@ -43,7 +43,7 @@ data:
 
             location / {
                 proxy_set_header    Host storage.googleapis.com;
-                proxy_pass https://googlestorage/formuladb-static-assets/$branchname$uri;
+                proxy_pass https://googlestorage/formuladb-static-assets/$envname$uri;
                 proxy_intercept_errors on;
 
                 error_page 404 = @root_fallback;

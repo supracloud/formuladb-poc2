@@ -1,5 +1,5 @@
-TENANT_NAME=$1
-if [ -z "$TENANT_NAME" ]; then echo "Usage: create_tenant.sh TENANT_NAME"; exit 1; fi
+ENV_NAME=$1
+if [ -z "$ENV_NAME" ]; then echo "Usage: create_tenant.sh ENV_NAME"; exit 1; fi
 
 export BASEDIR=`dirname $0`
 export GOOGLE_APPLICATION_CREDENTIALS=$BASEDIR/FormulaDB-storage-full.json
@@ -17,16 +17,17 @@ hash gsutil || {
     gcloud auth activate-service-account --key-file=tools/FormulaDB-storage-full.json
 }
 
-# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$TENANT_NAME'")'
+# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$ENV_NAME'")'
 
 # ASSETS="`git ls-files apps/hotel-booking/`" node $BASEDIR/gcloud.js \
-#     'uploadAssets("'$TENANT_NAME'")'
+#     'uploadAssets("'$ENV_NAME'")'
 
-gsutil -m rsync -r apps/formuladb.io gs://formuladb-static-assets/$TENANT_NAME/
-gsutil -m rsync -r apps/hotel-booking gs://formuladb-static-assets/$TENANT_NAME/examples/hotel-booking
-gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$TENANT_NAME/frmdb-editor
-gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$TENANT_NAME/formuladb
-perl -p -i -e 's!value.*#TBD_TENANT_NAME!value: '$TENANT_NAME' #TBD_TENANT_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
+gsutil -m rsync -r apps/formuladb.io gs://formuladb-static-assets/$ENV_NAME/
+gsutil -m rsync -r apps/hotel-booking gs://formuladb-static-assets/$ENV_NAME/examples/hotel-booking
+gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$ENV_NAME/frmdb-editor
+gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$ENV_NAME/formuladb
+perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
+perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 
 # -------------------------------------------------------------------------
 # External dependency: Elastic stack
@@ -36,10 +37,10 @@ perl -p -i -e 's!value.*#TBD_TENANT_NAME!value: '$TENANT_NAME' #TBD_TENANT_NAME!
 # External dependency: k8s
 # -------------------------------------------------------------------------
 
-if ! kubectl get namespaces|grep "\b${TENANT_NAME}\b"; then 
-    kubectl create namespace "${TENANT_NAME}" 
+if ! kubectl get namespaces|grep "\b${ENV_NAME}\b"; then 
+    kubectl create namespace "${ENV_NAME}" 
 fi
 
-if ! kubectl -n "${TENANT_NAME}" get secrets | grep "\bregcred\b"; then 
-    kubectl -n "${TENANT_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+if ! kubectl -n "${ENV_NAME}" get secrets | grep "\bregcred\b"; then 
+    kubectl -n "${ENV_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
 fi

@@ -14,7 +14,7 @@ const STORAGE = new Storage({
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
 
-    constructor(public kvsFactory: KeyValueStoreFactoryI) {}
+    constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) {}
    
     async getMetadataKOS() {
         if (!this.metadataKOS) {
@@ -83,6 +83,7 @@ export class MetadataStore {
     async savePageHtml(pagePath: string, html: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
         
-        return STORAGE. ;
+        let gcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${pageName}`);
+        gcFile.createWriteStream().write(html);
     }
 }

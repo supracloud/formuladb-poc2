@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: lb
+  name: be
 spec:
   template:
     spec:
       containers:
-      - name: lb
+      - name: be
         env:
         - name: ENV_NAME
-          value: tdev-acr #TBD_ENV_NAME
+          value: master
