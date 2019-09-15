@@ -8,7 +8,7 @@ build:
       manual:
       # Sync all the javascript files that are in the dist-be folder
       # with the container's root
-      - src: 'dist-be/**/*.js'
+      - src: 'dist-be/**/*.js*'
         dest: .
     docker:
       dockerfile: Dockerfile.be
@@ -23,14 +23,19 @@ profiles:
         path: /build/artifacts/0/docker/buildArgs
         value:
           BUILD_DEVELOPMENT: 1
+      - op: replace
+        path: /deploy/kustomize/path
+        value: k8s/overlays/development
       - op: add
         path: /portForward
         value:
           - resourceType: service
-            resourceName: lb
+            resourceName: git
             namespace: default
-            port: 80
-            localPort: 8085
+            port: 8085
+            localPort: 8086
+  - name: staging
+    patches:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/development

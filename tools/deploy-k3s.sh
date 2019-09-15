@@ -48,7 +48,7 @@ hash kustomize &>/dev/null || { echo "kustomize not found! See https://github.co
 # To completely erase the dev environment execute: k3d delete
 if ! k3d get-kubeconfig
 then
-  k3d create --api-port 6550 # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
+  k3d create --api-port 6550 --wait 0 --auto-restart # --volume /etc/resolv.conf:/etc/resolv.conf.k3s --server-arg=--resolv-conf=/etc/resolv.conf.k3s # add --publish 80:80 --publish 443:443 to access the Ingress that exposes the LB
   while ! k3d get-kubeconfig --name='k3s-default' 2> /dev/null
   do
     sleep 5
@@ -66,11 +66,10 @@ then
     sleep 5
   done
 
-  if ! kubectl get secrets | grep "\bregcred\b"; then 
-    echo "regcred already creatd"
-  else
-    kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
-  fi
+  while ! kubectl create secret generic regcred --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson
+  do
+    sleep 5
+  done
 else
   export KUBECONFIG="$(k3d get-kubeconfig --name='k3s-default')"
 fi

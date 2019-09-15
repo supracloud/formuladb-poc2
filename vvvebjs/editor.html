@@ -2,6 +2,14 @@
 <html lang="en">
 
 <head>
+	<script src="https://storage.googleapis.com/formuladb-static-assets/elastic-apm-rum.umd.min.js">
+	</script>
+	<script>
+	  elasticApm.init({
+		serviceName: 'formuladb-editor',
+		serverUrl: 'https://apmserver.formuladb.io'
+	  })
+	</script>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

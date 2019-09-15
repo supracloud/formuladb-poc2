@@ -2,273 +2,139 @@ stages:
   - build
   - test_mem
   - bundle
-  - deploy_dev_k3s_cluster
   - build_images_and_deploy_dev
   - test_postgres
-  - stress
+  - test_stress
   - e2e_dev_env
   - publish_static_assets
-  - deploy_demo
+  - deploy_staging
   - e2e_demo_env
   - deploy_production
   - e2e_production_env
-  # - e2e_example_apps
+  - e2e_example_apps
   - cleanup
-  # - videos
+  - videos
 
-build:
-  stage: build
-  script:
-    - env
-    - npm install
-    - npm run compile
+.cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
   cache:
-    key: ${CI_COMMIT_SHA}
+    key: ${CI_COMMIT_SHORT_SHA}
     paths:
       - node_modules/
       - tsc-out/
       - dist-be/
       - dist-fe/
+
+.only_for_staging_and_production: &only_for_staging_and_production
+  only:
+    - master
+    - tags
+
+.only_for_production: &only_for_production
+  only:
+    - tags
+
+build:
+  stage: build
+  script:
+    - npm install
+    - npm run compile
+  <<: *cache_node_modules_and_artifacts
 
 bundle:
   stage: bundle
   script:
     - npm run bundle
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
-
-deploy_dev_k3s_cluster:
-  stage: deploy_dev_k3s_cluster
-  script:
-    - sh tools/deploy-k3s.sh
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+  <<: *cache_node_modules_and_artifacts
 
 build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
   script:
-    - export KUBECONFIG=`k3d get-kubeconfig`
-    - skaffold run -p dev
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
 
 test_mem:
   stage: test_mem
   script:
     - npm test
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+  <<: *cache_node_modules_and_artifacts
 
 test_postgres:
   stage: test_postgres
-  before_script:
-    - trap 'kill $(jobs -p)' EXIT
   script:
-    - export KUBECONFIG=`k3d get-kubeconfig`
-    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
-    - while ! nc -z localhost 5432; do sleep 1; done
-    - FRMDB_STORAGE=postgres npm test
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
 
-stress:
-  stage: stress
-  before_script:
-    - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
+test_stress:
+  stage: test_stress
   script:
-    - npm test -- core/src/frmdb_engine.stress.spec.ts
-    - export KUBECONFIG=`k3d get-kubeconfig`
-    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5432 || kubectl port-forward $POD 5432:5432 &
-    - while ! nc -z localhost 5432; do sleep 1; done
-    - FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
 
 e2e_dev_env:
   stage: e2e_dev_env
   script:
-    - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
-    - trap 'kill $(jobs -p) 2> /dev/null || true' ERR
-    - export KUBECONFIG=`k3d get-kubeconfig`
-    - POD=`kubectl get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 8085 || kubectl port-forward $POD 8085:80 &
-    - bash serve.sh &
-    - TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
-    - ps -ef|grep 'live-server'|grep -v grep|awk '{print $2}'|xargs kill
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-    - ps -ef|grep '[b]ash serve.sh'|awk '{print $2}'|xargs kill
-    - skaffold delete
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
-  artifacts:
-    expire_in: 1 week
-    paths:
-      - e2e/reports/
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
 
 publish_static_assets:
   stage: publish_static_assets
   script:
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/frmdb-apps/ci-tools.git
-    - cd ci-tools
-    - npm install
-    - source tools.sh
-    - cd ..
-    - export NODE_PATH=`pwd`/ci-tools/node_modules
-    # publish vvvebj on GCloud
-    - upload-assets `find vvvebjs -type f -print`
-    # publish FE on GCloud
-    - mkdir -p dist/fe
-    - cp fe/js/*js dist-fe/frmdb-fe.js dist-fe/frmdb-data-grid.js dist-fe/frmdb-editor.js dist/fe
-    - cp -ar fe/img dist/fe/
-    - cd dist
-    - upload-assets `find -type f -printf '%P\n'`
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
-  only:
-    - master
-    - tags
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
+  <<: *only_for_staging_and_production
 
-deploy_demo:
-  stage: deploy_demo
-  before_script:
-    - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
+deploy_staging:
+  stage: deploy_staging
   script:
-    - export KUBECONFIG=k8s/demo-kube-config.conf
-    - skaffold run -p dev
-    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
-    - while ! nc -z localhost 5433; do sleep 1; done
-    - PGPORT=5433 npm run e2e:data
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
-  only:
-    - master
-    - tags
+    - ./ci/jobs.sh $CI_JOB_NAME
+  environment:
+    name: staging
+    url: https://staging.formuladb.io
+  <<: *cache_node_modules_and_artifacts
+  <<: *only_for_staging_and_production
 
 e2e_demo_env:
   stage: e2e_demo_env
   script:
-    - TARGET=headless protractor --baseUrl='https://demo.formuladb.io' e2e/protractor.conf.js
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
-  only:
-    - master
-    - tags
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
+  <<: *only_for_staging_and_production
 
 deploy_production:
   stage: deploy_production
-  before_script:
-    - trap 'kill $(jobs -p) 2> /dev/null || true' EXIT
   script:
-    - export KUBECONFIG=k8s/production-kube-config.conf
-    - skaffold run
-    - POD=`kubectl get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    - nc -z localhost 5433 || kubectl port-forward $POD 5433:5432 &
-    - while ! nc -z localhost 5433; do sleep 1; done
-    - PGPORT=5433 npm run e2e:data
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
-  only:
-    - tags
+    - ./ci/jobs.sh $CI_JOB_NAME
+  environment:
+    name: production
+    url: https://formuladb.io
+  <<: *cache_node_modules_and_artifacts
+  <<: *only_for_production
 
 e2e_production_env:
   stage: e2e_production_env
   script:
-    - TARGET=headless protractor --baseUrl='https://formuladb.io' e2e/protractor.conf.js
-  cache:
-    key: ${CI_COMMIT_SHA}
+    - ./ci/jobs.sh $CI_JOB_NAME
+  <<: *cache_node_modules_and_artifacts
+  <<: *only_for_production
+
+.e2e_example_apps:
+  script:
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/metawiz/e2e.git
+
+.videos:
+  stage: videos
+  script:
+    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.1 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
+  artifacts:
+    expire_in: 1 week
     paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - dist-fe/
+      - fe/e2e/protractor_videos/
   only:
-    - tags
-
-# e2e_example_apps:
-#   script:
-#     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/metawiz/e2e.git
-
-# videos:
-#   stage: videos
-#   script:
-#     - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.1 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
-#   artifacts:
-#     expire_in: 1 week
-#     paths:
-#       - fe/e2e/protractor_videos/
-#   only:
-#     refs:
-#       - master
+    refs:
+      - master
 
 cleanup:
   stage: cleanup
   script:
-    - docker system prune -af
-#    - killall node --quiet || true
-    - find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
-    # cleanup registry: BE development images in febe project
-    - bash ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 2
-    - /bin/bash -c '/usr/bin/killall -q kubectl; exit 0'
+    - ./ci/jobs.sh $CI_JOB_NAME
   when: always
