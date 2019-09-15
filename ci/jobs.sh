@@ -8,6 +8,7 @@ ENV_NAME="t$CI_COMMIT_SHA"
 if [ -z "$ENV_NAME" ]; then 
     ENV_NAME="t`git rev-parse HEAD`"
 fi
+echo "ENV_NAME=${ENV_NAME}"
 export ENV_NAME
 export KUBECONFIG=k8s/production-kube-config.conf
 export BASEDIR=`dirname $0`

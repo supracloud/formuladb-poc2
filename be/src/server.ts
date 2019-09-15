@@ -11,7 +11,11 @@ var apm = require('elastic-apm-node').start({
     //secretToken: '',
     serverUrl: 'https://apmserver.formuladb.io',
     // for now send events for both dev and prod. Update in the future to disable dev
-    active: process.env.NODE_ENV != ''
+    active: true,
+    environment: process.env.ENV_NAME || 'not-known',
+    // captureBody: true,
+    // transactionSampleRate: 1.0,
+    verifyServerCert: false,//TODO: fix this
   })
 
 require('source-map-support').install();
