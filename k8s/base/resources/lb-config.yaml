@@ -6,8 +6,9 @@ data:
   nginx.conf: |
     worker_processes  2;
     load_module /usr/lib/nginx/modules/ngx_http_perl_module.so;
+    error_log stderr;
 
-    env BRANCH_NAME;
+    env ORGANIZ_NAME;
 
     events {
         worker_connections  10240;
@@ -21,13 +22,13 @@ data:
                         '$status $body_bytes_sent "$http_referer" '
                         '"$http_user_agent" "$http_x_forwarded_for"';
 
-        access_log  /var/log/nginx/access.log  main;
+        access_log  /dev/stdout  main;
 
         sendfile        on;
 
         keepalive_timeout  65;
 
-        perl_set $branchname 'sub { return $ENV{"BRANCH_NAME"}; }';
+        perl_set $envname 'sub { return $ENV{"ORGANIZ_NAME"}; }';
 
         upstream googlestorage {
             server storage.googleapis.com:443;
@@ -40,9 +41,21 @@ data:
             root         /usr/share/nginx/html;
             rewrite  ^/$  /index.html  last;
 
+            #FIXME: this returns 404, why?
+            # location /index.html {
+            #     proxy_set_header    Host storage.googleapis.com;
+            #     proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb.io/portal/$uri;
+            #     proxy_intercept_errors on;
+            # }
+            # location /assets {
+            #     proxy_set_header    Host storage.googleapis.com;
+            #     proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb.io/portal/$uri;
+            #     proxy_intercept_errors on;
+            # }
+
             location / {
                 proxy_set_header    Host storage.googleapis.com;
-                proxy_pass https://googlestorage/formuladb-static-assets/$branchname$uri;
+                proxy_pass https://googlestorage/formuladb-static-assets/$envname$uri;
                 proxy_intercept_errors on;
 
                 error_page 404 = @root_fallback;
@@ -54,17 +67,6 @@ data:
 
             location @root_fallback {
                 proxy_pass http://be:8084;
-            }
-
-            # case-insensitive matching
-            location ~* /formuladb-editor/(.*)$ {
-                proxy_set_header    Host storage.googleapis.com;
-                proxy_pass https://googlestorage/formuladb-static-assets/vvvebjs/$1;
-            }
-
-            location ~* /formuladb/(.*)$ {
-                proxy_set_header    Host storage.googleapis.com;
-                proxy_pass https://googlestorage/formuladb-static-assets/fe/$1;
             }
 
             error_page 404 /404.html;

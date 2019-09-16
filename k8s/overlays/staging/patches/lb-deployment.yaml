@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: lb
+spec:
+  template:
+    spec:
+      containers:
+      - name: lb
+        env:
+        - name: ORGANIZ_NAME
+          value: staging

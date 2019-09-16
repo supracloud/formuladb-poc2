@@ -9,7 +9,7 @@ import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector'
 
 describe('TransactionManager', () => {
     beforeEach(async (done) => {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
         done();
     });
 

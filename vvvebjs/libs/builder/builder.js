@@ -1275,6 +1275,19 @@ Vvveb.Builder = {
 		for (let frmdbFragment of Array.from(cleanedUpDOM.querySelectorAll('frmdb-fragment'))) {
 			frmdbFragment.innerHTML = '';
 		}
+
+		//cleanup stelar.js styles
+		for (let el of Array.from(cleanedUpDOM.querySelectorAll('[data-stellar-vertical-offset]'))) {
+			el.style.removeProperty('transform');
+		}
+
+		//cleanup isotope.js styles
+		for (let el of Array.from(cleanedUpDOM.querySelectorAll('[data-category]'))) {
+			el.style.removeProperty('position');
+			el.style.removeProperty('left');
+			el.style.removeProperty('top');
+		}
+		
 		html += frmdbNormalizeHTMLStr(cleanedUpDOM.innerHTML) + "\n</html>";
 
 		html = this.removeHelpers(html, keepHelperAttributes);

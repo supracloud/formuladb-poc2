@@ -53,7 +53,7 @@ describe('Inventory Metadata', () => {
         await frmdbTStore.clearAllForTestingPurposes();
         await frmdbEngine.init();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
         done();
     });

@@ -1,0 +1,7 @@
+{
+    "auths": {
+            "registry.gitlab.com": {
+                    "auth": "YWNyaXN0dTpjM2NjMzdhNTQ5"
+            }
+    }
+}

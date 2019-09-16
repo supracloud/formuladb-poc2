@@ -1,6 +1,6 @@
 {
     "name": "formuladb",
-    "version": "0.0.12",
+    "version": "0.0.17",
     "description": "FormulaDB low code platform",
     "scripts": {
         "start": "node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
@@ -12,9 +12,9 @@
         "docker:be": "docker build -t formuladb-be -f Dockerfile.be . && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:${npm_package_version} && docker tag formuladb-be registry.gitlab.com/metawiz/febe/formuladb-be:latest",
         "docker:fe": "docker build -t formuladb-maps -f Dockerfile.fe . && docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:${npm_package_version}",
         "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
-        "dev:watch": "while ! k3d get-kubeconfig 2>/dev/null; do sleep 1; done; KUBECONFIG=`k3d get-kubeconfig` skaffold dev -p dev --port-forward=true",
+        "skaffold": "KUBECONFIG=k8s/production-kube-config.conf skaffold dev -n \"tdev-${USER}\" -p dev --port-forward=true",
         "sass:watch": "sass --watch vvvebjs vvvebjs/scss/editor.scss:vvvebjs/css/editor.css",
-        "serve": "tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window 'bash serve.sh' ';' select-layout tiled ';' split-window -h 'npm run dev:watch' ';' select-layout tiled",
+        "serve": "bash ci/prepare-organization.sh \"tdev-${USER}\" dev && tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window 'bash serve.sh' ';' select-layout tiled ';' split-window -h 'npm run skaffold' ';' select-layout tiled",
         "test": "node jasmine.js",
         "test:e2e": "protractor e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
@@ -82,6 +82,7 @@
         "d3": "^5.11.0",
         "debug": "^4.1.1",
         "detect-node": "^2.0.4",
+        "diff": "^4.0.1",
         "dompurify": "^1.0.11",
         "dotenv": "^6.2.0",
         "elastic-apm-node": "^2.16.2",

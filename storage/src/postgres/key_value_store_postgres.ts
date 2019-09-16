@@ -360,7 +360,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryPostgres";
-    metadataStore = new MetadataStore(new GitStorage(), this);
+    metadataStore = new MetadataStore(process.env.ORGANIZ_NAME || 'env-not-known', this);
     
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);

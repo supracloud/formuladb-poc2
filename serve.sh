@@ -8,8 +8,6 @@ handleErr () {
 }
 trap handleErr ERR
 
-./tools/prepare-dev-tenant.sh
-
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed
 ../node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \

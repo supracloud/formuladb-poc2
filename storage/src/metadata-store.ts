@@ -5,13 +5,20 @@ import { InventoryApp, InventorySchema } from "@test/inventory/metadata";
 import { FormuladbIoApp, FormuladbIoSchema } from "@test/formuladb.io/metadata";
 import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
 import { Page } from "@domain/uimetadata/page";
-import { GitStorageI } from "./git-storage-i";
+import * as fetch from 'node-fetch';
+import * as moment from 'moment';
+import * as Diff from 'diff';
+
+import { Storage } from '@google-cloud/storage';
+const STORAGE = new Storage({
+    projectId: "seismic-plexus-232506",
+});
 
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
 
-    constructor(private gitStorage: GitStorageI, public kvsFactory: KeyValueStoreFactoryI) {}
-   
+    constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
+
     async getMetadataKOS() {
         if (!this.metadataKOS) {
             this.metadataKOS = await this.kvsFactory.createKeyObjS<App | Schema | Page>('metadata');
@@ -19,7 +26,7 @@ export class MetadataStore {
         return this.metadataKOS;
     }
 
-    
+
     async putApp(tenantName: string, appName: string, app: App): Promise<App> {
         let metadataKOS = await this.getMetadataKOS();
         return metadataKOS.put(app) as Promise<App>;
@@ -35,7 +42,7 @@ export class MetadataStore {
         let metadataKOS = await this.getMetadataKOS();
         return metadataKOS.get(pageId) as Promise<Page>;
     }
-        
+
     async getApp(tenantName: string, appName: string): Promise<App | null> {
         let metadataKOS = await this.getMetadataKOS();
 
@@ -78,7 +85,49 @@ export class MetadataStore {
 
     async savePageHtml(pagePath: string, html: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
-        
-        return this.gitStorage.savePage(tenantName, appName, pageName, html);
+
+        let gcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${pageName}`);
+        let buf = await gcFile.download();
+        let oldHtml = buf.toString();
+
+        await new Promise((resolve, reject) => {
+            let stream = gcFile.createWriteStream({
+                resumable: false,
+                validation: false,
+                contentType: "text/html",
+                metadata: {
+                    'Cache-Control': 'public, max-age=31536000'
+                }
+            });
+            stream.write(html)
+            stream.end();
+            stream.on("finish", () => resolve(true));
+            stream.on("error", reject);
+        });
+
+        let diff = Diff.createTwoFilesPatch('oldHtml', 'html', oldHtml, html, '', '', { context: 5 });
+
+        //this will not work in the browser because of CORS
+        const timestamp = moment();
+        fetch(`https://elasticsearch.formuladb.io/page-${timestamp.format('YYYY-MM-DD')}/_doc`, {
+            method: "POST",
+            body: JSON.stringify({
+                envName: this.envName,
+                tenantName,
+                appName,
+                pageName,
+                html,
+                diff,
+                '@timestamp': timestamp.format(/*ISO8601*/),
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Basic ' + Buffer.from("formuladb:HEwAXwhG5Tqd").toString('base64'),
+            },
+        })
+            .then(async (response) => {
+                let res = await response.text();
+                console.log(res);
+            });
     }
 }

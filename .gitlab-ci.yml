@@ -6,18 +6,17 @@ stages:
   - test_postgres
   - test_stress
   - e2e_dev_env
-  - publish_static_assets
-  - deploy_staging
-  - e2e_demo_env
-  - deploy_production
-  - e2e_production_env
-  - e2e_example_apps
+  - build_images_and_deploy_staging
+  - e2e_staging
+  - build_images_and_deploy_production
+  - e2e_production
+  # - e2e_all_example_apps
   - cleanup
   - videos
 
 .cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
   cache:
-    key: ${CI_COMMIT_SHORT_SHA}
+    key: ${CI_COMMIT_SHA}
     paths:
       - node_modules/
       - tsc-out/
@@ -76,15 +75,8 @@ e2e_dev_env:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
-publish_static_assets:
-  stage: publish_static_assets
-  script:
-    - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
-  <<: *only_for_staging_and_production
-
-deploy_staging:
-  stage: deploy_staging
+build_images_and_deploy_staging:
+  stage: build_images_and_deploy_staging
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   environment:
@@ -93,15 +85,15 @@ deploy_staging:
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_staging_and_production
 
-e2e_demo_env:
-  stage: e2e_demo_env
+e2e_staging:
+  stage: e2e_staging
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_staging_and_production
 
-deploy_production:
-  stage: deploy_production
+build_images_and_deploy_production:
+  stage: build_images_and_deploy_production
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   environment:
@@ -110,14 +102,14 @@ deploy_production:
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_production
 
-e2e_production_env:
-  stage: e2e_production_env
+e2e_production:
+  stage: e2e_production
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_production
 
-.e2e_example_apps:
+.e2e_all_example_apps:
   script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/metawiz/e2e.git
 

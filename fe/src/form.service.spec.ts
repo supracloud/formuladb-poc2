@@ -27,7 +27,7 @@ describe('FormService', () => {
     let clock;
 
     beforeEach(() => {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
         fetchMock.get('/formuladb-api/test-tenant/test-app', {
             _id: "test-app", description: "test-app-desc",
