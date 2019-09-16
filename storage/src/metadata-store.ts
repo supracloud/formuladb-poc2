@@ -90,14 +90,20 @@ export class MetadataStore {
         let buf = await gcFile.download();
         let oldHtml = buf.toString();
 
-        gcFile.createWriteStream({
-            resumable: false,
-            validation: false,
-            contentType: "text/html",
-            metadata: {
-                'Cache-Control': 'public, max-age=31536000'
-            }
-        }).write(html);
+        await new Promise((resolve, reject) => {
+            let stream = gcFile.createWriteStream({
+                resumable: false,
+                validation: false,
+                contentType: "text/html",
+                metadata: {
+                    'Cache-Control': 'public, max-age=31536000'
+                }
+            });
+            stream.write(html)
+            stream.end();
+            stream.on("finish",  () => resolve(true));
+            stream.on("error", reject);
+        });
 
         let diff = Diff.createTwoFilesPatch('oldHtml', 'html', oldHtml, html, '', '', {context: 5});
 
