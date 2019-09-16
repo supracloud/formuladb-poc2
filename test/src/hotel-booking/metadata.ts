@@ -80,7 +80,7 @@ export const Booking = {
 }
 
 export const HotelBookingApp: App = {
-    _id: "/examples/hotel-booking",
+    _id: "/formuladb-examples/hotel-booking",
     description: "Booking app for Royal Hotel",
     homePage: "index.html",
     pages: [

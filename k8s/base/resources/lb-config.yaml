@@ -8,7 +8,7 @@ data:
     load_module /usr/lib/nginx/modules/ngx_http_perl_module.so;
     error_log stderr;
 
-    env ENV_NAME;
+    env ORGANIZ_NAME;
 
     events {
         worker_connections  10240;
@@ -28,7 +28,7 @@ data:
 
         keepalive_timeout  65;
 
-        perl_set $envname 'sub { return $ENV{"ENV_NAME"}; }';
+        perl_set $envname 'sub { return $ENV{"ORGANIZ_NAME"}; }';
 
         upstream googlestorage {
             server storage.googleapis.com:443;

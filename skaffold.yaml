@@ -30,4 +30,9 @@ profiles:
     patches:
       - op: replace
         path: /deploy/kustomize/path
-        value: k8s/overlays/development
+        value: k8s/overlays/staging
+  - name: production
+    patches:
+      - op: replace
+        path: /deploy/kustomize/path
+        value: k8s/overlays/production

@@ -229,7 +229,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
 }
 export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryMem";
-    metadataStore = new MetadataStore('mem', this);
+    metadataStore = new MetadataStore(new GitStorageMem(), 'mem', this);
 
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStoreMem<VALUET>();

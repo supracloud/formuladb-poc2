@@ -8,5 +8,5 @@ spec:
       containers:
       - name: be
         env:
-        - name: ENV_NAME
-          value: master
+        - name: ORGANIZ_NAME
+          value: production

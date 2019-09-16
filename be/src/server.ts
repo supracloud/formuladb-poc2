@@ -12,7 +12,7 @@ var apm = require('elastic-apm-node').start({
     serverUrl: 'https://apmserver.formuladb.io',
     // for now send events for both dev and prod. Update in the future to disable dev
     active: true,
-    environment: process.env.ENV_NAME || 'not-known',
+    environment: process.env.ORGANIZ_NAME || 'not-known',
     // captureBody: true,
     // transactionSampleRate: 1.0,
     verifyServerCert: false,//TODO: fix this

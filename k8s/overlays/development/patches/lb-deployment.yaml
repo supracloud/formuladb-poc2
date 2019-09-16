@@ -8,5 +8,5 @@ spec:
       containers:
       - name: lb
         env:
-        - name: ENV_NAME
+        - name: ORGANIZ_NAME
           value: tdev-acr #TBD_ENV_NAME
