@@ -41,6 +41,18 @@ data:
             root         /usr/share/nginx/html;
             rewrite  ^/$  /index.html  last;
 
+            #FIXME: this returns 404, why?
+            # location /index.html {
+            #     proxy_set_header    Host storage.googleapis.com;
+            #     proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb.io/portal/$uri;
+            #     proxy_intercept_errors on;
+            # }
+            # location /assets {
+            #     proxy_set_header    Host storage.googleapis.com;
+            #     proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb.io/portal/$uri;
+            #     proxy_intercept_errors on;
+            # }
+
             location / {
                 proxy_set_header    Host storage.googleapis.com;
                 proxy_pass https://googlestorage/formuladb-static-assets/$envname$uri;
