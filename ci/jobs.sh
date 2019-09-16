@@ -56,8 +56,7 @@ function test_stress {
 function e2e_dev_env {
     POD=`kubectl -n $ORGANIZ_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:80 &
-    bash serve.sh &
-    TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
+    TARGET=headless protractor --baseUrl='http://localhost:8085' e2e/protractor.conf.js
 #    - skaffold -n $ORGANIZ_NAME delete
 }
 
