@@ -37,21 +37,21 @@ data:
 
         server {
             listen         80;
-            server_name  formuladb.online www.formuladb.online formuladb.io www.formuladb.io;
+            server_name  formuladb.io www.formuladb.io;
             root         /usr/share/nginx/html;
             rewrite  ^/$  /index.html  last;
 
-            #FIXME: this returns 404, why?
-            # location /index.html {
-            #     proxy_set_header    Host storage.googleapis.com;
-            #     proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb.io/portal/$uri;
-            #     proxy_intercept_errors on;
-            # }
-            # location /assets {
-            #     proxy_set_header    Host storage.googleapis.com;
-            #     proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb.io/portal/$uri;
-            #     proxy_intercept_errors on;
-            # }
+            location /index.html {
+                proxy_set_header    Host storage.googleapis.com;
+                proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb-internal/formuladb.io$uri;
+                proxy_intercept_errors on;
+            }
+
+            location /assets {
+                proxy_set_header    Host storage.googleapis.com;
+                proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb-internal/formuladb.io$uri;
+                proxy_intercept_errors on;
+            }
 
             location / {
                 proxy_set_header    Host storage.googleapis.com;
