@@ -5,7 +5,6 @@ import { InventoryApp, InventorySchema } from "@test/inventory/metadata";
 import { FormuladbIoApp, FormuladbIoSchema } from "@test/formuladb.io/metadata";
 import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
 import { Page } from "@domain/uimetadata/page";
-import { GitStorageI } from "./git-storage-i";
 import * as fetch from 'node-fetch';
 import * as moment from 'moment';
 import * as Diff from 'diff';
@@ -18,7 +17,7 @@ const STORAGE = new Storage({
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
 
-    constructor(private gitStorage: GitStorageI, private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
+    constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
 
     async getMetadataKOS() {
         if (!this.metadataKOS) {
@@ -130,9 +129,5 @@ export class MetadataStore {
                 let res = await response.text();
                 console.log(res);
             });
-
-        if (("formuladb-examples" == tenantName || "formuladb-internal" == tenantName) && this.envName === "staging") {
-            this.gitStorage.savePage(tenantName, appName, pageName, html);
-        }
     }
 }

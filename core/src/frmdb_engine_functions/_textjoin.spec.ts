@@ -51,7 +51,7 @@ describe('FrmdbEngineStore _textjoin', () => {
         frmdbTStore = await getFrmdbEngineStore(TestSchema);
         await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
         done();
     });
 

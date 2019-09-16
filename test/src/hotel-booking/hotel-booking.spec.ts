@@ -38,7 +38,7 @@ describe('[FE] Hotel Booking', () => {
     let clock;
 
     beforeEach(() => {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
         fetchMock.get('/formuladb-api/test-tenant/hotel-booking', HotelBookingApp);
         fetchMock.get('/formuladb-api/test-tenant/hotel-booking/schema', HotelBookingSchema);

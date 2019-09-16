@@ -14,7 +14,7 @@
         "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
         "skaffold": "KUBECONFIG=k8s/production-kube-config.conf skaffold dev -n \"tdev-${USER}\" -p dev --port-forward=true",
         "sass:watch": "sass --watch vvvebjs vvvebjs/scss/editor.scss:vvvebjs/css/editor.css",
-        "serve": "bash ci/create-dev-tenant.sh \"tdev-${USER}\" && tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window 'bash serve.sh' ';' select-layout tiled ';' split-window -h 'npm run skaffold' ';' select-layout tiled",
+        "serve": "bash ci/prepare-organization.sh \"tdev-${USER}\" dev && tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window 'bash serve.sh' ';' select-layout tiled ';' split-window -h 'npm run skaffold' ';' select-layout tiled",
         "test": "node jasmine.js",
         "test:e2e": "protractor e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
