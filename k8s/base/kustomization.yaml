@@ -4,7 +4,6 @@ resources:
 - resources/db-deployment.yaml
 - resources/db-service.yaml
 - resources/formuladb-online-https-secret.yaml
-- resources/ingress.yaml
 - resources/lb-config.yaml
 - resources/lb-deployment.yaml
 - resources/lb-service.yaml

@@ -60,7 +60,8 @@ startFrmdb() {
 }
 
 ssh-ci() {
-    ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
+    #ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
+    ssh -i ./ssh/frmdb.id_rsa root@34.76.177.179
 }
 
 ssh-demo() {

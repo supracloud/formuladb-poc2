@@ -17,6 +17,10 @@ hash gsutil || {
     gcloud auth activate-service-account --key-file=tools/FormulaDB-storage-full.json
 }
 
+if ! gcloud auth list|grep formuladb-static-assets; then
+    gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
+fi
+
 # node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$ORGANIZ_NAME'")'
 
 # ASSETS="`git ls-files apps/hotel-booking/`" node $BASEDIR/gcloud.js \
@@ -25,6 +29,7 @@ hash gsutil || {
 gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-internal/formuladb.io
 gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/ #TODO: remove this when nginx rule is working
 gsutil -m rsync -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-examples/hotel-booking
+
 gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$ORGANIZ_NAME/frmdb-editor
 gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb
 
