@@ -20,7 +20,7 @@ function _cleanup {
 
 function build_images_and_deploy_dev {
     bash $BASEDIR/create-dev-tenant.sh "$ENV_NAME"
-    skaffold run -p dev
+    skaffold -n $ENV_NAME run -p dev
     while ! kubectl -n $ENV_NAME get pods | grep 'lb-'; do sleep 1; done
     POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 5432 || kubectl -n $ENV_NAME port-forward $POD 5432:5432 &
@@ -48,7 +48,7 @@ function e2e_dev_env {
     nc -z localhost 8085 || kubectl -n $ENV_NAME port-forward $POD 8085:80 &
     bash serve.sh &
     TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
-#    - skaffold delete
+#    - skaffold -n $ENV_NAME delete
 }
 
 function publish_static_assets {
