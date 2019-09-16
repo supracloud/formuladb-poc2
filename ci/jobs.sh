@@ -35,7 +35,7 @@ function build_images_and_deploy {
 }
 
 function build_images_and_deploy_dev {
-    build_images_and_deploy 
+    build_images_and_deploy "$ORGANIZ_NAME" dev
 }
 
 function test_postgres {
