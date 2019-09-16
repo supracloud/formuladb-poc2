@@ -21,6 +21,7 @@ function _cleanup {
 function build_images_and_deploy_dev {
     bash $BASEDIR/create-dev-tenant.sh "$ENV_NAME"
     skaffold run -p dev
+    while ! kubectl -n $ENV_NAME get pods | grep 'lb-'; do sleep 1; done
     POD=`kubectl -n $ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 5432 || kubectl -n $ENV_NAME port-forward $POD 5432:5432 &
     while ! nc -z localhost 5432; do sleep 1; done
