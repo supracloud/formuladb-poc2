@@ -20,11 +20,11 @@ function _cleanup {
 
 function build_images_and_deploy {
     NAMESPACE=$1
-    if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; return 1; fi
+    if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
     SKAFFOLD_PROFILE=$2
-    if [ -z "$SKAFFOLD_PROFILE" ]; then echo "pls provide SKAFFOLD_PROFILE"; return 2; fi
+    if [ -z "$SKAFFOLD_PROFILE" ]; then echo "pls provide SKAFFOLD_PROFILE"; exit 2; fi
 
-    bash $BASEDIR/prepare-organization.sh "$NAMESPACE"
+    bash $BASEDIR/prepare-organization.sh "$NAMESPACE" "$SKAFFOLD_PROFILE"
     skaffold -n $NAMESPACE run -p $SKAFFOLD_PROFILE
     while ! kubectl -n $NAMESPACE get pods | grep 'lb-'; do sleep 1; done
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done

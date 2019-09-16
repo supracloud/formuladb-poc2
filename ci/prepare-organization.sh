@@ -22,9 +22,9 @@ hash gsutil || {
 # ASSETS="`git ls-files apps/hotel-booking/`" node $BASEDIR/gcloud.js \
 #     'uploadAssets("'$ORGANIZ_NAME'")'
 
-gsutil -m rsync -r apps/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb.io/portal
-gsutil -m rsync -r apps/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/ #TODO: remove this when nginx rule is working
-gsutil -m rsync -r apps/hotel-booking gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-examples/hotel-booking
+gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-internal/formuladb.io
+gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/ #TODO: remove this when nginx rule is working
+gsutil -m rsync -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-examples/hotel-booking
 gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$ORGANIZ_NAME/frmdb-editor
 gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb
 
