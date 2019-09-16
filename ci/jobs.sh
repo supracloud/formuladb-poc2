@@ -53,11 +53,17 @@ function test_stress {
     FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
 }
 
-function e2e_dev_env {
+function test_e2e {
+    ORGANIZ_NAME=$1
+    if [ -z "ORGANIZ_NAME" ]; then echo "pls provide ORGANIZ_NAME"; exit 1; fi
+
     POD=`kubectl -n $ORGANIZ_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:80 &
-    TARGET=headless protractor --baseUrl='http://localhost:8085' e2e/protractor.conf.js
-#    - skaffold -n $ORGANIZ_NAME delete
+    TARGET=headless npm run test:e2e -- --baseUrl='http://localhost:8085'
+}
+
+function e2e_dev_env {
+    test_e2e "$ORGANIZ_NAME"
 }
 
 function build_images_and_deploy_staging {
@@ -65,7 +71,7 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    TARGET=headless protractor --baseUrl='https://staging.formuladb.io' e2e/protractor.conf.js
+    test_e2e staging
 }
 
 function build_images_and_deploy_production {
@@ -73,7 +79,7 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
-    TARGET=headless protractor --baseUrl='https://formuladb.io' e2e/protractor.conf.js
+    test_e2e production #make sure only safe tests
 }
 
 function cleanup {
