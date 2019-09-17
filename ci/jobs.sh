@@ -5,7 +5,7 @@ trap _cleanup ERR
 trap _cleanup EXIT
 
 ORGANIZ_NAME="t$CI_COMMIT_SHA"
-if [ -z "$ORGANIZ_NAME" ]; then 
+if [ -z "$CI_COMMIT_SHA" ]; then 
     ORGANIZ_NAME="t`git rev-parse HEAD`"
 fi
 echo "ORGANIZ_NAME=${ORGANIZ_NAME}"
@@ -55,9 +55,8 @@ function test_stress {
 
 function e2e_dev_env {
     POD=`kubectl -n $ORGANIZ_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:80 &
-    bash serve.sh &
-    TARGET=headless protractor --baseUrl='http://localhost:8081' e2e/protractor.conf.js
+    nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:8085 &
+    TARGET=headless protractor --baseUrl='http://localhost:8085' e2e/protractor.conf.js
 #    - skaffold -n $ORGANIZ_NAME delete
 }
 
@@ -66,7 +65,10 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    TARGET=headless protractor --baseUrl='https://staging.formuladb.io' e2e/protractor.conf.js
+    ORGANIZ_NAME=staging
+    POD=`kubectl -n $ORGANIZ_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:80 &
+    npm run test:e2e -- --baseUrl='https://staging.formuladb.io'
 }
 
 function build_images_and_deploy_production {
@@ -74,6 +76,9 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
+    ORGANIZ_NAME=production
+    POD=`kubectl -n $ORGANIZ_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:8085 &
     TARGET=headless protractor --baseUrl='https://formuladb.io' e2e/protractor.conf.js
 }
 
