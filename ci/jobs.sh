@@ -59,6 +59,7 @@ function test_e2e {
 
     POD=`kubectl -n $ORGANIZ_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8085 || kubectl -n $ORGANIZ_NAME port-forward $POD 8085:80 &
+    npm run webdriver-update
     TARGET=headless npm run test:e2e -- --baseUrl='http://localhost:8085'
 }
 
