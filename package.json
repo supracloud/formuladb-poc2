@@ -19,7 +19,8 @@
         "webdriver-update": "webdriver-manager update",
         "test:e2e": "protractor e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
-        "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts"
+        "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts",
+        "generate-icons": "mkdir -p dist-fe/icons && icon-font-generator fe/icons/*.svg -o dist-fe/icons"
     },
     "author": "",
     "license": "ISC",
@@ -36,6 +37,7 @@
         "document-register-element": "^1.13.2",
         "fetch-mock": "^7.3.6",
         "glob": "^7.1.4",
+        "icon-font-generator": "^2.1.10",
         "install": "^0.12.2",
         "is-wsl": "^2.1.0",
         "jasmine": "^3.4.0",
