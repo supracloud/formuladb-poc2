@@ -31,6 +31,8 @@ gsutil -m rsync -r apps/formuladb-examples/hotel-booking gs://formuladb-static-a
 
 gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-editor
 gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb
+gsutil -m rsync -r fe/img gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb/img
+gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb/icons
 
 curl -L -O https://github.com/elastic/apm-agent-rum-js/releases/latest/download/elastic-apm-rum.umd.min.js
 gsutil -m rsync elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$ORGANIZ_NAME/elastic-apm-rum.umd.min.js
