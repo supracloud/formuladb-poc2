@@ -96,9 +96,7 @@
 				</button>
 				<div class="dropdown-menu" aria-labelledby="frmdb-editor-color-palette-select">
 				</div>
-			</div>
 
-			<div class="btn-group mr-3" role="menu">
 				<button class="btn btn-sm" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<i class="flag-icon flag-icon-gb"></i>
 				</button>
@@ -182,9 +180,9 @@
 						<i class="la la-ellipsis-v"></i>
 					</a>
 					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-						<a class="dropdown-item" id="new-page-btn" title="New Table"><i class="la la-plus-circle"></i> New Page</a>
+						<a class="dropdown-item" id="new-page-btn" title="New Page"><i class="la la-plus-circle"></i> New Page</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" id="TBD" title="New Table"><i class="la la-trash"></i> Delete <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
+						<a class="dropdown-item" id="delete-page-btn" title="New Table"><i class="la la-trash"></i> Delete <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
 					</div>
 				</li>
 			</ul>
@@ -203,23 +201,22 @@
 			<div class="drag-elements">
 
 				<div class="header">
-					<ul class="nav nav-tabs" id="elements-tabs" role="tablist">
+					<ul class="nav nav-tabs flex-nowrap" id="elements-tabs" role="tablist">
 						<li class="nav-item component-tab">
-							<a class="nav-link py-2 active" id="components-tab" data-toggle="tab" href="#components" role="tab" aria-controls="components"
+							<a class="nav-link px-2 py-2 active" id="components-tab" data-toggle="tab" href="#components" role="tab" aria-controls="components"
 								aria-selected="true"><i class="la la-lg la-cube"></i>
 								Components
 							</a>
 						</li>
 						<li class="nav-item blocks-tab">
-							<a class="nav-link py-2" id="blocks-tab" data-toggle="tab" href="#blocks" role="tab" aria-controls="blocks" aria-selected="false"><i
+							<a class="nav-link px-2 py-2" id="blocks-tab" data-toggle="tab" href="#blocks" role="tab" aria-controls="blocks" aria-selected="false"><i
 									class="la la-lg la-image"></i>
 								Blocks
 							</a>
 						</li>
-						<li class="nav-item component-properties-tab" style="display:none">
-							<a class="nav-link" id="properties-tab" data-toggle="tab" href="#properties" role="tab" aria-controls="blocks"
-								aria-selected="false"><i class="la la-lg la-cog"></i>
-								<div><small>Properties</small></div>
+						<li class="nav-item component-properties-tab" style="display:none; width: 32px">
+							<a class="nav-link px-2 py-2" id="properties-tab" data-toggle="tab" href="#properties" role="tab" aria-controls="blocks"
+								aria-selected="false"><i class="la la-lg la-pencil-square"></i>
 							</a>
 						</li>
 					</ul>
@@ -270,26 +267,26 @@
 							<div class="component-properties-sidepane">
 								<div>
 									<div class="component-properties">
-										<ul class="nav nav-tabs nav-fill" id="properties-tabs" role="tablist">
-											<li class="nav-item content-tab">
-												<a class="nav-link active" data-toggle="tab" href="#content-left-panel-tab" role="tab"
+										<ul class="nav nav-tabs nav-fill flex-nowrap" id="properties-tabs" role="tablist">
+											<li class="nav-item content-tab flex-grow-1">
+												<a class="nav-link active py-1" data-toggle="tab" href="#content-left-panel-tab" role="tab"
 													aria-controls="components" aria-selected="true">
 													<i class="la la-lg la-cube"></i>
-													<div><span>Content</span></div>
+													Content
 												</a>
 											</li>
-											<li class="nav-item style-tab">
-												<a class="nav-link" data-toggle="tab" href="#style-left-panel-tab" role="tab" aria-controls="blocks"
+											<li class="nav-item style-tab flex-grow-1">
+												<a class="nav-link py-1" data-toggle="tab" href="#style-left-panel-tab" role="tab" aria-controls="blocks"
 													aria-selected="false">
 													<i class="la la-lg la-image"></i>
-													<div><span>Style</span></div>
+													Style
 												</a>
 											</li>
-											<li class="nav-item advanced-tab">
-												<a class="nav-link" data-toggle="tab" href="#advanced-left-panel-tab" role="tab" aria-controls="blocks"
+											<li class="nav-item advanced-tab flex-grow-0">
+												<a class="nav-link py-1" data-toggle="tab" href="#advanced-left-panel-tab" role="tab" aria-controls="blocks"
 													aria-selected="false">
 													<i class="la la-lg la-cog"></i>
-													<div><span>Advanced</span></div>
+													Advanced
 												</a>
 											</li>
 										</ul>
@@ -464,7 +461,7 @@
 
 		</div>
 
-		<div id="right-panel">
+		<div id="right-panel" class="d-none">
 			<div class="component-properties">
 
 				<ul class="nav nav-tabs nav-fill" id="properties-tabs" role="tablist">
@@ -834,13 +831,6 @@
 </script>
 
 
-		<script id="vvveb-filemanager-page" type="text/html">
-	<li data-url="{%=url%}" data-page="{%=name%}">
-		<label for="{%=name%}"><span>{%=title%}</span></label> <input type="checkbox" checked id="{%=name%}" />
-		<ol></ol>
-	</li>
-</script>
-
 		<script id="vvveb-filemanager-component" type="text/html">
 	<li data-url="{%=url%}" data-component="{%=name%}" class="file">
 		<a href="{%=url%}"><span>{%=title%}</span></a>
@@ -962,7 +952,7 @@
 									<div>
 										<select class="form-control custom-select" name="startTemplateUrl">
 											<option class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
-											data-frmdb-attr="value::$frmdb.pages[].name"></option>
+											data-frmdb-attr="value::$frmdb.pages[].url"></option>
 										</select>
 									</div>
 								</div>
@@ -970,23 +960,19 @@
 
 							<div class="form-group row" data-key="href">
 								<label class="col-sm-3 control-label">Page name</label>
-								<div class="col-sm-9 input">
-									<div>
-										<input name="title" type="text" class="form-control" placeholder="new-page-name" required pattern="[-a-zA-Z]+"
-										oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '-'); 
-											this.closest('.modal-body').querySelector('.page-file-name').value = this.value">
+								<div class="col-sm-9 input-group">
+									<input name="title" type="text" class="form-control" placeholder="new-page-name" required pattern="[-a-zA-Z]+"
+									oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '-')">
+									<div class="input-group-append">
+										<div class="input-group-text">.html</div>
 									</div>
 								</div>
 							</div>
 
-							<div class="form-group row" data-key="href">
-								<label class="col-sm-3 control-label">File name</label>
-								<div class="col-sm-9 input">
-									<div>
-										<input name="fileName" type="text" class="form-control page-file-name" placeholder="new-page-name.html" disabled required>
-									</div>
-								</div>
+							<div class="alert alert-danger" role="alert" style="display: none">
+								A simple danger alert—check it out!
 							</div>
+
 						</div>
 
 						<div class="modal-footer">

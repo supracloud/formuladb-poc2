@@ -83,15 +83,45 @@ export class MetadataStore {
         return appPage;
     }
 
-    async savePageHtml(pagePath: string, html: string): Promise<void> {
+    async deletePage(deletedPagePath: string): Promise<void> {
+        let [tenantName, appName, pageName] = deletedPagePath.split(/\//).filter(x => x);
+        let oldGcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${pageName}`);
+        await oldGcFile.delete();
+
+        let app = await this.getApp(tenantName, appName);
+        if (!app) throw new Error(`App ${tenantName}/${appName} not found`);
+        app.pages = app.pages.filter(p => p.name != pageName);
+        await this.putApp(tenantName, appName, app);
+    }
+
+    async newPage(newPageName: string, startTemplateUrl: string) {
+        await this.savePageHtml(startTemplateUrl, '', newPageName);
+        let [tenantName, appName, pageName] = startTemplateUrl.split(/\//).filter(x => x);
+        let app = await this.getApp(tenantName, appName);
+        if (!app) throw new Error(`App ${tenantName}/${appName} not found`);
+        app.pages.push({name: newPageName, title: newPageName});
+        await this.putApp(tenantName, appName, app);
+    }
+
+    async savePageHtml(pagePath: string, html: string, newPageName?: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
 
-        let gcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${pageName}`);
-        let buf = await gcFile.download();
+        let oldGcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${pageName}`);
+        let buf = await oldGcFile.download();
         let oldHtml = buf.toString();
 
+        let newGcFile = oldGcFile;
+        let newHtml = html;
+        let diff = ''
+        if (newPageName) {
+            newGcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${newPageName}`);
+            newHtml = oldHtml;
+        } else {
+            diff = newPageName ? '' : Diff.createTwoFilesPatch('oldHtml', 'html', oldHtml, html, '', '', { context: 5 });
+        }
+
         await new Promise((resolve, reject) => {
-            let stream = gcFile.createWriteStream({
+            let stream = newGcFile.createWriteStream({
                 resumable: false,
                 validation: false,
                 contentType: "text/html",
@@ -99,13 +129,16 @@ export class MetadataStore {
                     'Cache-Control': 'public, max-age=31536000'
                 }
             });
-            stream.write(html)
+            stream.write(newHtml)
             stream.end();
             stream.on("finish", () => resolve(true));
             stream.on("error", reject);
         });
 
-        let diff = Diff.createTwoFilesPatch('oldHtml', 'html', oldHtml, html, '', '', { context: 5 });
+        this.logHistoryEvent(tenantName, appName, pageName, newPageName, newHtml, diff);
+    }
+
+    private async logHistoryEvent(tenantName, appName, pageName, newPageName, newHtml, diff) {
 
         //this will not work in the browser because of CORS
         const timestamp = moment();
@@ -116,7 +149,8 @@ export class MetadataStore {
                 tenantName,
                 appName,
                 pageName,
-                html,
+                newPageName,
+                newHtml,
                 diff,
                 '@timestamp': timestamp.format(/*ISO8601*/),
             }),

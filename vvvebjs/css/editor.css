@@ -12493,37 +12493,37 @@ body {
 }
 @media (min-width: 576px) {
   body {
-    --builder-left-panel-width: 14vw;
+    --builder-left-panel-width: 16vw;
     --builder-right-panel-width: 12vw;
   }
 }
 @media (min-width: 768px) {
   body {
-    --builder-left-panel-width: 14vw;
+    --builder-left-panel-width: 16vw;
     --builder-right-panel-width: 12vw;
   }
 }
 @media (min-width: 992px) {
   body {
-    --builder-left-panel-width: 14vw;
+    --builder-left-panel-width: 16vw;
     --builder-right-panel-width: 12vw;
   }
 }
 @media (min-width: 1200px) {
   body {
-    --builder-left-panel-width: 14vw;
+    --builder-left-panel-width: 16vw;
     --builder-right-panel-width: 12vw;
   }
 }
 @media (min-width: 1600px) {
   body {
-    --builder-left-panel-width: 14vw;
+    --builder-left-panel-width: 16vw;
     --builder-right-panel-width: 12vw;
   }
 }
 @media (min-width: 2000px) {
   body {
-    --builder-left-panel-width: 14vw;
+    --builder-left-panel-width: 16vw;
     --builder-right-panel-width: 12vw;
   }
 }
@@ -12575,7 +12575,7 @@ body::-webkit-scrollbar-thumb {
   background: -webkit-linear-gradient(left, #fff 85%, #fafbfc 100%);
   background: linear-gradient(left, #fff 85%, #fafbfc 100%);
   box-shadow: -1px -2px 2px #f3f3f3 inset;
-  width: 14vw;
+  width: 16vw;
   width: calc(var(--builder-left-panel-width));
   height: 100%;
   max-height: 100%;
@@ -12691,7 +12691,7 @@ body::-webkit-scrollbar-thumb {
   bottom: 0px;
   position: fixed;
   border-top: 1px solid #ddd;
-  left: 14vw;
+  left: 16vw;
   left: calc($builder-left-panel-width + $builder-canvas-margin);
   left: calc(var(--builder-left-panel-width) + var(--builder-canvas-margin));
   right: 12vw;
@@ -12759,7 +12759,6 @@ body::-webkit-scrollbar-thumb {
   text-align: center;
   border-top-color: #fff;
   border-radius: 0px;
-  min-width: 5rem;
   color: #343a40;
   line-height: 1.2rem;
 }
@@ -12954,7 +12953,7 @@ body::-webkit-scrollbar-thumb {
 }
 #vvveb-builder #canvas {
   margin-right: 12vw;
-  margin-left: 14vw;
+  margin-left: 16vw;
   margin-right: var(--builder-right-panel-width);
   margin-left: var(--builder-left-panel-width);
   width: 100%;
@@ -12976,12 +12975,12 @@ body::-webkit-scrollbar-thumb {
 }
 #vvveb-builder #canvas.tablet {
   width: 768px !important;
-  left: calc(50% - 398vw);
+  left: calc(50% - 400vw);
   left: calc(50% - ((768px / 2) + var(--builder-left-panel-width)));
 }
 #vvveb-builder #canvas.mobile {
   width: 320px !important;
-  left: calc(50% - 174vw);
+  left: calc(50% - 176vw);
   left: calc(50% - ((320px / 2) + var(--builder-left-panel-width)));
 }
 #vvveb-builder.preview {
