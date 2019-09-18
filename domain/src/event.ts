@@ -60,6 +60,22 @@ export class ServerEventDeleteEntity extends MwzEvent {
     }
 }
 
+export class ServerEventNewPage extends MwzEvent {
+    readonly type_ = "ServerEventNewPage";
+
+    constructor(public newPageName: string, public startTemplateUrl: string) {
+        super();
+    }
+}
+
+export class ServerEventDeletePage extends MwzEvent {
+    readonly type_ = "ServerEventDeletePage";
+
+    constructor(public deletedPagePath: string) {
+        super();
+    }
+}
+
 export class ServerEventPreviewFormula extends MwzEvent {
     readonly type_ = "ServerEventPreviewFormula";
 
@@ -101,4 +117,6 @@ export type MwzEvents =
     | ServerEventSetProperty
     | ServerEventDeleteProperty
     | ServerEventPutPageHtml
+    | ServerEventNewPage
+    | ServerEventDeletePage
     ;

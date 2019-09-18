@@ -31,19 +31,19 @@ $canvas-width-substract: $builder-left-panel-width+$builder-right-panel-width+$b
 $canvas-no-right-width-substract: $builder-left-panel-width+$builder-canvas-margin;
 $canvas-height-substract: $builder-header-top-height+$builder-bottom-panel-height;
 
-$builder-left-panel-width:14vw;
+$builder-left-panel-width:16vw;
 $builder-right-panel-width:12vw;
 
-$builder-left-panel-width-sm:14vw;
+$builder-left-panel-width-sm:16vw;
 $builder-right-panel-width-sm:12vw;
 
-$builder-left-panel-width-md:14vw;
+$builder-left-panel-width-md:16vw;
 $builder-right-panel-width-md:12vw;
 
-$builder-left-panel-width-lg:14vw;
+$builder-left-panel-width-lg:16vw;
 $builder-right-panel-width-lg:12vw;
 
-$builder-left-panel-width-xl:14vw;
+$builder-left-panel-width-xl:16vw;
 $builder-right-panel-width-xl:12vw;
 
 
@@ -142,32 +142,32 @@ body {
     --db-panel-height: 220px;
 
     @include media-breakpoint-up(sm) {
-        --builder-left-panel-width: 14vw;
+        --builder-left-panel-width: 16vw;
         --builder-right-panel-width: 12vw;
     }
 
     @include media-breakpoint-up(md) {
-        --builder-left-panel-width: 14vw;
+        --builder-left-panel-width: 16vw;
         --builder-right-panel-width: 12vw;
     }
 
     @include media-breakpoint-up(lg) {
-        --builder-left-panel-width: 14vw;
+        --builder-left-panel-width: 16vw;
         --builder-right-panel-width: 12vw;
     }
 
     @include media-breakpoint-up(xl) {
-        --builder-left-panel-width: 14vw;
+        --builder-left-panel-width: 16vw;
         --builder-right-panel-width: 12vw;
     }
 
     @media (min-width: 1600px) {
-        --builder-left-panel-width: 14vw;
+        --builder-left-panel-width: 16vw;
         --builder-right-panel-width: 12vw;
     }
 
     @media (min-width: 2000px) {
-        --builder-left-panel-width: 14vw;
+        --builder-left-panel-width: 16vw;
         --builder-right-panel-width: 12vw;
     }
 
@@ -441,7 +441,6 @@ body {
                 text-align: center;
                 border-top-color: #fff;
                 border-radius: 0px;
-                min-width: 5rem;
                 color: $dark;
                 line-height: 1.2rem;
 

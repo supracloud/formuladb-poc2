@@ -7,6 +7,11 @@ export function normalizeHTMLStr(html: string): string {
     return prettyHtml(html);
 }
 
+export function normalizeDOM2HTML(node: Node): string {
+    let normalizedNode = format(node, 0);
+    return normalizedNode.innerHTML;
+}
+
 function prettyHtml(str) {
 
     var div = document.createElement('div');
