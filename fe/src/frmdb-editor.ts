@@ -4,7 +4,7 @@ import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
-import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml, ServerEventNewPage } from '@domain/event';
+import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml, ServerEventNewPage, ServerEventDeletePage } from '@domain/event';
 import { UserDeleteColumn, FrmdbSelectChange } from './frmdb-user-events';
 import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
@@ -23,6 +23,7 @@ interface FrmdbEditorState {
     selectedTableId: string;
     pages: { name: string, url: string }[];
     selectedPageName: string;
+    selectedPagePath: string;
 }
 
 const EditorState: FrmdbEditorState = {
@@ -30,6 +31,7 @@ const EditorState: FrmdbEditorState = {
     selectedTableId: '',
     pages: [],
     selectedPageName: '',
+    selectedPagePath: '',
 }
 
 window.onpopstate = () => {
@@ -50,29 +52,34 @@ async function initEditor(loadPageName?: string) {
     let appBackend = BACKEND_SERVICE();
     Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
 
+    let app: App | null = await appBackend.getApp();
+    if (!app) throw new Error(`App not found for ${window.location}`);
+    EditorState.pages = app.pages.map(p => ({ name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}` }));
+    let indexPage: {name: string, url: string} | null = null;
+    let vvvebPages: any[] = [];
+    for (let page of app.pages) {
+        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
+        if (page.name === app.homePage) indexPage = {name: page.name, url: url};
+        vvvebPages.push({ name: page.name, title: page.title, url });
+    }
+    if (!indexPage) {
+        indexPage = vvvebPages.length > 0 ? vvvebPages[0] : {name: "index-page-not-found", url: `/${appBackend.tenantName}/${appBackend.appName}/index-page-not-found`};
+    }
+    
     if (loadPageName) {
-        window.location.hash = `/${appBackend.tenantName}/${appBackend.appName}/${loadPageName}`;
+        window.location.hash = `#/${appBackend.tenantName}/${appBackend.appName}/${loadPageName}`;
     }
     let pageName = window.location.hash.replace(new RegExp(`/?${appBackend.tenantName}/${appBackend.appName}/?`), '')
         .replace(/^#/, '');
 
-    let app: App | null = await appBackend.getApp();
-    if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.pages = app.pages.map(p => ({ name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}` }));
-    let indexUrl;
-    let vvvebPages: any[] = [];
-    for (let page of app.pages) {
-        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
-        if (page.name === app.homePage) indexUrl = url;
-        vvvebPages.push({ name: page.name, title: page.title, url });
+    let currentPage: {name: string, url: string} = vvvebPages.find(p => p.name == pageName) || indexPage;
+    if (currentPage.name != pageName) {
+        window.location.hash = `#/${appBackend.tenantName}/${appBackend.appName}/${currentPage.name}`;
     }
 
-    //overwrite loadPage
-    indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].url : "index-page-not-found";
-
-    EditorState.selectedPageName = pageName;
-    let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
-    Vvveb.Builder.init(url, function () {
+    EditorState.selectedPagePath = currentPage.url;
+    EditorState.selectedPageName = currentPage.name;
+    Vvveb.Builder.init(currentPage.url, function () {
         Vvveb.FileManager.loadComponents();
 
         const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
@@ -133,14 +140,33 @@ function tableManagementFlows() {
     onDoc('click', '#delete-table-btn *', (event) => {
         let link: HTMLAnchorElement = event.target.closest('a');
         event.preventDefault();
-        if (!link.dataset.id) return;
+        let tableName: string | undefined = (link as any).tableToDelete;
+        if (!tableName) return;
 
         if (confirm(`Please confirm deletion of table ${link.dataset.id} ?`)) {
 
-            BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(link.dataset.id))
+            BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName))
                 .then(async (ev: ServerEventDeleteEntity) => {
                     if (ev.state_ != 'ABORT') {
                         await loadTables(ev.entityId);
+                    }
+                    return ev;
+                });
+        }
+    });
+
+    onDoc('click', '#delete-page-btn *', (event) => {
+        let link: HTMLAnchorElement = event.target.closest('a');
+        event.preventDefault();
+        let pagePathToDelete: string | undefined = (link as any).pagePathToDelete;
+        if (!pagePathToDelete) return;
+
+        if (confirm(`Please confirm deletion of table ${pagePathToDelete} ?`)) {
+
+            BACKEND_SERVICE().putEvent(new ServerEventDeletePage(pagePathToDelete))
+                .then(async (ev: ServerEventDeletePage) => {
+                    if (ev.state_ != 'ABORT') {
+                        initEditor();
                     }
                     return ev;
                 });
