@@ -4,7 +4,7 @@ import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
-import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml } from '@domain/event';
+import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml, ServerEventNewPage, ServerEventDeletePage } from '@domain/event';
 import { UserDeleteColumn, FrmdbSelectChange } from './frmdb-user-events';
 import { elvis } from '@core/elvis';
 import { updateDOM } from './live-dom-template/live-dom-template';
@@ -14,7 +14,7 @@ import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE 
 import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
 import { getParentObjId } from './form.service';
-import { normalizeHTMLStr } from '@core/normalize-html';
+import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
 
 declare var Vvveb: any;
 
@@ -23,6 +23,7 @@ interface FrmdbEditorState {
     selectedTableId: string;
     pages: { name: string, url: string }[];
     selectedPageName: string;
+    selectedPagePath: string;
 }
 
 const EditorState: FrmdbEditorState = {
@@ -30,6 +31,7 @@ const EditorState: FrmdbEditorState = {
     selectedTableId: '',
     pages: [],
     selectedPageName: '',
+    selectedPagePath: '',
 }
 
 window.onpopstate = () => {
@@ -41,7 +43,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
     initEditor();
 });
 
-async function initEditor() {
+async function initEditor(loadPageName?: string) {
+
+    $("#vvveb-builder").addClass("no-right-panel");
+    $(".component-properties-tab").show();
+    Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";    
 
     let appBackend = BACKEND_SERVICE();
     Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
@@ -49,22 +55,31 @@ async function initEditor() {
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
     EditorState.pages = app.pages.map(p => ({ name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}` }));
-    let indexUrl;
+    let indexPage: {name: string, url: string} | null = null;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
         let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
-        if (page.name === app.homePage) indexUrl = url;
-        vvvebPages.push({ name: page.name.replace(/\.html$/, ''), title: page.title, url });
+        if (page.name === app.homePage) indexPage = {name: page.name, url: url};
+        vvvebPages.push({ name: page.name, title: page.title, url });
+    }
+    if (!indexPage) {
+        indexPage = vvvebPages.length > 0 ? vvvebPages[0] : {name: "index-page-not-found", url: `/${appBackend.tenantName}/${appBackend.appName}/index-page-not-found`};
+    }
+    
+    if (loadPageName) {
+        window.location.hash = `#/${appBackend.tenantName}/${appBackend.appName}/${loadPageName}`;
+    }
+    let pageName = window.location.hash.replace(new RegExp(`/?${appBackend.tenantName}/${appBackend.appName}/?`), '')
+        .replace(/^#/, '');
+
+    let currentPage: {name: string, url: string} = vvvebPages.find(p => p.name == pageName) || indexPage;
+    if (currentPage.name != pageName) {
+        window.location.hash = `#/${appBackend.tenantName}/${appBackend.appName}/${currentPage.name}`;
     }
 
-    //overwrite loadPage
-    indexUrl = indexUrl || vvvebPages.length > 0 ? vvvebPages[0].url : "index-page-not-found";
-
-    let pageName = window.location.hash.replace(new RegExp(`/?${appBackend.tenantName}/${appBackend.appName}/?`), '')
-        .replace(/^#/, '').replace(/\.html$/, '');
-    EditorState.selectedPageName = pageName;
-    let url = (vvvebPages.find(p => p.name == pageName) || { url: indexUrl }).url;
-    Vvveb.Builder.init(url, function () {
+    EditorState.selectedPagePath = currentPage.url;
+    EditorState.selectedPageName = currentPage.name;
+    Vvveb.Builder.init(currentPage.url, function () {
         Vvveb.FileManager.loadComponents();
 
         const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
@@ -110,11 +125,11 @@ function tableManagementFlows() {
     });
 
     onEvent(document.body, 'click', '#new-page-btn, #new-page-btn *', (event) => {
-        Vvveb.Gui.newPage(newTableName =>
-            BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
-                .then(async (ev: ServerEventNewEntity) => {
+        Vvveb.Gui.newPage((newPageName, startTemplateUrl) =>
+            BACKEND_SERVICE().putEvent(new ServerEventNewPage(newPageName, startTemplateUrl))
+                .then(async (ev: ServerEventNewPage) => {
                     if (ev.state_ != 'ABORT') {
-                        await loadTables(ev.path);
+                        initEditor(ev.newPageName);
                     }
                     return ev;
                 })
@@ -125,14 +140,33 @@ function tableManagementFlows() {
     onDoc('click', '#delete-table-btn *', (event) => {
         let link: HTMLAnchorElement = event.target.closest('a');
         event.preventDefault();
-        if (!link.dataset.id) return;
+        let tableName: string | undefined = (link as any).tableToDelete;
+        if (!tableName) return;
 
         if (confirm(`Please confirm deletion of table ${link.dataset.id} ?`)) {
 
-            BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(link.dataset.id))
+            BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName))
                 .then(async (ev: ServerEventDeleteEntity) => {
                     if (ev.state_ != 'ABORT') {
                         await loadTables(ev.entityId);
+                    }
+                    return ev;
+                });
+        }
+    });
+
+    onDoc('click', '#delete-page-btn *', (event) => {
+        let link: HTMLAnchorElement = event.target.closest('a');
+        event.preventDefault();
+        let pagePathToDelete: string | undefined = (link as any).pagePathToDelete;
+        if (!pagePathToDelete) return;
+
+        if (confirm(`Please confirm deletion of table ${pagePathToDelete} ?`)) {
+
+            BACKEND_SERVICE().putEvent(new ServerEventDeletePage(pagePathToDelete))
+                .then(async (ev: ServerEventDeletePage) => {
+                    if (ev.state_ != 'ABORT') {
+                        initEditor();
                     }
                     return ev;
                 });
@@ -278,7 +312,7 @@ async function frmdbPutServerEventPutPageHtml(pagePath: string, pageHtml: string
 }
 (window as any).frmdbPutServerEventPutPageHtml = frmdbPutServerEventPutPageHtml;
 
-(window as any).frmdbNormalizeHTMLStr = normalizeHTMLStr;
+(window as any).frmdbNormalizeDOM2HTML = normalizeDOM2HTML;
 
 tableManagementFlows();
 tableColumnManagementFlows();

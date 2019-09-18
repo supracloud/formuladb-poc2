@@ -1288,7 +1288,7 @@ Vvveb.Builder = {
 			el.style.removeProperty('top');
 		}
 		
-		html += frmdbNormalizeHTMLStr(cleanedUpDOM.innerHTML) + "\n</html>";
+		html += frmdbNormalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
 
 		html = this.removeHelpers(html, keepHelperAttributes);
 
@@ -1536,32 +1536,28 @@ Vvveb.Gui = {
 	},
 
 	//Pages, file/components tree 
-	newPage: function () {
+	newPage: function (callback) {
 
-		var newPageModal = $('#new-page-modal');
+		var $newPageModal = $('#new-page-modal');
 
-		newPageModal.modal("show").find("form").off("submit").submit(function (event) {
+		$newPageModal.modal("show").find("form").off("submit").submit(function (event) {
 
-			var title = $("input[name=title]", newPageModal).val();
-			var startTemplateUrl = $("select[name=startTemplateUrl]", newPageModal).val();
-			var fileName = $("input[name=fileName]", newPageModal).val();
+			var title = $("input[name=title]", $newPageModal).val();
+			var startTemplateUrl = $("select[name=startTemplateUrl]", $newPageModal).val()
+				.replace(/^#/, '');
 
 			//replace nonalphanumeric with dashes and lowercase for name
-			var name = title.replace(/\W+/g, '-').toLowerCase();
-			//allow only alphanumeric, dot char for extension (eg .html) and / to allow typing full path including folders
-			fileName = fileName.replace(/[^A-Za-z0-9\.\/]+/g, '-').toLowerCase();
+			var name = title.replace(/\W+/g, '-').replace(/[^_A-Za-z0-9]+/g, '_').toLowerCase() + '.html';
 
-			//add your server url/prefix/path if needed
-			var url = "" + fileName;
-
-
-			Vvveb.FileManager.addPage(name, title, url);
 			event.preventDefault();
 
-			return Vvveb.Builder.saveAjax(url, startTemplateUrl, function () {
-				Vvveb.FileManager.loadPage(name);
-				Vvveb.FileManager.scrollBottom();
-				newPageModal.modal("hide");
+			callback(name, startTemplateUrl).then(errMsg => {
+				if (errMsg) {
+					$newPageModal.find('.alert').show().text(errMsg);
+				} else {
+					$newPageModal.find('.alert').hide();
+					$newPageModal.modal("hide");
+				}
 			});
 		});
 
@@ -1741,9 +1737,6 @@ Vvveb.FileManager = {
 
 		this.pages[name] = data;
 		data['name'] = name;
-
-		this.tree.append(
-			tmpl("vvveb-filemanager-page", data));
 	},
 
 	addPages: function (pages) {
