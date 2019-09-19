@@ -9,4 +9,4 @@ spec:
       - name: lb
         env:
         - name: ORGANIZ_NAME
-          value: tdev-acr #TBD_ENV_NAME
+          value: biz #TBD_ENV_NAME
