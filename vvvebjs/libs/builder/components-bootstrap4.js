@@ -172,6 +172,36 @@ Vvveb.Components.add("_base", {
         col:6,
         inputtype: TextInput
     },
+    {
+        name: "Toggle",
+        key: "data-toggle",
+        htmlAttr: "data-toggle",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: SelectInput,
+        data: {
+			options: [{
+				value: "modal",
+				text: "modal"
+			}, {	
+				value: "tooltip",
+				text: "tooltip"
+			}, {
+				value: "popover",
+				text: "popover"
+			}],
+		}
+    },
+    {
+        name: "Target",
+        key: "data-target",
+        htmlAttr: "data-target",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },    
    ]
 });    
 

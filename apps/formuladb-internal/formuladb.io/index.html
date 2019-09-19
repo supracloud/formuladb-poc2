@@ -271,7 +271,7 @@
                 <img class="card-img-bottom" src="assets/images/83-royal-hotel.png" alt="Card image cap">
             </div>
         </a>
-        <a href="javascript:alert('Add to Wishlist! App ready in 3 to 9 weeks depending on the popularity!')" class="ecommerce item" data-category="E-commerce">
+        <a href="javascript:void(0)" class="ecommerce item" data-category="E-commerce" data-toggle="modal" data-target="#add-to-wishlist-modal">
             <div class="card">
                 <div class="card-header text-center">
                     <div class="item-name">Watch
@@ -1019,7 +1019,7 @@
     </div>
 </footer>
 
-<div class="modal" tabindex="-1" role="dialog">
+<div class="modal" id="add-to-wishlist-modal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -1029,11 +1029,25 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Modal body text goes here.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <form>
+                    <div class="alert alert-secondary" role="alert" data-frmdb-value="::short_description">
+                        short app description...
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="your@email" required>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="notify_me">
+                        <label class="form-check-label" for="notify_me">Notify me when the app is ready.</label>
+                    </div>
+                
+                    <div class="form-group">
+                        <label for="details">If you'd like to share any questions/comments/details:</label>
+                        <textarea class="form-control" id="details" rows="3"></textarea>
+                    </div>
+                
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
     </div>
