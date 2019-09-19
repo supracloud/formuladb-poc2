@@ -15,4 +15,6 @@ cd live-server-wwwroot #optimize speed
     --mount=/formuladb/:./../dist-fe/ \
     --mount=/formuladb/img/:./../fe/img/ \
     --mount=/formuladb/frmdb-runtime-utils.js:./../fe/js/frmdb-runtime-utils.js \
+    --mount=/formuladb-examples/:./../apps/formuladb-examples/ \
+    --mount=/formuladb-internal/:./../apps/formuladb-internal/ \
     --proxy=/:http://localhost:8085/ \

@@ -11,7 +11,7 @@ export const SampleApp = {
     isEditable: false,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        wish_list_requests: { name: "wish_list_requests", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
+        wish_list_count: { name: "wish_list_count", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         category_2: { name: "category_2", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         theme_url: { name: "theme_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -22,7 +22,7 @@ export const SampleApp = {
 };
 
 export const FormuladbIoApp: App = {
-    _id: "formuladb.io",
+    _id: "/formuladb-internal/formuladb.io",
     description: "formuladb.io",
     theme: "portal/public",
     pages: [

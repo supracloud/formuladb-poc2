@@ -258,7 +258,7 @@
             </div>
         </a>
         <a href="/formuladb-editor/editor.html#/formuladb-examples/hotel-booking/index.html" class="travel item" data-category="Travel &amp; Booking" target="">
-            <div class="card">
+            <div class="card" data-toggle="tooltip" title="">
                 <div class="card-header text-center">
                     <div class="item-name">Hotel Booking
 
@@ -1010,36 +1010,35 @@
 
                     webdesign
 
-
-                    <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>.
-
-
+                    <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>, 
                     <a href="https://themewagon.com">ThemeWagon</a>.
-
-                    =========================================================
-                    * Argon Design System - v1.1.0
-                    =========================================================
-
-                    * Product Page: https://www.creative-tim.com/product/argon-design-system
-                    * Copyright 2019 Creative Tim (https://www.creative-tim.com)
-                    * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md)
-
-                    * Coded by Creative Tim
-
-                    =========================================================
-                    --&gt;
-                    webdesign
-
-                    <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>.
-
-                    <a href="https://themewagon.com">ThemeWagon</a>.
-
 
                 </div>
             </div>
         </div>
     </div>
 </footer>
+
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add to Wish List</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -1050,38 +1049,10 @@
     	var aTag = $("a[name='" + aid + "']");
     	$('html,body').animate({ scrollTop: aTag.offset().top - 20 }, 'slow');
     }
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 </script>
-<script type="text/javascript">
-    // <![CDATA[  <-- For SVG support
-    if ('WebSocket' in window) {
-    	(function() {
-    		function refreshCSS() {
-    			var sheets = [].slice.call(document.getElementsByTagName("link"));
-    			var head = document.getElementsByTagName("head")[0];
-    			for (var i = 0; i < sheets.length; ++i) {
-    				var elem = sheets[i];
-    				head.removeChild(elem);
-    				var rel = elem.rel;
-    				if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
-    					var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
-    					elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
-    				}
-    				head.appendChild(elem);
-    			}
-    		}
-    		var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
-    		var address = protocol + window.location.host + window.location.pathname + '/ws';
-    		var socket = new WebSocket(address);
-    		socket.onmessage = function(msg) {
-    			if (msg.data == 'reload') window.location.reload();
-    			else if (msg.data == 'refreshcss') refreshCSS();
-    		};
-    		console.log('Live reload enabled.');
-    	})();
-    }
-    // ]]>
-</script>
-<iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
-<iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
 
 </html>
