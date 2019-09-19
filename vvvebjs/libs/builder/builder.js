@@ -1381,7 +1381,7 @@ Vvveb.Gui = {
 		const appName = 'hotel-booking';
 		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
 		let themeChangeButton = null;
-		fetch(`/frmdb-apps/${appName}/theme.json`).then(re => re.json().then(themes => {
+		fetch(`/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/theme.json`).then(re => re.json().then(themes => {
 			themes.forEach(t => {
 				if (!themeChangeButton) {
 					themeChangeButton = jQuery('#frmdb-editor-color-palette-select');
