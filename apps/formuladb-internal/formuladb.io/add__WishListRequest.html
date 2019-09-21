@@ -1,0 +1,35 @@
+<link type="text/css" href="assets/css/argon.min.css" rel="stylesheet">
+
+<div class="modal" tabindex="-1" role="dialog" style="display: initial">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add to Wish List <span data-frmdb-value="::_id"></span></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="alert alert-secondary" role="alert" data-frmdb-value="::short_description">
+                        short app description...
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-control" id="email" placeholder="your@email" required data-frmdb-value="::email">
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="notify_me" data-frmdb-value="::notify_me">
+                        <label class="form-check-label" for="notify_me">Notify me when the app is ready.</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="details">If you'd like to share any questions/comments/details:</label>
+                        <textarea class="form-control" id="details" rows="3" data-frmdb-value="::comments"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
