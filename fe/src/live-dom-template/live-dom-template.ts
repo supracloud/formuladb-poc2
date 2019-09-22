@@ -78,7 +78,7 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
     if (objValForKey instanceof Array || 'object' === typeof objValForKey) {
         let complexPropDomKey = `${currentScopePrefix}${domKeySep}${key}`;
         let complexPropElems = getElemWithComplexPropertyDataBinding(el, complexPropDomKey);
-        setElemValue(objValForKey, complexPropElems, complexPropDomKey, context, arrayCurrentIndexes);
+        setElemValue(objValForKey, complexPropElems, complexPropDomKey, context, arrayCurrentIndexes, key);
     }
 
     if (objValForKey instanceof Array) {
@@ -130,7 +130,7 @@ function updateDOMForScalarValue(objValForKey: string|boolean|number|Date, el: E
     LOG.debug("updateDOMForScope", "", key, objValForKey, domKey, elemsForKey);
     if (0 == elemsForKey.length) {
     } else {
-        setElemValue(objValForKey, elemsForKey, domKey, context, arrayCurrentIndexes);
+        setElemValue(objValForKey, elemsForKey, domKey, context, arrayCurrentIndexes, key);
     }
 }
 
@@ -143,8 +143,8 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];
             let value: string | number | boolean | null = null;
-            if ('data-frmdb-value' === attr.name) {
-                if (elem.tagName === "INPUT" || elem.tagName === "TEXTAREA") {
+            if ('data-frmdb-value' === attr.name || 'data-frmdb-target-field' === attr.name) {
+                if (elem.tagName === "INPUT" || elem.tagName === "TEXTAREA" || elem.tagName === 'SELECT') {
                     let input: HTMLInputElement = elem as HTMLInputElement;
                     if (input.type == "number") value = parseInt(input.value);
                     else if (input.type == "checkbox") value = input.checked;
@@ -154,6 +154,9 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
             
             if (value != null) {
                 let jsonKey = attr.value.replace(/.*:/, '');
+                let alternateJsonKey = elem.getAttribute('data-frmdb-target-field');
+                if (alternateJsonKey) jsonKey = alternateJsonKey;
+
                 if (jsonKey.indexOf(prefix ? prefix + '.' : '') != 0) throw new Error("prefix not correct for key " + jsonKey + " attr " + attr.name + "=" + attr.value);
                 jsonKey = jsonKey.slice(prefix ? prefix.length + 1 : 0);
                 if (jsonKey.indexOf('[]') >= 0) continue;

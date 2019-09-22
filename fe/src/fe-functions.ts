@@ -32,11 +32,13 @@ export async function loadPage(pageName: string): Promise<string> {
 
 async function loadData(dataBindingId: string): Promise<DataObj | DataObj[]> {
     if (isNewDataObjId(dataBindingId)) return {_id: dataBindingId};
-    
+
     let appBackend = BACKEND_SERVICE();
 
     if (dataBindingId.indexOf('~~') > 0) {
-        return appBackend.getDataObj(dataBindingId);
+        let dataObj = await appBackend.getDataObj(dataBindingId);
+        (dataObj as any)._id_ = dataObj._id.replace(/^.*?~~/, '');
+        return dataObj;
     } else {
         return appBackend.getTableData(dataBindingId);
     }
@@ -55,12 +57,13 @@ async function $MODAL(modalPageName: string, initDataBindingId?: string, recordD
     
     let pageModal = modalEl.querySelector('.modal');
     if (pageModal) {
-        modalEl.innerHTML = pageModal.innerHTML;
+        modalEl = pageModal;
+        modalEl.setAttribute("id", "frmdbModal");
     }
 
     if (initDataBindingId) {
         let data = await loadData(initDataBindingId);
-        updateDOM(data, modalEl as HTMLElement);    
+        updateDOM({$INITDATA$: data}, modalEl as HTMLElement);    
     }
 
     if (recordDataBindingId) {

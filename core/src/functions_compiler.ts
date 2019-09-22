@@ -409,7 +409,9 @@ function COUNTIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, 
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
     if (!isMapReduceKeysQueriesAndValue(range)) throw new FormulaCompilerError(fc.funcExpr, "COUNTIF expects a value to sum at " + fc.funcExpr.origExpr);
-    return _REDUCE(fc, range, {name: CountReduceFunN});
+    let rangeTmp = _.cloneDeep(range);
+    rangeTmp.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr = $s2e('1');
+    return _REDUCE(fc, rangeTmp, {name: CountReduceFunN});
 }
 function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiteral): MapReduceTrigger {
     let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
