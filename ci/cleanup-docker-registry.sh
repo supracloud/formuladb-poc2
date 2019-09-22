@@ -20,6 +20,9 @@ do
     if [[ $stripped_tag =~ $devel_version_regex ]]
     then
         created_at=`curl --header "PRIVATE-TOKEN: $token" "https://gitlab.com/api/v4/projects/$project_id/registry/repositories/$repository_id/tags/$stripped_tag"|jq ".created_at"`
+        if [[ $created_at == "null" ]]; then
+            continue
+        fi
         stripped_created_at=`sed 's/"//g' <(echo -n $created_at)`
         age=`date -d @$(( $(date +%s) - $(date -d $stripped_created_at +%s) )) -u +'%s'`
         if [[ $age -gt $max_age ]]
