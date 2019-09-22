@@ -39,12 +39,41 @@ export class FormService {
             this.debounced_newRecordCache(inputEl);
             this.debounced_manageInput(inputEl);
         });
+
+        onEvent(appRootEl, ["click", "submit"], 'button[type="submit"]', async (event) => {
+            event.preventDefault();
+            let button = event.target;
+            if (!(button instanceof HTMLButtonElement)) throw new Error("invalid button " + event.target);
+            let form: HTMLFormElement | null = button.closest('form');
+            if (!form) throw new Error("Form not found for button " + button.outerHTML);
+            let inputEl: InputElem | null = form.querySelector('input,select,textarea');
+            if (!inputEl) throw new Error("No input found for form " + form.outerHTML);
+            let alertEl: HTMLElement | null = form.querySelector('[data-frmdb-submit-status]');
+            if (!alertEl) throw new Error("No alert found for form " + form.outerHTML);
+    
+            this.manageInput(inputEl as InputElem)
+            .then(event => {
+                if (event) {
+                    alertEl!.classList.remove('d-none');
+                    if (event.state_ === "ABORT") {
+                        alertEl!.innerText = event.error_ || '500 -> Internal Server Error';
+                        alertEl!.classList.add('alert-danger');
+                        alertEl!.classList.remove('alert-success');
+                    } else {
+                        alertEl!.innerText = alertEl!.title;
+                        alertEl!.classList.add('alert-success');
+                        alertEl!.classList.remove('alert-danger');
+                    }
+                }
+            });
+        });        
+        
     }
     
     private debounced_manageInput = _.debounce((inputEl: InputElem) => this.manageInput(inputEl), 350);
     private debounced_newRecordCache = _.debounce((inputEl: InputElem) => this.putObjInNewRecordCache(inputEl), 100);
 
-    async manageInput(inputEl: InputElem) {
+    async manageInput(inputEl: InputElem): Promise<ServerEventModifiedFormData|void> {
         let {parentEl, parentObj} = this.getParentObj(inputEl);
         if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
 
@@ -67,6 +96,7 @@ export class FormService {
                         parentEl.setAttribute('data-frmdb-record', parentObj._id);
                     }
                 }
+                return event;
             }
         }
     }
@@ -138,8 +168,19 @@ export class FormService {
     public validateOnClient(parentEl: HTMLElement, parentObj: DataObj): boolean {
         const tools = BACKEND_SERVICE().getFrmdbEngineTools();
         
+        let formEl: HTMLElement | null = parentEl;
+        if (formEl.tagName !== 'FORM') formEl = parentEl.querySelector('form');
+        if (formEl) {
+            formEl.classList.add('was-validated');
+            let alertEl: HTMLElement | null = formEl.querySelector('[data-frmdb-submit-status]');
+            if (alertEl) {
+                alertEl.classList.add('d-none');
+            }
+        }
+
+
         for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
-            if (!isFormEl(control)) throw new Error("Elem is not know as a form element " + control.outerHTML);
+            if (!isFormEl(control)) { console.log("Only form elements are sent to the server ", control.outerHTML); continue };
             let err = tools.validateObjPropertyType(parentObj, getEntityPropertyNameFromEl(control), control.value);
             if (err) { this.markInvalid(control, err); return false;}
             else this.markValid(control);

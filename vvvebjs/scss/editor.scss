@@ -34,6 +34,11 @@ $custom-select-padding-y: .4rem;
 
 $input-height: default;
 
+$spacer: 0.5rem !default;
+$grid-gutter-width: 16px !default;
+$form-group-margin-bottom: 0.5rem !default;
+
+
 @import "line-awesome";
 @import "bootstrap";
 @import "builder";

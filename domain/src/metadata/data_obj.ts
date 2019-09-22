@@ -17,7 +17,7 @@ export function parsePrefix(prefix: string): string {
     return prefix.substr(0, idx) || 'ZZZblabla';
 }
 export function entityNameFromDataObjId(_id: string): string {
-    return _id.replace(/[~][~].*/, '');
+    return _id.substring(0, _id.indexOf('~~'));
 }
 export function parseDataObjId(_id: string): DataObjId {
     let ret = _parseDataObjId(_id);
@@ -42,7 +42,7 @@ function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);
 }
 export function isNewDataObjId(_id: string): boolean {
-    return _id.endsWith('~~') || _id.endsWith('__');
+    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('__FRMDB_NEW_RECORD__');
 }
 export function isNewTopLevelDataObjId(_id: string): boolean {
     return _id.endsWith('~~');

@@ -140,7 +140,10 @@ export function getValueForDomExpandedKey(domExpandedKey: string, context: {}) {
     else return val;
 }
 
-export function setElemValue(objValForKey: any, elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[]) {
+export function setElemValue(objValForKey: any, elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[], origKey: string) {
+    // if (origKey === '_id' && typeof objValForKey === "string") {
+    //     objValForKey = objValForKey.replace(/^.*?~~/, '');
+    // } // WARNING: this code would break saving of objects when formulas depend on this _id
     for (let el of elems) {
         let foundDataBinding = _setElemValue(objValForKey, el, key, context, arrayCurrentIndexes)
         if (!foundDataBinding) throw new Error("Internal Error: " + el + " does not have data binding for key " + key);
