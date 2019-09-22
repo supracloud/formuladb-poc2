@@ -2,7 +2,7 @@ import * as DOMPurify from "dompurify";
 
 import { BACKEND_SERVICE } from "./backend.service";
 import { AppPage } from "@domain/app";
-import { DataObj } from "@domain/metadata/data_obj";
+import { DataObj, isNewDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
@@ -31,6 +31,8 @@ export async function loadPage(pageName: string): Promise<string> {
 }
 
 async function loadData(dataBindingId: string): Promise<DataObj | DataObj[]> {
+    if (isNewDataObjId(dataBindingId)) return {_id: dataBindingId};
+    
     let appBackend = BACKEND_SERVICE();
 
     if (dataBindingId.indexOf('~~') > 0) {
@@ -40,7 +42,7 @@ async function loadData(dataBindingId: string): Promise<DataObj | DataObj[]> {
     }
 }
 
-async function $MODAL(modalPageName: string, dataBindingId: string) {
+async function $MODAL(modalPageName: string, initDataBindingId?: string, recordDataBindingId?: string) {
     let html = await loadPage(modalPageName);
     let modalEl = document.querySelector('#frmdbModal.modal');
     if (!modalEl) {
@@ -56,9 +58,16 @@ async function $MODAL(modalPageName: string, dataBindingId: string) {
         modalEl.innerHTML = pageModal.innerHTML;
     }
 
-    let data = await loadData(dataBindingId);
+    if (initDataBindingId) {
+        let data = await loadData(initDataBindingId);
+        updateDOM(data, modalEl as HTMLElement);    
+    }
 
-    updateDOM(data, modalEl as HTMLElement);
+    if (recordDataBindingId) {
+        let data = await loadData(recordDataBindingId);
+        modalEl.setAttribute('data-frmdb-record', recordDataBindingId);
+        updateDOM(data, modalEl as HTMLElement);
+    }
 
     ($('#frmdbModal') as any).modal('show');
 }

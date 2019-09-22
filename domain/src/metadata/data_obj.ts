@@ -42,7 +42,7 @@ function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);
 }
 export function isNewDataObjId(_id: string): boolean {
-    return _id.endsWith('~~') || _id.endsWith('__');
+    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('__FRMDB_NEW_RECORD__');
 }
 export function isNewTopLevelDataObjId(_id: string): boolean {
     return _id.endsWith('~~');

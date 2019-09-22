@@ -29,7 +29,6 @@ export const WishListRequest = {
         app: { name: "app", propType_: Pn.REFERENCE_TO, referencedEntityName: SampleApp._id, referencedPropertyName: SampleApp.props._id.name } as EntityProperty,
         email: { name: "email", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         comments: { name: "comments", propType_: Pn.STRING } as EntityProperty,
-        notify_me: { name: "notify_me", propType_: Pn.BOOLEAN } as EntityProperty,
     }
 };
 

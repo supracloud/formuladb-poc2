@@ -365,7 +365,7 @@ export class FrmdbTransactionRunner {
             let isNewObj: boolean = false;
             if (isNewDataObjId(event.obj._id)) {
                 if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
-                event.obj._id = event.obj._id + generateUUID();
+                event.obj._id = event.obj._id.replace('__FRMDB_NEW_RECORD__', '') + generateUUID();
                 isNewObj = true;
             }
             let originalObj = _.cloneDeep(event.obj);

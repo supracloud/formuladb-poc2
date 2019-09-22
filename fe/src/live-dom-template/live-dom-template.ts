@@ -144,7 +144,7 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
             let attr = elem.attributes[i];
             let value: string | number | boolean | null = null;
             if ('data-frmdb-value' === attr.name) {
-                if (elem.tagName === "INPUT") {
+                if (elem.tagName === "INPUT" || elem.tagName === "TEXTAREA") {
                     let input: HTMLInputElement = elem as HTMLInputElement;
                     if (input.type == "number") value = parseInt(input.value);
                     else if (input.type == "checkbox") value = input.checked;

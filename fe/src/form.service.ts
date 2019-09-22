@@ -138,8 +138,14 @@ export class FormService {
     public validateOnClient(parentEl: HTMLElement, parentObj: DataObj): boolean {
         const tools = BACKEND_SERVICE().getFrmdbEngineTools();
         
+        let formEl: HTMLElement | null = parentEl;
+        if (formEl.tagName !== 'FORM') formEl = parentEl.querySelector('form');
+        if (formEl) {
+            formEl.classList.add('was-validated');
+        }
+
         for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
-            if (!isFormEl(control)) throw new Error("Elem is not know as a form element " + control.outerHTML);
+            if (!isFormEl(control)) { console.log("Only form elements are sent to the server ", control.outerHTML); continue };
             let err = tools.validateObjPropertyType(parentObj, getEntityPropertyNameFromEl(control), control.value);
             if (err) { this.markInvalid(control, err); return false;}
             else this.markValid(control);
