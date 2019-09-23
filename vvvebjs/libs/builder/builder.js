@@ -1287,6 +1287,13 @@ Vvveb.Builder = {
 			el.style.removeProperty('left');
 			el.style.removeProperty('top');
 		}
+
+		//cleanup google analytics
+		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src="https://www.google-analytics.com/analytics.js"]'))) {
+			if (jsEl.parentElement) {
+				jsEl.parentElement.removeChild(jsEl);
+			}
+		}		
 		
 		html += frmdbNormalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
 
