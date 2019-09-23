@@ -1,5 +1,5 @@
-ORGANIZ_NAME=$1
-if [ -z "$ORGANIZ_NAME" ]; then echo "Usage: create_tenant.sh ORGANIZ_NAME"; exit 1; fi
+FRMDB_ENV_NAME=$1
+if [ -z "$FRMDB_ENV_NAME" ]; then echo "Usage: create_tenant.sh FRMDB_ENV_NAME"; exit 1; fi
 
 export BASEDIR=`dirname $0`
 export GOOGLE_APPLICATION_CREDENTIALS=$BASEDIR/FormulaDB-storage-full.json
@@ -50,21 +50,21 @@ if ! gcloud auth list|grep formuladb-static-assets; then
     gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
 fi
 
-# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$ORGANIZ_NAME'")'
+# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
 
 # ASSETS="`git ls-files apps/hotel-booking/`" node $BASEDIR/gcloud.js \
-#     'uploadAssets("'$ORGANIZ_NAME'")'
+#     'uploadAssets("'$FRMDB_ENV_NAME'")'
 
-gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-internal/formuladb.io
-gsutil -m rsync -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-examples/hotel-booking
+gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
+gsutil -m rsync -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
 
-gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-editor
-gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb
-gsutil -m rsync -r fe/img gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb/img
-gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb/icons
+gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-editor
+gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
+gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/img
+gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons
 
 curl -L -O https://github.com/elastic/apm-agent-rum-js/releases/latest/download/elastic-apm-rum.umd.min.js
-gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$ORGANIZ_NAME/elastic-apm-rum.umd.min.js
+gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$FRMDB_ENV_NAME/elastic-apm-rum.umd.min.js
 
 # -------------------------------------------------------------------------
 # External dependency: Elastic stack
@@ -76,13 +76,13 @@ gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$ORGANIZ_NAME/
 # External dependency: k8s
 # -------------------------------------------------------------------------
 
-perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ORGANIZ_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
-perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ORGANIZ_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
+perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
+perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 
-if ! kubectl get namespaces|grep "\b${ORGANIZ_NAME}\b"; then 
-    kubectl create namespace "${ORGANIZ_NAME}" 
+if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
+    kubectl create namespace "${FRMDB_ENV_NAME}" 
 fi
 
-if ! kubectl -n "${ORGANIZ_NAME}" get secrets | grep "\bregcred\b"; then 
-    kubectl -n "${ORGANIZ_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then 
+    kubectl -n "${FRMDB_ENV_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
 fi

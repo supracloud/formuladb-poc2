@@ -5,6 +5,7 @@
 
 import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema } from "@domain/metadata/entity";
 import { App } from "@domain/app";
+import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
 export const SampleApp = {
     _id: "SampleApp",
@@ -46,9 +47,11 @@ export const FormuladbIoApp: App = {
 };
 
 export const FormuladbIoSchema: Schema = {
-    _id: 'FRMDB_SCHEMA~~' + FormuladbIoApp._id,
+    _id: 'FRMDB_SCHEMA~~formuladb-internal--' + FormuladbIoApp._id,
     entities: {
         [SampleApp._id]: SampleApp,
         [WishListRequest._id]: WishListRequest,
+        [$User._id]: $User,
+        [$Dictionary._id]: $Dictionary,
     },
 }

@@ -48,12 +48,12 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
             }    
         }
 
-        for (let schema of mockMetadata.schemas) {
-            let mockData = new MockData(schema.entities);
-            let frmdbEngineStore = new FrmdbEngineStore('', '', kvsFactory, schema);
+        for (let schemaForApp of mockMetadata.schemas) {
+            let mockData = new MockData(schemaForApp.schema.entities);
+            let frmdbEngineStore = new FrmdbEngineStore(schemaForApp.tenantName, schemaForApp.appName, kvsFactory, schemaForApp.schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
             await frmdbEngine.init(true);
-            for (let entityId of Object.keys(schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
+            for (let entityId of Object.keys(schemaForApp.schema.entities).filter(id => !commonEntitiesIds.includes(id))) {
                 for (let obj of mockData.getAllForPath(entityId)) {
                     console.log("PUTTTTTT", obj);
                     // await frmdbEngineStore.putDataObj(obj);

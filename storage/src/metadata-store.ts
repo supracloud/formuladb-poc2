@@ -61,16 +61,8 @@ export class MetadataStore {
         let metadataKOS = await this.getMetadataKOS();
         let schema = await metadataKOS.get(`FRMDB_SCHEMA~~${tenantName}--${appName}`);
 
-        if (!schema) {
-            //TODO: get this information from persistent storage using a MetadataStorage generic interface (e.g. git storage, object storage)
-            if ("formuladb.io" === appName) {
-                return Promise.resolve(FormuladbIoSchema);
-            } else if ("hotel-booking" === appName) {
-                return Promise.resolve(HotelBookingSchema);
-            } else if ("inventory" === appName) {
-                return Promise.resolve(InventorySchema);
-            } else return null;
-        } else if (!isSchema(schema)) throw new Error("Not a schema " + JSON.stringify(schema));
+        if (!schema) throw new Error(`Schema not found FRMDB_SCHEMA~~${tenantName}--${appName}`);
+        else if (!isSchema(schema)) throw new Error("Not a schema " + JSON.stringify(schema));
         else return schema;
     }
 
