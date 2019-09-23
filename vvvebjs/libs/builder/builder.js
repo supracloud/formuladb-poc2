@@ -1286,14 +1286,24 @@ Vvveb.Builder = {
 			el.style.removeProperty('position');
 			el.style.removeProperty('left');
 			el.style.removeProperty('top');
+			el.style.removeProperty('display');
 		}
-
-		//cleanup google analytics
+		for (let isotopeGrid of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-isotope-grid.grid'))) {
+			isotopeGrid.style.removeProperty('position');
+			isotopeGrid.style.removeProperty('height');
+		}
+		
+		//cleanup tracking code
 		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src="https://www.google-analytics.com/analytics.js"]'))) {
 			if (jsEl.parentElement) {
 				jsEl.parentElement.removeChild(jsEl);
 			}
-		}		
+		}
+		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src*="hotjar.com"]'))) {
+			if (jsEl.parentElement) {
+				jsEl.parentElement.removeChild(jsEl);
+			}
+		}
 		
 		html += frmdbNormalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
 
