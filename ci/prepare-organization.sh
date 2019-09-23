@@ -1,5 +1,6 @@
 FRMDB_ENV_NAME=$1
 if [ -z "$FRMDB_ENV_NAME" ]; then echo "Usage: create_tenant.sh FRMDB_ENV_NAME"; exit 1; fi
+NO_K8S=$2
 
 export BASEDIR=`dirname $0`
 export GOOGLE_APPLICATION_CREDENTIALS=$BASEDIR/FormulaDB-storage-full.json
@@ -76,13 +77,15 @@ gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$FRMDB_ENV_NAM
 # External dependency: k8s
 # -------------------------------------------------------------------------
 
-perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
-perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
+if [ -z "$NO_K8S" ]; then
+  perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
+  perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 
-if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
-    kubectl create namespace "${FRMDB_ENV_NAME}" 
-fi
+  if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
+      kubectl create namespace "${FRMDB_ENV_NAME}" 
+  fi
 
-if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then 
-    kubectl -n "${FRMDB_ENV_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+  if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then 
+      kubectl -n "${FRMDB_ENV_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+  fi
 fi

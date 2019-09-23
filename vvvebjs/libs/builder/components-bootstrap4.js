@@ -89,7 +89,7 @@ Vvveb.Components.add("_base", {
         htmlAttr: "id",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     }, {
         name: "Class",
@@ -97,22 +97,32 @@ Vvveb.Components.add("_base", {
         htmlAttr: "class",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
+    {
+        key: "value",
+        inputtype: SectionInput,
+        section: "data",
+        name:false,
+        sort:base_sort++,
+        data: {header:"Value"},
+    },    
     {
         name: "Record",
         key: "data-frmdb-record",
         htmlAttr: "data-frmdb-record",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
         inputtype: TextInput
     },
     {
-        name: "Table",
+        name: "Repeat for Table",
         key: "data-frmdb-table",
         htmlAttr: "data-frmdb-table",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
@@ -122,6 +132,17 @@ Vvveb.Components.add("_base", {
         name: "Value",
         key: "data-frmdb-value",
         htmlAttr: "data-frmdb-value",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Initialize Width",
+        key: "data-frmdb-init",
+        htmlAttr: "data-frmdb-init",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
@@ -131,15 +152,25 @@ Vvveb.Components.add("_base", {
         name: "Show Only If",
         key: "data-frmdb-if",
         htmlAttr: "data-frmdb-if",
+        section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col:12,
         inputtype: TextInput
     },
+    {
+        key: "attributes",
+        inputtype: SectionInput,
+        section: "data",
+        name:false,
+        sort:base_sort++,
+        data: {header:"Attributes"},
+    },    
     {
         name: "Attribute 1",
         key: "data-frmdb-attr1",
         htmlAttr: "data-frmdb-attr1",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
@@ -149,15 +180,45 @@ Vvveb.Components.add("_base", {
         name: "Attribute 2",
         key: "data-frmdb-attr2",
         htmlAttr: "data-frmdb-attr2",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
         inputtype: TextInput
     },
     {
+        name: "Attribute 3",
+        key: "data-frmdb-attr3",
+        htmlAttr: "data-frmdb-attr3",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Attribute 4",
+        key: "data-frmdb-attr4",
+        htmlAttr: "data-frmdb-attr4",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        key: "properties",
+        inputtype: SectionInput,
+        section: "data",
+        name:false,
+        sort:base_sort++,
+        data: {header:"Properties"},
+    },    
+    {
         name: "Property 1",
         key: "data-frmdb-prop1",
         htmlAttr: "data-frmdb-prop1",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
@@ -167,41 +228,32 @@ Vvveb.Components.add("_base", {
         name: "Property 2",
         key: "data-frmdb-prop2",
         htmlAttr: "data-frmdb-prop2",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
         inputtype: TextInput
-    },
+    },  
     {
-        name: "Toggle",
-        key: "data-toggle",
-        htmlAttr: "data-toggle",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: SelectInput,
-        data: {
-			options: [{
-				value: "modal",
-				text: "modal"
-			}, {	
-				value: "tooltip",
-				text: "tooltip"
-			}, {
-				value: "popover",
-				text: "popover"
-			}],
-		}
-    },
-    {
-        name: "Target",
-        key: "data-target",
-        htmlAttr: "data-target",
+        name: "Property 3",
+        key: "data-frmdb-prop3",
+        htmlAttr: "data-frmdb-prop3",
+        section: "data",
         sort: base_sort++,
         inline:true,
         col:6,
         inputtype: TextInput
-    },    
+    },  
+    {
+        name: "Property 4",
+        key: "data-frmdb-prop4",
+        htmlAttr: "data-frmdb-prop4",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },  
    ]
 });    
 
@@ -1116,7 +1168,9 @@ Vvveb.Components.extend("_base", "html/link", {
         name: "Url",
         key: "href",
         htmlAttr: "href",
-        inputtype: LinkInput
+        inputtype: LinkInput,
+        inline:true,
+        col: 12
     }, {
         name: "Target",
         key: "target",

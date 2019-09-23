@@ -922,6 +922,8 @@ Vvveb.Builder = {
 		self.frameHtml.on("click", function (event) {
 
 			if (Vvveb.Builder.isPreview == false) {
+				event.preventDefault();
+
 				if (event.target) {
 					//if component properties is loaded in left panel tab instead of right panel show tab
 					if ($(".component-properties-tab").is(":visible"))//if properites tab is enabled/visible 
@@ -1349,8 +1351,10 @@ Vvveb.Builder = {
 		frmdbPutServerEventPutPageHtml(
 			pagePath,
 			html
-		).then(() => callback())
-		.catch(err => alert(err));
+		).then(() => callback && callback(pagePath))
+		.catch(err => {
+			alert(err)
+		});
 	},
 
 	setDesignerMode: function (designerMode = false) {
