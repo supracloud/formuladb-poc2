@@ -265,7 +265,6 @@ Vvveb.Components = {
 		// 		+ (clonedNode.classList.length > 0 ? '.' + Array.from(clonedNode.classList).join('.') : ''),
 		// 	type:"html/tag"			
 		// };
-		//return false;
 	},
 
 	render: function (type) {

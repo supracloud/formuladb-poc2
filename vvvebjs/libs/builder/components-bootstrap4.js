@@ -2488,6 +2488,20 @@ Vvveb.Components.extend("_base", "_base", {
     }]
 });
 
+Vvveb.Components.add("html/header", {
+    image: "icons/header.svg",
+    nodes: ['header'],
+    name: "Header",
+    html: "<header>"
+});
+
+Vvveb.Components.add("html/section", {
+    image: "icons/section.svg",
+    nodes: ['section'],
+    name: "Section",
+    html: "<section>"
+});
+
 Vvveb.Components.add("html/element", {
     image: "icons/tag.svg",
     nodes: [],
