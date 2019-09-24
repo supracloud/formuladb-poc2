@@ -164,7 +164,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         name:false,
         sort:base_sort++,
-        data: {header:"Attributes"},
+        data: {header:"Attributes (advanced)"},
     },    
     {
         name: "Attribute 1",
@@ -173,7 +173,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
     {
@@ -183,7 +183,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
     {
@@ -193,7 +193,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
     {
@@ -203,7 +203,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
     {
@@ -212,7 +212,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         name:false,
         sort:base_sort++,
-        data: {header:"Properties"},
+        data: {header:"Properties (advanced)"},
     },    
     {
         name: "Property 1",
@@ -221,7 +221,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
     {
@@ -231,7 +231,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },  
     {
@@ -241,7 +241,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },  
     {
@@ -251,7 +251,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },  
    ]

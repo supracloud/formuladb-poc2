@@ -713,6 +713,23 @@ Vvveb.Builder = {
 		return el.tagName;
 	},
 
+	selectNodeInComponentsTree: function(node) {
+		if (!node.vvvebComponentsTreeId) return;
+
+		const treeComp = $("#components-tree .tree");
+		treeComp.find('input').prop('checked', false);
+		treeComp.find('.highlighted').removeClass('highlighted');
+
+		let li = treeComp.find(`li[data-node-id="${node.vvvebComponentsTreeId}"]`);
+		if (!li) {console.warn("li for", node, "not found"); return;}
+		li.find('input').prop('checked', true);
+		li.addClass('highlighted');
+		li.parents().children('input').prop('checked', true);
+		treeComp.animate({
+			scrollTop: Math.max(0,li.offset().top-treeComp.offset().top + treeComp.scrollTop())
+		});
+	},
+
 	loadNodeComponent: function (node) {
 		data = Vvveb.Components.matchNode(node);
 		var component;
@@ -931,6 +948,7 @@ Vvveb.Builder = {
 
 					self.selectNode(event.target);
 					self.loadNodeComponent(event.target);
+					self.selectNodeInComponentsTree(event.target);
 				}
 
 				// image grabbing
@@ -1820,26 +1838,16 @@ Vvveb.FileManager = {
 			j++;
 			for (i in tree) {
 				var node = tree[i];
+				node.node.vvvebComponentsTreeId = `id_${j}_${i}`;
 
 				if (tree[i].children.length > 0) {
-					var li = $('<li data-component="' + node.name + '">\
+					var li = $('<li data-component="' + node.name + '" data-node-id="' + node.node.vvvebComponentsTreeId + '" >\
 					<label for="id' + j + '" style="background-image:url(libs/builder/' + node.image + ')"><span>' + node.name + '</span></label>\
 					<input type="checkbox" id="id' + j + '">\
 					</li>');
 					li.data("node", node.node);
 					li.append(drawComponentsTree(node.children));
 					html.append(li);
-					$(node.node).click((event) => {
-						const treeComp = $("#components-tree .tree");
-						treeComp.find('input').prop('checked', false);
-						treeComp.find('.highlighted').removeClass('highlighted');
-						li.find('input').prop('checked', true);
-						li.addClass('highlighted');
-						li.parents().children('input').prop('checked', true);
-						treeComp.animate({
-							scrollTop: Math.max(0,li.offset().top-treeComp.offset().top + treeComp.scrollTop())
-						});
-					});
 				}
 				else {
 					var li = $('<li data-component="' + node.name + '" class="file">\
