@@ -2487,3 +2487,10 @@ Vvveb.Components.extend("_base", "_base", {
 		}
     }]
 });
+
+Vvveb.Components.add("html/element", {
+    image: "icons/tag.svg",
+    nodes: [],
+    name: "Element",
+    html: "<tagName>"
+});

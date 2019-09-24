@@ -246,7 +246,25 @@ Vvveb.Components = {
 		tagName = node.tagName.toLowerCase();
 		if (tagName in this._nodesLookup) return this._nodesLookup[tagName];
 
-		return false;
+		if (tagName === "script" || tagName === "iframe") return false;
+
+		let clonedNode = node.cloneNode();
+		{
+			let child = clonedNode.lastElementChild;  
+			while (child) { 
+				e.removeChild(child); 
+				child = e.lastElementChild; 
+			} 
+		}
+
+		return this._components['html/element']
+		// return {
+		// 	html: clonedNode.outerHTML,
+		// 	image:"icons/code.svg",
+		// 	name: clonedNode.tagName + (clonedNode.id ? `#${clonedNode.id}` : '') 
+		// 		+ (clonedNode.classList.length > 0 ? '.' + Array.from(clonedNode.classList).join('.') : ''),
+		// 	type:"html/tag"			
+		// };
 		//return false;
 	},
 
@@ -726,7 +744,7 @@ Vvveb.Builder = {
 		li.addClass('highlighted');
 		li.parents().children('input').prop('checked', true);
 		treeComp.animate({
-			scrollTop: Math.max(0,li.offset().top-treeComp.offset().top + treeComp.scrollTop())
+			scrollTop: Math.max(0, (li.offset()||{top: 0}).top - treeComp.offset().top + treeComp.scrollTop())
 		});
 	},
 
@@ -1850,7 +1868,7 @@ Vvveb.FileManager = {
 					html.append(li);
 				}
 				else {
-					var li = $('<li data-component="' + node.name + '" class="file">\
+					var li = $('<li data-component="' + node.name + '" class="file" data-node-id="' + node.node.vvvebComponentsTreeId + '">\
 							<label for="id' + j + '" style="background-image:url(libs/builder/' + node.image + ')"><span>' + node.name + '</span></label>\
 							<input type="checkbox" id="id' + j + '"></li>');
 					li.data("node", node.node);
