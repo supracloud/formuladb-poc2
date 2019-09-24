@@ -56,6 +56,7 @@ fi
 #     'uploadAssets("'$ORGANIZ_NAME'")'
 
 gsutil -m rsync -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-internal/formuladb.io
+gsutil -m rsync -r apps/global gs://formuladb-static-assets/$ORGANIZ_NAME/global
 gsutil -m rsync -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-examples/hotel-booking
 
 gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$ORGANIZ_NAME/formuladb-editor

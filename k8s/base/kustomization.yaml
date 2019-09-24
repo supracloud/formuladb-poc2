@@ -4,9 +4,6 @@ resources:
 - resources/db-deployment.yaml
 - resources/db-service.yaml
 - resources/formuladb-online-https-secret.yaml
-- resources/lb-config.yaml
-- resources/lb-deployment.yaml
-- resources/lb-service.yaml
 - resources/pg-persistence-persistentvolumeclaim.yaml 
 - resources/service-account-secret.yaml
 #wildcard support removed for some reason https://github.com/kubernetes-sigs/kustomize/issues/119

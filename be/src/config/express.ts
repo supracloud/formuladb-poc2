@@ -15,6 +15,7 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
+import * as http from 'http';
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -73,7 +74,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return Promise.resolve(kvs$User);
     }
 
-    passport.use("user-pass", new LocalStrategy(
+    passport.use(new LocalStrategy({
+            usernameField: 'username',
+            passwordField: 'password'
+        },
         async function (username, password, cb) {
             try {
                 let userKVS = await getUserKvs();
@@ -151,16 +155,29 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         app.use(passport.initialize());
         app.use(passport.session());
         app.use(function (req, res, next) {
-            if (req.path !== '/formuladb-api/login') {
-                connectEnsureLogin.ensureLoggedIn('/formuladb-api/login')(req, res, next);
+            if (req.path !== '/global/iam/login') {
+                connectEnsureLogin.ensureLoggedIn('/global/iam/login')(req, res, next);
             } else next();
         });
-        app.post('/formuladb-api/login',
-            passport.authenticate('user-pass', { failureRedirect: '/formuladb-api/login' }),
-            function (req, res) {
+
+        app.get('/global/iam/login', async function (req, res, next) {
+            let env = process.env.ORGANIZ_NAME;
+            let httpProxy = proxy({
+                target: 'https://storage.googleapis.com/formuladb-static-assets/',
+                changeOrigin: true,
+                pathRewrite: {
+                    '/global/iam/login': env + '/global/iam/login.html'
+                },
+                logLevel: "debug",
+            });
+            httpProxy(req, res, next);
+        });
+    
+        app.post('/global/iam/login',
+            passport.authenticate('local', { failureRedirect: '/global/iam/login' }),
+            function(req, res) {
                 res.redirect('/');
-            }
-        );
+            });
     } else {
         app.use(function (req, res, next) {
             req.user = { role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN' };
@@ -242,6 +259,33 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } else {
             res.sendFile(path.resolve('dist/formuladb/index.html'));
         }
+    });
+
+    app.use((req, res, next) => {
+        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
+        if (!path) {
+            next();
+            return;
+        }
+        let httpProxy = proxy({
+            target: 'https://storage.googleapis.com/formuladb-static-assets/',
+            changeOrigin: true,
+            pathRewrite: function (path: string, req) {
+                let env = process.env.ORGANIZ_NAME;
+
+                if (path.startsWith('/index.html')) {
+                    return path.replace('/index.html', env + '/formuladb-internal/formuladb.io/index.html');
+                }
+
+                if (path.startsWith('/assets')) {
+                    return env + '/formuladb-internal/formuladb.io' + path;
+                }
+                
+                return env + path;
+            },
+            logLevel: "debug",
+        });
+        httpProxy(req, res, next);
     });
 
     // catch 404 and forward to error handler

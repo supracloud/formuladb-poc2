@@ -1,5 +1,4 @@
 bases:
 - ../../base
 patches:
-- patches/lb-deployment.yaml
 - patches/be-deployment.yaml
