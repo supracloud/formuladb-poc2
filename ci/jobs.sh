@@ -58,7 +58,7 @@ function test_e2e {
     if [ -z "ORGANIZ_NAME" ]; then echo "pls provide ORGANIZ_NAME"; exit 1; fi
 
     POD=`kubectl -n $ORGANIZ_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 8084 || kubectl -n $ORGANIZ_NAME port-forward $POD 8084:8084 &
+    nc -z localhost 8084 || kubectl -n $ORGANIZ_NAME port-forward $POD 8084:3000 &
     npm run webdriver-update
     TARGET=headless npm run test:e2e -- --baseUrl='http://localhost:8084'
 }

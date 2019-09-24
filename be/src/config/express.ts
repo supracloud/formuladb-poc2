@@ -178,6 +178,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             function(req, res) {
                 res.redirect('/');
             });
+
+        app.get('/global/iam/logout', function(req, res){
+            req.logout();
+            res.redirect('/');
+            });
     } else {
         app.use(function (req, res, next) {
             req.user = { role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN' };
