@@ -15,6 +15,7 @@ import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
 import { getParentObjId } from './form.service';
 import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
+import './fe-functions';
 
 declare var Vvveb: any;
 

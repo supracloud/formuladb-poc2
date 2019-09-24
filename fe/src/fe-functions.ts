@@ -4,6 +4,7 @@ import { BACKEND_SERVICE } from "./backend.service";
 import { AppPage } from "@domain/app";
 import { DataObj, isNewDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
+import { Entity } from "@domain/metadata/entity";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -75,4 +76,12 @@ async function $MODAL(modalPageName: string, initDataBindingId?: string, recordD
     ($('#frmdbModal') as any).modal('show');
 }
 
+function $TABLES(): {name: string}[] {
+    let appBackend = BACKEND_SERVICE();
+    return Object.values(appBackend.currentSchema.entities).map(ent => ({
+        name: ent._id,
+    }));
+}
+
 (window as any).$MODAL = $MODAL;
+(window as any).$TABLES = $TABLES;

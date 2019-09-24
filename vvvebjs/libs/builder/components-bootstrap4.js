@@ -77,6 +77,20 @@ var style_section = 'style';
 
 Vvveb.Components.add("_base", {
     name: "Element",
+    beforeInit: function (node) {
+        let dataFrmdbTableProp = this.properties.find(x => x.key == 'data-frmdb-table');
+        if (dataFrmdbTableProp) {
+            let tables = $TABLES();
+            dataFrmdbTableProp.validValues = tables.map(t => t.name);
+            dataFrmdbTableProp.data.options = [{
+                value: '',
+                text: '-',
+            }].concat(tables.map(t => ({
+                value: t.name,
+                text: t.name,
+            })));
+        }
+    },
 	properties: [{
         key: "element_header",
         inputtype: SectionInput,
@@ -126,7 +140,11 @@ Vvveb.Components.add("_base", {
         sort: base_sort++,
         inline:true,
         col:6,
-        inputtype: TextInput
+        inputtype: SelectInput,
+        validValues: [],
+        data: {
+            options: []
+        }
     },
     {
         name: "Value",
@@ -2488,21 +2506,21 @@ Vvveb.Components.extend("_base", "_base", {
     }]
 });
 
-Vvveb.Components.add("html/header", {
+Vvveb.Components.extend("_base", "html/header", {
     image: "icons/header.svg",
     nodes: ['header'],
     name: "Header",
     html: "<header>"
 });
 
-Vvveb.Components.add("html/section", {
+Vvveb.Components.extend("_base", "html/section", {
     image: "icons/section.svg",
     nodes: ['section'],
     name: "Section",
     html: "<section>"
 });
 
-Vvveb.Components.add("html/element", {
+Vvveb.Components.extend("_base", "html/element", {
     image: "icons/tag.svg",
     nodes: [],
     name: "Element",
