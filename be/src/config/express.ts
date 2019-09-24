@@ -97,7 +97,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     passport.deserializeUser(async function (id, cb) {
         try {
             let userKVS = await getUserKvs();
-            let user = await userKVS.get('$User~~' + id);
+            let user = await userKVS.get(id);
             if (!user) return cb(new Error("User " + id + " forbidden or not found !"));
             return cb(null, user);
         } catch (err) {
@@ -262,8 +262,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     app.use((req, res, next) => {
-        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html)$/);
-        if (!path) {
+        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html|json)$/);
+        if (!path && req.path !== '/') {
             next();
             return;
         }
@@ -273,8 +273,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             pathRewrite: function (path: string, req) {
                 let env = process.env.ORGANIZ_NAME;
 
-                if (path.startsWith('/index.html')) {
-                    return path.replace('/index.html', env + '/formuladb-internal/formuladb.io/index.html');
+                if (path.startsWith('/index.html') || path === '/') {
+                    return env + '/formuladb-internal/formuladb.io/index.html';
                 }
 
                 if (path.startsWith('/assets')) {
