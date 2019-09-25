@@ -182,7 +182,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         name:false,
         sort:base_sort++,
-        data: {header:"Attributes (advanced)"},
+        data: {header:"Attributes"},
     },    
     {
         name: "Attribute 1",
@@ -2511,6 +2511,13 @@ Vvveb.Components.extend("_base", "html/header", {
     nodes: ['header'],
     name: "Header",
     html: "<header>"
+});
+
+Vvveb.Components.extend("_base", "html/footer", {
+    image: "icons/footer.svg",
+    nodes: ['footer'],
+    name: "Footer",
+    html: "<footer>"
 });
 
 Vvveb.Components.extend("_base", "html/section", {

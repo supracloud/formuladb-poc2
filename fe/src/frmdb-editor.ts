@@ -16,6 +16,7 @@ import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
 import { getParentObjId } from './form.service';
 import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
 import './fe-functions';
+import './form/form.component';
 
 declare var Vvveb: any;
 
@@ -254,7 +255,7 @@ async function loadTables(selectedTable?: string) {
 }
 
 function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
-    for (let i = 0; i < el.attributes.length; i++) {
+    for (let i = 0; i < (el.attributes||[]).length; i++) {
         let attrib = el.attributes[i];
         console.warn(DATA_FRMDB_ATTRS_Enum);
         if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
