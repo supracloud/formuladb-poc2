@@ -1,10 +1,11 @@
 import './router';
 import './fragment/fragment.component';
-import './globals';
 import { initFrmdb } from './init';
 import './form/form.component';
 
 import './directives/data-frmdb-select';
 import './fe-functions';
 
-initFrmdb();
+window.addEventListener('DOMContentLoaded', (event) => {
+    initFrmdb();
+});

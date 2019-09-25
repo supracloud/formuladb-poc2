@@ -763,7 +763,7 @@ Vvveb.Builder = {
 	selectNode: function (node) {
 		var self = this;
 
-		window.frmdbEditorHighlightDataGridCell(node);
+		window.frmdbEditorHighlightDataGridCell(node[0] && node[0].tagName ? node[0] : node);
 
 		if (!node) {
 			jQuery("#select-box").hide();

@@ -1,5 +1,3 @@
-set -x
-
 handleErr () {
     errcode=$?
     set +x
@@ -9,9 +7,9 @@ handleErr () {
 trap handleErr ERR
 
 while true; do
-    sleep 10
-    gsutil -m rsync -r gs://formuladb-static-assets/tdev-${USER}/formuladb-internal/ apps/formuladb-internal/
-    gsutil -m rsync -r gs://formuladb-static-assets/tdev-${USER}/formuladb-examples/ apps/formuladb-examples/
+    sleep 15
+    gsutil -m rsync -r gs://formuladb-static-assets/tdev-${USER}/formuladb-internal/ apps/formuladb-internal/ 2>&1 | grep -v synchronization
+    gsutil -m rsync -r gs://formuladb-static-assets/tdev-${USER}/formuladb-examples/ apps/formuladb-examples/ 2>&1 | grep -v synchronization
 done &
 
 mkdir -p live-server-wwwroot

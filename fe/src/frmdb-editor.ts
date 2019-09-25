@@ -17,24 +17,15 @@ import { getParentObjId } from './form.service';
 import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
 import './fe-functions';
 import './form/form.component';
+import { FrmdbAppState } from './frmdb-app-state';
 
 declare var Vvveb: any;
 
-interface FrmdbEditorState {
-    tables: Entity[];
+class FrmdbEditorState extends FrmdbAppState {
     selectedTableId: string;
-    pages: { name: string, url: string }[];
-    selectedPageName: string;
-    selectedPagePath: string;
 }
 
-const EditorState: FrmdbEditorState = {
-    tables: [],
-    selectedTableId: '',
-    pages: [],
-    selectedPageName: '',
-    selectedPagePath: '',
-}
+let EditorState: FrmdbEditorState = new FrmdbEditorState('n-a-tenant', 'n-a-app');
 
 window.onpopstate = () => {
     _resetAppAndTenant();
@@ -53,6 +44,8 @@ async function initEditor(loadPageName?: string) {
 
     let appBackend = BACKEND_SERVICE();
     Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
+    EditorState = new FrmdbEditorState(appBackend.tenantName, appBackend.appName);
+    window['$FRMDB'] = EditorState;
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);

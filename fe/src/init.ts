@@ -3,6 +3,7 @@ import { APP_AND_TENANT_ROOT } from "./app.service";
 import { waitUntilNotNull } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
 import { initRoutes } from "./router";
+import { DataBindingsMonitor } from "./data-bindings-monitor";
 
 export async function initFrmdb() {
     let [tenantName, appName, appRootEl] = APP_AND_TENANT_ROOT();
@@ -11,4 +12,6 @@ export async function initFrmdb() {
     await waitUntilNotNull(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
     formService.initFormsFromNewRecordCache();
     initRoutes();
+
+    new DataBindingsMonitor();
 }

@@ -109,23 +109,13 @@ Vvveb.Components.add("_base", {
         data: {header:"Value"},
     },    
     {
-        name: "Record",
-        key: "data-frmdb-record",
-        htmlAttr: "data-frmdb-record",
-        section: "data",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
         name: "Repeat for Table",
         key: "data-frmdb-table",
         htmlAttr: "data-frmdb-table",
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 8,
         inputtype: SelectInput,
         validValues: [],
         data: {
@@ -140,17 +130,40 @@ Vvveb.Components.add("_base", {
                     value: '',
                     text: '-',
                 }].concat(tables.map(t => ({
-                    value: t.name + '[]',
+                    value: '$FRMDB.' + t.name + '[]',
                     text: t.name,
                 })));
             }
         },    
         onChange: function(node, value, input, component) {
             
-            console.log("DDDD", arguments);
+            if (!node.attr('data-frmdb-table-limit')) {
+                node.attr('data-frmdb-table-limit', '3');
+                component.properties.find(p => p.name === 'Limit').inputtype.setValue(3);
+            }
             
             return node;
         },        
+    },
+    {
+        name: "Limit",
+        key: "data-frmdb-table-limit",
+        htmlAttr: "data-frmdb-table-limit",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 4,
+        inputtype: NumberInput
+    },
+    {
+        name: "Record",
+        key: "data-frmdb-record",
+        htmlAttr: "data-frmdb-record",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
     },
     {
         name: "Value",

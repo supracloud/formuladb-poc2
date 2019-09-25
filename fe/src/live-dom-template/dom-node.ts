@@ -11,6 +11,13 @@ export class ElemList {
         return this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`).length;
     }
 
+    public getLimit() {
+        let limitEl = this.parentEl.querySelector(`[data-frmdb-table-limit]`);
+        if (!limitEl) return 3;
+        let limit = parseInt(limitEl.getAttribute('data-frmdb-table-limit')||'');
+        return limit || 3;
+    }
+
     public addElem() {
         let firstEl = this.parentEl.querySelector(`[data-frmdb-table="${this.key}"]`);
         if (!firstEl) firstEl = createElem('div', this.key);
