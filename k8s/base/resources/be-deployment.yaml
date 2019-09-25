@@ -13,7 +13,7 @@ spec:
       initContainers:
       - name: check-db-ready
         image: postgres:11
-        command: ['sh', '-c', 'pg_isready -h db -p 5432 -t 3600']
+        command: ['sh', '-c', 'pg_isready -h db -p 5432 -t 10']
       containers:
       - env:
         - name: DEBUG

@@ -1,14 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: be
+  name: lb
 spec:
   template:
     spec:
       containers:
-      - name: be
+      - name: lb
         env:
-        - name: FRMDB_AUTH_ENABLED
-          value: "true"
         - name: ORGANIZ_NAME
-          value: tdev-loi #TBD_ENV_NAME
+          value: biz

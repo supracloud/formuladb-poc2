@@ -99,7 +99,109 @@ Vvveb.Components.add("_base", {
         inline:true,
         col:6,
         inputtype: TextInput
-    }
+    },
+    {
+        name: "Record",
+        key: "data-frmdb-record",
+        htmlAttr: "data-frmdb-record",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Table",
+        key: "data-frmdb-table",
+        htmlAttr: "data-frmdb-table",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Value",
+        key: "data-frmdb-value",
+        htmlAttr: "data-frmdb-value",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Show Only If",
+        key: "data-frmdb-if",
+        htmlAttr: "data-frmdb-if",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Attribute 1",
+        key: "data-frmdb-attr1",
+        htmlAttr: "data-frmdb-attr1",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Attribute 2",
+        key: "data-frmdb-attr2",
+        htmlAttr: "data-frmdb-attr2",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Property 1",
+        key: "data-frmdb-prop1",
+        htmlAttr: "data-frmdb-prop1",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Property 2",
+        key: "data-frmdb-prop2",
+        htmlAttr: "data-frmdb-prop2",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },
+    {
+        name: "Toggle",
+        key: "data-toggle",
+        htmlAttr: "data-toggle",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: SelectInput,
+        data: {
+			options: [{
+				value: "modal",
+				text: "modal"
+			}, {	
+				value: "tooltip",
+				text: "tooltip"
+			}, {
+				value: "popover",
+				text: "popover"
+			}],
+		}
+    },
+    {
+        name: "Target",
+        key: "data-target",
+        htmlAttr: "data-target",
+        sort: base_sort++,
+        inline:true,
+        col:6,
+        inputtype: TextInput
+    },    
    ]
 });    
 

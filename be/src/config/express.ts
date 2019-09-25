@@ -155,31 +155,31 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         app.use(passport.initialize());
         app.use(passport.session());
         app.use(function (req, res, next) {
-            if (req.path !== '/global/iam/login') {
-                connectEnsureLogin.ensureLoggedIn('/global/iam/login')(req, res, next);
+            if (req.path !== '/formuladb-api/login') {
+                connectEnsureLogin.ensureLoggedIn('/formuladb-api/login')(req, res, next);
             } else next();
         });
 
-        app.get('/global/iam/login', async function (req, res, next) {
+        app.get('/formuladb-api/login', async function (req, res, next) {
             let env = process.env.ORGANIZ_NAME;
             let httpProxy = proxy({
                 target: 'https://storage.googleapis.com/formuladb-static-assets/',
                 changeOrigin: true,
                 pathRewrite: {
-                    '/global/iam/login': env + '/global/iam/login.html'
+                    '/formuladb-api/login': env + '/global/iam/login.html'
                 },
                 logLevel: "debug",
             });
             httpProxy(req, res, next);
         });
     
-        app.post('/global/iam/login',
-            passport.authenticate('local', { failureRedirect: '/global/iam/login' }),
+        app.post('/formuladb-api/login',
+            passport.authenticate('local', { failureRedirect: '/formuladb-api/login' }),
             function(req, res) {
                 res.redirect('/');
             });
 
-        app.get('/global/iam/logout', function(req, res){
+        app.get('/formuladb-api/logout', function(req, res){
             req.logout();
             res.redirect('/');
             });
