@@ -77,20 +77,6 @@ var style_section = 'style';
 
 Vvveb.Components.add("_base", {
     name: "Element",
-    beforeInit: function (node) {
-        let dataFrmdbTableProp = this.properties.find(x => x.key == 'data-frmdb-table');
-        if (dataFrmdbTableProp) {
-            let tables = $TABLES();
-            dataFrmdbTableProp.validValues = tables.map(t => t.name);
-            dataFrmdbTableProp.data.options = [{
-                value: '',
-                text: '-',
-            }].concat(tables.map(t => ({
-                value: t.name,
-                text: t.name,
-            })));
-        }
-    },
 	properties: [{
         key: "element_header",
         inputtype: SectionInput,
@@ -144,7 +130,27 @@ Vvveb.Components.add("_base", {
         validValues: [],
         data: {
             options: []
-        }
+        },
+        beforeInit: function (node) {
+            let dataFrmdbTableProp = this;
+            if (dataFrmdbTableProp) {
+                let tables = $TABLES();
+                dataFrmdbTableProp.validValues = tables.map(t => t.name);
+                dataFrmdbTableProp.data.options = [{
+                    value: '',
+                    text: '-',
+                }].concat(tables.map(t => ({
+                    value: t.name + '[]',
+                    text: t.name,
+                })));
+            }
+        },    
+        onChange: function(node, value, input, component) {
+            
+            console.log("DDDD", arguments);
+            
+            return node;
+        },        
     },
     {
         name: "Value",
