@@ -21,11 +21,14 @@ export class ElemList {
     }
 
     public addElem(): Elem {
-        let firstEl = this.parentEl.querySelector(`[data-frmdb-table="${this.key}"]`);
+        let elList = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
+        let firstEl = elList[0];
         if (!firstEl) firstEl = createElem('div', this.key);
         let newEl: Elem = firstEl.cloneNode(true) as Elem;
         if (newEl.id) newEl.id = generateUUID();
-        this.parentEl.appendChild(newEl);
+        if (elList.length > 0) {
+            elList[elList.length - 1].insertAdjacentElement('afterend', newEl);
+        } else this.parentEl.appendChild(newEl);
         return newEl as Elem;
     }
 
