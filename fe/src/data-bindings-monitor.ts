@@ -22,7 +22,7 @@ export class DataBindingsMonitor {
                     {
                         this.debouncedUpdateDOMForTable(el);
                     } 
-                    else if (Object.values(DATA_FRMDB_ATTRS_Enum).includes(mutation.attributeName as any)) {
+                    else if (Object.values(DATA_FRMDB_ATTRS_Enum).includes(mutation.attributeName as any))
                     {
                         if ((el.getAttribute(mutation.attributeName)||'').indexOf('$FRMDB.') !== 0) continue;
                         let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
@@ -32,8 +32,8 @@ export class DataBindingsMonitor {
                         } else {
                             this.debouncedUpdateDOMForTable(parentRecordEl);
                         }
-                        
                     }
+                }
             }
         });
         observer.observe(rootEl || document, { attributes: true, childList: true, subtree: true });
