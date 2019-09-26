@@ -1,6 +1,7 @@
 import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { instance } from "gaxios";
+import { emit } from "@fe/delegated-events";
 const LOG = new FrmdbLogger('live-dom-template');
 
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
@@ -90,7 +91,8 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
         for (let elemListForKey of elemListsForKey) {
             for (let [i, o] of objValForKey.entries()) {
                 if (elemListForKey.length() <= i) {
-                    elemListForKey.addElem();
+                    let newElemInList = elemListForKey.addElem();
+                    emit(document, {type: "FrmdbAddPageElement", el: newElemInList});
                 }
                 elemListForKey.at(i)!['data-frmdb-obj'] = o;
                 if (isScalar(o)) {

@@ -134,16 +134,7 @@ Vvveb.Components.add("_base", {
                     text: t.name,
                 })));
             }
-        },    
-        onChange: function(node, value, input, component) {
-            
-            if (!node.attr('data-frmdb-table-limit')) {
-                node.attr('data-frmdb-table-limit', '3');
-                component.properties.find(p => p.name === 'Limit').inputtype.setValue(3);
-            }
-            
-            return node;
-        },        
+        },      
     },
     {
         name: "Limit",
@@ -153,7 +144,10 @@ Vvveb.Components.add("_base", {
         sort: base_sort++,
         inline:true,
         col: 4,
-        inputtype: NumberInput
+        inputtype: NumberInput,
+        data:{
+            placeholder: "3"
+        }
     },
     {
         name: "Record",

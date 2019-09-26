@@ -979,6 +979,27 @@ Vvveb.Builder = {
 
 		});
 
+		self.frameDoc.on("FrmdbAddPageElement", function (event) {
+			let node = event.detail.el;
+			if (!node) return;
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				addedNodes: [node],
+				nextSibling: node.nextSibling
+			});
+		});
+
+		self.frameDoc.on("FrmdbRemovePageElement", function (event) {
+			let node = event.detail.el;
+			if (!node) return;
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				removedNodes: [node],
+				nextSibling: node.nextSibling
+			});
+		});
 	},
 
 	_grabImage(element) {
@@ -1084,6 +1105,7 @@ Vvveb.Builder = {
 		$("#clone-btn").on("click", function (event) {
 
 			clone = self.selectedEl.clone();
+			if (clone.get(0).id) clone.get(0).id = Math.random() * new Date().getTime();
 
 			self.selectedEl.after(clone);
 

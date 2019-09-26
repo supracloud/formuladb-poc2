@@ -1,5 +1,7 @@
 import * as _ from "lodash";//TODO: optimization include only the needed functions
 import * as DOMPurify from "dompurify";
+import { generate } from "short-uuid";
+import { generateUUID } from "@domain/uuid";
 
 let parser = new DOMParser(), serializer = new XMLSerializer();
 
@@ -18,10 +20,13 @@ export class ElemList {
         return limit || 3;
     }
 
-    public addElem() {
+    public addElem(): Elem {
         let firstEl = this.parentEl.querySelector(`[data-frmdb-table="${this.key}"]`);
         if (!firstEl) firstEl = createElem('div', this.key);
-        this.parentEl.appendChild(firstEl.cloneNode(true));
+        let newEl: Elem = firstEl.cloneNode(true) as Elem;
+        if (newEl.id) newEl.id = generateUUID();
+        this.parentEl.appendChild(newEl);
+        return newEl as Elem;
     }
 
     public addTo(parentEl: Elem) {
@@ -34,10 +39,11 @@ export class ElemList {
         else return list[idx] as Elem;
     }
 
-    public removeAt(idx: number) {
+    public removeAt(idx: number): Elem | null {
         let childEl = this.parentEl.childNodes[idx];
-        if (!childEl) return;
+        if (!childEl) return null;
         this.parentEl.removeChild(childEl);
+        return childEl as Elem;
     }
 }
 
