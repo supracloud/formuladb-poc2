@@ -150,7 +150,7 @@ Vvveb.Components.add("_base", {
         }
     },
     {
-        name: "Record",
+        name: "Parent Record",
         key: "data-frmdb-record",
         htmlAttr: "data-frmdb-record",
         section: "data",
@@ -160,14 +160,23 @@ Vvveb.Components.add("_base", {
         inputtype: TextInput
     },
     {
-        name: "Value",
+        name: "Value From Record",
         key: "data-frmdb-value",
         htmlAttr: "data-frmdb-value",
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
-        inputtype: TextInput
+        col: 12,
+        inputtype: SelectInput,
+        validValues: [],
+        data: {
+            options: []
+        },
+        beforeInit: function (node) {
+            let opts = $DATA_COLUMNS_FOR_ELEM(node);
+            this.validValues = opts.map(o => o.value);
+            this.data.options = opts;
+        },            
     },
     {
         name: "Initialize Width",
@@ -176,7 +185,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
     {
@@ -195,7 +204,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         name:false,
         sort:base_sort++,
-        data: {header:"Attributes"},
+        data: {header:"Attributes", expanded:false},
     },    
     {
         name: "Attribute 1",
@@ -243,7 +252,7 @@ Vvveb.Components.add("_base", {
         section: "data",
         name:false,
         sort:base_sort++,
-        data: {header:"Properties (advanced)"},
+        data: {header:"Properties (advanced)", expanded:false},
     },    
     {
         name: "Property 1",

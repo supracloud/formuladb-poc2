@@ -348,7 +348,11 @@ Vvveb.Components = {
 			var property = component.properties[i];
 			var element = nodeElement;
 
-			if (property.beforeInit) property.beforeInit(element.get(0))
+			try {
+				if (property.beforeInit) property.beforeInit(element.get(0))
+			} catch (err) {
+				console.warn("Error in beforeInit", component, property, err);
+			}
 
 			if (property.child) element = element.find(property.child);
 

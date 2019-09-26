@@ -95,6 +95,9 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
                     emit(document, {type: "FrmdbAddPageElement", el: newElemInList});
                 }
                 elemListForKey.at(i)!['data-frmdb-obj'] = o;
+                if (o._id && o._id.indexOf('~~') > 0) {
+                    elemListForKey.at(i)!.setAttribute('data-frmdb-record', o._id);
+                }
                 if (isScalar(o)) {
                     updateDOMForScalarValue(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
                 } else updateDOMForScope(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));

@@ -2,7 +2,7 @@ import * as DOMPurify from "dompurify";
 
 import { BACKEND_SERVICE } from "./backend.service";
 import { AppPage } from "@domain/app";
-import { DataObj, isNewDataObjId } from "@domain/metadata/data_obj";
+import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Entity } from "@domain/metadata/entity";
 
@@ -83,5 +83,26 @@ function $TABLES(): {name: string}[] {
     }));
 }
 
+function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): {text: string, value: string}[] {
+    let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
+    if (!parentRecordEl) {console.warn("parent record not found", el.outerHTML); return []}
+
+    let tableName = parentRecordEl.getAttribute('data-frmdb-table');
+    if (!tableName) {
+        tableName = entityNameFromDataObjId(parentRecordEl.getAttribute('data-frmdb-record')||'');
+    } else {
+        tableName = tableName.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+    }
+    if (!tableName) {console.warn("table not found", tableName, el.outerHTML); return []}
+    let appBackend = BACKEND_SERVICE();
+    let entity = appBackend.currentSchema.entities[tableName];
+    if (!entity) {console.warn("entity not found", tableName, el.outerHTML); return []}
+    return Object.values(entity.props).map(p => ({
+        text: `${tableName}.${p.name}`,
+        value: `$FRMDB.${tableName}[].${p.name}`,
+    }));
+}
+
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;
+(window as any).$DATA_COLUMNS_FOR_ELEM = $DATA_COLUMNS_FOR_ELEM;

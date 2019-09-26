@@ -251,7 +251,10 @@ function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } 
     for (let i = 0; i < (el.attributes||[]).length; i++) {
         let attrib = el.attributes[i];
         console.warn(DATA_FRMDB_ATTRS_Enum);
-        if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
+        if (attrib.name === 'data-frmdb-table') {
+            let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+            return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
+        } else if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
             let recordId = getParentObjId(el);
             let tableName = entityNameFromDataObjId(recordId);
             let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');
@@ -278,6 +281,9 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     dataGrid.frmdbState.highlightColumns = {
         [tableName]: {
             [columnId]: CURRENT_COLUMN_HIGHLIGHT_STYLE,
+        },
+        '$HIGHLIGHT-RECORD$': {
+            [recordId]: CURRENT_COLUMN_HIGHLIGHT_STYLE
         }
     };
     changeSelectedTableIdIfDifferent(tableName);

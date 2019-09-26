@@ -43,7 +43,9 @@ export class ElemList {
     }
 
     public removeAt(idx: number): Elem | null {
-        let childEl = this.parentEl.childNodes[idx];
+        let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
+        if (list.length < idx) return null;
+        let childEl = list[idx];
         if (!childEl) return null;
         this.parentEl.removeChild(childEl);
         return childEl as Elem;

@@ -12,6 +12,7 @@ export const SampleApp = {
     isEditable: false,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         category_2: { name: "category_2", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         theme_url: { name: "theme_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
