@@ -412,7 +412,10 @@
 		<script id="vvveb-input-textinput" type="text/html">
 
 	<div>
-		<input name="{%=key%}" type="text" class="form-control"/>
+		<input name="{%=key%}" type="text" 
+		{% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+		{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+		class="form-control"/>
 	</div>
 	
 </script>
@@ -691,6 +694,7 @@
 			  {% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
 			  {% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
 			  {% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+			  {% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
 			  {% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
 		class="form-control"/>
 	</div>

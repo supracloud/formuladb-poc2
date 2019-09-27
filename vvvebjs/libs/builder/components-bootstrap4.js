@@ -157,7 +157,17 @@ Vvveb.Components.add("_base", {
         sort: base_sort++,
         inline:true,
         col: 12,
-        inputtype: TextInput
+        inputtype: TextInput,
+        data: {
+            disabled: true,
+        },
+        beforeInit: function (node) {
+            if (!node.getAttribute('data-frmdb-record')) {
+                let parentRecordEl = node.closest('[data-frmdb-record]');
+                if (!parentRecordEl) return;
+                this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record');
+            }
+        },          
     },
     {
         name: "Value From Record",
@@ -208,8 +218,8 @@ Vvveb.Components.add("_base", {
     },    
     {
         name: "Attribute 1",
-        key: "data-frmdb-attr1",
-        htmlAttr: "data-frmdb-attr1",
+        key: "data-frmdb-attr",
+        htmlAttr: "data-frmdb-attr",
         section: "data",
         sort: base_sort++,
         inline:true,

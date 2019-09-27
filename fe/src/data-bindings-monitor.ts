@@ -24,7 +24,7 @@ export class DataBindingsMonitor {
                     } 
                     else if (Object.values(DATA_FRMDB_ATTRS_Enum).includes(mutation.attributeName as any))
                     {
-                        if ((el.getAttribute(mutation.attributeName)||'').indexOf('$FRMDB.') !== 0) continue;
+                        if ((el.getAttribute(mutation.attributeName)||'').indexOf('$FRMDB.') < 0) continue;
                         let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
                         if (!parentRecordEl) {console.warn("parent record not found", el.outerHTML); continue}
                         if (parentRecordEl.getAttribute('data-frmdb-table')) {
