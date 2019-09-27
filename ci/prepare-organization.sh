@@ -77,7 +77,7 @@ gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$ORGANIZ_NAME/
 # External dependency: k8s
 # -------------------------------------------------------------------------
 
-perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ORGANIZ_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
+perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ORGANIZ_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/pg-backup-deployment.yaml
 perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$ORGANIZ_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 
 if ! kubectl get namespaces|grep "\b${ORGANIZ_NAME}\b"; then 

@@ -1,0 +1,14 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: postgresql-cloud-dump
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgresql-cloud-dump
+            env:
+            - name: ORGANIZ_NAME
+              value: tdev-loi #TBD_ENV_NAME

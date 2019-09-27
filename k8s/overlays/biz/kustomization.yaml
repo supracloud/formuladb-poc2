@@ -1,7 +1,7 @@
 bases:
 - ../../base
 patches:
-- patches/lb-deployment.yaml
 - patches/be-deployment.yaml
+- patches/pg-backup-deployment.yaml
 resources:
 - resources/ingress.yaml
