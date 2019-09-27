@@ -20,7 +20,7 @@
         "test:e2e": "protractor e2e/protractor.conf.js",
         "e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
         "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts",
-        "generate-icons": "icon-font-generator fe/img/icons/*.svg -o fe/icons"
+        "generate-icons": "icon-font-generator -p frmdb-i fe/img/icons/*.svg -o fe/icons"
     },
     "author": "",
     "license": "ISC",
