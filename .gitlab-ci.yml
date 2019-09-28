@@ -122,7 +122,7 @@ e2e_staging_with_videos:
     paths:
       - e2e/protractor_videos/
   <<: *cache_node_modules_and_artifacts
-#  <<: *only_for_staging_and_production
+  <<: *only_for_staging_and_production
 
 cleanup:
   stage: cleanup
