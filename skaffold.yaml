@@ -36,8 +36,8 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/production
-  - name: biz
+  - name: client
     patches:
       - op: replace
         path: /deploy/kustomize/path
-        value: k8s/overlays/biz
+        value: k8s/overlays/client

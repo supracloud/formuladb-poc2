@@ -29,6 +29,7 @@ import { LazyInit } from "@domain/ts-utils";
 import { DictionaryEntry } from "@domain/dictionary-entry";
 import { I18nBe } from "@be/i18n-be";
 import { html } from "d3";
+import { createNewEnvironment } from "./env-manager";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -190,6 +191,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
+    app.get('/formuladb-api/env/:envname', function(req, res){
+        createNewEnvironment(req.params.envname);
+        // TODO err handling
+        });
+
     app.post('/formuladb-api/translate', async (req, res) => {
         res.json(await i18nBe.translateText(req.body.texts, req.body.to));
     });
@@ -267,7 +273,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     app.use((req, res, next) => {
-        let path = req.path.match(/^\/?([-_\w]+)\/([-_\w]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html|json)$/);
+        let path = req.path.match(/^\/?([-_\w\.]+)\/([-_\w\.]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html|json)$/);
         if (!path && req.path !== '/') {
             next();
             return;

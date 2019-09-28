@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: postgresql-cloud-dump
 spec:
-  schedule: "0 * * * *"
+  schedule: "0 0 * * *"
   successfulJobsHistoryLimit: 3
   jobTemplate:
     spec:

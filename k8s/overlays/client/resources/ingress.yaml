@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - biz.formuladb.io
+    - client.formuladb.io
     secretName: formuladb-online
   rules:
-  - host: biz.formuladb.io
+  - host: client.formuladb.io
     http:
       paths:
       - path: /

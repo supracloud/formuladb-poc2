@@ -2,3 +2,4 @@
 !dist-be/frmdb-be.js
 !dist-be/frmdb-be.js.map
 !package.json
+!k8s
