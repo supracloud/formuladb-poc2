@@ -128,7 +128,7 @@ export function create_gif_palette_and_video() {
                 return resolve();
             })
             .output(path.join(base_videos_path, 'tmp/') + 'protractor-cropped.gif')
-            .complexFilter([ "crop=1920:960:0:120,fps=5,scale=1920:-1:flags=lanczos[x];[x][1:v]paletteuse" ])
+            .complexFilter([ "crop=1920:960:0:120,fps=0.1,scale=1920:-1:flags=lanczos[x];[x][1:v]paletteuse" ])
             .run();
         })
         .output(path.join(base_videos_path, 'tmp/') + 'palette.png')
