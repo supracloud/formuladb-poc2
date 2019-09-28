@@ -11,8 +11,8 @@ stages:
   - build_images_and_deploy_production
   - e2e_production
   # - e2e_all_example_apps
-  - cleanup
   - e2e_staging_with_videos
+  - cleanup
 
 .cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
   cache:
