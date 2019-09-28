@@ -534,6 +534,9 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
 function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function CONCATENATE(fc: FuncCommon, expr: Expression, expr2: Expression): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 function REGEXREPLACE(fc: FuncCommon, expr: Expression, regex: StringLiteral, replacement: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -564,6 +567,7 @@ function OVERLAP(fc: FuncCommon, start_date_1: Expression, end_date_1: Expressio
 
 export const ScalarFunctions = {
     TEXT: TEXT,
+    CONCATENATE: CONCATENATE,
     REGEXREPLACE: REGEXREPLACE,
     EOMONTH: EOMONTH,
     SQRT: SQRT,

@@ -256,6 +256,7 @@ function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } 
             return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
         } else if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
             let recordId = getParentObjId(el);
+            if (!recordId) return null;
             let tableName = entityNameFromDataObjId(recordId);
             let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');
             return { recordId, columnId };

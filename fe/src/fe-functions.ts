@@ -4,7 +4,7 @@ import { BACKEND_SERVICE } from "./backend.service";
 import { AppPage } from "@domain/app";
 import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
-import { Entity } from "@domain/metadata/entity";
+import { Entity, Pn } from "@domain/metadata/entity";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -100,9 +100,23 @@ function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): {text: string, value: string}[
     return Object.values(entity.props).map(p => ({
         text: `${tableName}.${p.name}`,
         value: `$FRMDB.${tableName}[].${p.name}`,
-    }));
+    })).concat(
+        Object.values(entity.props)
+        .filter(p => p.name === "_id" || p.propType_ === Pn.REFERENCE_TO)
+        .map(p => ({
+            text: `$ID(${tableName}.${p.name})`,
+            value: `:$ID:$FRMDB.${tableName}[].${p.name}`,
+        }))
+    );
 }
+
+function $ID(_id: string) {return _id.replace(/^.*?~~/, '')}
+
+export const FeFunctionsForDataBinding = {
+    '$ID': $ID,
+};
 
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;
 (window as any).$DATA_COLUMNS_FOR_ELEM = $DATA_COLUMNS_FOR_ELEM;
+(window as any).$ID = $ID;

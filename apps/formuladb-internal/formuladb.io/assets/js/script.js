@@ -72,18 +72,14 @@ $(document).ready(function(){
 	  	columnWidth: '.item'
 	});
 
-	// filter functions
-	var filterFns = {};
-
 	// bind filter button click
 	$('.navbar.navbar-categories').on( 'click', 'a', function(e) {
 
 		e.preventDefault();
 		
 		var filterValue = $( this ).attr('data-filter');
-		// use filterFn if matches value
-		filterValue = filterFns[ filterValue ] || filterValue;
-		$grid.isotope({ filter: filterValue });
+		if (filterValue === '*') $grid.isotope({ filter: '*' });
+		else $grid.isotope({ filter: `[data-category*="${filterValue}"]` });
 	});
 	
 });

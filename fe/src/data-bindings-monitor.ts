@@ -3,6 +3,7 @@ import { updateDOM } from "./live-dom-template/live-dom-template";
 import * as _ from "lodash";
 import { DATA_FRMDB_ATTRS_Enum } from "./live-dom-template/dom-node";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
+import { FeFunctionsForDataBinding } from "./fe-functions";
 
 declare var $: any;
 
@@ -49,7 +50,10 @@ export class DataBindingsMonitor {
             let bes = BACKEND_SERVICE();
             let record = await bes.getDataObj(recordId);
             if (!record) {console.warn("record not found " + el.outerHTML); return}
-            updateDOM(record, el);
+            updateDOM({
+                ...record,
+                ...FeFunctionsForDataBinding,
+            }, el);
         } catch (err) {
             console.error(err);
         }
@@ -63,7 +67,10 @@ export class DataBindingsMonitor {
             let limit = parseInt(el.getAttribute('data-frmdb-table-limit')||'') || 3;
             let bes = BACKEND_SERVICE();
             let data = await bes.getTableData(tableName + '~~');
-            updateDOM({$FRMDB: {[tableName]: data.slice(0, limit)}}, el.parentElement);
+            updateDOM({
+                $FRMDB: {[tableName]: data.slice(0, limit)},
+                ...FeFunctionsForDataBinding
+            }, el.parentElement);
         } catch (err) {
             console.error(err);
         }

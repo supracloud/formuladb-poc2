@@ -273,8 +273,11 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                     ${props.map(p => p.name).join(", ")}
                 ) VALUES (
                     ${props.map((p, i) => '$' + (1+i))}
-                ) ON CONFLICT (_id) DO UPDATE SET 
-                    ${this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")}
+                ) ON CONFLICT (_id) DO  
+                    ${this.propsNoId().length > 0 ?
+                        ' UPDATE SET ' + this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")
+                        : ' NOTHING'
+                    }
                 `;
                 let values = Object.values(this.entity.props)
                     .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])

@@ -7,15 +7,23 @@ import { Entity, Pn, EntityProperty, FormulaProperty, EntityStateGraph, Schema }
 import { App } from "@domain/app";
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
+export const AppCategory = {
+    _id: "AppCategory",
+    isEditable: false,
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+
 export const SampleApp = {
     _id: "SampleApp",
     isEditable: false,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        category_2: { name: "category_2", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        categories: { name: "categories", propType_: Pn.FORMULA, formula: 'category + ";" + category_2' } as EntityProperty,
+        category: { name: "category", propType_: Pn.REFERENCE_TO, referencedEntityName: AppCategory._id, referencedPropertyName: AppCategory.props._id.name } as EntityProperty,
+        category2: { name: "category2", propType_: Pn.REFERENCE_TO, referencedEntityName: AppCategory._id, referencedPropertyName: AppCategory.props._id.name } as EntityProperty,
+        categories: { name: "categories", propType_: Pn.FORMULA, formula: "CONCATENATE(category, category2)" } as EntityProperty,
         theme_url: { name: "theme_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         short_description:  { name: "short_description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         wish_list_count: { name: "wish_list_count", propType_: Pn.FORMULA, formula: "COUNTIF(WishListRequest._id, app == @[_id])" } as EntityProperty,
@@ -53,6 +61,7 @@ export const FormuladbIoSchema: Schema = {
     entities: {
         [SampleApp._id]: SampleApp,
         [WishListRequest._id]: WishListRequest,
+        [AppCategory._id]: AppCategory,
         [$User._id]: $User,
         [$Dictionary._id]: $Dictionary,
     },

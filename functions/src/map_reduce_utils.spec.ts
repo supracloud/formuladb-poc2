@@ -3,8 +3,9 @@
  * License TBD
  */
 
-import { packFunction } from "@functions/map_reduce_utils";
+import { packFunction, evalExpression } from "@functions/map_reduce_utils";
 import * as acorn from "acorn";
+import { $s2e } from "./s2e";
 declare var emit: any;
 
 describe('MapReduceUtils', () => {
@@ -60,5 +61,10 @@ describe('MapReduceUtils', () => {
         packedFunction.split(/\n/).forEach((line, i) => {
             expect(line).toEqual(expectedLines[i])
         });
+    });
+
+    fit ("should evaluate CONCATENATE", () => {
+        let res = evalExpression({a: "a", b: "b"}, $s2e("CONCATENATE(a, b)"));
+        expect(res).toEqual("ab");
     });
 });

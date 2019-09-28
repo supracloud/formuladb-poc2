@@ -102,7 +102,7 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
                     updateDOMForScalarValue(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
                 } else updateDOMForScope(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
             };
-            while (elemListForKey.length() > objValForKey.length) {
+            while (elemListForKey.length() > 1 && elemListForKey.length() > objValForKey.length) {
                 elemListForKey.removeAt(objValForKey.length);
             }
         }

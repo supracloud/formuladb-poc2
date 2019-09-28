@@ -151,49 +151,10 @@
         <nav class="navbar navbar-categories sticky-top navbar-light navbar-expand bg-light mb-4 p-2 rounded" style="background-color: #f8f9fa!important">
             <ul class="navbar-nav">
                 <li class="nav-item ">
-                    <a href="#" class="nav-link active" data-filter="*">All Categories</a>
+                    <a href="#" class="nav-link active" data-filter="*"><span>All Categories</span></a>
                 </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-filter=".admin">Admin &amp; Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-filter=".business">Business &amp; Corporate</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a href="#" class="nav-link" data-filter=".landing">Landing Pages</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a href="#" class="nav-link" data-filter=".ecommerce">E-commerce</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a href="#" class="nav-link" data-filter=".food">Food &amp; Restaurant</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".medical">Medical &amp; Health Care</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".travel">Travel &amp; Booking</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".multipurpose">Multipurpose</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".personal">Personal</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".portfolio">Portfolio</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a href="#" class="nav-link" data-filter=".event">Events &amp; Wedding</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".photography">Photography</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a href="#" class="nav-link" data-filter=".coming">Coming Soon</a>
-                </li>
-                <li class="nav-item" style="display: none;">
-                    <a class="nav-link" href="#" data-filter=".other">Other</a>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]">
+                    <a href="#" class="nav-link" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id"><span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Admin & Dashboard</span></a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -205,7 +166,7 @@
             </ul>
         </nav>
         <div class="grid frmdb-isotope-grid" style="">
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Admin &amp; Dashboard" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
@@ -231,7 +192,7 @@
                     <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products, Stock, Orders, Receipts, Transactions, Real-Time Validations</p>
                 </div>
             </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Admin &amp; Dashboard" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="business item" data-category="Admin &amp; Dashboard" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">

@@ -141,7 +141,8 @@ function domExpandedKey(domKey: string, arrayCurrentIndexes: number[]) {
 }
 
 function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: number[]) {
-    let value = _.get(context, domExpandedKey(domKey, arrayCurrentIndexes));
+    let realKey = domExpandedKey(domKey, arrayCurrentIndexes);
+    let value = typeof context === 'function' ? context.call(null, realKey) : _.get(context, realKey);
     if (value == 'function') return value.call()
     else return value;
 }
@@ -154,8 +155,7 @@ function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: num
  */
 export function getValueForDomExpandedKey(domExpandedKey: string, context: {}) {
     let val = _.get(context, domExpandedKey);
-    if (typeof val === "function") return val.call()
-    else return val;
+    return val;
 }
 
 export function setElemValue(objValForKey: any, elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[], origKey: string) {
