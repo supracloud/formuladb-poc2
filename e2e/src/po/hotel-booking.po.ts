@@ -24,6 +24,13 @@ export class HotelBooking {
   /**
    * Get tables in left navigation bar
    */
+  async getTablesDropdown() {
+    // switch back to page content
+    await browser.switchTo().defaultContent();
+    let tablesDropDown: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.selectedTableId"]'));
+    return tablesDropDown[0];
+  }
+
   async getTables() {
     // switch back to page content
     await browser.switchTo().defaultContent();

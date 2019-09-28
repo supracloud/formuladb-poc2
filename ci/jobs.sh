@@ -90,4 +90,16 @@ function cleanup {
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
 }
 
+function e2e_staging_with_videos {
+    docker run \
+        --rm \
+        --name e2e_staging_with_videos \
+        --cap-add=SYS_ADMIN \
+        --user root \
+        -v $PWD:/root/febe \
+        -v /dev/shm:/dev/shm \
+        registry.gitlab.com/metawiz/febe/ci-with-video:1.0.2 \
+        bash -c 'source ~/.bashrc && TARGET=recordings-with-audio protractor e2e/protractor.conf.js'
+}
+
 eval $1
