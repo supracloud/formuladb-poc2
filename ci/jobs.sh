@@ -95,11 +95,11 @@ function e2e_staging_with_videos {
         --rm \
         --name e2e_staging_with_videos \
         --cap-add=SYS_ADMIN \
-        --user root \
-        -v $PWD:/root/febe \
+        --user $(id -u):$(id -g) \
+        -v $PWD:/febe \
         -v /dev/shm:/dev/shm \
-        registry.gitlab.com/metawiz/febe/ci-with-video:1.0.2 \
-        bash -c 'source ~/.bashrc && TARGET=recordings-with-audio protractor e2e/protractor.conf.js'
+        registry.gitlab.com/metawiz/febe/ci-with-video:1.0.3 \
+        bash -c 'source /bootstrap && TARGET=recordings-with-audio protractor e2e/protractor.conf.js'
 }
 
 eval $1

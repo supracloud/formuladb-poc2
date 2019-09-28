@@ -29,10 +29,9 @@ ENV GOOGLE_APPLICATION_CREDENTIALS=/GOOGLE_APPLICATION_CREDENTIALS.json
 ENV DISPLAY=:99
 
 RUN echo $'Xvfb -ac :99 -screen 0 1920x1080x16 &\n\
-nohup webdriver-manager start /dev/null 2>&1 &\n\
-' >> /root/.bashrc
+' > /bootstrap
 
-VOLUME /root/febe
-WORKDIR /root/febe
+VOLUME /febe
+WORKDIR /febe
 # https://github.com/elgalu/docker-selenium/issues/20#issuecomment-135092714
 # docker build -t registry.gitlab.com/metawiz/febe/ci-with-video:1.0.2 -f Dockerfile.video .
