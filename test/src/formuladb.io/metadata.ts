@@ -15,6 +15,7 @@ export const SampleApp = {
         name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         category: { name: "category", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         category_2: { name: "category_2", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        categories: { name: "categories", propType_: Pn.FORMULA, formula: 'category + ";" + category_2' } as EntityProperty,
         theme_url: { name: "theme_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         short_description:  { name: "short_description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         wish_list_count: { name: "wish_list_count", propType_: Pn.FORMULA, formula: "COUNTIF(WishListRequest._id, app == @[_id])" } as EntityProperty,

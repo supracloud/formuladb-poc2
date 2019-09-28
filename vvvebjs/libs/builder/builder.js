@@ -1355,6 +1355,12 @@ Vvveb.Builder = {
 			isotopeGrid.style.removeProperty('position');
 			isotopeGrid.style.removeProperty('height');
 		}
+
+		//cleanup responsive nav dropdown
+		{
+			let el = document.querySelector('.frmdb-responsive-nav-more-items-dropdown');
+			while (el.firstChild) el.removeChild(el.firstChild);	
+		}
 		
 		//cleanup tracking code
 		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src="https://www.google-analytics.com/analytics.js"]'))) {
@@ -1365,6 +1371,11 @@ Vvveb.Builder = {
 		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src*="hotjar.com"]'))) {
 			if (jsEl.parentElement) {
 				jsEl.parentElement.removeChild(jsEl);
+			}
+		}
+		for (let stEl of Array.from(document.getElementsByTagName('style'))) {
+			if (stEl.textContent.indexOf('iframe#_hjRemoteVarsFrame') >= 0) {
+				stEl.parentElement.removeChild(stEl);
 			}
 		}
 		
