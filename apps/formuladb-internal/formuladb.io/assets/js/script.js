@@ -73,8 +73,9 @@ $(document).ready(function(){
 	});
 
 	// bind filter button click
-	$('.navbar.navbar-categories').on( 'click', 'a', function(e) {
-
+	$('body').on( 'click', '.navbar.navbar-categories a.frmdb-isotope-filter', function(e) {
+		if ($('body.frmdb-editor-on').length > 0) return;
+		
 		e.preventDefault();
 		
 		var filterValue = $( this ).attr('data-filter');

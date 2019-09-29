@@ -706,6 +706,7 @@ Vvveb.Builder = {
 		self.frameDoc = $(window.FrameDocument);
 		self.frameHtml = $(window.FrameDocument).find("html");
 		self.frameBody = $(window.FrameDocument).find("body");
+		self.frameBody[0].classList.add('frmdb-editor-on');
 		self.frameHead = $(window.FrameDocument).find("head");
 
 		//insert editor helpers like non editable areas
@@ -1359,7 +1360,7 @@ Vvveb.Builder = {
 		//cleanup responsive nav dropdown
 		{
 			let el = document.querySelector('.frmdb-responsive-nav-more-items-dropdown');
-			while (el.firstChild) el.removeChild(el.firstChild);	
+			while (el && el.firstChild) el.removeChild(el.firstChild);	
 		}
 		
 		//cleanup tracking code
@@ -1373,7 +1374,7 @@ Vvveb.Builder = {
 				jsEl.parentElement.removeChild(jsEl);
 			}
 		}
-		for (let stEl of Array.from(document.getElementsByTagName('style'))) {
+		for (let stEl of Array.from(cleanedUpDOM.getElementsByTagName('style'))) {
 			if (stEl.textContent.indexOf('iframe#_hjRemoteVarsFrame') >= 0) {
 				stEl.parentElement.removeChild(stEl);
 			}
@@ -1567,6 +1568,7 @@ Vvveb.Gui = {
 
 	preview: function () {
 		(Vvveb.Builder.isPreview == true) ? Vvveb.Builder.isPreview = false : Vvveb.Builder.isPreview = true;
+		Vvveb.Builder.frameBody[0].classList.toggle('frmdb-editor-on', !Vvveb.Builder.isPreview);
 		$("#iframe-layer").toggle();
 		$("#vvveb-builder").toggleClass("preview");
 	},

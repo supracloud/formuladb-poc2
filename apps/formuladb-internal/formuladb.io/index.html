@@ -24,11 +24,13 @@
     <meta name="description" content="Start your development with a Design System for Bootstrap 4.">
     <meta name="author" content="Creative Tim">
     <title>FormulaDB - Build Applications Without Code</title>
-    <link href="../assets/img/brand/favicon.png" rel="icon" type="image/png">
+    <link href="../../tbd/assets/img/brand/favicon.png" rel="icon" type="image/png">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
     <link href="assets/vendor/nucleo/css/nucleo.css" rel="stylesheet">
     <link type="text/css" href="assets/css/argon.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
+
+
 
 </head>
 
@@ -127,11 +129,15 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <h1 class="display-3 text-white">Build Your Own
+
                             <br> Web Applications
+
                             <br> Without Coding
+
                         </h1>
                         <p class="lead  text-white">
                             <strong>50+</strong> samples, easy to customize and combine, start in minutes.
+
                         </p>
                         <div class="btn-wrapper">
                             <a href="javascript:void(0)" onclick="scrollToAnchor('SAMPLES')" class="btn btn-success btn-icon mb-3 mb-sm-0" style="text-transform: none">
@@ -151,58 +157,87 @@
         <nav class="navbar navbar-categories sticky-top navbar-light navbar-expand bg-light mb-4 p-2 rounded" style="background-color: #f8f9fa!important">
             <ul class="navbar-nav">
                 <li class="nav-item ">
-                    <a href="#" class="nav-link active" data-filter="*"><span>All Categories</span></a>
+                    <a href="#" class="nav-link active frmdb-isotope-filter" data-filter="*">
+                        <span>All Categories</span>
+                    </a>
                 </li>
                 <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]">
-                    <a href="#" class="nav-link" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id"><span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Admin & Dashboard</span></a>
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Admin &amp; Dashboard</span>
+                    </a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         More
                     </a>
-                    <div class="dropdown-menu category-list frmdb-responsive-nav-more-items-dropdown" aria-labelledby="navbarDropdown">
-                    </div>
+                    <div class="dropdown-menu category-list frmdb-responsive-nav-more-items-dropdown" aria-labelledby="navbarDropdown"></div>
                 </li>
             </ul>
         </nav>
         <div class="grid frmdb-isotope-grid" style="">
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Business Planning" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
                             <span></span>
                         </div>
                         <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Inventory</div>
-                        <div class="item-category" data-frmdb-value="$FRMDB.SampleApp[].category">Business Planning</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Planning</div>
                     </div>
-                    <img class="card-img-bottom" src="assets/images/sb-admin-2.png" alt="Card image cap">
-                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products, Stock, Orders, Receipts, Transactions, Real-Time Validations</p>
+                    <img class="card-img-bottom" src="assets/images/sb-admin-2.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products, Stocks, Orders, Receipts, Transactions, Validations</p>
                 </div>
             </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/hotel-booking/index.html" class="admin item" data-category="Admin &amp; Dashboard" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~02" data-frmdb-table-limit="4" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
                             <span></span>
                         </div>
-                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Inventory</div>
-                        <div class="item-category" data-frmdb-value="$FRMDB.SampleApp[].category">Business Planning</div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Hotel Booking</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
                     </div>
-                    <img class="card-img-bottom" src="assets/images/sb-admin-2.png" alt="Card image cap">
-                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products, Stock, Orders, Receipts, Transactions, Real-Time Validations</p>
+                    <img class="card-img-bottom" src="assets/images/83-royal-hotel.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Room Booking, Galery, Contact</p>
                 </div>
             </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="business item" data-category="Admin &amp; Dashboard" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="3" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Maintenance Services" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~03" data-frmdb-table-limit="4" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
                             <span></span>
                         </div>
-                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Inventory</div>
-                        <div class="item-category" data-frmdb-value="$FRMDB.SampleApp[].category">Business Planning</div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Service Management</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Maintenance Services</div>
                     </div>
-                    <img class="card-img-bottom" src="assets/images/sb-admin-2.png" alt="Card image cap">
-                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products, Stock, Orders, Receipts, Transactions, Real-Time Validations</p>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Service forms, customer tickets/incidents, spare parts, inventory</p>
+                </div>
+            </a>
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Business PlanningStartup Management" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~04" data-frmdb-table-limit="4" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Reporting &amp; Business Inteligence</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Planning</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Data sources, Integrations, Reports, Charts</p>
+                </div>
+            </a>
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Business PlanningAppCategory~~Startup Management" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~05" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Expenses &amp; budgets</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Planning</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Forecasts, receipts, reports</p>
                 </div>
             </a>
         </div>
@@ -212,47 +247,84 @@
             <div class="col-12 col-md">
                 <div class="copyright">
                     © 2019 FormulaDB
+
                     <br>
                     <small>
                         webdesign
+
                         <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>,
-                        <a href="https://themewagon.com" target="_blank">ThemeWagon</a>, 
+
+                        <a href="https://themewagon.com" target="_blank">ThemeWagon</a>,
+
                         <br>
                         <a href="https://colorlib.com" target="_blank">Colorlib</a>,
+
                         <a href="https://startbootstrap.com" target="_blank">Start Bootstrap</a>.
-                        <br/>
+
+                        <br>
                     </small>
                 </div>
-                Powered by: <br/>
-                <a href="https://techcelerator.ro/2018/11/28/formuladb"><img src="assets/images/techcelerator.png" alt="Techcelerator"></a>
+                Powered by:
+                <br>
+                <a href="https://techcelerator.ro/2018/11/28/formuladb">
+                    <img src="assets/images/techcelerator.png" alt="Techcelerator">
+                </a>
             </div>
             <div class="col-6 col-md">
                 <h5>Company</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Abount</a></li>
-                    <li><a class="text-muted" href="#">Contact</a></li>
-                    <li><a class="text-muted" href="#">Testimonials</a></li>
-                    <li><a class="text-muted" href="community.html#consultants">Consultants</a></li>
-                    <li><a class="text-muted" href="community.html#evangelists">Evangelists</a></li>
+                    <li>
+                        <a class="text-muted" href="#">Abount</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Contact</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Testimonials</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="community.html#consultants">Consultants</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="community.html#evangelists">Evangelists</a>
+                    </li>
                 </ul>
             </div>
             <div class="col-6 col-md">
                 <h5>Legal</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">GDPR</a></li>
-                    <li><a class="text-muted" href="#">Terms Of Service</a></li>
-                    <li><a class="text-muted" href="#">Privacy</a></li>
-                    <li><a class="text-muted" href="#">Report Abuse</a></li>
-                    <li><a class="text-muted" href="#">Security</a></li>
+                    <li>
+                        <a class="text-muted" href="#">GDPR</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Terms Of Service</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Privacy</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Report Abuse</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Security</a>
+                    </li>
                 </ul>
             </div>
             <div class="col-6 col-md">
                 <h5>Resources</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Documentation</a></li>
-                    <li><a class="text-muted" href="#">Blog</a></li>
-                    <li><a class="text-muted" href="#">Knowledge Base</a></li>
-                    <li><a class="text-muted" href="#">Site Status</a></li>
+                    <li>
+                        <a class="text-muted" href="#">Documentation</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Blog</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Knowledge Base</a>
+                    </li>
+                    <li>
+                        <a class="text-muted" href="#">Site Status</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -273,6 +345,7 @@
         })
     </script>
     <script src="/formuladb/frmdb-fe.js"></script>
+    <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
 </body>
