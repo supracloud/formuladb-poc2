@@ -3,3 +3,4 @@
 !dist-be/frmdb-be.js.map
 !package.json
 !k8s
+!skaffold.yaml

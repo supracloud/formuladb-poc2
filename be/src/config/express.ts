@@ -191,10 +191,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
-    app.get('/formuladb-api/env/:envname', function(req, res){
-        createNewEnvironment(req.params.envname);
-        // TODO err handling
-        });
+    app.get('/formuladb-api/env/:envname', async function(req, res){
+        await createNewEnvironment(req.params.envname);
+        res.redirect(`https://${req.params.envname}.formuladb.io/`);
+    });
 
     app.post('/formuladb-api/translate', async (req, res) => {
         res.json(await i18nBe.translateText(req.body.texts, req.body.to));

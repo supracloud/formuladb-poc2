@@ -10,6 +10,10 @@ build:
       # with the container's root
       - src: 'dist-be/**/*.js*'
         dest: .
+      - src: skaffold.yaml
+        dest: /
+      - src: 'k8s/**/*'
+        dest: /k8s
     docker:
       dockerfile: Dockerfile.be
       buildArgs: {}
