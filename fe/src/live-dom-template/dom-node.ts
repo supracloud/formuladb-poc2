@@ -305,16 +305,14 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
                 (el as HTMLInputElement).value = value + '';
             } else if ((el as HTMLElement).tagName.toLowerCase() === 'img') {
                 (el as HTMLInputElement).src = value + '';
-            } else if ((el as HTMLElement).tagName.toLowerCase() === 'i') {
-                if (value.indexOf('la-') === 0 || value.indexOf('icon-') === 0 || value.indexOf('fa-') === 0) {
-                    el.classList.forEach(className => {
-                        let prefix = value.substr(0, value.indexOf('-') + 1);
-                        if (className.startsWith(prefix)) {
-                            el.classList.remove(className);
-                        }
-                    });
-                    el.classList.add(value);
-                }
+            } else if ((el as HTMLElement).tagName.toLowerCase() === 'i' && (value.indexOf('la-') === 0 || value.indexOf('icon-') === 0 || value.indexOf('fa-') === 0)) {
+                el.classList.forEach(className => {
+                    let prefix = value.substr(0, value.indexOf('-') + 1);
+                    if (className.startsWith(prefix)) {
+                        el.classList.remove(className);
+                    }
+                });
+                el.classList.add(value);
             } else {
                 let textNodeFound: boolean = false;
                 el.childNodes.forEach(child => {

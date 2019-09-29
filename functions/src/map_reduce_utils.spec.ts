@@ -63,7 +63,7 @@ describe('MapReduceUtils', () => {
         });
     });
 
-    fit ("should evaluate CONCATENATE", () => {
+    it ("should evaluate CONCATENATE", () => {
         let res = evalExpression({a: "a", b: "b"}, $s2e("CONCATENATE(a, b)"));
         expect(res).toEqual("ab");
     });

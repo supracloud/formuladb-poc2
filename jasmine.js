@@ -47,6 +47,34 @@ const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');
 jsdomDevtoolsFormatter.install();
 
 
+if (!global.HTMLElement.prototype.insertAdjacentElement) {
+
+    global.HTMLElement.prototype.insertAdjacentElement = function(position, elem) {
+        "use strict";
+
+        var
+            ref = this
+            , ref_parent = ref.parentNode
+            , node, first_child, next_sibling
+        ;
+
+        switch (position.toLowerCase()) {
+            case "beforebegin":
+                ref_parent.insertBefore(elem, ref);
+                break;
+            case "afterbegin":
+                ref.insertBefore(node, ref.firstChild);
+                break;
+            case "beforeend":
+                ref.appendChild(elem);
+                break;
+            case "afterend":
+                ref_parent.insertBefore(elem, ref.nextSibling);
+                break;
+        }
+    };
+}
+
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const Jasmine = require("jasmine");
 
