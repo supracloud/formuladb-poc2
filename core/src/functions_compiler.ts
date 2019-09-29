@@ -540,6 +540,9 @@ function CONCATENATE(fc: FuncCommon, expr: Expression, expr2: Expression): Compi
 function REGEXREPLACE(fc: FuncCommon, expr: Expression, regex: StringLiteral, replacement: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
+function SUBSTITUTE(fc: FuncCommon, expr: Expression, old_text: Expression, new_text: Expression): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
 function EOMONTH(fc: FuncCommon, expr: Expression, numMonths: NumberLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -569,6 +572,7 @@ export const ScalarFunctions = {
     TEXT: TEXT,
     CONCATENATE: CONCATENATE,
     REGEXREPLACE: REGEXREPLACE,
+    SUBSTITUTE: SUBSTITUTE,
     EOMONTH: EOMONTH,
     SQRT: SQRT,
     ROUND: ROUND,

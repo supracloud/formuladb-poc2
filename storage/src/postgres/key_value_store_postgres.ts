@@ -301,7 +301,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                 break;
             case Pn.FORMULA:
                 //FIXME: implement proper type system
-                if (prop.formula.match(/SUM|COUNT|[-]|[+]/) != null) {
+                if (prop.formula.match(/SUM|COUNT| [-] | [+] /) != null) {
                     type = "numeric(12,5)";
                 } else {
                     type = "varchar";

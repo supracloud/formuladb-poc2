@@ -20,11 +20,11 @@ export const SampleApp = {
     isEditable: false,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        name: { name: "name", propType_: Pn.FORMULA, formula: "REGEXREPLACE(_id, \"SampleApp~~[0-9]+ \", \"\")" } as EntityProperty,
         category: { name: "category", propType_: Pn.REFERENCE_TO, referencedEntityName: AppCategory._id, referencedPropertyName: AppCategory.props._id.name } as EntityProperty,
         category2: { name: "category2", propType_: Pn.REFERENCE_TO, referencedEntityName: AppCategory._id, referencedPropertyName: AppCategory.props._id.name } as EntityProperty,
         categories: { name: "categories", propType_: Pn.FORMULA, formula: "CONCATENATE(category, category2)" } as EntityProperty,
-        theme_url: { name: "theme_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        app_url: { name: "app_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         short_description:  { name: "short_description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         wish_list_count: { name: "wish_list_count", propType_: Pn.FORMULA, formula: "COUNTIF(WishListRequest._id, app == @[_id])" } as EntityProperty,
         small_img: { name: "small_img", propType_: Pn.IMAGE, allowNull: false } as EntityProperty,

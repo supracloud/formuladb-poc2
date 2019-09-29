@@ -30,11 +30,9 @@
     <link type="text/css" href="assets/css/argon.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 
-
-
 </head>
 
-<body data-frmdb-tenant="formuladb-internal" data-frmdb-app="formuladb.io">
+<body data-frmdb-tenant="formuladb-internal" data-frmdb-app="formuladb.io" class="frmdb-editor-on">
     <div class="corner-ribbon top-left red shadow">Coming Soon 28 Oct</div>
     <div style="position: absolute; top: 0; width: 100%">
         <div class="section section-shaped" style="height: 700px">
@@ -130,13 +128,21 @@
                     <div class="col-lg-4">
                         <h1 class="display-3 text-white">Build Your Own
 
+
+
                             <br> Web Applications
 
+
+
                             <br> Without Coding
+
+
 
                         </h1>
                         <p class="lead  text-white">
                             <strong>50+</strong> samples, easy to customize and combine, start in minutes.
+
+
 
                         </p>
                         <div class="btn-wrapper">
@@ -161,9 +167,19 @@
                         <span>All Categories</span>
                     </a>
                 </li>
-                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]">
-                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id">
-                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Admin &amp; Dashboard</span>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Booking &amp; Appointments">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Booking &amp; Appointments">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Booking &amp; Appointments</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Business Administration">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Business Administration">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Business Administration</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Consulting">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Consulting">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Consulting</span>
                     </a>
                 </li>
                 <li class="nav-item dropdown">
@@ -175,20 +191,20 @@
             </ul>
         </nav>
         <div class="grid frmdb-isotope-grid" style="">
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Business Planning" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01 Basic Inventory" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
                             <span></span>
                         </div>
-                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Inventory</div>
-                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Planning</div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Basic Inventory</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
                     </div>
-                    <img class="card-img-bottom" src="assets/images/sb-admin-2.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <img class="card-img-bottom" src="assets/images/inventory.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
                     <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products, Stocks, Orders, Receipts, Transactions, Validations</p>
                 </div>
             </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~02" data-frmdb-table-limit="4" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~02 Hotel Booking" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
@@ -201,7 +217,20 @@
                     <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Room Booking, Galery, Contact</p>
                 </div>
             </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Maintenance Services" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~03" data-frmdb-table-limit="4" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~03 Users and Roles" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Users and Roles</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Users, Roles, Applications, Permissions, Single-sign-on for all apps</p>
+                </div>
+            </a>
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Maintenance Services" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~04 Service Management" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
@@ -210,34 +239,21 @@
                         <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Service Management</div>
                         <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Maintenance Services</div>
                     </div>
-                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <img class="card-img-bottom" src="assets/images/management.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
                     <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Service forms, customer tickets/incidents, spare parts, inventory</p>
                 </div>
             </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Business PlanningStartup Management" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~04" data-frmdb-table-limit="4" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business AdministrationStartup Management" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~05 Reporting &amp; Business Inteligence" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
                             <span></span>
                         </div>
                         <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Reporting &amp; Business Inteligence</div>
-                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Planning</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
                     </div>
-                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <img class="card-img-bottom" src="assets/images/reporting.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
                     <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Data sources, Integrations, Reports, Charts</p>
-                </div>
-            </a>
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="AppCategory~~Business PlanningAppCategory~~Startup Management" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~05" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <div class="ribbon ribbon-top-left">
-                            <span></span>
-                        </div>
-                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Expenses &amp; budgets</div>
-                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Planning</div>
-                    </div>
-                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
-                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Forecasts, receipts, reports</p>
                 </div>
             </a>
         </div>
@@ -248,23 +264,37 @@
                 <div class="copyright">
                     © 2019 FormulaDB
 
+
+
                     <br>
                     <small>
                         webdesign
 
+
+
                         <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a>,
 
+
+
                         <a href="https://themewagon.com" target="_blank">ThemeWagon</a>,
+
+
 
                         <br>
                         <a href="https://colorlib.com" target="_blank">Colorlib</a>,
 
+
+
                         <a href="https://startbootstrap.com" target="_blank">Start Bootstrap</a>.
+
+
 
                         <br>
                     </small>
                 </div>
                 Powered by:
+
+
                 <br>
                 <a href="https://techcelerator.ro/2018/11/28/formuladb">
                     <img src="assets/images/techcelerator.png" alt="Techcelerator">
@@ -274,7 +304,7 @@
                 <h5>Company</h5>
                 <ul class="list-unstyled text-small">
                     <li>
-                        <a class="text-muted" href="#">Abount</a>
+                        <a class="text-muted" href="#">About</a>
                     </li>
                     <li>
                         <a class="text-muted" href="#">Contact</a>
@@ -345,6 +375,8 @@
         })
     </script>
     <script src="/formuladb/frmdb-fe.js"></script>
+    <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
+    <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>

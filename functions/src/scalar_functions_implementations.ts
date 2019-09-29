@@ -17,9 +17,8 @@ export const ScalarFunctionsImplementations = {
     },
     ISNUMBER: formulajs.ISNUMBER,
     CONCATENATE: formulajs.CONCATENATE,
-    REGEXREPLACE: function REGEXREPLACE(expr, regex, replacement) {
-        //TODO
-    },
+    REGEXREPLACE: formulajs.REGEXREPLACE,
+    SUBSTITUTE: formulajs.SUBSTITUTE,
     EOMONTH: function EOMONTH(expr, numMonths) {
         //TODO
     },

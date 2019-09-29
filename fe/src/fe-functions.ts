@@ -110,7 +110,9 @@ function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): {text: string, value: string}[
     );
 }
 
-function $ID(_id: string) {return _id.replace(/^.*?~~/, '')}
+function $ID(_id: string) {
+    return _id ? _id.replace(/^.*?~~/, '') : ''
+}
 
 export const FeFunctionsForDataBinding = {
     '$ID': $ID,

@@ -8,7 +8,7 @@ import { FeFunctionsForDataBinding } from "./fe-functions";
 declare var $: any;
 
 export class DataBindingsMonitor {
-    constructor(rootEl?) {
+    constructor(private rootEl: HTMLElement) {
         const observer = new MutationObserver((mutationsList, observer) => {
             for(let mutation of mutationsList) {
                 if (mutation.type === 'childList') {
@@ -37,7 +37,16 @@ export class DataBindingsMonitor {
                 }
             }
         });
-        observer.observe(rootEl || document, { attributes: true, childList: true, subtree: true });
+        observer.observe(rootEl, { attributes: true, childList: true, subtree: true });
+    }
+
+    public async updateDOMForRoot() {
+        let tableNames = _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-table]'))
+            .map(el => el.getAttribute('data-frmdb-table')));
+        for (let tableName of tableNames) {
+            let tableEl = this.rootEl.querySelector(`[data-frmdb-table="${tableName}"]`);
+            await this.updateDOMForTable(tableEl as HTMLElement);
+        }
     }
 
     private debouncedUpdateDOMForTable = _.debounce((el) => this.updateDOMForTable(el), 100);
@@ -65,12 +74,21 @@ export class DataBindingsMonitor {
             if (!tableName) {console.warn("Empty table name " + el.outerHTML); return}
             if (!el.parentElement) {console.warn("Parent not found for table data binding " + el.outerHTML); return}
             let limit = parseInt(el.getAttribute('data-frmdb-table-limit')||'') || 3;
+            this.updateDOMForTableParent(el.parentElement, tableName, limit);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async updateDOMForTableParent(parentEl: HTMLElement, tableName: string, limit: number) {
+        try {
+            if (!parentEl) return;
             let bes = BACKEND_SERVICE();
             let data = await bes.getTableData(tableName + '~~');
             updateDOM({
                 $FRMDB: {[tableName]: data.slice(0, limit)},
                 ...FeFunctionsForDataBinding
-            }, el.parentElement);
+            }, parentEl);
         } catch (err) {
             console.error(err);
         }

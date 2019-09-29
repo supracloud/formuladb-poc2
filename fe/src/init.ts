@@ -13,5 +13,6 @@ export async function initFrmdb() {
     formService.initFormsFromNewRecordCache();
     initRoutes();
 
-    new DataBindingsMonitor();
+    let dataBindingMonitor = new DataBindingsMonitor(document.body);
+    dataBindingMonitor.updateDOMForRoot();
 }
