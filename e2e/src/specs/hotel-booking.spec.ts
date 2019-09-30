@@ -8,12 +8,12 @@ import * as _ from "lodash";
 import { HotelBooking } from '../po/hotel-booking.po';
 import { browser } from 'protractor';
 import * as e2e_utils from "../utils";
-import { waitUntilNotNull } from '@domain/ts-utils';
 
 var messages = [ '<speak>Welcome to the Hotel Booking app template. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
                  '<speak>For the Hotel Booking app you will already find a few predefined Tables like RoomType, Room or Booking<break time="1s"/></speak>',
                  '<speak>Also there are the predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
-                 '<speak>You will be able to make quick cosmetic/branding changes like change the color palette and the website language<break time="1s"/></speak>',
+                 '<speak>You will be able to make quick cosmetic/branding changes like change the color palette</speak>',
+                 '<speak>and the website language<break time="1s"/></speak>',
                  '<speak>You will be able to manage dynamic content and logic by mapping Table data to Page elements, for example we can display a list of Room Types as a list of cards on the home page.<break time="1s"/></speak>',
                  '<speak>Please follow formuladb.io and our social media for news about the official launch.<break time="1s"/></speak>',
 ];
@@ -83,6 +83,37 @@ describe('hotel-booking view mode testing', () => {
       return _.difference(['index.html', 'about.html', 'contact.html'], pages).length === 0
     })
     expect(foundPages).toEqual(true);
+  });
+
+  it('should change theme color', async () => {
+    await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), durations[action_index++]);
+    let colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
+    await colors[1].click();
+    await browser.sleep(200);
+    let icon = await hotelBooking.getLogoIcon();
+    let color = await icon.getCssValue('color');
+    expect(color).toEqual('rgba(255, 0, 0, 1)');
+    await browser.sleep(1000);
+
+    await (await hotelBooking.byCss('#frmdb-editor-color-palette-select')).click();
+    colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
+    await colors[0].click();
+    await browser.sleep(500);
+    icon = await hotelBooking.getLogoIcon();
+    color = await icon.getCssValue('color');
+    expect(color).toEqual('rgba(243, 195, 0, 1)');
+  });
+
+  it('should change language', async () => {
+    await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), durations[action_index++]);
+    let languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
+    await languages[1].click();
+    expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
+
+    await (await hotelBooking.byCss('#frmdb-editor-i18n-select')).click();
+    languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
+    await languages[0].click();
+    expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
   });
 
   it('Should end recording and cleanup', async () => {

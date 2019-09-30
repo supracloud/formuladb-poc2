@@ -21,6 +21,17 @@ export class HotelBooking {
     return element(by.css('h2')).getText();
   }
 
+  async getLogoIcon() {
+    let EC = ExpectedConditions;
+
+    // wait for iframe to be loaded
+    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 50000);
+    await browser.switchTo().frame(0);
+    // wait for the document inside the iframe to be loaded
+    await browser.wait(EC.presenceOf(element(by.css('.navbar-brand.logo_h i'))), 50000);
+    return element(by.css('.navbar-brand.logo_h i'));
+  }
+
   /**
    * Get tables in left navigation bar
    */
@@ -39,6 +50,15 @@ export class HotelBooking {
     await browser.switchTo().defaultContent();
     let pagesDropDown: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.selectedPageName"]'));
     return pagesDropDown[0];
+  }
+
+  async byCss(selector: string) {
+    await browser.switchTo().defaultContent();
+    return await element(by.css(selector));
+  }  
+  async allByCss(selector: string) {
+    await browser.switchTo().defaultContent();
+    return await element.all(by.css(selector));
   }
 
   async getTables() {
