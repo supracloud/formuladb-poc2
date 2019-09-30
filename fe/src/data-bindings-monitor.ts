@@ -101,8 +101,8 @@ export class DataBindingsMonitor {
     }
 
     applyCustomProcessing_for_isotopejs(elem, parent) {
-        if ($ && $(parent).is('.frmdb-isotope-grid') > 0) {
+        if (typeof $ !== 'undefined' && $(parent).is('.frmdb-isotope-grid') > 0) {
             $(parent).isotope().isotope('reloadItems').isotope( { filter: '*' } );
         }
-    }    
+    }
 }

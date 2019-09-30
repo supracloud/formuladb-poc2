@@ -10,12 +10,14 @@ import * as moment from 'moment';
 import * as Diff from 'diff';
 
 import { Storage } from '@google-cloud/storage';
+import { GitStorage } from "./git-storage";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
 
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
+    private gitStorage = new GitStorage();
 
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
 
@@ -128,6 +130,9 @@ export class MetadataStore {
         });
 
         this.logHistoryEvent(tenantName, appName, pageName, newPageName, newHtml, diff);
+        if ('biz' === this.envName) {
+            this.gitStorage.savePage(tenantName, appName, pageName, newHtml); 
+        }
     }
 
     private async logHistoryEvent(tenantName, appName, pageName, newPageName, newHtml, diff) {

@@ -153,10 +153,14 @@ describe('FormulaTokenizer', () => {
         }));
         let suggestions = formulaTokenizerSchemaChecker.getSuggestionsForToken(parserTokens[0]);
         expect(suggestions[0]).toEqual({
+            suggestion: 'SUBSTITUTE',
+            matchedFragments: [{ startPos: 0, endPos: 1 }, { startPos: 3, endPos: 3 }, { startPos: 7, endPos: 7 }],
+        });
+        expect(suggestions[1]).toEqual({
             suggestion: 'SUM',
             matchedFragments: [{ startPos: 0, endPos: 1 }],
         });
-        expect(suggestions[1]).toEqual({
+        expect(suggestions[2]).toEqual({
             suggestion: 'SUMIF',
             matchedFragments: [{ startPos: 0, endPos: 1 }, { startPos: 4, endPos: 4 }],
         });
