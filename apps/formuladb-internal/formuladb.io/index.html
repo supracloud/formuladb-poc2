@@ -30,13 +30,9 @@
     <link type="text/css" href="assets/css/argon.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 
-
-
-
-
 </head>
 
-<body data-frmdb-tenant="formuladb-internal" data-frmdb-app="formuladb.io" class="frmdb-editor-on">
+<body data-frmdb-tenant="formuladb-internal" data-frmdb-app="formuladb.io" class="" style="">
     <div class="corner-ribbon top-left red shadow">Coming Soon 28 Oct</div>
     <div style="position: absolute; top: 0; width: 100%">
         <div class="section section-shaped" style="height: 700px">
@@ -71,7 +67,11 @@
 
 
 
+
+
                             <br> Web Applications
+
+
 
 
 
@@ -81,9 +81,13 @@
 
 
 
+
+
                         </h1>
                         <p class="lead  text-white">
                             <strong>50+</strong> samples, easy to customize and combine, start in minutes.
+
+
 
 
 
@@ -104,14 +108,14 @@
     </section>
     <section class="section content section-lg pt-lg-0 mt-0 position-relative">
         <a name="SAMPLES"></a>
-        <nav class="navbar navbar-categories sticky-top navbar-light navbar-expand bg-light mb-4 p-2 rounded" style="background-color: #f8f9fa!important">
+        <nav class="navbar navbar-categories sticky-top navbar-light navbar-expand bg-light mb-4 p-2 rounded" style="background-color: rgb(248, 249, 250) !important;">
             <ul class="navbar-nav">
                 <li class="nav-item ">
-                    <a href="#" class="nav-link active frmdb-isotope-filter" data-filter="*">
+                    <a href="#" class="nav-link frmdb-isotope-filter active" data-filter="*">
                         <span>All Categories</span>
                     </a>
                 </li>
-                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Booking &amp; Appointments">
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Booking &amp; Appointments" data-frmdb-table-limit="10">
                     <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Booking &amp; Appointments">
                         <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Booking &amp; Appointments</span>
                     </a>
@@ -126,16 +130,56 @@
                         <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Consulting</span>
                     </a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Design &amp; Media" data-frmdb-table-limit="10">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Design &amp; Media">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Design &amp; Media</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Food &amp; Travel" data-frmdb-table-limit="10">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Food &amp; Travel">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Food &amp; Travel</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Maintenance &amp; Support" data-frmdb-table-limit="10">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Maintenance &amp; Support">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Maintenance &amp; Support</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Medical &amp; Health" data-frmdb-table-limit="10" style="display: none;">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Medical &amp; Health">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Medical &amp; Health</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Sports &amp; Fitness" data-frmdb-table-limit="10" style="display: none;">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Sports &amp; Fitness">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Sports &amp; Fitness</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-frmdb-table="$FRMDB.AppCategory[]" data-frmdb-record="AppCategory~~Startup Management" data-frmdb-table-limit="10" style="display: none;">
+                    <a href="#" class="nav-link frmdb-isotope-filter" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Startup Management">
+                        <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Startup Management</span>
+                    </a>
+                </li>
+                <li class="nav-item dropdown show">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         More
                     </a>
-                    <div class="dropdown-menu category-list frmdb-responsive-nav-more-items-dropdown" aria-labelledby="navbarDropdown"></div>
+                    <div class="dropdown-menu category-list frmdb-responsive-nav-more-items-dropdown show" aria-labelledby="navbarDropdown">
+                        <a href="#" class="frmdb-isotope-filter dropdown-item" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Medical &amp; Health">
+                            <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Medical &amp; Health</span>
+                        </a>
+                        <a href="#" class="frmdb-isotope-filter dropdown-item" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Sports &amp; Fitness">
+                            <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Sports &amp; Fitness</span>
+                        </a>
+                        <a href="#" class="frmdb-isotope-filter dropdown-item" data-frmdb-attr="data-filter::$FRMDB.AppCategory[]._id" data-filter="AppCategory~~Startup Management">
+                            <span data-frmdb-value=":$ID:$FRMDB.AppCategory[]._id">Startup Management</span>
+                        </a>
+                    </div>
                 </li>
             </ul>
         </nav>
         <div class="grid frmdb-isotope-grid" style="">
-            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01 Basic Inventory" data-frmdb-table-limit="5" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+            <a href="/formuladb-editor/editor.html#/formuladb-examples/inventory/index.html" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~01 Basic Inventory" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
                 <div class="card">
                     <div class="card-header text-center">
                         <div class="ribbon ribbon-top-left">
@@ -200,6 +244,604 @@
                     <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Data sources, Integrations, Reports, Charts</p>
                 </div>
             </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~06 Expenses &amp; budgets')" class="admin item" data-category="Business AdministrationStartup Management" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~06 Expenses &amp; budgets" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Expenses &amp; budgets</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/expenses.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Forecasts, receipts, reports</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~07 Blog')" class="admin item" data-category="Website &amp; Media" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~07 Blog" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Blog</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Website &amp; Media</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/100-blanca.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Blog Posts, Writers, Embed Blog section in any web app</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~08 Photography services')" class="admin item" data-category="Photography" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~08 Photography services" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Photography services</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Photography</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/23-photography.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation website, photoshoot appointmens</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~09 Design services ')" class="admin item" data-category="Website &amp; Media" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~09 Design services " data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Design services </div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Website &amp; Media</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/50-interior.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Portfolio, customer plans, designs (pdf,images, attachments)</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~10 Wellness services')" class="admin item" data-category="Medical &amp; Health" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~10 Wellness services" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Wellness services</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Medical &amp; Health</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/47-burnout.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Showcase, blog, appointments</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~11 Health clinic')" class="admin item" data-category="Medical &amp; Health" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~11 Health clinic" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Health clinic</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Medical &amp; Health</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/61-medi-life.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation website, patients, appointments, articles/blog posts</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~12 Dental services')" class="admin item" data-category="Medical &amp; Health" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~12 Dental services" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Dental services</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Medical &amp; Health</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/87-dentist.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation website, appointments, patients</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~13 Medical Doctor')" class="admin item" data-category="Medical &amp; Health" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~13 Medical Doctor" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Medical Doctor</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Medical &amp; Health</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/66-caremed.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation website, appointments, patients</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~14 Book Publishers')" class="admin item" data-category="Website &amp; Media" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~14 Book Publishers" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Book Publishers</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Website &amp; Media</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/24-book.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Portfolio, Inventory, </p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~15 SEO tools')" class="admin item" data-category="Website &amp; Media" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~15 SEO tools" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">SEO tools</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Website &amp; Media</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/97-seo.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Competion, kweywords, backlinks</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~16 Advertising&amp;Media Services')" class="admin item" data-category="Website &amp; Media" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~16 Advertising&amp;Media Services" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Advertising&amp;Media Services</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Website &amp; Media</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/21-reveal.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Showcase, projects, designs (pdf, images, attachments)</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~17 Digital Creative Agency')" class="admin item" data-category="Website &amp; Media" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~17 Digital Creative Agency" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Digital Creative Agency</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Website &amp; Media</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/16-datarc.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Showcase, projects, designs (pdf, images, attachments)</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~18 Real estate agency/broker')" class="admin item" data-category="Consulting" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~18 Real estate agency/broker" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Real estate agency/broker</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Consulting</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/90-south.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Properties, contracts, testimonials</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~19 Financial Advisers')" class="admin item" data-category="Consulting" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~19 Financial Advisers" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Financial Advisers</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Consulting</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation website, customers portfolio, testimonials, paperless financial documents</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~20 Law Firm')" class="admin item" data-category="Consulting" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~20 Law Firm" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Law Firm</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Consulting</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/44-law.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Contracts/documents, portfolio, testimonials, appointments</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~21 Barber shop')" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~21 Barber shop" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Barber shop</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/72-razor.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Appointments, Galery, Showcase, Supplies/Beauty products, Services, Prices</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~22 Beauty Salon')" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~22 Beauty Salon" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Beauty Salon</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/beauty.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Appointments, Galery, Showcase, Supplies/Beauty products, Services, Prices</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~23 Spa')" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~23 Spa" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Spa</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/spa.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Galery, Appointmens, services</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~24 Bike store and service')" class="admin item" data-category="Booking &amp; AppointmentsMaintenance &amp; Support" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~24 Bike store and service" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Bike store and service</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Galery, online store, service appointments&amp;status</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~25 Water sports')" class="admin item" data-category="Sports &amp; Fitness" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~25 Water sports" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Water sports</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Sports &amp; Fitness</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/water_sports_3.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Scuba, Jet ski, Paddleboard, Kiting Galery, testimonials, bookings</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~26 Gym')" class="admin item" data-category="Sports &amp; Fitness" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~26 Gym" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Gym</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Sports &amp; Fitness</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Galery, trainers, class appointments, members</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~27 Trainer/Educator')" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~27 Trainer/Educator" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Trainer/Educator</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/74-ezuca.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation website, classes, bookings</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~28 Team planning')" class="admin item" data-category="Startup ManagementBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~28 Team planning" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Team planning</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Startup Management</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Members, activities, boards, milestones</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~29 Business Plan')" class="admin item" data-category="Startup ManagementBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~29 Business Plan" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Business Plan</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Startup Management</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/65-businessbox.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Forecasts, cash flow, team, projects</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~30 Business Model Canvas')" class="admin item" data-category="Startup ManagementBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~30 Business Model Canvas" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Business Model Canvas</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Startup Management</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Key Activities, partners, key resources, channels, costs, revenues, customer segmentation</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~31 Value Proposition Canvas')" class="admin item" data-category="Startup ManagementBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~31 Value Proposition Canvas" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Value Proposition Canvas</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Startup Management</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Products&amp;services, gain creators, pain relevers,job to be done</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~32 HR Recruit')" class="admin item" data-category="Human ResourcesBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~32 HR Recruit" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">HR Recruit</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Human Resources</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/25-job-listing.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Profiles, Job openings, Interview Appointments</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~33 Restaurant')" class="admin item" data-category="Food &amp; Travel" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~33 Restaurant" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Restaurant</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Food &amp; Travel</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/42-taste.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation, Galery, Reservations, Menu, Events</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~34 HR Processes')" class="admin item" data-category="Human ResourcesBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~34 HR Processes" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">HR Processes</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Human Resources</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Timesheet, Training, Leave, Conference Room Booking</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~35 Social Media Management')" class="admin item" data-category="Startup ManagementBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~35 Social Media Management" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Social Media Management</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Startup Management</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Channels, Scheduals, Keywords, Analytics</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~36 Online Store')" class="admin item" data-category="E-Commerce" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~36 Online Store" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Online Store</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">E-Commerce</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/3-watch.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Orders, inventory, payments, shipping, showcase, and analytics</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~37 Event Planning')" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~37 Event Planning" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Event Planning</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/67-the-real-wedding.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Attendies, speakers, topics, scheduals,presentation</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~38 Insurance Broker')" class="admin item" data-category="Consulting" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~38 Insurance Broker" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Insurance Broker</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Consulting</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Comparative Offers, Claims, Payments, Settlements,Customers, Policies, Presentation</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~39 Helpdesk')" class="admin item" data-category="Maintenance &amp; Support" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~39 Helpdesk" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Helpdesk</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Maintenance &amp; Support</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Tickets, Reports,Forms, </p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~40 Credit Broker')" class="admin item" data-category="Consulting" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~40 Credit Broker" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Credit Broker</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Consulting</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Comparative Offers, Credit Products, Customers, Policies, Presentation</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~41 Playground')" class="admin item" data-category="Booking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~41 Playground" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Playground</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Booking &amp; Appointments</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Presentation, Galery, Reservations, Menu, Events</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~42 Project Tracking')" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~42 Project Tracking" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Project Tracking</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Projects, Tasks, Team Members, Clients</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~43 Legal case management')" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~43 Legal case management" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Legal case management</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Users, Clients, Cases, Tasks, Documents, Resources</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~44 Shopping/Packing Lists')" class="admin item" data-category="PersonalHome &amp; Family" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~44 Shopping/Packing Lists" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Shopping/Packing Lists</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Personal</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description"></p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~45 CV/ Resume')" class="admin item" data-category="Personal" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~45 CV/ Resume" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">CV/ Resume</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Personal</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/98-profile.png" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Profiles, Portofolio, Presentation</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~46 Survey')" class="admin item" data-category="Human ResourcesBusiness Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~46 Survey" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Survey</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Human Resources</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description"></p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~47 Art Gallery')" class="admin item" data-category="Food &amp; TravelBooking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~47 Art Gallery" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Art Gallery</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Food &amp; Travel</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Tickets, shop, gallery, presentation, workshops</p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~48 Museum')" class="admin item" data-category="Food &amp; TravelBooking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~48 Museum" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Museum</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Food &amp; Travel</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description"></p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~49 Exhibition area')" class="admin item" data-category="Food &amp; TravelBooking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~49 Exhibition area" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Exhibition area</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Food &amp; Travel</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description"></p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~50 Theater')" class="admin item" data-category="Food &amp; TravelBooking &amp; Appointments" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~50 Theater" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Theater</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Food &amp; Travel</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description"></p>
+                </div>
+            </a>
+            <a href="javascript:$MODAL('add__WishListRequest.html', 'SampleApp~~51 Basic Warehouse')" class="admin item" data-category="Business Administration" style="" data-frmdb-table="$FRMDB.SampleApp[]" data-frmdb-record="SampleApp~~51 Basic Warehouse" data-frmdb-table-limit="51" data-frmdb-attr="data-category::$FRMDB.SampleApp[].categories" data-frmdb-attr2="href::$FRMDB.SampleApp[].app_url">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <div class="ribbon ribbon-top-left">
+                            <span></span>
+                        </div>
+                        <div class="item-name" data-frmdb-value="$FRMDB.SampleApp[].name">Basic Warehouse</div>
+                        <div class="item-category" data-frmdb-value=":$ID:$FRMDB.SampleApp[].category">Business Administration</div>
+                    </div>
+                    <img class="card-img-bottom" src="assets/images/under-construction.jpg" alt="Card image cap" data-frmdb-value="$FRMDB.SampleApp[].long_img">
+                    <p class="item-short-description text-justify" data-frmdb-value="$FRMDB.SampleApp[].short_description">Warehouses, Products, Product Locations, Shipment Tracking Numbers</p>
+                </div>
+            </a>
         </div>
     </section>
     <frmdb-fragment name="footer.html"></frmdb-fragment>
@@ -225,6 +867,48 @@
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
     <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
+    <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
+    <iframe name="_hjRemoteVarsFrame" title="_hjRemoteVarsFrame" id="_hjRemoteVarsFrame" src="https://vars.hotjar.com/box-90f3a29ef7448451db5af955688970d7.html" style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
+    <div class="modal" id="frmdbModal" style="display: none;" aria-hidden="true">
+        <div data-frmdb-record="WishListRequest~~__FRMDB_NEW_RECORD__" style="display: initial" role="dialog" tabindex="-1" class="modal" id="frmdbModal">
+            <div role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add to Wish-List</h5>
+                        <button aria-label="Close" data-dismiss="modal" class="close" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <div class="input-group mb-2">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text">App</div>
+                                    </div>
+                                    <select data-frmdb-target-field="app" data-frmdb-value="" rows="3" id="details" class="form-control" readonly="">
+                                        <option data-frmdb-value="::$INITDATA$._id_" data-frmdb-attr="value::$INITDATA$._id" selected="" value="SampleApp~~33 Restaurant">33 Restaurant</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div data-frmdb-value="::$INITDATA$.short_description" role="alert" class="alert alert-secondary">Presentation, Galery, Reservations, Menu, Events</div>
+                            <div class="form-group">
+                                <input data-frmdb-value="::email" required="" placeholder="your@email" id="email" class="form-control" type="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="details">If you'd like to share any questions/comments/details:</label>
+                                <textarea data-frmdb-value="::comments" rows="3" id="details" class="form-control"></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                            <div title="Thank You!" role="alert" data-frmdb-submit-status="" class="alert d-none">
+                                short app description...
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

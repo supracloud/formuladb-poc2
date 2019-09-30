@@ -57,8 +57,8 @@ export const FormuladbIoApp: App = {
         { name: "community.html", title: "FormulaDB" },
         { name: "about.html", title: "FormulaDB" },
         { name: "add__WishListRequest.html", title: "" },
-        { name: "nav.html", title: "FormulaDB" },
-        { name: "footer.html", title: "FormulaDB" },
+        { name: "_nav.html", title: "FormulaDB" },
+        { name: "_footer.html", title: "FormulaDB" },
     ],
 };
 
