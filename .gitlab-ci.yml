@@ -11,8 +11,8 @@ stages:
   - build_images_and_deploy_production
   - e2e_production
   # - e2e_all_example_apps
+  - e2e_staging_with_videos
   - cleanup
-  - videos
 
 .cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
   cache:
@@ -113,17 +113,16 @@ e2e_production:
   script:
     - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/metawiz/e2e.git
 
-.videos:
-  stage: videos
+e2e_staging_with_videos:
+  stage: e2e_staging_with_videos
   script:
-    - docker run --rm --name ci-with-video --cap-add=SYS_ADMIN --user centos -v $PWD:/home/centos/febe registry.gitlab.com/metawiz/febe/ci-with-video:1.0.1 bash -c 'source ~/.bashrc && sudo yum update -y google-chrome-stable.x86_64 && cd && cd febe/storage && npm install && cd ../core && npm install && cd ../fe/ && npm install && cd ../be/ && npm install && npm run compile && (npm run start &) && cd ../fe && npm run e2e-with-recordings-and-audio'
+    - ./ci/jobs.sh $CI_JOB_NAME
   artifacts:
     expire_in: 1 week
     paths:
-      - fe/e2e/protractor_videos/
-  only:
-    refs:
-      - master
+      - e2e/protractor_videos/
+  <<: *cache_node_modules_and_artifacts
+  <<: *only_for_staging_and_production
 
 cleanup:
   stage: cleanup

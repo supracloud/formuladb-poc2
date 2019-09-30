@@ -28,7 +28,8 @@ exports.config = {
         browserName: 'chrome',
         chromeOptions: {
           args: [
-            '--window-size=1920,1080'
+            '--window-size=1920,1080',
+            '--no-sandbox'
           ].concat(extra_args)
         }
       }];
@@ -36,7 +37,7 @@ exports.config = {
     return multiCapabilities;
   },
   directConnect: true,
-  baseUrl: 'https://formuladb.online',
+  baseUrl: 'https://staging.formuladb.io',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
@@ -77,6 +78,14 @@ exports.config = {
           require('util').inspect(browserLog));
       });
     browser.waitForAngularEnabled(false);
+
+    if (target && target.startsWith('recordings')) {
+      browser.params.recordings = true;
+    }
+    if (target && target == 'recordings-with-audio') {
+      browser.params.audio = true;
+    }    
+
   }
 };
 
