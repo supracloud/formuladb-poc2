@@ -31,10 +31,34 @@ export class HotelBooking {
     return tablesDropDown[0];
   }
 
+  /**
+   * Get pages in left navigation bar
+   */
+  async getPagesDropdown() {
+    // switch back to page content
+    await browser.switchTo().defaultContent();
+    let pagesDropDown: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.selectedPageName"]'));
+    return pagesDropDown[0];
+  }
+
   async getTables() {
     // switch back to page content
     await browser.switchTo().defaultContent();
     let menuItems: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.tables[]._id"]'));
+    
+    let tables: Array<string> = [];
+    // Using getAttribute('innerText') hack to get the link text, as explained here https://stackoverflow.com/questions/20888592/gettext-method-of-selenium-chrome-driver-sometimes-returns-an-empty-string
+    for (var i = 0; i < menuItems.length; i++) {
+      tables.push(await menuItems[i].getAttribute('innerText'));
+    }
+
+    return tables;
+  }
+  
+  async getPages() {
+    // switch back to page content
+    await browser.switchTo().defaultContent();
+    let menuItems: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.pages[].name"]'));
     
     let tables: Array<string> = [];
     // Using getAttribute('innerText') hack to get the link text, as explained here https://stackoverflow.com/questions/20888592/gettext-method-of-selenium-chrome-driver-sometimes-returns-an-empty-string

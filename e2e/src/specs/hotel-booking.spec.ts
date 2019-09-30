@@ -12,8 +12,10 @@ import { waitUntilNotNull } from '@domain/ts-utils';
 
 var messages = [ '<speak>Welcome to the Hotel Booking app template. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
                  '<speak>For the Hotel Booking app you will already find a few predefined Tables like RoomType, Room or Booking<break time="1s"/></speak>',
-                 '<speak>Also there are a few predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
-                 '<speak>Under Room Type you will find predefined types of rooms. You could also add your own if none of the default ones matches<break time="1s"/></speak>',
+                 '<speak>Also there are the predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
+                 '<speak>You will be able to make quick cosmetic/branding changes like change the color palette and the website language<break time="1s"/></speak>',
+                 '<speak>You will be able to manage dynamic content and logic by mapping Table data to Page elements, for example we can display a list of Room Types as a list of cards on the home page.<break time="1s"/></speak>',
+                 '<speak>Please follow formuladb.io and our social media for news about the official launch.<break time="1s"/></speak>',
 ];
 var durations = new Array(messages.length);
 
@@ -70,6 +72,17 @@ describe('hotel-booking view mode testing', () => {
     let roomTypes: { id: string, value: string }[] = await hotelBooking.getFirstRoomTypeData();
     console.log(roomTypes);
     //expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
+  });
+
+  it('should load the page list: index.html, about.html, contact.html', async () => {
+    await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), durations[action_index++]);
+    // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
+    let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
+      let pages = await hotelBooking.getPages();
+      console.log(pages);
+      return _.difference(['index.html', 'about.html', 'contact.html'], pages).length === 0
+    })
+    expect(foundPages).toEqual(true);
   });
 
   it('Should end recording and cleanup', async () => {
