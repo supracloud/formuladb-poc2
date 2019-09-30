@@ -1381,6 +1381,9 @@ Vvveb.Builder = {
 				stEl.parentElement.removeChild(stEl);
 			}
 		}
+		for (let el of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-editor-on'))) {
+			el.classList.remove('frmdb-editor-on');
+		}
 		
 		html += frmdbNormalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
 
