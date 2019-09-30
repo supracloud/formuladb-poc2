@@ -43,6 +43,16 @@ export const WishListRequest = {
     }
 };
 
+export const ContactRequest = {
+    _id: "ContactRequest",
+    isEditable: false,
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        email: { name: "email", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        comments: { name: "comments", propType_: Pn.STRING } as EntityProperty,
+    }
+};
+
 export const FormuladbIoApp: App = {
     _id: "/formuladb-internal/formuladb.io",
     description: "formuladb.io",
@@ -68,6 +78,7 @@ export const FormuladbIoSchema: Schema = {
         [SampleApp._id]: SampleApp,
         [WishListRequest._id]: WishListRequest,
         [AppCategory._id]: AppCategory,
+        [ContactRequest._id]: ContactRequest,
         [$User._id]: $User,
         [$Dictionary._id]: $Dictionary,
     },
