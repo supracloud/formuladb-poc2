@@ -108,11 +108,13 @@ describe('hotel-booking view mode testing', () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), durations[action_index++]);
     let languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
     await languages[1].click();
-    expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
+    await browser.sleep(1000);
+    expect(await hotelBooking.getPageTitle()).toEqual('Détends ton esprit');
 
     await (await hotelBooking.byCss('#frmdb-editor-i18n-select')).click();
     languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
     await languages[0].click();
+    await browser.sleep(1000);
     expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
   });
 
