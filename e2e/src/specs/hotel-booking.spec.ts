@@ -58,8 +58,7 @@ describe('hotel-booking view mode testing', () => {
     let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
       let tables = await hotelBooking.getTables();
       console.log(tables);
-      console.log()
-      return _.difference(['RoomType', 'Room', 'Booking'], ).length === 0
+      return _.difference(['RoomType', 'Room', 'Booking'], tables).length === 0
     })
     expect(foundTables).toEqual(true);
   });
