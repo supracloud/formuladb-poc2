@@ -55,9 +55,12 @@ describe('hotel-booking view mode testing', () => {
   it('should load the booking tables: RoomType, Room, Booking', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
-    let foundTables = await e2e_utils.retry(async () => 
-      _.difference(['RoomType', 'Room', 'Booking'], await hotelBooking.getTables()).length === 0
-    )
+    let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
+      let tables = await hotelBooking.getTables();
+      console.log(tables);
+      console.log()
+      return _.difference(['RoomType', 'Room', 'Booking'], ).length === 0
+    })
     expect(foundTables).toEqual(true);
   });
 
