@@ -95,7 +95,7 @@ export const HotelBookingApp: App = {
 };
 
 export const HotelBookingSchema: Schema = {
-    _id: 'FRMDB_SCHEMA~~' + HotelBookingApp._id,
+    _id: 'FRMDB_SCHEMA~~formuladb-examples--' + HotelBookingApp._id,
     entities: {
         [RoomType._id]: RoomType,
         [Room._id]: Room,

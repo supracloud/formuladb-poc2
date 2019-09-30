@@ -1,5 +1,3 @@
-set -x
-
 handleErr () {
     errcode=$?
     set +x
@@ -8,6 +6,12 @@ handleErr () {
 }
 trap handleErr ERR
 
+while true; do
+    sleep 15
+    gsutil -m rsync -r gs://formuladb-static-assets/tdev-${USER}/formuladb-internal/ apps/formuladb-internal/ 2>&1 | grep -v synchronization
+    gsutil -m rsync -r gs://formuladb-static-assets/tdev-${USER}/formuladb-examples/ apps/formuladb-examples/ 2>&1 | grep -v synchronization
+done &
+
 mkdir -p live-server-wwwroot
 cd live-server-wwwroot #optimize speed
 ../node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \
@@ -15,7 +19,4 @@ cd live-server-wwwroot #optimize speed
     --mount=/formuladb/:./../dist-fe/ \
     --mount=/formuladb/img/:./../fe/img/ \
     --mount=/formuladb/frmdb-runtime-utils.js:./../fe/js/frmdb-runtime-utils.js \
-    --mount=/formuladb-examples/:./../apps/formuladb-examples/ \
-    --mount=/formuladb-internal/:./../apps/formuladb-internal/ \
-    --mount=/:./../apps/formuladb-internal/formuladb.io/ \
     --proxy=/:http://localhost:8085/ \

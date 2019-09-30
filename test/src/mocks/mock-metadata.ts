@@ -159,17 +159,17 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    InventorySchema,
-    HotelBookingSchema,
-    FormuladbIoSchema,
+    { tenantName: "formuladb-examples", appName: "basic-inventory", schema: InventorySchema},
+    { tenantName: "formuladb-examples", appName: "hotel-booking", schema: HotelBookingSchema},
+    { tenantName: "formuladb-internal", appName: "formuladb.io", schema: FormuladbIoSchema},
 ];
 
 for (let sch of Schemas) {
     for (let commonEntity of CommonEntities) {
-        sch.entities[commonEntity._id] = commonEntity;    
+        sch.schema.entities[commonEntity._id] = commonEntity;    
     }
 
-    for (let ent of Object.values(sch.entities)) {
+    for (let ent of Object.values(sch.schema.entities)) {
         ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
         ent.isEditable = true;    
     }

@@ -347,8 +347,8 @@ body {
 
 /* common */
 .ribbon {
-  width: 132px;
-  height: 132px;
+  width: 70px;
+  height: 70px;
   overflow: hidden;
   position: absolute;
 }
@@ -363,18 +363,28 @@ body {
 .ribbon span {
   position: absolute;
   display: block;
-  width: 225px;
-  padding: 15px 0;
+  width: 165px;
+  padding: 5px 0;
   background-color: #ff749e;
   box-shadow: 0 5px 10px rgba(0,0,0,.1);
   color: #fff;
-  font: 700 18px/1 'Lato', sans-serif;
+  font: 700 12px/1 'Lato', sans-serif;
   text-shadow: 0 1px 1px rgba(0,0,0,.2);
   text-align: center;
 }
 
-.ribbon span.demo {
+a.item[href*="MODAL"] .ribbon span {
+	background-color: #ff749e;
+}
+a.item[href*="MODAL"] .ribbon span:after {
+	content: "Wish List"
+}
+
+a.item .ribbon span {
 	background-color: #3dff9e;
+}
+a.item .ribbon span:after {
+	content: "Try Now"
 }
 
 /* top left*/
@@ -396,8 +406,8 @@ body {
   left: 0;
 }
 .ribbon-top-left span {
-  right: -25px;
-  top: 30px;
+  right: -40px;
+  top: 18px;
   transform: rotate(-45deg);
 }
 
@@ -429,3 +439,13 @@ body {
 /* Different positions */
 
 .corner-ribbon.orange{background: #e82;}
+
+.item .card-header {
+	padding-bottom: 10px;
+}
+.item-short-description {
+	color: rgba(0,0,0,.5);
+	margin: 0;
+	font-size: 0.8rem;
+	padding: 10px;
+}

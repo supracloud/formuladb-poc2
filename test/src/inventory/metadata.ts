@@ -205,7 +205,7 @@ export const LargeSalesProduct = {
 }
 
 export const InventoryApp: App = {
-    _id: "inventory",
+    _id: "basic-inventory",
     description: "Basic Inventory with positive stock",
     theme: "frmdb-themes/startbootstrap-sb-admin-2",
     pages: [

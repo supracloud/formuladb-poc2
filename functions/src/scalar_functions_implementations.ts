@@ -16,9 +16,9 @@ export const ScalarFunctionsImplementations = {
         return index >= 0 ? index + 1 : undefined;
     },
     ISNUMBER: formulajs.ISNUMBER,
-    REGEXREPLACE: function REGEXREPLACE(expr, regex, replacement) {
-        //TODO
-    },
+    CONCATENATE: formulajs.CONCATENATE,
+    REGEXREPLACE: formulajs.REGEXREPLACE,
+    SUBSTITUTE: formulajs.SUBSTITUTE,
     EOMONTH: function EOMONTH(expr, numMonths) {
         //TODO
     },

@@ -1,36 +1,54 @@
 import * as _ from "lodash";//TODO: optimization include only the needed functions
 import * as DOMPurify from "dompurify";
+import { generate } from "short-uuid";
+import { generateUUID } from "@domain/uuid";
 
 let parser = new DOMParser(), serializer = new XMLSerializer();
 
 export type Elem = HTMLElement;
 export class ElemList {
-    constructor(private key: string, private parentEl: Elem) {}
+    constructor(private key: string, private parentEl: Elem) { }
 
     public length() {
         return this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`).length;
     }
 
-    public addElem() {
-        let firstEl = this.parentEl.querySelector(`[data-frmdb-table="${this.key}"]`);
+    public getLimit() {
+        let limitEl = this.parentEl.querySelector(`[data-frmdb-table-limit]`);
+        if (!limitEl) return 3;
+        let limit = parseInt(limitEl.getAttribute('data-frmdb-table-limit') || '');
+        return limit || 3;
+    }
+
+    public addElem(): Elem {
+        let elList = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
+        let firstEl = elList[0];
         if (!firstEl) firstEl = createElem('div', this.key);
-        this.parentEl.appendChild(firstEl.cloneNode(true));
+        let newEl: Elem = firstEl.cloneNode(true) as Elem;
+        if (newEl.id) newEl.id = generateUUID();
+        if (elList.length > 0) {
+            elList[elList.length - 1].insertAdjacentElement('afterend', newEl);
+        } else this.parentEl.appendChild(newEl);
+        return newEl as Elem;
     }
 
     public addTo(parentEl: Elem) {
         parentEl.appendChild(this.parentEl);
     }
 
-    public at(idx: number): Elem | null{
+    public at(idx: number): Elem | null {
         let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
         if (list.length < idx) return null;
         else return list[idx] as Elem;
     }
 
-    public removeAt(idx: number) {
-        let childEl = this.parentEl.childNodes[idx];
-        if (!childEl) return;
+    public removeAt(idx: number): Elem | null {
+        let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
+        if (list.length < idx) return null;
+        let childEl = list[idx];
+        if (!childEl) return null;
         this.parentEl.removeChild(childEl);
+        return childEl as Elem;
     }
 }
 
@@ -40,7 +58,7 @@ export function createElem(tagName: string, key: string): Elem {
     let attr = document.createAttribute("data-frmdb-value");
     attr.value = key;
     el.setAttributeNode(attr);
-    
+
     return el;
 }
 
@@ -85,7 +103,7 @@ export function getElemWithComplexPropertyDataBinding(el: Elem, key: string): El
         DATA_FRMDB_ATTRS_Enum["data-frmdb-prop2"],
         DATA_FRMDB_ATTRS_Enum["data-frmdb-prop3"],
         DATA_FRMDB_ATTRS_Enum["data-frmdb-prop4"],
-        ].map(a => `[${a}$=":${key}"]`).join(',');
+    ].map(a => `[${a}$=":${key}"]`).join(',');
     return _getElemForKey(el, sel);
 }
 function _getElemForKey(el: Elem, sel: string): Elem[] {
@@ -93,7 +111,7 @@ function _getElemForKey(el: Elem, sel: string): Elem[] {
     if (el.matches /* ShadowRoot does not have matches method */ && el.matches(sel)) ret.push(el);
     return ret
         .concat(Array.from(el.querySelectorAll(sel)))
-        .concat(_.flatMap(el.querySelectorAll('template'), 
+        .concat(_.flatMap(el.querySelectorAll('template'),
             tmpl => Array.from(tmpl.content.querySelectorAll(sel))));
 }
 
@@ -101,7 +119,7 @@ export function getElemList(el: Elem, key: string): ElemList[] {
     let listElems = Array.from(el.querySelectorAll(`[data-frmdb-table="${key}"]`));
     let parents: Set<HTMLElement> = new Set();
     for (let listEl of listElems) {
-        if (!listEl.parentElement) throw {err: new Error("found data-frmdb-table without parent"), key, listEl};
+        if (!listEl.parentElement) throw { err: new Error("found data-frmdb-table without parent"), key, listEl };
         parents.add(listEl.parentElement);
     }
     return Array.from(parents.values()).map(parent => new ElemList(key, parent));
@@ -123,7 +141,8 @@ function domExpandedKey(domKey: string, arrayCurrentIndexes: number[]) {
 }
 
 function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: number[]) {
-    let value = _.get(context, domExpandedKey(domKey, arrayCurrentIndexes));
+    let realKey = domExpandedKey(domKey, arrayCurrentIndexes);
+    let value = typeof context === 'function' ? context.call(null, realKey) : _.get(context, realKey);
     if (value == 'function') return value.call()
     else return value;
 }
@@ -136,8 +155,7 @@ function getValueForDomKey(domKey: string, context: {}, arrayCurrentIndexes: num
  */
 export function getValueForDomExpandedKey(domExpandedKey: string, context: {}) {
     let val = _.get(context, domExpandedKey);
-    if (typeof val === "function") return val.call()
-    else return val;
+    return val;
 }
 
 export function setElemValue(objValForKey: any, elems: Elem[], key: string, context: {}, arrayCurrentIndexes: number[], origKey: string) {
@@ -178,9 +196,9 @@ function getDataBindingAttrs(objValForKey: any, el: Elem, key: string, context: 
             } else {
                 [valueName, metaKey, ctxKey] = ['', '', v[0]];
             }
-            
+
             if (ctxKey != key) throw new Error("Expected if [valueName]:[metaObjKey]:domKey but found " + attrib.name + "=" + attrib.value + " for key " + key);
-            
+
             let value, metaKeyExpanded = '', ctxKeyExpanded = domExpandedKey(ctxKey, arrayCurrentIndexes);
             if (metaKey === '') {
                 value = objValForKey;
@@ -204,7 +222,7 @@ function getDataBindingAttrs(objValForKey: any, el: Elem, key: string, context: 
             } else if ("table" === type) {
                 //ignore this type for setValue
             } else throw new Error("Unknown type " + type + " for " + attrib.name + " " + attrib.value + " " + key);
-            
+
             el[attrib.name] = `${valueName}:${metaKeyExpanded}:${ctxKeyExpanded}`;//save expanded keys for debugging purposes
         }
     }
@@ -238,7 +256,7 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
 
             if (attrName.indexOf("class.") == 0) {
                 let className = attrName.replace(/^class\./, '');
-                el.classList.toggle(className, value == true );
+                el.classList.toggle(className, value == true);
             } else if (attrName.indexOf("class[") == 0) {
                 let options = attrName.replace(/^class\[/, '').replace(/\]$/, '').split('|');
                 let className = value + '';
@@ -283,8 +301,18 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
         if ("html" === dataAttrsForEl.value.valueName) {
             el.innerHTML = DOMPurify.sanitize(value);
         } else {
-            if ((el as HTMLElement).tagName.toLowerCase() === 'input') {
+            if ((el as HTMLElement).tagName.toLowerCase() === 'input' || (el as HTMLElement).tagName.toLowerCase() === 'textarea' || (el as HTMLElement).tagName.toLowerCase() === 'select') {
                 (el as HTMLInputElement).value = value + '';
+            } else if ((el as HTMLElement).tagName.toLowerCase() === 'img') {
+                (el as HTMLInputElement).src = value + '';
+            } else if ((el as HTMLElement).tagName.toLowerCase() === 'i' && (value.indexOf('la-') === 0 || value.indexOf('icon-') === 0 || value.indexOf('fa-') === 0)) {
+                el.classList.forEach(className => {
+                    let prefix = value.substr(0, value.indexOf('-') + 1);
+                    if (className.startsWith(prefix)) {
+                        el.classList.remove(className);
+                    }
+                });
+                el.classList.add(value);
             } else {
                 let textNodeFound: boolean = false;
                 el.childNodes.forEach(child => {
@@ -321,7 +349,7 @@ export function deleteElem(el: Elem, childEl: Elem) {
  * @returns the wrapper element
  */
 export function wrap(el: Element, inputWrapper: Element | string = 'div'): Element {
-    if (!el.parentNode) {console.error("wrap called and parent not found", el, inputWrapper); return el;}
+    if (!el.parentNode) { console.error("wrap called and parent not found", el, inputWrapper); return el; }
     let wrapper: Element;
     if (inputWrapper instanceof Element) {
         wrapper = inputWrapper;
@@ -333,7 +361,7 @@ export function wrap(el: Element, inputWrapper: Element | string = 'div'): Eleme
         (wrapper as HTMLTemplateElement).content.appendChild(el);
     } else {
         wrapper.appendChild(el);
-    } 
+    }
     return wrapper;
 }
 
@@ -345,11 +373,11 @@ export function wrap(el: Element, inputWrapper: Element | string = 'div'): Eleme
  */
 export function unwrap(el: Element): Element {
     let parent = el.parentNode;
-    if (!parent || !(parent instanceof Element)) {console.error("unwrap called and parent not found", el); return el;}
+    if (!parent || !(parent instanceof Element)) { console.error("unwrap called and parent not found", el); return el; }
 
-    let e = el.tagName.toLowerCase() === 'template' ? (el as HTMLTemplateElement).content : el ;
+    let e = el.tagName.toLowerCase() === 'template' ? (el as HTMLTemplateElement).content : el;
     // move all children out of the element
-    while (e.firstChild) parent.insertBefore(e.firstChild, el);        
+    while (e.firstChild) parent.insertBefore(e.firstChild, el);
 
     // remove the empty element
     parent.removeChild(el);
@@ -378,7 +406,7 @@ function show(el: Element) {
 }
 
 function hideAsTemplate(el: Element): Element {
-    if (!el.parentNode) {console.error("wrap called and parent not found", el); return el;}
+    if (!el.parentNode) { console.error("wrap called and parent not found", el); return el; }
     let script: any = document.createElement('script');
     script.setAttribute("type", "text/html");
     script.text = el.outerHTML;
@@ -388,7 +416,7 @@ function hideAsTemplate(el: Element): Element {
     return script;
 }
 function showFromTemplate(el: Element): Element {
-    if (!el.parentNode) {console.error("wrap called and parent not found", el); return el;}
+    if (!el.parentNode) { console.error("wrap called and parent not found", el); return el; }
     if (!el.matches('script[type="text/html"]')) throw new Error("hide called on a non-hidden element " + el);
     let htmlText = (el as any).text;//get text from script tag
     let newEl = document.createElement('div');

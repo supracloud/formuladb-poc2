@@ -72,11 +72,9 @@ exports.config = {
     }));
 
     browser.manage().window().maximize();
-    browser.manage().logs()
-      .get('browser').then(function (browserLog) {
-        console.log('log: ' +
-          require('util').inspect(browserLog));
-      });
+    afterEach(() => {
+      browser.manage().logs().get('browser').then(printBrowserLogs);
+    });
     browser.waitForAngularEnabled(false);
 
     if (target && target.startsWith('recordings')) {
@@ -84,7 +82,7 @@ exports.config = {
     }
     if (target && target == 'recordings-with-audio') {
       browser.params.audio = true;
-    }    
+    }
 
   }
 };
@@ -95,4 +93,15 @@ if (isWsl) {
 
   // Selenium standalone server should be started in Windows, expecting port 4445
   exports.config.seleniumAddress = 'http://localhost:4445/wd/hub';
+}
+
+function printBrowserLogs(browserLogs) {
+  // browserLogs is an array of objects with level and message fields
+  browserLogs.forEach(function (log) {
+    if (log.level.value > 900) { // it's an error log
+      console.error(log.message);
+    } else {
+      console.log(log.message);          
+    }
+  });
 }

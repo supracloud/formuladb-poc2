@@ -233,3 +233,17 @@ export function create_stream_and_run() {
     duration_until_now = 0;
     return stream;
 }
+
+export async function retryUntilTrueOrRetryLimitReached(callback: () => boolean | Promise<boolean>, retries = 20, sleepTime = 500): Promise<boolean> {
+    let ret: boolean | Promise<boolean> = false, retryNb = 0;
+    while (!ret && retryNb < retries) {
+        ret = callback();
+        retryNb++;
+        if (ret instanceof Promise) ret = await ret;
+        if (!ret) {
+            console.log("retrying...", new Date(), retryNb, callback);
+            await browser.sleep(sleepTime);
+        }
+    }
+    return ret;
+}

@@ -22,6 +22,7 @@
 
 	<link href="css/editor.css" rel="stylesheet">
 	<link href="css/line-awesome.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/formuladb/icons/icons.css" />
 
 	<style>
 		#vvveb-code-editor .CodeMirror {
@@ -39,9 +40,17 @@
 			height: 38px; 
 		}
 
+		#vvveb-builder #left-panel .component-properties .form-group > label {
+			margin: 0; 
+		}
+
 		#left-panel .component-properties .tab-content {
 			overflow: auto; 
 			height: calc(100vh - var(--builder-filemanager-height) - 132px);
+		}
+
+		#left-panel #properties-tabs.nav {
+			padding-left: 0px;
 		}
 	</style>
 </head>
@@ -52,7 +61,7 @@
 	<div id="vvveb-builder">
 
 		<div id="data-grid">
-			<frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" no_floating_filter="true"></frmdb-data-grid>
+			<frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" expand_row="#edit-record-modal" no_floating_filter="true"></frmdb-data-grid>
 		</div>
 
 		<div id="top-panel">
@@ -78,11 +87,11 @@
 					data-vvveb-action="fullscreen">
 					<i class="la la-arrows"></i>
 				</button>
-
+<!-- 
 				<button id="code-editor-btn" data-view="mobile" class="btn btn-sm btn-light btn-sm" title="Code Editor"
 					data-vvveb-action="togglePageEditor">
 					<i class="la la-file-code-o"></i>
-				</button>
+				</button> -->
 
 				<button id="table-code-editor-btn" data-view="mobile" class="d-none btn btn-sm btn-light btn-sm" title="Table Code Viewer"
 					data-vvveb-action="toggleTableEditor">
@@ -136,7 +145,9 @@
 			<div style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
 				<img src="/formuladb/img/logo.png" style="width: 110px; height: 32px;" />
 				<div class="dropdown float-right">
-					<button class="btn btn-sm dropdown-toggle text-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<button class="btn btn-sm dropdown-toggle text-light" type="button" id="dropdownMenuButton" 
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+						title="Test/Playground Environments (Coming Soon)">
 						<span class="badge badge-pill badge-light text-danger">live</span>
 					</button>
 					<div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
@@ -209,27 +220,33 @@
 
 			<div class="component-properties">
 				<ul class="nav nav-tabs nav-fill flex-nowrap" id="properties-tabs" role="tablist">
-					<li class="nav-item content-tab flex-grow-1">
+					<li class="nav-item content-tab">
 						<a class="nav-link active py-1" data-toggle="tab" href="#content-left-panel-tab" role="tab"
 							aria-controls="components" aria-selected="true">
 							<i class="la la-lg la-cube"></i>
 							Content
 						</a>
 					</li>
-					<li class="nav-item style-tab flex-grow-1">
+					<li class="nav-item style-tab">
 						<a class="nav-link py-1" data-toggle="tab" href="#style-left-panel-tab" role="tab" aria-controls="blocks"
 							aria-selected="false">
 							<i class="la la-lg la-image"></i>
 							Style
 						</a>
 					</li>
-					<li class="nav-item advanced-tab flex-grow-0">
-						<a class="nav-link py-1" data-toggle="tab" href="#advanced-left-panel-tab" role="tab" aria-controls="blocks"
+					<li class="nav-item data-tab">
+						<a class="nav-link py-1" data-toggle="tab" href="#data-left-panel-tab" role="tab" aria-controls="blocks"
 							aria-selected="false">
-							<i class="la la-lg la-cog"></i>
-							Advanced
+							<i class="la la-lg la-database"></i>
+							Data
 						</a>
 					</li>
+					<!-- <li class="nav-item code-tab">
+						<a class="nav-link py-1" data-toggle="tab" href="#advanced-left-panel-tab" role="tab" aria-controls="blocks"
+							aria-selected="false">
+							<i class="la la-lg la-code"></i>
+						</a>
+					</li> -->
 				</ul>
 
 				<div class="tab-content">
@@ -242,8 +259,8 @@
 						aria-labelledby="style-tab">
 					</div>
 
-					<div class="tab-pane fade show" id="advanced-left-panel-tab" data-section="advanced" role="tabpanel"
-						aria-labelledby="advanced-tab">
+					<div class="tab-pane fade show" id="data-left-panel-tab" data-section="data" role="tabpanel"
+						aria-labelledby="data-tab">
 					</div>
 				</div>
 			</div>
@@ -282,6 +299,7 @@
 							<a id="down-btn" href="" title="Move element down"><i class="la la-arrow-down"></i></a>
 							<a id="clone-btn" href="" title="Clone element"><i class="la la-copy"></i></a>
 							<a id="delete-btn" href="" title="Remove element"><i class="la la-trash"></i></a>
+							<!-- <a id="data-btn" href="" title="Drag the little database icon to a Table Cell&#10;in order to link the value to this Page Element&#10;(Comming Soon, for now please use the left panel, Data tab)"><i class="la la-database"></i></a> -->
 						</div>
 					</div>
 
@@ -300,12 +318,6 @@
 									<a class="nav-link" id="box-blocks-tab" data-toggle="tab" href="#box-blocks" role="tab" aria-controls="blocks"
 										aria-selected="false"><i class="la la-lg la-image"></i>
 										<div><small>Blocks</small></div>
-									</a>
-								</li>
-								<li class="nav-item component-properties-tab" style="display:none">
-									<a class="nav-link" id="box-properties-tab" data-toggle="tab" href="#box-properties" role="tab" aria-controls="blocks"
-										aria-selected="false"><i class="la la-lg la-cog"></i>
-										<div><small>Properties</small></div>
 									</a>
 								</li>
 							</ul>
@@ -400,7 +412,10 @@
 		<script id="vvveb-input-textinput" type="text/html">
 
 	<div>
-		<input name="{%=key%}" type="text" class="form-control"/>
+		<input name="{%=key%}" type="text" 
+		{% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+		{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+		class="form-control"/>
 	</div>
 	
 </script>
@@ -679,6 +694,8 @@
 			  {% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
 			  {% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
 			  {% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+			  {% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+			  {% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
 		class="form-control"/>
 	</div>
 </script>
@@ -955,6 +972,23 @@
 			</div>
 		</div>
 
+	</div>
+
+	<!-- edit record -->
+	<div class="modal fade" id="edit-record-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Edit Record</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<frmdb-form></frmdb-form>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- bootstrap -->

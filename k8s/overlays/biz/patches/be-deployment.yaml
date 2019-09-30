@@ -8,5 +8,5 @@ spec:
       containers:
       - name: be
         env:
-        - name: ORGANIZ_NAME
+        - name: FRMDB_ENV_NAME
           value: biz

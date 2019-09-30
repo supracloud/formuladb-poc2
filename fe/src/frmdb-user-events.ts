@@ -72,6 +72,16 @@ export interface FrmdbAddColumn {
     type: 'FrmdbAddColumn';
 }
 
+export interface FrmdbAddPageElement {
+    type: 'FrmdbAddPageElement';
+    el: HTMLElement;
+}
+
+export interface FrmdbRemovePageElement {
+    type: 'FrmdbRemovePageElement';
+    el: HTMLElement;
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -88,4 +98,6 @@ export type FrmdbUserEvent =
     | FrmdbSelectChange
     | FrmdbColumnChanged
     | FrmdbAddColumn
+    | FrmdbAddPageElement
+    | FrmdbRemovePageElement
     ;

@@ -15,24 +15,17 @@ import { entityNameFromDataObjId } from '@domain/metadata/data_obj';
 import { DATA_FRMDB_ATTRS_Enum } from './live-dom-template/dom-node';
 import { getParentObjId } from './form.service';
 import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
+import './fe-functions';
+import './form/form.component';
+import { FrmdbAppState } from './frmdb-app-state';
 
 declare var Vvveb: any;
 
-interface FrmdbEditorState {
-    tables: Entity[];
+class FrmdbEditorState extends FrmdbAppState {
     selectedTableId: string;
-    pages: { name: string, url: string }[];
-    selectedPageName: string;
-    selectedPagePath: string;
 }
 
-const EditorState: FrmdbEditorState = {
-    tables: [],
-    selectedTableId: '',
-    pages: [],
-    selectedPageName: '',
-    selectedPagePath: '',
-}
+let EditorState: FrmdbEditorState = new FrmdbEditorState('n-a-tenant', 'n-a-app');
 
 window.onpopstate = () => {
     _resetAppAndTenant();
@@ -51,6 +44,8 @@ async function initEditor(loadPageName?: string) {
 
     let appBackend = BACKEND_SERVICE();
     Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
+    EditorState = new FrmdbEditorState(appBackend.tenantName, appBackend.appName);
+    window['$FRMDB'] = EditorState;
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
@@ -128,7 +123,7 @@ function tableManagementFlows() {
         Vvveb.Gui.newPage((newPageName, startTemplateUrl) =>
             BACKEND_SERVICE().putEvent(new ServerEventNewPage(newPageName, startTemplateUrl))
                 .then(async (ev: ServerEventNewPage) => {
-                    if (ev.state_ != 'ABORT') {
+                    if (ev.state_ != 'ABORT' || ev.error_) {
                         initEditor(ev.newPageName);
                     }
                     return ev;
@@ -253,11 +248,15 @@ async function loadTables(selectedTable?: string) {
 }
 
 function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
-    for (let i = 0; i < el.attributes.length; i++) {
+    for (let i = 0; i < (el.attributes||[]).length; i++) {
         let attrib = el.attributes[i];
         console.warn(DATA_FRMDB_ATTRS_Enum);
-        if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
+        if (attrib.name === 'data-frmdb-table') {
+            let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+            return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
+        } else if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
             let recordId = getParentObjId(el);
+            if (!recordId) return null;
             let tableName = entityNameFromDataObjId(recordId);
             let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');
             return { recordId, columnId };
@@ -283,6 +282,9 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     dataGrid.frmdbState.highlightColumns = {
         [tableName]: {
             [columnId]: CURRENT_COLUMN_HIGHLIGHT_STYLE,
+        },
+        '$HIGHLIGHT-RECORD$': {
+            [recordId]: CURRENT_COLUMN_HIGHLIGHT_STYLE
         }
     };
     changeSelectedTableIdIfDifferent(tableName);

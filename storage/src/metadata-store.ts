@@ -10,12 +10,14 @@ import * as moment from 'moment';
 import * as Diff from 'diff';
 
 import { Storage } from '@google-cloud/storage';
+import { GitStorage } from "./git-storage";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
 
 export class MetadataStore {
     metadataKOS: KeyObjStoreI<App | Schema | Page>;
+    private gitStorage = new GitStorage();
 
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
 
@@ -61,16 +63,8 @@ export class MetadataStore {
         let metadataKOS = await this.getMetadataKOS();
         let schema = await metadataKOS.get(`FRMDB_SCHEMA~~${tenantName}--${appName}`);
 
-        if (!schema) {
-            //TODO: get this information from persistent storage using a MetadataStorage generic interface (e.g. git storage, object storage)
-            if ("formuladb.io" === appName) {
-                return Promise.resolve(FormuladbIoSchema);
-            } else if ("hotel-booking" === appName) {
-                return Promise.resolve(HotelBookingSchema);
-            } else if ("inventory" === appName) {
-                return Promise.resolve(InventorySchema);
-            } else return null;
-        } else if (!isSchema(schema)) throw new Error("Not a schema " + JSON.stringify(schema));
+        if (!schema) throw new Error(`Schema not found FRMDB_SCHEMA~~${tenantName}--${appName}`);
+        else if (!isSchema(schema)) throw new Error("Not a schema " + JSON.stringify(schema));
         else return schema;
     }
 
@@ -136,6 +130,9 @@ export class MetadataStore {
         });
 
         this.logHistoryEvent(tenantName, appName, pageName, newPageName, newHtml, diff);
+        if ('biz' === this.envName) {
+            this.gitStorage.savePage(tenantName, appName, pageName, newHtml); 
+        }
     }
 
     private async logHistoryEvent(tenantName, appName, pageName, newPageName, newHtml, diff) {

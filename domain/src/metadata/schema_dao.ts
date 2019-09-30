@@ -26,6 +26,7 @@ export class SchemaDAO {
     public getFormulas(objId: string): CompiledFormula[] {
         let ret: CompiledFormula[] = [];
         let entity = this.getEntityForDataObj(objId);
+        if (!entity) {console.warn("Entity does not exist", objId); return []}
         _.values(entity.props).forEach(pr => {
             if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
                 if (pr.compiledFormula_.triggers && pr.compiledFormula_.triggers.length > 0) ret.push(pr.compiledFormula_);
