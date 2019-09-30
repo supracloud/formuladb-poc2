@@ -123,7 +123,7 @@ function tableManagementFlows() {
         Vvveb.Gui.newPage((newPageName, startTemplateUrl) =>
             BACKEND_SERVICE().putEvent(new ServerEventNewPage(newPageName, startTemplateUrl))
                 .then(async (ev: ServerEventNewPage) => {
-                    if (ev.state_ != 'ABORT') {
+                    if (ev.state_ != 'ABORT' || ev.error_) {
                         initEditor(ev.newPageName);
                     }
                     return ev;

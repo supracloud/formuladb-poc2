@@ -199,25 +199,25 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     //all write operations are handled via events
-    app.post('/formuladb-api/:tenant/:app/event', async function (req, res) {
+    app.post('/formuladb-api/:tenant/:app/event', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app))
             .processEvent(req.body)
             .then(notif => res.json(notif))
-            .catch(err => console.error(err));
+            .catch(err => {console.error(err); next(err)});
     });
 
-    app.patch('/formuladb-api/:tenant/:app/:id', async function (req, res) {
+    app.patch('/formuladb-api/:tenant/:app/:id', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.patchDataObj(req.body)
             .then(notif => res.json(notif))
-            .catch(err => console.error(err));
+            .catch(err => {console.error(err); next(err)});
     });
 
-    app.put('/formuladb-api/:tenant/:app', async function (req, res) {
+    app.put('/formuladb-api/:tenant/:app', async function (req, res, next) {
         return kvsFactory.metadataStore.putApp(req.params.tenant, req.params.app, req.body)
             .then(ret => res.json(ret))
-            .catch(err => console.error(err));
+            .catch(err => {console.error(err); next(err)});
     });
-    app.put('/formuladb-api/:tenant/:app/schema', async function (req, res) {
+    app.put('/formuladb-api/:tenant/:app/schema', async function (req, res, next) {
         if (req.user.role !== 'ADMIN') { res.status(403); return; }
         let schema = req.body;
         let existingSchema = await kvsFactory.metadataStore.getSchema(req.params.tenant, req.params.app);
@@ -227,13 +227,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.init(schema)
             .then(ret => res.json(ret))
-            .catch(err => console.error(err));
+            .catch(err => {console.error(err); next(err)});
     });
 
-    app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res) {
+    app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
-            .catch(err => console.error(err));
+            .catch(err => {console.error(err); next(err)});
     });
 
     app.get('/formuladb/*', (req, res) => {
@@ -254,18 +254,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use((err: any, req: express.Request, res: express.Response, next): void => {
         res.status(err.status || 500).json({
             message: err.message,
-            error: err
+            error_: err
         });
     });
-
-    if (app.get("env") === "development") {
-        app.use((err: Error, req: express.Request, res: express.Response, next): void => {
-            res.status(500).json({
-                message: err.message,
-                error: err
-            });
-        });
-    }
 
     return app;
 };

@@ -49,10 +49,16 @@ export const FormuladbIoApp: App = {
     theme: "portal/public",
     pages: [
         { name: "index.html", title: "FormulaDB" },
-        { name: "no_code.html", title: "FormulaDB" },
-        { name: "low_code.html", title: "FormulaDB" },
+        { name: "no-code.html", title: "FormulaDB" },
+        { name: "low-code.html", title: "FormulaDB" },
+        { name: "no-code-vs-low-code.html", title: "FormulaDB" },
         { name: "pricing.html", title: "FormulaDB" },
+        { name: "contact.html", title: "FormulaDB" },
+        { name: "community.html", title: "FormulaDB" },
+        { name: "about.html", title: "FormulaDB" },
         { name: "add__WishListRequest.html", title: "" },
+        { name: "nav.html", title: "FormulaDB" },
+        { name: "footer.html", title: "FormulaDB" },
     ],
 };
 
