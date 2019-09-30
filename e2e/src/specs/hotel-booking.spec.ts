@@ -4,9 +4,11 @@
  * 
  */
 
+import * as _ from "lodash";
 import { HotelBooking } from '../po/hotel-booking.po';
 import { browser } from 'protractor';
 import * as e2e_utils from "../utils";
+import { waitUntilNotNull } from '@domain/ts-utils';
 
 var messages = [ '<speak>Welcome to the Hotel Booking app template. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
                  '<speak>For the Hotel Booking app you will already find a few predefined tables like RoomType, Room or Booking<break time="1s"/></speak>',
@@ -53,8 +55,10 @@ describe('hotel-booking view mode testing', () => {
   it('should load the booking tables: RoomType, Room, Booking', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
-    let bookingTables: Array<string> = await hotelBooking.getTables();
-    ['RoomType', 'Room', 'Booking'].forEach(x => expect(bookingTables.indexOf(x)).toBeGreaterThan(-1));
+    let foundTables = await e2e_utils.retry(async () => 
+      _.difference(['RoomType', 'Room', 'Booking'], await hotelBooking.getTables()).length === 0
+    )
+    expect(foundTables).toEqual(true);
   });
 
   it('should load the room types list', async () => {
