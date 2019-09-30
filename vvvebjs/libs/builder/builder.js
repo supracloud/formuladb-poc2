@@ -641,6 +641,7 @@ Vvveb.Builder = {
 		var self = this;
 		self.iframe = this.documentFrame.get(0);
 		self.iframe.src = url;
+		console.warn("Loading page", url);
 
 		return this.documentFrame.on("load", function () {
 			window.FrameWindow = self.iframe.contentWindow;
@@ -708,6 +709,7 @@ Vvveb.Builder = {
 		self.frameBody = $(window.FrameDocument).find("body");
 		self.frameBody[0].classList.add('frmdb-editor-on');
 		self.frameHead = $(window.FrameDocument).find("head");
+		console.warn("Loaded page", self.frameBody.html());
 
 		//insert editor helpers like non editable areas
 		self.frameHead.append('<link data-vvveb-helpers href="' + Vvveb.baseUrl + '../../css/vvvebjs-editor-helpers.css" rel="stylesheet">');
