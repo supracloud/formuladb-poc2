@@ -1,6 +1,6 @@
 FRMDB_ENV_NAME=$1
 if [ -z "$FRMDB_ENV_NAME" ]; then echo "Usage: create_tenant.sh FRMDB_ENV_NAME"; exit 1; fi
-NO_K8S=$2
+NO_K8S=$3
 
 export BASEDIR=`dirname $0`
 export GOOGLE_APPLICATION_CREDENTIALS=$BASEDIR/FormulaDB-storage-full.json
