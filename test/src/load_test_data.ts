@@ -49,6 +49,7 @@ export async function loadTestData(): Promise<KeyValueStoreFactoryI> {
         }
 
         for (let schemaForApp of mockMetadata.schemas) {
+            console.log("Loading data for schema", JSON.stringify(schemaForApp));
             let mockData = new MockData(schemaForApp.schema.entities);
             let frmdbEngineStore = new FrmdbEngineStore(schemaForApp.tenantName, schemaForApp.appName, kvsFactory, schemaForApp.schema);
             let frmdbEngine = new FrmdbEngine(frmdbEngineStore);
