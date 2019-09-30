@@ -57,7 +57,11 @@ function test_stress {
 function test_e2e {
     FRMDB_ENV_NAME=$1
     if [ -z "FRMDB_ENV_NAME" ]; then echo "pls provide FRMDB_ENV_NAME"; exit 1; fi
-
+    
+    POD=`kubectl -n $NAMESPACE get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 5432 || kubectl -n $NAMESPACE port-forward $POD 5432:5432 &
+    while ! nc -z localhost 5432; do sleep 1; done
+    npm run e2e:data
     POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8085 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8085:80 &
     npm run webdriver-update
