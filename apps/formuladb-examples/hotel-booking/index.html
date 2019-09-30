@@ -13,7 +13,7 @@
 
 <body>
     <header class="header_area">
-        <frmdb-fragment name="nav-F.html"></frmdb-fragment>
+        <frmdb-fragment name="_nav.html"></frmdb-fragment>
     </header>
     <section class="banner_area">
         <div class="booking_table d_flex align-items-center">
@@ -32,7 +32,64 @@
         <div class="hotel_booking_area position">
             <div class="container">
                 <div data-frmdb-record="Booking~~" data-frmdb-record-no-autosave="">
-                    <frmdb-fragment name="booking-F.html"></frmdb-fragment>
+                    <div class="hotel_booking_table">
+                        <div class="col-md-3">
+                            <h2>Book<br> Your Room</h2>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="boking_table">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="book_tabel_item">
+                                            <div class="form-group">
+                                                <div class='input-group date'>
+                                                    <input type='text' class="form-control" placeholder="Arrival Date" required
+                                                        data-frmdb-value="::start_date" />
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class='input-group date'>
+                                                    <input type='text' class="form-control" placeholder="Departure Date" required
+                                                        data-frmdb-value="::end_date" />
+                                                    <span class="input-group-addon">
+                                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="book_tabel_item">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type='number' class="form-control" placeholder="Nb Adults" required max="4"
+                                                        data-frmdb-value="::nb_adults" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type='number' class="form-control" title="Nb Children" value="0" data-frmdb-value="::nb_children" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="book_tabel_item">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <input type='number' class="form-control" placeholder="Nb Rooms" />
+                                                </div>
+                                            </div>
+                                            <a class="book_now_btn button_hover" href="booking.html">Book Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -171,7 +228,8 @@
                             <br>Our History
                             <br>Mission &amp; Vision
                         </h2>
-                        <p>inappropriate behavior is often laughed off as “boys will be boys,” women face higher conduct standards especially in the workplace. That’s why it’s crucial that, as women, our behavior on the job is beyond reproach. inappropriate behavior is often laughed.</p>
+                        <p>inappropriate behavior is often laughed off as “boys will be boys,” women face higher conduct standards especially in the workplace.
+                            That’s why it’s crucial that, as women, our behavior on the job is beyond reproach. inappropriate behavior is often laughed.</p>
                         <a href="#" class="button_hover theme_btn_two">Request Custom Price</a>
                     </div>
                 </div>
@@ -181,7 +239,7 @@
             </div>
         </div>
     </section>
-    <frmdb-fragment name="footer-F.html" data-vvveb-disabled=""></frmdb-fragment>
+    <frmdb-fragment name="_footer.html" data-vvveb-disabled=""></frmdb-fragment>
     <script src="theme/js/jquery-3.2.1.min.js"></script>
     <script src="theme/js/popper.js"></script>
     <script src="theme/js/bootstrap.min.js"></script>

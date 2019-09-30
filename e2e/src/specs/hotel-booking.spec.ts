@@ -11,7 +11,8 @@ import * as e2e_utils from "../utils";
 import { waitUntilNotNull } from '@domain/ts-utils';
 
 var messages = [ '<speak>Welcome to the Hotel Booking app template. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
-                 '<speak>For the Hotel Booking app you will already find a few predefined tables like RoomType, Room or Booking<break time="1s"/></speak>',
+                 '<speak>For the Hotel Booking app you will already find a few predefined Tables like RoomType, Room or Booking<break time="1s"/></speak>',
+                 '<speak>Also there are a few predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
                  '<speak>Under Room Type you will find predefined types of rooms. You could also add your own if none of the default ones matches<break time="1s"/></speak>',
 ];
 var durations = new Array(messages.length);
