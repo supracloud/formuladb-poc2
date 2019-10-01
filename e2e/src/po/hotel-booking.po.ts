@@ -80,6 +80,17 @@ export class HotelBooking {
     await this.waitForSelectorInIframe(selector);
     return await element.all(by.css(selector));
   }
+  async byCssInShadowDOM(elemSelector, selector): Promise<ElementFinder> {
+    let EC = ExpectedConditions;
+    await browser.switchTo().defaultContent();
+    await browser.wait(EC.presenceOf(element(by.css(elemSelector))), 12000);
+    let elem = element(by.css(elemSelector));
+
+    let selectedElem = await browser.executeScript(function () {
+      return arguments[0].shadowRoot.querySelector(arguments[1])
+    }, elem, selector);
+    return selectedElem as ElementFinder;
+  }
 
   /** NOT WORKING */
   async scrollIntoView(elem) {

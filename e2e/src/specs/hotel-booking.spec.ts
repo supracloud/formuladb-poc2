@@ -17,7 +17,7 @@ var messages = ['<speak>Welcome to the Hotel Booking app template draft intro vi
   '<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="1s"/></speak>',
   '<speak>For example you can display the room types as a list of cards<break time="1s"/></speak>',
   '<speak>You can use Formulas to perform computations<break time="1s"/></speak>',
-  '<speak>Please follow formuladb.io for more details and news about the official launch.<break time="1s"/></speak>',
+  '<speak>Please follow formuladb.io for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="1s"/></speak>',
 ];
 var durations = new Array(messages.length);
 
@@ -57,7 +57,7 @@ describe('hotel-booking view mode testing', () => {
     await e2e_utils.handle_element_click(await hotelBooking.getTablesDropdown(), durations[action_index++]);
   });
 
-  xit('should load the booking tables: RoomType, Room, Booking', async () => {
+  it('should load the booking tables: RoomType, Room, Booking', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
     let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
@@ -68,7 +68,7 @@ describe('hotel-booking view mode testing', () => {
     expect(foundTables).toEqual(true);
   });
 
-  xit('should load the room types list', async () => {
+  it('should load the room types list', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that room types list is correctly displayed; verify the first row against the e2e data
     let roomTypes: { id: string, value: string }[] = await hotelBooking.getFirstRoomTypeData();
@@ -76,7 +76,7 @@ describe('hotel-booking view mode testing', () => {
     //expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
   });
 
-  xit('should load the page list: index.html, about.html, contact.html', async () => {
+  it('should load the page list: index.html, about.html, contact.html', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
     let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
@@ -87,7 +87,7 @@ describe('hotel-booking view mode testing', () => {
     expect(foundPages).toEqual(true);
   });
 
-  xit('should change theme color', async () => {
+  it('should change theme color', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), durations[action_index++]);
     let colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
     await browser.sleep(550);
@@ -107,7 +107,7 @@ describe('hotel-booking view mode testing', () => {
     expect(color).toEqual('rgba(243, 195, 0, 1)');
   });
 
-  xit('should change language', async () => {
+  it('should change language', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), durations[action_index++]);
     let languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
     await browser.sleep(550);
@@ -122,7 +122,7 @@ describe('hotel-booking view mode testing', () => {
     expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
   });
 
-  xit('should highlight column for data binding', async () => {
+  it('should highlight column for data binding', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     await hotelBooking.scrollIframe(350);
     let arivalDateFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::start_date"]');
@@ -159,7 +159,7 @@ describe('hotel-booking view mode testing', () => {
       let el = await hotelBooking.byCss('[href="#data-left-panel-tab"]');
       await el.click();
 
-      //delete hardcoded cards, leave just the first one
+      console.log(new Date(), 'delete hardcoded cards, leave just the first one');
       for (let i = 0; i < 3; i++) {
         el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
         await hotelBooking.clickWithJs(el);
@@ -168,7 +168,7 @@ describe('hotel-booking view mode testing', () => {
         await el.click();
       }
 
-      //configure data binding for the fist card
+      console.log(new Date(), 'configure data binding for the fist card');
       el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
       await hotelBooking.clickWithJs(el);
       await browser.sleep(956);
@@ -181,6 +181,8 @@ describe('hotel-booking view mode testing', () => {
       el = await hotelBooking.byCss('[data-key="data-frmdb-table"] select [value="$FRMDB.RoomType[]"]');
       await el.click();
       await browser.sleep(956);
+
+      console.log(new Date(), 'configure data binding for img');
       el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) img');
       await hotelBooking.clickWithJs(el);
       await browser.sleep(956);
@@ -190,6 +192,8 @@ describe('hotel-booking view mode testing', () => {
       el = await hotelBooking.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].picture"]');
       await el.click();
       await browser.sleep(956);
+
+      console.log(new Date(), 'configure data binding for h4');
       el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) a h4');
       await hotelBooking.clickWithJs(el);
       await browser.sleep(956);
@@ -199,6 +203,8 @@ describe('hotel-booking view mode testing', () => {
       el = await hotelBooking.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].name"]');
       await el.click();
       await browser.sleep(956);
+
+      console.log(new Date(), 'repeat card 7 times');
       el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
       await hotelBooking.clickWithJs(el);
       await browser.sleep(956);
@@ -206,6 +212,7 @@ describe('hotel-booking view mode testing', () => {
       await el.clear(); await el.sendKeys('7'); await el.sendKeys(Key.ENTER);
       await browser.sleep(956);
 
+      console.log(new Date(), 'scroll to each of the 7 cards');
       el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
       await hotelBooking.clickWithJs(el);
       await hotelBooking.scrollIframe(980);
@@ -230,12 +237,52 @@ describe('hotel-booking view mode testing', () => {
       await hotelBooking.clickWithJs(el);
       await hotelBooking.scrollIframe(1350);
       await browser.sleep(550);
-
-      await browser.sleep(100050);
     } catch (err) {
       console.error(err);
       throw err;
     }
+  });
+
+  xit('should allow basic formula editing', async () => {
+    try {
+      await e2e_utils.handle_generic_action(durations[action_index++]);
+      
+      //select booking table
+      let el = await hotelBooking.byCss('[data-frmdb-value="$frmdb.selectedTableId"]');
+      await el.click();
+      await browser.sleep(957);
+      let els = await hotelBooking.allByCss('[data-frmdb-value="$frmdb.tables[]._id"]');
+      let found = false;
+      for (el of els) {
+        let txt = await el.getText();
+        if ('Booking' === txt) {
+          found = true;
+          await el.click();
+        }
+      }
+      expect(found).toEqual(true);
+      await browser.sleep(957);
+      
+      //select day column
+      el = await hotelBooking.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
+      await el.click();
+      await browser.sleep(150);
+      el = await hotelBooking.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="nb_children"]');
+      await el.click();
+      await browser.sleep(150);
+      el = await hotelBooking.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
+      await el.click();
+      await browser.sleep(957);
+
+
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  });
+
+  it('please follow formuladb.io', async () => {
+    await e2e_utils.handle_generic_action(durations[action_index++]);
   });
 
   it('Should end recording and cleanup', async () => {
