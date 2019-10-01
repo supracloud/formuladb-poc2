@@ -121,7 +121,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="8s"/></speak>');
+    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="5s"/></speak>');
     DURATIONS.push(0);
     it('should change theme color', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), DURATIONS[action_index++]);
@@ -164,7 +164,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="10s"/></speak>');
+    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="7s"/></speak>');
     DURATIONS.push(0);
     it('should highlight column for data binding', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);

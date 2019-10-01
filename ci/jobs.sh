@@ -108,7 +108,7 @@ function e2e_staging_with_videos {
         -v $PWD:/febe \
         -v /dev/shm:/dev/shm \
         registry.gitlab.com/metawiz/febe/ci-with-video:1.0.3 \
-        bash -c 'source /bootstrap && TARGET=recordings-with-audio protractor e2e/protractor.conf.js --baseUrl="https://staging.formuladb.io"'
+        bash -c 'source /bootstrap && TARGET=recordings-with-audio protractor e2e/protractor.conf.js --baseUrl="https://formuladb.io"'
 
         # bash -c 'source /bootstrap && 
         # curl -XGET --header "PRIVATE-TOKEN: RER-gkXZCCi8irBNsUgL" https://gitlab.com/api/v4/projects/metawiz%2Ffebe/repository/archive.tar.gz > febe.tgz &&
