@@ -54,6 +54,8 @@ export class HotelBooking {
 
   async byCss(selector: string) {
     await browser.switchTo().defaultContent();
+    let EC = ExpectedConditions;
+    await browser.wait(EC.presenceOf(element(by.css(selector))), 4310);
     return await element(by.css(selector));
   }
   async allByCss(selector: string) {

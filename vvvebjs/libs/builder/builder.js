@@ -525,6 +525,7 @@ Vvveb.Builder = {
 
 		var self = this;
 
+		self.showIntroVideoModal();
 		self.loadControlGroups();
 		self.loadBlockGroups();
 
@@ -542,6 +543,14 @@ Vvveb.Builder = {
 		self._initBox();
 
 		self.dragElement = null;
+	},
+
+	showIntroVideoModal: function () {
+		
+		let $introVideoModal = $('#intro-video-modal');
+		$introVideoModal.find('video source').attr('src', `/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/intro.avi`);
+		$introVideoModal.modal("show");
+
 	},
 
 	/* controls */

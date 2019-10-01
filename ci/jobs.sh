@@ -93,7 +93,7 @@ function e2e_production {
 }
 
 function cleanup {
-    docker system prune -af
+    # docker system prune -af
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
