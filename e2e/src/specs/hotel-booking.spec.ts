@@ -9,17 +9,8 @@ import { HotelBooking } from '../po/hotel-booking.po';
 import { browser, Key } from 'protractor';
 import * as e2e_utils from "../utils";
 
-var messages = ['<speak>Welcome to the Hotel Booking app template draft intro video. As an admin you can customize the app. On the left side pane there are the available data tables<break time="2s"/></speak>',
-'<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="2s"/></speak>',
-'<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="2s"/></speak>',
-'<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="2s"/></speak>',
-'<speak>and the website language<break time="2s"/></speak>',
-'<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="5s"/></speak>',
-'<speak>For example you can display the room types as a list of cards<break time="12s"/></speak>',
-'<speak>You can use Formulas to perform computations<break time="9s"/></speak>',
-'<speak>Please follow formuladb.io for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="2s"/></speak>',
-];
-var durations = new Array(messages.length);
+var MESSAGES: string[] = [];
+var DURATIONS: number[] = [];
 
 const hotelBooking = new HotelBooking();
 
@@ -35,6 +26,8 @@ describe('hotel-booking view mode testing', () => {
         browser.driver.manage().window().maximize();
     });
     
+    MESSAGES.push('<speak>Welcome to the Hotel Booking draft intro video. As an admin you can customize the Hotel Booking app. On the left side pane there are the available data tables<break time="2s"/></speak>');
+    DURATIONS.push(0);
     it('should display the home page', async (done) => {
         // check that page loads and title is as expected
         await hotelBooking.navigateToHome();
@@ -45,7 +38,7 @@ describe('hotel-booking view mode testing', () => {
         }
         
         if (browser.params.audio) {
-            await e2e_utils.create_audio_tracks(messages, durations);
+            await e2e_utils.create_audio_tracks(MESSAGES, DURATIONS);
         }
         
         if (browser.params.recordings) {
@@ -75,13 +68,16 @@ describe('hotel-booking view mode testing', () => {
         done();
     });    
     
+    MESSAGES.push('<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="2s"/></speak>');
+    DURATIONS.push(0);
     it('should have tables drop down', async (done) => {
-        await e2e_utils.handle_element_click(await hotelBooking.getTablesDropdown(), durations[action_index++]);
+        await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
+        let el = await hotelBooking.getTablesDropdown();
+        await el.click();
         done();
     });
     
     it('should load the booking tables: RoomType, Room, Booking', async (done) => {
-        await e2e_utils.handle_generic_action(durations[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
         let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
             let tables = await hotelBooking.getTables();
@@ -90,11 +86,14 @@ describe('hotel-booking view mode testing', () => {
         })
         expect(foundTables).toEqual(true);
 
+        //close tables dropdown
+        let el = await hotelBooking.getTablesDropdown();
+        await el.click();
+
         done();
     });
     
     it('should load the room types list', async (done) => {
-        await e2e_utils.handle_generic_action(durations[action_index++]);
         // check that room types list is correctly displayed; verify the first row against the e2e data
         let roomTypes: { id: string, value: string }[] = await hotelBooking.getFirstRoomTypeData();
         console.log(roomTypes);
@@ -103,8 +102,10 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
+    MESSAGES.push('<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="2s"/></speak>');
+    DURATIONS.push(0);
     it('should load the page list: index.html, about.html, contact.html', async (done) => {
-        await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), durations[action_index++]);
+        await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
         let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
             let pages = await hotelBooking.getPages();
@@ -116,8 +117,10 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
+    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="2s"/></speak>');
+    DURATIONS.push(0);
     it('should change theme color', async (done) => {
-        await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), durations[action_index++]);
+        await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), DURATIONS[action_index++]);
         let colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
         await browser.sleep(550);
         await colors[1].click();
@@ -138,8 +141,10 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
+    MESSAGES.push('<speak>and the website language<break time="2s"/></speak>');
+    DURATIONS.push(0);
     it('should change language', async (done) => {
-        await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), durations[action_index++]);
+        await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), DURATIONS[action_index++]);
         let languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
         await browser.sleep(550);
         await languages[1].click();
@@ -155,8 +160,10 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
+    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="5s"/></speak>');
+    DURATIONS.push(0);
     it('should highlight column for data binding', async (done) => {
-        await e2e_utils.handle_generic_action(durations[action_index++]);
+        await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
         await hotelBooking.scrollIframe(350);
         let arivalDateFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::start_date"]');
         await browser.sleep(1051);
@@ -186,9 +193,11 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
+    MESSAGES.push('<speak>For example you can display the room types as a list of cards<break time="12s"/></speak>');
+    DURATIONS.push(0);
     it('should work with data binding for cards', async (done) => {
         try {
-            await e2e_utils.handle_generic_action(durations[action_index++]);
+            await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
             await hotelBooking.scrollIframe(950);
             await browser.sleep(150);
             let el = await hotelBooking.byCss('[href="#data-left-panel-tab"]');
@@ -280,13 +289,14 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    xit('should allow basic formula editing', async (done) => {
+    MESSAGES.push('<speak>You can use Formulas to perform computations<break time="9s"/></speak>');
+    DURATIONS.push(0);
+    it('should allow basic formula editing', async (done) => {
         try {
-            await e2e_utils.handle_generic_action(durations[action_index++]);
+            await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
             
             //select booking table
-            let el = await hotelBooking.byCss('[data-toggle="dropdown"][data-frmdb-value="$frmdb.selectedTableId"]');
-            await el.click();
+            let el;
             await browser.sleep(957);
             let els = await hotelBooking.allByCss('[data-frmdb-value="$frmdb.tables[]._id"]');
             let found = false;
@@ -295,6 +305,7 @@ describe('hotel-booking view mode testing', () => {
                 if ('Booking' === txt) {
                     found = true;
                     await (await hotelBooking.byCss('[data-toggle="dropdown"][data-frmdb-value="$frmdb.selectedTableId"]')).click();
+                    await browser.sleep(957);
                     await el.click();
                 }
             }
@@ -353,8 +364,10 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
+    MESSAGES.push('<speak>Please follow formuladb.io for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="2s"/></speak>');
+    DURATIONS.push(0);
     it('please follow formuladb.io', async (done) => {
-        await e2e_utils.handle_generic_action(durations[action_index++]);
+        await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
 
         done();
     });
@@ -363,7 +376,7 @@ describe('hotel-booking view mode testing', () => {
         if (browser.params.recordings) {
             await e2e_utils.wait_for_ffmpeg_stream_to_finish(stream);
             if (browser.params.audio) {
-                await e2e_utils.concat_audio(messages);
+                await e2e_utils.concat_audio(MESSAGES);
                 await e2e_utils.merge_video_and_audio();
             } else {
                 e2e_utils.create_final_video();

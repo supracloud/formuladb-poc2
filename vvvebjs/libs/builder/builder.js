@@ -548,7 +548,7 @@ Vvveb.Builder = {
 	showIntroVideoModal: function () {
 		
 		let $introVideoModal = $('#intro-video-modal');
-		$introVideoModal.find('video source').attr('src', `/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/intro.avi`);
+		$introVideoModal.find('video source').attr('src', `/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/intro.webm`);
 		$introVideoModal.modal("show");
 
 	},
