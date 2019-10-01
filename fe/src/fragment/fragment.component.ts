@@ -30,7 +30,7 @@ export interface FragmentComponentState extends FragmentComponentAttr {
     noShadow: true,
 })
 export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, FragmentComponentState> {
-    importHTML_not_using_shadowDom_anymore(html: string) {
+    __old__importHTML_not_using_shadowDom_anymore(html: string) {
         const template = document.createElement('template');
         template.innerHTML = html;
         //FIXME: DOMPurify.sanitize(html) removes <link rel="stylesheet", we need to manually use the purifier and add back the stylesheet

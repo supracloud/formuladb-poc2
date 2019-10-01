@@ -41,7 +41,7 @@ data:
             root         /usr/share/nginx/html;
             rewrite  ^/$  /index.html  last;
 
-            location /index.html {
+            location ~ ^/[-_.a-zA-Z]+\.html {
                 proxy_set_header    Host storage.googleapis.com;
                 proxy_pass https://googlestorage/formuladb-static-assets/$envname/formuladb-internal/formuladb.io$uri;
                 proxy_intercept_errors on;
