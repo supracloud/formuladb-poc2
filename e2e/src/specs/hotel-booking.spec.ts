@@ -90,10 +90,6 @@ describe('hotel-booking view mode testing', () => {
         })
         expect(foundTables).toEqual(true);
 
-        //close tables dropdown
-        let el = await hotelBooking.getTablesDropdown();
-        await el.click();
-
         done();
     });
     
@@ -109,6 +105,10 @@ describe('hotel-booking view mode testing', () => {
     MESSAGES.push('<speak>You will also find the predefined Pages like the home page<break time="1s"/>, about page<break time="1s"/>, gallery page<break time="1s"/>, contact page<break time="1s"/></speak>');
     DURATIONS.push(0);
     it('should load the page list: index.html, about.html, contact.html', async (done) => {
+        //close tables dropdown
+        let el = await hotelBooking.getTablesDropdown();
+        await el.click();
+
         await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
         let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
@@ -165,7 +165,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records, which allows dynamic content to be created from your data<break time="6s"/></speak>');
+    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records, which allows dynamic content to be created from your data<break time="4s"/></speak>');
     DURATIONS.push(0);
     it('should highlight column for data binding', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
@@ -369,7 +369,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>Please follow formuladb.io for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="2s"/></speak>');
+    MESSAGES.push('<speak>Please follow out website for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="2s"/></speak>');
     DURATIONS.push(0);
     it('please follow formuladb.io', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
