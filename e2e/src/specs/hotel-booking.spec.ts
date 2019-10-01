@@ -16,7 +16,7 @@ const hotelBooking = new HotelBooking();
 
 describe('hotel-booking view mode testing', () => {
     
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 300000;
     let stream;
     let test_name = 'hotel-booking';
     let action_index = 0;
