@@ -69,19 +69,19 @@ describe('hotel-booking view mode testing', () => {
         done();
     });    
     
-    MESSAGES.push('<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="3s"/></speak>');
-    DURATIONS.push(0);
     it('should have tables drop down', async (done) => {
         console.log(new Date(), "checking tables dropdown");
         await hotelBooking.byCss('#intro-video-modal:not(.show)');
         await browser.sleep(1800);//WTF modal is hidden but dropdown is still not clickable
-        await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
         let el = await hotelBooking.getTablesDropdown();
         await el.click();
         done();
     });
     
+    MESSAGES.push('<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="3s"/></speak>');
+    DURATIONS.push(0);
     it('should load the booking tables: RoomType, Room, Booking', async (done) => {
+        await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
         let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
             let tables = await hotelBooking.getTables();
@@ -106,7 +106,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="3s"/></speak>');
+    MESSAGES.push('<speak>You will also find the predefined Pages like the home page<break time="1s"/>, about page<break time="1s"/>, gallery page<break time="1s"/>, contact page<break time="1s"/></speak>');
     DURATIONS.push(0);
     it('should load the page list: index.html, about.html, contact.html', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), DURATIONS[action_index++]);
@@ -121,15 +121,16 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="5s"/></speak>');
+    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="4s"/></speak>');
     DURATIONS.push(0);
     it('should change theme color', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), DURATIONS[action_index++]);
+        await browser.sleep(2000);
         let colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
         await browser.sleep(550);
         await colors[1].click();
         await browser.sleep(200);
-        await browser.sleep(2500);
+        await browser.sleep(3500);
         let icon = await hotelBooking.getLogoIcon();
         let color = await icon.getCssValue('color');
         expect(color).toEqual('rgba(255, 0, 0, 1)');
@@ -145,7 +146,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>and the website language<break time="5s"/></speak>');
+    MESSAGES.push('<speak>and also the website language<break time="5s"/></speak>');
     DURATIONS.push(0);
     it('should change language', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), DURATIONS[action_index++]);
@@ -164,7 +165,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="7s"/></speak>');
+    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records, which allows dynamic content to be created from your data<break time="6s"/></speak>');
     DURATIONS.push(0);
     it('should highlight column for data binding', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
@@ -293,7 +294,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can use Formulas to perform computations<break time="15s"/></speak>');
+    MESSAGES.push('<speak>You can use Formulas to perform computations<break time="12s"/></speak>');
     DURATIONS.push(0);
     it('should allow basic formula editing', async (done) => {
         try {

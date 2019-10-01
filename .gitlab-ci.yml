@@ -32,14 +32,14 @@ stages:
   only:
     - tags
 
-build:
+.build:
   stage: build
   script:
     - npm install
     - npm run compile
   <<: *cache_node_modules_and_artifacts
 
-bundle:
+.bundle:
   stage: bundle
   script:
     - npm run bundle
@@ -76,7 +76,7 @@ bundle:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
-build_images_and_deploy_staging:
+.build_images_and_deploy_staging:
   stage: build_images_and_deploy_staging
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
