@@ -75,31 +75,7 @@ Vvveb.ComponentsGroup['Basic Components'] =
 var base_sort = 100;//start sorting for base component from 100 to allow extended properties to be first
 var style_section = 'style';
 
-Vvveb.Components.add("_base", {
-    name: "Element",
-	properties: [{
-        key: "element_header",
-        inputtype: SectionInput,
-        name:false,
-        sort:base_sort++,
-        data: {header:"General"},
-    }, {
-        name: "Id",
-        key: "id",
-        htmlAttr: "id",
-        sort: base_sort++,
-        inline:true,
-        col: 12,
-        inputtype: TextInput
-    }, {
-        name: "Class",
-        key: "class",
-        htmlAttr: "class",
-        sort: base_sort++,
-        inline:true,
-        col: 12,
-        inputtype: TextInput
-    },
+let FrmdbDataBindingProperties = [
     {
         key: "value",
         inputtype: SectionInput,
@@ -119,7 +95,7 @@ Vvveb.Components.add("_base", {
         inputtype: SelectInput,
         validValues: [],
         data: {
-            options: []
+            options: [],
         },
         beforeInit: function (node) {
             let dataFrmdbTableProp = this;
@@ -303,7 +279,35 @@ Vvveb.Components.add("_base", {
         inline:true,
         col: 12,
         inputtype: TextInput
-    },  
+    },
+];
+
+Vvveb.Components.add("_base", {
+    name: "Element",
+	properties: [{
+        key: "element_header",
+        inputtype: SectionInput,
+        name:false,
+        sort:base_sort++,
+        data: {header:"General"},
+    }, {
+        name: "Id",
+        key: "id",
+        htmlAttr: "id",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    }, {
+        name: "Class",
+        key: "class",
+        htmlAttr: "class",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    ...FrmdbDataBindingProperties
    ]
 });    
 
@@ -2270,8 +2274,9 @@ Vvveb.Components.add("html/gridcolumn", {
 			
 			return node;
 		},				
-	}]
-});
+    },
+    ...FrmdbDataBindingProperties,
+]});
 Vvveb.Components.add("html/gridrow", {
     name: "Grid Row",
     image: "icons/grid_row.svg",

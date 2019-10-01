@@ -6,18 +6,18 @@
 
 import * as _ from "lodash";
 import { HotelBooking } from '../po/hotel-booking.po';
-import { browser } from 'protractor';
+import { browser, Key } from 'protractor';
 import * as e2e_utils from "../utils";
 
-var messages = [ '<speak>Welcome to the Hotel Booking app template draft intro video. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
-                 '<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="1s"/></speak>',
-                 '<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
-                 '<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette</speak>',
-                 '<speak>and the website language<break time="1s"/></speak>',
-                 '<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="1s"/></speak>',
-                 '<speak>For example you can display the room types as a list of cards<break time="1s"/></speak>',
-                 '<speak>You can use Formulas to perform computations<break time="1s"/></speak>',
-                 '<speak>Please follow formuladb.io for more details and news about the official launch.<break time="1s"/></speak>',
+var messages = ['<speak>Welcome to the Hotel Booking app template draft intro video. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
+  '<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="1s"/></speak>',
+  '<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
+  '<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette</speak>',
+  '<speak>and the website language<break time="1s"/></speak>',
+  '<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="1s"/></speak>',
+  '<speak>For example you can display the room types as a list of cards<break time="1s"/></speak>',
+  '<speak>You can use Formulas to perform computations<break time="1s"/></speak>',
+  '<speak>Please follow formuladb.io for more details and news about the official launch.<break time="1s"/></speak>',
 ];
 var durations = new Array(messages.length);
 
@@ -56,8 +56,8 @@ describe('hotel-booking view mode testing', () => {
   it('should have tables drop down', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.getTablesDropdown(), durations[action_index++]);
   });
-    
-  it('should load the booking tables: RoomType, Room, Booking', async () => {
+
+  xit('should load the booking tables: RoomType, Room, Booking', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
     let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
@@ -68,7 +68,7 @@ describe('hotel-booking view mode testing', () => {
     expect(foundTables).toEqual(true);
   });
 
-  it('should load the room types list', async () => {
+  xit('should load the room types list', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that room types list is correctly displayed; verify the first row against the e2e data
     let roomTypes: { id: string, value: string }[] = await hotelBooking.getFirstRoomTypeData();
@@ -76,7 +76,7 @@ describe('hotel-booking view mode testing', () => {
     //expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
   });
 
-  it('should load the page list: index.html, about.html, contact.html', async () => {
+  xit('should load the page list: index.html, about.html, contact.html', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
     let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
@@ -87,27 +87,27 @@ describe('hotel-booking view mode testing', () => {
     expect(foundPages).toEqual(true);
   });
 
-  it('should change theme color', async () => {
+  xit('should change theme color', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), durations[action_index++]);
     let colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
     await browser.sleep(550);
     await colors[1].click();
     await browser.sleep(200);
+    await browser.sleep(2500);
     let icon = await hotelBooking.getLogoIcon();
     let color = await icon.getCssValue('color');
     expect(color).toEqual('rgba(255, 0, 0, 1)');
-    await browser.sleep(2200);
 
     await (await hotelBooking.byCss('#frmdb-editor-color-palette-select')).click();
     colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
     await colors[0].click();
-    await browser.sleep(1500);
+    await browser.sleep(2500);
     icon = await hotelBooking.getLogoIcon();
     color = await icon.getCssValue('color');
     expect(color).toEqual('rgba(243, 195, 0, 1)');
   });
 
-  it('should change language', async () => {
+  xit('should change language', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), durations[action_index++]);
     let languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
     await browser.sleep(550);
@@ -122,7 +122,7 @@ describe('hotel-booking view mode testing', () => {
     expect(await hotelBooking.getPageTitle()).toEqual('Relax Your Mind');
   });
 
-  it('should highlight column for data binding', async () => {
+  xit('should highlight column for data binding', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     await hotelBooking.scrollIframe(350);
     let arivalDateFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::start_date"]');
@@ -152,26 +152,90 @@ describe('hotel-booking view mode testing', () => {
   });
 
   it('should work with data binding for cards', async () => {
-    await e2e_utils.handle_generic_action(durations[action_index++]);
-    await hotelBooking.scrollIframe(950);
-    await browser.sleep(150);
-    let el = await hotelBooking.byCss('[href="#data-left-panel-tab"]');
-    await el.click();
+    try {
+      await e2e_utils.handle_generic_action(durations[action_index++]);
+      await hotelBooking.scrollIframe(950);
+      await browser.sleep(150);
+      let el = await hotelBooking.byCss('[href="#data-left-panel-tab"]');
+      await el.click();
 
-    for (let i = 0; i < 3; i++) {
+      //delete hardcoded cards, leave just the first one
+      for (let i = 0; i < 3; i++) {
+        el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
+        await hotelBooking.clickWithJs(el);
+        await browser.sleep(956);
+        el = await hotelBooking.byCss('#select-box #select-actions #delete-btn');
+        await el.click();
+      }
+
+      //configure data binding for the fist card
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
+      await hotelBooking.clickWithJs(el);
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-table-limit"] input');
+      await el.sendKeys('1');
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-table"] select');
+      await el.click();
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-table"] select [value="$FRMDB.RoomType[]"]');
+      await el.click();
+      await browser.sleep(956);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) img');
+      await hotelBooking.clickWithJs(el);
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-value"] select');
+      await el.click();
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].picture"]');
+      await el.click();
+      await browser.sleep(956);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) a h4');
+      await hotelBooking.clickWithJs(el);
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-value"] select');
+      await el.click();
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].name"]');
+      await el.click();
+      await browser.sleep(956);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
+      await hotelBooking.clickWithJs(el);
+      await browser.sleep(956);
+      el = await hotelBooking.byCss('[data-key="data-frmdb-table-limit"] input');
+      await el.clear(); await el.sendKeys('7'); await el.sendKeys(Key.ENTER);
+      await browser.sleep(956);
+
       el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
       await hotelBooking.clickWithJs(el);
-      await browser.sleep(450);
-      el = await hotelBooking.byCss('#select-box #select-actions #delete-btn');
-      await el.click();
+      await hotelBooking.scrollIframe(980);
+      await browser.sleep(550);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(3)');
+      await hotelBooking.clickWithJs(el);
+      await hotelBooking.scrollIframe(1000);
+      await browser.sleep(550);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(4)');
+      await hotelBooking.clickWithJs(el);
+      await hotelBooking.scrollIframe(1100);
+      await browser.sleep(550);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(5)');
+      await hotelBooking.clickWithJs(el);
+      await hotelBooking.scrollIframe(1200);
+      await browser.sleep(550);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(6)');
+      await hotelBooking.clickWithJs(el);
+      await hotelBooking.scrollIframe(1300);
+      await browser.sleep(550);
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(7)');
+      await hotelBooking.clickWithJs(el);
+      await hotelBooking.scrollIframe(1350);
+      await browser.sleep(550);
+
+      await browser.sleep(100050);
+    } catch (err) {
+      console.error(err);
+      throw err;
     }
-
-    el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
-    await hotelBooking.clickWithJs(el);
-    await browser.sleep(450);
-    el = await hotelBooking.byCss('#select-box #select-actions #delete-btn');
-
-    await browser.sleep(10050);
   });
 
   it('Should end recording and cleanup', async () => {
@@ -185,7 +249,7 @@ describe('hotel-booking view mode testing', () => {
       }
       await e2e_utils.crop_video();
       await e2e_utils.create_gif_palette_and_video();
-        e2e_utils.cleanup(test_name);
+      e2e_utils.cleanup(test_name);
     }
   });
 

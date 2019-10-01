@@ -65,6 +65,7 @@ test_postgres:
 
 test_stress:
   stage: test_stress
+  retry: 4
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
