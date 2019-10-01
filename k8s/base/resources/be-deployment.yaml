@@ -13,7 +13,7 @@ spec:
       initContainers:
       - name: check-db-ready
         image: postgres:11
-        command: ['sh', '-c', 'pg_isready -h db -p 5432 -t 10']
+        command: ['sh', '-c', 'until pg_isready -h db -p 5432 -t 1; do echo waiting for database; sleep 2; done;']
       containers:
       - env:
         - name: DEBUG
@@ -29,7 +29,7 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /etc/gcp/sa_credentials.json
         - name: FRMDB_AUTH_ENABLED
-          value: "true"
+          value: "false"
         image: registry.gitlab.com/metawiz/febe/formuladb-be
         name: be
         ports:

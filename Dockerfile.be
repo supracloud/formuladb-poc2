@@ -49,6 +49,7 @@ service_account = default\n\
 plugin_directory = /usr/lib/python2.7/site-packages/google_compute_engine/boto' >> /root/.boto
 
 ENV PATH="${PATH}:/gsutil"
+ENV KUBECONFIG=k8s/production-kube-config.conf
 
 COPY package.json /package.json
 
