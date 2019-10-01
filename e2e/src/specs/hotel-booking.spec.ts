@@ -9,15 +9,15 @@ import { HotelBooking } from '../po/hotel-booking.po';
 import { browser, Key } from 'protractor';
 import * as e2e_utils from "../utils";
 
-var messages = ['<speak>Welcome to the Hotel Booking app template draft intro video. As an admin you can customize the app. On the left side pane there are the available data tables<break time="1s"/></speak>',
-  '<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="1s"/></speak>',
-  '<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="1s"/></speak>',
-  '<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette</speak>',
-  '<speak>and the website language<break time="1s"/></speak>',
-  '<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="1s"/></speak>',
-  '<speak>For example you can display the room types as a list of cards<break time="1s"/></speak>',
-  '<speak>You can use Formulas to perform computations<break time="1s"/></speak>',
-  '<speak>Please follow formuladb.io for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="1s"/></speak>',
+var messages = ['<speak>Welcome to the Hotel Booking app template draft intro video. As an admin you can customize the app. On the left side pane there are the available data tables<break time="2s"/></speak>',
+  '<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="2s"/></speak>',
+  '<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="2s"/></speak>',
+  '<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="2s"/></speak>',
+  '<speak>and the website language<break time="2s"/></speak>',
+  '<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="5s"/></speak>',
+  '<speak>For example you can display the room types as a list of cards<break time="12s"/></speak>',
+  '<speak>You can use Formulas to perform computations<break time="9s"/></speak>',
+  '<speak>Please follow formuladb.io for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations and much much more.<break time="2s"/></speak>',
 ];
 var durations = new Array(messages.length);
 
@@ -126,7 +126,7 @@ describe('hotel-booking view mode testing', () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     await hotelBooking.scrollIframe(350);
     let arivalDateFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::start_date"]');
-    await browser.sleep(1000);
+    await browser.sleep(1051);
     let departureDateFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::end_date"]');
     await hotelBooking.clickWithJs(arivalDateFormEl);
     await browser.sleep(150);
@@ -134,20 +134,20 @@ describe('hotel-booking view mode testing', () => {
     await browser.sleep(150);
     await hotelBooking.clickWithJs(arivalDateFormEl);
 
-    await browser.sleep(1050);
+    await browser.sleep(1051);
     await hotelBooking.clickWithJs(departureDateFormEl);
     //TODO check background color of column in the data grid
 
-    await browser.sleep(1050);
+    await browser.sleep(1051);
     //TODO check background color of column in the data grid
     let nbAdultsFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::nb_adults"]');
     await hotelBooking.clickWithJs(nbAdultsFormEl);
 
-    await browser.sleep(1050);
+    await browser.sleep(1051);
     //TODO check background color of column in the data grid
     let nbChildrenFormEl = await hotelBooking.byCssInFrame('[data-frmdb-value="::nb_children"]');
     await hotelBooking.clickWithJs(nbChildrenFormEl);
-    await browser.sleep(1050);
+    await browser.sleep(1051);
     //TODO check background color of column in the data grid
   });
 
@@ -243,7 +243,7 @@ describe('hotel-booking view mode testing', () => {
     }
   });
 
-  xit('should allow basic formula editing', async () => {
+  it('should allow basic formula editing', async () => {
     try {
       await e2e_utils.handle_generic_action(durations[action_index++]);
       
@@ -254,9 +254,10 @@ describe('hotel-booking view mode testing', () => {
       let els = await hotelBooking.allByCss('[data-frmdb-value="$frmdb.tables[]._id"]');
       let found = false;
       for (el of els) {
-        let txt = await el.getText();
+        let txt = await el.getAttribute('innerText');
         if ('Booking' === txt) {
           found = true;
+          await (await hotelBooking.byCss('[data-frmdb-value="$frmdb.selectedTableId"]')).click();
           await el.click();
         }
       }
@@ -274,6 +275,38 @@ describe('hotel-booking view mode testing', () => {
       await el.click();
       await browser.sleep(957);
 
+      el = await hotelBooking.byCss('.editor-textarea');
+      expect(await el.getAttribute('value')).toEqual('DATEDIF(start_date, end_date, "D") + 1');
+      await browser.sleep(250);
+      
+      el = await hotelBooking.byCss('#toggle-formula-editor');
+      await el.click();
+      await browser.sleep(957);
+
+      el = await hotelBooking.byCss('.editor-textarea');
+      await el.click();
+      await browser.sleep(551);
+      await browser.sleep(957);
+      await el.sendKeys('00'); await el.sendKeys(Key.TAB);
+      await browser.sleep(957);
+
+      el = await hotelBooking.byCss('#apply-formula-changes');
+      await el.click();
+      await browser.sleep(957);
+
+      var alertDialog = browser.switchTo().alert();
+      let txt = await alertDialog.getText();
+      expect(txt).toContain('Please confirm, apply modifications to DB');
+      await alertDialog.accept();  // Use to accept (simulate clicking ok)
+      await browser.switchTo().defaultContent();
+      await browser.sleep(957);
+      await browser.sleep(957);
+
+      el = await hotelBooking.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
+      await el.click();
+      txt = await el.getAttribute('innerText');
+      expect(txt).toContain('104.00');
+      await browser.sleep(1150);
 
     } catch (err) {
       console.error(err);
