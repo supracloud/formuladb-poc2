@@ -1489,7 +1489,7 @@ Vvveb.Gui = {
 				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i> ${t.name}</a>`)
 					.click(event => {
 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
-							.attr('href', `css/${t.css}?refresh=${new Date().getTime()}`);
+							.attr('href', `${t.css}?refresh=${new Date().getTime()}`);
 						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
 					})
 					.appendTo(themeOptions);

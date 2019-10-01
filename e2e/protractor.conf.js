@@ -37,7 +37,7 @@ exports.config = {
     return multiCapabilities;
   },
   directConnect: true,
-  baseUrl: 'https://staging.formuladb.io',
+  baseUrl: 'http://localhost:8081',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
