@@ -146,6 +146,7 @@
 		<div id="left-panel">
 			<div style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
 				<img src="/formuladb/img/logo.png" style="width: 110px; height: 32px;" />
+				<a class="float-right btn btn-sm btn-outline-light mx-1" href="javascript:Vvveb.Builder.showIntroVideoModal()"><i class="la la-info"></i></a>
 				<div class="dropdown float-right">
 					<button class="btn btn-sm dropdown-toggle text-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false" title="Test/Playground Environments (Coming Soon)">
@@ -974,17 +975,15 @@
 
 	<!-- new Column modal-->
 	<div class="modal fade modal-xl" id="intro-video-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document" style="width: 88vw; max-width: 88vw">
-			<div class="modal-content" style="width: 88vw; max-width: 88vw">
+		<div class="modal-dialog mt-3" role="document" style="width: 96vw; max-width: 96vw">
+			<div class="modal-content" style="width: 96vw; max-width: 96vw">
 				<div class="modal-header">
 					<p class="modal-title text-primary"><i class="la la-lg la-video"></i> Intro Video</p>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true"><small><i class="la la-close"></i></small></span>
 					</button>
 				</div>
-				<video width="100%" controls>
-					<source src="intro.avi" type="video/mp4">
-					Your browser does not support HTML5 video.
+				<video width="100%" controls autoplay>
 				</video>
 			</div>
 		</div>

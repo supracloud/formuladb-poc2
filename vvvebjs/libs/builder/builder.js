@@ -548,9 +548,10 @@ Vvveb.Builder = {
 	showIntroVideoModal: function () {
 		
 		let $introVideoModal = $('#intro-video-modal');
-		$introVideoModal.find('video source').attr('src', `/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/intro.webm`);
-		$introVideoModal.modal("show");
-
+		$introVideoModal.find('video').attr('src', `/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/intro.webm`);
+		$introVideoModal.modal("show").on('hidden.bs.modal', function (e) {
+			$introVideoModal.find('video')[0].pause();
+		});
 	},
 
 	/* controls */
