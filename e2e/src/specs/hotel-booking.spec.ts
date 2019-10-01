@@ -68,7 +68,7 @@ describe('hotel-booking view mode testing', () => {
     expect(foundTables).toEqual(true);
   });
 
-  xit('should load the room types list', async () => {
+  it('should load the room types list', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
     // check that room types list is correctly displayed; verify the first row against the e2e data
     let roomTypes: { id: string, value: string }[] = await hotelBooking.getFirstRoomTypeData();
@@ -76,7 +76,7 @@ describe('hotel-booking view mode testing', () => {
     //expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
   });
 
-  xit('should load the page list: index.html, about.html, contact.html', async () => {
+  it('should load the page list: index.html, about.html, contact.html', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), durations[action_index++]);
     // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
     let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
@@ -87,7 +87,7 @@ describe('hotel-booking view mode testing', () => {
     expect(foundPages).toEqual(true);
   });
 
-  xit('should change theme color', async () => {
+  it('should change theme color', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), durations[action_index++]);
     let colors = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
     await browser.sleep(550);
@@ -107,7 +107,7 @@ describe('hotel-booking view mode testing', () => {
     expect(color).toEqual('rgba(243, 195, 0, 1)');
   });
 
-  xit('should change language', async () => {
+  it('should change language', async () => {
     await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), durations[action_index++]);
     let languages = await hotelBooking.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
     await browser.sleep(550);
@@ -151,9 +151,27 @@ describe('hotel-booking view mode testing', () => {
     //TODO check background color of column in the data grid
   });
 
-  xit('should work with data binding for cards', async () => {
+  it('should work with data binding for cards', async () => {
     await e2e_utils.handle_generic_action(durations[action_index++]);
-    await hotelBooking.scrollIframe(350);
+    await hotelBooking.scrollIframe(950);
+    await browser.sleep(150);
+    let el = await hotelBooking.byCss('[href="#data-left-panel-tab"]');
+    await el.click();
+
+    for (let i = 0; i < 3; i++) {
+      el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
+      await hotelBooking.clickWithJs(el);
+      await browser.sleep(450);
+      el = await hotelBooking.byCss('#select-box #select-actions #delete-btn');
+      await el.click();
+    }
+
+    el = await hotelBooking.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
+    await hotelBooking.clickWithJs(el);
+    await browser.sleep(450);
+    el = await hotelBooking.byCss('#select-box #select-actions #delete-btn');
+
+    await browser.sleep(10050);
   });
 
   it('Should end recording and cleanup', async () => {
