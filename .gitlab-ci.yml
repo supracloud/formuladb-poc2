@@ -1,15 +1,15 @@
 stages:
   - build
-  # - test_mem
+  - test_mem
   - bundle
-  # - build_images_and_deploy_dev
-  # - test_postgres
-  # - test_stress
-  # - e2e_dev_env
+  - build_images_and_deploy_dev
+  - test_postgres
+  - test_stress
+  - e2e_dev_env
   - build_images_and_deploy_staging
-  # - e2e_staging
-  # - build_images_and_deploy_production
-  # - e2e_production
+  - e2e_staging
+  - build_images_and_deploy_production
+  - e2e_production
   # - e2e_all_example_apps
   - e2e_staging_with_videos
   - cleanup
@@ -45,32 +45,32 @@ bundle:
     - npm run bundle
   <<: *cache_node_modules_and_artifacts
 
-build_images_and_deploy_dev:
+.build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
-test_mem:
+.test_mem:
   stage: test_mem
   script:
     - npm test
   <<: *cache_node_modules_and_artifacts
 
-test_postgres:
+.test_postgres:
   stage: test_postgres
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
-test_stress:
+.test_stress:
   stage: test_stress
   retry: 2
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
-e2e_dev_env:
+.e2e_dev_env:
   stage: e2e_dev_env
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
@@ -86,7 +86,7 @@ build_images_and_deploy_staging:
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_staging_and_production
 
-e2e_staging:
+.e2e_staging:
   stage: e2e_staging
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
