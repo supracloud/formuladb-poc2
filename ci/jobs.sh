@@ -57,11 +57,13 @@ function test_stress {
 function test_e2e {
     FRMDB_ENV_NAME=$1
     if [ -z "FRMDB_ENV_NAME" ]; then echo "pls provide FRMDB_ENV_NAME"; exit 1; fi
+    URL=$2
+    if [ -z "URL" ]; then echo "pls provide URL"; exit 2; fi
 
     POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8085 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8085:80 &
     npm run webdriver-update
-    TARGET=headless npm run test:e2e -- --baseUrl='http://localhost:8085'
+    TARGET=headless npm run test:e2e -- --baseUrl="$URL"
 }
 
 function e2e_dev_env {
@@ -70,7 +72,7 @@ function e2e_dev_env {
     while ! nc -z localhost 5432; do sleep 1; done
     npm run e2e:data
 
-    test_e2e "$FRMDB_ENV_NAME"
+    test_e2e "$FRMDB_ENV_NAME" "http://localhost:8085"
 }
 
 function build_images_and_deploy_staging {
@@ -78,7 +80,7 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    test_e2e staging
+    test_e2e staging "https://staging.formuladb.io"
 }
 
 function build_images_and_deploy_production {
@@ -86,7 +88,8 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
-    test_e2e production #make sure only safe tests
+    #WARNING: make sure only safe tests
+    test_e2e production "https://formuladb.io"
 }
 
 function cleanup {
@@ -105,7 +108,7 @@ function e2e_staging_with_videos {
         -v $PWD:/febe \
         -v /dev/shm:/dev/shm \
         registry.gitlab.com/metawiz/febe/ci-with-video:1.0.3 \
-        bash -c 'source /bootstrap && TARGET=recordings-with-audio protractor e2e/protractor.conf.js'
+        bash -c 'source /bootstrap && TARGET=recordings-with-audio protractor e2e/protractor.conf.js --baseUrl="https://staging.formuladb.io"'
 }
 
 eval $1
