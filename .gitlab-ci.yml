@@ -1,15 +1,15 @@
 stages:
   - build
-  - test_mem
+  # - test_mem
   - bundle
-  - build_images_and_deploy_dev
-  - test_postgres
-  - test_stress
-  - e2e_dev_env
+  # - build_images_and_deploy_dev
+  # - test_postgres
+  # - test_stress
+  # - e2e_dev_env
   - build_images_and_deploy_staging
-  - e2e_staging
-  - build_images_and_deploy_production
-  - e2e_production
+  # - e2e_staging
+  # - build_images_and_deploy_production
+  # - e2e_production
   # - e2e_all_example_apps
   - e2e_staging_with_videos
   - cleanup

@@ -26,7 +26,7 @@ describe('hotel-booking view mode testing', () => {
         browser.driver.manage().window().maximize();
     });
     
-    MESSAGES.push('<speak>Welcome to the Hotel Booking draft intro video. As an admin you can customize the Hotel Booking app. On the left side pane there are the available data tables<break time="2s"/></speak>');
+    MESSAGES.push('<speak>Welcome to the Hotel Booking draft intro video. As an admin you can customize the Hotel Booking app. On the left side pane there are the available data tables<break time="3s"/></speak>');
     DURATIONS.push(0);
     it('should display the home page', async (done) => {
         // check that page loads and title is as expected
@@ -65,12 +65,16 @@ describe('hotel-booking view mode testing', () => {
             done.fail(err);
         }
 
+        console.log(new Date(), "DISMISS intro video modal");
         done();
     });    
     
-    MESSAGES.push('<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="2s"/></speak>');
+    MESSAGES.push('<speak>For the Hotel Booking app you will find a few predefined Tables like RoomType, Room or Booking<break time="3s"/></speak>');
     DURATIONS.push(0);
     it('should have tables drop down', async (done) => {
+        console.log(new Date(), "checking tables dropdown");
+        await hotelBooking.byCss('#intro-video-modal:not(.show)');
+        await browser.sleep(1800);//WTF modal is hidden but dropdown is still not clickable
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
         let el = await hotelBooking.getTablesDropdown();
         await el.click();
@@ -102,7 +106,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="2s"/></speak>');
+    MESSAGES.push('<speak>You will also find the predefined Pages like the home page, about page, gallery page, contact page<break time="3s"/></speak>');
     DURATIONS.push(0);
     it('should load the page list: index.html, about.html, contact.html', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.getPagesDropdown(), DURATIONS[action_index++]);
@@ -117,7 +121,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="2s"/></speak>');
+    MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="8s"/></speak>');
     DURATIONS.push(0);
     it('should change theme color', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-color-palette-select'), DURATIONS[action_index++]);
@@ -141,7 +145,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>and the website language<break time="2s"/></speak>');
+    MESSAGES.push('<speak>and the website language<break time="5s"/></speak>');
     DURATIONS.push(0);
     it('should change language', async (done) => {
         await e2e_utils.handle_element_click(await hotelBooking.byCss('#frmdb-editor-i18n-select'), DURATIONS[action_index++]);
@@ -160,7 +164,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="5s"/></speak>');
+    MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records<break time="10s"/></speak>');
     DURATIONS.push(0);
     it('should highlight column for data binding', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
@@ -193,7 +197,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>For example you can display the room types as a list of cards<break time="12s"/></speak>');
+    MESSAGES.push('<speak>For example you can display the room types as a list of cards<break time="20s"/></speak>');
     DURATIONS.push(0);
     it('should work with data binding for cards', async (done) => {
         try {
@@ -289,7 +293,7 @@ describe('hotel-booking view mode testing', () => {
         done();
     });
     
-    MESSAGES.push('<speak>You can use Formulas to perform computations<break time="9s"/></speak>');
+    MESSAGES.push('<speak>You can use Formulas to perform computations<break time="15s"/></speak>');
     DURATIONS.push(0);
     it('should allow basic formula editing', async (done) => {
         try {

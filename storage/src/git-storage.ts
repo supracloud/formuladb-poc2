@@ -76,4 +76,6 @@ curl -s -XGET --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' https://gitlab.com/
 curl -v --request PUT --header 'PRIVATE-TOKEN: T8fpbohTXHdsE9yVsL1s' --header "Content-Type: application/json" \
     --data '{"branch": "develop", "author_email": "cristualexandru@gmail.com", "content": "<html>blasdaa bla</html>", "commit_message": "update file"}' \
     'https://gitlab.com/api/v4/projects/frmdb-apps%2Fhotel-booking/repository/files/tst'
+
+acristu api token: RER-gkXZCCi8irBNsUgL
 */
