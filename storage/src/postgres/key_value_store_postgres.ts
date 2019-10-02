@@ -273,8 +273,11 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                     ${props.map(p => p.name).join(", ")}
                 ) VALUES (
                     ${props.map((p, i) => '$' + (1+i))}
-                ) ON CONFLICT (_id) DO UPDATE SET 
-                    ${this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")}
+                ) ON CONFLICT (_id) DO  
+                    ${this.propsNoId().length > 0 ?
+                        ' UPDATE SET ' + this.propsNoId().map((p, i) => p.name + '=$' + (1 + props.length + i)).join(", ")
+                        : ' NOTHING'
+                    }
                 `;
                 let values = Object.values(this.entity.props)
                     .map(p => p.name === '_id' ? this.pgSpecialChars(obj[p.name]) : obj[p.name])
@@ -298,7 +301,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                 break;
             case Pn.FORMULA:
                 //FIXME: implement proper type system
-                if (prop.formula.match(/SUM|COUNT|[-]|[+]/) != null) {
+                if (prop.formula.match(/SUM|COUNT| [-] | [+] /) != null) {
                     type = "numeric(12,5)";
                 } else {
                     type = "varchar";
@@ -360,7 +363,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
 }
 export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
     readonly type = "KeyValueStoreFactoryPostgres";
-    metadataStore = new MetadataStore(process.env.ORGANIZ_NAME || 'env-not-known', this);
+    metadataStore = new MetadataStore(process.env.FRMDB_ENV_NAME || 'env-not-known', this);
     
     createKeyValS<VALUET>(name: string, valueExample: VALUET): KeyValueStoreI<VALUET> {
         return new KeyValueStorePostgres<VALUET>(name);

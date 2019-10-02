@@ -4,3 +4,4 @@
 !package.json
 !k8s
 !skaffold.yaml
+!ci/FormulaDB-storage-full.json

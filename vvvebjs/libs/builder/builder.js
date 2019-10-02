@@ -246,8 +246,25 @@ Vvveb.Components = {
 		tagName = node.tagName.toLowerCase();
 		if (tagName in this._nodesLookup) return this._nodesLookup[tagName];
 
-		return false;
-		//return false;
+		if (tagName === "script" || tagName === "iframe") return false;
+
+		let clonedNode = node.cloneNode();
+		{
+			let child = clonedNode.lastElementChild;  
+			while (child) { 
+				e.removeChild(child); 
+				child = e.lastElementChild; 
+			} 
+		}
+
+		return this._components['html/element']
+		// return {
+		// 	html: clonedNode.outerHTML,
+		// 	image:"icons/code.svg",
+		// 	name: clonedNode.tagName + (clonedNode.id ? `#${clonedNode.id}` : '') 
+		// 		+ (clonedNode.classList.length > 0 ? '.' + Array.from(clonedNode.classList).join('.') : ''),
+		// 	type:"html/tag"			
+		// };
 	},
 
 	render: function (type) {
@@ -331,7 +348,11 @@ Vvveb.Components = {
 			var property = component.properties[i];
 			var element = nodeElement;
 
-			if (property.beforeInit) property.beforeInit(element.get(0))
+			try {
+				if (property.beforeInit) property.beforeInit(element.get(0))
+			} catch (err) {
+				console.warn("Error in beforeInit", component, property, err);
+			}
 
 			if (property.child) element = element.find(property.child);
 
@@ -504,6 +525,7 @@ Vvveb.Builder = {
 
 		var self = this;
 
+		self.showIntroVideoModal();
 		self.loadControlGroups();
 		self.loadBlockGroups();
 
@@ -521,6 +543,15 @@ Vvveb.Builder = {
 		self._initBox();
 
 		self.dragElement = null;
+	},
+
+	showIntroVideoModal: function () {
+		
+		let $introVideoModal = $('#intro-video-modal');
+		$introVideoModal.find('video').attr('src', `/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/intro.webm`);
+		$introVideoModal.modal("show").on('hidden.bs.modal', function (e) {
+			$introVideoModal.find('video')[0].pause();
+		});
 	},
 
 	/* controls */
@@ -620,6 +651,7 @@ Vvveb.Builder = {
 		var self = this;
 		self.iframe = this.documentFrame.get(0);
 		self.iframe.src = url;
+		console.warn("Loading page", url);
 
 		return this.documentFrame.on("load", function () {
 			window.FrameWindow = self.iframe.contentWindow;
@@ -685,7 +717,9 @@ Vvveb.Builder = {
 		self.frameDoc = $(window.FrameDocument);
 		self.frameHtml = $(window.FrameDocument).find("html");
 		self.frameBody = $(window.FrameDocument).find("body");
+		self.frameBody[0].classList.add('frmdb-editor-on');
 		self.frameHead = $(window.FrameDocument).find("head");
+		console.warn("Loaded page", self.frameBody.html());
 
 		//insert editor helpers like non editable areas
 		self.frameHead.append('<link data-vvveb-helpers href="' + Vvveb.baseUrl + '../../css/vvvebjs-editor-helpers.css" rel="stylesheet">');
@@ -713,6 +747,23 @@ Vvveb.Builder = {
 		return el.tagName;
 	},
 
+	selectNodeInComponentsTree: function(node) {
+		if (!node.vvvebComponentsTreeId) return;
+
+		const treeComp = $("#components-tree .tree");
+		treeComp.find('input').prop('checked', false);
+		treeComp.find('.highlighted').removeClass('highlighted');
+
+		let li = treeComp.find(`li[data-node-id="${node.vvvebComponentsTreeId}"]`);
+		if (!li) {console.warn("li for", node, "not found"); return;}
+		li.find('input').prop('checked', true);
+		li.addClass('highlighted');
+		li.parents().children('input').prop('checked', true);
+		treeComp.animate({
+			scrollTop: Math.max(0, (li.offset()||{top: 0}).top - treeComp.offset().top + treeComp.scrollTop())
+		});
+	},
+
 	loadNodeComponent: function (node) {
 		data = Vvveb.Components.matchNode(node);
 		var component;
@@ -729,7 +780,7 @@ Vvveb.Builder = {
 	selectNode: function (node) {
 		var self = this;
 
-		window.frmdbEditorHighlightDataGridCell(node);
+		window.frmdbEditorHighlightDataGridCell(node[0] && node[0].tagName ? node[0] : node);
 
 		if (!node) {
 			jQuery("#select-box").hide();
@@ -922,6 +973,8 @@ Vvveb.Builder = {
 		self.frameHtml.on("click", function (event) {
 
 			if (Vvveb.Builder.isPreview == false) {
+				event.preventDefault();
+
 				if (event.target) {
 					//if component properties is loaded in left panel tab instead of right panel show tab
 					if ($(".component-properties-tab").is(":visible"))//if properites tab is enabled/visible 
@@ -929,6 +982,7 @@ Vvveb.Builder = {
 
 					self.selectNode(event.target);
 					self.loadNodeComponent(event.target);
+					self.selectNodeInComponentsTree(event.target);
 				}
 
 				// image grabbing
@@ -942,6 +996,27 @@ Vvveb.Builder = {
 
 		});
 
+		self.frameDoc.on("FrmdbAddPageElement", function (event) {
+			let node = event.detail.el;
+			if (!node) return;
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				addedNodes: [node],
+				nextSibling: node.nextSibling
+			});
+		});
+
+		self.frameDoc.on("FrmdbRemovePageElement", function (event) {
+			let node = event.detail.el;
+			if (!node) return;
+			Vvveb.Undo.addMutation({
+				type: 'childList',
+				target: node.parentNode,
+				removedNodes: [node],
+				nextSibling: node.nextSibling
+			});
+		});
 	},
 
 	_grabImage(element) {
@@ -1047,6 +1122,7 @@ Vvveb.Builder = {
 		$("#clone-btn").on("click", function (event) {
 
 			clone = self.selectedEl.clone();
+			if (clone.get(0).id) clone.get(0).id = Math.random() * new Date().getTime();
 
 			self.selectedEl.after(clone);
 
@@ -1286,6 +1362,37 @@ Vvveb.Builder = {
 			el.style.removeProperty('position');
 			el.style.removeProperty('left');
 			el.style.removeProperty('top');
+			el.style.removeProperty('display');
+		}
+		for (let isotopeGrid of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-isotope-grid.grid'))) {
+			isotopeGrid.style.removeProperty('position');
+			isotopeGrid.style.removeProperty('height');
+		}
+
+		//cleanup responsive nav dropdown
+		{
+			let el = document.querySelector('.frmdb-responsive-nav-more-items-dropdown');
+			while (el && el.firstChild) el.removeChild(el.firstChild);	
+		}
+		
+		//cleanup tracking code
+		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src="https://www.google-analytics.com/analytics.js"]'))) {
+			if (jsEl.parentElement) {
+				jsEl.parentElement.removeChild(jsEl);
+			}
+		}
+		for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src*="hotjar.com"]'))) {
+			if (jsEl.parentElement) {
+				jsEl.parentElement.removeChild(jsEl);
+			}
+		}
+		for (let stEl of Array.from(cleanedUpDOM.getElementsByTagName('style'))) {
+			if (stEl.textContent.indexOf('iframe#_hjRemoteVarsFrame') >= 0) {
+				stEl.parentElement.removeChild(stEl);
+			}
+		}
+		for (let el of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-editor-on'))) {
+			el.classList.remove('frmdb-editor-on');
 		}
 		
 		html += frmdbNormalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
@@ -1332,8 +1439,10 @@ Vvveb.Builder = {
 		frmdbPutServerEventPutPageHtml(
 			pagePath,
 			html
-		).then(() => callback())
-		.catch(err => alert(err));
+		).then(() => callback && callback(pagePath))
+		.catch(err => {
+			alert(err)
+		});
 	},
 
 	setDesignerMode: function (designerMode = false) {
@@ -1390,7 +1499,7 @@ Vvveb.Gui = {
 				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i> ${t.name}</a>`)
 					.click(event => {
 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
-							.attr('href', `css/${t.css}?refresh=${new Date().getTime()}`);
+							.attr('href', `${t.css}?refresh=${new Date().getTime()}`);
 						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
 					})
 					.appendTo(themeOptions);
@@ -1474,6 +1583,7 @@ Vvveb.Gui = {
 
 	preview: function () {
 		(Vvveb.Builder.isPreview == true) ? Vvveb.Builder.isPreview = false : Vvveb.Builder.isPreview = true;
+		Vvveb.Builder.frameBody[0].classList.toggle('frmdb-editor-on', !Vvveb.Builder.isPreview);
 		$("#iframe-layer").toggle();
 		$("#vvveb-builder").toggleClass("preview");
 	},
@@ -1799,29 +1909,19 @@ Vvveb.FileManager = {
 			j++;
 			for (i in tree) {
 				var node = tree[i];
+				node.node.vvvebComponentsTreeId = `id_${j}_${i}`;
 
 				if (tree[i].children.length > 0) {
-					var li = $('<li data-component="' + node.name + '">\
+					var li = $('<li data-component="' + node.name + '" data-node-id="' + node.node.vvvebComponentsTreeId + '" >\
 					<label for="id' + j + '" style="background-image:url(libs/builder/' + node.image + ')"><span>' + node.name + '</span></label>\
 					<input type="checkbox" id="id' + j + '">\
 					</li>');
 					li.data("node", node.node);
 					li.append(drawComponentsTree(node.children));
 					html.append(li);
-					$(node.node).click((event) => {
-						const treeComp = $("#components-tree .tree");
-						treeComp.find('input').prop('checked', false);
-						treeComp.find('.highlighted').removeClass('highlighted');
-						li.find('input').prop('checked', true);
-						li.addClass('highlighted');
-						li.parents().children('input').prop('checked', true);
-						treeComp.animate({
-							scrollTop: Math.max(0,li.offset().top-treeComp.offset().top + treeComp.scrollTop())
-						});
-					});
 				}
 				else {
-					var li = $('<li data-component="' + node.name + '" class="file">\
+					var li = $('<li data-component="' + node.name + '" class="file" data-node-id="' + node.node.vvvebComponentsTreeId + '">\
 							<label for="id' + j + '" style="background-image:url(libs/builder/' + node.image + ')"><span>' + node.name + '</span></label>\
 							<input type="checkbox" id="id' + j + '"></li>');
 					li.data("node", node.node);

@@ -3,7 +3,7 @@
 * License TBD
 */
 
-class Tmp {}
+class Tmp { }
 
 class WebComponentExample extends HTMLElement {
     public connectedCallbackCalled: boolean = false;
@@ -32,7 +32,35 @@ describe('WebComponentExample Spec Example', () => {
     beforeEach(() => {
     });
 
-    it('should render', () => { 
+    it("test polyfill", () => {
+        const polyfillCustomElements = require('custom-elements-module')
+        const jsdom = require('jsdom')
+
+        const { window } = new jsdom.JSDOM(`<x-h>Custom H</x-h>`, {
+            beforeParse(window) {
+                polyfillCustomElements(window)
+            }
+        })
+
+        const { customElements, document, HTMLElement } = window
+
+        customElements.define(
+            'x-h',
+            class CustomH extends HTMLElement {
+                constructor() {
+                    super()
+
+                    this.attachShadow({ mode: 'open' }).appendChild(
+                        document.createElement('slot')
+                    )
+                }
+            }
+        )
+
+        expect(document.querySelector('x-h').tagName).toEqual('X-H');
+    })
+
+    it('should render', () => {
         const el: WebComponentExample = document.createElement('web-component-example') as WebComponentExample;
         expect(el.connectedCallbackCalled).toEqual(false);
         expect(el.attributeChangedCallbackCalled).toEqual(false);
@@ -41,7 +69,7 @@ describe('WebComponentExample Spec Example', () => {
         expect(el.attributeChangedCallbackCalled).toEqual(true);
         expect(el.shadowRoot!.innerHTML).toEqual('<span>Hello attributeChangedCallback</span>');
         el.removeAttribute('test');
-        
+
         document.body.innerHTML = '<web-component-example test="blabla"></web-component-example>';
         let el2: WebComponentExample = document.querySelector('web-component-example') as WebComponentExample;
         expect(el2.connectedCallbackCalled).toEqual(true);

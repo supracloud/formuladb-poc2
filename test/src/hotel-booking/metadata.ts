@@ -85,17 +85,16 @@ export const HotelBookingApp: App = {
     homePage: "index.html",
     pages: [
         { name: "index.html", title: "Relax Your Mind" },
-        { name: "booking.html", title: "Relax Your Mind" },
-        { name: "footer-F.html", title: "Relax Your Mind" },
-        { name: "nav-F.html", title: "Relax Your Mind" },
-        { name: "booking-F.html", title: "Relax Your Mind" },
-        { name: "contact.html", title: "Relax Your Mind" },
+        { name: "_footer.html", title: "Relax Your Mind" },
+        { name: "_nav.html", title: "Relax Your Mind" },
+        { name: "about.html", title: "Relax Your Mind" },
         { name: "gallery.html", title: "Relax Your Mind" },
+        { name: "contact.html", title: "Relax Your Mind" },
     ],
 };
 
 export const HotelBookingSchema: Schema = {
-    _id: 'FRMDB_SCHEMA~~' + HotelBookingApp._id,
+    _id: 'FRMDB_SCHEMA~~formuladb-examples--' + HotelBookingApp._id,
     entities: {
         [RoomType._id]: RoomType,
         [Room._id]: Room,

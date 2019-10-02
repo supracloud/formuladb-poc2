@@ -1,0 +1,37 @@
+FROM centos:7
+
+USER root
+
+RUN yum -y update
+RUN yum install -y gcc-c++ make
+RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash -
+RUN yum -y install java-1.8.0-openjdk-devel git libX11-devel libpng-devel libXtst-devel
+
+RUN echo $'[google-chrome]\n\
+name=google-chrome\n\
+baseurl=http://dl.google.com/linux/chrome/rpm/stable/$basearch\n\
+enabled=1\n\
+gpgcheck=1\n\
+gpgkey=https://dl-ssl.google.com/linux/linux_signing_key.pub' >> /etc/yum.repos.d/google-chrome.repo
+
+RUN yum -y install google-chrome-stable chromedriver chromium xorg-x11-server-Xvfb gcc-c++.x86_64
+
+RUN yum -y install nodejs
+
+RUN npm install -g @angular/cli protractor selenium standalone && \
+    webdriver-manager update
+
+RUN yum clean all
+
+COPY ci/FormulaDB-storage-full.json /GOOGLE_APPLICATION_CREDENTIALS.json
+
+ENV GOOGLE_APPLICATION_CREDENTIALS=/GOOGLE_APPLICATION_CREDENTIALS.json
+ENV DISPLAY=:99
+
+RUN echo $'Xvfb -ac :99 -screen 0 1920x1080x16 &\n\
+' > /bootstrap
+
+VOLUME /febe
+WORKDIR /febe
+# https://github.com/elgalu/docker-selenium/issues/20#issuecomment-135092714
+# docker build -t registry.gitlab.com/metawiz/febe/ci-with-video:1.0.2 -f Dockerfile.video .

@@ -1,13 +1,13 @@
 @font-face {
     font-family: "icons";
-    src: url("./icons.eot?1c0c981777e715afd74fdef7b5e4563e?#iefix") format("embedded-opentype"),
-url("./icons.woff2?1c0c981777e715afd74fdef7b5e4563e") format("woff2"),
-url("./icons.woff?1c0c981777e715afd74fdef7b5e4563e") format("woff"),
-url("./icons.ttf?1c0c981777e715afd74fdef7b5e4563e") format("truetype"),
-url("./icons.svg?1c0c981777e715afd74fdef7b5e4563e#icons") format("svg");
+    src: url("./icons.eot?0103da2150203e28a2109b969b0ae193?#iefix") format("embedded-opentype"),
+url("./icons.woff2?0103da2150203e28a2109b969b0ae193") format("woff2"),
+url("./icons.woff?0103da2150203e28a2109b969b0ae193") format("woff"),
+url("./icons.ttf?0103da2150203e28a2109b969b0ae193") format("truetype"),
+url("./icons.svg?0103da2150203e28a2109b969b0ae193#icons") format("svg");
 }
 
-i[class^="icon-"]:before, i[class*=" icon-"]:before {
+i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
     font-family: icons !important;
     font-style: normal;
     font-weight: normal !important;
@@ -18,51 +18,51 @@ i[class^="icon-"]:before, i[class*=" icon-"]:before {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-cards-row:before {
+.frmdb-i-cards-row:before {
     content: "\f101";
 }
-.icon-cards:before {
+.frmdb-i-cards:before {
     content: "\f102";
 }
-.icon-carousel:before {
+.frmdb-i-carousel:before {
     content: "\f103";
 }
-.icon-dashboard:before {
+.frmdb-i-dashboard:before {
     content: "\f104";
 }
-.icon-f-pattern-solid:before {
+.frmdb-i-f-pattern-solid:before {
     content: "\f105";
 }
-.icon-f-pattern:before {
+.frmdb-i-f-pattern:before {
     content: "\f106";
 }
-.icon-frmdb:before {
+.frmdb-i-frmdb:before {
     content: "\f107";
 }
-.icon-grid-large:before {
+.frmdb-i-grid-large:before {
     content: "\f108";
 }
-.icon-grid1:before {
+.frmdb-i-grid1:before {
     content: "\f109";
 }
-.icon-grid2:before {
+.frmdb-i-grid2:before {
     content: "\f10a";
 }
-.icon-grid4:before {
+.frmdb-i-grid4:before {
     content: "\f10b";
 }
-.icon-grid5:before {
+.frmdb-i-grid5:before {
     content: "\f10c";
 }
-.icon-list-solid:before {
+.frmdb-i-list-solid:before {
     content: "\f10d";
 }
-.icon-list:before {
+.frmdb-i-list:before {
     content: "\f10e";
 }
-.icon-replace:before {
+.frmdb-i-replace:before {
     content: "\f10f";
 }
-.icon-split-screen:before {
+.frmdb-i-split-screen:before {
     content: "\f110";
 }

@@ -2,25 +2,25 @@
     {
         "name": "yellow",
         "symbolColor": "#f3c300",
-        "css": "royal-master-1.css",
+        "css": "theme/css/royal-master-1.css",
         "default": true
     },
     {
         "name": "red",
         "symbolColor": "red",
-        "css": "royal-master-2.css",
+        "css": "theme/css/royal-master-2.css",
         "default": true
     },
     {
         "name": "green",
         "symbolColor": "#36e836",
-        "css": "royal-master-3.css",
+        "css": "theme/css/royal-master-3.css",
         "default": true
     },
     {
         "name": "blue",
         "symbolColor": "rgb(50, 161, 235)",
-        "css": "royal-master-4.css",
+        "css": "theme/css/royal-master-4.css",
         "default": true
     }
 ]

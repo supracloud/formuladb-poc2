@@ -3,6 +3,10 @@
     white-space: nowrap;
 }
 
+.formula-code-editor #toggle-formula-editor {
+    font-size: 20px !important;
+}
+
 .formula-code-editor #toggle-formula-editor.active {
     background-color: var(--primary);
 }

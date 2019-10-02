@@ -75,6 +75,213 @@ Vvveb.ComponentsGroup['Basic Components'] =
 var base_sort = 100;//start sorting for base component from 100 to allow extended properties to be first
 var style_section = 'style';
 
+let FrmdbDataBindingProperties = [
+    {
+        key: "value",
+        inputtype: SectionInput,
+        section: "data",
+        name:false,
+        sort:base_sort++,
+        data: {header:"Value"},
+    },    
+    {
+        name: "Repeat for Table",
+        key: "data-frmdb-table",
+        htmlAttr: "data-frmdb-table",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 8,
+        inputtype: SelectInput,
+        validValues: [],
+        data: {
+            options: [],
+        },
+        beforeInit: function (node) {
+            let dataFrmdbTableProp = this;
+            if (dataFrmdbTableProp) {
+                let tables = $TABLES();
+                dataFrmdbTableProp.validValues = tables.map(t => t.name);
+                dataFrmdbTableProp.data.options = [{
+                    value: '',
+                    text: '-',
+                }].concat(tables.map(t => ({
+                    value: '$FRMDB.' + t.name + '[]',
+                    text: t.name,
+                })));
+            }
+        },      
+    },
+    {
+        name: "Limit",
+        key: "data-frmdb-table-limit",
+        htmlAttr: "data-frmdb-table-limit",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 4,
+        inputtype: NumberInput,
+        data:{
+            placeholder: "3"
+        }
+    },
+    {
+        name: "Parent Record",
+        key: "data-frmdb-record",
+        htmlAttr: "data-frmdb-record",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput,
+        data: {
+            disabled: true,
+        },
+        beforeInit: function (node) {
+            if (!node.getAttribute('data-frmdb-record')) {
+                let parentRecordEl = node.closest('[data-frmdb-record]');
+                if (!parentRecordEl) return;
+                this.data.placeholder = parentRecordEl.getAttribute('data-frmdb-record');
+            }
+        },          
+    },
+    {
+        name: "Value From Record",
+        key: "data-frmdb-value",
+        htmlAttr: "data-frmdb-value",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: SelectInput,
+        validValues: [],
+        data: {
+            options: []
+        },
+        beforeInit: function (node) {
+            let opts = $DATA_COLUMNS_FOR_ELEM(node);
+            this.validValues = opts.map(o => o.value);
+            this.data.options = opts;
+        },            
+    },
+    {
+        name: "Initialize Width",
+        key: "data-frmdb-init",
+        htmlAttr: "data-frmdb-init",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    {
+        name: "Show Only If",
+        key: "data-frmdb-if",
+        htmlAttr: "data-frmdb-if",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col:12,
+        inputtype: TextInput
+    },
+    {
+        key: "attributes",
+        inputtype: SectionInput,
+        section: "data",
+        name:false,
+        sort:base_sort++,
+        data: {header:"Attributes", expanded:false},
+    },    
+    {
+        name: "Attribute 1",
+        key: "data-frmdb-attr",
+        htmlAttr: "data-frmdb-attr",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    {
+        name: "Attribute 2",
+        key: "data-frmdb-attr2",
+        htmlAttr: "data-frmdb-attr2",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    {
+        name: "Attribute 3",
+        key: "data-frmdb-attr3",
+        htmlAttr: "data-frmdb-attr3",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    {
+        name: "Attribute 4",
+        key: "data-frmdb-attr4",
+        htmlAttr: "data-frmdb-attr4",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    {
+        key: "properties",
+        inputtype: SectionInput,
+        section: "data",
+        name:false,
+        sort:base_sort++,
+        data: {header:"Properties (advanced)", expanded:false},
+    },    
+    {
+        name: "Property 1",
+        key: "data-frmdb-prop1",
+        htmlAttr: "data-frmdb-prop1",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+    {
+        name: "Property 2",
+        key: "data-frmdb-prop2",
+        htmlAttr: "data-frmdb-prop2",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },  
+    {
+        name: "Property 3",
+        key: "data-frmdb-prop3",
+        htmlAttr: "data-frmdb-prop3",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },  
+    {
+        name: "Property 4",
+        key: "data-frmdb-prop4",
+        htmlAttr: "data-frmdb-prop4",
+        section: "data",
+        sort: base_sort++,
+        inline:true,
+        col: 12,
+        inputtype: TextInput
+    },
+];
+
 Vvveb.Components.add("_base", {
     name: "Element",
 	properties: [{
@@ -89,7 +296,7 @@ Vvveb.Components.add("_base", {
         htmlAttr: "id",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     }, {
         name: "Class",
@@ -97,111 +304,10 @@ Vvveb.Components.add("_base", {
         htmlAttr: "class",
         sort: base_sort++,
         inline:true,
-        col:6,
+        col: 12,
         inputtype: TextInput
     },
-    {
-        name: "Record",
-        key: "data-frmdb-record",
-        htmlAttr: "data-frmdb-record",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Table",
-        key: "data-frmdb-table",
-        htmlAttr: "data-frmdb-table",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Value",
-        key: "data-frmdb-value",
-        htmlAttr: "data-frmdb-value",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Show Only If",
-        key: "data-frmdb-if",
-        htmlAttr: "data-frmdb-if",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Attribute 1",
-        key: "data-frmdb-attr1",
-        htmlAttr: "data-frmdb-attr1",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Attribute 2",
-        key: "data-frmdb-attr2",
-        htmlAttr: "data-frmdb-attr2",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Property 1",
-        key: "data-frmdb-prop1",
-        htmlAttr: "data-frmdb-prop1",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Property 2",
-        key: "data-frmdb-prop2",
-        htmlAttr: "data-frmdb-prop2",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },
-    {
-        name: "Toggle",
-        key: "data-toggle",
-        htmlAttr: "data-toggle",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: SelectInput,
-        data: {
-			options: [{
-				value: "modal",
-				text: "modal"
-			}, {	
-				value: "tooltip",
-				text: "tooltip"
-			}, {
-				value: "popover",
-				text: "popover"
-			}],
-		}
-    },
-    {
-        name: "Target",
-        key: "data-target",
-        htmlAttr: "data-target",
-        sort: base_sort++,
-        inline:true,
-        col:6,
-        inputtype: TextInput
-    },    
+    ...FrmdbDataBindingProperties
    ]
 });    
 
@@ -1116,7 +1222,9 @@ Vvveb.Components.extend("_base", "html/link", {
         name: "Url",
         key: "href",
         htmlAttr: "href",
-        inputtype: LinkInput
+        inputtype: LinkInput,
+        inline:true,
+        col: 12
     }, {
         name: "Target",
         key: "target",
@@ -2166,8 +2274,9 @@ Vvveb.Components.add("html/gridcolumn", {
 			
 			return node;
 		},				
-	}]
-});
+    },
+    ...FrmdbDataBindingProperties,
+]});
 Vvveb.Components.add("html/gridrow", {
     name: "Grid Row",
     image: "icons/grid_row.svg",
@@ -2432,4 +2541,32 @@ Vvveb.Components.extend("_base", "_base", {
 			}]
 		}
     }]
+});
+
+Vvveb.Components.extend("_base", "html/header", {
+    image: "icons/header.svg",
+    nodes: ['header'],
+    name: "Header",
+    html: "<header>"
+});
+
+Vvveb.Components.extend("_base", "html/footer", {
+    image: "icons/footer.svg",
+    nodes: ['footer'],
+    name: "Footer",
+    html: "<footer>"
+});
+
+Vvveb.Components.extend("_base", "html/section", {
+    image: "icons/section.svg",
+    nodes: ['section'],
+    name: "Section",
+    html: "<section>"
+});
+
+Vvveb.Components.extend("_base", "html/element", {
+    image: "icons/tag.svg",
+    nodes: [],
+    name: "Element",
+    html: "<tagName>"
 });

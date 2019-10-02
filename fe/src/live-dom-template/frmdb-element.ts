@@ -124,7 +124,7 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     }
 
     protected updateDOM() {
-        let el = this.frmdbConfig.noShadow ? this : this.shadowRoot as any as HTMLElement;
+        let el = this.frmdbConfig.noShadow ? this : (this.shadowRoot as any as HTMLElement) || this;
         updateDOM(this.frmdbState, el);
     }
 
