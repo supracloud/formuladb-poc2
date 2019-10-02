@@ -100,6 +100,7 @@ function cleanup {
 }
 
 function e2e_staging_with_videos {
+    npm install --only=dev
     docker run \
         --rm \
         --name e2e_staging_with_videos \
