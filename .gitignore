@@ -2,6 +2,7 @@
 
 # compiled output
 live-server-wwwroot
+frmdb-wwwroot
 dist-be
 dist-fe
 tsc-out

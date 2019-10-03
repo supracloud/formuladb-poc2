@@ -1349,7 +1349,7 @@ Vvveb.Builder = {
 		/** @type {Element} */
 		let cleanedUpDOM = doc.documentElement.cloneNode(true);
 		for (let frmdbFragment of Array.from(cleanedUpDOM.querySelectorAll('frmdb-fragment'))) {
-			frmdbFragment.innerHTML = '';
+			// frmdbFragment.innerHTML = '';//For SEO better to keep this content
 		}
 
 		//cleanup stelar.js styles

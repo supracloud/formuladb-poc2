@@ -13,6 +13,9 @@ RUN npm install --only=production
 
 COPY dist-be/frmdb-be* /dist-be/
 
+ADD scripts /scripts
+ADD ssh /ssh
+
 EXPOSE 3000
 
 CMD npm run $NPM_SCRIPT

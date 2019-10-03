@@ -3,7 +3,7 @@
     "version": "0.0.17",
     "description": "FormulaDB low code platform",
     "scripts": {
-        "start": "node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
+        "start": "bash scripts/init-be.sh && node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "start_dev": "nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "compile": "tsc --sourceMap -p .",
         "compile:watch": "npm run compile -- -w",
