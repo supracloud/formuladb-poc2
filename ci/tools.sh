@@ -53,12 +53,6 @@ rsync-deploy() {
 }
 #rsync-deploy 4179 ../customer-dacris dacris@mail.dacris.ro:/opt/data/dacris/LIVE/formuladb
 
-startFrmdb() {
-    FRMDB_RELEASE=`git branch|grep '^\*'|sed -e 's/[*] //g'`
-    # TODO: if release is not "master" or x.y.z replace tags for formuladb-fe and formuladb-be with "stopped"
-    FRMDB_RELEASE=${FRMDB_RELEASE} docker-compose.exe up --remove-orphans --abort-on-container-exit
-}
-
 ssh-ci() {
     #ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
     ssh -i ./ssh/frmdb.id_rsa root@34.76.177.179

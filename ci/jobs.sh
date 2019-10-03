@@ -4,10 +4,7 @@ set -Ee
 trap _cleanup ERR
 trap _cleanup EXIT
 
-FRMDB_ENV_NAME="t$CI_COMMIT_SHA"
-if [ -z "$FRMDB_ENV_NAME" ]; then 
-    FRMDB_ENV_NAME="t`git rev-parse HEAD`"
-fi
+FRMDB_ENV_NAME="e`git branch|grep '^*'|cut -d ' ' -f2`"
 echo "FRMDB_ENV_NAME=${FRMDB_ENV_NAME}"
 export FRMDB_ENV_NAME
 export KUBECONFIG=k8s/production-kube-config.conf

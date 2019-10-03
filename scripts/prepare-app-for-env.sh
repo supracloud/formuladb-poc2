@@ -12,31 +12,41 @@ mkdir -p ${FRMDB_TENANT_NAME}
 
 if git ls-remote --heads git@gitlab.com:${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}.git "${FRMDB_TENANT_NAME}" | grep "${FRMDB_TENANT_NAME}"; then
     echo "app ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME} already exists for this env ${FRMDB_TENANT_NAME}";
-    exit 1
+    exit 0
 fi
 
 git clone --branch master --single-branch \
     git@gitlab.com:${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}.git ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}
+${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}
 git checkout -b "${FRMDB_TENANT_NAME}"
 git push
+cd -
+
 git clone --branch master --single-branch \
-    git@gitlab.com:${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}.git ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----db
+    git@gitlab.com:${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----db.git ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----db
+${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----db
 git checkout -b "${FRMDB_TENANT_NAME}"
 git push
+cd -
+
 git clone --branch master --single-branch \
-    git@gitlab.com:${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}.git ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----obj
+    git@gitlab.com:${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----obj.git ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----obj
+cd ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}----obj
 git checkout -b "${FRMDB_TENANT_NAME}"
 git push
+cd -
 
 mkdir -p formuladb-themes
 THEME_NAME=`cat ${FRMDB_TENANT_NAME}/${FRMDB_APP_NAME}/app.yaml | grep theme_name | cut -d ':' -f2`
 if git ls-remote --heads git@gitlab.com:formuladb-themes/${THEME_NAME}.git "${FRMDB_TENANT_NAME}" | grep "${FRMDB_TENANT_NAME}"; then
     echo "theme ${THEME_NAME} already exists for this env ${FRMDB_TENANT_NAME}";
-    exit 2
+    exit 0
 fi
 if [[ -n "$THEME_NAME" ]]; then
     git clone --branch master --single-branch \
         git@gitlab.com:formuladb-themes/${THEME_NAME}.git formuladb-themes/${THEME_NAME}
+    cd formuladb-themes/${THEME_NAME}
     git checkout -b "${FRMDB_TENANT_NAME}"
     git push
+    cd -
 fi
