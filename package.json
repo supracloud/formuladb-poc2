@@ -80,6 +80,7 @@
         "acorn": "^5.4.1",
         "ag-grid-community": "^21.1.0",
         "ag-grid-enterprise": "^21.1.0",
+        "async-retry": "^1.2.3",
         "body-parser": "~1.13.2",
         "chromedriver": "^76.0.0",
         "cluster-key-slot": "^1.0.12",

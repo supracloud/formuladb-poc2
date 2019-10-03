@@ -5,9 +5,13 @@
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const https = require('https')
+const retry = require('async-retry')
+const fetch = require('node-fetch')
 
 export async function createNewEnvironment(envName: string) {
+  // Don't want to alter for now staging or prod
+  if (['production', 'staging', ''].includes(envName)) return;
+
   try {
     await exec(`kubectl get namespace|grep ${envName}`);
   } catch (error) {
@@ -18,53 +22,51 @@ export async function createNewEnvironment(envName: string) {
   
     await exec(`perl -p -i -e 's!^(.*)\\s.*?\\.formuladb\.io$!\\1 ${envName}.formuladb.io!' k8s/overlays/client/resources/ingress.yaml`);
     
-    console.log(`Namespace ...`);
-    await exec(`kubectl create namespace ${envName}`); 
+    // From now on we want to cleanup on error
+    try {
+      console.log(`Namespace ...`);
+      await exec(`kubectl create namespace ${envName}`); 
 
-    console.log(`Registry secret ...`);
-    await exec(`kubectl get secret regcred --export -oyaml | kubectl apply --namespace=${envName} -f -`);
+      console.log(`Registry secret ...`);
+      await exec(`kubectl get secret regcred --export -oyaml | kubectl apply --namespace=${envName} -f -`);
 
-    console.log(`GKE ...`);
-    await exec(`skaffold deploy -n ${envName} -p client --images=registry.gitlab.com/metawiz/febe/formuladb-be:0.0.16-98-gd3dfd176-dirty`);
+      console.log(`GKE ...`);
+      await exec(`skaffold deploy -n ${envName} -p client --images=registry.gitlab.com/metawiz/febe/formuladb-be:0.0.16-181-gdeda1f3c-dirty`);
 
-    console.log(`Object storage clone ...`);
-    await exec(`gsutil -m rsync -r gs://formuladb-static-assets/production/ gs://formuladb-static-assets/${envName}/`,
-              {maxBuffer: 10240 * 1000});
+      console.log(`Object storage clone ...`);
+      await exec(`gsutil -m rsync -r gs://formuladb-static-assets/production/ gs://formuladb-static-assets/${envName}/`,
+                {maxBuffer: 10240 * 1000});
 
+      await retry(async bail => {
+        // if anything throws, we retry
+        const res = await fetch(`https://${envName}.formuladb.io`)
+        
+        console.log(`https://${envName}.formuladb.io returned ${res.status}`);
+        if (200 !== res.status) {
+          throw "Not ready!";
+        }
+        return 200;
+      })
+    } catch (error) {
+      console.log(`Environment setup failed with error ${error}. Cleaning up ...`);
+      await cleanupEnvironment(envName);
+    }
+              
     console.log(`Done!`);
   }
 }
 
-function retryUntilSuccess(org, max, callback) {
-  const options = {
-    hostname: `${org}.formuladb.io`,
-    port: 443,
-    path: '/',
-    method: 'GET'
+export async function cleanupEnvironment(envName: string) {
+  // Don't want to alter for now staging or prod
+  if (['production', 'staging', ''].includes(envName)) return;
+  try {
+    await exec(`kubectl get namespace|grep ${envName}`);
+  } catch (error) {
+    return `Namespace ${envName} not found. Nothing to delete!`;
   }
-
-  var req = https.request(options, function(res) {
-    req.end();
-    if (res.statusCode != 200) {
-      if (max > 0) {
-        setTimeout(function() {
-          retryUntilSuccess(org, max-1, callback);
-        }, 1000);
-      } else {
-        callback(null, history);
-      }
-    } else {
-      callback(null, history);
-    }
-  });
-
-  req.on('error', function(e) {
-    if (max > 0) {
-      setTimeout(function() {
-        retryUntilSuccess(org, max-1, callback);
-      }, 1000);
-    } else {
-      callback(null, history);
-    }
-  });
+  console.log(`Deleting namespace ${envName}`);
+  await exec(`kubectl delete namespace ${envName}`); 
+  console.log(`Deleting bucket folder ${envName}`);
+  await exec(`gsutil -m rm -r gs://formuladb-static-assets/${envName}/`, {maxBuffer: 10240 * 1000});
+  return `Deleted env ${envName}!`;
 }

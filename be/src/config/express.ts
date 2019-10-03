@@ -29,7 +29,7 @@ import { LazyInit } from "@domain/ts-utils";
 import { DictionaryEntry } from "@domain/dictionary-entry";
 import { I18nBe } from "@be/i18n-be";
 import { html } from "d3";
-import { createNewEnvironment } from "./env-manager";
+import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -194,6 +194,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/formuladb-api/env/:envname', async function(req, res){
         await createNewEnvironment(req.params.envname);
         res.redirect(`https://${req.params.envname}.formuladb.io/`);
+    });
+
+    app.delete('/formuladb-api/env/:envname', async function(req, res) {
+        console.log(`Delete called on ${req.params.envname} environment`)
+        let status_message = await cleanupEnvironment(req.params.envname);
+        console.log(status_message);
+        res.end(status_message, null, 4);
     });
 
     app.post('/formuladb-api/translate', async (req, res) => {
