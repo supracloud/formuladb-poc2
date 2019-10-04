@@ -4,7 +4,7 @@ set -Ee
 trap _cleanup ERR
 trap _cleanup EXIT
 
-FRMDB_ENV_NAME="e`git branch|grep '^*'|cut -d ' ' -f2`"
+FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 echo "FRMDB_ENV_NAME=${FRMDB_ENV_NAME}"
 export FRMDB_ENV_NAME
 export KUBECONFIG=k8s/production-kube-config.conf
@@ -114,6 +114,24 @@ function e2e_staging_with_videos {
         # mv febe-master-* febe &&
         # cd febe &&
         # TARGET=recordings-with-audio protractor e2e/protractor.conf.js --baseUrl="https://staging.formuladb.io"'
+}
+
+
+function publish_static_assets() {
+    #################
+    # TODO publish static assets to git@gitlab.com:metawiz/formuladb-env.git
+    #################
+
+    # gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
+    # gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
+
+    # gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-editor
+    # gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
+    # gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/img
+    # gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons
+
+    # curl -L -O https://github.com/elastic/apm-agent-rum-js/releases/latest/download/elastic-apm-rum.umd.min.js
+    # gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$FRMDB_ENV_NAME/elastic-apm-rum.umd.min.js
 }
 
 eval $1

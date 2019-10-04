@@ -1,4 +1,4 @@
-FRMDB_ENV_NAME="e`git branch|grep '^*'|cut -d ' ' -f2`"
+FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 
 export BASEDIR=`dirname $0`
 export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
@@ -45,6 +45,5 @@ hash kustomize &>/dev/null || { echo "kustomize not found! See https://github.co
 # -------------------------------------------------------------------------
 if [ -z "$NO_K8S" ]; then
   echo "Preparing k8s namespace ${FRMDB_ENV_NAME}"
-  perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/lb-deployment.yaml
   perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 fi
