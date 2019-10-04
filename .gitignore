@@ -2,7 +2,7 @@
 
 # compiled output
 live-server-wwwroot
-frmdb-wwwroot
+formuladb-env
 dist-be
 dist-fe
 tsc-out
