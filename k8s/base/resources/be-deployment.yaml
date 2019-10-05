@@ -42,7 +42,7 @@ spec:
           readOnly: true
         - mountPath: /wwwroot
           name: git-persistence
-          subPath: gitroot
+          # subPath: gitroot
       volumes:
       - name: service-account-credentials
         secret:

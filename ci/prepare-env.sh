@@ -32,13 +32,24 @@ hash kustomize &>/dev/null || {
 }
 hash kustomize &>/dev/null || { echo "kustomize not found! See https://github.com/kubernetes-sigs/kustomize/blob/master/docs/INSTALL.md"; exit 1; }
 
-# hash gsutil || {
-#     echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-#     sudo apt-get install -y apt-transport-https ca-certificates
-#     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-#     sudo apt-get update && sudo apt-get install -y google-cloud-sdk
-#     gcloud auth activate-service-account --key-file=tools/FormulaDB-storage-full.json
-# }
+hash gsutil || {
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+    sudo apt-get install -y apt-transport-https ca-certificates
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+    sudo apt-get update && sudo apt-get install -y google-cloud-sdk
+    gcloud auth activate-service-account --key-file=tools/FormulaDB-storage-full.json
+}
+
+# -------------------------------------------------------------------------
+# External dependency: obj storage
+# -------------------------------------------------------------------------
+
+if ! gcloud auth list|grep formuladb-static-assets; then
+    gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
+fi
+
+### using a single central bucket for now...
+# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
 
 # -------------------------------------------------------------------------
 # k8s

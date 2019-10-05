@@ -11,12 +11,10 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
-ADD formuladb-env 
+ADD ssh /ssh
+ADD scripts /scripts
 
 COPY dist-be/frmdb-be* /dist-be/
-
-ADD scripts /scripts
-ADD ssh /ssh
 
 EXPOSE 3000
 

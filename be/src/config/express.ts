@@ -168,6 +168,19 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
+    app.get(/\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf)$/, async function (req, res, next) {
+        let httpProxy = proxy({
+            target: 'https://storage.googleapis.com/formuladb-static-assets/',
+            changeOrigin: true,
+            // pathRewrite: function (path, req) {
+            //     return req.path.match(/\.html$/) ? path : app2theme(path);
+            // },
+            logLevel: "debug",
+        });
+        httpProxy(req, res, next);
+    });
+
+
     app.post('/formuladb-api/translate', async (req, res) => {
         res.json(await i18nBe.translateText(req.body.texts, req.body.to));
     });
@@ -178,7 +191,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         res.json(app);
     });
 
-    app.get('/formuladb-api/:tenant/:app/schema', async function(req, res) {
+    app.get('/formuladb-api/:tenant/:app/schema', async function (req, res) {
         let schema: Schema | null = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.getSchema();
         res.json(schema);
     });
@@ -203,19 +216,19 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app))
             .processEvent(req.body)
             .then(notif => res.json(notif))
-            .catch(err => {console.error(err); next(err)});
+            .catch(err => { console.error(err); next(err) });
     });
 
     app.patch('/formuladb-api/:tenant/:app/:id', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.patchDataObj(req.body)
             .then(notif => res.json(notif))
-            .catch(err => {console.error(err); next(err)});
+            .catch(err => { console.error(err); next(err) });
     });
 
     app.put('/formuladb-api/:tenant/:app', async function (req, res, next) {
         return kvsFactory.metadataStore.putApp(req.params.tenant, req.params.app, req.body)
             .then(ret => res.json(ret))
-            .catch(err => {console.error(err); next(err)});
+            .catch(err => { console.error(err); next(err) });
     });
     app.put('/formuladb-api/:tenant/:app/schema', async function (req, res, next) {
         if (req.user.role !== 'ADMIN') { res.status(403); return; }
@@ -227,13 +240,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.init(schema)
             .then(ret => res.json(ret))
-            .catch(err => {console.error(err); next(err)});
+            .catch(err => { console.error(err); next(err) });
     });
 
     app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
-            .catch(err => {console.error(err); next(err)});
+            .catch(err => { console.error(err); next(err) });
     });
 
     app.get('/formuladb/*', (req, res) => {

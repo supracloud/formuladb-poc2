@@ -13,18 +13,16 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
-if [ ! -d "formuladb-env" ]; then
-    git clone --jobs 5 --branch master --single-branch --depth 1 --recursive --shallow-submodules \
-        git@gitlab.com:metawiz/formuladb-env.git
+if [ ! -d "formuladb-apps" ]; then
+    git clone --jobs 10 --branch master --single-branch --depth 1 \
+        git@gitlab.com:metawiz/formuladb-apps.git
 fi
 
-cd formuladb-env
+cd formuladb-apps
 if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
-    echo "formuladb-env already at the right branch"
+    echo "formuladb-apps already at the right branch"
 else
     git checkout -b "${FRMDB_ENV_NAME}"
-    git submodule foreach git checkout -b "${FRMDB_ENV_NAME}"
-    git submodule foreach git push git push --set-upstream origin "${FRMDB_ENV_NAME}"
     git push --set-upstream origin "${FRMDB_ENV_NAME}"
 fi
 
@@ -44,7 +42,5 @@ if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then
 else
     true
 fi
-
-
 
 cd "${ORIGDIR}"
