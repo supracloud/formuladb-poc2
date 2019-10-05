@@ -13,12 +13,12 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
-if [ ! -d "formuladb-apps" ]; then
+if [ ! -d "wwwroot/formuladb-apps" ]; then
     git clone --jobs 10 --branch master --single-branch --depth 1 \
         git@gitlab.com:metawiz/formuladb-apps.git
 fi
 
-cd formuladb-apps
+cd wwwroot/formuladb-apps
 if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
     echo "formuladb-apps already at the right branch"
 else

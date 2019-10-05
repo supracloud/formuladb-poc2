@@ -7,6 +7,5 @@ export interface App extends KeyValueObj {
     description: string;
     homePage?: string;
     defaultLocale?: "en" | "ro";
-    theme_name: string,
     pages: AppPage[];
 }
