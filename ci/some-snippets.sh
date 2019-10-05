@@ -18,3 +18,7 @@ for appName in "${FRMDB_APP_NAME}" "${FRMDB_APP_NAME}----db" "${FRMDB_APP_NAME}-
         --data '{"path": "formuladb-apps/'${appName}'"}' \
         'https://gitlab.com/api/v4/projects'
 done
+
+
+## git lfs
+find . -type f | egrep '\.(png|jpg|jpeg|svg|webm|eot|ttf|woff|woff2|otf)$'|xargs git lfs track

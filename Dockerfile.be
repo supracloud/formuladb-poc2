@@ -11,6 +11,8 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
+ADD formuladb-env 
+
 COPY dist-be/frmdb-be* /dist-be/
 
 ADD scripts /scripts
