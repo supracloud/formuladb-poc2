@@ -1,4 +1,4 @@
 [submodule "formuladb-apps"]
-	path = wwwroot/formuladb-apps
+	path = formuladb-apps
 	url = git@gitlab.com:metawiz/formuladb-apps.git
 	branch = .

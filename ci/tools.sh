@@ -91,3 +91,28 @@ upload-all() {
         upload-asset "$i"
     done    
 }
+
+kubectlget() {
+    export KUBECONFIG=k8s/production-kube-config.conf
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" get "$@"
+}
+
+kubectlexecit() {
+    _kubectlexec -it "$@"
+}
+
+kubectlexec() {
+    _kubectlexec "" "$@"
+}
+
+_kubectlexec() {
+    export KUBECONFIG=k8s/production-kube-config.conf
+    opt=$1
+    shift
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec $opt service/$service_name "$@"
+    #TODO this needs to parse the arguments...it is more complex
+}

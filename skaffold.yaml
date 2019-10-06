@@ -10,6 +10,12 @@ build:
       # with the container's root
       - src: 'dist-be/**/*.js*'
         dest: .
+      - src: 'formuladb-apps/**/*.html'
+        dest: /wwwroot/git/formuladb-apps
+        strip: formuladb-apps
+      - src: 'scripts/*'
+        dest: /scripts
+        strip: scripts
     docker:
       dockerfile: Dockerfile.be
       buildArgs: {}

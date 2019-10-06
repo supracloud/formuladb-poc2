@@ -34,18 +34,6 @@ let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
 const SECRET = 'bla-bla-secret';
 
-const STATIC_EXT = [
-    '.js',
-    '.ico',
-    '.css',
-    '.png',
-    '.jpg',
-    '.woff2',
-    '.woff',
-    '.ttf',
-    '.svg',
-];
-
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
     var kvs$User: KeyTableStoreI<BeUser>;
@@ -168,18 +156,20 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
-    app.get(/\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf)$/, async function (req, res, next) {
+    app.get(/formuladb-static.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf)$/, async function (req, res, next) {
         let httpProxy = proxy({
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
-            // pathRewrite: function (path, req) {
-            //     return req.path.match(/\.html$/) ? path : app2theme(path);
-            // },
+            pathRewrite: function (path, req) { return path },
             logLevel: "debug",
         });
+
         httpProxy(req, res, next);
     });
 
+    app.get('/formuladb/*', express.static('wwwroot/formuladb'));
+    app.get('/formuladb-editor/*', express.static('wwwroot/formuladb-editor'));
+    app.get(/.*\.html$/, express.static('wwwroot/git/formuladb-apps'));
 
     app.post('/formuladb-api/translate', async (req, res) => {
         res.json(await i18nBe.translateText(req.body.texts, req.body.to));
@@ -247,14 +237,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
             .catch(err => { console.error(err); next(err) });
-    });
-
-    app.get('/formuladb/*', (req, res) => {
-        if (STATIC_EXT.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-            res.sendFile(path.resolve(`dist/formuladb/${req.path.replace(/^\/?formuladb\//, '')}`));
-        } else {
-            res.sendFile(path.resolve('dist/formuladb/index.html'));
-        }
     });
 
     // catch 404 and forward to error handler
