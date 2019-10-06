@@ -39,7 +39,6 @@ export class FrmdbStore {
         return this.transactionsDB;
     }
 
-
     private async getDataKvs(entityName: string) {
         let ret = this.dataKVSMap.get(entityName);
         if (!ret) {
@@ -61,62 +60,6 @@ export class FrmdbStore {
      */
     public async putTransaction(event: MwzEvents): Promise<MwzEvents> {
         return (await this.getTransactionsDB()).put(event);
-    }
-
-    public async getSchema(): Promise<Schema | null> {
-        return this.kvsFactory.metadataStore.getSchema(this.tenantName, this.appName);
-    }
-    public async putSchema(schema: Schema): Promise<Schema> {
-        let ret: Schema = await this.kvsFactory.metadataStore.putSchema(this.tenantName, this.appName, schema);
-        Object.assign(this.schema, ret);
-        return ret;
-    }
-    public setSchema(schema: Schema) {
-        Object.assign(this.schema, schema);
-    }
-
-    public getEntities(): Promise<Entity[]> {
-        return this.getSchema().then(s => s ? Object.values(s.entities) : []);
-    }
-
-    private getDefaultEntity(path: string): Entity | null {
-        switch(path) {
-            case $User._id:
-                return $User;
-            case $Dictionary._id:
-                return $Dictionary;
-            default:
-                return null;
-        }
-    }
-
-    public async getEntity(path: string): Promise<Entity | null> {
-        let defaultEntity = this.getDefaultEntity(path);
-        if (defaultEntity) return Promise.resolve(defaultEntity);
-
-        let schema = await this.getSchema();
-        //the Entity's _id is the path
-        return schema ? schema.entities[path] : null;
-    }
-
-    public async putEntity(entity: Entity): Promise<Entity> {
-        let schema = await this.getSchema();
-        if (!schema) throw new Error("Attempt to put entity in an empty schema " + CircularJSON.stringify(entity));
-        schema.entities[entity._id] = entity;
-        //the Entity's _id is the path
-        return this.putSchema(schema)
-            .then(x => entity);
-    }
-
-    public async delEntity(entityId: string): Promise<Entity> {
-        let schema = await this.getSchema();
-        if (!schema) throw new Error("Attempt to del entity " + entityId + " from empty schema");
-        let ret = schema.entities[entityId];
-        if (!ret) throw new Error("Attempt to del non existent entity " + entityId);
-        delete schema.entities[entityId];
-        //the Entity's _id is the path
-        return this.putSchema(schema)
-            .then(x => ret);
     }
 
     public async getDataObj(id: string): Promise<DataObj | null> {

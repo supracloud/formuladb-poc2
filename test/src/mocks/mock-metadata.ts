@@ -159,9 +159,9 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    { tenantName: "formuladb-examples", appName: "basic-inventory", schema: InventorySchema},
-    { tenantName: "formuladb-examples", appName: "hotel-booking", schema: HotelBookingSchema},
-    { tenantName: "formuladb-internal", appName: "formuladb.io", schema: FormuladbIoSchema},
+    { tenantName: "formuladb-apps", appName: "basic-inventory", schema: InventorySchema},
+    { tenantName: "formuladb-apps", appName: "hotel-booking", schema: HotelBookingSchema},
+    { tenantName: "formuladb-apps", appName: "formuladb.io", schema: FormuladbIoSchema},
 ];
 
 for (let sch of Schemas) {

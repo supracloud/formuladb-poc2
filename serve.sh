@@ -7,5 +7,6 @@ handleErr () {
 trap handleErr ERR
 
 ./node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \
-    --watch=./formuladb-editor,dist-fe,fe/js,fe/img,formuladb-apps \
+    --watch=formuladb-editor,dist-fe,fe/js,fe/img,formuladb-apps \
+    --mount=/formuladb/:./dist-fe/ \
     --proxy=/:http://localhost:8084/ \
