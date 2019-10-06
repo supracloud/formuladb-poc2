@@ -98,21 +98,28 @@ kubectlget() {
     kubectl -n "$namespace" get "$@"
 }
 
-kubectlexecit() {
-    _kubectlexec -it "$@"
-}
-
 kubectlexec() {
-    _kubectlexec "" "$@"
-}
-
-_kubectlexec() {
     export KUBECONFIG=k8s/production-kube-config.conf
-    opt=$1
-    shift
     service_name=$1
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
-    kubectl -n "$namespace" exec $opt service/$service_name "$@"
+    kubectl -n "$namespace" exec service/$service_name "$@"
     #TODO this needs to parse the arguments...it is more complex
+}
+
+kubectllogs() {
+    export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" logs service/$service_name "$@"
+}
+
+kubectldelete() {
+    export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
+    kubectl -n "$namespace" delete pod $pod
 }

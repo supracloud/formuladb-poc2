@@ -1,8 +1,9 @@
 *
 !dist-be/frmdb-be.js
-!dist-be/frmdb-be.js.map
+!dist-fe/*.js
 !package.json
 !ci/FormulaDB-storage-full.json
 !ssh
 !scripts
 !formuladb-apps
+!formuladb-editor

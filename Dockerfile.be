@@ -13,9 +13,11 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
-ADD ./ssh /ssh
+ADD ./formuladb-editor /wwwroot/formuladb-editor
+ADD ./dist-fe /wwwroot/formuladb
 ADD ./ssh /ssh
 ADD ./scripts /scripts
+ADD ./formuladb-apps /wwwroot/git/formuladb-apps
 
 COPY dist-be/frmdb-be* /dist-be/
 
