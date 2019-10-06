@@ -18,8 +18,8 @@ spec:
           do echo waiting for database; sleep 2; done;']
       containers:
       - env:
-        - name: DEBUG
-          value: express:*
+        # - name: DEBUG
+        #   value: express:*
         - name: DEFAULT_USER
         - name: DEV_MODE
         - name: FRMDB_STORAGE

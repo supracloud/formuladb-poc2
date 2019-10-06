@@ -15,6 +15,8 @@ RUN npm install --only=production
 
 ADD ./formuladb-editor /wwwroot/formuladb-editor
 ADD ./dist-fe /wwwroot/formuladb
+COPY ./fe/js/*.js /wwwroot/formuladb/
+ADD ./fe/img /wwwroot/formuladb/img
 ADD ./ssh /ssh
 ADD ./scripts /scripts
 ADD ./formuladb-apps /wwwroot/git/formuladb-apps

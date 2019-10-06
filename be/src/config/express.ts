@@ -156,10 +156,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
-
     app.get(/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, async function (req, res, next) {
         let httpProxy = proxy({
-            target: 'https://storage.googleapis.com/formuladb-static-assets/',
+            target: 'https://storage.googleapis.com/formuladb-static-assets',
             changeOrigin: true,
             pathRewrite: function (path, req) { return path },
             logLevel: "debug",
@@ -167,11 +166,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
         httpProxy(req, res, next);
     });    
-    app.get('/formuladb/*', express.static('/wwwroot/formuladb'));
-    app.get('/formuladb-editor/*', express.static('/wwwroot/formuladb-editor'));
-    let formuladbAppsStatic = express.static('/wwwroot/git/formuladb-apps');
-    app.get('/', formuladbAppsStatic);
-    app.get(/.*\.html$/, (req, res, next) => {
+
+    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-apps/formuladb.io', { index: "index.html" });
+    app.get('/', formuladbIoStatic);
+    app.get('/*.html', formuladbIoStatic);
+    app.get('/*.yaml', formuladbIoStatic);
+    
+    app.get('/formuladb/*', express.static('/wwwroot'));
+    app.get('/formuladb-editor/*', express.static('/wwwroot'));
+
+    let formuladbAppsStatic = express.static('/wwwroot/git');
+    app.get(/.*\.(html|yaml)$/, function appHtmlAndYaml(req, res, next) {
         console.log("HTML FILESSSSSSSS", req.url);
         formuladbAppsStatic(req, res, next);
     });
