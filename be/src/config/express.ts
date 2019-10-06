@@ -271,17 +271,12 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             .catch(err => {console.error(err); next(err)});
     });
 
-    app.get('/formuladb/*', (req, res) => {
-        if (STATIC_EXT.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-            res.sendFile(path.resolve(`dist/formuladb/${req.path.replace(/^\/?formuladb\//, '')}`));
-        } else {
-            res.sendFile(path.resolve('dist/formuladb/index.html'));
-        }
-    });
-
     app.use((req, res, next) => {
         let path = req.path.match(/^\/?([-_\w\.]+)\/([-_\w\.]+)\/.*\.(?:css|js|png|jpg|jpeg|eot|eot|woff2|woff|ttf|svg|html|json)$/);
-        if (!path && req.path !== '/') {
+        if (!path &&
+            req.path !== '/' &&
+            !req.path.startsWith('/formuladb-editor/') &&
+            !req.path.startsWith('/formuladb/')) {
             next();
             return;
         }
@@ -290,7 +285,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             changeOrigin: true,
             pathRewrite: function (path: string, req) {
                 let env = process.env.FRMDB_ENV_NAME;
-
                 if (path.startsWith('/index.html') || path === '/') {
                     return env + '/formuladb-internal/formuladb.io/index.html';
                 }
