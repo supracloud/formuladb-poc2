@@ -156,7 +156,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
-    app.get(/formuladb-static.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf)$/, async function (req, res, next) {
+
+    app.get(/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, async function (req, res, next) {
         let httpProxy = proxy({
             target: 'https://storage.googleapis.com/formuladb-static-assets/',
             changeOrigin: true,
@@ -165,11 +166,15 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
 
         httpProxy(req, res, next);
+    });    
+    app.get('/formuladb/*', express.static('/wwwroot/formuladb'));
+    app.get('/formuladb-editor/*', express.static('/wwwroot/formuladb-editor'));
+    let formuladbAppsStatic = express.static('/wwwroot/git/formuladb-apps');
+    app.get('/', formuladbAppsStatic);
+    app.get(/.*\.html$/, (req, res, next) => {
+        console.log("HTML FILESSSSSSSS", req.url);
+        formuladbAppsStatic(req, res, next);
     });
-
-    app.get('/formuladb/*', express.static('wwwroot/formuladb'));
-    app.get('/formuladb-editor/*', express.static('wwwroot/formuladb-editor'));
-    app.get(/.*\.html$/, express.static('wwwroot/git/formuladb-apps'));
 
     app.post('/formuladb-api/translate', async (req, res) => {
         res.json(await i18nBe.translateText(req.body.texts, req.body.to));

@@ -9,6 +9,7 @@ cd /wwwroot/git
 if [ ! -d "formuladb-apps" ]; then
     git clone --jobs 10 --branch "${FRMDB_ENV_NAME}" --single-branch --depth 1 \
         git@gitlab.com:metawiz/formuladb-apps.git formuladb-apps
+    cd formuladb-apps
 else
     cd formuladb-apps
     if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
@@ -18,3 +19,7 @@ else
         git push --set-upstream origin "${FRMDB_ENV_NAME}"
     fi
 fi
+
+# TODO: we should overwrite this should be the current user using --author ?
+git config user.email "alexandru.cristu@computaris.com"
+git config user.name "Alexandru Cristu Sync"

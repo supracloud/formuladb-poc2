@@ -123,3 +123,10 @@ kubectldelete() {
     pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
     kubectl -n "$namespace" delete pod $pod
 }
+
+function kubectlgetall {
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    for i in $(kubectl api-resources --verbs=list --namespaced -o name | grep -v "events.events.k8s.io" | grep -v "events" | sort | uniq); do
+        kubectl -n "$namespace" get --ignore-not-found ${i} | sed -e "s/^/[$i] /"
+    done
+}

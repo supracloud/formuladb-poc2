@@ -33,7 +33,7 @@ if ! gcloud auth list|grep formuladb-static-assets; then
     gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
 fi
 
-gsutil -m rsync -d -r formuladb-static gs://formuladb-static-assets/formuladb-static
+gsutil -m rsync -r formuladb-static gs://formuladb-static-assets/formuladb-static
 
 # node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
 
