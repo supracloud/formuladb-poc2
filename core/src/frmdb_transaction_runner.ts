@@ -240,6 +240,7 @@ export class FrmdbTransactionRunner {
                 await this.frmdbEngineStore.putEntity(modifiedEntity);
             }
         } catch (ex) {
+            console.error(ex);
             event.state_ = 'ABORT';
             event.notifMsg_ = '' + ex;
             try {

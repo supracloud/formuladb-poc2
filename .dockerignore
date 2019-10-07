@@ -4,6 +4,7 @@
 !package.json
 !fe/js
 !fe/img
+!fe/icons
 !ci/FormulaDB-storage-full.json
 !ssh
 !scripts

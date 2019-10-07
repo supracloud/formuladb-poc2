@@ -1,6 +1,7 @@
 import { App } from "@domain/app";
-import { Schema, Entity } from "@domain/metadata/entity";
+import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
+import * as _ from "lodash";
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
@@ -11,14 +12,14 @@ const STORAGE = new Storage({
 });
 
 const os = require('os');
-const ROOT = process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ? 
+const ROOT = process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ?
     (process.env.FRMDB_SPECS ? '/tmp' : 'wwwroot/git')
     : '/wwwroot/git';
 const TENANT_NAME = process.env.FRMDB_SPECS && process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ? 'testTenant' : 'formuladb-apps';
 
 export interface SchemaEntityList {
     _id: string;
-    entityIds: string[]; 
+    entityIds: string[];
 }
 
 export class MetadataStore {
@@ -26,20 +27,31 @@ export class MetadataStore {
 
     private async writeFile(fileName: string, content: string) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(fileName, content, function(err) {
-                if(err) {
+            fs.writeFile(fileName, content, function (err) {
+                if (err) {
                     console.error(err);
                     reject(err);
                 }
                 resolve();
-            }); 
+            });
         });
     }
 
     private toYaml(input: Entity | Schema | App | SchemaEntityList): string {
-        return jsyaml.safeDump(input, {
+        let obj = input;
+        if (isEntity(input)) {
+            let entity: Entity = _.cloneDeep(input);
+            for (let p of Object.values(entity.props)) {
+                if (p.propType_ === Pn.FORMULA) {
+                    p.compiledFormula_ = undefined;
+                }
+            }
+            obj = entity;
+        }
+        return jsyaml.safeDump(obj, {
             indent: 4,
             flowLevel: 4,
+            skipInvalid: true,
         });
     }
 
@@ -50,26 +62,26 @@ export class MetadataStore {
 
     private async readFile(fileName: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            fs.readFile(fileName, 'utf8', function(err, data) {
-                if(err) {
+            fs.readFile(fileName, 'utf8', function (err, data) {
+                if (err) {
                     console.error(err);
                     reject(err);
                 }
                 resolve(data);
-            }); 
+            });
         });
     }
 
 
     private async delFile(fileName: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            fs.unlink(fileName, function(err) {
-                if(err) {
+            fs.unlink(fileName, function (err) {
+                if (err) {
                     console.error(err);
                     reject(err);
                 }
                 resolve();
-            }); 
+            });
         });
     }
 
@@ -80,7 +92,7 @@ export class MetadataStore {
     }
     async putSchema(tenantName: string, appName: string, schema: Schema): Promise<Schema> {
         await Promise.all(Object.values(schema.entities)
-            .map(entity => this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`, 
+            .map(entity => this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`,
                 this.toYaml(entity)))
             .concat(this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`, this.toYaml({
                 _id: schema._id,
@@ -95,7 +107,7 @@ export class MetadataStore {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
             await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`)
         );
-        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => 
+        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId =>
             this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`)
         ));
         let entities: Entity[] = entitiesStr.map(entityStr => this.fromYaml(entityStr));
@@ -133,11 +145,7 @@ export class MetadataStore {
     }
 
     public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`, 
-        jsyaml.safeDump(entity, {
-            indent: 4,
-            flowLevel: 4,
-        }))
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`, this.toYaml(entity))
 
         return entity;
     }
@@ -148,11 +156,11 @@ export class MetadataStore {
         );
         schemaNoEntities.entityIds = schemaNoEntities.entityIds.filter(e => e != entityId);
         await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
-        
+
         let entityFile = `${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`;
         let entity: Entity = await this.fromYaml<Entity>(entityFile);
         await this.delFile(entityFile);
-        
+
         return entity;
     }
 

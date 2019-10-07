@@ -236,7 +236,7 @@ describe('FrmdbEngine', () => {
         done();
     });
 
-    fit("Should allow adding/modifying formulas", async (done) => {
+    it("Should allow adding/modifying formulas", async (done) => {
         await frmdbEngine.init();
 
         await testDataStockReservationSchema();

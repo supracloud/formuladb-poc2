@@ -525,7 +525,7 @@ Vvveb.Builder = {
 
 		var self = this;
 
-		self.showIntroVideoModal();
+		// self.showIntroVideoModal();
 		self.loadControlGroups();
 		self.loadBlockGroups();
 
@@ -1490,7 +1490,8 @@ Vvveb.Gui = {
 		const appName = 'hotel-booking';
 		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
 		let themeChangeButton = null;
-		fetch(`/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/theme.json`).then(re => re.json().then(themes => {
+		fetch(`/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.tenantName}/${Vvveb.Gui.FRMDB_BACKEND_SERVICE.appName}/theme.yaml`).then(re => re.text().then(themesYamlStr => {
+			let themes = jsyaml.safeLoad(themesYamlStr);
 			themes.forEach(t => {
 				if (!themeChangeButton) {
 					themeChangeButton = jQuery('#frmdb-editor-color-palette-select');
