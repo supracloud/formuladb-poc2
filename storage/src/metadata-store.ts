@@ -12,10 +12,8 @@ const STORAGE = new Storage({
 });
 
 const os = require('os');
-const ROOT = process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ?
-    (process.env.FRMDB_SPECS ? '/tmp' : 'wwwroot/git')
-    : '/wwwroot/git';
-const TENANT_NAME = process.env.FRMDB_SPECS && process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ? 'testTenant' : 'formuladb-apps';
+const ROOT = process.env.FRMDB_SPECS ? '/tmp' : '/wwwroot/git';
+const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'formuladb-apps';
 
 export interface SchemaEntityList {
     _id: string;
