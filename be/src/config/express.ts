@@ -168,7 +168,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         httpProxy(req, res, next);
     });
 
-    let formuladbIoStatic = express.static('wwwroot/git/formuladb-apps/formuladb.io', { index: "index.html" });
+    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-apps/formuladb.io', { index: "index.html" });
     app.get('/', formuladbIoStatic);
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);
@@ -176,7 +176,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/formuladb/*', express.static('/wwwroot'));
     app.get('/formuladb-editor/*', express.static('/wwwroot'));
 
-    let formuladbAppsStatic = express.static('wwwroot/git');
+    let formuladbAppsStatic = express.static('/wwwroot/git');
     app.get(/.*\.(html|yaml)$/, function appHtmlAndYaml(req, res, next) {
         console.log("HTML FILESSSSSSSS", req.url);
         formuladbAppsStatic(req, res, next);

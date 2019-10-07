@@ -118,6 +118,7 @@ function e2e_staging_with_videos {
 
 
 function publish_static_assets() {
+    echo ""
     #################
     # TODO publish static assets to git@gitlab.com:metawiz/formuladb-env.git
     #################
