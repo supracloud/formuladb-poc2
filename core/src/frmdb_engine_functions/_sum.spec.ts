@@ -7,7 +7,7 @@ import * as _ from "../frmdb_lodash";
 import { FrmdbEngineStore } from "../frmdb_engine_store";
 
 import { MapFunctionN, CompiledFormula } from "@domain/metadata/execution_plan";
-import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { getFrmdbEngineStore, getTestFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 import { frmdbxit } from "@fe/fe-test-urils.spec";
 
 describe('FrmdbEngineStore _sum', () => {
@@ -17,7 +17,7 @@ describe('FrmdbEngineStore _sum', () => {
 
     beforeEach(async (done) => {
 
-        frmdbTStore = await getFrmdbEngineStore({_id: "FRMDB_SCHEMA", entities: {}});
+        frmdbTStore = await getTestFrmdbEngineStore({_id: "FRMDB_SCHEMA", entities: {}});
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
         done();

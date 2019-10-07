@@ -7,5 +7,5 @@
 !ci/FormulaDB-storage-full.json
 !ssh
 !scripts
-!formuladb-apps
+!wwwroot/git/formuladb-apps
 !formuladb-editor

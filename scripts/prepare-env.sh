@@ -13,6 +13,8 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
+cd wwwroot/git
+
 if [ ! -d "formuladb-apps" ]; then
     git clone --jobs 10 --branch master --single-branch --depth 1 \
         git@gitlab.com:metawiz/formuladb-apps.git
@@ -31,7 +33,7 @@ fi
 # -------------------------------------------------------------------------
 
 cd ${ORIGDIR}/${BASEDIR}/..
-export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
+# export KUBECONFIG=${ORIGDIR}/$BASEDIR/../k8s/production-kube-config.conf
 
 if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
     kubectl create namespace "${FRMDB_ENV_NAME}" 

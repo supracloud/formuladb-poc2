@@ -26,11 +26,23 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
     }
 }
 
-export async function getFrmdbEngineStore(schema: Schema, tenantName = 'testTenant', appName = 'testApp'): Promise<FrmdbEngineStore> {
+export async function getFrmdbEngineStore(schema: Schema, tenantName: string, appName: string): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
     return new FrmdbEngineStore(tenantName, appName, kvsFactory, schema);
 }
 
-export async function getFrmdbEngine(schema: Schema, tenantName = 'testTenant', appName = 'testApp'): Promise<FrmdbEngine> {
+export async function getFrmdbEngine(schema: Schema, tenantName: string, appName: string): Promise<FrmdbEngine> {
     return new FrmdbEngine(await getFrmdbEngineStore(schema, tenantName, appName));
+}
+
+
+const fs = require('fs');//TODO: fix this for running in the browser
+export async function getTestFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
+    await fs.ensureDirSync('/tmp/testTenant');
+    await fs.ensureDirSync('/tmp/testTenant/testApp');
+    let kvsFactory = await getKeyValueStoreFactory();
+    return new FrmdbEngineStore('tenantName', 'testApp', kvsFactory, schema);
+}
+export async function getTestFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
+    return new FrmdbEngine(await getTestFrmdbEngineStore(schema));
 }

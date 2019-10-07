@@ -205,7 +205,7 @@ export const LargeSalesProduct = {
 }
 
 export const InventoryApp: App = {
-    _id: "basic-inventory",
+    _id: "Basic_Inventory",
     description: "Basic Inventory with positive stock",
     pages: [
         "index.html",

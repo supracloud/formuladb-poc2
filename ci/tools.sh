@@ -93,13 +93,13 @@ upload-all() {
 }
 
 kubectlget() {
-    export KUBECONFIG=k8s/production-kube-config.conf
+    #export KUBECONFIG=k8s/production-kube-config.conf
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
     kubectl -n "$namespace" get "$@"
 }
 
 kubectlexec() {
-    export KUBECONFIG=k8s/production-kube-config.conf
+    #export KUBECONFIG=k8s/production-kube-config.conf
     service_name=$1
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
@@ -108,7 +108,7 @@ kubectlexec() {
 }
 
 kubectllogs() {
-    export KUBECONFIG=k8s/production-kube-config.conf
+    #export KUBECONFIG=k8s/production-kube-config.conf
     service_name=$1
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
@@ -116,7 +116,7 @@ kubectllogs() {
 }
 
 kubectldelete() {
-    export KUBECONFIG=k8s/production-kube-config.conf
+    #export KUBECONFIG=k8s/production-kube-config.conf
     service_name=$1
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
@@ -124,9 +124,19 @@ kubectldelete() {
     kubectl -n "$namespace" delete pod $pod
 }
 
-function kubectlgetall {
+kubectlgetall() {
+    #export KUBECONFIG=k8s/production-kube-config.conf
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
     for i in $(kubectl api-resources --verbs=list --namespaced -o name | grep -v "events.events.k8s.io" | grep -v "events" | sort | uniq); do
         kubectl -n "$namespace" get --ignore-not-found ${i} | sed -e "s/^/[$i] /"
     done
+}
+
+kubectlport-forward() {
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
+    kubectl -n "$namespace" port-forward $pod "$@"
 }

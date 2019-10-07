@@ -10,7 +10,7 @@ import { Fn } from "@domain/metadata/functions";
 import { MapFunctionN, CompiledFormula } from "@domain/metadata/execution_plan";
 import { compileFormula } from '../formula_compiler';
 import { evalExpression } from "@functions/map_reduce_utils";
-import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { getFrmdbEngineStore, getTestFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 import { Schema, Pn, Entity } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
 
@@ -47,7 +47,7 @@ describe('FrmdbEngineStore _count', () => {
     }
 
     beforeEach(async (done) => {
-        frmdbTStore = await getFrmdbEngineStore(TestSchema);
+        frmdbTStore = await getTestFrmdbEngineStore(TestSchema);
         await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;

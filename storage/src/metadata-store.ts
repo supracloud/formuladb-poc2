@@ -10,8 +10,13 @@ const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
 
+const os = require('os');
+const ROOT = process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ? 
+    (process.env.FRMDB_SPECS ? '/tmp' : 'wwwroot/git')
+    : '/wwwroot/git';
+const TENANT_NAME = process.env.FRMDB_SPECS && process.platform === 'linux' && os.release().toLowerCase().includes('microsoft') ? 'testTenant' : 'formuladb-apps';
 
-interface SchemaNoEntities {
+export interface SchemaEntityList {
     _id: string;
     entityIds: string[]; 
 }
@@ -31,11 +36,16 @@ export class MetadataStore {
         });
     }
 
-    private toYaml(input: Entity | Schema | App | SchemaNoEntities): string {
+    private toYaml(input: Entity | Schema | App | SchemaEntityList): string {
         return jsyaml.safeDump(input, {
             indent: 4,
             flowLevel: 4,
         });
+    }
+
+    private fromYaml<T extends Entity | Schema | App | SchemaEntityList>(str: string): T {
+        //TODO add schema validation even if CPU intensive
+        return jsyaml.safeLoad(str) as T;
     }
 
     private async readFile(fileName: string): Promise<string> {
@@ -64,15 +74,15 @@ export class MetadataStore {
     }
 
     async putApp(tenantName: string, appName: string, app: App): Promise<App> {
-        await this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/app.yaml`, this.toYaml(app));
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/app.yaml`, this.toYaml(app));
 
         return app;
     }
     async putSchema(tenantName: string, appName: string, schema: Schema): Promise<Schema> {
         await Promise.all(Object.values(schema.entities)
-            .map(entity => this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/${entity._id}.yaml`, 
-                this.toYaml(schema)))
-            .concat(this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/schema.yaml`, this.toYaml({
+            .map(entity => this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`, 
+                this.toYaml(entity)))
+            .concat(this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`, this.toYaml({
                 _id: schema._id,
                 entityIds: Object.keys(schema.entities),
             })))
@@ -81,21 +91,22 @@ export class MetadataStore {
         return schema;
     }
 
-
     public async getSchema(tenantName: string, appName: string): Promise<Schema | null> {
-        let schemaNoEntities: SchemaNoEntities = jsyaml.safeLoad(
-            await this.readFile(`/wwwroot/git/formuladb-apps/${appName}/schema.yaml`)
+        let schemaNoEntities: SchemaEntityList = this.fromYaml(
+            await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`)
         );
         let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => 
-            this.readFile(`/wwwroot/git/formuladb-apps/${appName}/${entityId}.yaml`)
+            this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`)
         ));
-        let entities: Entity[] = entitiesStr.map(entityStr => jsyaml.safeLoad(entityStr));
+        let entities: Entity[] = entitiesStr.map(entityStr => this.fromYaml(entityStr));
+
+        let entitiesDictionary = entities.reduce((acc, ent, i) => {
+            acc[ent._id] = ent; return acc;
+        }, {});
 
         let schema: Schema = {
             _id: schemaNoEntities._id,
-            entities: entities.reduce((acc, ent, i) => {
-                acc[ent._id] = ent; return acc;
-            }, {}),
+            entities: entitiesDictionary,
         }
         return schema;
     }
@@ -116,13 +127,13 @@ export class MetadataStore {
     }
 
     public async getEntity(tenantName: string, appName: string, entityId: string): Promise<Entity | null> {
-        let str = await this.readFile(`/wwwroot/git/formuladb-apps/${appName}/${entityId}.yaml`);
-        let entity: Entity = jsyaml.safeLoad(str);
+        let str = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`);
+        let entity: Entity = this.fromYaml(str);
         return entity;
     }
 
     public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
-        await this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/${entity._id}.yaml`, 
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`, 
         jsyaml.safeDump(entity, {
             indent: 4,
             flowLevel: 4,
@@ -132,40 +143,40 @@ export class MetadataStore {
     }
 
     public async delEntity(tenantName: string, appName: string, entityId: string): Promise<Entity> {
-        let schemaNoEntities: SchemaNoEntities = jsyaml.safeLoad(
-            await this.readFile(`/wwwroot/git/formuladb-apps/${appName}/schema.yaml`)
+        let schemaNoEntities: SchemaEntityList = this.fromYaml(
+            await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`)
         );
         schemaNoEntities.entityIds = schemaNoEntities.entityIds.filter(e => e != entityId);
-        await this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
         
-        let entityFile = `/wwwroot/git/formuladb-apps/${appName}/${entityId}.yaml`;
-        let entity = await jsyaml.safeLoad(entityFile);
+        let entityFile = `${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`;
+        let entity: Entity = await this.fromYaml<Entity>(entityFile);
         await this.delFile(entityFile);
         
         return entity;
     }
 
     async getApp(tenantName: string, appName: string): Promise<App | null> {
-        let app: App = jsyaml.safeLoad(
-            await this.readFile(`/wwwroot/git/formuladb-apps/${appName}/app.yaml`)
+        let app: App = this.fromYaml(
+            await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/app.yaml`)
         );
         return app;
     }
 
     async newPage(newPageName: string, startTemplateUrl: string) {
         let [tenantName, appName, pageName] = startTemplateUrl.split(/\//).filter(x => x);
-        let content = await this.readFile(`/wwwroot/git/formuladb-apps/${appName}/${pageName}`);
-        await this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/${newPageName}`, content);
+        let content = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`);
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${newPageName}`, content);
     }
 
     async savePageHtml(pagePath: string, html: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
-        await this.writeFile(`/wwwroot/git/formuladb-apps/${appName}/${pageName}`, html);
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`, html);
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {
         let [tenantName, appName, pageName] = deletedPagePath.split(/\//).filter(x => x);
-        this.delFile(`/wwwroot/git/formuladb-apps/${appName}/${pageName}`);
+        this.delFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`);
     }
 
     async saveMediaObject(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

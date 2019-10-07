@@ -28,6 +28,8 @@ export class KeyValueStoreMem<VALUET> implements KeyValueStoreI<VALUET> {
     constructor() {
     }
 
+    public async close() {}
+
     public get(_id: string): Promise<VALUET> {
         return simulateIO(_.cloneDeep(this.db[_id]));
     }
@@ -246,4 +248,7 @@ export class KeyValueStoreFactoryMem implements KeyValueStoreFactoryI {
     async clearAllForTestingPurposes() {
         // Mem KV store is ephemeral so nothing to clear
     };
+
+    public async close() {}
+    
 }

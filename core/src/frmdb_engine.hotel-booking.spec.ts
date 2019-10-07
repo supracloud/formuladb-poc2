@@ -6,7 +6,7 @@
 import * as _ from "lodash";
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
+import { getFrmdbEngine, getTestFrmdbEngine } from "@storage/key_value_store_impl_selector";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormData } from "@domain/event";
 import { Schema_booking } from "@test/mocks/mock-metadata";
@@ -19,7 +19,7 @@ describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STOR
     let frmdbEngine: FrmdbEngine;
 
     beforeEach(async (done) => {
-        frmdbEngine = await getFrmdbEngine(Schema_booking);
+        frmdbEngine = await getTestFrmdbEngine(Schema_booking);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         await frmdbEngine.init();

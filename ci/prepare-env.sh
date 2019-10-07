@@ -1,7 +1,7 @@
 FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 
 export BASEDIR=`dirname $0`
-export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
+# export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
 
 # -------------------------------------------------------------------------
 # Tooling / Clients

@@ -31,6 +31,7 @@ const logger = new FrmdbLogger("kvs:pg");
 export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
 
     static db: pgPromise.IDatabase<any> | undefined = undefined;
+    static pgp: pgPromise.IMain | undefined = undefined;
     private initialized: boolean = false;
     private tableCreated: boolean | null = null
     protected table_id: string | undefined = undefined;
@@ -48,10 +49,17 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
         };
         if (KeyValueStorePostgres.db == null) {
             console.info("Connecting to", config);
-            KeyValueStorePostgres.db = pgPromise({pgNative: false})(config);
+            KeyValueStorePostgres.pgp = pgPromise({pgNative: false});
+            KeyValueStorePostgres.db = KeyValueStorePostgres.pgp(config);
         }
 
         this.table_id = this.getTableName(name);
+    }
+
+    public async close() {
+        if (KeyValueStorePostgres.pgp != undefined) {
+            return KeyValueStorePostgres.pgp.end();
+        }
     }
 
     protected getDB() {
@@ -324,12 +332,14 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     }
 
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {
+        console.log("simpleAdHocQuery", squery);
         await this.initialize();
         let query = this.sqlQueryCreator.createSqlQuery(this.table_id!, squery);
 
         //FIXME: why ag-grid sends _id_1, or errors_1, invetigate why ?!?!
         let regex = new RegExp("\\b(" + Object.values(this.entity.props).map(p => p.name).join('|') + ")_1\\b", "g");
         let res = await this.getDB().any(query.replace(regex, (match, $1) => $1));
+        console.log("simpleAdHocQuery res", res);
         return res;
     }
 
@@ -381,4 +391,10 @@ export class KeyValueStoreFactoryPostgres implements KeyValueStoreFactoryI {
         let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
         await forCleanup.clearAllForTestingPurposes();
     }
+    
+    public async close() {
+        let forCleanup: KeyValueStorePostgres<void> = new KeyValueStorePostgres<void>("cleanup");
+        return forCleanup.close();
+    }
+
 }

@@ -15,6 +15,8 @@ require.extensions['.scss'] = function (module, filename) {
     module.exports = '';//we would need to run sass to make this work
 }
 
+process.env.FRMDB_SPECS = "true";
+
 //JSDOM for fe specs
 // const { JSDOM } = require('@tbranyen/jsdom');
 const { JSDOM } = require('jsdom');
