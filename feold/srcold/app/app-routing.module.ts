@@ -12,8 +12,8 @@ const routes: Routes = [
         path: '', component: AppComponent,
     },
     { path: ':appName', component: AppComponent },
-    { path: ':appName/:entityName', component: AppComponent },
-    { path: ':appName/:entityName/:_id', component: AppComponent },
+    { path: ':appName/:entityId', component: AppComponent },
+    { path: ':appName/:entityId/:_id', component: AppComponent },
 ];
 
 @NgModule({

@@ -93,7 +93,7 @@ export const MapKeyN = ExecPlanN.MapKeyN;
 export class MapKey implements ExecPlanBase {
     readonly type_ = MapKeyN;
     rawExpr: Expression;
-    entityName: string;
+    entityId: string;
     keyExpr: KeyExpression;
     has$Identifier: boolean;
     hasNon$Identifier: boolean;
@@ -122,7 +122,7 @@ export const MapValueN = ExecPlanN.MapValueN;
 export class MapValue {
     readonly type_ = MapValueN;
     rawExpr: Expression;
-    entityName: string;
+    entityId: string;
     valueExpr: Expression;
     has$Identifier: boolean;
     hasNon$Identifier: boolean;
@@ -162,7 +162,7 @@ export class MapFunction implements ExecPlanBase {
     readonly type_ = MapFunctionN;
     existingIndex?: string;
     rawExpr: Expression;
-    entityName: string;
+    entityId: string;
     keyExpr: KeyExpression;
     valueExpr: Expression;
 }
@@ -176,7 +176,7 @@ export const MapKeyAndQueryN = ExecPlanN.MapKeyAndQueryN;
 export class MapKeyAndQuery implements ExecPlanBase {
     readonly type_ = MapKeyAndQueryN;
     rawExpr: Expression;
-    entityName: string;
+    entityId: string;
     keyExpr: KeyExpression;
     query: MapQuery;
 }
@@ -191,7 +191,7 @@ export class MapFunctionAndQuery implements ExecPlanBase {
     readonly type_ = MapFunctionAndQueryN;
     existingIndex?: string;
     rawExpr: Expression;
-    entityName: string;
+    entityId: string;
     keyExpr: KeyExpression;
     valueExpr: Expression;
     query: MapQuery;
@@ -244,7 +244,7 @@ export class MapReduceKeysQueriesAndValue implements ExecPlanBase {
     rawExpr: Expression;
     mapreduceAggsOfManyObservablesQueryableFromOneObs: {
         map: {
-            entityName: string;
+            entityId: string;
             keyExpr: KeyExpression;
             valueExpr: Expression;
             query: MapQuery;

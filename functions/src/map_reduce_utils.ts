@@ -207,7 +207,7 @@ function getFuncParamNames(func): string[] {
 export function generateMapFunctionAndQuery(args: MapFunctionAndQueryT): string {
     return packMapFunctionAndQuery(
         function (doc) {
-            if (doc._id.match('^' + args.entityName))
+            if (doc._id.match('^' + args.entityId))
                 emit(['trid', evalExpression(doc, args.keyExpr)],
                     evalExpression(doc, args.valueExpr));
         }, [evalExpression], args);
@@ -245,7 +245,7 @@ export const PackedMapFunctions = {
         let args = map;
         function map1(doc) {
             var id = parseDataObjIdES5(doc._id);
-            if (id && id.entityName === args.entityName) {
+            if (id && id.entityId === args.entityId) {
                 emit(evalExpression({$ROW$: doc}, args.keyExpr), evalExpression({$ROW$: doc}, args.valueExpr));
             }
         }
@@ -255,7 +255,7 @@ export const PackedMapFunctions = {
         let args = map;
         function map1(doc) {
             var id = parseDataObjIdES5(doc._id);
-            if (id && id.entityName === args.entityName) {
+            if (id && id.entityId === args.entityId) {
                 emit(evalExpression(doc, args.keyExpr), evalExpression(doc, args.valueExpr));
             }
         }
@@ -263,6 +263,6 @@ export const PackedMapFunctions = {
     }
 }
 
-export function makeDataObjId(entityName, _id) {
-    return entityName + ':' + _id;
+export function makeDataObjId(entityId, _id) {
+    return entityId + ':' + _id;
 }

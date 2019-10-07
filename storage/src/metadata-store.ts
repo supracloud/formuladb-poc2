@@ -4,7 +4,6 @@ import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i"
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
-import { CircularJSON } from "@domain/json-stringify";
 
 import { Storage } from '@google-cloud/storage';
 const STORAGE = new Storage({
@@ -105,7 +104,7 @@ export class MetadataStore {
         return this.getSchema(tenantName, appName).then(s => s ? Object.values(s.entities) : []);
     }
 
-    private getDefaultEntity(path: string): Entity | null {
+    public getDefaultEntity(tenantName: string, appName: string, path: string): Entity | null {
         switch (path) {
             case $User._id:
                 return $User;
@@ -187,7 +186,5 @@ export class MetadataStore {
             stream.on("finish", () => resolve(true));
             stream.on("error", reject);
         });
-
     }
-
 }

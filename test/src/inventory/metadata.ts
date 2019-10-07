@@ -208,7 +208,7 @@ export const InventoryApp: App = {
     _id: "basic-inventory",
     description: "Basic Inventory with positive stock",
     pages: [
-        {name: "index.html", title: "Inventory"},
+        "index.html",
     ],
 };
 

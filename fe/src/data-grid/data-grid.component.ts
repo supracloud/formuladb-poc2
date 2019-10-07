@@ -271,7 +271,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     };
 
     applyCellStyles(params) {
-        let entityName = this.getAttribute('table_name');
+        let entityId = this.getAttribute('table_name');
         let hc = this.frmdbState.highlightColumns||{};
 
         let backgroundStyles: {[k: string]: string | null} = {
@@ -284,8 +284,8 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             "border-color": null,
         }
 
-        if (entityName && hc[entityName] && hc[entityName][params.colDef.field]) {
-            let highightColor = hc[entityName][params.colDef.field];
+        if (entityId && hc[entityId] && hc[entityId][params.colDef.field]) {
+            let highightColor = hc[entityId][params.colDef.field];
             if (typeof highightColor === "string") {
                 backgroundStyles = { 
                     ...backgroundStyles,
@@ -409,11 +409,11 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     getCellRenderer(col: TableColumn) {
-        let entityName = this.getAttribute("table_name");
+        let entityId = this.getAttribute("table_name");
         let expandRowTarget = this.getAttributeTyped("expand_row");
         if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.defaultView.$('${expandRowTarget}'); s=m.find('frmdb-form')[0].frmdbState; s.rowid='${params.value}'; s.table_name='${entityName}'; m.modal('toggle')">${this.valueFormatter(params)}</a>`;
+                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.defaultView.$('${expandRowTarget}'); s=m.find('frmdb-form')[0].frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; m.modal('toggle')">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
     }

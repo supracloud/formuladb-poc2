@@ -25,9 +25,9 @@ export class FrmdbEngineTools {
     public cleanupPropertyTypes(obj: DataObj): DataObj {
         // if (!obj._rev) return obj;
 
-        let entityName = entityNameFromDataObjId(obj._id);
+        let entityId = entityNameFromDataObjId(obj._id);
         for (let key of Object.keys(obj)) {
-            let property = this.schemaDAO.getProperty(entityName, key);
+            let property = this.schemaDAO.getProperty(entityId, key);
             if (!property) continue;
             switch (property.propType_) {
                 case Pn.NUMBER:
@@ -46,13 +46,13 @@ export class FrmdbEngineTools {
         if (propertyName === '_id' || propertyName === '_rev') return null;
         if (propertyValue == null) return null;
 
-        let entityName = entityNameFromDataObjId(obj._id);
-        let property = this.schemaDAO.getProperty(entityName, propertyName);
+        let entityId = entityNameFromDataObjId(obj._id);
+        let property = this.schemaDAO.getProperty(entityId, propertyName);
         if (!property) return null;
         switch (property.propType_) {
             case Pn.NUMBER:
                 if ((propertyValue + '').match(/^[\d.]+$/) == null) {
-                    return `Number expected for ${entityName}.${propertyName} = ${propertyValue}`;
+                    return `Number expected for ${entityId}.${propertyName} = ${propertyValue}`;
                 }
                 break;
         }

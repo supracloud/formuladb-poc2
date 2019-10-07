@@ -57,7 +57,7 @@ describe('frmdb_engine_store', () => {
 
         $s2e(Fn.SUMIF(`A.num`, `a_y == @[b_y]`) + ` + 1`)
         await frmdbEngineStore.createMapReduceView("sum1", {
-            entityName: 'A',
+            entityId: 'A',
             keyExpr: [$s2e(`a_y`)],
             valueExpr: $s2e(`num`),
         }, false, {name: SumReduceFunN});

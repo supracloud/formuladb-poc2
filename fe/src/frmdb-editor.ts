@@ -49,13 +49,13 @@ async function initEditor(loadPageName?: string) {
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.pages = app.pages.map(p => ({ name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}` }));
+    EditorState.pages = app.pages.map(p => ({ name: p, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p}` }));
     let indexPage: {name: string, url: string} | null = null;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
-        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
-        if (page.name === app.homePage) indexPage = {name: page.name, url: url};
-        vvvebPages.push({ name: page.name, title: page.title, url });
+        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page}`;
+        if (page === app.homePage) indexPage = {name: page, url: url};
+        vvvebPages.push({ name: page, title: page, url });
     }
     if (!indexPage) {
         indexPage = vvvebPages.length > 0 ? vvvebPages[0] : {name: "index-page-not-found", url: `/${appBackend.tenantName}/${appBackend.appName}/index-page-not-found`};
