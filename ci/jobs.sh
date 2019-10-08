@@ -16,6 +16,9 @@ function _cleanup {
 }
 
 function build_images_and_deploy {
+    GIT_SSH_COMMAND="ssh -i ssh/frmdb.id_rsa"
+    git submodule update --init
+    
     set -x
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
