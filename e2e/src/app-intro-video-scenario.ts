@@ -7,6 +7,7 @@ import { DataObj } from "@domain/metadata/data_obj";
 import { stepListOfTables } from './step-list-of-tables';
 import { stepListOfPages } from './step-list-of-pages';
 import { stepChangeLook } from './step-change-look';
+import { stepChangeLanguage } from './step-change-language';
 
 export interface AppIntroVideoScenarioData {
     app: App;
@@ -40,12 +41,13 @@ export class AppIntroVideoScenario {
         this.SCEN.describe(this.data.app._id, () => {
             this.SCEN.step(`Welcome to ${this.data.app._id} application`, async () => {
                 await this.API.navigateTo(`formuladb-editor/editor.html#/formuladb-apps/${this.data.app._id}/index.html`);
-                await this.API.byCssInFrame('iframe#iframe1', 'h1,h2', this.data.homePageTitle);
+                await this.API.byCssInFrame('iframe', 'h1,h2', this.data.homePageTitle);
             });
 
             // stepListOfTables(this);
             // stepListOfPages(this);
-            stepChangeLook(this);
+            // stepChangeLook(this);
+            stepChangeLanguage(this);
 
             this.SCEN.step(`Please follow our website for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations, import data from Spreadsheets and other systems, and much much more.`, async () => {
                 await this.API.finish();

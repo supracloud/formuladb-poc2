@@ -1,22 +1,5 @@
     
-//     MESSAGES.push('<speak>and also the website language<break time="5s"/></speak>');
-//     DURATIONS.push(0);
-//     it('should change language', async (done) => {
-//         await e2e_utils.handle_element_click(await e2eApi.byCss('#frmdb-editor-i18n-select'), DURATIONS[action_index++]);
-//         let languages = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
-//         await browser.sleep(550);
-//         await languages[1].click();
-//         await browser.sleep(2200);
-//         expect(await e2eApi.__old__getPageTitle()).toEqual('Détends ton esprit');
-        
-//         await (await e2eApi.byCss('#frmdb-editor-i18n-select')).click();
-//         languages = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
-//         await languages[0].click();
-//         await browser.sleep(2200);
-//         expect(await e2eApi.__old__getPageTitle()).toEqual('Relax Your Mind');
 
-//         done();
-//     });
     
 //     MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records, which allows dynamic content to be created from your data<break time="4s"/></speak>');
 //     DURATIONS.push(0);

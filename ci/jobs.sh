@@ -17,6 +17,9 @@ function _cleanup {
 
 function build_images_and_deploy {
     set -x
+    chmod og-rwx ssh
+    chmod og-r ssh/*
+    chmod uog-wx ssh/*
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i ssh/frmdb.id_rsa" git submodule update --init
     
     set -x
