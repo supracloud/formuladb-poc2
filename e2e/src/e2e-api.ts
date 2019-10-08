@@ -109,7 +109,7 @@ export class E2EApi {
 
     public getDataForTable(appData: DataObj[], tableName: string): DataObj[] {
         const ret: any[] = [];
-        for (const obj of appData.slice(0, 2)) {
+        for (const obj of appData.slice(1, 2)) {
             if (obj._id.indexOf(`${tableName}~~`) === 0) { ret.push(obj); }
         }
         return ret;
@@ -137,6 +137,9 @@ export class E2EApi {
                         expectedElem = elem;
                         break;
                     }
+                } else {
+                    expectedElem = elem;
+                    break;
                 }
             }
             return expectedElem;
