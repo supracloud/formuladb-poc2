@@ -1,3 +1,5 @@
+require('source-map-support').install();
+require('module-alias/register');
 const { SpecReporter } = require('jasmine-spec-reporter');
 const isWsl = require('is-wsl');
 
@@ -12,7 +14,7 @@ exports.config = {
     audio: false
   },
   specs: [
-    './src/**/formuladb.io.spec.ts'
+    '../tsc-out/e2e/src/**/Hotel_Booking.spec.js'
   ],
   getMultiCapabilities: function () {
 
@@ -49,9 +51,7 @@ exports.config = {
   SELENIUM_PROMISE_MANAGER: false,
 
   onPrepare() {
-    require('ts-node').register({
-      project: require('path').join(__dirname, '../tsconfig.json')
-    });
+    console.error(process.cwd());
 
     jasmine.getEnv().addReporter(new SpecReporter({  // add jasmine-spec-reporter
       spec: {
@@ -72,9 +72,11 @@ exports.config = {
     }));
 
     browser.manage().window().maximize();
-    afterEach(() => {
-      browser.manage().logs().get('browser').then(printBrowserLogs);
-    });
+    if (!isWsl) {
+      afterEach(() => {
+        browser.manage().logs().get('browser').then(printBrowserLogs);
+      });
+    }
     browser.waitForAngularEnabled(false);
 
     if (target && target.startsWith('recordings')) {

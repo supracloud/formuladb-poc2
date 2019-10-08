@@ -31,7 +31,7 @@ describe('hotel-booking view mode testing', () => {
     it('should display the home page', async (done) => {
         // check that page loads and title is as expected
         // await e2eApi.navigateToHome();
-        expect(await e2eApi.getPageTitle()).toEqual('Relax Your Mind');
+        expect(await e2eApi.__old__getPageTitle()).toEqual('Relax Your Mind');
         
         if (browser.params.recordings || browser.params.audio) {
             e2e_utils.setup_directories();
@@ -50,7 +50,7 @@ describe('hotel-booking view mode testing', () => {
 
     it('dismiss the intro-video modal', async (done) => {
         try {
-            let found = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
+            let found = await e2e_utils.retryUntilFoundOrRetryLimitReached(async () => {
                 let el = await e2eApi.byCss('#intro-video-modal');
                 let cls = await el.getAttribute('class');
                 return cls.indexOf('show') >= 0;
@@ -83,8 +83,8 @@ describe('hotel-booking view mode testing', () => {
     it('should load the booking tables: RoomType, Room, Booking', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
-        let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
-            let tables = await e2eApi.getTables();
+        let foundTables = await e2e_utils.retryUntilFoundOrRetryLimitReached(async () => {
+            let tables = await e2eApi.__old__getTables();
             console.log(tables);
             return _.difference(['RoomType', 'Room', 'Booking'], tables).length === 0
         })
@@ -111,7 +111,7 @@ describe('hotel-booking view mode testing', () => {
 
         await e2e_utils.handle_element_click(await e2eApi.getPagesDropdown(), DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
-        let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
+        let foundPages = await e2e_utils.retryUntilFoundOrRetryLimitReached(async () => {
             let pages = await e2eApi.getPages();
             console.log(pages);
             return _.difference(['index.html', 'about.html', 'contact.html'], pages).length === 0
@@ -154,13 +154,13 @@ describe('hotel-booking view mode testing', () => {
         await browser.sleep(550);
         await languages[1].click();
         await browser.sleep(2200);
-        expect(await e2eApi.getPageTitle()).toEqual('Détends ton esprit');
+        expect(await e2eApi.__old__getPageTitle()).toEqual('Détends ton esprit');
         
         await (await e2eApi.byCss('#frmdb-editor-i18n-select')).click();
         languages = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
         await languages[0].click();
         await browser.sleep(2200);
-        expect(await e2eApi.getPageTitle()).toEqual('Relax Your Mind');
+        expect(await e2eApi.__old__getPageTitle()).toEqual('Relax Your Mind');
 
         done();
     });
