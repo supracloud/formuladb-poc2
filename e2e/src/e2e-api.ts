@@ -1,12 +1,13 @@
 import { browser, element, by, ExpectedConditions, ElementArrayFinder, ElementFinder } from 'protractor';
 import { Room, Booking } from '@test/hotel-booking/metadata';
+import * as e2e_utils from "./utils";
 
-export class HotelBooking {
+export class E2EApi {
 
-  async navigateToHome() {
-    await browser.get('formuladb-editor/editor.html#/formuladb-apps/Hotel_Booking/index.html');
+  async navigateTo(url) {
+    await browser.get(url);
   }
-
+  
   /**
    * Get page title from iframe
    */
@@ -14,10 +15,10 @@ export class HotelBooking {
     let EC = ExpectedConditions;
 
     // wait for iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 50000);
+    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7000);
     await browser.switchTo().frame(0);
     // wait for the document inside the iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('h2'))), 50000);
+    await browser.wait(EC.presenceOf(element(by.css('h2'))), 7000);
     return element(by.css('h2')).getText();
   }
 
@@ -25,10 +26,10 @@ export class HotelBooking {
     let EC = ExpectedConditions;
 
     // wait for iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 50000);
+    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7000);
     await browser.switchTo().frame(0);
     // wait for the document inside the iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('.navbar-brand.logo_h i'))), 50000);
+    await browser.wait(EC.presenceOf(element(by.css('.navbar-brand.logo_h i'))), 7000);
     return element(by.css('.navbar-brand.logo_h i'));
   }
 
@@ -69,10 +70,10 @@ export class HotelBooking {
     await browser.switchTo().defaultContent();
 
     // wait for iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 21000);
+    await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7000);
     await browser.switchTo().frame(0);
     // wait for the document inside the iframe to be loaded
-    await browser.wait(EC.presenceOf(element(by.css(selector))), 22000);
+    await browser.wait(EC.presenceOf(element(by.css(selector))), 7000);
   }
   async byCssInFrame(selector: string) {
     await this.waitForSelectorInIframe(selector);
@@ -85,7 +86,7 @@ export class HotelBooking {
   async byCssInShadowDOM(elemSelector, selector): Promise<ElementFinder> {
     let EC = ExpectedConditions;
     await browser.switchTo().defaultContent();
-    await browser.wait(EC.presenceOf(element(by.css(elemSelector))), 12000);
+    await browser.wait(EC.presenceOf(element(by.css(elemSelector))), 7000);
     let elem = element(by.css(elemSelector));
 
     let selectedElem = await browser.executeScript(function () {

@@ -12,7 +12,7 @@ exports.config = {
     audio: false
   },
   specs: [
-    './src/**/*.spec.ts'
+    './src/**/formuladb.io.spec.ts'
   ],
   getMultiCapabilities: function () {
 

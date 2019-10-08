@@ -8,30 +8,22 @@ import * as _ from "lodash";
 import { E2EApi } from '../e2e-api';
 import { browser, Key } from 'protractor';
 import * as e2e_utils from "../utils";
+import { E2eScenario } from "@e2e/e2e-scenario";
 
 var MESSAGES: string[] = [];
 var DURATIONS: number[] = [];
 
-const e2eApi = new E2EApi();
+const SCEN = new E2eScenario;
+const API = new E2EApi();
 
-describe('hotel-booking view mode testing', () => {
-    
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 300000;
-    let stream;
-    let test_name = 'hotel-booking';
-    let action_index = 0;
-    
-    beforeAll(async () => {
-        browser.ignoreSynchronization = true;
-        browser.driver.manage().window().maximize();
-    });
+SCEN.describe('hotel-booking view mode testing', () => {
     
     MESSAGES.push('<speak>Welcome to the Hotel Booking draft intro video. As an admin you can customize the Hotel Booking app. On the left side pane there are the available data tables<break time="3s"/></speak>');
     DURATIONS.push(0);
     it('should display the home page', async (done) => {
         // check that page loads and title is as expected
-        await e2eApi.navigateToHome();
-        expect(await e2eApi.getPageTitle()).toEqual('Relax Your Mind');
+        await API.navigateToHome();
+        expect(await API.getPageTitle()).toEqual('Relax Your Mind');
         
         if (browser.params.recordings || browser.params.audio) {
             e2e_utils.setup_directories();
@@ -51,13 +43,13 @@ describe('hotel-booking view mode testing', () => {
     it('dismiss the intro-video modal', async (done) => {
         try {
             let found = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
-                let el = await e2eApi.byCss('#intro-video-modal');
+                let el = await API.byCss('#intro-video-modal');
                 let cls = await el.getAttribute('class');
                 return cls.indexOf('show') >= 0;
             })
             expect(found).toEqual(true);
             await browser.sleep(150);
-            let el = await e2eApi.byCss('#intro-video-modal [data-dismiss="modal"]');
+            let el = await API.byCss('#intro-video-modal [data-dismiss="modal"]');
             await el.click();
             await browser.sleep(150);
         } catch (err) {
@@ -71,9 +63,9 @@ describe('hotel-booking view mode testing', () => {
     
     it('should have tables drop down', async (done) => {
         console.log(new Date(), "checking tables dropdown");
-        await e2eApi.byCss('#intro-video-modal:not(.show)');
+        await API.byCss('#intro-video-modal:not(.show)');
         await browser.sleep(1800);//WTF modal is hidden but dropdown is still not clickable
-        let el = await e2eApi.getTablesDropdown();
+        let el = await API.getTablesDropdown();
         await el.click();
         done();
     });
@@ -84,7 +76,7 @@ describe('hotel-booking view mode testing', () => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
         let foundTables = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
-            let tables = await e2eApi.getTables();
+            let tables = await API.getTables();
             console.log(tables);
             return _.difference(['RoomType', 'Room', 'Booking'], tables).length === 0
         })
@@ -95,7 +87,7 @@ describe('hotel-booking view mode testing', () => {
     
     it('should load the room types list', async (done) => {
         // check that room types list is correctly displayed; verify the first row against the e2e data
-        let roomTypes: { id: string, value: string }[] = await e2eApi.getFirstRoomTypeData();
+        let roomTypes: { id: string, value: string }[] = await API.getFirstRoomTypeData();
         console.log(roomTypes);
         //expect(['RoomType', 'Room', 'Booking'].sort().toString() == bookingTables.sort().toString());
 
@@ -106,13 +98,13 @@ describe('hotel-booking view mode testing', () => {
     DURATIONS.push(0);
     it('should load the page list: index.html, about.html, contact.html', async (done) => {
         //close tables dropdown
-        let el = await e2eApi.getTablesDropdown();
+        let el = await API.getTablesDropdown();
         await el.click();
 
-        await e2e_utils.handle_element_click(await e2eApi.getPagesDropdown(), DURATIONS[action_index++]);
+        await e2e_utils.handle_element_click(await API.getPagesDropdown(), DURATIONS[action_index++]);
         // check that at least hotel booking tables ('RoomType', 'Room', 'Booking') are displayed in the left navbar
         let foundPages = await e2e_utils.retryUntilTrueOrRetryLimitReached(async () => {
-            let pages = await e2eApi.getPages();
+            let pages = await API.getPages();
             console.log(pages);
             return _.difference(['index.html', 'about.html', 'contact.html'], pages).length === 0
         })
@@ -124,22 +116,22 @@ describe('hotel-booking view mode testing', () => {
     MESSAGES.push('<speak>You can get started quickly with very simple cosmetic/branding changes like change the color palette<break time="4s"/></speak>');
     DURATIONS.push(0);
     it('should change theme color', async (done) => {
-        await e2e_utils.handle_element_click(await e2eApi.byCss('#frmdb-editor-color-palette-select'), DURATIONS[action_index++]);
+        await e2e_utils.handle_element_click(await API.byCss('#frmdb-editor-color-palette-select'), DURATIONS[action_index++]);
         await browser.sleep(2000);
-        let colors = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
+        let colors = await API.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
         await browser.sleep(550);
         await colors[1].click();
         await browser.sleep(200);
         await browser.sleep(3500);
-        let icon = await e2eApi.getLogoIcon();
+        let icon = await API.getLogoIcon();
         let color = await icon.getCssValue('color');
         expect(color).toEqual('rgba(255, 0, 0, 1)');
         
-        await (await e2eApi.byCss('#frmdb-editor-color-palette-select')).click();
-        colors = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
+        await (await API.byCss('#frmdb-editor-color-palette-select')).click();
+        colors = await API.allByCss('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item');
         await colors[0].click();
         await browser.sleep(2500);
-        icon = await e2eApi.getLogoIcon();
+        icon = await API.getLogoIcon();
         color = await icon.getCssValue('color');
         expect(color).toEqual('rgba(243, 195, 0, 1)');
 
@@ -149,18 +141,18 @@ describe('hotel-booking view mode testing', () => {
     MESSAGES.push('<speak>and also the website language<break time="5s"/></speak>');
     DURATIONS.push(0);
     it('should change language', async (done) => {
-        await e2e_utils.handle_element_click(await e2eApi.byCss('#frmdb-editor-i18n-select'), DURATIONS[action_index++]);
-        let languages = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
+        await e2e_utils.handle_element_click(await API.byCss('#frmdb-editor-i18n-select'), DURATIONS[action_index++]);
+        let languages = await API.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
         await browser.sleep(550);
         await languages[1].click();
         await browser.sleep(2200);
-        expect(await e2eApi.getPageTitle()).toEqual('Détends ton esprit');
+        expect(await API.getPageTitle()).toEqual('Détends ton esprit');
         
-        await (await e2eApi.byCss('#frmdb-editor-i18n-select')).click();
-        languages = await e2eApi.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
+        await (await API.byCss('#frmdb-editor-i18n-select')).click();
+        languages = await API.allByCss('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item');
         await languages[0].click();
         await browser.sleep(2200);
-        expect(await e2eApi.getPageTitle()).toEqual('Relax Your Mind');
+        expect(await API.getPageTitle()).toEqual('Relax Your Mind');
 
         done();
     });
@@ -169,29 +161,29 @@ describe('hotel-booking view mode testing', () => {
     DURATIONS.push(0);
     it('should highlight column for data binding', async (done) => {
         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
-        await e2eApi.scrollIframe(350);
-        let arivalDateFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::start_date"]');
+        await API.scrollIframe(350);
+        let arivalDateFormEl = await API.byCssInFrame('[data-frmdb-value="::start_date"]');
         await browser.sleep(1051);
-        let departureDateFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::end_date"]');
-        await e2eApi.clickWithJs(arivalDateFormEl);
+        let departureDateFormEl = await API.byCssInFrame('[data-frmdb-value="::end_date"]');
+        await API.clickWithJs(arivalDateFormEl);
         await browser.sleep(150);
-        await e2eApi.clickWithJs(departureDateFormEl);
+        await API.clickWithJs(departureDateFormEl);
         await browser.sleep(150);
-        await e2eApi.clickWithJs(arivalDateFormEl);
+        await API.clickWithJs(arivalDateFormEl);
         
         await browser.sleep(1051);
-        await e2eApi.clickWithJs(departureDateFormEl);
+        await API.clickWithJs(departureDateFormEl);
         //TODO check background color of column in the data grid
         
         await browser.sleep(1051);
         //TODO check background color of column in the data grid
-        let nbAdultsFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::nb_adults"]');
-        await e2eApi.clickWithJs(nbAdultsFormEl);
+        let nbAdultsFormEl = await API.byCssInFrame('[data-frmdb-value="::nb_adults"]');
+        await API.clickWithJs(nbAdultsFormEl);
         
         await browser.sleep(1051);
         //TODO check background color of column in the data grid
-        let nbChildrenFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::nb_children"]');
-        await e2eApi.clickWithJs(nbChildrenFormEl);
+        let nbChildrenFormEl = await API.byCssInFrame('[data-frmdb-value="::nb_children"]');
+        await API.clickWithJs(nbChildrenFormEl);
         await browser.sleep(1051);
         //TODO check background color of column in the data grid
 
@@ -203,88 +195,88 @@ describe('hotel-booking view mode testing', () => {
     it('should work with data binding for cards', async (done) => {
         try {
             await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
-            await e2eApi.scrollIframe(950);
+            await API.scrollIframe(950);
             await browser.sleep(150);
-            let el = await e2eApi.byCss('[href="#data-left-panel-tab"]');
+            let el = await API.byCss('[href="#data-left-panel-tab"]');
             await el.click();
             
             console.log(new Date(), 'delete hardcoded cards, leave just the first one');
             for (let i = 0; i < 3; i++) {
-                el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
-                await e2eApi.clickWithJs(el);
+                el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
+                await API.clickWithJs(el);
                 await browser.sleep(956);
-                el = await e2eApi.byCss('#select-box #select-actions #delete-btn');
+                el = await API.byCss('#select-box #select-actions #delete-btn');
                 await el.click();
             }
             
             console.log(new Date(), 'configure data binding for the fist card');
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
-            await e2eApi.clickWithJs(el);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
+            await API.clickWithJs(el);
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-table-limit"] input');
+            el = await API.byCss('[data-key="data-frmdb-table-limit"] input');
             await el.sendKeys('1');
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-table"] select');
+            el = await API.byCss('[data-key="data-frmdb-table"] select');
             await el.click();
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-table"] select [value="$FRMDB.RoomType[]"]');
+            el = await API.byCss('[data-key="data-frmdb-table"] select [value="$FRMDB.RoomType[]"]');
             await el.click();
             await browser.sleep(956);
             
             console.log(new Date(), 'configure data binding for img');
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) img');
-            await e2eApi.clickWithJs(el);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) img');
+            await API.clickWithJs(el);
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-value"] select');
+            el = await API.byCss('[data-key="data-frmdb-value"] select');
             await el.click();
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].picture"]');
+            el = await API.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].picture"]');
             await el.click();
             await browser.sleep(956);
             
             console.log(new Date(), 'configure data binding for h4');
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) a h4');
-            await e2eApi.clickWithJs(el);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1) a h4');
+            await API.clickWithJs(el);
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-value"] select');
+            el = await API.byCss('[data-key="data-frmdb-value"] select');
             await el.click();
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].name"]');
+            el = await API.byCss('[data-key="data-frmdb-value"] select [value="$FRMDB.RoomType[].name"]');
             await el.click();
             await browser.sleep(956);
             
             console.log(new Date(), 'repeat card 7 times');
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
-            await e2eApi.clickWithJs(el);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(1)');
+            await API.clickWithJs(el);
             await browser.sleep(956);
-            el = await e2eApi.byCss('[data-key="data-frmdb-table-limit"] input');
+            el = await API.byCss('[data-key="data-frmdb-table-limit"] input');
             await el.clear(); await el.sendKeys('7'); await el.sendKeys(Key.ENTER);
             await browser.sleep(956);
             
             console.log(new Date(), 'scroll to each of the 7 cards');
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
-            await e2eApi.clickWithJs(el);
-            await e2eApi.scrollIframe(980);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(2)');
+            await API.clickWithJs(el);
+            await API.scrollIframe(980);
             await browser.sleep(550);
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(3)');
-            await e2eApi.clickWithJs(el);
-            await e2eApi.scrollIframe(1000);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(3)');
+            await API.clickWithJs(el);
+            await API.scrollIframe(1000);
             await browser.sleep(550);
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(4)');
-            await e2eApi.clickWithJs(el);
-            await e2eApi.scrollIframe(1100);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(4)');
+            await API.clickWithJs(el);
+            await API.scrollIframe(1100);
             await browser.sleep(550);
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(5)');
-            await e2eApi.clickWithJs(el);
-            await e2eApi.scrollIframe(1200);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(5)');
+            await API.clickWithJs(el);
+            await API.scrollIframe(1200);
             await browser.sleep(550);
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(6)');
-            await e2eApi.clickWithJs(el);
-            await e2eApi.scrollIframe(1300);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(6)');
+            await API.clickWithJs(el);
+            await API.scrollIframe(1300);
             await browser.sleep(550);
-            el = await e2eApi.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(7)');
-            await e2eApi.clickWithJs(el);
-            await e2eApi.scrollIframe(1350);
+            el = await API.byCssInFrame('.accomodation_area .row .col-lg-3:nth-child(7)');
+            await API.clickWithJs(el);
+            await API.scrollIframe(1350);
             await browser.sleep(550);
         } catch (err) {
             console.error(err);
@@ -303,13 +295,13 @@ describe('hotel-booking view mode testing', () => {
             //select booking table
             let el;
             await browser.sleep(957);
-            let els = await e2eApi.allByCss('[data-frmdb-value="$frmdb.tables[]._id"]');
+            let els = await API.allByCss('[data-frmdb-value="$frmdb.tables[]._id"]');
             let found = false;
             for (el of els) {
                 let txt = await el.getAttribute('innerText');
                 if ('Booking' === txt) {
                     found = true;
-                    await (await e2eApi.byCss('[data-toggle="dropdown"][data-frmdb-value="$frmdb.selectedTableId"]')).click();
+                    await (await API.byCss('[data-toggle="dropdown"][data-frmdb-value="$frmdb.selectedTableId"]')).click();
                     await browser.sleep(957);
                     await el.click();
                 }
@@ -318,32 +310,32 @@ describe('hotel-booking view mode testing', () => {
             await browser.sleep(957);
             
             //select day column
-            el = await e2eApi.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
+            el = await API.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
             await el.click();
             await browser.sleep(150);
-            el = await e2eApi.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="nb_children"]');
+            el = await API.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="nb_children"]');
             await el.click();
             await browser.sleep(150);
-            el = await e2eApi.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
+            el = await API.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
             await el.click();
             await browser.sleep(957);
             
-            el = await e2eApi.byCss('.editor-textarea');
+            el = await API.byCss('.editor-textarea');
             expect(await el.getAttribute('value')).toEqual('DATEDIF(start_date, end_date, "D") + 1');
             await browser.sleep(250);
             
-            el = await e2eApi.byCss('#toggle-formula-editor');
+            el = await API.byCss('#toggle-formula-editor');
             await el.click();
             await browser.sleep(957);
             
-            el = await e2eApi.byCss('.editor-textarea');
+            el = await API.byCss('.editor-textarea');
             await el.click();
             await browser.sleep(551);
             await browser.sleep(957);
             await el.sendKeys('00'); await el.sendKeys(Key.TAB);
             await browser.sleep(957);
             
-            el = await e2eApi.byCss('#apply-formula-changes');
+            el = await API.byCss('#apply-formula-changes');
             await el.click();
             await browser.sleep(957);
             
@@ -355,7 +347,7 @@ describe('hotel-booking view mode testing', () => {
             await browser.sleep(957);
             await browser.sleep(957);
             
-            el = await e2eApi.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
+            el = await API.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
             await el.click();
             txt = await el.getAttribute('innerText');
             expect(txt).toContain('104.00');
