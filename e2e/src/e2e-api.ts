@@ -9,20 +9,6 @@ export class E2EApi {
         await browser.get(url);
     }
 
-    /**
-    * Get page title from iframe
-    */
-    async __old__getPageTitle() {
-        let EC = ExpectedConditions;
-
-        // wait for iframe to be loaded
-        await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7000);
-        await browser.switchTo().frame(0);
-        // wait for the document inside the iframe to be loaded
-        await browser.wait(EC.presenceOf(element(by.css('h2'))), 7000);
-        return element(by.css('h2')).getText();
-    }
-
     async getLogoIcon() {
         let EC = ExpectedConditions;
 
@@ -36,26 +22,18 @@ export class E2EApi {
 
     async finish() {
         await browser.close();
-    } 
-
-    /**
-    * Get tables in left navigation bar
-    */
-    async getTablesDropdown() {
-        // switch back to page content
-        await browser.switchTo().defaultContent();
-        let tablesDropDown: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.selectedTableId"]'));
-        return tablesDropDown[0];
     }
 
-    /**
-    * Get pages in left navigation bar
-    */
-    async getPagesDropdown() {
-        // switch back to page content
-        await browser.switchTo().defaultContent();
-        let pagesDropDown: Array<ElementFinder> = await element.all(by.css('[data-frmdb-value="$frmdb.selectedPageName"]'));
-        return pagesDropDown[0];
+    async mouseMove(el: ElementFinder | WebElement) {
+        await browser.actions().mouseMove(el);
+    }
+
+    async clickByCssInMain(selector: string, content?: string) {
+        let el = await this.byCssInMain(selector, content);
+        await el.click();
+        //TODO: add mouse pointer visual indicator
+
+        return el;
     }
 
     async byCssInMain(selector: string, content?: string) {
@@ -68,7 +46,7 @@ export class E2EApi {
         let EC = ExpectedConditions;
         let el: ElementFinder;
         if (content) {
-            el = element(by.cssContainingText(selector, content))
+            el = element(by.cssContainingText(selector, content));
         } else {
             el = element(by.css(selector))
         }
