@@ -30,7 +30,7 @@ describe('hotel-booking view mode testing', () => {
     DURATIONS.push(0);
     it('should display the home page', async (done) => {
         // check that page loads and title is as expected
-        await e2eApi.navigateToHome();
+        // await e2eApi.navigateToHome();
         expect(await e2eApi.getPageTitle()).toEqual('Relax Your Mind');
         
         if (browser.params.recordings || browser.params.audio) {
