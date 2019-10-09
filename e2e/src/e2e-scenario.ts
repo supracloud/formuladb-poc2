@@ -4,7 +4,7 @@ import { browser, Key } from 'protractor';
 import * as e2e_utils from "./utils";
 import * as os from 'os';
 
-export class E2eScenario {
+export class E2eScenarioWithVideo {
     protected MESSAGES: string[] = [];
     protected DURATIONS: number[] = [];
     protected action_index = 0;

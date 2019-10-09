@@ -1,6 +1,6 @@
 import { onDoc, onEvent } from './delegated-events';
 import { queryFormulaEditor } from './formula-editor/formula-editor.component';
-import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from './data-grid/data-grid.component';
+import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
@@ -18,6 +18,7 @@ import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
 import './fe-functions';
 import './form/form.component';
 import { FrmdbAppState } from './frmdb-app-state';
+import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 
 declare var Vvveb: any;
 

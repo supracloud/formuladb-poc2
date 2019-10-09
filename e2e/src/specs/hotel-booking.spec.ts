@@ -1,38 +1,7 @@
     
 
     
-//     MESSAGES.push('<speak>You can create more powerful customizations by binding Page elements to data from Table Records, which allows dynamic content to be created from your data<break time="4s"/></speak>');
-//     DURATIONS.push(0);
-//     it('should highlight column for data binding', async (done) => {
-//         await e2e_utils.handle_generic_action(DURATIONS[action_index++]);
-//         await e2eApi.scrollIframe(350);
-//         let arivalDateFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::start_date"]');
-//         await browser.sleep(1051);
-//         let departureDateFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::end_date"]');
-//         await e2eApi.clickWithJs(arivalDateFormEl);
-//         await browser.sleep(150);
-//         await e2eApi.clickWithJs(departureDateFormEl);
-//         await browser.sleep(150);
-//         await e2eApi.clickWithJs(arivalDateFormEl);
-        
-//         await browser.sleep(1051);
-//         await e2eApi.clickWithJs(departureDateFormEl);
-//         //TODO check background color of column in the data grid
-        
-//         await browser.sleep(1051);
-//         //TODO check background color of column in the data grid
-//         let nbAdultsFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::nb_adults"]');
-//         await e2eApi.clickWithJs(nbAdultsFormEl);
-        
-//         await browser.sleep(1051);
-//         //TODO check background color of column in the data grid
-//         let nbChildrenFormEl = await e2eApi.byCssInFrame('[data-frmdb-value="::nb_children"]');
-//         await e2eApi.clickWithJs(nbChildrenFormEl);
-//         await browser.sleep(1051);
-//         //TODO check background color of column in the data grid
 
-//         done();
-//     });
     
 //     MESSAGES.push('<speak>For example you can display the room types as a list of cards<break time="20s"/></speak>');
 //     DURATIONS.push(0);

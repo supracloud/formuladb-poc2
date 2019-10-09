@@ -1,5 +1,5 @@
 import { browser, element, by, ExpectedConditions, ElementArrayFinder, ElementFinder } from 'protractor';
-import { E2eScenario } from "./e2e-scenario";
+import { E2eScenarioWithVideo } from "./e2e-scenario";
 import { E2EApi } from "./e2e-api";
 import { App } from "@domain/app";
 import { Schema, Entity, Pn } from "@domain/metadata/entity";
@@ -8,6 +8,7 @@ import { stepListOfTables } from './step-list-of-tables';
 import { stepListOfPages } from './step-list-of-pages';
 import { stepChangeLook } from './step-change-look';
 import { stepChangeLanguage } from './step-change-language';
+import { stepDataBindingHighlight } from './step-data-binding-highlight';
 
 export interface AppIntroVideoScenarioData {
     app: App;
@@ -19,7 +20,7 @@ export interface AppIntroVideoScenarioData {
 
 export class AppIntroVideoScenario {
 
-    constructor(public data: AppIntroVideoScenarioData, public SCEN: E2eScenario, public API: E2EApi) {
+    constructor(public data: AppIntroVideoScenarioData, public SCEN: E2eScenarioWithVideo, public API: E2EApi) {
 
     }
 
@@ -47,7 +48,8 @@ export class AppIntroVideoScenario {
             // stepListOfTables(this);
             // stepListOfPages(this);
             // stepChangeLook(this);
-            stepChangeLanguage(this);
+            // stepChangeLanguage(this);
+            stepDataBindingHighlight(this);
 
             this.SCEN.step(`Please follow our website for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations, import data from Spreadsheets and other systems, and much much more.`, async () => {
                 await this.API.finish();

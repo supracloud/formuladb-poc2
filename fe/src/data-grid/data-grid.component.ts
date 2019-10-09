@@ -23,6 +23,7 @@ import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/f
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn } from '@domain/metadata/entity';
+import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -422,11 +423,6 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         this.setAttribute('table_name', tableName);
     }
 }
-
-export const CURRENT_COLUMN_HIGHLIGHT_STYLE = {
-    'background-image': 'linear-gradient(45deg, #d6efff 25%, #f5fbff 25%, #f5fbff 50%, #d6efff 50%, #d6efff 75%, #f5fbff 75%, #f5fbff 100%)',
-    'background-size': '28.28px 28.28px',
-};
 
 export function queryDataGrid(el: Document | HTMLElement): DataGridComponent {
     let dataGrid: DataGridComponent = el.querySelector("frmdb-data-grid") as DataGridComponent;

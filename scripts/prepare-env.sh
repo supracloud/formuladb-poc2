@@ -1,4 +1,6 @@
-FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
+if [[ -z "FRMDB_ENV_NAME" ]]; then
+    FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
+fi
 export BASEDIR=`dirname $0`
 export ORIGDIR=$PWD
 export GIT_SSH_COMMAND="ssh -i /mnt/d/code/metawiz/febe/ssh/frmdb.id_rsa"
