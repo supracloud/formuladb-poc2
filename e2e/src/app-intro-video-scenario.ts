@@ -47,12 +47,12 @@ export class AppIntroVideoScenario {
                 await this.API.byCssInFrame('iframe', 'h1,h2', this.data.homePageTitle);
             });
 
-            // stepListOfTables(this);
-            // stepListOfPages(this);
-            // stepChangeLook(this);
-            // stepChangeLanguage(this);
-            // stepDataBindingHighlight(this);
-            // stepCardsDataBinding(this);
+            stepListOfTables(this);
+            stepListOfPages(this);
+            stepChangeLook(this);
+            stepChangeLanguage(this);
+            stepDataBindingHighlight(this);
+            stepCardsDataBinding(this);
             stepFormulaEditorBasic(this);
 
             this.SCEN.step(`Please follow our website for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations, import data from Spreadsheets and other systems, and much much more.`, async () => {
