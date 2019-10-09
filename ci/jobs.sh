@@ -31,7 +31,6 @@ function build_images_and_deploy {
     bash $BASEDIR/prepare-env.sh "$NAMESPACE" "$SKAFFOLD_PROFILE"
     bash $BASEDIR/../scripts/prepare-env.sh "$NAMESPACE" "$SKAFFOLD_PROFILE"
     skaffold -n $NAMESPACE run -p $SKAFFOLD_PROFILE
-    while ! kubectl -n $NAMESPACE get pods | grep 'lb-'; do sleep 1; done
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
     POD=`kubectl -n $NAMESPACE get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 5432 || kubectl -n $NAMESPACE port-forward $POD 5432:5432 &
