@@ -3,7 +3,7 @@ if [[ -z "FRMDB_ENV_NAME" ]]; then
 fi
 export BASEDIR=`dirname $0`
 export ORIGDIR=$PWD
-export GIT_SSH_COMMAND="ssh -i /mnt/d/code/metawiz/febe/ssh/frmdb.id_rsa"
+export GIT_SSH_COMMAND="ssh -i $PWD/ssh/frmdb.id_rsa"
 
 trap err ERR
 
