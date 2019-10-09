@@ -1,8 +1,6 @@
 [submodule "formuladb-apps"]
 	path = wwwroot/git/formuladb-apps
 	url = git@gitlab.com:metawiz/formuladb-apps.git
-	branch = .
 [submodule "formuladb-static"]
 	path = formuladb-static
 	url = git@gitlab.com:metawiz/formuladb-static.git
-	branch = master
