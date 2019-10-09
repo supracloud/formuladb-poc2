@@ -32,11 +32,15 @@ function build_images_and_deploy {
     bash $BASEDIR/prepare-env.sh "$NAMESPACE" "$SKAFFOLD_PROFILE"
     bash $BASEDIR/../scripts/prepare-env.sh "$NAMESPACE" "$SKAFFOLD_PROFILE"
     skaffold -n $NAMESPACE run -p $SKAFFOLD_PROFILE
-    while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
-    POD=`kubectl -n $NAMESPACE get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5432 || kubectl -n $NAMESPACE port-forward $POD 5432:5432 &
-    while ! nc -z localhost 5432; do sleep 1; done
-    npm run e2e:data
+
+    # while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
+    # POD=`kubectl -n $NAMESPACE get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    # nc -z localhost 5432 || kubectl -n $NAMESPACE port-forward $POD 5432:5432 &
+    # while ! nc -z localhost 5432; do sleep 1; done
+    # npm run e2e:data
+
+    while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
+    kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 }
 
 function build_images_and_deploy_dev {
@@ -71,10 +75,13 @@ function test_e2e {
 }
 
 function e2e_dev_env {
-    POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
-    while ! nc -z localhost 5432; do sleep 1; done
-    npm run e2e:data
+    # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
+    # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
+    # while ! nc -z localhost 5432; do sleep 1; done
+    # npm run e2e:data
+
+    while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
+    kubectl -n "$FRMDB_ENV_NAME" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 
     test_e2e "$FRMDB_ENV_NAME" "http://localhost:8085"
 }

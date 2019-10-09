@@ -9,6 +9,7 @@ import { FrmdbEngine } from '@core/frmdb_engine';
 import { FrmdbEngineStore } from '@core/frmdb_engine_store';
 
 export const KvsImplementation = process.env.FRMDB_STORAGE || "mem";
+console.info("KvsImplementation=" + KvsImplementation);
 
 export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> {
     if (isNode) {

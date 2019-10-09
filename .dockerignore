@@ -1,5 +1,5 @@
 *
-!dist-be/frmdb-be.js
+!dist-be/frmdb-be*.js
 !dist-fe/*.js
 !package.json
 !fe/js

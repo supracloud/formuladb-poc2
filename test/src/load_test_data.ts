@@ -14,10 +14,6 @@ import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueObj } from "@domain/key_value_obj";
 import { ServerEventModifiedFormData } from "@domain/event";
 import { MockMetadata, CommonEntities } from "@test/mocks/mock-metadata";
-import { DictionaryEntry } from "@domain/dictionary-entry";
-import { $Dictionary } from "@domain/metadata/default-metadata";
-import { HotelBookingDictionary } from "./hotel-booking/data";
-import { DataObj } from "@domain/metadata/data_obj";
 
 function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
     return frmdbEngine.processEvent(new ServerEventModifiedFormData(obj));
@@ -58,11 +54,11 @@ export async function loadTestData() {
                 console.log(new Date(), "FINISHED", entityId);
             }
         }
-
         // let kvs$Dictionary = await kvsFactory.createKeyTableS<DictionaryEntry>($Dictionary);
         // await Promise.all([...HotelBookingDictionary].map(de => kvs$Dictionary.put(de as any)));
 
         kvsFactory.close();
+
     } catch (err) {
         console.error(err);
     }
