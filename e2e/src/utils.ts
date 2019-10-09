@@ -241,7 +241,6 @@ export async function retryUntilFoundOrRetryLimitReached<T>(callback: () => T | 
         retryNb++;
         if (ret instanceof Promise) ret = await ret;
         if (!ret) {
-            console.log("retrying...", new Date(), retryNb, callback);
             await browser.sleep(sleepTime);
         }
     }

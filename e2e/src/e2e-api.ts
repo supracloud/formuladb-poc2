@@ -26,14 +26,38 @@ export class E2EApi {
 
     async mouseMove(el: ElementFinder | WebElement) {
         await browser.actions().mouseMove(el);
+        //TODO: add mouse pointer visual indicator
+        //TODO: add speed
+    }
+
+    async click(el: ElementFinder | WebElement) {
+        await el.click();
+        //TODO: add mouse pointer visual indicator
+        //TODO: add speed
+        // await browser.sleep(1500);
     }
 
     async clickByCssInMain(selector: string, content?: string) {
         let el = await this.byCssInMain(selector, content);
-        await el.click();
-        //TODO: add mouse pointer visual indicator
-
+        await this.click(el);
         return el;
+    }
+
+    async clickByCssInShadowDOM(shadowDOMSelector: string, selector: string, content?: string) {
+        let el = await this.byCssInShadowDOM(shadowDOMSelector, selector, content);
+        await this.click(el);
+        return el;
+    }
+
+    async acceptAlert(content: string) {
+        let EC = ExpectedConditions;
+        await browser.wait(EC.alertIsPresent(), 7000);
+        var alertDialog = await browser.switchTo().alert();
+        let txt = await alertDialog.getText();
+        expect(txt).toContain(content);
+        await alertDialog.accept();  // Use to accept (simulate clicking ok)
+        await browser.wait(EC.not(EC.alertIsPresent()), 4000);
+        await browser.switchTo().defaultContent();
     }
 
     async byCssInMain(selector: string, content?: string) {
@@ -41,21 +65,32 @@ export class E2EApi {
         return this.byCss(selector, content);
     }
     async byCss(selector: string, content?: string) {
-        console.log(`        [E2E]> byCss: ${selector}, ${content}`);
+        console.log(`        [E2E]> byCss: ${selector} ${content ? ', expected-content=' + content : ''}`);
 
         let EC = ExpectedConditions;
         let el: ElementFinder;
+
         if (content) {
-            el = element(by.cssContainingText(selector, content));
+            if (selector.indexOf('textarea') >= 0 || selector.indexOf('input') >= 0) {
+                el = element(by.css(selector))
+                browser.wait(EC.textToBePresentInElementValue(el, content), 5000);
+            } else {
+                el = element(by.cssContainingText(selector, content));
+            }
         } else {
             el = element(by.css(selector))
         }
 
         // await browser.wait(EC.presenceOf(el), 5000);
-        await browser.wait(EC.visibilityOf(el), 50000);
+        await browser.wait(EC.visibilityOf(el), 10000, `byCss: ${selector}, ${content}`);
 
         if (content) {
-            let text = await el.getAttribute('innerText');
+            let text: string;
+            if (selector.indexOf('textarea') >= 0 || selector.indexOf('input') >= 0) {
+                text = await el.getAttribute('value');
+            } else {
+                text = await el.getAttribute('innerText');
+            }
             expect(text).toContain(content);
         }
         return el;
@@ -122,7 +157,7 @@ export class E2EApi {
             }
             return expectedElem;
         })
-        if (!selectedElem) throw new Error(`element ${selector} not retrieved, opts=${JSON.stringify(selector)}`);
+        if (!selectedElem) throw new Error(`Not found element ${selector} in ShadowDOM of ${shadowDOMSelector}`);
         
         if (content) {
             let text = await selectedElem.getAttribute('innerText');
@@ -140,6 +175,7 @@ export class E2EApi {
     }
 
     async clickWithJs(elem) {
+        console.log(`        [E2E]> clickWithJs`);
         await browser.executeScript(function (el) {
             arguments[0].click();
         }, elem);

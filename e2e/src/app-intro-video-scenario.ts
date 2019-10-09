@@ -9,6 +9,8 @@ import { stepListOfPages } from './step-list-of-pages';
 import { stepChangeLook } from './step-change-look';
 import { stepChangeLanguage } from './step-change-language';
 import { stepDataBindingHighlight } from './step-data-binding-highlight';
+import { stepCardsDataBinding } from './step-cards-data-binding';
+import { stepFormulaEditorBasic } from './step-formula-editor-basic';
 
 export interface AppIntroVideoScenarioData {
     app: App;
@@ -49,7 +51,9 @@ export class AppIntroVideoScenario {
             // stepListOfPages(this);
             // stepChangeLook(this);
             // stepChangeLanguage(this);
-            stepDataBindingHighlight(this);
+            // stepDataBindingHighlight(this);
+            // stepCardsDataBinding(this);
+            stepFormulaEditorBasic(this);
 
             this.SCEN.step(`Please follow our website for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations, import data from Spreadsheets and other systems, and much much more.`, async () => {
                 await this.API.finish();
