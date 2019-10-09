@@ -68,8 +68,8 @@ function test_e2e {
     URL=$2
     if [ -z "URL" ]; then echo "pls provide URL"; exit 2; fi
 
-    POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=lb -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 8085 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8085:80 &
+    POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
+    nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
     npm run webdriver-update
     TARGET=headless npm run test:e2e -- --baseUrl="$URL"
 }
@@ -83,7 +83,7 @@ function e2e_dev_env {
     while ! kubectl -n "$FRMDB_ENV_NAME" get pods | grep 'be-.*Running'; do sleep 1; done
     kubectl -n "$FRMDB_ENV_NAME" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 
-    test_e2e "$FRMDB_ENV_NAME" "http://localhost:8085"
+    test_e2e "$FRMDB_ENV_NAME" "http://localhost:8084"
 }
 
 function build_images_and_deploy_staging {

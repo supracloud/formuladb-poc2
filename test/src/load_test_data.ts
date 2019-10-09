@@ -57,6 +57,7 @@ export async function loadTestData() {
         // let kvs$Dictionary = await kvsFactory.createKeyTableS<DictionaryEntry>($Dictionary);
         // await Promise.all([...HotelBookingDictionary].map(de => kvs$Dictionary.put(de as any)));
 
+        console.info("load_test_data has FINISHED.");
         kvsFactory.close();
 
     } catch (err) {
