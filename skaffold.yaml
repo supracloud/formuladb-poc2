@@ -16,9 +16,9 @@ build:
       - src: 'formuladb-editor/**/*'
         dest: /wwwroot/formuladb-editor
         strip: formuladb-editor
-      - src: 'wwwroot/git/formuladb-apps/**/*'
+      - src: 'formuladb-apps/**/*'
         dest: /wwwroot/git/formuladb-apps
-        strip: wwwroot/git/formuladb-apps
+        strip: formuladb-apps
       - src: 'scripts/*'
         dest: /scripts
         strip: scripts

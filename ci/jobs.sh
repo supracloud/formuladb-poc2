@@ -21,7 +21,7 @@ function build_images_and_deploy {
     chmod og-r ssh/*
     chmod uog-wx ssh/*
     pwd
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init wwwroot/git/formuladb-apps
+    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init formuladb-apps
     
     set -x
     NAMESPACE=$1

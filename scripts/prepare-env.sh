@@ -15,8 +15,6 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
-cd wwwroot/git
-
 if [ ! -d "formuladb-apps" ]; then
     git clone --jobs 10 --branch master --single-branch --depth 1 \
         git@gitlab.com:metawiz/formuladb-apps.git
