@@ -13,10 +13,10 @@ export class E2EApi {
         let EC = ExpectedConditions;
 
         // wait for iframe to be loaded
-        await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7000);
+        await browser.wait(EC.presenceOf(element(by.css('iframe'))), 20000);
         await browser.switchTo().frame(0);
         // wait for the document inside the iframe to be loaded
-        await browser.wait(EC.presenceOf(element(by.css('.navbar-brand.logo_h i'))), 7000);
+        await browser.wait(EC.presenceOf(element(by.css('.navbar-brand.logo_h i'))), 20000);
         return element(by.css('.navbar-brand.logo_h i'));
     }
 
@@ -51,12 +51,12 @@ export class E2EApi {
 
     async acceptAlert(content: string) {
         let EC = ExpectedConditions;
-        await browser.wait(EC.alertIsPresent(), 7000);
+        await browser.wait(EC.alertIsPresent(), 20000);
         var alertDialog = await browser.switchTo().alert();
         let txt = await alertDialog.getText();
         expect(txt).toContain(content);
         await alertDialog.accept();  // Use to accept (simulate clicking ok)
-        await browser.wait(EC.not(EC.alertIsPresent()), 4000);
+        await browser.wait(EC.not(EC.alertIsPresent()), 20000);
         await browser.switchTo().defaultContent();
     }
 
@@ -73,7 +73,7 @@ export class E2EApi {
         if (content) {
             if (selector.indexOf('textarea') >= 0 || selector.indexOf('input') >= 0) {
                 el = element(by.css(selector))
-                browser.wait(EC.textToBePresentInElementValue(el, content), 5000);
+                browser.wait(EC.textToBePresentInElementValue(el, content), 20000);
             } else {
                 el = element(by.cssContainingText(selector, content));
             }
@@ -81,8 +81,8 @@ export class E2EApi {
             el = element(by.css(selector))
         }
 
-        // await browser.wait(EC.presenceOf(el), 5000);
-        await browser.wait(EC.visibilityOf(el), 10000, `byCss: ${selector}, ${content}`);
+        // await browser.wait(EC.presenceOf(el), 20000);
+        await browser.wait(EC.visibilityOf(el), 20000, `byCss: ${selector}, ${content}`);
 
         if (content) {
             let text: string;
@@ -106,7 +106,7 @@ export class E2EApi {
 
         let iframe = await this.byCss(selector);
         // wait for iframe to be loaded
-        await browser.wait(EC.presenceOf(iframe), 7000);
+        await browser.wait(EC.presenceOf(iframe), 20000);
         await browser.switchTo().frame(await iframe.getWebElement());
     }
 
@@ -132,7 +132,7 @@ export class E2EApi {
         let EC = ExpectedConditions;
         await browser.switchTo().defaultContent();
 
-        await browser.wait(EC.presenceOf(element(by.css(shadowDOMSelector))), 7000);
+        await browser.wait(EC.presenceOf(element(by.css(shadowDOMSelector))), 20000);
         let shadowDOMElem = element(by.css(shadowDOMSelector));
 
         let selectedElem: WebElement | undefined = await e2e_utils.retryUntilFoundOrRetryLimitReached(async () => {
