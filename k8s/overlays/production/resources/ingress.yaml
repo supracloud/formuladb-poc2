@@ -19,12 +19,12 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: lb
+          serviceName: be
           servicePort: 8084
   - host: www.formuladb.io
     http:
       paths:
       - path: /
         backend:
-          serviceName: lb
+          serviceName: be
           servicePort: 8084
