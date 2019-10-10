@@ -234,7 +234,7 @@ export function create_stream_and_run() {
     return stream;
 }
 
-export async function retryUntilFoundOrRetryLimitReached<T>(callback: () => T | undefined | Promise<T | undefined>, retries = 20, sleepTime = 500): Promise<T | undefined> {
+export async function retryUntilFoundOrRetryLimitReached<T>(callback: () => T | undefined | Promise<T | undefined>, retries = 25, sleepTime = 750): Promise<T | undefined> {
     let ret: T | undefined | Promise<T | undefined> = undefined, retryNb = 0;
     while (!ret && retryNb < retries) {
         ret = callback();
