@@ -2,3 +2,5 @@ bases:
 - ../../base
 patches:
 - patches/be-deployment.yaml
+resources:
+- resources/ingress.yaml

@@ -154,6 +154,15 @@ kubectlport-forward() {
     kubectl -n "$namespace" port-forward $pod "$@"
 }
 
+kubectlport-forward-env-be() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    export KUBECONFIG=k8s/production-kube-config.conf
+    namespace=$1
+    shift
+    pod=`kubectl -n ${namespace} get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
+    kubectl -n "$namespace" port-forward $pod 8085:3000
+}
+
 frmdb-be-load-test-data() {
     if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"

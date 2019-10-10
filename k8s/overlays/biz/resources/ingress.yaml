@@ -17,4 +17,4 @@ spec:
       - path: /
         backend:
           serviceName: lb
-          servicePort: 8085
+          servicePort: 8084
