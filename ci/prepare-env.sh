@@ -72,7 +72,7 @@ if [ -z "$NO_K8S" ]; then
   perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 
   if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then 
-    perl -p -i -e 's!- .*.formuladb.io #TBD_ENV_NAME.formuladb.io!- '$FRMDB_ENV_NAME'.formuladb.io #TBD_ENV_NAME.formuladb.io!' k8s/overlays/development/resources/ingress.yaml
+    perl -p -i -e 's![-\w\d.]+.formuladb.io #TBD_ENV_NAME.formuladb.io!- '$FRMDB_ENV_NAME'.formuladb.io #TBD_ENV_NAME.formuladb.io!' k8s/overlays/development/resources/ingress.yaml
     cat k8s/overlays/development/resources/ingress.yaml
   fi
 
