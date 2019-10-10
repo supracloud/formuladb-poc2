@@ -3,6 +3,7 @@ const textToSpeech = require('@google-cloud/text-to-speech');
 const fs = require('fs');
 const mp3Duration = require('mp3-duration');
 import { browser, ElementFinder } from 'protractor';
+import { waitUntil } from '@domain/ts-utils';
 var path = require('path');
 var ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
@@ -235,14 +236,5 @@ export function create_stream_and_run() {
 }
 
 export async function retryUntilFoundOrRetryLimitReached<T>(callback: () => T | undefined | Promise<T | undefined>, retries = 25, sleepTime = 750): Promise<T | undefined> {
-    let ret: T | undefined | Promise<T | undefined> = undefined, retryNb = 0;
-    while (!ret && retryNb < retries) {
-        ret = callback();
-        retryNb++;
-        if (ret instanceof Promise) ret = await ret;
-        if (!ret) {
-            await browser.sleep(sleepTime);
-        }
-    }
-    return ret;
+    return waitUntil(callback, retries, sleepTime);
 }

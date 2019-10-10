@@ -18,12 +18,12 @@ export function stepListOfTables(scenario: AppIntroVideoScenario) {
                 for (let prop of Object.values(entity.props)) {
                     if (prop.name == '_id') continue;
                     if (prop.propType_ === Pn.BOOLEAN) continue;
-                    let sibling = await scenario.API.byCssInShadowDOM('frmdb-data-grid', `[row-index="${rowIndex}"] > .ag-cell[col-id="${prop.name}"]`);
-                    await sibling.click();
-                    let siblingText = await sibling.getAttribute('innerText');
+                    await scenario.API.clickByCssInShadowDOM('frmdb-data-grid', `[row-index="${rowIndex}"] > .ag-cell[col-id="${prop.name}"]`);
+                    let expectedVal: string;
                     //FIXME: proper comparison based on column type
-                    if (prop.propType_ == Pn.STRING) expect((siblingText || '').slice(0, 10)).toEqual(((obj[prop.name] || '') + '').slice(0, 10));
-                    else expect((siblingText || '').slice(0, 2)).toEqual(((obj[prop.name] || '') + '').slice(0, 2));
+                    if (prop.propType_ == Pn.STRING) expectedVal = ((obj[prop.name] || '') + '').slice(0, 10);
+                    else expectedVal = ((obj[prop.name] || '') + '').slice(0, 2);
+                    await scenario.API.clickByCssInShadowDOM('frmdb-data-grid', `[row-index="${rowIndex}"] > .ag-cell[col-id="${prop.name}"]`, expectedVal);
                 }
             }
         }

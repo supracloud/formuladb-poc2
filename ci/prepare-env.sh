@@ -1,4 +1,4 @@
-if [[ -z "FRMDB_ENV_NAME" ]]; then
+if [[ -z "${FRMDB_ENV_NAME}" ]]; then
     FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
 
@@ -68,6 +68,6 @@ fi
 # k8s
 # -------------------------------------------------------------------------
 if [ -z "$NO_K8S" ]; then
-  echo "Preparing k8s deployment for namespace ${FRMDB_ENV_NAME}"
+  echo "Preparing k8s deployment for namespace ${FRMDB_ENV_NAME}."
   perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 fi

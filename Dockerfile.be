@@ -20,7 +20,6 @@ ADD ./fe/img /wwwroot/formuladb/img
 ADD ./fe/icons /wwwroot/formuladb/icons
 ADD ./ssh /ssh
 ADD ./scripts /scripts
-ADD ./formuladb-apps /wwwroot/git/formuladb-apps
 
 COPY dist-be/frmdb-be* /dist-be/
 

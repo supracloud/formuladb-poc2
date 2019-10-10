@@ -9,17 +9,6 @@ export class E2EApi {
         await browser.get(url);
     }
 
-    async getLogoIcon() {
-        let EC = ExpectedConditions;
-
-        // wait for iframe to be loaded
-        await browser.wait(EC.presenceOf(element(by.css('iframe'))), 20000);
-        await browser.switchTo().frame(0);
-        // wait for the document inside the iframe to be loaded
-        await browser.wait(EC.presenceOf(element(by.css('.navbar-brand.logo_h i'))), 20000);
-        return element(by.css('.navbar-brand.logo_h i'));
-    }
-
     async finish() {
         await browser.close();
     }
@@ -44,19 +33,42 @@ export class E2EApi {
     }
 
     async clickByCssInShadowDOM(shadowDOMSelector: string, selector: string, content?: string) {
+        try {
+            let el = await this.byCssInShadowDOM(shadowDOMSelector, selector, content);
+            await this.click(el);
+            return el;
+        } catch (err) {
+            console.warn(err);
+            throw new Error(JSON.stringify(err));
+        }
+    }
+
+    async clickByCssInShadowDOMWithJs(shadowDOMSelector: string, selector: string, content?: string) {
         let el = await this.byCssInShadowDOM(shadowDOMSelector, selector, content);
+        await this.clickWithJs(el);
+        return el;
+    }
+
+    async clickByCssInFrame(iframeSelector: string, selector: string, content?: string) {
+        let el = await this.byCssInFrame(iframeSelector, selector, content);
         await this.click(el);
+        return el;
+    }
+
+    async clickByCssInFrameWithJs(iframeSelector: string, selector: string, content?: string) {
+        let el = await this.byCssInFrame(iframeSelector, selector, content);
+        await this.clickWithJs(el);
         return el;
     }
 
     async acceptAlert(content: string) {
         let EC = ExpectedConditions;
-        await browser.wait(EC.alertIsPresent(), 20000);
+        await browser.wait(EC.alertIsPresent(), 20000, "wait for alert to be present");
         var alertDialog = await browser.switchTo().alert();
         let txt = await alertDialog.getText();
         expect(txt).toContain(content);
         await alertDialog.accept();  // Use to accept (simulate clicking ok)
-        await browser.wait(EC.not(EC.alertIsPresent()), 20000);
+        await browser.wait(EC.not(EC.alertIsPresent()), 20000, "wait for alert NOT to be present");
         await browser.switchTo().defaultContent();
     }
 
@@ -106,7 +118,7 @@ export class E2EApi {
 
         let iframe = await this.byCss(selector);
         // wait for iframe to be loaded
-        await browser.wait(EC.presenceOf(iframe), 20000);
+        await browser.wait(EC.presenceOf(iframe), 20000, `wait for iframe ${selector}`);
         await browser.switchTo().frame(await iframe.getWebElement());
     }
 
@@ -129,42 +141,47 @@ export class E2EApi {
     }
 
     async byCssInShadowDOM(shadowDOMSelector: string, selector: string, content?: string): Promise<WebElement> {
+        console.log(`        [E2E]> byCss-ShadowDOM: ${selector} ${content ? ', expected-content=' + content : ''}`);
         let EC = ExpectedConditions;
         await browser.switchTo().defaultContent();
+        
+        try {
+            await browser.wait(EC.presenceOf(element(by.css(shadowDOMSelector))), 20000, `wait for elem with Shadow DEM ${shadowDOMSelector}`);
+            let shadowDOMElem = element(by.css(shadowDOMSelector));
 
-        await browser.wait(EC.presenceOf(element(by.css(shadowDOMSelector))), 20000);
-        let shadowDOMElem = element(by.css(shadowDOMSelector));
-
-        let selectedElem: WebElement | undefined = await e2e_utils.retryUntilFoundOrRetryLimitReached(async () => {
-            let elems: WebElement[] = await browser.executeScript(function () {
-                return arguments[0].shadowRoot.querySelectorAll(arguments[1])
-            }, shadowDOMElem, selector);
-            if (elems.length == 0) return undefined;
-            let expectedElem: WebElement | undefined = undefined; 
-            for (let elem of elems) {
-                // if (!(await selectedElem.isPresent())) return undefined;
-                if (!(await elem.isDisplayed())) continue;
-                if (content) {
-                    let text = await elem.getAttribute('innerText')
-                    if (text.indexOf(content) >= 0) {
+            let selectedElem: WebElement | undefined = await e2e_utils.retryUntilFoundOrRetryLimitReached(async () => {
+                let elems: WebElement[] = await browser.executeScript(function () {
+                    return arguments[0].shadowRoot.querySelectorAll(arguments[1])
+                }, shadowDOMElem, selector);
+                if (elems.length == 0) return undefined;
+                let expectedElem: WebElement | undefined = undefined; 
+                for (let elem of elems) {
+                    // if (!(await selectedElem.isPresent())) return undefined;
+                    if (!(await elem.isDisplayed())) continue;
+                    if (content) {
+                        let text = await elem.getAttribute('innerText');
+                        if (text.indexOf(content) >= 0) {
+                            expectedElem = elem;
+                            break;
+                        }
+                    } else {
                         expectedElem = elem;
                         break;
                     }
-                } else {
-                    expectedElem = elem;
-                    break;
                 }
+                return expectedElem;
+            })
+            if (!selectedElem) throw new Error(`Not found element ${selector} in ShadowDOM of ${shadowDOMSelector}`);
+            
+            if (content) {
+                let text = await selectedElem.getAttribute('innerText');
+                expect(text).toContain(content);
             }
-            return expectedElem;
-        })
-        if (!selectedElem) throw new Error(`Not found element ${selector} in ShadowDOM of ${shadowDOMSelector}`);
-        
-        if (content) {
-            let text = await selectedElem.getAttribute('innerText');
-            expect(text).toContain(content);
-        }
 
-        return selectedElem;
+            return selectedElem;
+        } catch (err) {
+            throw new Error(JSON.stringify(err));
+        }
     }
 
     /** NOT WORKING */
@@ -184,7 +201,7 @@ export class E2EApi {
     async scrollIframe(scrollHeight: number) {
         let EC = ExpectedConditions;
         await browser.switchTo().defaultContent();
-        await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7100);
+        await browser.wait(EC.presenceOf(element(by.css('iframe'))), 7100, 'wait for iframe to scroll');
 
         await browser.executeScript(function (iframeEl, scrollHeight) {
             let iframe = arguments[0];

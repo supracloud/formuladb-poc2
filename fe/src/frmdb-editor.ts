@@ -191,7 +191,9 @@ function tableColumnManagementFlows() {
     onDoc("frmdbchange", "frmdb-formula-editor", async (event) => {
         let formulaEditor = queryFormulaEditor(document);
         let dataGrid = queryDataGrid(document);
-        dataGrid.frmdbState.highlightColumns = formulaEditor.frmdbState.formulaHighlightedColumns;
+        if (formulaEditor.frmdbState.formulaHighlightedColumns) {
+            dataGrid.highlightColumns = formulaEditor.frmdbState.formulaHighlightedColumns;
+        }
     });
 
     onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
@@ -251,7 +253,6 @@ async function loadTables(selectedTable?: string) {
 function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
     for (let i = 0; i < (el.attributes||[]).length; i++) {
         let attrib = el.attributes[i];
-        console.warn(DATA_FRMDB_ATTRS_Enum);
         if (attrib.name === 'data-frmdb-table') {
             let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
             return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
@@ -280,7 +281,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     if (!cell) return;
     let { recordId, columnId } = cell;
     let tableName = entityNameFromDataObjId(recordId);
-    dataGrid.frmdbState.highlightColumns = {
+    dataGrid.highlightColumns = {
         [tableName]: {
             [columnId]: CURRENT_COLUMN_HIGHLIGHT_STYLE,
         },
@@ -289,7 +290,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
         }
     };
     changeSelectedTableIdIfDifferent(tableName);
-    dataGrid.forceCellRefresh();
+    dataGrid.forceCellRefresh(tableName);
 }
 (window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
 

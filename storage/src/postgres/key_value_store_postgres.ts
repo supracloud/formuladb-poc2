@@ -12,7 +12,7 @@ import * as pgPromise from "pg-promise";
 import * as dotenv from "dotenv";
 import { CreateSqlQuery } from "./create_sql_query";
 import { Entity, EntityProperty, Pn, Schema } from "@domain/metadata/entity";
-import { waitUntilNotNull } from "@domain/ts-utils";
+import { waitUntil } from "@domain/ts-utils";
 import { ReduceFun } from "@domain/metadata/reduce_functions";
 import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
@@ -89,7 +89,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
             await this.createTable();
             this.tableCreated = true;
         } else {
-            await waitUntilNotNull(() => Promise.resolve(this.tableCreated), 500);
+            await waitUntil(() => Promise.resolve(this.tableCreated), 500);
             let tableExists = await this.checkIfTableExists();
             if (!tableExists) throw new Error(`Table creation timeout ${this.table_id}`);
         }

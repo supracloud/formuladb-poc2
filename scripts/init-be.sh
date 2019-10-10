@@ -5,6 +5,8 @@ echo "env: $FRMDB_ENV_NAME"
 export BASEDIR=`dirname $0`
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /ssh/frmdb.id_rsa"
 
+pwd
+find /wwwroot/git -type d 
 cd /wwwroot/git
 if [ ! -d "formuladb-apps" ]; then
     git clone --jobs 10 --branch "${FRMDB_ENV_NAME}" --single-branch --depth 1 \

@@ -27,17 +27,18 @@ export function stepFormulaEditorBasic(scenario: AppIntroVideoScenario) {
             await scenario.API.clickByCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]');
             
             //TODO: make this configurable for any app
-            await scenario.API.byCssInMain('.editor-textarea', 'DATEDIF(start_date, end_date, "D") + 1');
+            await scenario.API.byCssInMain('.editor-textarea', 'DATEDIF(start_date, end_date, "D") + ');
             
             await scenario.API.clickByCssInMain('#toggle-formula-editor');
             el = await scenario.API.clickByCssInMain('.editor-textarea:not([readonly])');
-            await el.sendKeys(Key.BACK_SPACE); await el.sendKeys('200'); await el.sendKeys(Key.TAB);
+            let nb = Math.round(Math.random()*100);
+            await el.sendKeys(Key.BACK_SPACE.repeat(50) + 'DATEDIF(start_date, end_date, "D") + ' + nb + Key.TAB);
             
             await scenario.API.clickByCssInMain('#apply-formula-changes.bg-success[data-frmdb-dirty="true"]');
             await scenario.API.acceptAlert('Please confirm, apply modifications to DB');
             
             await scenario.API.byCssInShadowDOM('frmdb-data-grid', '.ag-row:nth-child(2) .ag-cell[col-id="days"]', 
-                '204.00');
+                `${nb+4}.00`);
             
         } catch (err) {
             console.error(err);

@@ -1,6 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const TerserPlugin = require('terser-webpack-plugin');
+// const TerserPlugin = require('terser-webpack-plugin');
 const npm_package = require('./package.json');
 const _ = require("lodash");
 
@@ -19,14 +19,14 @@ configBase = {
         alias: _.mapValues(npm_package._moduleAliases || {},
             v => path.resolve(__dirname, v)),
     },
-    optimization: {
-        minimizer: [
-            new TerserPlugin({
-                sourceMap: true,
-                cache: true,
-            }),
-        ],
-    },
+    // optimization: {
+    //     minimizer: [
+    //         new TerserPlugin({
+    //             sourceMap: true,
+    //             cache: true,
+    //         }),
+    //     ],
+    // },
 };
 
 configBaseNode = {

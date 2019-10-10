@@ -25,7 +25,7 @@ import { BackendService } from "./backend.service";
 import { FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
 import { FormNotifFromBackendAction, ResetPageDataFromBackendAction, PageFromBackendAction, PageDataFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
-import { waitUntilNotNull } from "@core/ts-utils";
+import { waitUntil } from "@core/ts-utils";
 import { isNewTopLevelDataObjId } from '@domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
@@ -79,7 +79,7 @@ export class AppEffects {
         //listen for new object creations
         this.listenForNewDataObjActions();
 
-        waitUntilNotNull(async () => {
+        waitUntil(async () => {
             let ret = await this.backendService.getApplications();
             return ret;
         });
@@ -89,7 +89,7 @@ export class AppEffects {
 
     public async changeApplication(appName: string) {
         try {
-            let apps: Map<string, App> = await waitUntilNotNull(async () => {
+            let apps: Map<string, App> = await waitUntil(async () => {
                 let ret = await this.backendService.getApplications();
                 return ret;
             });
@@ -112,7 +112,7 @@ export class AppEffects {
             let dict = await this.backendService.getDictionary(app.locale || 'en');
             this.store.dispatch(new I18nLoadDictionary(dict));
 
-            let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
+            let entities = await waitUntil(async () => {return await this.backendService.getEntities()});
 
             //load entities and remove readOnly flag
             this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));

@@ -11,7 +11,7 @@ import {
 } from 'ag-grid-community';
 import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
-import { waitUntilNotNull, PickOmit, objKeysTyped } from '@domain/ts-utils';
+import { waitUntil, PickOmit, objKeysTyped } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
 import { DataGridToolsComponent } from './data-grid-tools.component';
@@ -36,14 +36,6 @@ export interface DataGridComponentAttr {
 }
 
 export interface DataGridComponentState {
-    highlightColumns?: { 
-        [tableName: string]: { 
-            [columnName: string]: string | {
-                'background-image': string,
-                'background-size': string,
-            }
-        } 
-    };
     conditionalFormatting?: { tbdCssClassName: string };
     selectedRow: DataObj;
     selectedColumnName: string;
@@ -57,10 +49,23 @@ export interface DataGridComponentState {
     // noShadow: true,
 })
 export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentState> {
+    private _highlightColumns: { 
+        [tableName: string]: { 
+            [columnName: string]: string | {
+                'background-image': string,
+                'background-size': string,
+            }
+        } 
+    };
+    get highlightColumns() {return this._highlightColumns}
+    set highlightColumns(hc: DataGridComponent['_highlightColumns']) {
+        this._highlightColumns = hc;
+        this.forceCellRefresh();
+    }
 
     /** web components API **************************************************/
     attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
-        waitUntilNotNull(() => Promise.resolve(this.gridApi), 2500)
+        waitUntil(() => Promise.resolve(this.gridApi), 2500)
         .then(() => {
             if (!this.gridApi) throw new Error("Timeout during initialization");
             if (attrName == 'table_name') {
@@ -89,19 +94,10 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
     }
 
-    /** frmdb components API **************************************************/
-    frmdbPropertyChangedCallback<T extends keyof DataGridComponentState>(propName: keyof DataGridComponentState, oldVal: DataGridComponentState[T] | undefined, newVal: DataGridComponentState[T]) {
-        if (propName === "highlightColumns" || propName === "conditionalFormatting") {
-            this.forceCellRefresh();
-        }
-    }
-
     /** component internals *************************************************/
 
-    public forceCellRefresh() {
-        if (this.gridApi) {
-            this.gridApi.refreshView();
-        }
+    public forceCellRefresh(tableName?: string) {
+        this.gridApi && this.gridApi.refreshView();
     }
     public forceReloadData() {
         if (this.gridApi) {
@@ -273,7 +269,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     applyCellStyles(params) {
         let entityId = this.getAttribute('table_name');
-        let hc = this.frmdbState.highlightColumns||{};
+        let hc = this._highlightColumns || {};
 
         let backgroundStyles: {[k: string]: string | null} = {
             backgroundColor: null,
@@ -340,7 +336,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         //     color: this.dataGrid.headerBackground,
         //     pattern: "Solid",
         // };
-        await waitUntilNotNull(() => Promise.resolve(this.gridApi));
+        await waitUntil(() => Promise.resolve(this.gridApi));
         this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(tableName));
         try {
 

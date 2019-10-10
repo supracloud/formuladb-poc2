@@ -5,8 +5,6 @@ const isWsl = require('is-wsl');
 
 var target = process.env.TARGET;
 
-var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
-
 exports.config = {
   allScriptsTimeout: 11000,
   params: {
@@ -63,12 +61,6 @@ exports.config = {
         displayDuration: false,
         displayPending: false,
       }
-    }));
-
-    jasmine.getEnv().addReporter(new HtmlScreenshotReporter({
-      dest: 'e2e/reports',
-      filename: 'e2e-report.html',
-      captureOnlyFailedSpecs: true
     }));
 
     browser.manage().window().maximize();

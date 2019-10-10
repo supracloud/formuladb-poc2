@@ -41,10 +41,15 @@ export class E2eScenarioWithVideo {
         this.DURATIONS.push(0);
         
         it(msg, async () => {
-            console.log("    [E2E] step: ", msg);
-            await e2e_utils.handle_generic_action(this.DURATIONS[this.action_index++]);
+            try {
+                console.log("    [E2E] step: ", msg);
+                await e2e_utils.handle_generic_action(this.DURATIONS[this.action_index++]);
 
-            await callback();
+                await callback();
+            } catch (err) {
+                console.warn(err);
+                throw err;
+            }
         })
     }
 }

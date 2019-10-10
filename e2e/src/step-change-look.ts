@@ -11,12 +11,12 @@ export function stepChangeLook(scenario: AppIntroVideoScenario) {
 
         await scenario.API.clickByCssInMain('#frmdb-editor-color-palette-select');
         await scenario.API.clickByCssInMain('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item:nth-child(2)');
-        await browser.wait(async () => (await getColor()) == 'rgba(255, 0, 0, 1)', 5000);
+        await browser.wait(async () => (await getColor()) == 'rgba(255, 0, 0, 1)', 5000, 'wait for color to become red');
         expect(await getColor()).toEqual('rgba(255, 0, 0, 1)');
 
         await scenario.API.clickByCssInMain('#frmdb-editor-color-palette-select');
         await scenario.API.clickByCssInMain('[aria-labelledby="frmdb-editor-color-palette-select"] .dropdown-item:nth-child(1)');
-        await browser.wait(async () => (await getColor()) == 'rgba(243, 195, 0, 1)', 5000);
+        await browser.wait(async () => (await getColor()) == 'rgba(243, 195, 0, 1)', 5000, 'wait for color to become yellow');
         expect(await getColor()).toEqual('rgba(243, 195, 0, 1)');
 
     });
