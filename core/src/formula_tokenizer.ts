@@ -1,6 +1,6 @@
 import { Expression, isIdentifier, isLiteral, isCallExpression, isBinaryExpression, isLogicalExpression, CallExpression } from 'jsep';
 import { compileFormulaForce, FormulaCompilerError } from './formula_compiler';
-import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict, PropertyTypeFunctions } from './functions_compiler';
+import { ScalarFunctions, MapFunctions, MapReduceFunctions, FunctionsDict, PropertyTypeFunctions, FunctionSignatures } from './functions_compiler';
 import * as _ from 'lodash';
 import { CircularJSON } from "@domain/json-stringify";
 
@@ -259,15 +259,14 @@ export class FormulaTokenizer {
     }
 
     private setCallStackFrame(tokens: Token[], functionName: string, argumentIdx: number) {
-        let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName] || PropertyTypeFunctions[functionName];
-        console.warn(ScalarFunctions);
+        let fnSgn = FunctionSignatures[functionName];
         let errors: string[] = [];
         let argumentName: string | undefined = undefined;
 
-        if (!fn) {
-            errors.push("Function " + functionName + " does not have " + (argumentIdx + 1) + " arguments");
+        if (!fnSgn) {
+            errors.push("Function " + functionName + " does not exist");
         } else {
-            let m = fn.toString().match(/function (\w+)\(fc, (.*)\)/);
+            let m = fnSgn.match(/function (\w+)\(fc, (.*)\)/);
             if (m && m.length == 3) {
                 let args: string[] = m[2].split(/\s*,\s*/);
                 if (args.length <= argumentIdx) {
@@ -277,7 +276,7 @@ export class FormulaTokenizer {
                 }
             } else {
                 errors.push("Unknown function " + functionName);
-                console.error("Cannot parse function signature: ", functionName, fn, m);
+                console.error("Cannot parse function signature: ", functionName, fnSgn, m);
             }
         }
         for (let token of tokens) {

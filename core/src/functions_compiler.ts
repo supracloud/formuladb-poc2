@@ -597,3 +597,39 @@ export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapReduceFunctions))
     .concat(Object.keys(PropertyTypeFunctions))
 ;
+
+//cat core/src/functions_compiler.ts | perl -ne 'if (/^function ([A-Z_]+)\(/) {my $f=$1; s!:[\w \|]+([,)])!$1!g; s!\).*!)!; chomp; print "$f: `$_`,\n"}'
+export const FunctionSignatures = {
+    _MAP_VALUE: `function _MAP_VALUE(fc, fullTableRange, valueExpr)`,
+    _MAP_KEY: `function _MAP_KEY(fc, fullTableRange, keyExpr)`,
+    _MAP: `function _MAP(fc, basicRange, keyExpr, valueExpr?)`,
+    GROUP_BY: `function GROUP_BY(fc, basicRange, ...groupExpr: Expression[])`,
+    IF: `function IF(fc, tableRange, logicalExpression)`,
+    __IF: `function __IF(fc, tableRange, logicalExpression)`,
+    _IF: `function _IF(fc, inputRange, compiledLogicalExpression)`,
+    _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
+    _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
+    SUM: `function SUM(fc, tableRange)`,
+    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange)`,
+    NUMBER: `function NUMBER(fc)`,
+    STRING: `function STRING(fc)`,
+    DATETIME: `function DATETIME(fc)`,
+    SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
+    COUNT: `function COUNT(fc, tableRange)`,
+    COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,
+    TEXTJOIN: `function TEXTJOIN(fc, tableRange, delimiter)`,
+    RANK: `function RANK(fc, lookupExpr, tableRange)`,
+    VLOOKUP: `function VLOOKUP(fc, entityRange, booleanExpr, resultExpr)`,
+    TEXT: `function TEXT(fc, expr, format)`,
+    CONCATENATE: `function CONCATENATE(fc, expr, expr2)`,
+    REGEXREPLACE: `function REGEXREPLACE(fc, expr, regex, replacement)`,
+    SUBSTITUTE: `function SUBSTITUTE(fc, expr, old_text, new_text)`,
+    EOMONTH: `function EOMONTH(fc, expr, numMonths)`,
+    SQRT: `function SQRT(fc, expr)`,
+    ROUND: `function ROUND(fc, expr)`,
+    FACT: `function FACT(fc, expr)`,
+    HLOOKUP: `function HLOOKUP(fc, expr)`,
+    FLOOR: `function FLOOR(fc, expr, significance)`,
+    DATEDIF: `function DATEDIF(fc, start_date, end_date, unit)`,
+    OVERLAP: `function OVERLAP(fc, start_date_1, end_date_1, start_date_2, end_date_2, max_interval)`,
+}

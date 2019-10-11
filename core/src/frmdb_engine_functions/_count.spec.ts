@@ -58,10 +58,6 @@ describe('FrmdbEngineStore _count', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     });
 
-    function $s(f: (...args) => any) {
-        return f.toString().replace(/\w+\.Fn\./, '').replace(/^function\s*\(.*?\)\s*\{\s*return\s*/, '').replace(/;\s*\}$/, '');
-    }
-
     const rank1 = Fn.RANK(`[FLOOR(@[x]/4) * 4, @[x]]`, Fn._MAP(`A.x`, `[FLOOR(x/4) * 4, x]`));
     it("simple one table RANK formula: " + rank1, async (done) => {
         let formula = rank1;

@@ -62,7 +62,7 @@ new Promise(resolve => setTimeout(() => resolve(), 5000))
 function startGitSync() {
     console.log("Starting git-sync each 20 sec");
     setInterval(() => {
-        runCmd('timeout', '-t', '20', 'bash', '/scripts/sync-git.sh');
+        runCmd('bash', '/scripts/sync-git.sh');
     }, 20000)
 }
 
