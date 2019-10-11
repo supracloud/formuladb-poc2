@@ -66,7 +66,7 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     private async initView(viewHashCode: string) {
         let view = this.view(viewHashCode, "forceUpdate");
-        let allObjs = await this.getDataListByPrefix(view.map.entityName + '~~');
+        let allObjs = await this.getDataListByPrefix(view.map.entityId + '~~');
         for (let obj of allObjs) {
             await this.forceUpdateViewForObj(viewHashCode, null, obj);
         }
@@ -117,7 +117,7 @@ export class FrmdbEngineStore extends FrmdbStore {
             let inclusive_start = aggsTrg.map.query.inclusive_start;
             let inclusive_end = aggsTrg.map.query.inclusive_end;
         
-            let all = await this.all(aggsTrg.map.entityName);
+            let all = await this.all(aggsTrg.map.entityId);
             let filteredObjs: any[] = [];
             for (let obj of all) {
                 let key = kvsKey2Str(evalExpression(obj, aggsTrg.map.keyExpr));
@@ -126,7 +126,7 @@ export class FrmdbEngineStore extends FrmdbStore {
                 }
             }
 
-            // let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityName, {
+            // let triggerValue: any = await this.adHocQuery(aggsTrg.map.entityId, {
             //     extraColsBeforeGroup: [
             //         {alias: 'KEY', expr: aggsTrg.map.keyExpr},
             //         {alias: 'VALUE', expr: aggsTrg.map.valueExpr}, 

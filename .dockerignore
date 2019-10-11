@@ -1,5 +1,12 @@
 *
-!dist-be/frmdb-be.js
-!dist-be/frmdb-be.js.map
+!dist-be/frmdb-be*.js
+!dist-fe/*.js
 !package.json
+!fe/js
+!fe/img
+!fe/icons
 !ci/FormulaDB-storage-full.json
+!ssh
+!scripts
+!formuladb-apps
+!formuladb-editor

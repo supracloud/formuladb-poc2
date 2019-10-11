@@ -22,7 +22,7 @@ describe('MapReduceView', () => {
 
     it('should precompute and compute basic SUM', async (done) => {
         let mapReduceView = new MapReduceView(kvsFactory, "tst", {
-            entityName: 'A',
+            entityId: 'A',
             keyExpr: [$s2e(`a_y`)],
             valueExpr: $s2e(`num`),
         }, false, {name: SumReduceFunN});

@@ -98,7 +98,7 @@ function _MAP_VALUE(fc: FuncCommon, fullTableRange: Identifier, valueExpr: Expre
         return {
             type_: MapValueN,
             rawExpr: fc.funcExpr,
-            entityName: fullTableRange.name,
+            entityId: fullTableRange.name,
             valueExpr: ce.rawExpr,
             has$Identifier: ce.has$Identifier,
             hasNon$Identifier: ce.hasNon$Identifier,
@@ -112,7 +112,7 @@ function _MAP_KEY(fc: FuncCommon, fullTableRange: Identifier, keyExpr: Expressio
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
-            entityName: fullTableRange.name,
+            entityId: fullTableRange.name,
             keyExpr: [ce.rawExpr],
             has$Identifier: ce.has$Identifier,
             hasNon$Identifier: ce.hasNon$Identifier,
@@ -134,7 +134,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
-            entityName: basicRange.name,
+            entityId: basicRange.name,
             keyExpr: isArrayExpression(keyExpr) ? keyExpr.elements : [keyExpr],
             has$Identifier: inputRange.has$Identifier,
             hasNon$Identifier: inputRange.hasNon$Identifier,
@@ -144,7 +144,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
         return {
             type_: MapFunctionN,
             rawExpr: fc.funcExpr,
-            entityName: inputRange.entityName,
+            entityId: inputRange.entityId,
             keyExpr: isArrayExpression(keyExpr) ? keyExpr.elements : [keyExpr],
             valueExpr: inputRange.valueExpr,
         };
@@ -153,7 +153,7 @@ function _MAP(fc: FuncCommon, basicRange: Identifier | MemberExpression | CallEx
         return {
             type_: MapFunctionN,
             rawExpr: fc.funcExpr,
-            entityName: inputRange.entityName,
+            entityId: inputRange.entityId,
             keyExpr: inputRange.keyExpr.concat(isArrayExpression(keyExpr) ? keyExpr.elements : [keyExpr]),
             valueExpr: inputRange.valueExpr,
         };
@@ -170,7 +170,7 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
         return {
             type_: MapKeyN,
             rawExpr: fc.funcExpr,
-            entityName: basicRange.name,
+            entityId: basicRange.name,
             keyExpr: compiledGroupExpr.map(cg => cg.rawExpr),
             has$Identifier: inputRange.has$Identifier,
             hasNon$Identifier: inputRange.hasNon$Identifier,
@@ -179,7 +179,7 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
         return {
             type_: MapFunctionN,
             rawExpr: fc.funcExpr,
-            entityName: inputRange.entityName,
+            entityId: inputRange.entityId,
             keyExpr: compiledGroupExpr.map(cg => cg.rawExpr),
             valueExpr: inputRange.valueExpr,
         };
@@ -187,7 +187,7 @@ function GROUP_BY(fc: FuncCommon, basicRange: Identifier | MemberExpression | Ca
         return {
             type_: MapFunctionN,
             rawExpr: fc.funcExpr,
-            entityName: inputRange.entityName,
+            entityId: inputRange.entityId,
             keyExpr: inputRange.keyExpr.concat(compiledGroupExpr.map(cg => cg.rawExpr)),
             valueExpr: inputRange.valueExpr,
         };
@@ -201,7 +201,7 @@ function __IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallEx
     let inputRange = compileArgNV(fc, 'basicRange', tableRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
     let logicalExpressionContext = {...fc.context};
     if (includesMapValue(inputRange)) {
-        logicalExpressionContext.currentEntityName = inputRange.entityName;
+        logicalExpressionContext.currentEntityName = inputRange.entityId;
     }
     let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression, [isLogicalExpression, isBinaryExpression], logicalExpressionContext, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
     return [inputRange, compiledLogicalExpression];
@@ -233,7 +233,7 @@ function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLog
             rawExpr: fc.funcExpr,
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
                 map: {
-                    entityName: inputRange.entityName,
+                    entityId: inputRange.entityId,
                     keyExpr: compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr,
                     valueExpr: inputRange.valueExpr,
                     query: {
@@ -253,7 +253,7 @@ function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLog
         rawExpr: fc.funcExpr,
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
             map: {
-                entityName: includesMapKey(inputRange) ? inputRange.entityName : _throw("IF Expected MapKey but found ", inputRange),
+                entityId: includesMapKey(inputRange) ? inputRange.entityId : _throw("IF Expected MapKey but found ", inputRange),
                 keyExpr: includesMapKey(inputRange) ? inputRange.keyExpr.concat(
                     compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr)
                     : compiledLogicalExpression.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr,
@@ -286,7 +286,7 @@ function _RANGE(fc: FuncCommon, basicRange: Identifier | MemberExpression | Call
     return {
         type_: MapFunctionAndQueryN,
         rawExpr: fc.funcExpr,
-        entityName: inputRange.entityName,
+        entityId: inputRange.entityId,
         keyExpr: inputRange.keyExpr,
         valueExpr: inputRange.valueExpr,
         query: {
@@ -317,7 +317,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             type_: MapReduceTriggerN,
             rawExpr: fc.funcExpr,
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-                aggsViewName: getViewName(true, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName, fc.funcExpr),
+                aggsViewName: getViewName(true, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId, fc.funcExpr),
                 map: {
                     ...inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
                 },
@@ -325,7 +325,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
-                entityName: fc.context.targetEntityName,
+                entityId: fc.context.targetEntityName,
                 ...inputRange.mapObserversImpactedByOneObservable,
                 valueExpr: $s2e(`_id`),
             }
@@ -335,9 +335,9 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             type_: MapReduceTriggerN,
             rawExpr: fc.funcExpr,
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-                aggsViewName: getViewName(true, inputRange.entityName, fc.funcExpr),
+                aggsViewName: getViewName(true, inputRange.entityId, fc.funcExpr),
                 map: {
-                    entityName: inputRange.entityName,
+                    entityId: inputRange.entityId,
                     keyExpr: isMapValue(inputRange) ? [$s2e(`_id`)] : inputRange.keyExpr,
                     valueExpr: inputRange.valueExpr,
                     query: includesMapFunctionAndQuery(inputRange) ? inputRange.query : {
@@ -351,7 +351,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
-                entityName: fc.context.targetEntityName,
+                entityId: fc.context.targetEntityName,
                 keyExpr: [$s2e(`_id`)],
                 valueExpr: $s2e(`_id`),
                 query: {
@@ -423,12 +423,12 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
             ...inputRange.mapObserversImpactedByOneObservable,
             obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
             valueExpr: $s2e(`_id`),
-            entityName: fc.context.targetEntityName,
+            entityId: fc.context.targetEntityName,
         },
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-            aggsViewName: getViewName(true, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName, fc.funcExpr),
+            aggsViewName: getViewName(true, inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId, fc.funcExpr),
             map: {
-                entityName: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName,
+                entityId: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId,
                 keyExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr
                     .concat(inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr),
                 valueExpr: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr,
@@ -461,9 +461,9 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
         type_: MapReduceTriggerN,
         rawExpr: fc.funcExpr,
         mapreduceAggsOfManyObservablesQueryableFromOneObs: {
-            aggsViewName: getViewName(true, inputRange.entityName, fc.funcExpr),
+            aggsViewName: getViewName(true, inputRange.entityId, fc.funcExpr),
             map: {
-                entityName: inputRange.entityName || _throw("RANK table range missing table name: " + tableRange.origExpr + "; " + CircularJSON.stringify(inputRange)),
+                entityId: inputRange.entityId || _throw("RANK table range missing table name: " + tableRange.origExpr + "; " + CircularJSON.stringify(inputRange)),
                 keyExpr: inputRange.keyExpr,
                 valueExpr: $s2e(`1`),
                 query: {
@@ -477,7 +477,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
         },
         mapObserversImpactedByOneObservable: {
             obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
-            entityName: fc.context.targetEntityName,
+            entityId: fc.context.targetEntityName,
             keyExpr: isArrayExpression(lookupExpr) ? lookupExpr.elements : [lookupExpr],
             valueExpr: $s2e(`_id`),
             query: {
@@ -597,3 +597,39 @@ export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapReduceFunctions))
     .concat(Object.keys(PropertyTypeFunctions))
 ;
+
+//cat core/src/functions_compiler.ts | perl -ne 'if (/^function ([A-Z_]+)\(/) {my $f=$1; s!:[\w \|]+([,)])!$1!g; s!\).*!)!; chomp; print "$f: `$_`,\n"}'
+export const FunctionSignatures = {
+    _MAP_VALUE: `function _MAP_VALUE(fc, fullTableRange, valueExpr)`,
+    _MAP_KEY: `function _MAP_KEY(fc, fullTableRange, keyExpr)`,
+    _MAP: `function _MAP(fc, basicRange, keyExpr, valueExpr?)`,
+    GROUP_BY: `function GROUP_BY(fc, basicRange, ...groupExpr: Expression[])`,
+    IF: `function IF(fc, tableRange, logicalExpression)`,
+    __IF: `function __IF(fc, tableRange, logicalExpression)`,
+    _IF: `function _IF(fc, inputRange, compiledLogicalExpression)`,
+    _RANGE: `function _RANGE(fc, basicRange, startExpr, endExpr, inclusive_start?, inclusive_end?)`,
+    _REDUCE: `function _REDUCE(fc, inputRange, reduceFun)`,
+    SUM: `function SUM(fc, tableRange)`,
+    REFERENCE_TO: `function REFERENCE_TO(fc, tableRange)`,
+    NUMBER: `function NUMBER(fc)`,
+    STRING: `function STRING(fc)`,
+    DATETIME: `function DATETIME(fc)`,
+    SUMIF: `function SUMIF(fc, tableRange, logicalExpression)`,
+    COUNT: `function COUNT(fc, tableRange)`,
+    COUNTIF: `function COUNTIF(fc, tableRange, logicalExpression)`,
+    TEXTJOIN: `function TEXTJOIN(fc, tableRange, delimiter)`,
+    RANK: `function RANK(fc, lookupExpr, tableRange)`,
+    VLOOKUP: `function VLOOKUP(fc, entityRange, booleanExpr, resultExpr)`,
+    TEXT: `function TEXT(fc, expr, format)`,
+    CONCATENATE: `function CONCATENATE(fc, expr, expr2)`,
+    REGEXREPLACE: `function REGEXREPLACE(fc, expr, regex, replacement)`,
+    SUBSTITUTE: `function SUBSTITUTE(fc, expr, old_text, new_text)`,
+    EOMONTH: `function EOMONTH(fc, expr, numMonths)`,
+    SQRT: `function SQRT(fc, expr)`,
+    ROUND: `function ROUND(fc, expr)`,
+    FACT: `function FACT(fc, expr)`,
+    HLOOKUP: `function HLOOKUP(fc, expr)`,
+    FLOOR: `function FLOOR(fc, expr, significance)`,
+    DATEDIF: `function DATEDIF(fc, start_date, end_date, unit)`,
+    OVERLAP: `function OVERLAP(fc, start_date_1, end_date_1, start_date_2, end_date_2, max_interval)`,
+}

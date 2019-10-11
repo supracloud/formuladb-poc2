@@ -53,12 +53,6 @@ rsync-deploy() {
 }
 #rsync-deploy 4179 ../customer-dacris dacris@mail.dacris.ro:/opt/data/dacris/LIVE/formuladb
 
-startFrmdb() {
-    FRMDB_RELEASE=`git branch|grep '^\*'|sed -e 's/[*] //g'`
-    # TODO: if release is not "master" or x.y.z replace tags for formuladb-fe and formuladb-be with "stopped"
-    FRMDB_RELEASE=${FRMDB_RELEASE} docker-compose.exe up --remove-orphans --abort-on-container-exit
-}
-
 ssh-ci() {
     #ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
     ssh -i ./ssh/frmdb.id_rsa root@34.76.177.179
@@ -96,4 +90,81 @@ upload-all() {
     find vvvebjs/ -type f|egrep -v '\.git|./demo/|\.scss$|\.php$|\.map$|bootstrap.js' | while read i; do
         upload-asset "$i"
     done    
+}
+
+kubectlget() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" get "$@"
+}
+
+kubectldescribe() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" describe "$@"
+}
+
+kubectlexec() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec service/$service_name "$@"
+    #TODO this needs to parse the arguments...it is more complex
+}
+
+kubectllogs() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" logs service/$service_name "$@"
+}
+
+kubectldelete() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
+    kubectl -n "$namespace" delete pod $pod
+}
+
+kubectlgetall() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    for i in $(kubectl api-resources --verbs=list --namespaced -o name | grep -v "events.events.k8s.io" | grep -v "events" | sort | uniq); do
+        kubectl -n "$namespace" get --ignore-not-found ${i} | sed -e "s/^/[$i] /"
+    done
+}
+
+kubectlport-forward() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
+    kubectl -n "$namespace" port-forward $pod "$@"
+}
+
+kubectlport-forward-env-be() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    export KUBECONFIG=k8s/production-kube-config.conf
+    namespace=$1
+    shift
+    pod=`kubectl -n ${namespace} get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
+    kubectl -n "$namespace" port-forward $pod 8085:3000
+}
+
+frmdb-be-load-test-data() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 }

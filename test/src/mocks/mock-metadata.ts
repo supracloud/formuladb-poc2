@@ -17,9 +17,9 @@ import * as StaticPagesMetadata from "../default_pages/website-metadata";
 import * as Booking from './booking-metadata';
 import { App } from '@domain/app';
 import { $User, $Dictionary, $Currency } from '@domain/metadata/default-metadata';
-import { HotelBookingSchema } from '../hotel-booking/metadata';
-import { InventorySchema } from '../inventory/metadata';
-import { FormuladbIoSchema } from '@test/formuladb.io/metadata';
+import { HotelBookingSchema, HotelBookingApp } from '../hotel-booking/metadata';
+import { InventorySchema, InventoryApp } from '../inventory/metadata';
+import { FormuladbIoSchema, FormuladbIoApp } from '@test/formuladb.io/metadata';
 
 export * from "../inventory/metadata";
 export * from "./general-metadata";
@@ -159,9 +159,9 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    { tenantName: "formuladb-examples", appName: "basic-inventory", schema: InventorySchema},
-    { tenantName: "formuladb-examples", appName: "hotel-booking", schema: HotelBookingSchema},
-    { tenantName: "formuladb-internal", appName: "formuladb.io", schema: FormuladbIoSchema},
+    { tenantName: "formuladb-apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp},
+    { tenantName: "formuladb-apps", appName: "Hotel_Booking", schema: HotelBookingSchema, app: HotelBookingApp},
+    { tenantName: "formuladb-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp},
 ];
 
 for (let sch of Schemas) {

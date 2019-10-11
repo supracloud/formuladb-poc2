@@ -62,6 +62,15 @@ configBe = {
     },
 };
 
+configBeTools = {
+    ...configBaseNode,
+    entry: './tsc-out/test/src/load_test_data.js',
+    output: {
+        path: path.resolve(__dirname, 'dist-be'),
+        filename: 'frmdb-be-load-test-data.js'
+    },
+};
+
 configDataGrid = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
@@ -90,7 +99,8 @@ configFrmdbEditor = {
 };
 
 module.exports = [
-    configBe, 
+    configBe,
+    configBeTools,
     configDataGrid, 
     configFe,
     configFrmdbEditor

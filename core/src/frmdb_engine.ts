@@ -44,7 +44,7 @@ export class FrmdbEngine {
     }
 
     public async putSchema(schema: Schema): Promise<Schema> {
-        await this.frmdbEngineStore.putSchema(schema);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.putSchema(this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, schema);
         this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
         this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
@@ -100,7 +100,7 @@ export class FrmdbEngine {
         if (!event.path.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
         let newEntity: Entity = { _id: event.path, props: {} };
 
-        return this.frmdbEngineStore.putEntity(newEntity)
+        return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, newEntity)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
@@ -110,7 +110,7 @@ export class FrmdbEngine {
     }
 
     private deleteEntity(event: events.ServerEventDeleteEntity): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.delEntity(event.entityId)
+        return this.frmdbEngineStore.kvsFactory.metadataStore.delEntity(this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, event.entityId)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;

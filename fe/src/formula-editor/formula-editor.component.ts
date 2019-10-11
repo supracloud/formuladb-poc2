@@ -60,8 +60,19 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
     toggleEditorBtn: HTMLButtonElement;
     applyChangesBtn: HTMLButtonElement;
 
-    dirty: boolean;
-    hasErrors: boolean;
+    get dirty(): boolean { return this.applyChangesBtn.dataset.frmdbDirty === "true" }
+    set dirty(val: boolean) { this.applyChangesBtn.dataset.frmdbDirty = '' + val }
+    get hasErrors(): boolean { return this.applyChangesBtn.classList.contains("bg-danger") }
+    set hasErrors(val: boolean) { 
+        this.applyChangesBtn.classList.remove("bg-success");
+        this.applyChangesBtn.classList.remove("bg-danger");
+        if (val) {
+            this.applyChangesBtn.classList.add("bg-danger");
+        } else {
+            this.applyChangesBtn.classList.add("bg-success");
+        }
+    }
+
     currentTokens: UiToken[];
     currentSuggestions: Suggestion[];
     activeSuggestion: number;
@@ -234,8 +245,6 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
 
             this.overlay.innerHTML = ftext;
             this.hasErrors = hasErrors;
-            this.applyChangesBtn.classList.toggle("bg-danger", hasErrors);
-            this.applyChangesBtn.classList.toggle("bg-success", !hasErrors);
         }
     }
 
@@ -401,7 +410,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
                 let columnName = token.columnName;
                 if (tableName && columnName) {
                     newformulaHighlightedColumns[tableName] = newformulaHighlightedColumns[tableName] || {};
-                    if (this.st.formulaHighlightedColumns[tableName] && this.st.formulaHighlightedColumns[tableName][columnName]) {
+                    if (this.st.formulaHighlightedColumns && this.st.formulaHighlightedColumns[tableName] && this.st.formulaHighlightedColumns[tableName][columnName]) {
                         newformulaHighlightedColumns[tableName][columnName] = this.st.formulaHighlightedColumns[tableName][columnName];
                         existingStyles.add(newformulaHighlightedColumns[tableName][columnName]);
                         uiToken.class = this.st.formulaHighlightedColumns[tableName][columnName].replace(/^#/, 'c_');

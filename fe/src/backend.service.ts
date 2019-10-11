@@ -18,7 +18,7 @@ import { SchemaCompiler } from '@core/schema_compiler';
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { APP_AND_TENANT_ROOT } from "./app.service";
-import { waitUntilNotNull } from "@domain/ts-utils";
+import { waitUntil } from "@domain/ts-utils";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -141,9 +141,9 @@ export class BackendService {
         return dictionary;
     }
 
-    public simpleAdHocQuery(entityName: string, query: SimpleAddHocQuery): Promise<any[]> {
-        LOG.debug("simpleAdHocQuery", entityName + " %o", query);
-        return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/' + entityName + '/SimpleAddHocQuery',
+    public simpleAdHocQuery(entityId: string, query: SimpleAddHocQuery): Promise<any[]> {
+        LOG.debug("simpleAdHocQuery", entityId + " %o", query);
+        return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/' + entityId + '/SimpleAddHocQuery',
             query);
     }
 
@@ -153,9 +153,9 @@ export class BackendService {
         let dataObj = http;
         if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
 
-        let { entityName, id: objId, uid: parentUUID } = parseDataObjId(id);
-        let entity = await this.getEntity(entityName);
-        if (!entity) throw new Error("cannot find entity: " + entityName + ", for getting children");
+        let { entityId, id: objId, uid: parentUUID } = parseDataObjId(id);
+        let entity = await this.getEntity(entityId);
+        if (!entity) throw new Error("cannot find entity: " + entityId + ", for getting children");
         for (const prop of Object.values(entity.props)) {
             if (prop.propType_ === Pn.CHILD_TABLE) {
                 const subtableData = await this.getTableData(getChildrenPrefix(prop.referencedEntityName, parentUUID));
@@ -179,7 +179,7 @@ export class BackendService {
     }
 
     public async getCurrentSchema(): Promise<Schema> {
-        return waitUntilNotNull(() => this.currentSchema as any);
+        return waitUntil(() => this.currentSchema as any);
     }
 
     public async getEntity(path: string): Promise<Entity> {

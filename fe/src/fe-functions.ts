@@ -1,7 +1,6 @@
 import * as DOMPurify from "dompurify";
 
 import { BACKEND_SERVICE } from "./backend.service";
-import { AppPage } from "@domain/app";
 import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Entity, Pn } from "@domain/metadata/entity";
@@ -17,10 +16,10 @@ export async function loadPage(pageName: string): Promise<string> {
     let appBackend = BACKEND_SERVICE();
     let app = await appBackend.getApp();
     if (!app) throw new Error("App not found");
-    let page: AppPage | undefined = app.pages.find(p => p.name == pageName);
+    let page: string | undefined = app.pages.find(p => p == pageName);
     if (!page) throw new Error("App not found");
 
-    let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
+    let url = `/${appBackend.tenantName}/${appBackend.appName}/${page}`;
     console.log(`fetching ${url}...`);
     let res = await fetch(url, {
         headers: {

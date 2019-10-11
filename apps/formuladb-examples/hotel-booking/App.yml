@@ -1,4 +1,0 @@
-_id: App~~booking
-description: 'Booking Items (e.g. rooms, events, cars)'
-page:
-  layout: frmdb-ly-admin

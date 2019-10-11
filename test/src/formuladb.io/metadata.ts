@@ -54,21 +54,20 @@ export const ContactRequest = {
 };
 
 export const FormuladbIoApp: App = {
-    _id: "/formuladb-internal/formuladb.io",
+    _id: "formuladb.io",
     description: "formuladb.io",
-    theme: "portal/public",
     pages: [
-        { name: "index.html", title: "FormulaDB" },
-        { name: "no-code.html", title: "FormulaDB" },
-        { name: "low-code.html", title: "FormulaDB" },
-        { name: "no-code-vs-low-code.html", title: "FormulaDB" },
-        { name: "pricing.html", title: "FormulaDB" },
-        { name: "contact.html", title: "FormulaDB" },
-        { name: "community.html", title: "FormulaDB" },
-        { name: "about.html", title: "FormulaDB" },
-        { name: "add__WishListRequest.html", title: "" },
-        { name: "_nav.html", title: "FormulaDB" },
-        { name: "_footer.html", title: "FormulaDB" },
+        "index.html",
+        "no-code.html",
+        "low-code.html",
+        "no-code-vs-low-code.html",
+        "pricing.html",
+        "contact.html",
+        "community.html",
+        "about.html",
+        "add__WishListRequest.html",
+        "_nav.html",
+        "_footer.html",
     ],
 };
 

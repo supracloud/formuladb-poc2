@@ -7,8 +7,6 @@ import * as _ from 'lodash';
 
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
-import { AppPage } from '@domain/app';
-import { BACKEND_SERVICE } from '@fe/backend.service';
 import { loadPage } from '@fe/fe-functions';
 const LOG = new FrmdbLogger('frmdb-fragment');
 

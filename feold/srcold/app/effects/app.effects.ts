@@ -25,7 +25,7 @@ import { BackendService } from "./backend.service";
 import { FormulaPreviewFromBackend, I18nLoadDictionary, pageInitialState } from '../state/app.state';
 import { FormNotifFromBackendAction, ResetPageDataFromBackendAction, PageFromBackendAction, PageDataFromBackendAction } from '../actions/form.backend.actions';
 import { EntitiesFromBackendFullLoadAction } from '../state/entity-state';
-import { waitUntilNotNull } from "@core/ts-utils";
+import { waitUntil } from "@core/ts-utils";
 import { isNewTopLevelDataObjId } from '@domain/metadata/data_obj';
 import { FrmdbStreamsService } from '../state/frmdb-streams.service';
 import { AppServerEventAction, AppServerEventActionN } from '../actions/app.actions';
@@ -56,7 +56,7 @@ export const ActionsToBeSentToServerNames = [
 
 @Injectable()
 export class AppEffects {
-    private currentUrl: { appName: string | null, entityName: string | null, id: string | null, entity: Entity | null } = { appName: null, entityName: null, id: null, entity: null };
+    private currentUrl: { appName: string | null, entityId: string | null, id: string | null, entity: Entity | null } = { appName: null, entityId: null, id: null, entity: null };
     private tablePage: TablePage;
     private formPage: FormPage;
     private app: App;
@@ -79,7 +79,7 @@ export class AppEffects {
         //listen for new object creations
         this.listenForNewDataObjActions();
 
-        waitUntilNotNull(async () => {
+        waitUntil(async () => {
             let ret = await this.backendService.getApplications();
             return ret;
         });
@@ -89,7 +89,7 @@ export class AppEffects {
 
     public async changeApplication(appName: string) {
         try {
-            let apps: Map<string, App> = await waitUntilNotNull(async () => {
+            let apps: Map<string, App> = await waitUntil(async () => {
                 let ret = await this.backendService.getApplications();
                 return ret;
             });
@@ -112,7 +112,7 @@ export class AppEffects {
             let dict = await this.backendService.getDictionary(app.locale || 'en');
             this.store.dispatch(new I18nLoadDictionary(dict));
 
-            let entities = await waitUntilNotNull(async () => {return await this.backendService.getEntities()});
+            let entities = await waitUntil(async () => {return await this.backendService.getEntities()});
 
             //load entities and remove readOnly flag
             this.store.dispatch(new appState.EntitiesFromBackendFullLoadAction(entities));
@@ -138,7 +138,7 @@ export class AppEffects {
                 break;
             }
             case "ServerEventModifiedFormData": {
-                let { appName, entityName: path, id } = appState.parseUrl(this.router.url);
+                let { appName, entityId: path, id } = appState.parseUrl(this.router.url);
                 if (!id) {
                     console.error("Modify object for non-object url: " + this.router.url);
                     break;
@@ -155,7 +155,7 @@ export class AppEffects {
                 break;
             }
             case "ServerEventDeletedFormData": {
-                let { appName, entityName: path, id } = appState.parseUrl(this.router.url);
+                let { appName, entityId: path, id } = appState.parseUrl(this.router.url);
                 if (null == id) {
                     this.frmdbStreams.serverEvents$.next({type: "ServerDeletedFormData", obj: eventFromBe.obj});
                 } else {
@@ -222,9 +222,9 @@ export class AppEffects {
     }
 
     private async processRouterUrlChange(url: string) {
-        let { appName, entityName, id } = appState.parseUrl(url);
+        let { appName, entityId, id } = appState.parseUrl(url);
 
-        if (appName === this.currentUrl.appName && entityName === this.currentUrl.entityName && id === this.currentUrl.id) return;
+        if (appName === this.currentUrl.appName && entityId === this.currentUrl.entityId && id === this.currentUrl.id) return;
 
         let appNameChanged = false;
         if (appName !== this.currentUrl.appName) {
@@ -235,32 +235,32 @@ export class AppEffects {
             }
         }
 
-        if (entityName !== this.currentUrl.entityName) {
-            this.currentUrl.entityName = entityName;
-            if (entityName) {
-                await this.changeEntity(entityName);
+        if (entityId !== this.currentUrl.entityId) {
+            this.currentUrl.entityId = entityId;
+            if (entityId) {
+                await this.changeEntity(entityId);
                 if (!id) {
-                    this.store.dispatch(new ResetPageDataFromBackendAction({_id: entityName + '^~Table'}));
+                    this.store.dispatch(new ResetPageDataFromBackendAction({_id: entityId + '^~Table'}));
                 }
             }
         } else if (!id && this.currentUrl.id) {
             this.store.dispatch(new PageChangedAction(this.tablePage));
         }
 
-        if (id && entityName && id != this.currentUrl.id) {
+        if (id && entityId && id != this.currentUrl.id) {
             this.currentUrl.id = id;
 
-            let entity = await this.backendService.getEntity(entityName);
-            if (null == entity) throw new Error("Cannot find entity " + entityName);
+            let entity = await this.backendService.getEntity(entityId);
+            if (null == entity) throw new Error("Cannot find entity " + entityId);
 
-            let form: FormPage | null = await this.backendService.getForm(entityName);
+            let form: FormPage | null = await this.backendService.getForm(entityId);
             if (!form || !form.childNodes || form.childNodes.length == 0) {
                 form = this.autoLayoutService.autoLayoutFormPage(form||emptyFormPage(entity._id), entity);
             }
             this.formPage = form;
             this.store.dispatch(new PageFromBackendAction(form));
 
-            if (id === entityName + '~~') {
+            if (id === entityId + '~~') {
                 this.store.dispatch(new ResetPageDataFromBackendAction({_id: id}));
             } else {
                 this.backendService.getDataObj(id)
@@ -274,7 +274,7 @@ export class AppEffects {
             this.currentUrl.id = null;
         }
 
-        if (appNameChanged && !entityName) {
+        if (appNameChanged && !entityId) {
             this.router.navigate([appName! + '/' + (elvis(this.app).homePage || 'Home/Home~~Home')]);
         }
     }

@@ -18,8 +18,8 @@ spec:
           do echo waiting for database; sleep 2; done;']
       containers:
       - env:
-        - name: DEBUG
-          value: express:*
+        # - name: DEBUG
+        #   value: express:*
         - name: DEFAULT_USER
         - name: DEV_MODE
         - name: FRMDB_STORAGE
@@ -40,6 +40,9 @@ spec:
         - name: service-account-credentials
           mountPath: /etc/gcp
           readOnly: true
+        - mountPath: /wwwroot/git
+          name: git-persistence
+          # subPath: gitroot
       volumes:
       - name: service-account-credentials
         secret:
@@ -47,6 +50,9 @@ spec:
           items:
           - key: sa_json
             path: sa_credentials.json
+      - name: git-persistence
+        persistentVolumeClaim:
+          claimName: git-persistence
       restartPolicy: Always
       imagePullSecrets:
         - name: regcred

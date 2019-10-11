@@ -240,6 +240,7 @@ export class FrmdbTransactionRunner {
                 await this.frmdbEngineStore.putEntity(modifiedEntity);
             }
         } catch (ex) {
+            console.error(ex);
             event.state_ = 'ABORT';
             event.notifMsg_ = '' + ex;
             try {
@@ -278,8 +279,8 @@ export class FrmdbTransactionRunner {
 
     private async getChildObjects(obj: DataObj): Promise<DataObj[]> {
         let ret: DataObj[] = [];
-        let { entityName, id, uid } = parseDataObjId(obj._id);
-        let entity = await this.frmdbEngineStore.getEntity(entityName);
+        let { entityId, id, uid } = parseDataObjId(obj._id);
+        let entity = await this.frmdbEngineStore.getEntity(entityId);
         if (!entity) throw new Error("Cannot find children of object with missing entity " + obj._id);
         for (let prop of Object.values(entity.props)) {
             if (prop.propType_ === Pn.CHILD_TABLE) {
@@ -433,7 +434,7 @@ export class FrmdbTransactionRunner {
     }
 
     public validateObj(obsNew: DataObj): FailedValidation[] {
-        let obsEntityName = parseDataObjId(obsNew._id).entityName;
+        let obsEntityName = parseDataObjId(obsNew._id).entityId;
         let failedValidations: FailedValidation[] = [];
         for (let vEntry of _.entries(this.schemaDAO.getValidations(obsNew._id))) {
             let [validationName, validation] = vEntry;
@@ -490,13 +491,13 @@ export class FrmdbTransactionRunner {
 
     private async preComputeFormula(oblId: string, transacDAG: TransactionDAG, oblOld: DataObj | null, oblNew: DataObj | null, compiledFormula: CompiledFormula, obsOld: DataObj, obsNew: DataObj) {
         if (!oblOld && !oblNew) throw new Error("preComputeFormula both old and new observables cannot be null");
-        let oblEntityName = parseDataObjId(oblId).entityName;
+        let oblEntityName = parseDataObjId(oblId).entityId;
         let aggsViewUpdates: MapReduceViewUpdates<string | number>[] = [];
         let obsViewUpdates: MapViewUpdates<string | number>[] = [];
 
         let triggerValues: _.Dictionary<number | string> = {};
         for (let triggerOfFormula of compiledFormula.triggers || []) {
-            if (triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName === oblEntityName) {
+            if (triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId === oblEntityName) {
                 aggsViewUpdates.push(await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName, oblOld, oblNew));
                 obsViewUpdates.push(await this.frmdbEngineStore.preComputeViewUpdateForObj(triggerOfFormula.mapObserversImpactedByOneObservable.obsViewName, obsOld, obsNew));
 

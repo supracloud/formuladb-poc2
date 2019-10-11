@@ -15,6 +15,6 @@ export interface Role {
     _id: string;
     isDeveloper?: boolean;
     permissions: {
-        [entityName: string]: "read" | "write" | "create" | "read-owner" | "write-owner" | "read-role" | "write-role";
+        [entityId: string]: "read" | "write" | "create" | "read-owner" | "write-owner" | "read-role" | "write-role";
     }
 }

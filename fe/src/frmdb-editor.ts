@@ -1,6 +1,6 @@
 import { onDoc, onEvent } from './delegated-events';
 import { queryFormulaEditor } from './formula-editor/formula-editor.component';
-import { queryDataGrid, DataGridComponent, CURRENT_COLUMN_HIGHLIGHT_STYLE } from './data-grid/data-grid.component';
+import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';
@@ -18,6 +18,7 @@ import { normalizeHTMLStr, normalizeDOM2HTML } from '@core/normalize-html';
 import './fe-functions';
 import './form/form.component';
 import { FrmdbAppState } from './frmdb-app-state';
+import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 
 declare var Vvveb: any;
 
@@ -49,13 +50,13 @@ async function initEditor(loadPageName?: string) {
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
-    EditorState.pages = app.pages.map(p => ({ name: p.name, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p.name}` }));
+    EditorState.pages = app.pages.map(p => ({ name: p, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p}` }));
     let indexPage: {name: string, url: string} | null = null;
     let vvvebPages: any[] = [];
     for (let page of app.pages) {
-        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page.name}`;
-        if (page.name === app.homePage) indexPage = {name: page.name, url: url};
-        vvvebPages.push({ name: page.name, title: page.title, url });
+        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page}`;
+        if (page === app.homePage) indexPage = {name: page, url: url};
+        vvvebPages.push({ name: page, title: page, url });
     }
     if (!indexPage) {
         indexPage = vvvebPages.length > 0 ? vvvebPages[0] : {name: "index-page-not-found", url: `/${appBackend.tenantName}/${appBackend.appName}/index-page-not-found`};
@@ -190,7 +191,9 @@ function tableColumnManagementFlows() {
     onDoc("frmdbchange", "frmdb-formula-editor", async (event) => {
         let formulaEditor = queryFormulaEditor(document);
         let dataGrid = queryDataGrid(document);
-        dataGrid.frmdbState.highlightColumns = formulaEditor.frmdbState.formulaHighlightedColumns;
+        if (formulaEditor.frmdbState.formulaHighlightedColumns) {
+            dataGrid.highlightColumns = formulaEditor.frmdbState.formulaHighlightedColumns;
+        }
     });
 
     onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
@@ -250,7 +253,6 @@ async function loadTables(selectedTable?: string) {
 function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
     for (let i = 0; i < (el.attributes||[]).length; i++) {
         let attrib = el.attributes[i];
-        console.warn(DATA_FRMDB_ATTRS_Enum);
         if (attrib.name === 'data-frmdb-table') {
             let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
             return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
@@ -279,7 +281,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     if (!cell) return;
     let { recordId, columnId } = cell;
     let tableName = entityNameFromDataObjId(recordId);
-    dataGrid.frmdbState.highlightColumns = {
+    dataGrid.highlightColumns = {
         [tableName]: {
             [columnId]: CURRENT_COLUMN_HIGHLIGHT_STYLE,
         },
@@ -288,7 +290,7 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
         }
     };
     changeSelectedTableIdIfDifferent(tableName);
-    dataGrid.forceCellRefresh();
+    dataGrid.forceCellRefresh(tableName);
 }
 (window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
 

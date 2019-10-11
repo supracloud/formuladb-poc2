@@ -167,17 +167,17 @@ export const reducers = {
 };
 
 
-export function parseUrl(url: string): { appName: string | null, entityName: string | null, id: string | null } {
+export function parseUrl(url: string): { appName: string | null, entityId: string | null, id: string | null } {
   let match = url.match(/^\/([\w_]+)\/?([\w_]+)?\/?([-_%\w\d~]+)?/)
   let appName: string | null = null;
-  let entityName: string | null = null;
+  let entityId: string | null = null;
   let id: string | null = null;
   if (null != match) {
     appName = match[1];
-    if (match.length >= 3 && match[2] != null) entityName = match[2];
+    if (match.length >= 3 && match[2] != null) entityId = match[2];
     if (match.length >= 4 && match[3] != null) id = match[3];
   }
 
-  return { appName, entityName, id };
+  return { appName, entityId, id };
 
 }
