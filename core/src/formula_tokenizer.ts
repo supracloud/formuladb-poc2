@@ -260,6 +260,7 @@ export class FormulaTokenizer {
 
     private setCallStackFrame(tokens: Token[], functionName: string, argumentIdx: number) {
         let fn = ScalarFunctions[functionName] || MapFunctions[functionName] || MapReduceFunctions[functionName] || PropertyTypeFunctions[functionName];
+        console.warn(ScalarFunctions);
         let errors: string[] = [];
         let argumentName: string | undefined = undefined;
 
