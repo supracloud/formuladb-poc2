@@ -69,6 +69,23 @@
             }
         },
         {
+            "name": "FE serve - env",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8082",
+            "webRoot": "${workspaceFolder}",
+            "pathMapping": {
+                "/formuladb-editor": "${workspaceFolder}/vvvebjs"
+            },
+            "sourceMapPathOverrides": {
+                "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
+                "webpack:///./functions/src/*": "${webRoot}/functions/src/*",
+                "webpack:///./core/src/*": "${webRoot}/core/src/*",
+                "webpack:///./test/src/*": "${webRoot}/test/src/*",
+                "webpack:///./fe/src/*": "${webRoot}/fe/src/*",
+            }
+        },
+        {
             "name": "BE serve",
             "type": "node",
             "request": "attach",
