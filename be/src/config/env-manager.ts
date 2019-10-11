@@ -38,12 +38,16 @@ export async function createNewEnvironment(envName: string) {
       await exec(`gsutil -m rsync -r gs://formuladb-static-assets/production/ gs://formuladb-static-assets/${envName}/`,
                 {maxBuffer: 10240 * 1000});
 
+      console.log(`Data provisioning ...`);
+      await exec(`PGPASSWORD=postgres psql -U postgres -d postgres -h db.${envName} < k8s/pg_dump.sql`);
+
       await retry(async bail => {
         // if anything throws, we retry
         const res = await fetch(`https://${envName}.formuladb.io`)
         
         console.log(`https://${envName}.formuladb.io returned ${res.status}`);
         if (200 !== res.status) {
+          console.log(`Not ready yet ...`);
           throw "Not ready!";
         }
         return 200;

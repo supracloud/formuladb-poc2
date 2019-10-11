@@ -9,4 +9,4 @@ spec:
       - name: be
         env:
         - name: FRMDB_ENV_NAME
-          value: tdev-acr #TBD_ENV_NAME
+          value: tdev-loi #TBD_ENV_NAME

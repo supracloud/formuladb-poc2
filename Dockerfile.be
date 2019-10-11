@@ -30,7 +30,7 @@ ENV NPM_SCRIPT=${BUILD_DEVELOPMENT:+start_dev}
 ENV NPM_SCRIPT=${NPM_SCRIPT:-start}
 
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache bash git python2 perl py-pip
+    apk add --no-cache bash git python2 perl py-pip postgresql-client
 
 # https://stackoverflow.com/questions/44442354/using-standalone-gsutil-from-within-gke
 RUN pip install google-compute-engine

@@ -13,7 +13,7 @@ build:
       - src: skaffold.yaml
         dest: /
       - src: 'k8s/**/*'
-        dest: /k8s
+        dest: /
     docker:
       dockerfile: Dockerfile.be
       buildArgs: {}
