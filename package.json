@@ -22,7 +22,8 @@
         "_old_e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
         "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts",
         "generate-icons": "icon-font-generator -p frmdb-i fe/img/icons/*.svg -o fe/icons",
-        "generate-json-schemas": "for i in App Entity SchemaEntityList; do typescript-json-schema ./tsconfig.json $i > core/src/schemas/$i.schema.json ; done"
+        "generate-json-schemas": "for i in App Entity SchemaEntityList; do typescript-json-schema ./tsconfig.json $i > core/src/schemas/$i.schema.json ; done",
+        "sync-dev-static-assets": "watch 'bash ci/copy-static-assets-to-dev-ngunx-pod.sh' formuladb-static formuladb-themes"
     },
     "author": "",
     "license": "ISC",
@@ -71,6 +72,7 @@
         "tsconfig-paths": "^3.8.0",
         "typescript": "3.5.2",
         "typescript-json-schema": "^0.40.0",
+        "watch": "^1.0.2",
         "webpack": "^4.33.0",
         "webpack-cli": "^3.3.2",
         "webpack-node-externals": "^1.7.2",

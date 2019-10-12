@@ -157,8 +157,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
+    const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-static-assets';
     let httpProxy = proxy({
-        target: 'https://storage.googleapis.com/formuladb-static-assets',
+        target: staticAssetsUrl,
         changeOrigin: true,
         proxyTimeout: 500,
         // pathRewrite: function (path, req) { return path },

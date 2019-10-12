@@ -6,6 +6,8 @@ handleErr () {
 }
 trap handleErr ERR
 
+npm run sync-dev-static-assets &
+
 ./node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \
     --mount=/formuladb-editor/:./formuladb-editor/ \
     --mount=/formuladb/:././dist-fe/ \
