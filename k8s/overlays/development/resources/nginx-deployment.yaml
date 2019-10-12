@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: nginx
+  name: nginx
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        service: nginx
+    spec:
+      containers:
+      # - image: registry.gitlab.com/metawiz/febe/formuladb-nginx
+      - image: nginx:alpine
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: regcred
+status: {}
