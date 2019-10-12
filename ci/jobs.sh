@@ -39,6 +39,7 @@ function build_images_and_deploy {
     # while ! nc -z localhost 5432; do sleep 1; done
     # npm run e2e:data
 
+    while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
     kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 }
