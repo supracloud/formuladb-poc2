@@ -29,7 +29,7 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /etc/gcp/sa_credentials.json
         - name: FRMDB_AUTH_ENABLED
-          value: "false"
+          value: "true"
         image: registry.gitlab.com/metawiz/febe/formuladb-be
         name: be
         ports:

@@ -6,30 +6,20 @@
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
-import * as passport from "passport";
-import * as connectEnsureLogin from "connect-ensure-login";
-import { Strategy as LocalStrategy } from "passport-local";
-import * as md5 from 'md5';
 import * as proxy from 'http-proxy-middleware';
-import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as csv from 'csv';
-import * as mime from 'mime';
-import * as http from 'http';
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
-import { BeUser } from "@domain/user";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
-import { DictionaryEntry } from "@domain/dictionary-entry";
 import { I18nBe } from "@be/i18n-be";
-import { html } from "d3";
 import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
+import { initPassport, handleAuth } from "./auth";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -50,7 +40,6 @@ const STATIC_EXT = [
 
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
-    var kvs$User: KeyTableStoreI<BeUser>;
     var i18nBe = new I18nBe(kvsFactory);
 
     async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
@@ -68,44 +57,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return frmdbEngineInit.get();
     }
 
-    async function getUserKvs(): Promise<KeyTableStoreI<BeUser>> {
-        if (!kvs$User) {
-            kvs$User = await kvsFactory.createKeyTableS<BeUser>($User);
-        }
-        return Promise.resolve(kvs$User);
-    }
-
-    passport.use(new LocalStrategy({
-            usernameField: 'username',
-            passwordField: 'password'
-        },
-        async function (username, password, cb) {
-            try {
-                let userKVS = await getUserKvs();
-                let user = await userKVS.get('$User~~' + username);
-                if (!user) return cb(null, false);
-                let hashedPass = md5(password);
-                if (user.password != hashedPass) { return cb(null, false); }
-                return cb(null, user);
-            } catch (err) {
-                return cb(err);
-            }
-        }
-    ));
-    passport.serializeUser(function (user: BeUser, cb) {
-        cb(null, user._id);
-    });
-    passport.deserializeUser(async function (id, cb) {
-        try {
-            let userKVS = await getUserKvs();
-            let user = await userKVS.get(id);
-            if (!user) return cb(new Error("User " + id + " forbidden or not found !"));
-            return cb(null, user);
-        } catch (err) {
-            return cb(err);
-        }
-    });
-
     // app.use(logger("dev"));
     app.use(cookieParser(SECRET));
     app.use(require('express-session')({
@@ -113,6 +64,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         resave: false,
         saveUninitialized: true
     }))
+
+    initPassport(app, kvsFactory);
 
     //This needs to be before express bodyParser: https://github.com/nodejitsu/node-http-proxy/issues/180
     if (process.env.FRMDB_PROXY) {
@@ -152,51 +105,33 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } else next();
     });
 
-    if (process.env.FRMDB_AUTH_ENABLED === "true") {
-        app.use(passport.initialize());
-        app.use(passport.session());
-        app.use(function (req, res, next) {
-            if (req.path !== '/formuladb-api/login') {
-                connectEnsureLogin.ensureLoggedIn('/formuladb-api/login')(req, res, next);
-            } else next();
-        });
+    handleAuth(app);
 
-        app.get('/formuladb-api/login', async function (req, res, next) {
-            let env = process.env.FRMDB_ENV_NAME;
-            let httpProxy = proxy({
-                target: 'https://storage.googleapis.com/formuladb-static-assets/',
-                changeOrigin: true,
-                pathRewrite: {
-                    '/formuladb-api/login': env + '/global/iam/login.html'
-                },
-                logLevel: "debug",
-            });
-            httpProxy(req, res, next);
+    app.get('/register', async function(req, res, next) {
+        let env = process.env.FRMDB_ENV_NAME;
+        let httpProxy = proxy({
+            target: 'https://storage.googleapis.com/formuladb-static-assets/',
+            changeOrigin: true,
+            pathRewrite: {
+                '/register': env + '/formuladb-internal/formuladb.io/register.html'
+            },
+            logLevel: "debug",
         });
-    
-        app.post('/formuladb-api/login',
-            passport.authenticate('local', { failureRedirect: '/formuladb-api/login' }),
-            function(req, res) {
-                res.redirect('/');
-            });
+        httpProxy(req, res, next);
 
-        app.get('/formuladb-api/logout', function(req, res){
-            req.logout();
-            res.redirect('/');
-            });
-    } else {
-        app.use(function (req, res, next) {
-            req.user = { role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN' };
-            next();
-        });
-    }
+        // TODO: protect this route
+        //await createNewEnvironment(req.params.envname);
+        //res.redirect(`https://${req.params.envname}.formuladb.io/`);
+    });
 
-    app.get('/formuladb-api/env/:envname', async function(req, res){
-        await createNewEnvironment(req.params.envname);
-        res.redirect(`https://${req.params.envname}.formuladb.io/`);
+    app.post('/register', async (req, res) => {
+        await createNewEnvironment(req.params.name);
+        // TODO add
+        res.redirect(`https://${req.params.name}.formuladb.io/`);
     });
 
     app.delete('/formuladb-api/env/:envname', async function(req, res) {
+        // TODO: protect this route
         console.log(`Delete called on ${req.params.envname} environment`)
         let status_message = await cleanupEnvironment(req.params.envname);
         console.log(status_message);
