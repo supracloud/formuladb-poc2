@@ -165,7 +165,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         // pathRewrite: function (path, req) { return path },
         logLevel: "debug",
     });
-    app.get(/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+    app.get(/^\/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+        httpProxy(req, res, next);
+    });
+    app.get(/^\/formuladb-themes\/.*/, timeout('2s'), async function (req, res, next) {
         httpProxy(req, res, next);
     });
 

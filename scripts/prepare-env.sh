@@ -1,9 +1,11 @@
-if [[ -z "FRMDB_ENV_NAME" ]]; then
-    FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
+if [[ -z "$FRMDB_ENV_NAME" ]]; then
+    export FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
+echo "FRMDB_ENV_NAME=$FRMDB_ENV_NAME"
+
 export BASEDIR=`dirname $0`
 export ORIGDIR=$PWD
-export GIT_SSH_COMMAND="ssh -i $PWD/ssh/frmdb.id_rsa"
+export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa"
 
 trap err ERR
 
@@ -25,8 +27,8 @@ if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
     echo "formuladb-apps already at the right branch"
 else
     git checkout -b "${FRMDB_ENV_NAME}"
-    git push --set-upstream origin "${FRMDB_ENV_NAME}"
 fi
+git push --set-upstream origin "${FRMDB_ENV_NAME}"
 
 # -------------------------------------------------------------------------
 # k8s

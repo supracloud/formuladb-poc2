@@ -1,8 +1,9 @@
 import { FrmdbElementBase, FrmdbElementDecorator } from "@fe/live-dom-template/frmdb-element";
 import * as _ from "lodash";
 import { onEvent } from "@fe/delegated-events";
+import { html } from "@fe/live-dom-template/live-dom-template";
 
-const HTML = /*html*/`
+const HTML = html`
 <div class="live-dom-editor">
     <div class="overlay">
         <div id="highlight-name"></div>
@@ -14,12 +15,9 @@ const HTML = /*html*/`
 </div>
 `;
 
-@FrmdbElementDecorator({
-    tag: 'frmdb-live-dom-editor',
-    template: HTML,
-    observedAttributes: [],
-})
-class LiveDomEditor extends FrmdbElementBase<any, {}> {
+class LiveDomEditor extends HTMLElement {
+    highlightEl: HTMLElement;
+    box: HTMLElement;
     on = onEvent.bind(null, this);
     emit = FrmdbElementBase.prototype.emit.bind(this);
     constructor() {
@@ -29,19 +27,14 @@ class LiveDomEditor extends FrmdbElementBase<any, {}> {
 
         this.on('mousemove', '*', _.debounce((event) => {
             console.log(event.target);
-            // this.highlightEl$ = jQuery(event.this.highlightEl$);
-            // let offset = this.highlightEl$.offset();
-            // let height = this.highlightEl$.outerHeight();
-            // let halfHeight = Math.max((height || 0) / 2, 50);
-            // let width = this.highlightEl$.outerWidth();
-            // let halfWidth = Math.max((width || 0) / 2, 50);
-
-            // $("#highlight-box").css({
-            //     top: offset.top - window.document.scrollTop(),
-            //     left: offset.left - self.frameDoc.scrollLeft(),
-            //     width: width,
-            //     height: height,
-            // });
+            let offset = this.highlightEl.getBoundingClientRect();
+            let height = this.highlightEl.clientHeight;
+            let width = this.highlightEl.clientWidth;
+ 
+            this.box.style.top = (offset.top + window.scrollY).toString();
+            this.box.style.left = (offset.left - window.scrollX).toString();
+            this.box.style.width = width.toString();
+            this.box.style.height = height.toString();
         }, 20));
     }
 }

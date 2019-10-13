@@ -58,7 +58,7 @@
             "url": "http://localhost:8081",
             "webRoot": "${workspaceFolder}",
             "pathMapping": {
-                "/formuladb-editor": "${workspaceFolder}/vvvebjs"
+                "/formuladb-editor": "${workspaceFolder}/formuladb-editor"
             },
             "sourceMapPathOverrides": {
                 "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
