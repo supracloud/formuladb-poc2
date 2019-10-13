@@ -237,6 +237,20 @@
             },
             "type": "object"
         },
+        "BooleanProperty": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "propType_": {
+                    "enum": [
+                        "BOOLEAN"
+                    ],
+                    "type": "string"
+                }
+            },
+            "type": "object"
+        },
         "CallExpression": {
             "properties": {
                 "arguments": {
@@ -349,7 +363,7 @@
             "type": "object"
         },
         "ChildTableProperty": {
-            "description": "Table of existing entities or entities created",
+            "description": "TablePage of existing entities or entities created",
             "properties": {
                 "isLargeTable": {
                     "type": "boolean"
@@ -377,6 +391,9 @@
                             },
                             {
                                 "$ref": "#/definitions/StringProperty"
+                            },
+                            {
+                                "$ref": "#/definitions/BooleanProperty"
                             },
                             {
                                 "$ref": "#/definitions/DocumentProperty"
@@ -835,6 +852,9 @@
                                 "$ref": "#/definitions/StringProperty"
                             },
                             {
+                                "$ref": "#/definitions/BooleanProperty"
+                            },
+                            {
                                 "$ref": "#/definitions/DocumentProperty"
                             },
                             {
@@ -893,6 +913,44 @@
                         "FORMULA"
                     ],
                     "type": "string"
+                },
+                "returnType_": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ChildTableProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/ExtendsEntityProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/NumberProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/StringProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/BooleanProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/DocumentProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/DatetimeProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/AttachmentProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/ImageProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/ActionProperty"
+                        },
+                        {
+                            "$ref": "#/definitions/ReferenceToProperty"
+                        }
+                    ],
+                    "description": "Exclude from T those types that are assignable to U"
                 }
             },
             "type": "object"
@@ -935,15 +993,6 @@
                         "IMAGE"
                     ],
                     "type": "string"
-                },
-                "url": {
-                    "type": "string"
-                },
-                "urls": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
                 }
             },
             "type": "object"
@@ -1206,7 +1255,7 @@
                 "mapObserversImpactedByOneObservable": {
                     "allOf": [
                         {
-                            "$ref": "#/definitions/Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityName\"|\"valueExpr\">"
+                            "$ref": "#/definitions/Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityId\"|\"valueExpr\">"
                         },
                         {
                             "properties": {
@@ -1227,7 +1276,7 @@
                             "type": "string"
                         },
                         "map": {
-                            "$ref": "#/definitions/Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityName\"|\"valueExpr\">"
+                            "$ref": "#/definitions/Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityId\"|\"valueExpr\">"
                         },
                         "reduceFun": {
                             "anyOf": [
@@ -1504,9 +1553,9 @@
             },
             "type": "object"
         },
-        "Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityName\"|\"valueExpr\">": {
+        "Pick<MapFunctionAndQuery,\"keyExpr\"|\"query\"|\"existingIndex\"|\"entityId\"|\"valueExpr\">": {
             "properties": {
-                "entityName": {
+                "entityId": {
                     "type": "string"
                 },
                 "existingIndex": {
@@ -1609,6 +1658,18 @@
         },
         "ReferenceToProperty": {
             "properties": {
+                "joinReferenceEntityName": {
+                    "type": "string"
+                },
+                "joinReferenceEntityName2": {
+                    "type": "string"
+                },
+                "joinReferencedPropertyName": {
+                    "type": "string"
+                },
+                "joinReferencedPropertyName2": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1616,6 +1677,9 @@
                     "enum": [
                         "REFERENCE_TO"
                     ],
+                    "type": "string"
+                },
+                "referencedEntityAlias": {
                     "type": "string"
                 },
                 "referencedEntityName": {
@@ -1923,6 +1987,9 @@
                     },
                     {
                         "$ref": "#/definitions/StringProperty"
+                    },
+                    {
+                        "$ref": "#/definitions/BooleanProperty"
                     },
                     {
                         "$ref": "#/definitions/DocumentProperty"

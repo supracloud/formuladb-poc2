@@ -10,7 +10,7 @@ import * as _ from "lodash";
 import { DAG } from "./dag";
 
 export interface FormulaTriggeredByObj {
-    entityName: string;
+    entityId: string;
     propertyName: string;
     formula: CompiledFormula;
 }
@@ -36,12 +36,12 @@ export class SchemaDAO {
     }
 
     public getSelfFormulas(objId: string): CompiledFormula[] {
-        let entityName = parseDataObjId(objId).entityName;
+        let entityId = parseDataObjId(objId).entityId;
         let ret: CompiledFormula[] = [];
-        let entity = this.schema.entities[entityName];
+        let entity = this.schema.entities[entityId];
         for (let pr of Object.values(entity.props)) {
             if (Pn.FORMULA === pr.propType_ && null != pr.compiledFormula_) {
-                if (pr.compiledFormula_.targetEntityName === entityName && !pr.compiledFormula_.triggers) {
+                if (pr.compiledFormula_.targetEntityName === entityId && !pr.compiledFormula_.triggers) {
                     ret.push(pr.compiledFormula_);
                 }
             }
@@ -49,26 +49,26 @@ export class SchemaDAO {
         return ret;
     }
 
-    public getValidationsForEntity(entityName: string): _.Dictionary<FormulaValidation> | undefined {
-        return this.schema.entities[entityName].validations;
+    public getValidationsForEntity(entityId: string): _.Dictionary<FormulaValidation> | undefined {
+        return this.schema.entities[entityId].validations;
     }
     public getValidations(objId: string): _.Dictionary<FormulaValidation> | undefined {
-        let entityName = parseDataObjId(objId).entityName;
-        return this.getValidationsForEntity(entityName);
+        let entityId = parseDataObjId(objId).entityId;
+        return this.getValidationsForEntity(entityId);
     }
 
-    public getProperty(entityName: string, propertyName: string): EntityProperty {
-        return this.schema.entities[entityName].props[propertyName];
+    public getProperty(entityId: string, propertyName: string): EntityProperty {
+        return this.schema.entities[entityId].props[propertyName];
     }
 
     public getEntityForDataObj(id: string) {
-        let entityName = parseDataObjId(id).entityName;
-        return this.schema.entities[entityName];
+        let entityId = parseDataObjId(id).entityId;
+        return this.schema.entities[entityId];
     }
 
     public getAutoCorrections(objId: string, validationFullName: string): AutoCorrectionOnValidationFailed[] {
-        let entityName = parseDataObjId(objId).entityName;
-        let autoCorrections = this.schema.entities[entityName].autoCorrectionsOnValidationFailed;
+        let entityId = parseDataObjId(objId).entityId;
+        let autoCorrections = this.schema.entities[entityId].autoCorrectionsOnValidationFailed;
         if (autoCorrections != null) {
             return autoCorrections[validationFullName];
         } else {
@@ -76,7 +76,7 @@ export class SchemaDAO {
         }
     }
     public getFormulasTriggeredByObj(objId: string): FormulaTriggeredByObj[] {
-        let entityName = parseDataObjId(objId).entityName;
+        let entityId = parseDataObjId(objId).entityId;
         let ret: FormulaTriggeredByObj[] = [];
         this.entities().forEach(en => {
             _.values(en.props).forEach(pr => {
@@ -84,9 +84,9 @@ export class SchemaDAO {
                     let compiledFormula: CompiledFormula = pr.compiledFormula_;
                     
                     for (let t of (pr.compiledFormula_.triggers ||[])) {
-                        if (t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName === entityName) {
+                        if (t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId === entityId) {
                             ret.push({
-                                entityName: en._id,
+                                entityId: en._id,
                                 propertyName: pr.name,
                                 formula: compiledFormula,
                             });
@@ -99,7 +99,7 @@ export class SchemaDAO {
         return ret;
     }
     public getObsViewNamesUpdatedByObj(objId: string): string[] {
-        let entityName = parseDataObjId(objId).entityName;
+        let entityId = parseDataObjId(objId).entityId;
         let ret: string[] = [];
         this.entities().forEach(en => {
             _.values(en.props).forEach(pr => {
@@ -107,7 +107,7 @@ export class SchemaDAO {
                     let compiledFormula: CompiledFormula = pr.compiledFormula_;
                     
                     for (let t of (pr.compiledFormula_.triggers ||[])) {
-                        if (t.mapObserversImpactedByOneObservable.entityName === entityName) {
+                        if (t.mapObserversImpactedByOneObservable.entityId === entityId) {
                             ret.push(t.mapObserversImpactedByOneObservable.obsViewName);
                         }
                     }

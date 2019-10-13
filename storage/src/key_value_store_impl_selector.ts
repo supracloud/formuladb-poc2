@@ -9,6 +9,7 @@ import { FrmdbEngine } from '@core/frmdb_engine';
 import { FrmdbEngineStore } from '@core/frmdb_engine_store';
 
 export const KvsImplementation = process.env.FRMDB_STORAGE || "mem";
+console.info("KvsImplementation=" + KvsImplementation);
 
 export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> {
     if (isNode) {
@@ -26,11 +27,22 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
     }
 }
 
-export async function getFrmdbEngineStore(schema: Schema, tenantName = 'testTenant', appName = 'testApp'): Promise<FrmdbEngineStore> {
+export async function getFrmdbEngineStore(schema: Schema, tenantName: string, appName: string): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
     return new FrmdbEngineStore(tenantName, appName, kvsFactory, schema);
 }
 
-export async function getFrmdbEngine(schema: Schema, tenantName = 'testTenant', appName = 'testApp'): Promise<FrmdbEngine> {
+export async function getFrmdbEngine(schema: Schema, tenantName: string, appName: string): Promise<FrmdbEngine> {
     return new FrmdbEngine(await getFrmdbEngineStore(schema, tenantName, appName));
+}
+
+
+const fs = require('fs');//TODO: fix this for running in the browser
+export async function getTestFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
+    fs.mkdirSync('/tmp/testTenant/testApp', { recursive: true });
+    let kvsFactory = await getKeyValueStoreFactory();
+    return new FrmdbEngineStore('tenantName', 'testApp', kvsFactory, schema);
+}
+export async function getTestFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
+    return new FrmdbEngine(await getTestFrmdbEngineStore(schema));
 }

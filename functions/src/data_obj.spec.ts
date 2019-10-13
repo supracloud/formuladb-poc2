@@ -14,9 +14,9 @@ describe('DataObj', () => {
 
   it('should parse _id(s) correctly', () => {
     let parsedObjId = parseDataObjId("ProductLocation~~1__1");
-    expect(parsedObjId).toEqual({entityName: "ProductLocation", id: "ProductLocation~~1__1", uid: "1__1"});
+    expect(parsedObjId).toEqual({entityId: "ProductLocation", id: "ProductLocation~~1__1", uid: "1__1"});
     parsedObjId = parseDataObjId("InventoryProduct~~1");
-    expect(parsedObjId).toEqual({entityName: "InventoryProduct", id: "InventoryProduct~~1", uid: "1"});
+    expect(parsedObjId).toEqual({entityId: "InventoryProduct", id: "InventoryProduct~~1", uid: "1"});
     expect(() => parseDataObjId('')).toThrow();
   });
 

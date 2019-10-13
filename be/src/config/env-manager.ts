@@ -9,7 +9,7 @@ const retry = require('async-retry')
 const fetch = require('node-fetch')
 
 export async function createNewEnvironment(envName: string) {
-  // Don't want to alter for now staging or prod
+  // If production or staging, just don't
   if (['production', 'staging', ''].includes(envName)) return;
 
   try {
@@ -29,22 +29,11 @@ export async function createNewEnvironment(envName: string) {
       await exec(`perl -p -i -e 's!^(.*)\\s.*?\\.formuladb\.io$!\\1 ${envName}.formuladb.io!' k8s/overlays/client/resources/ingress.yaml`,
                  {cwd: `env_workspace/${envName}`});
 
-      console.log(`Namespace ... `);
-      await exec(`kubectl create namespace ${envName}`); 
-
-      console.log(`Registry secret ...`);
-      await exec(`kubectl get secret regcred --export -oyaml | kubectl apply --namespace=${envName} -f -`);
-
-      console.log(`GKE ...`);
-      await exec(`skaffold deploy -n ${envName} -p client --images=registry.gitlab.com/metawiz/febe/formuladb-be:0.0.16-182-g16369013-dirty`,
+      await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
                  {cwd: `env_workspace/${envName}`});
 
-      console.log(`Object storage clone ...`);
-      await exec(`gsutil -m rsync -r gs://formuladb-static-assets/production/ gs://formuladb-static-assets/${envName}/`,
-                {maxBuffer: 10240 * 1000});
-
-      console.log(`Data provisioning ...`);
-      await exec(`PGPASSWORD=postgres psql -U postgres -d postgres -h db.${envName} < k8s/pg_dump.sql`,
+      console.log(`GKE ...`);
+      await exec(`skaffold deploy -n ${envName} -p client --images=registry.gitlab.com/metawiz/febe/formuladb-be:0.0.16-185-g1cb1e942-dirty`,
                  {cwd: `env_workspace/${envName}`});
 
       await retry(async bail => {
@@ -62,23 +51,34 @@ export async function createNewEnvironment(envName: string) {
       console.log(`Environment setup failed with error ${error}. Cleaning up ...`);
       await cleanupEnvironment(envName);
     }
-              
+
+    console.log(`Env ready. Data provisioning ...`);
+    await exec(`kubectl -n ${envName} exec service/be -- node /dist-be/frmdb-be-load-test-data.js`,
+               {cwd: `env_workspace/${envName}`, maxBuffer: 10240 * 1000});
+
     console.log(`Done!`);
   }
 }
 
 export async function cleanupEnvironment(envName: string) {
-  // Don't want to alter for now staging or prod
+  // If production or staging, just don't
   if (['production', 'staging', ''].includes(envName)) return;
   try {
     await exec(`kubectl get namespace ${envName}`);
   } catch (error) {
     return `Namespace ${envName} not found. Nothing to delete!`;
   }
+
+  // Delete git remote branch for formuladb-apps. Thus, make sure we have the local git clone available
+  await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
+             {cwd: `env_workspace/${envName}`});
+  await exec(`git push origin --delete ${envName} || true`,
+             {cwd: `env_workspace/${envName}/formuladb-apps`});
+  console.log(`Branch ${envName} deleted in remote.`);
+
   console.log(`Deleting namespace ${envName}`);
   await exec(`kubectl delete namespace ${envName}`); 
-  console.log(`Deleting bucket folder ${envName}`);
-  await exec(`gsutil -m rm -r gs://formuladb-static-assets/${envName}/`, {maxBuffer: 10240 * 1000});
+
   console.log(`Deleting k8s directory copy for ${envName}`);
   await exec(`rm -rf env_workspace/${envName} || true`);
   return `Deleted env ${envName}!`;

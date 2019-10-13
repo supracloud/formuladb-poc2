@@ -1,9 +1,9 @@
+require('source-map-support').install();
+require('module-alias/register');
 const { SpecReporter } = require('jasmine-spec-reporter');
 const isWsl = require('is-wsl');
 
 var target = process.env.TARGET;
-
-var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -12,7 +12,7 @@ exports.config = {
     audio: false
   },
   specs: [
-    './src/**/*.spec.ts'
+    '../tsc-out/e2e/src/**/Hotel_Booking.spec.js'
   ],
   getMultiCapabilities: function () {
 
@@ -49,9 +49,7 @@ exports.config = {
   SELENIUM_PROMISE_MANAGER: false,
 
   onPrepare() {
-    require('ts-node').register({
-      project: require('path').join(__dirname, '../tsconfig.json')
-    });
+    console.error(process.cwd());
 
     jasmine.getEnv().addReporter(new SpecReporter({  // add jasmine-spec-reporter
       spec: {
@@ -65,16 +63,12 @@ exports.config = {
       }
     }));
 
-    jasmine.getEnv().addReporter(new HtmlScreenshotReporter({
-      dest: 'e2e/reports',
-      filename: 'e2e-report.html',
-      captureOnlyFailedSpecs: true
-    }));
-
     browser.manage().window().maximize();
-    afterEach(() => {
-      browser.manage().logs().get('browser').then(printBrowserLogs);
-    });
+    if (!isWsl) {
+      afterEach(() => {
+        browser.manage().logs().get('browser').then(printBrowserLogs);
+      });
+    }
     browser.waitForAngularEnabled(false);
 
     if (target && target.startsWith('recordings')) {

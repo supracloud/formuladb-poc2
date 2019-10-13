@@ -20,14 +20,20 @@ export function isType<K extends keyof typeof NN, T>(t: K, p: any): p is T {
     return p !== null && p.frmdbt_ === t;
 }
 
-export async function waitUntilNotNull<T>(callback: () => Promise<T>, sleepTime = 250): Promise<Exclude<T, null | undefined>> {
-    let ret: T = await callback();
-    if (ret) return Promise.resolve(ret as Exclude<T, null | undefined>);
-    return new Promise<Exclude<T, null | undefined>>(resolve => {
+export async function waitUntil<T>(callback: () => T | Promise<T>, retries = 10, sleepTime = 50): Promise<T> {
+    let retryNb = 0;
+    return new Promise<T>((resolve, reject) => {
         let interval = setInterval(async () => {
-            let x: T = await callback();
-            if (x) {
-                resolve(x as Exclude<T, null | undefined>);
+            let x: T | Promise<T> = callback();
+            retryNb++;
+            if (x instanceof Promise) x = await x;
+            if (!x) {
+                if (retryNb >= retries) {
+                    reject(x);
+                    clearInterval(interval);
+                }
+            } else {
+                resolve(x);
                 clearInterval(interval);
             }
         }, sleepTime)
@@ -42,7 +48,7 @@ export class LazyInit<T> {
     }
 
     public async get(): Promise<T> {
-        if (null == this.value) await waitUntilNotNull(() => Promise.resolve(this.value), 500);
+        if (null == this.value) await waitUntil(() => Promise.resolve(this.value), 500);
         if (!this.value) throw new Error(`Timeout initializing ` + this.callback);
         return this.value;
     }

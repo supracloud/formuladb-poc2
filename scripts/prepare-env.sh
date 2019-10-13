@@ -1,0 +1,53 @@
+set -xe
+
+if [[ -z ${FRMDB_ENV_NAME+x} ]]; then
+    FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
+fi
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
+export ORIGDIR=$PWD
+export GIT_SSH_COMMAND="ssh -i $SCRIPTPATH/../ssh/frmdb.id_rsa"
+echo $SCRIPTPATH
+echo $ORIGDIR
+trap err ERR
+
+function err() {
+    echo "ERR on line ${BASH_LINENO[0]}: $BASH_COMMAND"
+    cd "${ORIGDIR}"
+}
+
+# -------------------------------------------------------------------------
+# git
+# -------------------------------------------------------------------------
+if [ ! -d "formuladb-apps" ]; then
+    git clone --jobs 10 --branch master --single-branch --depth 1 \
+        git@gitlab.com:metawiz/formuladb-apps.git
+fi
+
+cd formuladb-apps
+if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
+    echo "formuladb-apps already at the right branch"
+else
+    git checkout -b "${FRMDB_ENV_NAME}"
+    git push --set-upstream origin "${FRMDB_ENV_NAME}"
+fi
+
+# -------------------------------------------------------------------------
+# k8s
+# -------------------------------------------------------------------------
+
+cd ${SCRIPTPATH}/..
+export KUBECONFIG=${SCRIPTPATH}/../k8s/production-kube-config.conf
+
+if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
+    kubectl create namespace "${FRMDB_ENV_NAME}" 
+fi
+
+if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then 
+    kubectl get secret regcred -n production -o yaml | sed "s/namespace: production/namespace: ${FRMDB_ENV_NAME}/" | kubectl create -f -
+else
+    true
+fi
+
+cd "${ORIGDIR}"

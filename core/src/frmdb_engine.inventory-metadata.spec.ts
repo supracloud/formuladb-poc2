@@ -14,7 +14,7 @@ import { ServerEventModifiedFormData, ServerEventPreviewFormula } from "@domain/
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { Schema, Pn, FormulaProperty } from "@domain/metadata/entity";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
-import { getFrmdbEngine } from "@storage/key_value_store_impl_selector";
+import { getFrmdbEngine, getTestFrmdbEngine } from "@storage/key_value_store_impl_selector";
 
 
 describe('Inventory Metadata', () => {
@@ -48,7 +48,7 @@ describe('Inventory Metadata', () => {
         oi1_2 = { _id: "OrderItem~~1__2", product_id: "ProductLocation~~1", quantity: 4};
     
 
-        frmdbEngine = await getFrmdbEngine(InventorySchema);
+        frmdbEngine = await getTestFrmdbEngine(InventorySchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.clearAllForTestingPurposes();
         await frmdbEngine.init();

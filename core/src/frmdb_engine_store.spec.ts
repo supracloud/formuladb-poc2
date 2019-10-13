@@ -9,7 +9,7 @@ import { FrmdbEngineStore } from "./frmdb_engine_store";
 import { Fn } from "@domain/metadata/functions";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { compileFormula } from './formula_compiler';
-import { getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { getFrmdbEngineStore, getTestFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
 import { SumReduceFunN } from "@domain/metadata/reduce_functions";
 import { Pn, Entity, Schema } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
@@ -42,7 +42,7 @@ describe('frmdb_engine_store', () => {
 
 
     beforeEach(async (done) => {
-        frmdbEngineStore = await getFrmdbEngineStore(TestSchema);
+        frmdbEngineStore = await getTestFrmdbEngineStore(TestSchema);
         await frmdbEngineStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
@@ -57,7 +57,7 @@ describe('frmdb_engine_store', () => {
 
         $s2e(Fn.SUMIF(`A.num`, `a_y == @[b_y]`) + ` + 1`)
         await frmdbEngineStore.createMapReduceView("sum1", {
-            entityName: 'A',
+            entityId: 'A',
             keyExpr: [$s2e(`a_y`)],
             valueExpr: $s2e(`num`),
         }, false, {name: SumReduceFunN});

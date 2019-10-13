@@ -11,7 +11,7 @@ import { FrmdbEngine } from "./frmdb_engine";
 import { Pn, Entity, FormulaProperty, Schema, EntityProperty, ChildTableProperty } from "@domain/metadata/entity";
 import { DataObj } from "@domain/metadata/data_obj";
 import { KeyValueObj } from "@domain/key_value_obj";
-import { getFrmdbEngine, getFrmdbEngineStore } from '@storage/key_value_store_impl_selector';
+import { getFrmdbEngine, getFrmdbEngineStore, getTestFrmdbEngine } from '@storage/key_value_store_impl_selector';
 import { $s2e } from "@functions/s2e";
 
 describe('FrmdbEngine', () => {
@@ -106,7 +106,7 @@ describe('FrmdbEngine', () => {
         a1 = { _id: "A~~1", b: 'B~~1', val: 1};
         a2 = { _id: "A~~2", b: 'B~~1', val: 2};
     
-        frmdbEngine = await getFrmdbEngine(stockReservationSchema);
+        frmdbEngine = await getTestFrmdbEngine(stockReservationSchema);
         frmdbTStore = frmdbEngine.frmdbEngineStore;
         await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;

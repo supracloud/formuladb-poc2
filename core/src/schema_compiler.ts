@@ -162,7 +162,7 @@ export class SchemaCompiler {
                         })
                     } else {
                         pr.compiledFormula_.triggers.forEach(t => {
-                            let referencedEntity = this.schema.entities[t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName];
+                            let referencedEntity = this.schema.entities[t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId];
                             let referencedEntityProperties: _.Dictionary<EntityProperty> = {};
                             t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr.forEach(kexpr => {
                                 this.extractEntityPropertiesFromExpression(kexpr, referencedEntity, referencedEntityProperties);
@@ -170,7 +170,7 @@ export class SchemaCompiler {
                             this.extractEntityPropertiesFromExpression(t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr, referencedEntity, referencedEntityProperties);
                             _.values(referencedEntityProperties).forEach(refProp => {
                                 let parentProperty = {
-                                    id: t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityName + '.' + refProp.name,
+                                    id: t.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.entityId + '.' + refProp.name,
                                     entityProp: refProp,
                                 }
                                 formulaDAG.addParentChild(parentProperty, childFormulaProperty);

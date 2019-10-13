@@ -8,6 +8,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
+const FREE_PATHS = [/\/formuladb-static/, /\/register/, /\/login/, /^\/$/];
+const ADMIN_PATHS = [/\/formuladb-editor/];
 
 export function initPassport(app: express.Express,
                              kvsFactory: KeyValueStoreFactoryI) {
@@ -58,17 +60,8 @@ export function initPassport(app: express.Express,
 }
 
 export function handleAuth(app: express.Express) {
-    app.get('/login', async function (req, res, next) {
-        let env = process.env.FRMDB_ENV_NAME;
-        let httpProxy = proxy({
-            target: 'https://storage.googleapis.com/formuladb-static-assets/',
-            changeOrigin: true,
-            pathRewrite: {
-                '/login': env + '/formuladb-internal/formuladb.io/login.html'
-            },
-            logLevel: "debug",
-        });
-        httpProxy(req, res, next);
+    app.get('/login', function(req, res) {
+        res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/login.html');
     });
 
     app.post('/login',
@@ -84,9 +77,28 @@ export function handleAuth(app: express.Express) {
 
     if (process.env.FRMDB_AUTH_ENABLED === "true" &&
         (typeof process.env.FRMDB_ENV_NAME === "string" &&
-         ! ["production", "staging", "tdev-loi"].includes(process.env.FRMDB_ENV_NAME))) {
+         ! ["production", "staging"/*, "135-login-roles-permissions-create-organization"*/].includes(process.env.FRMDB_ENV_NAME))) {
         app.use(function (req, res, next) {
-            if (req.path !== '/login') {
+
+            if (req.user && req.user.role && req.user.role === 'ADMIN') {
+                next();
+                return;
+            }
+
+            var adminpath = ADMIN_PATHS.some(function(regex) {
+                return regex.test(req.path);
+            });
+            if (adminpath) {
+                // Check if user role is admin
+                if (req.user.role !== 'ADMIN') {
+                    res.send("aaa");
+                }
+            }
+
+            var freepath = FREE_PATHS.some(function(regex) {
+                return regex.test(req.path);
+            });
+            if (! freepath) {
                 connectEnsureLogin.ensureLoggedIn('/login')(req, res, next);
             } else next();
         });

@@ -9,4 +9,6 @@ spec:
       - name: be
         env:
         - name: FRMDB_ENV_NAME
-          value: tdev-loi #TBD_ENV_NAME
+          value: 135-login-roles-permissions-create-organization #TBD_ENV_NAME
+        - name: FRMDB_IS_DEV_ENV
+          value: "true"

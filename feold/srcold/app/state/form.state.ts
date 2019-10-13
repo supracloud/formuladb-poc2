@@ -112,8 +112,8 @@ function setAutoCompleteState(currentObjId: string, state: FormState, autoComple
 }
 function walkForm(node: NodeElement, autoCompleteState: AutoCompleteState) {
     if (node.nodeType === NodeType.form_autocomplete) {
-        let entityName = node.refEntityAlias || node.refEntityName;
-        if (autoCompleteState.entityAlias === entityName) {
+        let entityId = node.refEntityAlias || node.refEntityName;
+        if (autoCompleteState.entityAlias === entityId) {
             autoCompleteState.controls[node.refPropertyName] = node;
         }
     } else if (isNodeElementWithChildren(node)) {

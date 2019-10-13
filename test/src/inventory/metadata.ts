@@ -205,11 +205,10 @@ export const LargeSalesProduct = {
 }
 
 export const InventoryApp: App = {
-    _id: "basic-inventory",
+    _id: "Basic_Inventory",
     description: "Basic Inventory with positive stock",
-    theme: "frmdb-themes/startbootstrap-sb-admin-2",
     pages: [
-        {name: "index.html", title: "Inventory"},
+        "index.html",
     ],
 };
 

@@ -29,8 +29,10 @@ ARG BUILD_DEVELOPMENT
 ENV NPM_SCRIPT=${BUILD_DEVELOPMENT:+start_dev}
 ENV NPM_SCRIPT=${NPM_SCRIPT:-start}
 
+ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
+
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache bash git python2 perl py-pip postgresql-client
+    apk add --no-cache bash git python2 perl py-pip postgresql-client vim openssh vimdiff curl
 
 # https://stackoverflow.com/questions/44442354/using-standalone-gsutil-from-within-gke
 RUN pip install google-compute-engine
@@ -57,6 +59,13 @@ RUN npm install --only=production
 
 COPY k8s /k8s/
 COPY skaffold.yaml /skaffold.yaml
+ADD ./formuladb-editor /wwwroot/formuladb-editor
+ADD ./dist-fe /wwwroot/formuladb
+COPY ./fe/js/*.js /wwwroot/formuladb/
+ADD ./fe/img /wwwroot/formuladb/img
+ADD ./fe/icons /wwwroot/formuladb/icons
+ADD ./ssh /ssh
+ADD ./scripts /scripts
 
 COPY dist-be/frmdb-be* /dist-be/
 

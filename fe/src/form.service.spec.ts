@@ -8,7 +8,7 @@ import * as lolex from "lolex";
 
 import { Entity, Pn } from "@domain/metadata/entity";
 import { FormService } from "./form.service";
-import { waitUntilNotNull } from "@domain/ts-utils";
+import { waitUntil } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
 import { setValue, navigate } from "./fe-test-urils.spec";
 import { ServerEventModifiedFormData } from '@domain/event';
@@ -87,7 +87,7 @@ describe('FormService', () => {
         formService.updateRecordDOM({_id: 'A~~', f1: 12});
         expect(f1Input!.value).toEqual("12");
 
-        await waitUntilNotNull(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
+        await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
 
         clock = lolex.install();
 

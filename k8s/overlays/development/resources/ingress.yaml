@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: formuladb
+  annotations:
+    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    traefik.ingress.kubernetes.io/redirect-permanent: "true"
+spec:
+  tls:
+  - hosts:
+    - dev-env.formuladb.io #TBD_ENV_NAME.formuladb.io
+    secretName: formuladb-online
+  rules:
+  - host: dev-env.formuladb.io #TBD_ENV_NAME.formuladb.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: be
+          servicePort: 8084

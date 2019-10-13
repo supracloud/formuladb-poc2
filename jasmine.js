@@ -15,6 +15,8 @@ require.extensions['.scss'] = function (module, filename) {
     module.exports = '';//we would need to run sass to make this work
 }
 
+process.env.FRMDB_SPECS = "true";
+
 //JSDOM for fe specs
 // const { JSDOM } = require('@tbranyen/jsdom');
 const { JSDOM } = require('jsdom');
@@ -109,6 +111,7 @@ try {
             "tsc-out/fe/**/*.spec.js",
             "tsc-out/core/**/*.spec.js",
             "tsc-out/storage/**/*.spec.js",
+            "!tsc-out/storage/**/*.rem.spec.js",
             "!tsc-out/core/**/*.stress.spec.js",
             "!tsc-out/core/**/*.rem.spec.js",
             // "tsc-out/fe/**/*.spec.js",

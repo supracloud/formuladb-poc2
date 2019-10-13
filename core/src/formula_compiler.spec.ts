@@ -252,7 +252,7 @@ describe('FormulaCompiler', () => {
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
                 aggsViewName: 'bla',
                 map: {
-                    entityName: 'R_A',
+                    entityId: 'R_A',
                     keyExpr: [$s2e(`a_y`), $s2e(Fn.FACT(`aZ`))],
                     valueExpr: $s2e(`num`),
                     query: {
@@ -266,7 +266,7 @@ describe('FormulaCompiler', () => {
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: 'blu',
-                entityName: 'R_B',
+                entityId: 'R_B',
                 keyExpr: [$s2e(`@[b_y]`), $s2e(Fn.ROUND(Fn.SQRT(`@[bZ]`)))],
                 valueExpr: $s2e(`_id`),
                 query: {
@@ -288,7 +288,7 @@ describe('FormulaCompiler', () => {
             mapreduceAggsOfManyObservablesQueryableFromOneObs: {
                 aggsViewName: '',
                 map: {
-                    entityName: 'R_C',
+                    entityId: 'R_C',
                     keyExpr: [$s2e(Fn.EOMONTH(`cT`, `-1`))],
                     valueExpr: $s2e(`1`),
                     query: {
@@ -302,7 +302,7 @@ describe('FormulaCompiler', () => {
             },
             mapObserversImpactedByOneObservable: {
                 obsViewName: '',
-                entityName: 'R_B',
+                entityId: 'R_B',
                 keyExpr: [$s2e(Fn.EOMONTH(`@[bT]`, `-1`))],
                 valueExpr: $s2e(`_id`),
                 query: {

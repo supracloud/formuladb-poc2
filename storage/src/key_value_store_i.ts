@@ -26,6 +26,7 @@ export interface KeyValueStoreI<VALUET> {
     del(_id: string): Promise<VALUET>;
     clearDB(): Promise<any>;
     all(): Promise<VALUET[]>;
+    close(): Promise<void>;
 }
 
 export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<OBJT> {
@@ -120,6 +121,7 @@ export interface KeyValueStoreFactoryI {
     createKeyTableS<OBJT extends KeyValueObj>(entity: Entity): KeyTableStoreI<OBJT>;
     clearAllForTestingPurposes(): Promise<void>;
     metadataStore: MetadataStore;
+    close(): Promise<void>;
 }
 
 export type ScalarType = string | number | boolean;

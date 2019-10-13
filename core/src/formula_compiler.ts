@@ -285,7 +285,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 return {
                     type_: MapValueN,
                     rawExpr: node,
-                    entityName: referencedTableName,
+                    entityId: referencedTableName,
                     valueExpr: $s2e(referencedColumnName),
                     has$Identifier: false,
                     hasNon$Identifier: true,
@@ -372,9 +372,9 @@ function encodeViewNameURIComponent(str: string): string {
             .replace(/<=/g, "_le_")
     );
 }
-export function getViewName(isAggs: boolean, entityName, rawExpr: Expression): string {
-    let ret = (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
-    ret = (isAggs ? 'vaggs-' : 'vobs-') + entityName + '-' + rawExpr.origExpr;
+export function getViewName(isAggs: boolean, entityId, rawExpr: Expression): string {
+    let ret = (isAggs ? 'vaggs-' : 'vobs-') + entityId + '-' + encodeViewNameURIComponent(rawExpr.origExpr);
+    ret = (isAggs ? 'vaggs-' : 'vobs-') + entityId + '-' + rawExpr.origExpr;
     return ret;
 }
 
@@ -434,7 +434,7 @@ export function combine2Nodes<T extends Expression>(
             return {
                 type_: MapFunctionAndQueryN,
                 rawExpr: expr,
-                entityName: node1.entityName,
+                entityId: node1.entityId,
                 keyExpr: node1.keyExpr,
                 valueExpr: node2.rawExpr,
                 query: node1.query,

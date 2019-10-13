@@ -14,6 +14,15 @@ build:
         dest: /
       - src: 'k8s/**/*'
         dest: /
+      - src: 'dist-fe/**/*'
+        dest: /wwwroot/formuladb
+        strip: dist-fe
+      - src: 'formuladb-editor/**/*'
+        dest: /wwwroot/formuladb-editor
+        strip: formuladb-editor
+      - src: 'scripts/*'
+        dest: /scripts
+        strip: scripts
     docker:
       dockerfile: Dockerfile.be
       buildArgs: {}
@@ -30,6 +39,20 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/development
+      # - op: add
+      #   path: /build/artifacts
+      #   value:
+      #     - image: registry.gitlab.com/metawiz/febe/formuladb-nginx
+      #       context: .
+      #       sync:
+      #         manual:
+      #         - src: 'formuladb-static/**/*'
+      #           dest: /usr/share/nginx/html/
+      #         - src: 'formuladb-themes/**/*'
+      #           dest: /usr/share/nginx/html/
+      #       docker:
+      #         dockerfile: Dockerfile.nginx
+      #         buildArgs: {}
   - name: staging
     patches:
       - op: replace

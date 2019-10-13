@@ -8,7 +8,7 @@ export interface DataObj extends KeyValueObj {
     _id: string;
 }
 export interface DataObjId {
-    entityName: string;
+    entityId: string;
     id: string;
     uid: string;
 }
@@ -22,7 +22,7 @@ export function entityNameFromDataObjId(_id: string): string {
 export function parseDataObjId(_id: string): DataObjId {
     let ret = _parseDataObjId(_id);
     if (ret) return ret;
-    else throw new Error("Expected id entityName:id but found " + _id);
+    else throw new Error("Expected id entityId:id but found " + _id);
 }
 export function isDataObj(param): param is DataObj {
     return param != null && typeof param === 'object' && null != _parseDataObjId(param._id);
@@ -32,7 +32,7 @@ export function parseDataObjIdES5(_id) {
     var m = _id.match(/^([$\w_]+)~~([-_ \/&\w~]+)$/);
     if (null != m) {
         return {
-            entityName: m[1]!,
+            entityId: m[1]!,
             id: m[0]!,
             uid: m[2],
         };
@@ -52,8 +52,8 @@ export function getChildrenPrefix(referencedEntityName: string, parentUID: strin
     return referencedEntityName + '~~' + parentUID + '__';
 }
 
-export function entityNameToChildTableFieldName(entityName: string) {
-    return entityName.replace(/([a-z])([A-Z0-9])/g, (m, $1, $2) => $1 + '_' + $2)
+export function entityNameToChildTableFieldName(entityId: string) {
+    return entityId.replace(/([a-z])([A-Z0-9])/g, (m, $1, $2) => $1 + '_' + $2)
         .toLowerCase() + '_table';
 }
 export function childTableFieldNameToEntityName(childTableName: string) {
@@ -84,8 +84,8 @@ export function mergeSubObj(parentObj: DataObj | null, obj: DataObj): boolean {
 }
 
 function addChildObjToChildTable(parentChildTable: Array<DataObj>, childTableKeyName: string, childObj: DataObj): boolean {
-    let {entityName, id, uid} = parseDataObjId(childObj._id);
-    if (childTableKeyName === entityNameToChildTableFieldName(entityName)) {
+    let {entityId, id, uid} = parseDataObjId(childObj._id);
+    if (childTableKeyName === entityNameToChildTableFieldName(entityId)) {
         parentChildTable.push(childObj);
         return true;
     } else return false;

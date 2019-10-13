@@ -9,7 +9,7 @@ import { FrmdbEngineStore } from "../frmdb_engine_store";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { compileFormula } from "../formula_compiler";
 import { Entity, Pn } from "@domain/metadata/entity";
-import { getFrmdbEngineStore } from "@storage/key_value_store_impl_selector";
+import { getFrmdbEngineStore, getTestFrmdbEngineStore } from "@storage/key_value_store_impl_selector";
 import { Schema } from "@domain/metadata/entity";
 
 
@@ -48,7 +48,7 @@ describe('FrmdbEngineStore _textjoin', () => {
     }
     
     beforeEach(async (done) => {
-        frmdbTStore = await getFrmdbEngineStore(TestSchema);
+        frmdbTStore = await getTestFrmdbEngineStore(TestSchema);
         await frmdbTStore.kvsFactory.clearAllForTestingPurposes();
         originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
