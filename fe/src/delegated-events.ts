@@ -6,6 +6,7 @@ const LOG = new FrmdbLogger('delegated-events');
 export type EventType = 
     | "click" 
     | "mouseover" 
+    | "mousemove"
     | "blur" 
     | "keydown" 
     | "keyup" 
