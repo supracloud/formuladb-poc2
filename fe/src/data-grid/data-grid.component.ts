@@ -9,7 +9,6 @@ import {
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
     RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef
 } from 'ag-grid-community';
-import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
 import { waitUntil, PickOmit, objKeysTyped } from '@domain/ts-utils';
 
@@ -24,6 +23,7 @@ import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn } from '@domain/metadata/entity';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
+import { setAgGridLicense } from '@fe/licenses';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -88,10 +88,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     constructor() {
         super();
-
-        // tslint:disable-next-line:max-line-length
-        // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
-        LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
+        setAgGridLicense();
     }
 
     /** component internals *************************************************/

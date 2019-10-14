@@ -30,7 +30,7 @@ export class HighlightBoxComponent extends HTMLElement {
                 :host {
                     position: fixed;
                     border: 1px solid rgb(61, 133, 253);
-                    background-color: rgba(61, 133, 253, 0.1);
+                    background-color: rgba(61, 133, 253, 0.05);
                     pointer-events: none;
                     z-index: 45678;
                 }
@@ -47,8 +47,12 @@ export class HighlightBoxComponent extends HTMLElement {
         if (!this.rootEl) return;
 
         onEvent(this.rootEl, 'mousemove', '*', /*_.debounce(*/(event) => {
-            console.log(event.target, window.scrollY, window.scrollX);
+            // console.log(event.target, window.scrollY, window.scrollX);
             let highlightEl: HTMLElement = event.target as HTMLElement;
+            if (!highlightEl.tagName) return;
+            if (["frmdb-dom-tree", "frmdb-data-grid", "body"]
+                .includes(highlightEl.tagName.toLowerCase())) return;
+
             let offset = highlightEl.getBoundingClientRect();
             let height = highlightEl.clientHeight;
             let width = highlightEl.clientWidth;

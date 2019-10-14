@@ -1,6 +1,8 @@
 import { onDoc, onEvent } from './delegated-events';
 import { queryFormulaEditor } from './formula-editor/formula-editor.component';
 import { queryDataGrid, DataGridComponent } from './data-grid/data-grid.component';
+import './highlight-box/highlight-box.component';
+import './dom-tree/dom-tree.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
 import './directives/data-frmdb-select';

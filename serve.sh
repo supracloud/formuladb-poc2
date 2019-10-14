@@ -13,5 +13,6 @@ npm run sync-dev-static-assets &
     --mount=/formuladb/:././dist-fe/ \
     --mount=/formuladb/img/:././fe/img/ \
     --mount=/formuladb/icons/:././fe/icons/ \
+    --mount=/test:./test \
     --mount=/formuladb/frmdb-runtime-utils.js:./fe/js/frmdb-runtime-utils.js \
     --proxy=/:http://localhost:8084/ \
