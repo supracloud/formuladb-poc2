@@ -9,10 +9,10 @@ import './fe-functions';
 window.addEventListener('DOMContentLoaded', (event) => {
     initFrmdb();
     
-    // if (new URL(window.location.href).searchParams.get('formuladb-editor') != null) {
-    //     loadExternalScript('/formuladb/frmdb-editor.js');
-    //     document.body.appendChild(document.createElement('frmdb-editor'));
-    // }
+    if (new URL(window.location.href).searchParams.get('formuladb-editor') != null) {
+        loadExternalScript('/formuladb/frmdb-editor.js');
+        document.body.appendChild(document.createElement('frmdb-editor'));
+    }
 
 });
 

@@ -22,6 +22,8 @@ import './fe-functions';
 import './form/form.component';
 import { FrmdbAppState } from './frmdb-app-state';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
+import { FrmdbEditorBuilder } from './frmdb-editor-builder';
+import { FrmdbEditorGui } from './frmdb-editor-gui';
 
 class FrmdbEditorState extends FrmdbAppState {
     selectedTableId: string;
@@ -61,6 +63,10 @@ async function initEditor(pagePath: string) {
     iframe.onload = () => {
         initI18n();
         loadTables();
+        let builder = new FrmdbEditorBuilder(iframe);
+        builder.init();
+        let builderGui = new FrmdbEditorGui(builder, iframe);
+        builderGui.init();
     }
 }
 

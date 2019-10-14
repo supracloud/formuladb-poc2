@@ -1,12 +1,12 @@
 import { FrmdbEditorBuilder } from "./frmdb-editor-builder";
-import { I18nFe } from "./i18n-fe";
+import { I18nFe, I18N_FE } from "./i18n-fe";
 import { BACKEND_SERVICE } from "./backend.service";
 import jsyaml = require("js-yaml");
 import { WysiwygEditor } from "./dom-tree/component-editor/wysiwyg-editor";
 import { Undo } from "./dom-tree/component-editor/undo";
 
 export class FrmdbEditorGui {
-    constructor(private builder: FrmdbEditorBuilder, private iframe: HTMLIFrameElement, private i18n: I18nFe) {
+    constructor(private builder: FrmdbEditorBuilder, private iframe: HTMLIFrameElement) {
     }
 
 	init() {
@@ -15,21 +15,16 @@ export class FrmdbEditorGui {
 		$("[data-vvveb-action]").each(function () {
             if (!this.dataset.vvvebAction) return;
 			$(this).on('click', self[this.dataset.vvvebAction]);
-			if (this.dataset.vvvebShortcut) {
-                $(document).bind('keydown', this.dataset.vvvebShortcut, self[this.dataset.vvvebAction]);
-                //@ts-ignore
-				$(self.iframe.contentWindow.document, self.iframe.contentWindow).bind('keydown', this.dataset.vvvebShortcut, self[this.dataset.vvvebAction]);
-			}
 		});
 
 
 		// i18n section
 		const i18nSelect = jQuery('#frmdb-editor-i18n-select')
 		const i18nOptions = jQuery('[aria-labelledby="frmdb-editor-i18n-select"]');
-		const currentLanguage = self.i18n.getLangDesc(localStorage.getItem('editor-lang') || self.i18n.defaultLanguage);
+		const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage);
 		i18nSelect.attr('data-i18n', currentLanguage!.lang);
 		i18nSelect.html(`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`);
-		self.i18n.languages.forEach(lang =>
+		I18N_FE.languages.forEach(lang =>
 			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.flag}">${lang.full}</a>`)
 				.click(event => {
 					const prev = i18nSelect.attr('data-i18n');
@@ -37,7 +32,7 @@ export class FrmdbEditorGui {
 					localStorage.setItem('editor-lang', next);
 					i18nSelect.attr('data-i18n', next);
 					i18nSelect.html(`<i class="flag-icon flag-icon-${lang.flag}"></i>`);
-					self.i18n.translateAll(this.iframe.contentWindow!.document, prev, next);
+					I18N_FE.translateAll(this.iframe.contentWindow!.document, prev, next);
 					// event.preventDefault();
 					// return false;
 				}).appendTo(i18nOptions)
@@ -83,56 +78,14 @@ export class FrmdbEditorGui {
 		this.builder.selectNode();
 	}
 
-	//show modal with html content
-	save() {
-		$('#textarea-modal textarea').val(this.builder.getHtml());
-		$('#textarea-modal').modal();
-	}
-
-
-	download() {
-		filename = /[^\/]+$/.exec(Vvveb.Builder.iframe.src)[0];
-		uriContent = "data:application/octet-stream," + encodeURIComponent(Vvveb.Builder.getHtml());
-
-		var link = document.createElement('a');
-		if ('download' in link) {
-			link.dataset.download = filename;
-			link.href = uriContent;
-			link.target = "_blank";
-
-			document.body.appendChild(link);
-			result = link.click();
-			document.body.removeChild(link);
-			link.remove();
-
-		} else {
-			location.href = uriContent;
-		}
-	}
-
-	viewport() {
-		$("#canvas").attr("class", this.dataset.view);
-	}
-
-	togglePageEditor() {
-		self.toggleEditor();
-	}
-	toggleTableEditor() {
-		self.toggleEditor(true);
-	}
-	toggleEditor(isTable) {
-		$("#vvveb-builder").toggleClass("bottom-panel-expand");
-		$("#toggleEditorJsExecute").toggle();
-		Vvveb.CodeEditor.toggle(isTable);
-	}
-
-	toggleEditorJsExecute() {
-		Vvveb.Builder.runJsOnSetHtml = this.checked;
+	viewport(ev) {
+		if (!ev.target || !ev.target.dataset || !ev.target.dataset.view) return;
+		$("#canvas").attr("class", ev.target.dataset.view);
 	}
 
 	preview() {
-		(this.isPreview == true) ? this.isPreview = false : this.isPreview = true;
-		Vvveb.Builder.frameBody[0].classList.toggle('frmdb-editor-on', !this.isPreview);
+		(this.builder.isPreview == true) ? this.builder.isPreview = false : this.builder.isPreview = true;
+		this.builder.frameBody[0].classList.toggle('frmdb-editor-on', !this.builder.isPreview);
 		$("#iframe-layer").toggle();
 		$("#vvveb-builder").toggleClass("preview");
 	}
@@ -141,58 +94,14 @@ export class FrmdbEditorGui {
 		launchFullScreen(document); // the whole page
 	}
 
-	componentSearch() {
-		searchText = this.value;
-
-		$("#left-panel .components-list li ol li").each(function () {
-			$this = $(this);
-
-			$this.hide();
-			if ($this.data("search").indexOf(searchText) > -1) $this.show();
-		});
-	}
-
 	clearComponentSearch() {
 		$(".component-search").val("").keyup();
-	}
-
-	blockSearch() {
-		searchText = this.value;
-
-		$("#left-panel .blocks-list li ol li").each(function () {
-			$this = $(this);
-
-			$this.hide();
-			if ($this.data("search").indexOf(searchText) > -1) $this.show();
-		});
 	}
 
 	clearBlockSearch() {
 		$(".block-search").val("").keyup();
 	}
 
-	addBoxComponentSearch() {
-		searchText = this.value;
-
-		$("#add-section-box .components-list li ol li").each(function () {
-			$this = $(this);
-
-			$this.hide();
-			if ($this.data("search").indexOf(searchText) > -1) $this.show();
-		});
-	}
-
-
-	addBoxBlockSearch() {
-		searchText = this.value;
-
-		$("#add-section-box .blocks-list li ol li").each(function () {
-			$this = $(this);
-
-			$this.hide();
-			if ($this.data("search").indexOf(searchText) > -1) $this.show();
-		});
-	}
 }
 
 // Toggle fullscreen

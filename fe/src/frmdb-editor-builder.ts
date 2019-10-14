@@ -20,7 +20,7 @@ import { BACKEND_SERVICE } from "./backend.service";
 import { Undo } from "./dom-tree/component-editor/undo";
 import { WysiwygEditor } from "./dom-tree/component-editor/wysiwyg-editor";
 import { baseUrl, defaultComponent, Components, Blocks } from "./dom-tree/component-editor/components-base";
-import { I18nFe } from "./i18n-fe";
+import { I18nFe, I18N_FE } from "./i18n-fe";
 import { highlightDataGridCell } from "./frmdb-editor";
 import { FrmdbAddPageElement, FrmdbRemovePageElement } from "./frmdb-user-events";
 import { normalizeDOM2HTML } from "@core/normalize-html";
@@ -39,6 +39,7 @@ function isElement(obj) {
 		(typeof obj.ownerDocument === "object")/* && obj.tagName != "BODY"*/;
 }
 
+//@ts-ignore
 var isIE11 = !!window.MSInputMethodContext && !!(document as any).documentMode;
 
 export class FrmdbEditorBuilder {
@@ -47,7 +48,6 @@ export class FrmdbEditorBuilder {
 	isDragging: boolean;
 	component: any = {};
 	dragMoveMutation: any = false;
-	i18n = new I18nFe();
 	selectedEl: JQuery;
 	highlightEl: JQuery;
 	canvas: JQuery;
@@ -377,10 +377,10 @@ export class FrmdbEditorBuilder {
 					let nodeLanguage = this.texteditEl!.attr('data-i18n');
 					const nodeValue = this.texteditEl!.text();
 					if (!nodeLanguage) {
-						this.texteditEl!.attr('data-i18n', this.i18n.defaultLanguage);
-						nodeLanguage = this.i18n.defaultLanguage;
+						this.texteditEl!.attr('data-i18n', I18N_FE.defaultLanguage);
+						nodeLanguage = I18N_FE.defaultLanguage;
 					}
-					this.i18n.updateNode(this.texteditEl![0], nodeLanguage, nodeLanguage, WysiwygEditor.oldValue, nodeValue);
+					I18N_FE.updateNode(this.texteditEl![0], nodeLanguage, nodeLanguage, WysiwygEditor.oldValue, nodeValue);
 
 					jQuery("#select-box").css({
 						//@ts-ignore

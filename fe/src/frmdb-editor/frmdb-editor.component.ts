@@ -44,6 +44,9 @@ export class FrmdbEditorComponent extends HTMLElement {
                 child.style.top = `calc(var(--frmdb-editor-top-panel-height, 33vh) + ${style.top})`;
                 child.style.left = `calc(var(--frmdb-editor-left-panel-width, 16vw) + ${style.left})`;
             }
+            if (style.width == '100%') {
+                child.style.width = `calc(100% - var(--frmdb-editor-left-panel-width, 16vw))`;
+            }
         }
     }
 
