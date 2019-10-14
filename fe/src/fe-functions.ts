@@ -75,14 +75,14 @@ async function $MODAL(modalPageName: string, initDataBindingId?: string, recordD
     ($('#frmdbModal') as any).modal('show');
 }
 
-function $TABLES(): {name: string}[] {
+export function $TABLES(): {name: string}[] {
     let appBackend = BACKEND_SERVICE();
     return Object.values(appBackend.currentSchema.entities).map(ent => ({
         name: ent._id,
     }));
 }
 
-function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): {text: string, value: string}[] {
+export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): {text: string, value: string}[] {
     let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
     if (!parentRecordEl) {console.warn("parent record not found", el.outerHTML); return []}
 

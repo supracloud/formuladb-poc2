@@ -531,32 +531,3 @@ var AutocompleteInput = $.extend({}, Input, {
 	}
   }
 );
-
-var AutocompleteList = $.extend({}, Input, {
-
-    events: [
-        ["autocompletelist.change", "onAutocompleteChange", "input"],
-	 ],
-
-	onAutocompleteChange: function(event, value, text) {
-		
-		if (event.data && event.data.element)
-		{
-			event.data.element.trigger('propertyChange', [value, this]);
-		}
-	},
-
-	setValue: function(value) {
-		$('input', this.element).data("autocompleteList").setValue(value);
-	},
-
-	init: function(data) {
-		
-		this.element = this.render("textinput", data);
-		
-		$('input', this.element).autocompleteList(data);//using default parameters
-		
-		return this.element;
-	}
-  }
-);

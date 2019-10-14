@@ -1,10 +1,6 @@
 import {
     Grid, GridOptions,
-    GridApi, GridReadyEvent,
-    RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef
 } from 'ag-grid-community';import * as _ from "lodash";
-import { onEvent } from "@fe/delegated-events";
 import { setAgGridLicense } from '@fe/licenses';
 
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/dom-tree/dom-tree.component.scss').default;
@@ -14,7 +10,8 @@ const HTML: string = /*html*/`
 `;
 
 interface NodeData {
-    filePath: string[];
+    domPath: string;
+    el: Element;
 }
 class FileCellRenderer { 
     eGui: HTMLElement;
@@ -22,7 +19,7 @@ class FileCellRenderer {
     init (params) {
         var tempDiv = document.createElement('div');
         var value = params.value;
-        var icon = this.getFileIcon(params.value);
+        var icon = this.getElementIcon(params.value);
         tempDiv.innerHTML = icon ? '<i class="' + icon + '"/>' + '<span class="filename">' + value + '</span>' : value;
         this.eGui = tempDiv.firstChild as HTMLElement;
     }
@@ -31,7 +28,7 @@ class FileCellRenderer {
         return this.eGui;
     }
     
-    getFileIcon(filename) {
+    getElementIcon(filename) {
         return filename.endsWith('.mp3') || filename.endsWith('.wav') ? 'fa fa-file-audio-o'
             : filename.endsWith('.xls') ? 'fa fa-file-excel-o'
                 : filename.endsWith('.txt') ? 'fa fa fa-file-o'
@@ -65,44 +62,32 @@ export class DomTreeComponent extends HTMLElement {
 
     init() {
         if (!this.rootEl) return;
+        let rootNodeData = {
+            domPath: '',
+            el: this.rootEl,
+        };
+        this.loadNodes(rootNodeData, this.rowData);
+    }
+
+    loadNodes(parent: NodeData, gridData: NodeData[]) {
+        for (var i = 0; i < parent.el.children.length; i++) {
+            let childEl = parent.el.children[i];
+            if (!childEl.tagName) continue;
+            let nodeData = {
+                domPath: (parent.domPath ? parent.domPath + '/' : '' ) + `${childEl.tagName}[${i+1}]`,
+                el: childEl,
+            }; 
+            gridData.push(nodeData);
+            this.loadNodes(nodeData, gridData);
+        }
     }
 
     // specify the columns
     columnDefs = [
-        {
-            field: 'dateModified',
-            cellClassRules: {
-                'hover-over': (params) => { return params.node === this.potentialParent; }
-            }
-        },
-        {
-            field: 'size',
-            valueFormatter: (params) => {
-                return params.value ? params.value + ' MB' : '';
-            },
-            cellClassRules: {
-                'hover-over': (params) => { return params.node === this.potentialParent; }
-            }
-        }
     ];
 
     // specify the data
-    rowData = [
-        { id: 1, filePath: ['Documents'], type: 'folder' },
-        { id: 2, filePath: ['Documents', 'txt'], type: 'folder' },
-        { id: 3, filePath: ['Documents', 'txt', 'notes.txt'], type: 'file', dateModified: 'May 21 2017 01:50:00 PM', size: 14.7 },
-        { id: 4, filePath: ['Documents', 'pdf'], type: 'folder' },
-        { id: 5, filePath: ['Documents', 'pdf', 'book.pdf'], type: 'file', dateModified: 'May 20 2017 01:50:00 PM', size: 2.1 },
-        { id: 6, filePath: ['Documents', 'pdf', 'cv.pdf'], type: 'file', dateModified: 'May 20 2016 11:50:00 PM', size: 2.4 },
-        { id: 7, filePath: ['Documents', 'xls'], type: 'folder' },
-        { id: 8, filePath: ['Documents', 'xls', 'accounts.xls'], type: 'file', dateModified: 'Aug 12 2016 10:50:00 AM', size: 4.3 },
-        { id: 9, filePath: ['Documents', 'stuff'], type: 'folder' },
-        { id: 10, filePath: ['Documents', 'stuff', 'xyz.txt'], type: 'file', dateModified: 'Jan 17 2016 08:03:00 PM', size: 1.1 },
-        { id: 11, filePath: ['Music'], type: 'folder' },
-        { id: 12, filePath: ['Music', 'mp3'], type: 'folder' },
-        { id: 13, filePath: ['Music', 'mp3', 'theme.mp3'], type: 'file', dateModified: 'Sep 11 2016 08:03:00 PM', size: 14.3 },
-        { id: 14, filePath: ['Misc'], type: 'folder' },
-        { id: 15, filePath: ['Misc', 'temp.txt'], type: 'file', dateModified: 'Aug 12 2016 10:50:00 PM', size: 101 }
+    rowData: NodeData[] = [
     ];
 
     gridOptions: GridOptions = {
@@ -117,11 +102,11 @@ export class DomTreeComponent extends HTMLElement {
         treeData: true,
         animateRows: true,
         groupDefaultExpanded: -1,
-        getDataPath: (data) => {
-            return data.filePath;
+        getDataPath: (data: NodeData) => {
+            return data.domPath.split('/');
         },
-        getRowNodeId: (data) => {
-            return data.id;
+        getRowNodeId: (data: NodeData) => {
+            return data.domPath;
         },
         autoGroupColumnDef: {
             rowDrag: true,
@@ -158,8 +143,8 @@ export class DomTreeComponent extends HTMLElement {
 
         // take new parent path from parent, if data is missing, means it's the root node,
         // which has no data.
-        var newParentPath = this.potentialParent.data ? this.potentialParent.data.filePath : [];
-        var needToChangeParent = !this.arePathsEqual(newParentPath, movingData.filePath);
+        var newParentPath = this.potentialParent.data ? this.potentialParent.data.domPath : [];
+        var needToChangeParent = !this.arePathsEqual(newParentPath, movingData.domPath);
 
         // check we are not moving a folder into a child folder
         var invalidMode = this.isSelectionParentOfTarget(event.node, this.potentialParent);
@@ -184,12 +169,12 @@ export class DomTreeComponent extends HTMLElement {
 
     moveToPath(newParentPath, node, allUpdatedNodes) {
         // last part of the file path is the file name
-        var oldPath = node.data.filePath;
+        var oldPath = node.data.domPath;
         var fileName = oldPath[oldPath.length - 1];
         var newChildPath = newParentPath.slice();
         newChildPath.push(fileName);
 
-        node.data.filePath = newChildPath;
+        node.data.domPath = newChildPath;
 
         allUpdatedNodes.push(node.data);
 
