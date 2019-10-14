@@ -23,8 +23,6 @@ import './form/form.component';
 import { FrmdbAppState } from './frmdb-app-state';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 
-declare var Vvveb: any;
-
 class FrmdbEditorState extends FrmdbAppState {
     selectedTableId: string;
 }
@@ -33,69 +31,46 @@ let EditorState: FrmdbEditorState = new FrmdbEditorState('n-a-tenant', 'n-a-app'
 
 window.onpopstate = () => {
     _resetAppAndTenant();
-    initEditor();
+    initEditor(window.location.hash.replace(/^#/, ''));
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
-    initEditor();
+    initEditor(window.location.hash.replace(/^#/, ''));
 });
 
-async function initEditor(loadPageName?: string) {
+async function initEditor(pagePath: string) {
 
     $("#vvveb-builder").addClass("no-right-panel");
     $(".component-properties-tab").show();
-    Vvveb.Components.componentPropertiesElement = "#left-panel .component-properties";    
 
     let appBackend = BACKEND_SERVICE();
-    Vvveb.Gui.FRMDB_BACKEND_SERVICE = appBackend;
     EditorState = new FrmdbEditorState(appBackend.tenantName, appBackend.appName);
     window['$FRMDB'] = EditorState;
 
     let app: App | null = await appBackend.getApp();
     if (!app) throw new Error(`App not found for ${window.location}`);
     EditorState.pages = app.pages.map(p => ({ name: p, url: `#/${appBackend.tenantName}/${appBackend.appName}/${p}` }));
-    let indexPage: {name: string, url: string} | null = null;
-    let vvvebPages: any[] = [];
-    for (let page of app.pages) {
-        let url = `/${appBackend.tenantName}/${appBackend.appName}/${page}`;
-        if (page === app.homePage) indexPage = {name: page, url: url};
-        vvvebPages.push({ name: page, title: page, url });
-    }
-    if (!indexPage) {
-        indexPage = vvvebPages.length > 0 ? vvvebPages[0] : {name: "index-page-not-found", url: `/${appBackend.tenantName}/${appBackend.appName}/index-page-not-found`};
-    }
-    
-    if (loadPageName) {
-        window.location.hash = `#/${appBackend.tenantName}/${appBackend.appName}/${loadPageName}`;
-    }
-    let pageName = window.location.hash.replace(new RegExp(`/?${appBackend.tenantName}/${appBackend.appName}/?`), '')
-        .replace(/^#/, '');
 
-    let currentPage: {name: string, url: string} = vvvebPages.find(p => p.name == pageName) || indexPage;
-    if (currentPage.name != pageName) {
-        window.location.hash = `#/${appBackend.tenantName}/${appBackend.appName}/${currentPage.name}`;
-    }
-
-    EditorState.selectedPagePath = currentPage.url;
-    EditorState.selectedPageName = currentPage.name;
-    Vvveb.Builder.init(currentPage.url, function () {
-        Vvveb.FileManager.loadComponents();
-
-        const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
-        if (currentLanguage.lang != I18N_FE.defaultLanguage) {
-            setTimeout(() =>
-                I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
-            );
-        }
-    });
-
-    Vvveb.Gui.init();
-    Vvveb.FileManager.init();
-    Vvveb.FileManager.addPages(vvvebPages);
+    EditorState.selectedPagePath = pagePath;
+    EditorState.selectedPageName = pagePath.replace(/.*\//, '');
 
     ($.fn as any).tooltip.Constructor.Default.whiteList.a = ['data-id', 'href'];
 
-    loadTables();
+    let iframe = document.querySelector('iframe#iframe-page') as HTMLIFrameElement;
+    iframe.src = pagePath;
+    iframe.onload = () => {
+        initI18n();
+        loadTables();
+    }
+}
+
+function initI18n() {
+    const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
+    if (currentLanguage.lang != I18N_FE.defaultLanguage) {
+        setTimeout(() =>
+            I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
+        );
+    }
 }
 
 function changeSelectedTableIdIfDifferent(tableName: string) {
@@ -111,29 +86,70 @@ function tableManagementFlows() {
     });
 
     onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {
-        Vvveb.Gui.newTable(newTableName =>
-            BACKEND_SERVICE().putEvent(new ServerEventNewEntity(newTableName))
+        var $newTableModal = $('#new-table-modal');
+        $newTableModal.find('.alert').hide();
+        $("input[name=tableName]", $newTableModal).val('');
+
+        $newTableModal.modal("show").find("form").off("submit").submit(function (event) {
+
+            var name = $("input[name=tableName]", $newTableModal).val();
+            if (typeof name !== 'string') { console.warn("Invalid table name", name); return }
+            event.preventDefault();
+
+            BACKEND_SERVICE().putEvent(new ServerEventNewEntity(name))
                 .then(async (ev: ServerEventNewEntity) => {
                     if (ev.state_ != 'ABORT') {
                         await loadTables(ev.path);
+                        $newTableModal.find('.alert').hide();
+                        $newTableModal.modal("hide");
+                    } else {
+                        $newTableModal.find('.alert').show().text(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
                     }
                     return ev;
                 })
-                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
-        )
+
+        });
     });
 
     onEvent(document.body, 'click', '#new-page-btn, #new-page-btn *', (event) => {
-        Vvveb.Gui.newPage((newPageName, startTemplateUrl) =>
-            BACKEND_SERVICE().putEvent(new ServerEventNewPage(newPageName, startTemplateUrl))
+
+        var $newPageModal = $('#new-page-modal');
+
+        $newPageModal.modal("show").find("form").off("submit").submit(function (event) {
+
+            var title = $("input[name=title]", $newPageModal).val() as string;
+            var startTemplateUrl = ($("select[name=startTemplateUrl]", $newPageModal).val() as string)
+                .replace(/^#/, '');
+
+            //replace nonalphanumeric with dashes and lowercase for name
+            var name = title.replace(/\W+/g, '-').replace(/[^_A-Za-z0-9]+/g, '_').toLowerCase() + '.html';
+
+            event.preventDefault();
+            BACKEND_SERVICE().putEvent(new ServerEventNewPage(name, startTemplateUrl))
                 .then(async (ev: ServerEventNewPage) => {
                     if (ev.state_ != 'ABORT' || ev.error_) {
-                        initEditor(ev.newPageName);
+                        window.location.hash = `${EditorState.tenantName}/${EditorState.appName}/${ev.newPageName}`;
+                        $newPageModal.find('.alert').hide();
+                        $newPageModal.modal("hide");
+                    } else {
+                        $newPageModal.find('.alert').show().text(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
+
                     }
-                    return ev;
-                })
-                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
-        )
+                });
+        });
+    });
+
+    onEvent(document.body, 'click', '#save-btn, #save-btn *', (event) => {
+        let pagePath = window.location.hash.replace(/^#/, '');
+        let html = getHtml();
+
+        return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
+            .then(async (ev: ServerEventPutPageHtml) => {
+                if (ev.state_ != 'ABORT') {
+                } else {
+                    alert(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
+                }
+            })
     });
 
     onDoc('click', '#delete-table-btn *', (event) => {
@@ -160,12 +176,12 @@ function tableManagementFlows() {
         let pagePathToDelete: string | undefined = (link as any).pagePathToDelete;
         if (!pagePathToDelete) return;
 
-        if (confirm(`Please confirm deletion of table ${pagePathToDelete} ?`)) {
+        if (confirm(`Please confirm deletion of page ${pagePathToDelete} ?`)) {
 
             BACKEND_SERVICE().putEvent(new ServerEventDeletePage(pagePathToDelete))
                 .then(async (ev: ServerEventDeletePage) => {
                     if (ev.state_ != 'ABORT') {
-                        initEditor();
+                        window.location.hash = `${EditorState.tenantName}/${EditorState.appName}/index.html`;
                     }
                     return ev;
                 });
@@ -204,21 +220,33 @@ function tableColumnManagementFlows() {
         if (!currentEntity) { console.warn(`Entity ${EditorState.selectedTableId} does not exist`); return; }
         let entity: Entity = currentEntity;
 
-        Vvveb.Gui.newColumn(entity._id, newColumnName => {
-            return BACKEND_SERVICE().putEvent(new ServerEventSetProperty(entity, {
+        var $newColumnModal = $('#new-column-modal');
+        $newColumnModal.find('.alert').hide();
+        $newColumnModal.find('[data-frmdb-value="selectedTableName"]').text(currentEntity._id);
+        $("input[name=columnName]", $newColumnModal).val('');
+
+        $newColumnModal.modal("show").find("form").off("submit").submit(function (event) {
+
+            var name = $("input[name=columnName]", $newColumnModal).val() as string;
+            event.preventDefault();
+
+            BACKEND_SERVICE().putEvent(new ServerEventSetProperty(entity, {
                 propType_: Pn.STRING,
-                name: newColumnName,
+                name,
             }))
                 .then(async (ev: ServerEventSetProperty) => {
                     if (ev.state_ != 'ABORT') {
                         let dataGrid = queryDataGrid(document.body);
                         await dataGrid.initAgGrid();
                         await loadTables(EditorState.selectedTableId);
+                        $newColumnModal.find('.alert').hide();
+                        $newColumnModal.modal("hide");
+
+                    } else {
+                        $newColumnModal.find('.alert').show().text(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
                     }
-                    return ev;
                 })
-                .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
-        })
+        });
     });
 
     onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
@@ -254,7 +282,7 @@ async function loadTables(selectedTable?: string) {
 }
 
 function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
-    for (let i = 0; i < (el.attributes||[]).length; i++) {
+    for (let i = 0; i < (el.attributes || []).length; i++) {
         let attrib = el.attributes[i];
         if (attrib.name === 'data-frmdb-table') {
             let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
@@ -278,7 +306,7 @@ function getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } 
     return null;
 }
 
-function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
+export function highlightDataGridCell(el: HTMLElement) {
     let dataGrid = queryDataGrid(document);
     let cell = getCellFromEl(el);
     if (!cell) return;
@@ -295,31 +323,81 @@ function frmdbEditorHighlightDataGridCell(el: HTMLElement) {
     changeSelectedTableIdIfDifferent(tableName);
     dataGrid.forceCellRefresh(tableName);
 }
-(window as any).frmdbEditorHighlightDataGridCell = frmdbEditorHighlightDataGridCell;
 
-async function frmdbPutServerEventPutPageHtml(pagePath: string, pageHtml: string, templateId?: string) {
-    let html = pageHtml;
+function getHtml() {
+    /** @type {Document} */
+    var doc = this.iframe.contentWindow!.document;
+    var hasDoctpe = (doc.doctype !== null);
+    var html = "";
 
-    if (templateId) {
-        await fetch(templateId, {
-            headers: {
-                'accept': 'text/html',
-            },
-        }).then(async (response) => {
-            html = await response.text();
-        });
+    if (hasDoctpe) html =
+        "<!DOCTYPE "
+        //@ts-ignore
+        + doc.doctype.name
+        //@ts-ignore
+        + (doc.doctype.publicId ? ' PUBLIC "' + doc.doctype.publicId + '"' : '')
+        //@ts-ignore
+        + (!doc.doctype.publicId && doc.doctype.systemId ? ' SYSTEM' : '')
+        //@ts-ignore
+        + (doc.doctype.systemId ? ' "' + doc.doctype.systemId + '"' : '')
+        + ">\n";
+
+    let cleanedUpDOM: HTMLElement = doc.documentElement.cloneNode(true) as HTMLElement;
+    for (let frmdbFragment of Array.from(cleanedUpDOM.querySelectorAll('frmdb-fragment'))) {
+        // frmdbFragment.innerHTML = '';//For SEO better to keep this content
     }
-    return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
-        .then(async (ev: ServerEventPutPageHtml) => {
-            if (ev.state_ != 'ABORT') {
-            }
-            return ev;
-        })
-        .then(ev => ev.state_ == 'ABORT' ? ev.notifMsg_ || ev.error_ : null)
-}
-(window as any).frmdbPutServerEventPutPageHtml = frmdbPutServerEventPutPageHtml;
 
-(window as any).frmdbNormalizeDOM2HTML = normalizeDOM2HTML;
+    //cleanup stelar.js styles
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll('[data-stellar-vertical-offset]'))) {
+        (el as HTMLElement).style.removeProperty('transform');
+    }
+
+    //cleanup isotope.js styles
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll('[data-category]'))) {
+        (el as HTMLElement).style.removeProperty('position');
+        (el as HTMLElement).style.removeProperty('left');
+        (el as HTMLElement).style.removeProperty('top');
+        (el as HTMLElement).style.removeProperty('display');
+    }
+    for (let isotopeGrid of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-isotope-grid.grid'))) {
+        (isotopeGrid as HTMLElement).style.removeProperty('position');
+        (isotopeGrid as HTMLElement).style.removeProperty('height');
+    }
+
+    //cleanup responsive nav dropdown
+    {
+        let el = document.querySelector('.frmdb-responsive-nav-more-items-dropdown');
+        while (el && el.firstChild) el.removeChild(el.firstChild);
+    }
+
+    //cleanup tracking code
+    for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src="https://www.google-analytics.com/analytics.js"]'))) {
+        if (jsEl.parentElement) {
+            jsEl.parentElement.removeChild(jsEl);
+        }
+    }
+    for (let jsEl of Array.from(cleanedUpDOM.querySelectorAll('head > script[src*="hotjar.com"]'))) {
+        if (jsEl.parentElement) {
+            jsEl.parentElement.removeChild(jsEl);
+        }
+    }
+    for (let stEl of Array.from(cleanedUpDOM.getElementsByTagName('style'))) {
+        if ((stEl.textContent||'').indexOf('iframe#_hjRemoteVarsFrame') >= 0) {
+            stEl.parentElement!.removeChild(stEl);
+        }
+    }
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-editor-on'))) {
+        el.classList.remove('frmdb-editor-on');
+    }
+
+    html += normalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
+
+    html = html.replace(/<.*?data-vvveb-helpers.*?>/gi, "");
+    html = html.replace(/\s*data-vvveb-\w+(=["'].*?["'])?\s*/gi, "");
+    html = html.replace(/\s*<!-- Code injected by live-server(.|\n)+<\/body>/, '</body>');
+
+    return html;
+}
 
 tableManagementFlows();
 tableColumnManagementFlows();

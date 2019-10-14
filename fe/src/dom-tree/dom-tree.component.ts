@@ -110,7 +110,7 @@ export class DomTreeComponent extends HTMLElement {
         },
         autoGroupColumnDef: {
             rowDrag: true,
-            headerName: 'Files',
+            headerName: 'Components & Layers',
             width: 250,
             cellRendererParams: {
                 suppressCount: true,
