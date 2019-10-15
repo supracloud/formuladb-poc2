@@ -32,8 +32,9 @@ export async function createNewEnvironment(envName: string) {
       await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
                  {cwd: `env_workspace/${envName}`});
 
-      console.log(`GKE ...`);
-      await exec(`skaffold deploy -n ${envName} -p client --images=registry.gitlab.com/metawiz/febe/formuladb-be:0.0.16-185-g1cb1e942-dirty`,
+      const { stdout, stderr } = await exec('kubectl get deployment be -n$FRMDB_ENV_NAME -o=jsonpath=\'{.spec.template.spec.containers[0].image}\'');
+      console.log(`GKE with image ${stdout} ...`);
+      await exec(`skaffold deploy -n ${envName} -p client --images=${stdout}`,
                  {cwd: `env_workspace/${envName}`});
 
       await retry(async bail => {
@@ -46,10 +47,11 @@ export async function createNewEnvironment(envName: string) {
           throw "Not ready!";
         }
         return 200;
-      })
+      }, {factor: 2, randomize: false})
     } catch (error) {
       console.log(`Environment setup failed with error ${error}. Cleaning up ...`);
       await cleanupEnvironment(envName);
+      return;
     }
 
     console.log(`Env ready. Data provisioning ...`);
@@ -70,6 +72,7 @@ export async function cleanupEnvironment(envName: string) {
   }
 
   // Delete git remote branch for formuladb-apps. Thus, make sure we have the local git clone available
+  await exec(`mkdir -p env_workspace/${envName}`);
   await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
              {cwd: `env_workspace/${envName}`});
   await exec(`git push origin --delete ${envName} || true`,
