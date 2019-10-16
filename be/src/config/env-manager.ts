@@ -22,11 +22,7 @@ export async function createNewEnvironment(envName: string) {
       // Do a copy on the k8s resources for concurrent env setup
       console.log(`Cloning k8s resources for ${envName} ... `);
       await exec(`mkdir -p env_workspace/${envName} && cp -r k8s skaffold.yaml env_workspace/${envName}`);
-      await exec(`perl -p -i -e 's!value.*#TBD_ENV_NAME!value: ${envName} #TBD_ENV_NAME!' k8s/overlays/client/patches/pg-backup-deployment.yaml`,
-                 {cwd: `env_workspace/${envName}`});
-      await exec(`perl -p -i -e 's!value.*#TBD_ENV_NAME!value: ${envName} #TBD_ENV_NAME!' k8s/overlays/client/patches/be-deployment.yaml`,
-                 {cwd: `env_workspace/${envName}`});
-      await exec(`perl -p -i -e 's!^(.*)\\s.*?\\.formuladb\.io$!\\1 ${envName}.formuladb.io!' k8s/overlays/client/resources/ingress.yaml`,
+      await exec(`perl -p -i -e 's!namespace.*#TBD_ENV_NAME!namespace: ${envName} #TBD_ENV_NAME!' k8s/base/kustomization.yaml`,
                  {cwd: `env_workspace/${envName}`});
 
       await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
@@ -47,7 +43,7 @@ export async function createNewEnvironment(envName: string) {
           throw "Not ready!";
         }
         return 200;
-      }, {factor: 2, randomize: false})
+      }, {factor: 2, randomize: false, maxTimeout: 5000, retries: 20})
     } catch (error) {
       console.log(`Environment setup failed with error ${error}. Cleaning up ...`);
       await cleanupEnvironment(envName);

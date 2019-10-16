@@ -10,10 +10,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - client.formuladb.io
+    - $(NAMESPACE_NAME).formuladb.io
     secretName: certificate-formuladb-prod
   rules:
-  - host: client.formuladb.io
+  - host: $(NAMESPACE_NAME).formuladb.io
     http:
       paths:
       - path: /

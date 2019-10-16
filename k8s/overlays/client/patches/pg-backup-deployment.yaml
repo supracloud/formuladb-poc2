@@ -11,4 +11,4 @@ spec:
           - name: postgresql-cloud-dump
             env:
             - name: FRMDB_ENV_NAME
-              value: client #TBD_ENV_NAME
+              value: $(NAMESPACE_NAME)
