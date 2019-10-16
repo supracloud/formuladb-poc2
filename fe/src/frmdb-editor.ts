@@ -24,6 +24,7 @@ import { FrmdbAppState } from './frmdb-app-state';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 import { FrmdbEditorBuilder } from './frmdb-editor-builder';
 import { FrmdbEditorGui } from './frmdb-editor-gui';
+import './theme-customizer/theme-customizer.component';
 
 class FrmdbEditorState extends FrmdbAppState {
     selectedTableId: string;
@@ -37,7 +38,7 @@ window.onpopstate = () => {
 }
 
 window.addEventListener('DOMContentLoaded', (event) => {
-    initEditor(window.location.hash.replace(/^#/, ''));
+    // initEditor(window.location.hash.replace(/^#/, ''));
 });
 
 async function initEditor(pagePath: string) {

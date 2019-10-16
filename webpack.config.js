@@ -75,7 +75,7 @@ configDataGrid = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
     output: {
-        path: path.resolve(__dirname, 'dist-fe'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-data-grid.js'
     },
 };
@@ -84,7 +84,7 @@ configFe = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/fe.js',
     output: {
-        path: path.resolve(__dirname, 'dist-fe'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-fe.js'
     },
 };
@@ -93,7 +93,7 @@ configFrmdbEditor = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/frmdb-editor.js',
     output: {
-        path: path.resolve(__dirname, 'dist-fe'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-editor.js'
     },
 };

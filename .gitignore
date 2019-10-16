@@ -4,7 +4,8 @@
 live-server-wwwroot
 formuladb-env
 dist-be
-dist-fe
+formuladb/*js
+formuladb/*js.map
 tsc-out
 tmp
 out-tsc
@@ -13,6 +14,8 @@ cache
 builds
 /e2e/reports
 elastic-apm-rum.umd.min.js
+_scss
+_css
 
 # dependencies
 node_modules

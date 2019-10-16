@@ -10,9 +10,9 @@ build:
       # with the container's root
       - src: 'dist-be/**/*.js*'
         dest: .
-      - src: 'dist-fe/**/*'
+      - src: 'formuladb/**/*'
         dest: /wwwroot/formuladb
-        strip: dist-fe
+        strip: formuladb
       - src: 'formuladb-editor/**/*'
         dest: /wwwroot/formuladb-editor
         strip: formuladb-editor

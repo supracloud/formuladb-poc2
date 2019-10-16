@@ -8,7 +8,7 @@ var app = express();
 const mapFiles = ['frmdb-data-grid.js.map', 'frmdb-fe.js.map', 'frmdb-editor.js.map'];
 for (let f of mapFiles) {
     app.get(`/formuladb/${f}`, function (req, res) {
-        res.sendFile(path.join(__dirname, 'dist-fe', f));
+        res.sendFile(path.join(__dirname, 'formuladb', f));
     });    
 }
 

@@ -1,6 +1,6 @@
 *
 !dist-be/frmdb-be*.js
-!dist-fe/*.js
+!formuladb/*.js
 !package.json
 !fe/js
 !fe/img

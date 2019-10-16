@@ -36,6 +36,6 @@ gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-static
 gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
 
 gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-editor
-gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
+gsutil -m rsync -x ".*.js.map$" -r formuladb gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
 gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/img
 gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons

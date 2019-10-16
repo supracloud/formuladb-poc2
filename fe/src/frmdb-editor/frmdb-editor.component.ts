@@ -33,21 +33,8 @@ export class FrmdbEditorComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        document.body.style.paddingTop = 'var(--frmdb-editor-top-panel-height, 33vh)';
-        document.body.style.paddingLeft = 'var(--frmdb-editor-left-panel-width, 16vw)';
-
-        //TODO: adjust any element with position fixed or sticky for all cases
-        for (let i = 0; i < document.body.children.length; i++) {
-            let child: HTMLElement = document.body.children[i] as HTMLElement;
-            let style = getComputedStyle(child);
-            if (style.position == 'absolute') {
-                child.style.top = `calc(var(--frmdb-editor-top-panel-height, 33vh) + ${style.top})`;
-                child.style.left = `calc(var(--frmdb-editor-left-panel-width, 16vw) + ${style.left})`;
-            }
-            if (style.width == '100%') {
-                child.style.width = `calc(100% - var(--frmdb-editor-left-panel-width, 16vw))`;
-            }
-        }
+        document.body.style.setProperty('--frmdb-editor-top-panel-height', "33vh");
+        document.body.style.setProperty('--frmdb-editor-left-panel-width', "16vw");
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {

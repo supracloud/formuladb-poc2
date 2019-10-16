@@ -21,7 +21,7 @@ stages:
       - node_modules/
       - tsc-out/
       - dist-be/
-      - dist-fe/
+      - formuladb/
 
 .only_for_staging_and_production: &only_for_staging_and_production
   only:

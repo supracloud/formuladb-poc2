@@ -13,11 +13,7 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
-ADD ./formuladb-editor /wwwroot/formuladb-editor
-ADD ./dist-fe /wwwroot/formuladb
-COPY ./fe/js/*.js /wwwroot/formuladb/
-ADD ./fe/img /wwwroot/formuladb/img
-ADD ./fe/icons /wwwroot/formuladb/icons
+ADD ./formuladb /wwwroot/formuladb
 ADD ./ssh /ssh
 ADD ./scripts /scripts
 
