@@ -1,5 +1,4 @@
 import { DataObj } from "@domain/metadata/data_obj";
-import { AutocompleteAttrs } from "./autocomplete/autocomplete.component";
 import { Entity, EntityProperty } from "@domain/metadata/entity";
 
 export interface UserModifiedFormData {

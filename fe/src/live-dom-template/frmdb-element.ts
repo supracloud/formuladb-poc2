@@ -40,7 +40,11 @@ export function FrmdbElementDecorator<ATTR, STATE>(config: FrmdbElementConfig<AT
                 // this.appendChild(clone);//does not trigger connectedCallback in jsdom
                 this.innerHTML = template.innerHTML;//works with jsdom
             } else {
-                this.attachShadow({ mode: 'open' }).appendChild(clone);
+                if (!this.shadowRoot) {
+                    this.attachShadow({ mode: 'open' });
+                }
+                this.shadowRoot!.innerHTML = '';
+                this.shadowRoot!.appendChild(clone);
             }
             connectedCallback.call(this);
         };

@@ -11,7 +11,18 @@ const HTML = /*html*/`
             width: 16vw;
             height: 50vh;
         }
+        .top-panel {
+            position: fixed;
+            display: block;
+            top: 0px;
+            left: var(--frmdb-editor-left-panel-width);
+            width: calc(100vw - var(--frmdb-editor-left-panel-width) - 18px);
+            height: var(--frmdb-editor-top-panel-height);
+        }
     </style>
+    <div class="top-panel">
+        <frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" expand_row="#edit-record-modal" no_floating_filter="true"></frmdb-data-grid>
+    </div>
     <frmdb-dom-tree root-element="body"></frmdb-dom-tree>
     <frmdb-highlight-box root-element="body"></frmdb-highlight-box>
 `;
@@ -33,8 +44,12 @@ export class FrmdbEditorComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        document.body.style.setProperty('--frmdb-editor-top-panel-height', "33vh");
+        document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
         document.body.style.setProperty('--frmdb-editor-left-panel-width', "16vw");
+    }
+    disconnectedCallback() {
+        document.body.style.setProperty('--frmdb-editor-top-panel-height', "0px");
+        document.body.style.setProperty('--frmdb-editor-left-panel-width', "0px");
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {

@@ -49,7 +49,7 @@ export const WysiwygEditor = {
 	},
 
 	edit: function (element) {
-		element.attr({ 'contenteditable': true, 'spellcheckker': false });
+		element.attr({ 'contenteditable': true, 'spellcheck': false });
 		$("#wysiwyg-editor").show();
 
 		this.element = element;
@@ -58,7 +58,7 @@ export const WysiwygEditor = {
 	},
 
 	destroy: function (element) {
-		element.removeAttr('contenteditable spellcheckker');
+		element.removeAttr('contenteditable spellcheck');
 		$("#wysiwyg-editor").hide();
 		this.isActive = false;
 

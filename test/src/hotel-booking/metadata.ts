@@ -85,8 +85,6 @@ export const HotelBookingApp: App = {
     homePage: "index.html",
     pages: [
         "index.html",
-        "_footer.html",
-        "_nav.html",
         "about.html",
         "gallery.html",
         "contact.html",
