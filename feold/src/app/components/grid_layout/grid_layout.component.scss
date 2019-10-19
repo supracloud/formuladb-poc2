@@ -1,9 +1,0 @@
-:host {
-    display: grid;
-    // grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    grid-template-rows: auto;
-    > * {
-        overflow: auto;
-    }
-}

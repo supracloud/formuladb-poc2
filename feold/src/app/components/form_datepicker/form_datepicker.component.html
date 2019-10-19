@@ -1,9 +1,0 @@
-<label [for]="inputElement.propertyName">
-    {{inputElement.propertyName | i18n}}
-    <div class="frmdb-input-dev-mode-label" *ngIf="frmdbStreams.devMode$ | async">{{inputElement.propertyName}}</div>
-</label>
-<ng-container *ngIf="hasControl(fullpath)">
-    <div class="input-group">
-        <input type="date" class="form-control" placeholder="yyyy-mm-dd" [name]="fullpath" [formControl]="formgrp.get(fullpath)" />
-    </div>
-</ng-container>
