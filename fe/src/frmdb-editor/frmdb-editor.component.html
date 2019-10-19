@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="/formuladb-static/icons/font-awesome/css/font-awesome.min.css">
+
+<div class="top-panel">
+    <frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" expand_row="#edit-record-modal" no_floating_filter="true"></frmdb-data-grid>
+</div>
+<div class="left-panel">
+    <div style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
+        <img src="/formuladb/img/logo.png" style="width: 110px; height: 32px;" />
+        <a class="float-right btn btn-sm btn-outline-light mx-1" href="javascript:void()" data-frmdb-action="showIntroVideoModal"><i class="fa fa-info"></i></a>
+    </div>
+    <frmdb-table-list></frmdb-table-list>
+    <frmdb-pages-list></frmdb-pages-list>
+    <frmdb-dom-tree root-element="body"></frmdb-dom-tree>
+</div>
+<frmdb-highlight-box root-element="body"></frmdb-highlight-box>

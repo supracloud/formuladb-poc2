@@ -1,0 +1,26 @@
+.left-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--frmdb-editor-left-panel-width);
+    height: 100vh;
+}
+
+frmdb-dom-tree {
+    height: 35vh;
+}
+
+.top-panel {
+    position: fixed;
+    display: block;
+    top: 0px;
+    left: var(--frmdb-editor-left-panel-width);
+    width: calc(100vw - var(--frmdb-editor-left-panel-width) - 17px);
+    height: var(--frmdb-editor-top-panel-height);
+}
+
+$spacer: 0.25rem;
+
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/bootstrap";
+@import "../../../formuladb-themes/node_modules/font-awesome/scss/font-awesome.scss";
+@import "../../../formuladb-themes/frmdb/dropdown";

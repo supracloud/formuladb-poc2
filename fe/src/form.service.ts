@@ -32,7 +32,8 @@ export class FormService {
     constructor(private appRootEl: HTMLElement) {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
             let inputEl = event.target;
-            if (!isFormEl(inputEl)) throw new Error("input event came from " + event.target);
+            if (!isFormEl(inputEl)) return;
+            
             this.debounced_newRecordCache(inputEl);
             this.debounced_manageInput(inputEl);
         });

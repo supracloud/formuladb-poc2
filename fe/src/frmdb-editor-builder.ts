@@ -69,15 +69,6 @@ export class FrmdbEditorBuilder {
 		this._initBox();
 	}
 
-	showIntroVideoModal() {
-
-		let $introVideoModal = $('#intro-video-modal');
-		$introVideoModal.find('video').attr('src', `/formuladb-static/${BACKEND_SERVICE().appName}/intro.webm`);
-		$introVideoModal.modal("show").on('hidden.bs.modal', function (e) {
-			($introVideoModal.find('video')[0] as HTMLVideoElement).pause();
-		});
-	}
-
 	/* iframe */
 	initIframe() {
 
