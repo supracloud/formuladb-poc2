@@ -166,5 +166,5 @@ kubectlport-forward-env-be() {
 frmdb-be-load-test-data() {
     if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
-    kubectl -n "$namespace" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
+    kubectl -n "$namespace" exec service/be -- env $@ node /dist-be/frmdb-be-load-test-data.js
 }

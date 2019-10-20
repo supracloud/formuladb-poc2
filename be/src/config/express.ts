@@ -90,8 +90,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
       
     app.post('/register', async (req, res) => {
-        await createNewEnvironment(req.body.name);
-        res.redirect(`https://${req.body.name}.formuladb.io/`);
+        await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
+        res.redirect(`https://${req.body.environment}.formuladb.io/`);
     });
 
     app.delete('/formuladb-api/env/:envname', async function(req, res) {
@@ -111,6 +111,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         logLevel: "debug",
     });
     app.get(/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+        httpProxy(req, res, next);
+    });
+
+    app.get(/^\/formuladb-themes\/.*/, timeout('2s'), async function (req, res, next) {
         httpProxy(req, res, next);
     });
 

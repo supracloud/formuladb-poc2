@@ -56,9 +56,25 @@
 </head>
 
 <body>
-
+	<div id="toastDrawer" aria-live="polite" aria-atomic="true" style="position: fixed; top: 0; right: 0; z-index: 999999;">
+		<div class="toast">
+			<div class="toast-header">
+				<strong class="mr-auto">Keep in mind that ...</strong>
+				<button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+				<span aria-hidden="true">×</span>
+				</button>
+			</div>
+			<div class="toast-body">
+				<div class="container text-center">
+					<p>This is a demo environment and resets every 15 minutes.</p>
+					<a href="/register" class="btn btn-light">Register</a>
+				</div>
+				<p class="pt-1 mt-3">Already have an account? <a href="/login" class="blue-text">Log In</a></p>
+			</div>
+		</div>
+	</div>
+				
 	<div id="vvveb-builder">
-
 		<div id="data-grid">
 			<frmdb-data-grid data-frmdb-attr="table_name:$frmdb.selectedTableId" expand_row="#edit-record-modal" no_floating_filter="true"></frmdb-data-grid>
 		</div>
@@ -971,7 +987,7 @@
 		</div>
 
 	</div>
-
+	
 	<!-- new Column modal-->
 	<div class="modal fade modal-xl" id="intro-video-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
 		<div class="modal-dialog mt-3" role="document" style="width: 96vw; max-width: 96vw">
@@ -1069,6 +1085,12 @@
 			$('.owl-carousel').trigger('play.owl.autoplay', [500]);
 		}
 	</script>
+    <script>
+        $('.toast').toast({animation: true, autohide: true, delay: 15000})
+        setInterval(function() {
+            $('.toast').toast('show');
+        },60000);
+    </script>
 </body>
 
 </html>

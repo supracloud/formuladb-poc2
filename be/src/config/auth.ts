@@ -24,7 +24,7 @@ export function initPassport(app: express.Express,
     }    
     
     passport.use(new LocalStrategy({
-            usernameField: 'username',
+            usernameField: 'email',
             passwordField: 'password'
         },
         async function (username, password, cb) {
@@ -75,7 +75,7 @@ export function handleAuth(app: express.Express) {
     res.redirect('/');
     });
 
-    if (process.env.FRMDB_AUTH_ENABLED === "true" &&
+    if (process.env.FRMDB_IS_DEV_ENV !== "true" && process.env.FRMDB_AUTH_ENABLED === "true" &&
         (typeof process.env.FRMDB_ENV_NAME === "string" &&
          ! ["production", "staging"/*, "135-login-roles-permissions-create-organization"*/].includes(process.env.FRMDB_ENV_NAME))) {
         app.use(function (req, res, next) {
