@@ -24,7 +24,7 @@ import { Pn } from '@domain/metadata/entity';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
 import { setAgGridLicense } from '@fe/licenses';
 import { DataGridComponentI } from './data-grid.component.i';
-import { emit } from '@fe/delegated-events';
+import { emit, getTarget } from '@fe/delegated-events';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
@@ -63,6 +63,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = `<style>${CSS}</style> ${HTML}`;
+        new Grid(this.elem.querySelector("#myGrid") as HTMLElement, this.gridOptions);
     }
 
     /** web components API **************************************************/
@@ -80,7 +81,6 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     }
 
     connectedCallback() {
-        new Grid(this.elem.querySelector("#myGrid") as HTMLElement, this.gridOptions);
     }
 
     /** component internals *************************************************/
@@ -114,7 +114,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
                 action: () => {
                     emit(this, {
                         type: "UserDeleteColumn", 
-                        tableName: getTarget(event) || 'n/a/tbl', 
+                        tableName: this.tableName || 'n/a/tbl', 
                         columnName: params.column.getColDef().field || 'n/a/col',
                     });
                 },

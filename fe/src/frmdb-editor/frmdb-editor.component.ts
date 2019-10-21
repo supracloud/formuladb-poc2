@@ -17,6 +17,7 @@ import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
 import { normalizeDOM2HTML } from "@core/normalize-html";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
+import { App } from "@domain/app";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -62,6 +63,7 @@ export class FrmdbEditorComponent extends HTMLElement {
         this.tableColumnManagementFlows();
         this.initI18n();
         this.loadTables();
+        this.loadPages();
     }
     disconnectedCallback() {
         document.body.style.setProperty('--frmdb-editor-top-panel-height', "0px");
@@ -299,6 +301,16 @@ export class FrmdbEditorComponent extends HTMLElement {
             updateDOM({ $frmdb: this.EditorState }, this.shadowRoot as any as HTMLElement);
         })
             .catch(err => console.error(err));
+    }
+
+    async loadPages() {
+        let app: App | null = await this.backendService.getApp();
+        if (!app) throw new Error(`App not found for ${window.location}`);
+        this.EditorState.pages = app.pages.map(p => ({ name: p, url: `/${this.backendService.tenantName}/${this.backendService.appName}/${p}` }));
+        let pagePath = window.location.pathname;
+        this.EditorState.selectedPagePath = pagePath;
+        this.EditorState.selectedPageName = pagePath.replace(/.*\//, '') || 'index.html';
+        updateDOM({ $frmdb: this.EditorState }, this.shadowRoot as any as HTMLElement);
     }
 
     getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
