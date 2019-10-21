@@ -21,7 +21,6 @@ import { Undo } from "./dom-tree/component-editor/undo";
 import { WysiwygEditor } from "./dom-tree/component-editor/wysiwyg-editor";
 import { baseUrl, defaultComponent, Components, Blocks } from "./dom-tree/component-editor/components-base";
 import { I18nFe, I18N_FE } from "./i18n-fe";
-import { highlightDataGridCell } from "./frmdb-editor";
 import { FrmdbAddPageElement, FrmdbRemovePageElement } from "./frmdb-user-events";
 import { normalizeDOM2HTML } from "@core/normalize-html";
 
@@ -205,7 +204,8 @@ export class FrmdbEditorBuilder {
 			return;
 		}
 
-		highlightDataGridCell(node[0] && node[0].tagName ? node[0] : node);
+		// TODO: move this to frmdb-editor.component
+		// highlightDataGridCell(node[0] && node[0].tagName ? node[0] : node);
 
 
 		let selectActions = jQuery("#select-box").removeClass("text-edit").find("#select-actions");

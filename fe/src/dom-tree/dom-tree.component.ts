@@ -40,6 +40,7 @@ class FileCellRenderer {
 export class DomTreeComponent extends HTMLElement {
     rootEl: HTMLElement | undefined;
     static observedAttributes = ['root-element'];
+    grid: Grid | undefined;
 
     constructor() {
         super();
@@ -52,7 +53,9 @@ export class DomTreeComponent extends HTMLElement {
     connectedCallback() {
         this.style.display = "block";
 
-        new Grid(this.shadowRoot!.querySelector("#zaGrid") as HTMLElement, this.gridOptions);
+        if (!this.grid) {
+            this.grid = new Grid(this.shadowRoot!.querySelector("#zaGrid") as HTMLElement, this.gridOptions);
+        }
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {

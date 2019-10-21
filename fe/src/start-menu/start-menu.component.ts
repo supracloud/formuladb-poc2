@@ -2,18 +2,6 @@ import * as _ from "lodash";
 import { onEvent } from "@fe/delegated-events";
 import { html } from "@fe/live-dom-template/live-dom-template";
 
-
-var themeStylesheetElement: HTMLLinkElement | null;
-function loadExternalStyles(styleUrl: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        themeStylesheetElement = document.createElement('link');
-        themeStylesheetElement.rel = 'stylesheet';
-        themeStylesheetElement.href = styleUrl;
-        themeStylesheetElement.onload = resolve;
-        document.head.appendChild(this.themeStylesheetElement);
-    });
-}
-
 function loadExternalScript(scriptUrl: string): Promise<any> {
     return new Promise(resolve => {
         const scriptElement = document.createElement('script');
