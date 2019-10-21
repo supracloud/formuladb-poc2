@@ -17,15 +17,20 @@ export type EventType =
     | FrmdbUserEvent['type']
 ;
 
+export function getTarget(event: Event): HTMLElement | null {
+    return (event.composed ? event.composedPath()[0] : event.target) as HTMLElement;
+}
+
 export function onEvent(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
     let events = eventType instanceof Array ? eventType : [eventType];
     let selectors = selector instanceof Array ? selector : [selector];
     for (let ev of events) {
         //@ts-ignore
         el.addEventListener(ev, (event: any) => {
-            if (!event || !event.target) {console.warn("received incorrect event:", event); return};
+            let target = getTarget(event);
+            if (!event || !target) {console.warn("received incorrect event:", event); return};
             for (let sel of selectors) {
-                if (event.target.matches(sel)) {
+                if (target.matches(sel)) {
                     LOG.debug("on", "%o, %o,", ev, event);
                     fn(event);
                     break;

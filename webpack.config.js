@@ -91,7 +91,7 @@ configFe = {
 
 configFrmdbEditor = {
     ...configBaseWeb,
-    entry: './tsc-out/fe/src/frmdb-editor.js',
+    entry: './tsc-out/fe/src/frmdb-editor/frmdb-editor.component.js',
     output: {
         path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-editor.js'

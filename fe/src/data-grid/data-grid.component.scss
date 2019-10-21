@@ -9,6 +9,13 @@
 @import "~ag-grid-community/dist/styles/ag-grid";
 @import "~ag-grid-community/dist/styles/ag-theme-balham";
 
+:host {
+  min-width: 28vw;
+  min-height: 18vh;
+  height: 100%;
+  display: block;
+}
+
 .ag-theme-balham .ag-cell {
   line-height: var(--frmdb-data-grid-row-lh, 26px) !important;
 }
