@@ -18,6 +18,7 @@ import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
 import { normalizeDOM2HTML } from "@core/normalize-html";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
+import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -41,15 +42,18 @@ export class FrmdbEditorComponent extends HTMLElement {
     backendService = BACKEND_SERVICE();
     EditorState: FrmdbEditorState;
     frmdbFe: FrmdbFeComponentI;
+    iframe: HTMLIFrameElement;
+    get frameDoc(): Document {
+        return this.iframe.contentWindow!.document;
+    }
 
     constructor() {
         super();
 
         this.EditorState = new FrmdbEditorState(this.backendService.tenantName, this.backendService.appName);
+        this.innerHTML = `<style>${CSS}</style> ${HTML}`;
 
-        this.attachShadow({ mode: 'open' });
-        this.shadowRoot!.innerHTML = `<style>${CSS}</style> ${HTML}`;
-
+        this.iframe = this.querySelector('iframe')!;
         this.frmdbFe = queryFrmdbFe();
         this.frmdbFe.loadExternalStyleSheet('/formuladb-static/icons/line-awesome/css/line-awesome.min.css');
         this.frmdbFe.loadExternalStyleSheet('/formuladb/css/ad-grid-balham-font.css');
@@ -64,6 +68,13 @@ export class FrmdbEditorComponent extends HTMLElement {
         this.initI18n();
         this.loadTables();
         this.loadPages();
+        this.viewManagementFlows();
+        this.iframe.src = window.location.hash.replace(/^#/, '');
+        this.iframe.onload = () => {
+            let highlightBox: HighlightBoxComponent = this.frameDoc.createElement('frmdb-highlight-box') as HighlightBoxComponent;
+            highlightBox.rootElement = 'body';
+            this.frameDoc.body.appendChild(highlightBox);
+        }
     }
     disconnectedCallback() {
         document.body.style.setProperty('--frmdb-editor-top-panel-height', "0px");
@@ -98,7 +109,7 @@ export class FrmdbEditorComponent extends HTMLElement {
     changeSelectedTableIdIfDifferent(tableName: string) {
         if (tableName === this.EditorState.selectedTableId) return;
         this.EditorState.selectedTableId = tableName;
-        updateDOM({ $frmdb: { selectedTableId: this.EditorState.selectedTableId } }, this.shadowRoot as any as HTMLElement);
+        updateDOM({ $frmdb: { selectedTableId: this.EditorState.selectedTableId } }, this);
     }
 
     tableManagementFlows() {
@@ -292,13 +303,31 @@ export class FrmdbEditorComponent extends HTMLElement {
         });
     }
 
+    viewManagementFlows() {
+        onEvent(this, 'click', '[data-frmdb-action^="viewport-"], [data-frmdb-action^="viewport-"] *', (event: MouseEvent) => {
+            let target = getTarget(event)!.closest('[data-frmdb-action]')!;
+            let viewport = target.getAttribute('data-frmdb-action');
+            if (viewport === "viewport-laptop") {
+                this.iframe.style.width = 'calc(100vw - var(--frmdb-editor-left-panel-width))';
+                this.iframe.style.marginLeft = '0px';
+            } else if (viewport === "viewport-tablet") {
+                this.iframe.style.width = '768px';
+                this.iframe.style.marginLeft = 'calc((100vw - 768px - var(--frmdb-editor-left-panel-width)) / 2)';
+            } else if (viewport === "viewport-mobile") {
+                this.iframe.style.width = '320px';
+                this.iframe.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
+            }
+        });
+        
+    }
+
     async loadTables(selectedTable?: string) {
         return BACKEND_SERVICE().getEntities().then(entities => {
 
             this.EditorState.tables = entities;
             this.EditorState.selectedTableId = selectedTable || entities[0]._id;
             setTimeout(() => elvis(elvis((window as any).Vvveb).Gui).CurrentTableId = entities[0]._id, 500);
-            updateDOM({ $frmdb: this.EditorState }, this.shadowRoot as any as HTMLElement);
+            updateDOM({ $frmdb: this.EditorState }, this);
         })
             .catch(err => console.error(err));
     }
@@ -306,11 +335,11 @@ export class FrmdbEditorComponent extends HTMLElement {
     async loadPages() {
         let app: App | null = await this.backendService.getApp();
         if (!app) throw new Error(`App not found for ${window.location}`);
-        this.EditorState.pages = app.pages.map(p => ({ name: p, url: `/${this.backendService.tenantName}/${this.backendService.appName}/${p}` }));
-        let pagePath = window.location.pathname;
+        this.EditorState.pages = app.pages.map(p => ({ name: p, url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}` }));
+        let pagePath = window.location.hash.replace(/^#/, '');
         this.EditorState.selectedPagePath = pagePath;
         this.EditorState.selectedPageName = pagePath.replace(/.*\//, '') || 'index.html';
-        updateDOM({ $frmdb: this.EditorState }, this.shadowRoot as any as HTMLElement);
+        updateDOM({ $frmdb: this.EditorState }, this);
     }
 
     getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {

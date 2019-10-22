@@ -44,7 +44,7 @@ export function onDoc(eventType: EventType | EventType[], selector: string | str
     return onEvent(document, eventType, selector, fn);
 }
 
-export function emit(target: HTMLElement | Document, event: FrmdbUserEvent, bubbles: boolean = true) {
+export function emit(target: Element | Document, event: FrmdbUserEvent, bubbles: boolean = true) {
     target.dispatchEvent(new CustomEvent(event.type, {detail: event, bubbles}));
 }
 

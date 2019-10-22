@@ -2,7 +2,7 @@ import { onDoc, emit, getTarget } from "../delegated-events";
 import { elvis } from "@core/elvis";
 
 onDoc('click', '[data-frmdb-select] .dropdown-item, [data-frmdb-select] .dropdown-item *', (event) => {
-    let target = getTarget(event)!;
+    let target = getTarget(event)!.closest('.dropdown-item')!;
     let frmdbSelect = target.closest('[data-frmdb-select]');
     if (!frmdbSelect) { console.warn("select not found for " + target); return; }
     let frmdbSelectValue = frmdbSelect.querySelector('[data-frmdb-select] .dropdown-toggle');

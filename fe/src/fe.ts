@@ -3,9 +3,8 @@ import './fragment/fragment.component';
 import { initFrmdb } from './init';
 import './form/form.component';
 
-import './directives/data-frmdb-select';
+import './directives/data-frmdb-select.directive';
 import './fe-functions';
-import './start-menu/start-menu.component';
 import * as _ from "lodash";
 
 export class FrmdbFeComponent extends HTMLElement {
@@ -27,7 +26,9 @@ export class FrmdbFeComponent extends HTMLElement {
                     bottom: 5px;
                 }
             </style>
-            <img src="/formuladb-static/formuladb.io/favicon.png" />
+            ${window.location !== window.parent.location || window.location.pathname === '/formuladb/editor.html' ? '' : /*html*/`
+                <a href="/formuladb/editor.html#${window.location.pathname}"><img src="/formuladb-static/formuladb.io/favicon.png" /></a>
+            `}
         `;
     }
 

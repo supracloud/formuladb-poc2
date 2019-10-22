@@ -15,11 +15,11 @@ const HTML = html`
 export class HighlightBoxComponent extends HTMLElement {
     rootEl: HTMLElement | undefined;
     highlightEl: HTMLElement | undefined;
-    private top: HTMLElement;
-    private right: HTMLElement;
-    private bottom: HTMLElement;
-    private left: HTMLElement;
     static observedAttributes = ['root-element'];
+
+    set rootElement(selector: string) {
+        this.setAttribute('root-element', selector);
+    }
 
     constructor() {
         super();

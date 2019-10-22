@@ -6,7 +6,7 @@ import './dom-tree/dom-tree.component';
 import './frmdb-editor/frmdb-editor.component';
 import { BACKEND_SERVICE } from './backend.service';
 import { EntityProperty, Entity, Pn } from '@domain/metadata/entity';
-import './directives/data-frmdb-select';
+import './directives/data-frmdb-select.directive';
 import { ServerEventDeleteProperty, ServerEventSetProperty, ServerEventDeleteEntity, ServerEventNewEntity, ServerEventPreviewFormula, ServerEventPutPageHtml, ServerEventNewPage, ServerEventDeletePage } from '@domain/event';
 import { UserDeleteColumn } from './frmdb-user-events';
 import { elvis } from '@core/elvis';
