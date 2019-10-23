@@ -177,7 +177,7 @@ export class MetadataStore {
 
     async savePageHtml(pagePath: string, html: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`, html);
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName||'index.html'}`, html);
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {
