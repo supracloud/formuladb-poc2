@@ -1,7 +1,5 @@
 import * as _ from "lodash";
 import { onEvent, onDoc, getTarget } from "@fe/delegated-events";
-import './table-list.component';
-import './page-list.component';
 import { BACKEND_SERVICE } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from "@fe/i18n-fe";
@@ -19,6 +17,8 @@ import { normalizeDOM2HTML } from "@core/normalize-html";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
+import "@fe/dom-tree/dom-tree.component";
+import { launchFullScreen } from "@fe/frmdb-editor-gui";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -43,6 +43,8 @@ export class FrmdbEditorComponent extends HTMLElement {
     EditorState: FrmdbEditorState;
     frmdbFe: FrmdbFeComponentI;
     iframe: HTMLIFrameElement;
+    dataGrid: DataGridComponentI;
+    letPanel: HTMLElement;
     get frameDoc(): Document {
         return this.iframe.contentWindow!.document;
     }
@@ -62,7 +64,9 @@ export class FrmdbEditorComponent extends HTMLElement {
     connectedCallback() {
         document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
         document.body.style.setProperty('--frmdb-editor-left-panel-width', "15vw");
-        
+        this.dataGrid = queryDataGrid(this);
+        this.letPanel = this.querySelector('.left-panel') as HTMLElement;
+
         this.tableManagementFlows();
         this.tableColumnManagementFlows();
         this.initI18n();
@@ -171,7 +175,7 @@ export class FrmdbEditorComponent extends HTMLElement {
                     });
             });
         });
-
+        
         onEvent(this, 'click', '#save-btn, #save-btn *', (event) => {
             let pagePath = window.location.hash.replace(/^#/, '');
             let html = this.getHtml();
@@ -179,6 +183,7 @@ export class FrmdbEditorComponent extends HTMLElement {
             return BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
                 .then(async (ev: ServerEventPutPageHtml) => {
                     if (ev.state_ != 'ABORT') {
+                        alert(`Saved ${pagePath}`);
                     } else {
                         alert(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
                     }
@@ -222,8 +227,7 @@ export class FrmdbEditorComponent extends HTMLElement {
         });
 
         onDoc('FrmdbColumnChanged', '*', (event) => {
-            let dataGrid = queryDataGrid(document);
-            dataGrid.forceReloadData();
+            this.dataGrid.forceReloadData();
         });
 
     }
@@ -304,6 +308,27 @@ export class FrmdbEditorComponent extends HTMLElement {
     }
 
     viewManagementFlows() {
+
+        onEvent(this, 'click', '#fullscreen-btn, #fullscreen-btn *', (event) => {
+            launchFullScreen(document);
+        });
+
+        let preview = false;
+        onEvent(this, 'click', '#preview-btn, #preview-btn *', (event) => {
+            preview = !preview;
+            if (preview) {
+                document.body.style.setProperty('--frmdb-editor-top-panel-height', "32px");
+                document.body.style.setProperty('--frmdb-editor-left-panel-width', "0px");
+                this.dataGrid.style.display = 'none';
+                this.letPanel.style.display = 'none';
+            } else {
+                document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
+                document.body.style.setProperty('--frmdb-editor-left-panel-width', "15vw");
+                this.dataGrid.style.display = 'block';                        
+                this.letPanel.style.display = 'block';
+            }
+        });
+
         onEvent(this, 'click', '[data-frmdb-action^="viewport-"], [data-frmdb-action^="viewport-"] *', (event: MouseEvent) => {
             let target = getTarget(event)!.closest('[data-frmdb-action]')!;
             let viewport = target.getAttribute('data-frmdb-action');
@@ -387,7 +412,7 @@ export class FrmdbEditorComponent extends HTMLElement {
 
     getHtml() {
         /** @type {Document} */
-        let doc: Document = window.document;
+        let doc: Document = this.frameDoc;
         let hasDoctpe = (doc.doctype !== null);
         let html = "";
 
@@ -447,6 +472,9 @@ export class FrmdbEditorComponent extends HTMLElement {
         }
         for (let el of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-editor-on'))) {
             el.classList.remove('frmdb-editor-on');
+        }
+        for (let el of Array.from(cleanedUpDOM.querySelectorAll('frmdb-highlight-box'))) {
+            el.parentElement!.removeChild(el);
         }
 
         html += normalizeDOM2HTML(cleanedUpDOM) + "\n</html>";

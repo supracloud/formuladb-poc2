@@ -105,7 +105,7 @@ export class FrmdbEditorGui {
 }
 
 // Toggle fullscreen
-function launchFullScreen(document) {
+export function launchFullScreen(document) {
 	if (document.documentElement.requestFullScreen) {
 
 		if (document.FullScreenElement)

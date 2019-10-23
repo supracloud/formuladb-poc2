@@ -110,9 +110,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //     });
     // }
 
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json({limit: "10mb"}));
+    app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
     app.use(bodyParser.text({
+        limit: "10mb",
         type: ['text/yaml', 'text/csv', 'text/html'], verify: (req, res, buf, encoding) => {
             console.log("TTTTT", buf, encoding, buf.toString(encoding));
         }
@@ -178,7 +179,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/*.yaml', formuladbIoStatic);
 
     app.get('/formuladb/*', express.static('/wwwroot'));
-    app.get('/formuladb-editor/*', express.static('/wwwroot'));
 
     let formuladbAppsStatic = express.static('/wwwroot/git');
     app.get(/.*\.(html|yaml)$/, function appHtmlAndYaml(req, res, next) {

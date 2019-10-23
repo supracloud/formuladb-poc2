@@ -38,8 +38,6 @@ export class FrmdbFeComponent extends HTMLElement {
         });
 
         initFrmdb();
-        this.loadExternalScript('/formuladb/frmdb-data-grid.js');
-        this.loadExternalScript('/formuladb/frmdb-editor.js');
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {

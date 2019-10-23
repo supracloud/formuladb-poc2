@@ -1,6 +1,7 @@
 *
+formuladb/*.js.map
 !dist-be/frmdb-be*.js
-!formuladb/*.js
+!formuladb
 !package.json
 !fe/js
 !fe/img

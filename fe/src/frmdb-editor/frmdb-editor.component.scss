@@ -8,7 +8,6 @@
 }
 .top-panel {
     position: fixed;
-    display: block;
     top: 0px;
     left: var(--frmdb-editor-left-panel-width);
     width: calc(100vw - var(--frmdb-editor-left-panel-width));
