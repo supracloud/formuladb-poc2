@@ -16,8 +16,9 @@ import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
 import { normalizeDOM2HTML } from "@core/normalize-html";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
-import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
+import "@fe/highlight-box/highlight-box.component";
 import "@fe/dom-tree/dom-tree.component";
+import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
 
 class FrmdbEditorState {
@@ -34,63 +35,54 @@ class FrmdbEditorState {
     }
 }
 
-const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/frmdb-editor.component.html').default;
-const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/frmdb-editor.component.scss').default;
+const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/frmdb-editor.directive.scss').default;
 
-export class FrmdbEditorComponent extends HTMLElement {
+export class FrmdbEditorDirective {
     static observedAttributes = ['root-element'];
     backendService = BACKEND_SERVICE();
     EditorState: FrmdbEditorState;
     frmdbFe: FrmdbFeComponentI;
     iframe: HTMLIFrameElement;
+    canvas: HTMLDivElement;
     dataGrid: DataGridComponentI;
     letPanel: HTMLElement;
+    highlightBox: HighlightBoxComponent;
+    editorStyle: HTMLStyleElement;
     get frameDoc(): Document {
         return this.iframe.contentWindow!.document;
     }
 
     constructor() {
-        super();
-
         this.EditorState = new FrmdbEditorState(this.backendService.tenantName, this.backendService.appName);
-        this.innerHTML = `<style>${CSS}</style> ${HTML}`;
+        this.editorStyle = document.createElement('style');
+        this.editorStyle.appendChild(document.createTextNode(STYLE));
 
-        this.iframe = this.querySelector('iframe')!;
+        this.iframe = document.body.querySelector('iframe')!;
+        this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
         this.frmdbFe = queryFrmdbFe();
         this.frmdbFe.loadExternalStyleSheet('/formuladb-static/icons/line-awesome/css/line-awesome.min.css');
         this.frmdbFe.loadExternalStyleSheet('/formuladb/css/ad-grid-balham-font.css');
-    }
-
-    connectedCallback() {
-        document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
-        document.body.style.setProperty('--frmdb-editor-left-panel-width', "15vw");
-        this.dataGrid = queryDataGrid(this);
-        this.letPanel = this.querySelector('.left-panel') as HTMLElement;
-
-        this.tableManagementFlows();
-        this.tableColumnManagementFlows();
-        this.initI18n();
-        this.loadTables();
-        this.loadPages();
-        this.viewManagementFlows();
-        this.iframe.src = window.location.hash.replace(/^#/, '');
-        this.iframe.onload = () => {
-            let highlightBox: HighlightBoxComponent = this.frameDoc.createElement('frmdb-highlight-box') as HighlightBoxComponent;
-            highlightBox.rootElement = 'body';
-            this.frameDoc.body.appendChild(highlightBox);
-        }
-    }
-    disconnectedCallback() {
-        document.body.style.setProperty('--frmdb-editor-top-panel-height', "0px");
-        document.body.style.setProperty('--frmdb-editor-left-panel-width', "0px");
-    }
-
-    attributeChangedCallback(name: any, oldVal: any, newVal: any) {
-        this.init();
-    }
-
-    init() {
-
+        window.addEventListener('DOMContentLoaded', () => {
+            document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
+            document.body.style.setProperty('--frmdb-editor-left-panel-width', "15vw");
+            document.body.appendChild(this.editorStyle);
+        });
+        window.addEventListener('load', () => {
+            this.dataGrid = queryDataGrid(document.body);
+            this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
+            this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+    
+            this.tableManagementFlows();
+            this.tableColumnManagementFlows();
+            this.initI18n();
+            this.loadTables();
+            this.loadPages();
+            this.viewManagementFlows();
+            this.iframe.src = window.location.hash.replace(/^#/, '');
+            this.iframe.onload = () => {
+                this.highlightBox.rootEl = this.iframe.contentWindow!.document;
+            }
+        })
     }
 
     showIntroVideoModal() {
@@ -113,16 +105,16 @@ export class FrmdbEditorComponent extends HTMLElement {
     changeSelectedTableIdIfDifferent(tableName: string) {
         if (tableName === this.EditorState.selectedTableId) return;
         this.EditorState.selectedTableId = tableName;
-        updateDOM({ $frmdb: { selectedTableId: this.EditorState.selectedTableId } }, this);
+        updateDOM({ $frmdb: { selectedTableId: this.EditorState.selectedTableId } }, document.body);
     }
 
     tableManagementFlows() {
 
-        onEvent(this, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
+        onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
             this.changeSelectedTableIdIfDifferent(getTarget(event)!.innerHTML);
         });
 
-        onEvent(this, 'click', '#new-table-btn, #new-table-btn *', (event) => {
+        onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {
             var $newTableModal = $('#new-table-modal');
             $newTableModal.find('.alert').hide();
             $("input[name=tableName]", $newTableModal).val('');
@@ -148,7 +140,7 @@ export class FrmdbEditorComponent extends HTMLElement {
             });
         });
 
-        onEvent(this, 'click', '#new-page-btn, #new-page-btn *', (event) => {
+        onEvent(document.body, 'click', '#new-page-btn, #new-page-btn *', (event) => {
 
             var $newPageModal = $('#new-page-modal');
 
@@ -176,7 +168,7 @@ export class FrmdbEditorComponent extends HTMLElement {
             });
         });
         
-        onEvent(this, 'click', '#save-btn, #save-btn *', (event) => {
+        onEvent(document.body, 'click', '#save-btn, #save-btn *', (event) => {
             let pagePath = window.location.hash.replace(/^#/, '');
             let html = this.getHtml();
 
@@ -252,7 +244,7 @@ export class FrmdbEditorComponent extends HTMLElement {
             }
         });
 
-        onEvent(this, 'FrmdbAddColumn', '*', (event) => {
+        onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
             let currentEntity: Entity | undefined = this.EditorState.tables.find(e => e._id == this.EditorState.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.EditorState.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
@@ -273,7 +265,7 @@ export class FrmdbEditorComponent extends HTMLElement {
                 }))
                     .then(async (ev: ServerEventSetProperty) => {
                         if (ev.state_ != 'ABORT') {
-                            let dataGrid = queryDataGrid(this);
+                            let dataGrid = queryDataGrid(document.body);
                             await dataGrid.initAgGrid();
                             await this.loadTables(this.EditorState.selectedTableId);
                             $newColumnModal.find('.alert').hide();
@@ -286,7 +278,7 @@ export class FrmdbEditorComponent extends HTMLElement {
             });
         });
 
-        onEvent(this, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
+        onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
             let currentEntity: Entity | undefined = this.EditorState.tables.find(e => e._id == this.EditorState.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.EditorState.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
@@ -296,7 +288,7 @@ export class FrmdbEditorComponent extends HTMLElement {
                 BACKEND_SERVICE().putEvent(new ServerEventDeleteProperty(entity, event.detail.columnName))
                     .then(async (ev: ServerEventDeleteProperty) => {
                         if (ev.state_ != 'ABORT') {
-                            let dataGrid = queryDataGrid(this);
+                            let dataGrid = queryDataGrid(document.body);
                             await dataGrid.initAgGrid();
                             await this.loadTables(this.EditorState.selectedTableId);
                         }
@@ -309,12 +301,12 @@ export class FrmdbEditorComponent extends HTMLElement {
 
     viewManagementFlows() {
 
-        onEvent(this, 'click', '#fullscreen-btn, #fullscreen-btn *', (event) => {
+        onEvent(document.body, 'click', '#fullscreen-btn, #fullscreen-btn *', (event) => {
             launchFullScreen(document);
         });
 
         let preview = false;
-        onEvent(this, 'click', '#preview-btn, #preview-btn *', (event) => {
+        onEvent(document.body, 'click', '#preview-btn, #preview-btn *', (event) => {
             preview = !preview;
             if (preview) {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "32px");
@@ -329,18 +321,18 @@ export class FrmdbEditorComponent extends HTMLElement {
             }
         });
 
-        onEvent(this, 'click', '[data-frmdb-action^="viewport-"], [data-frmdb-action^="viewport-"] *', (event: MouseEvent) => {
+        onEvent(document.body, 'click', '[data-frmdb-action^="viewport-"], [data-frmdb-action^="viewport-"] *', (event: MouseEvent) => {
             let target = getTarget(event)!.closest('[data-frmdb-action]')!;
             let viewport = target.getAttribute('data-frmdb-action');
             if (viewport === "viewport-laptop") {
-                this.iframe.style.width = 'calc(100vw - var(--frmdb-editor-left-panel-width))';
-                this.iframe.style.marginLeft = '0px';
+                this.canvas.style.width = 'calc(100vw - var(--frmdb-editor-left-panel-width))';
+                this.canvas.style.marginLeft = '0px';
             } else if (viewport === "viewport-tablet") {
-                this.iframe.style.width = '768px';
-                this.iframe.style.marginLeft = 'calc((100vw - 768px - var(--frmdb-editor-left-panel-width)) / 2)';
+                this.canvas.style.width = '768px';
+                this.canvas.style.marginLeft = 'calc((100vw - 768px - var(--frmdb-editor-left-panel-width)) / 2)';
             } else if (viewport === "viewport-mobile") {
-                this.iframe.style.width = '320px';
-                this.iframe.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
+                this.canvas.style.width = '320px';
+                this.canvas.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
             }
         });
         
@@ -352,7 +344,7 @@ export class FrmdbEditorComponent extends HTMLElement {
             this.EditorState.tables = entities;
             this.EditorState.selectedTableId = selectedTable || entities[0]._id;
             setTimeout(() => elvis(elvis((window as any).Vvveb).Gui).CurrentTableId = entities[0]._id, 500);
-            updateDOM({ $frmdb: this.EditorState }, this);
+            updateDOM({ $frmdb: this.EditorState }, document.body);
         })
             .catch(err => console.error(err));
     }
@@ -364,7 +356,7 @@ export class FrmdbEditorComponent extends HTMLElement {
         let pagePath = window.location.hash.replace(/^#/, '');
         this.EditorState.selectedPagePath = pagePath;
         this.EditorState.selectedPageName = pagePath.replace(/.*\//, '') || 'index.html';
-        updateDOM({ $frmdb: this.EditorState }, this);
+        updateDOM({ $frmdb: this.EditorState }, document.body);
     }
 
     getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {
@@ -488,4 +480,4 @@ export class FrmdbEditorComponent extends HTMLElement {
 
 }
 
-customElements.define('frmdb-editor', FrmdbEditorComponent);
+new FrmdbEditorDirective();

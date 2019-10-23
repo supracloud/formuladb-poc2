@@ -22,6 +22,12 @@
     left: var(--frmdb-editor-left-panel-width);
     width: calc(100vw - var(--frmdb-editor-left-panel-width));
     height: calc(100vh - var(--frmdb-editor-top-panel-height));
+    margin: 0;
+    padding: 0;
+    iframe {
+        width: 100%;
+        height: 100%;
+    }
 }
 
 $font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

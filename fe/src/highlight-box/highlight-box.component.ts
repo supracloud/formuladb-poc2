@@ -13,12 +13,17 @@ const HTML = html`
 `;
 
 export class HighlightBoxComponent extends HTMLElement {
-    rootEl: HTMLElement | undefined;
+    _rootEl: HTMLElement | Document | undefined;
     highlightEl: HTMLElement | undefined;
     static observedAttributes = ['root-element'];
 
     set rootElement(selector: string) {
         this.setAttribute('root-element', selector);
+    }
+
+    set rootEl(el: HTMLElement | Document) {
+        this._rootEl = el;
+        this.init();
     }
 
     constructor() {
@@ -28,7 +33,8 @@ export class HighlightBoxComponent extends HTMLElement {
         this.shadowRoot!.innerHTML = html`
             <style>
                 :host {
-                    position: fixed;
+                    position: absolute;
+                    display: block;
                     border: 1px solid rgb(61, 133, 253);
                     background-color: rgba(61, 133, 253, 0.05);
                     pointer-events: none;
@@ -39,15 +45,14 @@ export class HighlightBoxComponent extends HTMLElement {
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {
-        this.rootEl = document.querySelector(newVal);
+        this._rootEl = document.querySelector(newVal);
         this.init();
     }
 
     init() {
-        if (!this.rootEl) return;
+        if (!this._rootEl) return;
 
-        onEvent(this.rootEl, 'mousemove', '*', /*_.debounce(*/(event) => {
-            // console.log(event.target, window.scrollY, window.scrollX);
+        onEvent(this._rootEl, 'mousemove', '*', /*_.debounce(*/(event) => {
             let highlightEl: HTMLElement = event.target as HTMLElement;
             if (!highlightEl.tagName) return;
             if (["frmdb-dom-tree", "frmdb-data-grid", "body"]
