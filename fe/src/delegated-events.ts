@@ -48,10 +48,6 @@ export function emit(target: Element | Document, event: FrmdbUserEvent, bubbles:
     target.dispatchEvent(new CustomEvent(event.type, {detail: event, bubbles}));
 }
 
-export function emitFrmdbChange(target: HTMLElement | Document, propName?: string, oldVal?: any, newVal?: any) {
-    target.dispatchEvent(new CustomEvent("frmdbchange", {detail: {propName, oldVal, newVal}, bubbles: true}));
-}
-
 export function listenForDOMChanges(targetNode: HTMLElement) {
     const config = { attributes: true, childList: true, subtree: true };
 

@@ -1,7 +1,7 @@
 import * as yaml from 'js-yaml';
 import * as _ from "lodash";
 
-import { emit, emitFrmdbChange } from "../delegated-events";
+import { emit } from "../delegated-events";
 import { updateDOM } from "./live-dom-template";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbUserEvent } from '@fe/frmdb-user-events';
@@ -103,7 +103,6 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
             let oldValue = this.frmdbState[propName];
             if (!_.isEqual(oldValue, propValue)) {
                 ret = Reflect.set(obj, propName, propValue);
-                emitFrmdbChange(this, propName as string, oldValue, propValue);
                 this.frmdbPropertyChangedCallback(propName, oldValue, propValue);
                 this.debouncedUpdateDOM();
             }

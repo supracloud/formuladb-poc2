@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { onEvent } from "@fe/delegated-events";
+import { onEvent, emit } from "@fe/delegated-events";
 import { html } from "@fe/live-dom-template/live-dom-template";
 
 const HTML = html`
@@ -52,7 +52,20 @@ export class HighlightBoxComponent extends HTMLElement {
     init() {
         if (!this._rootEl) return;
 
-        onEvent(this._rootEl, 'mousemove', '*', /*_.debounce(*/(event) => {
+        onEvent(this._rootEl, ['click'], '*', (event) => {
+            event.preventDefault();
+
+            let el: HTMLElement = event.target as HTMLElement;
+            if (!el.tagName) return;
+            if (["frmdb-dom-tree", "frmdb-data-grid", "body"]
+                .includes(el.tagName.toLowerCase())) return;
+
+            emit(this, {type: "FrmdbSelectPageElement", el});
+        });
+
+        onEvent(this._rootEl, ['mousemove'], '*', (event) => {
+            event.preventDefault();
+
             let highlightEl: HTMLElement = event.target as HTMLElement;
             if (!highlightEl.tagName) return;
             if (["frmdb-dom-tree", "frmdb-data-grid", "body"]
@@ -66,7 +79,7 @@ export class HighlightBoxComponent extends HTMLElement {
             this.style.left = (offset.left) + 'px';
             this.style.height = height + 'px';
             this.style.width = width + 'px';
-        }/*, 50)*/)
+        });
     }
 }
 

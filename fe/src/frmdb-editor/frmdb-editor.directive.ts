@@ -7,7 +7,7 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
-import { UserDeleteColumn } from "@fe/frmdb-user-events";
+import { UserDeleteColumn, FrmdbSelectPageElement } from "@fe/frmdb-user-events";
 import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
@@ -82,6 +82,7 @@ export class FrmdbEditorDirective {
             this.iframe.onload = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
             }
+            this.pageElementFlows();
         })
     }
 
@@ -335,7 +336,13 @@ export class FrmdbEditorDirective {
                 this.canvas.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
             }
         });
-        
+    }
+
+    pageElementFlows() {
+
+        onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
+            this.highlightDataGridCell(event.detail.el);
+        });
     }
 
     async loadTables(selectedTable?: string) {
