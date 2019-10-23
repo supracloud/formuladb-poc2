@@ -25,7 +25,7 @@ export async function createNewEnvironment(envName: string, email: string, passw
       await exec(`perl -p -i -e 's!namespace.*#TBD_ENV_NAME!namespace: ${envName} #TBD_ENV_NAME!' k8s/base/kustomization.yaml`,
                  {cwd: `env_workspace/${envName}`});
 
-      await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
+      await exec(`FRMDB_ENV_NAME=${envName} FRMDB_APPS_BASE_BRANCH=${process.env.FRMDB_ENV_NAME} bash /scripts/prepare-env.sh`,
                  {cwd: `env_workspace/${envName}`});
 
       const { stdout, stderr } = await exec('kubectl get deployment be -n$FRMDB_ENV_NAME -o=jsonpath=\'{.spec.template.spec.containers[0].image}\'');

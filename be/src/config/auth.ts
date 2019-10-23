@@ -8,7 +8,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
-const FREE_PATHS = [/\/formuladb-static/, /\/register/, /\/login/, /^\/$/];
+const FREE_PATHS = [/\/formuladb-static/, /\/formuladb-themes/, /\/assets/, /\/register/, /\/login/, /^\/$/];
 const ADMIN_PATHS = [/\/formuladb-editor/];
 
 export function initPassport(app: express.Express,
@@ -71,14 +71,16 @@ export function handleAuth(app: express.Express) {
     });
 
     app.get('/logout', function(req, res){
-    req.logout();
-    res.redirect('/');
+        req.logout();
+        req.session.destroy(function (err) {
+            res.redirect('/');
+        });
     });
 
-    if (process.env.FRMDB_IS_DEV_ENV !== "true" && process.env.FRMDB_AUTH_ENABLED === "true" &&
-        (typeof process.env.FRMDB_ENV_NAME === "string" &&
-         ! ["production", "staging"/*, "135-login-roles-permissions-create-organization"*/].includes(process.env.FRMDB_ENV_NAME))) {
+    if (process.env.FRMDB_AUTH_ENABLED === "true") {
+        console.log("auth enabled");
         app.use(function (req, res, next) {
+            console.log("in auth");
 
             if (req.user && req.user.role && req.user.role === 'ADMIN') {
                 next();

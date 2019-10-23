@@ -3,6 +3,9 @@ set -xe
 if [[ -z ${FRMDB_ENV_NAME+x} ]]; then
     FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
+if [[ -z ${FRMDB_APPS_BASE_BRANCH+x} ]]; then
+    FRMDB_APPS_BASE_BRANCH="master"
+fi
 SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 
@@ -21,7 +24,7 @@ function err() {
 # git
 # -------------------------------------------------------------------------
 if [ ! -d "formuladb-apps" ]; then
-    git clone --jobs 10 --branch master --single-branch --depth 1 \
+    git clone --jobs 10 --branch "${FRMDB_APPS_BASE_BRANCH}" --single-branch --depth 1 \
         git@gitlab.com:metawiz/formuladb-apps.git
 fi
 

@@ -1086,10 +1086,12 @@
 		}
 	</script>
     <script>
-        $('.toast').toast({animation: true, autohide: true, delay: 15000})
-        setInterval(function() {
-            $('.toast').toast('show');
-        },60000);
+		$('.toast').toast({animation: true, autohide: true, delay: 15000})
+		setInterval(function() {
+			if (document.cookie.indexOf("connect.sid=") == -1) {
+					$('.toast').toast('show');
+			}
+		},60000);
     </script>
 </body>
 

@@ -22,6 +22,7 @@ import { LazyInit } from "@domain/ts-utils";
 import { I18nBe } from "@be/i18n-be";
 import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 import { initPassport, handleAuth } from "./auth";
+import { nextTick } from "q";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -85,21 +86,32 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     handleAuth(app);
 
-    app.get('/register', function(req, res) {
-        res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/register.html');
+    app.get('/register', function(req, res, next) {
+        if (process.env.FRMDB_IS_DEV_ENV || process.env.FRMDB_IS_PROD_ENV) {
+            res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/register.html');
+        } else {
+            next();
+        }
     });
       
-    app.post('/register', async (req, res) => {
-        await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
-        res.redirect(`https://${req.body.environment}.formuladb.io/`);
+    app.post('/register', async (req, res, next) => {
+        if (process.env.FRMDB_IS_DEV_ENV || process.env.FRMDB_IS_PROD_ENV) {
+            await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
+            res.redirect(`https://${req.body.environment}.formuladb.io/`);
+        } else {
+            next();
+        }
     });
 
-    app.delete('/formuladb-api/env/:envname', async function(req, res) {
-        // TODO: protect this route. Only for production ?
-        console.log(`Delete called on ${req.params.envname} environment`)
-        let status_message = await cleanupEnvironment(req.params.envname);
-        console.log(status_message);
-        res.end(status_message, null, 4);
+    app.delete('/formuladb-api/env/:envname', async function(req, res, next) {
+        if (process.env.FRMDB_IS_DEV_ENV || process.env.FRMDB_IS_PROD_ENV) {
+            console.log(`Delete called on ${req.params.envname} environment`)
+            let status_message = await cleanupEnvironment(req.params.envname);
+            console.log(status_message);
+            res.end(status_message, null, 4);
+        } else {
+            next();
+        }
     });
 
     const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-static-assets';
