@@ -70,7 +70,7 @@ export function handleAuth(app: express.Express) {
         res.redirect('/');
     });
 
-    app.get('/logout', function(req, res){
+    app.get('/logout', function(req, res) {
         req.logout();
         req.session.destroy(function (err) {
             res.redirect('/');
@@ -80,7 +80,6 @@ export function handleAuth(app: express.Express) {
     if (process.env.FRMDB_AUTH_ENABLED === "true") {
         console.log("auth enabled");
         app.use(function (req, res, next) {
-            console.log("in auth");
 
             if (req.user && req.user.role && req.user.role === 'ADMIN') {
                 next();
@@ -90,10 +89,15 @@ export function handleAuth(app: express.Express) {
             var adminpath = ADMIN_PATHS.some(function(regex) {
                 return regex.test(req.path);
             });
-            if (adminpath) {
+            if (adminpath && process.env.FRMDB_IS_PROD_ENV !== "true") {
                 // Check if user role is admin
+                if (!req.user || !req.user.role) {
+                    res.redirect('/login');
+                    return;
+                }
                 if (req.user.role !== 'ADMIN') {
-                    res.send("aaa");
+                    res.redirect('/');
+                    return;
                 }
             }
 

@@ -12,3 +12,5 @@ spec:
           value: $(NAMESPACE_NAME)
         - name: FRMDB_IS_DEV_ENV
           value: "true"
+        - name: FRMDB_AUTH_ENABLED
+          value: "false"
