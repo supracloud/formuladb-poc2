@@ -1,4 +1,4 @@
-import { Undo } from "./undo";
+import { Undo } from "../frmdb-editor/undo";
 
 export const WysiwygEditor = {
 

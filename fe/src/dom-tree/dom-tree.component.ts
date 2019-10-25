@@ -100,6 +100,7 @@ export class DomTreeComponent extends HTMLElement {
         components: {
             fileCellRenderer: FileCellRenderer
         },
+        headerHeight: 26,
         columnDefs: this.columnDefs,
         rowData: this.rowData,
         treeData: true,

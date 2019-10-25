@@ -30,7 +30,6 @@ import { emit, getTarget } from '@fe/delegated-events';
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 
-
 export class DataGridComponent extends HTMLElement implements DataGridComponentI {
     conditionalFormatting?: { tbdCssClassName: string };
     selectedRow: DataObj;

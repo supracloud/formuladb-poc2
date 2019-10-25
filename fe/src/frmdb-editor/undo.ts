@@ -49,7 +49,44 @@ MutationRecord.oldValue 			String 		The return value depends on the MutationReco
 												For characterData, it is the data of the changed node before the change.
 												For childList, it is null.
 */
- 
+
+interface MutationBase {
+	type: 'attributes' | 'characterData' | 'childList' | 'move';
+	target: HTMLElement;
+}
+interface AttributesMutation extends MutationBase {
+	type: 'attributes';
+	attributeName: string;
+	oldValue: string | number | boolean | null;
+	newValue: string | number | boolean | null;
+}
+
+interface CharacterDataMutation extends MutationBase {
+	type: 'characterData';
+	oldValue: string;
+	newValue: string;
+}
+interface ChildListMutation extends MutationBase {
+	type: 'childList';
+	removedNodes?: HTMLElement[];
+	addedNodes?: HTMLElement[];
+	nextSibling?: HTMLElement;
+}
+interface MoveMutation extends MutationBase {
+	type: 'move';
+	oldParent: HTMLElement;
+	oldNextSibling?: HTMLElement;
+	newParent: HTMLElement;
+	newNextSibling?: HTMLElement;
+}
+
+export type Mutation = 
+	| AttributesMutation
+	| CharacterDataMutation
+	| ChildListMutation
+	| MoveMutation
+;
+
 export const Undo = {
 	
 	undos: [],
@@ -60,7 +97,7 @@ export const Undo = {
 	init: function() {
 	},
 	*/	
-	addMutation : function(mutation) {	
+	addMutation : function(mutation: Mutation) {	
 		/*
 			this.mutations.push(mutation);
 			this.undoIndex++;
@@ -68,66 +105,58 @@ export const Undo = {
 		this.mutations.splice(++this.undoIndex, 0, mutation);
 	 },
 
-	restore : function(mutation, undo) {	
+	restore : function(mutation: Mutation, undo) {	
 		
 		switch (mutation.type) {
 			case 'childList':
 			
-				if (undo == true)
-				{
+				if (undo == true) {
 					var addedNodes = mutation.removedNodes;
 					var removedNodes = mutation.addedNodes;
-				} else //redo
-				{
+				} else { //redo
 					addedNodes = mutation.addedNodes;
 					removedNodes = mutation.removedNodes;
 				}
 				
-				if (addedNodes) for(let i in addedNodes)
-				{
-					var node = addedNodes[i];
-					if (mutation.nextSibling)
-					{ 
-						mutation.nextSibling.parentNode.insertBefore(node, mutation.nextSibling);
-					} else
-					{
+				if (addedNodes) for(let i in addedNodes) {
+					let node = addedNodes[i];
+					if (mutation.nextSibling) { 
+						mutation.nextSibling.parentNode!.insertBefore(node, mutation.nextSibling);
+					} else {
 						mutation.target.append(node);
 					}
 				}
 
-				if (removedNodes) for(let i in removedNodes)
-				{
-					node = removedNodes[i];
-					node.parentNode.removeChild(node);
+				if (removedNodes) for(let i in removedNodes) {
+					let node = removedNodes[i];
+					node.parentNode!.removeChild(node);
 				}
 			break;					
-			case 'move':
-				if (undo == true)
-				{
-					var parent = mutation.oldParent;
-					var sibling = mutation.oldNextSibling;
-				} else //redo
-				{
+			case 'move': {
+				let parent: HTMLElement, sibling: HTMLElement | undefined;
+				if (undo == true) {
+					parent = mutation.oldParent;
+					sibling = mutation.oldNextSibling;
+				} else { //redo
 					parent = mutation.newParent;
 					sibling = mutation.newNextSibling;
 				}
 			  
-				if (sibling)
-				{
-					sibling.parentNode.insertBefore(mutation.target, sibling);
-				} else
-				{
-					parent.append(node);
+				if (sibling) {
+					sibling.parentNode!.insertBefore(mutation.target, sibling);
+				} else {
+					parent.append(mutation.target);
 				}
+			}
 			break;
 			case 'characterData':
 			  mutation.target.innerHTML = undo ? mutation.oldValue : mutation.newValue;
 			  break;
 			case 'attributes':
-			  var value = undo ? mutation.oldValue : mutation.newValue;
+			  let value = undo ? mutation.oldValue : mutation.newValue;
 
 			  if (value || value === false || value === 0)
-				mutation.target.setAttribute(mutation.attributeName, value);
+				mutation.target.setAttribute(mutation.attributeName, '' + value);
 			  else
 				mutation.target.removeAttribute(mutation.attributeName);
 

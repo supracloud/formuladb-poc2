@@ -18,8 +18,10 @@ import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import "@fe/highlight-box/highlight-box.component";
 import "@fe/dom-tree/dom-tree.component";
+import "@fe/component-editor/element-editor.component";
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
+import { ElementEditorComponent } from "@fe/component-editor/element-editor.component";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -35,8 +37,6 @@ class FrmdbEditorState {
     }
 }
 
-const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/frmdb-editor.directive.scss').default;
-
 export class FrmdbEditorDirective {
     static observedAttributes = ['root-element'];
     backendService = BACKEND_SERVICE();
@@ -47,26 +47,20 @@ export class FrmdbEditorDirective {
     dataGrid: DataGridComponentI;
     letPanel: HTMLElement;
     highlightBox: HighlightBoxComponent;
-    editorStyle: HTMLStyleElement;
+    elementEditor: ElementEditorComponent;
+
     get frameDoc(): Document {
         return this.iframe.contentWindow!.document;
     }
 
     constructor() {
         this.EditorState = new FrmdbEditorState(this.backendService.tenantName, this.backendService.appName);
-        this.editorStyle = document.createElement('style');
-        this.editorStyle.appendChild(document.createTextNode(STYLE));
 
         this.iframe = document.body.querySelector('iframe')!;
         this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
+        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
         this.frmdbFe = queryFrmdbFe();
-        this.frmdbFe.loadExternalStyleSheet('/formuladb-static/icons/line-awesome/css/line-awesome.min.css');
-        this.frmdbFe.loadExternalStyleSheet('/formuladb/css/ad-grid-balham-font.css');
-        window.addEventListener('DOMContentLoaded', () => {
-            document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
-            document.body.style.setProperty('--frmdb-editor-left-panel-width', "15vw");
-            document.body.appendChild(this.editorStyle);
-        });
+
         window.addEventListener('load', () => {
             this.dataGrid = queryDataGrid(document.body);
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
@@ -341,7 +335,9 @@ export class FrmdbEditorDirective {
     pageElementFlows() {
 
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
-            this.highlightDataGridCell(event.detail.el);
+            let node = event.detail.el;
+            this.highlightDataGridCell(node);
+            this.elementEditor.editedEl = node;
         });
     }
 

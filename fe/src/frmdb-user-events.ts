@@ -86,6 +86,11 @@ export interface FrmdbSelectPageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbModifyPageElement {
+    type: 'FrmdbModifyPageElement';
+    value: string | number | boolean;
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -105,4 +110,5 @@ export type FrmdbUserEvent =
     | FrmdbAddPageElement
     | FrmdbRemovePageElement
     | FrmdbSelectPageElement
+    | FrmdbModifyPageElement
 ;

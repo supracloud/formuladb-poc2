@@ -1,12 +1,11 @@
-import { FrmdbEditorBuilder } from "./frmdb-editor-builder";
 import { I18nFe, I18N_FE } from "./i18n-fe";
 import { BACKEND_SERVICE } from "./backend.service";
 import jsyaml = require("js-yaml");
-import { WysiwygEditor } from "./dom-tree/component-editor/wysiwyg-editor";
-import { Undo } from "./dom-tree/component-editor/undo";
+import { WysiwygEditor } from "./component-editor/wysiwyg-editor";
+import { Undo } from "./frmdb-editor/undo";
 
 export class FrmdbEditorGui {
-    constructor(private builder: FrmdbEditorBuilder, private iframe: HTMLIFrameElement) {
+    constructor(private iframe: HTMLIFrameElement) {
     }
 
 	init() {
@@ -66,7 +65,7 @@ export class FrmdbEditorGui {
 		} else {
 			Undo.undo();
 		}
-		this.builder.selectNode();
+		// this.builder.selectNode();
 	}
 
 	redo() {
@@ -75,33 +74,8 @@ export class FrmdbEditorGui {
 		} else {
 			Undo.redo();
 		}
-		this.builder.selectNode();
+		// this.builder.selectNode();
 	}
-
-	viewport(ev) {
-		if (!ev.target || !ev.target.dataset || !ev.target.dataset.view) return;
-		$("#canvas").attr("class", ev.target.dataset.view);
-	}
-
-	preview() {
-		(this.builder.isPreview == true) ? this.builder.isPreview = false : this.builder.isPreview = true;
-		this.builder.frameBody[0].classList.toggle('frmdb-editor-on', !this.builder.isPreview);
-		$("#iframe-layer").toggle();
-		$("#vvveb-builder").toggleClass("preview");
-	}
-
-	fullscreen() {
-		launchFullScreen(document); // the whole page
-	}
-
-	clearComponentSearch() {
-		$(".component-search").val("").keyup();
-	}
-
-	clearBlockSearch() {
-		$(".block-search").val("").keyup();
-	}
-
 }
 
 // Toggle fullscreen

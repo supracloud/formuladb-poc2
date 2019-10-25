@@ -2,11 +2,12 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="/formuladb/frmdb-editor.min.css">
     <link rel="stylesheet" href="/formuladb-static/icons/line-awesome/css/line-awesome.min.css">
+    <link rel="stylesheet" href="/formuladb/css/ad-grid-balham-font.css">
 </head>
 
 <body>
-
     <div class="top-panel d-flex flex-column shadow-sm">
         <frmdb-data-grid class="flex-grow-1" data-frmdb-attr="table-name:$frmdb.selectedTableId" expand-row="#edit-record-modal" no-floating-filters="true">
         </frmdb-data-grid>
@@ -139,6 +140,8 @@
         </ul>
 
         <frmdb-dom-tree root-element="body"></frmdb-dom-tree>
+
+        <frmdb-element-editor></frmdb-element-editor>
     </div>
     <div id="canvas" class="position-relative">
         <iframe></iframe>
@@ -147,7 +150,398 @@
 
     <script src="/formuladb/frmdb-fe.js"></script>
     <script src="/formuladb/frmdb-data-grid.js"></script>
+    <script src="/formuladb-static/plugins/vendor/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="/formuladb-static/plugins/vendor/js/popper.min.js"></script>
+    <script src="/formuladb-static/plugins/vendor/js/bootstrap.min.js"></script>
     <script src="/formuladb/frmdb-editor.js"></script>
+
+
+    <!--////// start templates //////////////////////////////////////////////////////// -->
+    <script id="vvveb-property" type="text/html">
+
+        <div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
+            
+            {% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
+            
+            <div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
+            
+        </div>		 
+        
+    </script>
+    
+    <script id="tmpl-frmdb-input-textinput" type="text/html">
+
+        <div>
+            <input name="{%=key%}" type="text" 
+            {% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+            {% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+            class="form-control"/>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-textareainput" type="text/html">
+
+        <div>
+            <textarea name="{%=key%}" rows="3" class="form-control"/>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-checkboxinput" type="text/html">
+
+        <div class="custom-control custom-checkbox">
+              <input name="{%=key%}" class="custom-control-input" type="checkbox" id="{%=key%}_check">
+              <label class="custom-control-label" for="{%=key%}_check">{% if (typeof text !== 'undefined') { %} {%=text%} {% } %}</label>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-radioinput" type="text/html">
+
+        <div>
+        
+            {% for ( var i = 0; i < options.length; i++ ) { %}
+    
+            <label class="custom-control custom-radio  {% if (typeof inline !== 'undefined' && inline == true) { %}custom-control-inline{% } %}"  title="{%=options[i].title%}">
+              <input name="{%=key%}" class="custom-control-input" type="radio" value="{%=options[i].value%}" id="{%=key%}{%=i%}" {%if (options[i].checked) { %}checked="{%=options[i].checked%}"{% } %}>
+              <label class="custom-control-label" for="{%=key%}{%=i%}">{%=options[i].text%}</label>
+            </label>
+    
+            {% } %}
+    
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-radiobuttoninput" type="text/html">
+
+        <div class="btn-group btn-group-toggle  {%if (extraclass) { %}{%=extraclass%}{% } %} clearfix" data-toggle="buttons">
+        
+            {% for ( var i = 0; i < options.length; i++ ) { %}
+    
+            <label class="btn  btn-outline-primary  {%if (options[i].checked) { %}active{% } %}  {%if (options[i].extraclass) { %}{%=options[i].extraclass%}{% } %}" for="{%=key%}{%=i%} " title="{%=options[i].title%}">
+              <input name="{%=key%}" class="custom-control-input" type="radio" value="{%=options[i].value%}" id="{%=key%}{%=i%}" {%if (options[i].checked) { %}checked="{%=options[i].checked%}"{% } %}>
+              {%if (options[i].icon) { %}<i class="{%=options[i].icon%}"></i>{% } %}
+              {%=options[i].text%}
+            </label>
+    
+            {% } %}
+                    
+        </div>
+        
+    </script>
+
+
+    <script id="tmpl-frmdb-input-toggle" type="text/html">
+
+        <div class="toggle">
+            <input type="checkbox" name="{%=key%}" value="{%=on%}" data-value-off="{%=off%}" data-value-on="{%=on%}" class="toggle-checkbox" id="{%=key%}">
+            <label class="toggle-label" for="{%=key%}">
+                <span class="toggle-inner"></span>
+                <span class="toggle-switch"></span>
+            </label>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-header" type="text/html">
+
+            <h6 class="header">{%=header%}</h6>
+        
+    </script>
+
+
+    <script id="tmpl-frmdb-input-select" type="text/html">
+
+        <div>
+    
+            <select class="form-control custom-select">
+                {% for ( var i = 0; i < options.length; i++ ) { %}
+                <option value="{%=options[i].value%}">{%=options[i].text%}</option>
+                {% } %}
+            </select>
+        
+        </div>
+        
+    </script>
+
+
+    <script id="tmpl-frmdb-input-listinput" type="text/html">
+
+        <div class="row">
+    
+            {% for ( var i = 0; i < options.length; i++ ) { %}
+            <div class="col-6">
+                <div class="input-group">
+                    <input name="{%=key%}_{%=i%}" type="text" class="form-control" value="{%=options[i].text%}"/>
+                    <div class="input-group-append">
+                        <button class="input-group-text btn btn-sm btn-danger">
+                            <i class="la la-trash la-lg"></i>
+                        </button>
+                    </div>
+                  </div>
+                  <br/>
+            </div>
+            {% } %}
+    
+    
+            {% if (typeof hide_remove === 'undefined') { %}
+            <div class="col-12">
+            
+                <button class="btn btn-sm btn-outline-primary">
+                    <i class="la la-trash la-lg"></i> Add new
+                </button>
+                
+            </div>
+            {% } %}
+                
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-grid" type="text/html">
+
+        <div class="row">
+            <div class="mb-1 col-12">
+            
+                <label>Flexbox</label>
+                <select class="form-control custom-select" name="col">
+                    
+                    <option value="">None</option>
+                    {% for ( var i = 1; i <= 12; i++ ) { %}
+                    <option value="{%=i%}" {% if ((typeof col !== 'undefined') && col == i) { %} selected {% } %}>{%=i%}</option>
+                    {% } %}
+                    
+                </select>
+                <br/>
+            </div>
+    
+            <div class="col-6">
+                <label>Extra small</label>
+                <select class="form-control custom-select" name="col-xs">
+                    
+                    <option value="">None</option>
+                    {% for ( var i = 1; i <= 12; i++ ) { %}
+                    <option value="{%=i%}" {% if ((typeof col_xs !== 'undefined') && col_xs == i) { %} selected {% } %}>{%=i%}</option>
+                    {% } %}
+                    
+                </select>
+                <br/>
+            </div>
+            
+            <div class="col-6">
+                <label>Small</label>
+                <select class="form-control custom-select" name="col-sm">
+                    
+                    <option value="">None</option>
+                    {% for ( var i = 1; i <= 12; i++ ) { %}
+                    <option value="{%=i%}" {% if ((typeof col_sm !== 'undefined') && col_sm == i) { %} selected {% } %}>{%=i%}</option>
+                    {% } %}
+                    
+                </select>
+                <br/>
+            </div>
+            
+            <div class="col-6">
+                <label>Medium</label>
+                <select class="form-control custom-select" name="col-md">
+                    
+                    <option value="">None</option>
+                    {% for ( var i = 1; i <= 12; i++ ) { %}
+                    <option value="{%=i%}" {% if ((typeof col_md !== 'undefined') && col_md == i) { %} selected {% } %}>{%=i%}</option>
+                    {% } %}
+                    
+                </select>
+                <br/>
+            </div>
+            
+            <div class="col-6 mb-1">
+                <label>Large</label>
+                <select class="form-control custom-select" name="col-lg">
+                    
+                    <option value="">None</option>
+                    {% for ( var i = 1; i <= 12; i++ ) { %}
+                    <option value="{%=i%}" {% if ((typeof col_lg !== 'undefined') && col_lg == i) { %} selected {% } %}>{%=i%}</option>
+                    {% } %}
+                    
+                </select>
+                <br/>
+            </div>
+            
+            {% if (typeof hide_remove === 'undefined') { %}
+            <div class="col-12">
+            
+                <button class="btn btn-sm btn-outline-light text-danger">
+                    <i class="la la-trash la-lg"></i> Remove
+                </button>
+                
+            </div>
+            {% } %}
+            
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-textvalue" type="text/html">
+
+        <div class="row">
+            <div class="col-6 mb-1">
+                <label>Value</label>
+                <input name="value" type="text" value="{%=value%}" class="form-control"/>
+            </div>
+    
+            <div class="col-6 mb-1">
+                <label>Text</label>
+                <input name="text" type="text" value="{%=text%}" class="form-control"/>
+            </div>
+    
+            {% if (typeof hide_remove === 'undefined') { %}
+            <div class="col-12">
+            
+                <button class="btn btn-sm btn-outline-light text-danger">
+                    <i class="la la-trash la-lg"></i> Remove
+                </button>
+                
+            </div>
+            {% } %}
+    
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-rangeinput" type="text/html">
+
+        <div>
+            <input name="{%=key%}" type="range" min="{%=min%}" max="{%=max%}" step="{%=step%}" class="form-control"/>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-imageinput" type="text/html">
+
+        <div>
+            <input name="{%=key%}" type="text" class="form-control"/>
+            <input name="file" type="file" class="form-control"/>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-colorinput" type="text/html">
+
+        <div>
+            <input name="{%=key%}" type="color" {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %}  pattern="#[a-f0-9]{6}" class="form-control"/>
+        </div>
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-bootstrap-color-picker-input" type="text/html">
+
+        <div>
+            <div id="cp2" class="input-group" title="Using input value">
+              <input name="{%=key%}" type="text" {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %}	 class="form-control"/>
+              <span class="input-group-append">
+                <span class="input-group-text colorpicker-input-addon"><i></i></span>
+              </span>
+            </div>
+        </div>
+    
+    </script>
+
+    <script id="tmpl-frmdb-input-numberinput" type="text/html">
+        <div>
+            <input name="{%=key%}" type="number" value="{%=value%}" 
+                  {% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
+                  {% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
+                  {% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+                  {% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+                  {% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+            class="form-control"/>
+        </div>
+    </script>
+
+    <script id="tmpl-frmdb-input-button" type="text/html">
+        <div>
+            <button class="btn btn-sm btn-primary">
+                <i class="la  {% if (typeof icon !== 'undefined') { %} {%=icon%} {% } else { %} la-plus {% } %} la-lg"></i> {%=text%}
+            </button>
+        </div>		
+    </script>
+
+    <script id="tmpl-frmdb-input-cssunitinput" type="text/html">
+        <div class="input-group" id="cssunit-{%=key%}">
+            <input name="number" type="number"  {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %} 
+                  {% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
+                  {% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
+                  {% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+            class="form-control"/>
+             <div class="input-group-append">
+            <select class="form-control custom-select small-arrow" name="unit">
+                <option value="em">em</option>
+                <option value="px">px</option>
+                <option value="%">%</option>
+                <option value="rem">rem</option>
+                <option value="auto">auto</option>
+            </select>
+            </div>
+        </div>
+        
+    </script>
+
+
+    <script id="tmpl-frmdb-filemanager-component" type="text/html">
+        <li data-url="{%=url%}" data-component="{%=name%}" class="file">
+            <a href="{%=url%}"><span>{%=title%}</span></a>
+        </li>
+    </script>
+
+    <script id="tmpl-frmdb-input-sectioninput" type="text/html">
+
+            <label class="header" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
+            <input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
+            <div class="section" data-section="{%=key%}"></div>		
+        
+    </script>
+
+
+    <script id="tmpl-frmdb-property" type="text/html">
+
+        <div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
+            
+            {% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
+            
+            <div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
+            
+        </div>		 
+        
+    </script>
+
+    <script id="tmpl-frmdb-input-autocompletelist" type="text/html">
+
+        <div>
+            <input name="{%=key%}" type="text" class="form-control"/>
+            
+            <div class="form-control autocomplete-list" style="min=height: 150px; overflow: auto;">
+                      <div id="featured-product43"><i class="la la-close"></i> MacBook
+                        <input name="product[]" value="43" type="hidden">
+                      </div>
+                                      <div id="featured-product40"><i class="la la-close"></i> iPhone
+                        <input name="product[]" value="40" type="hidden">
+                      </div>
+                                      <div id="featured-product42"><i class="la la-close"></i> Apple Cinema 30"
+                        <input name="product[]" value="42" type="hidden">
+                      </div>
+                                      <div id="featured-product30"><i class="la la-close"></i> Canon EOS 5D
+                        <input name="product[]" value="30" type="hidden">
+                      </div>
+            </div>
+        </div>
+        
+    </script>
+    
+    <!--////// end templates //////////////////////////////////////////////////////// -->
+
+
 </body>
 
 </html>
