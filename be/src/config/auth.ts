@@ -60,6 +60,14 @@ export function initPassport(app: express.Express,
 }
 
 export function handleAuth(app: express.Express) {
+    app.get('/isauthenticated', function(req, res) {
+        if(req.isAuthenticated()) {
+            res.status(200).send();
+        } else{
+            res.status(401).send();
+        }
+    });
+
     app.get('/login', function(req, res) {
         res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/login.html');
     });

@@ -1088,9 +1088,13 @@
     <script>
 		$('.toast').toast({animation: true, autohide: true, delay: 15000})
 		setInterval(function() {
-			if (document.cookie.indexOf("connect.sid=") == -1) {
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.onreadystatechange = function() { 
+				if (xmlHttp.readyState == 4 && xmlHttp.status != 200)
 					$('.toast').toast('show');
 			}
+			xmlHttp.open("GET", "/isauthenticated", true);
+			xmlHttp.send(null);
 		},60000);
     </script>
 </body>
