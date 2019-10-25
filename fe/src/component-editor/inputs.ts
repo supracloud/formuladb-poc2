@@ -22,13 +22,22 @@ import { emit, onEvent } from "@fe/delegated-events";
 declare var $: null;
 
 export abstract class Input extends HTMLElement {
+	abstract inputTagName: string;
 	value: string;
 
-	init(name): void {
+	init(data): void {
+		this.render(this.inputTagName, data);
+		onEvent(this, 'change', 'input,textarea,select', (event: Event) => {
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+		});
+		onEvent(this, 'click', 'button', (event: Event) => {
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+		});
 	}
 
 	setValue(value) {
-		this.querySelector('input')!.value = value;
+		(this.querySelector('input,select,textarea') as HTMLInputElement 
+			| HTMLSelectElement | HTMLTextAreaElement).value = value;
 	}
 
 	render(elemTagName, data) {
@@ -38,7 +47,7 @@ export abstract class Input extends HTMLElement {
 };
 
 export class TextInput extends Input {
-    static elemTagName = "(frmdb-text-input)";
+    static elemTagName = "frmdb-text-input";
     inputTagName = "frmdb-text-input";
 
 	init(data) {
@@ -52,7 +61,7 @@ export class TextInput extends Input {
 
 
 export class TextareaInput extends Input {
-    static elemTagName = "(frmdb-textarea-input)";
+    static elemTagName = "frmdb-textarea-input";
     inputTagName = "frmdb-textarea-input";
 
 	setValue(value) {
@@ -69,7 +78,7 @@ export class TextareaInput extends Input {
 
 
 export class CheckboxInput extends Input {
-    static elemTagName = "(frmdb-checkbox-input)";
+    static elemTagName = "frmdb-checkbox-input";
     inputTagName = "frmdb-checkbox-input";
 	checked: boolean;
 
@@ -82,24 +91,16 @@ export class CheckboxInput extends Input {
 }
 
 export class SelectInput extends Input {
-    static elemTagName = "(frmdb-select-input)";
+    static elemTagName = "frmdb-select-input";
     inputTagName = "frmdb-select-input";
 
 	setValue(value) {
 		this.querySelector('select')!.value = value;
 	}
-
-	init(data) {
-		this.render(this.inputTagName, data);
-		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
-		});
-	}
-
 }
 
 export class LinkInput extends TextInput {
-    static elemTagName = "(frmdb-link-input)";
+    static elemTagName = "frmdb-link-input";
     inputTagName = "frmdb-link-input";
 
 	init(data) {
@@ -111,7 +112,7 @@ export class LinkInput extends TextInput {
 }
 
 export class RangeInput extends Input {
-    static elemTagName = "(frmdb-range-input)";
+    static elemTagName = "frmdb-range-input";
     inputTagName = "frmdb-range-input";
 
 	init(data) {
@@ -123,7 +124,7 @@ export class RangeInput extends Input {
 }
 
 export class NumberInput extends Input {
-    static elemTagName = "(frmdb-number-input)";
+    static elemTagName = "frmdb-number-input";
     inputTagName = "frmdb-number-input";
 
 	init(data) {
@@ -135,57 +136,50 @@ export class NumberInput extends Input {
 }
 
 export class CssUnitInput extends Input {
-    static elemTagName = "(frmdb-css-unit-input)";
+    static elemTagName = "frmdb-css-unit-input";
     inputTagName = "frmdb-css-unit-input";
 
 	name: string;
 	nb: number = 0;
 	unit: string = "px";
 
-	events: Events = {
-		change: { handler: this.onChange, selector: "select" },
-		keyup: { handler: this.onChange, selector: "input" },
-		mouseup: { handler: this.onChange, selector: "input" },
-	};
-
-	onChange(event) {
-
-		if (event.data && event.data.element) {
-			let input = event.data.input;
-			if (this.value != "") input[this.name] = this.value;// this.name = unit or number	
-			if (input['unit'] == "") input['unit'] = "px";//if unit is not set use default px
-
-			var value = "";
-			if (input.unit == "auto") {
-				$(event.data.element).addClass("auto");
-				value = input.unit;
-			}
-			else {
-				$(event.data.element).removeClass("auto");
-				value = input.number + input.unit;
-			}
-
-			event.data.element.trigger('propertyChange', [value, this]);
-		}
-	}
 
 	setValue(value) {
 		this.nb = parseInt(value);
 		this.unit = value.replace(this.nb, '');
 
-		if (this.unit == "auto") $(this.element).addClass("auto");
+		// if (this.unit == "auto") $(this.element).addClass("auto");
 
-		$('input', this.element).val(this.nb);
-		$('select', this.element).val(this.unit);
+		this.querySelector('input')!.value = '' + this.nb;
+		this.querySelector('select')!.value = '' + this.unit;
 	}
 
 	init(data) {
-		return this.render(this.inputTagName, data);
+		this.render(this.inputTagName, data);
+		
+		onEvent(this, ['change','keyup',/*'mouseup'*/], 'select, input', (event: Event) => {
+			let el: HTMLInputElement | HTMLSelectElement = event.target! as HTMLInputElement | HTMLSelectElement;
+			let input = this;
+			if (el.value != "") input[el.name] = el.value;// this.name = unit or number	
+			if (input['unit'] == "") input['unit'] = "px";//if unit is not set use default px
+
+			var value = "";
+			if (input.unit == "auto") {
+				this.classList.add("auto");
+				value = input.unit;
+			} else {
+				this.classList.remove("auto");
+				value = input.nb + input.unit;
+			}
+
+			emit(this, { type: "FrmdbModifyPageElement", value });
+		});
+
 	}
 }
 
 export class ColorInput extends Input {
-    static elemTagName = "(frmdb-color-input)";
+    static elemTagName = "frmdb-color-input";
     inputTagName = "frmdb-color-input";
 
 	//html5 color input only supports setting values as hex colors even if the picker returns only rgb
@@ -201,32 +195,21 @@ export class ColorInput extends Input {
 		}
 	}
 
-	events: Events = {
-		change: { handler: this.onChange, selector: "input" }
-	};
-
 	setValue(value) {
-		$('input', this.element).val(this.rgb2hex(value));
-	}
-
-	init(data) {
-		return this.render(this.inputTagName, data);
+		this.querySelector('input')!.value = this.rgb2hex(value);
 	}
 }
 
 export class ImageInput extends Input {
-    static elemTagName = "(frmdb-image-input)";
+    static elemTagName = "frmdb-image-input";
     inputTagName = "frmdb-image-input";
 
-	events: Events = {
-		change: { handler: this.onChange, selector: "input[type=file]" },
-	};
 
 	setValue(value) {
 
 		//don't set blob value to avoid slowing down the page		
 		if (value.indexOf("data:image") == -1) {
-			$('input[type="text"]', this.element).val(value);
+			(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
 		}
 	}
 
@@ -237,53 +220,38 @@ export class ImageInput extends Input {
 }
 
 export class FileUploadInput extends TextInput {
-    static elemTagName = "(frmdb-file-upload-input)";
+    static elemTagName = "frmdb-file-upload-input";
     inputTagName = "frmdb-file-upload-input";
-
-	events: Events = {
-		blur: { handler: this.onChange, selector: "input" },
-	};
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
 }
 
 export class RadioInput extends Input {
-    static elemTagName = "(frmdb-radio-input)";
+    static elemTagName = "frmdb-radio-input";
     inputTagName = "frmdb-radio-input";
 
-	onChange(event, node) {
-
-		if (event.data && event.data.element) {
-			event.data.element.trigger('propertyChange', [this.value, this]);
-		}
-	}
-
-	events: Events = {
-		change: { handler: this.onChange, selector: "input" },
-	};
-
 	setValue(value) {
-		$('input', this.element).removeAttr('checked');
-		if (value)
-			$("input[value=" + value + "]", this.element).attr("checked", "true").prop('checked', true);
-	}
-
-	init(data) {
-		return this.render(this.inputTagName, data);
+		this.querySelectorAll('input').forEach(i => i.removeAttribute('checked'));
+		if (value) {
+			let i = this.querySelector("input[value=" + value + "]") as HTMLInputElement;
+			if (i) {
+				i.setAttribute("checked", "true");
+				i.checked = true;
+			}
+		}
 	}
 }
 
 export class RadioButtonInput extends RadioInput {
-    static elemTagName = "(frmdb-radio-button-input)";
+    static elemTagName = "frmdb-radio-button-input";
     inputTagName = "frmdb-radio-button-input";
 
 	setValue(value) {
-		$('input', this.element).removeAttr('checked');
-		$('btn', this.element).removeClass('active');
+		this.querySelector('input')!.removeAttribute('checked');
+		this.querySelector('.btn')!.classList.remove('active');
 		if (value && value != "") {
-			($("input[value=" + value + "]", this.element).attr("checked", "true").prop('checked', true).parent() as any).button("toggle");
+			let i = this.querySelector("input[value=" + value + "]")as HTMLInputElement;
+			i.setAttribute("checked", "true");
+			i.checked = true;
+			// i.parentElement.button("toggle");
 		}
 	}
 
@@ -293,157 +261,73 @@ export class RadioButtonInput extends RadioInput {
 }
 
 export class ToggleInput extends TextInput {
-    static elemTagName = "(frmdb-toggle-input)";
+    static elemTagName = "frmdb-toggle-input";
     inputTagName = "frmdb-toggle-input";
 	checked: boolean;
 
-	onChange(event: Event, node: HTMLElement) {
-		if (event.data && event.data.element) {
-			event.data.element.trigger('propertyChange', [this.checked ? this.getAttribute("data-value-on") : this.getAttribute("data-value-off"), this]);
-		}
-	}
-
-	events: Events = {
-		change: { handler: this.onChange, selector: "input" },
-	};
-
 	init(data) {
-		return this.render(this.inputTagName, data);
+		this.render(this.inputTagName, data);
+		onEvent(this, 'change', 'input,textarea,select', (event: Event) => {
+			emit(this, { type: "FrmdbModifyPageElement", value: 
+				this.checked ? this.getAttribute("data-value-on")! : this.getAttribute("data-value-off")!
+			});
+		});
 	}
 }
 
 export class ValueTextInput extends TextInput {
-    static elemTagName = "(frmdb-value-text-input)";
+    static elemTagName = "frmdb-value-text-input";
     inputTagName = "frmdb-value-text-input";
-
-	events: Events = {
-		blur: { handler: this.onChange, selector: "input" },
-	};
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
 }
 
 export class GridLayoutInput extends TextInput {
-    static elemTagName = "(frmdb-grid-layout-input)";
+    static elemTagName = "frmdb-grid-layout-input";
     inputTagName = "frmdb-grid-layout-input";
-
-	events: Events = {
-		blur: { handler: this.onChange, selector: "input" },
-	};
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
 }
 
 export class ProductsInput extends TextInput {
-    static elemTagName = "(frmdb-products-input)";
+    static elemTagName = "frmdb-products-input";
     inputTagName = "frmdb-products-input";
-
-	events: Events = {
-		blur: { handler: this.onChange, selector: "input" },
-	};
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
 }
 
-
 export class GridInput extends Input {
-    static elemTagName = "(frmdb-grid-input)";
+    static elemTagName = "frmdb-grid-input";
     inputTagName = "frmdb-grid-input";
 
-
-	events: Events = {
-		change: { handler: this.onChange, selector: "select" /*'select'*/ },
-		click: { handler: this.onChange, selector: "button" /*'select'*/ },
-	};
-
-
 	setValue(value) {
-		$('select', this.element).val(value);
+		this.querySelector('select')!.value = value;
 	}
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
-
 }
 
 export class TextValueInput extends Input {
-    static elemTagName = "(frmdb-text-value-input)";
+    static elemTagName = "frmdb-text-value-input";
     inputTagName = "frmdb-text-value-input";
-
-
-	events: Events = {
-		blur: { handler: this.onChange, selector: "input" },
-		click: { handler: this.onChange, selector: "button" /*'select'*/ },
-	};
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
 
 }
 
 export class ButtonInput extends Input {
-    static elemTagName = "(frmdb-button-input)";
+    static elemTagName = "frmdb-button-input";
     inputTagName = "frmdb-button-input";
 
-	events: Events = {
-		click: { handler: this.onChange, selector: "button" /*'select'*/ },
-	};
-
-
 	setValue(value) {
-		$('button', this.element).val(value);
-	}
-
-	init(data) {
-		return this.render(this.inputTagName, data);
+		this.querySelector('button')!.value = value;
 	}
 
 }
 
 export class SectionInput extends Input {
-    static elemTagName = "(frmdb-section-input)";
+    static elemTagName = "frmdb-section-input";
     inputTagName = "frmdb-section-input";
-
-	events: Events = {
-		click: { handler: this.onChange, selector: "button" /*'select'*/ },
-	};
-
 
 	setValue(value) {
 		return false;
 	}
 
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
-
 }
 
 export class ListInput extends Input {
-    static elemTagName = "(frmdb-list-input)";
+    static elemTagName = "frmdb-list-input";
     inputTagName = "frmdb-list-input";
-
-	events: Events = {
-		change: { handler: this.onChange, selector: "select" },
-	};
-
-
-	setValue(value) {
-		$('select', this.element).val(value);
-	}
-
-	init(data) {
-		return this.render(this.inputTagName, data);
-	}
-
 }
 
 export const Inputs = {

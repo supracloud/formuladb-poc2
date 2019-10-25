@@ -371,7 +371,7 @@ export class ElementEditorComponent extends HTMLElement {
 			}
 			else {
 				let row = document.createElement('div');
-				row.innerHTML = tmpl('vvveb-property', property);
+				row.innerHTML = tmpl('frmdb-property', property);
 				row.querySelector('.input')!.append(property.input);
 				section.append(row);
 			}

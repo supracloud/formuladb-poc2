@@ -157,19 +157,7 @@
 
 
     <!--////// start templates //////////////////////////////////////////////////////// -->
-    <script id="vvveb-property" type="text/html">
-
-        <div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
-            
-            {% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
-            
-            <div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
-            
-        </div>		 
-        
-    </script>
-    
-    <script id="tmpl-frmdb-input-textinput" type="text/html">
+    <script id="tmpl-frmdb-textinput" type="text/html">
 
         <div>
             <input name="{%=key%}" type="text" 
@@ -180,7 +168,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-textareainput" type="text/html">
+    <script id="tmpl-frmdb-textareainput" type="text/html">
 
         <div>
             <textarea name="{%=key%}" rows="3" class="form-control"/>
@@ -188,7 +176,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-checkboxinput" type="text/html">
+    <script id="tmpl-frmdb-checkboxinput" type="text/html">
 
         <div class="custom-control custom-checkbox">
               <input name="{%=key%}" class="custom-control-input" type="checkbox" id="{%=key%}_check">
@@ -197,7 +185,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-radioinput" type="text/html">
+    <script id="tmpl-frmdb-radioinput" type="text/html">
 
         <div>
         
@@ -214,13 +202,13 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-radiobuttoninput" type="text/html">
+    <script id="tmpl-frmdb-radio-buttoninput" type="text/html">
 
         <div class="btn-group btn-group-toggle  {%if (extraclass) { %}{%=extraclass%}{% } %} clearfix" data-toggle="buttons">
         
             {% for ( var i = 0; i < options.length; i++ ) { %}
     
-            <label class="btn  btn-outline-primary  {%if (options[i].checked) { %}active{% } %}  {%if (options[i].extraclass) { %}{%=options[i].extraclass%}{% } %}" for="{%=key%}{%=i%} " title="{%=options[i].title%}">
+            <label class="btn btn-outline-primary  {%if (options[i].checked) { %}active{% } %}  {%if (options[i].extraclass) { %}{%=options[i].extraclass%}{% } %}" for="{%=key%}{%=i%} " title="{%=options[i].title%}">
               <input name="{%=key%}" class="custom-control-input" type="radio" value="{%=options[i].value%}" id="{%=key%}{%=i%}" {%if (options[i].checked) { %}checked="{%=options[i].checked%}"{% } %}>
               {%if (options[i].icon) { %}<i class="{%=options[i].icon%}"></i>{% } %}
               {%=options[i].text%}
@@ -233,7 +221,7 @@
     </script>
 
 
-    <script id="tmpl-frmdb-input-toggle" type="text/html">
+    <script id="tmpl-frmdb-toggle" type="text/html">
 
         <div class="toggle">
             <input type="checkbox" name="{%=key%}" value="{%=on%}" data-value-off="{%=off%}" data-value-on="{%=on%}" class="toggle-checkbox" id="{%=key%}">
@@ -245,14 +233,14 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-header" type="text/html">
+    <script id="tmpl-frmdb-header" type="text/html">
 
             <h6 class="header">{%=header%}</h6>
         
     </script>
 
 
-    <script id="tmpl-frmdb-input-select" type="text/html">
+    <script id="tmpl-frmdb-select" type="text/html">
 
         <div>
     
@@ -267,7 +255,7 @@
     </script>
 
 
-    <script id="tmpl-frmdb-input-listinput" type="text/html">
+    <script id="tmpl-frmdb-listinput" type="text/html">
 
         <div class="row">
     
@@ -300,7 +288,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-grid" type="text/html">
+    <script id="tmpl-frmdb-grid" type="text/html">
 
         <div class="row">
             <div class="mb-1 col-12">
@@ -383,7 +371,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-textvalue" type="text/html">
+    <script id="tmpl-frmdb-text-value-input" type="text/html">
 
         <div class="row">
             <div class="col-6 mb-1">
@@ -410,7 +398,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-rangeinput" type="text/html">
+    <script id="tmpl-frmdb-rangeinput" type="text/html">
 
         <div>
             <input name="{%=key%}" type="range" min="{%=min%}" max="{%=max%}" step="{%=step%}" class="form-control"/>
@@ -418,7 +406,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-imageinput" type="text/html">
+    <script id="tmpl-frmdb-image-input" type="text/html">
 
         <div>
             <input name="{%=key%}" type="text" class="form-control"/>
@@ -427,7 +415,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-colorinput" type="text/html">
+    <script id="tmpl-frmdb-color-input" type="text/html">
 
         <div>
             <input name="{%=key%}" type="color" {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %}  pattern="#[a-f0-9]{6}" class="form-control"/>
@@ -435,7 +423,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-bootstrap-color-picker-input" type="text/html">
+    <script id="tmpl-frmdb-bootstrap-color-picker-input" type="text/html">
 
         <div>
             <div id="cp2" class="input-group" title="Using input value">
@@ -448,7 +436,7 @@
     
     </script>
 
-    <script id="tmpl-frmdb-input-numberinput" type="text/html">
+    <script id="tmpl-frmdb-number-input" type="text/html">
         <div>
             <input name="{%=key%}" type="number" value="{%=value%}" 
                   {% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
@@ -460,7 +448,7 @@
         </div>
     </script>
 
-    <script id="tmpl-frmdb-input-button" type="text/html">
+    <script id="tmpl-frmdb-button" type="text/html">
         <div>
             <button class="btn btn-sm btn-primary">
                 <i class="la  {% if (typeof icon !== 'undefined') { %} {%=icon%} {% } else { %} la-plus {% } %} la-lg"></i> {%=text%}
@@ -468,7 +456,7 @@
         </div>		
     </script>
 
-    <script id="tmpl-frmdb-input-cssunitinput" type="text/html">
+    <script id="tmpl-frmdb-css-unit-input" type="text/html">
         <div class="input-group" id="cssunit-{%=key%}">
             <input name="number" type="number"  {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %} 
                   {% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
@@ -495,7 +483,7 @@
         </li>
     </script>
 
-    <script id="tmpl-frmdb-input-sectioninput" type="text/html">
+    <script id="tmpl-frmdb-sectioninput" type="text/html">
 
             <label class="header" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
             <input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
@@ -516,7 +504,7 @@
         
     </script>
 
-    <script id="tmpl-frmdb-input-autocompletelist" type="text/html">
+    <script id="tmpl-frmdb-autocompletelist" type="text/html">
 
         <div>
             <input name="{%=key%}" type="text" class="form-control"/>
