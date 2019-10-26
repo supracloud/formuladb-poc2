@@ -95,9 +95,9 @@ export class DataBindingsMonitor {
     }
 
     applyCustomProcessingForPlugins(el, parent) {
-        setTimeout(() => {
-            this.applyCustomProcessing_for_isotopejs(el, parent);
-        }, 350);
+        // setTimeout(() => {
+        //     this.applyCustomProcessing_for_isotopejs(el, parent);
+        // }, 350);
     }
 
     applyCustomProcessing_for_isotopejs(elem, parent) {
