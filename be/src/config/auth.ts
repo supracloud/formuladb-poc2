@@ -8,7 +8,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
-const FREE_PATHS = [/\/formuladb-static/, /\/formuladb-themes/, /\/assets/, /\/register/, /\/login/, /^\/$/];
+const FREE_PATHS = [/\/formuladb-static/, /\/formuladb-themes/, /\/assets/, /\/register/, /\/login/, /\/formuladb-apps/, /^\/$/];
 const ADMIN_PATHS = [/\/formuladb-editor/];
 
 export function initPassport(app: express.Express,
@@ -65,6 +65,14 @@ export function handleAuth(app: express.Express) {
             res.status(200).send();
         } else{
             res.status(401).send();
+        }
+    });
+
+    app.get('/isproductionenv', function(req, res) {
+        if(process.env.FRMDB_IS_PROD_ENV === "true") {
+            res.status(200).send();
+        } else{
+            res.status(204).send();
         }
     });
 

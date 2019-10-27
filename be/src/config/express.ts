@@ -88,7 +88,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     handleAuth(app);
 
     app.get('/register', function(req, res, next) {
-        if (process.env.FRMDB_IS_DEV_ENV || process.env.FRMDB_IS_PROD_ENV) {
+        if (process.env.FRMDB_IS_PROD_ENV) {
             res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/register.html');
         } else {
             next();
@@ -96,7 +96,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
       
     app.post('/register', async (req, res, next) => {
-        if (process.env.FRMDB_IS_DEV_ENV || process.env.FRMDB_IS_PROD_ENV) {
+        if (process.env.FRMDB_IS_PROD_ENV) {
             await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
             res.redirect(`https://${req.body.environment}.formuladb.io/`);
         } else {
@@ -105,7 +105,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     });
 
     app.delete('/formuladb-api/env/:envname', async function(req, res, next) {
-        if (process.env.FRMDB_IS_DEV_ENV || process.env.FRMDB_IS_PROD_ENV) {
+        if (process.env.FRMDB_IS_PROD_ENV) {
             console.log(`Delete called on ${req.params.envname} environment`)
             let status_message = await cleanupEnvironment(req.params.envname);
             console.log(status_message);
@@ -131,7 +131,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         httpProxy(req, res, next);
     });
 
-    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-apps/formuladb.io', { index: "index.html" });
+    let defaultApp = process.env.FRMDB_IS_PROD_ENV === "true" ? "formuladb.io" : "Hotel_Booking";
+    let formuladbIoStatic = express.static(`/wwwroot/git/formuladb-apps/${defaultApp}`, { index: "index.html" });
+
     app.get('/', formuladbIoStatic);
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);

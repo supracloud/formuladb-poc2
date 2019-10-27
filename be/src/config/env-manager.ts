@@ -67,9 +67,9 @@ export async function cleanupEnvironment(envName: string) {
     return `Namespace ${envName} not found. Nothing to delete!`;
   }
 
-  // Delete git remote branch for formuladb-apps. Thus, make sure we have the local git clone available
+  // Delete git remote branch for formuladb-apps. Thus, make sure we have the local git clone available and in sync with remote
   await exec(`mkdir -p env_workspace/${envName}`);
-  await exec(`FRMDB_ENV_NAME=${envName} bash /scripts/prepare-env.sh`,
+  await exec(`FRMDB_ENV_NAME=${envName} FRMDB_APPS_BASE_BRANCH=${process.env.FRMDB_ENV_NAME} bash /scripts/prepare-env.sh`,
              {cwd: `env_workspace/${envName}`});
   await exec(`git push origin --delete ${envName} || true`,
              {cwd: `env_workspace/${envName}/formuladb-apps`});
