@@ -68,6 +68,14 @@ export function handleAuth(app: express.Express) {
         }
     });
 
+    app.get('/isadminauthenticated', function(req, res) {
+        if (req.user && req.user.role && req.user.role === 'ADMIN') {
+            res.status(200).send();
+        } else{
+            res.status(401).send();
+        }
+    });
+
     app.get('/isproductionenv', function(req, res) {
         if(process.env.FRMDB_IS_PROD_ENV === "true") {
             res.status(200).send();

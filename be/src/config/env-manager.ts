@@ -8,6 +8,11 @@ const exec = util.promisify(require('child_process').exec);
 const retry = require('async-retry')
 const fetch = require('node-fetch')
 
+async function delay(ms) {
+  // return await for better async stack trace support in case of errors.
+  return await new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export async function createNewEnvironment(envName: string, email: string, password:string) {
   // If production or staging, just don't
   if (['production', 'staging', ''].includes(envName)) return;
@@ -33,28 +38,32 @@ export async function createNewEnvironment(envName: string, email: string, passw
       await exec(`skaffold deploy -n ${envName} -p client --images=${stdout}`,
                  {cwd: `env_workspace/${envName}`});
 
-      await retry(async bail => {
-        // if anything throws, we retry
-        const res = await fetch(`https://${envName}.formuladb.io`)
+      for (let step = 0; step < 24; step++) {
+        try {
+          const res = await fetch(`https://${envName}.formuladb.io`)
+          console.log(`https://${envName}.formuladb.io returned ${res.status}`);
+          if (200 === res.status) {
+            console.log(`Env ready. Data provisioning ...`);
+            await exec(`kubectl -n ${envName} exec service/be -- env DISABLE_TEST_USERS=true ADMIN_USER_EMAIL=${email} ADMIN_USER_PASS=${password} node /dist-be/frmdb-be-load-test-data.js`,
+                       {cwd: `env_workspace/${envName}`, maxBuffer: 10240 * 1000});
         
-        console.log(`https://${envName}.formuladb.io returned ${res.status}`);
-        if (200 !== res.status) {
-          console.log(`Not ready yet ...`);
-          throw "Not ready!";
+            console.log(`Done!`);
+            return;
+          }
+          console.log(`Fetch returned with ${res.status}. Retrying ...`);
+        } catch (error) {
+          console.log(`Fetch failed with error ${error}. Retrying ...`);
         }
-        return 200;
-      }, {factor: 2, randomize: false, maxTimeout: 5000, retries: 20})
+        await delay(5000);
+      }
+
+      throw "Env not ready. Giving up ...";
+
     } catch (error) {
       console.log(`Environment setup failed with error ${error}. Cleaning up ...`);
       await cleanupEnvironment(envName);
       return;
     }
-
-    console.log(`Env ready. Data provisioning ...`);
-    await exec(`kubectl -n ${envName} exec service/be -- env DISABLE_TEST_USERS=true ADMIN_USER_EMAIL=${email} ADMIN_USER_PASS=${password} node /dist-be/frmdb-be-load-test-data.js`,
-               {cwd: `env_workspace/${envName}`, maxBuffer: 10240 * 1000});
-
-    console.log(`Done!`);
   }
 }
 
