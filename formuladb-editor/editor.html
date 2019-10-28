@@ -1090,8 +1090,11 @@
 		setInterval(function() {
 			var xmlHttp = new XMLHttpRequest();
 			xmlHttp.onreadystatechange = function() { 
-				if (xmlHttp.readyState == 4 && xmlHttp.status != 200)
-					$('.toast').toast('show');
+				if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+					var jsonResponse = JSON.parse(xmlHttp.responseText);
+					if (jsonResponse.isauthenticated === false)
+						$('.toast').toast('show');
+				}
 			}
 			xmlHttp.open("GET", "/isauthenticated", true);
 			xmlHttp.send(null);

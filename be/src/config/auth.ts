@@ -1,12 +1,11 @@
 import * as express from "express";
 import * as passport from "passport";
 import * as connectEnsureLogin from "connect-ensure-login";
-import * as proxy from 'http-proxy-middleware';
 import { KeyTableStoreI, KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { BeUser } from "@domain/user";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
+import { $User } from "@domain/metadata/default-metadata";
 
 const FREE_PATHS = [/\/formuladb-static/, /\/formuladb-themes/, /\/assets/, /\/register/, /\/login/, /\/formuladb-apps/, /^\/$/];
 const ADMIN_PATHS = [/\/formuladb-editor/];
@@ -61,27 +60,17 @@ export function initPassport(app: express.Express,
 
 export function handleAuth(app: express.Express) {
     app.get('/isauthenticated', function(req, res) {
-        if(req.isAuthenticated()) {
-            res.status(200).send();
-        } else{
-            res.status(401).send();
-        }
+        res.status(200).send({ isauthenticated: req.isAuthenticated() });
     });
 
     app.get('/isadminauthenticated', function(req, res) {
-        if (req.user && req.user.role && req.user.role === 'ADMIN') {
-            res.status(200).send();
-        } else{
-            res.status(401).send();
-        }
+        res.status(200).send(
+            { isadminauthenticated: ('user' in req && 'role' in req.user && req.user.role === 'ADMIN') }
+        );
     });
 
     app.get('/isproductionenv', function(req, res) {
-        if(process.env.FRMDB_IS_PROD_ENV === "true") {
-            res.status(200).send();
-        } else{
-            res.status(204).send();
-        }
+        res.status(200).send({ isproductionenv: process.env.FRMDB_IS_PROD_ENV === "true" });
     });
 
     app.get('/login', function(req, res) {
