@@ -15,23 +15,9 @@
         <button class="btn" id="frmdb-editor-theme-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="la la-image"></i>
         </button>
-        <div class="dropdown-menu dropdown-menu-right" style="width: 65vw" aria-labelledby="frmdb-editor-theme-select">
-            <div class="card-deck frmdb-cards-wrap-3">
-                <div class="dropdown-item card" data-frmdb-table="themes[]" >
-
-                    <nav class="navbar navbar-dark bg-primary">
-                        <a class="navbar-brand" href="javascript:void(0)">Navbar</a>
-                    </nav>
-
-                    <h3 data-frmdb-value="themes[]"></h3>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-primary">Primary</button>
-                        <button type="button" class="btn btn-sm btn-secondary">Secondary</button>
-                        <button type="button" class="btn btn-sm btn-success">Success</button>
-                        <button type="button" class="btn btn-sm btn-info">Info</button>  
-                    </div>
-
-                </div>
+        <div class="dropdown-menu dropdown-menu-right" style="width: 75vw" aria-labelledby="frmdb-editor-theme-select">
+            <div class="card-deck frmdb-cards-wrap-3" style="transform: scale(0.75);">
+                <frmdb-theme-preview class="dropdown-item card p-2 m-2" data-frmdb-table="themes[]" data-frmdb-attr="color::selectedColor.attr" data-frmdb-attr2="theme::themes[]"></frmdb-theme-preview>
             </div>
         </div>
     </div>

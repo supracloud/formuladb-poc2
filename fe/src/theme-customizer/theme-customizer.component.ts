@@ -1,5 +1,6 @@
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { onEvent } from "@fe/delegated-events";
+import "./theme-preview.component";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
 // const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/theme-customizer/theme-customizer.component.scss').default;
@@ -103,9 +104,13 @@ const FIXME_LIST_REMOTE_FILES = [
 ];
 
 class Color {
+    attr: string;
     constructor(
         public primary: string = "#ffc107", 
-        public secondary: string = "#343a40") {}
+        public secondary: string = "#343a40") 
+    {
+        this.attr = `${this.primary}-${this.secondary}`;
+    }
 }
 class State {
     colors: Color[] = [];
