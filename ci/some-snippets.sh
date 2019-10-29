@@ -32,10 +32,12 @@ gsutil -m rsync -r formuladb-static gs://formuladb-static-assets/formuladb-stati
 # ASSETS="`git ls-files apps/hotel-booking/`" node $BASEDIR/gcloud.js \
 #     'uploadAssets("'$FRMDB_ENV_NAME'")'
 
-gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
+gsutil -m rsync -d -r formuladb.io gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
 gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
 
 gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-editor
 gsutil -m rsync -x ".*.js.map$" -r formuladb gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
 gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/img
 gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons
+
+gsutil -m rsync -r  gs://formuladb-static-assets/production/formuladb-internal .

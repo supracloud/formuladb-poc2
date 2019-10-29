@@ -5,7 +5,7 @@ export function tmpl(str, data?) {
     // load the template - and be sure to cache the result.
     var fn = /^[-a-zA-Z0-9]+$/.test(str) ?
         cache[str] = cache[str] ||
-        tmpl(document.getElementById(str)!.innerHTML) :
+        tmpl(str) :
 
         // Generate a reusable function that will serve as a template
         // generator (and which will be cached).

@@ -16,6 +16,8 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
+import * as serveIndex from 'serve-index';
+
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -158,6 +160,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
+    app.use('/formuladb-themes/_css', serveIndex('/wwwroot/git/formuladb-themes/_css'));
+    
     const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-static-assets';
     let httpProxy = proxy({
         target: staticAssetsUrl,

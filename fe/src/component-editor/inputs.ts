@@ -18,6 +18,7 @@ https://github.com/givanz/VvvebJs
 
 import { tmpl } from "./tmpl";
 import { emit, onEvent } from "@fe/delegated-events";
+import { elvis } from "@core/elvis";
 
 declare var $: null;
 
@@ -36,12 +37,12 @@ export abstract class Input extends HTMLElement {
 	}
 
 	setValue(value) {
-		(this.querySelector('input,select,textarea') as HTMLInputElement 
-			| HTMLSelectElement | HTMLTextAreaElement).value = value;
+		elvis((this.querySelector('input,select,textarea') as HTMLInputElement 
+			| HTMLSelectElement | HTMLTextAreaElement)).value = value;
 	}
 
-	render(elemTagName, data) {
-		this.innerHTML = tmpl("tmpl-" + elemTagName, data);
+	render(html, data) {
+		this.innerHTML = tmpl(html, data);
 		return this;
 	}
 };
@@ -51,7 +52,14 @@ export class TextInput extends Input {
     inputTagName = "frmdb-text-input";
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div>
+				<input name="{%=key%}" type="text" 
+				{% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+				{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+				class="form-control"/>
+			</div>
+		`, data);
 
 		onEvent(this.querySelector('input')!, 'blur', '*', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
@@ -69,7 +77,11 @@ export class TextareaInput extends Input {
 	}
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div>
+				<textarea name="{%=key%}" rows="3" class="form-control"/>
+			</div>
+		`, data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
 		});
@@ -83,7 +95,12 @@ export class CheckboxInput extends Input {
 	checked: boolean;
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div class="custom-control custom-checkbox">
+				<input name="{%=key%}" class="custom-control-input" type="checkbox" id="{%=key%}_check">
+				<label class="custom-control-label" for="{%=key%}_check">{% if (typeof text !== 'undefined') { %} {%=text%} {% } %}</label>
+			</div>
+		`, data);
 		onEvent(this.querySelector('input')!, 'change', '*', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: this.checked});
 		});
@@ -97,6 +114,17 @@ export class SelectInput extends Input {
 	setValue(value) {
 		this.querySelector('select')!.value = value;
 	}
+	init(data) {
+		this.render(/*html*/`
+			<div>
+				<select class="form-control custom-select">
+					{% for ( var i = 0; i < options.length; i++ ) { %}
+					<option value="{%=options[i].value%}">{%=options[i].text%}</option>
+					{% } %}
+				</select>
+			</div>
+		`, data);
+	}
 }
 
 export class LinkInput extends TextInput {
@@ -104,7 +132,7 @@ export class LinkInput extends TextInput {
     inputTagName = "frmdb-link-input";
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		super.init(data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
 		});
@@ -116,7 +144,11 @@ export class RangeInput extends Input {
     inputTagName = "frmdb-range-input";
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div>
+				<input name="{%=key%}" type="range" min="{%=min%}" max="{%=max%}" step="{%=step%}" class="form-control"/>
+			</div>
+		`, data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
 		});
@@ -128,7 +160,17 @@ export class NumberInput extends Input {
     inputTagName = "frmdb-number-input";
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div>
+				<input name="{%=key%}" type="number" value="{%=value%}" 
+					{% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
+					{% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
+					{% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+					{% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+					{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+				class="form-control"/>
+			</div>
+		`, data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
 		});
@@ -155,7 +197,24 @@ export class CssUnitInput extends Input {
 	}
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div class="input-group" id="cssunit-{%=key%}">
+				<input name="number" type="number"  {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %} 
+					{% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
+					{% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
+					{% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+				class="form-control"/>
+				<div class="input-group-append">
+				<select class="form-control custom-select small-arrow" name="unit">
+					<option value="em">em</option>
+					<option value="px">px</option>
+					<option value="%">%</option>
+					<option value="rem">rem</option>
+					<option value="auto">auto</option>
+				</select>
+				</div>
+			</div>
+		`, data);
 		
 		onEvent(this, ['change','keyup',/*'mouseup'*/], 'select, input', (event: Event) => {
 			let el: HTMLInputElement | HTMLSelectElement = event.target! as HTMLInputElement | HTMLSelectElement;
@@ -198,12 +257,19 @@ export class ColorInput extends Input {
 	setValue(value) {
 		this.querySelector('input')!.value = this.rgb2hex(value);
 	}
+
+	init(data) {
+		this.render(/*html*/`
+			<div>
+				<input name="{%=key%}" type="color" {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %}  pattern="#[a-f0-9]{6}" class="form-control"/>
+			</div>
+		`, data);
+	}
 }
 
 export class ImageInput extends Input {
     static elemTagName = "frmdb-image-input";
     inputTagName = "frmdb-image-input";
-
 
 	setValue(value) {
 
@@ -213,9 +279,13 @@ export class ImageInput extends Input {
 		}
 	}
 
-
 	init(data) {
-		return this.render(this.inputTagName, data);
+		return this.render(/*html*/`
+			<div>
+				<input name="{%=key%}" type="text" class="form-control"/>
+				<input name="file" type="file" class="form-control"/>
+			</div>		
+		`, data);
 	}
 }
 
@@ -238,6 +308,23 @@ export class RadioInput extends Input {
 			}
 		}
 	}
+
+	init(data) {
+		this.render(/*html*/`
+			<div>
+
+				{% for ( var i = 0; i < options.length; i++ ) { %}
+
+				<label class="custom-control custom-radio  {% if (typeof inline !== 'undefined' && inline == true) { %}custom-control-inline{% } %}"  title="{%=options[i].title%}">
+				<input name="{%=key%}" class="custom-control-input" type="radio" value="{%=options[i].value%}" id="{%=key%}{%=i%}" {%if (options[i].checked) { %}checked="{%=options[i].checked%}"{% } %}>
+				<label class="custom-control-label" for="{%=key%}{%=i%}">{%=options[i].text%}</label>
+				</label>
+
+				{% } %}
+
+			</div>		
+		`, data);
+	}
 }
 
 export class RadioButtonInput extends RadioInput {
@@ -256,7 +343,21 @@ export class RadioButtonInput extends RadioInput {
 	}
 
 	init(data) {
-		return this.render(this.inputTagName, data);
+		return this.render(/*html*/`
+			<div class="btn-group btn-group-toggle  {%if (extraclass) { %}{%=extraclass%}{% } %} clearfix" data-toggle="buttons">
+
+				{% for ( var i = 0; i < options.length; i++ ) { %}
+
+				<label class="btn btn-outline-primary  {%if (options[i].checked) { %}active{% } %}  {%if (options[i].extraclass) { %}{%=options[i].extraclass%}{% } %}" for="{%=key%}{%=i%} " title="{%=options[i].title%}">
+				<input name="{%=key%}" class="custom-control-input" type="radio" value="{%=options[i].value%}" id="{%=key%}{%=i%}" {%if (options[i].checked) { %}checked="{%=options[i].checked%}"{% } %}>
+				{%if (options[i].icon) { %}<i class="{%=options[i].icon%}"></i>{% } %}
+				{%=options[i].text%}
+				</label>
+
+				{% } %}
+						
+			</div>
+		`, data);
 	}
 }
 
@@ -266,7 +367,15 @@ export class ToggleInput extends TextInput {
 	checked: boolean;
 
 	init(data) {
-		this.render(this.inputTagName, data);
+		this.render(/*html*/`
+			<div class="toggle">
+				<input type="checkbox" name="{%=key%}" value="{%=on%}" data-value-off="{%=off%}" data-value-on="{%=on%}" class="toggle-checkbox" id="{%=key%}">
+				<label class="toggle-label" for="{%=key%}">
+					<span class="toggle-inner"></span>
+					<span class="toggle-switch"></span>
+				</label>
+			</div>
+		`, data);
 		onEvent(this, 'change', 'input,textarea,select', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: 
 				this.checked ? this.getAttribute("data-value-on")! : this.getAttribute("data-value-off")!
@@ -277,13 +386,36 @@ export class ToggleInput extends TextInput {
 
 export class ValueTextInput extends TextInput {
     static elemTagName = "frmdb-value-text-input";
-    inputTagName = "frmdb-value-text-input";
+	inputTagName = "frmdb-value-text-input";
+	
+	init(data) {
+		this.render(/*html*/`
+			<div class="row">
+				<div class="col-6 mb-1">
+					<label>Value</label>
+					<input name="value" type="text" value="{%=value%}" class="form-control"/>
+				</div>
+
+				<div class="col-6 mb-1">
+					<label>Text</label>
+					<input name="text" type="text" value="{%=text%}" class="form-control"/>
+				</div>
+
+				{% if (typeof hide_remove === 'undefined') { %}
+				<div class="col-12">
+				
+					<button class="btn btn-sm btn-outline-light text-danger">
+						<i class="la la-trash la-lg"></i> Remove
+					</button>
+					
+				</div>
+				{% } %}
+
+			</div>
+		`, data);
+	}
 }
 
-export class GridLayoutInput extends TextInput {
-    static elemTagName = "frmdb-grid-layout-input";
-    inputTagName = "frmdb-grid-layout-input";
-}
 
 export class ProductsInput extends TextInput {
     static elemTagName = "frmdb-products-input";
@@ -296,6 +428,89 @@ export class GridInput extends Input {
 
 	setValue(value) {
 		this.querySelector('select')!.value = value;
+	}
+
+	init(data) {
+		this.render(/*html*/`
+			<div class="row">
+				<div class="mb-1 col-12">
+				
+					<label>Flexbox</label>
+					<select class="form-control custom-select" name="col">
+						
+						<option value="">None</option>
+						{% for ( var i = 1; i <= 12; i++ ) { %}
+						<option value="{%=i%}" {% if ((typeof col !== 'undefined') && col == i) { %} selected {% } %}>{%=i%}</option>
+						{% } %}
+						
+					</select>
+					<br/>
+				</div>
+
+				<div class="col-6">
+					<label>Extra small</label>
+					<select class="form-control custom-select" name="col-xs">
+						
+						<option value="">None</option>
+						{% for ( var i = 1; i <= 12; i++ ) { %}
+						<option value="{%=i%}" {% if ((typeof col_xs !== 'undefined') && col_xs == i) { %} selected {% } %}>{%=i%}</option>
+						{% } %}
+						
+					</select>
+					<br/>
+				</div>
+				
+				<div class="col-6">
+					<label>Small</label>
+					<select class="form-control custom-select" name="col-sm">
+						
+						<option value="">None</option>
+						{% for ( var i = 1; i <= 12; i++ ) { %}
+						<option value="{%=i%}" {% if ((typeof col_sm !== 'undefined') && col_sm == i) { %} selected {% } %}>{%=i%}</option>
+						{% } %}
+						
+					</select>
+					<br/>
+				</div>
+				
+				<div class="col-6">
+					<label>Medium</label>
+					<select class="form-control custom-select" name="col-md">
+						
+						<option value="">None</option>
+						{% for ( var i = 1; i <= 12; i++ ) { %}
+						<option value="{%=i%}" {% if ((typeof col_md !== 'undefined') && col_md == i) { %} selected {% } %}>{%=i%}</option>
+						{% } %}
+						
+					</select>
+					<br/>
+				</div>
+				
+				<div class="col-6 mb-1">
+					<label>Large</label>
+					<select class="form-control custom-select" name="col-lg">
+						
+						<option value="">None</option>
+						{% for ( var i = 1; i <= 12; i++ ) { %}
+						<option value="{%=i%}" {% if ((typeof col_lg !== 'undefined') && col_lg == i) { %} selected {% } %}>{%=i%}</option>
+						{% } %}
+						
+					</select>
+					<br/>
+				</div>
+				
+				{% if (typeof hide_remove === 'undefined') { %}
+				<div class="col-12">
+				
+					<button class="btn btn-sm btn-outline-light text-danger">
+						<i class="la la-trash la-lg"></i> Remove
+					</button>
+					
+				</div>
+				{% } %}
+				
+			</div>		
+		`, data)
 	}
 }
 
@@ -313,6 +528,16 @@ export class ButtonInput extends Input {
 		this.querySelector('button')!.value = value;
 	}
 
+	init(data) {
+		this.render(/*html*/`
+			<div>
+				<button class="btn btn-sm btn-primary">
+					<i class="la  {% if (typeof icon !== 'undefined') { %} {%=icon%} {% } else { %} la-plus {% } %} la-lg"></i> {%=text%}
+				</button>
+			</div>		
+		`, data);
+	}
+
 }
 
 export class SectionInput extends Input {
@@ -323,11 +548,55 @@ export class SectionInput extends Input {
 		return false;
 	}
 
+	get section(): HTMLElement {
+		return this.querySelector('[data-section]') as HTMLElement;
+	}
+
+	init(data) {
+		this.render(/*html*/`
+			<label class="header" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
+			<input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
+			<div class="section" data-section="{%=key%}"></div>		
+		`, data);
+	}
 }
 
 export class ListInput extends Input {
     static elemTagName = "frmdb-list-input";
-    inputTagName = "frmdb-list-input";
+	inputTagName = "frmdb-list-input";
+	
+	init(data) {
+		this.render(/*html*/`
+			<div class="row">
+
+				{% for ( var i = 0; i < options.length; i++ ) { %}
+				<div class="col-6">
+					<div class="input-group">
+						<input name="{%=key%}_{%=i%}" type="text" class="form-control" value="{%=options[i].text%}"/>
+						<div class="input-group-append">
+							<button class="input-group-text btn btn-sm btn-danger">
+								<i class="la la-trash la-lg"></i>
+							</button>
+						</div>
+					</div>
+					<br/>
+				</div>
+				{% } %}
+
+
+				{% if (typeof hide_remove === 'undefined') { %}
+				<div class="col-12">
+				
+					<button class="btn btn-sm btn-outline-primary">
+						<i class="la la-trash la-lg"></i> Add new
+					</button>
+					
+				</div>
+				{% } %}
+					
+			</div>
+		`, data);
+	}
 }
 
 export const Inputs = {
@@ -346,7 +615,6 @@ export const Inputs = {
 	'RadioButtonInput': RadioButtonInput,
 	'ToggleInput': ToggleInput,
 	'ValueTextInput': ValueTextInput,
-	'GridLayoutInput': GridLayoutInput,
 	'ProductsInput': ProductsInput,
 	'GridInput': GridInput,
 	'TextValueInput': TextValueInput,
@@ -370,7 +638,6 @@ customElements.define("frmdb-radio-input", RadioInput);
 customElements.define("frmdb-radio-button-input", RadioButtonInput);
 customElements.define("frmdb-toggle-input", ToggleInput);
 customElements.define("frmdb-value-text-input", ValueTextInput);
-customElements.define("frmdb-grid-layout-input", GridLayoutInput);
 customElements.define("frmdb-products-input", ProductsInput);
 customElements.define("frmdb-grid-input", GridInput);
 customElements.define("frmdb-text-value-input", TextValueInput);

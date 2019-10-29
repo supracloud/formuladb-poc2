@@ -47,7 +47,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         return ('true' === (this.getAttribute("no-floating-filters")||'').toLowerCase());
     }
     get headerHeight() {
-        return parseInt(this.getAttribute("header-height") || "25");
+        return parseInt(this.getAttribute("header-height")||'') || 28;
     }
     get tableName() {
         return this.getAttribute("table-name") || undefined;
@@ -103,7 +103,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
     private gridOptions: GridOptions = {
 
-        headerHeight: 50,
+        headerHeight: 28,
         suppressContextMenu: true,
         getMainMenuItems: (params: GetMainMenuItemsParams) => {
             let defaults: (string | MenuItemDef)[] = params.defaultItems.slice(0);

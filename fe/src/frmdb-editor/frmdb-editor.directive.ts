@@ -18,11 +18,13 @@ import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import "@fe/highlight-box/highlight-box.component";
 import "@fe/dom-tree/dom-tree.component";
-import "@fe/component-editor/element-editor.component";
+import "@fe/component-editor/component-editor.component";
+import "@fe/theme-customizer/theme-customizer.component";
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
-import { ElementEditorComponent } from "@fe/component-editor/element-editor.component";
+import { ComponentEditorComponent } from "@fe/component-editor/component-editor.component";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
+import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -48,7 +50,8 @@ export class FrmdbEditorDirective {
     dataGrid: DataGridComponentI;
     letPanel: HTMLElement;
     highlightBox: HighlightBoxComponent;
-    elementEditor: ElementEditorComponent;
+    domTree: DomTreeComponent;
+    elementEditor: ComponentEditorComponent;
 
     get frameDoc(): Document {
         return this.iframe.contentWindow!.document;
@@ -59,13 +62,14 @@ export class FrmdbEditorDirective {
 
         this.iframe = document.body.querySelector('iframe')!;
         this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
-        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
+        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ComponentEditorComponent;
         this.frmdbFe = queryFrmdbFe();
 
         window.addEventListener('load', () => {
             this.dataGrid = queryDataGrid(document.body);
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+            this.domTree = document.body.querySelector('frmdb-dom-tree') as DomTreeComponent;
     
             this.tableManagementFlows();
             this.tableColumnManagementFlows();
@@ -76,6 +80,7 @@ export class FrmdbEditorDirective {
             this.iframe.src = window.location.hash.replace(/^#/, '');
             this.iframe.onload = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
+                this.domTree.rootEl = this.iframe.contentWindow!.document.body;
             }
             this.pageElementFlows();
         })
@@ -89,13 +94,36 @@ export class FrmdbEditorDirective {
         });
     }
 
-    initI18n() {
+    translatePage() {
         const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
         if (currentLanguage.lang != I18N_FE.defaultLanguage) {
             setTimeout(() =>
                 I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
             );
         }
+    }
+
+    initI18n() {
+        const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
+
+		// i18n section
+		const i18nSelect: HTMLElement = document.querySelector('#frmdb-editor-i18n-select') as HTMLElement;
+		const i18nOptions: HTMLElement = document.querySelector('[aria-labelledby="frmdb-editor-i18n-select"]') as HTMLElement;
+		i18nSelect.setAttribute('data-i18n', currentLanguage!.lang);
+		i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`;
+        I18N_FE.languages.forEach(lang =>
+            i18nOptions.innerHTML += /*html*/`<a class="dropdown-item" data-flag="${lang.flag}" data-lang="${lang.lang}"><i class="flag-icon flag-icon-${lang.flag}"></i> ${lang.full}</a>`
+        );
+        
+        onEvent(i18nOptions, 'click', '.dropdown-item.flag-icon, .dropdown-item.flag-icon *', (event) => {
+            const prev = i18nSelect.getAttribute('data-i18n')!;
+            const next = event.target.dataset.lang;
+            const flag = event.target.dataset.flag;
+            localStorage.setItem('editor-lang', next);
+            i18nSelect.setAttribute('data-i18n', next);
+            i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${flag}"></i>`;
+            I18N_FE.translateAll(this.iframe.contentWindow!.document, prev, next);
+        });
     }
 
     changeSelectedTableIdIfDifferent(tableName: string) {

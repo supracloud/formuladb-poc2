@@ -22,6 +22,7 @@ export function getTarget(event: Event): HTMLElement | null {
 }
 
 export function onEvent(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+    if (!el) return;
     let events = eventType instanceof Array ? eventType : [eventType];
     let selectors = selector instanceof Array ? selector : [selector];
     for (let ev of events) {

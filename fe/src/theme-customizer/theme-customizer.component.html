@@ -1,36 +1,38 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarColor01">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Features</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Pricing</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-            </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
+<div class="btn-group mr-3" role="group">
+    <div class="btn-group mr-3" data-frmdb-select="i" role="menu">
+        <button class="btn" id="frmdb-editor-color-palette-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="la la-square" data-frmdb-attr="style.color::selectedColor.primary"></i>
+            <i class="la la-square" data-frmdb-attr="style.color::selectedColor.secondary"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="frmdb-editor-color-palette-select">
+            <a class="dropdown-item" data-frmdb-table="colors[]">
+                <i class="la la-square" data-frmdb-attr="style.color::colors[].primary"></i> Primary color 
+                <i class="la la-square" data-frmdb-attr="style.color::colors[].secondary"></i> Secondary color        
+            </a>
+        </div>
     </div>
-</nav>
-<h1>Title</h1>
-<h2>Subtitle</h2>
-<button type="button" class="btn btn-primary">Primary</button>
-<button type="button" class="btn btn-secondary">Secondary</button>
-<button type="button" class="btn btn-success">Success</button>
-<button type="button" class="btn btn-info">Info</button>
-<button type="button" class="btn btn-warning">Warning</button>
-<button type="button" class="btn btn-danger">Danger</button>
+    <div class="btn-group mr-3" role="menu">
+        <button class="btn" id="frmdb-editor-theme-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="la la-image"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" style="width: 65vw" aria-labelledby="frmdb-editor-theme-select">
+            <div class="card-deck frmdb-cards-wrap-3">
+                <div class="dropdown-item card" data-frmdb-table="themes[]" >
+
+                    <nav class="navbar navbar-dark bg-primary">
+                        <a class="navbar-brand" href="javascript:void(0)">Navbar</a>
+                    </nav>
+
+                    <h3 data-frmdb-value="themes[]"></h3>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-sm btn-primary">Primary</button>
+                        <button type="button" class="btn btn-sm btn-secondary">Secondary</button>
+                        <button type="button" class="btn btn-sm btn-success">Success</button>
+                        <button type="button" class="btn btn-sm btn-info">Info</button>  
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

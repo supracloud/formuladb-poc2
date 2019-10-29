@@ -11,6 +11,7 @@ body {
     height: 100vh;
     z-index: 45679;
 }
+
 .top-panel {
     position: fixed;
     top: 0px;
@@ -40,7 +41,7 @@ $font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Rob
 $font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace ;
 $font-family-base:            $font-family-sans-serif;
 
-$font-size-base:              0.75rem; // Assumes the browser default, typically `16px`
+$font-size-base:              0.8rem; // Assumes the browser default, typically `16px`
 $font-size-lg:                $font-size-base * 1.25;
 $font-size-sm:                $font-size-base * .875;
 $label-margin-bottom:         .15rem;
@@ -50,8 +51,10 @@ $nav-link-padding-y: .1rem !default;
 $nav-link-padding-x: .2rem !default;
 
 @import "../../../formuladb-themes/node_modules/bootstrap/scss/bootstrap";
-@import "../../../formuladb-themes/node_modules/font-awesome/scss/font-awesome.scss";
+// @import "../../../formuladb-themes/node_modules/font-awesome/scss/font-awesome.scss";
 @import "../../../formuladb-themes/frmdb/dropdown";
+@import "../../../formuladb-themes/frmdb/card";
+// @import "../../../node_modules/line-awesome/css/line-awesome.css";
 
 .top-panel, .left-panel {
     font-family: $font-family-base;
@@ -63,6 +66,73 @@ $nav-link-padding-x: .2rem !default;
     background-color: $body-bg; // 2
 }
 
+$dom-tree-heigth: 25vh;
+
 frmdb-dom-tree {
-    height: 35vh;
+    height: $dom-tree-heigth;
+    display: block;
+}
+
+frmdb-element-editor {
+    display: block;
+    height: calc(100vh - $dom-tree-heigth - 34px - 2 * 21px);
+}
+
+label.header {
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0;
+    padding: 2px;
+    width: 100%;
+    // line-height: 32px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+    overflow: hidden;
+    color: #007bff;
+    cursor: pointer;
+    position: relative;
+    
+    &:first-child {
+        margin-top: 0rem;
+        border-top: none;
+    }
+    
+    .header-arrow {
+        // @extend .la;
+        // @extend .la-angle-down;
+        padding: 0.7rem;
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        
+        &.expanded {
+            // @extend .la-angle-right;
+        }
+    }
+    
+    :checked {
+        color: red;
+    }
+}
+
+input.header_check {
+    position: absolute;
+    left: 0;
+    margin-left: 0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+    height: 1em;
+    width: 1em;
+    top: 0;
+}
+
+input.header_check:checked + div.section,
+li.header > input.header_check:checked + ol {
+    display: block;
+}
+
+div.section,
+.header > ol {
+    display: none;
 }

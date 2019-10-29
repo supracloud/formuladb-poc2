@@ -16,27 +16,6 @@ export class FrmdbEditorGui {
 			$(this).on('click', self[this.dataset.vvvebAction]);
 		});
 
-
-		// i18n section
-		const i18nSelect = jQuery('#frmdb-editor-i18n-select')
-		const i18nOptions = jQuery('[aria-labelledby="frmdb-editor-i18n-select"]');
-		const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage);
-		i18nSelect.attr('data-i18n', currentLanguage!.lang);
-		i18nSelect.html(`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`);
-		I18N_FE.languages.forEach(lang =>
-			jQuery(`<a class="dropdown-item flag-icon flag-icon-${lang.flag}">${lang.full}</a>`)
-				.click(event => {
-					const prev = i18nSelect.attr('data-i18n');
-					const next = lang.lang;
-					localStorage.setItem('editor-lang', next);
-					i18nSelect.attr('data-i18n', next);
-					i18nSelect.html(`<i class="flag-icon flag-icon-${lang.flag}"></i>`);
-					I18N_FE.translateAll(this.iframe.contentWindow!.document, prev, next);
-					// event.preventDefault();
-					// return false;
-				}).appendTo(i18nOptions)
-		);
-
 		//theme section
 		const appName = 'hotel-booking';
 		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');

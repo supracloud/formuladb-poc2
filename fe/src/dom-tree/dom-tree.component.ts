@@ -1,5 +1,5 @@
 import {
-    Grid, GridOptions,
+    Grid, GridOptions, GridApi, GridReadyEvent,
 } from 'ag-grid-community';import * as _ from "lodash";
 import { setAgGridLicense } from '@fe/licenses';
 
@@ -38,9 +38,17 @@ class FileCellRenderer {
 
 
 export class DomTreeComponent extends HTMLElement {
-    rootEl: HTMLElement | undefined;
-    static observedAttributes = ['root-element'];
+    _rootEl: HTMLElement | undefined;
     grid: Grid | undefined;
+    private gridApi: GridApi;
+
+    get rootEl(): HTMLElement | undefined {
+        return this._rootEl;
+    }
+    set rootEl(el: HTMLElement | undefined) {
+        this._rootEl = el;
+        this.init();
+    }
 
     constructor() {
         super();
@@ -58,18 +66,15 @@ export class DomTreeComponent extends HTMLElement {
         }
     }
 
-    attributeChangedCallback(name: any, oldVal: any, newVal: any) {
-        this.rootEl = document.querySelector(newVal);
-        this.init();
-    }
-
     init() {
-        if (!this.rootEl) return;
+        if (!this.rootEl || !this.gridApi) return;
         let rootNodeData = {
             domPath: '',
             el: this.rootEl,
         };
-        this.loadNodes(rootNodeData, this.rowData);
+        let rowData: NodeData[] = [];
+        this.loadNodes(rootNodeData, rowData);
+        this.gridApi.setRowData(rowData);
     }
 
     loadNodes(parent: NodeData, gridData: NodeData[]) {
@@ -77,7 +82,7 @@ export class DomTreeComponent extends HTMLElement {
             let childEl = parent.el.children[i];
             if (!childEl.tagName) continue;
             let nodeData = {
-                domPath: (parent.domPath ? parent.domPath + '/' : '' ) + `${childEl.tagName}[${i+1}]`,
+                domPath: (parent.domPath ? parent.domPath + '/' : '' ) + `${childEl.tagName.toLowerCase()}.${i+1}`,
                 el: childEl,
             }; 
             gridData.push(nodeData);
@@ -89,10 +94,6 @@ export class DomTreeComponent extends HTMLElement {
     columnDefs = [
     ];
 
-    // specify the data
-    rowData: NodeData[] = [
-    ];
-
     gridOptions: GridOptions = {
         defaultColDef: {
             resizable: true
@@ -100,9 +101,10 @@ export class DomTreeComponent extends HTMLElement {
         components: {
             fileCellRenderer: FileCellRenderer
         },
-        headerHeight: 26,
+        headerHeight: 0,
+        suppressHorizontalScroll: true,
         columnDefs: this.columnDefs,
-        rowData: this.rowData,
+        rowData: [],
         treeData: true,
         animateRows: true,
         groupDefaultExpanded: -1,
@@ -124,9 +126,15 @@ export class DomTreeComponent extends HTMLElement {
                 'hover-over': (params) => { return params.node === this.potentialParent; }
             }
         },
-        onRowDragEnd: (ev) => this.onRowDragEnd(ev),
-        onRowDragMove: (ev) => this.onRowDragMove(ev),
-        onRowDragLeave: (ev) => this.onRowDragLeave(ev),
+        // onRowDragEnd: (ev) => this.onRowDragEnd(ev),
+        // onRowDragMove: (ev) => this.onRowDragMove(ev),
+        // onRowDragLeave: (ev) => this.onRowDragLeave(ev),
+        onGridReady: (params: GridReadyEvent) => {
+            if (!this.gridApi) {
+                this.gridApi = params.api as GridApi;
+            }
+            console.debug("onGridReady", this.gridApi);
+        },
     };
 
     potentialParent: {data: NodeData} | undefined = undefined;

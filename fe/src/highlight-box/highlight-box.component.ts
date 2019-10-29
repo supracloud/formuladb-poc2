@@ -38,7 +38,7 @@ export class HighlightBoxComponent extends HTMLElement {
                     border: 1px solid rgb(61, 133, 253);
                     background-color: rgba(61, 133, 253, 0.05);
                     pointer-events: none;
-                    z-index: 45678;
+                    z-index: 10;
                 }
             </style>
         `;
