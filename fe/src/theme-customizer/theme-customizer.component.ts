@@ -115,37 +115,61 @@ class Color {
 class State {
     colors: Color[] = [];
     themes: string[] = [];
-    selectedColor: Color = new Color();
-    selectedTheme: string = "lux";//FIXME take theme and colors from current css file 
+    selectedColor: Color | undefined = undefined;
+    selectedTheme: string | undefined = undefined;
 }
 
-class FrmdbThemeCustomizer extends HTMLElement {
+export class ThemeCustomizerComponent extends HTMLElement {
     state = new State();
+
+    _link: HTMLLinkElement | undefined = undefined;
+    set linkElem(l: HTMLLinkElement) {
+        this._link = l;
+        let m = this.parseCssFileName(this._link.href);
+        if (m) {
+            let {theme, primary, secondary} = m;
+            this.state.selectedTheme = theme;
+            this.state.selectedColor = new Color(primary, secondary);
+            updateDOM(this.state, this);
+        }
+    }
 
     connectedCallback() {
         this.innerHTML = HTML;
         this.init();
     }
 
+    parseCssFileName(cssFileName: string): {theme: string, primary: string, secondary: string} | null {
+        let m = cssFileName.match(/.*\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css$/);
+        if (m) return {theme: m[1], primary: '#' + m[2], secondary: '#' + m[3]}
+        else return null;
+    }
+
     async init() {
         let cssFiles = FIXME_LIST_REMOTE_FILES;
 
         for (let cssFile of cssFiles) {
-            let m = cssFile.match(/.*\/_css\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css/);
+            let m = this.parseCssFileName(cssFile);
             if (m) {
-                let prim = `#${m[2]}`, sec = `#${m[3]}`;
-                if (!this.state.themes.find(x => x == m![1])) this.state.themes.push(m[1]);
-                if (!this.state.colors.find(x => x.primary == prim && x.secondary == sec)) {
-                    this.state.colors.push(new Color(prim, sec));   
+                let {theme, primary, secondary} = m;
+                if (!this.state.themes.find(x => x == theme)) this.state.themes.push(theme);
+                if (!this.state.colors.find(x => x.primary == primary && x.secondary == secondary)) {
+                    this.state.colors.push(new Color(primary, secondary));
                 }
             }
         }
         updateDOM(this.state, this);
 
-        onEvent(this, "click", '.dropdown-item[data-frmdb-table="colors[]"], .dropdown-item[data-frmdb-table="colors[]"] *', (ev) => {
-            
+        onEvent(this, "click", '.dropdown-item[data-frmdb-table="colors[]"], .dropdown-item[data-frmdb-table="colors[]"] *', (event) => {
+            if (!this._link) {console.warn("cannot find the theme stylesheet for the current page"); return;}
+            let color: Color = event.target.closest('[data-frmdb-table="colors[]"]')['$DATA-FRMDB-OBJ$'];
+            if (!color) {console.warn("cannot find color for the menu selection"); return;}
+            this.state.selectedColor = color;
+            this._link.href = this._link.href.replace(/\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css$/, 
+                `/${this.state.selectedTheme}-${color.primary.replace(/^#/, '')}-${color.secondary.replace(/^#/, '')}.css`);
+            updateDOM(this.state, this);
         });
     }
 }
 
-window.customElements.define('frmdb-theme-customizer', FrmdbThemeCustomizer);
+window.customElements.define('frmdb-theme-customizer', ThemeCustomizerComponent);

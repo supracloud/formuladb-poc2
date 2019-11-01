@@ -99,7 +99,7 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
                     let newElemInList = elemListForKey.addElem();
                     emit(document, {type: "FrmdbAddPageElement", el: newElemInList});
                 }
-                elemListForKey.at(i)!['data-frmdb-obj'] = o;
+                elemListForKey.at(i)!['$DATA-FRMDB-OBJ$'] = o;
                 if (o._id && o._id.indexOf('~~') > 0) {
                     elemListForKey.at(i)!.setAttribute('data-frmdb-record', o._id);
                 }
@@ -121,7 +121,7 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
             elemsForKey.push(el);
         }
         for (let elForKey of elemsForKey) {
-            elForKey['data-frmdb-obj'] = objValForKey;
+            elForKey['$DATA-FRMDB-OBJ$'] = objValForKey;
             updateDOMForScope(objValForKey, elForKey, context, domKey, arrayCurrentIndexes);
         }
     } else {

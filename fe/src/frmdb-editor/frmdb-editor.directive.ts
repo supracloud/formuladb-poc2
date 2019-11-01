@@ -25,6 +25,7 @@ import { launchFullScreen } from "@fe/frmdb-editor-gui";
 import { ComponentEditorComponent } from "@fe/component-editor/component-editor.component";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
+import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -52,6 +53,7 @@ export class FrmdbEditorDirective {
     highlightBox: HighlightBoxComponent;
     domTree: DomTreeComponent;
     elementEditor: ComponentEditorComponent;
+    themeCustomizer: ThemeCustomizerComponent;
 
     get frameDoc(): Document {
         return this.iframe.contentWindow!.document;
@@ -70,6 +72,7 @@ export class FrmdbEditorDirective {
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
             this.domTree = document.body.querySelector('frmdb-dom-tree') as DomTreeComponent;
+            this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
     
             this.tableManagementFlows();
             this.tableColumnManagementFlows();
@@ -81,6 +84,7 @@ export class FrmdbEditorDirective {
             this.iframe.onload = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
                 this.domTree.rootEl = this.iframe.contentWindow!.document.body;
+                this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
             }
             this.pageElementFlows();
         })
@@ -324,7 +328,7 @@ export class FrmdbEditorDirective {
         onEvent(document.body, 'click', '#preview-btn, #preview-btn *', (event) => {
             preview = !preview;
             if (preview) {
-                document.body.style.setProperty('--frmdb-editor-top-panel-height', "32px");
+                document.body.style.setProperty('--frmdb-editor-top-panel-height', "34px");
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "0px");
                 this.dataGrid.style.display = 'none';
                 this.letPanel.style.display = 'none';
