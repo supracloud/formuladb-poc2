@@ -20,8 +20,8 @@ export class HighlightBoxComponent extends HTMLElement {
         color = color.replace(/#/g, '');
         let css = `/formuladb-themes/_css/${theme}-${color}.css`;
 
-        this.render();
         if (!this.link) {
+            this.render();
             this.link = document.createElement('link');
             this.link.rel = 'stylesheet';
             this.link.href = css;

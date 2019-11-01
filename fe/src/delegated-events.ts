@@ -22,13 +22,20 @@ export function getTarget(event: Event): HTMLElement | null {
 }
 
 export function onEvent(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+    _onEvent(false, el, eventType, selector, fn);
+}
+export function onEvenDeep(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+    _onEvent(true, el, eventType, selector, fn);
+}
+
+function _onEvent(deep: boolean, el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
     if (!el) return;
     let events = eventType instanceof Array ? eventType : [eventType];
     let selectors = selector instanceof Array ? selector : [selector];
     for (let ev of events) {
         //@ts-ignore
         el.addEventListener(ev, (event: any) => {
-            let target = getTarget(event);
+            let target = deep ? getTarget(event) : event.target;
             if (!event || !target) {console.warn("received incorrect event:", event); return};
             for (let sel of selectors) {
                 if (target.matches(sel)) {

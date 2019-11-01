@@ -105,11 +105,8 @@ const FIXME_LIST_REMOTE_FILES = [
 
 class Color {
     attr: string;
-    constructor(
-        public primary: string = "#ffc107", 
-        public secondary: string = "#343a40") 
-    {
-        this.attr = `${this.primary}-${this.secondary}`;
+    constructor(public primary: string, public secondary: string) {
+        this.attr = `${this.primary.replace(/^#/, '')}-${this.secondary.replace(/^#/, '')}`;
     }
 }
 class State {
@@ -161,14 +158,29 @@ export class ThemeCustomizerComponent extends HTMLElement {
         updateDOM(this.state, this);
 
         onEvent(this, "click", '.dropdown-item[data-frmdb-table="colors[]"], .dropdown-item[data-frmdb-table="colors[]"] *', (event) => {
-            if (!this._link) {console.warn("cannot find the theme stylesheet for the current page"); return;}
             let color: Color = event.target.closest('[data-frmdb-table="colors[]"]')['$DATA-FRMDB-OBJ$'];
             if (!color) {console.warn("cannot find color for the menu selection"); return;}
             this.state.selectedColor = color;
-            this._link.href = this._link.href.replace(/\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css$/, 
-                `/${this.state.selectedTheme}-${color.primary.replace(/^#/, '')}-${color.secondary.replace(/^#/, '')}.css`);
-            updateDOM(this.state, this);
+            this.updateTheme();
         });
+
+        onEvent(this, "click", '[data-frmdb-table="themes[]"]', (event) => {
+            let theme: string = event.target['$DATA-FRMDB-OBJ$'];
+            if (!theme) {console.warn("cannot find theme for the menu selection"); return;}
+            this.state.selectedTheme = theme;
+            this.updateTheme();
+        });
+    }
+
+    updateTheme() {
+        if (!this._link) {console.warn("cannot find the theme stylesheet for the current page"); return;}
+        if (!this.state.selectedColor) {console.warn("cannot find selected color for the current page"); return;}
+        if (!this.state.selectedTheme) {console.warn("cannot find selected theme for the current page"); return;}
+        
+        this._link.href = this._link.href.replace(/\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css$/, 
+            `/${this.state.selectedTheme}-${this.state.selectedColor.primary.replace(/^#/, '')}-${this.state.selectedColor.secondary.replace(/^#/, '')}.css`);
+        
+        updateDOM(this.state, this);        
     }
 }
 
