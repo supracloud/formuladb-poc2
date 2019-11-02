@@ -361,7 +361,7 @@ export class FrmdbEditorDirective {
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
             let node = event.detail.el;
             this.highlightDataGridCell(node);
-            this.elementEditor.editedEl = node;
+            this.elementEditor.setEditedEl(node);
         });
     }
 

@@ -2,8 +2,8 @@ import * as DOMPurify from "dompurify";
 
 import { BACKEND_SERVICE } from "./backend.service";
 import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
-import { updateDOM, html } from "./live-dom-template/live-dom-template";
-import { Entity, Pn } from "@domain/metadata/entity";
+import { updateDOM } from "./live-dom-template/live-dom-template";
+import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
 import { getHtml } from "./get-html";
 

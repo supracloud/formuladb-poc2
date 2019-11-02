@@ -4,11 +4,6 @@ import { instance } from "gaxios";
 import { emit } from "@fe/delegated-events";
 const LOG = new FrmdbLogger('live-dom-template');
 
-export function html(htmlStr: TemplateStringsArray) {
-    //used only for vscode features
-    return htmlStr.join('');
-}
-
 export function moveElem(el: Elem, $newParent: Elem, position: number) {
     throw new Error("TBD");
 }

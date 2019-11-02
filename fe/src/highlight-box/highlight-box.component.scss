@@ -1,0 +1,36 @@
+.box {
+    position: absolute;
+    display: block;
+    border: 1px solid rgb(61, 133, 253);
+    background-color: rgba(61, 133, 253, 0.05);
+    pointer-events: none;
+    z-index: 10;
+
+    .actions {
+        position: absolute;
+        top: 0;
+        transform:translateY(-100%);
+        right: 0px;
+        display: flex;
+        justify-content: center;
+
+        * {
+            background-color: #4285f4;
+            color: white;
+            font-size: 15px;
+            padding: 2px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        &.bottom {
+            top: 100%;
+            left: 0px;
+            transform:translateY(-50%);
+
+            * {
+                border-radius: 10px;
+            }
+        }
+    }
+}

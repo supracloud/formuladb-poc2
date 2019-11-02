@@ -1,9 +1,8 @@
 import { FrmdbElementBase, FrmdbElementDecorator } from "@fe/live-dom-template/frmdb-element";
 import * as _ from "lodash";
 import { onEvent } from "@fe/delegated-events";
-import { html } from "@fe/live-dom-template/live-dom-template";
 
-const HTML = html`
+const HTML = /*html*/`
 <div class="live-dom-editor">
     <div class="overlay">
         <div id="highlight-name"></div>

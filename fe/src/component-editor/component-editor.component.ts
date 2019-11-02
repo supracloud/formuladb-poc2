@@ -91,7 +91,7 @@ export class ComponentEditorComponent extends HTMLElement {
 	}
 
 	node: HTMLElement;
-	set editedEl(el: HTMLElement) {
+	setEditedEl(el: HTMLElement) {
 		this.node = el;
 		let cmp = this.matchNode(this.node);
 		let componentType = cmp ? cmp.type : defaultComponent;

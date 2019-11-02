@@ -1,20 +1,15 @@
 import * as _ from "lodash";
 import { onEvent, emit } from "@fe/delegated-events";
-import { html } from "@fe/live-dom-template/live-dom-template";
 
-const HTML = html`
-    <div class="overlay">
-        <div id="highlight-name"></div>
-
-        <div id="section-actions">
-            <a id="add-section-btn" href="" title="Add element">M</a>
-        </div>
-    </div>
-`;
+const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
+const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;
 
 export class HighlightBoxComponent extends HTMLElement {
     _rootEl: HTMLElement | Document | undefined;
     highlightEl: HTMLElement | undefined;
+    hoverBox: HTMLElement;
+    clickedBox: HTMLElement;
+    dblclickedBox: HTMLElement;
     static observedAttributes = ['root-element'];
 
     set rootElement(selector: string) {
@@ -30,18 +25,10 @@ export class HighlightBoxComponent extends HTMLElement {
         super();
 
         this.attachShadow({ mode: 'open' });
-        this.shadowRoot!.innerHTML = html`
-            <style>
-                :host {
-                    position: absolute;
-                    display: block;
-                    border: 1px solid rgb(61, 133, 253);
-                    background-color: rgba(61, 133, 253, 0.05);
-                    pointer-events: none;
-                    z-index: 10;
-                }
-            </style>
-        `;
+        this.shadowRoot!.innerHTML = `<style>${CSS}</style>${HTML}`;
+        this.hoverBox = this.shadowRoot!.querySelector('#hover') as HTMLElement;
+        this.clickedBox = this.shadowRoot!.querySelector('#clicked') as HTMLElement;
+        this.dblclickedBox = this.shadowRoot!.querySelector('#dblclicked') as HTMLElement;
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {
@@ -56,9 +43,7 @@ export class HighlightBoxComponent extends HTMLElement {
             event.preventDefault();
 
             let el: HTMLElement = event.target as HTMLElement;
-            if (!el.tagName) return;
-            if (["frmdb-dom-tree", "frmdb-data-grid", "body"]
-                .includes(el.tagName.toLowerCase())) return;
+            this.showBox(this.clickedBox, el);
 
             emit(this, {type: "FrmdbSelectPageElement", el});
         });
@@ -67,19 +52,23 @@ export class HighlightBoxComponent extends HTMLElement {
             event.preventDefault();
 
             let highlightEl: HTMLElement = event.target as HTMLElement;
-            if (!highlightEl.tagName) return;
-            if (["frmdb-dom-tree", "frmdb-data-grid", "body"]
-                .includes(highlightEl.tagName.toLowerCase())) return;
-
-            let offset = highlightEl.getBoundingClientRect();
-            let height = highlightEl.clientHeight;
-            let width = highlightEl.clientWidth;
-
-            this.style.top = (offset.top) + 'px';
-            this.style.left = (offset.left) + 'px';
-            this.style.height = height + 'px';
-            this.style.width = width + 'px';
+            this.showBox(this.hoverBox, highlightEl);
         });
+    }
+
+    showBox(box: HTMLElement, highlightEl: HTMLElement) {
+        if (!highlightEl.tagName) return;
+        if (["frmdb-dom-tree", "frmdb-highlight-box", "body"]
+            .includes(highlightEl.tagName.toLowerCase())) return;
+
+        let offset = highlightEl.getBoundingClientRect();
+        let height = highlightEl.clientHeight;
+        let width = highlightEl.clientWidth;
+
+        box.style.top = (offset.top) + 'px';
+        box.style.left = (offset.left) + 'px';
+        box.style.height = height + 'px';
+        box.style.width = width + 'px';
     }
 }
 
