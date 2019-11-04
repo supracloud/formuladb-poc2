@@ -1,30 +1,27 @@
 <link rel="stylesheet" href="/formuladb-static/icons/line-awesome/css/line-awesome.min.css">
 
-<div id="hover" class="box">
+<div id="highlight" class="box">
     <div class="name"></div>
     <div class="actions bottom">
-        <a id="add-section-btn" href="" title="Add element"><i class="la la-plus-circle"></i></a>
+        <a id="add-section-btn" href="javascript:void(0)" title="Add element"><i class="la la-plus-circle"></i></a>
     </div>
 </div>
 
-<div id="clicked" class="box">
-    <div class="actions">
-        <a id="drag-btn" href="" title="Drag element"><i class="la la-arrows"></i></a>
-        <a id="parent-btn" href="" title="Select parent"><i class="la la-level-down la-rotate-180"></i></a>
-
-        <a id="up-btn" href="" title="Move element up"><i class="la la-arrow-up"></i></a>
-        <a id="down-btn" href="" title="Move element down"><i class="la la-arrow-down"></i></a>
-        <a id="clone-btn" href="" title="Clone element"><i class="la la-copy"></i></a>
-        <a id="delete-btn" href="" title="Remove element"><i class="la la-trash"></i></a>
+<div id="selected" class="box">
+    <div class="actions selected">
+        <a class="btn" id="drag-btn" href="javascript:void(0)" title="Drag element"><i class="la la-arrows"></i></a>
+        <a class="btn" id="parent-btn" href="javascript:void(0)" title="Select parent"><i class="la la-level-down la-rotate-180"></i></a>
+        <a class="btn" id="up-btn" href="javascript:void(0)" title="Move element up"><i class="la la-arrow-up"></i></a>
+        <a class="btn" id="down-btn" href="javascript:void(0)" title="Move element down"><i class="la la-arrow-down"></i></a>
+        <a class="btn" id="edit-btn" href="javascript:void(0)" title="Edit element"><i class="la la-edit"></i></a>
+        <a class="btn" id="clone-btn" href="javascript:void(0)" title="Clone element"><i class="la la-copy"></i></a>
+        <a class="btn" id="delete-btn" href="javascript:void(0)" title="Remove element"><i class="la la-trash"></i></a>
     </div>
-</div>
-
-<div id="dblclicked" class="box">
-    <div class="actions">
-        <a id="bold-btn" href="" title="Bold"><i><strong>B</strong></i></a>
-        <a id="italic-btn" href="" title="Italic"><i>I</i></a>
-        <a id="underline-btn" href="" title="Underline"><u>u</u></a>
-        <a id="strike-btn" href="" title="Strikeout"><del>S</del></a>
-        <a id="link-btn" href="" title="Create link"><strong>a</strong></a>
+    <div class="actions editing d-none">
+        <a class="btn" id="bold-btn" href="javascript:void(0)" title="Bold"><i><strong>B</strong></i></a>
+        <a class="btn" id="italic-btn" href="javascript:void(0)" title="Italic"><i>I</i></a>
+        <a class="btn" id="underline-btn" href="javascript:void(0)" title="Underline"><u>u</u></a>
+        <a class="btn" id="strike-btn" href="javascript:void(0)" title="Strikeout"><del>S</del></a>
+        <a class="btn" id="link-btn" href="javascript:void(0)" title="Create link"><strong>a</strong></a>
     </div>
 </div>

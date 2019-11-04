@@ -6,10 +6,14 @@
     pointer-events: none;
     z-index: 10;
 
+    &#selected {
+        background-color: rgba(61, 131, 253, 0.2);
+    }
+
     .actions {
         position: absolute;
         top: 0;
-        transform:translateY(-100%);
+        transform: translateY(-100%);
         right: 0px;
         display: flex;
         justify-content: center;
@@ -19,8 +23,8 @@
             color: white;
             font-size: 15px;
             padding: 2px;
-            cursor: pointer;
             text-decoration: none;
+            pointer-events: initial;
         }
         
         &.bottom {

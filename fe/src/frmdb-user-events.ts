@@ -86,6 +86,11 @@ export interface FrmdbSelectPageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbEditWysiwygPageElement {
+    type: 'FrmdbEditWysiwygPageElement';
+    el: HTMLElement;
+}
+
 export interface FrmdbModifyPageElement {
     type: 'FrmdbModifyPageElement';
     value: string | number | boolean;
@@ -110,5 +115,6 @@ export type FrmdbUserEvent =
     | FrmdbAddPageElement
     | FrmdbRemovePageElement
     | FrmdbSelectPageElement
+    | FrmdbEditWysiwygPageElement
     | FrmdbModifyPageElement
 ;

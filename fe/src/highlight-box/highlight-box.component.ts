@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import { onEvent, emit } from "@fe/delegated-events";
+import { WysiwygEditor } from "./wysiwyg-editor";
 
 const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;
@@ -7,10 +8,11 @@ const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highl
 export class HighlightBoxComponent extends HTMLElement {
     _rootEl: HTMLElement | Document | undefined;
     highlightEl: HTMLElement | undefined;
-    hoverBox: HTMLElement;
-    clickedBox: HTMLElement;
-    dblclickedBox: HTMLElement;
+    highlightBox: HTMLElement;
+    selectedBox: HTMLElement;
+    selectedEl: HTMLElement | undefined;
     static observedAttributes = ['root-element'];
+    wysiwygEditor = new WysiwygEditor();
 
     set rootElement(selector: string) {
         this.setAttribute('root-element', selector);
@@ -26,9 +28,8 @@ export class HighlightBoxComponent extends HTMLElement {
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = `<style>${CSS}</style>${HTML}`;
-        this.hoverBox = this.shadowRoot!.querySelector('#hover') as HTMLElement;
-        this.clickedBox = this.shadowRoot!.querySelector('#clicked') as HTMLElement;
-        this.dblclickedBox = this.shadowRoot!.querySelector('#dblclicked') as HTMLElement;
+        this.highlightBox = this.shadowRoot!.querySelector('#highlight') as HTMLElement;
+        this.selectedBox = this.shadowRoot!.querySelector('#selected') as HTMLElement;
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {
@@ -39,21 +40,38 @@ export class HighlightBoxComponent extends HTMLElement {
     init() {
         if (!this._rootEl) return;
 
-        onEvent(this._rootEl, ['click'], '*', (event) => {
-            event.preventDefault();
-
-            let el: HTMLElement = event.target as HTMLElement;
-            this.showBox(this.clickedBox, el);
-
-            emit(this, {type: "FrmdbSelectPageElement", el});
-        });
+        this.wysiwygEditor.init(this._rootEl.ownerDocument!, this.selectedBox.querySelector('.actions.editing')! as HTMLElement);
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
             event.preventDefault();
-
             let highlightEl: HTMLElement = event.target as HTMLElement;
-            this.showBox(this.hoverBox, highlightEl);
+            this.showBox(this.highlightBox, highlightEl);
         });
+
+
+        onEvent(this._rootEl, ['click'], '*', (event) => {
+            event.preventDefault();
+            this.selectedEl = event.target as HTMLElement;
+            this.showBox(this.selectedBox, this.selectedEl);
+            this.toggleWysiwygEditor(false);
+            emit(this, {type: "FrmdbSelectPageElement", el: this.selectedEl});
+        });
+
+        onEvent(this.selectedBox, ['click'], '#edit-btn, #edit-btn *', (event) => {
+            event.preventDefault();
+            if (!this.selectedEl) return;
+            this.toggleWysiwygEditor(true);
+            emit(this, {type: "FrmdbEditWysiwygPageElement", el: this.selectedEl});
+        });
+    }
+
+    toggleWysiwygEditor(active: boolean) {
+        if (!this.selectedEl) return;
+
+        (this.selectedBox.querySelector('.actions.selected')! as HTMLElement).style.display = active ? 'none' : '';
+        (this.selectedBox.querySelector('.actions.editing')! as HTMLElement).style.display = active ? '' : 'none';
+        if (active) this.wysiwygEditor.start(this.selectedEl);
+        else this.wysiwygEditor.destroy();
     }
 
     showBox(box: HTMLElement, highlightEl: HTMLElement) {
@@ -65,6 +83,7 @@ export class HighlightBoxComponent extends HTMLElement {
         let height = highlightEl.clientHeight;
         let width = highlightEl.clientWidth;
 
+        box.style.display = 'block';
         box.style.top = (offset.top) + 'px';
         box.style.left = (offset.left) + 'px';
         box.style.height = height + 'px';

@@ -1,61 +1,59 @@
-import { I18nFe, I18N_FE } from "./i18n-fe";
 import { BACKEND_SERVICE } from "./backend.service";
 import jsyaml = require("js-yaml");
-import { WysiwygEditor } from "./component-editor/wysiwyg-editor";
 import { Undo } from "./frmdb-editor/undo";
 
-export class FrmdbEditorGui {
-    constructor(private iframe: HTMLIFrameElement) {
-    }
+// export class FrmdbEditorGui {
+//     constructor(private iframe: HTMLIFrameElement) {
+//     }
 
-	init() {
-        var self = this;
+// 	init() {
+//         var self = this;
 
-		$("[data-vvveb-action]").each(function () {
-            if (!this.dataset.vvvebAction) return;
-			$(this).on('click', self[this.dataset.vvvebAction]);
-		});
+// 		$("[data-vvveb-action]").each(function () {
+//             if (!this.dataset.vvvebAction) return;
+// 			$(this).on('click', self[this.dataset.vvvebAction]);
+// 		});
 
-		//theme section
-		const appName = 'hotel-booking';
-		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
-		let themeChangeButton: any = null;
-		fetch(`/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/theme.yaml`).then(re => re.text().then(themesYamlStr => {
-			let themes = jsyaml.safeLoad(themesYamlStr);
-			themes.forEach(t => {
-				if (!themeChangeButton) {
-					themeChangeButton = jQuery('#frmdb-editor-color-palette-select');
-					themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
-				}
-				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i> ${t.name}</a>`)
-					.click(event => {
-						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
-							.attr('href', `${t.css}?refresh=${new Date().getTime()}`);
-						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
-					})
-					.appendTo(themeOptions);
-			});
-		}));
-	}
+// 		//theme section
+// 		const appName = 'hotel-booking';
+// 		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
+// 		let themeChangeButton: any = null;
+// 		fetch(`/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/theme.yaml`).then(re => re.text().then(themesYamlStr => {
+// 			let themes = jsyaml.safeLoad(themesYamlStr);
+// 			themes.forEach(t => {
+// 				if (!themeChangeButton) {
+// 					themeChangeButton = jQuery('#frmdb-editor-color-palette-select');
+// 					themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
+// 				}
+// 				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i> ${t.name}</a>`)
+// 					.click(event => {
+// 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
+// 							.attr('href', `${t.css}?refresh=${new Date().getTime()}`);
+// 						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
+// 					})
+// 					.appendTo(themeOptions);
+// 			});
+// 		}));
+// 	}
 
-	undo() {
-		if (WysiwygEditor.isActive) {
-			WysiwygEditor.undo();
-		} else {
-			Undo.undo();
-		}
-		// this.builder.selectNode();
-	}
+// 	undo() {
+// 		if (WysiwygEditor.isActive) {
+// 			WysiwygEditor.undo();
+// 		} else {
+// 			Undo.undo();
+// 		}
+// 		// this.builder.selectNode();
+// 	}
 
-	redo() {
-		if (WysiwygEditor.isActive) {
-			WysiwygEditor.redo();
-		} else {
-			Undo.redo();
-		}
-		// this.builder.selectNode();
-	}
-}
+// 	redo() {
+// 		if (WysiwygEditor.isActive) {
+// 			WysiwygEditor.redo();
+// 		} else {
+// 			Undo.redo();
+// 		}
+// 		// this.builder.selectNode();
+// 	}
+// }
 
 // Toggle fullscreen
 export function launchFullScreen(document) {
