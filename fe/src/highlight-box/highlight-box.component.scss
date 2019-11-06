@@ -10,12 +10,25 @@
         background-color: rgba(61, 131, 253, 0.2);
     }
 
+    &#selected.editing {
+        background-color: transparent;
+
+        .actions.selected {
+            display: none;
+        }
+        
+        .actions.editing {
+            display: flex;
+        }
+    }
+
     .actions {
         position: absolute;
         top: 0;
         transform: translateY(-100%);
         right: 0px;
         display: flex;
+        &.editing { display: none; }
         justify-content: center;
 
         * {

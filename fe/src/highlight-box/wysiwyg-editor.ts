@@ -53,6 +53,7 @@ export class WysiwygEditor {
 		this.doc.execCommand('redo', false, undefined);
     }
 
+	get isActive() { return this.elem != null; }
 	start(elem: HTMLElement) {
 		this.elem = elem;
 		this.oldValue = elem.innerHTML;

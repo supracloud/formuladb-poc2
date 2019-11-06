@@ -15,6 +15,10 @@ export function getTextValue(el: HTMLElement) {
     }
 }
 
+export function isElementWithTextContentEditable(el: HTMLElement) {
+    return el.matches(translatableSelector) && isElementWithTextContent(el);
+}
+
 export function isElementWithTextContent(el: any) {
     if (el.hasAttribute('placeholder')) {
         return true;

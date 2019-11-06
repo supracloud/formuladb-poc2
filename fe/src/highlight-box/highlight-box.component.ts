@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import { onEvent, emit } from "@fe/delegated-events";
 import { WysiwygEditor } from "./wysiwyg-editor";
+import { isElementWithTextContentEditable } from "@fe/i18n-fe";
 
 const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;
@@ -40,7 +41,8 @@ export class HighlightBoxComponent extends HTMLElement {
     init() {
         if (!this._rootEl) return;
 
-        this.wysiwygEditor.init(this._rootEl.ownerDocument!, this.selectedBox.querySelector('.actions.editing')! as HTMLElement);
+        this.wysiwygEditor.init((this._rootEl as any).execCommand != null ? this._rootEl as Document : this._rootEl.ownerDocument!, 
+            this.selectedBox.querySelector('.actions.editing')! as HTMLElement);
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
             event.preventDefault();
@@ -49,8 +51,10 @@ export class HighlightBoxComponent extends HTMLElement {
         });
 
 
-        onEvent(this._rootEl, ['click'], '*', (event) => {
+        onEvent(this._rootEl, ['click'], '*', (event: MouseEvent) => {
             event.preventDefault();
+            if (this.wysiwygEditor.isActive && this.selectedEl && 
+                (this.selectedEl == event.target || this.selectedEl.contains(event.target as HTMLElement))) return;
             this.selectedEl = event.target as HTMLElement;
             this.showBox(this.selectedBox, this.selectedEl);
             this.toggleWysiwygEditor(false);
@@ -59,7 +63,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
         onEvent(this.selectedBox, ['click'], '#edit-btn, #edit-btn *', (event) => {
             event.preventDefault();
-            if (!this.selectedEl) return;
+            if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
             this.toggleWysiwygEditor(true);
             emit(this, {type: "FrmdbEditWysiwygPageElement", el: this.selectedEl});
         });
@@ -68,8 +72,8 @@ export class HighlightBoxComponent extends HTMLElement {
     toggleWysiwygEditor(active: boolean) {
         if (!this.selectedEl) return;
 
-        (this.selectedBox.querySelector('.actions.selected')! as HTMLElement).style.display = active ? 'none' : '';
-        (this.selectedBox.querySelector('.actions.editing')! as HTMLElement).style.display = active ? '' : 'none';
+        this.selectedBox.classList.toggle('editing', active);
+
         if (active) this.wysiwygEditor.start(this.selectedEl);
         else this.wysiwygEditor.destroy();
     }
