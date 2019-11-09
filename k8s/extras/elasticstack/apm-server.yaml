@@ -1,0 +1,28 @@
+image:
+  tag: 7.3.0
+service:
+  enabled: true
+ingress:
+  enabled: true
+  hosts:
+    - apmserver.formuladb.io
+  tls:
+    - secretName: formuladb-online
+      hosts:
+        - apmserver.formuladb.io
+config:
+  output.file:
+    enabled: false
+  output.elasticsearch:
+    hosts: ["formuladb-data:9200"]
+    protocol: "http"
+  apm-server:
+    rum:
+      enabled: true
+      event_rate.limit: 300
+      event_rate.lru_size: 1000
+      allow_origins: ['*']
+      library_pattern: "node_modules|bower_components|~"
+      exclude_from_grouping: "^/webpack"
+      source_mapping.cache.expiration: 5m
+      source_mapping.index_pattern: "apm-*-sourcemap*"
