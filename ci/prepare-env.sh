@@ -23,11 +23,13 @@ hash skaffold &>/dev/null || {
 hash skaffold &>/dev/null || { echo "skaffold not found! See https://skaffold.dev/docs/getting-started/#installing-skaffold"; exit $ERRCODE; }
 
 hash kustomize &>/dev/null || { 
-  curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest |\
-  grep browser_download |\
-  grep linux |\
-  cut -d '"' -f 4 |\
-  xargs curl -O -L
+  curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases |\
+    grep browser_download |\
+    grep linux |\
+    cut -d '"' -f 4 |\
+    grep /kustomize/v |\
+    sort | tail -n 1 |\
+    xargs curl -O -L
   mv kustomize_*_linux_amd64 kustomize
   chmod u+x ./kustomize
   sudo mv ./kustomize /usr/local/bin/

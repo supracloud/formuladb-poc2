@@ -332,11 +332,13 @@ export class FrmdbEditorDirective {
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "0px");
                 this.dataGrid.style.display = 'none';
                 this.letPanel.style.display = 'none';
+                this.highlightBox.disabled = true;
             } else {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
-                document.body.style.setProperty('--frmdb-editor-left-panel-width', "15vw");
+                document.body.style.setProperty('--frmdb-editor-left-panel-width', "12vw");
                 this.dataGrid.style.display = 'block';                        
                 this.letPanel.style.display = 'block';
+                this.highlightBox.disabled = false;
             }
         });
 
@@ -361,7 +363,7 @@ export class FrmdbEditorDirective {
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
             let node = event.detail.el;
             this.highlightDataGridCell(node);
-            this.elementEditor.setEditedEl(node);
+            // this.elementEditor.setEditedEl(node);
         });
     }
 

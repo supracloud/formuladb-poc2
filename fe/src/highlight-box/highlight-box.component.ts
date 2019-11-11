@@ -8,17 +8,21 @@ const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highl
 
 export class HighlightBoxComponent extends HTMLElement {
     _rootEl: HTMLElement | Document | undefined;
+    _disabled: boolean = false;
     highlightEl: HTMLElement | undefined;
     highlightBox: HTMLElement;
     selectedBox: HTMLElement;
     selectedEl: HTMLElement | undefined;
-    static observedAttributes = ['root-element'];
+    static observedAttributes = ['root-element', 'disabled'];
     wysiwygEditor = new WysiwygEditor();
 
     set rootElement(selector: string) {
         this.setAttribute('root-element', selector);
     }
-
+    set disabled(d: boolean) {
+        this.setAttribute('disabled', new Boolean(d).toString());
+    }
+    
     set rootEl(el: HTMLElement | Document) {
         this._rootEl = el;
         this.init();
@@ -33,9 +37,13 @@ export class HighlightBoxComponent extends HTMLElement {
         this.selectedBox = this.shadowRoot!.querySelector('#selected') as HTMLElement;
     }
 
-    attributeChangedCallback(name: any, oldVal: any, newVal: any) {
-        this._rootEl = document.querySelector(newVal);
-        this.init();
+    attributeChangedCallback(name: any, oldVal: string, newVal: string) {
+        if ('root-element' === name) {
+            this._rootEl = document.querySelector(newVal) as HTMLElement;
+            this.init();
+        } else if ('disabled' === name) {
+            this._disabled = (newVal.toLowerCase() == "true");
+        }
     }
 
     init() {
@@ -45,6 +53,7 @@ export class HighlightBoxComponent extends HTMLElement {
             this.selectedBox.querySelector('.actions.editing')! as HTMLElement);
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
+            if (this._disabled) return;
             event.preventDefault();
             let highlightEl: HTMLElement = event.target as HTMLElement;
             this.showBox(this.highlightBox, highlightEl);
@@ -52,6 +61,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
 
         onEvent(this._rootEl, ['click'], '*', (event: MouseEvent) => {
+            if (this._disabled) return;
             event.preventDefault();
             if (this.wysiwygEditor.isActive && this.selectedEl && 
                 (this.selectedEl == event.target || this.selectedEl.contains(event.target as HTMLElement))) return;
@@ -62,6 +72,7 @@ export class HighlightBoxComponent extends HTMLElement {
         });
 
         onEvent(this.selectedBox, ['click'], '#edit-btn, #edit-btn *', (event) => {
+            if (this._disabled) return;
             event.preventDefault();
             if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
             this.toggleWysiwygEditor(true);
@@ -70,6 +81,7 @@ export class HighlightBoxComponent extends HTMLElement {
     }
 
     toggleWysiwygEditor(active: boolean) {
+        if (this._disabled) return;
         if (!this.selectedEl) return;
 
         this.selectedBox.classList.toggle('editing', active);

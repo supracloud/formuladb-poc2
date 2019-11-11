@@ -1,3 +1,7 @@
+:host([disabled="true"]) .box {
+    display: none !important;
+}
+
 .box {
     position: absolute;
     display: block;
