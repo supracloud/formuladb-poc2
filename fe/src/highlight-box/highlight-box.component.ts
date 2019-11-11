@@ -22,7 +22,7 @@ export class HighlightBoxComponent extends HTMLElement {
     set disabled(d: boolean) {
         this.setAttribute('disabled', new Boolean(d).toString());
     }
-    
+
     set rootEl(el: HTMLElement | Document) {
         this._rootEl = el;
         this.init();
@@ -98,6 +98,12 @@ export class HighlightBoxComponent extends HTMLElement {
         let offset = highlightEl.getBoundingClientRect();
         let height = highlightEl.clientHeight;
         let width = highlightEl.clientWidth;
+
+        let nameEl = box.querySelector('.name');
+        if (nameEl) nameEl.innerHTML = highlightEl.tagName /*+ '.' + Array.from(highlightEl.classList).join('.')*/;
+
+        if (offset.top <= 20) box.classList.add('is-at-top')
+        else box.classList.remove('is-at-top');
 
         box.style.display = 'block';
         box.style.top = (offset.top) + 'px';

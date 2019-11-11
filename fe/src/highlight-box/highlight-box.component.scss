@@ -10,6 +10,10 @@
     pointer-events: none;
     z-index: 10;
 
+    &.is-at-top .actions, &.is-at-top .name { 
+        transform: translateY(0%); 
+    }
+
     &#selected {
         background-color: rgba(61, 131, 253, 0.2);
     }
@@ -24,6 +28,15 @@
         .actions.editing {
             display: flex;
         }
+    }
+
+    .name {
+        position: absolute;
+        top: 0;
+        transform: translateY(-100%);
+        left: 0px;
+        background-color: #4285f4;
+        color: white;
     }
 
     .actions {
