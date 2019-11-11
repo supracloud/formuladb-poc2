@@ -119,10 +119,11 @@ export class FrmdbEditorDirective {
             i18nOptions.innerHTML += /*html*/`<a class="dropdown-item" data-flag="${lang.flag}" data-lang="${lang.lang}"><i class="flag-icon flag-icon-${lang.flag}"></i> ${lang.full}</a>`
         );
         
-        onEvent(i18nOptions, 'click', '.dropdown-item.flag-icon, .dropdown-item.flag-icon *', (event) => {
+        onEvent(i18nOptions, 'click', '.dropdown-item, .dropdown-item *', (event) => {
             const prev = i18nSelect.getAttribute('data-i18n')!;
-            const next = event.target.dataset.lang;
-            const flag = event.target.dataset.flag;
+            let el: HTMLElement = event.target.closest('[data-lang]') as HTMLElement;
+            const next = el.dataset.lang!;
+            const flag = el.dataset.flag;
             localStorage.setItem('editor-lang', next);
             i18nSelect.setAttribute('data-i18n', next);
             i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${flag}"></i>`;

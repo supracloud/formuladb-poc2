@@ -1,5 +1,6 @@
 import { onEvent } from "@fe/delegated-events";
 import { Undo } from "@fe/frmdb-editor/undo";
+import { I18N_FE } from "@fe/i18n-fe";
 
 declare var $: null, jQuery: null;
 
@@ -57,21 +58,30 @@ export class WysiwygEditor {
 	start(elem: HTMLElement) {
 		this.elem = elem;
 		this.oldValue = elem.innerHTML;
-		this.elem.setAttribute('contenteditable', 'true');
-		this.elem.setAttribute('spellcheckker', 'false');
+		elem.setAttribute('contenteditable', 'true');
+		elem.setAttribute('spellcheckker', 'false');
+
 	}
 	destroy() {
 		if (!this.elem) return;
 		this.elem.removeAttribute('contenteditable');
 		this.elem.removeAttribute('spellcheckker');
 
+		let nodeLanguage = this.elem.getAttribute('data-i18n');
+		const nodeValue = this.elem.innerHTML;
+		if (!nodeLanguage) {
+			nodeLanguage = I18N_FE.getDefaultLanguage().lang;
+			this.elem.setAttribute('data-i18n', nodeLanguage);
+		}
+		I18N_FE.updateNode(this.elem, nodeLanguage, nodeLanguage, this.oldValue, nodeValue);
+
 		Undo.addMutation({
 			type: 'characterData',
 			target: this.elem,
 			oldValue: this.oldValue,
-			newValue: this.elem.innerHTML
+			newValue: nodeValue
 		});
-
+		
 		this.elem = null;
 	}
 }

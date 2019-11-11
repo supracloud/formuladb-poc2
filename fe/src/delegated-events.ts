@@ -14,6 +14,7 @@ export type EventType =
     | "change"
     | "input"
     | "submit"
+    | "paste"
     | FrmdbUserEvent['type']
 ;
 

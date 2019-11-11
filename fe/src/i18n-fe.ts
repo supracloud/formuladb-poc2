@@ -42,7 +42,7 @@ export class I18nFe {
         return this.languages.find(l => l.lang == lang);
     }
     public getDefaultLanguage() {
-        return this.getLangDesc(this.defaultLanguage);
+        return this.getLangDesc(this.defaultLanguage)!;
     }
 
     get languages() {
