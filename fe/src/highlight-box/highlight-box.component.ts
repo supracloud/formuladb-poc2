@@ -11,6 +11,8 @@ export class HighlightBoxComponent extends HTMLElement {
     _disabled: boolean = false;
     highlightEl: HTMLElement | undefined;
     highlightBox: HTMLElement;
+    parentHighlightBox: HTMLElement;
+    grandParentHighlightBox: HTMLElement;
     selectedBox: HTMLElement;
     selectedEl: HTMLElement | undefined;
     static observedAttributes = ['root-element', 'disabled'];
@@ -34,6 +36,8 @@ export class HighlightBoxComponent extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = `<style>${CSS}</style>${HTML}`;
         this.highlightBox = this.shadowRoot!.querySelector('#highlight') as HTMLElement;
+        this.parentHighlightBox = this.shadowRoot!.querySelector('#parent-highlight') as HTMLElement;
+        this.grandParentHighlightBox = this.shadowRoot!.querySelector('#grand-parent-highlight') as HTMLElement;
         this.selectedBox = this.shadowRoot!.querySelector('#selected') as HTMLElement;
     }
 
@@ -57,6 +61,12 @@ export class HighlightBoxComponent extends HTMLElement {
             event.preventDefault();
             let highlightEl: HTMLElement = event.target as HTMLElement;
             this.showBox(this.highlightBox, highlightEl);
+            if (highlightEl.parentElement) {
+                this.showBox(this.parentHighlightBox, highlightEl.parentElement);
+                if (highlightEl.parentElement.parentElement) {
+                    this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
+                } else this.grandParentHighlightBox.style.display = 'none';
+            } else this.parentHighlightBox.style.display = 'none';
         });
 
 
@@ -92,15 +102,17 @@ export class HighlightBoxComponent extends HTMLElement {
 
     showBox(box: HTMLElement, highlightEl: HTMLElement) {
         if (!highlightEl.tagName) return;
-        if (["frmdb-dom-tree", "frmdb-highlight-box", "body"]
-            .includes(highlightEl.tagName.toLowerCase())) return;
+        if (["frmdb-dom-tree", "frmdb-highlight-box", "body"].includes(highlightEl.tagName.toLowerCase())) {
+            box.style.display = 'none';
+            return;
+        }
 
         let offset = highlightEl.getBoundingClientRect();
         let height = highlightEl.clientHeight;
         let width = highlightEl.clientWidth;
 
         let nameEl = box.querySelector('.name');
-        if (nameEl) nameEl.innerHTML = highlightEl.tagName /*+ '.' + Array.from(highlightEl.classList).join('.')*/;
+        if (nameEl) nameEl.innerHTML = highlightEl.tagName + '.' + Array.from(highlightEl.classList).join('.');
 
         if (offset.top <= 20) box.classList.add('is-at-top')
         else box.classList.remove('is-at-top');

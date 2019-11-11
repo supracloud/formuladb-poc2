@@ -6,12 +6,20 @@
     position: absolute;
     display: block;
     border: 1px solid rgb(61, 133, 253);
-    background-color: rgba(61, 133, 253, 0.05);
+    // background-color: rgba(61, 133, 253, 0.05);
     pointer-events: none;
     z-index: 10;
 
     &.is-at-top .actions, &.is-at-top .name { 
         transform: translateY(0%); 
+    }
+
+    &#grand-parent-highlight {
+        border: 3px dotted yellow;
+    }
+
+    &#parent-highlight {
+        border: 2px dotted red;
     }
 
     &#selected {
