@@ -89,7 +89,16 @@ export interface FrmdbSelectPageElement {
 export interface FrmdbSelectPageElementAction {
     type: 'FrmdbSelectPageElementAction';
     el: HTMLElement;
-    action: "add-inside" | "add-after";
+    action: 
+        | "parent"
+        | "add-inside" 
+        | "add-after"
+        | "up"
+        | "down"
+        | "edit"
+        | "clone"
+        | "delete"
+    ;
 }
 
 export interface FrmdbEditWysiwygPageElement {

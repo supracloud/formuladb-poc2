@@ -48,10 +48,10 @@ export class AddElementComponent extends HTMLElement {
             if (!targetDoc) {console.warn("owner doc not found"); return;}
 
             if (this.action === 'add-inside') {
-                let newEl = this.copyEl(targetDoc, event.detail.el);
+                let newEl = targetDoc.importNode(event.detail.el, true);
                 this.selectedEl.appendChild(newEl);
             } else if (this.action === 'add-after') {
-                let newEl = this.copyEl(targetDoc, event.detail.el);
+                let newEl = targetDoc.importNode(event.detail.el, true);
                 let p = this.selectedEl.parentElement;
                 if (p) {
                     if (this.selectedEl.nextSibling) {
@@ -64,16 +64,6 @@ export class AddElementComponent extends HTMLElement {
 
             this.style.display = 'none';
         });
-    }
-
-    copyEl(doc: Document, el: HTMLElement): HTMLElement {
-        let newEl = doc.createElement(el.tagName);
-        newEl.innerHTML = el.innerHTML;
-        for (let i = 0; i < el.attributes.length; i++) {
-            let attr = el.attributes[i];
-            newEl.setAttribute(attr.name, attr.value);
-        }
-        return newEl;
     }
 
     start(themeCssFile: string | null, selectedEl: HTMLElement, action: FrmdbSelectPageElementAction['action']) {

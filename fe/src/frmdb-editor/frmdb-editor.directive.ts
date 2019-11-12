@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { onEvent, onDoc, getTarget } from "@fe/delegated-events";
+import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
 import { BACKEND_SERVICE } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from "@fe/i18n-fe";
@@ -27,6 +27,7 @@ import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
 import { AddElementComponent } from "./add-element.component";
+import { pageElementFlows } from "./page-element-flows";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -89,7 +90,7 @@ export class FrmdbEditorDirective {
                 this.domTree.rootEl = this.iframe.contentWindow!.document.body;
                 this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
             }
-            this.pageElementFlows();
+            pageElementFlows(this);
         })
     }
 
@@ -138,6 +139,14 @@ export class FrmdbEditorDirective {
         if (tableName === this.EditorState.selectedTableId) return;
         this.EditorState.selectedTableId = tableName;
         updateDOM({ $frmdb: { selectedTableId: this.EditorState.selectedTableId } }, document.body);
+    }
+
+    selectElement(el: HTMLElement | null) {
+        this.highlightBox.selectElement(el);
+        if (el) {
+            this.highlightDataGridCell(el);
+            // editor.elementEditor.setEditedEl(node);
+        }
     }
 
     tableManagementFlows() {
@@ -329,7 +338,7 @@ export class FrmdbEditorDirective {
         });
 
         let preview = false;
-        onEvent(document.body, 'click', '#preview-btn, #preview-btn *', (event) => {
+        onEventChildren(document.body, 'click', '#preview-btn', (event) => {
             preview = !preview;
             if (preview) {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "34px");
@@ -359,17 +368,6 @@ export class FrmdbEditorDirective {
                 this.canvas.style.width = '320px';
                 this.canvas.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
             }
-        });
-    }
-
-    pageElementFlows() {
-        onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
-            let node = event.detail.el;
-            this.highlightDataGridCell(node);
-            // this.elementEditor.setEditedEl(node);
-        });
-        onEvent(this.highlightBox, 'FrmdbSelectPageElementAction', '*', (event: {detail: FrmdbSelectPageElementAction}) => {
-            this.addElementCmp.start(this.themeCustomizer.cssFile, event.detail.el, event.detail.action)
         });
     }
 

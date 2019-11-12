@@ -64,9 +64,9 @@ export class HighlightBoxComponent extends HTMLElement {
             this.showBox(this.highlightBox, highlightEl);
             if (highlightEl.parentElement) {
                 this.showBox(this.parentHighlightBox, highlightEl.parentElement);
-                if (highlightEl.parentElement.parentElement) {
-                    this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
-                } else this.grandParentHighlightBox.style.display = 'none';
+                // if (highlightEl.parentElement.parentElement) {
+                //     this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
+                // } else this.grandParentHighlightBox.style.display = 'none';
             } else this.parentHighlightBox.style.display = 'none';
         });
 
@@ -90,13 +90,25 @@ export class HighlightBoxComponent extends HTMLElement {
             emit(this, {type: "FrmdbEditWysiwygPageElement", el: this.selectedEl});
         });
 
-        onEventChildren(this.selectedBox, ['click'], ['[data-frmdb-action="add-inside"]', '[data-frmdb-action="add-after"]'], (event) => {
+        onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action]', (event) => {
             if (this._disabled) return;
             event.preventDefault();
             let el: HTMLElement = event.target.closest('[data-frmdb-action]');
             if (!el || !this.selectedEl) return;
+            if (el.dataset.frmdbAction === "edit") return;
             emit(this, {type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action']});
         });
+    }
+
+    selectElement(el: HTMLElement | null) {
+        if (el) {
+            if (el != this.selectedEl) {
+                this.selectedEl = el;
+                this.showBox(this.selectedBox, this.selectedEl);
+            }
+        } else {
+            this.selectedBox.style.display = 'none';
+        }
     }
 
     toggleWysiwygEditor(active: boolean) {

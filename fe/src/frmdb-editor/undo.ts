@@ -52,7 +52,7 @@ MutationRecord.oldValue 			String 		The return value depends on the MutationReco
 
 interface MutationBase {
 	type: 'attributes' | 'characterData' | 'childList' | 'move';
-	target: HTMLElement;
+	target: Element;
 }
 interface AttributesMutation extends MutationBase {
 	type: 'attributes';
@@ -68,16 +68,16 @@ interface CharacterDataMutation extends MutationBase {
 }
 interface ChildListMutation extends MutationBase {
 	type: 'childList';
-	removedNodes?: HTMLElement[];
-	addedNodes?: HTMLElement[];
-	nextSibling?: HTMLElement;
+	removedNodes?: Element[];
+	addedNodes?: Element[];
+	nextSibling?: Element | null;
 }
 interface MoveMutation extends MutationBase {
 	type: 'move';
-	oldParent: HTMLElement;
-	oldNextSibling?: HTMLElement;
-	newParent: HTMLElement;
-	newNextSibling?: HTMLElement;
+	oldParent: Element;
+	oldNextSibling?: Element | null;
+	newParent: Element;
+	newNextSibling?: Element | null;
 }
 
 export type Mutation = 
@@ -133,7 +133,7 @@ export const Undo = {
 				}
 			break;					
 			case 'move': {
-				let parent: HTMLElement, sibling: HTMLElement | undefined;
+				let parent: Element, sibling: Element | undefined | null;
 				if (undo == true) {
 					parent = mutation.oldParent;
 					sibling = mutation.oldNextSibling;
