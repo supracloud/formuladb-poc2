@@ -18,8 +18,11 @@
         border: 3px dotted green;
     }
 
-    &#parent-highlight {
+    &#parent-highlight, &#parent-selected {
         border: 2px dotted yellow;
+        .name {
+            background-color: yellow;
+        }
     }
 
     &#selected {
@@ -39,10 +42,20 @@
     }
 
     .name {
+        white-space: nowrap;
+    }
+    > .name {
         position: absolute;
         top: 0;
         transform: translateY(-100%);
         left: 0px;
+    }
+
+    .name > .parent {
+        background-color: yellow;
+        color: black;
+    }
+    .name > .elem {
         background-color: #4285f4;
         color: white;
     }
@@ -53,13 +66,19 @@
         transform: translateY(-100%);
         right: 0px;
         display: flex;
+        flex-wrap: nowrap;
         &.editing { display: none; }
         justify-content: center;
 
-        * {
+        > a:hover {
+            background-color: #2777f8;
+            transform: scale(1.4);
+        }
+
+        > * {
             background-color: #4285f4;
             color: white;
-            font-size: 15px;
+            font-size: 12px;
             padding: 2px;
             text-decoration: none;
             pointer-events: initial;

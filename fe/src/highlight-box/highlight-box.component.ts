@@ -15,6 +15,7 @@ export class HighlightBoxComponent extends HTMLElement {
     parentHighlightBox: HTMLElement;
     grandParentHighlightBox: HTMLElement;
     selectedBox: HTMLElement;
+    parentSelectedBox: HTMLElement;
     selectedEl: HTMLElement | undefined;
     static observedAttributes = ['root-element', 'disabled'];
     wysiwygEditor = new WysiwygEditor();
@@ -40,6 +41,7 @@ export class HighlightBoxComponent extends HTMLElement {
         this.parentHighlightBox = this.shadowRoot!.querySelector('#parent-highlight') as HTMLElement;
         this.grandParentHighlightBox = this.shadowRoot!.querySelector('#grand-parent-highlight') as HTMLElement;
         this.selectedBox = this.shadowRoot!.querySelector('#selected') as HTMLElement;
+        this.parentSelectedBox = this.shadowRoot!.querySelector('#parent-selected') as HTMLElement;
     }
 
     attributeChangedCallback(name: any, oldVal: string, newVal: string) {
@@ -64,9 +66,9 @@ export class HighlightBoxComponent extends HTMLElement {
             this.showBox(this.highlightBox, highlightEl);
             if (highlightEl.parentElement) {
                 this.showBox(this.parentHighlightBox, highlightEl.parentElement);
-                // if (highlightEl.parentElement.parentElement) {
-                //     this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
-                // } else this.grandParentHighlightBox.style.display = 'none';
+                if (highlightEl.parentElement.parentElement) {
+                    this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
+                } else this.grandParentHighlightBox.style.display = 'none';
             } else this.parentHighlightBox.style.display = 'none';
         });
 
@@ -78,6 +80,9 @@ export class HighlightBoxComponent extends HTMLElement {
                 (this.selectedEl == event.target || this.selectedEl.contains(event.target as HTMLElement))) return;
             this.selectedEl = event.target as HTMLElement;
             this.showBox(this.selectedBox, this.selectedEl);
+            if (this.selectedEl.parentElement) {
+                this.showBox(this.parentSelectedBox, this.selectedEl.parentElement);
+            } else this.parentSelectedBox.style.display = 'none';
             this.toggleWysiwygEditor(false);
             emit(this, {type: "FrmdbSelectPageElement", el: this.selectedEl});
         });
@@ -132,8 +137,10 @@ export class HighlightBoxComponent extends HTMLElement {
         let height = highlightEl.clientHeight;
         let width = highlightEl.clientWidth;
 
-        let nameEl = box.querySelector('.name');
-        if (nameEl) nameEl.innerHTML = highlightEl.tagName + '.' + Array.from(highlightEl.classList).join('.');
+        let parentNameEl = box.querySelector('.name > .parent');
+        if (parentNameEl && highlightEl.parentElement) parentNameEl.innerHTML = this.getElName(highlightEl.parentElement) + ' >';
+        let nameEl = box.querySelector('.name > .elem');
+        if (nameEl) nameEl.innerHTML = this.getElName(highlightEl);
 
         if (offset.top <= 20) box.classList.add('is-at-top')
         else box.classList.remove('is-at-top');
@@ -143,6 +150,10 @@ export class HighlightBoxComponent extends HTMLElement {
         box.style.left = (offset.left) + 'px';
         box.style.height = height + 'px';
         box.style.width = width + 'px';
+    }
+
+    getElName(el: HTMLElement) {
+        return el.tagName + '.' + Array.from(el.classList).join('.');
     }
 }
 
