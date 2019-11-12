@@ -7,25 +7,26 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
-import { UserDeleteColumn, FrmdbSelectPageElement } from "@fe/frmdb-user-events";
+import { UserDeleteColumn, FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
-import { normalizeDOM2HTML } from "@core/normalize-html";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import "@fe/highlight-box/highlight-box.component";
 import "@fe/dom-tree/dom-tree.component";
 import "@fe/component-editor/component-editor.component";
 import "@fe/theme-customizer/theme-customizer.component";
+import "@fe/frmdb-editor/add-element.component";
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
 import { ComponentEditorComponent } from "@fe/component-editor/component-editor.component";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
+import { AddElementComponent } from "./add-element.component";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -51,6 +52,7 @@ export class FrmdbEditorDirective {
     dataGrid: DataGridComponentI;
     letPanel: HTMLElement;
     highlightBox: HighlightBoxComponent;
+    addElementCmp: AddElementComponent;
     domTree: DomTreeComponent;
     elementEditor: ComponentEditorComponent;
     themeCustomizer: ThemeCustomizerComponent;
@@ -71,6 +73,7 @@ export class FrmdbEditorDirective {
             this.dataGrid = queryDataGrid(document.body);
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+            this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
             this.domTree = document.body.querySelector('frmdb-dom-tree') as DomTreeComponent;
             this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
     
@@ -335,7 +338,7 @@ export class FrmdbEditorDirective {
                 this.letPanel.style.display = 'none';
                 this.highlightBox.disabled = true;
             } else {
-                document.body.style.setProperty('--frmdb-editor-top-panel-height', "30vh");
+                document.body.style.setProperty('--frmdb-editor-top-panel-height', "28vh");
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "12vw");
                 this.dataGrid.style.display = 'block';                        
                 this.letPanel.style.display = 'block';
@@ -360,11 +363,13 @@ export class FrmdbEditorDirective {
     }
 
     pageElementFlows() {
-
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
             let node = event.detail.el;
             this.highlightDataGridCell(node);
             // this.elementEditor.setEditedEl(node);
+        });
+        onEvent(this.highlightBox, 'FrmdbSelectPageElementAction', '*', (event: {detail: FrmdbSelectPageElementAction}) => {
+            this.addElementCmp.start(this.themeCustomizer.cssFile, event.detail.el, event.detail.action)
         });
     }
 

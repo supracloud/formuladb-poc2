@@ -84,6 +84,7 @@ export class DataBindingsMonitor {
         try {
             if (!parentEl) return;
             let bes = BACKEND_SERVICE();
+            if (null == bes.currentSchema.entities[tableName]) return;
             let data = await bes.getTableData(tableName + '~~');
             updateDOM({
                 $FRMDB: {[tableName]: data.slice(0, limit)},

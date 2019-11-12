@@ -23,13 +23,15 @@ export function getTarget(event: Event): HTMLElement | null {
 }
 
 export function onEvent(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
-    _onEvent(false, el, eventType, selector, fn);
+    _onEvent(false, false, el, eventType, selector, fn);
 }
-export function onEvenDeep(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
-    _onEvent(true, el, eventType, selector, fn);
+export function onEventDeepShadowDOM(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+    _onEvent(false, true, el, eventType, selector, fn);
 }
-
-function _onEvent(deep: boolean, el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+export function onEventChildren(el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
+    _onEvent(true, false, el, eventType, selector, fn);
+}
+function _onEvent(children: boolean, deep: boolean, el: HTMLElement | Document | ShadowRoot, eventType: EventType | EventType[], selector: string | string[], fn: (e) => void) {
     if (!el) return;
     let events = eventType instanceof Array ? eventType : [eventType];
     let selectors = selector instanceof Array ? selector : [selector];
@@ -39,7 +41,7 @@ function _onEvent(deep: boolean, el: HTMLElement | Document | ShadowRoot, eventT
             let target = deep ? getTarget(event) : event.target;
             if (!event || !target) {console.warn("received incorrect event:", event); return};
             for (let sel of selectors) {
-                if (target.matches(sel)) {
+                if (target.matches(sel) || (children && target.matches(sel + ' *'))) {
                     LOG.debug("on", "%o, %o,", ev, event);
                     fn(event);
                     break;

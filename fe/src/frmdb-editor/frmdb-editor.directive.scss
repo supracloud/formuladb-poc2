@@ -1,5 +1,5 @@
 body {
-    --frmdb-editor-top-panel-height: 30vh;
+    --frmdb-editor-top-panel-height: 28vh;
     --frmdb-editor-left-panel-width: 12vw;
 }
 
@@ -66,7 +66,10 @@ $nav-link-padding-x: .2rem !default;
     background-color: $body-bg; // 2
 }
 
-$dom-tree-heigth: 25vh;
+$dom-tree-heigth: 15vh;
+$logo-height: 29px;
+$tables-height: 28px;
+$pages-height: 28px;
 
 frmdb-dom-tree {
     height: $dom-tree-heigth;

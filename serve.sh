@@ -6,7 +6,7 @@ handleErr () {
 }
 trap handleErr ERR
 
-./node_modules/.bin/live-server --wait=500 --port=8081 -V --no-browser \
+./node_modules/.bin/live-server --port=8081 -V --no-browser \
     --mount=/formuladb/:./formuladb/ \
     --mount=/formuladb-themes/:./formuladb-themes/ \
     --mount=/formuladb-static/:./formuladb-static/ \

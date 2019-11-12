@@ -172,15 +172,20 @@ export class ThemeCustomizerComponent extends HTMLElement {
         });
     }
 
+    get cssFile() {
+        if (!this.state.selectedColor) {console.warn("cannot find selected color for the current page"); return null;}
+        if (!this.state.selectedTheme) {console.warn("cannot find selected theme for the current page"); return null;}
+        return `/formuladb-themes/_css/${this.state.selectedTheme}-${this.state.selectedColor.primary.replace(/^#/, '')}-${this.state.selectedColor.secondary.replace(/^#/, '')}.css`;
+    }
+
     updateTheme() {
         if (!this._link) {console.warn("cannot find the theme stylesheet for the current page"); return;}
         if (!this.state.selectedColor) {console.warn("cannot find selected color for the current page"); return;}
         if (!this.state.selectedTheme) {console.warn("cannot find selected theme for the current page"); return;}
         
-        this._link.href = this._link.href.replace(/\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css$/, 
-            `/${this.state.selectedTheme}-${this.state.selectedColor.primary.replace(/^#/, '')}-${this.state.selectedColor.secondary.replace(/^#/, '')}.css`);
+        this._link.href = this.cssFile || this._link.href;
         
-        updateDOM(this.state, this);        
+        updateDOM(this.state, this);
     }
 }
 

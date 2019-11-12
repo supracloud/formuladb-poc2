@@ -86,6 +86,12 @@ export interface FrmdbSelectPageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbSelectPageElementAction {
+    type: 'FrmdbSelectPageElementAction';
+    el: HTMLElement;
+    action: "add-inside" | "add-after";
+}
+
 export interface FrmdbEditWysiwygPageElement {
     type: 'FrmdbEditWysiwygPageElement';
     el: HTMLElement;
@@ -115,6 +121,7 @@ export type FrmdbUserEvent =
     | FrmdbAddPageElement
     | FrmdbRemovePageElement
     | FrmdbSelectPageElement
+    | FrmdbSelectPageElementAction
     | FrmdbEditWysiwygPageElement
     | FrmdbModifyPageElement
 ;

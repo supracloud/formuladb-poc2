@@ -1,7 +1,8 @@
 import * as _ from "lodash";
-import { onEvent, emit } from "@fe/delegated-events";
+import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { WysiwygEditor } from "./wysiwyg-editor";
 import { isElementWithTextContentEditable } from "@fe/i18n-fe";
+import { FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 
 const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;
@@ -81,12 +82,20 @@ export class HighlightBoxComponent extends HTMLElement {
             emit(this, {type: "FrmdbSelectPageElement", el: this.selectedEl});
         });
 
-        onEvent(this.selectedBox, ['click'], '#edit-btn, #edit-btn *', (event) => {
+        onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action="edit"]', (event) => {
             if (this._disabled) return;
             event.preventDefault();
             if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
             this.toggleWysiwygEditor(true);
             emit(this, {type: "FrmdbEditWysiwygPageElement", el: this.selectedEl});
+        });
+
+        onEventChildren(this.selectedBox, ['click'], ['[data-frmdb-action="add-inside"]', '[data-frmdb-action="add-after"]'], (event) => {
+            if (this._disabled) return;
+            event.preventDefault();
+            let el: HTMLElement = event.target.closest('[data-frmdb-action]');
+            if (!el || !this.selectedEl) return;
+            emit(this, {type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action']});
         });
     }
 
