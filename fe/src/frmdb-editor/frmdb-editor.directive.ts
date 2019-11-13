@@ -348,7 +348,7 @@ export class FrmdbEditorDirective {
                 this.highlightBox.disabled = true;
             } else {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "28vh");
-                document.body.style.setProperty('--frmdb-editor-left-panel-width', "12vw");
+                document.body.style.setProperty('--frmdb-editor-left-panel-width', "14vw");
                 this.dataGrid.style.display = 'block';                        
                 this.letPanel.style.display = 'block';
                 this.highlightBox.disabled = false;

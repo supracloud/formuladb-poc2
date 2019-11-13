@@ -5,7 +5,7 @@
 .box {
     position: absolute;
     display: block;
-    border: 1px solid rgb(61, 133, 253);
+    border: 1px dotted rgb(61, 133, 253);
     // background-color: rgba(61, 133, 253, 0.05);
     pointer-events: none;
     z-index: 10;
@@ -15,17 +15,24 @@
     }
 
     &#grand-parent-highlight {
-        border: 3px dotted green;
+        border: 2px dotted green;
+        margin: -4px 0 0 -4px;
+        padding: 4px;
     }
 
-    &#parent-highlight, &#parent-selected {
+    &#parent-highlight {
         border: 2px dotted yellow;
-        .name {
-            background-color: yellow;
-        }
+        margin: -2px 0 0 -2px;
+        padding: 2px;
+    }
+    &#parent-selected {
+        border: 2px solid yellow;
+        margin: -2px 0 0 -2px;
+        padding: 2px;
     }
 
     &#selected {
+        border-style: solid;
         background-color: rgba(61, 131, 253, 0.2);
     }
 
@@ -51,6 +58,10 @@
         left: 0px;
     }
 
+    .name > .grand-parent {
+        background-color: green;
+        color: white;
+    }
     .name > .parent {
         background-color: yellow;
         color: black;
@@ -72,13 +83,13 @@
 
         > a:hover {
             background-color: #2777f8;
-            transform: scale(1.4);
+            transform: scale(1.2);
         }
 
         > * {
             background-color: #4285f4;
             color: white;
-            font-size: 12px;
+            font-size: 14px;
             padding: 2px;
             text-decoration: none;
             pointer-events: initial;
