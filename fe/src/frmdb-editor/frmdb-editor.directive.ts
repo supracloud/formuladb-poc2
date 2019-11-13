@@ -17,12 +17,12 @@ import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import "@fe/highlight-box/highlight-box.component";
 import "@fe/dom-tree/dom-tree.component";
-import "@fe/component-editor/component-editor.component";
 import "@fe/theme-customizer/theme-customizer.component";
 import "@fe/frmdb-editor/add-element.component";
+import "@fe/frmdb-editor/element-editor.component";
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
-import { ComponentEditorComponent } from "@fe/component-editor/component-editor.component";
+import { ElementEditorComponent } from "./element-editor.component";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
@@ -55,7 +55,7 @@ export class FrmdbEditorDirective {
     highlightBox: HighlightBoxComponent;
     addElementCmp: AddElementComponent;
     domTree: DomTreeComponent;
-    elementEditor: ComponentEditorComponent;
+    elementEditor: ElementEditorComponent;
     themeCustomizer: ThemeCustomizerComponent;
 
     get frameDoc(): Document {
@@ -67,7 +67,7 @@ export class FrmdbEditorDirective {
 
         this.iframe = document.body.querySelector('iframe')!;
         this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
-        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ComponentEditorComponent;
+        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
         this.frmdbFe = queryFrmdbFe();
 
         window.addEventListener('load', () => {
@@ -145,7 +145,7 @@ export class FrmdbEditorDirective {
         this.highlightBox.selectElement(el);
         if (el) {
             this.highlightDataGridCell(el);
-            // editor.elementEditor.setEditedEl(node);
+            this.elementEditor.setEditedEl(el);
         }
     }
 

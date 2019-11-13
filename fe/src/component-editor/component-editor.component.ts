@@ -451,7 +451,7 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		key: "value",
 		inputtype: "SectionInput",
 		input: createInput("SectionInput"),
-		tab: "left-panel-tab-data",
+		tab: "left-panel-tab-content",
 		name: '',
 		sort: base_sort++,
 		data: { header: "Value" },

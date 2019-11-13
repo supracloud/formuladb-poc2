@@ -162,7 +162,8 @@ export class NumberInput extends Input {
 	init(data) {
 		this.render(/*html*/`
 			<div>
-				<input name="{%=key%}" type="number" value="{%=value%}" 
+				<input name="{%=key%}" type="number" 
+					{% if (typeof value !== 'undefined') { %} value="{%=value%}" {% } %} 
 					{% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
 					{% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
 					{% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
@@ -554,9 +555,12 @@ export class SectionInput extends Input {
 
 	init(data) {
 		this.render(/*html*/`
-			<label class="header" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
-			<input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
-			<div class="section" data-section="{%=key%}"></div>		
+			<button class="btn btn-link w-100" type="button" data-toggle="collapse" data-target="#{%=header%}" aria-expanded="true" aria-controls="{%=header%}">
+				{%=header%}			
+			</button>
+
+			<div id="{%=header%}" class="section collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+			</div>
 		`, data);
 	}
 }

@@ -62,14 +62,8 @@ export class HighlightBoxComponent extends HTMLElement {
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
             if (this._disabled) return;
             event.preventDefault();
-            let highlightEl: HTMLElement = event.target as HTMLElement;
-            this.showBox(this.highlightBox, highlightEl);
-            if (highlightEl.parentElement) {
-                this.showBox(this.parentHighlightBox, highlightEl.parentElement);
-                if (highlightEl.parentElement.parentElement) {
-                    this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
-                } else this.grandParentHighlightBox.style.display = 'none';
-            } else this.parentHighlightBox.style.display = 'none';
+            this.highlightEl = event.target as HTMLElement;
+            this.highlightElement(this.highlightEl);
         });
 
 
@@ -103,6 +97,24 @@ export class HighlightBoxComponent extends HTMLElement {
             if (el.dataset.frmdbAction === "edit") return;
             emit(this, {type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action']});
         });
+
+        this._rootEl.addEventListener('scroll', (event) => {
+            this.repositionBoxes();
+        });
+        (this._rootEl.ownerDocument || (this._rootEl as Document)).defaultView!.addEventListener('resize', (event) => {
+            this.repositionBoxes();
+        })
+    }
+
+    highlightElement(highlightEl: HTMLElement) {
+        this.showBox(this.highlightBox, highlightEl);
+        if (highlightEl.parentElement) {
+            this.showBox(this.parentHighlightBox, highlightEl.parentElement);
+            if (highlightEl.parentElement.parentElement) {
+                this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
+            } else this.grandParentHighlightBox.style.display = 'none';
+        } else this.parentHighlightBox.style.display = 'none';
+
     }
 
     selectElement(el: HTMLElement | null) {
@@ -133,10 +145,6 @@ export class HighlightBoxComponent extends HTMLElement {
             return;
         }
 
-        let offset = highlightEl.getBoundingClientRect();
-        let height = highlightEl.clientHeight;
-        let width = highlightEl.clientWidth;
-
         let grandParentElName, parentElName, elName = this.getElName(highlightEl);
         if (highlightEl.parentElement && highlightEl.parentElement.parentElement) grandParentElName = this.getElName(highlightEl.parentElement.parentElement) + ' >';
         if (highlightEl.parentElement) parentElName = this.getElName(highlightEl.parentElement) + ' >';
@@ -150,6 +158,15 @@ export class HighlightBoxComponent extends HTMLElement {
         let nameEl = box.querySelector('.name > .elem');
         if (nameEl) nameEl.innerHTML = elName;
 
+        this.positionBox(box, highlightEl);
+    }
+
+    positionBox(box: HTMLElement, highlightEl: HTMLElement) {
+        if (!highlightEl.tagName) return;
+        let offset = highlightEl.getBoundingClientRect();
+        let height = highlightEl.clientHeight;
+        let width = highlightEl.clientWidth;
+
         if (offset.top <= 20) box.classList.add('is-at-top')
         else box.classList.remove('is-at-top');
 
@@ -158,6 +175,24 @@ export class HighlightBoxComponent extends HTMLElement {
         box.style.left = (offset.left) + 'px';
         box.style.height = height + 'px';
         box.style.width = width + 'px';
+
+    }
+
+    repositionBoxes() {
+        if (this.highlightEl) {
+            this.positionBox(this.highlightBox, this.highlightEl);
+            if (this.highlightEl.parentElement) {
+                this.positionBox(this.parentHighlightBox, this.highlightEl.parentElement);
+                if (this.highlightEl.parentElement.parentElement) {
+                    this.positionBox(this.grandParentHighlightBox, this.highlightEl.parentElement.parentElement);
+                }
+            }
+        }
+        if (this.selectedEl) {
+            this.positionBox(this.selectedBox, this.selectedEl);
+            if (this.selectedEl.parentElement) this.positionBox(this.parentSelectedBox, this.selectedEl.parentElement);
+        }
+
     }
 
     getElName(el: HTMLElement) {
