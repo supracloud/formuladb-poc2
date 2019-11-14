@@ -1,6 +1,7 @@
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { onEvent } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
+import { Undo } from "./undo";
 
 export class AddElementComponent extends HTMLElement {
     iframe: HTMLIFrameElement;
@@ -50,15 +51,23 @@ export class AddElementComponent extends HTMLElement {
             if (this.action === 'add-inside') {
                 let newEl = targetDoc.importNode(event.detail.el, true);
                 this.selectedEl.appendChild(newEl);
+                Undo.addMutation({
+                    type: 'childList',
+                    target: this.selectedEl,
+                    addedNodes: [newEl],
+                    nextSibling: newEl.nextElementSibling
+                });
             } else if (this.action === 'add-after') {
                 let newEl = targetDoc.importNode(event.detail.el, true);
                 let p = this.selectedEl.parentElement;
                 if (p) {
-                    if (this.selectedEl.nextSibling) {
-                        p.insertBefore(newEl, this.selectedEl.nextSibling);
-                    } else {
-                        p.appendChild(newEl);
-                    }
+                    p.insertBefore(newEl, this.selectedEl.nextSibling);
+                    Undo.addMutation({
+                        type: 'childList',
+                        target: p,
+                        addedNodes: [newEl],
+                        nextSibling: newEl.nextElementSibling
+                    });
                 }
             }
 
