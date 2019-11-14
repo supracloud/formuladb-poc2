@@ -4,7 +4,7 @@ import { AppIntroVideoScenario } from "./app-intro-video-scenario";
 
 export function stepListOfPages(scenario: AppIntroVideoScenario) {
     scenario.SCEN.step(`For the ${scenario.data.app._id} app you will find a few predefined Pages like ${scenario.mainPages().join(',')}`, async () => {
-        let el = await scenario.API.clickByCssInMain('[data-toggle="dropdown"][data-frmdb-value="$frmdb.selectedPageName"]');
+        let el = await scenario.API.clickByCssInMain('.dropdown-toggle[data-frmdb-value="$frmdb.selectedPageName"]');
         
         for (let page of scenario.mainPages()) {
             console.log("    [E2E] checking page " + page);

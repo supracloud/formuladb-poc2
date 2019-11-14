@@ -6,7 +6,7 @@ export function stepListOfTables(scenario: AppIntroVideoScenario) {
     scenario.SCEN.step(`For the ${scenario.data.app._id} app you will find a few predefined Tables like ${scenario.mainTables()}`, async () => {
         for (let entity of scenario.mainEntities()) {
             console.log("    [E2E] checking table " + entity._id);
-            let el = await scenario.API.clickByCssInMain('[data-toggle="dropdown"][data-frmdb-value="$frmdb.selectedTableId"]');
+            let el = await scenario.API.clickByCssInMain('.dropdown-toggle[data-frmdb-value="$frmdb.selectedTableId"]');
             
             el = await scenario.API.clickByCssInMain('[data-frmdb-value="$frmdb.tables[]._id"]', entity._id);
             
