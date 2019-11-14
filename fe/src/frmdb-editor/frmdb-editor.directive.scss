@@ -54,9 +54,10 @@ $input-btn-padding-x:         .1rem;
 $grid-gutter-width:           5px;
 
 @import "../../../formuladb-themes/node_modules/bootstrap/scss/bootstrap";
-// @import "../../../formuladb-themes/node_modules/font-awesome/scss/font-awesome.scss";
 @import "../../../formuladb-themes/frmdb/dropdown";
 @import "../../../formuladb-themes/frmdb/card";
+
+// @import "../../../formuladb-themes/node_modules/font-awesome/scss/font-awesome.scss";
 // @import "../../../node_modules/line-awesome/css/line-awesome.css";
 
 .top-panel, .left-panel {

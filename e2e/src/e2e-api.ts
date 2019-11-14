@@ -100,10 +100,11 @@ export class E2EApi {
             let text: string;
             if (selector.indexOf('textarea') >= 0 || selector.indexOf('input') >= 0) {
                 text = await el.getAttribute('value');
+                expect(text).toContain(content);
             } else {
                 text = await el.getAttribute('innerText');
+                expect(text.toLowerCase()).toContain(content.toLowerCase());
             }
-            expect(text).toContain(content);
         }
         return el;
     }
@@ -134,7 +135,7 @@ export class E2EApi {
 
     public getDataForTable(appData: DataObj[], tableName: string): DataObj[] {
         const ret: any[] = [];
-        for (const obj of appData.slice(1, 2)) {
+        for (const obj of appData.slice(2, 3)) {
             if (obj._id.indexOf(`${tableName}~~`) === 0) { ret.push(obj); }
         }
         return ret;

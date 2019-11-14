@@ -49,11 +49,11 @@ export class AppIntroVideoScenario {
 
             stepListOfTables(this);
             stepListOfPages(this);
-            // stepChangeLook(this);
-            // stepChangeLanguage(this);
-            // stepDataBindingHighlight(this);
-            // stepCardsDataBinding(this);
-            // stepFormulaEditorBasic(this);
+            stepChangeLook(this);
+            stepChangeLanguage(this);
+            stepDataBindingHighlight(this);
+            stepCardsDataBinding(this);
+            stepFormulaEditorBasic(this);
 
             this.SCEN.step(`Please follow our website for news about the official launch and more details like how to create Tables and Pages, perform data rollups with SUMIF/COUNTIF, define validations, import data from Spreadsheets and other systems, and much much more.`, async () => {
                 await this.API.finish();
