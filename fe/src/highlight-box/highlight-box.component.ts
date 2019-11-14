@@ -145,16 +145,20 @@ export class HighlightBoxComponent extends HTMLElement {
             return;
         }
 
-        let grandParentElName, parentElName, elName = this.getElName(highlightEl);
+        let grandParentElName = '', parentElName = '', elName = this.getElName(highlightEl);
         if (highlightEl.parentElement && highlightEl.parentElement.parentElement) grandParentElName = this.getElName(highlightEl.parentElement.parentElement) + ' >';
         if (highlightEl.parentElement) parentElName = this.getElName(highlightEl.parentElement) + ' >';
 
         let grandParentNameEl = box.querySelector('.name > .grand-parent');
-        if (grandParentNameEl && grandParentElName && (grandParentElName + parentElName + elName).length < 55) {
-            grandParentNameEl.innerHTML = grandParentElName;        
+        if (grandParentNameEl) {
+            if (grandParentElName && (grandParentElName + parentElName + elName).length < 55) grandParentNameEl.innerHTML = grandParentElName;        
+            else grandParentNameEl.innerHTML = '';
         }
         let parentNameEl = box.querySelector('.name > .parent');
-        if (parentNameEl && parentElName) parentNameEl.innerHTML = parentElName;
+        if (parentNameEl) {
+            if (parentElName) parentNameEl.innerHTML = parentElName;
+            else parentNameEl.innerHTML = '';
+        }
         let nameEl = box.querySelector('.name > .elem');
         if (nameEl) nameEl.innerHTML = elName;
 
