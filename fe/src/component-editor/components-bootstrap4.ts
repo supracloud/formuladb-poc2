@@ -17,7 +17,7 @@ https://github.com/givanz/Vvvebjs
 */
 
 import { createInput, Input } from "./inputs";
-import { ComponentEditorComponent, FrmdbDataBindingProperties, style_section, DefaultSection, incrementSort } from "@fe/component-editor/component-editor.component";
+import { FrmdbDataBindingProperties, style_section, incrementSort, ElementEditorComponent } from "@fe/component-editor/component-editor.component";
 
 declare var $: null, jQuery: null;
 
@@ -67,7 +67,7 @@ function changeNodeName(node: HTMLElement, newNodeName: string) {
     }
     
     newNode.innerHTML = node.innerHTML;
-    node.parentElement!.replaceChild(node, newNode);
+    node.parentElement!.replaceChild(newNode, node);
     
     return newNode;
 }
@@ -75,7 +75,7 @@ function changeNodeName(node: HTMLElement, newNodeName: string) {
 // ComponentsGroup['Basic Components'] =
 // ["html/container", "html/gridrow", "html/button", "html/buttongroup", "html/buttontoolbar", "html/heading", "html/image", "html/jumbotron", "html/alert", "html/card", "html/listgroup", "html/hr", "html/taglabel", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination", "html/form", "html/textinput", "html/textareainput", "html/selectinput", "html/fileinput", "html/checkbox", "html/radiobutton", "html/table", "html/paragraph", "html/link", "html/video", "html/button"];
 
-export function addComponents(Components: ComponentEditorComponent, baseUrl: string) {
+export function addComponents(Components: ElementEditorComponent, baseUrl: string) {
     
     Components.add("_base", {
         name: "Element",
@@ -106,7 +106,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
             {
                 key: "display_header",
                 inputtype: "SectionInput",
-                input: createInput("SectionInput"),
                 name: '',
                 sort: incrementSort(),
                 tab: style_section,
@@ -120,7 +119,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 col: 6,
                 inline: true,
                 inputtype: "SelectInput",
-                input: createInput("SelectInput"),
                 validValues: ["block", "inline", "inline-block", "none"],
                 data: {
                     options: [{
@@ -146,7 +144,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 col: 6,
                 inline: true,
                 inputtype: "SelectInput",
-                input: createInput("SelectInput"),
                 validValues: ["static", "fixed", "relative", "absolute"],
                 data: {
                     options: [{
@@ -173,7 +170,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 parent: "",
                 inputtype: "CssUnitInput",
-                input: createInput("CssUnitInput"),
             }, {
                 name: "Left",
                 key: "left",
@@ -184,7 +180,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 parent: "",
                 inputtype: "CssUnitInput",
-                input: createInput("CssUnitInput"),
             }, {
                 name: "Bottom",
                 key: "bottom",
@@ -195,7 +190,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 parent: "",
                 inputtype: "CssUnitInput",
-                input: createInput("CssUnitInput"),
             }, {
                 name: "Right",
                 key: "right",
@@ -206,7 +200,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 parent: "",
                 inputtype: "CssUnitInput",
-                input: createInput("CssUnitInput"),
             }, {
                 name: "Float",
                 key: "float",
@@ -216,7 +209,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 col: 12,
                 inline: true,
                 inputtype: "RadioButtonInput",
-                input: createInput("RadioButtonInput"),
                 data: {
                     extraclass: "btn-group-sm btn-group-fullwidth",
                     options: [{
@@ -249,7 +241,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 parent: "",
                 inputtype: "RangeInput",
-                input: createInput("RangeInput"),
                 data: {
                     max: 1, //max zoom level
                     min: 0,
@@ -264,7 +255,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 htmlAttr: "style",
                 inputtype: "ColorInput",
-                input: createInput("ColorInput"),
             }, {
                 name: "Text Color",
                 key: "color",
@@ -274,7 +264,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 inline: true,
                 htmlAttr: "style",
                 inputtype: "ColorInput",
-                input: createInput("ColorInput"),
             }]
         });
         
@@ -285,7 +274,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     name: '',
                     key: "typography_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     sort: incrementSort(),
                     tab: style_section,
                     data: { header: "Typography" },
@@ -298,7 +286,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -353,7 +340,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -396,7 +382,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 12,
                     inline: true,
                     inputtype: "RadioButtonInput",
-                    input: createInput("RadioButtonInput"),
                     data: {
                         extraclass: "btn-group-sm btn-group-fullwidth",
                         options: [{
@@ -440,7 +425,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Letter spacing",
                     key: "letter-spacing",
@@ -450,7 +434,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Text decoration",
                     key: "text-decoration-line",
@@ -460,7 +443,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 12,
                     inline: true,
                     inputtype: "RadioButtonInput",
-                    input: createInput("RadioButtonInput"),
                     data: {
                         extraclass: "btn-group-sm btn-group-fullwidth",
                         options: [{
@@ -504,7 +486,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     inline: true,
                     htmlAttr: "style",
                     inputtype: "ColorInput",
-                    input: createInput("ColorInput"),
                 }, {
                     name: "Decoration style",
                     key: "text-decoration-style",
@@ -514,7 +495,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -544,7 +524,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 properties: [{
                     key: "size_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     name: '',
                     sort: incrementSort(),
                     tab: style_section,
@@ -558,7 +537,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Height",
                     key: "height",
@@ -568,7 +546,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Min Width",
                     key: "min-width",
@@ -578,7 +555,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Min Height",
                     key: "min-height",
@@ -588,7 +564,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Max Width",
                     key: "max-width",
@@ -598,7 +573,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Max Height",
                     key: "max-height",
@@ -608,7 +582,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }]
             });
             
@@ -617,7 +590,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 properties: [{
                     key: "margins_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     name: '',
                     sort: incrementSort(),
                     tab: style_section,
@@ -631,7 +603,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Right",
                     key: "margin-right",
@@ -641,7 +612,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Bottom",
                     key: "margin-bottom",
@@ -651,7 +621,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Left",
                     key: "margin-left",
@@ -661,7 +630,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }]
             });
             
@@ -670,7 +638,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 properties: [{
                     key: "paddings_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     name: '',
                     sort: incrementSort(),
                     tab: style_section,
@@ -684,7 +651,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Right",
                     key: "padding-right",
@@ -694,7 +660,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Bottom",
                     key: "padding-bottom",
@@ -704,7 +669,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Left",
                     key: "padding-left",
@@ -714,7 +678,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }]
             });
             
@@ -724,7 +687,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 properties: [{
                     key: "border_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     name: '',
                     sort: incrementSort(),
                     tab: style_section,
@@ -738,7 +700,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 12,
                     inline: true,
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -763,7 +724,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Color",
                     key: "border-color",
@@ -773,7 +733,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     inline: true,
                     htmlAttr: "style",
                     inputtype: "ColorInput",
-                    input: createInput("ColorInput"),
                 }]
             });
             
@@ -784,7 +743,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 properties: [{
                     key: "border_radius_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     name: '',
                     sort: incrementSort(),
                     tab: style_section,
@@ -798,7 +756,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Top Right",
                     key: "border-top-right-radius",
@@ -808,7 +765,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Bottom Left",
                     key: "border-bottom-left-radius",
@@ -818,7 +774,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }, {
                     name: "Bottom Right",
                     key: "border-bottom-right-radius",
@@ -828,7 +783,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "CssUnitInput",
-                    input: createInput("CssUnitInput"),
                 }]
             });
             
@@ -837,7 +791,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                 properties: [{
                     key: "background_image_header",
                     inputtype: "SectionInput",
-                    input: createInput("SectionInput"),
                     name: '',
                     sort: incrementSort(),
                     tab: style_section,
@@ -849,7 +802,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     tab: style_section,
                     //htmlAttr: "style",
                     inputtype: "ImageInput",
-                    input: createInput("ImageInput"),
                     
                     init: function (node) {
                         var image = (node.style.backgroundImage||'').replace(/^url\(['"]?(.+)['"]?\)/, '$1');
@@ -870,7 +822,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     tab: style_section,
                     htmlAttr: "style",
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -893,7 +844,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     tab: style_section,
                     htmlAttr: "style",
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -915,7 +865,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -940,7 +889,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                     col: 6,
                     inline: true,
                     inputtype: "SelectInput",
-                    input: createInput("SelectInput"),
                     data: {
                         options: [{
                             value: "",
@@ -970,7 +918,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                         key: "type",
                         htmlAttr: "class",
                         inputtype: "SelectInput",
-                        input: createInput("SelectInput"),
                         validValues: ["container", "container-fluid"],
                         data: {
                             options: [{
@@ -988,7 +935,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                         htmlAttr: "class",
                         validValues: bgcolorClasses,
                         inputtype: "SelectInput",
-                        input: createInput("SelectInput"),
                         data: {
                             options: bgcolorSelectOptions
                         }
@@ -998,14 +944,12 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                         key: "background-color",
                         htmlAttr: "style",
                         inputtype: "ColorInput",
-                        input: createInput("ColorInput"),
                     },
                     {
                         name: "Text Color",
                         key: "color",
                         htmlAttr: "style",
                         inputtype: "ColorInput",
-                        input: createInput("ColorInput"),
                     }],
                 });
                 
@@ -1020,7 +964,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             name: "Size",
                             key: "size",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             
                             onChange: function (node, value) {
                                 
@@ -1069,7 +1012,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "href",
                             htmlAttr: "href",
                             inputtype: "LinkInput",
-                            input: createInput("LinkInput"),
                             inline: true,
                             col: 12
                         }, {
@@ -1095,7 +1037,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "src",
                             htmlAttr: "src",
                             inputtype: "ImageInput",
-                            input: createInput("ImageInput"),
                         }, {
                             name: "Width",
                             key: "width",
@@ -1141,13 +1082,11 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "href",
                             htmlAttr: "href",
                             inputtype: "LinkInput",
-                            input: createInput("LinkInput"),
                         }, {
                             name: "Type",
                             key: "type",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["btn-default", "btn-primary", "btn-info", "btn-success", "btn-warning", "btn-info", "btn-light", "btn-dark", "btn-outline-primary", "btn-outline-info", "btn-outline-success", "btn-outline-warning", "btn-outline-info", "btn-outline-light", "btn-outline-dark", "btn-link"],
                             data: {
                                 options: [{
@@ -1205,7 +1144,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "size",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["btn-lg", "btn-sm"],
                             data: {
                                 options: [{
@@ -1229,7 +1167,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "disabled",
                             htmlAttr: "class",
                             inputtype: "ToggleInput",
-                            input: createInput("ToggleInput"),
                             validValues: ["disabled"],
                             data: {
                                 on: "disabled",
@@ -1247,7 +1184,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "size",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["btn-group-lg", "btn-group-sm"],
                             data: {
                                 options: [{
@@ -1266,7 +1202,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "alignment",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["btn-group", "btn-group-vertical"],
                             data: {
                                 options: [{
@@ -1319,7 +1254,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["alert-primary", "alert-secondary", "alert-success", "alert-danger", "alert-warning", "alert-info", "alert-light", "alert-dark"],
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "alert-primary",
@@ -1360,7 +1294,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["badge-primary", "badge-secondary", "badge-success", "badge-danger", "badge-warning", "badge-info", "badge-light", "badge-dark"],
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "",
@@ -1437,7 +1370,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["", "active"],
                             inputtype: "ToggleInput",
-                            input: createInput("ToggleInput"),
                             data: {
                                 on: "active",
                                 off: ""
@@ -1463,7 +1395,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "size",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["btn-lg", "btn-sm"],
                             data: {
                                 options: [{
@@ -1482,7 +1413,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "alignment",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["justify-content-center", "justify-content-end"],
                             data: {
                                 options: [{
@@ -1514,7 +1444,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["disabled"],
                             inputtype: "ToggleInput",
-                            input: createInput("ToggleInput"),
                             data: {
                                 on: "disabled",
                                 off: ""
@@ -1532,7 +1461,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: bgcolorClasses,
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: bgcolorSelectOptions
                             }
@@ -1544,7 +1472,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["", "w-25", "w-50", "w-75", "w-100"],
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "",
@@ -1571,7 +1498,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: bgcolorClasses,
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: bgcolorSelectOptions
                             }
@@ -1582,7 +1508,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["", "progress-bar-striped"],
                             inputtype: "ToggleInput",
-                            input: createInput("ToggleInput"),
                             data: {
                                 on: "progress-bar-striped",
                                 off: "",
@@ -1594,7 +1519,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["", "progress-bar-animated"],
                             inputtype: "ToggleInput",
-                            input: createInput("ToggleInput"),
                             data: {
                                 on: "progress-bar-animated",
                                 off: "",
@@ -1650,7 +1574,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["navbar-light", "navbar-dark"],
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "",
@@ -1669,7 +1592,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: bgcolorClasses,
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: bgcolorSelectOptions
                             }
@@ -1679,7 +1601,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["fixed-top", "fixed-bottom", "sticky-top"],
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "",
@@ -1709,7 +1630,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             htmlAttr: "class",
                             validValues: ["", "form-search", "form-inline", "form-horizontal"],
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "",
@@ -1777,7 +1697,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                     //index: i - 1,
                                     optionNode: opt,
                                     inputtype: "TextValueInput",
-                                    input: createInput("TextValueInput"),
                                     data: data,
                                     onChange: function (node, value, input) {
                                         
@@ -1814,17 +1733,14 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             name: "Option",
                             key: "option1",
                             inputtype: "TextValueInput",
-                            input: createInput("TextValueInput"),
                         }, {
                             name: "Option",
                             key: "option2",
                             inputtype: "TextValueInput",
-                            input: createInput("TextValueInput"),
                         }, {
                             name: "",
                             key: "addChild",
                             inputtype: "ButtonInput",
-                            input: createInput("ButtonInput"),
                             data: { text: "Add option", icon: "la-plus" },
                             onChange: function (node) {
                                 let opt = document.createElement('option');
@@ -1918,7 +1834,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-primary", "table-secondary", "table-success", "table-danger", "table-warning", "table-info", "table-light", "table-dark", "table-white"],
                                 inputtype: "SelectInput",
-                                input: createInput("SelectInput"),
                                 data: {
                                     options: [{
                                         value: "Default",
@@ -1959,7 +1874,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-responsive"],
                                 inputtype: "ToggleInput",
-                                input: createInput("ToggleInput"),
                                 data: {
                                     on: "table-responsive",
                                     off: ""
@@ -1971,7 +1885,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-sm"],
                                 inputtype: "ToggleInput",
-                                input: createInput("ToggleInput"),
                                 data: {
                                     on: "table-sm",
                                     off: ""
@@ -1983,7 +1896,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-hover"],
                                 inputtype: "ToggleInput",
-                                input: createInput("ToggleInput"),
                                 data: {
                                     on: "table-hover",
                                     off: ""
@@ -1995,7 +1907,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-bordered"],
                                 inputtype: "ToggleInput",
-                                input: createInput("ToggleInput"),
                                 data: {
                                     on: "table-bordered",
                                     off: ""
@@ -2007,7 +1918,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-striped"],
                                 inputtype: "ToggleInput",
-                                input: createInput("ToggleInput"),
                                 data: {
                                     on: "table-striped",
                                     off: ""
@@ -2019,7 +1929,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 validValues: ["table-inverse"],
                                 inputtype: "ToggleInput",
-                                input: createInput("ToggleInput"),
                                 data: {
                                     on: "table-inverse",
                                     off: ""
@@ -2031,7 +1940,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 htmlAttr: "class",
                                 child: "thead",
                                 inputtype: "SelectInput",
-                                input: createInput("SelectInput"),
                                 validValues: ["", "thead-inverse", "thead-default"],
                                 data: {
                                     options: [{
@@ -2056,7 +1964,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 key: "type",
                                 htmlAttr: "class",
                                 inputtype: "SelectInput",
-                                input: createInput("SelectInput"),
                                 validValues: ["", "success", "danger", "warning", "active"],
                                 data: {
                                     options: [{
@@ -2097,7 +2004,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 key: "type",
                                 htmlAttr: "class",
                                 inputtype: "SelectInput",
-                                input: createInput("SelectInput"),
                                 validValues: ["", "success", "danger", "warning", "info"],
                                 data: {
                                     options: [{
@@ -2134,7 +2040,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 name: "Column",
                                 key: "column",
                                 inputtype: "GridInput",
-                                input: createInput("GridInput"),
                                 data: { hide_remove: true },
                                 
                                 beforeInit: function (node) {
@@ -2197,7 +2102,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                     col: 12,
                                     inline: true,
                                     inputtype: "GridInput",
-                                    input: createInput("GridInput"),
                                     data: data,
                                     onChange: function (node: HTMLElement, value, input: Input) {
                                         
@@ -2243,19 +2147,16 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             name: "Column",
                             key: "column1",
                             inputtype: "GridInput",
-                            input: createInput("GridInput"),
                         }, {
                             name: "Column",
                             key: "column1",
                             inline: true,
                             col: 12,
                             inputtype: "GridInput",
-                            input: createInput("GridInput"),
                         }, {
                             name: "",
                             key: "addChild",
                             inputtype: "ButtonInput",
-                            input: createInput("ButtonInput"),
                             data: { text: "Add column", icon: "la la-plus" },
                             onChange: function (node) {
                                 let div = document.createElement('div');
@@ -2281,7 +2182,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "text-align",
                             htmlAttr: "class",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             validValues: ["", "text-left", "text-center", "text-right"],
                             data: {
                                 extraclass: "btn-group-sm btn-group-fullwidth",
@@ -2326,7 +2226,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "src",
                             htmlAttr: "src",
                             inputtype: "LinkInput",
-                            input: createInput("LinkInput"),
                         }, {
                             name: "Width",
                             key: "width",
@@ -2342,31 +2241,26 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "muted",
                             htmlAttr: "muted",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }, {
                             name: "Loop",
                             key: "loop",
                             htmlAttr: "loop",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }, {
                             name: "Autoplay",
                             key: "autoplay",
                             htmlAttr: "autoplay",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }, {
                             name: "Plays inline",
                             key: "playsinline",
                             htmlAttr: "playsinline",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }, {
                             name: "Controls",
                             key: "controls",
                             htmlAttr: "controls",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }]
                     });
                     
@@ -2391,7 +2285,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "type",
                             htmlAttr: "type",
                             inputtype: "SelectInput",
-                            input: createInput("SelectInput"),
                             data: {
                                 options: [{
                                     value: "button",
@@ -2409,13 +2302,11 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                             key: "autofocus",
                             htmlAttr: "autofocus",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }, {
                             name: "Disabled",
                             key: "disabled",
                             htmlAttr: "disabled",
                             inputtype: "CheckboxInput",
-                            input: createInput("CheckboxInput"),
                         }]
                     });
                     
@@ -2429,7 +2320,6 @@ export function addComponents(Components: ComponentEditorComponent, baseUrl: str
                                 col: 6,
                                 inline: true,
                                 inputtype: "SelectInput",
-                                input: createInput("SelectInput"),
                                 data: {
                                     options: [{
                                         value: "",

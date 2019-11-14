@@ -29,15 +29,15 @@ export abstract class Input extends HTMLElement {
 	init(data): void {
 		this.render(this.inputTagName, data);
 		onEvent(this, 'change', 'input,textarea,select', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: (event.target as any).value });
 		});
 		onEvent(this, 'click', 'button', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: (event.target as any).value });
 		});
 	}
 
 	setValue(value) {
-		elvis((this.querySelector('input,select,textarea') as HTMLInputElement 
+		elvis((this.querySelector('input,select,textarea') as HTMLInputElement
 			| HTMLSelectElement | HTMLTextAreaElement)).value = value;
 	}
 
@@ -48,10 +48,11 @@ export abstract class Input extends HTMLElement {
 };
 
 export class TextInput extends Input {
-    static elemTagName = "frmdb-text-input";
-    inputTagName = "frmdb-text-input";
+	static elemTagName = "frmdb-text-input";
+	inputTagName = "frmdb-text-input";
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
 				<input name="{%=key%}" type="text" 
@@ -62,39 +63,41 @@ export class TextInput extends Input {
 		`, data);
 
 		onEvent(this.querySelector('input')!, 'blur', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
 		});
 	}
 }
 
 
 export class TextareaInput extends Input {
-    static elemTagName = "frmdb-textarea-input";
-    inputTagName = "frmdb-textarea-input";
+	static elemTagName = "frmdb-textarea-input";
+	inputTagName = "frmdb-textarea-input";
 
 	setValue(value) {
 		this.querySelector('textarea')!.value = value;
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
 				<textarea name="{%=key%}" rows="3" class="form-control"/>
 			</div>
 		`, data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
 		});
 	}
 }
 
 
 export class CheckboxInput extends Input {
-    static elemTagName = "frmdb-checkbox-input";
-    inputTagName = "frmdb-checkbox-input";
+	static elemTagName = "frmdb-checkbox-input";
+	inputTagName = "frmdb-checkbox-input";
 	checked: boolean;
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div class="custom-control custom-checkbox">
 				<input name="{%=key%}" class="custom-control-input" type="checkbox" id="{%=key%}_check">
@@ -102,22 +105,23 @@ export class CheckboxInput extends Input {
 			</div>
 		`, data);
 		onEvent(this.querySelector('input')!, 'change', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.checked});
+			emit(this, { type: "FrmdbModifyPageElement", value: this.checked });
 		});
 	}
 }
 
 export class SelectInput extends Input {
-    static elemTagName = "frmdb-select-input";
-    inputTagName = "frmdb-select-input";
+	static elemTagName = "frmdb-select-input";
+	inputTagName = "frmdb-select-input";
 
 	setValue(value) {
 		this.querySelector('select')!.value = value;
 	}
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
-				<select class="form-control custom-select">
+				<select class="form-control ">
 					{% for ( var i = 0; i < options.length; i++ ) { %}
 					<option value="{%=options[i].value%}">{%=options[i].text%}</option>
 					{% } %}
@@ -128,59 +132,60 @@ export class SelectInput extends Input {
 }
 
 export class LinkInput extends TextInput {
-    static elemTagName = "frmdb-link-input";
-    inputTagName = "frmdb-link-input";
+	static elemTagName = "frmdb-link-input";
+	inputTagName = "frmdb-link-input";
 
 	init(data) {
 		super.init(data);
+		super.init(data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
 		});
 	}
 }
 
 export class RangeInput extends Input {
-    static elemTagName = "frmdb-range-input";
-    inputTagName = "frmdb-range-input";
+	static elemTagName = "frmdb-range-input";
+	inputTagName = "frmdb-range-input";
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
 				<input name="{%=key%}" type="range" min="{%=min%}" max="{%=max%}" step="{%=step%}" class="form-control"/>
 			</div>
 		`, data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
 		});
 	}
 }
 
 export class NumberInput extends Input {
-    static elemTagName = "frmdb-number-input";
-    inputTagName = "frmdb-number-input";
+	static elemTagName = "frmdb-number-input";
+	inputTagName = "frmdb-number-input";
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
-			<div>
-				<input name="{%=key%}" type="number" 
-					{% if (typeof value !== 'undefined') { %} value="{%=value%}" {% } %} 
-					{% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
-					{% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
-					{% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
-					{% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
-					{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
-				class="form-control"/>
-			</div>
+			<input name="{%=key%}" type="number" 
+				{% if (typeof value !== 'undefined') { %} value="{%=value%}" {% } %} 
+				{% if (typeof min !== 'undefined' && min != false) { %}min="{%=min%}"{% } %} 
+				{% if (typeof max !== 'undefined' && max != false) { %}max="{%=max%}"{% } %} 
+				{% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
+				{% if (typeof disabled !== 'undefined' && disabled) { %}disabled{% } %} 
+				{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
+			class="form-control"/>
 		`, data);
 		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value});
+			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
 		});
 	}
 }
 
 export class CssUnitInput extends Input {
-    static elemTagName = "frmdb-css-unit-input";
-    inputTagName = "frmdb-css-unit-input";
+	static elemTagName = "frmdb-css-unit-input";
+	inputTagName = "frmdb-css-unit-input";
 
 	name: string;
 	nb: number = 0;
@@ -198,6 +203,7 @@ export class CssUnitInput extends Input {
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div class="input-group" id="cssunit-{%=key%}">
 				<input name="number" type="number"  {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %} 
@@ -206,7 +212,7 @@ export class CssUnitInput extends Input {
 					{% if (typeof step !== 'undefined' && step != false) { %}step="{%=step%}"{% } %} 
 				class="form-control"/>
 				<div class="input-group-append">
-				<select class="form-control custom-select small-arrow" name="unit">
+				<select class="form-control  small-arrow" name="unit">
 					<option value="em">em</option>
 					<option value="px">px</option>
 					<option value="%">%</option>
@@ -216,8 +222,8 @@ export class CssUnitInput extends Input {
 				</div>
 			</div>
 		`, data);
-		
-		onEvent(this, ['change','keyup',/*'mouseup'*/], 'select, input', (event: Event) => {
+
+		onEvent(this, ['change', 'keyup',/*'mouseup'*/], 'select, input', (event: Event) => {
 			let el: HTMLInputElement | HTMLSelectElement = event.target! as HTMLInputElement | HTMLSelectElement;
 			let input = this;
 			if (el.value != "") input[el.name] = el.value;// this.name = unit or number	
@@ -239,8 +245,8 @@ export class CssUnitInput extends Input {
 }
 
 export class ColorInput extends Input {
-    static elemTagName = "frmdb-color-input";
-    inputTagName = "frmdb-color-input";
+	static elemTagName = "frmdb-color-input";
+	inputTagName = "frmdb-color-input";
 
 	//html5 color input only supports setting values as hex colors even if the picker returns only rgb
 	rgb2hex(rgb) {
@@ -260,6 +266,7 @@ export class ColorInput extends Input {
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
 				<input name="{%=key%}" type="color" {% if (typeof value !== 'undefined' && value != false) { %} value="{%=value%}" {% } %}  pattern="#[a-f0-9]{6}" class="form-control"/>
@@ -269,8 +276,8 @@ export class ColorInput extends Input {
 }
 
 export class ImageInput extends Input {
-    static elemTagName = "frmdb-image-input";
-    inputTagName = "frmdb-image-input";
+	static elemTagName = "frmdb-image-input";
+	inputTagName = "frmdb-image-input";
 
 	setValue(value) {
 
@@ -281,6 +288,7 @@ export class ImageInput extends Input {
 	}
 
 	init(data) {
+		super.init(data);
 		return this.render(/*html*/`
 			<div>
 				<input name="{%=key%}" type="text" class="form-control"/>
@@ -291,13 +299,13 @@ export class ImageInput extends Input {
 }
 
 export class FileUploadInput extends TextInput {
-    static elemTagName = "frmdb-file-upload-input";
-    inputTagName = "frmdb-file-upload-input";
+	static elemTagName = "frmdb-file-upload-input";
+	inputTagName = "frmdb-file-upload-input";
 }
 
 export class RadioInput extends Input {
-    static elemTagName = "frmdb-radio-input";
-    inputTagName = "frmdb-radio-input";
+	static elemTagName = "frmdb-radio-input";
+	inputTagName = "frmdb-radio-input";
 
 	setValue(value) {
 		this.querySelectorAll('input').forEach(i => i.removeAttribute('checked'));
@@ -311,6 +319,7 @@ export class RadioInput extends Input {
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
 
@@ -329,14 +338,14 @@ export class RadioInput extends Input {
 }
 
 export class RadioButtonInput extends RadioInput {
-    static elemTagName = "frmdb-radio-button-input";
-    inputTagName = "frmdb-radio-button-input";
+	static elemTagName = "frmdb-radio-button-input";
+	inputTagName = "frmdb-radio-button-input";
 
 	setValue(value) {
 		this.querySelector('input')!.removeAttribute('checked');
 		this.querySelector('.btn')!.classList.remove('active');
 		if (value && value != "") {
-			let i = this.querySelector("input[value=" + value + "]")as HTMLInputElement;
+			let i = this.querySelector("input[value=" + value + "]") as HTMLInputElement;
 			i.setAttribute("checked", "true");
 			i.checked = true;
 			// i.parentElement.button("toggle");
@@ -344,6 +353,7 @@ export class RadioButtonInput extends RadioInput {
 	}
 
 	init(data) {
+		super.init(data);
 		return this.render(/*html*/`
 			<div class="btn-group btn-group-toggle  {%if (extraclass) { %}{%=extraclass%}{% } %} clearfix" data-toggle="buttons">
 
@@ -363,11 +373,12 @@ export class RadioButtonInput extends RadioInput {
 }
 
 export class ToggleInput extends TextInput {
-    static elemTagName = "frmdb-toggle-input";
-    inputTagName = "frmdb-toggle-input";
+	static elemTagName = "frmdb-toggle-input";
+	inputTagName = "frmdb-toggle-input";
 	checked: boolean;
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div class="toggle">
 				<input type="checkbox" name="{%=key%}" value="{%=on%}" data-value-off="{%=off%}" data-value-on="{%=on%}" class="toggle-checkbox" id="{%=key%}">
@@ -378,18 +389,20 @@ export class ToggleInput extends TextInput {
 			</div>
 		`, data);
 		onEvent(this, 'change', 'input,textarea,select', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: 
-				this.checked ? this.getAttribute("data-value-on")! : this.getAttribute("data-value-off")!
+			emit(this, {
+				type: "FrmdbModifyPageElement", value:
+					this.checked ? this.getAttribute("data-value-on")! : this.getAttribute("data-value-off")!
 			});
 		});
 	}
 }
 
 export class ValueTextInput extends TextInput {
-    static elemTagName = "frmdb-value-text-input";
+	static elemTagName = "frmdb-value-text-input";
 	inputTagName = "frmdb-value-text-input";
-	
+
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div class="row">
 				<div class="col-6 mb-1">
@@ -419,25 +432,26 @@ export class ValueTextInput extends TextInput {
 
 
 export class ProductsInput extends TextInput {
-    static elemTagName = "frmdb-products-input";
-    inputTagName = "frmdb-products-input";
+	static elemTagName = "frmdb-products-input";
+	inputTagName = "frmdb-products-input";
 }
 
 export class GridInput extends Input {
-    static elemTagName = "frmdb-grid-input";
-    inputTagName = "frmdb-grid-input";
+	static elemTagName = "frmdb-grid-input";
+	inputTagName = "frmdb-grid-input";
 
 	setValue(value) {
 		this.querySelector('select')!.value = value;
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div class="row">
 				<div class="mb-1 col-12">
 				
 					<label>Flexbox</label>
-					<select class="form-control custom-select" name="col">
+					<select class="form-control " name="col">
 						
 						<option value="">None</option>
 						{% for ( var i = 1; i <= 12; i++ ) { %}
@@ -450,7 +464,7 @@ export class GridInput extends Input {
 
 				<div class="col-6">
 					<label>Extra small</label>
-					<select class="form-control custom-select" name="col-xs">
+					<select class="form-control " name="col-xs">
 						
 						<option value="">None</option>
 						{% for ( var i = 1; i <= 12; i++ ) { %}
@@ -463,7 +477,7 @@ export class GridInput extends Input {
 				
 				<div class="col-6">
 					<label>Small</label>
-					<select class="form-control custom-select" name="col-sm">
+					<select class="form-control " name="col-sm">
 						
 						<option value="">None</option>
 						{% for ( var i = 1; i <= 12; i++ ) { %}
@@ -476,7 +490,7 @@ export class GridInput extends Input {
 				
 				<div class="col-6">
 					<label>Medium</label>
-					<select class="form-control custom-select" name="col-md">
+					<select class="form-control " name="col-md">
 						
 						<option value="">None</option>
 						{% for ( var i = 1; i <= 12; i++ ) { %}
@@ -489,7 +503,7 @@ export class GridInput extends Input {
 				
 				<div class="col-6 mb-1">
 					<label>Large</label>
-					<select class="form-control custom-select" name="col-lg">
+					<select class="form-control " name="col-lg">
 						
 						<option value="">None</option>
 						{% for ( var i = 1; i <= 12; i++ ) { %}
@@ -516,20 +530,21 @@ export class GridInput extends Input {
 }
 
 export class TextValueInput extends Input {
-    static elemTagName = "frmdb-text-value-input";
-    inputTagName = "frmdb-text-value-input";
+	static elemTagName = "frmdb-text-value-input";
+	inputTagName = "frmdb-text-value-input";
 
 }
 
 export class ButtonInput extends Input {
-    static elemTagName = "frmdb-button-input";
-    inputTagName = "frmdb-button-input";
+	static elemTagName = "frmdb-button-input";
+	inputTagName = "frmdb-button-input";
 
 	setValue(value) {
 		this.querySelector('button')!.value = value;
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div>
 				<button class="btn btn-sm btn-primary">
@@ -542,8 +557,8 @@ export class ButtonInput extends Input {
 }
 
 export class SectionInput extends Input {
-    static elemTagName = "frmdb-section-input";
-    inputTagName = "frmdb-section-input";
+	static elemTagName = "frmdb-section-input";
+	inputTagName = "frmdb-section-input";
 
 	setValue(value) {
 		return false;
@@ -554,6 +569,7 @@ export class SectionInput extends Input {
 	}
 
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<label class="header" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
 			<input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
@@ -563,10 +579,11 @@ export class SectionInput extends Input {
 }
 
 export class ListInput extends Input {
-    static elemTagName = "frmdb-list-input";
+	static elemTagName = "frmdb-list-input";
 	inputTagName = "frmdb-list-input";
-	
+
 	init(data) {
+		super.init(data);
 		this.render(/*html*/`
 			<div class="row">
 

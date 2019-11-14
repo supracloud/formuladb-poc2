@@ -31,7 +31,8 @@ export class FormService {
     
     constructor(private appRootEl: HTMLElement) {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
-            if (event.target.closes('data-frmdb-ignore-form')) return;
+            console.warn("FormService change", event.target);
+            if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
             let inputEl = event.target;
             if (!isFormEl(inputEl)) return;
             
@@ -40,7 +41,7 @@ export class FormService {
         });
 
         onEvent(appRootEl, ["click", "submit"], 'button[type="submit"]', async (event) => {
-            if (event.target.closes('data-frmdb-ignore-form')) return;
+            if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
             event.preventDefault();
             let button = event.target;
             if (!(button instanceof HTMLButtonElement)) throw new Error("invalid button " + event.target);

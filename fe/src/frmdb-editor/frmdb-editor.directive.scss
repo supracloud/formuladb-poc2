@@ -47,8 +47,11 @@ $font-size-sm:                $font-size-base * .875;
 $label-margin-bottom:         .15rem;
 
 $spacer: 0.5rem;
-$nav-link-padding-y: .1rem !default;
-$nav-link-padding-x: .2rem !default;
+$nav-link-padding-y: .1rem;
+$nav-link-padding-x: .2rem;
+$input-btn-padding-y:         .1rem;
+$input-btn-padding-x:         .1rem;
+$grid-gutter-width:           5px;
 
 @import "../../../formuladb-themes/node_modules/bootstrap/scss/bootstrap";
 // @import "../../../formuladb-themes/node_modules/font-awesome/scss/font-awesome.scss";

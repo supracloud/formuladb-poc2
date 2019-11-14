@@ -3,7 +3,7 @@ import { tmpl } from "./tmpl";
 import { Undo } from "../frmdb-editor/undo";
 import { Input, Inputs, createInput, SectionInput } from "./inputs";
 import { addComponents } from "./components-bootstrap4";
-import { onEvent } from "@fe/delegated-events";
+import { onEvent, emit } from "@fe/delegated-events";
 import { FrmdbModifyPageElement } from "@fe/frmdb-user-events";
 import { $DATA_COLUMNS_FOR_ELEM, $TABLES } from "@fe/fe-functions";
 
@@ -56,7 +56,6 @@ interface Component {
 	properties: ComponentProperty[];
 	beforeInit?: (el: HTMLElement) => void;
 	init?: (el: HTMLElement) => void;
-	onChange?: (el: HTMLElement, property: ComponentProperty, value: string | number | boolean, input: Input) => void;
 }
 interface ComponentProperty {
 	name: string;
@@ -92,12 +91,12 @@ export class ElementEditorComponent extends HTMLElement {
 	node: HTMLElement;
 	setEditedEl(el: HTMLElement) {
 		this.node = el;
-		let cmp = this.matchNode(this.node);
-		let componentType = cmp ? cmp.type : defaultComponent;
 		if (!this.componentsInitialized) {
 			addComponents(this, baseUrl);
 			this.componentsInitialized = true;
 		}
+		let cmp = this.matchNode(this.node);
+		let componentType = cmp ? cmp.type : defaultComponent;
 		this.render(componentType, this.node);
 	}
 	
@@ -347,7 +346,10 @@ export class ElementEditorComponent extends HTMLElement {
 			}
 			
 			onEvent(propertyInput, "FrmdbModifyPageElement", "*", (event: { detail: FrmdbModifyPageElement }) => {
-				this.onPropertyChange(selectedEl, propertyInput, event.detail.value, component, property);
+				let newSelectedEl = this.onPropertyChange(selectedEl, propertyInput, event.detail.value, component, property);
+				if (newSelectedEl != selectedEl) {
+					emit(this, {type: "FrmdbSelectPageElement", el: newSelectedEl});
+				}
 			})
 			
 			if (property.inputtype == 'SectionInput') {
@@ -357,14 +359,14 @@ export class ElementEditorComponent extends HTMLElement {
 			else {
 				let row = document.createElement('div');
 				row.innerHTML = tmpl(/*html*/`
-				<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
-				{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
-				<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
-				</div>	
+					<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
+					{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
+					<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
+					</div>	
 				`, property);
 				row.querySelector('.input')!.append(propertyInput);
 				if (!section) {console.warn("no section exists yet", component, property); continue}
-				section.append(row);
+				section.append(row.querySelector('.form-group')!);
 			}
 		}
 		
@@ -406,12 +408,7 @@ export class ElementEditorComponent extends HTMLElement {
 			});
 		}
 		
-		if (component.onChange) {
-			component.onChange(element, property, value, input);
-		}
-		
 		return element;
-		
 	};
 };
 
@@ -464,7 +461,7 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		tab: "left-panel-tab-data",
 		sort: base_sort++,
 		inline: true,
-		col: 8,
+		col: 9,
 		inputtype: "SelectInput",
 		validValues: [],
 		data: {
@@ -492,7 +489,7 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		tab: "left-panel-tab-data",
 		sort: base_sort++,
 		inline: true,
-		col: 4,
+		col: 3,
 		inputtype: "NumberInput",
 		data: {
 			placeholder: "3"
