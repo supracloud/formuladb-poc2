@@ -96,8 +96,8 @@ export class FrmdbEditorDirective {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
                 this.domTree.rootEl = this.iframe.contentWindow!.document.body;
                 this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
+                pageElementFlows(this);
             }
-            pageElementFlows(this);
         })
     }
 

@@ -31,7 +31,6 @@ export class FormService {
     
     constructor(private appRootEl: HTMLElement) {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
-            console.warn("FormService change", event.target);
             if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
             let inputEl = event.target;
             if (!isFormEl(inputEl)) return;

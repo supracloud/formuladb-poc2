@@ -104,7 +104,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         }
     });
 
-    onEvent(editor.frameDoc, "FrmdbAddPageElement", '*', (event: {detail: FrmdbAddPageElement}) => {
+    editor.frameDoc.addEventListener("FrmdbAddPageElement" as any, (event: {detail: FrmdbAddPageElement}) => {
         let detail: FrmdbAddPageElement = event.detail;
         let node = detail.el;
         if (!node) return;
@@ -116,7 +116,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         });
     });
 
-    onEvent(editor.frameDoc, "FrmdbRemovePageElement", '*', (event: {detail: FrmdbRemovePageElement}) => {
+    editor.frameDoc.addEventListener("FrmdbRemovePageElement" as any, (event: {detail: FrmdbRemovePageElement}) => {
         let detail: FrmdbRemovePageElement = event.detail;
         let node = detail.el;
         if (!node) return;
