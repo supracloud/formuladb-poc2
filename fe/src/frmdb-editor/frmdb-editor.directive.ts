@@ -15,18 +15,25 @@ import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
-import "@fe/highlight-box/highlight-box.component";
-import "@fe/dom-tree/dom-tree.component";
-import "@fe/theme-customizer/theme-customizer.component";
-import "@fe/frmdb-editor/add-element.component";
-import "@fe/frmdb-editor/element-editor.component";
-import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
-import { launchFullScreen } from "@fe/frmdb-editor-gui";
-import { ElementEditorComponent } from "./element-editor.component";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
+
+import "@fe/highlight-box/highlight-box.component";
+import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
+
+import { launchFullScreen } from "@fe/frmdb-editor-gui";
+
+import "@fe/component-editor/component-editor.component";
+import { ElementEditorComponent } from "../component-editor/component-editor.component";
+
+import "@fe/dom-tree/dom-tree.component";
 import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
+
+import "@fe/theme-customizer/theme-customizer.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
+
+import "@fe/frmdb-editor/add-element.component";
 import { AddElementComponent } from "./add-element.component";
+
 import { pageElementFlows } from "./page-element-flows";
 
 class FrmdbEditorState {

@@ -77,8 +77,8 @@ frmdb-dom-tree {
 }
 
 frmdb-element-editor {
-    display: block;
-    height: calc(100vh - $dom-tree-heigth - 34px - 2 * 21px);
+    height: calc(100vh - #{$dom-tree-heigth} - 34px - 2 * 21px);
+    overflow: auto;
 }
 
 label.header {

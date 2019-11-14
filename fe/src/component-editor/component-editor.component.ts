@@ -21,21 +21,21 @@ class StyleManager {
 		let propName = styleProp.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
 		element.style[propName] = value;
 	}
-
+	
 	_getCssStyle(element: HTMLElement, styleProp) {
 		let value = "";
 		let el = element;
-
+		
 		if (el.style && el.style.length > 0 && el.style[styleProp]) {
 			//check inline
 			value = el.style[styleProp];
 		} else {
 			value = window.getComputedStyle(el, null).getPropertyValue(styleProp);
 		}
-
+		
 		return value;
 	}
-
+	
 	getStyle(element: HTMLElement, styleProp) {
 		return this._getCssStyle(element, styleProp);
 	}
@@ -67,7 +67,6 @@ interface ComponentProperty {
 	col?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 	inline?: boolean;
 	inputtype: keyof typeof Inputs,
-	input: Input;
 	validValues?: string[];
 	data?: any;
 	child?: string;//selector
@@ -80,16 +79,16 @@ interface ComponentProperty {
 
 const HTML: string = require('raw-loader!@fe-assets/component-editor/component-editor.component.html').default;
 
-export class ComponentEditorComponent extends HTMLElement {
-
+export class ElementEditorComponent extends HTMLElement {
+	
 	componentsInitialized: boolean = false;
-
+	
 	constructor() {
 		super();
-
+		
 		this.innerHTML = HTML;
 	}
-
+	
 	node: HTMLElement;
 	setEditedEl(el: HTMLElement) {
 		this.node = el;
@@ -101,29 +100,29 @@ export class ComponentEditorComponent extends HTMLElement {
 		}
 		this.render(componentType, this.node);
 	}
-
+	
 	_components: { [type: string]: Component } = {};
 	_nodesLookup = {};
 	_attributesLookup = {};
 	_classesLookup = {};
 	_classesRegexLookup = {};
 	styleManager = new StyleManager();
-
+	
 	get(type) {
 		return this._components[type];
 	}
-
+	
 	add(type: string, data: Component) {
 		data.type = type;
-
+		
 		this._components[type] = data;
-
+		
 		if (data.nodes) {
 			for (let i in data.nodes) {
 				this._nodesLookup[data.nodes[i]] = data;
 			}
 		}
-
+		
 		if (data.attributes) {
 			if (data.attributes.constructor === Array) {
 				for (let i in data.attributes) {
@@ -134,92 +133,94 @@ export class ComponentEditorComponent extends HTMLElement {
 					if (typeof this._attributesLookup[i] === 'undefined') {
 						this._attributesLookup[i] = {};
 					}
-
+					
 					if (typeof this._attributesLookup[i][data.attributes[i]] === 'undefined') {
 						this._attributesLookup[i][data.attributes[i]] = {};
 					}
-
+					
 					this._attributesLookup[i][data.attributes[i]] = data;
 				}
 			}
 		}
-
+		
 		if (data.classes) {
 			for (let i in data.classes) {
 				this._classesLookup[data.classes[i]] = data;
 			}
 		}
-
+		
 		if (data.classesRegex) {
 			for (let i in data.classesRegex) {
 				this._classesRegexLookup[data.classesRegex[i]] = data;
 			}
 		}
 	}
-
+	
 	extend(inheritType, type, data: Partial<Component>) {
-
-		let newData = data;
-
+		
 		let inheritData = this._components[inheritType]
-		_.merge(newData, inheritData);
-
+		let newData = inheritData ? {
+			...data,
+			...inheritData,
+			properties: (inheritData.properties || []).concat(data.properties||[])
+		} : data;
+		
 		//sort by order
 		newData.properties!.sort(function (a, b) {
 			if (typeof a.sort === "undefined") a.sort = 0;
 			if (typeof b.sort === "undefined") b.sort = 0;
-
+			
 			if (a.sort < b.sort)
-				return -1;
+			return -1;
 			if (a.sort > b.sort)
-				return 1;
+			return 1;
 			return 0;
 		});
 		/*		 
-				let output = array.reduce(function(o, cur) {
-		
-				  // Get the index of the key-value pair.
-				  let occurs = o.reduce(function(n, item, i) {
-					return (item.key === cur.key) ? i : n;
-				  }, -1);
-		
-				  // If the name is found,
-				  if (occurs >= 0) {
-		
-					// append the current value to its list of values.
-					o[occurs].value = o[occurs].value.concat(cur.value);
-		
-				  // Otherwise,
-				  } else {
-		
-					// add the current item to o (but make sure the value is an array).
-					let obj = {name: cur.key, value: [cur.value]};
-					o = o.concat([obj]);
-				  }
-		
-				  return o;
-				}, newData.properties);		 
+		let output = array.reduce(function(o, cur) {
+			
+			// Get the index of the key-value pair.
+			let occurs = o.reduce(function(n, item, i) {
+				return (item.key === cur.key) ? i : n;
+			}, -1);
+			
+			// If the name is found,
+			if (occurs >= 0) {
+				
+				// append the current value to its list of values.
+				o[occurs].value = o[occurs].value.concat(cur.value);
+				
+				// Otherwise,
+			} else {
+				
+				// add the current item to o (but make sure the value is an array).
+				let obj = {name: cur.key, value: [cur.value]};
+				o = o.concat([obj]);
+			}
+			
+			return o;
+		}, newData.properties);		 
 		*/
-
+		
 		this.add(type, newData as Component);
 	}
-
-
+	
+	
 	matchNode(node) {
 		let component = {};
-
+		
 		if (!node || !node.tagName) return false;
-
+		
 		if (node.attributes && node.attributes.length) {
 			//search for attributes
 			for (let i in node.attributes) {
 				if (node.attributes[i]) {
 					let attr = node.attributes[i].name;
 					let value = node.attributes[i].value;
-
+					
 					if (attr in this._attributesLookup) {
 						component = this._attributesLookup[attr];
-
+						
 						//currently we check that is not a component by looking at name attribute
 						//if we have a collection of objects it means that attribute value must be checked
 						if (typeof component["name"] === "undefined") {
@@ -227,24 +228,24 @@ export class ComponentEditorComponent extends HTMLElement {
 								return component[value];
 							}
 						} else
-							return component;
+						return component;
 					}
 				}
 			}
-
+			
 			for (let i in node.attributes) {
 				let attr = node.attributes[i].name;
 				let value = node.attributes[i].value;
-
+				
 				//check for node classes
 				if (attr == "class") {
 					let classes = value.split(" ");
-
+					
 					for (let j in classes) {
 						if (classes[j] in this._classesLookup)
-							return this._classesLookup[classes[j]];
+						return this._classesLookup[classes[j]];
 					}
-
+					
 					for (let regex in this._classesRegexLookup) {
 						let regexObj = new RegExp(regex);
 						if (regexObj.exec(value)) {
@@ -254,12 +255,12 @@ export class ComponentEditorComponent extends HTMLElement {
 				}
 			}
 		}
-
+		
 		let tagName = node.tagName.toLowerCase();
 		if (tagName in this._nodesLookup) return this._nodesLookup[tagName];
-
+		
 		if (tagName === "script" || tagName === "iframe") return false;
-
+		
 		let clonedNode = node.cloneNode();
 		{
 			let child = clonedNode.lastElementChild;
@@ -268,7 +269,7 @@ export class ComponentEditorComponent extends HTMLElement {
 				child = clonedNode.lastElementChild;
 			}
 		}
-
+		
 		return this._components['html/element']
 		// return {
 		// 	html: clonedNode.outerHTML,
@@ -278,108 +279,110 @@ export class ComponentEditorComponent extends HTMLElement {
 		// 	type:"html/tag"			
 		// };
 	}
-
+	
 	render(type: string, selectedEl: HTMLElement) {
 		let component = this._components[type];
-
+		
 		let tabs: { [tabName: string]: HTMLElement } = {};
-
+		
 		this.querySelectorAll(".tab-pane").forEach(function (tab: HTMLElement) {
 			tab.innerHTML = '';
 			let tabName = tab.id;
 			tabs[tabName!] = tab;
 		});
-
+		
 		if (component.beforeInit) component.beforeInit(selectedEl);
-
+		
 		let nodeElement = selectedEl;
-
+		
 		let contentTab = this.querySelector(`.tab-pane[id="left-panel-tab-content"]`) as HTMLElement
 		let tab: HTMLElement | undefined = undefined;
 		let section: HTMLElement | undefined = undefined;
-		for (let i in component.properties) {
-			let property = component.properties[i];
+		let componentProperties = [DefaultSection].concat(component.properties);
+		for (let i in componentProperties) {
+			let property = componentProperties[i];
 			if (property.tab) tab = this.querySelector(`.tab-pane[id="${property.tab}"]`) as HTMLElement;
 			else tab = contentTab;
 			let element = nodeElement;
-
+			
 			try {
 				if (property.beforeInit) property.beforeInit(element);
 			} catch (err) {
 				console.warn("Error in beforeInit", component, property, err);
 			}
-
+			
 			if (property.child) element = element.querySelector(property.child) as HTMLElement;
-
+			
 			if (property.data) {
 				property.data["key"] = property.key;
 			} else {
 				property.data = { "key": property.key };
 			}
-
-			property.input.init(property.data);
-
+			
+			let propertyInput = createInput(property.inputtype);
+			propertyInput.init(property.data);
+			
 			if (property.init) {
-				property.input.setValue(property.init(element));
+				propertyInput.setValue(property.init(element));
 			} else if (property.htmlAttr) {
 				let value;
 				if (property.htmlAttr == "style") {
 					//value = element.css(property.key);//jquery css returns computed style
 					value = this.styleManager.getStyle(element, property.key);//getStyle returns declared style
 				} else
-					if (property.htmlAttr == "innerHTML") {
-						value = element.innerHTML;
-					} else {
-						value = element.getAttribute(property.htmlAttr);
-					}
-
+				if (property.htmlAttr == "innerHTML") {
+					value = element.innerHTML;
+				} else {
+					value = element.getAttribute(property.htmlAttr);
+				}
+				
 				//if attribute is class check if one of valid values is included as class to set the select
 				if (value && property.htmlAttr == "class" && property.validValues) {
 					value = value.split(" ").filter((el) => {
 						return property.validValues ? property.validValues.indexOf(el) != -1 : true;
 					});
 				}
-
-				property.input.setValue(value);
+				
+				propertyInput.setValue(value);
 			}
-
-			onEvent(property.input, "FrmdbModifyPageElement", "*", (event: { detail: FrmdbModifyPageElement }) => {
-				this.onPropertyChange(selectedEl, property.input, event.detail.value, component, property);
+			
+			onEvent(propertyInput, "FrmdbModifyPageElement", "*", (event: { detail: FrmdbModifyPageElement }) => {
+				this.onPropertyChange(selectedEl, propertyInput, event.detail.value, component, property);
 			})
-
+			
 			if (property.inputtype == 'SectionInput') {
-				tab.appendChild(property.input);
-				section = (property.input as SectionInput).section;
+				tab.appendChild(propertyInput);
+				section = (propertyInput as SectionInput).section;
 			}
 			else {
 				let row = document.createElement('div');
 				row.innerHTML = tmpl(/*html*/`
-					<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
-						{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
-						<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
-					</div>	
+				<div class="form-group {% if (typeof col !== 'undefined' && col != false) { %} col-sm-{%=col%} d-inline-block {% } else { %}row{% } %}" data-key="{%=key%}" {% if (typeof group !== 'undefined' && group != null) { %}data-group="{%=group%}" {% } %}>
+				{% if (typeof name !== 'undefined' && name != false) { %}<label class="{% if (typeof inline === 'undefined' ) { %}col-sm-4{% } %} control-label" for="input-model">{%=name%}</label>{% } %}
+				<div class="{% if (typeof inline === 'undefined') { %}col-sm-{% if (typeof name !== 'undefined' && name != false) { %}8{% } else { %}12{% } } %} input"></div>
+				</div>	
 				`, property);
-				row.querySelector('.input')!.append(property.input);
-				let s = section ? section : (DefaultSection.input as SectionInput).section;
-				s.append(row);
+				row.querySelector('.input')!.append(propertyInput);
+				if (!section) {console.warn("no section exists yet", component, property); continue}
+				section.append(row);
 			}
 		}
-
+		
 		if (component.init) component.init(selectedEl);
 	}
-
-
+	
+	
 	onPropertyChange(selectedEl: HTMLElement, input: Input, value: string | number | boolean, component: Component, property: ComponentProperty) {
 		let element = selectedEl;
 		if (property.child) element = element.querySelector(property.child) as HTMLElement;
 		if (property.parent) element = element.closest(property.parent) as HTMLElement;
-
+		
 		if (property.onChange) {
 			element = property.onChange(element, value, input, component);
 		}/* else */
 		if (property.htmlAttr) {
 			let oldValue = element.getAttribute(property.htmlAttr);
-
+			
 			if (property.htmlAttr == "class" && property.validValues) {
 				element.classList.remove(property.validValues.join(" "));
 				element.classList.add('' + value);
@@ -393,7 +396,7 @@ export class ComponentEditorComponent extends HTMLElement {
 			else {
 				element.setAttribute(property.htmlAttr, '' + value);
 			}
-
+			
 			Undo.addMutation({
 				type: 'attributes',
 				target: element,
@@ -402,26 +405,26 @@ export class ComponentEditorComponent extends HTMLElement {
 				newValue: element.getAttribute(property.htmlAttr)
 			});
 		}
-
+		
 		if (component.onChange) {
 			component.onChange(element, property, value, input);
 		}
-
+		
 		return element;
-
+		
 	};
 };
 
-customElements.define('frmdb-element-editor', ComponentEditorComponent);
+customElements.define('frmdb-element-editor', ElementEditorComponent);
 
 export class BlocksClass {
-
+	
 	_blocks: {};
-
+	
 	get(type) {
 		return this._blocks[type];
 	}
-
+	
 	add(type, data) {
 		data.type = type;
 		this._blocks[type] = data;
@@ -438,11 +441,10 @@ export function incrementSort() {
 export const style_section = 'left-panel-tab-style';
 
 export const DefaultSection: ComponentProperty = {
+	tab: "left-panel-tab-content",
 	key: "element_header",
 	inputtype: "SectionInput",
-	input: createInput("SectionInput"),
 	name: 'Element',
-	sort: base_sort++,
 	data: { header: "General" },
 };
 
@@ -450,8 +452,7 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 	{
 		key: "value",
 		inputtype: "SectionInput",
-		input: createInput("SectionInput"),
-		tab: "left-panel-tab-content",
+		tab: "left-panel-tab-data",
 		name: '',
 		sort: base_sort++,
 		data: { header: "Value" },
@@ -465,7 +466,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 8,
 		inputtype: "SelectInput",
-		input: createInput("SelectInput"),
 		validValues: [],
 		data: {
 			options: [],
@@ -494,7 +494,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 4,
 		inputtype: "NumberInput",
-		input: createInput("NumberInput"),
 		data: {
 			placeholder: "3"
 		}
@@ -508,7 +507,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 		data: {
 			disabled: true,
 		},
@@ -529,7 +527,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "SelectInput",
-		input: createInput("SelectInput"),
 		validValues: [],
 		data: {
 			options: []
@@ -549,7 +546,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Show Only If",
@@ -560,12 +556,10 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		key: "attributes",
 		inputtype: "SectionInput",
-		input: createInput("SectionInput"),
 		tab: "left-panel-tab-data",
 		name: '',
 		sort: base_sort++,
@@ -580,7 +574,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Attribute 2",
@@ -591,7 +584,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Attribute 3",
@@ -602,7 +594,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Attribute 4",
@@ -613,12 +604,10 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		key: "properties",
 		inputtype: "SectionInput",
-		input: createInput("SectionInput"),
 		tab: "left-panel-tab-data",
 		name: '',
 		sort: base_sort++,
@@ -633,7 +622,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Property 2",
@@ -644,7 +632,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Property 3",
@@ -655,7 +642,6 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 	{
 		name: "Property 4",
@@ -666,6 +652,5 @@ export const FrmdbDataBindingProperties: ComponentProperty[] = [
 		inline: true,
 		col: 12,
 		inputtype: "TextInput",
-		input: createInput("TextInput"),
 	},
 ];

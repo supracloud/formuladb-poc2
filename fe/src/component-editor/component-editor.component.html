@@ -11,10 +11,16 @@
             Style
         </a>
     </li>
+    <li class="nav-item style-tab">
+        <a class="nav-link py-1" data-toggle="tab" href="#left-panel-tab-data" role="tab" aria-controls="blocks" aria-selected="false">
+            <i class="la la-lg la-database"></i>
+            Data
+        </a>
+    </li>
 </ul>
 
-<div class="tab-content h-100 overflow-auto">
-    <form class="tab-pane fade show active accordion" id="left-panel-tab-content" role="tabpanel" aria-labelledby="content-tab">
+<div class="tab-content h-100 overflow-auto flex-grow-1" data-frmdb-ignore-form>
+    <form class="tab-pane fade show active" id="left-panel-tab-content" role="tabpanel" aria-labelledby="content-tab">
         <div class="mt-4 text-center">Click on an element to edit.</div>
     </form>
 

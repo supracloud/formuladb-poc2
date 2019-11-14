@@ -555,12 +555,9 @@ export class SectionInput extends Input {
 
 	init(data) {
 		this.render(/*html*/`
-			<button class="btn btn-link w-100" type="button" data-toggle="collapse" data-target="#{%=header%}" aria-expanded="true" aria-controls="{%=header%}">
-				{%=header%}			
-			</button>
-
-			<div id="{%=header%}" class="section collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-			</div>
+			<label class="header" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
+			<input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
+			<div class="section" data-section="{%=key%}"></div>		
 		`, data);
 	}
 }

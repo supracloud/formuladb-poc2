@@ -151,7 +151,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
         let grandParentNameEl = box.querySelector('.name > .grand-parent');
         if (grandParentNameEl) {
-            if (grandParentElName && (grandParentElName + parentElName + elName).length < 55) grandParentNameEl.innerHTML = grandParentElName;        
+            if (grandParentElName && (grandParentElName + parentElName + elName).length < 75) grandParentNameEl.innerHTML = grandParentElName;        
             else grandParentNameEl.innerHTML = '';
         }
         let parentNameEl = box.querySelector('.name > .parent');
