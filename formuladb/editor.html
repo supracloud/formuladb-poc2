@@ -90,7 +90,7 @@
                 </a>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
-                <a href="javascript:void(0)" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true" aria-expanded="false"
+                <a href="javascript:void(0)" title="App Table List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true" aria-expanded="false"
                     data-frmdb-value="$frmdb.selectedTableId">
                 </a>
                 <div class="dropdown-menu">
@@ -117,7 +117,7 @@
                 </a>
             </li>
             <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover">
-                <a href="javascript:void(0)" class="nav-link dropdown-toggle text-center" role="button" aria-haspopup="true" aria-expanded="false"
+                <a href="javascript:void(0)" title="App Page List" class="nav-link dropdown-toggle text-center" role="button" aria-haspopup="true" aria-expanded="false"
                     data-frmdb-value="$frmdb.selectedPageName">
                 </a>
                 <div class="dropdown-menu">
@@ -143,7 +143,7 @@
         <frmdb-element-editor class="d-flex flex-column"></frmdb-element-editor>
     </div>
     <div id="canvas" class="position-relative overflow-hidden">
-        <iframe></iframe>
+        <iframe id="app"></iframe>
         <frmdb-highlight-box></frmdb-highlight-box>
     </div>
 

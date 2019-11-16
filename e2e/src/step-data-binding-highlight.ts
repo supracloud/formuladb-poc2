@@ -16,7 +16,7 @@ export function stepDataBindingHighlight(scenario: AppIntroVideoScenario) {
             expect(await getColBgImage(colName)).toEqual(value);
         }
 
-        await scenario.API.scrollIframe(350);
+        await scenario.API.scrollIframe(280);
         await scenario.API.clickByCssInFrameWithJs('iframe', '[data-frmdb-value="::start_date"]');
         await assertColBgImage('start_date', CURRENT_COLUMN_HIGHLIGHT_STYLE['background-image']);
 

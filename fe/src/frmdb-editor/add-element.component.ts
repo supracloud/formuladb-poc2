@@ -3,6 +3,8 @@ import { onEvent } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
 
+const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
+
 export class AddElementComponent extends HTMLElement {
     iframe: HTMLIFrameElement;
     highlightBox: HighlightBoxComponent;
@@ -32,7 +34,7 @@ export class AddElementComponent extends HTMLElement {
                     height: 100%;
                 }
             </style>
-            <iframe src="/formuladb-themes/index.html"></iframe>
+            ${HTML}
             <frmdb-highlight-box></frmdb-highlight-box>
         `;
         this.iframe = this.shadowRoot!.querySelector('iframe')!;

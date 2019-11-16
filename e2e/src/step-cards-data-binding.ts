@@ -6,13 +6,14 @@ export function stepCardsDataBinding(scenario: AppIntroVideoScenario) {
 
     scenario.SCEN.step(`For example you can display the room types as a list of cards`, async () => {
         try {
-            await scenario.API.scrollIframe(950);
+            await scenario.API.scrollIframe(600);
             await browser.sleep(150);
-            let el = await scenario.API.clickByCssInMain('[href="#data-left-panel-tab"]');
+            let el = await scenario.API.clickByCssInMain('[href="#left-panel-tab-data"]');
             
             console.log(new Date(), 'delete hardcoded cards, leave just the first one');
+            let accomodation = await scenario.API.byCssInFrame('iframe', '*', 'Hotel Accomodation');
             for (let i = 0; i < 3; i++) {
-                el = await scenario.API.byCssInFrame('iframe', '.accomodation_area .row .col-lg-3:nth-child(2)');
+                el = await accomodation.element(by.css('.card:nth-child(2)'));
                 await scenario.API.clickWithJs(el);
                 el = await scenario.API.clickByCssInMain('#select-box #select-actions #delete-btn');
             }
