@@ -1,0 +1,28 @@
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/functions";
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/variables";
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/mixins";
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/utilities";
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/nav";
+@import "../../../formuladb-themes/node_modules/bootstrap/scss/navbar";
+
+:host {
+    position: absolute;
+    top: 5vh;
+    left: 5vw;
+    width: 85vw;
+    height: 85vh;
+    z-index: 98765;
+    overflow: hidden;
+    display: none;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow-lg;
+    
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+}
+

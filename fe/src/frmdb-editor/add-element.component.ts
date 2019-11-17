@@ -1,13 +1,15 @@
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
-import { onEvent } from "@fe/delegated-events";
+import { onEvent, onEventChildren } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
+const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;
 
 export class AddElementComponent extends HTMLElement {
     iframe: HTMLIFrameElement;
     highlightBox: HighlightBoxComponent;
+    nav: HTMLElement;
     link: HTMLLinkElement | undefined = undefined;
     selectedEl: HTMLElement | undefined = undefined;
     action: FrmdbSelectPageElementAction['action'];
@@ -16,34 +18,19 @@ export class AddElementComponent extends HTMLElement {
         super();
 
         this.attachShadow({ mode: 'open' });
-        this.shadowRoot!.innerHTML = /*html*/`
-            <style>
-                :host {
-                    position: absolute;
-                    top: 5vh;
-                    left: 5vw;
-                    width: 85vw;
-                    height: 85vh;
-                    z-index: 98765;
-                    overflow: hidden;
-                    display: none;
-                    background-color: white;
-                }
-                iframe {
-                    width: 100%;
-                    height: 100%;
-                }
-            </style>
-            ${HTML}
-            <frmdb-highlight-box></frmdb-highlight-box>
-        `;
+        this.shadowRoot!.innerHTML = `<style>${CSS}</style> ${HTML}`;
         this.iframe = this.shadowRoot!.querySelector('iframe')!;
         this.highlightBox = this.shadowRoot!.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+        this.nav = this.shadowRoot!.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
             this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
             if (!this.link) console.warn("link #frmdb-theme-css not found!");
         }
+
+        onEventChildren(this.nav, 'click', '.nav-item', (event) => {
+            this.iframe.src = `/formuladb-themes/${event.target.id}.html`;
+        });
 
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
             if (!this.selectedEl) {console.warn("selectedEl not found"); return;}

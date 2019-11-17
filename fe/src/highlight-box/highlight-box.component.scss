@@ -1,3 +1,9 @@
+:host.names-hidden {
+    .box .name {
+        display: none;
+    }
+}
+
 :host([disabled="true"]) .box {
     display: none !important;
 }
