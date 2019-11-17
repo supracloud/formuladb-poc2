@@ -11,7 +11,7 @@
 .box {
     position: absolute;
     display: block;
-    border: 2px dotted rgb(61, 133, 253);
+    border: 2px solid rgb(61, 133, 253);
     // background-color: rgba(61, 133, 253, 0.05);
     pointer-events: none;
     z-index: 10;
@@ -25,11 +25,13 @@
         margin: -4px 0 0 -4px;
         padding: 4px;
     }
-
     &#parent-highlight {
         border: 2px dotted yellow;
         margin: -2px 0 0 -2px;
         padding: 2px;
+    }
+    &#prev-highlight {
+        border: 2px dotted red;
     }
     &#parent-selected {
         border: 2px solid yellow;

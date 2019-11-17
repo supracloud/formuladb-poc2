@@ -25,8 +25,8 @@ import { launchFullScreen } from "@fe/frmdb-editor-gui";
 import "@fe/component-editor/component-editor.component";
 import { ElementEditorComponent } from "../component-editor/component-editor.component";
 
-import "@fe/dom-tree/dom-tree.component";
-import { DomTreeComponent } from "@fe/dom-tree/dom-tree.component";
+import "./element-tree.component";
+import { ElementTreeComponent } from "./element-tree.component";
 
 import "@fe/theme-customizer/theme-customizer.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
@@ -61,7 +61,7 @@ export class FrmdbEditorDirective {
     letPanel: HTMLElement;
     highlightBox: HighlightBoxComponent;
     addElementCmp: AddElementComponent;
-    domTree: DomTreeComponent;
+    elementTree: ElementTreeComponent;
     elementEditor: ElementEditorComponent;
     themeCustomizer: ThemeCustomizerComponent;
 
@@ -82,7 +82,7 @@ export class FrmdbEditorDirective {
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
             this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
-            this.domTree = document.body.querySelector('frmdb-dom-tree') as DomTreeComponent;
+            this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
             this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
     
             this.tableManagementFlows();
@@ -94,7 +94,6 @@ export class FrmdbEditorDirective {
             this.iframe.src = window.location.hash.replace(/^#/, '');
             this.iframe.onload = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
-                this.domTree.rootEl = this.iframe.contentWindow!.document.body;
                 this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
                 pageElementFlows(this);
             }
@@ -153,6 +152,7 @@ export class FrmdbEditorDirective {
         if (el) {
             this.highlightDataGridCell(el);
             this.elementEditor.setEditedEl(el);
+            this.elementTree.render(el);
         }
     }
 
@@ -409,7 +409,7 @@ export class FrmdbEditorDirective {
                 let recordId = getParentObjId(el);
                 if (!recordId) return null;
                 let tableName = entityNameFromDataObjId(recordId);
-                let columnId = attrib.value.replace(/.*:/, '').replace(`${tableName}[].`, '');
+                let columnId = attrib.value.replace(/^\$FRMDB\./, '').replace(/.*:/, '').replace(`${tableName}[].`, '');
                 return { recordId, columnId };
             }
         }

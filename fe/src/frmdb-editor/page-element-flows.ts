@@ -102,6 +102,9 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         else if (action === "parent") {
             if (event.detail.el.parentElement) editor.selectElement(event.detail.el.parentElement);
         }
+        else if (action === "prev") {
+            if (event.detail.el.previousElementSibling) editor.selectElement(event.detail.el.previousElementSibling as HTMLElement);
+        }
     });
 
     editor.frameDoc.addEventListener("FrmdbAddPageElement" as any, (event: {detail: FrmdbAddPageElement}) => {

@@ -12,6 +12,7 @@ export class HighlightBoxComponent extends HTMLElement {
     _disabled: boolean = false;
     highlightEl: HTMLElement | undefined;
     highlightBox: HTMLElement;
+    prevHighlightBox: HTMLElement;
     parentHighlightBox: HTMLElement;
     grandParentHighlightBox: HTMLElement;
     selectedBox: HTMLElement;
@@ -38,6 +39,7 @@ export class HighlightBoxComponent extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = `<style>${CSS}</style>${HTML}`;
         this.highlightBox = this.shadowRoot!.querySelector('#highlight') as HTMLElement;
+        this.prevHighlightBox = this.shadowRoot!.querySelector('#prev-highlight') as HTMLElement;
         this.parentHighlightBox = this.shadowRoot!.querySelector('#parent-highlight') as HTMLElement;
         this.grandParentHighlightBox = this.shadowRoot!.querySelector('#grand-parent-highlight') as HTMLElement;
         this.selectedBox = this.shadowRoot!.querySelector('#selected') as HTMLElement;
@@ -64,6 +66,7 @@ export class HighlightBoxComponent extends HTMLElement {
             event.preventDefault();
             this.highlightEl = event.target as HTMLElement;
             this.highlightElement(this.highlightEl);
+            emit(this, { type: "FrmdbHoverPageElement", el: this.highlightEl });
         });
 
 
@@ -112,14 +115,17 @@ export class HighlightBoxComponent extends HTMLElement {
                 this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
             } else this.grandParentHighlightBox.style.display = 'none';
         } else this.parentHighlightBox.style.display = 'none';
+        if (highlightEl.previousElementSibling) {
+            this.showBox(this.prevHighlightBox, highlightEl.previousElementSibling as HTMLElement);
+        }
     }
 
     showSelectBox(el: HTMLElement) {
         this.selectedEl = el;
         this.showBox(this.selectedBox, this.selectedEl);
-        if (this.selectedEl.parentElement) {
-            this.showBox(this.parentSelectedBox, this.selectedEl.parentElement);
-        } else this.parentSelectedBox.style.display = 'none';
+        // if (this.selectedEl.parentElement) {
+        //     this.showBox(this.parentSelectedBox, this.selectedEl.parentElement);
+        // } else this.parentSelectedBox.style.display = 'none';
     }
     selectElement(el: HTMLElement | null) {
         if (el) {
@@ -149,8 +155,8 @@ export class HighlightBoxComponent extends HTMLElement {
         }
 
         let grandParentElName = '', parentElName = '', elName = this.getElName(highlightEl);
-        if (highlightEl.parentElement && highlightEl.parentElement.parentElement) grandParentElName = '< ' + this.getElName(highlightEl.parentElement.parentElement);
-        if (highlightEl.parentElement) parentElName = '< ' + this.getElName(highlightEl.parentElement);
+        if (highlightEl.parentElement && highlightEl.parentElement.parentElement) grandParentElName = this.getElName(highlightEl.parentElement.parentElement);
+        if (highlightEl.parentElement) parentElName = this.getElName(highlightEl.parentElement);
 
         let grandParentNameEl = box.querySelector('.name > .grand-parent');
         if (grandParentNameEl) {
@@ -194,10 +200,13 @@ export class HighlightBoxComponent extends HTMLElement {
                     this.positionBox(this.grandParentHighlightBox, this.highlightEl.parentElement.parentElement);
                 }
             }
+            if (this.highlightEl.previousElementSibling) {
+                this.positionBox(this.prevHighlightBox, this.highlightEl.previousElementSibling as HTMLElement);
+            }    
         }
         if (this.selectedEl) {
             this.positionBox(this.selectedBox, this.selectedEl);
-            if (this.selectedEl.parentElement) this.positionBox(this.parentSelectedBox, this.selectedEl.parentElement);
+            // if (this.selectedEl.parentElement) this.positionBox(this.parentSelectedBox, this.selectedEl.parentElement);
         }
 
     }

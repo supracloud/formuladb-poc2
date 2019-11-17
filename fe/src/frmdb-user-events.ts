@@ -81,6 +81,11 @@ export interface FrmdbRemovePageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbHoverPageElement {
+    type: 'FrmdbHoverPageElement';
+    el: HTMLElement;
+}
+
 export interface FrmdbSelectPageElement {
     type: 'FrmdbSelectPageElement';
     el: HTMLElement;
@@ -91,6 +96,7 @@ export interface FrmdbSelectPageElementAction {
     el: HTMLElement;
     action: 
         | "parent"
+        | "prev"
         | "add-inside" 
         | "add-after"
         | "up"
@@ -129,6 +135,7 @@ export type FrmdbUserEvent =
     | FrmdbAddColumn
     | FrmdbAddPageElement
     | FrmdbRemovePageElement
+    | FrmdbHoverPageElement
     | FrmdbSelectPageElement
     | FrmdbSelectPageElementAction
     | FrmdbEditWysiwygPageElement
