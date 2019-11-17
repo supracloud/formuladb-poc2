@@ -114,6 +114,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
             addedNodes: [node],
             nextSibling: node.nextElementSibling
         });
+        editor.selectElement(node);
     });
 
     editor.frameDoc.addEventListener("FrmdbRemovePageElement" as any, (event: {detail: FrmdbRemovePageElement}) => {

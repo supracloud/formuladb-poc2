@@ -56,7 +56,7 @@ export class HighlightBoxComponent extends HTMLElement {
     init() {
         if (!this._rootEl) return;
 
-        this.wysiwygEditor.init((this._rootEl as any).execCommand != null ? this._rootEl as Document : this._rootEl.ownerDocument!, 
+        this.wysiwygEditor.init((this._rootEl as any).execCommand != null ? this._rootEl as Document : this._rootEl.ownerDocument!,
             this.selectedBox.querySelector('.actions.editing')! as HTMLElement);
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
@@ -70,15 +70,13 @@ export class HighlightBoxComponent extends HTMLElement {
         onEvent(this._rootEl, ['click'], '*', (event: MouseEvent) => {
             if (this._disabled) return;
             event.preventDefault();
-            if (this.wysiwygEditor.isActive && this.selectedEl && 
+            if (this.wysiwygEditor.isActive && this.selectedEl &&
                 (this.selectedEl == event.target || this.selectedEl.contains(event.target as HTMLElement))) return;
+            this.selectElement(event.target as HTMLElement);
             this.selectedEl = event.target as HTMLElement;
-            this.showBox(this.selectedBox, this.selectedEl);
-            if (this.selectedEl.parentElement) {
-                this.showBox(this.parentSelectedBox, this.selectedEl.parentElement);
-            } else this.parentSelectedBox.style.display = 'none';
+            this.showSelectBox(this.selectedEl);
             this.toggleWysiwygEditor(false);
-            emit(this, {type: "FrmdbSelectPageElement", el: this.selectedEl});
+            emit(this, { type: "FrmdbSelectPageElement", el: this.selectedEl });
         });
 
         onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action="edit"]', (event) => {
@@ -86,7 +84,7 @@ export class HighlightBoxComponent extends HTMLElement {
             event.preventDefault();
             if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
             this.toggleWysiwygEditor(true);
-            emit(this, {type: "FrmdbEditWysiwygPageElement", el: this.selectedEl});
+            emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
         });
 
         onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action]', (event) => {
@@ -95,7 +93,7 @@ export class HighlightBoxComponent extends HTMLElement {
             let el: HTMLElement = event.target.closest('[data-frmdb-action]');
             if (!el || !this.selectedEl) return;
             if (el.dataset.frmdbAction === "edit") return;
-            emit(this, {type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action']});
+            emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
         });
 
         this._rootEl.addEventListener('scroll', (event) => {
@@ -114,14 +112,19 @@ export class HighlightBoxComponent extends HTMLElement {
                 this.showBox(this.grandParentHighlightBox, highlightEl.parentElement.parentElement);
             } else this.grandParentHighlightBox.style.display = 'none';
         } else this.parentHighlightBox.style.display = 'none';
-
     }
 
+    showSelectBox(el: HTMLElement) {
+        this.selectedEl = el;
+        this.showBox(this.selectedBox, this.selectedEl);
+        if (this.selectedEl.parentElement) {
+            this.showBox(this.parentSelectedBox, this.selectedEl.parentElement);
+        } else this.parentSelectedBox.style.display = 'none';
+    }
     selectElement(el: HTMLElement | null) {
         if (el) {
             if (el != this.selectedEl) {
-                this.selectedEl = el;
-                this.showBox(this.selectedBox, this.selectedEl);
+                this.showSelectBox(el);
             }
         } else {
             this.selectedBox.style.display = 'none';
@@ -151,7 +154,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
         let grandParentNameEl = box.querySelector('.name > .grand-parent');
         if (grandParentNameEl) {
-            if (grandParentElName && (grandParentElName + parentElName + elName).length < 75) grandParentNameEl.innerHTML = grandParentElName;        
+            if (grandParentElName && (grandParentElName + parentElName + elName).length < 75) grandParentNameEl.innerHTML = grandParentElName;
             else grandParentNameEl.innerHTML = '';
         }
         let parentNameEl = box.querySelector('.name > .parent');

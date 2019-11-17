@@ -1,5 +1,5 @@
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
-import { onEvent, onEventChildren } from "@fe/delegated-events";
+import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
 
@@ -14,14 +14,11 @@ export class AddElementComponent extends HTMLElement {
     selectedEl: HTMLElement | undefined = undefined;
     action: FrmdbSelectPageElementAction['action'];
 
-    constructor() {
-        super();
-
-        this.attachShadow({ mode: 'open' });
-        this.shadowRoot!.innerHTML = `<style>${CSS}</style> ${HTML}`;
-        this.iframe = this.shadowRoot!.querySelector('iframe')!;
-        this.highlightBox = this.shadowRoot!.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
-        this.nav = this.shadowRoot!.querySelector('nav') as HTMLElement;
+    connectedCallback() {
+        this.innerHTML = `<style>${CSS}</style> ${HTML}`;
+        this.iframe = this.querySelector('iframe')!;
+        this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+        this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
             this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
@@ -40,23 +37,13 @@ export class AddElementComponent extends HTMLElement {
             if (this.action === 'add-inside') {
                 let newEl = targetDoc.importNode(event.detail.el, true);
                 this.selectedEl.appendChild(newEl);
-                Undo.addMutation({
-                    type: 'childList',
-                    target: this.selectedEl,
-                    addedNodes: [newEl],
-                    nextSibling: newEl.nextElementSibling
-                });
+                emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
             } else if (this.action === 'add-after') {
                 let newEl = targetDoc.importNode(event.detail.el, true);
                 let p = this.selectedEl.parentElement;
                 if (p) {
                     p.insertBefore(newEl, this.selectedEl.nextSibling);
-                    Undo.addMutation({
-                        type: 'childList',
-                        target: p,
-                        addedNodes: [newEl],
-                        nextSibling: newEl.nextElementSibling
-                    });
+                    emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
                 }
             }
 
