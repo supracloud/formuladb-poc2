@@ -111,7 +111,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: filebeat
-  namespace: default
+  namespace: monitoring
 roleRef:
   kind: ClusterRole
   name: filebeat

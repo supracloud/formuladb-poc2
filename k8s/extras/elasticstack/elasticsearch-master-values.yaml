@@ -5,3 +5,8 @@ roles:
   master: "true"
   ingest: "false"
   data: "false"
+
+volumeClaimTemplate:
+  resources:
+    requests:
+      storage: 10Gi

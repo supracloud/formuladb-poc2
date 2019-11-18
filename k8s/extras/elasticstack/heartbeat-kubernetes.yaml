@@ -6,7 +6,7 @@ image:
 config:
   heartbeat.monitors:
   - type: http
-    schedule: '@every 10s'
+    schedule: '@every 60s'
     timeout: 5s
     urls:
       - "https://gitlab.formuladb.io"
@@ -26,15 +26,15 @@ config:
             config:
               - type: http
                 urls: ["https://${data.kubernetes.namespace}.formuladb.io"]
-                schedule: "@every 10s"
+                schedule: "@every 60s"
                 timeout: 5s
                 check.response.status: 200
   output.elasticsearch:
-    hosts: ["formuladb-master.default:9200"]
+    hosts: ["formuladb-master.monitoring:9200"]
   output.file:
     enabled: false
   setup.kibana:
-    host: "http://kibana-kibana.default:5601" 
+    host: "http://kibana-kibana.monitoring:5601" 
   processors:
     - add_cloud_metadata:
     - add_host_metadata:

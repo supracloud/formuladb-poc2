@@ -20,7 +20,7 @@ data:
     output.elasticsearch:
       hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
     setup.kibana:
-      host: "kibana-kibana.default:5601" 
+      host: "kibana-kibana.monitoring:5601" 
     setup.dashboards:
       enabled: true
 ---
@@ -106,7 +106,7 @@ spec:
         ]
         env:
         - name: ELASTICSEARCH_HOST
-          value: formuladb-master.default
+          value: formuladb-master.monitoring
         - name: ELASTICSEARCH_PORT
           value: "9200"
         - name: NODE_NAME
@@ -251,7 +251,7 @@ spec:
         ]
         env:
         - name: ELASTICSEARCH_HOST
-          value: formuladb-master.default
+          value: formuladb-master.monitoring
         - name: ELASTICSEARCH_PORT
           value: "9200"
         - name: NODE_NAME

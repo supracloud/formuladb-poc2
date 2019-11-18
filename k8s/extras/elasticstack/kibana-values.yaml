@@ -9,9 +9,10 @@ ingress:
     nginx.ingress.kubernetes.io/auth-secret: es-auth
     # message to display with an appropriate context why the authentication is required
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+    certmanager.k8s.io/issuer: "kibana-prod"
   hosts:
     - kibana.formuladb.io
   tls:
-    - secretName: formuladb-online
+    - secretName: certificate-kibana-prod
       hosts:
         - kibana.formuladb.io
