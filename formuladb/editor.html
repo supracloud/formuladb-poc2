@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/formuladb-static/icons/line-awesome/css/line-awesome.min.css">
     <link rel="stylesheet" href="/formuladb-static/icons/flag-icons-css/css/flag-icon.min.css" />
     <link rel="stylesheet" href="/formuladb/css/ad-grid-balham-font.css">
+	<link rel="stylesheet" type="text/css" href="/formuladb/icons/icons.css" />
 </head>
 
 <body>
@@ -16,11 +17,11 @@
             <frmdb-formula-editor></frmdb-formula-editor>
 
             <div class="btn-group mr-3" role="group">
-                <button class="btn btn-light" title="Undo (Ctrl/Cmd + Z)" id="undo-btn" data-frmdb-action="undo" data-vvveb-shortcut="ctrl+z">
+                <button class="btn btn-light" title="Undo most recent change" id="undo-btn" data-frmdb-action="undo" data-vvveb-shortcut="ctrl+z">
                     <i class="la la-undo"></i>
                 </button>
 
-                <button class="btn btn-light" title="Redo (Ctrl/Cmd + Shift + Z)" id="redo-btn" data-frmdb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
+                <button class="btn btn-light" title="Redo change" id="redo-btn" data-frmdb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
                     <i class="la la-undo la-flip-horizontal"></i>
                 </button>
             </div>

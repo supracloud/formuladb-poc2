@@ -7,7 +7,7 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
-import { UserDeleteColumn, FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
+import { UserDeleteColumn, FrmdbSelectPageElement, FrmdbSelectPageElementAction, UserSelectedCell } from "@fe/frmdb-user-events";
 import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
@@ -265,9 +265,9 @@ export class FrmdbEditorDirective {
 
     tableColumnManagementFlows() {
 
-        onDoc("frmdbchange", "frmdb-data-grid", async (event) => {
+        onDoc("UserSelectedCell", "frmdb-data-grid", async (event) => {
             let formulaEditor: FormulaEditorComponent = queryFormulaEditor(document);
-            let dataGrid: DataGridComponentI = getTarget(event) as DataGridComponentI;
+            let dataGrid = queryDataGrid(document);
 
             let entity: Entity = BACKEND_SERVICE().currentSchema.entities[dataGrid.tableName || ''];
             let prop: EntityProperty | undefined = entity.props[dataGrid.selectedColumnName || ''];

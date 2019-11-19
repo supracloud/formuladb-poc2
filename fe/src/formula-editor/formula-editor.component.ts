@@ -8,13 +8,12 @@ import { BACKEND_SERVICE } from "@fe/backend.service";
 import { ServerEventPreviewFormula, ServerEventSetProperty } from "@domain/event";
 import { FormulaTokenizerSchemaChecker } from "@core/formula_tokenizer_schema_checker";
 import { KeyEvent } from "@fe/key-event";
-import { onEvent } from "@fe/delegated-events";
+import { onEvent, onEventChildren } from "@fe/delegated-events";
 
 const HTML: string = require('raw-loader!@fe-assets/formula-editor/formula-editor.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/formula-editor/formula-editor.component.scss').default;
 
 //TODO <!-- PREVIEW: {{formulaEditorService?.formulaState?.editedProperty?.name}} = {{formulaEditorService?.formulaState?.previewEditedDataObj? formulaEditorService?.formulaState?.previewEditedDataObj[formulaEditorService?.formulaState?.editedProperty?.name] : ''}} -->
-
 
 const STYLES = [
     { bgColor: '#b6d0f988' },
@@ -49,7 +48,6 @@ interface FormulaEditorState {
     observedAttributes: [],
     template: HTML,
     style: CSS,
-    noShadow: true,
 })
 export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorState> {
 
@@ -87,11 +85,11 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
         this.toggleEditorBtn = this.elem.querySelector('#toggle-formula-editor') as HTMLButtonElement;
         this.applyChangesBtn = this.elem.querySelector('#apply-formula-changes') as HTMLButtonElement;
 
-        onEvent(this, 'keydown', '*', e => this.keydown(e));
-        onEvent(this, 'keyup', '*', e => this.keyup(e));
-        onEvent(this, 'click', '.editor *', e => this.click());
-        onEvent(this, 'click', '#toggle-formula-editor,#toggle-formula-editor *', e => this.toggleEditor());
-        onEvent(this, 'click', '#apply-formula-changes:enabled *', e => this.applyChanges());
+        onEvent(this.shadowRoot!, 'keydown', '*', e => this.keydown(e));
+        onEvent(this.shadowRoot!, 'keyup', '*', e => this.keyup(e));
+        onEvent(this.shadowRoot!, 'click', '.editor *', e => this.click());
+        onEventChildren(this.shadowRoot!, 'click', '#toggle-formula-editor', e => this.toggleEditor());
+        onEvent(this.shadowRoot!, 'click', '#apply-formula-changes:enabled *', e => this.applyChanges());
     }
 
     frmdbPropertyChangedCallback<T extends keyof FormulaEditorState>(propName: T, oldVal: FormulaEditorState[T] | undefined, newVal: FormulaEditorState[T]): Partial<FormulaEditorState> | Promise<Partial<FormulaEditorState>> {

@@ -156,7 +156,8 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             }
             this.selectedColumnName = newSelectedColumnName || this.selectedColumnName;
             this.selectedRowIdx = event.rowIndex;
-            
+            emit(this, { type: "UserSelectedCell", columnName: this.selectedColumnName });
+
             if (refreshCellsParams && this.gridApi) {
                 // this.gridApi.refreshCells(refreshCellsParams);
                 //FIXME: the targeted cell refresh does not call the applyCellStyles method

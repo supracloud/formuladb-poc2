@@ -7,3 +7,6 @@
 [submodule "formuladb-themes"]
 	path = formuladb-themes
 	url = git@gitlab.com:metawiz/formuladb-themes.git
+[submodule "formuladb-e2e"]
+	path = formuladb-e2e
+	url = git@gitlab.com:metawiz/formuladb-e2e.git

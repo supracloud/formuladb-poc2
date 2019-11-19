@@ -21,7 +21,6 @@
         "test:e2e": "protractor e2e/protractor.conf.js",
         "_old_e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
         "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts",
-        "generate-icons": "icon-font-generator -p frmdb-i fe/img/icons/*.svg -o fe/icons",
         "generate-json-schemas": "for i in App Entity SchemaEntityList; do typescript-json-schema ./tsconfig.json $i > core/src/schemas/$i.schema.json ; done",
         "sync-dev-static-assets": "watch 'bash ci/copy-static-assets-to-dev-ngunx-pod.sh' formuladb-static formuladb-themes"
     },
@@ -44,7 +43,6 @@
         "fetch-mock": "^7.3.6",
         "fluent-ffmpeg": "^2.1.2",
         "glob": "^7.1.4",
-        "icon-font-generator": "^2.1.10",
         "install": "^0.12.2",
         "is-wsl": "^2.1.0",
         "jasmine": "^3.4.0",
