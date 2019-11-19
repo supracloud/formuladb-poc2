@@ -75,6 +75,7 @@ export class HighlightBoxComponent extends HTMLElement {
             event.preventDefault();
             if (this.wysiwygEditor.isActive && this.selectedEl &&
                 (this.selectedEl == event.target || this.selectedEl.contains(event.target as HTMLElement))) return;
+            console.warn((event.target as any).outerHTML);
             this.selectElement(event.target as HTMLElement);
             this.selectedEl = event.target as HTMLElement;
             this.showSelectBox(this.selectedEl);
@@ -117,7 +118,7 @@ export class HighlightBoxComponent extends HTMLElement {
         } else this.parentHighlightBox.style.display = 'none';
         if (highlightEl.previousElementSibling) {
             this.showBox(this.prevHighlightBox, highlightEl.previousElementSibling as HTMLElement);
-        }
+        } else this.prevHighlightBox.style.display = 'none';
     }
 
     showSelectBox(el: HTMLElement) {

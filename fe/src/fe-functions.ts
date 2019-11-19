@@ -86,7 +86,7 @@ export function $TABLES(): { name: string }[] {
 
 export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: string }[] {
     let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
-    if (!parentRecordEl) { console.warn("parent record not found", el.outerHTML); return [] }
+    if (!parentRecordEl) { return [] }
 
     let tableName = parentRecordEl.getAttribute('data-frmdb-table');
     if (!tableName) {

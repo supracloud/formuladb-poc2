@@ -305,6 +305,9 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
                 (el as HTMLInputElement).value = value + '';
             } else if ((el as HTMLElement).tagName.toLowerCase() === 'img') {
                 (el as HTMLInputElement).src = value + '';
+            } else if ((el as HTMLElement).classList.contains('card-img-overlay')) {
+                let img = el.previousElementSibling as HTMLImageElement;
+                if (img && img.tagName.toLowerCase() === 'img') img.src = value + '';
             } else if ((el as HTMLElement).tagName.toLowerCase() === 'i' && (value.indexOf('la-') === 0 || value.indexOf('icon-') === 0 || value.indexOf('fa-') === 0)) {
                 el.classList.forEach(className => {
                     let prefix = value.substr(0, value.indexOf('-') + 1);
