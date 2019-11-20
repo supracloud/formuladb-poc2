@@ -22,10 +22,10 @@ describe('FormulaEditorComponent', () => {
         expect(el instanceof FormulaEditorComponent).toEqual(true);
 
         await new Promise(resolve => setTimeout(resolve, 200));
-        console.log(el.innerHTML);
-        let normalizedHtml = normalizeHTML(el.innerHTML);
+        console.log(el.shadowRoot!.innerHTML);
+        let normalizedHtml = normalizeHTML(el.shadowRoot!.innerHTML);
 
-        expect(normalizedHtml[1]).toEqual('<div class="formula-code-editor d-flex">');
+        expect(normalizedHtml[1]).toEqual('<div class="formula-code-editor">');
 
         done();
     });
