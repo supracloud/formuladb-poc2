@@ -6,38 +6,36 @@ image:
 config:
   heartbeat.monitors:
   - type: http
-    schedule: '@every 60s'
-    timeout: 5s
+    schedule: '0 * * * * * *'
+    timeout: 1s
     urls:
       - "https://gitlab.formuladb.io"
       - "https://dashboard.formuladb.io"
       - "https://formuladb.io"
+      - "https://staging.formuladb.io"
       - "https://formuladb:HEwAXwhG5Tqd@kibana.formuladb.io"
       - "https://formuladb:HEwAXwhG5Tqd@elasticsearch.formuladb.io"
       - "https://formuladb:HEwAXwhG5Tqd@apmserver.formuladb.io"
     check.response.status: 200
-  heartbeat.autodiscover:
-    providers:
-      - type: kubernetes
-        templates:
-          - condition:
-              equals:
-                kubernetes.labels.service: "be"
-            config:
-              - type: http
-                urls: ["https://${data.kubernetes.namespace}.formuladb.io"]
-                schedule: "@every 60s"
-                timeout: 5s
-                check.response.status: 200
+  # heartbeat.autodiscover:
+  #   providers:
+  #     - type: kubernetes
+  #       templates:
+  #         - condition:
+  #             equals:
+  #               kubernetes.labels.service: "be"
+  #           config:
+  #             - type: http
+  #               urls: ["https://${data.kubernetes.namespace}.formuladb.io"]
+  #               schedule: "0 * * * * * *"
+  #               timeout: 1s
+  #               check.response.status: 200
   output.elasticsearch:
     hosts: ["formuladb-master.monitoring:9200"]
   output.file:
     enabled: false
   setup.kibana:
     host: "http://kibana-kibana.monitoring:5601" 
-  processors:
-    - add_cloud_metadata:
-    - add_host_metadata:
 
 # List of beat plugins
 plugins: []
