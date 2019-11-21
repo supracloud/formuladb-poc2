@@ -85,6 +85,7 @@ function e2e_dev_env {
     # npm run e2e:data
 
     while ! kubectl -n "$FRMDB_ENV_NAME" get pods | grep 'be-.*Running'; do sleep 1; done
+    while ! kubectl -n "$FRMDB_ENV_NAME" exec service/be ls /wwwroot/git/formuladb-apps/Basic_Inventory | grep 'app.yaml'; do sleep 1; done
     kubectl -n "$FRMDB_ENV_NAME" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 
     test_e2e "$FRMDB_ENV_NAME" "http://localhost:8084"
