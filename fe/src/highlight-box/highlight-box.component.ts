@@ -63,7 +63,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
             if (this._disabled) return;
-            event.preventDefault();
+            // event.preventDefault();
             this.highlightEl = event.target as HTMLElement;
             this.highlightElement(this.highlightEl);
             emit(this, { type: "FrmdbHoverPageElement", el: this.highlightEl });
