@@ -64,7 +64,7 @@ function test_stress {
 }
 
 function test_e2e {
-    cd ${BASEDIR}/formuladb-e2e
+    cd ${BASEDIR}/../formuladb-e2e
     npm run compile
 
     FRMDB_ENV_NAME=$1
