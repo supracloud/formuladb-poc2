@@ -65,6 +65,7 @@ function test_stress {
 }
 
 function test_e2e {
+    set -x
     cd ${BASEDIR}/../formuladb-e2e
     npm run compile
 
