@@ -66,8 +66,6 @@ function test_stress {
 
 function test_e2e {
     set -x
-    cd ${BASEDIR}/../formuladb-e2e
-    npm run compile
 
     FRMDB_ENV_NAME=$1
     if [ -z "FRMDB_ENV_NAME" ]; then echo "pls provide FRMDB_ENV_NAME"; exit 1; fi
@@ -77,6 +75,9 @@ function test_e2e {
     POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
     npm run webdriver-update
+
+    cd ${BASEDIR}/../formuladb-e2e
+    npm run compile
     TARGET=headless npm test -- --baseUrl="$URL"
 }
 
