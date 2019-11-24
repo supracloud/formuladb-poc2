@@ -9,7 +9,7 @@ body {
     left: 0;
     width: var(--frmdb-editor-left-panel-width);
     height: 100vh;
-    z-index: 45679;
+    z-index: 1049;
 }
 
 .top-panel {
@@ -18,7 +18,7 @@ body {
     left: var(--frmdb-editor-left-panel-width);
     width: calc(100vw - var(--frmdb-editor-left-panel-width));
     height: var(--frmdb-editor-top-panel-height);
-    z-index: 45678;
+    z-index: 1048;
 }
 
 #canvas {
