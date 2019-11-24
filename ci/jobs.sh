@@ -78,6 +78,9 @@ function test_e2e {
 
     cd ${BASEDIR}/../formuladb-e2e
     npm run compile
+    pwd
+    pwd
+    cat package.json
     TARGET=headless npm test -- --baseUrl="$URL"
 }
 
