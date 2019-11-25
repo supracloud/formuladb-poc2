@@ -17,7 +17,7 @@ https://github.com/givanz/Vvvebjs
 */
 
 import { createInput, Input } from "./inputs";
-import { FrmdbDataBindingProperties, style_section, incrementSort, ElementEditorComponent } from "@fe/component-editor/component-editor.component";
+import { FrmdbDataBindingProperties, style_section, incrementSort, ElementEditorComponent, incrementCommonPropsSort } from "@fe/component-editor/component-editor.component";
 
 declare var $: null, jQuery: null;
 
@@ -72,6 +72,30 @@ function changeNodeName(node: HTMLElement, newNodeName: string) {
     return newNode;
 }
 
+function grabImage(element: HTMLElement) {
+    if (element.tagName.toLowerCase() === 'img') {
+        return element.getAttribute('src');
+    }
+    const img = element.querySelector('img');
+    if (img) return img.getAttribute('src');
+
+    if (element.classList.contains('card-img-overlay')) {
+        let imgEl = element.previousElementSibling as HTMLImageElement;
+        if (imgEl && imgEl.tagName.toLowerCase() === 'img') return imgEl.getAttribute('src');
+    }
+
+    let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-tint-img');
+    if (cssPropertyImgUrl) {
+        return cssPropertyImgUrl.replace(/^\s*url\(['"']/, '').replace(/['"']\)\s*$/, '');
+    }
+
+    for (let el of [element].concat(Array.from(element.querySelectorAll("div")))) {
+        if (getComputedStyle(el).backgroundImage !== 'none') {
+            return (getComputedStyle(el).backgroundImage||'').replace(/^url\(['"']/, '').replace(/['"']\)$/, '');
+        }
+    }
+}
+
 // ComponentsGroup['Basic Components'] =
 // ["html/container", "html/gridrow", "html/button", "html/buttongroup", "html/buttontoolbar", "html/heading", "html/image", "html/jumbotron", "html/alert", "html/card", "html/listgroup", "html/hr", "html/taglabel", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination", "html/form", "html/textinput", "html/textareainput", "html/selectinput", "html/fileinput", "html/checkbox", "html/radiobutton", "html/table", "html/paragraph", "html/link", "html/video", "html/button"];
 
@@ -80,24 +104,46 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
     Components.add("_base", {
         name: "Element",
         properties: [
+            ...FrmdbDataBindingProperties,
             {
                 name: "Id",
                 key: "id",
                 htmlAttr: "id",
-                sort: incrementSort(),
+                sort: incrementCommonPropsSort(),
                 inline: true,
                 col: 12,
                 inputtype: "TextInput",
+                tab: "left-panel-tab-content",
             }, {
                 name: "Class",
                 key: "class",
                 htmlAttr: "class",
-                sort: incrementSort(),
+                sort: incrementCommonPropsSort(),
                 inline: true,
                 col: 12,
                 inputtype: "TextInput",
+                tab: "left-panel-tab-content",
             },
-            ...FrmdbDataBindingProperties
+            {
+                name: "Image",
+                inline: true,
+                col: 12,
+                key: "src",
+                inputtype: "ImageInput",
+                beforeInit: function (node: HTMLElement) {
+                    let imgSrc = grabImage(node);
+                    if (!imgSrc) this.hide = true;
+                    else this.hide = false;
+                },
+                init: function (node: HTMLElement) {
+                    return grabImage(node);
+                },
+                onChange: function (node, value, input) {
+                    let imgEl = node.previousElementSibling as HTMLImageElement;
+                    imgEl.src = value + ''; 
+                    return node;
+                },
+            },            
         ]
     });
 
@@ -1033,20 +1079,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
         },*/
         image: "icons/image.svg",
         properties: [
-            {
-                name: "Image",
-                key: "src",
-                inputtype: "ImageInput",
-                init: function (node) {
-                    let imgEl = node.previousElementSibling as HTMLImageElement;
-                    return imgEl.src;
-                },
-                onChange: function (node, value, input) {
-                    let imgEl = node.previousElementSibling as HTMLImageElement;
-                    imgEl.src = value + ''; 
-                    return node;
-                },
-            },
+
         ]
     });
     Components.extend("_base", "html/image", {
@@ -1061,11 +1094,6 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
         },*/
         image: "icons/image.svg",
         properties: [{
-            name: "Image",
-            key: "src",
-            htmlAttr: "src",
-            inputtype: "ImageInput",
-        }, {
             name: "Width",
             key: "width",
             htmlAttr: "width",
@@ -2209,7 +2237,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
             name: "Text align",
             key: "text-align",
             htmlAttr: "class",
-            inputtype: "SelectInput",
+            inputtype: "RadioButtonInput",
             validValues: ["", "text-left", "text-center", "text-right"],
             data: {
                 extraclass: "btn-group-sm btn-group-fullwidth",

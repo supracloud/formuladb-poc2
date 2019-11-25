@@ -62,7 +62,7 @@ interface ComponentProperty {
 	key: string;
 	htmlAttr?: string;
 	sort?: number;
-	tab?: string;
+	tab?: "left-panel-tab-content" | "left-panel-tab-style" | "left-panel-tab-data";
 	col?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 	inline?: boolean;
 	inputtype: keyof typeof Inputs,
@@ -70,6 +70,7 @@ interface ComponentProperty {
 	data?: any;
 	child?: string;//selector
 	parent?: string;//selector
+	hide?: boolean;
 	beforeInit?: (el: HTMLElement) => void;
 	afterInit?: (el: HTMLElement) => void;
 	init?: (el: HTMLElement) => void;
@@ -309,6 +310,8 @@ export class ElementEditorComponent extends HTMLElement {
 			} catch (err) {
 				console.warn("Error in beforeInit", component, property, err);
 			}
+
+			if (property.hide) continue;
 			
 			if (property.child) element = element.querySelector(property.child) as HTMLElement;
 			
@@ -390,23 +393,33 @@ export class ElementEditorComponent extends HTMLElement {
 				element.classList.remove(property.validValues.join(" "));
 				element.classList.add('' + value);
 			}
-			else if (property.htmlAttr == "style") {
+			else if (property.htmlAttr === "style") {
 				this.styleManager.setStyle(element, property.key, '' + value);
 			}
-			else if (property.htmlAttr == "innerHTML") {
+			else if (property.htmlAttr === "innerHTML") {
+				oldValue = element.innerHTML;
 				element.innerHTML = '' + value;
 			}
 			else {
 				element.setAttribute(property.htmlAttr, '' + value);
 			}
 			
-			Undo.addMutation({
-				type: 'attributes',
-				target: element,
-				attributeName: property.htmlAttr,
-				oldValue: oldValue,
-				newValue: element.getAttribute(property.htmlAttr)
-			});
+			if (property.htmlAttr === "innerHTML") {
+				Undo.addMutation({
+					type: 'characterData',
+					target: element,
+					oldValue: oldValue || '',
+					newValue: value + ''
+				});
+			} else {		
+				Undo.addMutation({
+					type: 'attributes',
+					target: element,
+					attributeName: property.htmlAttr,
+					oldValue: oldValue,
+					newValue: element.getAttribute(property.htmlAttr)
+				});
+			}
 		}
 		
 		return element;
@@ -436,6 +449,11 @@ let base_sort = 100;
 export function incrementSort() {
 	return base_sort++;
 }
+let commonPropsSort = 80;
+export function incrementCommonPropsSort() {
+	return commonPropsSort++;
+}
+
 export const style_section = 'left-panel-tab-style';
 
 export const DefaultSection: ComponentProperty = {

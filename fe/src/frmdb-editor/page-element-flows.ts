@@ -25,6 +25,9 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         }
     });
 
+    onEventChildren(document.body, 'click', '#frmdb-chose-image-button', (event) => {
+    });
+
     onEvent(editor.highlightBox, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
         editor.selectElement(event.detail.el);
     });

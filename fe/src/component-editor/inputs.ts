@@ -61,10 +61,6 @@ export class TextInput extends Input {
 				class="form-control"/>
 			</div>
 		`, data);
-
-		onEvent(this.querySelector('input')!, 'blur', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
-		});
 	}
 }
 
@@ -84,9 +80,6 @@ export class TextareaInput extends Input {
 				<textarea name="{%=key%}" rows="3" class="form-control"/>
 			</div>
 		`, data);
-		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
-		});
 	}
 }
 
@@ -137,10 +130,6 @@ export class LinkInput extends TextInput {
 
 	init(data) {
 		super.init(data);
-		super.init(data);
-		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
-		});
 	}
 }
 
@@ -155,9 +144,6 @@ export class RangeInput extends Input {
 				<input name="{%=key%}" type="range" min="{%=min%}" max="{%=max%}" step="{%=step%}" class="form-control"/>
 			</div>
 		`, data);
-		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
-		});
 	}
 }
 
@@ -177,9 +163,6 @@ export class NumberInput extends Input {
 				{% if (typeof placeholder !== 'undefined' && placeholder != false) { %}placeholder="{%=placeholder%}"{% } %} 
 			class="form-control"/>
 		`, data);
-		onEvent(this.querySelector('textarea')!, 'keyup', '*', (event: Event) => {
-			emit(this, { type: "FrmdbModifyPageElement", value: this.value });
-		});
 	}
 }
 
@@ -284,6 +267,7 @@ export class ImageInput extends Input {
 		//don't set blob value to avoid slowing down the page		
 		if (value.indexOf("data:image") == -1) {
 			(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
+			(this.querySelector('img') as HTMLImageElement).src = value;
 		}
 	}
 
@@ -291,8 +275,10 @@ export class ImageInput extends Input {
 		super.init(data);
 		return this.render(/*html*/`
 			<div>
-				<input name="{%=key%}" type="text" class="form-control"/>
-				<input name="file" type="file" class="form-control"/>
+				<a id="frmdb-chose-image-button" href="javascript:void(0)">
+					<img style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
+				</a>
+				<input disabled name="{%=key%}" type="text" class="form-control"/>
 			</div>		
 		`, data);
 	}
