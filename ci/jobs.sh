@@ -77,12 +77,12 @@ function test_e2e {
 
     POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    npm run webdriver-update
 
     cd ${BASEDIR}/../formuladb-e2e
+    pwd
     npm install
     npm run compile
-    pwd
+    npm run webdriver-update
     pwd
     cat package.json
     TARGET=headless npm test -- --baseUrl="$URL"
