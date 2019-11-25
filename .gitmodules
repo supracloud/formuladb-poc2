@@ -10,3 +10,6 @@
 [submodule "formuladb-e2e"]
 	path = formuladb-e2e
 	url = git@gitlab.com:metawiz/formuladb-e2e.git
+[submodule "formuladb-icons"]
+	path = formuladb-icons
+	url = git@gitlab.com:metawiz/formuladb-icons.git

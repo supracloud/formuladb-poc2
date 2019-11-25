@@ -22,6 +22,8 @@ stages:
       - tsc-out/
       - dist-be/
       - formuladb/
+      - formuladb-themes/
+      - formuladb-e2e/
 
 .only_for_staging_and_production: &only_for_staging_and_production
   only:
