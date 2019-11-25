@@ -80,6 +80,7 @@ function test_e2e {
     npm run webdriver-update
 
     cd ${BASEDIR}/../formuladb-e2e
+    npm install
     npm run compile
     pwd
     pwd
