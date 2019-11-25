@@ -284,6 +284,32 @@ export class ImageInput extends Input {
 	}
 }
 
+export class IconInput extends Input {
+	static elemTagName = "frmdb-icon-input";
+	inputTagName = "frmdb-icon-input";
+
+	setValue(value) {
+
+		//don't set blob value to avoid slowing down the page		
+		if (value.indexOf("data:image") == -1) {
+			(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
+			(this.querySelector('i') as HTMLElement).setAttribute('class', value);
+		}
+	}
+
+	init(data) {
+		super.init(data);
+		return this.render(/*html*/`
+			<div class="d-flex">
+				<a id="frmdb-chose-icon-button" href="javascript:void(0)">
+					<i></i>
+				</a>
+				<input disabled name="{%=key%}" type="text" class="form-control ml-1"/>
+			</div>		
+		`, data);
+	}
+}
+
 export class FileUploadInput extends TextInput {
 	static elemTagName = "frmdb-file-upload-input";
 	inputTagName = "frmdb-file-upload-input";
@@ -614,6 +640,7 @@ export const Inputs = {
 	'CssUnitInput': CssUnitInput,
 	'ColorInput': ColorInput,
 	'ImageInput': ImageInput,
+	'IconInput': IconInput,
 	'FileUploadInput': FileUploadInput,
 	'RadioInput': RadioInput,
 	'RadioButtonInput': RadioButtonInput,
@@ -637,6 +664,7 @@ customElements.define("frmdb-number-input", NumberInput);
 customElements.define("frmdb-css-unit-input", CssUnitInput);
 customElements.define("frmdb-color-input", ColorInput);
 customElements.define("frmdb-image-input", ImageInput);
+customElements.define("frmdb-icon-input", IconInput);
 customElements.define("frmdb-file-upload-input", FileUploadInput);
 customElements.define("frmdb-radio-input", RadioInput);
 customElements.define("frmdb-radio-button-input", RadioButtonInput);

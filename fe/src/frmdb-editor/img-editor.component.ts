@@ -10,13 +10,13 @@ export class ImgEditorComponent extends HTMLElement {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
 
         onEvent(this, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
-            ($('#add-element-modal') as any).modal('hide');
+            ($('#img-editor-modal') as any).modal('hide');
         });
     }
 
     start(selectedEl: HTMLElement) {
         
-        ($('#add-element-modal') as any).modal('show');
+        ($('#img-editor-modal') as any).modal('show');
     }
 }
 customElements.define('frmdb-img-editor', ImgEditorComponent);

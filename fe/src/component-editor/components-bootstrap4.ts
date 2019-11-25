@@ -96,6 +96,12 @@ function grabImage(element: HTMLElement) {
     }
 }
 
+function grabIcon(element: HTMLElement) {
+    if (element.tagName.toLowerCase() === 'i') {
+        return element.getAttribute('class');
+    }
+}
+
 // ComponentsGroup['Basic Components'] =
 // ["html/container", "html/gridrow", "html/button", "html/buttongroup", "html/buttontoolbar", "html/heading", "html/image", "html/jumbotron", "html/alert", "html/card", "html/listgroup", "html/hr", "html/taglabel", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination", "html/form", "html/textinput", "html/textareainput", "html/selectinput", "html/fileinput", "html/checkbox", "html/radiobutton", "html/table", "html/paragraph", "html/link", "html/video", "html/button"];
 
@@ -138,12 +144,22 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                 init: function (node: HTMLElement) {
                     return grabImage(node);
                 },
-                onChange: function (node, value, input) {
-                    let imgEl = node.previousElementSibling as HTMLImageElement;
-                    imgEl.src = value + ''; 
-                    return node;
+            },
+            {
+                name: "Icon",
+                key: "icon-class",
+                inputtype: "IconInput",
+                inline: true,
+                col: 12,
+                beforeInit: function (node: HTMLElement) {
+                    let iconClass = grabIcon(node);
+                    if (!iconClass) this.hide = true;
+                    else this.hide = false;
                 },
-            },            
+                init: function (node: HTMLElement) {
+                    return grabIcon(node);
+                },
+            },                      
         ]
     });
 

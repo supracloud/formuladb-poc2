@@ -36,6 +36,12 @@ import { AddElementComponent } from "./add-element.component";
 
 import { pageElementFlows } from "./page-element-flows";
 
+import "@fe/frmdb-editor/img-editor.component";
+import { ImgEditorComponent } from "./img-editor.component";
+
+import "@fe/frmdb-editor/icon-editor.component";
+import { IconEditorComponent } from "./icon-editor.component";
+
 class FrmdbEditorState {
     tables: Entity[] = [];
     pages: { name: string, url: string }[];
@@ -61,6 +67,8 @@ export class FrmdbEditorDirective {
     letPanel: HTMLElement;
     highlightBox: HighlightBoxComponent;
     addElementCmp: AddElementComponent;
+    imgEditorCmp: ImgEditorComponent;
+    iconEditorCmp: IconEditorComponent;
     elementTree: ElementTreeComponent;
     elementEditor: ElementEditorComponent;
     themeCustomizer: ThemeCustomizerComponent;
@@ -82,6 +90,8 @@ export class FrmdbEditorDirective {
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
             this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
+            this.imgEditorCmp = document.body.querySelector('frmdb-img-editor') as ImgEditorComponent;
+            this.iconEditorCmp = document.body.querySelector('frmdb-icon-editor') as IconEditorComponent;
             this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
             this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
     

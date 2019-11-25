@@ -2,6 +2,7 @@ import { FrmdbEditorDirective } from "./frmdb-editor.directive";
 import { onEvent, onEventChildren } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction, FrmdbAddPageElement, FrmdbRemovePageElement } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
+import { ImageInput } from "@fe/component-editor/inputs";
 
 export function pageElementFlows(editor: FrmdbEditorDirective) {
     onEventChildren(document.body, 'click', '#undo-btn', (event) => {
@@ -26,6 +27,17 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     });
 
     onEventChildren(document.body, 'click', '#frmdb-chose-image-button', (event) => {
+        let prop: ImageInput | null = event.target.closest('frmdb-image-input');
+        if (prop) {
+            editor.imgEditorCmp.start(prop);
+        }
+    });
+
+    onEventChildren(document.body, 'click', '#frmdb-chose-icon-button', (event) => {
+        let prop: ImageInput | null = event.target.closest('frmdb-icon-input');
+        if (prop) {
+            editor.iconEditorCmp.start(prop);
+        }
     });
 
     onEvent(editor.highlightBox, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
