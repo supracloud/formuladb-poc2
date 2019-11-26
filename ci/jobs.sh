@@ -51,7 +51,7 @@ function build_images_and_deploy {
 }
 
 function build_images_and_deploy_dev {
-    build_images_and_deploy "$FRMDB_ENV_NAME" dev
+    build_images_and_deploy "$FRMDB_ENV_NAME" staging
 }
 
 function test_postgres {
