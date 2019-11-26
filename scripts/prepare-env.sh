@@ -17,18 +17,21 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
-if [ ! -d "formuladb-apps" ]; then
-    git clone --jobs 10 --branch master --single-branch --depth 1 \
-        git@gitlab.com:metawiz/formuladb-apps.git
-fi
 
-cd formuladb-apps
-if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
-    echo "formuladb-apps already at the right branch"
-else
-    git checkout -b "${FRMDB_ENV_NAME}"
-fi
-git push --set-upstream origin "${FRMDB_ENV_NAME}"
+for submodule in formuladb-icons formuladb-themes formuladb-static formuladb-apps; do
+    if [ ! -d "${submodule}" ]; then
+        git clone --jobs 10 --branch master --single-branch --depth 1 \
+            git@gitlab.com:metawiz/${submodule}.git
+    fi
+
+    cd ${submodule}
+    if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
+        echo "${submodule} already at the right branch"
+    else
+        git checkout -b "${FRMDB_ENV_NAME}"
+        git push --set-upstream origin "${FRMDB_ENV_NAME}"
+    fi
+done
 
 # -------------------------------------------------------------------------
 # k8s

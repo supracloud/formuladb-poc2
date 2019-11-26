@@ -21,12 +21,12 @@ function build_images_and_deploy {
     chmod og-r ssh/*
     chmod uog-wx ssh/*
     pwd
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init --depth 1 formuladb-apps
+    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init --jobs 5 --depth 1
     ls formuladb-apps
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init --depth 1 formuladb-themes
     ls formuladb-themes
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init --depth 1 formuladb-e2e
     ls formuladb-e2e
+    ls formuladb-icons
+    ls formuladb-static
     
     set -x
     NAMESPACE=$1
