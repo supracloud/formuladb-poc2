@@ -7,7 +7,7 @@ ENV NPM_SCRIPT=${NPM_SCRIPT:-start}
 ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
 
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache bash git vim openssh vimdiff curl
+    apk add --no-cache bash git vim openssh vimdiff curl rsync
 
 COPY package.json /package.json
 

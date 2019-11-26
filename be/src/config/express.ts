@@ -3,6 +3,8 @@
  * License TBD
  */
 
+process.env.DEBUG="express:*"
+require('hot-debug');
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
@@ -17,7 +19,7 @@ import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
 import * as serveIndex from 'serve-index';
-
+let debug = require('debug');
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -28,9 +30,7 @@ import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
-import { DictionaryEntry } from "@domain/dictionary-entry";
 import { I18nBe } from "@be/i18n-be";
-import { html } from "d3";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -160,7 +160,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         });
     }
 
-    app.use('/formuladb-themes/_css', serveIndex('/wwwroot/git/formuladb-themes/_css'));
+    //////////////////////////////////////////////////////////////////////////////////////
+    // themes, icons, images & other static content
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    app.use('/formuladb-themes', express.static('/wwwroot/git/formuladb-themes'));
+    app.use('/formuladb-icons/', express.static('wwwroot/git/formuladb-icons'));
+    app.use('/formuladb-static/', express.static('/wwwroot/git/formuladb-static'));
     
     const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-static-assets';
     let httpProxy = proxy({
@@ -170,12 +176,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         // pathRewrite: function (path, req) { return path },
         logLevel: "debug",
     });
+    //not used anymore
     app.get(/^\/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
         httpProxy(req, res, next);
     });
     app.get(/^\/formuladb-themes\/.*/, timeout('2s'), async function (req, res, next) {
         httpProxy(req, res, next);
     });
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // apps
+    //////////////////////////////////////////////////////////////////////////////////////
 
     let formuladbIoStatic = express.static('/wwwroot/git/formuladb-apps/formuladb.io', { index: "index.html" });
     app.get('/', formuladbIoStatic);
@@ -189,6 +200,33 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         console.log("HTML FILESSSSSSSS", req.url);
         formuladbAppsStatic(req, res, next);
     });
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // Internal Debug APIs
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    app.get('/formuladb-api/DEBUG/enabled/:debugValue', async function (req, res, next) {
+        try {
+            res.send(debug.enabled(req.params.debugValue));
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+
+    app.post('/formuladb-api/DEBUG/:debugValue', async function (req, res, next) {
+        try {
+            debug.enable(req.params.debugValue);
+            res.send(`OK ${req.params.debugValue}`);
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // API
+    //////////////////////////////////////////////////////////////////////////////////////
 
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {

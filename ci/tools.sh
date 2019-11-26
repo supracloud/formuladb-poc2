@@ -163,6 +163,29 @@ kubectlport-forward-env-be() {
     kubectl -n "$namespace" port-forward $pod 8085:3000
 }
 
+kubectlrsync() (
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+
+    src=$1
+    shift
+    dst=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    if echo "$src" | grep '.*:'; then
+        service_name=`echo "$src" | sed -e 's/:.*//'`
+        path=`echo "$src" | sed -e 's/.*://'`
+        pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
+        src="${pod}@${namespace}:${path}"
+    else 
+        service_name=`echo "$dst" | sed -e 's/:.*//'`
+        path=`echo "$dst" | sed -e 's/.*://'`
+        pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
+        dst="${pod}@${namespace}:${path}"
+    fi
+
+    kubectlrsync.sh -auv --progress --stats "$src" "$dst"
+)
+
 frmdb-be-load-test-data() {
     if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"

@@ -1,13 +1,13 @@
 *
 formuladb/*.js.map
+dist-be/**.js.map
 !dist-be/frmdb-be*.js
 !formuladb
 !package.json
-!fe/js
-!fe/img
-!fe/icons
 !ci/FormulaDB-storage-full.json
 !ssh
 !scripts
 !formuladb-apps
-!formuladb-editor
+!formuladb-themes
+!formuladb-icons
+!formuladb-static

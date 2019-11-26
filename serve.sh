@@ -6,6 +6,13 @@ handleErr () {
 }
 trap handleErr ERR
 
+. ci/tools.sh
+kubectlrsync formuladb-apps be:/wwwroot/git/
+kubectlrsync formuladb-icons be:/wwwroot/git/
+kubectlrsync formuladb-static be:/wwwroot/git/
+kubectlrsync formuladb-themes be:/wwwroot/git/
+frmdb-be-load-test-data
+
 ./node_modules/.bin/live-server --port=8081 -V --no-browser \
     --mount=/formuladb/:./formuladb/ \
     --mount=/formuladb-themes/:./formuladb-themes/ \

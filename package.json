@@ -4,7 +4,7 @@
     "description": "FormulaDB low code platform",
     "scripts": {
         "start": "bash scripts/init-be.sh && node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
-        "start_dev": "bash scripts/init-be.sh && nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
+        "start_dev": "nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "compile": "tsc --sourceMap -p .",
         "compile:watch": "npm run compile -- -w",
         "bundle": "webpack",
@@ -104,6 +104,7 @@
         "expression-eval": "git+https://github.com/acristu/expression-eval.git",
         "formulajs": "git+https://github.com/acristu/formula.js.git",
         "fuse.js": "^3.3.0",
+        "hot-debug": "^1.0.0",
         "http-proxy-middleware": "^0.19.1",
         "js-beautify": "^1.10.2",
         "js-yaml": "^3.13.1",
