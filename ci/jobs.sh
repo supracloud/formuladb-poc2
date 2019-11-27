@@ -46,7 +46,10 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
-    while ! kubectl -n "$NAMESPACE" exec service/be ls /wwwroot/git/formuladb-apps/Basic_Inventory | grep 'app.yaml'; do sleep 1; done
+    while ! kubectl -n "$NAMESPACE" exec service/be ls /wwwroot/git/formuladb-apps/Hotel_Booking | grep 'app.yaml'; do 
+        sleep 1; 
+        kubectl -n "$NAMESPACE" logs service/be
+    done
     kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 }
 
