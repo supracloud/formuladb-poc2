@@ -89,11 +89,39 @@ function grabImage(element: HTMLElement) {
         return cssPropertyImgUrl.replace(/^\s*url\(['"']/, '').replace(/['"']\)\s*$/, '');
     }
 
-    for (let el of [element].concat(Array.from(element.querySelectorAll("div")))) {
-        if (getComputedStyle(el).backgroundImage !== 'none') {
-            return (getComputedStyle(el).backgroundImage||'').replace(/^url\(['"']/, '').replace(/['"']\)$/, '');
+    // for (let el of [element].concat(Array.from(element.querySelectorAll("div")))) {
+    //     if (getComputedStyle(el).backgroundImage !== 'none') {
+    //         return (getComputedStyle(el).backgroundImage||'').replace(/^url\(['"']/, '').replace(/['"']\)$/, '');
+    //     }
+    // }
+}
+
+function setImageSrc(element: HTMLElement, value: string) {
+    if (element.tagName.toLowerCase() === 'img') {
+        return element.setAttribute('src', value);
+    }
+    const img = element.querySelector('img');
+    if (img) {
+        img.setAttribute('src', value);
+    }
+
+    if (element.classList.contains('card-img-overlay')) {
+        let imgEl = element.previousElementSibling as HTMLImageElement;
+        if (imgEl && imgEl.tagName.toLowerCase() === 'img') {
+            imgEl.setAttribute('src', value);
         }
     }
+
+    let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-tint-img');
+    if (cssPropertyImgUrl) {
+        element.style.setProperty('--frmdb-bg-tint-img', `url('${value}')`);
+    }
+
+    // for (let el of [element].concat(Array.from(element.querySelectorAll("div")))) {
+    //     if (getComputedStyle(el).backgroundImage !== 'none') {
+    //         return (getComputedStyle(el).backgroundImage||'').replace(/^url\(['"']/, '').replace(/['"']\)$/, '');
+    //     }
+    // }
 }
 
 function grabIcon(element: HTMLElement) {
@@ -141,6 +169,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                     if (!imgSrc) this.hide = true;
                     else this.hide = false;
                 },
+                onChange: setImageSrc,
                 init: function (node: HTMLElement) {
                     return grabImage(node);
                 },

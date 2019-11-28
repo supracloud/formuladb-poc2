@@ -258,6 +258,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
+    
+    app.get('/formuladb-api/:tenant/:app/media', async function (req, res, next) {
+        try {
+            let paths: string[] = await kvsFactory.metadataStore.getMediaObjects(req.params.tenant, req.params.app);
+            res.json(paths);
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+
     app.post('/formuladb-api/:tenant/:app/:table/SimpleAddHocQuery', async function (req, res, next) {
         try {
             let query = req.body as SimpleAddHocQuery;

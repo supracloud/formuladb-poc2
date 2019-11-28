@@ -12,6 +12,8 @@ const STORAGE = new Storage({
 });
 
 const os = require('os');
+const path = require('path');
+
 const ROOT = process.env.FRMDB_SPECS ? '/tmp' : '/wwwroot/git';
 const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'formuladb-apps';
 
@@ -23,14 +25,35 @@ export interface SchemaEntityList {
 export class MetadataStore {
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
 
-    private async writeFile(fileName: string, content: string) {
+    private async writeFile(fileName: string, content: string | Buffer) {
         return new Promise((resolve, reject) => {
-            fs.writeFile(fileName, content, function (err) {
-                if (err) {
-                    console.error(err);
-                    reject(err);
+            let dirName = path.dirname(fileName);
+
+            fs.mkdir(dirName, {recursive: true}, function(errMkdir) {
+                if (errMkdir) {
+                    console.error(errMkdir);
+                    reject(errMkdir);
+                } else {
+                    fs.writeFile(fileName, content, function (err) {
+                        if (err) {
+                            console.error(err);
+                            reject(err);
+                        }
+                        resolve();
+                    });    
                 }
-                resolve();
+            })
+        });
+    }
+
+    private async listDir(directoryPath: string): Promise<string[]> {
+        return new Promise((resolve, reject) => {
+            fs.readdir(directoryPath, function (err, files) {
+                //handling error
+                if (err) {
+                    reject(err);
+                } 
+                resolve(files.map(file => `${directoryPath.slice(ROOT.length)}/${file}`));
             });
         });
     }
@@ -185,7 +208,15 @@ export class MetadataStore {
         this.delFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`);
     }
 
-    async saveMediaObject(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {
+    async saveMediaObject(filePath: string, base64Content: string): Promise<void> {
+        await this.writeFile(`${ROOT}/formuladb-static/${filePath}`, new Buffer(base64Content, 'base64'));
+    }
+
+    async getMediaObjects(tenantName: string, appName: string) {
+        return this.listDir(`${ROOT}/formuladb-static/${appName}`);
+    }
+
+    async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {
 
         let newGcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${name}`);
 

@@ -36,6 +36,13 @@ export abstract class Input extends HTMLElement {
 		});
 	}
 
+	emitChange() {
+		let input = this.querySelector('input,textarea,select');
+		if (input) {
+			input.dispatchEvent(new Event('change', {bubbles: true}));
+		}
+	}
+
 	setValue(value) {
 		elvis((this.querySelector('input,select,textarea') as HTMLInputElement
 			| HTMLSelectElement | HTMLTextAreaElement)).value = value;
@@ -278,7 +285,7 @@ export class ImageInput extends Input {
 				<a id="frmdb-chose-image-button" href="javascript:void(0)">
 					<img style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
 				</a>
-				<input disabled name="{%=key%}" type="text" class="form-control"/>
+				<input readonly name="{%=key%}" type="text" class="form-control"/>
 			</div>		
 		`, data);
 	}

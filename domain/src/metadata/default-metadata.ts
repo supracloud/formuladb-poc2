@@ -34,7 +34,6 @@ export const $Dictionary: Entity = {
 export const $Currency: Entity = {
     _id: "$Currency",
     props: {
-
         code: { name: "code", propType_: Pn.STRING } as EntityProperty,
     },
 };

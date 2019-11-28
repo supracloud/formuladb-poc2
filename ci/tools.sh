@@ -116,6 +116,16 @@ kubectlexec() {
     #TODO this needs to parse the arguments...it is more complex
 }
 
+kubectlsh() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec service/$service_name bash -it
+    #TODO this needs to parse the arguments...it is more complex
+}
+
 kubectllogs() {
     if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
     #export KUBECONFIG=k8s/production-kube-config.conf
@@ -183,7 +193,7 @@ kubectlrsync() (
         dst="${pod}@${namespace}:${path}"
     fi
 
-    kubectlrsync.sh -auv --progress --stats "$src" "$dst"
+    kubectlrsync.sh -auv "$src" "$dst" | egrep -v 'sending incremental file list|sent.*bytes.*received.*bytes|total size is.*speedup|^ *$'
 )
 
 frmdb-be-load-test-data() {

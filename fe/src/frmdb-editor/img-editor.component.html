@@ -1,19 +1,55 @@
 <div class="modal fade modal-xl" id="img-editor-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
     <div class="modal-dialog mt-3" role="document" style="width: 96vw; max-width: 96vw">
-        <div class="modal-content" style="width: 96vw; max-width: 96vw">
+        <div class="modal-content" style="height: 85vh; width: 96vw; max-width: 96vw">
             <div class="modal-header">
-                <p class="modal-title text-primary"><i class="la la-lg la-video"></i> Choose Image</p>
+                <h5 class="modal-title"><i class="la la-image"></i> Choose Image</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body h-100">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link" id="Headers">Uploaded Images</a>
-                        <a class="nav-item nav-link active" id="BasicComponents">Free Public Images</a>
+                        <a class="nav-item nav-link active" data-toggle="tab" href="#Uploaded_Images">Your Uploaded Images</a>
+                        <a class="nav-item nav-link" data-toggle="tab" href="#Free_Public_Images"><img src="/formuladb/img/pixabay-logo.svg" style="width:94px">
+                            Free Images</a>
+                        <a class="nav-item nav-link" data-toggle="tab" href="#Paid_Images">Paid Images</a>
                     </div>
                 </nav>
+                <div class="tab-content h-100 overflow-auto">
+                    <div class="tab-pane active" id="Uploaded_Images" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="card-columns text-center">
+                            <a class="card border-0" data-frmdb-table="mediaObjectsUrls[]">
+                                <img class="border rounded" data-frmdb-value="mediaObjectsUrls[]" data-frmdb-attr="alt::mediaObjectsUrls[]" style="max-height: 20vh">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="Free_Public_Images" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="d-flex align-items-center">
+                            <a href="https://pixabay.com/" target="_blank"
+                                style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
+                                <i style="display:block;width:68px;height:18px;overflow:hidden"><img src="/formuladb/img/pixabay-logo.svg"
+                                        style="width:94px"></i>
+                                Free Images
+                            </a>
+                            <div class="input-group mb-3">
+                                <input id="frmdb-search-free-images" type="text" class="form-control"
+                                    placeholder="Search images: hotels, water sports, beauty, consulting ...">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="la la-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-columns">
+                            <a class="card border-0 text-center" data-frmdb-table="freeImagesUrls[]">
+                                <img class="border rounded" data-frmdb-value="freeImagesUrls[]" data-frmdb-attr="alt::freeImagesUrls[]" style="max-height: 20vh">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="Paid_Images" role="tabpanel" aria-labelledby="home-tab">
+                        Coming soon...
+                    </div>
+                </div>
             </div>
         </div>
     </div>
