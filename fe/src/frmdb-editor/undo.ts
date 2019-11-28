@@ -26,7 +26,7 @@ subtree 				Set to true if mutations to target and target's descendants are to b
 attributeOldValue 		Set to true if attributes is set to true and target's attribute value before the mutation needs to be recorded.
 characterDataOldValue 	Set to true if characterData is set to true and target's data before the mutation needs to be recorded.
 attributeFilter 		Set to an array of attribute local names (without namespace) if not all attribute mutations need to be observed.
-*/ 
+*/
 
 /*
 MutationRecord.type				 	String 		Returns "attributes" if the mutation was an attribute mutation,
@@ -51,7 +51,7 @@ MutationRecord.oldValue 			String 		The return value depends on the MutationReco
 */
 
 interface MutationBase {
-	type: 'attributes' | 'characterData' | 'childList' | 'move';
+	type: 'attributes' | 'characterData' | 'childList' | 'move' | 'style.property';
 	target: Element;
 }
 interface AttributesMutation extends MutationBase {
@@ -59,6 +59,12 @@ interface AttributesMutation extends MutationBase {
 	attributeName: string;
 	oldValue: string | number | boolean | null;
 	newValue: string | number | boolean | null;
+}
+interface StylePropertyMutation extends MutationBase {
+	type: 'style.property';
+	propertyName: string;
+	oldValue: string | null;
+	newValue: string | null;
 }
 
 interface CharacterDataMutation extends MutationBase {
@@ -80,36 +86,37 @@ interface MoveMutation extends MutationBase {
 	newNextSibling?: Element | null;
 }
 
-export type Mutation = 
+export type Mutation =
 	| AttributesMutation
 	| CharacterDataMutation
 	| ChildListMutation
 	| MoveMutation
-;
+	| StylePropertyMutation
+	;
 
 export const Undo = {
-	
+
 	undos: [],
 	mutations: [],
 	undoIndex: -1,
-	enabled:true,
+	enabled: true,
 	/*		
 	init: function() {
 	},
-	*/	
-	addMutation : function(mutation: Mutation) {	
+	*/
+	addMutation: function (mutation: Mutation) {
 		/*
 			this.mutations.push(mutation);
 			this.undoIndex++;
 		*/
 		this.mutations.splice(++this.undoIndex, 0, mutation);
-	 },
+	},
 
-	restore : function(mutation: Mutation, undo) {	
-		
+	restore: function (mutation: Mutation, undo) {
+
 		switch (mutation.type) {
 			case 'childList':
-			
+
 				if (undo == true) {
 					var addedNodes = mutation.removedNodes;
 					var removedNodes = mutation.addedNodes;
@@ -117,21 +124,21 @@ export const Undo = {
 					addedNodes = mutation.addedNodes;
 					removedNodes = mutation.removedNodes;
 				}
-				
-				if (addedNodes) for(let i in addedNodes) {
+
+				if (addedNodes) for (let i in addedNodes) {
 					let node = addedNodes[i];
-					if (mutation.nextSibling) { 
+					if (mutation.nextSibling) {
 						mutation.nextSibling.parentNode!.insertBefore(node, mutation.nextSibling);
 					} else {
 						mutation.target.append(node);
 					}
 				}
 
-				if (removedNodes) for(let i in removedNodes) {
+				if (removedNodes) for (let i in removedNodes) {
 					let node = removedNodes[i];
 					node.parentNode!.removeChild(node);
 				}
-			break;					
+				break;
 			case 'move': {
 				let parent: Element, sibling: Element | undefined | null;
 				if (undo == true) {
@@ -141,42 +148,48 @@ export const Undo = {
 					parent = mutation.newParent;
 					sibling = mutation.newNextSibling;
 				}
-			  
+
 				if (sibling) {
 					sibling.parentNode!.insertBefore(mutation.target, sibling);
 				} else {
 					parent.append(mutation.target);
 				}
 			}
-			break;
+				break;
 			case 'characterData':
-			  mutation.target.innerHTML = undo ? mutation.oldValue : mutation.newValue;
-			  break;
-			case 'attributes':
-			  let value = undo ? mutation.oldValue : mutation.newValue;
+				mutation.target.innerHTML = undo ? mutation.oldValue : mutation.newValue;
+				break;
+			case 'attributes': {
+				let value = undo ? mutation.oldValue : mutation.newValue;
 
-			  if (value || value === false || value === 0)
-				mutation.target.setAttribute(mutation.attributeName, '' + value);
-			  else
-				mutation.target.removeAttribute(mutation.attributeName);
-
-			break;
+				if (value || value === false || value === 0)
+					mutation.target.setAttribute(mutation.attributeName, '' + value);
+				else
+					mutation.target.removeAttribute(mutation.attributeName);
+			}
+				break;
+			case 'style.property': {
+				let value = undo ? mutation.oldValue : mutation.newValue;
+				let el = mutation.target as HTMLElement;
+				el.style.setProperty(mutation.propertyName, '' + value);
+			}
+				break;
 		}
 	},
-	 
-	undo : function() {	
+
+	undo: function () {
 		if (this.undoIndex >= 0) {
-		  this.restore(this.mutations[this.undoIndex--], true);
-		}
-	 },
-
-	redo : function() {	
-		if (this.undoIndex < this.mutations.length - 1) {
-		  this.restore(this.mutations[++this.undoIndex], false);
+			this.restore(this.mutations[this.undoIndex--], true);
 		}
 	},
 
-	hasChanges : function() {	
+	redo: function () {
+		if (this.undoIndex < this.mutations.length - 1) {
+			this.restore(this.mutations[++this.undoIndex], false);
+		}
+	},
+
+	hasChanges: function () {
 		return this.mutations.length;
 	},
 };

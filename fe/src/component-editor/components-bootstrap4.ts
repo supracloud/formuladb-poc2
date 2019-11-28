@@ -18,6 +18,7 @@ https://github.com/givanz/Vvvebjs
 
 import { createInput, Input } from "./inputs";
 import { FrmdbDataBindingProperties, style_section, incrementSort, ElementEditorComponent, incrementCommonPropsSort } from "@fe/component-editor/component-editor.component";
+import { Undo } from "@fe/frmdb-editor/undo";
 
 declare var $: null, jQuery: null;
 
@@ -98,23 +99,52 @@ function grabImage(element: HTMLElement) {
 
 function setImageSrc(element: HTMLElement, value: string) {
     if (element.tagName.toLowerCase() === 'img') {
-        return element.setAttribute('src', value);
+        Undo.addMutation({
+            type: 'attributes',
+            target: element,
+            attributeName: 'src',
+            oldValue: element.getAttribute('src'),
+            newValue: value
+        });
+        element.setAttribute('src', value);
     }
     const img = element.querySelector('img');
     if (img) {
+        Undo.addMutation({
+            type: 'attributes',
+            target: img,
+            attributeName: 'src',
+            oldValue: img.getAttribute('src'),
+            newValue: value
+        });
         img.setAttribute('src', value);
     }
 
     if (element.classList.contains('card-img-overlay')) {
         let imgEl = element.previousElementSibling as HTMLImageElement;
         if (imgEl && imgEl.tagName.toLowerCase() === 'img') {
+            Undo.addMutation({
+                type: 'attributes',
+                target: imgEl,
+                attributeName: 'src',
+                oldValue: imgEl.getAttribute('src'),
+                newValue: value
+            });
             imgEl.setAttribute('src', value);
         }
     }
 
     let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-tint-img');
     if (cssPropertyImgUrl) {
-        element.style.setProperty('--frmdb-bg-tint-img', `url('${value}')`);
+        let newPropValue = `url('${value}')`;
+        Undo.addMutation({
+            type: 'style.property',
+            target: element,
+            propertyName: '--frmdb-bg-tint-img',
+            oldValue: element.style.getPropertyValue('--frmdb-bg-tint-img'),
+            newValue: newPropValue
+        });
+        element.style.setProperty('--frmdb-bg-tint-img', newPropValue);
     }
 
     // for (let el of [element].concat(Array.from(element.querySelectorAll("div")))) {

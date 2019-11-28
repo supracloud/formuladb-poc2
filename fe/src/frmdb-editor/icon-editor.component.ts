@@ -15,7 +15,7 @@ export class IconEditorComponent extends HTMLElement {
         });
     }
 
-    start(iconinputProperty: IconInput) {
+    start(iconInputProperty: IconInput) {
         ($('#icon-editor-modal') as any).modal('show');
     }
 }
