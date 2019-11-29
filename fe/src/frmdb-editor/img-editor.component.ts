@@ -32,7 +32,6 @@ export class ImgEditorComponent extends HTMLElement {
         onEvent(this, 'click', '[data-frmdb-value="freeImagesUrls[]"]', event => {
             if (!this.imageProperty) return;
             alert('Coming soon...');
-            this.imageProperty.setValue(event.target.src);
         });
     }
 

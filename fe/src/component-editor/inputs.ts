@@ -296,22 +296,18 @@ export class IconInput extends Input {
 	inputTagName = "frmdb-icon-input";
 
 	setValue(value) {
-
-		//don't set blob value to avoid slowing down the page		
-		if (value.indexOf("data:image") == -1) {
-			(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
-			(this.querySelector('i') as HTMLElement).setAttribute('class', value);
-		}
+		(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
+		(this.querySelector('i') as HTMLElement).setAttribute('class', value);
 	}
 
 	init(data) {
 		super.init(data);
 		return this.render(/*html*/`
-			<div class="d-flex">
+			<div class="d-flex flex-column align-items-center">
 				<a id="frmdb-chose-icon-button" href="javascript:void(0)">
-					<i></i>
+					<h1><i></i></h1>
 				</a>
-				<input disabled name="{%=key%}" type="text" class="form-control ml-1"/>
+				<input disabled name="{%=key%}" type="text" class="form-control ml-2"/>
 			</div>		
 		`, data);
 	}

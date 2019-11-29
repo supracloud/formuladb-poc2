@@ -167,6 +167,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
 
     Components.add("_base", {
         name: "Element",
+        //@ts-ignore
         properties: [
             ...FrmdbDataBindingProperties,
             {
@@ -194,6 +195,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                 col: 12,
                 key: "src",
                 inputtype: "ImageInput",
+                tab: "left-panel-tab-content",
                 beforeInit: function (node: HTMLElement) {
                     let imgSrc = grabImage(node);
                     if (!imgSrc) this.hide = true;
@@ -208,12 +210,23 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                 name: "Icon",
                 key: "icon-class",
                 inputtype: "IconInput",
+                tab: "left-panel-tab-content",
                 inline: true,
                 col: 12,
                 beforeInit: function (node: HTMLElement) {
                     let iconClass = grabIcon(node);
                     if (!iconClass) this.hide = true;
                     else this.hide = false;
+                },
+                onChange: function (element: HTMLElement, value: string) {
+                    Undo.addMutation({
+                        type: 'attributes',
+                        target: element,
+                        attributeName: 'class',
+                        oldValue: element.getAttribute('class'),
+                        newValue: value
+                    });
+                    element.setAttribute('class', value);
                 },
                 init: function (node: HTMLElement) {
                     return grabIcon(node);

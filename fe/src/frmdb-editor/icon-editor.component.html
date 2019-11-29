@@ -1,6 +1,6 @@
-<div class="modal fade modal-xl" id="icon-editor-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
-    <div class="modal-dialog mt-3" role="document" style="width: 96vw; max-width: 96vw">
-        <div class="modal-content" style="height: 85vh; width: 96vw; max-width: 96vw">
+<div class="modal fade" id="icon-editor-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog mt-3 modal-xl" role="document">
+        <div class="modal-content" style="height: 85vh">
             <div class="modal-header">
                 <h5 class="modal-title"><i class="la la-image"></i> Choose Icon</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -10,15 +10,16 @@
             <div class="modal-body h-100 overflow-hidden mb-4">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link" data-toggle="tab" href="#Free_Icons">Free Icons</a>
-                        <a class="nav-item nav-link" data-toggle="tab" href="#Paid_Icons">Paid Icons</a>
+                        <a style="cursor: pointer" class="nav-item nav-link active" data-toggle="tab" href="#Free_Icons">Free Icons</a>
+                        <a style="cursor: pointer" class="nav-item nav-link" data-toggle="tab" href="#Paid_Icons">Paid Icons</a>
                     </div>
                 </nav>
                 <div class="tab-content h-100 overflow-auto">
                     <div class="tab-pane active" id="Free_Icons" role="tabpanel" aria-labelledby="home-tab">
                         <div class="card-columns text-center">
-                            <a class="card border-0" data-frmdb-table="freeIconsClasses[]">
-                                <i data-frmdb-attr="class::freeIconsClasses[]"></i> <span data-frmdb-value="freeIconsClasses[]"></span>
+                            <a style="cursor: pointer" class="card border-0" data-frmdb-table="freeIconsClasses[]">
+                                <h1><i data-frmdb-attr="class::freeIconsClasses[]"></i></h1>
+                                <span data-frmdb-value="freeIconsClasses[]"></span>
                             </a>
                         </div>
                     </div>
@@ -33,7 +34,7 @@
                             </div>
                         </div>
                         <div class="card-columns">
-                            <a class="card border-0 text-center" data-frmdb-table="paidIconsUrls[]">
+                            <a style="cursor: pointer" class="card border-0 text-center" data-frmdb-table="paidIconsUrls[]">
                                 <img class="border rounded" data-frmdb-value="paidIconsUrls[]" data-frmdb-attr="alt::paidIconsUrls[]"
                                     style="width: 20px; height: 20px;">
                             </a>
