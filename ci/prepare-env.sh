@@ -1,3 +1,4 @@
+set -xe
 if [[ -z "${FRMDB_ENV_NAME}" ]]; then
     FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
@@ -71,11 +72,5 @@ fi
 # -------------------------------------------------------------------------
 if [ -z "$NO_K8S" ]; then
   echo "Preparing k8s deployment for namespace ${FRMDB_ENV_NAME}."
-  perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
-
-  if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then 
-    perl -p -i -e 's![-\w\d.]+.formuladb.io #TBD_ENV_NAME.formuladb.io!'$FRMDB_ENV_NAME'.formuladb.io #TBD_ENV_NAME.formuladb.io!' k8s/overlays/development/resources/ingress.yaml
-    cat k8s/overlays/development/resources/ingress.yaml
-  fi
-
+  perl -p -i -e 's!namespace.*#TBD_ENV_NAME!namespace: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/base/kustomization.yaml
 fi

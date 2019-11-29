@@ -4,10 +4,9 @@ dist-be/**.js.map
 !dist-be/frmdb-be*.js
 !formuladb
 !package.json
+!k8s
+!skaffold.yaml
 !ci/FormulaDB-storage-full.json
 !ssh
 !scripts
-!formuladb-apps
-!formuladb-themes
-!formuladb-icons
-!formuladb-static
+!formuladb-env

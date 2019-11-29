@@ -70,6 +70,8 @@ export const FormuladbIoApp: App = {
         "add__WishListRequest.html",
         "_nav.html",
         "_footer.html",
+        "login.html",
+        "register.html",
     ],
 };
 

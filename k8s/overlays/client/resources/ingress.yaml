@@ -5,13 +5,15 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/redirect-entry-point: https
     traefik.ingress.kubernetes.io/redirect-permanent: "true"
+    kubernetes.io/ingress.class: "nginx"    
+    certmanager.k8s.io/issuer: "formuladb-prod"
 spec:
   tls:
   - hosts:
-    - biz.formuladb.io
-    secretName: formuladb-online
+    - $(NAMESPACE_NAME).formuladb.io
+    secretName: certificate-formuladb-prod
   rules:
-  - host: biz.formuladb.io
+  - host: $(NAMESPACE_NAME).formuladb.io
     http:
       paths:
       - path: /

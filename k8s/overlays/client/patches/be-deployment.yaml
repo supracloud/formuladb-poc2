@@ -9,4 +9,4 @@ spec:
       - name: be
         env:
         - name: FRMDB_ENV_NAME
-          value: biz
+          value: $(NAMESPACE_NAME)

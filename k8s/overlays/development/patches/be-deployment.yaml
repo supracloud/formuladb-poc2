@@ -9,6 +9,10 @@ spec:
       - name: be
         env:
         - name: FRMDB_ENV_NAME
-          value: 153-admin-user-can-edit-a-page-components-blocks-per-theme #TBD_ENV_NAME
+          value: $(NAMESPACE_NAME)
         - name: FRMDB_IS_DEV_ENV
+          value: "true"
+        - name: FRMDB_AUTH_ENABLED
+          value: "false"
+        - name: FRMDB_IS_PROD_ENV
           value: "true"

@@ -1,12 +1,16 @@
-if [[ -z "$FRMDB_ENV_NAME" ]]; then
-    export FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
+set -xe
+
+if [[ -z ${FRMDB_ENV_NAME+x} ]]; then
+    FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
-echo "FRMDB_ENV_NAME=$FRMDB_ENV_NAME"
 
-export BASEDIR=`dirname $0`
+SCRIPT=$(readlink -f "$0")
+SCRIPTPATH=$(dirname "$SCRIPT")
+
 export ORIGDIR=$PWD
-export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa"
-
+export GIT_SSH_COMMAND="ssh -i $SCRIPTPATH/../ssh/frmdb.id_rsa"
+echo $SCRIPTPATH
+echo $ORIGDIR
 trap err ERR
 
 function err() {
@@ -17,6 +21,14 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
+if [ ! -d "formuladb-env" ]; then
+    BASE_BRANCH="${FRMDB_APPS_BASE_BRANCH}"
+    if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+        BASE_BRANCH="${FRMDB_ENV_NAME}"
+    fi
+    git clone --jobs 10 --branch "${BASE_BRANCH}" --single-branch --depth 1 \
+        git@gitlab.com:metawiz/formuladb-env.git
+fi
 
 for submodule in formuladb-icons formuladb-themes formuladb-static formuladb-apps; do
     cd $BASEDIR
@@ -38,15 +50,15 @@ done
 # k8s
 # -------------------------------------------------------------------------
 
-cd ${ORIGDIR}/${BASEDIR}/..
-# export KUBECONFIG=${ORIGDIR}/$BASEDIR/../k8s/production-kube-config.conf
+cd ${SCRIPTPATH}/..
+export KUBECONFIG=${SCRIPTPATH}/../k8s/production-kube-config.conf
 
 if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
     kubectl create namespace "${FRMDB_ENV_NAME}" 
 fi
 
 if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then 
-    kubectl -n "${FRMDB_ENV_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${ORIGDIR}/${BASEDIR}/../ci/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+    kubectl get secret regcred -n production -o yaml | sed "s/namespace: production/namespace: ${FRMDB_ENV_NAME}/" | kubectl create -f -
 else
     true
 fi

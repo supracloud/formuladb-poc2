@@ -8,10 +8,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - dev-env.formuladb.io #TBD_ENV_NAME.formuladb.io
+    - $(NAMESPACE_NAME).formuladb.io
     secretName: formuladb-online
   rules:
-  - host: dev-env.formuladb.io #TBD_ENV_NAME.formuladb.io
+  - host: $(NAMESPACE_NAME).formuladb.io
     http:
       paths:
       - path: /

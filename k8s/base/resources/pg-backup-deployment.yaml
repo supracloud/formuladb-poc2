@@ -1,0 +1,34 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: postgresql-cloud-dump
+spec:
+  schedule: "0 0 * * *"
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgresql-cloud-dump
+            image: google/cloud-sdk:alpine
+            command: ["/bin/sh", "-c"]
+            args:
+              - echo Starting backup ... ;
+                apk add --no-cache postgresql-client;
+                export FNAME=backup-$(date +%Y-%m-%d.%H:%M:%S).sql;
+                pg_dump > $FNAME;
+                gsutil cp $FNAME gs://formuladb-static-assets/$FRMDB_ENV_NAME/DB_BACKUPS/$FNAME;
+                echo Done;
+            env:
+            - name: PGDATABASE
+              value: postgres
+            - name: PGHOST
+              value: db
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: postgres
+            - name: PGPASSWORD
+              value: postgres
+          restartPolicy: OnFailure

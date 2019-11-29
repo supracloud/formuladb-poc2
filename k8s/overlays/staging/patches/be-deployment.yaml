@@ -10,3 +10,5 @@ spec:
         env:
         - name: FRMDB_ENV_NAME
           value: staging
+        - name: FRMDB_IS_PROD_ENV
+          value: "true"

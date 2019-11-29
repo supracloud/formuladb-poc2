@@ -1,3 +1,4 @@
+namespace: 135-login-roles-permissions-create-organization #TBD_ENV_NAME
 resources:
 - resources/be-deployment.yaml
 - resources/be-service.yaml
@@ -7,4 +8,13 @@ resources:
 - resources/pg-persistence-persistentvolumeclaim.yaml 
 - resources/git-persistence-persistentvolumeclaim.yaml 
 - resources/service-account-secret.yaml
+- resources/pg-backup-deployment.yaml
 #wildcard support removed for some reason https://github.com/kubernetes-sigs/kustomize/issues/119
+vars:
+- name: NAMESPACE_NAME
+  objref:
+    kind: Deployment
+    name: be
+    apiVersion: extensions/v1beta1
+  fieldref:
+    fieldpath: metadata.namespace

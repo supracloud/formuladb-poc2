@@ -8,29 +8,25 @@ require('hot-debug');
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
-import * as passport from "passport";
-import * as timeout from 'connect-timeout';
-import * as connectEnsureLogin from "connect-ensure-login";
-import { Strategy as LocalStrategy } from "passport-local";
-import * as md5 from 'md5';
 import * as proxy from 'http-proxy-middleware';
-import * as path from 'path';
 import * as yaml from 'js-yaml';
 import * as csv from 'csv';
 import * as mime from 'mime';
 import * as serveIndex from 'serve-index';
 let debug = require('debug');
+import * as timeout from 'connect-timeout';
+
 
 import { FrmdbEngine } from "@core/frmdb_engine";
 import { KeyValueStoreFactoryI, KeyTableStoreI } from "@storage/key_value_store_i";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
-import { BeUser } from "@domain/user";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
 import { I18nBe } from "@be/i18n-be";
+import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
+import { initPassport, handleAuth } from "./auth";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -39,7 +35,6 @@ const SECRET = 'bla-bla-secret';
 
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
-    var kvs$User: KeyTableStoreI<BeUser>;
     var i18nBe = new I18nBe(kvsFactory);
 
     async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
@@ -57,41 +52,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         return frmdbEngineInit.get();
     }
 
-    async function getUserKvs(): Promise<KeyTableStoreI<BeUser>> {
-        if (!kvs$User) {
-            kvs$User = await kvsFactory.createKeyTableS<BeUser>($User);
-        }
-        return Promise.resolve(kvs$User);
-    }
-
-    passport.use("user-pass", new LocalStrategy(
-        async function (username, password, cb) {
-            try {
-                let userKVS = await getUserKvs();
-                let user = await userKVS.get('$User~~' + username);
-                if (!user) return cb(null, false);
-                let hashedPass = md5(password);
-                if (user.password != hashedPass) { return cb(null, false); }
-                return cb(null, user);
-            } catch (err) {
-                return cb(err);
-            }
-        }
-    ));
-    passport.serializeUser(function (user: BeUser, cb) {
-        cb(null, user._id);
-    });
-    passport.deserializeUser(async function (id, cb) {
-        try {
-            let userKVS = await getUserKvs();
-            let user = await userKVS.get('$User~~' + id);
-            if (!user) return cb(new Error("User " + id + " forbidden or not found !"));
-            return cb(null, user);
-        } catch (err) {
-            return cb(err);
-        }
-    });
-
     // app.use(logger("dev"));
     app.use(cookieParser(SECRET));
     app.use(require('express-session')({
@@ -100,17 +60,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         saveUninitialized: true
     }))
 
-    // This needs to be before express bodyParser: https://github.com/nodejitsu/node-http-proxy/issues/180
-    // if (process.env.FRMDB_PROXY) {
-    //     let httpProxy = proxy({ target: process.env.FRMDB_PROXY });
-    //     app.use(function (req, res, next) {
-    //         if (/\/formuladb.*/.test(req.path)) {
-    //             next();
-    //         } else {
-    //             // httpProxy(req, res, next);
-    //         }
-    //     });
-    // }
+    initPassport(app, kvsFactory);
 
     app.use(bodyParser.json({limit: "10mb"}));
     app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
@@ -120,6 +70,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             console.log("TTTTT", buf, encoding, buf.toString(encoding));
         }
     }));
+
     app.use((req, res, next) => {
         console.log("HEREEEEE3", req.url);
         next();
@@ -139,26 +90,35 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } else next();
     });
 
-    if (process.env.FRMDB_AUTH_ENABLED === "true") {
-        app.use(passport.initialize());
-        app.use(passport.session());
-        app.use(function (req, res, next) {
-            if (req.path !== '/formuladb-api/login') {
-                connectEnsureLogin.ensureLoggedIn('/formuladb-api/login')(req, res, next);
-            } else next();
-        });
-        app.post('/formuladb-api/login',
-            passport.authenticate('user-pass', { failureRedirect: '/formuladb-api/login' }),
-            function (req, res, next) {
-                res.redirect('/');
-            }
-        );
-    } else {
-        app.use(function (req, res, next) {
-            req.user = { role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN' };
+    handleAuth(app);
+
+    app.get('/register', function(req, res, next) {
+        if (process.env.FRMDB_IS_PROD_ENV) {
+            res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/register.html');
+        } else {
             next();
-        });
-    }
+        }
+    });
+      
+    app.post('/register', async (req, res, next) => {
+        if (process.env.FRMDB_IS_PROD_ENV) {
+            await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
+            res.redirect(`https://${req.body.environment}.formuladb.io/`);
+        } else {
+            next();
+        }
+    });
+
+    app.delete('/formuladb-api/env/:envname', async function(req, res, next) {
+        if (process.env.FRMDB_IS_PROD_ENV) {
+            console.log(`Delete called on ${req.params.envname} environment`)
+            let status_message = await cleanupEnvironment(req.params.envname);
+            console.log(status_message);
+            res.end(status_message, null, 4);
+        } else {
+            next();
+        }
+    });
 
     //////////////////////////////////////////////////////////////////////////////////////
     // themes, icons, images & other static content
@@ -334,7 +294,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
-            .catch(err => { console.error(err); next(err) });
+            .catch(err => {console.error(err); next(err)});
     });
 
     // catch 404 and forward to error handler

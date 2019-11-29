@@ -13,6 +13,10 @@ build:
       - src: 'formuladb/**/*'
         dest: /wwwroot/formuladb
         strip: formuladb
+      - src: skaffold.yaml
+        dest: /
+      - src: 'k8s/**/*'
+        dest: /
       - src: 'formuladb-editor/**/*'
         dest: /wwwroot/formuladb-editor
         strip: formuladb-editor
@@ -59,8 +63,8 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/production
-  - name: biz
+  - name: client
     patches:
       - op: replace
         path: /deploy/kustomize/path
-        value: k8s/overlays/biz
+        value: k8s/overlays/client
