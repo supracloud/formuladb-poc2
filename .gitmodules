@@ -1,3 +1,6 @@
 [submodule "formuladb-e2e"]
 	path = formuladb-e2e
-	url = git@gitlab.com:metawiz/formuladb-e2e.git
+	url = ../formuladb-e2e.git
+[submodule "formuladb-env"]
+	path = formuladb-env
+	url = ../formuladb-env.git

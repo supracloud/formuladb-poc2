@@ -2,7 +2,6 @@
 
 # compiled output
 live-server-wwwroot
-formuladb-env
 dist-be
 formuladb/*js
 formuladb/*js.map
