@@ -9,12 +9,8 @@ trap handleErr ERR
 (
 . ci/tools.sh
 while true; do
-    kubectlexec be mkdir -- -p /wwwroot/git/.git
-    kubectlrsync .git/modules be:/wwwroot/git/.git/modules
-    kubectlrsync formuladb-apps be:/wwwroot/git/
-    kubectlrsync formuladb-icons be:/wwwroot/git/
-    kubectlrsync formuladb-static be:/wwwroot/git/
-    kubectlrsync formuladb-themes be:/wwwroot/git/
+    kubectlrsync formuladb-env be:/wwwroot/git/formuladb-env
+    kubectlrsync be:/wwwroot/git/formuladb-env formuladb-env
 
     sleep 2
 done
@@ -22,8 +18,5 @@ done
 
 ./node_modules/.bin/live-server --port=8081 -V --no-browser \
     --mount=/formuladb/:./formuladb/ \
-    --mount=/formuladb-themes/:./formuladb-themes/ \
-    --mount=/formuladb-static/:./formuladb-static/ \
-    --mount=/formuladb-apps/:./formuladb-apps/ \
-    --mount=/formuladb-icons/:./formuladb-icons/ \
+    --mount=/formuladb-env/:./formuladb-env/ \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \

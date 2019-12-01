@@ -11,8 +11,6 @@ cache
 builds
 /e2e/reports
 elastic-apm-rum.umd.min.js
-_scss
-_css
 
 # dependencies
 node_modules

@@ -193,7 +193,7 @@ kubectlrsync() (
         dst="${pod}@${namespace}:${path}"
     fi
 
-    kubectlrsync.sh -auv "$src" "$dst" | egrep -v 'sending incremental file list|sent.*bytes.*received.*bytes|total size is.*speedup|^ *$'
+    kubectlrsync.sh --update -auv "$src" "$dst" | egrep -v 'sending incremental file list|sent.*bytes.*received.*bytes|total size is.*speedup|^ *$'
 )
 
 frmdb-be-load-test-data() {

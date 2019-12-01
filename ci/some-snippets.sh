@@ -41,3 +41,11 @@ gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
 gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons
 
 gsutil -m rsync -r  gs://formuladb-static-assets/production/formuladb-internal .
+
+
+#####################################
+## formuladb API
+#####################################
+curl -XPUT  -H "Content-Type: text/yaml" --data-binary @apps/inventory/App.yml http://localhost:3000/formuladb-api/inventory
+curl -XPUT  -H "Content-Type: text/yaml" --data-binary @apps/inventory/Schema.yml http://localhost:3000/formuladb-api/inventory/schema
+curl -XPUT  -H "Content-Type: text/csv" --data-binary @apps/inventory/\$User.csv http://localhost:3000/formuladb-api/inventory/bulk

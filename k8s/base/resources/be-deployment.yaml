@@ -40,6 +40,8 @@ spec:
         - name: service-account-credentials
           mountPath: /etc/gcp
           readOnly: true
+        - mountPath: /wwwroot/git
+          name: git-persistence          
       volumes:
       - name: service-account-credentials
         secret:
