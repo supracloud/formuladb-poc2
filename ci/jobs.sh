@@ -22,11 +22,11 @@ function build_images_and_deploy {
     chmod uog-wx ssh/*
     pwd
     GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init --jobs 5 --depth 1
-    ls formuladb-apps
+    ls formuladb-env/apps
     ls formuladb-themes
     ls formuladb-e2e
-    ls formuladb-icons
-    ls formuladb-static
+    ls formuladb-env/icons
+    ls formuladb-env/static
     
     set -x
     NAMESPACE=$1
@@ -46,7 +46,7 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
-    while ! kubectl -n "$NAMESPACE" exec service/be ls /wwwroot/git/formuladb-apps/Hotel_Booking | grep 'app.yaml'; do 
+    while ! kubectl -n "$NAMESPACE" exec service/be ls /wwwroot/git/formuladb-env/apps/Hotel_Booking | grep 'app.yaml'; do 
         sleep 1; 
         kubectl -n "$NAMESPACE" logs service/be
     done
@@ -155,16 +155,16 @@ function publish_static_assets() {
     # TODO publish static assets to git@gitlab.com:metawiz/formuladb-env.git
     #################
 
-    # gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
-    # gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
+    # gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
+    # gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
 
-    # gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-editor
-    # gsutil -m rsync -x ".*.js.map$" -r formuladb gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
-    # gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/img
-    # gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons
+    # gsutil -m rsync -r vvvebjs gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb-editor
+    # gsutil -m rsync -x ".*.js.map$" -r formuladb gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb
+    # gsutil -m rsync -r fe/img gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb/img
+    # gsutil -m rsync -r fe/icons gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb/icons
 
     # curl -L -O https://github.com/elastic/apm-agent-rum-js/releases/latest/download/elastic-apm-rum.umd.min.js
-    # gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$FRMDB_ENV_NAME/elastic-apm-rum.umd.min.js
+    # gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/elastic-apm-rum.umd.min.js
 }
 
 eval $1

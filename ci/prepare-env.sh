@@ -60,7 +60,7 @@ hash gsutil || {
 # External dependency: obj storage
 # -------------------------------------------------------------------------
 
-if ! gcloud auth list|grep formuladb-static-assets; then
+if ! gcloud auth list|grep formuladb-env/static-assets; then
     gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
 fi
 

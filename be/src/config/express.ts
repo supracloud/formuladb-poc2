@@ -94,7 +94,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/register', function(req, res, next) {
         if (process.env.FRMDB_IS_PROD_ENV) {
-            res.sendFile('/wwwroot/git/formuladb-apps/formuladb.io/register.html');
+            res.sendFile('/wwwroot/git/formuladb-env/apps/formuladb.io/register.html');
         } else {
             next();
         }
@@ -125,10 +125,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
 
     app.use('/formuladb-themes', express.static('/wwwroot/git/formuladb-themes'));
-    app.use('/formuladb-icons/', express.static('wwwroot/git/formuladb-icons'));
-    app.use('/formuladb-static/', express.static('/wwwroot/git/formuladb-static'));
+    app.use('/formuladb-env/icons/', express.static('wwwroot/git/formuladb-env/icons'));
+    app.use('/formuladb-env/static/', express.static('/wwwroot/git/formuladb-env/static'));
     
-    const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-static-assets';
+    const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-env/static-assets';
     let httpProxy = proxy({
         target: staticAssetsUrl,
         changeOrigin: true,
@@ -137,7 +137,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         logLevel: "debug",
     });
     //not used anymore
-    app.get(/^\/formuladb-static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+    app.get(/^\/formuladb-env/static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
         httpProxy(req, res, next);
     });
     app.get(/^\/formuladb-themes\/.*/, timeout('2s'), async function (req, res, next) {
@@ -148,7 +148,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     // apps
     //////////////////////////////////////////////////////////////////////////////////////
 
-    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-apps/formuladb.io', { index: "index.html" });
+    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-env/apps/formuladb.io', { index: "index.html" });
     app.get('/', formuladbIoStatic);
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);

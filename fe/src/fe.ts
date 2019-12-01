@@ -27,7 +27,7 @@ export class FrmdbFeComponent extends HTMLElement {
                 }
             </style>
             ${window.location !== window.parent.location || window.location.pathname === '/formuladb/editor.html' ? '' : /*html*/`
-                <a href="/formuladb/editor.html#${window.location.pathname}"><img src="/formuladb-static/formuladb.io/favicon.png" /></a>
+                <a href="/formuladb/editor.html#${window.location.pathname}"><img src="/formuladb-env/static/formuladb.io/favicon.png" /></a>
             `}
         `;
     }

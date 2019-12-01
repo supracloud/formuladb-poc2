@@ -22,7 +22,7 @@
         "_old_e2e:data": "FRMDB_STORAGE=postgres node tsc-out/test/src/load_test_data.js",
         "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts",
         "generate-json-schemas": "for i in App Entity SchemaEntityList; do typescript-json-schema ./tsconfig.json $i > core/src/schemas/$i.schema.json ; done",
-        "sync-dev-static-assets": "watch 'bash ci/copy-static-assets-to-dev-ngunx-pod.sh' formuladb-static formuladb-themes"
+        "sync-dev-static-assets": "watch 'bash ci/copy-static-assets-to-dev-ngunx-pod.sh' formuladb-env/static formuladb-themes"
     },
     "author": "",
     "license": "ISC",

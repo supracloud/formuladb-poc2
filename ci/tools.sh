@@ -70,7 +70,7 @@ upload-assets() {
     const storage = new Storage({keyFilename: '"$GCLOUD_BASEDIR"FormulaDB-storage-full.json'});\
     var array = process.env.ASSETS.split(' ');\
     for (var assetid = 0; assetid < array.length; assetid++) {\
-        storage.bucket('formuladb-static-assets').upload(array[assetid], {destination: '"$PATH_PREFIX"' + array[assetid]}, function(err, file) {\
+        storage.bucket('formuladb-env/static-assets').upload(array[assetid], {destination: '"$PATH_PREFIX"' + array[assetid]}, function(err, file) {\
         if (!err) {\
             console.log(file.name)\
         } else {\

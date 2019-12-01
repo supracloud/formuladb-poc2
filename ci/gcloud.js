@@ -6,7 +6,7 @@ const storage = new Storage({
 async function uploadAssets(tenantName) {
     var array = process.env.ASSETS.split(/\s+/);
     for (let fileName of array) {
-        storage.bucket('formuladb-static-assets')
+        storage.bucket('formuladb-env/static-assets')
             .upload(fileName, { 
                 destination: `${tenantName}/production/${fileName.replace(/apps\//, '')}`,
             })

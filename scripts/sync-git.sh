@@ -1,4 +1,4 @@
-cd /wwwroot/git/formuladb-apps
+cd /wwwroot/git/formuladb-env/apps
 
 if [ -n "$(git status --porcelain)" ]; then
   git add .

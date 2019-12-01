@@ -18,7 +18,7 @@ export class HighlightBoxComponent extends HTMLElement {
         if (!theme || !color) return;
 
         color = color.replace(/#/g, '');
-        let css = `/formuladb-themes/_css/${theme}-${color}.css`;
+        let css = `/formuladb-env/themes/formuladb/_css/${theme}-${color}.css`;
 
         if (!this.link) {
             this.render();

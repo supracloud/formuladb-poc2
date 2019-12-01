@@ -46,9 +46,9 @@ profiles:
       #       context: .
       #       sync:
       #         manual:
-      #         - src: 'formuladb-static/**/*'
+      #         - src: 'formuladb-env/static/**/*'
       #           dest: /usr/share/nginx/html/
-      #         - src: 'formuladb-themes/**/*'
+      #         - src: 'formuladb-env/themes/formuladb/**/*'
       #           dest: /usr/share/nginx/html/
       #       docker:
       #         dockerfile: Dockerfile.nginx

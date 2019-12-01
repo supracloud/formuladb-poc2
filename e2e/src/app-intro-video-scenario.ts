@@ -43,7 +43,7 @@ export class AppIntroVideoScenario {
     init() {
         this.SCEN.describe(this.data.app._id, () => {
             this.SCEN.step(`Welcome to ${this.data.app._id} application`, async () => {
-                await this.API.navigateTo(`formuladb/editor.html#/formuladb-apps/${this.data.app._id}/index.html`);
+                await this.API.navigateTo(`formuladb/editor.html#/formuladb-env/apps/${this.data.app._id}/index.html`);
                 await this.API.byCssInFrame('iframe', 'h1,h2', this.data.homePageTitle);
             });
 

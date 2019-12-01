@@ -25,7 +25,7 @@ export class AddElementComponent extends HTMLElement {
         }
 
         onEventChildren(this.nav, 'click', '.nav-item', (event) => {
-            this.iframe.src = `/formuladb-themes/${event.target.id}.html`;
+            this.iframe.src = `/formuladb-env/themes/formuladb/${event.target.id}.html`;
         });
 
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {

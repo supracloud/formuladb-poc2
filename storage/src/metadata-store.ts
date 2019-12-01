@@ -15,7 +15,7 @@ const os = require('os');
 const path = require('path');
 
 const ROOT = process.env.FRMDB_SPECS ? '/tmp' : '/wwwroot/git';
-const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'formuladb-apps';
+const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'formuladb-env/apps';
 
 export interface SchemaEntityList {
     _id: string;
@@ -209,16 +209,16 @@ export class MetadataStore {
     }
 
     async saveMediaObject(filePath: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${ROOT}/formuladb-static/${filePath}`, new Buffer(base64Content, 'base64'));
+        await this.writeFile(`${ROOT}/formuladb-env/static/${filePath}`, new Buffer(base64Content, 'base64'));
     }
 
     async getMediaObjects(tenantName: string, appName: string) {
-        return this.listDir(`${ROOT}/formuladb-static/${appName}`);
+        return this.listDir(`${ROOT}/formuladb-env/static/${appName}`);
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {
 
-        let newGcFile = STORAGE.bucket('formuladb-static-assets').file(`${this.envName}/${tenantName}/${appName}/${name}`);
+        let newGcFile = STORAGE.bucket('formuladb-env/static-assets').file(`${this.envName}/${tenantName}/${appName}/${name}`);
 
         await new Promise((resolve, reject) => {
             let stream = newGcFile.createWriteStream({
