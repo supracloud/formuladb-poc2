@@ -40,13 +40,15 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
-ADD ./formuladb /wwwroot/formuladb
 COPY k8s /k8s/
 COPY skaffold.yaml /skaffold.yaml
 ADD ./ssh /ssh
 ADD ./scripts /scripts
 
+ADD ./formuladb-env /formuladb-env
+
 COPY dist-be/frmdb-be* /dist-be/
+ADD ./formuladb /wwwroot/formuladb
 
 EXPOSE 3000
 

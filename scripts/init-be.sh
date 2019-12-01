@@ -11,18 +11,17 @@ find /wwwroot/git -type d
 for submodule in formuladb-icons formuladb-themes formuladb-static formuladb-apps; do
     cd /wwwroot/git
     if [ ! -d "${submodule}" ]; then
-        git clone --jobs 10 --branch "${FRMDB_ENV_NAME}" --single-branch --depth 1 \
-            git@gitlab.com:metawiz/${submodule}.git ${submodule}
-        cd ${submodule}
-    else
-        cd ${submodule}
-        if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
-            git pull
-        else
-            git checkout -b "${FRMDB_ENV_NAME}"
-            git push --set-upstream origin "${FRMDB_ENV_NAME}"
-        fi
+        cp -ar /${submodule} ${submodule} 
     fi
+
+    cd ${submodule}
+    if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
+        git pull
+    else
+        git checkout -b "${FRMDB_ENV_NAME}"
+        git push --set-upstream origin "${FRMDB_ENV_NAME}"
+    fi
+
 done
 
 # TODO: we should overwrite this should be the current user using --author ?
