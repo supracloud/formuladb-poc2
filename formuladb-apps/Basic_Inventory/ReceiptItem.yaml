@@ -1,0 +1,25 @@
+_id: ReceiptItem
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    product_id:
+        name: product_id
+        propType_: REFERENCE_TO
+        referencedEntityName: ProductLocation
+        referencedPropertyName: _id
+    quantity:
+        name: quantity
+        propType_: NUMBER
+        allowNull: false
+    price:
+        name: price
+        propType_: REFERENCE_TO
+        referencedEntityName: ProductLocation
+        referencedPropertyName: price
+    units:
+        name: units
+        propType_: CHILD_TABLE
+        referencedEntityName: InventoryProductUnit
+isEditable: true

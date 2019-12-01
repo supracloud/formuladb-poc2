@@ -1,0 +1,10 @@
+_id: $Currency
+props:
+    code:
+        name: code
+        propType_: STRING
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+isEditable: true

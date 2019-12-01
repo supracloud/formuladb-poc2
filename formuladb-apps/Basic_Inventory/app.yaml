@@ -1,0 +1,4 @@
+_id: Basic_Inventory
+description: Basic Inventory with positive stock
+pages:
+    - index.html

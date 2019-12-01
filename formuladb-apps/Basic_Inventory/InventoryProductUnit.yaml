@@ -1,0 +1,62 @@
+_id: InventoryProductUnit
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    code:
+        name: code
+        propType_: STRING
+        allowNull: false
+    productCode:
+        propType_: REFERENCE_TO
+        name: product_code
+        referencedEntityName: InventoryProduct
+        referencedPropertyName: code
+    product_name:
+        propType_: REFERENCE_TO
+        name: product_name
+        referencedEntityName: InventoryProduct
+        referencedPropertyName: name
+    inventory_location:
+        name: inventory_location
+        propType_: STRING
+        allowNull: false
+    serial1:
+        name: serial1
+        propType_: STRING
+    serial2:
+        name: serial2
+        propType_: STRING
+    serial3:
+        name: serial3
+        propType_: STRING
+    serial4:
+        name: serial4
+        propType_: STRING
+    serial5:
+        name: serial5
+        propType_: STRING
+    serial6:
+        name: serial6
+        propType_: STRING
+    serial7:
+        name: serial7
+        propType_: STRING
+    install_date:
+        name: install_date
+        propType_: DATETIME
+    state:
+        name: state
+        propType_: STRING
+        allowNull: false
+    nb_piston_cycles:
+        name: nb_piston_cycles
+        propType_: STRING
+    brita_counter:
+        name: brita_counter
+        propType_: STRING
+    washing_cycles:
+        name: washing_cycles
+        propType_: STRING
+isEditable: true

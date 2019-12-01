@@ -1,0 +1,71 @@
+@font-face {
+    font-family: "icons";
+    src: url("./icons.eot?8b62c5d39c0f0788258a24f7bf6e1c3c?#iefix") format("embedded-opentype"),
+url("./icons.woff2?8b62c5d39c0f0788258a24f7bf6e1c3c") format("woff2"),
+url("./icons.woff?8b62c5d39c0f0788258a24f7bf6e1c3c") format("woff"),
+url("./icons.ttf?8b62c5d39c0f0788258a24f7bf6e1c3c") format("truetype"),
+url("./icons.svg?8b62c5d39c0f0788258a24f7bf6e1c3c#icons") format("svg");
+}
+
+i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
+    font-family: icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.frmdb-i-cards-row:before {
+    content: "\f101";
+}
+.frmdb-i-cards:before {
+    content: "\f102";
+}
+.frmdb-i-carousel:before {
+    content: "\f103";
+}
+.frmdb-i-check-circle:before {
+    content: "\f104";
+}
+.frmdb-i-dashboard:before {
+    content: "\f105";
+}
+.frmdb-i-f-pattern-solid:before {
+    content: "\f106";
+}
+.frmdb-i-f-pattern:before {
+    content: "\f107";
+}
+.frmdb-i-frmdb:before {
+    content: "\f108";
+}
+.frmdb-i-grid-large:before {
+    content: "\f109";
+}
+.frmdb-i-grid1:before {
+    content: "\f10a";
+}
+.frmdb-i-grid2:before {
+    content: "\f10b";
+}
+.frmdb-i-grid4:before {
+    content: "\f10c";
+}
+.frmdb-i-grid5:before {
+    content: "\f10d";
+}
+.frmdb-i-list-solid:before {
+    content: "\f10e";
+}
+.frmdb-i-list:before {
+    content: "\f10f";
+}
+.frmdb-i-replace:before {
+    content: "\f110";
+}
+.frmdb-i-split-screen:before {
+    content: "\f111";
+}

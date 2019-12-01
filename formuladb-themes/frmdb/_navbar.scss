@@ -1,0 +1,29 @@
+
+@media not all and (hover: none) {
+    .frmdb-navbar-hover .dropdown {
+        @include frmdb-dropdown-hover-mixin;
+
+        .dropdown-menu:before {
+            position: absolute;
+            z-index: -5;
+            bottom: 100%;
+            left: 20px;
+
+            display: block;
+
+            width: 16px;
+            height: 16px;
+
+            content: '';
+            transform: rotate(-45deg) translateY(1rem);
+
+            border-radius: .2rem;
+            background: #fff;
+            box-shadow: none;
+        }
+        .dropdown-menu-right:before {
+            right: 20px;
+            left: auto;
+        }    
+    }
+}

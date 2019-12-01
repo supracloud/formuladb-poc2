@@ -1,0 +1,14 @@
+_id: FRMDB_SCHEMA~~Basic_Inventory
+entityIds:
+    - InventoryOrder
+    - OrderItem
+    - InventoryReceipt
+    - ReceiptItem
+    - InventoryProduct
+    - ProductLocation
+    - InventoryProductUnit
+    - LargeSalesReport
+    - LargeSalesProduct
+    - $Currency
+    - $User
+    - $Dictionary
