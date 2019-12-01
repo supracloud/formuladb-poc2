@@ -1,0 +1,41 @@
+{
+  "name": "simplelightbox",
+  "version": "1.17.2",
+  "description": "Touch-friendly image lightbox for mobile and desktop with jQuery",
+  "main": "dist/simple-lightbox.js",
+  "style": "dist/simplelightbox.scss",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andreknieriem/simplelightbox.git"
+  },
+  "dependencies": {
+    "jquery": ">=1.7.0"
+  },
+  "keywords": [
+    "lightbox",
+    "modal",
+    "gallery",
+    "jquery-plugin",
+    "touchfriendly",
+    "pinch",
+    "responsive",
+    "popup",
+    "dialog"
+  ],
+  "author": {
+    "name": "Andre Rinas",
+    "url": "https://www.andrerinas.de",
+    "email": "info@andrerinas.de"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andreknieriem/simplelightbox/issues"
+  },
+  "homepage": "http://simplelightbox.com/",
+  "scripts": {
+    "minify": "uglifyjs dist/simple-lightbox.js --compress --comments '/^\/*!/' --mangle --output dist/simple-lightbox.min.js"
+  },
+  "devDependencies": {
+    "uglify-js": "^3.4.9"
+  }
+}

@@ -1,0 +1,64 @@
+_id: ProductLocation
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    product_id:
+        name: product_id
+        propType_: STRING
+        allowNull: false
+        defaultValue: DEFAULT-location
+    location_code:
+        name: location_code
+        propType_: STRING
+        allowNull: false
+        defaultValue: DEFAULT-location
+    category:
+        name: category
+        propType_: STRING
+        allowNull: false
+    received_stock__:
+        name: received_stock__
+        propType_: FORMULA
+        formula: 'SUMIF(ReceiptItem.quantity, product_id == @[_id])'
+    available_stock__:
+        name: available_stock__
+        propType_: FORMULA
+        formula: received_stock__ - ordered_stock__
+    ordered_stock__:
+        name: ordered_stock__
+        propType_: FORMULA
+        formula: 'SUMIF(OrderItem.quantity, product_id == @[_id])'
+    price:
+        name: price
+        propType_: NUMBER
+        allowNull: true
+    currency:
+        propType_: REFERENCE_TO
+        referencedEntityName: General_Currency
+        referencedPropertyName: code
+        name: currency__
+    minimal_stock:
+        name: minimal_stock
+        propType_: NUMBER
+        allowNull: false
+    moving_stock:
+        name: moving_stock
+        propType_: NUMBER
+        allowNull: false
+    state:
+        name: state
+        propType_: STRING
+        allowNull: false
+validations:
+    positiveStock:
+        conditionExpr:
+            type: BinaryExpression
+            startIndex: 0
+            endIndex: 22
+            origExpr: available_stock__ >= 0
+            operator: '>='
+            left: {type: Identifier, startIndex: 0, endIndex: 17, origExpr: available_stock__, name: available_stock__}
+            right: {type: NumberLiteral, startIndex: 21, endIndex: 22, origExpr: '0', value: 0, raw: '0'}
+isEditable: true

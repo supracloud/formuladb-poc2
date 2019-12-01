@@ -1,0 +1,31 @@
+_id: RoomType
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    name:
+        name: name
+        propType_: STRING
+        allowNull: false
+    description:
+        name: description
+        propType_: STRING
+        allowNull: false
+    picture:
+        name: picture
+        propType_: IMAGE
+    long_description:
+        name: long_description
+        propType_: STRING
+    price:
+        name: price
+        propType_: NUMBER
+        allowNull: false
+    wifi:
+        name: wifi
+        propType_: BOOLEAN
+    parking:
+        name: parking
+        propType_: BOOLEAN

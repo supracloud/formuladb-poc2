@@ -1,0 +1,7 @@
+_id: AppCategory
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
