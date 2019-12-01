@@ -1,6 +1,3 @@
 [submodule "formuladb-e2e"]
 	path = formuladb-e2e
 	url = ../formuladb-e2e.git
-[submodule "formuladb-env"]
-	path = formuladb-env
-	url = ../formuladb-env.git
