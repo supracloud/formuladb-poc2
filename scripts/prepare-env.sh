@@ -21,14 +21,6 @@ function err() {
 # -------------------------------------------------------------------------
 # git
 # -------------------------------------------------------------------------
-if [ ! -d "formuladb-env" ]; then
-    BASE_BRANCH="${FRMDB_APPS_BASE_BRANCH}"
-    if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
-        BASE_BRANCH="${FRMDB_ENV_NAME}"
-    fi
-    git clone --jobs 10 --branch "${BASE_BRANCH}" --single-branch --depth 1 \
-        git@gitlab.com:metawiz/formuladb-env.git
-fi
 
 # -------------------------------------------------------------------------
 # k8s

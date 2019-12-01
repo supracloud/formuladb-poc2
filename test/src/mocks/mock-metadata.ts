@@ -161,26 +161,26 @@ export const CommonEntities = [
 const Schemas = [
     { tenantName: "formuladb-env/apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp },
     { tenantName: "formuladb-env/apps", appName: "Hotel_Booking", schema: HotelBookingSchema, app: HotelBookingApp },
-    {
-        tenantName: "formuladb-env/apps", appName: "Hotel_Booking_2",
-        schema: {
-            _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_2',
-            ...HotelBookingSchema,
-        }, app: {
-            _id: 'Hotel_Booking_2',
-            ...HotelBookingApp,
-        }
-    },
-    {
-        tenantName: "formuladb-env/apps", appName: "Hotel_Booking_3",
-        schema: {
-            _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_3',
-            ...HotelBookingSchema,
-        }, app: {
-            _id: 'Hotel_Booking_3',
-            ...HotelBookingApp,
-        }
-    },
+    // {
+    //     tenantName: "formuladb-env/apps", appName: "Hotel_Booking_2",
+    //     schema: {
+    //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_2',
+    //         ...HotelBookingSchema,
+    //     }, app: {
+    //         _id: 'Hotel_Booking_2',
+    //         ...HotelBookingApp,
+    //     }
+    // },
+    // {
+    //     tenantName: "formuladb-env/apps", appName: "Hotel_Booking_3",
+    //     schema: {
+    //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_3',
+    //         ...HotelBookingSchema,
+    //     }, app: {
+    //         _id: 'Hotel_Booking_3',
+    //         ...HotelBookingApp,
+    //     }
+    // },
     { tenantName: "formuladb-env/apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
 ];
 

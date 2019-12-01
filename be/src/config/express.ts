@@ -137,7 +137,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         logLevel: "debug",
     });
     //not used anymore
-    app.get(/^\/formuladb-env/static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+    app.get(/^\/formuladb-env\/static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
         httpProxy(req, res, next);
     });
     app.get(/^\/formuladb-themes\/.*/, timeout('2s'), async function (req, res, next) {

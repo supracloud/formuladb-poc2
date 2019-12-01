@@ -3,7 +3,7 @@ if [[ -z "${FRMDB_ENV_NAME}" ]]; then
     FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
 
-export BASEDIR=`dirname $0`
+export BASEDIR="${PWD}/`dirname $0`"
 # export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
 
 # -------------------------------------------------------------------------
@@ -54,22 +54,36 @@ hash gsutil || {
 # -------------------------------------------------------------------------
 # External dependency: git
 # -------------------------------------------------------------------------
-# if uname -a | grep 'Linux.*Microsoft'; then echo asfdasd; fi
-
-# -------------------------------------------------------------------------
-# External dependency: obj storage
-# -------------------------------------------------------------------------
-
-if ! gcloud auth list|grep formuladb-env/static-assets; then
-    gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
+if uname -a | grep 'Linux.*Microsoft'; then 
+    for submodule in formuladb-env formuladb-e2e formuladb-themes formuladb-icons; do
+        cd $BASEDIR/..
+        if [ ! -d "${submodule}" ]; then
+            git submodule update --init
+        fi
+        cd "${submodule}" && if git branch|grep '^*'|cut -d ' ' -f2 | grep "${FRMDB_ENV_NAME}"; then
+                echo "branch ok"
+            else
+                git checkout -b "${FRMDB_ENV_NAME}"
+                git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
+            fi
+    done
 fi
 
-### using a single central bucket for now...
-# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
+# # -------------------------------------------------------------------------
+# # External dependency: obj storage
+# # -------------------------------------------------------------------------
+
+# if ! gcloud auth list|grep formuladb-env/static-assets; then
+#     gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
+# fi
+
+# ### using a single central bucket for now...
+# # node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
 
 # -------------------------------------------------------------------------
 # k8s
 # -------------------------------------------------------------------------
+cd $BASEDIR/..
 if [ -z "$NO_K8S" ]; then
   echo "Preparing k8s deployment for namespace ${FRMDB_ENV_NAME}."
   perl -p -i -e 's!namespace.*#TBD_ENV_NAME!namespace: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/base/kustomization.yaml
