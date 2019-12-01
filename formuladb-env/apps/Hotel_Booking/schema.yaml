@@ -1,8 +1,0 @@
-_id: FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking
-entityIds:
-    - RoomType
-    - Room
-    - Booking
-    - $User
-    - $Dictionary
-    - $Currency

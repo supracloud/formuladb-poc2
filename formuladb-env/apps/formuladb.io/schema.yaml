@@ -1,9 +1,0 @@
-_id: FRMDB_SCHEMA~~formuladb-internal--formuladb.io
-entityIds:
-    - SampleApp
-    - WishListRequest
-    - AppCategory
-    - ContactRequest
-    - $User
-    - $Dictionary
-    - $Currency

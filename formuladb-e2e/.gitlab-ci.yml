@@ -1,8 +1,0 @@
-stages:
-  - publish
-
-publish:
-  stage: publish
-  script:
-    - npm run compile
-    - npm test -- --baseUrl="https://master.formuladb.io"

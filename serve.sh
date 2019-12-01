@@ -6,16 +6,6 @@ handleErr () {
 }
 trap handleErr ERR
 
-(
-. ci/tools.sh
-while true; do
-    kubectlrsync formuladb-env be:/wwwroot/git/formuladb-env
-    kubectlrsync be:/wwwroot/git/formuladb-env formuladb-env
-
-    sleep 2
-done
-) &
-
 ./node_modules/.bin/live-server --port=8081 -V --no-browser \
     --mount=/formuladb/:./formuladb/ \
     --mount=/formuladb-env/:./formuladb-env/ \

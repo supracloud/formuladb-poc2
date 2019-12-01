@@ -15,6 +15,8 @@
         "_skaffold_": "KUBECONFIG=k8s/production-kube-config.conf skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "skaffold": "skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "sass:watch": "sass --style compressed --watch fe/src/frmdb-editor/frmdb-editor.directive.scss:formuladb/frmdb-editor.min.css",
+        "live-server-git-sync": ,
+        "live-server": "concurrently -k \"\" \"bash serve.sh\" ",
         "serve": "bash ci/prepare-env.sh && bash scripts/prepare-env.sh && tmux new-session 'npm run compile:watch' ';' split-window -h 'npm run bundle:watch' ';' split-window 'bash serve.sh' ';' select-layout tiled ';' split-window -h 'npm run skaffold' ';' select-layout tiled",
         "test": "node jasmine.js",
         "webdriver-update": "webdriver-manager update",

@@ -1,8 +1,0 @@
-_id: Hotel_Booking
-description: Booking app for Royal Hotel
-homePage: index.html
-pages:
-    - index.html
-    - about.html
-    - gallery.html
-    - contact.html

@@ -7,7 +7,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import { $User } from "@domain/metadata/default-metadata";
 
-const FREE_PATHS = [/\/formuladb-env\/static/, /\/formuladb-env/themes/formuladb/, /\/assets/, /\/register/, /\/login/, /\/formuladb-env\/apps/, /^\/$/];
+const FREE_PATHS = [/\/formuladb-env\/static/, /\/formuladb-env\/themes\/formuladb/, /\/assets/, /\/register/, /\/login/, /\/formuladb-env\/apps/, /^\/$/];
 const ADMIN_PATHS = [/\/formuladb-editor/];
 
 export function initPassport(app: express.Express,
