@@ -1,0 +1,20 @@
+{
+  "name": "formuladb-e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "tsc --sourceMap -p .",
+    "compile:watch": "npm run compile -- -w",
+    "test": "protractor protractor.conf.js",
+    "webdriver-update": "webdriver-manager update"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^3.4.6",
+    "lodash": "^4.17.15",
+    "protractor": "^5.4.2",
+    "typescript": "3.6.3"
+  }
+}
