@@ -1,9 +1,0 @@
-stages:
-  - publish
-
-publish:
-  stage: publish
-  script:
-    - npm install
-    - npm run generate
-    - gsutil -m rsync -c -x ".git.*" -x ".*.css.map" -r _css gs://formuladb-static-assets/formuladb-themes/_css
