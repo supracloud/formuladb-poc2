@@ -11,22 +11,17 @@ find /wwwroot/git -type d
 cd /wwwroot/git
 if [ ! -d "formuladb-env" ]; then
 
-    if git clone --branch "${FRMDB_ENV_NAME}" --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-env.git; then
-        echo "branch already existing remotely"
-    else
-        cp -ar /formuladb-env formuladb-env 
-        cd formuladb-env
-        git init
-        git remote add origin git@gitlab.com:metawiz/formuladb-env.git
-        git checkout -b "${FRMDB_ENV_NAME}"
-
-        git add .
-        git config user.email "sync@formuladb.io"
-        git config user.name "Frmdb Sync"
-        git commit -m "Created env ${FRMDB_ENV_NAME}"
-
-        git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
+    BASE_BRANCH="master"
+    if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+        BASE_BRANCH="${FRMDB_ENV_NAME}"
     fi
+    git clone --jobs 10 --branch "${BASE_BRANCH}" --single-branch --depth 1 \
+        git@gitlab.com:metawiz/formuladb-env.git
+fi
+
+cd formuladb-env
+if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
+    git pull
 else
     cd formuladb-env
     if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then

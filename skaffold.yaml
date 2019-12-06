@@ -9,7 +9,7 @@ build:
       # Sync all the javascript files that are in the dist-be folder
       # with the container's root
       - src: 'dist-be/**/*.js*'
-        dest: .
+        dest: /
       - src: 'formuladb/**/*'
         dest: /wwwroot/formuladb
         strip: formuladb
@@ -17,9 +17,6 @@ build:
         dest: /
       - src: 'k8s/**/*'
         dest: /
-      - src: 'formuladb-editor/**/*'
-        dest: /wwwroot/formuladb-editor
-        strip: formuladb-editor
       - src: 'scripts/*'
         dest: /scripts
         strip: scripts

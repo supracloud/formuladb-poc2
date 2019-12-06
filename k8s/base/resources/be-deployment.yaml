@@ -41,7 +41,7 @@ spec:
           mountPath: /etc/gcp
           readOnly: true
         - mountPath: /wwwroot/git
-          name: git-persistence          
+          name: git-persistence
       volumes:
       - name: service-account-credentials
         secret:
@@ -49,6 +49,9 @@ spec:
           items:
           - key: sa_json
             path: sa_credentials.json
+      - name: git-persistence
+        persistentVolumeClaim:
+          claimName: git-persistence
       restartPolicy: Always
       imagePullSecrets:
         - name: regcred

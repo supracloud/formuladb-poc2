@@ -43,9 +43,10 @@ RUN npm install --only=production
 COPY k8s /k8s/
 COPY skaffold.yaml /skaffold.yaml
 ADD ./ssh /ssh
+RUN chmod 700 /ssh
+RUN chmod 644 /ssh/frmdb.id_rsa.pub
+RUN chmod 600 /ssh/frmdb.id_rsa
 ADD ./scripts /scripts
-
-ADD ./formuladb-env /formuladb-env
 
 COPY dist-be/frmdb-be* /dist-be/
 ADD ./formuladb /wwwroot/formuladb

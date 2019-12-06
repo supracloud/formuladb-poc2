@@ -30,14 +30,14 @@ export class FrmdbFeComponent extends HTMLElement {
                 <a href="/formuladb/editor.html#${window.location.pathname}"><img src="/formuladb-env/static/formuladb.io/favicon.png" /></a>
             `}
         `;
+        
+        initFrmdb();
     }
 
     connectedCallback() {
         this.addEventListener('click', () => {
             this.toggleFrmdbEditor();
         });
-
-        initFrmdb();
     }
 
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {
