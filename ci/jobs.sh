@@ -8,7 +8,6 @@ FRMDB_ENV_NAME="${CI_COMMIT_SHA}"
 echo "FRMDB_ENV_NAME=${FRMDB_ENV_NAME}"
 export FRMDB_ENV_NAME
 export BASEDIR=`dirname $0`
-export KUBECONFIG="${BASEDIR}/../k8s/production-kube-config.conf"
 
 function _cleanup {
     /usr/bin/killall -q kubectl || true

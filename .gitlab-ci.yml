@@ -50,6 +50,7 @@ bundle:
 build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
@@ -62,6 +63,7 @@ test_mem:
 test_postgres:
   stage: test_postgres
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
@@ -76,12 +78,14 @@ e2e_dev_env:
   stage: e2e_dev_env
   retry: 2
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
 build_images_and_deploy_staging:
   stage: build_images_and_deploy_staging
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   environment:
     name: staging
@@ -92,6 +96,7 @@ build_images_and_deploy_staging:
 e2e_staging:
   stage: e2e_staging
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_staging_and_production
@@ -99,6 +104,7 @@ e2e_staging:
 build_images_and_deploy_production:
   stage: build_images_and_deploy_production
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   environment:
     name: production
@@ -109,6 +115,7 @@ build_images_and_deploy_production:
 e2e_production:
   stage: e2e_production
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
   <<: *only_for_production
@@ -120,6 +127,7 @@ e2e_production:
 e2e_staging_with_videos:
   stage: e2e_staging_with_videos
   script:
+    - export KUBECONFIG="${PDW}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   artifacts:
     expire_in: 1 week

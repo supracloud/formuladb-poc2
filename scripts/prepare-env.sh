@@ -27,7 +27,6 @@ function err() {
 # -------------------------------------------------------------------------
 
 cd ${SCRIPTPATH}/..
-export KUBECONFIG=${SCRIPTPATH}/../k8s/production-kube-config.conf
 
 if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
     kubectl create namespace "${FRMDB_ENV_NAME}" 
