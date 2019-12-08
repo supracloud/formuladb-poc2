@@ -4,3 +4,9 @@
 [submodule "formuladb-env"]
 	path = formuladb-env
 	url = ../formuladb-env.git
+[submodule "formuladb-themes"]
+	path = formuladb-themes
+	url = ../formuladb-themes.git
+[submodule "formuladb-icons"]
+	path = formuladb-icons
+	url = ../formuladb-icons.git

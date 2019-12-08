@@ -124,9 +124,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     // themes, icons, images & other static content
     //////////////////////////////////////////////////////////////////////////////////////
 
-    app.use('/formuladb-themes', express.static('/wwwroot/git/formuladb-themes'));
+    app.use('/formuladb-env/themes', express.static('/wwwroot/git/formuladb-env/themes'));
     app.use('/formuladb-env/icons/', express.static('wwwroot/git/formuladb-env/icons'));
     app.use('/formuladb-env/static/', express.static('/wwwroot/git/formuladb-env/static'));
+    app.use('/formuladb-env/plugins/', express.static('/wwwroot/git/formuladb-env/plugins'));
     
     const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-env/static-assets';
     let httpProxy = proxy({
@@ -155,7 +156,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb/*', express.static('/wwwroot'));
 
-    let formuladbAppsStatic = express.static('/wwwroot/git');
+    let formuladbAppsStatic = express.static('/wwwroot/git/formuladb-env');
     app.get(/.*\.(html|yaml)$/, function appHtmlAndYaml(req, res, next) {
         console.log("HTML FILESSSSSSSS", req.url);
         formuladbAppsStatic(req, res, next);

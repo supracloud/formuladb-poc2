@@ -8,5 +8,6 @@ trap handleErr ERR
 
 ./node_modules/.bin/live-server --port=8081 -V --no-browser \
     --mount=/formuladb/:./formuladb/ \
+    --mount=/apps/:./formuladb-env/apps/ \
     --mount=/formuladb-env/:./formuladb-env/ \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \

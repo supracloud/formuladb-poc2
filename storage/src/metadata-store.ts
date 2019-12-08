@@ -14,8 +14,8 @@ const STORAGE = new Storage({
 const os = require('os');
 const path = require('path');
 
-const ROOT = process.env.FRMDB_SPECS ? '/tmp' : '/wwwroot/git';
-const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'formuladb-env/apps';
+const ROOT = process.env.FRMDB_SPECS ? '/tmp' : '/wwwroot/git/formuladb-env';
+const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'apps';
 
 export interface SchemaEntityList {
     _id: string;

@@ -4,10 +4,10 @@
  */
 
 
-@import "../../../formuladb-env/scss/line-awesome";
-@import "~/bootstrap/bootstrap";
-@import "~ag-grid-community/dist/styles/ag-grid";
-@import "~ag-grid-community/dist/styles/ag-theme-balham";
+@import "/formuladb-env/icons/line-awesome/css/line-awesome.min.css";
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+@import "../../../node_modules/ag-grid-community/dist/styles/ag-grid";
+@import "../../../node_modules/ag-grid-community/dist/styles/ag-theme-balham";
 
 :host {
   min-width: 28vw;

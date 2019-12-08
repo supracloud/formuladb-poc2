@@ -17,6 +17,9 @@ if [ ! -d "formuladb-env" ]; then
     fi
     git clone --jobs 10 --branch "${BASE_BRANCH}" --single-branch --depth 1 \
         git@gitlab.com:metawiz/formuladb-env.git
+        
+    git config user.email "git.bot@formuladb.io"
+    git config user.name "Git Bot"
 fi
 
 cd formuladb-env
