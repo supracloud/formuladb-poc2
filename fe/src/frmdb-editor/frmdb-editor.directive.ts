@@ -80,12 +80,11 @@ export class FrmdbEditorDirective {
     constructor() {
         this.EditorState = new FrmdbEditorState(this.backendService.tenantName, this.backendService.appName);
 
-        this.iframe = document.body.querySelector('iframe')!;
-        this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
-        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
-        this.frmdbFe = queryFrmdbFe();
-
         window.addEventListener('load', () => {
+            this.iframe = document.body.querySelector('iframe')!;
+            this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
+            this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
+            this.frmdbFe = queryFrmdbFe();    
             this.dataGrid = queryDataGrid(document.body);
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
@@ -101,12 +100,17 @@ export class FrmdbEditorDirective {
             this.loadTables();
             this.loadPages();
             this.viewManagementFlows();
-            this.iframe.src = window.location.hash.replace(/^#/, '');
-            this.iframe.onload = () => {
+            let ff = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
                 this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
                 pageElementFlows(this);
             }
+            this.iframe.onload = ff;
+            
+            //FIXME: Ugly Workaround for e2e where onload is not getting called:
+            setTimeout(ff, 2000);
+
+            this.iframe.src = window.location.hash.replace(/^#/, '');
         })
     }
 

@@ -361,9 +361,11 @@ export class RadioButtonInput extends RadioInput {
 		this.querySelector('.btn')!.classList.remove('active');
 		if (value && value != "") {
 			let i = this.querySelector("input[value=" + value + "]") as HTMLInputElement;
-			i.setAttribute("checked", "true");
-			i.checked = true;
-			// i.parentElement.button("toggle");
+			if (i) {
+				i.setAttribute("checked", "true");
+				i.checked = true;
+				// i.parentElement.button("toggle");
+			}
 		}
 	}
 

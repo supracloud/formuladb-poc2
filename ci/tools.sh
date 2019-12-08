@@ -1,3 +1,11 @@
+init-new-env() {
+    #not tested!
+    git submodules update --init --depth 1
+    npm install
+    cd formuladb-themes && npm install; cd -
+    cd formuladb-icons && npm install; cd -
+    cd formuladb-e2e && npm install; cd -
+}
 
 putSchema() {
     APP_NAME=$1
