@@ -1,6 +1,6 @@
 {
     "name": "formuladb",
-    "version": "0.0.21",
+    "version": "0.0.22",
     "description": "FormulaDB low code platform",
     "scripts": {
         "start": "bash scripts/init-be.sh && node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
