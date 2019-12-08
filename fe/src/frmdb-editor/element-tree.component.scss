@@ -8,28 +8,28 @@ li {
     white-space: nowrap;
 }
 .grand-parent {
-    background-color: green;
-    border: 2px dotted green;
-    background-clip: padding-box;
-    color: white;
+    // background-color: green;
+    // color: white;
+    // background-clip: padding-box;
+    border-bottom: 2px dotted yellow;
 }
 .parent {
-    background-color: yellow;
-    border: 2px dotted yellow;
-    background-clip: padding-box;
-    color: black;
-    padding-left: 5px;
+    // background-color: yellow;
+    // background-clip: padding-box;
+    // color: black;
+    border-bottom: 2px dotted red;
+    margin-left: 10px;
 }
 .prev {
-    background-color: red;
-    border: 2px dotted red;
-    background-clip: padding-box;
-    color: white;
-    padding-left: 10px;
+    // background-color: red;
+    // background-clip: padding-box;
+    // color: white;
+    border-bottom: 2px dotted #4285f4;
+    margin-left: 20px;
 }
 .elem {
-    background-color: #4285f4;
-    border: 2px solid #4285f4;
-    color: white;
-    padding-left: 10px;
+    // background-color: #4285f4;
+    // color: white;
+    border-bottom: 2px solid #4285f4;
+    margin-left: 20px;
 }

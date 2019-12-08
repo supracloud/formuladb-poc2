@@ -21,20 +21,20 @@
     }
 
     &#grand-parent-highlight {
-        border: 2px dotted green;
+        border: 2px dotted yellow;
         margin: -4px 0 0 -4px;
         padding: 4px;
     }
     &#parent-highlight {
-        border: 2px dotted yellow;
+        border: 2px dotted red;
         margin: -2px 0 0 -2px;
         padding: 2px;
     }
     &#prev-highlight {
-        border: 2px dotted red;
+        border: 1px dotted rgb(61, 133, 253);
     }
     &#parent-selected {
-        border: 2px solid yellow;
+        border: 2px solid red;
         margin: -2px 0 0 -2px;
         padding: 2px;
     }
