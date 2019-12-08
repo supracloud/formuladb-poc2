@@ -5,7 +5,7 @@ import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metada
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
-import { getHtml } from "./get-html";
+import { cleanupDocumentHtml } from "./get-html";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -112,7 +112,7 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
 }
 
 export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
-    let html = getHtml(doc);
+    let html = cleanupDocumentHtml(doc);
 
     BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
         .then(async (ev: ServerEventPutPageHtml) => {

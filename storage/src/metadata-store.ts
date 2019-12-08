@@ -6,7 +6,11 @@ import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 
+const { JSDOM } = require('jsdom');
+import { HTMLTools, isHTMLElement } from "@core/html-tools";
+
 import { Storage } from '@google-cloud/storage';
+import { cleanupDocumentHtml, cleanupDocumentDOM } from "@fe/get-html";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -14,8 +18,8 @@ const STORAGE = new Storage({
 const os = require('os');
 const path = require('path');
 
-const ROOT = process.env.FRMDB_SPECS ? '/tmp' : '/wwwroot/git/formuladb-env';
-const TENANT_NAME = process.env.FRMDB_SPECS ? 'testTenant' : 'apps';
+const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : '/wwwroot/git/formuladb-env';
+const TENANT_NAME = 'apps';
 
 export interface SchemaEntityList {
     _id: string;
@@ -29,7 +33,7 @@ export class MetadataStore {
         return new Promise((resolve, reject) => {
             let dirName = path.dirname(fileName);
 
-            fs.mkdir(dirName, {recursive: true}, function(errMkdir) {
+            fs.mkdir(dirName, { recursive: true }, function (errMkdir) {
                 if (errMkdir) {
                     console.error(errMkdir);
                     reject(errMkdir);
@@ -40,7 +44,7 @@ export class MetadataStore {
                             reject(err);
                         }
                         resolve();
-                    });    
+                    });
                 }
             })
         });
@@ -52,7 +56,7 @@ export class MetadataStore {
                 //handling error
                 if (err) {
                     reject(err);
-                } 
+                }
                 resolve(files.map(file => `${directoryPath.slice(ROOT.length)}/${file}`));
             });
         });
@@ -200,7 +204,83 @@ export class MetadataStore {
 
     async savePageHtml(pagePath: string, html: string): Promise<void> {
         let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName||'index.html'}`, html);
+
+        const jsdom = new JSDOM(html, {}, {
+            features: {
+                'FetchExternalResources': false,
+                'ProcessExternalResources': false
+            }
+        });
+        const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
+
+        let cleanedUpDOM = cleanupDocumentDOM(htmlTools.doc);
+
+        //<head> is managed like a special type of fragment
+        {
+            let headEl = cleanedUpDOM.querySelector('head');
+            if (!headEl) throw new Error(`could not find head elem for ${pagePath} with html ${html}`);
+            let titleEl = headEl.querySelector('title');
+            let headMarker = htmlTools.doc.createElement('head');
+            if (titleEl) headMarker.appendChild(titleEl.cloneNode(true));
+            cleanedUpDOM.replaceChild(headMarker, headEl);
+            await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
+        }
+
+        for (let fragmentEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-fragment]'))) {
+            let fragmentName = fragmentEl.getAttribute('data-frmdb-fragment');
+            if (!fragmentName) throw new Error("fragmentName not found for" + fragmentEl.outerHTML);
+            let fragmentMarker = htmlTools.doc.createElement('div');
+            fragmentMarker.setAttribute('data-frmdb-fragment', fragmentName);
+            fragmentEl.parentNode!.replaceChild(fragmentMarker, fragmentEl);
+
+            await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
+        }
+
+        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
+    }
+
+    async getPageHtml(tenantName: string, appName: string, pageName: string): Promise<string> {
+        let pageHtml = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName || 'index.html'}`);
+
+        const jsdom = new JSDOM(pageHtml, {}, {
+            features: {
+                'FetchExternalResources': false,
+                'ProcessExternalResources': false
+            }
+        });
+        const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
+        let pageDom = htmlTools.doc.documentElement;
+
+        //<head> is managed like a special type of fragment
+        {
+            let headEl = pageDom.querySelector('head');
+            if (!headEl) throw new Error(`could not find head elem for ${tenantName}/${appName}/${pageName} with html ${pageHtml}`);
+            let pageTitleEl = headEl.querySelector('title');
+            if (pageTitleEl != null) pageTitleEl = pageTitleEl.cloneNode(true) as HTMLTitleElement;
+
+            let headHtml = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/_head.html`);
+            headEl.outerHTML = headHtml;
+            let titleEl = headEl.querySelector('title');
+            if (pageTitleEl) {
+                if (titleEl) titleEl.innerText = pageTitleEl.innerText;
+                else headEl.appendChild(pageTitleEl);
+            }
+        }
+
+        for (let fragmentEl of Array.from(pageDom.querySelectorAll('[data-frmdb-fragment]'))) {
+            let fragmentName = fragmentEl.getAttribute('data-frmdb-fragment');
+            if (!fragmentName) throw new Error("fragmentName not found for" + fragmentEl.outerHTML);
+
+            let fragmentHtml = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${fragmentName}`);
+            let fragmentDom = htmlTools.html2dom(fragmentHtml);
+            if (isHTMLElement(fragmentDom)) {
+                let savedFragmentName = fragmentDom.getAttribute('data-frmdb-fragment');
+                if (savedFragmentName != fragmentName) throw new Error(`${savedFragmentName} != ${fragmentName} //// ${fragmentEl.outerHTML} //// ${fragmentHtml} /// ${fragmentDom.outerHTML}`);
+                fragmentEl.parentNode!.replaceChild(fragmentDom, fragmentEl);    
+            }
+        }
+
+        return htmlTools.document2html(pageDom);
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {

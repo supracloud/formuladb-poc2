@@ -1,23 +1,9 @@
-import { normalizeDOM2HTML } from "@core/normalize-html";
+import { HTMLTools } from "@core/html-tools";
+import { html } from "d3";
 
-export function getHtml(doc: Document) {
-    let hasDoctpe = (doc.doctype !== null);
-    let html = "";
-
-    if (hasDoctpe) html = "<!DOCTYPE "
-        + doc.doctype!.name
-        //@ts-ignore
-        + (doc.doctype.publicId ? ' PUBLIC "' + doc.doctype.publicId + '"' : '')
-        //@ts-ignore
-        + (!doc.doctype.publicId && doc.doctype.systemId ? ' SYSTEM' : '')
-        //@ts-ignore
-        + (doc.doctype.systemId ? ' "' + doc.doctype.systemId + '"' : '')
-        + ">\n";
+export function cleanupDocumentDOM(doc: Document): HTMLElement {
 
     let cleanedUpDOM: HTMLElement = doc.documentElement.cloneNode(true) as HTMLElement;
-    for (let frmdbFragment of Array.from(cleanedUpDOM.querySelectorAll('frmdb-fragment'))) {
-        // frmdbFragment.innerHTML = '';//For SEO better to keep this content
-    }
 
     //cleanup stelar.js styles
     for (let el of Array.from(cleanedUpDOM.querySelectorAll('[data-stellar-vertical-offset]'))) {
@@ -65,11 +51,11 @@ export function getHtml(doc: Document) {
         el.parentElement!.removeChild(el);
     }
 
-    html += normalizeDOM2HTML(cleanedUpDOM) + "\n</html>";
+    return cleanedUpDOM;
+}
 
-    html = html.replace(/<.*?data-vvveb-helpers.*?>/gi, "");
-    html = html.replace(/\s*data-vvveb-\w+(=["'].*?["'])?\s*/gi, "");
-    html = html.replace(/\s*<!-- Code injected by live-server(.|\n)+<\/body>/, '</body>');
-
-    return html;
+export function cleanupDocumentHtml(doc: Document): string {
+    let htmlTools = new HTMLTools(doc, new DOMParser());
+    let cleanedUpDOM: HTMLElement = cleanupDocumentDOM(doc);
+    return htmlTools.document2html(cleanedUpDOM);
 }

@@ -4,7 +4,9 @@
 */
 
 import { updateDOM, serializeElemToObj } from "./live-dom-template";
-import { normalizeHTML } from "@core/normalize-html";
+import { HTMLTools } from "@core/html-tools";
+
+const htmlTools = new HTMLTools(document, new DOMParser());
 
 export function wrapHTML(html: string): HTMLElement {
     let div = document.createElement('div');
@@ -62,8 +64,8 @@ describe('[FE] FrmdbTemplate', () => {
         updateDOM(data, el)
 
         let renderedHtml = el.outerHTML;
-        let normalizedHtml = normalizeHTML(renderedHtml);
-        let expectedNormalizedHTML = normalizeHTML(    
+        let normalizedHtml = htmlTools.normalizeHTML(renderedHtml);
+        let expectedNormalizedHTML = htmlTools.normalizeHTML(    
             /*html*/`
             <div>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">a</i>
@@ -155,8 +157,8 @@ describe('[FE] FrmdbTemplate', () => {
 
         setTimeout(() => {
             let renderedHtml = el.outerHTML;
-            let normalizedHtml = normalizeHTML(renderedHtml);
-            expect(normalizedHtml).toEqual(normalizeHTML(    
+            let normalizedHtml = htmlTools.normalizeHTML(renderedHtml);
+            expect(normalizedHtml).toEqual(htmlTools.normalizeHTML(    
                 /*html*/`
                 <div>
                     <a data-frmdb-table="asyncFunc[]" data-frmdb-value="asyncFunc[]">1</a>

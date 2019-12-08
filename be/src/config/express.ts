@@ -156,9 +156,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb/*', express.static('/wwwroot'));
 
+    app.get('/:tenant/:app/:page.html', async function (req, res, next) {
+        let pageHtml = await kvsFactory.metadataStore.getPageHtml(req.params.tenant, req.params.app, `${req.params.page}.html`);
+        res.set('Content-Type', 'text/html')
+        res.send(pageHtml);
+    });
     let formuladbAppsStatic = express.static('/wwwroot/git/formuladb-env');
-    app.get(/.*\.(html|yaml)$/, function appHtmlAndYaml(req, res, next) {
-        console.log("HTML FILESSSSSSSS", req.url);
+    app.get('/:tenant/:app/:name.yaml', function (req, res, next) {
         formuladbAppsStatic(req, res, next);
     });
 
