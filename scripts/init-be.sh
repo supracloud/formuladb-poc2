@@ -26,12 +26,6 @@ cd formuladb-env
 if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
     git pull
 else
-    cd formuladb-env
-    if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
-        echo "branch already existing locally"
-        git pull
-    else
-        echo "ERROR git repo not initialized correctly...exiting..."
-        exit 1
-    fi
+    git checkout -b "${FRMDB_ENV_NAME}"
+    git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
 fi
