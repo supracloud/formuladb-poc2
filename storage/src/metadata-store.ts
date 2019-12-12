@@ -275,7 +275,7 @@ export class MetadataStore {
             let fragmentDom = htmlTools.html2dom(fragmentHtml);
             if (isHTMLElement(fragmentDom)) {
                 let savedFragmentName = fragmentDom.getAttribute('data-frmdb-fragment');
-                if (savedFragmentName != fragmentName) throw new Error(`${savedFragmentName} != ${fragmentName} //// ${fragmentEl.outerHTML} //// ${fragmentHtml} /// ${fragmentDom.outerHTML}`);
+                if (savedFragmentName != fragmentName) throw new Error(`Fragment name mismatch: ${savedFragmentName} != ${fragmentName} //// ${fragmentEl.outerHTML} //// ${fragmentHtml} /// ${fragmentDom.outerHTML}`);
                 fragmentEl.parentNode!.replaceChild(fragmentDom, fragmentEl);    
             }
         }
