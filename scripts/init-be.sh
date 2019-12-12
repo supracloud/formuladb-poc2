@@ -15,14 +15,14 @@ if [ ! -d "formuladb-env" ]; then
     if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
         BASE_BRANCH="${FRMDB_ENV_NAME}"
     fi
-    git clone --jobs 10 --branch "${BASE_BRANCH}" --single-branch --depth 1 \
-        git@gitlab.com:metawiz/formuladb-env.git
-        
+    git clone --single-branch --depth 1 file:///formuladb-env
+
+    cd formuladb-env
     git config user.email "git.bot@formuladb.io"
     git config user.name "Git Bot"
 fi
 
-cd formuladb-env
+cd /wwwroot/git/formuladb-env
 if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
     git pull
 else

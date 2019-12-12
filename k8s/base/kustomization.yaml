@@ -1,4 +1,4 @@
-namespace: 153-admin-user-can-edit-a-page-components-blocks-per-theme #TBD_ENV_NAME
+namespace: 04b8d8621a87e0cb8b9f49f39fc690a5529618a6 #TBD_ENV_NAME
 resources:
 - resources/be-deployment.yaml
 - resources/be-service.yaml

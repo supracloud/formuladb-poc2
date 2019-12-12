@@ -51,10 +51,17 @@ hash gsutil || {
     fi
 }
 
+if uname -a | grep 'Linux.*Microsoft' && ! kubectl get namespace | grep local-path-storage; then 
+  kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+  kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+  kubectl patch storageclass hostpath -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+fi
+
 # -------------------------------------------------------------------------
 # External dependency: git
 # -------------------------------------------------------------------------
-if uname -a | grep 'Linux.*Microsoft'; then 
+if uname -a | grep 'Linux.*Microsoft' && [ "`git log -1 --format=%H`" != "$FRMDB_ENV_NAME" ]; then 
+    echo "SYNCHRONIZING branches for submodules"
     for submodule in formuladb-env formuladb-e2e formuladb-themes formuladb-icons; do
         cd $BASEDIR/..
         if [ ! -d "${submodule}" ]; then

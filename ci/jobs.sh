@@ -5,6 +5,9 @@ trap _cleanup ERR
 trap _cleanup EXIT
 
 FRMDB_ENV_NAME="${CI_COMMIT_SHA}"
+if [[ -z "$FRMDB_ENV_NAME" ]]; then
+    FRMDB_ENV_NAME=`git log -1 --format=%H`
+fi
 echo "FRMDB_ENV_NAME=${FRMDB_ENV_NAME}"
 export FRMDB_ENV_NAME
 export BASEDIR=`dirname $0`
@@ -86,7 +89,12 @@ function test_e2e {
     npm run webdriver-update
     pwd
     cat package.json
-    TARGET=headless npm test -- --baseUrl="$URL"
+
+    target=headless
+    if uname -a | grep 'Linux.*Microsoft'; then 
+        target=""
+    fi
+    TARGET=$target npm test -- --baseUrl="$URL"
 }
 
 function e2e_dev_env {

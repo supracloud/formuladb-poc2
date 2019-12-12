@@ -9,4 +9,5 @@ dist-be/**.js.map
 !ci/FormulaDB-storage-full.json
 !ssh
 !scripts
-!tmp/formuladb-env
+!formuladb-env
+!.git/modules/formuladb-env

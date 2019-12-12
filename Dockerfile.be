@@ -50,6 +50,10 @@ ADD ./scripts /scripts
 
 COPY dist-be/frmdb-be* /dist-be/
 ADD ./formuladb /wwwroot/formuladb
+ADD ./formuladb-env /formuladb-env
+RUN rm formuladb-env/.git
+ADD ./.git/modules/formuladb-env /formuladb-env/.git
+RUN perl -p -i -e 's!worktree = ../../../formuladb-env!!' /formuladb-env/.git/config
 
 EXPOSE 3000
 
