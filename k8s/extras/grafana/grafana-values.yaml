@@ -1,0 +1,74 @@
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    certmanager.k8s.io/issuer: "grafana-prod"
+  hosts:
+    - grafana.formuladb.io
+  tls:
+    - secretName: certificate-formuladb-prod
+      hosts:
+        - grafana.formuladb.io
+persistence:
+  enabled: true
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: ElasticSearch-monitoring
+      type: elasticsearch
+      access: proxy
+      url: http://formuladb-master.monitoring:9200
+      database: "metricbeat-*"
+      jsonData:
+        timeField: "@timestamp"
+        esVersion: 70
+    - name: ElasticSearch-uptime
+      type: elasticsearch
+      access: proxy
+      url: http://formuladb-master.monitoring:9200
+      database: "heartbeat-*"
+      jsonData:
+        timeField: "@timestamp"
+        esVersion: 70
+
+## Configure notifiers
+## ref: http://docs.grafana.org/administration/provisioning/#alert-notification-channels
+##
+notifiers:
+  notifiers.yaml:
+    notifiers:
+    - name: email-notifier
+      type: email
+      uid: email1
+      org_id: 1
+      is_default: true
+      settings:
+        addresses: laurentiu.soica@formuladb.io; alexandru.cristu@formuladb.io
+
+grafana.ini:
+  smtp:
+    enabled: true
+    host: "smtp.gmail.com:587"
+    user: "laurentiu.soica@formuladb.io"
+    password: "fk3bwuqazZ9y5U3"
+    from_address: "laurentiu.soica@formuladb.io"
+    from_name: FormulaDB
+  server:
+    root_url: https://grafana.formuladb.io/
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: 'default'
+      orgId: 1
+      folder: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      options:
+        path: /var/lib/grafana/dashboards/default
+
+dashboardsConfigMaps:
+  default: "cluster-nodes"
