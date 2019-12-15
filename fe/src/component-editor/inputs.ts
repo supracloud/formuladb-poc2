@@ -271,7 +271,11 @@ export class ImageInput extends Input {
 	inputTagName = "frmdb-image-input";
 	public frmdbBlob?: FrmdbBlob;
 
-	setValue(value) {
+	setValue(value: string) {
+		if (value.indexOf('blob://') !== 0 && this.frmdbBlob) {
+			BLOBS.removeBlob(this.frmdbBlob);//if we choose a regular URL, remove the cached blob
+		}
+
 		(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
 		(this.querySelector('img') as HTMLImageElement).src = value;
 		let lbl = this.querySelector('label') as HTMLLabelElement;

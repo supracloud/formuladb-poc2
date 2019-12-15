@@ -8,7 +8,6 @@ resources:
 - resources/git-persistence-persistentvolumeclaim.yaml 
 - resources/service-account-secret.yaml
 - resources/pg-backup-deployment.yaml
-- resources/production-issuer.yaml
 #wildcard support removed for some reason https://github.com/kubernetes-sigs/kustomize/issues/119
 vars:
 - name: NAMESPACE_NAME

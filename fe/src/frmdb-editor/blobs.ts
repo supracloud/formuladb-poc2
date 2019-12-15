@@ -16,6 +16,10 @@ class Blobs {
         this.blobs[frmdbBlob.url] = frmdbBlob;
         return frmdbBlob;
     }
+
+    removeBlob(blob: FrmdbBlob) {
+        delete this.blobs[blob.url];
+    }
 }
 
 export const BLOBS = new Blobs();

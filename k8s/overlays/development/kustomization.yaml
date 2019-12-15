@@ -7,4 +7,4 @@ resources:
 - resources/ingress.yaml
 # - resources/nginx-deployment.yaml
 # - resources/nginx-service.yaml
-- resources/staging-issuer.yaml
+# - resources/staging-issuer.yaml

@@ -5,3 +5,4 @@ patches:
 - patches/pg-backup-deployment.yaml
 resources:
 - resources/ingress.yaml
+- resources/production-issuer.yaml

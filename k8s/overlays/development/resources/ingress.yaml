@@ -11,7 +11,7 @@ spec:
   tls:
   - hosts:
     - $(NAMESPACE_NAME).formuladb.io
-    secretName: certificate-formuladb-staging
+    # secretName: certificate-formuladb-staging
   rules:
   - host: $(NAMESPACE_NAME).formuladb.io
     http:

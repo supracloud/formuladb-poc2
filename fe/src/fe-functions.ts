@@ -144,7 +144,7 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
     
     BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
         .then(async (ev: ServerEventPutPageHtml) => {
-            if (ev.state_ != 'ABORT') {
+            if (ev.state_ != 'ABORT' && !(ev as any).error) {
                 alert(`Saved ${pagePath}`);
             } else {
                 alert(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
