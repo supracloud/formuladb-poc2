@@ -10,7 +10,7 @@ const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
 
 import { Storage } from '@google-cloud/storage';
-import { cleanupDocumentHtml, cleanupDocumentDOM } from "@fe/get-html";
+import { cleanupDocumentDOM } from "@fe/get-html";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });

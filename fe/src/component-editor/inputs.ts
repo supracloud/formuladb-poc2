@@ -19,6 +19,7 @@ https://github.com/givanz/VvvebJs
 import { tmpl } from "./tmpl";
 import { emit, onEvent } from "@fe/delegated-events";
 import { elvis } from "@core/elvis";
+import { BLOBS, FrmdbBlob } from "@fe/frmdb-editor/blobs";
 
 declare var $: null;
 
@@ -268,6 +269,7 @@ export class ColorInput extends Input {
 export class ImageInput extends Input {
 	static elemTagName = "frmdb-image-input";
 	inputTagName = "frmdb-image-input";
+	public frmdbBlob?: FrmdbBlob;
 
 	setValue(value) {
 
@@ -292,7 +294,7 @@ export class ImageInput extends Input {
 		onEvent(this, 'change', 'input[type="file"]', (event: Event) => {
 			let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
             if (fileInput.files && fileInput.files[0]) {
-				this.setValue(URL.createObjectURL(fileInput.files[0]));
+				this.frmdbBlob = BLOBS.addImgFile(fileInput.files[0]);
 				this.emitChange();
             }
 		});

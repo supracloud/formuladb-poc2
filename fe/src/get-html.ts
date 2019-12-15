@@ -1,5 +1,6 @@
 import { HTMLTools } from "@core/html-tools";
-import { html } from "d3";
+import { BLOBS } from "./frmdb-editor/blobs";
+import { BACKEND_SERVICE } from "./backend.service";
 
 export function cleanupDocumentDOM(doc: Document): HTMLElement {
 
@@ -52,14 +53,4 @@ export function cleanupDocumentDOM(doc: Document): HTMLElement {
     }
 
     return cleanedUpDOM;
-}
-
-export function cleanupDocumentHtml(doc: Document): string {
-    let htmlTools = new HTMLTools(doc, new DOMParser());
-    let cleanedUpDOM: HTMLElement = cleanupDocumentDOM(doc);
-    return htmlTools.document2html(cleanedUpDOM);
-}
-
-export function getUploadedImgBlobs() {
-    //TODO search all images with src="blob://..."
 }

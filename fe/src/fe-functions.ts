@@ -5,7 +5,10 @@ import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metada
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
-import { cleanupDocumentHtml } from "./get-html";
+import { HTMLTools } from "@core/html-tools";
+import { cleanupDocumentDOM } from "./get-html";
+import { BLOBS } from "./frmdb-editor/blobs";
+import { frmdbSetImageSrc } from "./component-editor/components-bootstrap4";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -135,8 +138,20 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
 // }
 
 export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
-    let html = cleanupDocumentHtml(doc);
+    let htmlTools = new HTMLTools(doc, new DOMParser());
+    let cleanedUpDOM = cleanupDocumentDOM(doc);
 
+    //Extract all media blobs
+    let appBackend = BACKEND_SERVICE();
+    for (let frmdbBlob of Object.values(BLOBS.blobs)) {
+        if (frmdbBlob.type === "image" && frmdbBlob.el) {
+            let newSrc = `/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.file.name}`;
+            frmdbSetImageSrc(frmdbBlob.el, newSrc);
+        }
+    }
+
+    let html = htmlTools.document2html(cleanedUpDOM);
+    
     BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
         .then(async (ev: ServerEventPutPageHtml) => {
             if (ev.state_ != 'ABORT') {

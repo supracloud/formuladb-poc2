@@ -97,7 +97,7 @@ function grabImage(element: HTMLElement) {
     // }
 }
 
-function setImageSrc(element: HTMLElement, value: string) {
+export function frmdbSetImageSrc(element: HTMLElement, value: string) {
     if (element.tagName.toLowerCase() === 'img') {
         Undo.addMutation({
             type: 'attributes',
@@ -201,7 +201,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                     if (!imgSrc) this.hide = true;
                     else this.hide = false;
                 },
-                onChange: setImageSrc,
+                onChange: frmdbSetImageSrc,
                 init: function (node: HTMLElement) {
                     return grabImage(node);
                 },

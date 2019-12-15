@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import { tmpl } from "./tmpl";
 import { Undo } from "../frmdb-editor/undo";
-import { Input, Inputs, createInput, SectionInput } from "./inputs";
+import { Input, Inputs, createInput, SectionInput, ImageInput } from "./inputs";
 import { addComponents } from "./components-bootstrap4";
 import { onEvent, emit } from "@fe/delegated-events";
 import { FrmdbModifyPageElement } from "@fe/frmdb-user-events";
@@ -382,6 +382,11 @@ export class ElementEditorComponent extends HTMLElement {
 		let element = selectedEl;
 		if (property.child) element = element.querySelector(property.child) as HTMLElement;
 		if (property.parent) element = element.closest(property.parent) as HTMLElement;
+
+		if (property.inputtype === "ImageInput") {
+			let imgInput = input as ImageInput;
+			if (imgInput.frmdbBlob) imgInput.frmdbBlob.el = selectedEl;
+		}
 		
 		if (property.onChange) {
 			element = property.onChange(element, value, input, component);
