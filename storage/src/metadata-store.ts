@@ -57,7 +57,7 @@ export class MetadataStore {
                 if (err) {
                     reject(err);
                 }
-                resolve(files.map(file => `${directoryPath.slice(ROOT.length)}/${file}`));
+                resolve(files.map(file => `${directoryPath.slice('/wwwroot/git'.length)}/${file}`));
             });
         });
     }
@@ -289,11 +289,11 @@ export class MetadataStore {
     }
 
     async saveMediaObject(filePath: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${ROOT}/formuladb-env/static/${filePath}`, new Buffer(base64Content, 'base64'));
+        await this.writeFile(`${ROOT}/static/${filePath}`, new Buffer(base64Content, 'base64'));
     }
 
     async getMediaObjects(tenantName: string, appName: string) {
-        return this.listDir(`${ROOT}/formuladb-env/static/${appName}`);
+        return this.listDir(`${ROOT}/static/${appName}`);
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

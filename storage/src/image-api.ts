@@ -7,6 +7,10 @@ interface FreeImagesRespose {
     hits: {
         id: string;
         previewURL: string;
+        webformatURL: string;
+        largeImageURL: string;
+        webformatHeight: number;
+        webformatWidth: number;
     }[];
 }
 

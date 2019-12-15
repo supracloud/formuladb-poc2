@@ -10,47 +10,59 @@
             <div class="modal-body h-100 overflow-hidden mb-4">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" data-toggle="tab" href="#Uploaded_Images">Your Uploaded Images</a>
-                        <a class="nav-item nav-link" data-toggle="tab" href="#Free_Public_Images"><img src="/formuladb/img/pixabay-logo.svg" style="width:94px">
-                            Free Images</a>
-                        <a class="nav-item nav-link" data-toggle="tab" href="#Paid_Images">Paid Images</a>
+                        <a class="nav-item nav-link active" data-toggle="tab" href="#Uploaded_Images">My Uploaded Images</a>
+                        <a class="nav-item nav-link" data-toggle="tab" href="#Free_Public_Images">Free Online Images</a>
+                        <a class="nav-item nav-link" data-toggle="tab" href="#Paid_Images">Paid Online Images</a>
                     </div>
                 </nav>
                 <div class="tab-content h-100 overflow-auto">
                     <div class="tab-pane active" id="Uploaded_Images" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="card-columns text-center">
-                            <a class="card border-0" data-frmdb-table="mediaObjectsUrls[]">
-                                <img class="border rounded" data-frmdb-value="mediaObjectsUrls[]" data-frmdb-attr="alt::mediaObjectsUrls[]" style="max-height: 20vh">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="Free_Public_Images" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="d-flex align-items-center">
-                            <a href="https://pixabay.com/" target="_blank"
-                                style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
-                                <i style="display:block;width:68px;height:18px;overflow:hidden"><img src="/formuladb/img/pixabay-logo.svg"
-                                        style="width:94px"></i>
-                                Free Images
-                            </a>
-                            <div class="input-group mb-3">
-                                <input id="frmdb-search-free-images" type="text" class="form-control"
-                                    placeholder="Search images: hotels, water sports, beauty, consulting ...">
-                                <div class="input-group-append">
-                                    <span class="input-group-text"><i class="la la-search"></i></span>
+                        <div>
+                            <div class="row m-5 shadow">
+                                <div class="custom-file col">
+                                    <input type="file" class="custom-file-input" id="frmdb-upload-image-input">
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                                <div class="col text-center">
+                                    <img class="border rounded m-2" id="frmdb-uploaded-img" style="max-height: 20vh" />
                                 </div>
                             </div>
+                            <div class="card-columns text-center">
+                                <a class="card border-0" data-frmdb-table="mediaObjectsUrls[]">
+                                    <img class="border rounded" data-frmdb-value="mediaObjectsUrls[]" data-frmdb-attr="alt::mediaObjectsUrls[]"
+                                        style="max-height: 20vh">
+                                </a>
+                            </div>
                         </div>
-                        <div class="card-columns">
-                            <a class="card border-0 text-center" data-frmdb-table="freeImagesUrls[]">
-                                <img class="border rounded" data-frmdb-value="freeImagesUrls[]" data-frmdb-attr="alt::freeImagesUrls[]" style="max-height: 20vh">
-                            </a>
+                        <div class="tab-pane" id="Free_Public_Images" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="d-flex align-items-center">
+                                <a href="https://pixabay.com/" target="_blank"
+                                    style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
+                                    <i style="display:block;width:68px;height:18px;overflow:hidden"><img src="/formuladb/img/pixabay-logo.svg"
+                                            style="width:94px"></i>
+                                    Free Images
+                                </a>
+                                <div class="input-group mb-3">
+                                    <input id="frmdb-search-free-images" type="text" class="form-control"
+                                        placeholder="Search images: hotels, water sports, beauty, consulting ..." />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="la la-search"></i></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-columns">
+                                <a class="card border-0 text-center" data-frmdb-table="freeImagesUrls[]">
+                                    <img class="border rounded" data-frmdb-value="freeImagesUrls[].previewURL"
+                                        data-frmdb-attr="alt::freeImagesUrls[].previewURL"
+                                        data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].webformatURL" style="max-height: 25vh">
+                                </a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane" id="Paid_Images" role="tabpanel" aria-labelledby="home-tab">
-                        Coming soon...
+                        <div class="tab-pane" id="Paid_Images" role="tabpanel" aria-labelledby="home-tab">
+                            Coming soon...
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

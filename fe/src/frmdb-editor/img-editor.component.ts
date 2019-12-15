@@ -16,7 +16,10 @@ export class ImgEditorComponent extends HTMLElement {
 
         onEvent(this, 'change', '#frmdb-search-free-images', async (event) => {
             let res = await searchFreeImages(event.target!.value);
-            let freeImagesUrls = res.hits.map(hit => hit.previewURL);
+            let freeImagesUrls = res.hits.map(hit => ({
+                previewURL: hit.previewURL,
+                webformatURL: hit.webformatURL,
+            }));
             updateDOM({freeImagesUrls}, this);
             //TODO infinite scroll OR pagination
         });
@@ -29,6 +32,15 @@ export class ImgEditorComponent extends HTMLElement {
             ($('#img-editor-modal') as any).modal('hide');
         });
         
+        onEvent(this, 'change', '#frmdb-upload-image-input', (event) => {
+            let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
+            if (fileInput.files && fileInput.files[0]) {
+                let img: HTMLImageElement = this.querySelector('#frmdb-uploaded-img') as HTMLImageElement;
+                img.src = URL.createObjectURL(fileInput.files[0]); // set src to blob url
+                // img.onload = imageIsLoaded;
+            }
+        });
+
         onEvent(this, 'click', '[data-frmdb-value="freeImagesUrls[]"]', event => {
             if (!this.imageProperty) return;
             alert('Coming soon...');

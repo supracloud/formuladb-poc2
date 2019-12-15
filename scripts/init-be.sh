@@ -13,9 +13,10 @@ if [ ! -d "formuladb-env" ]; then
 
     BASE_BRANCH="master"
     if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
-        BASE_BRANCH="${FRMDB_ENV_NAME}"
+        git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-env.git
+    else
+        git clone --single-branch --depth 1 file:///formuladb-env
     fi
-    git clone --single-branch --depth 1 file:///formuladb-env
 
     cd formuladb-env
     git config user.email "git.bot@formuladb.io"
