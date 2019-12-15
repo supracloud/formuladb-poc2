@@ -1,0 +1,537 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-nodes
+  namespace: alerting
+data:
+  k8s-nodes-dashboard.json: |
+    {
+        "annotations": {
+        "list": [
+            {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+            }
+        ]
+        },
+        "editable": true,
+        "gnetId": null,
+        "graphTooltip": 0,
+        "links": [],
+        "panels": [
+        {
+            "alert": {
+            "alertRuleTags": {},
+            "conditions": [
+                {
+                "evaluator": {
+                    "params": [
+                    0.5
+                    ],
+                    "type": "gt"
+                },
+                "operator": {
+                    "type": "and"
+                },
+                "query": {
+                    "params": [
+                    "A",
+                    "5m",
+                    "now"
+                    ]
+                },
+                "reducer": {
+                    "params": [],
+                    "type": "avg"
+                },
+                "type": "query"
+                }
+            ],
+            "executionErrorState": "alerting",
+            "for": "",
+            "frequency": "1m",
+            "handler": 1,
+            "name": "Uptime alert",
+            "noDataState": "no_data",
+            "notifications": []
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "ElasticSearch-uptime",
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 0
+            },
+            "hiddenSeries": false,
+            "id": 6,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+            "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "bucketAggs": [
+                {
+                    "fake": true,
+                    "field": "url.full",
+                    "id": "3",
+                    "settings": {
+                    "min_doc_count": 1,
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                    },
+                    "type": "terms"
+                },
+                {
+                    "field": "@timestamp",
+                    "id": "2",
+                    "settings": {
+                    "interval": "5m",
+                    "min_doc_count": 0,
+                    "trimEdges": 0
+                    },
+                    "type": "date_histogram"
+                }
+                ],
+                "metrics": [
+                {
+                    "field": "summary.down",
+                    "id": "1",
+                    "meta": {},
+                    "settings": {},
+                    "type": "avg"
+                }
+                ],
+                "query": "*",
+                "refId": "A",
+                "timeField": "@timestamp"
+            }
+            ],
+            "thresholds": [
+            {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 0.5
+            }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Uptime",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "alert": {
+            "alertRuleTags": {},
+            "conditions": [
+                {
+                "evaluator": {
+                    "params": [
+                    4
+                    ],
+                    "type": "gt"
+                },
+                "operator": {
+                    "type": "and"
+                },
+                "query": {
+                    "params": [
+                    "A",
+                    "5m",
+                    "now"
+                    ]
+                },
+                "reducer": {
+                    "params": [],
+                    "type": "max"
+                },
+                "type": "query"
+                }
+            ],
+            "executionErrorState": "alerting",
+            "for": "0m",
+            "frequency": "1m",
+            "handler": 1,
+            "name": "High load on cluster node",
+            "noDataState": "no_data",
+            "notifications": []
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "ElasticSearch",
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 8
+            },
+            "hiddenSeries": false,
+            "id": 4,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+            "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "bucketAggs": [
+                {
+                    "fake": true,
+                    "field": "host.name",
+                    "id": "5",
+                    "settings": {
+                    "min_doc_count": 1,
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                    },
+                    "type": "terms"
+                },
+                {
+                    "fake": true,
+                    "field": "@timestamp",
+                    "id": "4",
+                    "settings": {
+                    "interval": "1m",
+                    "min_doc_count": 0,
+                    "trimEdges": 0
+                    },
+                    "type": "date_histogram"
+                }
+                ],
+                "metrics": [
+                {
+                    "field": "system.load.15",
+                    "id": "1",
+                    "meta": {},
+                    "settings": {},
+                    "type": "max"
+                }
+                ],
+                "query": "*",
+                "refId": "A",
+                "timeField": "@timestamp"
+            }
+            ],
+            "thresholds": [
+            {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "gt",
+                "value": 4
+            }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "System Load",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        },
+        {
+            "alert": {
+            "alertRuleTags": {},
+            "conditions": [
+                {
+                "evaluator": {
+                    "params": [
+                    20000000000
+                    ],
+                    "type": "lt"
+                },
+                "operator": {
+                    "type": "and"
+                },
+                "query": {
+                    "params": [
+                    "A",
+                    "5m",
+                    "now"
+                    ]
+                },
+                "reducer": {
+                    "params": [],
+                    "type": "avg"
+                },
+                "type": "query"
+                }
+            ],
+            "executionErrorState": "alerting",
+            "for": "5m",
+            "frequency": "1m",
+            "handler": 1,
+            "message": "Disk pressure on node",
+            "name": "Disk pressure on cluster node",
+            "noDataState": "no_data",
+            "notifications": []
+            },
+            "aliasColors": {},
+            "bars": false,
+            "dashLength": 10,
+            "dashes": false,
+            "datasource": "ElasticSearch",
+            "fill": 1,
+            "fillGradient": 0,
+            "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 16
+            },
+            "hiddenSeries": false,
+            "id": 2,
+            "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+            },
+            "lines": true,
+            "linewidth": 1,
+            "nullPointMode": "null",
+            "options": {
+            "dataLinks": []
+            },
+            "percentage": false,
+            "pointradius": 2,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "spaceLength": 10,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+            {
+                "bucketAggs": [
+                {
+                    "fake": true,
+                    "field": "kubernetes.node.name",
+                    "id": "4",
+                    "settings": {
+                    "min_doc_count": 1,
+                    "order": "desc",
+                    "orderBy": "_term",
+                    "size": "10"
+                    },
+                    "type": "terms"
+                },
+                {
+                    "fake": true,
+                    "field": "@timestamp",
+                    "id": "3",
+                    "settings": {
+                    "interval": "5m",
+                    "min_doc_count": 0,
+                    "trimEdges": 0
+                    },
+                    "type": "date_histogram"
+                }
+                ],
+                "metrics": [
+                {
+                    "field": "kubernetes.node.fs.available.bytes",
+                    "id": "1",
+                    "inlineScript": null,
+                    "meta": {},
+                    "settings": {},
+                    "type": "max"
+                }
+                ],
+                "query": "*",
+                "refId": "A",
+                "timeField": "@timestamp"
+            }
+            ],
+            "thresholds": [
+            {
+                "colorMode": "critical",
+                "fill": true,
+                "line": true,
+                "op": "lt",
+                "value": 20000000000
+            }
+            ],
+            "timeFrom": null,
+            "timeRegions": [],
+            "timeShift": null,
+            "title": "Available disk space",
+            "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+            },
+            "type": "graph",
+            "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+            },
+            "yaxes": [
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            },
+            {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+            }
+            ],
+            "yaxis": {
+            "align": false,
+            "alignLevel": null
+            }
+        }
+        ],
+        "refresh": "5s",
+        "schemaVersion": 21,
+        "style": "dark",
+        "tags": [],
+        "templating": {
+        "list": []
+        },
+        "time": {
+        "from": "now-15m",
+        "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "",
+        "title": "Cluster nodes",
+        "uid": "UkmsRmBWk",
+        "version": 1
+    }
