@@ -272,12 +272,11 @@ export class ImageInput extends Input {
 	public frmdbBlob?: FrmdbBlob;
 
 	setValue(value) {
-
-		// //don't set blob value to avoid slowing down the page		
-		// if (value.indexOf("data:image") == -1) {
-			(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
-			(this.querySelector('img') as HTMLImageElement).src = value;
-		// }
+		(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
+		(this.querySelector('img') as HTMLImageElement).src = value;
+		let lbl = this.querySelector('label') as HTMLLabelElement;
+		lbl.textContent = value;
+		lbl.title = value;
 	}
 
 	emitChange() {
@@ -295,6 +294,7 @@ export class ImageInput extends Input {
 			let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
             if (fileInput.files && fileInput.files[0]) {
 				this.frmdbBlob = BLOBS.addImgFile(fileInput.files[0]);
+				this.setValue(this.frmdbBlob.url);
 				this.emitChange();
             }
 		});
@@ -304,10 +304,10 @@ export class ImageInput extends Input {
 				<a id="frmdb-chose-image-button" href="javascript:void(0)">
 					<img style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
 				</a>
-				<input readonly name="{%=key%}" type="text" class="form-control"/>
+				<input hidden name="{%=key%}" type="text" class="form-control"/>
 				<div class="custom-file col">
-					<input type="file" class="custom-file-input">
 					<label class="custom-file-label" for="customFile">Choose file</label>
+					<input type="file" class="custom-file-input">
 				</div>
 			</div>		
 		`, data);

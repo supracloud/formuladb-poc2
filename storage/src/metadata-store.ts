@@ -11,6 +11,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@fe/get-html";
+import { FRMDB_ENV_DIR } from "@domain/constants";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -18,7 +19,7 @@ const STORAGE = new Storage({
 const os = require('os');
 const path = require('path');
 
-const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : '/wwwroot/git/formuladb-env';
+const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : FRMDB_ENV_DIR;
 const TENANT_NAME = 'apps';
 
 export interface SchemaEntityList {
@@ -291,11 +292,11 @@ export class MetadataStore {
     }
 
     async saveMediaObject(filePath: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${ROOT}/static/${filePath}`, new Buffer(base64Content, 'base64'));
+        await this.writeFile(`${ROOT}/static/${filePath.replace(ROOT, '')}`, new Buffer(base64Content, 'base64'));
     }
 
     async getMediaObjects(tenantName: string, appName: string) {
-        return this.listDir(`${ROOT}/static/${appName}`);
+        return this.listDir(`${ROOT}/static/${tenantName}/${appName}`);
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

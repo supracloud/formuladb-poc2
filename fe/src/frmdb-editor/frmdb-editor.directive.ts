@@ -4,7 +4,7 @@ import { BACKEND_SERVICE } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from "@fe/i18n-fe";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
-import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty } from "@domain/event";
+import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
 import { UserDeleteColumn, FrmdbSelectPageElement, FrmdbSelectPageElementAction, UserSelectedCell } from "@fe/frmdb-user-events";
@@ -12,7 +12,7 @@ import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
-import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
+import { CURRENT_COLUMN_HIGHLIGHT_STYLE, FRMDB_ENV_DIR } from "@domain/constants";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
@@ -41,6 +41,8 @@ import { ImgEditorComponent } from "./img-editor.component";
 
 import "@fe/frmdb-editor/icon-editor.component";
 import { IconEditorComponent } from "./icon-editor.component";
+import { BLOBS } from "./blobs";
+import { frmdbSetImageSrc } from "@fe/component-editor/components-bootstrap4";
 
 class FrmdbEditorState {
     tables: Entity[] = [];
@@ -84,7 +86,7 @@ export class FrmdbEditorDirective {
             this.iframe = document.body.querySelector('iframe')!;
             this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
             this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
-            this.frmdbFe = queryFrmdbFe();    
+            this.frmdbFe = queryFrmdbFe();
             this.dataGrid = queryDataGrid(document.body);
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
             this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
@@ -93,7 +95,7 @@ export class FrmdbEditorDirective {
             this.iconEditorCmp = document.body.querySelector('frmdb-icon-editor') as IconEditorComponent;
             this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
             this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
-    
+
             this.tableManagementFlows();
             this.tableColumnManagementFlows();
             this.initI18n();
@@ -106,7 +108,7 @@ export class FrmdbEditorDirective {
                 pageElementFlows(this);
             }
             this.iframe.onload = ff;
-            
+
             //FIXME: Ugly Workaround for e2e where onload is not getting called:
             setTimeout(ff, 2000);
 
@@ -134,15 +136,15 @@ export class FrmdbEditorDirective {
     initI18n() {
         const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
 
-		// i18n section
-		const i18nSelect: HTMLElement = document.querySelector('#frmdb-editor-i18n-select') as HTMLElement;
-		const i18nOptions: HTMLElement = document.querySelector('[aria-labelledby="frmdb-editor-i18n-select"]') as HTMLElement;
-		i18nSelect.setAttribute('data-i18n', currentLanguage!.lang);
-		i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`;
+        // i18n section
+        const i18nSelect: HTMLElement = document.querySelector('#frmdb-editor-i18n-select') as HTMLElement;
+        const i18nOptions: HTMLElement = document.querySelector('[aria-labelledby="frmdb-editor-i18n-select"]') as HTMLElement;
+        i18nSelect.setAttribute('data-i18n', currentLanguage!.lang);
+        i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`;
         I18N_FE.languages.forEach(lang =>
             i18nOptions.innerHTML += /*html*/`<a class="dropdown-item" data-flag="${lang.flag}" data-lang="${lang.lang}"><i class="flag-icon flag-icon-${lang.flag}"></i> ${lang.full}</a>`
         );
-        
+
         onEvent(i18nOptions, 'click', '.dropdown-item, .dropdown-item *', (event) => {
             const prev = i18nSelect.getAttribute('data-i18n')!;
             let el: HTMLElement = event.target.closest('[data-lang]') as HTMLElement;
@@ -229,8 +231,10 @@ export class FrmdbEditorDirective {
                     });
             });
         });
-        
-        onEvent(document.body, 'click', '#save-btn, #save-btn *', (event) => {
+
+        onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
+            await this.saveBlobs();
+            
             let pagePath = window.location.hash.replace(/^#/, '');
             $SAVE_DOC_PAGE(pagePath, this.frameDoc);
         });
@@ -370,7 +374,7 @@ export class FrmdbEditorDirective {
             } else {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "28vh");
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "14vw");
-                this.dataGrid.style.display = 'block';                        
+                this.dataGrid.style.display = 'block';
                 this.letPanel.style.display = 'block';
                 this.highlightBox.disabled = false;
             }
@@ -454,6 +458,49 @@ export class FrmdbEditorDirective {
         };
         this.changeSelectedTableIdIfDifferent(tableName);
         dataGrid.forceCellRefresh();
+    }
+
+
+
+    _arrayBufferToBase64(buffer: ArrayBuffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
+    async saveBlobs() {
+
+        let appBackend = BACKEND_SERVICE();
+        for (let frmdbBlob of Object.values(BLOBS.blobs)) {
+            if (frmdbBlob.type === "image" && frmdbBlob.el) {
+
+                let newSrc = `${FRMDB_ENV_DIR}/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.file.name}`;
+
+                var reader = new FileReader();
+                let p = new Promise((resolve, reject) => {
+                    reader.onload = (e) => {
+                        if (!e.target) return;
+                        let buf = e.target.result as ArrayBuffer;
+                        appBackend.putEvent(new ServerEventPutMediaObject(newSrc, this._arrayBufferToBase64(buf)))
+                            .then(async (ev: ServerEventPutMediaObject) => {
+                                if (ev.state_ != 'ABORT') {
+                                    resolve(`Saved ${newSrc}`);
+                                } else {
+                                    reject(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
+                                }
+                            })
+                    };
+                });
+                reader.readAsArrayBuffer(frmdbBlob.file);
+
+                await p;
+                frmdbSetImageSrc(frmdbBlob.el, newSrc);
+            }
+        }
     }
 
 }

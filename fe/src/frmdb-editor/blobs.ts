@@ -5,7 +5,7 @@ export interface FrmdbBlob {
     type: "image" | "video";
 }
 class Blobs {
-    blobs: {[url: string]: FrmdbBlob};
+    blobs: {[url: string]: FrmdbBlob} = {};
 
     addImgFile(file: File): FrmdbBlob {
         let frmdbBlob: FrmdbBlob = {

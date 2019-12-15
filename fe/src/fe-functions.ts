@@ -4,7 +4,7 @@ import { BACKEND_SERVICE } from "./backend.service";
 import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
-import { ServerEventPutPageHtml } from "@domain/event";
+import { ServerEventPutPageHtml, ServerEventPutMediaObject } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "./get-html";
 import { BLOBS } from "./frmdb-editor/blobs";
@@ -140,16 +140,6 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
 export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
     let htmlTools = new HTMLTools(doc, new DOMParser());
     let cleanedUpDOM = cleanupDocumentDOM(doc);
-
-    //Extract all media blobs
-    let appBackend = BACKEND_SERVICE();
-    for (let frmdbBlob of Object.values(BLOBS.blobs)) {
-        if (frmdbBlob.type === "image" && frmdbBlob.el) {
-            let newSrc = `/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.file.name}`;
-            frmdbSetImageSrc(frmdbBlob.el, newSrc);
-        }
-    }
-
     let html = htmlTools.document2html(cleanedUpDOM);
     
     BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
