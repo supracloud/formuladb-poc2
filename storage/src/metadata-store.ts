@@ -236,6 +236,8 @@ export class MetadataStore {
             await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
         }
 
+        //TODO: find all img data url(s) and save them as images
+
         await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 

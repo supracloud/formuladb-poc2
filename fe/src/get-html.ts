@@ -59,3 +59,7 @@ export function cleanupDocumentHtml(doc: Document): string {
     let cleanedUpDOM: HTMLElement = cleanupDocumentDOM(doc);
     return htmlTools.document2html(cleanedUpDOM);
 }
+
+export function getUploadedImgBlobs() {
+    //TODO search all images with src="blob://..."
+}

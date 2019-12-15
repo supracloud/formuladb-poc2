@@ -271,21 +271,42 @@ export class ImageInput extends Input {
 
 	setValue(value) {
 
-		//don't set blob value to avoid slowing down the page		
-		if (value.indexOf("data:image") == -1) {
+		// //don't set blob value to avoid slowing down the page		
+		// if (value.indexOf("data:image") == -1) {
 			(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
 			(this.querySelector('img') as HTMLImageElement).src = value;
+		// }
+	}
+
+	emitChange() {
+		let input = this.querySelector('input[type="text"]');
+		if (input) {
+			input.dispatchEvent(new Event('change', {bubbles: true}));
 		}
 	}
 
 	init(data) {
-		super.init(data);
+		onEvent(this, 'change', 'input[type="text"]', (event: Event) => {
+			emit(this, { type: "FrmdbModifyPageElement", value: (event.target as any).value });
+		});
+		onEvent(this, 'change', 'input[type="file"]', (event: Event) => {
+			let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
+            if (fileInput.files && fileInput.files[0]) {
+				this.setValue(URL.createObjectURL(fileInput.files[0]));
+				this.emitChange();
+            }
+		});
+
 		return this.render(/*html*/`
 			<div>
 				<a id="frmdb-chose-image-button" href="javascript:void(0)">
 					<img style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
 				</a>
 				<input readonly name="{%=key%}" type="text" class="form-control"/>
+				<div class="custom-file col">
+					<input type="file" class="custom-file-input">
+					<label class="custom-file-label" for="customFile">Choose file</label>
+				</div>
 			</div>		
 		`, data);
 	}

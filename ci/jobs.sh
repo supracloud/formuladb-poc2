@@ -105,7 +105,8 @@ function e2e_dev_env {
 
     while ! kubectl -n "$FRMDB_ENV_NAME" get pods | grep 'be-.*Running'; do sleep 1; done
 
-    test_e2e "$FRMDB_ENV_NAME" "http://localhost:8084"
+    # test_e2e "$FRMDB_ENV_NAME" "http://localhost:8084"
+    test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io"
 }
 
 function build_images_and_deploy_staging {
@@ -130,6 +131,7 @@ function cleanup {
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
+    kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [2-9][0-9]d$'|egrep -o "[0-9a-f]{40}" | xargs kubectl delete namespace
 }
 
 function e2e_staging_with_videos {

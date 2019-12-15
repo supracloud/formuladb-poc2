@@ -32,14 +32,13 @@ export class ImgEditorComponent extends HTMLElement {
             ($('#img-editor-modal') as any).modal('hide');
         });
         
-        onEvent(this, 'change', '#frmdb-upload-image-input', (event) => {
-            let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
-            if (fileInput.files && fileInput.files[0]) {
-                let img: HTMLImageElement = this.querySelector('#frmdb-uploaded-img') as HTMLImageElement;
-                img.src = URL.createObjectURL(fileInput.files[0]); // set src to blob url
-                // img.onload = imageIsLoaded;
-            }
-        });
+        // onEvent(this, 'change', '#frmdb-upload-image-input', (event) => {
+        //     let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
+        //     if (fileInput.files && fileInput.files[0]) {
+        //         let img: HTMLImageElement = this.querySelector('#frmdb-uploaded-img') as HTMLImageElement;
+        //         img.src = URL.createObjectURL(fileInput.files[0]); // set src to blob url
+        //     }
+        // });
 
         onEvent(this, 'click', '[data-frmdb-value="freeImagesUrls[]"]', event => {
             if (!this.imageProperty) return;

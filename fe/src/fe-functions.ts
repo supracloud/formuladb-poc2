@@ -111,6 +111,29 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     );
 }
 
+// function uploadBlob(blobUrl: string, contentType: string){
+//     var reader = new FileReader();
+//     // this function is triggered once a call to readAsDataURL returns
+//     reader.onload = function(event){
+//         var fd = new FormData();
+//         fd.append('fname', 'test.txt');
+//         fd.append('data', new Blob([event?.target?.result || ''], {type: contentType}));
+//         $.ajax({
+//             type: 'POST',
+//             url: 'upload.php',
+//             data: fd,
+//             processData: false,
+//             contentType: false
+//         }).done(function(data) {
+//             // print the output from the upload.php script
+//             console.log(data);
+//         });
+//     };      
+//     // trigger the read from the reader...
+//     reader.readAsDataURL(blob);
+
+// }
+
 export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
     let html = cleanupDocumentHtml(doc);
 
