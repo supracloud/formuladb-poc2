@@ -79,8 +79,8 @@ function test_e2e {
     URL=$2
     if [ -z "URL" ]; then echo "pls provide URL"; exit 2; fi
 
-    POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
+    # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
+    # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
 
     cd ${BASEDIR}/../formuladb-e2e
     pwd

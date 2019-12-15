@@ -140,5 +140,6 @@ e2e_staging_with_videos:
 cleanup:
   stage: cleanup
   script:
+    - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   when: always
