@@ -11,7 +11,6 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@fe/get-html";
-import { FRMDB_ENV_DIR } from "@domain/constants";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -19,7 +18,7 @@ const STORAGE = new Storage({
 const os = require('os');
 const path = require('path');
 
-const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : FRMDB_ENV_DIR;
+const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : '/wwwroot/git/formuladb-env';
 const TENANT_NAME = 'apps';
 
 export interface SchemaEntityList {
@@ -31,7 +30,7 @@ export class MetadataStore {
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
 
     private async writeFile(fileName: string, content: string | Buffer) {
-        return new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             let dirName = path.dirname(fileName);
 
             fs.mkdir(dirName, { recursive: true }, function (errMkdir) {
@@ -203,8 +202,9 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${newPageName}`, content);
     }
 
-    async savePageHtml(pagePath: string, html: string): Promise<void> {
-        let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
+    async savePageHtml(tenantName: string, appName: string, pageName: string, html: string): Promise<void> {
+
+        let pagePath = `${tenantName}/${appName}/${pageName}`;
 
         const jsdom = new JSDOM(html, {}, {
             features: {
@@ -291,8 +291,8 @@ export class MetadataStore {
         this.delFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`);
     }
 
-    async saveMediaObject(filePath: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${ROOT}/static/${filePath.replace(ROOT, '')}`, new Buffer(base64Content, 'base64'));
+    async saveMediaObject(tenantName: string, appName: string, fileName: string, base64Content: string): Promise<void> {
+        await this.writeFile(`${ROOT}/static/${tenantName}/${appName}/${fileName}`, new Buffer(base64Content, 'base64'));
     }
 
     async getMediaObjects(tenantName: string, appName: string) {

@@ -19,7 +19,7 @@ export class HTMLTools {
 
     normalizeDOM2HTML(node: Element): string {
         let normalizedNode = this.format(node, 0);
-        return normalizedNode.outerHTML;
+        return normalizedNode.outerHTML.replace(/\n\s*\n/g, "\n");
     }
 
     document2html(postProcessedHTMLElement?: HTMLElement): string {

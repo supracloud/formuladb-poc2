@@ -12,7 +12,7 @@ import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
-import { CURRENT_COLUMN_HIGHLIGHT_STYLE, FRMDB_ENV_DIR } from "@domain/constants";
+import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
 import { App } from "@domain/app";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
@@ -478,14 +478,14 @@ export class FrmdbEditorDirective {
         for (let frmdbBlob of Object.values(BLOBS.blobs)) {
             if (frmdbBlob.type === "image" && frmdbBlob.el) {
 
-                let newSrc = `${FRMDB_ENV_DIR}/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.file.name}`;
+                let newSrc = `/formuladb-env/static/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.file.name}`;
 
                 var reader = new FileReader();
                 let p = new Promise((resolve, reject) => {
                     reader.onload = (e) => {
                         if (!e.target) return;
                         let buf = e.target.result as ArrayBuffer;
-                        appBackend.putEvent(new ServerEventPutMediaObject(newSrc, this._arrayBufferToBase64(buf)))
+                        appBackend.putEvent(new ServerEventPutMediaObject(appBackend.tenantName, appBackend.appName, frmdbBlob.file.name, this._arrayBufferToBase64(buf)))
                             .then(async (ev: ServerEventPutMediaObject) => {
                                 if (ev.state_ != 'ABORT') {
                                     resolve(`Saved ${newSrc}`);

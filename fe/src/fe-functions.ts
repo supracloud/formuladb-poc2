@@ -4,7 +4,7 @@ import { BACKEND_SERVICE } from "./backend.service";
 import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
-import { ServerEventPutPageHtml, ServerEventPutMediaObject } from "@domain/event";
+import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "./get-html";
 import { BLOBS } from "./frmdb-editor/blobs";
@@ -138,13 +138,15 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
 // }
 
 export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
+    let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
+
     let htmlTools = new HTMLTools(doc, new DOMParser());
     let cleanedUpDOM = cleanupDocumentDOM(doc);
     let html = htmlTools.document2html(cleanedUpDOM);
     
-    BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(pagePath, html))
+    BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(tenantName, appName, pageName, html))
         .then(async (ev: ServerEventPutPageHtml) => {
-            if (ev.state_ != 'ABORT' && !(ev as any).error) {
+            if (ev.state_ != 'ABORT' && !ev.error_) {
                 alert(`Saved ${pagePath}`);
             } else {
                 alert(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));

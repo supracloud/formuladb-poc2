@@ -1,6 +1,4 @@
-import { HTMLTools } from "@core/html-tools";
-import { BLOBS } from "./frmdb-editor/blobs";
-import { BACKEND_SERVICE } from "./backend.service";
+declare var document: null;
 
 export function cleanupDocumentDOM(doc: Document): HTMLElement {
 
@@ -25,7 +23,7 @@ export function cleanupDocumentDOM(doc: Document): HTMLElement {
 
     //cleanup responsive nav dropdown
     {
-        let el = document.querySelector('.frmdb-responsive-nav-more-items-dropdown');
+        let el = doc.querySelector('.frmdb-responsive-nav-more-items-dropdown');
         while (el && el.firstChild) el.removeChild(el.firstChild);
     }
 

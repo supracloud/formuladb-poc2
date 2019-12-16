@@ -272,7 +272,7 @@ export class ImageInput extends Input {
 	public frmdbBlob?: FrmdbBlob;
 
 	setValue(value: string) {
-		if (value.indexOf('blob://') !== 0 && this.frmdbBlob) {
+		if (value.indexOf('blob:') !== 0 && this.frmdbBlob) {
 			BLOBS.removeBlob(this.frmdbBlob);//if we choose a regular URL, remove the cached blob
 		}
 
@@ -297,6 +297,9 @@ export class ImageInput extends Input {
 		onEvent(this, 'change', 'input[type="file"]', (event: Event) => {
 			let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
             if (fileInput.files && fileInput.files[0]) {
+				if (this.frmdbBlob) {
+					BLOBS.removeBlob(this.frmdbBlob);
+				}
 				this.frmdbBlob = BLOBS.addImgFile(fileInput.files[0]);
 				this.setValue(this.frmdbBlob.url);
 				this.emitChange();

@@ -42,7 +42,7 @@ describe('MetadataStore', () => {
     </html>`;
 
     it("Should save page without fragments", async () => {
-        await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml('/apps/testApp/test.html', pageHtmlFromClient);
+        await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml('apps', 'testApp', 'test.html', pageHtmlFromClient);
 
         expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/apps/testApp/test.html', /*html*/`
 <!DOCTYPE html>
