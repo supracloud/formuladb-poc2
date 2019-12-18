@@ -25,35 +25,41 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="tab-pane" id="Free_Public_Images" role="tabpanel" aria-labelledby="profile-tab">
-                            <div class="d-flex align-items-center">
-                                <a href="https://pixabay.com/" target="_blank"
-                                    style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
-                                    <i style="display:block;width:68px;height:18px;overflow:hidden"><img src="/formuladb/img/pixabay-logo.svg"
-                                            style="width:94px"></i>
-                                    Free Images
-                                </a>
-                                <div class="input-group mb-3">
-                                    <input id="frmdb-search-free-images" type="text" class="form-control"
-                                        placeholder="Search images: hotels, water sports, beauty, consulting ..." />
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="la la-search"></i></span>
-                                    </div>
+                    </div>
+                    <div class="tab-pane" id="Free_Public_Images" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="d-flex align-items-center">
+                            <a href="https://pixabay.com/" target="_blank"
+                                style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
+                                <i style="display:block;width:68px;height:18px;overflow:hidden"><img src="/formuladb/img/pixabay-logo.svg"
+                                        style="width:94px"></i>
+                                Free Images
+                            </a>
+                            <div class="input-group mb-3">
+                                <input id="frmdb-search-free-images" type="text" class="form-control"
+                                    placeholder="Search images: hotels, water sports, beauty, consulting ..." />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="la la-search"></i></span>
                                 </div>
                             </div>
-                            <div class="card-columns">
-                                <a class="card border-0 text-center" data-frmdb-table="freeImagesUrls[]">
-                                    <img class="border rounded" data-frmdb-value="freeImagesUrls[].previewURL"
-                                        data-frmdb-attr="alt::freeImagesUrls[].previewURL"
-                                        data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].webformatURL" style="max-height: 25vh">
-                                </a>
-                            </div>
                         </div>
-                        <div class="tab-pane" id="Paid_Images" role="tabpanel" aria-labelledby="home-tab">
-                            Coming soon...
+                        <div class="card-columns">
+                            <a class="card border-0 text-center" data-frmdb-table="freeImagesUrls[]">
+                                <img class="border rounded img-fluid" data-frmdb-value="freeImagesUrls[].webformatURL" data-frmdb-attr="alt::freeImagesUrls[].previewURL">
+                                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].previewURL" class="btn btn-outline-danger">Small</button>
+                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].webformatURL" class="btn btn-outline-danger">Medium</button>
+                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].largeImageURL" class="btn btn-outline-danger">Large</button>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
+                    </div>
+                    <div class="tab-pane" id="Paid_Images" role="tabpanel" aria-labelledby="home-tab">
+                        Coming soon...
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

@@ -19,6 +19,7 @@ export class ImgEditorComponent extends HTMLElement {
             let freeImagesUrls = res.hits.map(hit => ({
                 previewURL: hit.previewURL,
                 webformatURL: hit.webformatURL,
+                largeImageURL: hit.largeImageURL,
             }));
             updateDOM({freeImagesUrls}, this);
             //TODO infinite scroll OR pagination
@@ -32,9 +33,13 @@ export class ImgEditorComponent extends HTMLElement {
             ($('#img-editor-modal') as any).modal('hide');
         });
 
-        onEvent(this, 'click', '[data-frmdb-value="freeImagesUrls[]"]', event => {
+        onEvent(this, 'click', '[data-frmdb-download-url]', async (event) => {
             if (!this.imageProperty) return;
-            alert('Coming soon...');
+            let imgUrl = event.target.dataset.frmdbDownloadUrl;
+            let res = await fetch(imgUrl, {method: 'GET'})
+            let imgBlob: Blob = await res.blob();
+            this.imageProperty.setBlob(imgUrl.substring(imgUrl.lastIndexOf('/') + 1), imgBlob);
+            ($('#img-editor-modal') as any).modal('hide');
         });
     }
 

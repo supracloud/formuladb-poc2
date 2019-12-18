@@ -1,6 +1,7 @@
 export interface FrmdbBlob {
     url: string;
-    file: File;
+    fileName: string;
+    blob: Blob;
     el?: HTMLElement;
     type: "image" | "video";
 }
@@ -10,7 +11,19 @@ class Blobs {
     addImgFile(file: File): FrmdbBlob {
         let frmdbBlob: FrmdbBlob = {
             url: URL.createObjectURL(file),
-            file,
+            blob: file,
+            fileName: file.name,
+            type: "image",
+        };
+        this.blobs[frmdbBlob.url] = frmdbBlob;
+        return frmdbBlob;
+    }
+
+    addImgBlob(fileName: string, blob: Blob): FrmdbBlob {
+        let frmdbBlob: FrmdbBlob = {
+            url: URL.createObjectURL(blob),
+            blob: blob,
+            fileName,
             type: "image",
         };
         this.blobs[frmdbBlob.url] = frmdbBlob;

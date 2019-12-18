@@ -290,6 +290,16 @@ export class ImageInput extends Input {
 		}
 	}
 
+	setBlob(fileName: string, blob: Blob) {
+		if (this.frmdbBlob) {
+			BLOBS.removeBlob(this.frmdbBlob);
+		}
+
+		this.frmdbBlob = BLOBS.addImgBlob(fileName, blob);
+		this.setValue(this.frmdbBlob.url);
+		this.emitChange();
+	}
+
 	init(data) {
 		onEvent(this, 'change', 'input[type="text"]', (event: Event) => {
 			emit(this, { type: "FrmdbModifyPageElement", value: (event.target as any).value });
@@ -297,12 +307,8 @@ export class ImageInput extends Input {
 		onEvent(this, 'change', 'input[type="file"]', (event: Event) => {
 			let fileInput: HTMLInputElement = event?.target as HTMLInputElement;
             if (fileInput.files && fileInput.files[0]) {
-				if (this.frmdbBlob) {
-					BLOBS.removeBlob(this.frmdbBlob);
-				}
-				this.frmdbBlob = BLOBS.addImgFile(fileInput.files[0]);
-				this.setValue(this.frmdbBlob.url);
-				this.emitChange();
+				let f = fileInput.files[0];
+				this.setBlob(f.name, f);
             }
 		});
 

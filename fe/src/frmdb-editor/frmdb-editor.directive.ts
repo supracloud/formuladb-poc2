@@ -478,14 +478,14 @@ export class FrmdbEditorDirective {
         for (let frmdbBlob of Object.values(BLOBS.blobs)) {
             if (frmdbBlob.type === "image" && frmdbBlob.el) {
 
-                let newSrc = `/formuladb-env/static/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.file.name}`;
+                let newSrc = `/formuladb-env/static/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.fileName}`;
 
                 var reader = new FileReader();
                 let p = new Promise((resolve, reject) => {
                     reader.onload = (e) => {
                         if (!e.target) return;
                         let buf = e.target.result as ArrayBuffer;
-                        appBackend.putEvent(new ServerEventPutMediaObject(appBackend.tenantName, appBackend.appName, frmdbBlob.file.name, this._arrayBufferToBase64(buf)))
+                        appBackend.putEvent(new ServerEventPutMediaObject(appBackend.tenantName, appBackend.appName, frmdbBlob.fileName, this._arrayBufferToBase64(buf)))
                             .then(async (ev: ServerEventPutMediaObject) => {
                                 if (ev.state_ != 'ABORT') {
                                     resolve(`Saved ${newSrc}`);
@@ -495,7 +495,7 @@ export class FrmdbEditorDirective {
                             })
                     };
                 });
-                reader.readAsArrayBuffer(frmdbBlob.file);
+                reader.readAsArrayBuffer(frmdbBlob.blob);
 
                 await p;
                 frmdbSetImageSrc(frmdbBlob.el, newSrc);
