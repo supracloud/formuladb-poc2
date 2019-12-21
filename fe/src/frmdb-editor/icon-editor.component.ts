@@ -8,6 +8,9 @@ const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb
 
 export class IconEditorComponent extends HTMLElement {
     iconInputProperty: IconInput;
+    get isOpen(): boolean {
+        return (($('#icon-editor-modal') as any).data('bs.modal') || {})['_isShown'];
+    }
 
     connectedCallback() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
@@ -27,6 +30,7 @@ export class IconEditorComponent extends HTMLElement {
     }
 
     start(iconInputProperty: IconInput) {
+        if (this.isOpen) return;
         this.iconInputProperty = iconInputProperty;
         ($('#icon-editor-modal') as any).modal('show');
         updateDOM({freeIconsClasses: FREE_ICONS}, this);
