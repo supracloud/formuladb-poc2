@@ -63,6 +63,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
             if (this._disabled) return;
+            if ((event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore') || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')) return;
             // event.preventDefault();
             this.highlightEl = event.target as HTMLElement;
             this.highlightElement(this.highlightEl);
@@ -72,6 +73,7 @@ export class HighlightBoxComponent extends HTMLElement {
 
         onEvent(this._rootEl, ['click'], '*', (event: MouseEvent) => {
             if (this._disabled) return;
+            if ((event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore') || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')) return;
             event.preventDefault();
             if (this.wysiwygEditor.isActive && this.selectedEl &&
                 (this.selectedEl == event.target || this.selectedEl.contains(event.target as HTMLElement))) return;
