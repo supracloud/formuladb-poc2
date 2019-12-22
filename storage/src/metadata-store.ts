@@ -50,14 +50,18 @@ export class MetadataStore {
         });
     }
 
-    private async listDir(directoryPath: string): Promise<string[]> {
+    private async listDir(directoryPath: string, filter?: RegExp): Promise<string[]> {
         return new Promise((resolve, reject) => {
             fs.readdir(directoryPath, function (err, files) {
                 //handling error
                 if (err) {
                     reject(err);
                 }
-                resolve(files.map(file => `${directoryPath.slice('/wwwroot/git'.length)}/${file}`));
+                let retFiles = files.map(file => `${directoryPath.slice('/wwwroot/git'.length)}/${file}`);
+                if (filter) {
+                    retFiles = retFiles.filter(fileName => filter.test(fileName));
+                }
+                resolve(retFiles);
             });
         });
     }
@@ -193,6 +197,10 @@ export class MetadataStore {
         let app: App = this.fromYaml(
             await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/app.yaml`)
         );
+
+        let htmlPages = await this.listDir(`${ROOT}/${tenantName}/${appName}`, /\.html$/);
+        app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
+
         return app;
     }
 
