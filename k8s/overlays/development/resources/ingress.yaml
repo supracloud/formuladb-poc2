@@ -20,14 +20,3 @@ spec:
         backend:
           serviceName: be
           servicePort: 8084
----
-apiVersion: v1
-data:
-  ssl-redirect: "false"
-kind: ConfigMap
-metadata:
-  name: nginx-configuration
-  namespace: $(NAMESPACE_NAME)
-  labels:
-    app.kubernetes.io/name: ingress-nginx
-    app.kubernetes.io/part-of: ingress-nginx
