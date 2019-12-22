@@ -21,6 +21,7 @@ function fakeAsync<T>(x: T): Promise<T> {
 
 const template = /*html*/`
 <i data-frmdb-table="array[]" data-frmdb-value="array[]"></i>
+<h4 data-frmdb-table="topObj.emptyArray[]"></h4>
 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
     <span data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
         <strong data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" 
@@ -38,7 +39,7 @@ const template = /*html*/`
 `;
 
 let data = {
-    topObj: {a: 12, b: 15},
+    topObj: {a: 12, b: 15, emptyArray: []},
     array: ['a', 'b', 'c', 'd'],
     tableName: [
         { name: "row1", description: "desc of row 1", bg: () => "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
@@ -72,6 +73,7 @@ describe('[FE] FrmdbTemplate', () => {
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">b</i>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">c</i>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">d</i>
+                <h4 data-frmdb-table="topObj.emptyArray[]"></h4>
                 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
                     <span data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <strong data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</strong>
