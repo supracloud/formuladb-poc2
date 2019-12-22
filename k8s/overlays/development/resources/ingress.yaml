@@ -8,10 +8,10 @@ metadata:
     kubernetes.io/ingress.class: nginx
     # certmanager.k8s.io/issuer: "formuladb-staging"
 spec:
-  tls:
-  - hosts:
-    - $(NAMESPACE_NAME).formuladb.io
-    # secretName: certificate-formuladb-staging
+  # tls:
+  # - hosts:
+  #   - $(NAMESPACE_NAME).formuladb.io
+  #   secretName: certificate-formuladb-staging
   rules:
   - host: $(NAMESPACE_NAME).formuladb.io
     http:
