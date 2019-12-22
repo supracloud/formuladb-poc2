@@ -61,9 +61,13 @@ rsync-deploy() {
 }
 #rsync-deploy 4179 ../customer-dacris dacris@mail.dacris.ro:/opt/data/dacris/LIVE/formuladb
 
+#cp ./ssh/frmdb.id_rsa* ~/.ssh
+#chmod 600 ~/.ssh/frmdb.id_rsa
+#chmod 644 ~/.ssh/frmdb.id_rsa.pub
+#chmod 700 ~/.ssh
 ssh-ci() {
     #ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
-    ssh -i ./ssh/frmdb.id_rsa root@34.76.177.179
+    ssh -i ~/.ssh/frmdb.id_rsa root@34.76.177.179
 }
 
 ssh-demo() {
