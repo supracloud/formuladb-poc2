@@ -105,7 +105,7 @@ function e2e_dev_env {
     # while ! nc -z localhost 5432; do sleep 1; done
     # npm run e2e:data
 
-    while ! curl $URL/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
     kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 
     test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io"
