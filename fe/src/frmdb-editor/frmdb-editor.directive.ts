@@ -105,6 +105,7 @@ export class FrmdbEditorDirective {
             let ff = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
                 this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
+                this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
                 pageElementFlows(this);
             }
             this.iframe.onload = ff;
@@ -371,12 +372,16 @@ export class FrmdbEditorDirective {
                 this.dataGrid.style.display = 'none';
                 this.letPanel.style.display = 'none';
                 this.highlightBox.disabled = true;
+                this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-preview');                
+                this.iframe.contentWindow!.document.body.classList.remove('frmdb-editor-normal');
             } else {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "28vh");
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "14vw");
                 this.dataGrid.style.display = 'block';
                 this.letPanel.style.display = 'block';
                 this.highlightBox.disabled = false;
+                this.iframe.contentWindow!.document.body.classList.remove('frmdb-editor-preview');
+                this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
             }
         });
 
