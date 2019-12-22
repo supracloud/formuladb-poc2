@@ -19,9 +19,12 @@
                     <div class="tab-pane active" id="Uploaded_Images" role="tabpanel" aria-labelledby="home-tab">
                         <div>
                             <div class="card-columns text-center">
-                                <a class="card border-0" data-frmdb-table="mediaObjectsUrls[]">
-                                    <img class="border rounded" data-frmdb-value="mediaObjectsUrls[]" data-frmdb-attr="alt::mediaObjectsUrls[]"
-                                        style="max-height: 20vh">
+                                <a class="card border-0 d-flex flex-column text-center" data-frmdb-table="mediaObjectsUrls[]">
+                                    <div>
+                                        <img class="border rounded" data-frmdb-value="mediaObjectsUrls[]" data-frmdb-attr="alt::mediaObjectsUrls[]"
+                                            style="max-height: 20vh">
+                                    </div>
+                                    <span data-frmdb-value="mediaObjectsUrls[]"></spandata-frmdb-value="mediaObjectsUrls[]">
                                 </a>
                             </div>
                         </div>
@@ -44,12 +47,16 @@
                         </div>
                         <div class="card-columns">
                             <a class="card border-0 text-center" data-frmdb-table="freeImagesUrls[]">
-                                <img class="border rounded img-fluid" data-frmdb-value="freeImagesUrls[].webformatURL" data-frmdb-attr="alt::freeImagesUrls[].previewURL">
+                                <img class="border rounded img-fluid" data-frmdb-value="freeImagesUrls[].webformatURL"
+                                    data-frmdb-attr="alt::freeImagesUrls[].previewURL">
                                 <div class="card-img-overlay d-flex flex-column justify-content-end">
                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].previewURL" class="btn btn-outline-danger">Small</button>
-                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].webformatURL" class="btn btn-outline-danger">Medium</button>
-                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].largeImageURL" class="btn btn-outline-danger">Large</button>
+                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].previewURL"
+                                            class="btn btn-outline-danger">Small</button>
+                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].webformatURL"
+                                            class="btn btn-outline-danger">Medium</button>
+                                        <button data-frmdb-attr2="data-frmdb-download-url::freeImagesUrls[].largeImageURL"
+                                            class="btn btn-outline-danger">Large</button>
                                     </div>
                                 </div>
                             </a>
