@@ -135,7 +135,8 @@ function cleanup {
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
-    kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [2-9][0-9]d$'|egrep -o "[0-9a-f]{40}" | xargs kubectl delete namespace
+    namespacesToDelete=`kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [2-9][0-9]d$'|egrep -o "[0-9a-f]{40}"`
+    if [[ -n "$namespacesToDelete" ]]; then kubectl delete namespace $namespacesToDelete; fi
 }
 
 function e2e_staging_with_videos {
