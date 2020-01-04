@@ -13,6 +13,14 @@ https://docs.gitlab.com/charts/installation/tls.html#external-cert-manager-and-i
 # SMTP email
 kubectl create secret generic smtp-password -n gitlab --from-literal=password=fk3bwuqazZ9y5U3
 
+# Create GCS service account and secret
+```sh
+export PROJECT_ID=$(gcloud config get-value project)
+gcloud iam service-accounts create gitlab-gcs --display-name "Gitlab Cloud Storage"
+gcloud projects add-iam-policy-binding --role roles/storage.admin ${PROJECT_ID} --member=serviceAccount:gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com
+gcloud iam service-accounts keys create --iam-account gitlab-gcs@${PROJECT_ID}.iam.gserviceaccount.com storage.config
+kubectl create secret generic storage-config --from-file=config=storage.config
+```
 # Install git lab from chart
 
 ```sh
@@ -41,8 +49,20 @@ helm upgrade --install gitlab gitlab/gitlab \
   --set prometheus.install=false \
   --set gitlab-runner.install=true \
   --set registry.hpa.minReplicas=1 \
-  --set gitlab.gitlab-exporter.enabled=false
-
+  --set gitlab.gitlab-exporter.enabled=false \
+  --set gitlab.task-runner.backups.objectStorage.config.secret=storage-config \
+  --set gitlab.task-runner.backups.objectStorage.config.key=config \
+  --set gitlab.task-runner.backups.objectStorage.config.gcpProject=seismic-plexus-232506 \
+  --set gitlab.task-runner.backups.objectStorage.backend=gcs \
+  --set global.appConfig.backups.bucket=formuladb-gitlab-backup-storage \
+  --set global.appConfig.backups.tmpBucket=formuladb-gitlab-tmp-storage \
+  --set gitlab.task-runner.persistence.enabled=true \
+  --set gitlab.task-runner.persistence.size=100Gi \
+  --set gitlab.task-runner.backups.cron.persistence.enabled=true \
+  --set gitlab.task-runner.backups.cron.persistence.size=100Gi \
+  --set gitlab.task-runner.backups.cron.enabled=true \
+  --set minio.persistence.size=1024Gi \
+  --set gitlab.gitaly.persistence.size=100Gi
 
 ```
 
