@@ -1,9 +1,8 @@
 import * as _ from "lodash";
-import { onEvent, emit } from "@fe/delegated-events";
+import { translateThemeRulesByReplacingClasses, ThemeRules } from "@fe/frmdb-themes";
 
-
-export class HighlightBoxComponent extends HTMLElement {
-    static observedAttributes = ['color', 'theme'];
+export class ThemePreviewComponent extends HTMLElement {
+    static observedAttributes = ['color', 'look'];
 
     constructor() {
         super();
@@ -14,11 +13,12 @@ export class HighlightBoxComponent extends HTMLElement {
     link: HTMLLinkElement | undefined;
     attributeChangedCallback(name: any, oldVal: any, newVal: any) {
         let theme = this.getAttribute('theme');
+        let look = this.getAttribute('look');
         let color = this.getAttribute('color');
-        if (!theme || !color) return;
+        if (!look || !color) return;
 
         color = color.replace(/#/g, '');
-        let css = `/formuladb-env/themes/formuladb/_css/${theme}-${color}.css`;
+        let css = `/formuladb-env/css/${look}-${color}.css`;
 
         if (!this.link) {
             this.render();
@@ -30,24 +30,105 @@ export class HighlightBoxComponent extends HTMLElement {
             this.link.href = css;            
         }
 
+        fetch(`/formuladb-env/themes/${theme}.json`)
+        .then(async (response) => {
+            let themeRules: ThemeRules = await response.json();
+            translateThemeRulesByReplacingClasses(this.shadowRoot!, themeRules);
+        });
     }
-
 
     render() {
         this.shadowRoot!.innerHTML = /*html*/`
-            <!--<nav class="navbar navbar-dark bg-dark">
-                <a class="navbar-brand" href="javascript:void(0)">Navbar ${this.getAttribute('theme')}</a>
-            </nav>-->
-        
-            <h1>${this.getAttribute('theme')}</h1>
-            <div class="d-flex">
-                <button type="button" class="mx-1 btn btn-sm btn-primary">Primary</button>
-                <button type="button" class="mx-1 btn btn-sm btn-secondary">Secondary</button>
-                <button type="button" class="mx-1 btn btn-sm btn-success">Success</button>
-                <button type="button" class="mx-1 btn btn-sm btn-info">Info</button>  
+        <header class="frmdb-t-cover">
+            <div class="frmdb-t-cover__main">
+                <div class="jumbotron">
+                    <h6>Subtitle of app, can be a bit longer in words</h6>
+                    <h1 class="display-4">${this.getAttribute('theme')}</h1>
+                    <p>Lead paragraph providing a short introduction to you website or app,
+                        <br>it would be good to keep it under two lines of text
+                    </p>
+                    <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
+                </div>
             </div>
+            <div class="frmdb-t-cover__section">
+                Section embedded into the cover page
+            </div>
+        </header>
+
+        <section class="container py-5">
+            <div class="text-center mb-5">
+                <h2>Cards with Images</h2>
+                <p>Section lead paragraph, some text about the content described in this section.</p>
+            </div>
+            <div class="card-deck">
+                <div class="card frmdb-t-card-img" style="display: grid;">
+                    <div class="frmdb-t-img overflow-hidden">
+                        <img src="/formuladb-env/static/apps/themes/card1.jpg" alt="" />
+                    </div>
+                    <div class="card-body">
+                        <h5>Card 1 title</h5>
+                        <h6>Card 1 subtitle</h6>
+                        <p>Quisque ornare, quam a blandit malesuada</p>
+                    </div>
+                    <div class="frmdb-t-card-action">
+                        <a href="javascript:void(0)">Action</a>
+                    </div>
+                    <div class="frmdb-t-card-note">
+                        <span>INFO <small>info</small></span>
+                    </div>
+                </div>
+                <div class="card frmdb-t-card-img">
+                    <div class="frmdb-t-img overflow-hidden">
+                        <img src="/formuladb-env/static/apps/themes/card2.jpg" alt="">
+                    </div>
+                    <div class="card-body">
+                        <h5>Card 2 title</h5>
+                        <h6>Card 2 subtitle</h6>
+                        <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
+                    </div>
+                    <div class="frmdb-t-card-action">
+                        <a href="javascript:void(0)">Action</a>
+                    </div>
+                    <div class="frmdb-t-card-note">
+                        <span>INFO <small>info</small></span>
+                    </div>
+                </div>
+                <div class="card frmdb-t-card-img">
+                    <div class="frmdb-t-img overflow-hidden">
+                        <img src="/formuladb-env/static/apps/themes/card3.jpg" alt="">
+                    </div>
+                    <div class="card-body">
+                        <h5>Card 3 title</h5>
+                        <h6>Card 3 subtitle</h6>
+                        <p>Curabitur suscipit, massa eu maximus fringilla</p>
+                    </div>
+                    <div class="frmdb-t-card-action">
+                        <a href="javascript:void(0)">Action</a>
+                    </div>
+                    <div class="frmdb-t-card-note">
+                        <span>INFO <small>info</small></span>
+                    </div>
+                </div>
+                <div class="card frmdb-t-card-img">
+                    <div class="frmdb-t-img overflow-hidden">
+                        <img src="/formuladb-env/static/apps/themes/card4.jpg" alt="">
+                    </div>
+                    <div class="card-body">
+                        <h5>Card 4 title</h5>
+                        <h6>Card 4 subtitle</h6>
+                        <p>Etiam porta magna eu rutrum rhoncus</p>
+                    </div>
+                    <div class="frmdb-t-card-action">
+                        <a href="javascript:void(0)">Action</a>
+                    </div>
+                    <div class="frmdb-t-card-note">
+                        <span>INFO <small>info</small></span>
+                    </div>
+                </div>
+            </div>
+        </section>
         `;
     }
 }
 
-customElements.define('frmdb-theme-preview', HighlightBoxComponent);
+customElements.define('frmdb-theme-preview', ThemePreviewComponent);

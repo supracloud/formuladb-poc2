@@ -84,7 +84,7 @@ configThemeCustomizer = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/theme-customizer/theme-customizer.component.js',
     output: {
-        path: path.resolve(__dirname, 'formuladb-themes/_js'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-theme-customizer.js'
     },
 };

@@ -186,7 +186,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                 sort: incrementCommonPropsSort(),
                 inline: true,
                 col: 12,
-                inputtype: "TextInput",
+                inputtype: "TextareaInput",
                 tab: "left-panel-tab-content",
             },
             {

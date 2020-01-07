@@ -15,7 +15,7 @@
         "_skaffold_": "KUBECONFIG=k8s/production-kube-config.conf skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "skaffold": "skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "sass:watch": "sass --style compressed --watch fe/src/frmdb-editor/frmdb-editor.directive.scss:formuladb/frmdb-editor.min.css",
-        "rsync:watch": "while true; do sleep 3; bash ci/kubectlrsync.sh --exclude=.git be:/wwwroot/git/formuladb-env/ formuladb-env/ | egrep -v 'be:/wwwroot/git/formuladb-env/|skipping directory [.]'; done",
+        "rsync:watch": "while true; do sleep 3; bash ci/kubectlrsync.sh -auv --exclude=.git be:/wwwroot/git/formuladb-env/ formuladb-env/ | egrep -v 'be:/wwwroot/git/formuladb-env/|skipping directory [.]'; done",
         "xx-live-server": "concurrently -k \"npm run rsync:watch\" \"bash serve.sh\" ",
         "live-server": "bash serve.sh",
         "serve": "bash ci/prepare-env.sh && tmux new-session 'npm run compile:watch' ';' split-window -h 'sleep 8; npm run bundle:watch' ';' split-window 'sleep 22; npm run live-server' ';' select-layout tiled ';' split-window -h 'sleep 15; npm run skaffold' ';' select-layout tiled",

@@ -85,7 +85,7 @@ export class TextareaInput extends Input {
 		super.init(data);
 		this.render(/*html*/`
 			<div>
-				<textarea name="{%=key%}" rows="3" class="form-control"/>
+				<textarea name="{%=key%}" rows="4" class="form-control"/>
 			</div>
 		`, data);
 	}
