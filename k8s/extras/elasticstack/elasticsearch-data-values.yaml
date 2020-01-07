@@ -28,3 +28,12 @@ volumeClaimTemplate:
   resources:
     requests:
       storage: 100Gi
+
+replicas: 18
+esJavaOpts: "-Xmx8g -Xms8g"
+
+resources:
+  requests:
+    memory: "8Gi"
+  limits:
+    memory: "16Gi"
