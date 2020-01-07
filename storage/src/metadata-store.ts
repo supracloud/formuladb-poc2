@@ -19,7 +19,6 @@ const os = require('os');
 const path = require('path');
 
 const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : '/wwwroot/git/formuladb-env';
-const TENANT_NAME = 'apps';
 
 export interface SchemaEntityList {
     _id: string;
@@ -115,15 +114,15 @@ export class MetadataStore {
     }
 
     async putApp(tenantName: string, appName: string, app: App): Promise<App> {
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/app.yaml`, this.toYaml(app));
+        await this.writeFile(`${ROOT}/${tenantName}/${appName}/app.yaml`, this.toYaml(app));
 
         return app;
     }
     async putSchema(tenantName: string, appName: string, schema: Schema): Promise<Schema> {
         await Promise.all(Object.values(schema.entities)
-            .map(entity => this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`,
+            .map(entity => this.writeFile(`${ROOT}/${tenantName}/${appName}/${entity._id}.yaml`,
                 this.toYaml(entity)))
-            .concat(this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`, this.toYaml({
+            .concat(this.writeFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`, this.toYaml({
                 _id: schema._id,
                 entityIds: Object.keys(schema.entities),
             })))
@@ -134,10 +133,10 @@ export class MetadataStore {
 
     public async getSchema(tenantName: string, appName: string): Promise<Schema | null> {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
-            await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`)
+            await this.readFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`)
         );
         let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId =>
-            this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`)
+            this.readFile(`${ROOT}/${tenantName}/${appName}/${entityId}.yaml`)
         ));
         let entities: Entity[] = entitiesStr.map(entityStr => this.fromYaml(entityStr));
 
@@ -168,25 +167,25 @@ export class MetadataStore {
     }
 
     public async getEntity(tenantName: string, appName: string, entityId: string): Promise<Entity | null> {
-        let str = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`);
+        let str = await this.readFile(`${ROOT}/${tenantName}/${appName}/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;
     }
 
     public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${entity._id}.yaml`, this.toYaml(entity))
+        await this.writeFile(`${ROOT}/${tenantName}/${appName}/${entity._id}.yaml`, this.toYaml(entity))
 
         return entity;
     }
 
     public async delEntity(tenantName: string, appName: string, entityId: string): Promise<Entity> {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
-            await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`)
+            await this.readFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`)
         );
         schemaNoEntities.entityIds = schemaNoEntities.entityIds.filter(e => e != entityId);
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+        await this.writeFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
 
-        let entityFile = `${ROOT}/${TENANT_NAME}/${appName}/${entityId}.yaml`;
+        let entityFile = `${ROOT}/${tenantName}/${appName}/${entityId}.yaml`;
         let entity: Entity = await this.fromYaml<Entity>(entityFile);
         await this.delFile(entityFile);
 
@@ -195,7 +194,7 @@ export class MetadataStore {
 
     async getApp(tenantName: string, appName: string): Promise<App | null> {
         let app: App = this.fromYaml(
-            await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/app.yaml`)
+            await this.readFile(`${ROOT}/${tenantName}/${appName}/app.yaml`)
         );
 
         let htmlPages = await this.listDir(`${ROOT}/${tenantName}/${appName}`, /\.html$/);
@@ -206,8 +205,8 @@ export class MetadataStore {
 
     async newPage(newPageName: string, startTemplateUrl: string) {
         let [tenantName, appName, pageName] = startTemplateUrl.split(/\//).filter(x => x);
-        let content = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`);
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${newPageName}`, content);
+        let content = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName}`);
+        await this.writeFile(`${ROOT}/${tenantName}/${appName}/${newPageName}`, content);
     }
 
     async savePageHtml(tenantName: string, appName: string, pageName: string, html: string): Promise<void> {
@@ -232,7 +231,7 @@ export class MetadataStore {
             let headMarker = htmlTools.doc.createElement('head');
             if (titleEl) headMarker.appendChild(titleEl.cloneNode(true));
             cleanedUpDOM.replaceChild(headMarker, headEl);
-            await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
+            await this.writeFile(`${ROOT}/${tenantName}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
         }
 
         for (let fragmentEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-fragment]'))) {
@@ -242,16 +241,16 @@ export class MetadataStore {
             fragmentMarker.setAttribute('data-frmdb-fragment', fragmentName);
             fragmentEl.parentNode!.replaceChild(fragmentMarker, fragmentEl);
 
-            await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
+            await this.writeFile(`${ROOT}/${tenantName}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
         }
 
         //TODO: find all img data url(s) and save them as images
 
-        await this.writeFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
+        await this.writeFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 
     async getPageHtml(tenantName: string, appName: string, pageName: string): Promise<string> {
-        let pageHtml = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName || 'index.html'}`);
+        let pageHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
             features: {
@@ -269,7 +268,7 @@ export class MetadataStore {
             let pageTitleEl = headEl.querySelector('title');
             if (pageTitleEl != null) pageTitleEl = pageTitleEl.cloneNode(true) as HTMLTitleElement;
 
-            let headHtml = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/_head.html`);
+            let headHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/_head.html`);
             headEl.outerHTML = headHtml;
             let titleEl = headEl.querySelector('title');
             if (pageTitleEl) {
@@ -282,7 +281,7 @@ export class MetadataStore {
             let fragmentName = fragmentEl.getAttribute('data-frmdb-fragment');
             if (!fragmentName) throw new Error("fragmentName not found for" + fragmentEl.outerHTML);
 
-            let fragmentHtml = await this.readFile(`${ROOT}/${TENANT_NAME}/${appName}/${fragmentName}`);
+            let fragmentHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${fragmentName}`);
             let fragmentDom = htmlTools.html2dom(fragmentHtml);
             if (isHTMLElement(fragmentDom)) {
                 let savedFragmentName = fragmentDom.getAttribute('data-frmdb-fragment');
@@ -296,7 +295,7 @@ export class MetadataStore {
 
     async deletePage(deletedPagePath: string): Promise<void> {
         let [tenantName, appName, pageName] = deletedPagePath.split(/\//).filter(x => x);
-        this.delFile(`${ROOT}/${TENANT_NAME}/${appName}/${pageName}`);
+        this.delFile(`${ROOT}/${tenantName}/${appName}/${pageName}`);
     }
 
     async saveMediaObject(tenantName: string, appName: string, fileName: string, base64Content: string): Promise<void> {

@@ -39,20 +39,11 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/development
-      # - op: add
-      #   path: /build/artifacts
-      #   value:
-      #     - image: registry.gitlab.com/metawiz/febe/formuladb-nginx
-      #       context: .
-      #       sync:
-      #         manual:
-      #         - src: 'formuladb-env/static/**/*'
-      #           dest: /usr/share/nginx/html/
-      #         - src: 'formuladb-env/themes/formuladb/**/*'
-      #           dest: /usr/share/nginx/html/
-      #       docker:
-      #         dockerfile: Dockerfile.nginx
-      #         buildArgs: {}
+  - name: ci
+    patches:
+      - op: replace
+        path: /deploy/kustomize/path
+        value: k8s/overlays/development
   - name: staging
     patches:
       - op: replace

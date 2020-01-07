@@ -181,7 +181,7 @@ const Schemas = [
     //         ...HotelBookingApp,
     //     }
     // },
-    { tenantName: "formuladb-env/apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
+    { tenantName: "formuladb-env/frmdb-platform-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
 ];
 
 for (let sch of Schemas) {

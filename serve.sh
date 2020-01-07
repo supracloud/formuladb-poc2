@@ -12,5 +12,6 @@ trap handleErr ERR
     --mount=/formuladb-env/icons/:./formuladb-env/icons \
     --mount=/formuladb-env/static/:./formuladb-env/static \
     --mount=/formuladb-env/plugins/:./formuladb-env/plugins \
+    --proxy=/frmdb-platform-apps/:http://localhost:8084/frmdb-platform-apps \
     --proxy=/apps/:http://localhost:8084/apps \
     --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
