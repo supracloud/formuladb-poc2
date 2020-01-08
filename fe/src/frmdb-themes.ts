@@ -32,6 +32,30 @@ export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowR
     }
 }
 
+export function unloadThemeRules(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
+    let parentSelector = parentSelectorOpt || '';
+    for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
+        for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {
+            if (rule.addClasses) {
+                //TODO cleanup any previous theme
+                el.classList.remove(...rule.addClasses);
+            }
+            if (rule.addStyles) {
+                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) { 
+                    el.style.removeProperty(styleProp);
+                }
+            }
+            if (rule.addCssVars) {
+                for (let varToAdd of Object.entries(rule.addCssVars)) { 
+                    el.style.removeProperty(varToAdd[0]);
+                }
+            }
+            if (rule.children) {
+                unloadThemeRules(rootEl, rule.children, themeRuleSelector);
+            }
+        }
+    }
+}
 
 /** @deprecated, keeping it as an example of copy-ing CSS rules from one class to another */
 function translateThemeRulesByCopyingCSSStyleRules(themeRules) {

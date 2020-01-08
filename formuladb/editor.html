@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="/formuladb-env/icons/line-awesome/css/line-awesome.min.css">
     <link rel="stylesheet" href="/formuladb-env/icons/flag-icons-css/css/flag-icon.min.css" />
     <link rel="stylesheet" href="/formuladb/css/ad-grid-balham-font.css">
-	<link rel="stylesheet" type="text/css" href="/formuladb-env/icons/formuladb/editor/icons.css" />
+    <link rel="stylesheet" type="text/css" href="/formuladb-env/icons/formuladb/editor/icons.css" />
     <link rel="stylesheet" href="/formuladb-env/icons/font-awesome/css/font-awesome.min.css">
 </head>
 
@@ -40,10 +40,21 @@
 
             <div class="btn-group mr-3" role="group">
                 <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" role="menu">
-                    <button class="btn btn-sm" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="flag-icon flag-icon-gb"></i>
                     </button>
                     <div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
+                    </div>
+                </div>
+                <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" role="menu">
+                    <button class="btn btn-outline" id="frmdb-editor-app-version-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        1
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="frmdb-editor-app-version-select">
+                        <a class="dropdown-item" title="Version 1" data-frmdb-action="viewport-mobile">Version 1</a>
+                        <a class="dropdown-item" title="Version 2" data-frmdb-action="viewport-mobile">Version 2</a>
+                        <a class="dropdown-item" title="Version 3" data-frmdb-action="viewport-mobile">Version 3</a>
+                        <a class="dropdown-item" title="Version 4" data-frmdb-action="viewport-mobile">Version 4</a>
                     </div>
                 </div>
             </div>
@@ -92,8 +103,8 @@
                 </a>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
-                <a href="javascript:void(0)" title="App Table List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true" aria-expanded="false"
-                    data-frmdb-value="$frmdb.selectedTableId">
+                <a href="javascript:void(0)" title="App Table List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true"
+                    aria-expanded="false" data-frmdb-value="$frmdb.selectedTableId">
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" data-frmdb-table="$frmdb.tables[]" data-frmdb-value="$frmdb.tables[]._id" href="javascript:void(0)">table 1</a>
@@ -119,8 +130,8 @@
                 </a>
             </li>
             <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover">
-                <a href="javascript:void(0)" title="App Page List" class="nav-link dropdown-toggle text-center" role="button" aria-haspopup="true" aria-expanded="false"
-                    data-frmdb-value="$frmdb.selectedPageName">
+                <a href="javascript:void(0)" title="App Page List" class="nav-link dropdown-toggle text-center" role="button" aria-haspopup="true"
+                    aria-expanded="false" data-frmdb-value="$frmdb.selectedPageName">
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
@@ -336,10 +347,11 @@
             </div>
         </div>
     </div>
-    
+
     <frmdb-add-element></frmdb-add-element>
     <frmdb-img-editor></frmdb-img-editor>
     <frmdb-icon-editor></frmdb-icon-editor>
 
 </body>
+
 </html>

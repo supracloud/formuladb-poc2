@@ -13,7 +13,7 @@ if [ -z "$KRSYNC_STARTED" ]; then
     dst=$1
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
-    if echo "$src" | grep '.*:'; then
+    if echo "$src" | grep '.*:' >/dev/null; then
         service_name=`echo "$src" | sed -e 's/:.*//'`
         path=`echo "$src" | sed -e 's/.*://'`
         pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
