@@ -1,5 +1,6 @@
-cd /wwwroot/git/formuladb-env
+if [ -n "$BUILD_DEVELOPMENT" ]; then exit; fi
 
+cd /wwwroot/git/formuladb-env
 if [ -n "$(git status --porcelain)" ]; then
   git add .
   git commit -m "changes from git sync"

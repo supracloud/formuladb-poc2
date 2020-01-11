@@ -134,6 +134,16 @@ kubectlsh() {
     service_name=$1
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec service/$service_name "$@" bash -it
+    #TODO this needs to parse the arguments...it is more complex
+}
+
+kubectlsh() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
     kubectl -n "$namespace" exec service/$service_name bash -it
     #TODO this needs to parse the arguments...it is more complex
 }
@@ -184,29 +194,6 @@ kubectlport-forward-env-be() {
     pod=`kubectl -n ${namespace} get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     kubectl -n "$namespace" port-forward $pod 8085:3000
 }
-
-kubectlrsync() (
-    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
-
-    src=$1
-    shift
-    dst=$1
-    shift
-    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
-    if echo "$src" | grep '.*:'; then
-        service_name=`echo "$src" | sed -e 's/:.*//'`
-        path=`echo "$src" | sed -e 's/.*://'`
-        pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
-        src="${pod}@${namespace}:${path}"
-    else 
-        service_name=`echo "$dst" | sed -e 's/:.*//'`
-        path=`echo "$dst" | sed -e 's/.*://'`
-        pod=`kubectl -n ${namespace} get pod -l service=${service_name} -o jsonpath='{.items[0].metadata.name}'`
-        dst="${pod}@${namespace}:${path}"
-    fi
-
-    kubectlrsync.sh --update -auv "$src" "$dst" | egrep -v 'sending incremental file list|sent.*bytes.*received.*bytes|total size is.*speedup|^ *$'
-)
 
 frmdb-be-load-test-data() {
     if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi

@@ -80,6 +80,25 @@ configDataGrid = {
     },
 };
 
+configThemeCustomizer = {
+    ...configBaseWeb,
+    entry: './tsc-out/fe/src/theme-customizer/theme-customizer.component.js',
+    output: {
+        path: path.resolve(__dirname, 'formuladb'),
+        filename: 'frmdb-theme-customizer.js'
+    },
+};
+
+
+configPageElements = {
+    ...configBaseWeb,
+    entry: './tsc-out/fe/src/page-elements/page-elements.js',
+    output: {
+        path: path.resolve(__dirname, 'formuladb-themes/_js'),
+        filename: 'frmdb-page-elements.js'
+    },
+};
+
 configFe = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/fe.js',
@@ -102,6 +121,8 @@ module.exports = [
     configBe,
     configBeTools,
     configDataGrid, 
+    configThemeCustomizer,
+    configPageElements,
     configFe,
     configFrmdbEditor
 ];

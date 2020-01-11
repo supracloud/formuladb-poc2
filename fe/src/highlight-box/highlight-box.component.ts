@@ -18,15 +18,14 @@ export class HighlightBoxComponent extends HTMLElement {
     selectedBox: HTMLElement;
     parentSelectedBox: HTMLElement;
     selectedEl: HTMLElement | undefined;
-    static observedAttributes = ['root-element', 'disabled'];
+    static observedAttributes = ['disabled'];
     wysiwygEditor = new WysiwygEditor();
 
-    set rootElement(selector: string) {
-        this.setAttribute('root-element', selector);
-    }
     set disabled(d: boolean) {
         this.setAttribute('disabled', new Boolean(d).toString());
     }
+
+    public enableActionsEvents: boolean = true;
 
     set rootEl(el: HTMLElement | Document) {
         this._rootEl = el;
@@ -85,22 +84,25 @@ export class HighlightBoxComponent extends HTMLElement {
             emit(this, { type: "FrmdbSelectPageElement", el: this.selectedEl });
         });
 
-        onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action="edit"]', (event) => {
-            if (this._disabled) return;
-            event.preventDefault();
-            if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
-            this.toggleWysiwygEditor(true);
-            emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
-        });
+        if (this.enableActionsEvents) {
+            this.enableActionsEvents = false;
+            onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action="edit"]', (event) => {
+                if (this._disabled) return;
+                event.preventDefault();
+                if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
+                this.toggleWysiwygEditor(true);
+                emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
+            });
 
-        onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action]', (event) => {
-            if (this._disabled) return;
-            event.preventDefault();
-            let el: HTMLElement = event.target.closest('[data-frmdb-action]');
-            if (!el || !this.selectedEl) return;
-            if (el.dataset.frmdbAction === "edit") return;
-            emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
-        });
+            onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action]', (event) => {
+                if (this._disabled) return;
+                event.preventDefault();
+                let el: HTMLElement = event.target.closest('[data-frmdb-action]');
+                if (!el || !this.selectedEl) return;
+                if (el.dataset.frmdbAction === "edit") return;
+                emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
+            });
+        }
 
         this._rootEl.addEventListener('scroll', (event) => {
             this.repositionBoxes();
@@ -205,7 +207,7 @@ export class HighlightBoxComponent extends HTMLElement {
             }
             if (this.highlightEl.previousElementSibling) {
                 this.positionBox(this.prevHighlightBox, this.highlightEl.previousElementSibling as HTMLElement);
-            }    
+            }
         }
         if (this.selectedEl) {
             this.positionBox(this.selectedBox, this.selectedEl);

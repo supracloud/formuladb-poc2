@@ -85,7 +85,7 @@ function grabImage(element: HTMLElement) {
         if (imgEl && imgEl.tagName.toLowerCase() === 'img') return imgEl.getAttribute('src');
     }
 
-    let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-tint-img');
+    let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-img');
     if (cssPropertyImgUrl) {
         return cssPropertyImgUrl.replace(/^\s*url\(['"']/, '').replace(/['"']\)\s*$/, '');
     }
@@ -134,17 +134,17 @@ export function frmdbSetImageSrc(element: HTMLElement, value: string) {
         }
     }
 
-    let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-tint-img');
+    let cssPropertyImgUrl = element.style.getPropertyValue('--frmdb-bg-img');
     if (cssPropertyImgUrl) {
         let newPropValue = `url('${value}')`;
         Undo.addMutation({
             type: 'style.property',
             target: element,
-            propertyName: '--frmdb-bg-tint-img',
-            oldValue: element.style.getPropertyValue('--frmdb-bg-tint-img'),
+            propertyName: '--frmdb-bg-img',
+            oldValue: element.style.getPropertyValue('--frmdb-bg-img'),
             newValue: newPropValue
         });
-        element.style.setProperty('--frmdb-bg-tint-img', newPropValue);
+        element.style.setProperty('--frmdb-bg-img', newPropValue);
     }
 
     // for (let el of [element].concat(Array.from(element.querySelectorAll("div")))) {
@@ -186,7 +186,7 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                 sort: incrementCommonPropsSort(),
                 inline: true,
                 col: 12,
-                inputtype: "TextInput",
+                inputtype: "TextareaInput",
                 tab: "left-panel-tab-content",
             },
             {

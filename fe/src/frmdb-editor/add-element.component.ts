@@ -19,6 +19,7 @@ export class AddElementComponent extends HTMLElement {
         this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
+            this.highlightBox.enableActionsEvents = false;
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
             this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
             if (!this.link) console.warn("link #frmdb-theme-css not found!");
