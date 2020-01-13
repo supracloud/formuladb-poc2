@@ -19,13 +19,6 @@ function _cleanup {
 
 function build_images_and_deploy {
     set -x
-    chmod og-rwx ssh
-    chmod og-r ssh/*
-    chmod uog-wx ssh/*
-    pwd
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init --jobs 5 --depth 1
-    ls formuladb-env
-    ls formuladb-e2e
     
     set -x
     NAMESPACE=$1

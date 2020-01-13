@@ -1,0 +1,13 @@
+
+.frmdb-section-dark {
+    &.form, form {
+        &, .input-group-text, input, select, .form-control:focus {
+            background-color: $dark;
+            color: $light;
+        }
+
+        select {
+            border: 0;
+        }
+    }
+}

@@ -1,0 +1,82 @@
+:root {
+    --white:    rgb(255, 255, 255) ;
+    --gray-100: rgb(248, 249, 250) ;
+    --gray-200: rgb(237, 237, 237) ;
+    --gray-300: rgb(222, 226, 230) ;
+    --gray-400: rgb(204, 204, 204) ;
+    --gray-500: rgb(173, 181, 189) ;
+    --gray-600: rgb(136, 136, 136) ;
+    --gray-700: rgb(73, 80, 87) ;
+    --gray-800: rgb(51, 51, 51) ;
+    --gray-900: rgb(34, 34, 34) ;
+    --black:    rgb(0, 0, 0) ;
+
+    --blue:    rgb(0, 140, 186) ;
+    --indigo:  rgb(102, 16, 242) ;
+    --purple:  rgb(111, 66, 193) ;
+    --pink:    rgb(232, 62, 140) ;
+    --red:     rgb(240, 65, 36) ;
+    --orange:  rgb(253, 126, 20) ;
+    --yellow:  rgb(232, 144, 2) ;
+    --green:   rgb(67, 172, 106) ;
+    --teal:    rgb(32, 201, 151) ;
+    --cyan:    rgb(91, 192, 222) ;
+
+    --primary:       var(--blue );
+    --secondary:     var(--gray-200 );
+    --success:       var(--green );
+    --info:          var(--cyan );
+    --warning:       var(--yellow );
+    --danger:        var(--red );
+    --light:         var(--gray-200 );
+    --dark:          var(--gray-900 );
+}
+
+$white: var(--white);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$gray: var(--gray);
+$black: var(--black);
+$blue: var(--blue);
+$indigo: var(--indigo);
+$purple: var(--purple);
+$pink: var(--pink);
+$red: var(--red);
+$orange: var(--orange);
+$yellow: var(--yellow);
+$green: var(--green);
+$teal: var(--teal);
+$cyan: var(--cyan);
+$primary: var(--primary);
+$secondary: var(--secondary);
+$success: var(--success);
+$info: var(--info);
+$warning: var(--warning);
+$danger: var(--danger);
+$light: var(--light);
+$dark: var(--dark);
+
+@function frmdb-darken($color, $amount) {
+    @return $color;
+}
+
+@function frmdb-red($color) {
+    @return $color;
+}
+
+@function frmdb-green($color) {
+    @return $color;
+}
+
+@function frmdb-blue($color) {
+    @return $color;
+}
+
+
+@import "./bootstrap/scss/bootstrap.scss";

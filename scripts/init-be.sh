@@ -17,15 +17,15 @@ fi
 cd /wwwroot/git
 if [ ! -d "formuladb-env" ]; then
 
-    if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
-        git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-env.git
+    if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+        git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
     else
         git clone --single-branch --depth 1 file:///formuladb-env
 
         cd /wwwroot/git/formuladb-env
         git config user.email "git.bot@formuladb.io"
         git config user.name "Git Bot"
-        git remote set-url origin git@gitlab.com:metawiz/formuladb-env.git
+        git remote set-url origin git@gitlab.formuladb.io:formuladb/formuladb-env.git
     fi
 fi
 

@@ -15,8 +15,16 @@ done
 #####################################
 ## git lfs
 #####################################
-find . -type f | egrep '\.(png|jpg|jpeg|svg|webm|eot|ttf|woff|woff2|otf)$'|xargs git lfs track
-
+git lfs track '**/*.png'
+git lfs track '**/*.jpg'
+git lfs track '**/*.jpeg'
+git lfs track 'static/**/*.svg'
+git lfs track '**/*.webm'
+git lfs track '**/*.eot'
+git lfs track '**/*.ttf'
+git lfs track '**/*.woff'
+git lfs track '**/*.woff2'
+git lfs track '**/*.otf'
 
 #####################################
 ## gcloud storage

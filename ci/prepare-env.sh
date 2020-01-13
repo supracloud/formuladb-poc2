@@ -60,20 +60,25 @@ fi
 # -------------------------------------------------------------------------
 # External dependency: git
 # -------------------------------------------------------------------------
-if uname -a | grep 'Linux.*Microsoft' && [ "`git log -1 --format=%H`" != "$FRMDB_ENV_NAME" ]; then 
-    echo "SYNCHRONIZING branches for submodules"
-    for submodule in formuladb-env formuladb-e2e formuladb-themes formuladb-icons; do
-        cd $BASEDIR/..
-        if [ ! -d "${submodule}" ]; then
-            git submodule update --init
-        fi
-        cd "${submodule}" && if git branch|grep '^*'|cut -d ' ' -f2 | grep "${FRMDB_ENV_NAME}"; then
-                echo "branch ok"
-            else
-                git checkout -b "${FRMDB_ENV_NAME}"
-                git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
-            fi
-    done
+chmod og-rwx ssh
+chmod og-r ssh/*
+chmod uog-wx ssh/*
+pwd
+
+if [ ! -d "formuladb-env" ]; then
+  if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+      git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
+  else
+      git clone --branch master --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
+  fi
+fi
+
+cd formuladb-env
+if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
+    git pull origin ${FRMDB_ENV_NAME}
+else
+    git checkout -b "${FRMDB_ENV_NAME}"
+    git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
 fi
 
 # # -------------------------------------------------------------------------

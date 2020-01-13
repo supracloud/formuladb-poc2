@@ -1,0 +1,8 @@
+@keyframes zoomInOut {
+  50% {
+    transform: scale3d(1.1, 1.1, 1.1);
+  }
+  10% {
+    transform: scale3d(1, 1, 1);
+  }
+}

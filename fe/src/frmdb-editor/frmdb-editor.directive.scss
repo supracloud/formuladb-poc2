@@ -57,12 +57,9 @@ $grid-gutter-width:           5px;
 
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
-@import "../../../formuladb-themes/frmdb/dropdown";
-@import "../../../formuladb-themes/frmdb/card";
-@import "../../../formuladb-themes/frmdb/utilities/scrollbar";
-
-// @import "../../../formuladb-env/themes/formuladb/node_modules/font-awesome/scss/font-awesome.scss";
-// @import "../../../node_modules/line-awesome/css/line-awesome.css";
+@import "../../../themes/frmdb/dropdown";
+@import "../../../themes/frmdb/card";
+@import "../../../themes/frmdb/utilities/scrollbar";
 
 .top-panel, .left-panel {
     font-family: $font-family-base;
