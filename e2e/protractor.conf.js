@@ -12,7 +12,7 @@ exports.config = {
     audio: false
   },
   specs: [
-    './tsc-out/**/*.scenario.js'
+    '../tsc-out/**/*.scenario.js'
   ],
   getMultiCapabilities: function () {
 

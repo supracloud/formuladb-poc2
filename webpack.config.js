@@ -121,8 +121,6 @@ module.exports = [
     configBe,
     configBeTools,
     configDataGrid, 
-    configThemeCustomizer,
-    configPageElements,
     configFe,
     configFrmdbEditor
 ];

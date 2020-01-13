@@ -1,4 +1,4 @@
-import { FullTestWithVideo, Scroll, Click, SendKeys, StepWithVideo, GoTo, Sleep, Step, Desc, DescFocus, CheckExists, ClickWithJs, CheckColor, CheckDataGridHighlighted, AcceptAlert, MouseOver, DescXclude } from "../../api";
+import { FullTestWithVideo, StepXclude, Scroll, Click, SendKeys, StepWithVideo, GoTo, Sleep, Step, Desc, DescFocus, CheckExists, ClickWithJs, CheckColor, CheckDataGridHighlighted, AcceptAlert, MouseOver, DescXclude } from "../../api";
 import { Key } from "protractor";
 
 FullTestWithVideo("Hotel_Booking app intro video", () => {
@@ -13,7 +13,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
         Desc("Go to editor page", () => {
              StepWithVideo(`Using the FormulaDB editor you can customize the Hotel Booking app`, async () => {
                 await GoTo(`/formuladb/editor.html#/apps/Hotel_Booking/index.html`);
-                await CheckExists(`iframe#app h1:contains(Relax And Enjoy)`);
+                // await CheckExists(`iframe#app h1:contains(Relax And Enjoy)`);
             });    
         });
 
@@ -64,7 +64,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
                 await Sleep(200);//TODO wait until we are in preview mode
             });
 
-            StepWithVideo(`You can get started quickly with simple changes like change the color palette and the theme`, async () => {
+            StepXclude(`You can get started quickly with simple changes like change the color palette and the theme`, async () => {
 
                 await CheckColor(255, 193, 7, 1, '#frmdb-editor-color-palette-select i:nth-child(1)');
                 await Click('#frmdb-editor-color-palette-select');
@@ -89,7 +89,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
                 await CheckColor(255, 193, 7, 1, `iframe .navbar-brand i`);
             });
 
-            StepWithVideo(`You also can change the language of your website`, async () => {
+            StepXclude(`You also can change the language of your website`, async () => {
 
                 await Click('#frmdb-editor-i18n-select');
                 await Click('[aria-labelledby="frmdb-editor-i18n-select"] .dropdown-item:nth-child(2)');
@@ -215,7 +215,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
 
     });
 
-    Desc("Combine with other apps", () => {
+    DescXclude("Combine with other apps", () => {
         StepWithVideo(`Other apps can be useful in combination with the Hotel Booking app`, async () => {
             await GoTo(`/formuladb-apps/formuladb.io`);
         });

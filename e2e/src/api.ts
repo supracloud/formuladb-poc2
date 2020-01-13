@@ -111,6 +111,10 @@ function _it(focusOnThisStep: boolean, text: string, callback: () => Promise<any
     });
 }
 
+export function StepXclude(text: string, callback: () => Promise<any>) {
+    xit(text, callback);
+}
+
 export function Step(text: string, callback: () => Promise<any>) {
     _it(false, text, callback);
 }
