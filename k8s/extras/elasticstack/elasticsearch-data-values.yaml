@@ -16,7 +16,7 @@ ingress:
     nginx.ingress.kubernetes.io/auth-secret: es-auth
     # message to display with an appropriate context why the authentication is required
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
-    certmanager.k8s.io/issuer: "formuladb-prod"
+    certmanager.k8s.io/issuer: "elasticsearch-prod"
   hosts:
     - elasticsearch.formuladb.io
   tls:
@@ -29,7 +29,7 @@ volumeClaimTemplate:
     requests:
       storage: 100Gi
 
-replicas: 18
+replicas: 9
 esJavaOpts: "-Xmx8g -Xms8g"
 
 resources:

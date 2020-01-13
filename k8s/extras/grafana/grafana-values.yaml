@@ -15,7 +15,7 @@ datasources:
   datasources.yaml:
     apiVersion: 1
     datasources:
-    - name: ElasticSearch-monitoring
+    - name: ElasticSearch
       type: elasticsearch
       access: proxy
       url: http://formuladb-master.monitoring:9200

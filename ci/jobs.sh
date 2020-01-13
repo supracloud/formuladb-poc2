@@ -77,7 +77,7 @@ function test_e2e {
     while ! curl $URL/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
     while ! curl $URL/formuladb-api/apps/Hotel_Booking/schema | grep 'RoomType'; do sleep 2; done
 
-    cd ${BASEDIR}/../formuladb-e2e
+    cd ${BASEDIR}/../e2e
     pwd
     npm install
     npm run compile
