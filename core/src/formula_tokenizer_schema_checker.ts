@@ -129,7 +129,7 @@ export class FormulaTokenizerSchemaChecker {
     let fuse = new Fuse(list, this.baseFuseOptions);
     let fuseResults = fuse.search(tokenValue);
     if (fuseResults && fuseResults.length > 0) {
-      return fuseResults.map((result: any) => {
+      return (fuseResults as any[]).map((result: any) => {
         return {
           suggestion: list[result.item],
           matchedFragments: result.matches[0].indices.map(fuseIdx => { return { startPos: fuseIdx[0], endPos: fuseIdx[1] } })
