@@ -25,6 +25,7 @@ git lfs track '**/*.ttf'
 git lfs track '**/*.woff'
 git lfs track '**/*.woff2'
 git lfs track '**/*.otf'
+git lfs track 'css/**.css'
 
 #####################################
 ## gcloud storage
