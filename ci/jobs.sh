@@ -100,7 +100,7 @@ function e2e_dev_env {
     # npm run e2e:data
 
     while ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-platform-apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
-    kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
+    kubectl -n "$FRMDB_ENV_NAME" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 
     test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io"
 }
@@ -111,7 +111,7 @@ function build_images_and_deploy_staging {
 
 function e2e_staging {
     while ! curl $URL/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
-    kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
+    # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io"
 }
 
@@ -121,7 +121,7 @@ function build_images_and_deploy_production {
 
 function e2e_production {
     #WARNING: make sure only safe tests
-    test_e2e production "https://formuladb.io"
+    # test_e2e production "https://formuladb.io"
 }
 
 function cleanup {
