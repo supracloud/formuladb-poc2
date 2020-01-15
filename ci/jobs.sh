@@ -93,6 +93,7 @@ function test_e2e {
 }
 
 function e2e_dev_env {
+    set -x
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
     # while ! nc -z localhost 5432; do sleep 1; done
