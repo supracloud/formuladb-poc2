@@ -121,7 +121,7 @@ function build_images_and_deploy_production {
 
 function e2e_production {
     #WARNING: make sure only safe tests
-    # test_e2e production "https://formuladb.io"
+    echo test_e2e production "https://formuladb.io"
 }
 
 function cleanup {
