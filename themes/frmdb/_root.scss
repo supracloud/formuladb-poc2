@@ -1,0 +1,6 @@
+:root {
+    --nav-link-height: #{$nav-link-height};
+    --nav-link-padding-y: #{$nav-link-padding-y};
+    --navbar-padding-x: #{$navbar-padding-x};
+    --navbar-height: #{$nav-link-height + $nav-link-padding-y * 2};
+}

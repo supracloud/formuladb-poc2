@@ -1,5 +1,4 @@
 import { DataObj } from "@domain/metadata/data_obj";
-import { AutocompleteAttrs } from "./autocomplete/autocomplete.component";
 import { Entity, EntityProperty } from "@domain/metadata/entity";
 
 export interface UserModifiedFormData {
@@ -82,6 +81,42 @@ export interface FrmdbRemovePageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbHoverPageElement {
+    type: 'FrmdbHoverPageElement';
+    el: HTMLElement;
+}
+
+export interface FrmdbSelectPageElement {
+    type: 'FrmdbSelectPageElement';
+    el: HTMLElement;
+}
+
+export interface FrmdbSelectPageElementAction {
+    type: 'FrmdbSelectPageElementAction';
+    el: HTMLElement;
+    action: 
+        | "parent"
+        | "prev"
+        | "add-inside" 
+        | "add-after"
+        | "up"
+        | "down"
+        | "edit"
+        | "clone"
+        | "delete"
+    ;
+}
+
+export interface FrmdbEditWysiwygPageElement {
+    type: 'FrmdbEditWysiwygPageElement';
+    el: HTMLElement;
+}
+
+export interface FrmdbModifyPageElement {
+    type: 'FrmdbModifyPageElement';
+    value: string | number | boolean;
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -100,4 +135,9 @@ export type FrmdbUserEvent =
     | FrmdbAddColumn
     | FrmdbAddPageElement
     | FrmdbRemovePageElement
-    ;
+    | FrmdbHoverPageElement
+    | FrmdbSelectPageElement
+    | FrmdbSelectPageElementAction
+    | FrmdbEditWysiwygPageElement
+    | FrmdbModifyPageElement
+;

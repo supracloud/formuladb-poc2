@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/formuladb/frmdb-editor.min.css">
+    <link rel="stylesheet" href="/formuladb-env/icons/line-awesome/css/line-awesome.min.css">
+    <link rel="stylesheet" href="/formuladb-env/icons/flag-icons-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="/formuladb/css/ad-grid-balham-font.css">
+    <link rel="stylesheet" type="text/css" href="/formuladb-env/icons/formuladb/editor/icons.css" />
+    <link rel="stylesheet" href="/formuladb-env/icons/font-awesome/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="top-panel d-flex flex-column shadow-sm">
+        <frmdb-data-grid class="flex-grow-1" data-frmdb-attr="table-name:$frmdb.selectedTableId" expand-row="#edit-record-modal" no-floating-filters="true">
+        </frmdb-data-grid>
+        <div class="button-bar flex-grow-0 d-flex">
+            <frmdb-formula-editor></frmdb-formula-editor>
+
+            <div class="btn-group mr-3" role="group">
+                <button class="btn btn-light" title="Undo most recent change" id="undo-btn" data-frmdb-action="undo" data-vvveb-shortcut="ctrl+z">
+                    <i class="la la-undo"></i>
+                </button>
+
+                <button class="btn btn-light" title="Redo change" id="redo-btn" data-frmdb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
+                    <i class="la la-undo la-flip-horizontal"></i>
+                </button>
+            </div>
+
+            <div class="btn-group mr-3" role="group">
+                <button class="btn btn-light" title="Save Page" id="save-btn">
+                    <i class="la la-save"></i>
+                </button>
+                <button disabled class="btn btn-light" title="Publish to live environment" id="publish-btn" data-frmdb-action="saveApp">
+                    <i class="la la-upload"></i>
+                </button>
+            </div>
+
+            <frmdb-theme-customizer></frmdb-theme-customizer>
+
+            <div class="btn-group mr-3" role="group">
+                <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" role="menu">
+                    <button class="btn" id="frmdb-editor-i18n-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="flag-icon flag-icon-gb"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
+                    </div>
+                </div>
+                <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" role="menu">
+                    <button class="btn btn-outline" id="frmdb-editor-app-version-select" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        1
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="frmdb-editor-app-version-select">
+                        <a class="dropdown-item" title="Version 1" data-frmdb-action="viewport-mobile">Version 1</a>
+                        <a class="dropdown-item" title="Version 2" data-frmdb-action="viewport-mobile">Version 2</a>
+                        <a class="dropdown-item" title="Version 3" data-frmdb-action="viewport-mobile">Version 3</a>
+                        <a class="dropdown-item" title="Version 4" data-frmdb-action="viewport-mobile">Version 4</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group mr-3" role="group">
+                <button class="btn btn-light" title="Preview" id="preview-btn" type="button" data-toggle="button" aria-pressed="false"
+                    data-frmdb-action="preview">
+                    <i class="la la-eye"></i>
+                </button>
+
+                <button class="btn btn-light" title="Fullscreen (F11)" id="fullscreen-btn" data-toggle="button" aria-pressed="false"
+                    data-frmdb-action="fullscreen">
+                    <i class="la la-arrows"></i>
+                </button>
+
+                <button id="table-code-editor-btn" data-view="mobile" class="d-none btn btn-sm btn-light btn-sm" title="Table Code Viewer"
+                    data-frmdb-action="toggleTableEditor">
+                    <i class="la la-code-fork"></i>
+                </button>
+
+                <div class="btn-group dropdown frmdb-dropdown-hover" data-frmdb-select="i" role="menu">
+                    <button class="btn btn-sm dropdown-toggle" id="screen-size-dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="la la-laptop"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="screen-size-dropdown-toggle">
+                        <a class="dropdown-item" title="Mobile view" data-frmdb-action="viewport-mobile"><i class=" la la-mobile-phone"></i> Mobile</a>
+                        <a class="dropdown-item" title="Tablet view" data-frmdb-action="viewport-tablet"><i class="la la-tablet"></i> Tablet</a>
+                        <a class="dropdown-item" title="Desktop view" data-frmdb-action="viewport-laptop"><i class="la la-laptop"></i> Desktop</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="left-panel border-right shadow frmdb-dropdown-hover">
+        <div class="d-flex justify-content-between"
+            style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
+            <img id="logo" src="/formuladb/img/logo.png" style="width: 90px; height: 28px;" />
+            <a class="btn btn-sm btn-outline-light m-2" href="javascript:void(0)" data-frmdb-action="showIntroVideoModal"><i class="la la-info"></i></a>
+        </div>
+
+        <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
+            <li class="nav-item" title="list of tables">
+                <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                    <i class="la la-table"></i>
+                </a>
+            </li>
+            <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
+                <a href="javascript:void(0)" title="App Table List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true"
+                    aria-expanded="false" data-frmdb-value="$frmdb.selectedTableId">
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" data-frmdb-table="$frmdb.tables[]" data-frmdb-value="$frmdb.tables[]._id" href="javascript:void(0)">table 1</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown frmdb-dropdown-hover">
+                <a href="javascript:void(0)" class="nav-link" id="table-options" aria-haspopup="true" aria-expanded="false">
+                    <i class="la la-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+                    <a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Table</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="delete-table-btn" title="Delete Table" data-frmdb-prop="tableToDelete::$frmdb.selectedTableId"><i
+                            class="la la-trash"></i> Delete <span data-frmdb-value="$frmdb.selectedTableId"></span></a>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="nav flex-row flex-nowrap pl-1" style="min-height: 28px;">
+            <li class="nav-item" title="list of pages">
+                <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                    <i class="la la-image"></i>
+                </a>
+            </li>
+            <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover">
+                <a href="javascript:void(0)" title="App Page List" class="nav-link dropdown-toggle text-center" role="button" aria-haspopup="true"
+                    aria-expanded="false" data-frmdb-value="$frmdb.selectedPageName">
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
+                        data-frmdb-attr="href::$frmdb.pages[].url"></a>
+                </div>
+            </li>
+            <li class="nav-item dropdown frmdb-dropdown-hover">
+                <a class="nav-link" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">
+                    <i class="la la-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+                    <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="la la-plus-circle"></i> New Page</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="delete-page-btn" title="Delete Page" data-frmdb-prop="pagePathToDelete::$frmdb.selectedPagePath"><i
+                            class="la la-trash"></i> Delete <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
+                </div>
+            </li>
+        </ul>
+
+        <div class="left-panel-tree border-top overflow-auto">
+            <frmdb-element-tree></frmdb-element-tree>
+        </div>
+
+        <frmdb-element-editor class="d-flex flex-column"></frmdb-element-editor>
+    </div>
+    <div id="canvas" class="position-relative overflow-hidden">
+        <iframe id="app"></iframe>
+        <frmdb-highlight-box></frmdb-highlight-box>
+    </div>
+
+    <script src="/formuladb/frmdb-fe.js"></script>
+    <script src="/formuladb/frmdb-data-grid.js"></script>
+    <script src="/formuladb-env/plugins/vendor/js/jquery-3.3.1.slim.min.js"></script>
+    <script src="/formuladb-env/plugins/vendor/js/popper.min.js"></script>
+    <script src="/formuladb-env/plugins/vendor/js/bootstrap.min.js"></script>
+    <script src="/formuladb/frmdb-editor.js"></script>
+
+    <!-- new page modal-->
+    <div class="modal fade" id="new-page-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+            <form>
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title text-primary"><i class="la la-lg la-file"></i> New page</p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body text">
+                        <div class="form-group row" data-key="type">
+                            <label class="col-sm-3 control-label">
+                                Template
+                                <abbr class="badge badge-pill badge-secondary" title="This template will be used as a start">?</abbr>
+                            </label>
+                            <div class="col-sm-9 input">
+                                <div>
+                                    <select class="form-control custom-select" name="startTemplateUrl">
+                                        <option class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
+                                            data-frmdb-attr="value::$frmdb.pages[].url"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" data-key="href">
+                            <label class="col-sm-3 control-label">Page name</label>
+                            <div class="col-sm-9 input-group">
+                                <input name="title" type="text" class="form-control" placeholder="new-page-name" required pattern="[-a-zA-Z]+"
+                                    oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '-')">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">.html</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-danger" role="alert" style="display: none">
+                            A simple danger alert—check it out!
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-lg" type="submit"><i class="la la-check"></i> Create page</button>
+                        <button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="la la-close"></i> Cancel</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- new Table modal-->
+    <div class="modal fade" id="new-table-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+            <form>
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Table</p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body text">
+
+                        <div class="form-group row" data-key="href">
+                            <label class="col-sm-3 control-label">Table name</label>
+                            <div class="col-sm-9 input">
+                                <div>
+                                    <input name="tableName" type="text" class="form-control" placeholder="New_Table_Name" required pattern="[a-zA-Z_]+"
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+                                </div>
+
+                                <div class="alert alert-danger" role="alert" style="display: none">
+                                    A simple danger alert—check it out!
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-lg" type="submit"><i class="la la-check"></i> Create Table</button>
+                        <button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="la la-close"></i> Cancel</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- new Column modal-->
+    <div class="modal fade" id="new-column-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+
+            <form>
+
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <p class="modal-title text-primary"><i class="la la-lg la-table"></i> New Column for table <span data-frmdb-value="selectedTableName">
+                        </p>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body text">
+
+                        <div class="form-group row" data-key="href">
+                            <label class="col-sm-3 control-label">Column name</label>
+                            <div class="col-sm-9 input">
+                                <div>
+                                    <input name="columnName" type="text" class="form-control" placeholder="new_column_name" required pattern="[a-zA-Z_]+"
+                                        oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+                                </div>
+
+                                <div class="alert alert-danger" role="alert" style="display: none">
+                                    A simple danger alert—check it out!
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary btn-lg" type="submit"><i class="la la-check"></i> Add Column</button>
+                        <button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="la la-close"></i> Cancel</button>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Intro Video modal-->
+    <div class="modal fade modal-xl" id="intro-video-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
+        <div class="modal-dialog mt-3" role="document" style="width: 96vw; max-width: 96vw">
+            <div class="modal-content" style="width: 96vw; max-width: 96vw">
+                <div class="modal-header">
+                    <p class="modal-title text-primary"><i class="la la-lg la-video"></i> Intro Video</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+                    </button>
+                </div>
+                <video width="100%" controls autoplay>
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- edit record Modal -->
+    <div class="modal fade" id="edit-record-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Record</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <frmdb-form></frmdb-form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <frmdb-add-element></frmdb-add-element>
+    <frmdb-img-editor></frmdb-img-editor>
+    <frmdb-icon-editor></frmdb-icon-editor>
+
+</body>
+
+</html>

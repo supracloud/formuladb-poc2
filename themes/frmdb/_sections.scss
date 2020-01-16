@@ -1,0 +1,8 @@
+
+section, footer {
+    padding-top: $spacer * 4;
+}
+
+.frmdb-section-dark {
+    @include frmdb-section-dark-mixin($dark);
+}

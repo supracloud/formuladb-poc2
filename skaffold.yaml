@@ -9,13 +9,17 @@ build:
       # Sync all the javascript files that are in the dist-be folder
       # with the container's root
       - src: 'dist-be/**/*.js*'
-        dest: .
-      - src: 'dist-fe/**/*'
+        dest: /
+      - src: 'formuladb/**/*'
         dest: /wwwroot/formuladb
-        strip: dist-fe
-      - src: 'formuladb-editor/**/*'
-        dest: /wwwroot/formuladb-editor
-        strip: formuladb-editor
+        strip: formuladb
+      - src: 'formuladb-env/**/*'
+        dest: /wwwroot/git/formuladb-env
+        strip: formuladb-env
+      - src: skaffold.yaml
+        dest: /
+      - src: 'k8s/**/*'
+        dest: /
       - src: 'scripts/*'
         dest: /scripts
         strip: scripts
@@ -35,20 +39,11 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/development
-      # - op: add
-      #   path: /build/artifacts
-      #   value:
-      #     - image: registry.gitlab.com/metawiz/febe/formuladb-nginx
-      #       context: .
-      #       sync:
-      #         manual:
-      #         - src: 'formuladb-static/**/*'
-      #           dest: /usr/share/nginx/html/
-      #         - src: 'formuladb-themes/**/*'
-      #           dest: /usr/share/nginx/html/
-      #       docker:
-      #         dockerfile: Dockerfile.nginx
-      #         buildArgs: {}
+  - name: ci
+    patches:
+      - op: replace
+        path: /deploy/kustomize/path
+        value: k8s/overlays/development
   - name: staging
     patches:
       - op: replace
@@ -59,8 +54,8 @@ profiles:
       - op: replace
         path: /deploy/kustomize/path
         value: k8s/overlays/production
-  - name: biz
+  - name: client
     patches:
       - op: replace
         path: /deploy/kustomize/path
-        value: k8s/overlays/biz
+        value: k8s/overlays/client

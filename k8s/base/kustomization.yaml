@@ -1,10 +1,19 @@
+namespace: 153-admin-user-can-edit-a-page-components-blocks-per-theme #TBD_ENV_NAME
 resources:
 - resources/be-deployment.yaml
 - resources/be-service.yaml
 - resources/db-deployment.yaml
 - resources/db-service.yaml
-- resources/formuladb-online-https-secret.yaml
 - resources/pg-persistence-persistentvolumeclaim.yaml 
 - resources/git-persistence-persistentvolumeclaim.yaml 
 - resources/service-account-secret.yaml
+- resources/pg-backup-deployment.yaml
 #wildcard support removed for some reason https://github.com/kubernetes-sigs/kustomize/issues/119
+vars:
+- name: NAMESPACE_NAME
+  objref:
+    kind: Deployment
+    name: be
+    apiVersion: extensions/v1beta1
+  fieldref:
+    fieldpath: metadata.namespace

@@ -27,6 +27,8 @@ export const SampleApp = {
         app_url: { name: "app_url", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         short_description:  { name: "short_description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         wish_list_count: { name: "wish_list_count", propType_: Pn.FORMULA, formula: "COUNTIF(WishListRequest._id, app == @[_id])" } as EntityProperty,
+        status: { name: "status", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        call_to_action: { name: "call_to_action", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         small_img: { name: "small_img", propType_: Pn.IMAGE, allowNull: false } as EntityProperty,
         long_img: { name: "long_img", propType_: Pn.IMAGE, allowNull: false } as EntityProperty,
     }
@@ -68,6 +70,8 @@ export const FormuladbIoApp: App = {
         "add__WishListRequest.html",
         "_nav.html",
         "_footer.html",
+        "login.html",
+        "register.html",
     ],
 };
 

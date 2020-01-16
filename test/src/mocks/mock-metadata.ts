@@ -159,19 +159,39 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    { tenantName: "formuladb-apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp},
-    { tenantName: "formuladb-apps", appName: "Hotel_Booking", schema: HotelBookingSchema, app: HotelBookingApp},
-    { tenantName: "formuladb-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp},
+    { tenantName: "apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp },
+    { tenantName: "apps", appName: "Hotel_Booking", schema: HotelBookingSchema, app: HotelBookingApp },
+    // {
+    //     tenantName: "formuladb-env/apps", appName: "Hotel_Booking_2",
+    //     schema: {
+    //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_2',
+    //         ...HotelBookingSchema,
+    //     }, app: {
+    //         _id: 'Hotel_Booking_2',
+    //         ...HotelBookingApp,
+    //     }
+    // },
+    // {
+    //     tenantName: "formuladb-env/apps", appName: "Hotel_Booking_3",
+    //     schema: {
+    //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_3',
+    //         ...HotelBookingSchema,
+    //     }, app: {
+    //         _id: 'Hotel_Booking_3',
+    //         ...HotelBookingApp,
+    //     }
+    // },
+    { tenantName: "frmdb-platform-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
 ];
 
 for (let sch of Schemas) {
     for (let commonEntity of CommonEntities) {
-        sch.schema.entities[commonEntity._id] = commonEntity;    
+        sch.schema.entities[commonEntity._id] = commonEntity;
     }
 
     for (let ent of Object.values(sch.schema.entities)) {
         ent.props._id = { name: "_id", propType_: Pn.STRING, allowNull: false };
-        ent.isEditable = true;    
+        ent.isEditable = true;
     }
 }
 

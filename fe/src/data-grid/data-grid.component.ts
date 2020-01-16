@@ -9,9 +9,8 @@ import {
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
     RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef
 } from 'ag-grid-community';
-import { LicenseManager } from 'ag-grid-enterprise';
 import * as _ from 'lodash';
-import { waitUntil, PickOmit, objKeysTyped } from '@domain/ts-utils';
+import { waitUntil } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
 import { DataGridToolsComponent } from './data-grid-tools.component';
@@ -19,56 +18,60 @@ import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
 import { ExcelStyles } from './excel-styles';
-import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn } from '@domain/metadata/entity';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
+import { setAgGridLicense } from '@fe/licenses';
+import { DataGridComponentI } from './data-grid.component.i';
+import { emit, getTarget } from '@fe/delegated-events';
 
 /** Component constants (loaded by webpack) **********************************/
 const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
-export interface DataGridComponentAttr {
-    table_name: string;
-    header_height?: number;
-    expand_row?: boolean;
-    no_floating_filter?: boolean;
-}
 
-export interface DataGridComponentState {
+export class DataGridComponent extends HTMLElement implements DataGridComponentI {
     conditionalFormatting?: { tbdCssClassName: string };
     selectedRow: DataObj;
     selectedColumnName: string;
-}
 
-@FrmdbElementDecorator({
-    tag: 'frmdb-data-grid',
-    observedAttributes: ["table_name", "header_height" , "expand_row"],
-    template: HTML,
-    style: CSS,
-    // noShadow: true,
-})
-export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, DataGridComponentState> {
-    private _highlightColumns: { 
-        [tableName: string]: { 
-            [columnName: string]: string | {
-                'background-image': string,
-                'background-size': string,
-            }
-        } 
-    };
+    get elem() {return this.shadowRoot!}
+
+    private _highlightColumns: DataGridComponentI['highlightColumns'] = {};
     get highlightColumns() {return this._highlightColumns}
     set highlightColumns(hc: DataGridComponent['_highlightColumns']) {
         this._highlightColumns = hc;
         this.forceCellRefresh();
     }
+    get noFloatingFilters() {
+        return ('true' === (this.getAttribute("no-floating-filters")||'').toLowerCase());
+    }
+    get headerHeight() {
+        return parseInt(this.getAttribute("header-height")||'') || 28;
+    }
+    get tableName() {
+        return this.getAttribute("table-name") || undefined;
+    }
+    get expandRow() {
+        return this.getAttribute("expand-row") || undefined;
+    }
+
+    constructor() {
+        super();
+        setAgGridLicense();
+
+        this.attachShadow({ mode: 'open' });
+        this.shadowRoot!.innerHTML = `<style>${CSS}</style> ${HTML}`;
+        new Grid(this.elem.querySelector("#myGrid") as HTMLElement, this.gridOptions);
+    }
 
     /** web components API **************************************************/
-    attributeChangedCallback(attrName: keyof DataGridComponentAttr, oldVal, newVal) {
+    static observedAttributes = ["table-name", "header-height" , "expand-row", "no-floating-filters"];
+    attributeChangedCallback(attrName: string, oldVal, newVal) {
         waitUntil(() => Promise.resolve(this.gridApi), 2500)
         .then(() => {
             if (!this.gridApi) throw new Error("Timeout during initialization");
-            if (attrName == 'table_name') {
+            if (attrName == 'table-name') {
                 this.initAgGrid();
             } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
                 this.gridApi.purgeServerSideCache()
@@ -77,26 +80,11 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     connectedCallback() {
-        this.style.minWidth = "28vw";
-        this.style.minHeight = "18vh";
-        this.style.height = "100%";
-        this.style.display = "block";
-
-        new Grid(this.elem.querySelector("#myGrid") as HTMLElement, this.gridOptions);
-    }
-
-
-    constructor() {
-        super();
-
-        // tslint:disable-next-line:max-line-length
-        // LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_14_March_2019__MTU1MjUyMTYwMDAwMA==8917c155112df433b2b09086753e8903');
-        LicenseManager.setLicenseKey('Evaluation_License-_Not_For_Production_Valid_Until_8_April_2020__MTU4NjMwMDQwMDAwMA==4c5e7874be87bd3e2fdc7dd53041fbf7');
     }
 
     /** component internals *************************************************/
 
-    public forceCellRefresh(tableName?: string) {
+    public forceCellRefresh() {
         this.gridApi && this.gridApi.refreshView();
     }
     public forceReloadData() {
@@ -115,7 +103,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     private gridOptions: GridOptions = {
 
-        headerHeight: 50,
+        headerHeight: 28,
         suppressContextMenu: true,
         getMainMenuItems: (params: GetMainMenuItemsParams) => {
             let defaults: (string | MenuItemDef)[] = params.defaultItems.slice(0);
@@ -123,9 +111,9 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             defaults.push({
                 name: 'Delete Column',
                 action: () => {
-                    this.emit({
+                    emit(this, {
                         type: "UserDeleteColumn", 
-                        tableName: this.getAttribute("table_name") || 'n/a/tbl', 
+                        tableName: this.tableName || 'n/a/tbl', 
                         columnName: params.column.getColDef().field || 'n/a/col',
                     });
                 },
@@ -144,10 +132,10 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
             headerComponentParams: { menuIcon: 'fa-bars' }
         },
         onRowDoubleClicked: (event: RowDoubleClickedEvent) => {
-            this.emit({ type: "UserDblClickRow", dataObj: event.data });
+            emit(this, { type: "UserDblClickRow", dataObj: event.data });
         },
         onRowClicked: (event: RowClickedEvent) => {
-            this.frmdbState.selectedRow = event.data;
+            this.selectedRow = event.data;
         },
         onCellFocused: (event: CellFocusedEvent) => {
             let newSelectedRowIdx = event.rowIndex;
@@ -156,19 +144,20 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
                 newSelectedColumnName = event.column.getColDef().field!;
             }
             let refreshCellsParams: RefreshCellsParams | null = null;
-            if (this.selectedRowIdx != newSelectedRowIdx || this.frmdbState.selectedColumnName != newSelectedColumnName) {
+            if (this.selectedRowIdx != newSelectedRowIdx || this.selectedColumnName != newSelectedColumnName) {
                 refreshCellsParams = {
                     rowNodes: [
                         this.gridApi.getDisplayedRowAtIndex(this.selectedRowIdx || 0), 
                         this.gridApi.getDisplayedRowAtIndex(newSelectedRowIdx)
                     ],
-                    columns: [this.frmdbState.selectedColumnName || '_id', newSelectedColumnName || '_id'],
+                    columns: [this.selectedColumnName || '_id', newSelectedColumnName || '_id'],
                     force: true,
                 };
             }
-            this.frmdbState.selectedColumnName = newSelectedColumnName || this.frmdbState.selectedColumnName;
+            this.selectedColumnName = newSelectedColumnName || this.selectedColumnName;
             this.selectedRowIdx = event.rowIndex;
-            
+            emit(this, { type: "UserSelectedCell", columnName: this.selectedColumnName });
+
             if (refreshCellsParams && this.gridApi) {
                 // this.gridApi.refreshCells(refreshCellsParams);
                 //FIXME: the targeted cell refresh does not call the applyCellStyles method
@@ -268,7 +257,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     };
 
     applyCellStyles(params) {
-        let entityId = this.getAttribute('table_name');
+        let entityId = this.tableName;
         let hc = this._highlightColumns || {};
 
         let backgroundStyles: {[k: string]: string | null} = {
@@ -295,9 +284,9 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
                 };
             }
         }
-        else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
+        else if (params.node.rowIndex == this.selectedRowIdx && params.colDef.field == this.selectedColumnName) {
             borderStyles = { "border-color": "blue" };
-        } else if (params.node.rowIndex != this.selectedRowIdx && params.colDef.field == this.frmdbState.selectedColumnName) {
+        } else if (params.node.rowIndex != this.selectedRowIdx && params.colDef.field == this.selectedColumnName) {
             backgroundStyles = {
                 ...CURRENT_COLUMN_HIGHLIGHT_STYLE,
                 backgroundColor: null,
@@ -323,14 +312,14 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
 
     public async initAgGrid() {
         console.debug("ngOnInit", this, this.gridApi);
-        let tableName = this.getAttribute('table_name');
+        let tableName = this.tableName;
         if (!tableName) return;
 
         this.columns = await TABLE_SERVICE.getColumns(tableName);
 
-        this.gridOptions.floatingFilter = !this.getAttributeTyped("no_floating_filter", true);
+        this.gridOptions.floatingFilter = !this.noFloatingFilters;
         this.gridOptions.context = this.columns;
-        this.gridOptions.headerHeight = this.getAttributeTyped("header_height", 1) || 32;
+        this.gridOptions.headerHeight = this.headerHeight;
         // if (this.dataGrid.headerBackground) this.gridOptions.excelStyles!.find(s => s.id === "header")!.interior = {
         //     //FIXME: setting header background does not seem to work
         //     color: this.dataGrid.headerBackground,
@@ -341,7 +330,7 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};
-            let conditionalFormatting = this.frmdbState.conditionalFormatting || {};
+            let conditionalFormatting = this.conditionalFormatting || {};
             for (let cssClassName of Object.keys(elvis(conditionalFormatting))) {
                 cssClassRules[cssClassName] = function (params) {
                     return scalarFormulaEvaluate(params.data || {}, conditionalFormatting[cssClassName]);
@@ -402,12 +391,12 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
     }
 
     userSelectTableRow(dataObj: DataObj) {
-        this.emit({ type: "UserSelectedRow", dataObj });
+        emit(this, { type: "UserSelectedRow", dataObj });
     }
 
     getCellRenderer(col: TableColumn) {
-        let entityId = this.getAttribute("table_name");
-        let expandRowTarget = this.getAttributeTyped("expand_row");
+        let entityId = this.tableName;
+        let expandRowTarget = this.expandRow;
         if (expandRowTarget && col.name === '_id') {
             return (params) => {
                 return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.defaultView.$('${expandRowTarget}'); s=m.find('frmdb-form')[0].frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; m.modal('toggle')">${this.valueFormatter(params)}</a>`;
@@ -415,13 +404,6 @@ export class DataGridComponent extends FrmdbElementBase<DataGridComponentAttr, D
         } else return null;
     }
 
-    public setTableName(tableName: string) {
-        this.setAttribute('table_name', tableName);
-    }
 }
 
-export function queryDataGrid(el: Document | HTMLElement): DataGridComponent {
-    let dataGrid: DataGridComponent = el.querySelector("frmdb-data-grid") as DataGridComponent;
-    if (!dataGrid) throw new Error("data-grid not found");
-    return dataGrid;
-}
+customElements.define('frmdb-data-grid', DataGridComponent);

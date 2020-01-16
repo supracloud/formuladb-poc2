@@ -6,12 +6,13 @@ handleErr () {
 }
 trap handleErr ERR
 
-npm run sync-dev-static-assets &
-
-./node_modules/.bin/live-server --wait=200 --port=8081 -V --no-browser \
-    --mount=/formuladb-editor/:./formuladb-editor/ \
-    --mount=/formuladb/:././dist-fe/ \
-    --mount=/formuladb/img/:././fe/img/ \
-    --mount=/formuladb/icons/:././fe/icons/ \
-    --mount=/formuladb/frmdb-runtime-utils.js:./fe/js/frmdb-runtime-utils.js \
-    --proxy=/:http://localhost:8084/ \
+./node_modules/.bin/live-server --port=8081 --no-browser \
+    --watch=formuladb,formuladb-env \
+    --mount=/formuladb/:./formuladb/ \
+    --mount=/formuladb-env/themes/:./formuladb-env/themes \
+    --mount=/formuladb-env/icons/:./formuladb-env/icons \
+    --mount=/formuladb-env/static/:./formuladb-env/static \
+    --mount=/formuladb-env/plugins/:./formuladb-env/plugins \
+    --proxy=/frmdb-platform-apps/:http://localhost:8084/frmdb-platform-apps \
+    --proxy=/apps/:http://localhost:8084/apps \
+    --proxy=/formuladb-api:http://localhost:8084/formuladb-api \

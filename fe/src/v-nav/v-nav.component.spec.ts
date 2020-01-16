@@ -6,10 +6,12 @@
 const fetchMock = require('fetch-mock');
 
 import { VNavComponent } from './v-nav.component';
-import { normalizeHTML } from "@core/normalize-html";
+import { HTMLTools } from "@core/html-tools";
 import { InventorySchema } from '@test/inventory/metadata';
 
-export const InventoryVNavHtml = normalizeHTML(/* html */`
+const htmlTools = new HTMLTools(document, new DOMParser());
+
+export const InventoryVNavHtml = htmlTools.normalizeHTML(/* html */`
 <frmdb-v-nav>
     <frmdb-v-nav-segment data-frmdb-prop="nav::navigationItemsTree" class="nav flex-column">
         <ul class="nav flex-column">

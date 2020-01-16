@@ -1,0 +1,153 @@
+body {
+    --frmdb-editor-top-panel-height: 28vh;
+    --frmdb-editor-left-panel-width: 14vw;
+}
+
+.left-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--frmdb-editor-left-panel-width);
+    height: 100vh;
+    z-index: 1049;
+}
+
+.top-panel {
+    position: fixed;
+    top: 0px;
+    left: var(--frmdb-editor-left-panel-width);
+    width: calc(100vw - var(--frmdb-editor-left-panel-width));
+    height: var(--frmdb-editor-top-panel-height);
+    z-index: 1048;
+}
+
+#canvas {
+    position: fixed;
+    display: block;
+    top: var(--frmdb-editor-top-panel-height);
+    left: var(--frmdb-editor-left-panel-width);
+    width: calc(100vw - var(--frmdb-editor-left-panel-width));
+    height: calc(100vh - var(--frmdb-editor-top-panel-height));
+    margin: 0;
+    padding: 0;
+
+    iframe {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace ;
+$font-family-base:            $font-family-sans-serif;
+
+$font-size-base:              0.8rem; // Assumes the browser default, typically `16px`
+$font-size-lg:                $font-size-base * 1.25;
+$font-size-sm:                $font-size-base * .875;
+$label-margin-bottom:         .15rem;
+
+$spacer: 0.5rem;
+$nav-link-padding-y: .25rem;
+$nav-link-padding-x: .5rem;
+$modal-header-padding-y: .25rem;
+$modal-header-padding-x: .5rem;
+$input-btn-padding-y:         .1rem;
+$input-btn-padding-x:         .1rem;
+$grid-gutter-width:           5px;
+
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+
+@import "../../../themes/frmdb/dropdown";
+@import "../../../themes/frmdb/card";
+@import "../../../themes/frmdb/utilities/scrollbar";
+
+.top-panel, .left-panel {
+    font-family: $font-family-base;
+    @include font-size($font-size-base);
+    font-weight: $font-weight-base;
+    line-height: $line-height-base;
+    color: $body-color;
+    text-align: left; // 3
+    background-color: $body-bg; // 2
+}
+
+$dom-tree-heigth: 15vh;
+$logo-height: 29px;
+$tables-height: 28px;
+$pages-height: 28px;
+
+.left-panel-tree {
+    height: $dom-tree-heigth;
+    display: block;
+}
+
+frmdb-element-editor {
+    height: calc(100vh - #{$dom-tree-heigth} - 34px - 2 * 21px);
+    overflow: auto;
+}
+
+label.header {
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0;
+    padding: 2px;
+    width: 100%;
+    // line-height: 32px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+    overflow: hidden;
+    color: #007bff;
+    cursor: pointer;
+    position: relative;
+    
+    &:first-child {
+        margin-top: 0rem;
+        border-top: none;
+    }
+    
+    .header-arrow {
+        // @extend .la;
+        // @extend .la-angle-down;
+        padding: 0.7rem;
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        
+        &.expanded {
+            // @extend .la-angle-right;
+        }
+    }
+    
+    :checked {
+        color: red;
+    }
+}
+
+input.header_check {
+    position: absolute;
+    left: 0;
+    margin-left: 0;
+    opacity: 0;
+    z-index: 2;
+    cursor: pointer;
+    height: 1em;
+    width: 1em;
+    top: 0;
+}
+
+input.header_check:checked + div.section,
+li.header > input.header_check:checked + ol {
+    display: block;
+}
+
+div.section,
+.header > ol {
+    display: none;
+}
+
+frmdb-section-input {
+    display: block;
+}
+
+
+@import './add-element.component.scss';

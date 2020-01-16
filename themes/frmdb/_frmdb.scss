@@ -1,0 +1,28 @@
+@import "../node_modules/hover.css/scss/hover.scss";
+// @import "../node_modules/animate.css/animate.min";
+
+// @import "./frmdb/icons";
+@import "./mixins";
+@import "./root";
+@import "./utilities";
+@import "./forms";
+@import "./sections";
+@import "./card";
+@import "./dropdown";
+@import "./navbar";
+@import "./ribbon";
+@import "./collapse";
+@import "./media";
+@import "./frmdb-editor";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/regular";
+@import "../node_modules/@fortawesome/fontawesome-free/scss/fontawesome";
+
+.fa {
+    font-family: 'Font Awesome 5 Free';
+}
+
+body {
+    margin: 0;
+    --frmdb-editor-top-panel-height: 0px;
+    --frmdb-editor-left-panel-width: 0px;
+}

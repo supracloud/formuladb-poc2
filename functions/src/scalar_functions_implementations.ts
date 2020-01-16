@@ -62,6 +62,6 @@ export const ScalarFunctionsImplementations = {
         return (start2.isSameOrBefore(start1) && start1.isSameOrBefore(end2))
             || (start2.isSameOrBefore(end1) && end1.isSameOrBefore(end2))
             || (start2.isSameOrBefore(start1) && end1.isSameOrBefore(end2))
-            ;
+        ;
     }
 };

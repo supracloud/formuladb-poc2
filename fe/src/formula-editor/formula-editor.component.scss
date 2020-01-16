@@ -1,6 +1,10 @@
+@import "/formuladb-env/icons/formuladb/editor/icons.css";
+
 .formula-code-editor {
     min-width: 50vw;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 
 .formula-code-editor #toggle-formula-editor {
@@ -24,7 +28,28 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     height: 1.5rem;
-    margin: 5px 5px 0 5px;
+    margin: 0 5px 0 5px;
+}
+
+.btn {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 2px;
+    border-radius: 2px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.bg-success {
+    background-color: green;
+}
+
+.bg-danger {
+    background-color: red;
 }
 
 .formula-code-editor > a > img {

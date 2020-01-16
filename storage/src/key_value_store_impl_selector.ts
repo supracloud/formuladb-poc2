@@ -39,9 +39,10 @@ export async function getFrmdbEngine(schema: Schema, tenantName: string, appName
 
 const fs = require('fs');//TODO: fix this for running in the browser
 export async function getTestFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
-    fs.mkdirSync('/tmp/testTenant/testApp', { recursive: true });
+    fs.mkdirSync('/tmp/frmdb-metadata-store-for-specs', { recursive: true });
+    console.log("mkdir finished")
     let kvsFactory = await getKeyValueStoreFactory();
-    return new FrmdbEngineStore('tenantName', 'testApp', kvsFactory, schema);
+    return new FrmdbEngineStore('apps', 'testApp', kvsFactory, schema);
 }
 export async function getTestFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
     return new FrmdbEngine(await getTestFrmdbEngineStore(schema));

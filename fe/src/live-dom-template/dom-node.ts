@@ -9,8 +9,8 @@ export type Elem = HTMLElement;
 export class ElemList {
     constructor(private key: string, private parentEl: Elem) { }
 
-    public length() {
-        return this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`).length;
+    public elems(): Elem[] {
+        return Array.from(this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`));
     }
 
     public getLimit() {
@@ -20,20 +20,42 @@ export class ElemList {
         return limit || 3;
     }
 
-    public addElem(): Elem {
+    public createElems(nb: number): Elem[] {
+        let elems: Elem[] = [];
         let elList = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
         let firstEl = elList[0];
         if (!firstEl) firstEl = createElem('div', this.key);
-        let newEl: Elem = firstEl.cloneNode(true) as Elem;
-        if (newEl.id) newEl.id = generateUUID();
-        if (elList.length > 0) {
-            elList[elList.length - 1].insertAdjacentElement('afterend', newEl);
-        } else this.parentEl.appendChild(newEl);
-        return newEl as Elem;
+
+        for (let i = 0; i < nb; i++) {
+            let newEl: Elem = firstEl.cloneNode(true) as Elem;
+            if (newEl.id) newEl.id = generateUUID();
+            elems.push(newEl);
+        }
+
+        return elems;
     }
 
-    public addTo(parentEl: Elem) {
-        parentEl.appendChild(this.parentEl);
+    public add(el: Elem): Elem {
+        let elems = this.elems();
+        if (elems.length > 0) {
+            let lastElem = elems[elems.length - 1];
+            lastElem.parentElement?.insertBefore(el, lastElem.nextElementSibling);
+        } else {
+            this.parentEl.appendChild(el);
+        }
+        return el;
+    }
+
+    public addAll(newElemsAdded: Elem[]) {
+        let currentLastSibling: Elem | undefined = undefined;
+        for (let newElemInList of newElemsAdded) {
+            if (currentLastSibling) {
+                currentLastSibling.parentElement!.insertBefore(newElemInList, currentLastSibling.nextElementSibling);
+            } else {
+                this.add(newElemInList);
+            }
+            currentLastSibling = newElemInList;
+        }
     }
 
     public at(idx: number): Elem | null {
@@ -42,13 +64,8 @@ export class ElemList {
         else return list[idx] as Elem;
     }
 
-    public removeAt(idx: number): Elem | null {
-        let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
-        if (list.length < idx) return null;
-        let childEl = list[idx];
-        if (!childEl) return null;
-        this.parentEl.removeChild(childEl);
-        return childEl as Elem;
+    public remove(el: Elem) {
+        return this.parentEl.removeChild(el);
     }
 }
 
@@ -305,6 +322,9 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
                 (el as HTMLInputElement).value = value + '';
             } else if ((el as HTMLElement).tagName.toLowerCase() === 'img') {
                 (el as HTMLInputElement).src = value + '';
+            } else if ((el as HTMLElement).classList.contains('card-img-overlay')) {
+                let img = el.previousElementSibling as HTMLImageElement;
+                if (img && img.tagName.toLowerCase() === 'img') img.src = value + '';
             } else if ((el as HTMLElement).tagName.toLowerCase() === 'i' && (value.indexOf('la-') === 0 || value.indexOf('icon-') === 0 || value.indexOf('fa-') === 0)) {
                 el.classList.forEach(className => {
                     let prefix = value.substr(0, value.indexOf('-') + 1);

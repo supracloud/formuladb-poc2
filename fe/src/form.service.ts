@@ -31,13 +31,16 @@ export class FormService {
     
     constructor(private appRootEl: HTMLElement) {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
+            if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
             let inputEl = event.target;
-            if (!isFormEl(inputEl)) throw new Error("input event came from " + event.target);
+            if (!isFormEl(inputEl)) return;
+            
             this.debounced_newRecordCache(inputEl);
             this.debounced_manageInput(inputEl);
         });
 
         onEvent(appRootEl, ["click", "submit"], 'button[type="submit"]', async (event) => {
+            if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
             event.preventDefault();
             let button = event.target;
             if (!(button instanceof HTMLButtonElement)) throw new Error("invalid button " + event.target);

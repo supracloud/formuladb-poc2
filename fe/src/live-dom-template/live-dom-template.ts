@@ -85,25 +85,44 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
     if (objValForKey instanceof Array) {
         let domKey = `${currentScopePrefix}${domKeySep}${key}[]`;
         let elemListsForKey = getElemList(el, domKey);
-        LOG.debug("updateDOMForScope", "", key, objValForKey, domKey,elemListsForKey);
+        LOG.debug("updateDOMForKeyArray", "", key, objValForKey, domKey, elemListsForKey);
         if (0 == elemListsForKey.length) return;
 
         for (let elemListForKey of elemListsForKey) {
-            for (let [i, o] of objValForKey.entries()) {
-                if (elemListForKey.length() <= i) {
-                    let newElemInList = elemListForKey.addElem();
-                    emit(document, {type: "FrmdbAddPageElement", el: newElemInList});
+            let elemListToDataBind: Elem[];
+            {
+                let elemListBeforeRemovalOfExtraElems = elemListForKey.elems();
+                const oneElementMustRemain = 1;//if you want to hide elements use data-frmdb-if, one DOM element must remain in order to define the data binding
+                for (let i = 0; i < elemListBeforeRemovalOfExtraElems.length - objValForKey.length - oneElementMustRemain; i++ ) {
+                    let elToRemove = elemListForKey.at(i)!;
+                    emit(document, {type: "FrmdbRemovePageElement", el: elToRemove});
+                    elemListForKey.remove(elToRemove);
                 }
-                elemListForKey.at(i)!['data-frmdb-obj'] = o;
+                elemListToDataBind = elemListForKey.elems();
+            }
+
+            let newElemsAdded: Elem[] = [];
+            {
+                let elemListBeforeAddingNewElems = elemListForKey.elems();
+                if (elemListForKey.elems().length < objValForKey.length) {
+                    newElemsAdded = elemListForKey.createElems(objValForKey.length - elemListBeforeAddingNewElems.length);
+                }
+                elemListToDataBind = elemListToDataBind.concat(newElemsAdded);
+            }
+
+            for (let [i, o] of objValForKey.entries()) {
+                elemListToDataBind[i]!['$DATA-FRMDB-OBJ$'] = o;
                 if (o._id && o._id.indexOf('~~') > 0) {
-                    elemListForKey.at(i)!.setAttribute('data-frmdb-record', o._id);
+                    elemListToDataBind[i]!.setAttribute('data-frmdb-record', o._id);
                 }
                 if (isScalar(o)) {
-                    updateDOMForScalarValue(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
-                } else updateDOMForScope(o, elemListForKey.at(i)!, context, domKey, arrayCurrentIndexes.concat(i));
+                    updateDOMForScalarValue(o, elemListToDataBind[i]!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
+                } else updateDOMForScope(o, elemListToDataBind[i]!, context, domKey, arrayCurrentIndexes.concat(i));
             };
-            while (elemListForKey.length() > 1 && elemListForKey.length() > objValForKey.length) {
-                elemListForKey.removeAt(objValForKey.length);
+
+            elemListForKey.addAll(newElemsAdded);
+            for (let newElemInList of newElemsAdded) {
+                emit(document, {type: "FrmdbAddPageElement", el: newElemInList});
             }
         }
     } else if (isScalar(objValForKey)) {
@@ -111,12 +130,12 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
     } else if ('object' === typeof objValForKey) {
         let domKey = `${currentScopePrefix}${domKeySep}${key}`;
         let elemsForKey = getElemForKey(el, domKey);
-        LOG.debug("updateDOMForScope", "", key, objValForKey, domKey, elemsForKey);
+        LOG.debug("updateDOMForKeyObj", "", key, objValForKey, domKey, elemsForKey);
         if (0 == elemsForKey.length) {
             elemsForKey.push(el);
         }
         for (let elForKey of elemsForKey) {
-            elForKey['data-frmdb-obj'] = objValForKey;
+            elForKey['$DATA-FRMDB-OBJ$'] = objValForKey;
             updateDOMForScope(objValForKey, elForKey, context, domKey, arrayCurrentIndexes);
         }
     } else {
@@ -132,7 +151,7 @@ function isScalar(objValForKey) {
 function updateDOMForScalarValue(objValForKey: string|boolean|number|Date, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[], domKeySep: string, key: string) {
     let domKey = `${currentScopePrefix}${domKeySep}${key}`;
     let elemsForKey = getElemForKey(el, domKey);
-    LOG.debug("updateDOMForScope", "", key, objValForKey, domKey, elemsForKey);
+    LOG.debug("updateDOMForScalarValue", "", key, objValForKey, domKey, elemsForKey);
     if (0 == elemsForKey.length) {
     } else {
         setElemValue(objValForKey, elemsForKey, domKey, context, arrayCurrentIndexes, key);

@@ -1,7 +1,0 @@
-<frmdb-image *ngIf="card?.imageNode" [nodel]="card?.imageNode" [formgrp]="formgrp" [fullpath]="getChildPath(card?.imageNode)" [rdonly]="rdonly"></frmdb-image>
-<div class="card-body overflow-auto frmdb-d-grid">
-    <frmdb-form_text classex="wcol-100" *ngIf="card?.titleNode" [nodel]="card?.titleNode" [formgrp]="formgrp" [fullpath]="getChildPath(card?.titleNode)" [rdonly]="rdonly"></frmdb-form_text>
-    <frmdb-form_text classex="wcol-100 hrem-2" *ngIf="card?.subtitleNode" [nodel]="card?.subtitleNode" [formgrp]="formgrp" [fullpath]="getChildPath(card?.subtitleNode)" [rdonly]="rdonly"></frmdb-form_text>
-    <frmdb-form_text classex="wcol-100 hrem-5 overflow-auto" *ngIf="card?.textNode" [nodel]="card?.textNode" [formgrp]="formgrp" [fullpath]="getChildPath(card?.textNode)" [rdonly]="rdonly"></frmdb-form_text>        
-    <ng-container [frmdb-node-elements]="nodel?.childNodes" [parentnodel]="nodel" [formgrp]="formgrp" [fullpath]="fullpath" [rdonly]="rdonly"></ng-container>
-</div>

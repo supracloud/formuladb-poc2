@@ -15,6 +15,10 @@ export function getTextValue(el: HTMLElement) {
     }
 }
 
+export function isElementWithTextContentEditable(el: HTMLElement) {
+    return el.matches(translatableSelector) && isElementWithTextContent(el);
+}
+
 export function isElementWithTextContent(el: any) {
     if (el.hasAttribute('placeholder')) {
         return true;
@@ -36,6 +40,9 @@ export class I18nFe {
 
     public getLangDesc(lang: string) {
         return this.languages.find(l => l.lang == lang);
+    }
+    public getDefaultLanguage() {
+        return this.getLangDesc(this.defaultLanguage)!;
     }
 
     get languages() {
@@ -130,4 +137,4 @@ export class I18nFe {
 }
 
 export const I18N_FE = new I18nFe();
-(window as any).i18n = I18N_FE;
+

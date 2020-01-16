@@ -1,9 +1,0 @@
-[submodule "formuladb-static"]
-	path = formuladb-static
-	url = git@gitlab.com:metawiz/formuladb-static.git
-[submodule "formuladb-apps"]
-	path = formuladb-apps
-	url = git@gitlab.com:metawiz/formuladb-apps.git
-[submodule "formuladb-themes"]
-	path = formuladb-themes
-	url = git@gitlab.com:metawiz/formuladb-themes.git

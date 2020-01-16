@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+  labels:
+    k8s-app: kubernetes-dashboard
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    certmanager.k8s.io/issuer: "formuladb-prod"
+spec:
+  tls:
+  - hosts:
+    - dashboard.formuladb.io
+    secretName: certificate-formuladb-prod
+  rules:
+  - host: dashboard.formuladb.io
+    http:
+      paths:
+      - backend:
+          serviceName: kubernetes-dashboard
+          servicePort: 443

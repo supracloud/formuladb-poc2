@@ -12,7 +12,7 @@ exports.config = {
     audio: false
   },
   specs: [
-    '../tsc-out/e2e/src/**/Hotel_Booking.spec.js'
+    '../tsc-out/**/*.scenario.js'
   ],
   getMultiCapabilities: function () {
 

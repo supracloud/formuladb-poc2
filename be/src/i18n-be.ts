@@ -53,34 +53,34 @@ export class I18nBe {
         }
         if (batch.length > 0) batches.push(batch);
 
-        const translations = await Promise.all(batches.map(batch => {
-            // Construct request
-            const request = {
-                parent: translationClient.locationPath(projectId, 'global'),
-                contents: batch,
-                mimeType: 'text/html', // mime types: text/plain, text/html
-                sourceLanguageCode: DEFAULT_LANGUAGE,
-                targetLanguageCode: toLangAndCountry,
-            };
-            if (batch.length == 0) return [{translations: []}];
-            return translationClient.translateText(request)
-                .then(x => {
-                    let translatedBatch: string[] = x[0].translations.map(t => t.translatedText);
-                    for (let [idx, defaultText] of batch.entries()) {
-                        let translatedText = translatedBatch[idx];
-                        let dictEntry: DictionaryEntry = this.dictionaryCache.get(defaultText) || {_id: defaultText} as DictionaryEntry;
-                        dictEntry[toLang] = translatedText;
-                        dirtyDictionaryEntries.set(defaultText, dictEntry);
-                        returnedTranslations[defaultText] = translatedText;
-                    }
-                    console.log(x);
-                    return x;
-                })
-                .catch(err => {
-                    console.error(err, JSON.stringify(request)); 
-                    throw err;
-                });
-        }));
+        // const translations = await Promise.all(batches.map(batch => {
+        //     // Construct request
+        //     const request = {
+        //         parent: translationClient.locationPath(projectId, 'global'),
+        //         contents: batch,
+        //         mimeType: 'text/html', // mime types: text/plain, text/html
+        //         sourceLanguageCode: DEFAULT_LANGUAGE,
+        //         targetLanguageCode: toLangAndCountry,
+        //     };
+        //     if (batch.length == 0) return [{translations: []}];
+        //     return translationClient.translateText(request)
+        //         .then(x => {
+        //             let translatedBatch: string[] = x[0].translations.map(t => t.translatedText);
+        //             for (let [idx, defaultText] of batch.entries()) {
+        //                 let translatedText = translatedBatch[idx];
+        //                 let dictEntry: DictionaryEntry = this.dictionaryCache.get(defaultText) || {_id: defaultText} as DictionaryEntry;
+        //                 dictEntry[toLang] = translatedText;
+        //                 dirtyDictionaryEntries.set(defaultText, dictEntry);
+        //                 returnedTranslations[defaultText] = translatedText;
+        //             }
+        //             console.log(x);
+        //             return x;
+        //         })
+        //         .catch(err => {
+        //             console.error(err, JSON.stringify(request)); 
+        //             throw err;
+        //         });
+        // }));
 
         for (let dirtyDictEntry of dirtyDictionaryEntries.values()) {
             this.dictionaryCache.set(dirtyDictEntry._id, dirtyDictEntry);

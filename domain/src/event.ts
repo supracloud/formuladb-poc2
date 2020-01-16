@@ -95,7 +95,15 @@ export class ServerEventSetProperty extends MwzEvent {
 export class ServerEventPutPageHtml extends MwzEvent {
     readonly type_ = "ServerEventPutPageHtml";
 
-    constructor(public pagePath: string, public pageHtml: string) {
+    constructor(public tenantName: string, public appName: string, public pageName: string, public pageHtml: string) {
+        super();
+    }
+}
+
+export class ServerEventPutMediaObject extends MwzEvent {
+    readonly type_ = "ServerEventPutMediaObject";
+
+    constructor(public tenantName: string, public appName: string, public fileName: string, public base64Content: string) {
         super();
     }
 }
@@ -117,6 +125,7 @@ export type MwzEvents =
     | ServerEventSetProperty
     | ServerEventDeleteProperty
     | ServerEventPutPageHtml
+    | ServerEventPutMediaObject
     | ServerEventNewPage
     | ServerEventDeletePage
     ;

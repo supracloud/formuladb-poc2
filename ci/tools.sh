@@ -1,4 +1,3 @@
-
 putSchema() {
     APP_NAME=$1
     SCHEMA_FILE=$2
@@ -53,9 +52,13 @@ rsync-deploy() {
 }
 #rsync-deploy 4179 ../customer-dacris dacris@mail.dacris.ro:/opt/data/dacris/LIVE/formuladb
 
+#cp ./ssh/frmdb.id_rsa* ~/.ssh
+#chmod 600 ~/.ssh/frmdb.id_rsa
+#chmod 644 ~/.ssh/frmdb.id_rsa.pub
+#chmod 700 ~/.ssh
 ssh-ci() {
     #ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
-    ssh -i ./ssh/frmdb.id_rsa root@34.76.177.179
+    ssh -i ~/.ssh/frmdb.id_rsa root@34.76.177.179
 }
 
 ssh-demo() {
@@ -70,7 +73,7 @@ upload-assets() {
     const storage = new Storage({keyFilename: '"$GCLOUD_BASEDIR"FormulaDB-storage-full.json'});\
     var array = process.env.ASSETS.split(' ');\
     for (var assetid = 0; assetid < array.length; assetid++) {\
-        storage.bucket('formuladb-static-assets').upload(array[assetid], {destination: '"$PATH_PREFIX"' + array[assetid]}, function(err, file) {\
+        storage.bucket('formuladb-env/static-assets').upload(array[assetid], {destination: '"$PATH_PREFIX"' + array[assetid]}, function(err, file) {\
         if (!err) {\
             console.log(file.name)\
         } else {\
@@ -113,6 +116,26 @@ kubectlexec() {
     shift
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
     kubectl -n "$namespace" exec service/$service_name "$@"
+    #TODO this needs to parse the arguments...it is more complex
+}
+
+kubectlsh() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec service/$service_name "$@" bash -it
+    #TODO this needs to parse the arguments...it is more complex
+}
+
+kubectlsh() {
+    if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
+    #export KUBECONFIG=k8s/production-kube-config.conf
+    service_name=$1
+    shift
+    namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
+    kubectl -n "$namespace" exec service/$service_name bash -it
     #TODO this needs to parse the arguments...it is more complex
 }
 
@@ -166,5 +189,5 @@ kubectlport-forward-env-be() {
 frmdb-be-load-test-data() {
     if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then echo "use this only in WSL"; return 1; fi
     namespace="`git branch|grep '^*'|cut -d ' ' -f2`"
-    kubectl -n "$namespace" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
+    kubectl -n "$namespace" exec service/be -- env $@ node /dist-be/frmdb-be-load-test-data.js
 }

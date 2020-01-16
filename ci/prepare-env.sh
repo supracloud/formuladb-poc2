@@ -1,8 +1,9 @@
+set -xe
 if [[ -z "${FRMDB_ENV_NAME}" ]]; then
     FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
 
-export BASEDIR=`dirname $0`
+export BASEDIR="${PWD}/`dirname $0`"
 # export KUBECONFIG=$BASEDIR/../k8s/production-kube-config.conf
 
 # -------------------------------------------------------------------------
@@ -23,11 +24,13 @@ hash skaffold &>/dev/null || {
 hash skaffold &>/dev/null || { echo "skaffold not found! See https://skaffold.dev/docs/getting-started/#installing-skaffold"; exit $ERRCODE; }
 
 hash kustomize &>/dev/null || { 
-  curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest |\
-  grep browser_download |\
-  grep linux |\
-  cut -d '"' -f 4 |\
-  xargs curl -O -L
+  curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases |\
+    grep browser_download |\
+    grep linux |\
+    cut -d '"' -f 4 |\
+    grep /kustomize/v |\
+    sort | tail -n 1 |\
+    xargs curl -O -L
   mv kustomize_*_linux_amd64 kustomize
   chmod u+x ./kustomize
   sudo mv ./kustomize /usr/local/bin/
@@ -48,32 +51,63 @@ hash gsutil || {
     fi
 }
 
+if uname -a | grep 'Linux.*Microsoft' && ! kubectl get namespace | grep local-path-storage; then 
+  kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+  kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+  kubectl patch storageclass hostpath -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+fi
+
 # -------------------------------------------------------------------------
 # External dependency: git
 # -------------------------------------------------------------------------
-# if uname -a | grep 'Linux.*Microsoft'; then echo asfdasd; fi
+chmod og-rwx ssh
+chmod og-r ssh/*
+chmod uog-wx ssh/*
+pwd
 
-# -------------------------------------------------------------------------
-# External dependency: obj storage
-# -------------------------------------------------------------------------
+if [ ! -d "formuladb-env" ]; then
+  export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $BASEDIR/../ssh/frmdb.id_rsa"
 
-if ! gcloud auth list|grep formuladb-static-assets; then
-    gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
+  if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+      git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
+  else
+      git clone --branch master --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
+  fi
 fi
 
-### using a single central bucket for now...
-# node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
+cd formuladb-env
+if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
+    git pull origin ${FRMDB_ENV_NAME}
+else
+    git checkout -b "${FRMDB_ENV_NAME}"
+    git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
+fi
+
+# # -------------------------------------------------------------------------
+# # External dependency: obj storage
+# # -------------------------------------------------------------------------
+
+# if ! gcloud auth list|grep formuladb-env/static-assets; then
+#     gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
+# fi
+
+# ### using a single central bucket for now...
+# # node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
 
 # -------------------------------------------------------------------------
 # k8s
 # -------------------------------------------------------------------------
+cd $BASEDIR/..
 if [ -z "$NO_K8S" ]; then
-  echo "Preparing k8s deployment for namespace ${FRMDB_ENV_NAME}."
-  perl -p -i -e 's!value.*#TBD_ENV_NAME!value: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/overlays/development/patches/be-deployment.yaml
 
-  if ! uname -a | grep 'Linux.*Microsoft' >/dev/null; then 
-    perl -p -i -e 's![-\w\d.]+.formuladb.io #TBD_ENV_NAME.formuladb.io!'$FRMDB_ENV_NAME'.formuladb.io #TBD_ENV_NAME.formuladb.io!' k8s/overlays/development/resources/ingress.yaml
-    cat k8s/overlays/development/resources/ingress.yaml
+  if ! kubectl get namespaces|grep "\b${FRMDB_ENV_NAME}\b"; then 
+      kubectl create namespace "${FRMDB_ENV_NAME}" 
   fi
+  if ! kubectl -n "${FRMDB_ENV_NAME}" get secrets | grep "\bregcred\b"; then 
+      kubectl -n "${FRMDB_ENV_NAME}" create secret generic regcred --from-file=.dockerconfigjson=${BASEDIR}/docker-config.json --type=kubernetes.io/dockerconfigjson; 
+  fi
+
+  echo "Preparing k8s deployment for namespace ${FRMDB_ENV_NAME}."
+  perl -p -i -e 's!namespace.*#TBD_ENV_NAME!namespace: '$FRMDB_ENV_NAME' #TBD_ENV_NAME!' k8s/base/kustomization.yaml
 
 fi

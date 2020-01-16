@@ -6,8 +6,10 @@
 const fetchMock = require('fetch-mock');
 
 import { FormulaEditorComponent } from './formula-editor.component';
-import { normalizeHTML } from "@core/normalize-html";
+import { HTMLTools } from "@core/html-tools";
 import { InventorySchema } from '@test/inventory/metadata';
+
+const htmlTools = new HTMLTools(document, new DOMParser());
 
 describe('FormulaEditorComponent', () => {
     beforeEach(() => {
@@ -22,10 +24,10 @@ describe('FormulaEditorComponent', () => {
         expect(el instanceof FormulaEditorComponent).toEqual(true);
 
         await new Promise(resolve => setTimeout(resolve, 200));
-        console.log(el.innerHTML);
-        let normalizedHtml = normalizeHTML(el.innerHTML);
+        console.log(el.shadowRoot!.innerHTML);
+        let normalizedHtml = htmlTools.normalizeHTML(el.shadowRoot!.innerHTML);
 
-        expect(normalizedHtml[1]).toEqual('<div class="formula-code-editor d-flex">');
+        expect(normalizedHtml[1]).toEqual('<div class="formula-code-editor">');
 
         done();
     });

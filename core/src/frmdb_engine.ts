@@ -72,6 +72,8 @@ export class FrmdbEngine {
                 return this.transactionRunner.deleteEntityProperty(event);
             case "ServerEventPutPageHtml":
                 return this.putPageHtml(event);
+            case "ServerEventPutMediaObject":
+                return this.putMediaObject(event);
             case "ServerEventNewPage":
                 return this.newPage(event);
             case "ServerEventDeletePage":
@@ -82,7 +84,12 @@ export class FrmdbEngine {
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pagePath, event.pageHtml);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.tenantName, event.appName, event.pageName, event.pageHtml);
+        return event;
+    }
+
+    private async putMediaObject(event: events.ServerEventPutMediaObject): Promise<events.MwzEvents> {
+        await this.frmdbEngineStore.kvsFactory.metadataStore.saveMediaObject(event.tenantName, event.appName, event.fileName, event.base64Content);
         return event;
     }
 

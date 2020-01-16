@@ -75,8 +75,27 @@ configDataGrid = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
     output: {
-        path: path.resolve(__dirname, 'dist-fe'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-data-grid.js'
+    },
+};
+
+configThemeCustomizer = {
+    ...configBaseWeb,
+    entry: './tsc-out/fe/src/theme-customizer/theme-customizer.component.js',
+    output: {
+        path: path.resolve(__dirname, 'formuladb'),
+        filename: 'frmdb-theme-customizer.js'
+    },
+};
+
+
+configPageElements = {
+    ...configBaseWeb,
+    entry: './tsc-out/fe/src/page-elements/page-elements.js',
+    output: {
+        path: path.resolve(__dirname, 'formuladb-themes/_js'),
+        filename: 'frmdb-page-elements.js'
     },
 };
 
@@ -84,16 +103,16 @@ configFe = {
     ...configBaseWeb,
     entry: './tsc-out/fe/src/fe.js',
     output: {
-        path: path.resolve(__dirname, 'dist-fe'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-fe.js'
     },
 };
 
 configFrmdbEditor = {
     ...configBaseWeb,
-    entry: './tsc-out/fe/src/frmdb-editor.js',
+    entry: './tsc-out/fe/src/frmdb-editor/frmdb-editor.directive.js',
     output: {
-        path: path.resolve(__dirname, 'dist-fe'),
+        path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-editor.js'
     },
 };

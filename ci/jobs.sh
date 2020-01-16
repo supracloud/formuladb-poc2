@@ -4,10 +4,12 @@ set -Ee
 trap _cleanup ERR
 trap _cleanup EXIT
 
-FRMDB_ENV_NAME="${CI_COMMIT_SHA}"
+FRMDB_ENV_NAME="n${CI_COMMIT_SHA}"
+if [[ -z "$FRMDB_ENV_NAME" ]]; then
+    FRMDB_ENV_NAME="n`git log -1 --format=%H`"
+fi
 echo "FRMDB_ENV_NAME=${FRMDB_ENV_NAME}"
 export FRMDB_ENV_NAME
-export KUBECONFIG=k8s/production-kube-config.conf
 export BASEDIR=`dirname $0`
 
 function _cleanup {
@@ -17,11 +19,6 @@ function _cleanup {
 
 function build_images_and_deploy {
     set -x
-    chmod og-rwx ssh
-    chmod og-r ssh/*
-    chmod uog-wx ssh/*
-    pwd
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git submodule update --init formuladb-apps
     
     set -x
     NAMESPACE=$1
@@ -41,11 +38,15 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
+    while ! kubectl -n "$NAMESPACE" exec service/be ls /wwwroot/git/formuladb-env/apps/Hotel_Booking | grep 'app.yaml'; do 
+        sleep 1; 
+        kubectl -n "$NAMESPACE" logs service/be
+    done
     kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 }
 
 function build_images_and_deploy_dev {
-    build_images_and_deploy "$FRMDB_ENV_NAME" dev
+    build_images_and_deploy "$FRMDB_ENV_NAME" ci
 }
 
 function test_postgres {
@@ -64,27 +65,35 @@ function test_stress {
 }
 
 function test_e2e {
+    set -x
+
     FRMDB_ENV_NAME=$1
     if [ -z "FRMDB_ENV_NAME" ]; then echo "pls provide FRMDB_ENV_NAME"; exit 1; fi
     URL=$2
     if [ -z "URL" ]; then echo "pls provide URL"; exit 2; fi
 
-    POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
-    nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    npm run webdriver-update
-    TARGET=headless npm run test:e2e -- --baseUrl="$URL"
+    # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
+    # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
+    while ! curl $URL/formuladb-api/apps/Hotel_Booking/schema | grep 'RoomType'; do sleep 2; done
+
+    target=headless
+    if uname -a | grep 'Linux.*Microsoft'; then 
+        target=""
+    fi
+    TARGET=$target npm test -- --baseUrl="$URL"
 }
 
 function e2e_dev_env {
+    set -x
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
     # while ! nc -z localhost 5432; do sleep 1; done
     # npm run e2e:data
 
-    while ! kubectl -n "$FRMDB_ENV_NAME" get pods | grep 'be-.*Running'; do sleep 1; done
+    while ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-platform-apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
     kubectl -n "$FRMDB_ENV_NAME" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 
-    test_e2e "$FRMDB_ENV_NAME" "http://localhost:8084"
+    test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io"
 }
 
 function build_images_and_deploy_staging {
@@ -92,6 +101,8 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
+    while ! curl $URL/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
+    # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io"
 }
 
@@ -101,14 +112,17 @@ function build_images_and_deploy_production {
 
 function e2e_production {
     #WARNING: make sure only safe tests
-    test_e2e production "https://formuladb.io"
+    echo test_e2e production "https://formuladb.io"
 }
 
 function cleanup {
-    # docker system prune -af
+    set -x
+    docker system prune -af
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
+    namespacesToDelete=`kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [2-9][0-9]d$'|egrep -o "[0-9a-f]{40}" || true`
+    if [[ -n "$namespacesToDelete" ]]; then kubectl delete namespace $namespacesToDelete; fi
 }
 
 function e2e_staging_with_videos {
@@ -138,16 +152,16 @@ function publish_static_assets() {
     # TODO publish static assets to git@gitlab.com:metawiz/formuladb-env.git
     #################
 
-    # gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
-    # gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
+    # gsutil -m rsync -d -r apps/formuladb-internal/formuladb.io gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb-internal/formuladb.io
+    # gsutil -m rsync -d -r apps/formuladb-examples/hotel-booking gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb-examples/hotel-booking
 
-    # gsutil -m rsync -r vvvebjs gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb-editor
-    # gsutil -m rsync -x ".*.js.map$" -r dist-fe gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb
-    # gsutil -m rsync -r fe/img gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/img
-    # gsutil -m rsync -r fe/icons gs://formuladb-static-assets/$FRMDB_ENV_NAME/formuladb/icons
+    # gsutil -m rsync -r vvvebjs gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb-editor
+    # gsutil -m rsync -x ".*.js.map$" -r formuladb gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb
+    # gsutil -m rsync -r fe/img gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb/img
+    # gsutil -m rsync -r fe/icons gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/formuladb/icons
 
     # curl -L -O https://github.com/elastic/apm-agent-rum-js/releases/latest/download/elastic-apm-rum.umd.min.js
-    # gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-static-assets/$FRMDB_ENV_NAME/elastic-apm-rum.umd.min.js
+    # gsutil cp elastic-apm-rum.umd.min.js gs://formuladb-env/static-assets/$FRMDB_ENV_NAME/elastic-apm-rum.umd.min.js
 }
 
 eval $1

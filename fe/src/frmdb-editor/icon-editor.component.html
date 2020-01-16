@@ -1,0 +1,47 @@
+<div class="modal fade" id="icon-editor-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog mt-3 modal-xl" role="document">
+        <div class="modal-content" style="height: 85vh">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="la la-image"></i> Choose Icon</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+                </button>
+            </div>
+            <div class="modal-body h-100 overflow-hidden mb-4">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a style="cursor: pointer" class="nav-item nav-link active" data-toggle="tab" href="#Free_Icons">Free Icons</a>
+                        <a style="cursor: pointer" class="nav-item nav-link" data-toggle="tab" href="#Paid_Icons">Paid Icons</a>
+                    </div>
+                </nav>
+                <div class="tab-content h-100 overflow-auto">
+                    <div class="tab-pane active" id="Free_Icons" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="card-columns text-center">
+                            <a style="cursor: pointer" class="card border-0" data-frmdb-table="freeIconsClasses[]">
+                                <h1><i data-frmdb-attr="class::freeIconsClasses[]"></i></h1>
+                                <span data-frmdb-value="freeIconsClasses[]"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="Paid_Icons" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="d-flex align-items-center">
+                            <div class="input-group mb-3">
+                                <input id="frmdb-search-free-icons" type="text" class="form-control"
+                                    placeholder="Search icons: hotels, water sports, beauty, consulting ...">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="la la-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-columns">
+                            <a style="cursor: pointer" class="card border-0 text-center" data-frmdb-table="paidIconsUrls[]">
+                                <img class="border rounded" data-frmdb-value="paidIconsUrls[]" data-frmdb-attr="alt::paidIconsUrls[]"
+                                    style="width: 20px; height: 20px;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
