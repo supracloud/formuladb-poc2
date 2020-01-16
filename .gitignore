@@ -2,6 +2,7 @@
 
 # compiled output
 dist-be
+formuladb-env
 formuladb/*js
 formuladb/*js.map
 tsc-out
