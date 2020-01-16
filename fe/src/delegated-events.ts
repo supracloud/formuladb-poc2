@@ -56,6 +56,7 @@ export function onDoc(eventType: EventType | EventType[], selector: string | str
 }
 
 export function emit(target: Element | Document, event: FrmdbUserEvent, bubbles: boolean = true) {
+    LOG.debug("emit", "%o, %s,", event, new Error().stack);
     target.dispatchEvent(new CustomEvent(event.type, {detail: event, bubbles}));
 }
 

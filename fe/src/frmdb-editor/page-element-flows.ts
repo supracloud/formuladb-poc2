@@ -4,7 +4,11 @@ import { FrmdbSelectPageElement, FrmdbSelectPageElementAction, FrmdbAddPageEleme
 import { Undo } from "./undo";
 import { ImageInput } from "@fe/component-editor/inputs";
 
+let isInitialized: boolean = false;
 export function pageElementFlows(editor: FrmdbEditorDirective) {
+    if (isInitialized) return;
+    isInitialized = true;
+    
     onEventChildren(document.body, 'click', '#undo-btn', (event) => {
         event.preventDefault();
 
@@ -102,17 +106,20 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         }
         else if (action === "delete") {
 
-            let node = event.detail.el;
+            if (confirm("Please confirm! Deletion the selected page element ?")) {
 
-            Undo.addMutation({
-                type: 'childList',
-                target: node.parentElement!,
-                removedNodes: [node],
-                nextSibling: node.nextElementSibling
-            });
+                let node = event.detail.el;
 
-            node.parentNode!.removeChild(node);
-            editor.selectElement(null);
+                Undo.addMutation({
+                    type: 'childList',
+                    target: node.parentElement!,
+                    removedNodes: [node],
+                    nextSibling: node.nextElementSibling
+                });
+
+                node.parentNode!.removeChild(node);
+                editor.selectElement(null);
+            }
         }
         else if (action === "parent") {
             if (event.detail.el.parentElement) editor.selectElement(event.detail.el.parentElement);

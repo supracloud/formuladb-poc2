@@ -86,21 +86,19 @@ export class HighlightBoxComponent extends HTMLElement {
 
         if (this.enableActionsEvents) {
             this.enableActionsEvents = false;
-            onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action="edit"]', (event) => {
-                if (this._disabled) return;
-                event.preventDefault();
-                if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
-                this.toggleWysiwygEditor(true);
-                emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
-            });
 
             onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action]', (event) => {
                 if (this._disabled) return;
                 event.preventDefault();
                 let el: HTMLElement = event.target.closest('[data-frmdb-action]');
                 if (!el || !this.selectedEl) return;
-                if (el.dataset.frmdbAction === "edit") return;
-                emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
+                if (el.dataset.frmdbAction === "edit") {
+                    if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
+                    this.toggleWysiwygEditor(true);
+                    emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
+                } else {
+                    emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
+                }
             });
         }
 
