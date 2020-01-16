@@ -74,7 +74,6 @@ function test_e2e {
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    while ! curl $URL/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
     while ! curl $URL/formuladb-api/apps/Hotel_Booking/schema | grep 'RoomType'; do sleep 2; done
 
     cd ${BASEDIR}/../e2e
