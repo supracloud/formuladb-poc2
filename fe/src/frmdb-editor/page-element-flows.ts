@@ -54,7 +54,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     onEvent(editor.highlightBox, 'FrmdbSelectPageElementAction', '*', (event: { detail: FrmdbSelectPageElementAction }) => {
         let action = event.detail.action;
         if (action === "add-after" || action === "add-inside") {
-            editor.addElementCmp.start(editor.themeCustomizer.cssFile, event.detail.el, event.detail.action)
+            editor.addElementCmp.start(editor.themeCustomizer.cssFile, editor.frameDoc.body.getAttribute('data-frmdb-theme') || 'NoTheme', event.detail.el, event.detail.action)
         }
         else if (action === "up" || action === "down") {
             let node = event.detail.el;

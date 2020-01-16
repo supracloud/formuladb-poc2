@@ -1,10 +1,30 @@
 export interface ThemeRules {
     [themeRuleSelector: string]: {
         addClasses?: string[];
-        addCssVars?: {[varName: string]: string};
-        addStyles?: {[varName: string]: string};
+        addCssVars?: { [varName: string]: string };
+        addStyles?: { [varName: string]: string };
         children: ThemeRules;
     }
+}
+
+export async function applyTheme(themeName: string, rootEl: Document | ShadowRoot | HTMLElement) {
+    let themeRules: ThemeRules = await fetch(`/formuladb-env/themes/${themeName}.json`)
+        .then(response => response.json());
+
+    let currentThemeName: string | null = null;
+    if (rootEl instanceof Document) currentThemeName = rootEl.body.getAttribute('data-frmdb-theme');
+    if (rootEl instanceof HTMLElement) currentThemeName = rootEl.getAttribute('data-frmdb-theme');
+
+    if (currentThemeName) {
+        let currentThemeRules = await fetch(`/formuladb-env/themes/${currentThemeName}.json`)
+            .then(response => response.json());
+        unloadThemeRules(rootEl, currentThemeRules);
+    }
+
+    translateThemeRulesByReplacingClasses(rootEl, themeRules);
+
+    if (rootEl instanceof Document) rootEl.body.setAttribute('data-frmdb-theme', themeName);
+    if (rootEl instanceof HTMLElement) rootEl.setAttribute('data-frmdb-theme', themeName);
 }
 
 export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
@@ -16,12 +36,12 @@ export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowR
                 el.classList.add(...rule.addClasses);
             }
             if (rule.addStyles) {
-                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) { 
+                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) {
                     el.style[styleProp] = styleVal;
                 }
             }
             if (rule.addCssVars) {
-                for (let varToAdd of Object.entries(rule.addCssVars)) { 
+                for (let varToAdd of Object.entries(rule.addCssVars)) {
                     el.style.setProperty(varToAdd[0], varToAdd[1]);
                 }
             }
@@ -41,12 +61,12 @@ export function unloadThemeRules(rootEl: Document | ShadowRoot | HTMLElement, th
                 el.classList.remove(...rule.addClasses);
             }
             if (rule.addStyles) {
-                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) { 
+                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) {
                     el.style.removeProperty(styleProp);
                 }
             }
             if (rule.addCssVars) {
-                for (let varToAdd of Object.entries(rule.addCssVars)) { 
+                for (let varToAdd of Object.entries(rule.addCssVars)) {
                     el.style.removeProperty(varToAdd[0]);
                 }
             }

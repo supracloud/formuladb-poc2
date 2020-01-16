@@ -1,6 +1,7 @@
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
+import { applyTheme } from "@fe/frmdb-themes";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;
@@ -12,6 +13,8 @@ export class AddElementComponent extends HTMLElement {
     link: HTMLLinkElement | undefined = undefined;
     selectedEl: HTMLElement | undefined = undefined;
     action: FrmdbSelectPageElementAction['action'];
+    lookCssFile: string | undefined;
+    themeName: string | undefined;
 
     connectedCallback() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
@@ -23,11 +26,11 @@ export class AddElementComponent extends HTMLElement {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
             this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
             if (!this.link) console.warn("link #frmdb-theme-css not found!");
+            if (this.lookCssFile) this.link.href = this.lookCssFile;
+            if (this.themeName) {
+                applyTheme(this.themeName, this.iframe.contentWindow!.document);
+            }
         }
-
-        onEventChildren(this.nav, 'click', '.nav-item', (event) => {
-            this.iframe.src = `/formuladb-env/themes/formuladb/${event.target.id}.html`;
-        });
 
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
             if (!this.selectedEl) {console.warn("selectedEl not found"); return;}
@@ -51,12 +54,14 @@ export class AddElementComponent extends HTMLElement {
         });
     }
 
-    start(themeCssFile: string | null, selectedEl: HTMLElement, action: FrmdbSelectPageElementAction['action']) {
+    start(lookCssFile: string | undefined, themeName: string, selectedEl: HTMLElement, action: FrmdbSelectPageElementAction['action']) {
         if (!this.link) return;
         this.selectedEl = selectedEl;
         this.action = action;
-        if (themeCssFile) this.link.href = themeCssFile;
-        
+        this.lookCssFile = lookCssFile;
+        this.themeName = themeName;
+        this.iframe.contentWindow!.location.reload();
+                
         ($('#add-element-modal') as any).modal('show');
     }
 }

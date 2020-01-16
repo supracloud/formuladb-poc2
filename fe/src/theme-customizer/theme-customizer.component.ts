@@ -2,7 +2,7 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { onEvent } from "@fe/delegated-events";
 import "./look-preview.component";
 import "./theme-preview.component";
-import { ThemeRules, translateThemeRulesByReplacingClasses, unloadThemeRules } from "@fe/frmdb-themes";
+import { ThemeRules, translateThemeRulesByReplacingClasses, unloadThemeRules, applyTheme } from "@fe/frmdb-themes";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
 // const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/theme-customizer/theme-customizer.component.scss').default;
@@ -216,13 +216,13 @@ export class ThemeCustomizerComponent extends HTMLElement {
         onEvent(this, "click", '[data-frmdb-theme]', (event) => {
             let theme: string = event.target.getAttribute('data-frmdb-theme');
             if (!theme) {console.warn("cannot find theme for the menu selection"); return;}
-            this.applyTheme(theme);
+            applyTheme(theme, this._link?.getRootNode() as Document);
         });        
     }
 
     get cssFile() {
-        if (!this.state.selectedColor) {console.warn("cannot find selected color for the current page"); return null;}
-        if (!this.state.selectedLook) {console.warn("cannot find selected theme for the current page"); return null;}
+        if (!this.state.selectedColor) {console.warn("cannot find selected color for the current page"); return undefined;}
+        if (!this.state.selectedLook) {console.warn("cannot find selected theme for the current page"); return undefined;}
         return `/formuladb-env/css/${this.state.selectedLook}-${this.state.selectedColor.primary.replace(/^#/, '')}-${this.state.selectedColor.secondary.replace(/^#/, '')}.css`;
     }
 
@@ -240,20 +240,9 @@ export class ThemeCustomizerComponent extends HTMLElement {
         let doc = this._link?.getRootNode() as Document;
         if (!doc) return;
         let themeName = doc.body.getAttribute('data-frmdb-theme');
-        if (themeName) this.applyTheme(themeName);
+        if (themeName) applyTheme(themeName, this._link?.getRootNode() as Document);
     }
 
-    applyTheme(themeName: string) {
-        fetch(`/formuladb-env/themes/${themeName}.json`)
-            .then(async (response) => {
-                if (this.currentThemeRules) {
-                    unloadThemeRules(this._link?.getRootNode() as Document, this.currentThemeRules);
-                }
-                let themeRules: ThemeRules = await response.json();
-                this.currentThemeRules = themeRules;
-                translateThemeRulesByReplacingClasses(this._link?.getRootNode() as Document, themeRules);
-            });
-    }
 }
 
 window.customElements.define('frmdb-theme-customizer', ThemeCustomizerComponent);
