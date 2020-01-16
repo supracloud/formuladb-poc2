@@ -9,7 +9,6 @@ pwd
 find /wwwroot/git -type d 
 
 if [ -n "$BUILD_DEVELOPMENT" ]; then 
-    cp -ar /formuladb-env /wwwroot/git/
     exit; 
 fi
 

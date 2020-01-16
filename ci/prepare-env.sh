@@ -65,8 +65,8 @@ chmod og-r ssh/*
 chmod uog-wx ssh/*
 pwd
 
+export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $BASEDIR/../ssh/frmdb.id_rsa"
 if [ ! -d "formuladb-env" ]; then
-  export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $BASEDIR/../ssh/frmdb.id_rsa"
 
   if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
       git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
