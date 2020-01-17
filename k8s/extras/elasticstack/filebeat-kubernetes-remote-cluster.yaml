@@ -1,50 +1,8 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: filebeat-config
-  labels:
-    k8s-app: filebeat
-data:
-  filebeat.yml: |-
-    filebeat.config:
-      inputs:
-        # Mounted `filebeat-inputs` configmap:
-        path: ${path.config}/inputs.d/*.yml
-        # Reload inputs configs as they change:
-        reload.enabled: false
-      modules:
-        path: ${path.config}/modules.d/*.yml
-        # Reload module configs as they change:
-        reload.enabled: false
-
-    processors:
-      - add_cloud_metadata:
-
-    output.elasticsearch:
-      hosts: ['${ELASTICSEARCH_HOST:https://elasticsearch.formuladb.io}:${ELASTICSEARCH_PORT:443}']
-      username: formuladb
-      password: HEwAXwhG5Tqd
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: filebeat-inputs
-  labels:
-    k8s-app: filebeat
-data:
-  kubernetes.yml: |-
-    - type: docker
-      containers.ids:
-      - "*"
-      processors:
-        - add_kubernetes_metadata:
-            in_cluster: true
----
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: filebeat
+  namespace: kube-system
   labels:
     k8s-app: filebeat
 spec:
@@ -57,20 +15,11 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:7.4.2
+        image: docker.elastic.co/beats/filebeat:7.5.1
         args: [
           "-c", "/etc/filebeat.yml",
           "-e",
         ]
-        env:
-        - name: ELASTICSEARCH_HOST
-          value: https://elasticsearch.formuladb.io
-        - name: ELASTICSEARCH_PORT
-          value: "443"
-        - name: ELASTICSEARCH_USERNAME
-          value: formuladb
-        - name: ELASTICSEARCH_PASSWORD
-          value: HEwAXwhG5Tqd    
         securityContext:
           runAsUser: 0
         resources:
@@ -92,6 +41,10 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+        - name: fields
+          mountPath: /usr/share/filebeat/fields.yml
+          readOnly: true
+          subPath: fields.yml
       volumes:
       - name: config
         configMap:
@@ -104,11 +57,14 @@ spec:
         configMap:
           defaultMode: 0600
           name: filebeat-inputs
-      # We set an `emptyDir` here to ensure the manifest will deploy correctly.
-      # It's recommended to change this to a `hostPath` folder, to ensure internal data
-      # files survive pod changes (ie: version upgrade)
       - name: data
-        emptyDir: {}
+        hostPath:
+          path: /var/lib/filebeat
+      - name: fields
+        configMap:
+          defaultMode: 0600
+          name: fields
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -143,6 +99,1914 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: filebeat
+  namespace: kube-system
   labels:
     k8s-app: filebeat
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-inputs
+  namespace: kube-system
+  labels:
+    k8s-app: filebeat
+data:
+  kubernetes.yml: |-
+    - type: docker
+      containers.ids:
+      - "*"
+      processors:
+        - add_kubernetes_metadata:
+            in_cluster: true
+        - drop_event:
+            when:
+              equals:
+                kubernetes.labels.app: nginx-ingress
+      exclude_lines: ['kube-probe']
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: kube-system
+  labels:
+    k8s-app: filebeat
+data:
+  filebeat.yml: |-
+    filebeat.config:
+      inputs:
+        # Mounted `filebeat-inputs` configmap:
+        path: ${path.config}/inputs.d/*.yml
+        # Reload inputs configs as they change:
+        reload.enabled: false
+      modules:
+        path: ${path.config}/modules.d/*.yml
+        # Reload module configs as they change:
+        reload.enabled: false
+
+    filebeat.autodiscover:
+      providers:
+        - type: kubernetes
+          templates:
+            - condition:
+                equals:
+                  kubernetes.labels.app: nginx-ingress
+              config:
+                - module: nginx
+                  access:
+                    input:
+                      type: docker
+                      containers.ids:
+                        - "${data.kubernetes.container.id}"
+
+    processors:
+      - add_cloud_metadata:
+
+    fields:
+      logtype: kubernetes
+      kubernetes.cluster.name: formuladb-apps
+    fields_under_root: true
+
+    output.elasticsearch:
+      hosts: ['${ELASTICSEARCH_HOST:https://elasticsearch.formuladb.io}:${ELASTICSEARCH_PORT:443}']
+      username: formuladb
+      password: HEwAXwhG5Tqd
+    setup.template.fields: "/usr/share/filebeat/fields.yml"
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fields
+  namespace: kube-system
+  labels:
+    k8s-app: filebeat
+data:
+  fields.yml: |-
+    - key: ecs
+      title: ECS
+      description: ECS Fields.
+      fields:
+      - name: '@timestamp'
+        level: core
+        required: true
+        type: date
+        description: 'Date/time when the event originated.
+
+          This is the date/time extracted from the event, typically representing when
+          the event was generated by the source.
+
+          If the event source has no original timestamp, this value is typically populated
+          by the first time the event was received by the pipeline.
+
+          Required field for all events.'
+        example: '2016-05-23T08:05:34.853Z'
+    - key: beat
+      anchor: beat-common
+      title: Beat
+      description: >
+        Contains common beat fields available in all event types.
+      fields:
+        - name: agent.hostname
+          type: keyword
+          description: Hostname of the agent.
+
+        - name: beat.timezone
+          type: alias
+          path: event.timezone
+          migration: true
+
+        - name: fields
+          type: object
+          object_type: keyword
+          description: >
+            Contains user configurable fields.
+
+        - name: error
+          type: group
+          description: >
+            Error fields containing additional info in case of errors.
+          fields:
+            - name: type
+              type: keyword
+              description: >
+                Error type.
+
+        - name: beat.name
+          type: alias
+          path: host.name
+          migration: true
+
+        - name: beat.hostname
+          type: alias
+          path: agent.hostname
+          migration: true
+
+        - name: timeseries.instance
+          type: keyword
+          description: Time series instance id
+    - key: docker
+      title: Docker
+      description: >
+        Docker stats collected from Docker.
+      short_config: false
+      anchor: docker-processor
+      fields:
+        - name: docker
+          type: group
+          fields:
+            - name: container.id
+              type: alias
+              path: container.id
+              migration: true
+
+            - name: container.image
+              type: alias
+              path: container.image.name
+              migration: true
+
+            - name: container.name
+              type: alias
+              path: container.name
+              migration: true
+
+            - name: container.labels  # TODO: How to map these?
+              type: object
+              object_type: keyword
+              description: >
+                Image labels.
+    - key: host
+      title: Host
+      description: >
+        Info collected for the host machine.
+      anchor: host-processor
+      fields:
+
+        # ECS fields are in fields.ecs.yml.
+        # These are the non-ECS fields.
+        - name: host
+          type: group
+          fields:
+
+            - name: containerized
+              type: boolean
+              description: >
+                If the host is a container.
+
+            - name: os.build
+              type: keyword
+              example: "18D109"
+              description: >
+                OS build information.
+
+            - name: os.codename
+              type: keyword
+              example: "stretch"
+              description: >
+                OS codename, if any.
+    - key: kubernetes
+      title: Kubernetes
+      description: >
+        Kubernetes metadata added by the kubernetes processor
+      short_config: false
+      anchor: kubernetes-processor
+      fields:
+        - name: kubernetes
+          type: group
+          fields:
+            - name: pod.name
+              type: keyword
+              description: >
+                Kubernetes pod name
+
+            - name: pod.uid
+              type: keyword
+              description: >
+                Kubernetes Pod UID
+
+            - name: namespace
+              type: keyword
+              description: >
+                Kubernetes namespace
+
+            - name: node.name
+              type: keyword
+              description: >
+                Kubernetes node name
+
+            - name: labels.*
+              type: object
+              object_type: keyword
+              object_type_mapping_type: "*"
+              description: >
+                Kubernetes labels map
+
+            - name: annotations.*
+              type: object
+              object_type: keyword
+              object_type_mapping_type: "*"
+              description: >
+                Kubernetes annotations map
+
+            - name: replicaset.name
+              type: keyword
+              description: >
+                Kubernetes replicaset name
+
+            - name: deployment.name
+              type: keyword
+              description: >
+                Kubernetes deployment name
+
+            - name: statefulset.name
+              type: keyword
+              description: >
+                Kubernetes statefulset name
+
+            - name: container.name
+              type: keyword
+              description: >
+                Kubernetes container name
+
+            - name: container.image
+              type: keyword
+              description: >
+                Kubernetes container image
+    - key: process
+      title: Process
+      description: >
+        Process metadata fields
+      fields:
+        - name: process
+          type: group
+          fields:
+            - name: exe
+              type: alias
+              path: process.executable
+              migration: true
+    - key: log
+      title: Log file content
+      description: >
+        Contains log file lines.
+      fields:
+
+        - name: log.file.path
+          type: keyword
+          required: false
+          description: >
+            The file from which the line was read. This field contains the absolute path to the file.
+            For example: `/var/log/system.log`.
+
+        - name: log.source.address
+          type: keyword
+          required: false
+          description: >
+            Source address from which the log event was read / sent from.
+
+        - name: log.offset
+          type: long
+          required: false
+          description: >
+            The file offset the reported line starts at.
+
+        - name: stream
+          type: keyword
+          required: false
+          description: >
+            Log stream when reading container logs, can be 'stdout' or 'stderr'
+
+        - name: input.type
+          required: true
+          description: >
+            The input type from which the event was generated. This field is set to the value specified
+            for the `type` option in the input section of the Filebeat config file.
+
+        - name: syslog.facility
+          type: long
+          required: false
+          description: >
+            The facility extracted from the priority.
+
+        - name: syslog.priority
+          type: long
+          required: false
+          description: >
+            The priority of the syslog event.
+
+        - name: syslog.severity_label
+          type: keyword
+          required: false
+          description: >
+            The human readable severity.
+
+        - name: syslog.facility_label
+          type: keyword
+          required: false
+          description: >
+            The human readable facility.
+
+        - name: process.program
+          type: keyword
+          required: false
+          description: >
+            The name of the program.
+
+        - name: log.flags
+          description: >
+            This field contains the flags of the event.
+
+        - name: http.response.content_length
+          type: alias
+          path: http.response.body.bytes
+          migration: true
+
+        - name: user_agent
+          type: group
+          fields:
+          - name: os
+            type: group
+            fields:
+            - name: full_name
+              type: keyword
+
+        - name: fileset.name
+          type: keyword
+          description: >
+            The Filebeat fileset that generated this event.
+
+        - name: fileset.module
+          type: alias
+          path: event.module
+          migration: true
+
+        - name: read_timestamp
+          type: alias
+          path: event.created
+          migration: true
+
+        - name: docker.attrs
+          type: object
+          object_type: keyword
+          description: >
+            docker.attrs contains labels and environment variables written by docker's JSON File logging driver.
+            These fields are only available when they are configured in the logging driver options.
+
+        - name: icmp.code
+          type: keyword
+          description: >
+            ICMP code.
+
+        - name: icmp.type
+          type: keyword
+          description: >
+            ICMP type.
+
+        - name: igmp.type
+          type: keyword
+          description: >
+            IGMP type.
+
+        - name: kafka
+          type: group
+          fields:
+            - name: topic
+              type: keyword
+              description: >
+                Kafka topic
+
+            - name: partition
+              type: long
+              description: >
+                Kafka partition number
+
+            - name: offset
+              type: long
+              description: >
+                Kafka offset of this message
+
+            - name: key
+              type: keyword
+              description: >
+                Kafka key, corresponding to the Kafka value stored in the message
+
+            - name: block_timestamp
+              type: date
+              description: >
+                Kafka outer (compressed) block timestamp
+
+            - name: headers
+              type: array
+              description: >
+                An array of Kafka header strings for this message, in the form
+                "<key>: <value>".
+    - key: auditd
+      title: "Auditd"
+      description: >
+        Module for parsing auditd logs.
+      short_config: true
+      fields:
+
+        - name: user
+          type: group
+          fields:
+
+            - name: terminal
+              type: keyword
+              description: >
+                Terminal or tty device on which the user is performing the observed activity.
+
+            - name: audit
+              type: group
+              fields:
+                - name: id
+                  type: keyword
+                  description: >
+                    One or multiple unique identifiers of the user.
+                - name: name
+                  type: keyword
+                  example: albert
+                  description: >
+                    Short name or login of the user.
+
+                - name: group.id
+                  type: keyword
+                  description: >
+                    Unique identifier for the group on the system/platform.
+                - name: group.name
+                  type: keyword
+                  description: >
+                        Name of the group.
+
+            - name: effective
+              type: group
+              fields:
+                - name: id
+                  type: keyword
+                  description: >
+                    One or multiple unique identifiers of the user.
+                - name: name
+                  type: keyword
+                  example: albert
+                  description: >
+                    Short name or login of the user.
+                - name: group.id
+                  type: keyword
+                  description: >
+                    Unique identifier for the group on the system/platform.
+                - name: group.name
+                  type: keyword
+                  description: >
+                        Name of the group.
+
+            - name: filesystem
+              type: group
+              fields:
+                - name: id
+                  type: keyword
+                  description: >
+                    One or multiple unique identifiers of the user.
+                - name: name
+                  type: keyword
+                  example: albert
+                  description: >
+                    Short name or login of the user.
+                - name: group.id
+                  type: keyword
+                  description: >
+                    Unique identifier for the group on the system/platform.
+                - name: group.name
+                  type: keyword
+                  description: >
+                        Name of the group.
+
+            - name: owner
+              type: group
+              fields:
+                - name: id
+                  type: keyword
+                  description: >
+                    One or multiple unique identifiers of the user.
+                - name: name
+                  type: keyword
+                  example: albert
+                  description: >
+                    Short name or login of the user.
+                - name: group.id
+                  type: keyword
+                  description: >
+                    Unique identifier for the group on the system/platform.
+                - name: group.name
+                  type: keyword
+                  description: >
+                        Name of the group.
+
+            - name: saved
+              type: group
+              fields:
+                - name: id
+                  type: keyword
+                  description: >
+                    One or multiple unique identifiers of the user.
+                - name: name
+                  type: keyword
+                  example: albert
+                  description: >
+                    Short name or login of the user.
+                - name: group.id
+                  type: keyword
+                  description: >
+                    Unique identifier for the group on the system/platform.
+                - name: group.name
+                  type: keyword
+                  description: >
+                        Name of the group.
+
+        - name: auditd
+          type: group
+          description: >
+            Fields from the auditd logs.
+          fields:
+            - name: log
+              type: group
+              description: >
+                Fields from the Linux audit log. Not all fields are documented here because
+                they are dynamic and vary by audit event type.
+              fields:
+                - name: old_auid
+                  description: >
+                    For login events this is the old audit ID used for the user prior to
+                    this login.
+                - name: new_auid
+                  description: >
+                    For login events this is the new audit ID. The audit ID can be used to
+                    trace future events to the user even if their identity changes (like
+                    becoming root).
+                - name: old_ses
+                  description: >
+                    For login events this is the old session ID used for the user prior to
+                    this login.
+                - name: new_ses
+                  description: >
+                    For login events this is the new session ID. It can be used to tie a
+                    user to future events by session ID.
+                - name: sequence
+                  type: long
+                  description: >
+                    The audit event sequence number.
+                - name: items
+                  description: >
+                    The number of items in an event.
+                - name: item
+                  description: >
+                    The item field indicates which item out of the total number of items.
+                    This number is zero-based; a value of 0 means it is the first item.
+                - name: tty
+                  type: keyword
+                  definition: >
+                    TTY udevice the user is running programs on.
+                - name: a0
+                  description: >
+                    The first argument to the system call.
+                - name: addr
+                  type: ip
+                  definition: >
+                    Remote address that the user is connecting from.
+                - name: rport
+                  type: long
+                  definition: >
+                    Remote port number.
+                - name: laddr
+                  type: ip
+                  definition: >
+                    Local network address.
+                - name: lport
+                  type: long
+                  definition: >
+                    Local port number.
+            
+                - name: acct
+                  type: alias
+                  path: user.name
+                  migration: true
+                - name: pid
+                  type: alias
+                  path: process.pid
+                  migration: true
+                - name: ppid
+                  type: alias
+                  path: process.ppid
+                  migration: true
+                - name: res
+                  type: alias
+                  path: event.outcome
+                  migration: true
+                - name: record_type
+                  type: alias
+                  path: event.action
+                  migration: true
+                - name: geoip
+                  type: group
+                  fields:
+                    - name: continent_name
+                      type: alias
+                      path: source.geo.continent_name
+                      migration: true
+                    - name: country_iso_code
+                      type: alias
+                      path: source.geo.country_iso_code
+                      migration: true
+                    - name: location
+                      type: alias
+                      path: source.geo.location
+                      migration: true
+                    - name: region_name
+                      type: alias
+                      path: source.geo.region_name
+                      migration: true
+                    - name: city_name
+                      type: alias
+                      path: source.geo.city_name
+                      migration: true
+                    - name: region_iso_code
+                      type: alias
+                      path: source.geo.region_iso_code
+                      migration: true
+            
+                # Fields below were not defined in 6.x but were still being populated.
+                - name: arch
+                  type: alias
+                  path: host.architecture
+                  migration: true
+                - name: gid
+                  type: alias
+                  path: user.group.id
+                  migration: true
+                - name: uid
+                  type: alias
+                  path: user.id
+                  migration: true
+                - name: agid
+                  type: alias
+                  path: user.audit.group.id
+                  migration: true
+                - name: auid
+                  type: alias
+                  path: user.audit.id
+                  migration: true
+                - name: fsgid
+                  type: alias
+                  path: user.filesystem.group.id
+                  migration: true
+                - name: fsuid
+                  type: alias
+                  path: user.filesystem.id
+                  migration: true
+                - name: egid
+                  type: alias
+                  path: user.effective.group.id
+                  migration: true
+                - name: euid
+                  type: alias
+                  path: user.effective.id
+                  migration: true
+                - name: sgid
+                  type: alias
+                  path: user.saved.group.id
+                  migration: true
+                - name: suid
+                  type: alias
+                  path: user.saved.id
+                  migration: true
+                - name: ogid
+                  type: alias
+                  path: user.owner.group.id
+                  migration: true
+                - name: ouid
+                  type: alias
+                  path: user.owner.id
+                  migration: true
+                - name: comm
+                  type: alias
+                  path: process.name
+                  migration: true
+                - name: exe
+                  type: alias
+                  path: process.executable
+                  migration: true
+                - name: terminal
+                  type: alias
+                  path: user.terminal
+                  migration: true
+                - name: msg
+                  type: alias
+                  path: message
+                  migration: true
+                - name: src
+                  type: alias
+                  path: source.address
+                  migration: true
+                - name: dst
+                  type: alias
+                  path: destination.address
+                  migration: true
+    - key: elasticsearch
+      title: "elasticsearch"
+      description: >
+        elasticsearch Module
+      fields:
+        - name: elasticsearch
+          type: group
+          description: >
+          fields:
+            - name: component
+              description: "Elasticsearch component from where the log event originated"
+              example: "o.e.c.m.MetaDataCreateIndexService"
+              type: keyword
+            - name: cluster.uuid
+              description: "UUID of the cluster"
+              example: "GmvrbHlNTiSVYiPf8kxg9g"
+              type: keyword
+            - name: cluster.name
+              description: "Name of the cluster"
+              example: "docker-cluster"
+              type: keyword
+            - name: node.id
+              description: "ID of the node"
+              example: "DSiWcTyeThWtUXLB9J0BMw"
+              type: keyword
+            - name: node.name
+              description: "Name of the node"
+              example: "vWNJsZ3"
+              type: keyword
+            - name: index.name
+              description: "Index name"
+              example: "filebeat-test-input"
+              type: keyword
+            - name: index.id
+              description: "Index id"
+              example: "aOGgDwbURfCV57AScqbCgw"
+              type: keyword
+            - name: shard.id
+              description: "Id of the shard"
+              example: "0"
+              type: keyword
+            - name: audit
+              type: group
+              description: >
+              fields:
+                - name: layer
+                  description: "The layer from which this event originated: rest, transport or ip_filter"
+                  example: "rest"
+                  type: keyword
+                - name: event_type
+                  description: "The type of event that occurred: anonymous_access_denied, authentication_failed, access_denied, access_granted, connection_granted, connection_denied, tampered_request, run_as_granted, run_as_denied"
+                  example: "access_granted"
+                  type: keyword
+                - name: origin.type
+                  description: "Where the request originated: rest (request originated from a REST API request), transport (request was received on the transport channel), local_node (the local node issued the request)"
+                  example: "local_node"
+                  type: keyword
+                - name: realm
+                  description: "The authentication realm the authentication was validated against"
+                  example": "default_file"
+                  type: keyword
+                - name: user.realm
+                  description: "The user's authentication realm, if authenticated"
+                  example": "active_directory"
+                  type: keyword
+                - name: user.roles
+                  description: "Roles to which the principal belongs"
+                  example: [ "kibana_user", "beats_admin" ]
+                  type: keyword
+                - name: action
+                  description: "The name of the action that was executed"
+                  example: "cluster:monitor/main"
+                  type: keyword
+                - name: url.params
+                  description: "REST URI parameters"
+                  example: "{username=jacknich2}"
+                - name: indices
+                  description: "Indices accessed by action"
+                  example: [ "foo-2019.01.04", "foo-2019.01.03", "foo-2019.01.06" ]
+                  type: keyword
+                - name: request.id
+                  description: "Unique ID of request"
+                  example: "WzL_kb6VSvOhAq0twPvHOQ"
+                  type: keyword
+                - name: request.name
+                  description: "The type of request that was executed"
+                  example: "ClearScrollRequest"
+                  type: keyword
+                - name: request_body
+                  type: alias
+                  path: http.request.body.content
+                  migration: true
+                - name: origin_address
+                  type: alias
+                  path: source.ip
+                  migration: true
+                - name: uri
+                  type: alias
+                  path: url.original
+                  migration: true
+                - name: principal
+                  type: alias
+                  path: user.name
+                  migration: true
+                - name: message
+                  type: text
+            - name: deprecation
+              type: group
+              description: >
+              fields:
+            - name: gc
+              type: group
+              description: >
+                GC fileset fields.
+              fields:
+                - name: phase
+                  type: group
+                  description: >
+                    Fields specific to GC phase.
+                  fields:
+                    - name: name
+                      type: keyword
+                      description: >
+                        Name of the GC collection phase.
+                    - name: duration_sec
+                      type: float
+                      description: >
+                        Collection phase duration according to the Java virtual machine.
+                    - name: scrub_symbol_table_time_sec
+                      type: float
+                      description: >
+                        Pause time in seconds cleaning up symbol tables.
+                    - name: scrub_string_table_time_sec
+                      type: float
+                      description: >
+                        Pause time in seconds cleaning up string tables.
+                    - name: weak_refs_processing_time_sec
+                      type: float
+                      description: >
+                        Time spent processing weak references in seconds.
+                    - name: parallel_rescan_time_sec
+                      type: float
+                      description: >
+                        Time spent in seconds marking live objects while application is stopped.
+                    - name: class_unload_time_sec
+                      type: float
+                      description: >
+                        Time spent unloading unused classes in seconds.
+                    - name: cpu_time
+                      type: group
+                      description: >
+                        Process CPU time spent performing collections.
+                      fields:
+                        - name: user_sec
+                          type: float
+                          description: >
+                            CPU time spent outside the kernel.
+                        - name: sys_sec
+                          type: float
+                          description: >
+                            CPU time spent inside the kernel. 
+                        - name: real_sec
+                          type: float
+                          description: >
+                            Total elapsed CPU time spent to complete the collection from start to finish.
+                - name: jvm_runtime_sec
+                  type: float
+                  description: >
+                    The time from JVM start up in seconds, as a floating point number.
+                - name: threads_total_stop_time_sec
+                  type: float
+                  description: >
+                    Garbage collection threads total stop time seconds.
+                - name: stopping_threads_time_sec
+                  type: float
+                  description: >
+                    Time took to stop threads seconds.
+                - name: tags
+                  type: keyword
+                  description: >
+                    GC logging tags.
+                - name: heap
+                  type: group
+                  description: >
+                    Heap allocation and total size.
+                  fields:
+                    - name: size_kb
+                      type: integer
+                      description: >
+                        Total heap size in kilobytes.
+                    - name: used_kb
+                      type: integer
+                      description: >
+                        Used heap in kilobytes.
+                - name: old_gen
+                  type: group
+                  description: >
+                    Old generation occupancy and total size.
+                  fields:
+                    - name: size_kb
+                      type: integer
+                      description: >
+                        Total size of old generation in kilobytes.
+                    - name: used_kb
+                      type: integer
+                      description: >
+                        Old generation occupancy in kilobytes.
+                - name: young_gen
+                  type: group
+                  description: >
+                    Young generation occupancy and total size.
+                  fields:
+                    - name: size_kb
+                      type: integer
+                      description: >
+                        Total size of young generation in kilobytes.
+                    - name: used_kb
+                      type: integer
+                      description: >
+                        Young generation occupancy in kilobytes.
+            - name: server
+              description: "Server log file"
+              type: group
+              fields:
+              - name: stacktrace
+                description": Stack trace in case of errors
+                index: false
+              - name: gc
+                description: "GC log"
+                type: group
+                fields:
+                - name: young
+                  description: "Young GC"
+                  example: ""
+                  type: group
+                  fields:
+                  - name: one
+                    description: ""
+                    example: ""
+                    type: long
+                  - name: two
+                    description: ""
+                    example: ""
+                    type: long
+                - name: overhead_seq
+                  description: "Sequence number"
+                  example: 3449992
+                  type: long
+                - name: collection_duration.ms
+                  description: "Time spent in GC, in milliseconds"
+                  example: 1600
+                  type: float
+                - name: observation_duration.ms
+                  description: "Total time over which collection was observed, in milliseconds"
+                  example: 1800
+                  type: float
+            - name: slowlog
+              description: "Slowlog events from Elasticsearch"
+              example: "[2018-06-29T10:06:14,933][INFO ][index.search.slowlog.query] [v_VJhjV] [metricbeat-6.3.0-2018.06.26][0] took[4.5ms], took_millis[4], total_hits[19435], types[], stats[], search_type[QUERY_THEN_FETCH], total_shards[1], source[{\"query\":{\"match_all\":{\"boost\":1.0}}}],"
+              type: group
+              fields:
+              - name: logger
+                description: "Logger name"
+                example: "index.search.slowlog.fetch"
+                type: keyword
+              - name: took
+                description: "Time it took to execute the query"
+                example: "300ms"
+                type: keyword
+              - name: types
+                description: "Types"
+                example: ""
+                type: keyword
+              - name: stats
+                description: "Stats groups"
+                example: "group1"
+                type: keyword
+              - name: search_type
+                description: "Search type"
+                example: "QUERY_THEN_FETCH"
+                type: keyword
+              - name: source_query
+                description: "Slow query"
+                example: "{\"query\":{\"match_all\":{\"boost\":1.0}}}"
+                type: keyword
+              - name: extra_source
+                description: "Extra source information"
+                example: ""
+                type: keyword
+              - name: total_hits
+                description: "Total hits"
+                example: 42
+                type: keyword
+              - name: total_shards
+                description: "Total queried shards"
+                example: 22
+                type: keyword
+              - name: routing
+                description: "Routing"
+                example: "s01HZ2QBk9jw4gtgaFtn"
+                type: keyword
+              - name: id
+                description: Id
+                example: ""
+                type: keyword
+              - name: type
+                description: "Type"
+                example: "doc"
+                type: keyword
+              - name: source
+                description: Source of document that was indexed
+                type: keyword
+    - key: kibana
+      title: "kibana"
+      description: >
+        kibana Module
+      fields:
+        - name: kibana
+          type: group
+          description: >
+          fields:
+            - name: log
+              type: group
+              description: >
+                Kafka log lines.
+              fields:
+                - name: tags
+                  type: keyword
+                  description: >
+                    Kibana logging tags.
+                - name: state
+                  type: keyword
+                  description: >
+                    Current state of Kibana.
+                - name: meta
+                  type: object
+                  object_type: keyword
+            
+                - name: kibana.log.meta.req.headers.referer
+                  type: alias
+                  path: http.request.referrer
+                  migration: true
+                - name: kibana.log.meta.req.referer
+                  type: alias
+                  path: http.request.referrer
+                  migration: true
+                - name: kibana.log.meta.req.headers.user-agent
+                  type: alias
+                  path: user_agent.original
+                  migration: true
+                - name: kibana.log.meta.req.remoteAddress
+                  type: alias
+                  path: source.address
+                  migration: true
+                - name: kibana.log.meta.req.url
+                  type: alias
+                  path: url.original
+                  migration: true
+                - name: kibana.log.meta.statusCode
+                  type: alias
+                  path: http.response.status_code
+                  migration: true
+                - name: kibana.log.meta.method
+                  type: alias
+                  path: http.request.method
+                  migration: true
+    - key: nginx
+      title: "Nginx"
+      fields:
+        - name: nginx
+          type: group
+          fields:
+            - name: access
+              type: group
+              fields:
+                - name: remote_ip_list
+                  type: array
+                - name: body_sent.bytes
+                  level: extended
+                  type: long
+                  format: bytes
+                  description: Size in bytes of the response body.
+                  example: 887          
+                - name: user_name
+                  level: core
+                  type: keyword
+                  ignore_above: 1024
+                  description: Short name or login of the user.
+                  example: albert
+                - name: method
+                  level: extended
+                  type: keyword
+                  ignore_above: 1024
+                  description: 'HTTP request method.
+            
+                    The field value must be normalized to lowercase for querying. See the documentation
+                    section "Implementing ECS".'
+                  example: get, post, put          
+                - name: url
+                  level: extended
+                  type: keyword
+                  ignore_above: 1024
+                  description: 'Unmodified original url as seen in the event source.
+            
+                    Note that in network monitoring, the observed URL may be a full URL, whereas
+                    in access logs, the URL is often just represented as a path.
+            
+                    This field is meant to represent the URL as it was observed, complete or not.'
+                  example: https://www.elastic.co:443/search?q=elasticsearch#top or /search?q=elasticsearch
+                - name: http_version
+                  level: extended
+                  type: keyword
+                  ignore_above: 1024
+                  description: HTTP version.
+                  example: 1.1
+                - name: response_code
+                  level: extended
+                  type: long
+                  format: string
+                  description: HTTP response status code.
+                  example: 404          
+                - name: referrer
+                  level: extended
+                  type: keyword
+                  ignore_above: 1024
+                  description: Referrer for this HTTP request.
+                  example: https://blog.example.com/
+                - name: agent
+                  level: extended
+                  type: keyword
+                  ignore_above: 1024
+                  description: Unparsed version of the user_agent.
+                  example: Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15
+                    (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1
+                - name: user_agent
+                  type: group
+                  fields:
+                    - name: name
+                      level: extended
+                      type: keyword
+                      ignore_above: 1024
+                      description: Name of the user agent.
+                      example: Safari              
+                    - name: os_name
+                      level: extended
+                      type: keyword
+                      ignore_above: 1024
+                      description: Operating system name, without the version.
+                      example: Mac OS X              
+                    - name: original
+                      level: extended
+                      type: keyword
+                      ignore_above: 1024
+                      description: Unparsed version of the user_agent.
+                      example: Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15
+                        (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1
+                - name: geoip
+                  type: group
+                  fields:
+                    - name: continent_name
+                      level: core
+                      type: keyword
+                      ignore_above: 1024
+                      description: Name of the continent.
+                      example: North America
+                    - name: country_iso_code
+                      level: core
+                      type: keyword
+                      ignore_above: 1024
+                      description: Country ISO code.
+                      example: CA
+                    - name: location
+                      level: core
+                      type: geo_point
+                      description: Longitude and latitude.
+                      example: '{ "lon": -73.614830, "lat": 45.505918 }'
+                    - name: region_name
+                      level: core
+                      type: keyword
+                      ignore_above: 1024
+                      description: Region name.
+                      example: Quebec
+                    - name: city_name
+                      level: core
+                      type: keyword
+                      ignore_above: 1024
+                      description: City name.
+                      example: Montreal
+                    - name: region_iso_code
+                      level: core
+                      type: keyword
+                      ignore_above: 1024
+                      description: Region ISO code.
+                      example: CA-QC
+            - name: error
+              type: group
+              fields:
+                - name: connection_id
+                  type: long
+                - name: level
+                  level: core
+                  type: keyword
+                  ignore_above: 1024
+                  description: 'Original log level of the log event.
+            
+                    Some examples are `warn`, `error`, `i`.'
+                  example: err
+                - name: pid
+                  level: core
+                  type: long
+                  format: string
+                  description: Process id.
+                  example: 4242
+                - name: tid
+                  level: extended
+                  type: long
+                  format: string
+                  description: Thread ID.
+                  example: 4242
+                - name: message
+                  level: core
+                  type: text
+                  description: 'For log events the message field contains the log message, optimized
+                    for viewing in a log viewer.
+              
+                    For structured logs without an original message field, other fields can be concatenated
+                    to form a human-readable summary of the event.
+              
+                    If multiple messages exist, they can be combined into one message.'
+                  example: Hello World            
+    - key: osquery
+      title: "Osquery"
+      description: >
+        Fields exported by the `osquery` module
+      fields:
+        - name: osquery
+          type: group
+          description: >
+          fields:
+            - name: result
+              type: group
+              description: >
+                Common fields exported by the result metricset.
+              fields:
+                - name: name
+                  type: keyword
+                  description: >
+                    The name of the query that generated this event.
+                - name: action
+                  type: keyword
+                  description: >
+                    For incremental data, marks whether the entry was added
+                    or removed. It can be one of "added", "removed", or "snapshot".
+                - name: host_identifier
+                  type: keyword
+                  description: >
+                    The identifier for the host on which the osquery agent is running.
+                    Normally the hostname.
+                - name: unix_time
+                  type: long
+                  description: >
+                    Unix timestamp of the event, in seconds since the epoch. Used for computing the `@timestamp` column.
+                - name: calendar_time
+                  type: keyword
+                  description: >
+                    String representation of the collection time, as formatted by osquery.
+    - key: postgresql
+      title: "PostgreSQL"
+      description: >
+        Module for parsing the PostgreSQL log files.
+      short_config: true
+      fields:
+        - name: postgresql
+          type: group
+          description: >
+              Fields from PostgreSQL logs.
+          fields:
+            - name: log
+              type: group
+              description: >
+                Fields from the PostgreSQL log files.
+              fields:
+                - name: timestamp
+                  deprecated: 7.3.0
+                  description: >
+                    The timestamp from the log line.
+                - name: core_id
+                  type: long
+                  description: >
+                    Core id
+                - name: database
+                  example: "mydb"
+                  description: >
+                    Name of database
+                - name: query
+                  example: "SELECT * FROM users;"
+                  description: >
+                    Query statement.
+                - name: query_step
+                  example: "parse"
+                  description: >
+                    Statement step when using extended query protocol (one of statement, parse, bind or execute)
+                - name: query_name
+                  example: "pdo_stmt_00000001"
+                  description: >
+                    Name given to a query when using extended query protocol. If it is "<unnamed>", or not present,
+                    this field is ignored.
+            
+                - name: error.code
+                  type: long
+                  description: Error code returned by Postgres (if any)
+            
+                - name: timezone
+                  type: alias
+                  path: event.timezone
+                  migration: true
+                - name: thread_id
+                  type: alias
+                  path: process.pid
+                  migration: true
+                - name: user
+                  type: alias
+                  path: user.name
+                  migration: true
+                - name: level
+                  type: alias
+                  path: log.level
+                  migration: true
+                - name: message
+                  type: alias
+                  path: message
+                  migration: true
+    - key: system
+      title: "System"
+      description: >
+        Module for parsing system log files.
+      short_config: true
+      fields:
+        - name: system
+          type: group
+          description: >
+            Fields from the system log files.
+          fields:
+            - name: auth
+              type: group
+              description: >
+                Fields from the Linux authorization logs.
+              fields:
+                - name: timestamp
+                  type: alias
+                  path: '@timestamp'
+                  migration: true
+                - name: hostname
+                  type: alias
+                  path: host.hostname
+                  migration: true
+                - name: program
+                  type: alias
+                  path: process.name
+                  migration: true
+                - name: pid
+                  type: alias
+                  path: process.pid
+                  migration: true
+                - name: message
+                  type: alias
+                  path: message
+                  migration: true
+                - name: user
+                  type: alias
+                  path: user.name
+                  migration: true
+            
+                - name: ssh
+                  type: group
+                  fields:
+                  - name: method
+                    description: >
+                      The SSH authentication method. Can be one of "password" or "publickey".
+                  - name: signature
+                    description: >
+                      The signature of the client public key.
+                  - name: dropped_ip
+                    type: ip
+                    description: >
+                      The client IP from SSH connections that are open and immediately dropped.
+            
+                  - name: event
+                    example: Accepted
+                    description: >
+                      The SSH event as found in the logs (Accepted, Invalid, Failed, etc.)
+            
+                  - name: ip
+                    type: alias
+                    path: source.ip
+                    migration: true
+                  - name: port
+                    type: alias
+                    path: source.port
+                    migration: true
+            
+                  - name: geoip
+                    type: group
+                    fields:
+                      - name: continent_name
+                        type: alias
+                        path: source.geo.continent_name
+                        migration: true
+                      - name: country_iso_code
+                        type: alias
+                        path: source.geo.country_iso_code
+                        migration: true
+                      - name: location
+                        type: alias
+                        path: source.geo.location
+                        migration: true
+                      - name: region_name
+                        type: alias
+                        path: source.geo.region_name
+                        migration: true
+                      - name: city_name
+                        type: alias
+                        path: source.geo.city_name
+                        migration: true
+                      - name: region_iso_code
+                        type: alias
+                        path: source.geo.region_iso_code
+                        migration: true
+            
+                - name: sudo
+                  type: group
+                  description: >
+                    Fields specific to events created by the `sudo` command.
+                  fields:
+                  - name: error
+                    example: user NOT in sudoers
+                    description: >
+                      The error message in case the sudo command failed.
+                  - name: tty
+                    description: >
+                      The TTY where the sudo command is executed.
+                  - name: pwd
+                    description: >
+                      The current directory where the sudo command is executed.
+                  - name: user
+                    example: root
+                    description: >
+                      The target user to which the sudo command is switching.
+                  - name: command
+                    description: >
+                      The command executed via sudo.
+            
+                - name: useradd
+                  type: group
+                  description: >
+                    Fields specific to events created by the `useradd` command.
+                  fields:
+                  - name: home
+                    description:
+                      The home folder for the new user.
+                  - name: shell
+                    description:
+                      The default shell for the new user.
+            
+                  - name: name
+                    type: alias
+                    path: user.name
+                    migration: true
+                  - name: uid
+                    type: alias
+                    path: user.id
+                    migration: true
+                  - name: gid
+                    type: alias
+                    path: group.id
+                    migration: true
+            
+                - name: groupadd
+                  type: group
+                  description: >
+                    Fields specific to events created by the `groupadd` command.
+                  fields:
+                  - name: name
+                    type: alias
+                    path: group.name
+                    migration: true
+                  - name: gid
+                    type: alias
+                    path: group.id
+                    migration: true
+            - name: syslog
+              type: group
+              description: >
+                Contains fields from the syslog system logs.
+              fields:
+                - name: timestamp
+                  type: alias
+                  path: '@timestamp'
+                  migration: true
+                - name: hostname
+                  type: alias
+                  path: host.hostname
+                  migration: true
+                - name: program
+                  type: alias
+                  path: process.name
+                  migration: true
+                - name: pid
+                  type: alias
+                  path: process.pid
+                  migration: true
+                - name: message
+                  type: alias
+                  path: message
+                  migration: true
+    - key: coredns
+      title: Coredns
+      description: >
+        Module for handling logs produced by coredns
+      fields:
+      - name: coredns
+        type: group
+        description: >
+          coredns fields after normalization
+        fields:
+        - name: id
+          type: keyword
+          description: >
+            id of the DNS transaction
+
+        - name: query.size
+          type: integer
+          format: bytes
+          description: >
+            size of the DNS query
+
+        - name: query.class
+          type: keyword
+          description: >
+            DNS query class
+
+        - name: query.name
+          type: keyword
+          description: >
+            DNS query name
+
+        - name: query.type
+          type: keyword
+          description: >
+            DNS query type
+
+        - name: response.code
+          type: keyword
+          description: >
+            DNS response code
+
+        - name: response.flags
+          type: keyword
+          description: >
+            DNS response flags
+
+        - name: response.size
+          type: integer
+          format: bytes
+          description: >
+            size of the DNS response
+        
+        - name: dnssec_ok
+          type: boolean
+          description: >
+            dnssec flag          
+    - key: googlecloud
+      title: Google Cloud
+      description: >
+        Module for handling logs from Google Cloud.
+      fields:
+        - name: googlecloud
+          type: group
+          description: >
+            Fields from Google Cloud logs.
+          fields:
+            - name: vpcflow
+              type: group
+              description: >
+                Fields for Google Cloud VPC flow logs.
+              fields:
+              - name: reporter
+                type: keyword
+                description: >
+                  The side which reported the flow. Can be either 'SRC' or 'DEST'.
+            
+              - name: rtt.ms
+                type: long
+                description: >
+                  Latency as measured (for TCP flows only) during the time interval. This is
+                  the time elapsed between sending a SEQ and receiving a corresponding ACK
+                  and it contains the network RTT as well as the application related delay.
+            
+              - name: destination.instance
+                type: group
+                description: >
+                  If the destination of the connection was a VM located on the same VPC,
+                  this field is populated with VM instance details. In a Shared VPC
+                  configuration, project_id corresponds to the project that owns the
+                  instance, usually the service project.
+                fields:
+                  - name: project_id
+                    type: keyword
+                    description: >
+                      ID of the project containing the VM.
+            
+                  - name: region
+                    type: keyword
+                    description: >
+                      Region of the VM.
+            
+                  - name: zone
+                    type: keyword
+                    description: >
+                      Zone of the VM.
+            
+              - name: destination.vpc
+                type: group
+                description: >
+                  If the destination of the connection was a VM located on the same VPC,
+                  this field is populated with VPC network details. In a Shared VPC
+                  configuration, project_id corresponds to that of the host project.
+                fields:
+                  - name: project_id
+                    type: keyword
+                    description: >
+                      ID of the project containing the VM.
+            
+                  - name: vpc_name
+                    type: keyword
+                    description: >
+                      VPC on which the VM is operating.
+            
+                  - name: subnetwork_name
+                    type: keyword
+                    description: >
+                      Subnetwork on which the VM is operating.
+            
+              - name: source.instance
+                type: group
+                description: >
+                  If the source of the connection was a VM located on the same VPC, this
+                  field is populated with VM instance details. In a Shared VPC
+                  configuration, project_id corresponds to the project that owns the
+                  instance, usually the service project.
+                fields:
+                  - name: project_id
+                    type: keyword
+                    description: >
+                      ID of the project containing the VM.
+            
+                  - name: region
+                    type: keyword
+                    description: >
+                      Region of the VM.
+            
+                  - name: zone
+                    type: keyword
+                    description: >
+                      Zone of the VM.
+            
+              - name: source.vpc
+                type: group
+                description: >
+                  If the source of the connection was a VM located on the same VPC, this
+                  field is populated with VPC network details. In a Shared VPC
+                  configuration, project_id corresponds to that of the host project.
+                fields:
+                  - name: project_id
+                    type: keyword
+                    description: >
+                      ID of the project containing the VM.
+            
+                  - name: vpc_name
+                    type: keyword
+                    description: >
+                      VPC on which the VM is operating.
+            
+                  - name: subnetwork_name
+                    type: keyword
+                    description: >
+                      Subnetwork on which the VM is operating.
+    - key: iptables
+      title: iptables
+      description: >
+        Module for handling the iptables logs.
+      fields:
+        - name: iptables
+          type: group
+          description: >
+            Fields from the iptables logs.
+          fields:
+            - name: ether_type
+              type: long
+              description: >
+                Value of the ethernet type field identifying the network layer protocol.
+            
+            - name: flow_label
+              type: integer
+              description: >
+                IPv6 flow label.
+            
+            - name: fragment_flags
+              type: keyword
+              description: >
+                IP fragment flags. A combination of CE, DF and MF.
+            
+            - name: fragment_offset
+              type: long
+              description: >
+                Offset of the current IP fragment.
+            
+            - name: icmp
+              type: group
+              description: >
+                ICMP fields.
+              fields:
+            
+              - name: code
+                type: long
+                description: >
+                  ICMP code.
+            
+              - name: id
+                type: long
+                description: >
+                  ICMP ID.
+            
+              - name: parameter
+                type: long
+                description: >
+                  ICMP parameter.
+            
+              - name: redirect
+                type: ip
+                description: >
+                  ICMP redirect address.
+            
+              - name: seq
+                type: long
+                description: >
+                  ICMP sequence number.
+            
+              - name: type
+                type: long
+                description: >
+                  ICMP type.
+            
+            - name: id
+              type: long
+              description: >
+                Packet identifier.
+            
+            - name: incomplete_bytes
+              type: long
+              description: >
+                Number of incomplete bytes.
+            
+            - name: input_device
+              type: keyword
+              description: >
+                Device that received the packet.
+            
+            - name: precedence_bits
+              type: short
+              description: >
+                IP precedence bits.
+            
+            - name: tos
+              type: long
+              description: >
+                  IP Type of Service field.
+            
+            - name: length
+              type: long
+              description: >
+                Packet length.
+            
+            - name: output_device
+              type: keyword
+              description: >
+                Device that output the packet.
+            
+            - name: tcp
+              type: group
+              description: >
+                TCP fields.
+              fields:
+            
+              - name: flags
+                type: keyword
+                description: >
+                  TCP flags.
+            
+              - name: reserved_bits
+                type: short
+                description: >
+                  TCP reserved bits.
+            
+              - name: seq
+                type: long
+                description: >
+                  TCP sequence number.
+            
+              - name: ack
+                type: long
+                description: >
+                  TCP Acknowledgment number.
+            
+              - name: window
+                type: long
+                description: >
+                  Advertised TCP window size.
+            
+            - name: ttl
+              type: integer
+              description: >
+                Time To Live field.
+            
+            - name: udp
+              type: group
+              description: >
+                UDP fields.
+              fields:
+            
+              - name: length
+                type: long
+                description: >
+                  Length of the UDP header and payload.
+            
+            - name: ubiquiti
+              type: group
+              description: >
+                Fields for Ubiquiti network devices.
+              fields:
+            
+                - name: input_zone
+                  type: keyword
+                  description: >
+                    Input zone.
+            
+                - name: output_zone
+                  type: keyword
+                  description: >
+                    Output zone.
+            
+                - name: rule_number
+                  type: keyword
+                  description:
+                    The rule number within the rule set.
+            
+                - name: rule_set
+                  type: keyword
+                  description:
+                    The rule set name.
