@@ -43,8 +43,10 @@ import "@fe/frmdb-editor/icon-editor.component";
 import { IconEditorComponent } from "./icon-editor.component";
 import { BLOBS } from "./blobs";
 import { frmdbSetImageSrc } from "@fe/component-editor/components-bootstrap4";
+import { Undo } from "./undo";
 
 class FrmdbEditorState {
+    apps: string[] = [];
     tables: Entity[] = [];
     pages: { name: string, url: string }[];
     selectedPageName: string;
@@ -99,6 +101,7 @@ export class FrmdbEditorDirective {
             this.tableManagementFlows();
             this.tableColumnManagementFlows();
             this.initI18n();
+            this.loadApps();
             this.loadTables();
             this.loadPages();
             this.viewManagementFlows();
@@ -114,7 +117,12 @@ export class FrmdbEditorDirective {
             setTimeout(ff, 2000);
 
             this.iframe.src = window.location.hash.replace(/^#/, '');
-        })
+        });
+
+        window.onpopstate = () => {
+            this.iframe.src = window.location.hash.replace(/^#/, '');
+            this.updateCurrentPage();
+        }
     }
 
     showIntroVideoModal() {
@@ -179,6 +187,18 @@ export class FrmdbEditorDirective {
             this.changeSelectedTableIdIfDifferent(getTarget(event)!.innerHTML);
         });
 
+        onEvent(document.body, 'click', 'a[data-frmdb-value="$frmdb.pages[].name"]', (event: MouseEvent) => {
+            let safeToNavigate = false;
+            if (Undo.hasChanges()) {
+                if (confirm(`There are ${Undo.ngActiveChanges() + 1} changes, are you sure you want leave this page ?`)) {
+                    safeToNavigate = true;
+                    Undo.clear();
+                }
+            } else safeToNavigate = true;
+
+            if (!safeToNavigate) event.preventDefault();
+        });
+
         onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {
             var $newTableModal = $('#new-table-modal');
             $newTableModal.find('.alert').hide();
@@ -235,7 +255,7 @@ export class FrmdbEditorDirective {
 
         onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
             await this.saveBlobs();
-            
+
             let pagePath = window.location.hash.replace(/^#/, '');
             $SAVE_DOC_PAGE(pagePath, this.frameDoc);
         });
@@ -372,7 +392,7 @@ export class FrmdbEditorDirective {
                 this.dataGrid.style.display = 'none';
                 this.letPanel.style.display = 'none';
                 this.highlightBox.disabled = true;
-                this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-preview');                
+                this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-preview');
                 this.iframe.contentWindow!.document.body.classList.remove('frmdb-editor-normal');
             } else {
                 document.body.style.setProperty('--frmdb-editor-top-panel-height', "28vh");
@@ -401,6 +421,16 @@ export class FrmdbEditorDirective {
         });
     }
 
+    async loadApps() {
+        let apps: string[] = await fetch(`/formuladb-api/${this.backendService.tenantName}/app-names`)
+            .then(response => {
+                return response.json();
+            });
+
+        this.EditorState.apps = apps;
+        updateDOM({ $frmdb: this.EditorState }, document.body);
+    }
+
     async loadTables(selectedTable?: string) {
         return BACKEND_SERVICE().getEntities().then(entities => {
 
@@ -416,6 +446,10 @@ export class FrmdbEditorDirective {
         let app: App | null = await this.backendService.getApp();
         if (!app) throw new Error(`App not found for ${window.location}`);
         this.EditorState.pages = app.pages.map(p => ({ name: p, url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}` }));
+        this.updateCurrentPage();
+    }
+
+    updateCurrentPage() {
         let pagePath = window.location.hash.replace(/^#/, '');
         this.EditorState.selectedPagePath = pagePath;
         this.EditorState.selectedPageName = pagePath.replace(/.*\//, '') || 'index.html';

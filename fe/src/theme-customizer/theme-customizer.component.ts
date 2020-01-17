@@ -2,7 +2,7 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { onEvent } from "@fe/delegated-events";
 import "./look-preview.component";
 import "./theme-preview.component";
-import { ThemeRules, translateThemeRulesByReplacingClasses, unloadThemeRules, applyTheme } from "@fe/frmdb-themes";
+import { ThemeRules, translateThemeRulesByReplacingClasses, unloadThemeRules, applyTheme, unloadCurrentTheme } from "@fe/frmdb-themes";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
 // const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/theme-customizer/theme-customizer.component.scss').default;
@@ -167,8 +167,8 @@ export class ThemeCustomizerComponent extends HTMLElement {
             let {theme: look, primary, secondary} = m;
             this.state.selectedLook = look;
             this.state.selectedColor = new Color(primary, secondary);
-            updateDOM(this.state, this);
             this.initTheme();
+            updateDOM(this.state, this);
         }
     }
 
@@ -196,7 +196,7 @@ export class ThemeCustomizerComponent extends HTMLElement {
                 }
             }
         }
-        this.state.themes = ['Comfort', 'GrandFrames'];
+        this.state.themes = ['None', 'Comfort', 'GrandFrames'];
         updateDOM(this.state, this);
 
         onEvent(this, "click", '.dropdown-item[data-frmdb-table="colors[]"], .dropdown-item[data-frmdb-table="colors[]"] *', (event) => {
@@ -214,9 +214,16 @@ export class ThemeCustomizerComponent extends HTMLElement {
         });
 
         onEvent(this, "click", '[data-frmdb-theme]', (event) => {
-            let theme: string = event.target.getAttribute('data-frmdb-theme');
-            if (!theme) {console.warn("cannot find theme for the menu selection"); return;}
-            applyTheme(theme, this._link?.getRootNode() as Document);
+            let themeName: string = event.target.getAttribute('data-frmdb-theme');
+            if (!themeName) {console.warn("cannot find theme for the menu selection"); return;}
+            if ('None' == themeName) {
+                unloadCurrentTheme(this._link?.getRootNode() as Document);
+                this.state.selectedTheme = themeName;
+            } else if (themeName) {
+                applyTheme(themeName, this._link?.getRootNode() as Document);
+                this.state.selectedTheme = themeName;
+            }
+            updateDOM(this.state, this);
         });        
     }
 
@@ -240,7 +247,10 @@ export class ThemeCustomizerComponent extends HTMLElement {
         let doc = this._link?.getRootNode() as Document;
         if (!doc) return;
         let themeName = doc.body.getAttribute('data-frmdb-theme');
-        if (themeName) applyTheme(themeName, this._link?.getRootNode() as Document);
+        if (themeName) {
+            applyTheme(themeName, this._link?.getRootNode() as Document);
+            this.state.selectedTheme = themeName;
+        }
     }
 
 }

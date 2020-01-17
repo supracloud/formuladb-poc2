@@ -10,9 +10,7 @@ export interface ThemeRules {
     }
 }
 
-export async function applyTheme(themeName: string, rootEl: Document | ShadowRoot | HTMLElement) {
-    let themeRules: ThemeRules = await fetch(`/formuladb-env/themes/${themeName}.json`)
-        .then(response => response.json());
+export async function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement): Promise<string | null> {
 
     let currentThemeName: string | null = null;
     if (isDocument(rootEl)) currentThemeName = rootEl.body.getAttribute('data-frmdb-theme');
@@ -24,6 +22,14 @@ export async function applyTheme(themeName: string, rootEl: Document | ShadowRoo
         unloadThemeRules(rootEl, currentThemeRules);
     }
 
+    return currentThemeName;
+}
+
+export async function applyTheme(themeName: string, rootEl: Document | ShadowRoot | HTMLElement) {
+    let themeRules: ThemeRules = await fetch(`/formuladb-env/themes/${themeName}.json`)
+        .then(response => response.json());
+
+    await unloadCurrentTheme(rootEl);
     translateThemeRulesByReplacingClasses(rootEl, themeRules);
 
     if (isDocument(rootEl)) rootEl.body.setAttribute('data-frmdb-theme', themeName);

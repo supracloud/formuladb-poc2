@@ -192,6 +192,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
     // API
     //////////////////////////////////////////////////////////////////////////////////////
+    
+    app.get('/formuladb-api/:tenant/app-names', async function (req, res, next) {
+        let apps = await kvsFactory.metadataStore.getApps(req.params.tenant);
+        res.send(apps);
+    });
 
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {

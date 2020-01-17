@@ -192,6 +192,11 @@ export class MetadataStore {
         return entity;
     }
 
+    async getApps(tenantName: string): Promise<string[]> {
+        let apps = await this.listDir(`${ROOT}/${tenantName}`);
+        return apps.map(fName => fName.replace(/.*\//, ''));
+    }
+
     async getApp(tenantName: string, appName: string): Promise<App | null> {
         let app: App = this.fromYaml(
             await this.readFile(`${ROOT}/${tenantName}/${appName}/app.yaml`)

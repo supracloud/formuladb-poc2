@@ -96,7 +96,6 @@ export type Mutation =
 
 export const Undo = {
 
-	undos: [],
 	mutations: [],
 	undoIndex: -1,
 	enabled: true,
@@ -190,7 +189,16 @@ export const Undo = {
 	},
 
 	hasChanges: function () {
-		return this.mutations.length;
+		return this.undoIndex >= 0;
 	},
+
+	ngActiveChanges: function() {
+		return this.undoIndex;
+	},
+
+	clear: function () {
+		this.mutations = [];
+		this.undoIndex = -1;
+	}
 };
 

@@ -97,6 +97,33 @@
         </div>
 
         <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
+            <li class="nav-item" title="list of apps">
+                <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                    <i class="la la-sitemap"></i>
+                </a>
+            </li>
+            <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
+                <a href="javascript:void(0)" title="Apps List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true"
+                    aria-expanded="false" data-frmdb-value="$frmdb.appName">
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" data-frmdb-table="$frmdb.apps[]" data-frmdb-value="$frmdb.apps[]" href="javascript:void(0)">app 1</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown frmdb-dropdown-hover">
+                <a href="javascript:void(0)" class="nav-link" id="table-options" aria-haspopup="true" aria-expanded="false">
+                    <i class="la la-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
+                    <a class="dropdown-item" id="new-table-btn" title="New App"><i class="la la-plus-circle"></i> New App</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" id="delete-table-btn" title="Clone this App" data-frmdb-prop="tableToDelete::$frmdb.selectedTableId"><i
+                            class="la la-copy"></i> Clone App <span data-frmdb-value="$frmdb.selectedTableId"></span></a>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
             <li class="nav-item" title="list of tables">
                 <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
                     <i class="la la-table"></i>
@@ -118,7 +145,7 @@
                     <a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Table</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="delete-table-btn" title="Delete Table" data-frmdb-prop="tableToDelete::$frmdb.selectedTableId"><i
-                            class="la la-trash"></i> Delete <span data-frmdb-value="$frmdb.selectedTableId"></span></a>
+                            class="la la-trash"></i> Delete Table <span data-frmdb-value="$frmdb.selectedTableId"></span></a>
                 </div>
             </li>
         </ul>
@@ -146,7 +173,7 @@
                     <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="la la-plus-circle"></i> New Page</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="delete-page-btn" title="Delete Page" data-frmdb-prop="pagePathToDelete::$frmdb.selectedPagePath"><i
-                            class="la la-trash"></i> Delete <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
+                            class="la la-trash"></i> Delete Page <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
                 </div>
             </li>
         </ul>
