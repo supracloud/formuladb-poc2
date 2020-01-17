@@ -7,6 +7,7 @@ handleErr () {
 trap handleErr ERR
 
 ./node_modules/.bin/live-server --port=8081 --no-browser \
+    --wait=1000 \
     --watch=formuladb,formuladb-env \
     --mount=/formuladb/:./formuladb/ \
     --mount=/formuladb-env/themes/:./formuladb-env/themes \
@@ -15,4 +16,4 @@ trap handleErr ERR
     --mount=/formuladb-env/plugins/:./formuladb-env/plugins \
     --proxy=/frmdb-platform-apps/:http://localhost:8084/frmdb-platform-apps \
     --proxy=/apps/:http://localhost:8084/apps \
-    --proxy=/formuladb-api:http://localhost:8084/formuladb-api \
+    --proxy=/formuladb-api:http://localhost:8084/formuladb-api

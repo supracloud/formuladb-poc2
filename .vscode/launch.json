@@ -55,7 +55,7 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:8081",
+            "url": "http://localhost:8081/formuladb/editor.html#/apps/Hotel_Booking/index.html",
             "webRoot": "${workspaceFolder}",
             "pathMapping": {
                 "/formuladb-editor": "${workspaceFolder}/formuladb-editor"

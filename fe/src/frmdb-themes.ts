@@ -1,3 +1,6 @@
+import { isDocument } from "./dom-utils";
+import { isHTMLElement } from "@core/html-tools";
+
 export interface ThemeRules {
     [themeRuleSelector: string]: {
         addClasses?: string[];
@@ -12,8 +15,8 @@ export async function applyTheme(themeName: string, rootEl: Document | ShadowRoo
         .then(response => response.json());
 
     let currentThemeName: string | null = null;
-    if (rootEl instanceof Document) currentThemeName = rootEl.body.getAttribute('data-frmdb-theme');
-    if (rootEl instanceof HTMLElement) currentThemeName = rootEl.getAttribute('data-frmdb-theme');
+    if (isDocument(rootEl)) currentThemeName = rootEl.body.getAttribute('data-frmdb-theme');
+    if (isHTMLElement(rootEl)) currentThemeName = rootEl.getAttribute('data-frmdb-theme');
 
     if (currentThemeName) {
         let currentThemeRules = await fetch(`/formuladb-env/themes/${currentThemeName}.json`)
@@ -23,8 +26,8 @@ export async function applyTheme(themeName: string, rootEl: Document | ShadowRoo
 
     translateThemeRulesByReplacingClasses(rootEl, themeRules);
 
-    if (rootEl instanceof Document) rootEl.body.setAttribute('data-frmdb-theme', themeName);
-    if (rootEl instanceof HTMLElement) rootEl.setAttribute('data-frmdb-theme', themeName);
+    if (isDocument(rootEl)) rootEl.body.setAttribute('data-frmdb-theme', themeName);
+    if (isHTMLElement(rootEl)) rootEl.setAttribute('data-frmdb-theme', themeName);
 }
 
 export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {

@@ -98,4 +98,6 @@ export class FrmdbFeComponent extends HTMLElement {
 }
 
 customElements.define('frmdb-fe', FrmdbFeComponent);
-document.body.appendChild(document.createElement('frmdb-fe'));
+if (document.querySelector('frmdb-fe') == null) {
+    document.body.appendChild(document.createElement('frmdb-fe'));
+}

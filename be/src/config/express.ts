@@ -124,6 +124,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
 
     app.use('/formuladb-env/themes', express.static('/wwwroot/git/formuladb-env/themes'));
+    app.use('/formuladb-env/css/', express.static('wwwroot/git/formuladb-env/css'));
     app.use('/formuladb-env/icons/', express.static('wwwroot/git/formuladb-env/icons'));
     app.use('/formuladb-env/static/', express.static('/wwwroot/git/formuladb-env/static'));
     app.use('/formuladb-env/plugins/', express.static('/wwwroot/git/formuladb-env/plugins'));

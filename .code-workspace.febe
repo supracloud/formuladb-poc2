@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "./formuladb-env"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"zenMode.hideTabs": false,
+		"typescript.tsdk": "fe/node_modules/typescript/lib",
+		"typescript.reportStyleChecksAsWarnings": false,
+		"git.ignoreLimitWarning": true
+	}
+}
