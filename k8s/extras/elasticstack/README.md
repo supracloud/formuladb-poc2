@@ -1,4 +1,4 @@
-# APM Server
+# Elastic Stack
 ```sh
 
 kubectl create secret generic es-auth --namespace monitoring --from-file k8s/extras/elasticstack/auth
@@ -16,6 +16,10 @@ helm install --namespace monitoring --name elasticsearch-data elastic/elasticsea
 kubectl apply -f k8s/extras/elasticstack/kibana-certificate-issuer.yaml
 
 helm install --namespace monitoring --name kibana elastic/kibana -f k8s/extras/elasticstack/kibana-values.yaml
+```
+
+# APM Server
+```sh
 
 kubectl apply -f k8s/extras/elasticstack/apm-server-certificate-issuer.yaml
 
@@ -26,7 +30,17 @@ helm install --namespace monitoring --name apm-server -f k8s/extras/elasticstack
 `kubectl apply -f k8s/extras/elasticstack/metricbeat-kubernetes.yaml`
 
 ## Filebeat
-`kubectl apply -n monitoring -f k8s/extras/elasticstack/filebeat-kubernetes.yaml`
+```sh
+# for gitlab and monitoring
+kubectl apply -n monitoring -f k8s/extras/elasticstack/filebeat-kubernetes.yaml
+# for formuladb apps 
+# with info from https://gist.github.com/tkuther/b432827283f360293a87b5be49594f91
+kubectl apply -n kube-system -f k8s/extras/elasticstack/filebeat-kubernetes-remote-cluster.yaml
+# Kibana visualizations inspired from here
+# https://sysadmins.co.za/setup-kibana-dashboards-for-nginx-log-analysis/
+
+# Import index pattern, analytics dashboard and analytics visualizations from json file.
+```
 
 ## Heartbeat
 `helm install --namespace monitoring --name heartbeat -f k8s/extras/elasticstack/heartbeat-kubernetes.yaml stable/heartbeat`

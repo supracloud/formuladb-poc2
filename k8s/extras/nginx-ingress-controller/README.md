@@ -5,7 +5,10 @@ helm install --name nginx-ingress stable/nginx-ingress --set rbac.create=true --
 
 ```sh
 # On formuladb prod gke
-helm install --name nginx-ingress stable/nginx-ingress --set rbac.create=true --set controller.publishService.enabled=true --set controller.kind=DaemonSet
+# - adding ingress namespace and name for analytics
+helm upgrade --install nginx-ingress stable/nginx-ingress --set rbac.create=true \
+ --set controller.publishService.enabled=true --set controller.kind=DaemonSet \
+ --set controller.config.log-format-upstream='$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $request_length $request_time [$proxy_upstream_name] [$proxy_alternative_upstream_name] $upstream_addr $upstream_response_length $upstream_response_time $upstream_status $req_id $namespace $ingress_name $service_name $service_port'
 # This is to get the source IP in the nginx ingress controller
 # see https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-type-loadbalancer
 kubectl patch svc nginx-ingress-controller -p '{"spec":{"externalTrafficPolicy":"Local"}}'

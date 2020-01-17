@@ -23,6 +23,9 @@ data:
 
     output.elasticsearch:
       hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
+    setup.template.enabled: true
+    setup.template.name: "filebeat"
+    setup.template.fields: "fields.yml"
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -55,7 +58,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: filebeat
-        image: docker.elastic.co/beats/filebeat:7.4.2
+        image: docker.elastic.co/beats/filebeat:7.5.1
         args: [
           "-c", "/etc/filebeat.yml",
           "-e",
