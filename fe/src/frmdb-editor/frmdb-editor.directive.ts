@@ -4,7 +4,7 @@ import { BACKEND_SERVICE } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from "@fe/i18n-fe";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
-import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject } from "@domain/event";
+import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
 import { UserDeleteColumn, FrmdbSelectPageElement, FrmdbSelectPageElementAction, UserSelectedCell } from "@fe/frmdb-user-events";
@@ -197,6 +197,37 @@ export class FrmdbEditorDirective {
             } else safeToNavigate = true;
 
             if (!safeToNavigate) event.preventDefault();
+        });
+
+
+        onEventChildren(document.body, 'click', '#new-app-btn', (event) => {
+            var $newAppModal = $('#new-app-modal');
+            $newAppModal.find('.alert').hide();
+            $("input[name=tableName]", $newAppModal).val('');
+
+            $newAppModal.modal("show").find("form").off("submit").submit((event) => {
+
+                event.preventDefault();
+
+                var appName = $("input[name=appName]", $newAppModal).val();
+                if (typeof appName !== 'string') { console.warn("Invalid app name", appName); return }
+                var basedOnApp = $("select[name=basedOnApp]", $newAppModal).val();
+                if (typeof basedOnApp !== 'string') { console.warn("Invalid base app name", basedOnApp); return }
+
+                let tenantName = BACKEND_SERVICE().tenantName;
+                BACKEND_SERVICE().putEvent(new ServerEventNewApp(tenantName, appName, basedOnApp != '-' ? basedOnApp : undefined))
+                    .then(async (ev: ServerEventNewEntity) => {
+                        if (ev.state_ != 'ABORT') {
+                            await this.loadApps();
+                            $newAppModal.find('.alert').hide();
+                            $newAppModal.modal("hide");
+                        } else {
+                            $newAppModal.find('.alert').show().text(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
+                        }
+                        return ev;
+                    })
+
+            });
         });
 
         onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {

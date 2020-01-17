@@ -208,6 +208,15 @@ export class MetadataStore {
         return app;
     }
 
+    async newApp(tenantName: string, appName: string, basedOnApp?: string): Promise<App | null> {
+        if (basedOnApp) {
+            await execShell(`cp -ar ${ROOT}/${tenantName}/${basedOnApp} ${ROOT}/${tenantName}/${appName}`);
+        } else {
+            await execShell(`cp -ar ${ROOT}/frmdb-platform-apps/themes ${ROOT}/${tenantName}/${appName}`);
+        }
+        return this.getApp("apps", appName);
+    }
+
     async newPage(newPageName: string, startTemplateUrl: string) {
         let [tenantName, appName, pageName] = startTemplateUrl.split(/\//).filter(x => x);
         let content = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName}`);
@@ -330,4 +339,18 @@ export class MetadataStore {
             stream.on("error", reject);
         });
     }
+}
+
+
+const exec = require('child_process').exec;
+async function execShell(cmd: string): Promise<{ error: Error, stdout: string | Buffer, stderr: string | Buffer }> {
+    const exec = require('child_process').exec;
+    return new Promise((resolve, reject) => {
+        exec(cmd, (error, stdout, stderr) => {
+            if (error) {
+                reject({error, stdout, stderr});
+            }
+            resolve({error, stdout, stderr});
+        });
+    });
 }

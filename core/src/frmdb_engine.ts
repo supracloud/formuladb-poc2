@@ -78,6 +78,8 @@ export class FrmdbEngine {
                 return this.newPage(event);
             case "ServerEventDeletePage":
                 return this.deletePage(event);
+            case "ServerEventNewApp":
+                return this.newApp(event);
             default:
                 return Promise.reject("n/a event");
         }
@@ -95,6 +97,14 @@ export class FrmdbEngine {
 
     private async newPage(event: events.ServerEventNewPage): Promise<events.MwzEvents> {
         await this.frmdbEngineStore.kvsFactory.metadataStore.newPage(event.newPageName, event.startTemplateUrl);
+        return event;
+    }
+
+    private async newApp(event: events.ServerEventNewApp): Promise<events.MwzEvents> {
+        await this.frmdbEngineStore.kvsFactory.metadataStore.newApp(
+            event.tenantName, 
+            event.appName,
+            event.basedOnApp);
         return event;
     }
 
