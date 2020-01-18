@@ -208,6 +208,16 @@ export class MetadataStore {
         return app;
     }
 
+    async getThemes() {
+        let themeFiles = await this.listDir(`${ROOT}/themes`, /\.json$/);
+        return themeFiles.map(t => t.replace(/.*\//, '').replace(/\.json$/, ''));
+    }
+
+    async getLooks() {
+        let cssFiles = await this.listDir(`${ROOT}/css`, /\.css$/);
+        return cssFiles;
+    }
+
     async newApp(tenantName: string, appName: string, basedOnApp?: string): Promise<App | null> {
         if (basedOnApp) {
             await execShell(`cp -ar ${ROOT}/${tenantName}/${basedOnApp} ${ROOT}/${tenantName}/${appName}`);

@@ -16,11 +16,12 @@ function findTenantAndApp() {
     }
 }
 
-export function decodePageUrl(url: string): {tenantName: string, appName: string, page: string} {
-    let m = url.match(/(\w+)\/(\w+)\/(\w+)/);
-    if (m && m.length == 4) {
+export function decodePageUrl(url: string): {tenantName: string, appName: string, page: string | undefined} {
+    let m = url.match(/(\w+)\/(\w+)(?:\/(\w+\.html))?/);
+    if (!m) throw new Error("Bad page url " + url);
+    if (m.length == 3 || m.length == 4) {
         return {tenantName: m[1], appName: m[2], page: m[3]}; 
-    } else throw new Error("Bad page url " + url)
+    } else throw new Error("Bad page url segments " + url);
 }
 
 export function APP_AND_TENANT_ROOT(): [string, string, HTMLElement] {

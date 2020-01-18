@@ -192,7 +192,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
     // API
     //////////////////////////////////////////////////////////////////////////////////////
-    
+        
+    app.get('/formuladb-api/themes', async function (req, res, next) {
+        let themes = await kvsFactory.metadataStore.getThemes();
+        res.send(themes);
+    });
+        
+    app.get('/formuladb-api/looks', async function (req, res, next) {
+        let looks = await kvsFactory.metadataStore.getLooks();
+        res.send(looks);
+    });
+
     app.get('/formuladb-api/:tenant/app-names', async function (req, res, next) {
         let apps = await kvsFactory.metadataStore.getApps(req.params.tenant);
         res.send(apps);
