@@ -36,3 +36,7 @@ else
     git checkout -b "${FRMDB_ENV_NAME}"
     git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
 fi
+
+if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" -o "production" = "${FRMDB_ENV_NAME}" ]; then
+    psql -e -h db -U postgres < wwwroot/git/formuladb-env/db/pg_dump.sql 
+fi

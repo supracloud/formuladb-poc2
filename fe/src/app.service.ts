@@ -17,7 +17,7 @@ function findTenantAndApp() {
 }
 
 export function decodePageUrl(url: string): {tenantName: string, appName: string, page: string | undefined} {
-    let m = url.match(/(\w+)\/(\w+)(?:\/(\w+\.html))?/);
+    let m = url.match(/([-\w]+)\/(\w+)(?:\/(\w+\.html))?/);
     if (!m) throw new Error("Bad page url " + url);
     if (m.length == 3 || m.length == 4) {
         return {tenantName: m[1], appName: m[2], page: m[3]}; 

@@ -215,7 +215,7 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
-            this.checkSafeNavigation(event);
+            this.changeSelectedTableIdIfDifferent(getTarget(event)!.innerHTML);
         });
 
         onEvent(document.body, 'click', 'a[data-frmdb-value="$frmdb.pages[].name"]', (event: MouseEvent) => {

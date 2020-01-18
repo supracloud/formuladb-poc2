@@ -49,6 +49,9 @@ RUN chmod 644 /ssh/frmdb.id_rsa.pub
 RUN chmod 600 /ssh/frmdb.id_rsa
 ADD ./scripts /scripts
 
+RUN echo "db:5432:postgres:postgres:postgres" > /root/.pgpass
+RUN chmod 0600 /root/.pgpass
+
 COPY dist-be/frmdb-be* /dist-be/
 ADD ./formuladb /wwwroot/formuladb
 ADD ./formuladb-env /formuladb-env

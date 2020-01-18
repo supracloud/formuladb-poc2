@@ -27,7 +27,7 @@ describe('MetadataStore', () => {
         <title>FormulaDB - Build Applications Without Code</title>
         <link href="/formuladb-env/static/formuladb.io/favicon.png" rel="icon" type="image/png">
     </head>
-    <body data-frmdb-tenant="formuladb-env/apps" data-frmdb-app="formuladb.io">
+    <body data-frmdb-tenant="formuladb-env/apps" data-frmdb-app="formuladb_io">
         <header>
             <nav class="navbar" data-frmdb-fragment="_nav.html">
                 nav content
@@ -51,7 +51,7 @@ describe('MetadataStore', () => {
     <title>FormulaDB - Build Applications Without Code</title>
 </head>
 
-<body data-frmdb-tenant="formuladb-env/apps" data-frmdb-app="formuladb.io">
+<body data-frmdb-tenant="formuladb-env/apps" data-frmdb-app="formuladb_io">
     <header>
         <div data-frmdb-fragment="_nav.html"></div>
     </header>

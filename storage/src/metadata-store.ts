@@ -4,7 +4,7 @@ import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i"
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -135,10 +135,20 @@ export class MetadataStore {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
             await this.readFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`)
         );
-        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId =>
-            this.readFile(`${ROOT}/${tenantName}/${appName}/${entityId}.yaml`)
-        ));
-        let entities: Entity[] = entitiesStr.map(entityStr => this.fromYaml(entityStr));
+        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => {
+            if (entityId == '$User') return entityId;
+            if (entityId == '$Currency') return entityId;
+            if (entityId == '$Dictionary') return entityId;
+
+            return this.readFile(`${ROOT}/db/${entityId}.yaml`)
+        }));
+        let entities: Entity[] = entitiesStr.map(entityStr => {
+            if (entityStr == '$User') return $User;
+            if (entityStr == '$Currency') return $Currency;
+            if (entityStr == '$Dictionary') return $Dictionary;
+
+            return this.fromYaml(entityStr)
+        });
 
         let entitiesDictionary = entities.reduce((acc, ent, i) => {
             acc[ent._id] = ent; return acc;
