@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
-import { BACKEND_SERVICE } from "@fe/backend.service";
+import { BACKEND_SERVICE, RESET_BACKEND_SERVICE } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from "@fe/i18n-fe";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
@@ -44,9 +44,11 @@ import { IconEditorComponent } from "./icon-editor.component";
 import { BLOBS } from "./blobs";
 import { frmdbSetImageSrc } from "@fe/component-editor/components-bootstrap4";
 import { Undo } from "./undo";
+import { decodePageUrl } from "@fe/app.service";
 
 class FrmdbEditorState {
-    apps: string[] = [];
+    apps: {name: string, url: string}[] = [];
+    selectedAppName: string;
     tables: Entity[] = [];
     pages: { name: string, url: string }[];
     selectedPageName: string;
@@ -120,8 +122,20 @@ export class FrmdbEditorDirective {
         });
 
         window.onpopstate = () => {
+            let {appName: currentAppName} = decodePageUrl(this.iframe.src);
+            let {tenantName, appName, page} = decodePageUrl(window.location.hash.replace(/^#/, ''));
+
             this.iframe.src = window.location.hash.replace(/^#/, '');
-            this.updateCurrentPage();
+
+            if (currentAppName != appName) {
+                RESET_BACKEND_SERVICE();
+                this.backendService = BACKEND_SERVICE();
+                this.loadTables();
+                this.loadPages();
+                this.updateCurrentApp();
+            } else {
+                this.updateCurrentPage();
+            }
         }
     }
 
@@ -166,6 +180,19 @@ export class FrmdbEditorDirective {
         });
     }
 
+    checkSafeNavigation(event) {
+        let safeToNavigate = false;
+        if (Undo.hasChanges()) {
+            if (confirm(`There are ${Undo.ngActiveChanges() + 1} changes, are you sure you want leave this page ?`)) {
+                safeToNavigate = true;
+                Undo.clear();
+            }
+        } else safeToNavigate = true;
+
+        if (!safeToNavigate) event.preventDefault();
+
+    }
+
     changeSelectedTableIdIfDifferent(tableName: string) {
         if (tableName === this.EditorState.selectedTableId) return;
         this.EditorState.selectedTableId = tableName;
@@ -183,20 +210,16 @@ export class FrmdbEditorDirective {
 
     tableManagementFlows() {
 
-        onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
+        onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.apps[]"]', (event: MouseEvent) => {
             this.changeSelectedTableIdIfDifferent(getTarget(event)!.innerHTML);
         });
 
-        onEvent(document.body, 'click', 'a[data-frmdb-value="$frmdb.pages[].name"]', (event: MouseEvent) => {
-            let safeToNavigate = false;
-            if (Undo.hasChanges()) {
-                if (confirm(`There are ${Undo.ngActiveChanges() + 1} changes, are you sure you want leave this page ?`)) {
-                    safeToNavigate = true;
-                    Undo.clear();
-                }
-            } else safeToNavigate = true;
+        onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
+            this.checkSafeNavigation(event);
+        });
 
-            if (!safeToNavigate) event.preventDefault();
+        onEvent(document.body, 'click', 'a[data-frmdb-value="$frmdb.pages[].name"]', (event: MouseEvent) => {
+            this.checkSafeNavigation(event);
         });
 
 
@@ -458,7 +481,16 @@ export class FrmdbEditorDirective {
                 return response.json();
             });
 
-        this.EditorState.apps = apps;
+        this.EditorState.apps = apps.map(a => ({
+            name: a,
+            url: `#/${this.backendService.tenantName}/${a}/index.html` 
+        }));
+        this.updateCurrentApp();
+    }
+
+    updateCurrentApp() {
+        let {tenantName, appName, page } = decodePageUrl(window.location.hash.replace(/^#/, ''));
+        this.EditorState.selectedAppName = appName;
         updateDOM({ $frmdb: this.EditorState }, document.body);
     }
 
@@ -476,14 +508,19 @@ export class FrmdbEditorDirective {
     async loadPages() {
         let app: App | null = await this.backendService.getApp();
         if (!app) throw new Error(`App not found for ${window.location}`);
-        this.EditorState.pages = app.pages.map(p => ({ name: p, url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}` }));
+        this.EditorState.pages = app.pages
+            .filter(p => p.indexOf('_') != 0)
+            .map(p => ({ 
+                name: p.replace(/\.html$/, '')/*.replace(/^index$/, 'Home Page')*/, 
+                url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}` 
+            }));
         this.updateCurrentPage();
     }
 
     updateCurrentPage() {
         let pagePath = window.location.hash.replace(/^#/, '');
         this.EditorState.selectedPagePath = pagePath;
-        this.EditorState.selectedPageName = pagePath.replace(/.*\//, '') || 'index.html';
+        this.EditorState.selectedPageName = (pagePath || 'index').replace(/.*\//, '').replace(/\.html$/, '');
         updateDOM({ $frmdb: this.EditorState }, document.body);
     }
 

@@ -17,7 +17,7 @@ import { App } from "@domain/app";
 import { SchemaCompiler } from '@core/schema_compiler';
 import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_engine_functions/_textjoin";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { APP_AND_TENANT_ROOT } from "./app.service";
+import { APP_AND_TENANT_ROOT, _resetAppAndTenant } from "./app.service";
 import { waitUntil } from "@domain/ts-utils";
 const LOG = new FrmdbLogger('backend-service');
 
@@ -195,6 +195,11 @@ export function BACKEND_SERVICE(): BackendService {
         _backendService = new BackendService(tenantName, appName);
     }
     return _backendService;
+}
+export function RESET_BACKEND_SERVICE() {
+    _resetAppAndTenant();
+    let [tenantName, appName] = APP_AND_TENANT_ROOT();
+    _backendService = new BackendService(tenantName, appName);
 }
 
 (window as any).FrmdbBackendService = BackendService;

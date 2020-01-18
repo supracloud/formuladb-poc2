@@ -99,7 +99,7 @@
 
         <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
             <li class="nav-item" title="list of apps">
-                <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
                     <i class="la la-sitemap"></i>
                 </a>
             </li>
@@ -108,11 +108,12 @@
                     aria-expanded="false" data-frmdb-value="$frmdb.appName">
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$frmdb.apps[]" data-frmdb-value="$frmdb.apps[]" href="javascript:void(0)">app 1</a>
+                    <a class="dropdown-item" data-frmdb-table="$frmdb.apps[]" data-frmdb-value="$frmdb.apps[].name"
+                        data-frmdb-attr="href::$frmdb.apps[].url">app 1</a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
-                <a href="javascript:void(0)" class="nav-link" id="table-options" aria-haspopup="true" aria-expanded="false">
+                <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
                     <i class="la la-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
@@ -126,7 +127,7 @@
 
         <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
             <li class="nav-item" title="list of tables">
-                <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
                     <i class="la la-table"></i>
                 </a>
             </li>
@@ -139,7 +140,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
-                <a href="javascript:void(0)" class="nav-link" id="table-options" aria-haspopup="true" aria-expanded="false">
+                <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
                     <i class="la la-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
@@ -153,7 +154,7 @@
 
         <ul class="nav flex-row flex-nowrap pl-1" style="min-height: 28px;">
             <li class="nav-item" title="list of pages">
-                <a class="nav-link disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
+                <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
                     <i class="la la-image"></i>
                 </a>
             </li>
@@ -167,7 +168,7 @@
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
-                <a class="nav-link" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link px-1" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">
                     <i class="la la-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">

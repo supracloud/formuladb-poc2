@@ -11,11 +11,16 @@ function findTenantAndApp() {
         let path = window.location.pathname;
         if (window.location.pathname === '/formuladb/editor.html') path = window.location.hash.replace(/^#/, '');
         path = path.replace(/[?].*$/, '');
-        let [t, a] = path.split('/').filter(x => x);
-        if (!t || !a) throw new Error("Cannot find tenant and app in path " + window.location.pathname);
-        [tenantName, appName] = [t, a];
+        ({tenantName, appName} = decodePageUrl(path));
         appRootEl = document.body;
     }
+}
+
+export function decodePageUrl(url: string): {tenantName: string, appName: string, page: string} {
+    let m = url.match(/(\w+)\/(\w+)\/(\w+)/);
+    if (m && m.length == 4) {
+        return {tenantName: m[1], appName: m[2], page: m[3]}; 
+    } else throw new Error("Bad page url " + url)
 }
 
 export function APP_AND_TENANT_ROOT(): [string, string, HTMLElement] {
