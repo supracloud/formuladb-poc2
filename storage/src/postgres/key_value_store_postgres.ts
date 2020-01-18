@@ -330,6 +330,15 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             )`;
         await this.getDB().any(query);
     }
+    
+    async updateEntity(entity: Entity) {
+        for (let prop of Object.values(entity.props)) {
+            if (!this.entity.props[prop.name]) {
+                let query = `ALTER TABLE ${this.table_id} ADD ${this.prop2sqlCol(prop)}`;
+                await this.getDB().any(query);
+            }
+        }
+    }
 
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {
         console.log("simpleAdHocQuery", squery);

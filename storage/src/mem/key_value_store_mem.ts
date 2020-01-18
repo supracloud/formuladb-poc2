@@ -99,12 +99,16 @@ export class KeyObjStoreMem<OBJT extends KeyValueObj> extends KeyValueStoreMem<O
 }
 
 export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<OBJT> implements KeyTableStoreI<OBJT> {
+
     constructor(public entity: Entity) {
         super();
     }
 
     init(): Promise<any> {
         return Promise.resolve(); //no-op
+    }
+
+    async updateEntity(entity: Entity) {
     }
 
     public evalNumberFilter(val, item: FilterItem): boolean {

@@ -199,7 +199,7 @@ export class FrmdbTransactionRunner {
 
     public async setEntityProperty(event: events.ServerEventSetProperty) {
         try {
-            let modifiedEntity = await this.frmdbEngineStore.getEntity(event.targetEntity._id);
+            let modifiedEntity = _.cloneDeep(await this.frmdbEngineStore.getEntity(event.targetEntity._id));
             if (!modifiedEntity) throw new Error("Cannot modify non existent entity " + event.targetEntity._id + ", " + CircularJSON.stringify(event.property));
 
             if (Pn.FORMULA == event.property.propType_) {

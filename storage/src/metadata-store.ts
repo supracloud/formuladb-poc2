@@ -177,13 +177,13 @@ export class MetadataStore {
     }
 
     public async getEntity(tenantName: string, appName: string, entityId: string): Promise<Entity | null> {
-        let str = await this.readFile(`${ROOT}/${tenantName}/${appName}/${entityId}.yaml`);
+        let str = await this.readFile(`${ROOT}/db/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;
     }
 
     public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
-        await this.writeFile(`${ROOT}/${tenantName}/${appName}/${entity._id}.yaml`, this.toYaml(entity))
+        await this.writeFile(`${ROOT}/db/${entity._id}.yaml`, this.toYaml(entity))
 
         return entity;
     }
@@ -195,7 +195,7 @@ export class MetadataStore {
         schemaNoEntities.entityIds = schemaNoEntities.entityIds.filter(e => e != entityId);
         await this.writeFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
 
-        let entityFile = `${ROOT}/${tenantName}/${appName}/${entityId}.yaml`;
+        let entityFile = `${ROOT}/db/${entityId}.yaml`;
         let entity: Entity = await this.fromYaml<Entity>(entityFile);
         await this.delFile(entityFile);
 

@@ -64,6 +64,7 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
         } else if (attrName === "rowid") {
             let dataObj = await BACKEND_SERVICE().getDataObj(this.frmdbState.rowid!);
             this.frmdbState.dataObj = dataObj;
+            this.querySelector('form')?.setAttribute('data-frmdb-record', this.frmdbState.rowid!);
         } else if (attrName === "fields") {
             if (this.frmdbState.props && this.frmdbState.props.length > 0) {
                 let props = [...this.frmdbState.props];

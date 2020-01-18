@@ -37,6 +37,8 @@ export interface KeyObjStoreI<OBJT extends KeyValueObj> extends KeyValueStoreI<O
 }
 export interface KeyTableStoreI<OBJT extends KeyValueObj> extends KeyObjStoreI<OBJT> {
     entity: Entity;
+    /** add/delete/modify entity property */
+    updateEntity(entity: Entity): Promise<any>;
     /** filtering and grouping by any _id */
     simpleAdHocQuery(params: SimpleAddHocQuery): Promise<any[]>;
     /** The resulting rows are grouped */

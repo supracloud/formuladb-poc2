@@ -103,7 +103,10 @@ export class FrmdbStore {
     }
 
     public async putEntity(entity: Entity): Promise<Entity> {
-        return this.kvsFactory.metadataStore.putEntity(this.tenantName, this.appName, entity);
+        let kvs = await this.getDataKvs(entity._id);
+        await kvs.updateEntity(entity);
+        let ret = await this.kvsFactory.metadataStore.putEntity(this.tenantName, this.appName, entity);
+        return ret;
     }
 
     private evaluateAggregation(value: any, reduceFun: ReduceFun, aggValue: any) {
