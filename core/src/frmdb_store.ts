@@ -106,6 +106,7 @@ export class FrmdbStore {
         let kvs = await this.getDataKvs(entity._id);
         await kvs.updateEntity(entity);
         let ret = await this.kvsFactory.metadataStore.putEntity(this.tenantName, this.appName, entity);
+        this.schema.entities[entity._id] = entity;
         return ret;
     }
 

@@ -146,9 +146,10 @@ class TransactionAbortedError {
 }
 
 export class FrmdbTransactionRunner {
-    private schemaDAO: SchemaDAO;
+    private get schemaDAO(): SchemaDAO {
+        return this.frmdbEngineTools.schemaDAO;
+    }
     constructor(private frmdbEngineStore: FrmdbEngineStore, private frmdbEngineTools: FrmdbEngineTools) {
-        this.schemaDAO = this.frmdbEngineTools.schemaDAO;
     }
 
     private computeAutoCorrections(transacDAG: TransactionDAG, obj: DataObj, ex: FailedValidationsError): boolean {

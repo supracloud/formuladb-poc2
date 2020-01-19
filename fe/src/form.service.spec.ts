@@ -29,13 +29,13 @@ describe('FormService', () => {
     beforeEach(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
-        fetchMock.get('/formuladb-api/test-tenant/test-app', {
+        fetchMock.get('/formuladb-api/test-tenant/test_app', {
             _id: "test-app", description: "test-app-desc",
             pages: [
                 { name: "index", html: "index.html" },
             ],
         });
-        fetchMock.get('/formuladb-api/test-tenant/test-app/schema', {
+        fetchMock.get('/formuladb-api/test-tenant/test_app/schema', {
             _id: "FRMDB_SCHEMA~~test-app",
             entities: {
                 A: {
@@ -75,7 +75,7 @@ describe('FormService', () => {
     });
 
     it('should allow editing of records', async (done) => {
-        navigate('/test-tenant/test-app', HTML);
+        navigate('/test-tenant/test_app', HTML);
 
         let f1Input: HTMLInputElement = document.querySelector('[data-frmdb-value="::f1"]') as HTMLInputElement;
         let f2Input: HTMLInputElement = document.querySelector('[data-frmdb-value="::f2"]') as HTMLInputElement;
@@ -91,7 +91,7 @@ describe('FormService', () => {
 
         clock = lolex.install();
 
-        fetchMock.post('/formuladb-api/test-tenant/test-app/event', (url, req) => {
+        fetchMock.post('/formuladb-api/test-tenant/test_app/event', (url, req) => {
             throw new Error("API should not be called when client side validation fails! " + req.body);
         });
 
@@ -106,7 +106,7 @@ describe('FormService', () => {
         expect(f2Input.validity.valid).toEqual(false);
         expect(f2Input.validationMessage).toMatch(/123|constraints/i);
 
-        fetchMock.post('/formuladb-api/test-tenant/test-app/event', {
+        fetchMock.post('/formuladb-api/test-tenant/test_app/event', {
             type: "ServerEventModifiedFormData",
             obj: { _id: 'A~~blabla', f1: 14 },
         });

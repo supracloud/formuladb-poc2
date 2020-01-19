@@ -89,7 +89,7 @@ export const InventoryVNavHtml = htmlTools.normalizeHTML(/* html */`
 
 describe('VNavComponent', () => {
     beforeEach(() => {
-        fetchMock.get('/formuladb-api/test-tenant/test-app/schema', InventorySchema);
+        fetchMock.get('/formuladb-api/test-tenant/test_app/schema', InventorySchema);
     });
 
     afterEach(fetchMock.restore)
