@@ -334,7 +334,8 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
     async updateEntity(entity: Entity) {
         for (let prop of Object.values(entity.props)) {
             if (!this.entity.props[prop.name]) {
-                let query = `ALTER TABLE ${this.table_id} ADD ${this.prop2sqlCol(prop)}`;
+                //FIXME: handle column type change not only new columns
+                let query = `ALTER TABLE ${this.table_id} ADD COLUMN IF NOT EXISTS ${this.prop2sqlCol(prop)}`;
                 await this.getDB().any(query);
             }
         }
