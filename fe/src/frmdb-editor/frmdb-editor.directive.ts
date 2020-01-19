@@ -609,7 +609,6 @@ export class FrmdbEditorDirective {
             }
         }
     }
-
 }
 
 new FrmdbEditorDirective();

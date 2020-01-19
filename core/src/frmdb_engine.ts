@@ -51,7 +51,7 @@ export class FrmdbEngine {
         return Promise.resolve(schema);
     }
 
-    public processEvent(event: events.MwzEvents): Promise<events.MwzEvent> {
+    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
         event._id = Date.now() + '_' + generateUUID();
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 

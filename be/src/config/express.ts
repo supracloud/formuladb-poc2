@@ -26,6 +26,7 @@ import { LazyInit } from "@domain/ts-utils";
 import { I18nBe } from "@be/i18n-be";
 import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 import { initPassport, handleAuth } from "./auth";
+import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -71,10 +72,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     }));
 
     app.use((req, res, next) => {
-        console.log("HEREEEEE3", req.url);
-        next();
-    });
-    app.use((req, res, next) => {
         if (req.headers['content-type'] === 'text/yaml') {
             req.body = yaml.safeLoad(req.body);
             next();
@@ -107,6 +104,12 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next();
         }
     });
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // API (prioritary paths)
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    setupChangesFeedRoutes(app, kvsFactory);
 
     app.delete('/formuladb-api/env/:envname', async function(req, res, next) {
         if (process.env.FRMDB_IS_PROD_ENV) {
@@ -192,7 +195,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
     // API
     //////////////////////////////////////////////////////////////////////////////////////
-        
+
     app.get('/formuladb-api/themes', async function (req, res, next) {
         let themes = await kvsFactory.metadataStore.getThemes();
         res.send(themes);
@@ -283,7 +286,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/:tenant/:app/event', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app))
             .processEvent(req.body)
-            .then(notif => res.json(notif))
+            .then(notif => {
+                addEventToChangesFeed(notif);
+                res.json(notif);
+            })
             .catch(err => { console.error(err); next(err) });
     });
 
