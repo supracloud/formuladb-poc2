@@ -10,9 +10,16 @@ ingress:
     # message to display with an appropriate context why the authentication is required
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
     certmanager.k8s.io/issuer: "kibana-prod"
+    nginx.ingress.kubernetes.io/app-root: /analytics
   hosts:
     - kibana.formuladb.io
   tls:
     - secretName: certificate-kibana-prod
       hosts:
         - kibana.formuladb.io
+kibanaConfig:
+  kibana.yml: |
+    server:
+      basePath: "/analytics"
+      rewriteBasePath: true
+healthCheckPath: "/analytics/app/kibana"
