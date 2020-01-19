@@ -33,7 +33,7 @@ ENV BUILD_DEVELOPMENT=${BUILD_DEVELOPMENT}
 ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
 
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache bash git git-lfs perl postgresql-client vim openssh vimdiff curl rsync
+    apk add --no-cache bash git git-lfs perl postgresql-client vim openssh vimdiff curl rsync findutils
 
 ENV KUBECONFIG=k8s/production-kube-config.conf
 

@@ -338,6 +338,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
                 await this.getDB().any(query);
             }
         }
+        this.entity = entity;
     }
 
     public async simpleAdHocQuery(squery: SimpleAddHocQuery): Promise<any[]> {

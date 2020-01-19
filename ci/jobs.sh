@@ -36,13 +36,13 @@ function build_images_and_deploy {
     # while ! nc -z localhost 5432; do sleep 1; done
     # npm run e2e:data
 
-    while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
-    while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 1; done
-    while ! kubectl -n "$NAMESPACE" exec service/be ls /wwwroot/git/formuladb-env/apps/Hotel_Booking | grep 'app.yaml'; do 
-        sleep 1; 
+    while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 2; done
+    while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
+    while ! curl "http://$NAMESPACE.formuladb.io/formuladb-api/apps/Hotel_Booking/schema" | grep 'RoomType'; do 
+        echo "== be not started yet ==================================================="
         kubectl -n "$NAMESPACE" logs service/be
+        sleep 2; 
     done
-    kubectl -n "$NAMESPACE" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
 }
 
 function build_images_and_deploy_dev {
@@ -85,13 +85,11 @@ function test_e2e {
 
 function e2e_dev_env {
     set -x
-    # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
-    # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
-    # while ! nc -z localhost 5432; do sleep 1; done
-    # npm run e2e:data
 
-    while ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-platform-apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
-    kubectl -n "$FRMDB_ENV_NAME" exec service/be -- node /dist-be/frmdb-be-load-test-data.js
+    if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-platform-apps/formuladb.io/schema | grep 'SampleApp'; then
+        echo "== ERROR: be not started yet ! "
+        kubectl -n "$FRMDB_ENV_NAME" logs service/be
+    fi
 
     test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io"
 }
