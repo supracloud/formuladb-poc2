@@ -32,6 +32,15 @@ else
     fi
 fi
 
-if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" -o "production" = "${FRMDB_ENV_NAME}" ]; then
-    psql -e -h db -U postgres < wwwroot/git/formuladb-env/db/pg_dump.sql 
+if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" ]; then
+    psql -e -h db -U postgres < /wwwroot/git/formuladb-env/db/pg_dump.schema.sql 
+    for csv in /wwwroot/git/formuladb-env/db/*.csv; do 
+        ls -lh $csv
+        t=`basename $csv|sed -e 's/\.csv$//'`
+        cat $csv | psql -h db -U postgres -c "
+            CREATE TEMP TABLE tmp_table ON COMMIT DROP AS SELECT * FROM ${t} WITH NO DATA;
+            COPY tmp_table FROM STDIN WITH CSV HEADER;
+            INSERT INTO ${t} SELECT * FROM tmp_table ON CONFLICT DO NOTHING;
+        "
+    done
 fi
