@@ -40,9 +40,9 @@ describe('[FE] Hotel Booking', () => {
     beforeEach(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
-        fetchMock.get('/formuladb-api/test-tenant/hotel-booking', HotelBookingApp);
-        fetchMock.get('/formuladb-api/test-tenant/hotel-booking/schema', HotelBookingSchema);
-        fetchMock.get('/test-tenant/hotel-booking/booking-F.html', booking_fragment_html);
+        fetchMock.get('/formuladb-api/test-tenant/hotel_booking', HotelBookingApp);
+        fetchMock.get('/formuladb-api/test-tenant/hotel_booking/schema', HotelBookingSchema);
+        fetchMock.get('/test-tenant/hotel_booking/booking-F.html', booking_fragment_html);
     });
 
     afterEach(() => {
@@ -67,7 +67,7 @@ describe('[FE] Hotel Booking', () => {
         };
 
         it("user navigates to index page, and fills in preliminary data for a new booking", async (done) => {
-            await navigate('/test-tenant/hotel-booking', index_html);
+            await navigate('/test-tenant/hotel_booking', index_html);
 
             expect(document.querySelector('frmdb-fragment') instanceof FragmentComponent).toEqual(true);
 
@@ -88,7 +88,7 @@ describe('[FE] Hotel Booking', () => {
 
         it("user clicks 'Book Now', navigates to the booking page, all data introduced on index page is visible", async (done) => {
 
-            await navigate('/test-tenant/hotel-booking/booking', booking_html);
+            await navigate('/test-tenant/hotel_booking/booking', booking_html);
 
             start_date_El = document.querySelector('[data-frmdb-value="::start_date"]') as HTMLInputElement;
             end_date_El = document.querySelector('[data-frmdb-value="::end_date" ]') as HTMLInputElement;
@@ -106,7 +106,7 @@ describe('[FE] Hotel Booking', () => {
 
         it("User updates the booking but server validation fails", async (done) => {
 
-            fetchMock.post('/formuladb-api/test-tenant/hotel-booking/event', {
+            fetchMock.post('/formuladb-api/test-tenant/hotel_booking/event', {
                 type: "ServerEventModifiedFormData",
                 state_: "ABORT",
                 reason_: "ABORTED_FAILED_VALIDATIONS_RETRIES_EXCEEDED",
@@ -125,7 +125,7 @@ describe('[FE] Hotel Booking', () => {
         });
 
         it("User updates the booking and it is saved successfully", async (done) => {
-            fetchMock.post('/formuladb-api/test-tenant/hotel-booking/event', {
+            fetchMock.post('/formuladb-api/test-tenant/hotel_booking/event', {
                 type: "ServerEventModifiedFormData",
                 obj: bookingObjFromServer,
             });

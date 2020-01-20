@@ -2,6 +2,7 @@ import { _testResetBackendService } from "./backend.service";
 import { _resetAppAndTenant } from "./app.service";
 import { initFrmdb } from "./init";
 
+const fetchMock = require('fetch-mock');
 export async function navigate(path: string, html: string) {
     _testResetBackendService();
     _resetAppAndTenant();
@@ -10,6 +11,7 @@ export async function navigate(path: string, html: string) {
 
     await new Promise(r => setTimeout(r, 0));//wait for fragments to be rendered
 
+    fetchMock.post(/\/formuladb-api\/changes-feed/, []);
     await initFrmdb();
 }
 

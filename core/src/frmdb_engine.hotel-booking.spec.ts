@@ -14,7 +14,7 @@ import { Act_Wiza, Act_Collins } from "@test/mocks/general-data";
 import { Room_DoubleDeluxe1, HotelBookingData, RoomType_DoubleDeluxe } from "@test/hotel-booking/data";
 import { frmdbxit } from "@fe/fe-test-urils.spec";
 
-describe(`[BE] FrmdbEngine hotel-booking [FRMDB_STORAGE=${process.env.FRMDB_STORAGE}]`, () => {
+describe(`[BE] FrmdbEngine hotel_booking [FRMDB_STORAGE=${process.env.FRMDB_STORAGE}]`, () => {
     let frmdbTStore: FrmdbEngineStore;
     let frmdbEngine: FrmdbEngine;
 

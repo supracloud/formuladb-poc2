@@ -88,6 +88,7 @@ export const HotelBookingApp: App = {
         "about.html",
         "gallery.html",
         "contact.html",
+        "booking-F.html",
     ],
 };
 
