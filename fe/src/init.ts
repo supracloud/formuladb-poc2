@@ -5,6 +5,7 @@ import { BACKEND_SERVICE } from "./backend.service";
 import { initRoutes } from "./router";
 import { DataBindingsMonitor } from "./data-bindings-monitor";
 
+let dataBindingMonitor: DataBindingsMonitor | null = null;
 export async function initFrmdb() {
     let [tenantName, appName, appRootEl] = APP_AND_TENANT_ROOT();
     let formService = new FormService(appRootEl);
@@ -13,6 +14,13 @@ export async function initFrmdb() {
     formService.initFormsFromNewRecordCache();
     initRoutes();
 
-    let dataBindingMonitor = new DataBindingsMonitor(document.body);
+    dataBindingMonitor = new DataBindingsMonitor(document.body);
     dataBindingMonitor.updateDOMForRoot();
+}
+
+export function deinitFrmdb() {
+    if (dataBindingMonitor) {
+        dataBindingMonitor.stop = true;
+        dataBindingMonitor = null;
+    } 
 }

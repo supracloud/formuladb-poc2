@@ -33,6 +33,7 @@ const booking_html = /*html*/`
 `;
 
 import { FragmentComponent } from '@fe/fragment/fragment.component';
+import { deinitFrmdb } from "@fe/init";
 
 describe('[FE] Hotel Booking', () => {
     let clock;
@@ -40,6 +41,7 @@ describe('[FE] Hotel Booking', () => {
     beforeEach(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
+        fetchMock.post(/\/formuladb-api\/changes-feed/, []);
         fetchMock.get('/formuladb-api/test-tenant/hotel_booking', HotelBookingApp);
         fetchMock.get('/formuladb-api/test-tenant/hotel_booking/schema', HotelBookingSchema);
         fetchMock.get('/test-tenant/hotel_booking/booking-F.html', booking_fragment_html);
@@ -48,6 +50,7 @@ describe('[FE] Hotel Booking', () => {
     afterEach(() => {
         fetchMock.restore();
         if (clock) clock.uninstall();
+        deinitFrmdb();
     })
 
     describe('User should be able to create new booking and update it', () => {

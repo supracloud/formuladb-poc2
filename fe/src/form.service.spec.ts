@@ -12,6 +12,7 @@ import { waitUntil } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
 import { setValue, navigate } from "./fe-test-urils.spec";
 import { ServerEventModifiedFormData } from '@domain/event';
+import { deinitFrmdb } from './init';
 
 const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;
@@ -29,6 +30,7 @@ describe('FormService', () => {
     beforeEach(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
+        fetchMock.post(/\/formuladb-api\/changes-feed/, []);
         fetchMock.get('/formuladb-api/test-tenant/test_app', {
             _id: "test-app", description: "test-app-desc",
             pages: [
@@ -53,6 +55,7 @@ describe('FormService', () => {
     afterEach(() => {
         fetchMock.restore();
         if (clock) clock.uninstall();
+        deinitFrmdb();
     })
 
     it('mock debounce example', async (done) => {

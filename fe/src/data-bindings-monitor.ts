@@ -112,7 +112,10 @@ export class DataBindingsMonitor {
         }
     }
 
+    public stop: boolean = false;
     async updateDOMOnDataUpdatesFromServer() {
+        if (this.stop) return;
+
         let startTime = new Date().getTime();
 
         let events: events.MwzEvents[] = await postData<any, events.MwzEvents[]>(
