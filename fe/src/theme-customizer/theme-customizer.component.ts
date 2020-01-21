@@ -15,11 +15,12 @@ class Color {
 }
 class State {
     colors: Color[] = [];
-    looks: string[] = [];
-    themes: string[] = [];
+    looks: { name: string, active: boolean }[] = [];
+    themes: { name: string, active: boolean }[] = [];
     selectedColor: Color | undefined = undefined;
     selectedLook: string | undefined = undefined;
     selectedTheme: string | undefined = undefined;
+    noneThemeIsActive: boolean = true;
 }
 
 export class ThemeCustomizerComponent extends HTMLElement {
@@ -31,9 +32,11 @@ export class ThemeCustomizerComponent extends HTMLElement {
         this._link = l;
         let m = this.parseCssFileName(this._link.href);
         if (m) {
-            let { theme: look, primary, secondary } = m;
+            let { look, primary, secondary } = m;
             this.state.selectedLook = look;
             this.state.selectedColor = new Color(primary, secondary);
+            let activeLook = this.state.looks.find(x => x.name == this.state.selectedLook);
+            if (activeLook) activeLook.active = true;
             this.initTheme();
             updateDOM(this.state, this);
         }
@@ -44,9 +47,9 @@ export class ThemeCustomizerComponent extends HTMLElement {
         this.init();
     }
 
-    parseCssFileName(cssFileName: string): { theme: string, primary: string, secondary: string } | null {
+    parseCssFileName(cssFileName: string): { look: string, primary: string, secondary: string } | null {
         let m = cssFileName.match(/.*\/(\w+)-([0-9a-f]+)-([0-9a-f]+)\.css$/);
-        if (m) return { theme: m[1], primary: '#' + m[2], secondary: '#' + m[3] }
+        if (m) return { look: m[1], primary: '#' + m[2], secondary: '#' + m[3] }
         else return null;
     }
 
@@ -59,17 +62,21 @@ export class ThemeCustomizerComponent extends HTMLElement {
         for (let cssFile of cssFiles) {
             let m = this.parseCssFileName(cssFile);
             if (m) {
-                let { theme, primary, secondary } = m;
-                if (!this.state.looks.find(x => x == theme)) this.state.looks.push(theme);
+                let { look, primary, secondary } = m;
+                if (!this.state.looks.find(x => x.name == look)) this.state.looks.push({ name: look, active: false });
                 if (!this.state.colors.find(x => x.primary == primary && x.secondary == secondary)) {
                     this.state.colors.push(new Color(primary, secondary));
                 }
             }
         }
-        this.state.themes = await fetch(`/formuladb-api/themes`)
+        let activeLook = this.state.looks.find(x => x.name == this.state.selectedLook);
+        if (activeLook) activeLook.active = true;
+
+        let themeNames: string[] = await fetch(`/formuladb-api/themes`)
             .then(response => {
                 return response.json();
             });
+        this.state.themes = themeNames.map(t => ({name: t, active: false}));
         this.initTheme();
         updateDOM(this.state, this);
 
@@ -81,9 +88,15 @@ export class ThemeCustomizerComponent extends HTMLElement {
         });
 
         onEvent(this, "click", '[data-frmdb-table="looks[]"]', (event) => {
-            let look: string = event.target['$DATA-FRMDB-OBJ$'];
+            let look: {name: string, active: boolean} = event.target['$DATA-FRMDB-OBJ$'];
             if (!look) { console.warn("cannot find look for the menu selection"); return; }
-            this.state.selectedLook = look;
+
+            let activeLook = this.state.looks.find(x => x.active);
+            if (activeLook && activeLook.name != look.name) activeLook.active = false;
+
+            this.state.selectedLook = look.name;
+            activeLook = this.state.looks.find(x => x.name == look.name);
+            if (activeLook) activeLook.active = true;
             this.updateLook();
         });
 
@@ -93,9 +106,11 @@ export class ThemeCustomizerComponent extends HTMLElement {
             if ('- none -' == themeName) {
                 unloadCurrentTheme(this._link?.getRootNode() as Document);
                 this.state.selectedTheme = themeName;
+                this.state.noneThemeIsActive = true;
+                this.state.themes.forEach(t => t.active = false);
             } else if (themeName) {
-                applyTheme(themeName, this._link?.getRootNode() as Document);
-                this.state.selectedTheme = themeName;
+                this.applyActiveTheme(themeName);
+                this.state.noneThemeIsActive = false;
             }
             updateDOM(this.state, this);
         });
@@ -117,13 +132,19 @@ export class ThemeCustomizerComponent extends HTMLElement {
         updateDOM(this.state, this);
     }
 
+    applyActiveTheme(themeName: string) {
+        applyTheme(themeName, this._link?.getRootNode() as Document);
+        this.state.selectedTheme = themeName;
+        let activeTheme = this.state.themes.find(t => t.name == themeName);
+        if (activeTheme) activeTheme.active = true;
+    }
+
     initTheme() {
         let doc = this._link?.getRootNode() as Document;
         if (!doc) return;
         let themeName = doc.body.getAttribute('data-frmdb-theme');
         if (themeName) {
-            applyTheme(themeName, this._link?.getRootNode() as Document);
-            this.state.selectedTheme = themeName;
+            this.applyActiveTheme(themeName);
         }
     }
 

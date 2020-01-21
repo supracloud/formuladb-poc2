@@ -17,7 +17,11 @@
         </button>
         <div class="dropdown-menu dropdown-menu-right" style="width: 50vw; height: 50vh; overflow: auto" aria-labelledby="frmdb-editor-look-select">
             <div class="card-deck frmdb-cards-wrap-2">
-                <frmdb-look-preview class="dropdown-item card p-2 m-2" style="transform: scale(0.85);" data-frmdb-table="looks[]" data-frmdb-attr="color::selectedColor.attr" data-frmdb-attr2="look::looks[]"></frmdb-look-preview>
+                <frmdb-look-preview class="dropdown-item card p-2 m-2" style="transform: scale(0.85);" 
+                    data-frmdb-table="looks[]" data-frmdb-attr="color::selectedColor.attr" 
+                    data-frmdb-attr2="look::looks[].name"
+                    data-frmdb-attr3="class.active:looks[].active"
+                    ></frmdb-look-preview>
             </div>
         </div>
     </div>
@@ -26,8 +30,8 @@
             <i class="la la-image"></i>
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="frmdb-editor-theme-select">
-            <a class="dropdown-item text-nowrap" data-frmdb-theme="- none -">- none -</a>
-            <a class="dropdown-item text-nowrap" data-frmdb-table="themes[]" data-frmdb-value="themes[]" data-frmdb-attr="data-frmdb-theme:themes[]"></a>
+            <a class="dropdown-item text-nowrap" data-frmdb-theme="- none -" data-frmdb-attr="class.active:noneThemeIsActive">- none -</a>
+            <a class="dropdown-item text-nowrap" data-frmdb-table="themes[]" data-frmdb-value="themes[].name" data-frmdb-attr="data-frmdb-theme:themes[].name" data-frmdb-attr2="class.active:themes[].active"></a>
         </div>
     </div>    
 </div>
