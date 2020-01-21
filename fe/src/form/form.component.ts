@@ -29,6 +29,7 @@ export interface FormComponentState extends FormComponentAttr {
     props: (EntityProperty & {
         name: string,
         isAutocomplete: boolean,
+        isImage: boolean,
         nameI18n: string,
         disabled: boolean,
         cssWidth: CssWidth,
@@ -54,6 +55,7 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
                 props.push({
                     ...prop,
                     isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
+                    isImage: prop.propType_ == Pn.IMAGE, 
                     nameI18n: I18N.tt(prop.name),
                     disabled: this.getDisabled(entity, prop),
                     cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",

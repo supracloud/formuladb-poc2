@@ -144,6 +144,10 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
 
 }
 
+function isHidden() {
+    
+}
+
 function isScalar(objValForKey) {
     return /string|boolean|number/.test(typeof objValForKey) || objValForKey instanceof Date;
 }

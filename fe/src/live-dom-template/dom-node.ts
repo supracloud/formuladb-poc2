@@ -199,32 +199,61 @@ class ElemDataAttrs {
     attr: DataAttr[] = [];
     prop: DataAttr[] = [];
 }
+
+function computeValuesForDataBindingAttrs(attrib: Attr, objValForKey: any, el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): 
+    {valueName: string, metaKey: string, ctxKey: string, value, metaKeyExpanded: string, ctxKeyExpanded: string} 
+{
+    let v = attrib.value.split(":");
+    let valueName, metaKey, ctxKey;
+    if (v.length == 3) {
+        [valueName, metaKey, ctxKey] = v;
+    } else if (v.length == 2) {
+        [valueName, metaKey, ctxKey] = [v[0], '', v[1]];
+    } else {
+        [valueName, metaKey, ctxKey] = ['', '', v[0]];
+    }
+
+    if (ctxKey != key) throw new Error("Expected if [valueName]:[metaObjKey]:domKey but found " + attrib.name + "=" + attrib.value + " for key " + key);
+
+    let value, metaKeyExpanded = '', ctxKeyExpanded = domExpandedKey(ctxKey, arrayCurrentIndexes);
+
+    let valueForKey = objValForKey;
+    if ("objValForKey-needs-to-be-computed-for-ifKey" === objValForKey) {
+        valueForKey = getValueForDomExpandedKey(ctxKeyExpanded, context);
+    }
+    if (metaKey === '') {
+        value = valueForKey;
+    } else {
+        metaKeyExpanded = domExpandedKey(metaKey, arrayCurrentIndexes);
+        let metaCtx = getValueForDomExpandedKey(metaKeyExpanded, context);
+        let keyForSearchingInMetaContext = valueForKey;
+        value = getValueForDomKey(keyForSearchingInMetaContext, metaCtx, arrayCurrentIndexes) || '';
+    }
+
+    return {valueName, metaKey, ctxKey, value, metaKeyExpanded, ctxKeyExpanded};
+}
+
 function getDataBindingAttrs(objValForKey: any, el: Elem, key: string, context: {}, arrayCurrentIndexes: number[]): ElemDataAttrs {
     let ret: ElemDataAttrs = new ElemDataAttrs();
     for (let i = 0; i < el.attributes.length; i++) {
         let attrib = el.attributes[i];
+
+        //skip data binding if element is hidden
+        if (attrib.name === 'data-frmdb-if') {
+            let ifKey = attrib.value.replace(/.*:/, '');
+            let {valueName, metaKey, ctxKey, value, metaKeyExpanded, ctxKeyExpanded} = 
+                computeValuesForDataBindingAttrs(attrib, "objValForKey-needs-to-be-computed-for-ifKey", 
+                    el, ifKey, context, arrayCurrentIndexes);
+            if (!value) {
+                let dataAttr: DataAttr = { attrName: attrib.name, attrValue: attrib.value, valueName, metaKey, ctxKey, value };
+                ret.if = dataAttr;
+                return ret;
+            }
+        }
+
         if (attrib.value && attrib.name.indexOf('data-frmdb') == 0 && (attrib.value == key || attrib.value.endsWith(':' + key))) {
-            let v = attrib.value.split(":");
-            let valueName, metaKey, ctxKey;
-            if (v.length == 3) {
-                [valueName, metaKey, ctxKey] = v;
-            } else if (v.length == 2) {
-                [valueName, metaKey, ctxKey] = [v[0], '', v[1]];
-            } else {
-                [valueName, metaKey, ctxKey] = ['', '', v[0]];
-            }
-
-            if (ctxKey != key) throw new Error("Expected if [valueName]:[metaObjKey]:domKey but found " + attrib.name + "=" + attrib.value + " for key " + key);
-
-            let value, metaKeyExpanded = '', ctxKeyExpanded = domExpandedKey(ctxKey, arrayCurrentIndexes);
-            if (metaKey === '') {
-                value = objValForKey;
-            } else {
-                metaKeyExpanded = domExpandedKey(metaKey, arrayCurrentIndexes);
-                let metaCtx = getValueForDomExpandedKey(metaKeyExpanded, context);
-                let keyForSearchingInMetaContext = objValForKey;
-                value = getValueForDomKey(keyForSearchingInMetaContext, metaCtx, arrayCurrentIndexes) || '';
-            }
+            let {valueName, metaKey, ctxKey, value, metaKeyExpanded, ctxKeyExpanded} = 
+                computeValuesForDataBindingAttrs(attrib, objValForKey, el, key, context, arrayCurrentIndexes);
 
             let type = attrib.name.replace(/^data-frmdb-/, '').replace(/\d$/, '');
             let dataAttr: DataAttr = { attrName: attrib.name, attrValue: attrib.value, valueName, metaKey, ctxKey, value };
@@ -261,6 +290,7 @@ function _setElemValue(objValForKey: any, el: Elem, key: string, context: {}, ar
         } else {
             if (false == value) {
                 hide(el, dataAttrsForEl.if);
+                return true;//no checking for further data binding for hidden element
             }
         }
         ret = true;
@@ -369,7 +399,8 @@ export function deleteElem(el: Elem, childEl: Elem) {
  * @returns the wrapper element
  */
 export function wrap(el: Element, inputWrapper: Element | string = 'div'): Element {
-    if (!el.parentNode) { console.error("wrap called and parent not found", el, inputWrapper); return el; }
+    if (!el.parentNode) { console.warn("wrap called and parent not found", el, inputWrapper); return el; }
+    if (el.parentNode.nodeType == 11) { console.warn("wrap called and parent is a template", el, inputWrapper); return el; }
     let wrapper: Element;
     if (inputWrapper instanceof Element) {
         wrapper = inputWrapper;

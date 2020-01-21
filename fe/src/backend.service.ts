@@ -9,7 +9,7 @@ import { CircularJSON } from "@domain/json-stringify";
 
 import { DataObj, parseDataObjId, isDataObj, getChildrenPrefix } from "@domain/metadata/data_obj";
 import { Entity, Pn, Schema, isEntityProperty, isEntity, isSchema } from "@domain/metadata/entity";
-import { MwzEvents, MwzEvent } from "@domain/event";
+import { MwzEvents, MwzEvent, ServerEventPutMediaObject } from "@domain/event";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { FrmdbEngineTools } from "@core/frmdb_engine_tools";
 
@@ -185,6 +185,42 @@ export class BackendService {
     public async getEntity(path: string): Promise<Entity> {
         let schema = await this.getSchema();
         return schema.entities[path];
+    }
+
+    public async saveMedia(fileName: string, blob: Blob): Promise<string> {
+    
+        let newSrc = `/formuladb-env/static/${this.tenantName}/${this.appName}/${fileName}`;
+    
+        var reader = new FileReader();
+        let p = new Promise((resolve, reject) => {
+            reader.onload = (e) => {
+                if (!e.target) return;
+                let buf = e.target.result as ArrayBuffer;
+                this.putEvent(new ServerEventPutMediaObject(this.tenantName, this.appName, fileName, this._arrayBufferToBase64(buf)))
+                    .then(async (ev: ServerEventPutMediaObject) => {
+                        if (ev.state_ != 'ABORT' && !ev.error_) {
+                            resolve(`Saved ${newSrc}`);
+                        } else {
+                            reject(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
+                        }
+                    })
+            };
+        });
+        reader.readAsArrayBuffer(blob);
+    
+        await p;
+
+        return newSrc;
+    }
+
+    _arrayBufferToBase64(buffer: ArrayBuffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
     }
 }
 

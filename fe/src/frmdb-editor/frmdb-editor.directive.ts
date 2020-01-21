@@ -568,43 +568,12 @@ export class FrmdbEditorDirective {
     }
 
 
-
-    _arrayBufferToBase64(buffer: ArrayBuffer) {
-        var binary = '';
-        var bytes = new Uint8Array(buffer);
-        var len = bytes.byteLength;
-        for (var i = 0; i < len; i++) {
-            binary += String.fromCharCode(bytes[i]);
-        }
-        return window.btoa(binary);
-    }
-
     async saveBlobs() {
 
         let appBackend = BACKEND_SERVICE();
         for (let frmdbBlob of Object.values(BLOBS.blobs)) {
             if (frmdbBlob.type === "image" && frmdbBlob.el) {
-
-                let newSrc = `/formuladb-env/static/${appBackend.tenantName}/${appBackend.appName}/${frmdbBlob.fileName}`;
-
-                var reader = new FileReader();
-                let p = new Promise((resolve, reject) => {
-                    reader.onload = (e) => {
-                        if (!e.target) return;
-                        let buf = e.target.result as ArrayBuffer;
-                        appBackend.putEvent(new ServerEventPutMediaObject(appBackend.tenantName, appBackend.appName, frmdbBlob.fileName, this._arrayBufferToBase64(buf)))
-                            .then(async (ev: ServerEventPutMediaObject) => {
-                                if (ev.state_ != 'ABORT') {
-                                    resolve(`Saved ${newSrc}`);
-                                } else {
-                                    reject(ev.notifMsg_ || ev.error_ || JSON.stringify(ev));
-                                }
-                            })
-                    };
-                });
-                reader.readAsArrayBuffer(frmdbBlob.blob);
-
-                await p;
+                let newSrc = await appBackend.saveMedia(frmdbBlob.fileName, frmdbBlob.blob);
                 frmdbSetImageSrc(frmdbBlob.el, newSrc);
             }
         }

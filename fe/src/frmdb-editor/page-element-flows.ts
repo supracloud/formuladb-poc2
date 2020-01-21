@@ -3,6 +3,7 @@ import { onEvent, onEventChildren } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction, FrmdbAddPageElement, FrmdbRemovePageElement } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
 import { ImageInput } from "@fe/component-editor/inputs";
+import { ImagePropertyListener } from "./img-editor.component";
 
 let isInitialized: boolean = false;
 export function pageElementFlows(editor: FrmdbEditorDirective) {
@@ -33,7 +34,19 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     onEventChildren(document.body, 'click', '#frmdb-chose-image-button', (event) => {
         let prop: ImageInput | null = event.target.closest('frmdb-image-input');
         if (prop) {
-            editor.imgEditorCmp.start(prop);
+            let listener: ImagePropertyListener = {
+                setImgSrc: (src: string) => {
+                    if (!prop) return;
+                    prop.setValue(src);
+                    prop.emitChange();
+                },
+                setBlob: async (name: string, blob: Blob) => {
+                    if (!prop) return;
+                    prop.setBlob(name, blob);
+                    return this.frmdbBlob.url;
+                },
+            };
+            editor.imgEditorCmp.start(listener);
         }
     });
 
