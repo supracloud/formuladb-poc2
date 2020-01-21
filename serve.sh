@@ -6,9 +6,9 @@ handleErr () {
 }
 trap handleErr ERR
 
-./node_modules/.bin/live-server --port=8081 --no-browser \
+./node_modules/.bin/live-server --quiet --port=8081 --no-browser \
     --wait=1000 \
-    --watch=formuladb,formuladb-env \
+    --watch=formuladb \
     --mount=/formuladb/:./formuladb/ \
     --mount=/formuladb-env/themes/:./formuladb-env/themes \
     --mount=/formuladb-env/icons/:./formuladb-env/icons \
