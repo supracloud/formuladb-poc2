@@ -15,6 +15,7 @@ import { Entity, EntityProperty, Pn } from '@domain/metadata/entity';
 import { CssWidth } from '@domain/uimetadata/css-classes';
 import { elvis } from '@core/elvis';
 import { FORM_SERVICE } from '@fe/form.service';
+import { ImgEditorComponent } from '@fe/frmdb-editor/img-editor.component';
 const LOG = new FrmdbLogger('frmdb-form');
 
 /** Component constants (loaded by webpack) **********************************/
@@ -85,3 +86,41 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
 
 // document.createElement('frmdb-form').setAttribute('rowid', "test-rowid");
 // console.log((FormComponent as any).observedAttributes);
+
+class FormImageComponent extends HTMLElement {
+    imgEditor: ImgEditorComponent;
+    connectedCallback() {
+        this.imgEditor = this.ownerDocument?.querySelector('frmdb-img-editor') as ImgEditorComponent;
+    }
+
+    static observedAttributes = ["img-src"];
+    attributeChangedCallback(attrName: string, oldVal, newVal) {
+        if ('img-src' === attrName) {
+            let inputEl: HTMLInputElement | undefined = this.parentElement!.querySelector('input') as HTMLInputElement | undefined;
+            if (!inputEl) return;
+            let imagePropertyListener = {
+                setImgSrc: (src: string) => {
+                    if (!inputEl) return;
+                    inputEl.value = src;
+                    inputEl.dispatchEvent(new Event('change', {bubbles: true}));
+                },
+                setBlob: async (name: string, blob: Blob) => {
+                    if (!inputEl) return;
+                    let newSrc = await BACKEND_SERVICE().saveMedia(name, blob);
+                    return newSrc;
+                },
+            };
+
+            this.innerHTML = /*html*/ `
+                <a href="javascript:void(0)">
+                    <img src="${inputEl.value}" style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
+                </a>
+            `;
+            this.onclick = () => {
+                this.imgEditor.start(imagePropertyListener);
+            }
+        }
+    }
+
+}
+customElements.define('frmdb-form-image', FormImageComponent);

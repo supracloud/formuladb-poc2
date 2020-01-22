@@ -9,7 +9,7 @@ body {
     left: 0;
     width: var(--frmdb-editor-left-panel-width);
     height: 100vh;
-    z-index: 1049;
+    z-index: 1039;
 }
 
 .top-panel {
@@ -18,7 +18,7 @@ body {
     left: var(--frmdb-editor-left-panel-width);
     width: calc(100vw - var(--frmdb-editor-left-panel-width));
     height: var(--frmdb-editor-top-panel-height);
-    z-index: 1048;
+    z-index: 1038;
 }
 
 #canvas {
@@ -57,9 +57,12 @@ $grid-gutter-width:           5px;
 
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
+@import "../../../themes/frmdb/mixins";
 @import "../../../themes/frmdb/dropdown";
 @import "../../../themes/frmdb/card";
 @import "../../../themes/frmdb/utilities/scrollbar";
+@import "../../../themes/frmdb/utilities/background";
+@import "../../../themes/frmdb/utilities/sizing";
 
 .top-panel, .left-panel {
     font-family: $font-family-base;
