@@ -13,7 +13,11 @@ import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
+
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
+import '../directives/data-toggle-tab.directive';
+import '../directives/data-toggle-modal.directive';
+
 import { App } from "@domain/app";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 

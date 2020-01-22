@@ -42,8 +42,8 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
                 },
                 setBlob: async (name: string, blob: Blob) => {
                     if (!prop) return;
-                    prop.setBlob(name, blob);
-                    return this.frmdbBlob.url;
+                    let frmdbBlob = prop.setBlob(name, blob);
+                    return frmdbBlob.url;
                 },
             };
             editor.imgEditorCmp.start(listener);

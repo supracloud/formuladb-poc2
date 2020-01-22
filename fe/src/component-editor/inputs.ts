@@ -290,7 +290,7 @@ export class ImageInput extends Input {
 		}
 	}
 
-	setBlob(fileName: string, blob: Blob) {
+	setBlob(fileName: string, blob: Blob): FrmdbBlob {
 		if (this.frmdbBlob) {
 			BLOBS.removeBlob(this.frmdbBlob);
 		}
@@ -298,6 +298,7 @@ export class ImageInput extends Input {
 		this.frmdbBlob = BLOBS.addImgBlob(fileName, blob);
 		this.setValue(this.frmdbBlob.url);
 		this.emitChange();
+		return this.frmdbBlob;
 	}
 
 	init(data) {

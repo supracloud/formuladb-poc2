@@ -98,26 +98,29 @@ class FormImageComponent extends HTMLElement {
         if ('img-src' === attrName) {
             let inputEl: HTMLInputElement | undefined = this.parentElement!.querySelector('input') as HTMLInputElement | undefined;
             if (!inputEl) return;
-            let imagePropertyListener = {
-                setImgSrc: (src: string) => {
-                    if (!inputEl) return;
-                    inputEl.value = src;
-                    inputEl.dispatchEvent(new Event('change', {bubbles: true}));
-                },
-                setBlob: async (name: string, blob: Blob) => {
-                    if (!inputEl) return;
-                    let newSrc = await BACKEND_SERVICE().saveMedia(name, blob);
-                    return newSrc;
-                },
-            };
 
             this.innerHTML = /*html*/ `
                 <a href="javascript:void(0)">
                     <img src="${inputEl.value}" style="width: 100%; border-radius: 5px; border: 1px solid grey;" />
                 </a>
             `;
+            let img: HTMLImageElement = this.querySelector('img') as HTMLImageElement;
+
+            let setImgSrc = (src: string) => {
+                if (!inputEl) return;
+                inputEl.value = src;
+                img.src = src;
+                inputEl.dispatchEvent(new Event('change', {bubbles: true}));
+            };
+            let setBlob = async (name: string, blob: Blob) => {
+                if (!inputEl) return;
+                let newSrc = await BACKEND_SERVICE().saveMedia(name, blob);
+                setImgSrc(newSrc);
+                return newSrc;
+            };
+
             this.onclick = () => {
-                this.imgEditor.start(imagePropertyListener);
+                this.imgEditor.start({setImgSrc, setBlob});
             }
         }
     }
