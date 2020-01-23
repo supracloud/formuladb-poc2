@@ -435,6 +435,7 @@ export class FormulaEditorComponent extends FrmdbElementBase<any, FormulaEditorS
             }
         }
         this.frmdbState.formulaHighlightedColumns = newformulaHighlightedColumns;
+        this.dispatchEvent(new CustomEvent('FrmdbFormulaEditorChangedColumnsHighlightEvent', {bubbles: true}));
 
         this.currentTokens = ret;
         return ret;

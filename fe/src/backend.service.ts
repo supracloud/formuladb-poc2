@@ -208,8 +208,10 @@ export class BackendService {
         });
         reader.readAsArrayBuffer(blob);
     
+        console.warn('XXXX')
         await p;
 
+        console.warn('XXXX')
         return newSrc;
     }
 

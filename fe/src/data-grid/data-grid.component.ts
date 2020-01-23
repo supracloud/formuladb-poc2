@@ -35,19 +35,19 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     selectedRow: DataObj;
     selectedColumnName: string;
 
-    get elem() {return this.shadowRoot!}
+    get elem() { return this.shadowRoot! }
 
     private _highlightColumns: DataGridComponentI['highlightColumns'] = {};
-    get highlightColumns() {return this._highlightColumns}
+    get highlightColumns() { return this._highlightColumns }
     set highlightColumns(hc: DataGridComponent['_highlightColumns']) {
         this._highlightColumns = hc;
         this.forceCellRefresh();
     }
     get noFloatingFilters() {
-        return ('true' === (this.getAttribute("no-floating-filters")||'').toLowerCase());
+        return ('true' === (this.getAttribute("no-floating-filters") || '').toLowerCase());
     }
     get headerHeight() {
-        return parseInt(this.getAttribute("header-height")||'') || 28;
+        return parseInt(this.getAttribute("header-height") || '') || 28;
     }
     get tableName() {
         return this.getAttribute("table-name") || undefined;
@@ -66,17 +66,17 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     }
 
     /** web components API **************************************************/
-    static observedAttributes = ["table-name", "header-height" , "expand-row", "no-floating-filters"];
+    static observedAttributes = ["table-name", "header-height", "expand-row", "no-floating-filters"];
     attributeChangedCallback(attrName: string, oldVal, newVal) {
         waitUntil(() => Promise.resolve(this.gridApi), 2500)
-        .then(() => {
-            if (!this.gridApi) throw new Error("Timeout during initialization");
-            if (attrName == 'table-name') {
-                this.initAgGrid();
-            } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
-                this.gridApi.purgeServerSideCache()
-            }    
-        });
+            .then(() => {
+                if (!this.gridApi) throw new Error("Timeout during initialization");
+                if (attrName == 'table-name') {
+                    this.initAgGrid();
+                } else if ("TODOO how to pass in events from outside ServerDeletedFormData" == "TODOO how to pass in events from outside ServerDeletedFormData") {
+                    this.gridApi.purgeServerSideCache()
+                }
+            });
     }
 
     connectedCallback() {
@@ -112,12 +112,12 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
                 name: 'Delete Column',
                 action: () => {
                     emit(this, {
-                        type: "UserDeleteColumn", 
-                        tableName: this.tableName || 'n/a/tbl', 
+                        type: "UserDeleteColumn",
+                        tableName: this.tableName || 'n/a/tbl',
                         columnName: params.column.getColDef().field || 'n/a/col',
                     });
                 },
-                icon: '<i class="la la-minus-circle"></i>'                
+                icon: '<i class="la la-minus-circle"></i>'
             });
 
             return defaults;
@@ -147,7 +147,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             if (this.selectedRowIdx != newSelectedRowIdx || this.selectedColumnName != newSelectedColumnName) {
                 refreshCellsParams = {
                     rowNodes: [
-                        this.gridApi.getDisplayedRowAtIndex(this.selectedRowIdx || 0), 
+                        this.gridApi.getDisplayedRowAtIndex(this.selectedRowIdx || 0),
                         this.gridApi.getDisplayedRowAtIndex(newSelectedRowIdx)
                     ],
                     columns: [this.selectedColumnName || '_id', newSelectedColumnName || '_id'],
@@ -161,7 +161,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             if (refreshCellsParams && this.gridApi) {
                 // this.gridApi.refreshCells(refreshCellsParams);
                 //FIXME: the targeted cell refresh does not call the applyCellStyles method
-                this.gridApi.refreshCells({force: true});
+                this.gridApi.refreshCells({ force: true });
             }
         },
         autoGroupColumnDef: { width: 150 },
@@ -184,7 +184,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
                 // this.frmdbStreams.userEvents$.next({type: "UserModifiedTableUi", table: this.tableState});
             }
         },
-        floatingFilter: true,   
+        floatingFilter: true,
         onFilterChanged: (event: any) => {
             if (!_.isEqual(this.filters, this.gridApi.getFilterModel())) {
                 const fs = this.gridApi.getFilterModel();
@@ -260,20 +260,24 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         let entityId = this.tableName;
         let hc = this._highlightColumns || {};
 
-        let backgroundStyles: {[k: string]: string | null} = {
+        let backgroundStyles: { [k: string]: string | null } = {
             backgroundColor: null,
             'background-image': null,
-            'background-size': null,    
+            'background-size': null,
         };
 
-        let borderStyles: {[k: string]: string | null} = {
+        let borderStyles: { [k: string]: string | null } = {
             "border-color": null,
         }
 
-        if (entityId && hc[entityId] && hc[entityId][params.colDef.field]) {
-            let highightColor = hc[entityId][params.colDef.field];
+        if (entityId && hc[entityId] && (
+            hc[entityId][params.colDef.field]
+            || params.data._id == hc['$HIGHLIGHT-RECORD$']?._id
+        )){
+            let highightColor = hc[entityId][params.colDef.field] || 
+                Object.values(hc[entityId])[0];
             if (typeof highightColor === "string") {
-                backgroundStyles = { 
+                backgroundStyles = {
                     ...backgroundStyles,
                     backgroundColor: highightColor.replace(/^c_/, '#'),
                 };
@@ -288,11 +292,10 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             borderStyles = { "border-color": "blue" };
         } else if (params.node.rowIndex != this.selectedRowIdx && params.colDef.field == this.selectedColumnName) {
             backgroundStyles = {
-                ...CURRENT_COLUMN_HIGHLIGHT_STYLE,
-                backgroundColor: null,
+                backgroundColor: '#eceeef',
             };
-    }
-        return { ...backgroundStyles, ...borderStyles};
+        }
+        return { ...backgroundStyles, ...borderStyles };
     }
 
     agFilter(ctype: string) {
@@ -386,7 +389,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     }
 
     valueFormatter(params) {
-        if (params.colDef.field === '_id') return ((params.value || '')+'').replace(/^.*~~/, '');
+        if (params.colDef.field === '_id') return ((params.value || '') + '').replace(/^.*~~/, '');
         else return params.value;
     }
 

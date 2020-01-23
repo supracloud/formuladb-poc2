@@ -7,7 +7,15 @@ function hide(modal: HTMLElement) {
     modal.classList.remove('show', 'd-block');
 }
 
-export function $FMODAL(modal: HTMLElement, action?: 'show' | 'hide' | 'toggle') {
+export function $FMODAL(modalEl: HTMLElement | string, action?: 'show' | 'hide' | 'toggle'): HTMLElement {
+    let modal: HTMLElement;
+    if (typeof modalEl === "string") {
+        modal = document.querySelector(modalEl) as HTMLElement;
+    } else {
+        modal = modalEl;
+    }
+    if (!modal) throw new Error(`${modalEl} not found`);
+
     let dismissBtns: HTMLElement[] = Array.from(modal.querySelectorAll('[data-dismiss="modal"]'));
     for (let b of dismissBtns) {
         if (!b.onclick) b.onclick = () => hide(modal);
@@ -23,10 +31,13 @@ export function $FMODAL(modal: HTMLElement, action?: 'show' | 'hide' | 'toggle')
         show(modal);
     } else if (action === "hide") {
         hide(modal);
+        modal.dispatchEvent(new CustomEvent("FrmdbModalCloseEvent"));
     } else if (action === "toggle") {
         if (modal.classList.contains('show')) hide(modal);
         else show(modal);
     }
+
+    return modal;
 }
 (window as any).$FMODAL = $FMODAL;
 

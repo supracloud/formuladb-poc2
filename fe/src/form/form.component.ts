@@ -109,7 +109,14 @@ class FormImageComponent extends HTMLElement {
             let setImgSrc = (src: string) => {
                 if (!inputEl) return;
                 inputEl.value = src;
+
                 img.src = src;
+
+                //Workaround for live-server which gets the image via rsync a bit later
+                //TODO: remove this when we add ingress to local dev env
+                setTimeout(() => img.src = src, 1500);
+                setTimeout(() => img.src = src, 3000);
+
                 inputEl.dispatchEvent(new Event('change', {bubbles: true}));
             };
             let setBlob = async (name: string, blob: Blob) => {

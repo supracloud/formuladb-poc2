@@ -10,12 +10,12 @@ export type EventType =
     | "blur" 
     | "keydown" 
     | "keyup" 
-    | "frmdbchange" 
     | "change"
     | "input"
     | "submit"
     | "paste"
     | FrmdbUserEvent['type']
+    | 'FrmdbFormulaEditorChangedColumnsHighlightEvent'
 ;
 
 export function getTarget(event: Event): HTMLElement | null {
