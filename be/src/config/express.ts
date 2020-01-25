@@ -90,7 +90,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/register', function(req, res, next) {
         if (process.env.FRMDB_IS_PROD_ENV) {
-            res.sendFile('/wwwroot/git/formuladb-env/apps/formuladb.io/register.html');
+            res.sendFile('/wwwroot/git/formuladb-env/frmdb-platform-apps/formuladb_io/register.html');
         } else {
             next();
         }

@@ -86,7 +86,7 @@ function test_e2e {
 function e2e_dev_env {
     set -x
 
-    if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-platform-apps/formuladb.io/schema | grep 'SampleApp'; then
+    if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-platform-apps/formuladb_io/schema | grep 'SampleApp'; then
         echo "== ERROR: be not started yet ! "
         kubectl -n "$FRMDB_ENV_NAME" logs service/be
     fi
@@ -99,7 +99,7 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    while ! curl $URL/formuladb-api/apps/formuladb.io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl $URL/formuladb-api/apps/formuladb_io/schema | grep 'SampleApp'; do sleep 2; done
     # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io"
 }

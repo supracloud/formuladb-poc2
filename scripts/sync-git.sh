@@ -9,6 +9,9 @@ else
 fi
 
 cd /wwwroot/git/formuladb-env
+git config user.email "git.bot@formuladb.io"
+git config user.name "Git Bot"
+
 if [ -n "$(git status --porcelain)" ]; then
   git add .
   if [ -z "$BUILD_DEVELOPMENT" ]; then

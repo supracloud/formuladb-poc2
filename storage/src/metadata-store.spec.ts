@@ -25,7 +25,7 @@ describe('MetadataStore', () => {
     <!DOCTYPE html>
     <head>
         <title>FormulaDB - Build Applications Without Code</title>
-        <link href="/formuladb-env/static/formuladb.io/favicon.png" rel="icon" type="image/png">
+        <link href="/formuladb-env/static/formuladb_io/favicon.png" rel="icon" type="image/png">
     </head>
     <body data-frmdb-tenant="formuladb-env/apps" data-frmdb-app="formuladb_io">
         <header>
@@ -68,7 +68,7 @@ describe('MetadataStore', () => {
         let headHtml = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/apps/testApp/_head.html', 'utf8');
         expect(headHtml).toEqual(/*html*/`<head>
 <title>FormulaDB - Build Applications Without Code</title>
-<link href="/formuladb-env/static/formuladb.io/favicon.png" rel="icon" type="image/png">
+<link href="/formuladb-env/static/formuladb_io/favicon.png" rel="icon" type="image/png">
 </head>`);
     });
 
