@@ -152,7 +152,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     // apps
     //////////////////////////////////////////////////////////////////////////////////////
 
-    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-env/apps/formuladb.io', { index: "index.html" });
+    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-env/frmdb-platform-apps/formuladb_io', { index: "index.html" });
     app.get('/', formuladbIoStatic);
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);

@@ -217,7 +217,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
 
     DescXclude("Combine with other apps", () => {
         StepWithVideo(`Other apps can be useful in combination with the Hotel Booking app`, async () => {
-            await GoTo(`/formuladb-apps/formuladb.io`);
+            await GoTo(`/frmdb-platform-apps/formuladb_io`);
         });
         StepWithVideo(`For example Blog app, so you can easily publish content for your visitors`, async () => {
             //TODO
