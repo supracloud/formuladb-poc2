@@ -13,7 +13,7 @@ config:
       - "https://dashboard.formuladb.io"
       - "https://formuladb.io"
       - "https://staging.formuladb.io"
-      - "https://formuladb:HEwAXwhG5Tqd@kibana.formuladb.io"
+      - "https://formuladb:HEwAXwhG5Tqd@kibana.formuladb.io/analytics/app/kibana"
       - "https://formuladb:HEwAXwhG5Tqd@elasticsearch.formuladb.io"
       - "https://formuladb:HEwAXwhG5Tqd@apmserver.formuladb.io"
     check.response.status: 200
