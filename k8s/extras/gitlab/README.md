@@ -66,6 +66,22 @@ helm upgrade --install gitlab gitlab/gitlab \
 
 ```
 
+```
+kubectl edit cronjob -n gitlab gitlab-task-runner-backup
+
+Remove lines due to https://gitlab.com/gitlab-org/charts/gitlab/issues/1426
+
+            - mountPath: /srv/gitlab/tmp
+              name: task-runner-tmp
+			  
+          - name: task-runner-tmp
+            persistentVolumeClaim:
+              claimName: gitlab-task-runner-backup-tmp
+
+``` 
+
+TODO: add a cronjob for minio backup. gitlab charts does not support yet backup up to external object storage https://gitlab.com/gitlab-org/charts/gitlab/issues/1765
+
 # Initial login
 
 ```sh
