@@ -1,5 +1,6 @@
 set -xe
 
+FRMDB_ENV_NAME="$1"
 if [[ -z ${FRMDB_ENV_NAME+x} ]]; then
     FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
 fi

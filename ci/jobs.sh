@@ -26,8 +26,8 @@ function build_images_and_deploy {
     SKAFFOLD_PROFILE=$2
     if [ -z "$SKAFFOLD_PROFILE" ]; then echo "pls provide SKAFFOLD_PROFILE"; exit 2; fi
 
-    bash $BASEDIR/prepare-env.sh
-    bash $BASEDIR/../scripts/prepare-env.sh
+    bash $BASEDIR/prepare-env.sh "$NAMESPACE"
+    bash $BASEDIR/../scripts/prepare-env.sh "$NAMESPACE"
     skaffold -n $NAMESPACE run -p $SKAFFOLD_PROFILE
 
     # while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 1; done
