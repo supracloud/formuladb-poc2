@@ -41,6 +41,6 @@ if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" ]; then
             CREATE TEMP TABLE tmp_table ON COMMIT DROP AS SELECT * FROM ${t} WITH NO DATA;
             COPY tmp_table FROM STDIN WITH CSV HEADER;
             INSERT INTO ${t} SELECT * FROM tmp_table ON CONFLICT DO NOTHING;
-        "
+        " || true
     done
 fi
