@@ -218,7 +218,7 @@ export class FrmdbEditorDirective {
     tableManagementFlows() {
 
         onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.apps[]"]', (event: MouseEvent) => {
-            this.changeSelectedTableIdIfDifferent(getTarget(event)!.innerHTML);
+            this.checkSafeNavigation(event);
         });
 
         onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
@@ -252,7 +252,8 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             await this.loadApps();
                             newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
-                            $FMODAL(newAppModal, 'hide')
+                            $FMODAL(newAppModal, 'hide');
+                            window.location.hash = `#/${tenantName}/${appName}/index.html`;
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);

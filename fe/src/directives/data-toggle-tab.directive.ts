@@ -9,6 +9,10 @@ onEventChildren(document, 'click', '[data-toggle="tab"]', (event) => {
     let tabPane = document.querySelector(tab.href.replace(/^.*#/, '#'));
     if (!tabPane || !tabPane.matches('.tab-pane')) return;
     
+    for (let siblingTab of Array.from(tab.parentElement!.parentElement!.querySelectorAll('.nav-item .nav-link'))) {
+        siblingTab.classList.remove('active');
+    }
+    tab.classList.add('active');
     for (let pane of Array.from(tabPane.parentElement!.querySelectorAll('.tab-pane'))) {
         pane.classList.remove('active', 'show');
     }
