@@ -43,7 +43,7 @@ kubectl apply -n kube-system -f k8s/extras/elasticstack/filebeat-kubernetes-remo
 ```
 
 ## Heartbeat
-`helm install --namespace monitoring --name heartbeat -f k8s/extras/elasticstack/heartbeat-kubernetes.yaml stable/heartbeat`
+`kubectl apply -n monitoring -f k8s/extras/elasticstack/heartbeat-kubernetes.yaml`
 
 # Kube-state-metrics
 `kubectl apply -f k8s/extras/elasticstack/kube-state-metrics.yaml`
