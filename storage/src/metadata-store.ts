@@ -234,6 +234,7 @@ export class MetadataStore {
         } else {
             await execShell(`cp -ar ${ROOT}/frmdb-platform-apps/themes ${ROOT}/${tenantName}/${appName}`);
         }
+        await execShell(`mkdir -p ${ROOT}/static/${tenantName}/${appName}`);
         return this.getApp("apps", appName);
     }
 

@@ -13,7 +13,7 @@ spec:
   #   - $(NAMESPACE_NAME).formuladb.io
   #   secretName: certificate-formuladb-staging
   rules:
-  - host: frmdb.localhost
+  - host: $(NAMESPACE_NAME).formuladb.io
     http:
       paths:
       - path: /

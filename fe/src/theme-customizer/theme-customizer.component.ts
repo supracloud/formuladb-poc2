@@ -20,7 +20,7 @@ class State {
     selectedColor: Color | undefined = undefined;
     selectedLook: string | undefined = undefined;
     selectedTheme: string | undefined = undefined;
-    noneThemeIsActive: boolean = true;
+    noneThemeIsActive: boolean = false;
 }
 
 export class ThemeCustomizerComponent extends HTMLElement {
@@ -109,6 +109,7 @@ export class ThemeCustomizerComponent extends HTMLElement {
                 this.state.noneThemeIsActive = true;
                 this.state.themes.forEach(t => t.active = false);
             } else if (themeName) {
+                this.state.themes.forEach(t => t.active = false);
                 this.applyActiveTheme(themeName);
                 this.state.noneThemeIsActive = false;
             }

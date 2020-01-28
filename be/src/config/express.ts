@@ -131,22 +131,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use('/formuladb-env/icons/', express.static('wwwroot/git/formuladb-env/icons'));
     app.use('/formuladb-env/static/', express.static('/wwwroot/git/formuladb-env/static'));
     app.use('/formuladb-env/plugins/', express.static('/wwwroot/git/formuladb-env/plugins'));
-    
-    const staticAssetsUrl = process.env.FRMDB_IS_DEV_ENV ? 'http://nginx:8085' : 'https://storage.googleapis.com/formuladb-env/static-assets';
-    let httpProxy = proxy({
-        target: staticAssetsUrl,
-        changeOrigin: true,
-        proxyTimeout: 500,
-        // pathRewrite: function (path, req) { return path },
-        logLevel: "debug",
-    });
-    //not used anymore
-    app.get(/^\/formuladb-env\/static\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
-        httpProxy(req, res, next);
-    });
-    app.get(/^\/formuladb-themes\/.*/, timeout('2s'), async function (req, res, next) {
-        httpProxy(req, res, next);
-    });
+    app.use('/formuladb-env/frmdb-platform-apps/themes/', express.static('/wwwroot/git/formuladb-env/frmdb-platform-apps/themes/'));
 
     //////////////////////////////////////////////////////////////////////////////////////
     // apps

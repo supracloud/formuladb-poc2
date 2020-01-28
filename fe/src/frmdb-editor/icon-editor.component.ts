@@ -2,15 +2,13 @@ import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { ImageInput, IconInput } from "@fe/component-editor/inputs";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
+import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/icon-editor.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/icon-editor.component.scss').default;
 
 export class IconEditorComponent extends HTMLElement {
-    iconInputProperty: IconInput;
-    get isOpen(): boolean {
-        return (($('#icon-editor-modal') as any).data('bs.modal') || {})['_isShown'];
-    }
+    iconInputProperty: IconInput | null = null;
 
     connectedCallback() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
@@ -20,7 +18,8 @@ export class IconEditorComponent extends HTMLElement {
             let iconClass = event.target.closest('a').querySelector('i').getAttribute('class');
             this.iconInputProperty.setValue(iconClass);
             this.iconInputProperty.emitChange();
-            ($('#icon-editor-modal') as any).modal('hide');
+            $FMODAL('#icon-editor-modal', 'hide');
+            this.iconInputProperty = null;
         });
         
         onEventChildren(this, 'click', '[data-frmdb-value="paidIconsUrls[]"]', event => {
@@ -30,9 +29,9 @@ export class IconEditorComponent extends HTMLElement {
     }
 
     start(iconInputProperty: IconInput) {
-        if (this.isOpen) return;
+        if (this.iconInputProperty) return;
         this.iconInputProperty = iconInputProperty;
-        ($('#icon-editor-modal') as any).modal('show');
+        $FMODAL('#icon-editor-modal');
         updateDOM({freeIconsClasses: FREE_ICONS}, this);
     }
 }

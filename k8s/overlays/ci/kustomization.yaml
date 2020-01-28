@@ -1,0 +1,10 @@
+bases:
+- ../../base
+patches:
+- patches/be-deployment.yaml
+- patches/pg-backup-deployment.yaml
+resources:
+- resources/ingress.yaml
+# - resources/nginx-deployment.yaml
+# - resources/nginx-service.yaml
+# - resources/staging-issuer.yaml

@@ -2,6 +2,7 @@ import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { applyTheme } from "@fe/frmdb-themes";
+import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;
@@ -50,7 +51,7 @@ export class AddElementComponent extends HTMLElement {
                 }
             }
 
-            ($('#add-element-modal') as any).modal('hide');
+            $FMODAL('#add-element-modal', 'hide');
         });
     }
 
@@ -62,7 +63,7 @@ export class AddElementComponent extends HTMLElement {
         this.themeName = themeName;
         this.iframe.contentWindow!.location.reload();
                 
-        ($('#add-element-modal') as any).modal('show');
+        $FMODAL('#add-element-modal');
     }
 }
 customElements.define('frmdb-add-element', AddElementComponent);

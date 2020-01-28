@@ -18,12 +18,12 @@ var ComfortTheme = {
             '--frmdb-bg-img': "url('../_img/bg1.jpg')",
         },
         children: {
-            '.frmdb-t-cover__main': {
+            '.frmdb-t-main': {
                 addClasses: [
                     'flex-grow-1', 'd-flex', 'flex-column', 'justify-content-center'
                 ],
             },
-            '.frmdb-t-cover__section': {
+            '.frmdb-t-aside': {
                 addClasses: [
                     'container', 'frmdb-section-dark'
                 ],

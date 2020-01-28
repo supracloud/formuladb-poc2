@@ -20,7 +20,6 @@ function _cleanup {
 function build_images_and_deploy {
     set -x
     
-    set -x
     NAMESPACE=$1
     if [ -z "$NAMESPACE" ]; then echo "pls provide NAMESPACE"; exit 1; fi
     SKAFFOLD_PROFILE=$2

@@ -43,7 +43,7 @@ profiles:
     patches:
       - op: replace
         path: /deploy/kustomize/path
-        value: k8s/overlays/development
+        value: k8s/overlays/ci
   - name: staging
     patches:
       - op: replace

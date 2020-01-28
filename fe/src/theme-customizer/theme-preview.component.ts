@@ -40,7 +40,7 @@ export class ThemePreviewComponent extends HTMLElement {
     render() {
         this.shadowRoot!.innerHTML = /*html*/`
         <header class="frmdb-t-cover">
-            <div class="frmdb-t-cover__main">
+            <div class="frmdb-t-main">
                 <div class="jumbotron">
                     <h6>Subtitle of app, can be a bit longer in words</h6>
                     <h1 class="display-4">${this.getAttribute('theme')}</h1>
@@ -50,7 +50,7 @@ export class ThemePreviewComponent extends HTMLElement {
                     <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
                 </div>
             </div>
-            <div class="frmdb-t-cover__section">
+            <div class="frmdb-t-aside">
                 Section embedded into the cover page
             </div>
         </header>

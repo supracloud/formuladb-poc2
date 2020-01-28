@@ -1,12 +1,13 @@
-import { isDocument } from "./dom-utils";
+import { isDocument, getWindow } from "./dom-utils";
 import { isHTMLElement } from "@core/html-tools";
+import { debouncedAOSRefreshHard } from "./frmdb-plugins";
 
 export interface ThemeRules {
     [themeRuleSelector: string]: {
         addClasses?: string[];
         addCssVars?: { [varName: string]: string };
         addStyles?: { [varName: string]: string };
-        children: ThemeRules;
+        addAttributes?: { [attrName: string]: string };
     }
 }
 
@@ -38,6 +39,7 @@ export async function applyTheme(themeName: string, rootEl: Document | ShadowRoo
 
 export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
     let parentSelector = parentSelectorOpt || '';
+    let wnd = getWindow(rootEl);
     for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
         for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {
             if (rule.addClasses) {
@@ -54,8 +56,13 @@ export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowR
                     el.style.setProperty(varToAdd[0], varToAdd[1]);
                 }
             }
-            if (rule.children) {
-                translateThemeRulesByReplacingClasses(rootEl, rule.children, themeRuleSelector);
+            if (rule.addAttributes) {
+                for (let attrToAdd of Object.entries(rule.addAttributes)) {
+                    el.setAttribute(attrToAdd[0], attrToAdd[1]);
+                    if (attrToAdd[0] === "data-aos") {
+                        debouncedAOSRefreshHard(wnd);
+                    }
+                }
             }
         }
     }
@@ -78,9 +85,6 @@ export function unloadThemeRules(rootEl: Document | ShadowRoot | HTMLElement, th
                 for (let varToAdd of Object.entries(rule.addCssVars)) {
                     el.style.removeProperty(varToAdd[0]);
                 }
-            }
-            if (rule.children) {
-                unloadThemeRules(rootEl, rule.children, themeRuleSelector);
             }
         }
     }

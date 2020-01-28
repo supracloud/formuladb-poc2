@@ -14,7 +14,7 @@ var GrandFramesTheme = {
             'frmdb-transform-preserve-3d',
         ],
         children: {
-            '.frmdb-t-cover__main': {
+            '.frmdb-t-main': {
                 addCssVars: {
                     '--frmdb-bg-img': "url('../_img/bg2.jpg')",
                 },
@@ -29,7 +29,7 @@ var GrandFramesTheme = {
                     }
                 }
             },
-            '.frmdb-t-cover__section': {
+            '.frmdb-t-aside': {
                 addClasses: [
                     'container', 'p-0', 'frmdb-section-dark', 'mt-n5',
                 ],
