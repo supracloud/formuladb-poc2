@@ -37,10 +37,10 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 2; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
-    while ! curl "http://$NAMESPACE.formuladb.io/formuladb-api/apps/Hotel_Booking/schema" | grep 'RoomType'; do 
+    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/apps/Hotel_Booking/schema" | grep 'RoomType'; do 
         echo "== be not started yet ==================================================="
         kubectl -n "$NAMESPACE" logs service/be
-        sleep 2; 
+        sleep 10; 
     done
 }
 
