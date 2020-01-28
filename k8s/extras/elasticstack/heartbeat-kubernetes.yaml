@@ -1,87 +1,128 @@
-image:
-  repository: docker.elastic.co/beats/heartbeat
-  tag: 7.4.2
-  pullPolicy: IfNotPresent
-
-config:
-  heartbeat.monitors:
-  - type: http
-    schedule: '0 * * * * * *'
-    timeout: 1s
-    urls:
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heartbeat-deployment-config
+  labels:
+    k8s-app: heartbeat
+data:
+  heartbeat.yml: |-
+    heartbeat.monitors:
+    - type: http
+      schedule: '0 * * * * * *'
+      timeout: 1s
+      urls:
       - "https://gitlab.formuladb.io"
       - "https://dashboard.formuladb.io"
       - "https://formuladb.io"
       - "https://staging.formuladb.io"
-      - "https://formuladb:HEwAXwhG5Tqd@kibana.formuladb.io"
+      - "https://formuladb:HEwAXwhG5Tqd@kibana.formuladb.io/analytics/app/kibana"
       - "https://formuladb:HEwAXwhG5Tqd@elasticsearch.formuladb.io"
       - "https://formuladb:HEwAXwhG5Tqd@apmserver.formuladb.io"
-    check.response.status: 200
-  # heartbeat.autodiscover:
-  #   providers:
-  #     - type: kubernetes
-  #       templates:
-  #         - condition:
-  #             equals:
-  #               kubernetes.labels.service: "be"
-  #           config:
-  #             - type: http
-  #               urls: ["https://${data.kubernetes.namespace}.formuladb.io"]
-  #               schedule: "0 * * * * * *"
-  #               timeout: 1s
-  #               check.response.status: 200
-  output.elasticsearch:
-    hosts: ["formuladb-master.monitoring:9200"]
-  output.file:
-    enabled: false
-  setup.kibana:
-    host: "http://kibana-kibana.monitoring:5601" 
+      check.response.status: 200
+      
+    output.elasticsearch:
+      hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
 
-# List of beat plugins
-plugins: []
-  # - kinesis.so
+    output.file:
+        enabled: false
+    setup.kibana:
+        host: "http://kibana-kibana.monitoring:5601" 
 
-hostNetwork: false
-
-# A map of additional environment variables
-extraVars: {}
-  # test1: "test2"
-
-# Add additional volumes and mounts, for example to read other log files on the host
-extraVolumes: []
-  # - hostPath:
-  #     path: /var/log
-  #   name: varlog
-extraVolumeMounts: []
-  # - name: varlog
-  #   mountPath: /host/var/log
-  #   readOnly: true
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 200Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 100Mi
-
-priorityClassName: ""
-
-nodeSelector: {}
-
-tolerations: []
-
-rbac:
-  # Specifies whether RBAC resources should be created
-  create: true
-
-serviceAccount:
-  # Specifies whether a ServiceAccount should be created
-  create: true
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: heartbeat
+  labels:
+    k8s-app: heartbeat
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: heartbeat
+    spec:
+      serviceAccountName: heartbeat
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: heartbeat
+        image: docker.elastic.co/beats/heartbeat:7.5.2
+        args: [
+          "-c", "/etc/heartbeat.yml",
+          "-e",
+        ]
+        env:
+        - name: ELASTICSEARCH_HOST
+          value: formuladb-master
+        - name: ELASTICSEARCH_PORT
+          value: "9200"
+        securityContext:
+          runAsUser: 0
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: config
+          mountPath: /etc/heartbeat.yml
+          readOnly: true
+          subPath: heartbeat.yml
+      volumes:
+      - name: config
+        configMap:
+          defaultMode: 0600
+          name: heartbeat-deployment-config
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: heartbeat
+subjects:
+- kind: ServiceAccount
+  name: heartbeat
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: heartbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: heartbeat
+  labels:
+    k8s-app: heartbeat
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["extensions"]
+  resources:
+  - replicasets
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources:
+  - statefulsets
+  - deployments
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: heartbeat
+  labels:
+    k8s-app: heartbeat
+---
