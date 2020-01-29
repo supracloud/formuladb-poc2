@@ -94,6 +94,19 @@ export function FullTestWithVideo(text: string, callback: () => void) {
         }
     });
 
+    afterAll(async () => {
+        await e2e_utils.wait_for_ffmpeg_stream_to_finish(stream);
+        if (browser.params.audio) {
+            await e2e_utils.concat_audio(MESSAGES);
+            await e2e_utils.merge_video_and_audio();
+        } else {
+            e2e_utils.create_final_video();
+        }
+        await e2e_utils.crop_video();
+        await e2e_utils.create_gif_palette_and_video();
+        e2e_utils.cleanup(text);
+    });
+
     Desc(text, callback);
 }
 
