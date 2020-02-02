@@ -7,8 +7,6 @@ import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "./get-html";
-import { BLOBS } from "./frmdb-editor/blobs";
-import { frmdbSetImageSrc } from "./component-editor/components-bootstrap4";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)

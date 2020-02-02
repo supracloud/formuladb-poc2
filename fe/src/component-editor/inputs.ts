@@ -473,7 +473,7 @@ export class ValueTextInput extends TextInput {
 				<div class="col-12">
 				
 					<button class="btn btn-sm btn-outline-light text-danger">
-						<i class="la la-trash la-lg"></i> Remove
+						<i class="frmdb-i-fa-trash frmdb-i-lg"></i> Remove
 					</button>
 					
 				</div>
@@ -572,7 +572,7 @@ export class GridInput extends Input {
 				<div class="col-12">
 				
 					<button class="btn btn-sm btn-outline-light text-danger">
-						<i class="la la-trash la-lg"></i> Remove
+						<i class="frmdb-i-fa-trash frmdb-i-lg"></i> Remove
 					</button>
 					
 				</div>
@@ -602,7 +602,7 @@ export class ButtonInput extends Input {
 		this.render(/*html*/`
 			<div>
 				<button class="btn btn-sm btn-primary">
-					<i class="la  {% if (typeof icon !== 'undefined') { %} {%=icon%} {% } else { %} la-plus {% } %} la-lg"></i> {%=text%}
+					<i class="la  {% if (typeof icon !== 'undefined') { %} {%=icon%} {% } else { %} la-plus {% } %} frmdb-i-lg"></i> {%=text%}
 				</button>
 			</div>		
 		`, data);
@@ -647,7 +647,7 @@ export class ListInput extends Input {
 						<input name="{%=key%}_{%=i%}" type="text" class="form-control" value="{%=options[i].text%}"/>
 						<div class="input-group-append">
 							<button class="input-group-text btn btn-sm btn-danger">
-								<i class="la la-trash la-lg"></i>
+								<i class="frmdb-i-fa-trash frmdb-i-lg"></i>
 							</button>
 						</div>
 					</div>
@@ -660,7 +660,7 @@ export class ListInput extends Input {
 				<div class="col-12">
 				
 					<button class="btn btn-sm btn-outline-primary">
-						<i class="la la-trash la-lg"></i> Add new
+						<i class="frmdb-i-fa-trash frmdb-i-lg"></i> Add new
 					</button>
 					
 				</div>

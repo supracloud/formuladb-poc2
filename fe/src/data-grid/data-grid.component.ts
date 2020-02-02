@@ -117,7 +117,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
                         columnName: params.column.getColDef().field || 'n/a/col',
                     });
                 },
-                icon: '<i class="la la-minus-circle"></i>'
+                icon: '<i class="frmdb-i-fa-minus-circle"></i>'
             });
 
             return defaults;

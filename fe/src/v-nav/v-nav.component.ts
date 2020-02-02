@@ -103,7 +103,7 @@ export class VNavComponent extends FrmdbElementBase<{}, VNavComponentState> {
             ${this.entities.map(ent => /*html*/`
                 <li class="nav-item  ${this.frmdbState.selectedEntityId === ent._id ? 'active' : ''}">
                     <a class="nav-link position-relative py-0" data-id="${ent._id}">
-                        <span class="frmdb-nav-segment-text" data-content="<a class='delete-table-btn' data-id='${ent._id}' href='#'><i class='la la-trash'></i></a>">
+                        <span class="frmdb-nav-segment-text" data-content="<a class='delete-table-btn' data-id='${ent._id}' href='#'><i class='frmdb-i-fa-trash'></i></a>">
                             <span>${I18N.tt(ent._id)}</span>
                             <!--<span class="frmdb-nav-segment-dev-mode-identifier">${ent._id}</span>-->
                         </span>

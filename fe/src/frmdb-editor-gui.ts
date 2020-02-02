@@ -23,13 +23,13 @@ import { Undo } from "./frmdb-editor/undo";
 // 			themes.forEach(t => {
 // 				if (!themeChangeButton) {
 // 					themeChangeButton = jQuery('#frmdb-editor-color-palette-select');
-// 					themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
+// 					themeChangeButton.html(`<i style="color:${t.symbolColor}" class="frmdb-i-fa-square"></i>`);
 // 				}
-// 				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="la la-square"></i> ${t.name}</a>`)
+// 				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="frmdb-i-fa-square"></i> ${t.name}</a>`)
 // 					.click(event => {
 // 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
 // 							.attr('href', `${t.css}?refresh=${new Date().getTime()}`);
-// 						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="la la-square"></i>`);
+// 						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="frmdb-i-fa-square"></i>`);
 // 					})
 // 					.appendTo(themeOptions);
 // 			});

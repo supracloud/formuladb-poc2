@@ -55,29 +55,10 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "_url": "http://localhost:8084/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
-            "url": "http://frmdb.localhost/formuladb/editor.html#/apps/Hotel_Booking/index.html",
+            "url": "http://localhost:8084/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
+            "_url": "http://frmdb.localhost/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
+            "__url": "http://frmdb.localhost/formuladb/editor.html#/apps/Hotel_Booking/index.html",
             "webRoot": "${workspaceFolder}",
-            "pathMapping": {
-                "/formuladb-editor": "${workspaceFolder}/formuladb-editor"
-            },
-            "sourceMapPathOverrides": {
-                "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
-                "webpack:///./functions/src/*": "${webRoot}/functions/src/*",
-                "webpack:///./core/src/*": "${webRoot}/core/src/*",
-                "webpack:///./test/src/*": "${webRoot}/test/src/*",
-                "webpack:///./fe/src/*": "${webRoot}/fe/src/*",
-            }
-        },
-        {
-            "name": "FE serve - env",
-            "type": "chrome",
-            "request": "launch",
-            "url": "http://localhost:8082",
-            "webRoot": "${workspaceFolder}",
-            "pathMapping": {
-                "/formuladb-editor": "${workspaceFolder}/vvvebjs"
-            },
             "sourceMapPathOverrides": {
                 "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
                 "webpack:///./functions/src/*": "${webRoot}/functions/src/*",

@@ -79,7 +79,7 @@ function test_e2e {
     if uname -a | grep 'Linux.*Microsoft'; then 
         target=""
     fi
-    TARGET=$target npm test -- --baseUrl="$URL"
+    TARGET=$target npm run e2e -- --baseUrl="$URL"
 }
 
 function e2e_dev_env {

@@ -31,6 +31,7 @@ export class AddElementComponent extends HTMLElement {
             if (this.themeName) {
                 applyTheme(this.themeName, this.iframe.contentWindow!.document);
             }
+            this.iframe.contentWindow!.document.querySelector('[data-frmdb-fragment="_nav.html"]')?.setAttribute("data-frmdb-highlight-ignore", "");
         }
 
         onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
