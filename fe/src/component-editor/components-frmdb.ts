@@ -19,8 +19,6 @@ https://github.com/givanz/Vvvebjs
 import { createInput, Input } from "./inputs";
 import { incrementSort, ElementEditorComponent, incrementCommonPropsSort } from "@fe/component-editor/component-editor.component";
 import { Undo } from "@fe/frmdb-editor/undo";
-import { SyleClassesProperties } from "./properties-style-classes";
-import { FrmdbDataBindingProperties } from "./properties-data-binding";
 
 declare var $: null, jQuery: null;
 
@@ -166,78 +164,6 @@ function grabIcon(element: HTMLElement) {
 // ["html/container", "html/gridrow", "html/button", "html/buttongroup", "html/buttontoolbar", "html/heading", "html/image", "html/jumbotron", "html/alert", "html/card", "html/listgroup", "html/hr", "html/taglabel", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination", "html/form", "html/textinput", "html/textareainput", "html/selectinput", "html/fileinput", "html/checkbox", "html/radiobutton", "html/table", "html/paragraph", "html/link", "html/video", "html/button"];
 
 export function addComponents(Components: ElementEditorComponent, baseUrl: string) {
-
-    Components.extend("_base", "_base", {
-        name: "Element",
-        //@ts-ignore
-        properties: [
-            {
-                name: "Id",
-                key: "id",
-                htmlAttr: "id",
-                sort: incrementCommonPropsSort(),
-                inline: true,
-                col: 12,
-                inputtype: "TextInput",
-                tab: "left-panel-tab-content",
-            }, {
-                name: "Class (Advanced, for web developers)",
-                key: "class",
-                htmlAttr: "class",
-                sort: incrementCommonPropsSort(),
-                inline: true,
-                col: 12,
-                inputtype: "TextareaInput",
-                tab: "left-panel-tab-content",
-            },
-            {
-                name: "Image",
-                inline: true,
-                col: 12,
-                key: "src",
-                inputtype: "ImageInput",
-                tab: "left-panel-tab-content",
-                beforeInit: function (node: HTMLElement) {
-                    let imgSrc = grabImage(node);
-                    if (!imgSrc) this.hide = true;
-                    else this.hide = false;
-                },
-                onChange: frmdbSetImageSrc,
-                init: function (node: HTMLElement) {
-                    return grabImage(node);
-                },
-            },
-            {
-                name: "Icon",
-                key: "icon-class",
-                inputtype: "IconInput",
-                tab: "left-panel-tab-content",
-                inline: true,
-                col: 12,
-                beforeInit: function (node: HTMLElement) {
-                    let iconClass = grabIcon(node);
-                    if (!iconClass) this.hide = true;
-                    else this.hide = false;
-                },
-                onChange: function (element: HTMLElement, value: string) {
-                    Undo.addMutation({
-                        type: 'attributes',
-                        target: element,
-                        attributeName: 'class',
-                        oldValue: element.getAttribute('class'),
-                        newValue: value
-                    });
-                    element.setAttribute('class', value);
-                },
-                init: function (node: HTMLElement) {
-                    return grabIcon(node);
-                },
-            },
-            ...SyleClassesProperties,
-            ...FrmdbDataBindingProperties,
-        ]
-    });
-
 
     Components.extend("_base", "html/container", {
         classes: ["container", "container-fluid"],
@@ -1407,7 +1333,6 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
                 return node;
             },
         },
-        ...FrmdbDataBindingProperties,
         ]
     });
     Components.add("html/gridrow", {
@@ -1666,5 +1591,21 @@ export function addComponents(Components: ElementEditorComponent, baseUrl: strin
         nodes: [],
         name: "Element",
         html: "<tagName>"
+    });
+
+    Components.extend("_base", "_base", {
+        name: "Element",
+        properties: [
+            {
+                name: "Class (Advanced, for web developers)",
+                key: "class",
+                htmlAttr: "class",
+                sort: incrementCommonPropsSort(),
+                inline: true,
+                col: 12,
+                inputtype: "TextareaInput",
+                tab: "left-panel-tab-content",
+            },
+        ]
     });
 }

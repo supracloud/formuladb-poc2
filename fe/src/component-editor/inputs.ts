@@ -132,6 +132,28 @@ export class SelectInput extends Input {
 	}
 }
 
+
+export class ResponsiveClassSelectInput extends Input {
+	static elemTagName = "frmdb-responsive-class-select-input";
+	inputTagName = "frmdb-responsive-class-select-input";
+
+	setValue(value) {
+		this.querySelector('select')!.value = value;
+	}
+	init(data) {
+		super.init(data);
+		this.render(/*html*/`
+			<div>
+				<select class="form-control ">
+					{% for ( var i = 0; i < options.length; i++ ) { %}
+					<option value="{%=options[i].value%}">{%=options[i].text%}</option>
+					{% } %}
+				</select>
+			</div>
+		`, data);
+	}
+}
+
 export class LinkInput extends TextInput {
 	static elemTagName = "frmdb-link-input";
 	inputTagName = "frmdb-link-input";

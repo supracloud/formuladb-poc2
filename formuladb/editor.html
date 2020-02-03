@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/formuladb-env/icons/flag-icons-css/css/flag-icon.min.css" />
     <link rel="stylesheet" href="/formuladb/css/ad-grid-balham-font.css">
     <link rel="stylesheet" type="text/css" href="/formuladb-env/icons/formuladb/icons.css" />
+    <link rel="stylesheet" type="text/css" href="/formuladb-env/css/_transform.css" />
 </head>
 
 <body>
@@ -18,20 +19,20 @@
 
             <div class="btn-group mr-3" role="group">
                 <button class="btn btn-light" title="Undo most recent change" id="undo-btn" data-frmdb-action="undo" data-vvveb-shortcut="ctrl+z">
-                    <i class="la la-undo"></i>
+                    <i class="frmdb-i-fa-undo"></i>
                 </button>
 
                 <button class="btn btn-light" title="Redo change" id="redo-btn" data-frmdb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
-                    <i class="la la-undo la-flip-horizontal"></i>
+                    <i class="frmdb-i-fa-undo frmdb-i-flip-horizontal"></i>
                 </button>
             </div>
 
             <div class="btn-group mr-3" role="group">
                 <button class="btn btn-light" title="Save Page" id="save-btn">
-                    <i class="la la-save"></i>
+                    <i class="frmdb-i-fa-save"></i>
                 </button>
                 <button disabled class="btn btn-light" title="Publish to live environment" id="publish-btn" data-frmdb-action="saveApp">
-                    <i class="la la-upload"></i>
+                    <i class="frmdb-i-fa-upload"></i>
                 </button>
             </div>
 
@@ -45,7 +46,7 @@
                     <div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
                     </div>
                 </div>
-                <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" role="menu">
+                <!-- <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" role="menu">
                     <button class="btn btn-outline" id="frmdb-editor-app-version-select" type="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                         1
@@ -56,34 +57,34 @@
                         <a class="dropdown-item" title="Version 3" data-frmdb-action="viewport-mobile">Version 3</a>
                         <a class="dropdown-item" title="Version 4" data-frmdb-action="viewport-mobile">Version 4</a>
                     </div>
-                </div>
+                </div> -->
             </div>
 
             <div class="btn-group mr-3" role="group">
                 <button class="btn btn-light" title="Preview" id="preview-btn" type="button" data-toggle="button" aria-pressed="false"
                     data-frmdb-action="preview">
-                    <i class="la la-eye"></i>
+                    <i class="frmdb-i-fa-eye"></i>
                 </button>
 
                 <button class="btn btn-light" title="Fullscreen (F11)" id="fullscreen-btn" data-toggle="button" aria-pressed="false"
                     data-frmdb-action="fullscreen">
-                    <i class="la la-arrows"></i>
+                    <i class="frmdb-i-fa-arrows"></i>
                 </button>
 
                 <button id="table-code-editor-btn" data-view="mobile" class="d-none btn btn-sm btn-light btn-sm" title="Table Code Viewer"
                     data-frmdb-action="toggleTableEditor">
-                    <i class="la la-code-fork"></i>
+                    <i class="frmdb-i-fa-code-fork"></i>
                 </button>
 
                 <div class="btn-group dropdown frmdb-dropdown-hover" data-frmdb-select="i" role="menu">
                     <button class="btn btn-sm dropdown-toggle" id="screen-size-dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
-                        <i class="la la-laptop"></i>
+                        <i class="frmdb-i-fa-laptop"></i>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="screen-size-dropdown-toggle">
-                        <a class="dropdown-item" title="Mobile view" data-frmdb-action="viewport-mobile"><i class=" la la-mobile-phone"></i> Mobile</a>
-                        <a class="dropdown-item" title="Tablet view" data-frmdb-action="viewport-tablet"><i class="la la-tablet"></i> Tablet</a>
-                        <a class="dropdown-item" title="Desktop view" data-frmdb-action="viewport-laptop"><i class="la la-laptop"></i> Desktop</a>
+                        <a class="dropdown-item" title="Mobile view" data-frmdb-action="viewport-mobile"><i class=" frmdb-i-fa-mobile-alt"></i> Mobile</a>
+                        <a class="dropdown-item" title="Tablet view" data-frmdb-action="viewport-tablet"><i class="frmdb-i-fa-tablet-alt frmdb-i-rotate-90"></i> Tablet</a>
+                        <a class="dropdown-item" title="Desktop view" data-frmdb-action="viewport-laptop"><i class="frmdb-i-fa-laptop"></i> Desktop</a>
                     </div>
                 </div>
             </div>
@@ -93,13 +94,13 @@
         <div class="d-flex justify-content-between"
             style="border-bottom: 1px solid #BDC3C7; background:linear-gradient(150deg,#7795f8 15%,#6772e5 70%,#555abf 94%)">
             <img id="logo" src="/formuladb/img/logo.png" style="width: 90px; height: 28px;" />
-            <a class="btn btn-sm btn-outline-light m-2" href="javascript:void(0)" data-frmdb-action="showIntroVideoModal"><i class="la la-info"></i></a>
+            <a class="btn btn-sm btn-outline-light m-2" href="javascript:void(0)" data-frmdb-action="showIntroVideoModal"><i class="frmdb-i-fa-info"></i></a>
         </div>
 
         <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
             <li class="nav-item" title="list of apps">
                 <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
-                    <i class="la la-sitemap"></i>
+                    <i class="frmdb-i-fa-sitemap"></i>
                 </a>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
@@ -113,13 +114,13 @@
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
                 <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
-                    <i class="la la-ellipsis-v"></i>
+                    <i class="frmdb-i-fa-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-                    <a class="dropdown-item" id="new-app-btn" title="New App"><i class="la la-plus-circle"></i> New App</a>
+                    <a class="dropdown-item" id="new-app-btn" title="New App"><i class="frmdb-i-fa-plus-circle"></i> New App</a>
                     <!-- <div class="dropdown-divider"></div> -->
                     <!-- <a class="dropdown-item" id="delete-table-btn" title="Clone this App" data-frmdb-prop="tableToDelete::$frmdb.selectedTableId"><i
-                            class="la la-copy"></i> Clone App <span data-frmdb-value="$frmdb.selectedTableId"></span></a> -->
+                            class="frmdb-i-fa-copy"></i> Clone App <span data-frmdb-value="$frmdb.selectedTableId"></span></a> -->
                 </div>
             </li>
         </ul>
@@ -127,7 +128,7 @@
         <ul class="nav flex-row flex-nowrap pl-1 border-bottom" style="min-height: 28px;">
             <li class="nav-item" title="list of tables">
                 <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
-                    <i class="la la-table"></i>
+                    <i class="frmdb-i-fa-table"></i>
                 </a>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
@@ -140,13 +141,13 @@
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
                 <a href="javascript:void(0)" class="nav-link px-1" id="table-options" aria-haspopup="true" aria-expanded="false">
-                    <i class="la la-ellipsis-v"></i>
+                    <i class="frmdb-i-fa-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-                    <a class="dropdown-item" id="new-table-btn" title="New Table"><i class="la la-plus-circle"></i> New Table</a>
+                    <a class="dropdown-item" id="new-table-btn" title="New Table"><i class="frmdb-i-fa-plus-circle"></i> New Table</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="delete-table-btn" title="Delete Table" data-frmdb-prop="tableToDelete::$frmdb.selectedTableId"><i
-                            class="la la-trash"></i> Delete Table <span data-frmdb-value="$frmdb.selectedTableId"></span></a>
+                            class="frmdb-i-fa-trash"></i> Delete Table <span data-frmdb-value="$frmdb.selectedTableId"></span></a>
                 </div>
             </li>
         </ul>
@@ -154,7 +155,7 @@
         <ul class="nav flex-row flex-nowrap pl-1" style="min-height: 28px;">
             <li class="nav-item" title="list of pages">
                 <a class="nav-link px-1 disabled" href="javascript:void(0)" tabindex="-1" aria-disabled="true">
-                    <i class="la la-image"></i>
+                    <i class="frmdb-i-fa-image"></i>
                 </a>
             </li>
             <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover">
@@ -168,13 +169,13 @@
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
                 <a class="nav-link px-1" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">
-                    <i class="la la-ellipsis-v"></i>
+                    <i class="frmdb-i-fa-ellipsis-v"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
-                    <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="la la-plus-circle"></i> New Page</a>
+                    <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="frmdb-i-fa-plus-circle"></i> New Page</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="delete-page-btn" title="Delete Page" data-frmdb-prop="pagePathToDelete::$frmdb.selectedPagePath"><i
-                            class="la la-trash"></i> Delete Page <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
+                            class="frmdb-i-fa-trash"></i> Delete Page <span data-frmdb-value="$frmdb.selectedPageName"></span></a>
                 </div>
             </li>
         </ul>
@@ -198,9 +199,9 @@
 
                 <div class="modal-content">
                     <div class="modal-header">
-                        <p class="modal-title text-primary"><i class="la la-lg la-file"></i> New page</p>
+                        <p class="modal-title text-primary"><i class="frmdb-i-fa-file"></i> New page</p>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"><small><i class="la la-close"></i></small></span>
+                            <span aria-hidden="true"><small><i class="frmdb-i-fa-close"></i></small></span>
                         </button>
                     </div>
 
@@ -238,8 +239,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button class="btn btn-primary btn-lg" type="submit"><i class="la la-check"></i> Create page</button>
-                        <button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="la la-close"></i> Cancel</button>
+                        <button class="btn btn-primary btn-lg" type="submit"><i class="frmdb-i-fa-check"></i> Create page</button>
+                        <button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="frmdb-i-fa-close"></i> Cancel</button>
                     </div>
                 </div>
 

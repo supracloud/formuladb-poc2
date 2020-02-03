@@ -29,10 +29,10 @@ class FileCellRenderer {
     }
     
     getElementIcon(filename) {
-        return filename.endsWith('.mp3') || filename.endsWith('.wav') ? 'fa fa-file-audio-o'
-            : filename.endsWith('.xls') ? 'fa fa-file-excel-o'
-                : filename.endsWith('.txt') ? 'fa fa fa-file-o'
-                    : filename.endsWith('.pdf') ? 'fa fa-file-pdf-o' : 'fa fa-folder';
+        return filename.endsWith('.mp3') || filename.endsWith('.wav') ? 'frmdb-i-fa-file-audio-o'
+            : filename.endsWith('.xls') ? 'frmdb-i-fa-file-excel-o'
+                : filename.endsWith('.txt') ? 'fa frmdb-i-fa-file-o'
+                    : filename.endsWith('.pdf') ? 'frmdb-i-fa-file-pdf-o' : 'frmdb-i-fa-folder';
     }
 }
 

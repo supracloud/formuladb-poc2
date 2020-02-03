@@ -4,8 +4,9 @@ import { Undo } from "../frmdb-editor/undo";
 import { Input, Inputs, createInput, SectionInput, ImageInput } from "./inputs";
 import { onEvent, emit } from "@fe/delegated-events";
 import { FrmdbModifyPageElement } from "@fe/frmdb-user-events";
-import { $DATA_COLUMNS_FOR_ELEM, $TABLES } from "@fe/fe-functions";
-import { addComponents } from "./components-frmdb";
+import { ComponentsBase } from "./components-base";
+import { ComponentsBaseSyleClasses } from "./components-base-style-classes";
+import { ComponentsBaseDataBinding } from "./components-base-data-binding";
 
 export const defaultComponent = "_base";
 export const preservePropertySections = true;
@@ -42,7 +43,7 @@ class StyleManager {
 }
 
 
-interface Component {
+export interface Component {
 	type?: string;
 	name: string;
 	nodes?: string[];
@@ -74,7 +75,7 @@ export interface ComponentProperty {
 	beforeInit?: (el: HTMLElement) => void;
 	afterInit?: (el: HTMLElement) => void;
 	init?: (el: HTMLElement) => void;
-	onChange?: (el: HTMLElement, value: string | number | boolean, input: Input, component: Component) => HTMLElement;
+	onChange?: (el: HTMLElement, value: string, input: Input, component: Component) => HTMLElement;
 }
 
 const HTML: string = require('raw-loader!@fe-assets/component-editor/component-editor.component.html').default;
@@ -89,11 +90,17 @@ export class ElementEditorComponent extends HTMLElement {
 		this.innerHTML = HTML;
 	}
 	
+	initializeComponents() {
+		this.extend("_base", "_base", ComponentsBase);
+		this.extend("_base", "_base", ComponentsBaseSyleClasses);
+		this.extend("_base", "_base", ComponentsBaseDataBinding);
+	}
+
 	node: HTMLElement;
 	setEditedEl(el: HTMLElement) {
 		this.node = el;
 		if (!this.componentsInitialized) {
-			addComponents(this, baseUrl);
+			this.initializeComponents();
 			this.componentsInitialized = true;
 		}
 		let cmp = this.matchNode(this.node);
@@ -389,7 +396,7 @@ export class ElementEditorComponent extends HTMLElement {
 		}
 		
 		if (property.onChange) {
-			element = property.onChange(element, value, input, component);
+			element = property.onChange(element, '' + value, input, component);
 		}/* else */
 		if (property.htmlAttr) {
 			let oldValue = element.getAttribute(property.htmlAttr);
@@ -450,16 +457,14 @@ export const Blocks = new BlocksClass();
 
 
 
-let base_sort = 200;
+let base_sort = 2000;
 export function incrementSort() {
 	return base_sort++;
 }
-let commonPropsSort = 80;
+let commonPropsSort = 1000;
 export function incrementCommonPropsSort() {
 	return commonPropsSort++;
 }
-
-export const style_section = 'left-panel-tab-style';
 
 export const DefaultSection: ComponentProperty = {
 	tab: "left-panel-tab-content",
@@ -468,3 +473,18 @@ export const DefaultSection: ComponentProperty = {
 	name: 'Element',
 	data: { header: "General" },
 };
+
+function changeNodeName(node: HTMLElement, newNodeName: string) {
+    var newNode;
+    newNode = document.createElement(newNodeName);
+    let attributes = node.attributes;
+
+    for (let i = 0, len = attributes.length; i < len; i++) {
+        newNode.setAttribute(attributes[i].nodeName, attributes[i].nodeValue);
+    }
+
+    newNode.innerHTML = node.innerHTML;
+    node.parentElement!.replaceChild(newNode, node);
+
+    return newNode;
+}

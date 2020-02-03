@@ -55,10 +55,10 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:8084/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
-            "_url": "http://frmdb.localhost/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
-            "__url": "http://frmdb.localhost/formuladb/editor.html#/apps/Hotel_Booking/index.html",
+            "url": "http://frmdb.localhost/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
+            "_url": "http://frmdb.localhost/formuladb/editor.html#/apps/Hotel_Booking/index.html",
             "webRoot": "${workspaceFolder}",
+            "trace": true,
             "sourceMapPathOverrides": {
                 "webpack:///./domain/src/*": "${webRoot}/domain/src/*",
                 "webpack:///./functions/src/*": "${webRoot}/functions/src/*",
