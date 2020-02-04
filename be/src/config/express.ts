@@ -310,8 +310,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {
-        let err: Error = new Error("Not Found");
-        next(err);
+        res.status(404).send('Not found');
     });
 
     // production error handler
