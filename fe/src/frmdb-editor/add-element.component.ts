@@ -3,6 +3,7 @@ import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { applyTheme } from "@fe/frmdb-themes";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
+import { loadPage } from "@fe/fe-functions";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;
@@ -21,9 +22,10 @@ export class AddElementComponent extends HTMLElement {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
         this.iframe = this.querySelector('iframe')!;
         this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+        this.highlightBox.enableSelectedActionsEvents = false;
+        this.highlightBox.enableAddElementActionsEvents = true;
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
-            this.highlightBox.enableActionsEvents = false;
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
             this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
             if (!this.link) console.warn("link #frmdb-theme-css not found!");
@@ -34,7 +36,21 @@ export class AddElementComponent extends HTMLElement {
             this.iframe.contentWindow!.document.querySelector('[data-frmdb-fragment="_nav.html"]')?.setAttribute("data-frmdb-highlight-ignore", "");
         }
 
-        onEvent(this.highlightBox, 'FrmdbSelectPageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
+        fetch('/formuladb-env/frmdb-platform-apps/themes/components-nav.html', {
+            headers: {
+                'accept': 'text/html',
+            },
+        }).then(async (res) => {
+            let html = await res.text();
+            this.querySelector('#components-nav')!.innerHTML = html;
+        });
+
+        onEventChildren(this, 'click', '#components-nav a', (ev: MouseEvent) => {
+            ev.preventDefault();
+            this.iframe.src = (ev.target as any)?.href;
+        })
+
+        onEvent(this.highlightBox, 'FrmdbChoosePageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
             if (!this.selectedEl) {console.warn("selectedEl not found"); return;}
             let targetDoc = this.selectedEl.ownerDocument;
             if (!targetDoc) {console.warn("owner doc not found"); return;}

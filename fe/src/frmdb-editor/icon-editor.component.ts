@@ -1,5 +1,4 @@
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
-import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { ImageInput, IconInput } from "@fe/component-editor/inputs";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";

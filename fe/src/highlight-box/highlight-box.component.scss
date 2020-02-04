@@ -48,11 +48,23 @@
     &#selected.editing {
         background-color: transparent;
 
-        .actions.selected {
+        .actions.selected, .add-elements {
             display: none;
         }
         
         .actions.editing {
+            display: flex;
+        }
+    }
+
+    &#selected.add-elements {
+        background-color: transparent;
+
+        .actions.selected, .actions.editing {
+            display: none;
+        }
+        
+        .actions.add-elements {
             display: flex;
         }
     }
@@ -88,6 +100,7 @@
         display: flex;
         flex-wrap: nowrap;
         &.editing { display: none; }
+        &.add-elements { display: none; }
         justify-content: center;
 
         > a:hover {

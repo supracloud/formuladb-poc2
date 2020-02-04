@@ -1,5 +1,4 @@
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
-import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { BACKEND_SERVICE } from "@fe/backend.service";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { searchFreeImages } from "@storage/image-api";

@@ -1,16 +1,23 @@
-<div class="modal fade modal-xl" id="add-element-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
-    <div class="modal-dialog mt-3" role="document" style="width: 96vw; max-width: 96vw">
-        <div class="modal-content" style="width: 96vw; max-width: 96vw">
+<div class="modal fade modal-xl frmdb-bg-dark-30" id="add-element-modal" style="width: 100vw; max-width: 100vw" tabindex="-1" role="dialog">
+    <div class="modal-dialog mt-3" role="document" style="width: 99vw; max-width: 99vw">
+        <div class="modal-content" style="width: 99vw; max-width: 99vw">
             <div class="modal-header">
                 <p class="modal-title text-primary"><i class="frmdb-i-lg frmdb-i-fa-plus-circle"></i> Choose Page Element to Add</p>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><small><i class="frmdb-i-fa-close"></i></small></span>
+                    <span aria-hidden="true"><small><i class="frmdb-i-fa-window-close"></i></small></span>
                 </button>
             </div>
             <div class="modal-body">
-                <div id="examples-canvas" class="w-100 h-100 position-relative overflow-hidden">
-                    <iframe src="/frmdb-platform-apps/themes/index.html"></iframe>
-                    <frmdb-highlight-box class="names-hidden"></frmdb-highlight-box>
+                <div id="examples-canvas" class="w-100 position-relative overflow-hidden">
+                    <div class="row">
+                        <div id="components-nav" class="col-1 border-right overflow-auto">
+
+                        </div>
+                        <div class="col-11">
+                            <iframe class="vh-85" src="/frmdb-platform-apps/themes/index.html"></iframe>
+                            <frmdb-highlight-box class="names-hidden"></frmdb-highlight-box>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

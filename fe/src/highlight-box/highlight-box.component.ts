@@ -25,7 +25,8 @@ export class HighlightBoxComponent extends HTMLElement {
         this.setAttribute('disabled', new Boolean(d).toString());
     }
 
-    public enableActionsEvents: boolean = true;
+    public enableSelectedActionsEvents: boolean = true;
+    public enableAddElementActionsEvents: boolean = false;
 
     set rootEl(el: HTMLElement | Document) {
         this._rootEl = el;
@@ -84,10 +85,10 @@ export class HighlightBoxComponent extends HTMLElement {
             emit(this, { type: "FrmdbSelectPageElement", el: this.selectedEl });
         });
 
-        if (this.enableActionsEvents) {
-            this.enableActionsEvents = false;
+        if (this.enableSelectedActionsEvents) {
+            this.enableSelectedActionsEvents = false;
 
-            onEventChildren(this.selectedBox, ['click'], '[data-frmdb-action]', (event) => {
+            onEventChildren(this.selectedBox, ['click'], '.actions.selected [data-frmdb-action]', (event) => {
                 if (this._disabled) return;
                 event.preventDefault();
                 let el: HTMLElement = event.target.closest('[data-frmdb-action]');
@@ -100,6 +101,25 @@ export class HighlightBoxComponent extends HTMLElement {
                     emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
                 }
             });
+        }
+
+        if (this.enableAddElementActionsEvents) {
+            this.enableAddElementActionsEvents = false;
+            this.selectedBox.classList.add('add-elements');
+
+            onEventChildren(this.selectedBox, ['click'], '.actions.add-elements [data-frmdb-action]', (event) => {
+                if (this._disabled) return;
+                event.preventDefault();
+                let el: HTMLElement = event.target.closest('[data-frmdb-action]');
+                if (!el || !this.selectedEl) return;
+                if (el.dataset.frmdbAction === "parent") {
+                    this.selectElement(el.parentElement);
+                } else if (el.dataset.frmdbAction === "prev") {
+                    this.selectElement(el.previousElementSibling as HTMLElement | null);
+                } else if (el.dataset.frmdbAction === "choose") {
+                    emit(this, { type: "FrmdbChoosePageElement", el: this.selectedEl });
+                }
+            });            
         }
 
         this._rootEl.addEventListener('scroll', (event) => {

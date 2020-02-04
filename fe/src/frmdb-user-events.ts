@@ -91,6 +91,11 @@ export interface FrmdbSelectPageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbChoosePageElement {
+    type: 'FrmdbChoosePageElement';
+    el: HTMLElement;
+}
+
 export interface FrmdbSelectPageElementAction {
     type: 'FrmdbSelectPageElementAction';
     el: HTMLElement;
@@ -137,6 +142,7 @@ export type FrmdbUserEvent =
     | FrmdbRemovePageElement
     | FrmdbHoverPageElement
     | FrmdbSelectPageElement
+    | FrmdbChoosePageElement
     | FrmdbSelectPageElementAction
     | FrmdbEditWysiwygPageElement
     | FrmdbModifyPageElement
