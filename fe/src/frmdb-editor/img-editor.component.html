@@ -1,18 +1,18 @@
 <div class="modal fade frmdb-bg-dark-70 frmdb-level-2" id="img-editor-modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-xl" role="document" >
-        <div class="modal-content" >
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title"><i class="frmdb-i-fa-image"></i> Choose Image</h5>
+                <h5 class="modal-title"><i class="fa fa-image"></i> Choose Image</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true"><small><i class="frmdb-i-fa-close"></i></small></span>
+                    <span aria-hidden="true"><small><i class="fa fa-window-close"></i></small></span>
                 </button>
             </div>
             <div class="modal-body vh-90 overflow-hidden mb-4">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link active" data-toggle="tab" href="#Uploaded_Images">My Uploaded Images</a>
-                        <a class="nav-item nav-link" data-toggle="tab" href="#Free_Public_Images">Free Online Images</a>
-                        <a class="nav-item nav-link" data-toggle="tab" href="#Paid_Images">Paid Online Images</a>
+                        <a class="nav-item nav-link" data-toggle="tab" href="#Free_Public_Images">Search Free Images</a>
+                        <a class="nav-item nav-link" data-toggle="tab" href="#Paid_Images">Search Premium Images</a>
                     </div>
                 </nav>
                 <div class="tab-content h-100 overflow-auto">
@@ -41,7 +41,7 @@
                                 <input id="frmdb-search-free-images" type="text" class="form-control"
                                     placeholder="Search images: hotels, water sports, beauty, consulting ..." />
                                 <div class="input-group-append">
-                                    <span class="input-group-text"><i class="frmdb-i-fa-search"></i></span>
+                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
                                 </div>
                             </div>
                         </div>
@@ -63,7 +63,28 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="Paid_Images" role="tabpanel" aria-labelledby="home-tab">
-                        Coming soon...
+                        <div class="d-flex align-items-center">
+                            <div class="input-group mb-3">
+                                <input id="frmdb-search-premium-images" type="text" class="form-control"
+                                    placeholder="Search images: hotels, water sports, beauty, consulting ..." />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-columns">
+                            <a class="card border-0 text-center" data-frmdb-table="premiumImagesUrls[]">
+                                <img class="border rounded img-fluid" data-frmdb-value="premiumImagesUrls[].previewURL"
+                                    data-frmdb-attr="alt::premiumImagesUrls[].previewURL">
+                                <div class="card-img-overlay d-flex flex-column justify-content-end">
+                                    <div class="btn-group" data-frmdb-attr="data-frmdb-premium-image-id::premiumImagesUrls[].imageId" role="group" aria-label="Basic example">
+                                        <button data-frmdb-premium-image-select="small" class="btn btn-outline-danger">Small</button>
+                                        <button data-frmdb-premium-image-select="medium" class="btn btn-outline-danger">Medium</button>
+                                        <button data-frmdb-premium-image-select="large" class="btn btn-outline-danger">Large</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

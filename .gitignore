@@ -12,6 +12,7 @@ docker-img
 cache
 builds
 /e2e/reports
+themes/.scss
 elastic-apm-rum.umd.min.js
 
 # dependencies

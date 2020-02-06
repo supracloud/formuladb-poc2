@@ -1,7 +1,7 @@
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { BACKEND_SERVICE } from "@fe/backend.service";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
-import { searchFreeImages } from "@storage/image-api";
+import { searchFreeImages, searchPremiumImages } from "@storage/image-api";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/img-editor.component.html').default;
@@ -31,6 +31,16 @@ export class ImgEditorComponent extends HTMLElement {
             //TODO infinite scroll OR pagination
         });
 
+        onEvent(this, 'change', '#frmdb-search-premium-images', async (event) => {
+            let res = await searchPremiumImages(event.target!.value);
+            let premiumImagesUrls = res.data.map(hit => ({
+                previewURL: hit.previewURL,
+                imageId: hit.imageId,
+            }));
+            updateDOM({premiumImagesUrls}, this);
+            //TODO infinite scroll OR pagination
+        });
+
         onEvent(this, 'click', '[data-frmdb-value="mediaObjectsUrls[]"]', event => {
             if (!this.imagePropertyListener) return;
             let src = event.target.src;
@@ -45,6 +55,10 @@ export class ImgEditorComponent extends HTMLElement {
             let imgBlob: Blob = await res.blob();
             await this.imagePropertyListener.setBlob(imgUrl.substring(imgUrl.lastIndexOf('/') + 1), imgBlob);
             $FMODAL(this.modal, "hide");
+        });
+
+        onEvent(this, 'click', '[data-frmdb-premium-image-select]', async (event) => {
+            let size = event.target.getAttribute('data-frmdb-premium-image-select');
         });
     }
 

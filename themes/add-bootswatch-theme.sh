@@ -10,9 +10,9 @@ if [[ -z "$THEME_NAME" ]]; then echo "Usage: add-bootswatch-theme.sh theme-name"
 mkdir -p "${THEME_NAME}"
 echo "
 .frmdb-theme-${THEME_NAME} {
-    @import '../node_modules/bootswatch/dist/${THEME_NAME}/variables';
+    @import '../../node_modules/bootswatch/dist/${THEME_NAME}/variables';
     @import '../node_modules/bootstrap/scss/bootstrap.scss';
-    @import '../node_modules/bootswatch/dist/${THEME_NAME}/bootswatch';
+    @import '../../node_modules/bootswatch/dist/${THEME_NAME}/bootswatch';
 
     @import '../frmdb/frmdb';
 }

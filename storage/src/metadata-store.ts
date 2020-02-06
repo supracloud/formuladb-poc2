@@ -365,7 +365,6 @@ export class MetadataStore {
 
 const exec = require('child_process').exec;
 async function execShell(cmd: string): Promise<{ error: Error, stdout: string | Buffer, stderr: string | Buffer }> {
-    const exec = require('child_process').exec;
     return new Promise((resolve, reject) => {
         exec(cmd, (error, stdout, stderr) => {
             if (error) {

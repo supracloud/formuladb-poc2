@@ -1,4 +1,4 @@
-apiVersion: skaffold/v1beta13
+apiVersion: skaffold/v2alpha3
 kind: Config
 build:
   artifacts:
@@ -6,56 +6,54 @@ build:
     context: .
     sync:
       manual:
-      # Sync all the javascript files that are in the dist-be folder
-      # with the container's root
-      - src: 'dist-be/**/*.js*'
+      - src: dist-be/**/*.js*
         dest: /
-      - src: 'formuladb/**/*'
+      - src: formuladb/**/*
         dest: /wwwroot/formuladb
         strip: formuladb
-      - src: 'formuladb-env/**/*'
+      - src: formuladb-env/**/*
         dest: /wwwroot/git/formuladb-env
         strip: formuladb-env
       - src: skaffold.yaml
         dest: /
-      - src: 'k8s/**/*'
+      - src: k8s/**/*
         dest: /
-      - src: 'scripts/*'
+      - src: scripts/*
         dest: /scripts
         strip: scripts
     docker:
       dockerfile: Dockerfile.be
-      buildArgs: {}
 deploy:
   kustomize:
-    path: k8s/overlays/production
+    paths:
+    - k8s/overlays/production
 profiles:
-  - name: dev
-    patches:
-      - op: add
-        path: /build/artifacts/0/docker/buildArgs
-        value:
-          BUILD_DEVELOPMENT: 1
-      - op: replace
-        path: /deploy/kustomize/path
-        value: k8s/overlays/development
-  - name: ci
-    patches:
-      - op: replace
-        path: /deploy/kustomize/path
-        value: k8s/overlays/ci
-  - name: staging
-    patches:
-      - op: replace
-        path: /deploy/kustomize/path
-        value: k8s/overlays/staging
-  - name: production
-    patches:
-      - op: replace
-        path: /deploy/kustomize/path
-        value: k8s/overlays/production
-  - name: client
-    patches:
-      - op: replace
-        path: /deploy/kustomize/path
-        value: k8s/overlays/client
+- name: dev
+  patches:
+  - op: add
+    path: /build/artifacts/0/docker/buildArgs
+    value:
+      BUILD_DEVELOPMENT: 1
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/development
+- name: ci
+  patches:
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/ci
+- name: staging
+  patches:
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/staging
+- name: production
+  patches:
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/production
+- name: client
+  patches:
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/client
