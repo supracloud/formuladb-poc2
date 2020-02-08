@@ -122,6 +122,10 @@ export interface FrmdbModifyPageElement {
     value: string | number | boolean;
 }
 
+export interface FrmdbIconsCssChanged {
+    type: 'FrmdbIconsCssChanged';
+}
+
 export type FrmdbUserEvent =
     | UserModifiedFormData
     | UserDeletedFormData
@@ -146,4 +150,5 @@ export type FrmdbUserEvent =
     | FrmdbSelectPageElementAction
     | FrmdbEditWysiwygPageElement
     | FrmdbModifyPageElement
+    | FrmdbIconsCssChanged
 ;

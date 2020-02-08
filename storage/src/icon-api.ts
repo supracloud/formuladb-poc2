@@ -16,15 +16,15 @@ var oauth = new OAuth.OAuth(
 )
 
 
-interface PremiumIconRespose {
-    totalHits: number,
-    hits: {
+export interface PremiumIconRespose {
+    icons: {
         id: string;
-        previewURL: string;
-        webformatURL: string;
-        largeImageURL: string;
-        webformatHeight: number;
-        webformatWidth: number;
+		preview_url: string;
+		license_description: string;
+        tags: {
+			id: number,
+			slug: string,
+		}[];
     }[];
 }
 
@@ -45,15 +45,38 @@ export async function searchPremiumIcons(search: string) {
     return res;
 }
 
-oauth.get(
-	'http://api.thenounproject.com/icons/kite',
-	null,
-	null,
-	function (e, data, res) {
-		if (e) console.error(e)
-		console.log(data);
-	}
-)
+
+export async function getPremiumIcon(iconId: string): Promise<{id: string, svg_url: string, name: string}> {
+    return new Promise((resolve, reject) => {
+		oauth.get(
+			`http://api.thenounproject.com/icon/${iconId}`,
+			null,
+			null,
+			function (e, data, res){
+				if (e) reject(e);
+				else {
+					let icon = JSON.parse(data)!.icon;
+					resolve({
+						id: icon.id,
+						svg_url: icon.icon_url,
+						name: icon.term_slug + '-' + icon.tags.map(t => t.slug).join('-'),
+					});
+				}
+			}
+		)
+	});
+}
+
+
+// oauth.get(
+// 	'http://api.thenounproject.com/icons/kite',
+// 	null,
+// 	null,
+// 	function (e, data, res) {
+// 		if (e) console.error(e)
+// 		console.log(data);
+// 	}
+// )
 
 // 'http://api.thenounproject.com/icon/6324',
 // {

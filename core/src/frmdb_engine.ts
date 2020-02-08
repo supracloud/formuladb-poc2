@@ -74,6 +74,8 @@ export class FrmdbEngine {
                 return this.putPageHtml(event);
             case "ServerEventPutMediaObject":
                 return this.putMediaObject(event);
+            case "ServerEventPutIcon":
+                return this.putIcon(event);
             case "ServerEventNewPage":
                 return this.newPage(event);
             case "ServerEventDeletePage":
@@ -92,6 +94,12 @@ export class FrmdbEngine {
 
     private async putMediaObject(event: events.ServerEventPutMediaObject): Promise<events.MwzEvents> {
         await this.frmdbEngineStore.kvsFactory.metadataStore.saveMediaObject(event.tenantName, event.appName, event.fileName, event.base64Content);
+        return event;
+    }
+
+    private async putIcon(event: events.ServerEventPutIcon): Promise<events.MwzEvents> {
+        let iconClass = await this.frmdbEngineStore.kvsFactory.metadataStore.saveIcon(event.tenantName, event.appName, event.iconId);
+        event.savedIconClass = iconClass;
         return event;
     }
 

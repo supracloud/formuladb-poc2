@@ -10,13 +10,13 @@
             <div class="modal-body h-100 overflow-hidden mb-4">
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <a style="cursor: pointer" class="nav-item nav-link active" data-toggle="tab" href="#Free_Icons">Free Icons</a>
-                        <a style="cursor: pointer" class="nav-item nav-link" data-toggle="tab" href="#Paid_Icons">Paid Icons</a>
+                        <a style="cursor: pointer" class="nav-item nav-link active" data-toggle="tab" href="#Available_Icons">Available Icons</a>
+                        <a style="cursor: pointer" class="nav-item nav-link" data-toggle="tab" href="#Paid_Icons">Premium Icons</a>
                     </div>
                 </nav>
                 <div class="tab-content h-100 overflow-auto">
-                    <div class="tab-pane active" id="Free_Icons" role="tabpanel" aria-labelledby="home-tab">
-                        <div class="card-columns text-center">
+                    <div class="tab-pane active" id="Available_Icons" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="card-deck frmdb-cards-wrap-5 text-center">
                             <a style="cursor: pointer" class="card border-0" data-frmdb-table="freeIconsClasses[]">
                                 <h1><i data-frmdb-attr="class::freeIconsClasses[]"></i></h1>
                                 <span data-frmdb-value="freeIconsClasses[]"></span>
@@ -33,10 +33,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-columns">
-                            <a style="cursor: pointer" class="card border-0 text-center" data-frmdb-table="paidIconsUrls[]">
-                                <img class="border rounded" data-frmdb-value="paidIconsUrls[]" data-frmdb-attr="alt::paidIconsUrls[]"
-                                    style="width: 20px; height: 20px;">
+                        <div class="card-deck frmdb-cards-wrap-5">
+                            <a style="cursor: pointer" class="card border-0 text-center" 
+                                data-frmdb-table="premiumIcons[]" data-frmdb-attr="data-frmdb-premium-icon-id::premiumIcons[].iconId"
+                            >
+                                <img class="border rounded" data-frmdb-value="premiumIcons[].previewURL" data-frmdb-attr="alt::paidIconsUrls[].previewURL"
+                                    style="width: 50px; height: 50px;">
                             </a>
                         </div>
                     </div>

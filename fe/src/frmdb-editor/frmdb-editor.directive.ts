@@ -393,6 +393,11 @@ export class FrmdbEditorDirective {
             }
         });
 
+        onEvent(document.body, 'FrmdbIconsCssChanged', '*', (event) => {
+            (document.head.querySelector('#frmdb-icons-css') as any).href += "";
+            (this.frameDoc.head.querySelector('#frmdb-icons-css') as any).href += "";
+        });
+
         onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
             let currentEntity: Entity | undefined = this.EditorState.tables.find(e => e._id == this.EditorState.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.EditorState.selectedTableId} does not exist`); return; }

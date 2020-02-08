@@ -116,6 +116,15 @@ export class ServerEventPutMediaObject extends MwzEvent {
     }
 }
 
+export class ServerEventPutIcon extends MwzEvent {
+    readonly type_ = "ServerEventPutIcon";
+    savedIconClass?: string;
+
+    constructor(public tenantName: string, public appName: string, public iconId: string) {
+        super();
+    }
+}
+
 export class ServerEventDeleteProperty extends MwzEvent {
     readonly type_ = "ServerEventDeleteProperty";
 
@@ -134,6 +143,7 @@ export type MwzEvents =
     | ServerEventDeleteProperty
     | ServerEventPutPageHtml
     | ServerEventPutMediaObject
+    | ServerEventPutIcon
     | ServerEventNewPage
     | ServerEventDeletePage
     | ServerEventNewApp

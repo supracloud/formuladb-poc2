@@ -27,6 +27,7 @@ import { I18nBe } from "@be/i18n-be";
 import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 import { initPassport, handleAuth } from "./auth";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
+import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -225,12 +226,31 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next(err);
         }
     });
-
     
     app.get('/formuladb-api/:tenant/:app/media', async function (req, res, next) {
         try {
             let paths: string[] = await kvsFactory.metadataStore.getMediaObjects(req.params.tenant, req.params.app);
             res.json(paths);
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+
+    app.get('/formuladb-api/:tenant/:app/icons', async function (req, res, next) {
+        try {
+            let paths: string[] = await kvsFactory.metadataStore.getAvailableIcons(req.params.tenant, req.params.app);
+            res.json(paths);
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+
+    app.get('/formuladb-api/:tenant/:app/premium-icons/:search', async function (req, res, next) {
+        try {
+            let icons: PremiumIconRespose = await searchPremiumIcons(req.params.search);
+            res.send(icons);
         } catch (err) {
             console.error(err);
             next(err);

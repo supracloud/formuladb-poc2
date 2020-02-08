@@ -1,3 +1,4 @@
+const fetch = require('node-fetch')
 import { App } from "@domain/app";
 import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
@@ -11,6 +12,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@fe/get-html";
+import { getPremiumIcon } from "./icon-api";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -337,8 +339,25 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/static/${tenantName}/${appName}/${fileName}`, new Buffer(base64Content, 'base64'));
     }
 
+    async saveIcon(tenantName: string, appName: string, iconId: string): Promise<string> {
+        let icon = await getPremiumIcon(iconId);
+        let svgContent = await fetch(icon.svg_url, {
+            headers: {
+                'accept': 'image/svg+xml',
+            },
+        }).then(r => r.text());
+
+        await this.writeFile(`${ROOT}/icons/formuladb/svg/${icon.name}.svg`, new Buffer(svgContent, 'utf8'));
+        await execShell(`npm run generate-user-icons`);
+        return `frmdb-i-${icon.name}`;
+    }
+
     async getMediaObjects(tenantName: string, appName: string) {
         return this.listDir(`${ROOT}/static/${tenantName}/${appName}`);
+    }
+
+    async getAvailableIcons(tenantName: string, appName: string) {
+        return this.listDir(`${ROOT}/icons/formuladb/svg`);
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {
