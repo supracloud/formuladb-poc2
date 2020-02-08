@@ -136,21 +136,44 @@ export class SelectInput extends Input {
 export class ResponsiveClassSelectInput extends Input {
 	static elemTagName = "frmdb-responsive-class-select-input";
 	inputTagName = "frmdb-responsive-class-select-input";
+	values: {string}[] = [];
 
 	setValue(value) {
+		this.values = value.split(/ +/);
 		this.querySelector('select')!.value = value;
 	}
+
 	init(data) {
 		super.init(data);
-		this.render(/*html*/`
-			<div>
-				<select class="form-control ">
-					{% for ( var i = 0; i < options.length; i++ ) { %}
-					<option value="{%=options[i].value%}">{%=options[i].text%}</option>
-					{% } %}
-				</select>
+		this.innerHTML = tmpl(/*html*/`
+			{% for ( var i = 0; i < options.length; i++ ) { %}
+			<div class="row">
+				<div class="col">
+					<select class="form-control ">
+						{% for ( var i = 0; i < options.length; i++ ) { %}
+						<option value="{%=data.pre_options[i].value%}">{%=options[i].text%}</option>
+						{% } %}
+					</select>
+				</div>
+				<div class="col">
+					<select class="form-control ">
+						<option class="text-nowrap" value="sm"><i class="fa fa-mobile-alt"></i><i class="fa fa-tablet-alt fa-rotate-90"><i class="fa fa-laptop"> sm (small and up)</option>
+						<option class="text-nowrap" value="md"><i class="fa fa-mobile-alt text-white"></i><i class="fa fa-tablet-alt fa-rotate-90"><i class="fa fa-laptop"> md (medium and up)</option>
+						<option class="text-nowrap" value="lg"><i class="fa fa-mobile-alt text-white"></i><i class="fa fa-tablet-alt fa-rotate-90 text-white"><i class="fa fa-laptop"> lg (large and up)</option>
+					</select>
+				</div>
+				<div class="col">
+					<select class="form-control ">
+						{% for ( var i = 0; i < options.length; i++ ) { %}
+						<option value="{%=data.post_options[i].value%}">{%=options[i].text%}</option>
+						{% } %}
+					</select>
+				</div>
 			</div>
-		`, data);
+		`, {
+			data,
+			values: this.values
+		});
 	}
 }
 
@@ -698,6 +721,7 @@ export const Inputs = {
 	'TextareaInput': TextareaInput,
 	'CheckboxInput': CheckboxInput,
 	'SelectInput': SelectInput,
+	'ResponsiveClassSelectInput': ResponsiveClassSelectInput,
 	'LinkInput': LinkInput,
 	'RangeInput': RangeInput,
 	'NumberInput': NumberInput,
