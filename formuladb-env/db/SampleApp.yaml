@@ -1,0 +1,53 @@
+_id: SampleApp
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    name:
+        name: name
+        propType_: FORMULA
+        formula: 'REGEXREPLACE(_id, "SampleApp~~[0-9]+ ", "")'
+    category:
+        name: category
+        propType_: REFERENCE_TO
+        referencedEntityName: AppCategory
+        referencedPropertyName: _id
+    category2:
+        name: category2
+        propType_: REFERENCE_TO
+        referencedEntityName: AppCategory
+        referencedPropertyName: _id
+    categories:
+        name: categories
+        propType_: FORMULA
+        formula: 'CONCATENATE(category, category2)'
+    app_url:
+        name: app_url
+        propType_: STRING
+        allowNull: false
+    short_description:
+        name: short_description
+        propType_: STRING
+        allowNull: false
+    wish_list_count:
+        name: wish_list_count
+        propType_: FORMULA
+        formula: 'COUNTIF(WishListRequest._id, app == @[_id])'
+    status:
+        name: status
+        propType_: STRING
+        allowNull: false
+    call_to_action:
+        name: call_to_action
+        propType_: STRING
+        allowNull: false
+    small_img:
+        name: small_img
+        propType_: IMAGE
+        allowNull: false
+    long_img:
+        name: long_img
+        propType_: IMAGE
+        allowNull: false

@@ -1,0 +1,19 @@
+_id: WishListRequest
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    app:
+        name: app
+        propType_: REFERENCE_TO
+        referencedEntityName: SampleApp
+        referencedPropertyName: _id
+    email:
+        name: email
+        propType_: STRING
+        allowNull: false
+    comments:
+        name: comments
+        propType_: STRING

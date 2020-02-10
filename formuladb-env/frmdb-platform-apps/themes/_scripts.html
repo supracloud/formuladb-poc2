@@ -1,0 +1,27 @@
+<div data-frmdb-fragment="_scripts.html" data-frmdb-highlight-ignore>
+    <script src="/formuladb-env/plugins/vendor/js/jquery-3.4.1.min.js"></script>
+    <script src="/formuladb-env/plugins/vendor/js/popper.min.js"></script>
+    <script src="/formuladb-env/plugins/vendor/js/bootstrap.min.js"></script>
+    <script>
+        function scrollToAnchor(aid) {
+            var aTag = $("a[name='" + aid + "']");
+            $('html,body').animate({ scrollTop: aTag.offset().top - 20 }, 'slow');
+        }
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script src="/formuladb/frmdb-fe.js"></script>
+
+    <link rel="stylesheet" href="/formuladb-env/plugins/animate.min.css">
+    <script src="/formuladb-env/plugins/aos/aos.js"></script>
+    <script>
+        AOS.init({
+            useClassNames: true,
+            initClassName: false,
+            animatedClassName: 'animated',
+        });        
+    </script>
+    <link rel="stylesheet" href="/formuladb-env/plugins/hover.css">
+
+</div>

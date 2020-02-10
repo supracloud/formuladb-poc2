@@ -1,0 +1,3 @@
+_id,product_id,quantity,error_quantity,client_stock,units
+OrderItem~~1__1,ProductLocation~~1__1,10.00000,,,
+OrderItem~~1__2,ProductLocation~~1__1a,4.00000,,,

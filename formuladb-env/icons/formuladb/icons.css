@@ -1,0 +1,32 @@
+@font-face {
+    font-family: "icons";
+    src: url("./icons.eot?c3444d8a8ddc4a22846bbe28d3c26ae2?#iefix") format("embedded-opentype"),
+url("./icons.woff2?c3444d8a8ddc4a22846bbe28d3c26ae2") format("woff2"),
+url("./icons.woff?c3444d8a8ddc4a22846bbe28d3c26ae2") format("woff"),
+url("./icons.ttf?c3444d8a8ddc4a22846bbe28d3c26ae2") format("truetype"),
+url("./icons.svg?c3444d8a8ddc4a22846bbe28d3c26ae2#icons") format("svg");
+}
+
+i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
+    font-family: icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.frmdb-i-000-smartphone:before {
+    content: "\f101";
+}
+.frmdb-i-001-tables:before {
+    content: "\f102";
+}
+.frmdb-i-002-laptop:before {
+    content: "\f103";
+}
+.frmdb-i-frmdb:before {
+    content: "\f104";
+}

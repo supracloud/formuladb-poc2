@@ -1,0 +1,21 @@
+.frmdb-i-rotate-90 {
+    display: inline-block;
+    transform: rotate(90deg);
+}
+.frmdb-i-rotate-180 {
+    display: inline-block;
+    transform: rotate(180deg);
+}
+.frmdb-i-rotate-270 {
+    display: inline-block;
+    transform: rotate(270deg);
+}
+
+.frmdb-i-flip-horizontal {
+    display: inline-block;
+    transform: scale(-1, 1);
+}
+.frmdb-i-flip-vertical {
+    display: inline-block;
+    transform: scale(1, -1);
+}

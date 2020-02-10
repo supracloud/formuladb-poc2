@@ -1,0 +1,13 @@
+_id: InventoryReceipt
+isEditable: true
+props:
+    _id:
+        name: _id
+        propType_: STRING
+        allowNull: false
+    receipt_item_table:
+        name: receipt_item_table
+        propType_: CHILD_TABLE
+        referencedEntityName: ReceiptItem
+        props: {}
+        isLargeTable: true
