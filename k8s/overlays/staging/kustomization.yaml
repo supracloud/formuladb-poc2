@@ -1,5 +1,5 @@
 bases:
-- ../../base
+- ../live
 patches:
 - patches/be-deployment.yaml
 - patches/pg-backup-deployment.yaml
