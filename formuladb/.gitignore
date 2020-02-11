@@ -1,0 +1,5 @@
+icons/svgo
+*.js
+*.js.map
+*.min.css
+*.min.css.map

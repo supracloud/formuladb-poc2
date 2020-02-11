@@ -1,0 +1,125 @@
+@font-face {
+    font-family: "frmdb-icons";
+    src: url("./frmdb-icons.eot?f092ea3b38950208548874ed0cd5ae23?#iefix") format("embedded-opentype"),
+url("./frmdb-icons.woff2?f092ea3b38950208548874ed0cd5ae23") format("woff2"),
+url("./frmdb-icons.woff?f092ea3b38950208548874ed0cd5ae23") format("woff"),
+url("./frmdb-icons.ttf?f092ea3b38950208548874ed0cd5ae23") format("truetype"),
+url("./frmdb-icons.svg?f092ea3b38950208548874ed0cd5ae23#frmdb-icons") format("svg");
+}
+
+i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
+    font-family: frmdb-icons !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.frmdb-i-000001-arrow-down:before {
+    content: "\f101";
+}
+.frmdb-i-000003-arrow-right:before {
+    content: "\f102";
+}
+.frmdb-i-000005-cards-row:before {
+    content: "\f103";
+}
+.frmdb-i-000007-cards:before {
+    content: "\f104";
+}
+.frmdb-i-000008-carousel:before {
+    content: "\f105";
+}
+.frmdb-i-000010-contact-form:before {
+    content: "\f106";
+}
+.frmdb-i-000011-dashboard:before {
+    content: "\f107";
+}
+.frmdb-i-000015-f-pattern-solid:before {
+    content: "\f108";
+}
+.frmdb-i-000016-f-pattern:before {
+    content: "\f109";
+}
+.frmdb-i-000017-file-manager-layout:before {
+    content: "\f10a";
+}
+.frmdb-i-000019-frmdb:before {
+    content: "\f10b";
+}
+.frmdb-i-000022-left-column-layout:before {
+    content: "\f10c";
+}
+.frmdb-i-000023-list-solid:before {
+    content: "\f10d";
+}
+.frmdb-i-000024-list:before {
+    content: "\f10e";
+}
+.frmdb-i-000027-minus_round:before {
+    content: "\f10f";
+}
+.frmdb-i-000028-play-button:before {
+    content: "\f110";
+}
+.frmdb-i-000029-plus_round:before {
+    content: "\f111";
+}
+.frmdb-i-000031-product_gallery:before {
+    content: "\f112";
+}
+.frmdb-i-000033-replace:before {
+    content: "\f113";
+}
+.frmdb-i-000034-right-column-layout:before {
+    content: "\f114";
+}
+.frmdb-i-000037-split-screen:before {
+    content: "\f115";
+}
+.frmdb-i-137094-header:before {
+    content: "\f116";
+}
+.frmdb-i-200559-themes:before {
+    content: "\f117";
+}
+.frmdb-i-2669552-font:before {
+    content: "\f118";
+}
+.frmdb-i-3085840-publish:before {
+    content: "\f119";
+}
+.frmdb-i-32227-web-design:before {
+    content: "\f11a";
+}
+.frmdb-i-496501-check-mark:before {
+    content: "\f11b";
+}
+.frmdb-i-496968-eye:before {
+    content: "\f11c";
+}
+.frmdb-i-500419-laptop:before {
+    content: "\f11d";
+}
+.frmdb-i-503483-smartphone:before {
+    content: "\f11e";
+}
+.frmdb-i-503489-tablet:before {
+    content: "\f11f";
+}
+.frmdb-i-607806-save:before {
+    content: "\f120";
+}
+.frmdb-i-608122-many-windows:before {
+    content: "\f121";
+}
+.frmdb-i-869490-data-table:before {
+    content: "\f122";
+}
+.frmdb-i-955659-website:before {
+    content: "\f123";
+}
