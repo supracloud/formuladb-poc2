@@ -58,6 +58,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     });
 
     onEvent(editor.highlightBox, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
+        console.warn("FrmdbSelectPageElement");
         editor.selectElement(event.detail.el);
     });
     onEvent(editor.elementEditor, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {

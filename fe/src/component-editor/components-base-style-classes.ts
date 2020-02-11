@@ -12,6 +12,7 @@ function setClassFromSet(node: HTMLElement, value: string, input: Input, compone
     return node;
 }
 function setSelectOptions(node: HTMLElement) {
+    this.data = this.data || {};
     this.data.options = this.validValues.map(v => {
         let value = v;
         let text = v === "" ? '-' : v;
@@ -33,26 +34,6 @@ function setResponsiveClasses(node: HTMLElement, value: string, input: Input, co
     return node;
 }
 
-const DisplayProperties: ComponentProperty[] = [
-    {
-        name: 'Display Classes',
-        key: "display_header",
-        inputtype: "SectionInput",
-        sort: propsSort++,
-        tab: 'left-panel-tab-style',
-        data: { header: "Display" },
-    },
-    {
-        name: "Display",
-        key: "display",
-        htmlAttr: "class",
-        inputtype: "SelectInput",
-        onChange: setClassFromSet,
-        sort: propsSort++,
-        validValues: ["", "d-inline", "d-inline-block", "d-block", "d-flex", 'd-grid'],
-        beforeInit: setSelectOptions,
-    },
-];
 
 const TextProperties: ComponentProperty[] = [
     {
@@ -91,6 +72,27 @@ const TextProperties: ComponentProperty[] = [
         sort: propsSort++,
         onChange: setClassFromSet,
         validValues: ["", "text-primary", "text-secondary", "text-success", "text-danger", "text-warning", "text-info", "text-light", "text-dark", "text-body", "text-muted", "text-white", "text-black-50", "text-white-50"],
+        beforeInit: setSelectOptions,
+    },
+];
+
+const DisplayProperties: ComponentProperty[] = [
+    {
+        name: 'Display Classes',
+        key: "display_header",
+        inputtype: "SectionInput",
+        sort: propsSort++,
+        tab: 'left-panel-tab-style',
+        data: { header: "Display" },
+    },
+    {
+        name: "Display",
+        key: "display",
+        htmlAttr: "class",
+        inputtype: "SelectInput",
+        onChange: setClassFromSet,
+        sort: propsSort++,
+        validValues: ["", "d-inline", "d-inline-block", "d-block", "d-flex", 'd-grid'],
         beforeInit: setSelectOptions,
     },
 ];
@@ -388,6 +390,6 @@ export const ComponentsBaseSyleClasses: Partial<Component> = {
     properties:
         TextProperties
         .concat(SpacingProperties)
-        .concat(DisplayProperties)
-        .concat(FlexProperties)
+        // .concat(DisplayProperties)
+        // .concat(FlexProperties)
 };

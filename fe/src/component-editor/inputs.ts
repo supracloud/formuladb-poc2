@@ -136,44 +136,87 @@ export class SelectInput extends Input {
 export class ResponsiveClassSelectInput extends Input {
 	static elemTagName = "frmdb-responsive-class-select-input";
 	inputTagName = "frmdb-responsive-class-select-input";
-	values: {string}[] = [];
+	state: {
+		values: {pre: string, brk: string, post: string}[],
+		isResponsive: boolean,
+		data: {pre: string[], post: string[]},
+	} = {values: [], isResponsive: false, data: {pre: [], post: []}};
 
-	setValue(value) {
-		this.values = value.split(/ +/);
-		this.querySelector('select')!.value = value;
+	setValue(value: string) {
+		this.state.values = value.split(/ +/).map(v => {
+			let pre, brk, post;
+			let className = v;
+			for (let x of this.state.data.pre) {
+				if (className.indexOf(x) === 0) {
+					pre = x;
+					className = className.replace(`${x}-`, '');
+					break;
+				}
+			}
+			for (let x of ['', 'sm', 'md', 'lg']) {
+				if (className.indexOf(x) === 0) {
+					brk = x;
+					className = className.replace(`${x}-`, '');
+					break;
+				}
+			}
+			for (let x of this.state.data.post) {
+				if (className.indexOf(x) === 0) {
+					post = x;
+					className = className.replace(`${x}`, '');
+					break;
+				}
+			}
+			if (className != '') console.warn(`Was not able to match className ${v} to ${JSON.stringify(this.state.data)}`);
+			return {pre, brk, post};
+		});
+		this.renderHtml();
 	}
 
-	init(data) {
-		super.init(data);
+	renderHtml() {
 		this.innerHTML = tmpl(/*html*/`
-			{% for ( var i = 0; i < options.length; i++ ) { %}
-			<div class="row">
-				<div class="col">
-					<select class="form-control ">
-						{% for ( var i = 0; i < options.length; i++ ) { %}
-						<option value="{%=data.pre_options[i].value%}">{%=options[i].text%}</option>
-						{% } %}
-					</select>
-				</div>
-				<div class="col">
-					<select class="form-control ">
-						<option class="text-nowrap" value="sm"><i class="fa fa-mobile-alt"></i><i class="fa fa-tablet-alt fa-rotate-90"><i class="fa fa-laptop"> sm (small and up)</option>
-						<option class="text-nowrap" value="md"><i class="fa fa-mobile-alt text-white"></i><i class="fa fa-tablet-alt fa-rotate-90"><i class="fa fa-laptop"> md (medium and up)</option>
-						<option class="text-nowrap" value="lg"><i class="fa fa-mobile-alt text-white"></i><i class="fa fa-tablet-alt fa-rotate-90 text-white"><i class="fa fa-laptop"> lg (large and up)</option>
-					</select>
-				</div>
-				<div class="col">
-					<select class="form-control ">
-						{% for ( var i = 0; i < options.length; i++ ) { %}
-						<option value="{%=data.post_options[i].value%}">{%=options[i].text%}</option>
-						{% } %}
-					</select>
-				</div>
+			<input type="checkbox" class="toggle-checkbox" data-id="isResponsive">
+			{% for ( let brk of ["all", "sm", "md", "lg"]) { %}
+			<div data-id="{%=brk}" class="d-flex {%= isResponsive ? ('all' == brk ? 'd-none' : '') : ('all' != brk ? 'd-none' : '') %} flex-nowrap">
+				{% if (brk === 'all') { %}
+				{% } else if (brk === 'sm') { %} 
+				<i class="fa fa-mobile-alt"></i>
+				{% } else if (brk === 'md') { %} 
+				<i class="fa fa-tablet-alt fa-rotate-90"></i>
+				{% } else if (brk === 'lg') { %} 
+				<i class="fa fa-laptop"></i>
+				{% } %} 
+				<select data-id="all-pre" class="form-control">
+					{% for ( var i = 0; i < options.length; i++ ) { %}
+					<option value="{%=data.pre_options[i].value%}">{%=options[i].text%}</option>
+					{% } %}
+				</select>
+				{% if (brk === 'all') { %}
+				<span>-</span>
+				{% } else if (brk === 'sm') { %} 
+				<span>-sm-</span>
+				{% } else if (brk === 'md') { %} 
+				<span>-md-</span>
+				{% } else if (brk === 'lg') { %} 
+				<span>-lg-</span>
+				{% } %} 
+				<select data-id="all-post" class="form-control">
+					{% for ( var i = 0; i < options.length; i++ ) { %}
+					<option value="{%=data.post_options[i].value%}">{%=options[i].text%}</option>
+					{% } %}
+				</select>
 			</div>
-		`, {
-			data,
-			values: this.values
+		</select>
+
+		`, this.state);
+	}
+	init(data) {
+		this.state.data = data;
+		onEvent(this, 'change', 'input,textarea,select', (event: Event) => {
+			emit(this, { type: "FrmdbModifyPageElement", value: (event.target as any).value });
 		});
+
+		this.renderHtml();
 	}
 }
 
