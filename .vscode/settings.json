@@ -55,7 +55,6 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "dist-be/**/*": true,
-        "formuladb/**/*": true,
         "tsc-out/**/*": true,
     },
     "zenMode.hideTabs": false,
@@ -64,5 +63,6 @@
     "typescript.reportStyleChecksAsWarnings": false,
     "git.ignoreLimitWarning": true,
     "files.eol": "\n",
-    "html.format.wrapLineLength": 160
+    "html.format.wrapLineLength": 160,
+    "svg.preview.background": "transparent"
 }

@@ -27,7 +27,7 @@ describe('FormulaEditorComponent', () => {
         console.log(el.shadowRoot!.innerHTML);
         let normalizedHtml = htmlTools.normalizeHTML(el.shadowRoot!.innerHTML);
 
-        expect(normalizedHtml[1]).toEqual('<link rel="stylesheet" href="/formuladb-env/icons/formuladb/icons.css">');
+        expect(normalizedHtml[1]).toEqual('<link rel="stylesheet" href="/formuladb-env/icons/formuladb/fdb-i.css">');
         expect(normalizedHtml[2]).toEqual('<div class="formula-code-editor">');
 
         done();

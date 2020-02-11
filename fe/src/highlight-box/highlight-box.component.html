@@ -1,5 +1,6 @@
+<link rel="stylesheet" href="/formuladb/frmdb-editor.min.css">
 <link rel="stylesheet" href="/formuladb-env/icons/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" href="/formuladb-env/icons/formuladb/icons.css">
+<link rel="stylesheet" href="/formuladb/icons/frmdb-icons.css" />
 <link rel="stylesheet" href="/formuladb-env/css/_transform.css">
 
 <div id="grand-parent-highlight" class="box">
@@ -25,8 +26,13 @@
 <div id="selected" class="box">
     <div class="actions selected">
         <!-- <a class="btn" data-frmdb-action="drag" href="javascript:void(0)" title="Drag element"><i class="fa fa-arrows"></i></a> -->
-        <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i class="fa fa-level-down-alt fa-rotate-180"></i></a>
-        <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i class="fa fa-level-down-alt fa-rotate-90"></i></a>
+        <a class="btn dropdown frmdb-dropdown-hover" data-frmdb-action="parent" href="javascript:void(0)" title="Select nearby element">
+            <i class="frmdb-i-0000102-hand-point-boxes"></i>
+            <div class="dropdown-menu">
+                <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i class="fa fa-level-down-alt fa-rotate-180"></i></a>
+                <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i class="fa fa-level-down-alt fa-rotate-90"></i></a>
+            </div>
+        </a>
         <a class="btn" data-frmdb-action="up" href="javascript:void(0)" title="Move element up"><i class="fa fa-arrow-up"></i></a>
         <a class="btn" data-frmdb-action="down" href="javascript:void(0)" title="Move element down"><i class="fa fa-arrow-down"></i></a>
         <a class="btn" data-frmdb-action="edit" href="javascript:void(0)" title="Edit element text"><i class="fa fa-edit"></i></a>
@@ -38,7 +44,7 @@
     <div class="actions add-elements">
         <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i class="fa fa-level-down-alt fa-rotate-180"></i></a>
         <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i class="fa fa-level-down-alt fa-rotate-90"></i></a>
-        <a class="btn" data-frmdb-action="choose" href="javascript:void(0)" title="Choose Element"><i class="fa fa-hand-pointer"></i></a>
+        <a class="btn" data-frmdb-action="choose" href="javascript:void(0)" title="Choose Element"><i class="frmdb-i-0000101-hand-point-plus-circle"></i></a>
     </div>
     <div class="actions editing">
         <a class="btn" id="bold-btn" href="javascript:void(0)" title="Bold"><i><strong>B</strong></i></a>
