@@ -2,10 +2,6 @@
 
 # compiled output
 dist-be
-formuladb-env
-!formuladb/*.html
-formuladb/*js
-formuladb/*js.map
 tsc-out
 tmp
 docker-img

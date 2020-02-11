@@ -8,18 +8,18 @@ else
   pg_dump -h db -U postgres -w | gzip > /wwwroot/git/formuladb-env/db/pg_dump.sql.gz
 fi
 
+if [ -n "$BUILD_DEVELOPMENT" ]; then exit 0; fi
+
 cd /wwwroot/git/formuladb-env
 git config user.email "git.bot@formuladb.io"
 git config user.name "Git Bot"
 
 if [ -n "$(git status --porcelain)" ]; then
   git add .
-  if [ -z "$BUILD_DEVELOPMENT" ]; then
-    git commit -m "changes from git sync"
-    git pull -Xtheirs
-    #TODO make better conflict handling here!
-    git push --set-upstream origin "${FRMDB_ENV_NAME}"
-  fi
+  git commit -m "changes from git sync"
+  git pull -Xtheirs
+  #TODO make better conflict handling here!
+  git push --set-upstream origin "${FRMDB_ENV_NAME}"
 else
   echo "no changes";
 fi
