@@ -1,0 +1,149 @@
+@font-face {
+    font-family: "fdb-i";
+    src: url("./fdb-i.eot?4d23b8156e4399ba729c3c0380ab0fd2?#iefix") format("embedded-opentype"),
+url("./fdb-i.woff2?4d23b8156e4399ba729c3c0380ab0fd2") format("woff2"),
+url("./fdb-i.woff?4d23b8156e4399ba729c3c0380ab0fd2") format("woff"),
+url("./fdb-i.ttf?4d23b8156e4399ba729c3c0380ab0fd2") format("truetype"),
+url("./fdb-i.svg?4d23b8156e4399ba729c3c0380ab0fd2#fdb-i") format("svg");
+}
+
+i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
+    font-family: fdb-i !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.frmdb-i-000-smartphone:before {
+    content: "\f101";
+}
+.frmdb-i-001-arrow-down:before {
+    content: "\f102";
+}
+.frmdb-i-001-tables:before {
+    content: "\f103";
+}
+.frmdb-i-002-laptop:before {
+    content: "\f104";
+}
+.frmdb-i-002-smartphone:before {
+    content: "\f105";
+}
+.frmdb-i-003-arrow-right:before {
+    content: "\f106";
+}
+.frmdb-i-004-tables:before {
+    content: "\f107";
+}
+.frmdb-i-005-cards-row:before {
+    content: "\f108";
+}
+.frmdb-i-006-laptop:before {
+    content: "\f109";
+}
+.frmdb-i-007-cards:before {
+    content: "\f10a";
+}
+.frmdb-i-008-carousel:before {
+    content: "\f10b";
+}
+.frmdb-i-009-check-circle:before {
+    content: "\f10c";
+}
+.frmdb-i-010-contact-form:before {
+    content: "\f10d";
+}
+.frmdb-i-011-dashboard:before {
+    content: "\f10e";
+}
+.frmdb-i-012-data-table_869490:before {
+    content: "\f10f";
+}
+.frmdb-i-013-diving_1671473:before {
+    content: "\f110";
+}
+.frmdb-i-014-eye_496968:before {
+    content: "\f111";
+}
+.frmdb-i-015-f-pattern-solid:before {
+    content: "\f112";
+}
+.frmdb-i-016-f-pattern:before {
+    content: "\f113";
+}
+.frmdb-i-017-file-manager-layout:before {
+    content: "\f114";
+}
+.frmdb-i-018-font_2669552:before {
+    content: "\f115";
+}
+.frmdb-i-019-frmdb:before {
+    content: "\f116";
+}
+.frmdb-i-020-header_137094:before {
+    content: "\f117";
+}
+.frmdb-i-021-laptop_500419:before {
+    content: "\f118";
+}
+.frmdb-i-022-left-column-layout:before {
+    content: "\f119";
+}
+.frmdb-i-023-list-solid:before {
+    content: "\f11a";
+}
+.frmdb-i-024-list:before {
+    content: "\f11b";
+}
+.frmdb-i-025-many-windows_608122:before {
+    content: "\f11c";
+}
+.frmdb-i-027-minus_round:before {
+    content: "\f11d";
+}
+.frmdb-i-028-play-button:before {
+    content: "\f11e";
+}
+.frmdb-i-029-plus_round:before {
+    content: "\f11f";
+}
+.frmdb-i-031-product_gallery:before {
+    content: "\f120";
+}
+.frmdb-i-032-publish_3085840:before {
+    content: "\f121";
+}
+.frmdb-i-033-replace:before {
+    content: "\f122";
+}
+.frmdb-i-034-right-column-layout:before {
+    content: "\f123";
+}
+.frmdb-i-035-save_607806:before {
+    content: "\f124";
+}
+.frmdb-i-036-smartphone_503483:before {
+    content: "\f125";
+}
+.frmdb-i-037-split-screen:before {
+    content: "\f126";
+}
+.frmdb-i-038-tablet_503489:before {
+    content: "\f127";
+}
+.frmdb-i-039-themes_200559:before {
+    content: "\f128";
+}
+.frmdb-i-040-web-design_32227:before {
+    content: "\f129";
+}
+.frmdb-i-041-website_955659:before {
+    content: "\f12a";
+}
+.frmdb-i-frmdb:before {
+    content: "\f12b";
+}

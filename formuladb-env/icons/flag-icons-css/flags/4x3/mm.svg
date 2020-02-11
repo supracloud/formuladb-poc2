@@ -1,16 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icon-css-mm" viewBox="0 0 640 480">
-  <defs>
-    <path id="a" fill="#fff" d="M0-.5l.2.5h-.4z" transform="scale(8.844)"/>
-    <g id="b">
-      <use width="18" height="12" transform="rotate(-144)" xlink:href="#a"/>
-      <use width="18" height="12" transform="rotate(-72)" xlink:href="#a"/>
-      <use width="18" height="12" xlink:href="#a"/>
-      <use width="18" height="12" transform="rotate(72)" xlink:href="#a"/>
-      <use width="18" height="12" transform="rotate(144)" xlink:href="#a"/>
-    </g>
-  </defs>
-  <path fill="#fecb00" d="M0-.1h640V160H0z"/>
-  <path fill="#ea2839" d="M0 320h640v160H0z"/>
-  <path fill="#34b233" d="M0 160h640v160H0z"/>
-  <use width="18" height="12" x="9" y="6.4" transform="matrix(40 0 0 40 -40 0)" xlink:href="#b"/>
-</svg>
+version https://git-lfs.github.com/spec/v1
+oid sha256:f7ef4a34cf98d96f557d0a7020f178154b730129be4c2b5f8425b825665875c1
+size 848

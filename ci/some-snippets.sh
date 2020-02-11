@@ -61,5 +61,5 @@ curl -XPUT  -H "Content-Type: text/yaml" --data-binary @apps/inventory/Schema.ym
 curl -XPUT  -H "Content-Type: text/csv" --data-binary @apps/inventory/\$User.csv http://localhost:3000/formuladb-api/inventory/bulk
 
 
-I=1; for i in *; do idx=`printf '%03d' $I`; k=`echo $i | sed 's/^[0-9]*-/'$idx'-/'`; echo mv $i $k; ((I++)) ; done
+I=35; for i in [a-z]*; do idx=`printf '%07d' $I`; k=`echo $i | sed 's/^/'$idx'-/'`; echo mv $i $k; ((I++)) ; done
 #for i in *; do [[ $i =~ ([0-9]+)-(.*.svg) ]]; printf "%07d-%s\n" $((10#${BASH_REMATCH[1]})) ${BASH_REMATCH[2]} ; done

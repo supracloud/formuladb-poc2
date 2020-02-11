@@ -1,7 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-ye" viewBox="0 0 512 512">
-  <g fill-rule="evenodd" stroke-width="1pt">
-    <path fill="#fff" d="M0 0h512v504.3H0z"/>
-    <path fill="#f10600" d="M0 0h512v167.9H0z"/>
-    <path d="M0 344.1h512V512H0z"/>
-  </g>
-</svg>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d7527d589cebe8037b89e642afcca050b9da0cb4e63ed52bbf116f8461f6c60e
+size 275
