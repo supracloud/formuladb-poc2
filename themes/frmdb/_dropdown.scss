@@ -12,6 +12,7 @@
     // }
     .dropdown-menu {
         margin-top: -3px;
+        min-width: 2rem;
         opacity: 0; 
         display: none;
         pointer-events: none;
@@ -25,6 +26,7 @@
 
     &:hover > .dropdown-menu {
         display: block;
+        min-width: 2rem;
         opacity: 1;
         pointer-events: auto;
         visibility: visible;

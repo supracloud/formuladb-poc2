@@ -16,7 +16,8 @@ export class ElementTreeComponent extends HTMLElement {
         if (el.parentElement && el.parentElement.parentElement) grandParentElName = this.getElName(el.parentElement.parentElement);
         if (el.parentElement) parentElName = this.getElName(el.parentElement);
         if (el.previousElementSibling) prevName = this.getElName(el.previousElementSibling as HTMLElement);
-        updateDOM({grandParentElName, parentElName, prevName, elName}, this.shadowRoot! as any as HTMLElement /*WTF?!*/);
+        let hasPrev: boolean = prevName != null && prevName != '';
+        updateDOM({grandParentElName, parentElName, prevName, elName, hasPrev}, this.shadowRoot! as any as HTMLElement /*WTF?!*/);
     }
 
     getElName(el: HTMLElement) {

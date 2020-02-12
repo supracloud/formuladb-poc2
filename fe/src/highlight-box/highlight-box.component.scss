@@ -11,7 +11,7 @@
 .box {
     position: absolute;
     display: block;
-    border: 1px solid rgb(61, 133, 253);
+    border: 2px solid rgb(61, 133, 253);
     // background-color: rgba(61, 133, 253, 0.05);
     pointer-events: none;
     z-index: 10;
@@ -21,7 +21,7 @@
     }
 
     &#grand-parent-highlight {
-        border: 2px dotted yellow;
+        border: 2px dashed yellow;
         margin: -4px 0 0 -4px;
         padding: 4px;
     }
@@ -31,7 +31,8 @@
         padding: 2px;
     }
     &#prev-highlight {
-        border: 1px dotted rgb(61, 133, 253);
+        border: 2px dotted rgb(61, 133, 253);
+        border-style: dotted dashed;
     }
     &#parent-selected {
         border: 2px solid red;
@@ -41,8 +42,8 @@
 
     &#selected {
         border-style: solid;
-        background-color: rgba(61, 131, 253, 0.2);
-        border: 2px solid rgb(61, 133, 253);
+        background-color: rgba(61, 131, 253, 0.25);
+        border: 2px solid rgba(61, 133, 253, 1);
     }
 
     &#selected.editing {
@@ -103,12 +104,12 @@
         &.add-elements { display: none; }
         justify-content: center;
 
-        > a:hover {
+        a:hover {
             background-color: #2777f8;
             transform: scale(1.2);
         }
 
-        > * {
+        * {
             background-color: #4285f4;
             color: white;
             font-size: 14px;

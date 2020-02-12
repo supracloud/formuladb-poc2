@@ -1,8 +1,11 @@
 ul {
     padding-left: 0px;
-    margin: 0;
+    margin: 4px;
+    margin-left: 10px;
+    list-style-type: none;
 }
 li {
+    padding-left: 4px;
     margin-top: 2px;
     font-size: 12px;
     white-space: nowrap;
@@ -11,25 +14,21 @@ li {
     // background-color: green;
     // color: white;
     // background-clip: padding-box;
-    border-bottom: 2px dotted yellow;
+    border: 2px dashed yellow;
 }
 .parent {
     // background-color: yellow;
     // background-clip: padding-box;
     // color: black;
-    border-bottom: 2px dotted red;
-    margin-left: 10px;
+    border: 2px dotted red;
 }
 .prev {
     // background-color: red;
     // background-clip: padding-box;
     // color: white;
-    border-bottom: 2px dotted #4285f4;
-    margin-left: 20px;
+    border: 2px dotted #4285f4;
 }
 .elem {
-    // background-color: #4285f4;
-    // color: white;
-    border-bottom: 2px solid #4285f4;
-    margin-left: 20px;
+    background-color: rgba(61, 131, 253, 0.2);
+    border: 2px solid #4285f4;
 }
