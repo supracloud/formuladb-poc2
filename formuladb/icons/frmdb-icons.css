@@ -1,10 +1,10 @@
 @font-face {
     font-family: "frmdb-icons";
-    src: url("./frmdb-icons.eot?c4fcd58cebdbf93a20d2a73a1de0d108?#iefix") format("embedded-opentype"),
-url("./frmdb-icons.woff2?c4fcd58cebdbf93a20d2a73a1de0d108") format("woff2"),
-url("./frmdb-icons.woff?c4fcd58cebdbf93a20d2a73a1de0d108") format("woff"),
-url("./frmdb-icons.ttf?c4fcd58cebdbf93a20d2a73a1de0d108") format("truetype"),
-url("./frmdb-icons.svg?c4fcd58cebdbf93a20d2a73a1de0d108#frmdb-icons") format("svg");
+    src: url("./frmdb-icons.eot?0a58fedf80aeec8ae45d991812a07b42?#iefix") format("embedded-opentype"),
+url("./frmdb-icons.woff2?0a58fedf80aeec8ae45d991812a07b42") format("woff2"),
+url("./frmdb-icons.woff?0a58fedf80aeec8ae45d991812a07b42") format("woff"),
+url("./frmdb-icons.ttf?0a58fedf80aeec8ae45d991812a07b42") format("truetype"),
+url("./frmdb-icons.svg?0a58fedf80aeec8ae45d991812a07b42#frmdb-icons") format("svg");
 }
 
 i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
@@ -228,90 +228,102 @@ i[class^="frmdb-i-"]:before, i[class*=" frmdb-i-"]:before {
 .frmdb-i-0000102-hand-point-boxes:before {
     content: "\f146";
 }
-.frmdb-i-000015-f-pattern-solid:before {
+.frmdb-i-0000103-hand-point-up:before {
     content: "\f147";
 }
-.frmdb-i-000016-f-pattern:before {
+.frmdb-i-0000104-hand-point-up-boxes:before {
     content: "\f148";
 }
-.frmdb-i-000017-file-manager-layout:before {
+.frmdb-i-0000105-paste-inside:before {
     content: "\f149";
 }
-.frmdb-i-000019-frmdb:before {
+.frmdb-i-0000106-paste-after:before {
     content: "\f14a";
 }
-.frmdb-i-000022-left-column-layout:before {
+.frmdb-i-000015-f-pattern-solid:before {
     content: "\f14b";
 }
-.frmdb-i-000027-minus_round:before {
+.frmdb-i-000016-f-pattern:before {
     content: "\f14c";
 }
-.frmdb-i-000028-play-button:before {
+.frmdb-i-000017-file-manager-layout:before {
     content: "\f14d";
 }
-.frmdb-i-000029-plus_round:before {
+.frmdb-i-000019-frmdb:before {
     content: "\f14e";
 }
-.frmdb-i-000031-product_gallery:before {
+.frmdb-i-000022-left-column-layout:before {
     content: "\f14f";
 }
-.frmdb-i-000033-replace:before {
+.frmdb-i-000027-minus_round:before {
     content: "\f150";
 }
-.frmdb-i-000034-right-column-layout:before {
+.frmdb-i-000028-play-button:before {
     content: "\f151";
 }
-.frmdb-i-1197910-hand-choose-circles:before {
+.frmdb-i-000029-plus_round:before {
     content: "\f152";
 }
-.frmdb-i-137094-header:before {
+.frmdb-i-000031-product_gallery:before {
     content: "\f153";
 }
-.frmdb-i-200559-themes:before {
+.frmdb-i-000033-replace:before {
     content: "\f154";
 }
-.frmdb-i-2669552-font:before {
+.frmdb-i-000034-right-column-layout:before {
     content: "\f155";
 }
-.frmdb-i-2892304-hand-point-choose:before {
+.frmdb-i-1197910-hand-choose-circles:before {
     content: "\f156";
 }
-.frmdb-i-3085840-publish:before {
+.frmdb-i-137094-header:before {
     content: "\f157";
 }
-.frmdb-i-32227-web-design:before {
+.frmdb-i-200559-themes:before {
     content: "\f158";
 }
-.frmdb-i-45501-move:before {
+.frmdb-i-2669552-font:before {
     content: "\f159";
 }
-.frmdb-i-496501-check-mark:before {
+.frmdb-i-2892304-hand-point-choose:before {
     content: "\f15a";
 }
-.frmdb-i-496968-eye:before {
+.frmdb-i-3085840-publish:before {
     content: "\f15b";
 }
-.frmdb-i-500419-laptop:before {
+.frmdb-i-32227-web-design:before {
     content: "\f15c";
 }
-.frmdb-i-503483-smartphone:before {
+.frmdb-i-45501-move:before {
     content: "\f15d";
 }
-.frmdb-i-503489-tablet:before {
+.frmdb-i-496501-check-mark:before {
     content: "\f15e";
 }
-.frmdb-i-607806-save:before {
+.frmdb-i-496968-eye:before {
     content: "\f15f";
 }
-.frmdb-i-608122-many-windows:before {
+.frmdb-i-500419-laptop:before {
     content: "\f160";
 }
-.frmdb-i-617055-hand-point-thk:before {
+.frmdb-i-503483-smartphone:before {
     content: "\f161";
 }
-.frmdb-i-869490-data-table:before {
+.frmdb-i-503489-tablet:before {
     content: "\f162";
 }
-.frmdb-i-955659-website:before {
+.frmdb-i-607806-save:before {
     content: "\f163";
+}
+.frmdb-i-608122-many-windows:before {
+    content: "\f164";
+}
+.frmdb-i-617055-hand-point-thk:before {
+    content: "\f165";
+}
+.frmdb-i-869490-data-table:before {
+    content: "\f166";
+}
+.frmdb-i-955659-website:before {
+    content: "\f167";
 }

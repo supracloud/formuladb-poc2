@@ -1,11 +1,12 @@
 import { FrmdbEditorDirective } from "./frmdb-editor.directive";
-import { onEvent, onEventChildren } from "@fe/delegated-events";
+import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction, FrmdbAddPageElement, FrmdbRemovePageElement } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
 import { ImageInput } from "@fe/component-editor/inputs";
 import { ImagePropertyListener } from "./img-editor.component";
 
 let isInitialized: boolean = false;
+let currentCutElement: HTMLElement | null = null;
 export function pageElementFlows(editor: FrmdbEditorDirective) {
     if (isInitialized) return;
     isInitialized = true;
@@ -70,29 +71,42 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         if (action === "add-after" || action === "add-inside") {
             editor.addElementCmp.start(editor.themeCustomizer.cssFile, editor.frameDoc.body.getAttribute('data-frmdb-theme') || 'NoTheme', event.detail.el, event.detail.action)
         }
-        else if (action === "up" || action === "down") {
+        else if (action === "paste-after" || action === "paste-inside") {
+            let targetDoc = event.detail.el.ownerDocument;
+            if (!targetDoc) {console.warn("owner doc not found"); return;}
+
+            if (action === 'paste-inside') {
+                let newEl = targetDoc.importNode(event.detail.el, true);
+                this.selectedEl.appendChild(newEl);
+                emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
+            } else if (action === 'paste-after') {
+                let newEl = targetDoc.importNode(event.detail.el, true);
+                let p = this.selectedEl.parentElement;
+                if (p) {
+                    p.insertBefore(newEl, this.selectedEl.nextSibling);
+                    emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
+                }
+            }
+        }
+        else if (action === "move-before" || action === "move-up" || action === "move-down") {
             let node = event.detail.el;
             let oldParent = node.parentElement!;
             let oldNextSibling = node.nextElementSibling;
 
-            if ("up" == action) {
+            if ("move-before" == action) {
                 let next = node.previousElementSibling;
                 if (next) {
                     oldParent.insertBefore(node, next);
-                } else {
-                    let p = node.parentElement;
-                    if (!p || !p.parentElement) { console.warn("parents not found", node, p); return }
-                    p.parentElement.insertBefore(node, p);
-                }
-            } else {
+                } else alert("Selected Page Element is already the first element.")
+            } else if ("move-up" == action) {
+                let p = node.parentElement;
+                if (!p || !p.parentElement) alert("Selected Page Element does not have a parent");
+                else p.parentElement.insertBefore(node, p);
+            } else if ("move-down" == action) {
                 let next = node.nextElementSibling;
                 if (next) {
-                    oldParent.insertBefore(node, next.nextElementSibling);
-                } else {
-                    let p = node.parentElement;
-                    if (!p || !p.parentElement) { console.warn("parents not found", node, p); return }
-                    p.parentElement.insertBefore(node, p.nextElementSibling);
-                }
+                    next.appendChild(node);
+                } else alert("Selected Page Element cannot be moved inside a non-existent sibling.")
             }
 
             Undo.addMutation({
@@ -104,6 +118,9 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
                 newNextSibling: node.nextElementSibling,
             });
             editor.selectElement(node);
+        }
+        else if (event.detail.action === "cut") {
+            currentCutElement = event.detail.el;
         }
         else if (event.detail.action === "clone") {
 

@@ -1,0 +1,116 @@
+
+.frmdb-tooltip {
+	background-color: #ffaffc;
+	border-radius: 10px;
+	padding: 10px 15px;
+	position: relative;
+	margin: 15px;
+	text-align: center;
+}
+
+.frmdb-tooltip::after {
+	background-color: transparentize($dark, 0.25);
+	border-radius: 10px;
+	color: $light;
+	display: none;
+	padding: 5px 5px;
+	position: absolute;
+	text-align: center;
+	z-index: 9999;
+}
+
+.frmdb-tooltip::before {
+	background-color: transparentize($dark, 0.25);
+	content: ' ';
+	display: none;
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	z-index: 999;
+}
+
+.frmdb-tooltip:hover::after {
+	display: block;
+}
+
+.frmdb-tooltip:hover::before {
+	display: block;
+}
+
+.frmdb-tooltip.top::after {
+	content: attr(title);
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, calc(-100% - 10px));
+}
+
+.frmdb-tooltip.top::before {
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, calc(-80% - 5px)) rotate(45deg);
+}
+
+.frmdb-tooltip.top-right::after {
+	content: attr(title);
+	top: 0;
+	left: 50%;
+	transform: translate(50%, calc(-80% - 10px));
+}
+
+.frmdb-tooltip.top-right::before {
+	top: 0;
+	left: 50%;
+	transform: translate(50%, calc(-100% - 5px)) rotate(45deg);
+}
+
+.frmdb-tooltip.top-left::after {
+	content: attr(title);
+	top: 0;
+	left: 0;
+	transform: translate(-50%, calc(-80% - 10px));
+}
+
+.frmdb-tooltip.top-left::before {
+	top: 0;
+	left: 0;
+	transform: translate(-50%, calc(-80% - 5px)) rotate(45deg);
+}
+
+.frmdb-tooltip.bottom::after {
+	content: attr(title);
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%, calc(100% + 10px));
+}
+
+.frmdb-tooltip.bottom::before {
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%, calc(100% + 5px)) rotate(45deg);
+}
+
+.frmdb-tooltip.right::after {
+	content: attr(title);
+	top: 0;
+	right: 0;
+	transform: translateX(calc(100% + 10px));
+}
+
+.frmdb-tooltip.right::before {
+	top: 50%;
+	right: 0;
+	transform: translate(calc(100% + 5px), -50%) rotate(45deg);
+}
+
+.frmdb-tooltip.left::after {
+	content: attr(title);
+	top: 0;
+	left: 0;
+	transform: translateX(calc(-100% - 10px));
+}
+
+.frmdb-tooltip.left::before {
+	top: 50%;
+	left: 0;
+	transform: translate(calc(-100% - 5px), -50%) rotate(45deg);
+}
