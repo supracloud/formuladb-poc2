@@ -85,6 +85,14 @@ export class HighlightBoxComponent extends HTMLElement {
             emit(this, { type: "FrmdbSelectPageElement", el: this.selectedEl });
         });
 
+        onEventChildren(this.selectedBox, ['mouseover'], '.actions [data-frmdb-action], .actions .dropdown', (event) => {
+            this.highlightBox.style.display = 'none';
+            this.parentHighlightBox.style.display = 'none';
+            this.grandParentHighlightBox.style.display = 'none';
+            this.prevHighlightBox.style.display = 'none';
+        });
+        
+
         if (this.enableSelectedActionsEvents) {
             this.enableSelectedActionsEvents = false;
 

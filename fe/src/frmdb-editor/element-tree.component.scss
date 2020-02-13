@@ -5,10 +5,12 @@ ul {
     list-style-type: none;
 }
 li {
-    padding-left: 4px;
+    margin-left: 4px;
+    margin-right: 4px;
     margin-top: 2px;
     font-size: 12px;
     white-space: nowrap;
+    overflow: hidden;
 }
 .grand-parent {
     // background-color: green;
