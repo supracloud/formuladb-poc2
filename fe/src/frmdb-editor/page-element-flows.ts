@@ -95,7 +95,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
             });
             editor.selectElement(currentCutElement);
         }
-        else if (action === "move-before" || action === "move-up" || action === "move-down") {
+        else if (action === "move-before" || action === "move-after" || action === "move-up" || action === "move-down") {
             let node = event.detail.el;
             let oldParent = node.parentElement!;
             let oldNextSibling = node.nextElementSibling;
@@ -105,6 +105,12 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
                 if (next) {
                     oldParent.insertBefore(node, next);
                 } else alert("Selected Page Element is already the first element.")
+            } else if ("move-after" == action) {
+                let nextS = node.nextElementSibling;
+                if (nextS) {
+                    let next = nextS.nextElementSibling;
+                    oldParent.insertBefore(node, next);
+                } else alert("Selected Page Element is already the last element.")
             } else if ("move-up" == action) {
                 let p = node.parentElement;
                 if (!p || !p.parentElement) alert("Selected Page Element does not have a parent");

@@ -107,6 +107,7 @@ export interface FrmdbSelectPageElementAction {
         | "paste-inside" 
         | "paste-after"
         | "move-before"
+        | "move-after"
         | "move-up"
         | "move-down"
         | "cut"

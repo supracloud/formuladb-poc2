@@ -99,11 +99,11 @@ export class HighlightBoxComponent extends HTMLElement {
                     emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
                 } else {
                     if (el.dataset.frmdbAction === "cut") {
-                        this.highlightBox.style.transition = "background-color 1s";
-                        this.highlightBox.style.backgroundColor = "rgba(61, 131, 253, 0.75)";
+                        this.selectedBox.style.transition = "background-color 1s";
+                        this.selectedBox.style.backgroundColor = "rgba(61, 131, 253, 0.75)";
                         setTimeout(() => {
-                            this.highlightBox.style.transition = "background-color 1s";
-                            this.highlightBox.style.backgroundColor = "rgba(61, 131, 253, 0.25)";    
+                            this.selectedBox.style.transition = "background-color 1s";
+                            this.selectedBox.style.backgroundColor = "rgba(61, 131, 253, 0.25)";    
                         }, 1000);
                     }
                     emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
@@ -121,9 +121,9 @@ export class HighlightBoxComponent extends HTMLElement {
                 let el: HTMLElement = event.target.closest('[data-frmdb-action]');
                 if (!el || !this.selectedEl) return;
                 if (el.dataset.frmdbAction === "parent") {
-                    this.selectElement(el.parentElement);
+                    this.selectElement(this.selectedEl.parentElement);
                 } else if (el.dataset.frmdbAction === "prev") {
-                    this.selectElement(el.previousElementSibling as HTMLElement | null);
+                    this.selectElement(this.selectedEl.previousElementSibling as HTMLElement | null);
                 } else if (el.dataset.frmdbAction === "choose") {
                     emit(this, { type: "FrmdbChoosePageElement", el: this.selectedEl });
                 }
@@ -160,9 +160,7 @@ export class HighlightBoxComponent extends HTMLElement {
     }
     selectElement(el: HTMLElement | null) {
         if (el) {
-            if (el != this.selectedEl) {
-                this.showSelectBox(el);
-            }
+            this.showSelectBox(el);
         } else {
             this.selectedBox.style.display = 'none';
         }
