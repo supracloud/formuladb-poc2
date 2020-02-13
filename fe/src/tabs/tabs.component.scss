@@ -1,0 +1,8 @@
+:host {
+  display: flex;
+  flex-wrap: wrap;
+}
+::slotted(howto-panel) {
+  flex-basis: 100%;
+  display: none;
+}

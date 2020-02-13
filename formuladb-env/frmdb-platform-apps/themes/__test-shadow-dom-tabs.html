@@ -7,6 +7,10 @@
         <howto-tab role="heading" slot="tab">
             <span>Tab 1</span>
         </howto-tab>
+        <howto-tab role="heading" slot="tab">Tab 2</howto-tab>
+        <howto-tab role="heading" slot="tab">Tab 3</howto-tab>
+        <howto-tab role="heading" slot="tab"><div>Tab 4</div></howto-tab>
+
         <howto-panel role="region" slot="panel">
             <h1>Content 1</h1>
             <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they
@@ -15,7 +19,6 @@
                 Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS
                 viral locavore cosby sweater.</p>
         </howto-panel>
-        <howto-tab role="heading" slot="tab">Tab 2</howto-tab>
         <howto-panel role="region" slot="panel">
             <h1>Content 2</h1>
             <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee
@@ -25,7 +28,6 @@
                 cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit.
             </p>
         </howto-panel>
-        <howto-tab role="heading" slot="tab">Tab 3</howto-tab>
         <howto-panel role="region" slot="panel">
             <h1>Content 3</h1>
             <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu
@@ -35,7 +37,6 @@
                 salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher
                 voluptate nisi qui.</p>
         </howto-panel>
-        <howto-tab role="heading" slot="tab"><div>Tab 4</div></howto-tab>
         <howto-panel role="region" slot="panel">
             <h1>Content 4</h1>
             <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu
@@ -89,6 +90,7 @@
       }
       ::slotted(howto-panel) {
         flex-basis: 100%;
+        display: none;
       }
     </style>
     <slot name="tab"></slot>
@@ -162,7 +164,7 @@
                         customElements.whenDefined('howto-tab'),
                         customElements.whenDefined('howto-panel'),
                     ])
-                        .then(_ => this._linkPanels());
+                        .then(_ => this._onSlotChange());
                 }
 
                 /**
@@ -179,45 +181,9 @@
                  * one of the shadow DOM slots.
                  */
                 _onSlotChange() {
-                    this._linkPanels();
-                }
-
-                /**
-                 * `_linkPanels()` links up tabs with their adjacent panels using
-                 * `aria-controls` and `aria-labelledby`. Additionally, the method makes
-                 * sure only one tab is active.
-                 *
-                 * If this function becomes a bottleneck, it can be easily optimized by
-                 * only handling the new elements instead of iterating over all of the
-                 * element’s children.
-                 */
-                _linkPanels() {
                     const tabs = this._allTabs();
-                    const panels = this._allPanels();
-                    // Give each panel a `aria-labelledby` attribute that refers to the tab
-                    // that controls it.
-                    let i = 0;
-                    for (let tab of tabs) {
-                        const panel = panels[i];
-                        if (!panel) break;
-                        i++;
-                        if (panel.tagName.toLowerCase() !== 'howto-panel') {
-                            console.error(`Tab #${tab.id} is not a` +
-                                `sibling of a <howto-panel>`);
-                            return;
-                        }
-
-                        tab.setAttribute('aria-controls', panel.id);
-                        panel.setAttribute('aria-labelledby', tab.id);
-                    }
-
-                    // The element checks if any of the tabs have been marked as selected.
-                    // If not, the first tab is now selected.
                     const selectedTab =
                         tabs.find(tab => tab.selected) || tabs[0];
-
-                    // Next, switch to the selected tab. `selectTab()` takes care of
-                    // marking all other tabs as deselected and hiding all other panels.
                     this._selectTab(selectedTab);
                 }
 
@@ -299,7 +265,7 @@
                     const panels = this._allPanels();
 
                     tabs.forEach(tab => tab.selected = false);
-                    panels.forEach(panel => panel.hidden = true);
+                    panels.forEach(panel => panel.style.display = "none");
                 }
 
 
@@ -308,16 +274,19 @@
                  * Additionally, it unhides the panel corresponding to the given tab.
                  */
                 _selectTab(newTab) {
+                    let idx = -1;
+                    this._allTabs().forEach((t, i) => {if (newTab === t) idx = i});
+
                     // Deselect all tabs and hide all panels.
                     this.reset();
 
                     // Get the panel that the `newTab` is associated with.
-                    const newPanel = this._panelForTab(newTab);
+                    const newPanel = this._allPanels()[idx];
                     // If that panel doesn’t exist, abort.
                     if (!newPanel)
                         throw new Error(`No panel with id ${newPanelId}`);
                     newTab.selected = true;
-                    newPanel.hidden = false;
+                    newPanel.style.display = 'block';
                     newTab.focus();
                 }
 
