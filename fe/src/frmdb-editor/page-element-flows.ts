@@ -72,21 +72,28 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
             editor.addElementCmp.start(editor.themeCustomizer.cssFile, editor.frameDoc.body.getAttribute('data-frmdb-theme') || 'NoTheme', event.detail.el, event.detail.action)
         }
         else if (action === "paste-after" || action === "paste-inside") {
-            let targetDoc = event.detail.el.ownerDocument;
-            if (!targetDoc) {console.warn("owner doc not found"); return;}
+            if (!currentCutElement) { alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return;}
+            let node = event.detail.el;
+            let oldParent = currentCutElement.parentElement!;
+            let oldNextSibling = currentCutElement.nextElementSibling;
 
             if (action === 'paste-inside') {
-                let newEl = targetDoc.importNode(event.detail.el, true);
-                this.selectedEl.appendChild(newEl);
-                emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
+                node.appendChild(currentCutElement);
             } else if (action === 'paste-after') {
-                let newEl = targetDoc.importNode(event.detail.el, true);
-                let p = this.selectedEl.parentElement;
+                let p = node.parentElement;
                 if (p) {
-                    p.insertBefore(newEl, this.selectedEl.nextSibling);
-                    emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
+                    p.insertBefore(currentCutElement, node.nextSibling);
                 }
             }
+            Undo.addMutation({
+                type: 'move',
+                target: currentCutElement,
+                oldParent: oldParent,
+                newParent: currentCutElement.parentElement!,
+                oldNextSibling: oldNextSibling,
+                newNextSibling: currentCutElement.nextElementSibling,
+            });
+            editor.selectElement(currentCutElement);
         }
         else if (action === "move-before" || action === "move-up" || action === "move-down") {
             let node = event.detail.el;

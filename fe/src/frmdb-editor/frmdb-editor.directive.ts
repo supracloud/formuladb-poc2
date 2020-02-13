@@ -587,7 +587,7 @@ export class FrmdbEditorDirective {
             '$HIGHLIGHT-RECORD$': {_id: recordId},
         };
         this.changeSelectedTableIdIfDifferent(tableName);
-        dataGrid.forceCellRefresh();
+        dataGrid.debouncedForceCellRefresh();
     }
 
 

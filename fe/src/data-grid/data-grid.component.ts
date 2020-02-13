@@ -41,7 +41,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     get highlightColumns() { return this._highlightColumns }
     set highlightColumns(hc: DataGridComponent['_highlightColumns']) {
         this._highlightColumns = hc;
-        this.forceCellRefresh();
+        this.debouncedForceCellRefresh();
     }
     get noFloatingFilters() {
         return ('true' === (this.getAttribute("no-floating-filters") || '').toLowerCase());
@@ -84,7 +84,8 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
     /** component internals *************************************************/
 
-    public forceCellRefresh() {
+    debouncedForceCellRefresh = _.debounce(() => this._forceCellRefresh(), 100);
+    public _forceCellRefresh() {
         this.gridApi && this.gridApi.refreshView();
     }
     public forceReloadData() {

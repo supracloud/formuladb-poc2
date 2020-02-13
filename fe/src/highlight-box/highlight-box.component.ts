@@ -98,6 +98,14 @@ export class HighlightBoxComponent extends HTMLElement {
                     this.toggleWysiwygEditor(true);
                     emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
                 } else {
+                    if (el.dataset.frmdbAction === "cut") {
+                        this.highlightBox.style.transition = "background-color 1s";
+                        this.highlightBox.style.backgroundColor = "rgba(61, 131, 253, 0.75)";
+                        setTimeout(() => {
+                            this.highlightBox.style.transition = "background-color 1s";
+                            this.highlightBox.style.backgroundColor = "rgba(61, 131, 253, 0.25)";    
+                        }, 1000);
+                    }
                     emit(this, { type: "FrmdbSelectPageElementAction", el: this.selectedEl, action: el.dataset.frmdbAction as FrmdbSelectPageElementAction['action'] });
                 }
             });

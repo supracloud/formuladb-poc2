@@ -96,16 +96,16 @@ export class ElementEditorComponent extends HTMLElement {
 		this.extend("_base", "_base", ComponentsBaseDataBinding);
 	}
 
-	node: HTMLElement;
+	selectedEl: HTMLElement;
 	setEditedEl(el: HTMLElement) {
-		this.node = el;
+		this.selectedEl = el;
 		if (!this.componentsInitialized) {
 			this.initializeComponents();
 			this.componentsInitialized = true;
 		}
-		let cmp = this.matchNode(this.node);
+		let cmp = this.matchNode(this.selectedEl);
 		let componentType = cmp ? cmp.type : defaultComponent;
-		this.render(componentType, this.node);
+		this.render(componentType, this.selectedEl);
 	}
 	
 	_components: { [type: string]: Component } = {};

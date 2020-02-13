@@ -9,7 +9,7 @@ export interface DataGridComponentI extends HTMLElement {
     };
     tableName?: string;
     selectedColumnName?: string;
-    forceCellRefresh();
+    debouncedForceCellRefresh();
     initAgGrid();
     forceReloadData();
 }
