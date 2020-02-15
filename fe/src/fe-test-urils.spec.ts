@@ -22,5 +22,3 @@ export function setValue(el: HTMLInputElement, val: string): HTMLInputElement {
 export async function testSleep(ms: number, message: string = "") {
     await new Promise(resolve => setTimeout(resolve, ms));
 }
-
-export function frmdbxit(str, callback) { }

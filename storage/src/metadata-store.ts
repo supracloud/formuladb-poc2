@@ -27,6 +27,14 @@ export interface SchemaEntityList {
     entityIds: string[];
 }
 
+export interface PageOpts {
+    lang: string;
+    look: string;
+    primaryColor: string;
+    secondaryColor: string;
+    theme: string;
+}
+
 export class MetadataStore {
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
 
@@ -286,7 +294,7 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 
-    async getPageHtml(tenantName: string, appName: string, pageName: string): Promise<string> {
+    async getPageHtml(opts: PageOpts, tenantName: string, appName: string, pageName: string): Promise<string> {
         let pageHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {

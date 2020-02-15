@@ -145,8 +145,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb/*', express.static('/wwwroot'));
 
-    app.get('/:tenant/:app/:page.html', async function (req, res, next) {
-        let pageHtml = await kvsFactory.metadataStore.getPageHtml(req.params.tenant, req.params.app, `${req.params.page}.html`);
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/:page.html', async function (req, res, next) {
+        let pageHtml = await kvsFactory.metadataStore.getPageHtml(
+            {lang: req.params.land, look: req.params.look, primaryColor: req.params.primary, secondaryColor: req.params.secondary, theme: req.params.theme},
+            req.params.tenant, req.params.app, `${req.params.page}.html`);
         res.set('Content-Type', 'text/html')
         res.send(pageHtml);
     });

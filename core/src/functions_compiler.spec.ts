@@ -1,4 +1,3 @@
-import { frmdbxit } from "@fe/fe-test-urils.spec";
 
 /**
  * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -15,7 +14,7 @@ describe('functions_compiler', () => {
     ];
 
     for (let testFormula of formulas) {
-        frmdbxit(' should compile ' + testFormula.testName + ': ' + testFormula.formula, () => {
+        console.log(' should compile ' + testFormula.testName + ': ' + testFormula.formula, () => {
         });
     }
 });

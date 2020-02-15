@@ -1,6 +1,7 @@
+import { LANGUAGES, DEFAULT_LANGUAGE } from "@domain/i18n";
+
 const translatableSelector = 'p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,[placeholder]';
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
-export const DEFAULT_LANGUAGE = 'en';
 
 export function getTranslationKey(el) {
     return el.hasAttribute('data-i18n-key') ? el.getAttribute('data-i18n-key') : (
@@ -46,20 +47,7 @@ export class I18nFe {
     }
 
     get languages() {
-        return [
-            { flag: 'gb', full: 'English', lang: 'en' },
-            { flag: 'fr', full: 'Francais', lang: 'fr' },
-            { flag: 'de', full: 'German', lang: 'de' },
-            { flag: 'it', full: 'Italian', lang: 'it' },
-            { flag: 'es', full: 'Spanish', lang: 'es' },
-            { flag: 'pt', full: 'Portuguese', lang: 'pt' },
-            { flag: 'gr', full: 'Greek', lang: 'el' },
-            { flag: 'ro', full: 'Romanian', lang: 'ro' },
-            { flag: 'pl', full: 'Polish', lang: 'pl' },
-            { flag: 'bg', full: 'Bulgarian', lang: 'bg' },
-            { flag: 'nl', full: 'Dutch', lang: 'nl' },
-            { flag: 'sv', full: 'Swedish', lang: 'sv' },
-        ]
+        return LANGUAGES;
     };
 
     updateNode(el: HTMLElement, sourceLang, targetLang, sourceValue, targetValue) {

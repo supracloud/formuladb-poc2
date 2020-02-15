@@ -45,7 +45,6 @@ export function initRoutes() {
     }
 }
 
-
 function render(pathName: string, allowMissingRoute: boolean = true) {
     let path = pathName.replace(/^\//, '');
     let matchedRoute: FrmdbRoute | null = null;

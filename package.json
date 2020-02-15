@@ -24,6 +24,7 @@
         "serve-tmux": "bash ci/prepare-dev.sh && tmux new-session 'npm run watch-compile' ';' split-window -h 'npm run bundle:watch' ';' split-window 'npm run watch-rsync' ';' select-layout tiled ';' split-window -h 'npm run watch-skaffold' ';' select-layout tiled",
         "serve": "bash ci/prepare-dev.sh && concurrently -k \"npm:watch-*\" ",
         "test": "node jasmine.js",
+        "test:fe": "node jasmine.js browser",
         "e2e": "protractor e2e/protractor.conf.js",
         "webdriver-update": "webdriver-manager update",
         "dev:be": "ts-node-dev --respawn --transpileOnly ./be/src/server.ts",

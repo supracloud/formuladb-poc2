@@ -807,6 +807,7 @@ customElements.define("frmdb-text-value-input", TextValueInput);
 customElements.define("frmdb-button-input", ButtonInput);
 customElements.define("frmdb-section-input", SectionInput);
 customElements.define("frmdb-list-input", ListInput);
+customElements.define("frmdb-responsive-class-select-input", ResponsiveClassSelectInput);
 
 export function createInput(inputtype: keyof typeof Inputs): Input {
 	return document.createElement(Inputs[inputtype].elemTagName) as Input;

@@ -1,6 +1,7 @@
 stages:
   - build
   - test_mem
+  - test_fe
   - bundle
   - build_images_and_deploy_dev
   - test_postgres
@@ -58,6 +59,12 @@ test_mem:
   stage: test_mem
   script:
     - npm test
+  <<: *cache_node_modules_and_artifacts
+
+test_fe:
+  stage: test_fe
+  script:
+    - npm run test:fe
   <<: *cache_node_modules_and_artifacts
 
 test_postgres:

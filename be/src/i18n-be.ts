@@ -3,6 +3,7 @@ import { DictionaryEntry } from "@domain/dictionary-entry";
 import { $Dictionary } from "@domain/metadata/default-metadata";
 import { v3beta1 } from "@google-cloud/translate";
 import { elvis } from "@core/elvis";
+import { LANGUAGES } from "@domain/i18n";
 
 const translationClient = new v3beta1.TranslationServiceClient();
 const projectId = 'seismic-plexus-232506';
@@ -10,6 +11,19 @@ const projectId = 'seismic-plexus-232506';
 const translateBatchSize = 128;
 const EMPTY_MAP = new Map();
 const DEFAULT_LANGUAGE = 'en';
+
+
+interface Translation {
+
+    /** Translation translatedText */
+    translatedText?: string;
+
+    /** Translation model */
+    model?: string;
+
+    /** Translation detectedLanguageCode */
+    detectedLanguageCode?: string;
+}
 
 export class I18nBe {
     kvs$Dictionary: KeyTableStoreI<DictionaryEntry>;
@@ -35,7 +49,7 @@ export class I18nBe {
         const batches: string[][] = [];
         let dictionaryKVS = await this.getDictionaryKvs();
         let dirtyDictionaryEntries: Map<string, DictionaryEntry> = new Map();
-        let returnedTranslations: {[key: string]: string} = {};
+        let returnedTranslations: { [key: string]: string } = {};
 
         let i = 0;
         let batch: string[] = [];
@@ -46,41 +60,35 @@ export class I18nBe {
                 batch.push(text)
                 i++;
             }
-            if (i%translateBatchSize == 0) {
+            if (i % translateBatchSize == 0) {
                 batches.push(batch);
                 batch = [];
             }
         }
         if (batch.length > 0) batches.push(batch);
 
-        // const translations = await Promise.all(batches.map(batch => {
-        //     // Construct request
-        //     const request = {
-        //         parent: translationClient.locationPath(projectId, 'global'),
-        //         contents: batch,
-        //         mimeType: 'text/html', // mime types: text/plain, text/html
-        //         sourceLanguageCode: DEFAULT_LANGUAGE,
-        //         targetLanguageCode: toLangAndCountry,
-        //     };
-        //     if (batch.length == 0) return [{translations: []}];
-        //     return translationClient.translateText(request)
-        //         .then(x => {
-        //             let translatedBatch: string[] = x[0].translations.map(t => t.translatedText);
-        //             for (let [idx, defaultText] of batch.entries()) {
-        //                 let translatedText = translatedBatch[idx];
-        //                 let dictEntry: DictionaryEntry = this.dictionaryCache.get(defaultText) || {_id: defaultText} as DictionaryEntry;
-        //                 dictEntry[toLang] = translatedText;
-        //                 dirtyDictionaryEntries.set(defaultText, dictEntry);
-        //                 returnedTranslations[defaultText] = translatedText;
-        //             }
-        //             console.log(x);
-        //             return x;
-        //         })
-        //         .catch(err => {
-        //             console.error(err, JSON.stringify(request)); 
-        //             throw err;
-        //         });
-        // }));
+        v3beta1.TranslationServiceClient['']
+        let promises = batches.filter(batch => batch.length > 0)
+            .map(batch => translationClient.translateText({
+                parent: translationClient.locationPath(projectId, 'global'),
+                contents: batch,
+                mimeType: 'text/html', // mime types: text/plain, text/html
+                sourceLanguageCode: DEFAULT_LANGUAGE,
+                targetLanguageCode: toLangAndCountry,
+            }));
+        let responses = await Promise.all(promises);
+
+        for (let res of responses) {
+            if (!res || !res[0] || !res[0].translations) continue;
+            let translatedBatch: string[] = res[0].translations.map(t => t.translatedText).filter<string>((x): x is string => x != null);
+            for (let [idx, defaultText] of batch.entries()) {
+                let translatedText = translatedBatch[idx];
+                let dictEntry: DictionaryEntry = this.dictionaryCache.get(defaultText) || { _id: defaultText } as DictionaryEntry;
+                dictEntry[toLang] = translatedText;
+                dirtyDictionaryEntries.set(defaultText, dictEntry);
+                returnedTranslations[defaultText] = translatedText;
+            }
+        }
 
         for (let dirtyDictEntry of dirtyDictionaryEntries.values()) {
             this.dictionaryCache.set(dirtyDictEntry._id, dirtyDictEntry);

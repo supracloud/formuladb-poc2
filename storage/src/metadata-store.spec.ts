@@ -2,7 +2,14 @@ import * as fs from 'fs';
 var rimraf = require("rimraf");
 import { HTMLTools } from "@core/html-tools";
 
-const htmlTools = new HTMLTools(document, new DOMParser());
+const { JSDOM } = require('jsdom');
+const jsdom = new JSDOM('', {}, {
+    features: {
+        'FetchExternalResources': false,
+        'ProcessExternalResources': false
+    }
+});
+const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
 
 import { getTestFrmdbEngineStore } from "./key_value_store_impl_selector";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
@@ -90,7 +97,9 @@ describe('MetadataStore', () => {
 
     it("Should read page with fragments assembled", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
-            await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml('apps', 'testApp', 'test.html'));
+            await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
+                {lang: ''}, 
+                'apps', 'testApp', 'test.html'));
 
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(pageHtmlFromClient);
         expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
