@@ -63,7 +63,7 @@ export class ThemePreviewComponent extends HTMLElement {
             <div class="card-deck">
                 <div class="card frmdb-t-card-img" style="display: grid;">
                     <div class="frmdb-t-img overflow-hidden">
-                        <img src="/formuladb-env/static/apps/themes/card1.jpg" alt="" />
+                        <img src="/formuladb-env/static/frmdb-apps/themes/card1.jpg" alt="" />
                     </div>
                     <div class="card-body">
                         <h5>Card 1 title</h5>
@@ -79,7 +79,7 @@ export class ThemePreviewComponent extends HTMLElement {
                 </div>
                 <div class="card frmdb-t-card-img">
                     <div class="frmdb-t-img overflow-hidden">
-                        <img src="/formuladb-env/static/apps/themes/card2.jpg" alt="">
+                        <img src="/formuladb-env/static/frmdb-apps/themes/card2.jpg" alt="">
                     </div>
                     <div class="card-body">
                         <h5>Card 2 title</h5>
@@ -95,7 +95,7 @@ export class ThemePreviewComponent extends HTMLElement {
                 </div>
                 <div class="card frmdb-t-card-img">
                     <div class="frmdb-t-img overflow-hidden">
-                        <img src="/formuladb-env/static/apps/themes/card3.jpg" alt="">
+                        <img src="/formuladb-env/static/frmdb-apps/themes/card3.jpg" alt="">
                     </div>
                     <div class="card-body">
                         <h5>Card 3 title</h5>
@@ -111,7 +111,7 @@ export class ThemePreviewComponent extends HTMLElement {
                 </div>
                 <div class="card frmdb-t-card-img">
                     <div class="frmdb-t-img overflow-hidden">
-                        <img src="/formuladb-env/static/apps/themes/card4.jpg" alt="">
+                        <img src="/formuladb-env/static/frmdb-apps/themes/card4.jpg" alt="">
                     </div>
                     <div class="card-body">
                         <h5>Card 4 title</h5>
