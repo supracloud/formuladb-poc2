@@ -14,7 +14,7 @@ import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
 import { PageOpts } from "@domain/url-utils";
-import { unloadCurrentTheme, applyTheme } from "@core/frmdb-themes";
+import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nStorage } from "./i18n-storage";
 import { I18nLang } from "@domain/i18n";
@@ -344,7 +344,9 @@ export class MetadataStore {
             }
         }
 
-        await applyTheme(pageOpts.theme, pageDom);
+        let themeRulesJson = await this.readFile(`${ROOT}/themes/${pageOpts.theme}.json`);
+        let themeRules: ThemeRules = JSON.parse(themeRulesJson);
+        await applyTheme(themeRules, pageDom);
         await this.i18nStorage.getDictionaryKvs();
         I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, this.i18nStorage.dictionaryCache);
 

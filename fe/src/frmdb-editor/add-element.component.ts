@@ -1,7 +1,7 @@
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
-import { applyTheme } from "@core/frmdb-themes";
+import { applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
 import { loadPage } from "@fe/fe-functions";
 
@@ -31,7 +31,9 @@ export class AddElementComponent extends HTMLElement {
             if (!this.link) console.warn("link #frmdb-theme-css not found!");
             if (this.lookCssFile) this.link.href = this.lookCssFile;
             if (this.themeName) {
-                applyTheme(this.themeName, this.iframe.contentWindow!.document);
+                fetch(`/formuladb-env/themes/${this.themeName}.json`)
+                    .then(response => response.json())
+                    .then(themeRules => applyTheme(themeRules, this.iframe.contentWindow!.document));
             }
             this.iframe.contentWindow!.document.querySelector('[data-frmdb-fragment="_nav.html"]')?.setAttribute("data-frmdb-highlight-ignore", "");
         }

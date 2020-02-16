@@ -30,10 +30,7 @@ export async function __old__unloadCurrentTheme(rootEl: Document | ShadowRoot | 
     return currentThemeName;
 }
 
-export async function applyTheme(themeName: string, rootEl: Document | ShadowRoot | HTMLElement) {
-    let themeRules: ThemeRules = await fetch(`/formuladb-env/themes/${themeName}.json`)
-        .then(response => response.json());
-
+export async function applyTheme(themeRules: ThemeRules, rootEl: Document | ShadowRoot | HTMLElement) {
     unloadCurrentTheme(rootEl);
     translateThemeRulesByReplacingClasses(rootEl, themeRules);
 }
@@ -42,6 +39,7 @@ export function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement) 
     for (let el of Array.from(rootEl.querySelectorAll('[data-frmdb-theme-classes]'))) {
         let themeClasses = (el.getAttribute('data-frmdb-theme-classes')||'').split(' ');
         el.classList.remove(...themeClasses);
+        el.removeAttribute('data-frmdb-theme-classes');
     }
 }
 

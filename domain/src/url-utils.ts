@@ -10,7 +10,7 @@ export interface PageOpts {
     pageName: string;
 }
 
-export function parsePargeUrl(url: string): PageOpts {
+export function parsePageUrl(url: string): PageOpts {
     let m = url.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)-(e|n)\/(.+?)\/(.+?)\/(.+?.html)/);
     if (m && m.length == 10) {
         return {
