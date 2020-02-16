@@ -3,7 +3,7 @@
 
 Please read the instructions in this document.
 
-Then start with this [example intro video test case](./src/apps/Hotel_Booking/IntroVideo.scenario.ts). Then go back to this document any time things are unclear in this example.
+Then start with this [example intro video test case](./src/frmdb-apps/Hotel_Booking/IntroVideo.scenario.ts). Then go back to this document any time things are unclear in this example.
 
 # Selecting elements from the page
 

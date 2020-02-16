@@ -6,7 +6,7 @@ import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
-import { cleanupDocumentDOM } from "./get-html";
+import { cleanupDocumentDOM } from "../../core/src/page-utils";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)

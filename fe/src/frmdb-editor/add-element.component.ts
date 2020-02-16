@@ -1,7 +1,7 @@
 import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
-import { applyTheme } from "@fe/frmdb-themes";
+import { applyTheme } from "@core/frmdb-themes";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
 import { loadPage } from "@fe/fe-functions";
 

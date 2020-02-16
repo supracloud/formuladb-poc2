@@ -162,7 +162,7 @@ const Schemas = [
     { tenantName: "apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp },
     { tenantName: "apps", appName: "Hotel_Booking", schema: HotelBookingSchema, app: HotelBookingApp },
     // {
-    //     tenantName: "formuladb-env/apps", appName: "Hotel_Booking_2",
+    //     tenantName: "formuladb-env/frmdb-apps", appName: "Hotel_Booking_2",
     //     schema: {
     //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_2',
     //         ...HotelBookingSchema,
@@ -172,7 +172,7 @@ const Schemas = [
     //     }
     // },
     // {
-    //     tenantName: "formuladb-env/apps", appName: "Hotel_Booking_3",
+    //     tenantName: "formuladb-env/frmdb-apps", appName: "Hotel_Booking_3",
     //     schema: {
     //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_3',
     //         ...HotelBookingSchema,
@@ -181,7 +181,7 @@ const Schemas = [
     //         ...HotelBookingApp,
     //     }
     // },
-    { tenantName: "frmdb-platform-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
+    { tenantName: "frmdb-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
 ];
 
 for (let sch of Schemas) {

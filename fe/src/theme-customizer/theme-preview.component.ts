@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { translateThemeRulesByReplacingClasses, ThemeRules } from "@fe/frmdb-themes";
+import { translateThemeRulesByReplacingClasses, _old_ThemeRules } from "@core/frmdb-themes";
 
 export class ThemePreviewComponent extends HTMLElement {
     static observedAttributes = ['color', 'look'];
@@ -32,7 +32,7 @@ export class ThemePreviewComponent extends HTMLElement {
 
         fetch(`/formuladb-env/themes/${theme}.json`)
         .then(async (response) => {
-            let themeRules: ThemeRules = await response.json();
+            let themeRules: _old_ThemeRules = await response.json();
             translateThemeRulesByReplacingClasses(this.shadowRoot!, themeRules);
         });
     }

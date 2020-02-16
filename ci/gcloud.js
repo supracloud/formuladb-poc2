@@ -8,7 +8,7 @@ async function uploadAssets(tenantName) {
     for (let fileName of array) {
         storage.bucket('formuladb-env/static-assets')
             .upload(fileName, { 
-                destination: `${tenantName}/production/${fileName.replace(/apps\//, '')}`,
+                destination: `${tenantName}/production/${fileName.replace(/frmdb-apps\//, '')}`,
             })
             .then(res => console.log(res))
             .catch(err => console.error(err))

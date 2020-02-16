@@ -55,8 +55,8 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "_url": "http://frmdb.localhost/formuladb/editor.html#/frmdb-platform-apps/formuladb_io/index.html",
-            "url": "http://frmdb.localhost/formuladb/editor.html#/apps/Hotel_Booking/index.html",
+            "_url": "http://frmdb.localhost/formuladb/editor.html#/frmdb-apps/formuladb_io/index.html",
+            "url": "http://frmdb.localhost/formuladb/editor.html#/frmdb-apps/Hotel_Booking/index.html",
             "webRoot": "${workspaceFolder}",
             "trace": true,
             "sourceMapPathOverrides": {

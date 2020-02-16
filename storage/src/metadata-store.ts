@@ -1,18 +1,23 @@
 const fetch = require('node-fetch')
 import { App } from "@domain/app";
 import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
-import { KeyValueStoreFactoryI, KeyObjStoreI } from "@storage/key_value_store_i";
+import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
 
 import { Storage } from '@google-cloud/storage';
-import { cleanupDocumentDOM } from "@fe/get-html";
+import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
+import { PageOpts } from "@domain/url-utils";
+import { unloadCurrentTheme, applyTheme } from "@core/frmdb-themes";
+import { I18N_UTILS } from "@core/i18n-utils";
+import { I18nStorage } from "./i18n-storage";
+import { I18nLang } from "@domain/i18n";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -27,16 +32,13 @@ export interface SchemaEntityList {
     entityIds: string[];
 }
 
-export interface PageOpts {
-    lang: string;
-    look: string;
-    primaryColor: string;
-    secondaryColor: string;
-    theme: string;
-}
-
 export class MetadataStore {
-    constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) { }
+    i18nStorage: I18nStorage;
+
+    constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) {
+        this.i18nStorage = new I18nStorage(kvsFactory);
+        this.i18nStorage.getDictionaryKvs();
+    }
 
     private async writeFile(fileName: string, content: string | Buffer) {
         await new Promise((resolve, reject) => {
@@ -242,7 +244,7 @@ export class MetadataStore {
         if (basedOnApp) {
             await execShell(`cp -ar ${ROOT}/${tenantName}/${basedOnApp} ${ROOT}/${tenantName}/${appName}`);
         } else {
-            await execShell(`cp -ar ${ROOT}/frmdb-platform-apps/themes ${ROOT}/${tenantName}/${appName}`);
+            await execShell(`cp -ar ${ROOT}/frmdb-apps/themes ${ROOT}/${tenantName}/${appName}`);
         }
         await execShell(`mkdir -p ${ROOT}/static/${tenantName}/${appName}`);
         return this.getApp("apps", appName);
@@ -254,8 +256,8 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/${tenantName}/${appName}/${newPageName}`, content);
     }
 
-    async savePageHtml(tenantName: string, appName: string, pageName: string, html: string): Promise<void> {
-
+    async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
+        let {tenantName, appName, pageName} = pageOpts;
         let pagePath = `${tenantName}/${appName}/${pageName}`;
 
         const jsdom = new JSDOM(html, {}, {
@@ -267,6 +269,12 @@ export class MetadataStore {
         const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
 
         let cleanedUpDOM = cleanupDocumentDOM(htmlTools.doc);
+
+        //page is saved without any theme-specific classes, theme rules are applied on read
+        unloadCurrentTheme(cleanedUpDOM);
+
+        //i18n texts are stored in $Dictionary table, not in the html page
+        I18N_UTILS.cleanI18nTranslations(cleanedUpDOM);
 
         //<head> is managed like a special type of fragment
         {
@@ -294,7 +302,8 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 
-    async getPageHtml(opts: PageOpts, tenantName: string, appName: string, pageName: string): Promise<string> {
+    async getPageHtml(pageOpts: PageOpts): Promise<string> {
+        let {tenantName, appName, pageName} = pageOpts;
         let pageHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
@@ -334,6 +343,10 @@ export class MetadataStore {
                 fragmentEl.parentNode!.replaceChild(fragmentDom, fragmentEl);
             }
         }
+
+        await applyTheme(pageOpts.theme, pageDom);
+        await this.i18nStorage.getDictionaryKvs();
+        I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, this.i18nStorage.dictionaryCache);
 
         return htmlTools.document2html(pageDom);
     }

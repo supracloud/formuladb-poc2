@@ -11,7 +11,7 @@ export const $User: Entity = {
     }
 };
 
-export const $Dictionary: Entity = {
+const _$Dictionary = {
     _id: "$Dictionary",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -30,6 +30,8 @@ export const $Dictionary: Entity = {
         nl: { name: "nl", propType_: Pn.STRING } as EntityProperty,
     }
 };
+export const $Dictionary: Entity = _$Dictionary;
+export type $DictionaryObjT = {[K in keyof typeof _$Dictionary['props']]: string};
 
 export const $Currency: Entity = {
     _id: "$Currency",

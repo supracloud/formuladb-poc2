@@ -2,7 +2,6 @@ import * as _ from "lodash";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
 import { BACKEND_SERVICE, RESET_BACKEND_SERVICE } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
-import { I18N_FE, isElementWithTextContent, getTranslationKey, DEFAULT_LANGUAGE } from "@fe/i18n-fe";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
@@ -50,6 +49,8 @@ import { frmdbSetImageSrc } from "@fe/component-editor/components-frmdb";
 import { Undo } from "./undo";
 import { decodePageUrl } from "@fe/app.service";
 import { $FMODAL } from "../directives/data-toggle-modal.directive";
+import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
+import { DEFAULT_LANGUAGE } from "@domain/i18n";
 
 declare var $: null, jQuery: null;
 
@@ -164,16 +165,17 @@ export class FrmdbEditorDirective {
     }
 
     initI18n() {
-        const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
+        const currentLanguage = I18N_UTILS.getLangDesc(localStorage.getItem('editor-lang') || I18N_UTILS.defaultLanguage)!;
 
         // i18n section
         const i18nSelect: HTMLElement = document.querySelector('#frmdb-editor-i18n-select') as HTMLElement;
         const i18nOptions: HTMLElement = document.querySelector('[aria-labelledby="frmdb-editor-i18n-select"]') as HTMLElement;
         i18nSelect.setAttribute('data-i18n', currentLanguage!.lang);
         i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`;
-        I18N_FE.languages.forEach(lang =>
+        I18N_UTILS.languages.forEach(lang => {
+            
             i18nOptions.innerHTML += /*html*/`<a class="dropdown-item" data-flag="${lang.flag}" data-lang="${lang.lang}"><i class="flag-icon flag-icon-${lang.flag}"></i> ${lang.full}</a>`
-        );
+        });
 
         onEvent(i18nOptions, 'click', '.dropdown-item, .dropdown-item *', (event) => {
             const prev = i18nSelect.getAttribute('data-i18n')!;
@@ -183,7 +185,7 @@ export class FrmdbEditorDirective {
             localStorage.setItem('editor-lang', next);
             i18nSelect.setAttribute('data-i18n', next);
             i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${flag}"></i>`;
-            I18N_FE.translateAll(this.iframe.contentWindow!.document, prev, next);
+            this.checkSafeNavigation(event);
         });
     }
 
@@ -197,7 +199,6 @@ export class FrmdbEditorDirective {
         } else safeToNavigate = true;
 
         if (!safeToNavigate) event.preventDefault();
-
     }
 
     changeSelectedTableIdIfDifferent(tableName: string) {
@@ -568,7 +569,8 @@ export class FrmdbEditorDirective {
             let recordId = `$Dictionary~~${getTranslationKey(el)}`;
             let columnId = document.querySelector('#frmdb-editor-i18n-select')!.getAttribute('data-i18n') || 'n/a';
             if (columnId == DEFAULT_LANGUAGE) columnId = '_id';
-            return { recordId, columnId };
+            // return { recordId, columnId };
+            return null; //disable highlight on $Dictionary table for now, because it is not a "normal" dynamic data-binding, the $Dictionary table is used only during server side rendering
         }
 
         return null;

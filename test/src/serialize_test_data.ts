@@ -16,7 +16,7 @@ const mockMetadata = new MockMetadata();
 const mockData = new MockData({});
 
 function writeFile(appName: string, data: any, fileName: string) {
-    let appDir = __dirname + '/../../../apps/' + appName;
+    let appDir = __dirname + '/../../../frmdb-apps/' + appName;
     if (!fs.existsSync(appDir)){
         fs.mkdirSync(appDir);
     }

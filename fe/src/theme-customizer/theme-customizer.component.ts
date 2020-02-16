@@ -2,7 +2,7 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { onEvent } from "@fe/delegated-events";
 import "./look-preview.component";
 import "./theme-preview.component";
-import { ThemeRules, translateThemeRulesByReplacingClasses, unloadThemeRules, applyTheme, unloadCurrentTheme } from "@fe/frmdb-themes";
+import { _old_ThemeRules, translateThemeRulesByReplacingClasses, __old__unloadThemeRules, applyTheme, unloadCurrentTheme } from "@core/frmdb-themes";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
 // const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/theme-customizer/theme-customizer.component.scss').default;
@@ -25,7 +25,7 @@ class State {
 
 export class ThemeCustomizerComponent extends HTMLElement {
     state = new State();
-    currentThemeRules: ThemeRules | undefined;
+    currentThemeRules: _old_ThemeRules | undefined;
 
     _link: HTMLLinkElement | undefined = undefined;
     set linkElem(l: HTMLLinkElement) {

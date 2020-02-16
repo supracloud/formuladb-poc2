@@ -1,0 +1,23 @@
+.d-grid {
+    display: grid;
+}
+
+@each $align in (stretch, center, start, end) {
+    .grid-align-self-#{$align} {
+        align-self: $align;
+    }
+    .grid-justify-self-#{$align} {
+        justify-self: $align;
+    }
+}
+
+@each $start in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) {
+    @each $end in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) {
+        .grid-col-#{$start}-#{$end} {
+            grid-column: $start / $end;
+        }
+        .grid-row-#{$start}-#{$end} {
+            grid-row: $start / $end;
+        }
+    }
+}

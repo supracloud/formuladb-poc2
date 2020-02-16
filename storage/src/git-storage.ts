@@ -24,7 +24,7 @@ export class GitStorage implements GitStorageI {
     }
 
     async savePage(tenantName: string, appName: string, pageName: string, html: string) {
-        return fetch(`https://gitlab.com/api/v4/projects/metawiz%2Ffebe/repository/files/apps/${tenantName}/${appName}/${pageName}`, {
+        return fetch(`https://gitlab.com/api/v4/projects/metawiz%2Ffebe/repository/files/frmdb-apps/${tenantName}/${appName}/${pageName}`, {
             method: 'PUT',
             body: JSON.stringify({
                 branch: "develop",

@@ -7,7 +7,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import { $User } from "@domain/metadata/default-metadata";
 
-// /\/formuladb-env\/(?:apps|frmdb-platform-apps|static|css|themes|icons|db)/, 
+// /\/formuladb-env\/(?:apps|frmdb-apps|static|css|themes|icons|db)/, 
 const FREE_PATHS = [/\/assets/, /\/register/, /\/login/, /^\/$/];
 const ADMIN_PATHS = [/\/formuladb\/editor.html/];
 
@@ -75,7 +75,7 @@ export function handleAuth(app: express.Express) {
     });
 
     app.get('/login', function(req, res) {
-        res.sendFile('/wwwroot/git/formuladb-env/frmdb-platform-apps/formuladb_io/login.html');
+        res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb_io/login.html');
     });
 
     app.post('/login',

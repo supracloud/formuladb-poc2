@@ -147,6 +147,7 @@ if (specificTsFile && specificTsFile.match(/\.spec\.ts$/)) {
     ].concat(ignoredSpecFiles);
 } else {
     specFiles = [
+        "tsc-out/domain/**/*.spec.js",
         "tsc-out/core/**/*.spec.js",
         "tsc-out/storage/**/*.spec.js",
     ].concat(ignoredSpecFiles);

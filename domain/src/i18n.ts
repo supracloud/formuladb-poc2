@@ -1,16 +1,17 @@
-export const LANGUAGES = [
-    { flag: 'gb', full: 'English', lang: 'en' },
-    { flag: 'fr', full: 'Francais', lang: 'fr' },
-    { flag: 'de', full: 'German', lang: 'de' },
-    { flag: 'it', full: 'Italian', lang: 'it' },
-    { flag: 'es', full: 'Spanish', lang: 'es' },
-    { flag: 'pt', full: 'Portuguese', lang: 'pt' },
-    { flag: 'gr', full: 'Greek', lang: 'el' },
-    { flag: 'ro', full: 'Romanian', lang: 'ro' },
-    { flag: 'pl', full: 'Polish', lang: 'pl' },
-    { flag: 'bg', full: 'Bulgarian', lang: 'bg' },
-    { flag: 'nl', full: 'Dutch', lang: 'nl' },
-    { flag: 'sv', full: 'Swedish', lang: 'sv' },
-];
+export const LANGUAGES = {
+    en: { flag: 'gb', full: 'English', lang: 'en' },
+    fr: { flag: 'fr', full: 'Francais', lang: 'fr' },
+    de: { flag: 'de', full: 'German', lang: 'de' },
+    it: { flag: 'it', full: 'Italian', lang: 'it' },
+    es: { flag: 'es', full: 'Spanish', lang: 'es' },
+    pt: { flag: 'pt', full: 'Portuguese', lang: 'pt' },
+    el: { flag: 'gr', full: 'Greek', lang: 'el' },
+    ro: { flag: 'ro', full: 'Romanian', lang: 'ro' },
+    pl: { flag: 'pl', full: 'Polish', lang: 'pl' },
+    bg: { flag: 'bg', full: 'Bulgarian', lang: 'bg' },
+    nl: { flag: 'nl', full: 'Dutch', lang: 'nl' },
+    sv: { flag: 'sv', full: 'Swedish', lang: 'sv' },
+};
 
-export const DEFAULT_LANGUAGE = 'en';
+export type I18nLang = keyof typeof LANGUAGES;
+export const DEFAULT_LANGUAGE: I18nLang = 'en';

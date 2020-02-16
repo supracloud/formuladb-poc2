@@ -1,8 +1,8 @@
 import { isDocument, getWindow } from "./dom-utils";
 import { isHTMLElement } from "@core/html-tools";
-import { debouncedAOSRefreshHard } from "./frmdb-plugins";
+import { debouncedAOSRefreshHard } from "../../fe/src/frmdb-plugins";
 
-export interface ThemeRules {
+export interface _old_ThemeRules {
     [themeRuleSelector: string]: {
         addClasses?: string[];
         addCssVars?: { [varName: string]: string };
@@ -11,7 +11,11 @@ export interface ThemeRules {
     }
 }
 
-export async function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement): Promise<string | null> {
+export interface ThemeRules {
+    [themeRuleSelector: string]: string[];
+}
+
+export async function __old__unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement): Promise<string | null> {
 
     let currentThemeName: string | null = null;
     if (isDocument(rootEl)) currentThemeName = rootEl.body.getAttribute('data-frmdb-theme');
@@ -20,7 +24,7 @@ export async function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLEle
     if (currentThemeName) {
         let currentThemeRules = await fetch(`/formuladb-env/themes/${currentThemeName}.json`)
             .then(response => response.json());
-        unloadThemeRules(rootEl, currentThemeRules);
+        __old__unloadThemeRules(rootEl, currentThemeRules);
     }
 
     return currentThemeName;
@@ -30,14 +34,29 @@ export async function applyTheme(themeName: string, rootEl: Document | ShadowRoo
     let themeRules: ThemeRules = await fetch(`/formuladb-env/themes/${themeName}.json`)
         .then(response => response.json());
 
-    await unloadCurrentTheme(rootEl);
+    unloadCurrentTheme(rootEl);
     translateThemeRulesByReplacingClasses(rootEl, themeRules);
-
-    if (isDocument(rootEl)) rootEl.body.setAttribute('data-frmdb-theme', themeName);
-    if (isHTMLElement(rootEl)) rootEl.setAttribute('data-frmdb-theme', themeName);
 }
 
-export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
+export function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement) {
+    for (let el of Array.from(rootEl.querySelectorAll('[data-frmdb-theme-classes]'))) {
+        let themeClasses = (el.getAttribute('data-frmdb-theme-classes')||'').split(' ');
+        el.classList.remove(...themeClasses);
+    }
+}
+
+export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules) {
+    let wnd = getWindow(rootEl);
+    for (let [themeRuleSelector, ruleClasses] of (Object.entries(themeRules))) {
+        for (let el of Array.from(rootEl.querySelectorAll(themeRuleSelector))) {
+            el.classList.add(...ruleClasses);
+            el.setAttribute('data-frmdb-theme-classes', ruleClasses.join(' '));
+        }
+    }
+}
+
+
+export function __old__translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: _old_ThemeRules, parentSelectorOpt = '') {
     let parentSelector = parentSelectorOpt || '';
     let wnd = getWindow(rootEl);
     for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
@@ -68,7 +87,7 @@ export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowR
     }
 }
 
-export function unloadThemeRules(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
+export function __old__unloadThemeRules(rootEl: Document | ShadowRoot | HTMLElement, themeRules: _old_ThemeRules, parentSelectorOpt = '') {
     let parentSelector = parentSelectorOpt || '';
     for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
         for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {

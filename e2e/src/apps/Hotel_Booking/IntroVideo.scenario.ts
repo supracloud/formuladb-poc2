@@ -4,7 +4,7 @@ import { Key } from "protractor";
 FullTestWithVideo("Hotel_Booking app intro video", () => {
     Desc("App overview", () => {
         Step(`Welcome to the Hotel Booking app intro video`, async () => {
-            await GoTo(`/apps/Hotel_Booking/index.html`);
+            await GoTo(`/frmdb-apps/Hotel_Booking/index.html`);
             await CheckExists(`h1:contains(Relax And Enjoy)`);
         });
     });
@@ -12,7 +12,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
     Desc("Editor overview", () => {
         Desc("Go to editor page", () => {
              StepWithVideo(`Using the FormulaDB editor you can customize the Hotel Booking app`, async () => {
-                await GoTo(`/formuladb/editor.html#/apps/Hotel_Booking/index.html`);
+                await GoTo(`/formuladb/editor.html#/frmdb-apps/Hotel_Booking/index.html`);
                 // await CheckExists(`iframe#app h1:contains(Relax And Enjoy)`);
             });    
         });
@@ -217,7 +217,7 @@ FullTestWithVideo("Hotel_Booking app intro video", () => {
 
     DescXclude("Combine with other apps", () => {
         StepWithVideo(`Other apps can be useful in combination with the Hotel Booking app`, async () => {
-            await GoTo(`/frmdb-platform-apps/formuladb_io`);
+            await GoTo(`/frmdb-apps/formuladb_io`);
         });
         StepWithVideo(`For example Blog app, so you can easily publish content for your visitors`, async () => {
             //TODO
