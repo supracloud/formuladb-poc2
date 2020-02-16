@@ -27,8 +27,8 @@ export class AddElementComponent extends HTMLElement {
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
-            this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
-            if (!this.link) console.warn("link #frmdb-theme-css not found!");
+            this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-look-css') as HTMLLinkElement;
+            if (!this.link) console.warn("link #frmdb-look-css not found!");
             if (this.lookCssFile) this.link.href = this.lookCssFile;
             if (this.themeName) {
                 fetch(`/formuladb-env/themes/${this.themeName}.json`)

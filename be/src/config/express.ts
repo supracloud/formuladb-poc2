@@ -176,6 +176,22 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         res.set('Content-Type', 'text/html')
         res.send(pageHtml);
     });
+    app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/formuladb-look.css', async function (req, res, next) {
+        let css = await kvsFactory.metadataStore.getLookCss({
+            lang: req.params.land,
+            look: req.params.look,
+            primaryColor: req.params.primary,
+            secondaryColor: req.params.secondary,
+            theme: req.params.theme,
+            editorOpts: req.params.editorOpts,
+            tenantName: req.params.tenant,
+            appName: req.params.app,
+            pageName: `${req.params.page}.html`,
+        });
+        res.set('Content-Type', 'text/css')
+        res.send(css);
+    });
+
     let formuladbAppsStatic = express.static('/wwwroot/git/formuladb-env');
     app.get('/:tenant/:app/:name.yaml', function (req, res, next) {
         formuladbAppsStatic(req, res, next);

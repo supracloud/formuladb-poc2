@@ -16,7 +16,7 @@ const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParse
 
 import { getTestFrmdbEngineStore } from "./key_value_store_impl_selector";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
-import { parsePageUrl } from '@domain/url-utils';
+import { parsePageUrl, PageOpts } from '@domain/url-utils';
 import { $DictionaryObjT } from '@domain/metadata/default-metadata.js';
 
 describe('MetadataStore', () => {
@@ -28,9 +28,13 @@ describe('MetadataStore', () => {
         frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/frmdb-apps");
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/themes");
+        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/css");
         fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/themes");
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/css");
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/themes/Clean.json', JSON.stringify(CleanTheme));
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/themes/Frames.json', JSON.stringify(FramesTheme));
+        fs.copyFileSync('./formuladb-env/css/basic-1a1a1a-ffffff.css', '/tmp/frmdb-metadata-store-for-specs/css/basic-1a1a1a-ffffff.css');
+        fs.copyFileSync('./formuladb-env/css/lux-cb8670-363636.css', '/tmp/frmdb-metadata-store-for-specs/css/lux-cb8670-363636.css');
     });
 
     function expectSavedPageToEqual(pagePath: string, html: string) {
@@ -149,6 +153,22 @@ describe('MetadataStore', () => {
             ;
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithFramesTheme);
         expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
+    });
+
+    it("Should read the correct look css", async () => {
+        let [lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName] =
+            ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', 'e', 'frmdb-apps', 'testApp'];
+        let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName} as PageOpts);
+        expect(cssStr.indexOf('--frmdb-look-name: basic')).toBeGreaterThan(0);
+        expect(cssStr.indexOf('--primary: #1a1a1a')).toBeGreaterThan(0);
+        expect(cssStr.indexOf('--secondary: #fff')).toBeGreaterThan(0);
+
+        [lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName] =
+            ['en', 'lux', 'cb8670', '363636', 'Clean', 'e', 'frmdb-apps', 'testApp'];
+        cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName} as PageOpts);
+        expect(cssStr.indexOf('--frmdb-look-name: lux')).toBeGreaterThan(0);
+        expect(cssStr.indexOf('--primary: #cb8670')).toBeGreaterThan(0);
+        expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);
     });
 
 });

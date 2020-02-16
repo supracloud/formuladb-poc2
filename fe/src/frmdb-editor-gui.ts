@@ -27,7 +27,7 @@ import { Undo } from "./frmdb-editor/undo";
 // 				}
 // 				jQuery(`<a class="dropdown-item" title="${t.name}"><i style="color:${t.symbolColor}" class="frmdb-i-fa-square"></i> ${t.name}</a>`)
 // 					.click(event => {
-// 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-theme-css')
+// 						jQuery("#iframe-wrapper > iframe").contents().find('#frmdb-look-css')
 // 							.attr('href', `${t.css}?refresh=${new Date().getTime()}`);
 // 						themeChangeButton.html(`<i style="color:${t.symbolColor}" class="frmdb-i-fa-square"></i>`);
 // 					})

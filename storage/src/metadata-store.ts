@@ -297,6 +297,11 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 
+    async getLookCss(pageOpts: PageOpts): Promise<string> {
+        let lookCss = await this.readFile(`${ROOT}/css/${pageOpts.look}-${pageOpts.primaryColor}-${pageOpts.secondaryColor}.css`);
+        return lookCss;
+    }
+
     async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
         let {tenantName, appName, pageName} = pageOpts;
         let pageHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`);

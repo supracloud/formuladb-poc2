@@ -117,7 +117,7 @@ export class FrmdbEditorDirective {
             this.viewManagementFlows();
             let ff = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
-                this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-theme-css') as HTMLLinkElement;
+                this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-look-css') as HTMLLinkElement;
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
                 pageElementFlows(this);
             }
