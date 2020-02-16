@@ -16,7 +16,6 @@ import { getPremiumIcon } from "./icon-api";
 import { PageOpts } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
-import { I18nStorage } from "./i18n-storage";
 import { I18nLang } from "@domain/i18n";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
@@ -33,11 +32,7 @@ export interface SchemaEntityList {
 }
 
 export class MetadataStore {
-    i18nStorage: I18nStorage;
-
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) {
-        this.i18nStorage = new I18nStorage(kvsFactory);
-        this.i18nStorage.getDictionaryKvs();
     }
 
     private async writeFile(fileName: string, content: string | Buffer) {
@@ -302,7 +297,7 @@ export class MetadataStore {
         await this.writeFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 
-    async getPageHtml(pageOpts: PageOpts): Promise<string> {
+    async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
         let {tenantName, appName, pageName} = pageOpts;
         let pageHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`);
 
@@ -347,8 +342,7 @@ export class MetadataStore {
         let themeRulesJson = await this.readFile(`${ROOT}/themes/${pageOpts.theme}.json`);
         let themeRules: ThemeRules = JSON.parse(themeRulesJson);
         await applyTheme(themeRules, pageDom);
-        await this.i18nStorage.getDictionaryKvs();
-        I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, this.i18nStorage.dictionaryCache);
+        I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, dictionaryCache);
 
         return htmlTools.document2html(pageDom);
     }

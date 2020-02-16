@@ -23,11 +23,12 @@ import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { App } from "@domain/app";
 import { Schema } from "@domain/metadata/entity";
 import { LazyInit } from "@domain/ts-utils";
-import { I18nBe } from "@be/i18n-be";
+import { i18nTranslateText } from "@be/i18n-be";
 import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 import { initPassport, handleAuth } from "./auth";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
+import { $Dictionary } from "@domain/metadata/default-metadata";
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
@@ -36,7 +37,20 @@ const SECRET = 'bla-bla-secret';
 
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
-    var i18nBe = new I18nBe(kvsFactory);
+
+    async function getCoreFrmdbEngine(): Promise<FrmdbEngine> {
+        let coreFrmdbEngineInit = new LazyInit(async () => {
+            let engine = new FrmdbEngine(new FrmdbEngineStore('frmdb-apps', 'core-formuladb', kvsFactory, {
+                _id: "FRMDB_SCHEMA",
+                entities: {
+                    [$Dictionary._id]: $Dictionary,
+                }
+            }));
+            await engine.init();
+            return engine;
+        });
+        return coreFrmdbEngineInit.get();
+    }
 
     async function getFrmdbEngine(tenantName: string, appName: string): Promise<FrmdbEngine> {
         let frmdbEngineInit = frmdbEngines.get(appName);
@@ -63,7 +77,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     initPassport(app, kvsFactory);
 
-    app.use(bodyParser.json({limit: "10mb"}));
+    app.use(bodyParser.json({ limit: "10mb" }));
     app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
     app.use(bodyParser.text({
         limit: "10mb",
@@ -89,14 +103,14 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     handleAuth(app);
 
-    app.get('/register', function(req, res, next) {
+    app.get('/register', function (req, res, next) {
         if (process.env.FRMDB_IS_PROD_ENV) {
             res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb_io/register.html');
         } else {
             next();
         }
     });
-      
+
     app.post('/register', async (req, res, next) => {
         if (process.env.FRMDB_IS_PROD_ENV) {
             await createNewEnvironment(req.body.environment, req.body.email, req.body.password);
@@ -112,7 +126,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     setupChangesFeedRoutes(app, kvsFactory);
 
-    app.delete('/formuladb-api/env/:envname', async function(req, res, next) {
+    app.delete('/formuladb-api/env/:envname', async function (req, res, next) {
         if (process.env.FRMDB_IS_PROD_ENV) {
             console.log(`Delete called on ${req.params.envname} environment`)
             let status_message = await cleanupEnvironment(req.params.envname);
@@ -145,10 +159,20 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/formuladb/*', express.static('/wwwroot'));
 
-    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/:page.html', async function (req, res, next) {
-        let pageHtml = await kvsFactory.metadataStore.getPageHtml(
-            {lang: req.params.land, look: req.params.look, primaryColor: req.params.primary, secondaryColor: req.params.secondary, theme: req.params.theme},
-            req.params.tenant, req.params.app, `${req.params.page}.html`);
+    app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/:page.html', async function (req, res, next) {
+        let coreFrmdbEngine = await getCoreFrmdbEngine();
+        let dictionaryCache = await coreFrmdbEngine.frmdbEngineStore.i18nStore.getDictionaryCache();
+        let pageHtml = await kvsFactory.metadataStore.getPageHtml({
+            lang: req.params.land,
+            look: req.params.look,
+            primaryColor: req.params.primary,
+            secondaryColor: req.params.secondary,
+            theme: req.params.theme,
+            editorOpts: req.params.editorOpts,
+            tenantName: req.params.tenant,
+            appName: req.params.app,
+            pageName: `${req.params.page}.html`,
+        }, dictionaryCache);
         res.set('Content-Type', 'text/html')
         res.send(pageHtml);
     });
@@ -188,7 +212,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         let themes = await kvsFactory.metadataStore.getThemes();
         res.send(themes);
     });
-        
+
     app.get('/formuladb-api/looks', async function (req, res, next) {
         let looks = await kvsFactory.metadataStore.getLooks();
         res.send(looks);
@@ -201,7 +225,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {
-            res.json(await i18nBe.translateText(req.body.texts, req.body.to));
+            let coreFrmdbEngine = await getCoreFrmdbEngine();
+            res.json(await i18nTranslateText(coreFrmdbEngine.frmdbEngineStore, req.body.texts, req.body.to));
         } catch (err) {
             console.error(err);
             next(err);
@@ -228,7 +253,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             next(err);
         }
     });
-    
+
     app.get('/formuladb-api/:tenant/:app/media', async function (req, res, next) {
         try {
             let paths: string[] = await kvsFactory.metadataStore.getMediaObjects(req.params.tenant, req.params.app);
@@ -327,7 +352,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.put('/formuladb-api/:tenant/:app/bulk', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.putBulk(req.body)
             .then(ret => res.json(ret))
-            .catch(err => {console.error(err); next(err)});
+            .catch(err => { console.error(err); next(err) });
     });
 
     // catch 404 and forward to error handler

@@ -17,9 +17,12 @@ const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParse
 import { getTestFrmdbEngineStore } from "./key_value_store_impl_selector";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { parsePageUrl } from '@domain/url-utils';
+import { $DictionaryObjT } from '@domain/metadata/default-metadata.js';
 
 describe('MetadataStore', () => {
     let frmdbEngineStore: FrmdbEngineStore;
+    let dictionaryCache: Map<string, $DictionaryObjT> = new Map<string, $DictionaryObjT>()
+        .set('main content', { 'fr': "contenu principal" } as $DictionaryObjT);
 
     beforeAll(async () => {
         frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
@@ -49,17 +52,20 @@ describe('MetadataStore', () => {
                 nav content
             </nav>
         </header>
-        <main>main content</main>
-        <footer>some footer</footer>
+        <main>
+            <h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>
+            <input placeholder="some placeholder" />
+        </main>
+        <footer><span>some footer</span></footer>
         <div style="display: none; pointer-events: none;" data-frmdb-fragment="_scripts.html">
             <script src="/formuladb-env/plugins/vendor/js/jquery-3.4.1.min.js"></script>
         </div>
     </body>
     </html>`;
 
-    it("Should save page without fragments", async () => {
+    it("Should save page without fragments/themes and default language", async () => {
         await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
-            parsePageUrl('/en-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test.html'),
+            parsePageUrl('/na-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test.html'),
             PageHtmlFromClientBrowser);
 
         expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/testApp/test.html', /*html*/`
@@ -74,8 +80,11 @@ describe('MetadataStore', () => {
         <div class="jumbotron"></div>
         <div data-frmdb-fragment="_nav.html"></div>
     </header>
-    <main>main content</main>
-    <footer>some footer</footer>
+    <main>
+        <h1>main content</h1>
+        <input placeholder="some placeholder">
+    </main>
+    <footer><span>some footer</span></footer>
     <div data-frmdb-fragment="_scripts.html"></div>
 </body>
 
@@ -107,29 +116,39 @@ describe('MetadataStore', () => {
         `);
     });
 
-    it("Should read page with fragments assembled", async () => {
+    it("Should read page with SSR for fragments and Clean theme and i18n", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/en-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test.html')));
+                parsePageUrl('/fr-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test.html'),
+                new Map().set('main content', { fr: 'contenu principal' })
+            ));
 
-        let expectedHtmlWithCleanTheme = PageHtmlFromClientBrowser.replace(
+        let expectedHtmlWithCleanThemeAndFrenchLang = PageHtmlFromClientBrowser.replace(
             `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
             `class="jumbotron w-100 text-center bg-transparent" data-frmdb-theme-classes="w-100 text-center bg-transparent"`,
-        );
-        let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithCleanTheme);
-        expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
+        )
+            .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1 data-i18n-key="main content">contenu principal</h1>')
+            .replace('<span>some footer</span>', '<span data-i18n-key="some footer">fr:some footer</span>')
+            .replace('<input placeholder="some placeholder"', '<input placeholder="fr:some placeholder" data-i18n-key="some placeholder"')
+            ;
 
-        readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
+        let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithCleanThemeAndFrenchLang);
+        expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
+    });
+
+    it("Should read page with SSR for fragments and Frames theme", async () => {
+        let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames-e/frmdb-apps/testApp/test.html')));
+                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames-e/frmdb-apps/testApp/test.html'), new Map()));
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser.replace(
             `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
             `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
-        );
-        expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithFramesTheme);
+        )
+            .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1>main content</h1>')
+            ;
+        let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithFramesTheme);
         expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
-
     });
 
 });

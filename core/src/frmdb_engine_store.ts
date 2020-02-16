@@ -21,6 +21,7 @@ import { ReduceFun, SumReduceFunN, TextjoinReduceFunN, CountReduceFunN } from "@
 import { DataObj } from '@domain/metadata/data_obj';
 import { Entity, Schema } from '@domain/metadata/entity';
 import { Pn } from '@domain/metadata/entity';
+import { I18nStore } from "./i18n-store";
 
 function ll(eventId: string, retryNb: number | string): string {
     return new Date().toISOString() + "|" + eventId + "|" + retryNb;
@@ -36,10 +37,12 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     protected transactionManager: TransactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
+    i18nStore: I18nStore;
 
     constructor(tenantName: string, appName: string, public kvsFactory: KeyValueStoreFactoryI, schema: Schema) {
         super(tenantName, appName, kvsFactory, _.cloneDeep(schema));
         this.transactionManager = new TransactionManager(kvsFactory);
+        this.i18nStore = new I18nStore(this);
     }
 
     public async installFormula(formula: CompiledFormula, skipExisting?: boolean): Promise<any> {

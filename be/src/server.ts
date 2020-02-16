@@ -29,7 +29,7 @@ import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 
 let kvsFactory: KeyValueStoreFactoryI;
 
-new Promise(resolve => setTimeout(() => resolve(), 5000))
+new Promise(resolve => setTimeout(() => resolve(), 2000))
     .then(async () => {
         kvsFactory = await getKeyValueStoreFactory();
     })
