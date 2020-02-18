@@ -1,27 +1,12 @@
+import { parsePageUrl } from "@domain/url-utils";
+
 let appName: string | null = null;
 let tenantName: string | null = null;
 let appRootEl: HTMLElement | null = null;
 
 function findTenantAndApp() {
-    appRootEl = document.querySelector('[data-frmdb-app]');
-    if (appRootEl) {
-        appName = appRootEl.getAttribute("data-frmdb-app") || "unknown-app";
-        tenantName = appRootEl.getAttribute("data-frmdb-tenant") || "unknown-tenant";
-    } else {
-        let path = window.location.pathname;
-        if (window.location.pathname === '/formuladb/editor.html') path = window.location.hash.replace(/^#/, '');
-        path = path.replace(/[?].*$/, '');
-        ({tenantName, appName} = decodePageUrl(path));
-        appRootEl = document.body;
-    }
-}
-
-export function decodePageUrl(url: string): {tenantName: string, appName: string, page: string | undefined} {
-    let m = url.match(/([-\w]+)\/(\w+)(?:\/(\w+\.html))?/);
-    if (!m) throw new Error("Bad page url " + url);
-    if (m.length == 3 || m.length == 4) {
-        return {tenantName: m[1], appName: m[2], page: m[3]}; 
-    } else throw new Error("Bad page url segments " + url);
+    ({tenantName, appName} = parsePageUrl(window.location.pathname));
+    appRootEl = document.body;
 }
 
 export function APP_AND_TENANT_ROOT(): [string, string, HTMLElement] {

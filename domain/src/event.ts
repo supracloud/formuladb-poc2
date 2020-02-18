@@ -7,6 +7,7 @@ import { KeyValueObj } from "./key_value_obj";
 import { DataObj } from "./metadata/data_obj";
 import { Entity, EntityProperty } from "./metadata/entity";
 import { generateUUID } from "./uuid";
+import { PageOpts } from "./url-utils";
 
 /**
  * The events sent by the clients become transactions on the back-end
@@ -103,7 +104,7 @@ export class ServerEventSetProperty extends MwzEvent {
 export class ServerEventPutPageHtml extends MwzEvent {
     readonly type_ = "ServerEventPutPageHtml";
 
-    constructor(public tenantName: string, public appName: string, public pageName: string, public pageHtml: string) {
+    constructor(public pageOpts: PageOpts, public pageHtml: string) {
         super();
     }
 }

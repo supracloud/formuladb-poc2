@@ -187,7 +187,7 @@
         <frmdb-element-editor class="d-flex flex-column"></frmdb-element-editor>
     </div>
     <div id="canvas" class="position-relative overflow-hidden">
-        <iframe id="app"></iframe>
+        <iframe id="app" src='about:blank'></iframe>
         <frmdb-highlight-box></frmdb-highlight-box>
     </div>
 
@@ -254,15 +254,15 @@
     <frmdb-img-editor></frmdb-img-editor>
     <frmdb-icon-editor></frmdb-icon-editor>
 
-    <iframe src="editor-edit-record-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="editor-intro-video-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="editor-new-column-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="editor-new-table-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="editor-new-app-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-edit-record-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-intro-video-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-new-column-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-new-table-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-new-app-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
 
-    <script src="/formuladb/frmdb-data-grid.js"></script>
     <script src="/formuladb/frmdb-fe.js"></script>
     <script src="/formuladb/frmdb-editor.js"></script>
+    <script src="/formuladb/frmdb-data-grid.js"></script>
 
 </body>
 

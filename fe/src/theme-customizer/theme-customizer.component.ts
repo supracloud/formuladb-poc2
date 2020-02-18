@@ -1,46 +1,29 @@
-import { updateDOM } from "@fe/live-dom-template/live-dom-template";
-import { onEvent } from "@fe/delegated-events";
 import "./look-preview.component";
 import "./theme-preview.component";
 import { _old_ThemeRules, translateThemeRulesByReplacingClasses, __old__unloadThemeRules, applyTheme, unloadCurrentTheme } from "@core/frmdb-themes";
+import { dataBindStateToElement } from "@fe/frmdb-element-urils";
+import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
+import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
 
 const HTML: string = require('raw-loader!@fe-assets/theme-customizer/theme-customizer.component.html').default;
 // const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/theme-customizer/theme-customizer.component.scss').default;
 
 class Color {
     attr: string;
-    constructor(public primary: string, public secondary: string) {
+    constructor(public primary: string, public secondary: string, public urlPathname: string) {
         this.attr = `${this.primary.replace(/^#/, '')}-${this.secondary.replace(/^#/, '')}`;
     }
 }
 class State {
     colors: Color[] = [];
-    looks: { name: string, active: boolean }[] = [];
-    themes: { name: string, active: boolean }[] = [];
+    looks: { name: string, active: boolean, urlPathname: string }[] = [];
+    themes: { name: string, active: boolean, urlPathname: string }[] = [];
     selectedColor: Color | undefined = undefined;
-    selectedLook: string | undefined = undefined;
-    selectedTheme: string | undefined = undefined;
     noneThemeIsActive: boolean = false;
 }
 
 export class ThemeCustomizerComponent extends HTMLElement {
-    state = new State();
-    currentThemeRules: _old_ThemeRules | undefined;
-
-    _link: HTMLLinkElement | undefined = undefined;
-    set linkElem(l: HTMLLinkElement) {
-        this._link = l;
-        let m = this.parseCssFileName(this._link.href);
-        if (m) {
-            let { look, primary, secondary } = m;
-            this.state.selectedLook = look;
-            this.state.selectedColor = new Color(primary, secondary);
-            let activeLook = this.state.looks.find(x => x.name == this.state.selectedLook);
-            if (activeLook) activeLook.active = true;
-            this.initTheme();
-            updateDOM(this.state, this);
-        }
-    }
+    state = dataBindStateToElement(this, new State());
 
     connectedCallback() {
         this.innerHTML = HTML;
@@ -53,102 +36,64 @@ export class ThemeCustomizerComponent extends HTMLElement {
         else return null;
     }
 
-    async init() {
-        let cssFiles = await fetch(`/formuladb-api/looks`)
-            .then(response => {
-                return response.json();
-            });
-
-        for (let cssFile of cssFiles) {
+    updateState(pageOpts: PageOpts) {
+        let newState = new State();
+        for (let cssFile of this.cssFiles) {
             let m = this.parseCssFileName(cssFile);
             if (m) {
                 let { look, primary, secondary } = m;
-                if (!this.state.looks.find(x => x.name == look)) this.state.looks.push({ name: look, active: false });
-                if (!this.state.colors.find(x => x.primary == primary && x.secondary == secondary)) {
-                    this.state.colors.push(new Color(primary, secondary));
+                let urlPathname = makeUrlPath({
+                    ...pageOpts,
+                    look: look,
+                    primaryColor: primary.replace(/^#/, ''),
+                    secondaryColor: secondary.replace(/^#/, ''),
+                });
+                if (!newState.looks.find(x => x.name == look)) {
+                    newState.looks.push({ name: look, active: false, urlPathname });
+                }
+                if (!newState.colors.find(x => x.primary == primary && x.secondary == secondary)) {
+                    newState.colors.push(new Color(primary, secondary, urlPathname));
                 }
             }
         }
-        let activeLook = this.state.looks.find(x => x.name == this.state.selectedLook);
+        let activeLook = newState.looks.find(x => x.name == pageOpts.look);
         if (activeLook) activeLook.active = true;
+        newState.selectedColor = newState.colors.find(x => x.primary == '#'+pageOpts.primaryColor && x.secondary == '#'+pageOpts.secondaryColor);
 
-        let themeNames: string[] = await fetch(`/formuladb-api/themes`)
+        newState.themes = this.themeNames.map(t => ({
+            name: t, active: false,
+            urlPathname: makeUrlPath({
+                ...pageOpts,
+                theme: t,
+            })
+        }));
+
+        Object.assign(this.state, newState);
+    }
+
+    cssFiles: string[];
+    async fetchCssFiles() {
+        return fetch(`/formuladb-api/looks`)
             .then(response => {
                 return response.json();
-            });
-        this.state.themes = themeNames.map(t => ({name: t, active: false}));
-        this.initTheme();
-        updateDOM(this.state, this);
+            }).then(x => this.cssFiles = x);
+    }
 
-        onEvent(this, "click", '.dropdown-item[data-frmdb-table="colors[]"], .dropdown-item[data-frmdb-table="colors[]"] *', (event) => {
-            let color: Color = event.target.closest('[data-frmdb-table="colors[]"]')['$DATA-FRMDB-OBJ$'];
-            if (!color) { console.warn("cannot find color for the menu selection"); return; }
-            this.state.selectedColor = color;
-            this.updateLook();
-        });
-
-        onEvent(this, "click", '[data-frmdb-table="looks[]"]', (event) => {
-            let look: {name: string, active: boolean} = event.target['$DATA-FRMDB-OBJ$'];
-            if (!look) { console.warn("cannot find look for the menu selection"); return; }
-
-            let activeLook = this.state.looks.find(x => x.active);
-            if (activeLook && activeLook.name != look.name) activeLook.active = false;
-
-            this.state.selectedLook = look.name;
-            activeLook = this.state.looks.find(x => x.name == look.name);
-            if (activeLook) activeLook.active = true;
-            this.updateLook();
-        });
-
-        onEvent(this, "click", '[data-frmdb-theme]', (event) => {
-            let themeName: string = event.target.getAttribute('data-frmdb-theme');
-            if (!themeName) { console.warn("cannot find theme for the menu selection"); return; }
-            if ('- none -' == themeName) {
-                unloadCurrentTheme(this._link?.getRootNode() as Document);
-                this.state.selectedTheme = themeName;
-                this.state.noneThemeIsActive = true;
-                this.state.themes.forEach(t => t.active = false);
-            } else if (themeName) {
-                this.state.themes.forEach(t => t.active = false);
-                this.applyActiveTheme(themeName);
-                this.state.noneThemeIsActive = false;
-            }
-            updateDOM(this.state, this);
+    themeNames: string[];
+    async fetchThemeNames() {
+        return fetch(`/formuladb-api/themes`)
+            .then(response => {
+                return response.json();
+            }).then(x => this.themeNames = x);
+    }
+    async init() {
+        await this.fetchCssFiles();
+        await this.fetchThemeNames();
+        this.updateState(parsePageUrl(window.location.pathname));
+        registerFrmdbEditorRouterHandler("theme-customizer", (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
+            this.updateState(newPageOpts)
         });
     }
-
-    get cssFile() {
-        if (!this.state.selectedColor) { console.warn("cannot find selected color for the current page"); return undefined; }
-        if (!this.state.selectedLook) { console.warn("cannot find selected theme for the current page"); return undefined; }
-        return `/formuladb-env/css/${this.state.selectedLook}-${this.state.selectedColor.primary.replace(/^#/, '')}-${this.state.selectedColor.secondary.replace(/^#/, '')}.css`;
-    }
-
-    updateLook() {
-        if (!this._link) { console.warn("cannot find the theme stylesheet for the current page"); return; }
-        if (!this.state.selectedColor) { console.warn("cannot find selected color for the current page"); return; }
-        if (!this.state.selectedLook) { console.warn("cannot find selected theme for the current page"); return; }
-
-        this._link.href = this.cssFile || this._link.href;
-
-        updateDOM(this.state, this);
-    }
-
-    applyActiveTheme(themeName: string) {
-        applyTheme(themeName, this._link?.getRootNode() as Document);
-        this.state.selectedTheme = themeName;
-        let activeTheme = this.state.themes.find(t => t.name == themeName);
-        if (activeTheme) activeTheme.active = true;
-    }
-
-    initTheme() {
-        let doc = this._link?.getRootNode() as Document;
-        if (!doc) return;
-        let themeName = doc.body.getAttribute('data-frmdb-theme');
-        if (themeName) {
-            this.applyActiveTheme(themeName);
-        }
-    }
-
 }
 
 window.customElements.define('frmdb-theme-customizer', ThemeCustomizerComponent);

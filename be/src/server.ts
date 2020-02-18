@@ -2,6 +2,9 @@
  * © 2018 S.C. FORMULA DATABASE S.R.L.
  * License TBD
  */
+ 
+require('source-map-support').install();
+require('module-alias/register');
 
 // Add this to the VERY top of the first file loaded in your app
 var apm = require('elastic-apm-node').start({
@@ -16,10 +19,8 @@ var apm = require('elastic-apm-node').start({
     // captureBody: true,
     // transactionSampleRate: 1.0,
     verifyServerCert: false,//TODO: fix this
+    logUncaughtExceptions: true,
 })
-
-require('source-map-support').install();
-require('module-alias/register');
 
 import * as http from 'http';
 

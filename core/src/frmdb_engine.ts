@@ -16,15 +16,19 @@ import { SchemaCompiler } from "./schema_compiler";
 import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
+import { I18nStore } from "./i18n-store";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
     private schemaDAO: SchemaDAO;
     public frmdbEngineTools: FrmdbEngineTools;
+    i18nStore: I18nStore;
+
     constructor(public frmdbEngineStore: FrmdbEngineStore) {
         this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
         this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
+        this.i18nStore = new I18nStore(this);
     }
 
     public async init(installFormulas: boolean = true) {
@@ -88,7 +92,7 @@ export class FrmdbEngine {
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.tenantName, event.appName, event.pageName, event.pageHtml);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pageOpts, event.pageHtml);
         return event;
     }
 

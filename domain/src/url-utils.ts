@@ -4,14 +4,14 @@ export interface PageOpts {
     primaryColor: string;
     secondaryColor: string;
     theme: string;
-    editorOpts: 'e' | 'n';
+    editorOpts: '$E$' | '_n_';
     tenantName: string;
     appName: string;
     pageName: string;
 }
 
-export function parsePageUrl(url: string): PageOpts {
-    let m = url.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)-(e|n)\/(.+?)\/(.+?)\/(.+?.html)/);
+export function parsePageUrl(path: string): PageOpts {
+    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)-(\$E\$|_n_)\/(.+?)\/(.+?)\/(.+?\.html)/);
     if (m && m.length == 10) {
         return {
             lang: m[1],
@@ -19,10 +19,19 @@ export function parsePageUrl(url: string): PageOpts {
             primaryColor: m[3],
             secondaryColor: m[4],
             theme: m[5],
-            editorOpts: m[6] as 'e'|'n',
+            editorOpts: m[6] as PageOpts['editorOpts'],
             tenantName: m[7],
             appName: m[8],
             pageName: m[9],
         }
-    } else throw new Error(`Page Url ${url} not formatted as expected /:lang-:look-:primary-:secondary-:theme-:eopts/:tenant/:app/:page.html`)
+    } else throw new Error(`Page Pathname ${path} not formatted as expected /:lang-:look-:primary-:secondary-:theme-:eopts/:tenant/:app/:page.html`)
+}
+
+export function switchEditorOffInPath(path: string) {
+    return path.replace(/\$E\$/, '_n_');
+}
+
+export function makeUrlPath(pageOpts: PageOpts) {
+    let {lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName, pageName} = pageOpts;
+    return `/${lang}-${look}-${primaryColor}-${secondaryColor}-${theme}-${editorOpts}/${tenantName}/${appName}/${pageName}`;
 }

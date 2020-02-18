@@ -21,10 +21,8 @@ import { I18nStore } from "./i18n-store";
 export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
-    i18nStore: I18nStore;
 
     constructor(public tenantName: string, public appName: string, public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
-        this.i18nStore = new I18nStore(this);
     }
 
     public async init(schema: Schema) {

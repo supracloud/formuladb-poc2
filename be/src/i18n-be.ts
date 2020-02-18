@@ -1,7 +1,7 @@
 import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { v3beta1 } from "@google-cloud/translate";
-import { $DictionaryObjT } from "@domain/metadata/default-metadata";
-import { FrmdbStore } from "@core/frmdb_store";
+import { $DictionaryObjT, $Dictionary } from "@domain/metadata/default-metadata";
+import { FrmdbEngine } from "@core/frmdb_engine";
 
 const translationClient = new v3beta1.TranslationServiceClient();
 const projectId = 'seismic-plexus-232506';
@@ -23,10 +23,10 @@ interface Translation {
     detectedLanguageCode?: string;
 }
 
-export async function i18nTranslateText(frdbStore: FrmdbStore, texts: string[], toLangAndCountry: string) {
+export async function i18nTranslateText(frdbEngine: FrmdbEngine, texts: string[], toLangAndCountry: string) {
     let toLang = toLangAndCountry.slice(0, 2);
     const batches: string[][] = [];
-    let dictionaryCache = await frdbStore.i18nStore.getDictionaryCache();
+    let dictionaryCache = await frdbEngine.i18nStore.getDictionaryCache();
     let dirtyDictionaryEntries: Map<string, $DictionaryObjT> = new Map();
     let returnedTranslations: { [key: string]: string } = {};
 
@@ -62,7 +62,7 @@ export async function i18nTranslateText(frdbStore: FrmdbStore, texts: string[], 
         let translatedBatch: string[] = res[0].translations.map(t => t.translatedText).filter<string>((x): x is string => x != null);
         for (let [idx, defaultText] of batch.entries()) {
             let translatedText = translatedBatch[idx];
-            let dictEntry: $DictionaryObjT = dictionaryCache.get(defaultText) || { _id: defaultText } as $DictionaryObjT;
+            let dictEntry: $DictionaryObjT = dictionaryCache.get(defaultText) || { _id: $Dictionary._id + '~~' + defaultText } as $DictionaryObjT;
             dictEntry[toLang] = translatedText;
             dirtyDictionaryEntries.set(defaultText, dictEntry);
             returnedTranslations[defaultText] = translatedText;
@@ -71,7 +71,7 @@ export async function i18nTranslateText(frdbStore: FrmdbStore, texts: string[], 
 
     for (let dirtyDictEntry of dirtyDictionaryEntries.values()) {
         dictionaryCache.set(dirtyDictEntry._id, dirtyDictEntry);
-            /*no-await*/ frdbStore.i18nStore.updateDictionaryEntry(dirtyDictEntry);
+            /*no-await*/ frdbEngine.i18nStore.updateDictionaryEntry(dirtyDictEntry);
     }
 
     return returnedTranslations;

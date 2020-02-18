@@ -47,18 +47,20 @@ import { IconEditorComponent } from "./icon-editor.component";
 import { BLOBS } from "./blobs";
 import { frmdbSetImageSrc } from "@fe/component-editor/components-frmdb";
 import { Undo } from "./undo";
-import { decodePageUrl } from "@fe/app.service";
 import { $FMODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
-import { DEFAULT_LANGUAGE } from "@domain/i18n";
+import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
+import { feTranslateApi } from "@fe/i18n-fe";
+import { parsePageUrl, switchEditorOffInPath, PageOpts } from "@domain/url-utils";
+import { registerFrmdbEditorRouterHandler } from "./frmdb-editor-router";
 
 declare var $: null, jQuery: null;
 
 class FrmdbEditorState {
-    apps: {name: string, url: string}[] = [];
-    selectedAppName: string;
+    apps: { name: string, url: string }[] = [];
     tables: Entity[] = [];
     pages: { name: string, url: string }[];
+    selectedAppName: string;
     selectedPageName: string;
     selectedPagePath: string;
     selectedTableId: string;
@@ -91,11 +93,15 @@ export class FrmdbEditorDirective {
         return this.iframe.contentWindow!.document;
     }
 
+    updateStateFromUrl() {
+
+    }
+
     constructor() {
         this.EditorState = new FrmdbEditorState(this.backendService.tenantName, this.backendService.appName);
 
         window.addEventListener('load', () => {
-            this.iframe = document.body.querySelector('iframe')!;
+            this.iframe = document.body.querySelector('iframe#app')! as HTMLIFrameElement;
             this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
             this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
             this.frmdbFe = queryFrmdbFe();
@@ -117,7 +123,6 @@ export class FrmdbEditorDirective {
             this.viewManagementFlows();
             let ff = () => {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
-                this.themeCustomizer.linkElem = this.iframe.contentWindow!.document.head.querySelector('#frmdb-look-css') as HTMLLinkElement;
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
                 pageElementFlows(this);
             }
@@ -126,14 +131,16 @@ export class FrmdbEditorDirective {
             //FIXME: Ugly Workaround for e2e where onload is not getting called:
             setTimeout(ff, 2000);
 
-            this.iframe.src = window.location.hash.replace(/^#/, '');
+            this.iframe.src = switchEditorOffInPath(window.location.pathname);
         });
 
-        window.onpopstate = () => {
-            let {appName: currentAppName} = decodePageUrl(this.iframe.src);
-            let {tenantName, appName, page} = decodePageUrl(window.location.hash.replace(/^#/, ''));
 
-            this.iframe.src = window.location.hash.replace(/^#/, '');
+        registerFrmdbEditorRouterHandler('editorIframeSrc', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
+
+            let { appName: currentAppName } = parsePageUrl(new URL(this.iframe.src).pathname);
+            let { appName } = newPageOpts;
+
+            this.iframe.src = switchEditorOffInPath(newPath);
 
             if (currentAppName != appName) {
                 RESET_BACKEND_SERVICE();
@@ -144,7 +151,7 @@ export class FrmdbEditorDirective {
             } else {
                 this.updateCurrentPage();
             }
-        }
+        });
     }
 
     showIntroVideoModal() {
@@ -156,10 +163,11 @@ export class FrmdbEditorDirective {
     }
 
     translatePage() {
-        const currentLanguage = I18N_FE.getLangDesc(localStorage.getItem('editor-lang') || I18N_FE.defaultLanguage)!;
-        if (currentLanguage.lang != I18N_FE.defaultLanguage) {
+        const currentLanguage = I18N_UTILS.getLangDesc(localStorage.getItem('editor-lang') || I18N_UTILS.defaultLanguage)!;
+        if (currentLanguage.lang != I18N_UTILS.defaultLanguage) {
             setTimeout(() =>
-                I18N_FE.translateAll((window as any).FrameDocument, I18N_FE.defaultLanguage, currentLanguage.lang)
+                I18N_UTILS.translateAll((window as any).FrameDocument, I18N_UTILS.defaultLanguage,
+                    currentLanguage.lang as I18nLang, feTranslateApi)
             );
         }
     }
@@ -173,7 +181,7 @@ export class FrmdbEditorDirective {
         i18nSelect.setAttribute('data-i18n', currentLanguage!.lang);
         i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`;
         I18N_UTILS.languages.forEach(lang => {
-            
+
             i18nOptions.innerHTML += /*html*/`<a class="dropdown-item" data-flag="${lang.flag}" data-lang="${lang.lang}"><i class="flag-icon flag-icon-${lang.flag}"></i> ${lang.full}</a>`
         });
 
@@ -509,13 +517,13 @@ export class FrmdbEditorDirective {
 
         this.EditorState.apps = apps.map(a => ({
             name: a,
-            url: `#/${this.backendService.tenantName}/${a}/index.html` 
+            url: `#/${this.backendService.tenantName}/${a}/index.html`
         }));
         this.updateCurrentApp();
     }
 
     updateCurrentApp() {
-        let {tenantName, appName, page } = decodePageUrl(window.location.hash.replace(/^#/, ''));
+        let { tenantName, appName } = parsePageUrl(window.location.pathname);
         this.EditorState.selectedAppName = appName;
         updateDOM({ $frmdb: this.EditorState }, document.body);
     }
@@ -536,9 +544,9 @@ export class FrmdbEditorDirective {
         if (!app) throw new Error(`App not found for ${window.location}`);
         this.EditorState.pages = app.pages
             .filter(p => p.indexOf('_') != 0)
-            .map(p => ({ 
-                name: p.replace(/\.html$/, '')/*.replace(/^index$/, 'Home Page')*/, 
-                url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}` 
+            .map(p => ({
+                name: p.replace(/\.html$/, '')/*.replace(/^index$/, 'Home Page')*/,
+                url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}`
             }));
         this.updateCurrentPage();
     }
@@ -586,7 +594,7 @@ export class FrmdbEditorDirective {
             [tableName]: {
                 [columnId]: CURRENT_COLUMN_HIGHLIGHT_STYLE,
             },
-            '$HIGHLIGHT-RECORD$': {_id: recordId},
+            '$HIGHLIGHT-RECORD$': { _id: recordId },
         };
         this.changeSelectedTableIdIfDifferent(tableName);
         dataGrid.debouncedForceCellRefresh();

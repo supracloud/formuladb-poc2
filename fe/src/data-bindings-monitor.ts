@@ -121,7 +121,7 @@ export class DataBindingsMonitor {
         let events: events.MwzEvents[] = await postData<any, events.MwzEvents[]>(
             `/formuladb-api/changes-feed/${CLIENT_ID}`, {});
 
-        //FIXME: take into account pagination, sorting, filters, now we update the whole table
+        //FIXME: take into account pagination, sorting, filters, now we update the whole table :(
 
         let tableNames: Set<string> = new Set<string>();
         for (let event of events) {

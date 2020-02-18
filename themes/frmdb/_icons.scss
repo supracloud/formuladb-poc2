@@ -1,3 +1,17 @@
+img[is="frmdb-svg-icon"], img[is="frmdb-svg-icon"].sz-1p2 {
+    height: 1.2em;
+}
+
+img[is="frmdb-svg-icon"].sz-1p5 {
+    height: 1.5em;
+}
+
+@each $size in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) {
+    img[is="frmdb-svg-icon"].sz-#{$size} { 
+        height: $size em;
+    }
+}
+
 svg {
     fill: currentColor;
     stroke: currentColor;

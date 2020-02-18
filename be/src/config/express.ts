@@ -161,20 +161,25 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/:page.html', async function (req, res, next) {
         let coreFrmdbEngine = await getCoreFrmdbEngine();
-        let dictionaryCache = await coreFrmdbEngine.frmdbEngineStore.i18nStore.getDictionaryCache();
-        let pageHtml = await kvsFactory.metadataStore.getPageHtml({
-            lang: req.params.land,
-            look: req.params.look,
-            primaryColor: req.params.primary,
-            secondaryColor: req.params.secondary,
-            theme: req.params.theme,
-            editorOpts: req.params.editorOpts,
-            tenantName: req.params.tenant,
-            appName: req.params.app,
-            pageName: `${req.params.page}.html`,
-        }, dictionaryCache);
-        res.set('Content-Type', 'text/html')
-        res.send(pageHtml);
+        let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
+        if (req.params.editorOpts === '$E$') {
+            res.set('Content-Type', 'text/html')
+            res.sendFile('/wwwroot/formuladb/editor.html');
+        } else {
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml({
+                lang: req.params.lang,
+                look: req.params.look,
+                primaryColor: req.params.primary,
+                secondaryColor: req.params.secondary,
+                theme: req.params.theme,
+                editorOpts: req.params.editorOpts,
+                tenantName: req.params.tenant,
+                appName: req.params.app,
+                pageName: `${req.params.page}.html`,
+            }, dictionaryCache);
+            res.set('Content-Type', 'text/html')
+            res.send(pageHtml);
+        }
     });
     app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/formuladb-look.css', async function (req, res, next) {
         let css = await kvsFactory.metadataStore.getLookCss({
@@ -242,7 +247,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
-            res.json(await i18nTranslateText(coreFrmdbEngine.frmdbEngineStore, req.body.texts, req.body.to));
+            res.json(await i18nTranslateText(coreFrmdbEngine, req.body.texts, req.body.to));
         } catch (err) {
             console.error(err);
             next(err);
