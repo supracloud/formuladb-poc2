@@ -7,6 +7,7 @@ import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "../../core/src/page-utils";
+import { parsePageUrl } from "@domain/url-utils";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -142,7 +143,7 @@ export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
     let cleanedUpDOM = cleanupDocumentDOM(doc);
     let html = htmlTools.document2html(cleanedUpDOM);
     
-    BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(tenantName, appName, pageName, html))
+    BACKEND_SERVICE().putEvent(new ServerEventPutPageHtml(parsePageUrl(pagePath), html))
         .then(async (ev: ServerEventPutPageHtml) => {
             if (ev.state_ != 'ABORT' && !ev.error_) {
                 alert(`Saved ${pagePath}`);

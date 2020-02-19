@@ -10,7 +10,7 @@ describe('url-utils', () => {
             primaryColor: "1a1a1a", 
             secondaryColor: "ffffff", 
             theme: "Clean" ,
-            editorOpts: 'e',
+            editorOpts: '$E$',
             tenantName: 'apps',
             appName: 'testApp',
             pageName: 'test-page.html',

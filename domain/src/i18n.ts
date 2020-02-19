@@ -15,3 +15,4 @@ export const LANGUAGES = {
 
 export type I18nLang = keyof typeof LANGUAGES;
 export const DEFAULT_LANGUAGE: I18nLang = 'en';
+export const DEFAULT_FLAG: string = 'gb';

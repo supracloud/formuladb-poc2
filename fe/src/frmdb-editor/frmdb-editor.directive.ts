@@ -34,6 +34,8 @@ import { ElementTreeComponent } from "./element-tree.component";
 import "@fe/theme-customizer/theme-customizer.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
 
+import "@fe/i18n-customizer/i18n-customizer.component";
+
 import "@fe/frmdb-editor/add-element.component";
 import { AddElementComponent } from "./add-element.component";
 
@@ -116,7 +118,6 @@ export class FrmdbEditorDirective {
 
             this.tableManagementFlows();
             this.tableColumnManagementFlows();
-            this.initI18n();
             this.loadApps();
             this.loadTables();
             this.loadPages();
@@ -135,8 +136,7 @@ export class FrmdbEditorDirective {
         });
 
 
-        registerFrmdbEditorRouterHandler('editorIframeSrc', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
-
+        registerFrmdbEditorRouterHandler('editor-iframe-src', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
             let { appName: currentAppName } = parsePageUrl(new URL(this.iframe.src).pathname);
             let { appName } = newPageOpts;
 
@@ -151,7 +151,7 @@ export class FrmdbEditorDirective {
             } else {
                 this.updateCurrentPage();
             }
-        });
+        }, () => this.checkSafeNavigation());
     }
 
     showIntroVideoModal() {
@@ -172,32 +172,7 @@ export class FrmdbEditorDirective {
         }
     }
 
-    initI18n() {
-        const currentLanguage = I18N_UTILS.getLangDesc(localStorage.getItem('editor-lang') || I18N_UTILS.defaultLanguage)!;
-
-        // i18n section
-        const i18nSelect: HTMLElement = document.querySelector('#frmdb-editor-i18n-select') as HTMLElement;
-        const i18nOptions: HTMLElement = document.querySelector('[aria-labelledby="frmdb-editor-i18n-select"]') as HTMLElement;
-        i18nSelect.setAttribute('data-i18n', currentLanguage!.lang);
-        i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${currentLanguage!.flag}"></i>`;
-        I18N_UTILS.languages.forEach(lang => {
-
-            i18nOptions.innerHTML += /*html*/`<a class="dropdown-item" data-flag="${lang.flag}" data-lang="${lang.lang}"><i class="flag-icon flag-icon-${lang.flag}"></i> ${lang.full}</a>`
-        });
-
-        onEvent(i18nOptions, 'click', '.dropdown-item, .dropdown-item *', (event) => {
-            const prev = i18nSelect.getAttribute('data-i18n')!;
-            let el: HTMLElement = event.target.closest('[data-lang]') as HTMLElement;
-            const next = el.dataset.lang!;
-            const flag = el.dataset.flag;
-            localStorage.setItem('editor-lang', next);
-            i18nSelect.setAttribute('data-i18n', next);
-            i18nSelect.innerHTML = /*html*/`<i class="flag-icon flag-icon-${flag}"></i>`;
-            this.checkSafeNavigation(event);
-        });
-    }
-
-    checkSafeNavigation(event) {
+    checkSafeNavigation(): boolean {
         let safeToNavigate = false;
         if (Undo.hasChanges()) {
             if (confirm(`There are ${Undo.ngActiveChanges() + 1} changes, are you sure you want leave this page ?`)) {
@@ -206,7 +181,12 @@ export class FrmdbEditorDirective {
             }
         } else safeToNavigate = true;
 
-        if (!safeToNavigate) event.preventDefault();
+        return safeToNavigate;
+    }
+
+
+    checkSafeNavigationForEvent(event) {
+        if (!this.checkSafeNavigation()) event.preventDefault();
     }
 
     changeSelectedTableIdIfDifferent(tableName: string) {
@@ -227,7 +207,7 @@ export class FrmdbEditorDirective {
     tableManagementFlows() {
 
         onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.apps[]"]', (event: MouseEvent) => {
-            this.checkSafeNavigation(event);
+            this.checkSafeNavigationForEvent(event);
         });
 
         onEvent(document.body, 'click', '[data-frmdb-value="$frmdb.tables[]._id"]', (event: MouseEvent) => {
@@ -235,7 +215,7 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'click', 'a[data-frmdb-value="$frmdb.pages[].name"]', (event: MouseEvent) => {
-            this.checkSafeNavigation(event);
+            this.checkSafeNavigationForEvent(event);
         });
 
 
@@ -336,8 +316,7 @@ export class FrmdbEditorDirective {
         onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
             await this.saveBlobs();
 
-            let pagePath = window.location.hash.replace(/^#/, '');
-            $SAVE_DOC_PAGE(pagePath, this.frameDoc);
+            $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc);
         });
 
         onDoc('click', '#delete-table-btn *', (event) => {

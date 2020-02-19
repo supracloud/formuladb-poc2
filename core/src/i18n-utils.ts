@@ -1,4 +1,4 @@
-import { LANGUAGES, DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
+import { LANGUAGES, DEFAULT_LANGUAGE, I18nLang, DEFAULT_FLAG } from "@domain/i18n";
 import { $DictionaryObjT } from "@domain/metadata/default-metadata";
 
 const translatableSelector = 'p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,[placeholder]';
@@ -40,6 +40,7 @@ export type TranslateCallback = (targetLang: I18nLang, texts: string[]) => Promi
 export class I18Utils {
 
     get defaultLanguage() { return DEFAULT_LANGUAGE; }
+    get defaultFlag() { return DEFAULT_FLAG; }
 
     public getLangDesc(lang: string) {
         return this.languages.find(l => l.lang == lang);
