@@ -24,7 +24,8 @@ const STORAGE = new Storage({
 const os = require('os');
 const path = require('path');
 
-const ROOT = process.env.FRMDB_SPECS ? '/tmp/frmdb-metadata-store-for-specs' : '/wwwroot/git/formuladb-env';
+const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
+const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
 
 export interface SchemaEntityList {
     _id: string;
@@ -121,15 +122,15 @@ export class MetadataStore {
     }
 
     async putApp(tenantName: string, appName: string, app: App): Promise<App> {
-        await this.writeFile(`${ROOT}/${tenantName}/${appName}/app.yaml`, this.toYaml(app));
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/app.yaml`, this.toYaml(app));
 
         return app;
     }
     async putSchema(tenantName: string, appName: string, schema: Schema): Promise<Schema> {
         await Promise.all(Object.values(schema.entities)
-            .map(entity => this.writeFile(`${ROOT}/${tenantName}/${appName}/${entity._id}.yaml`,
+            .map(entity => this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${entity._id}.yaml`,
                 this.toYaml(entity)))
-            .concat(this.writeFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`, this.toYaml({
+            .concat(this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`, this.toYaml({
                 _id: schema._id,
                 entityIds: Object.keys(schema.entities),
             })))
@@ -140,14 +141,14 @@ export class MetadataStore {
 
     public async getSchema(tenantName: string, appName: string): Promise<Schema | null> {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
-            await this.readFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`)
+            await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`)
         );
         let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => {
             if (entityId == '$User') return entityId;
             if (entityId == '$Currency') return entityId;
             if (entityId == '$Dictionary') return entityId;
 
-            return this.readFile(`${ROOT}/db/${entityId}.yaml`)
+            return this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
         }));
         let entities: Entity[] = entitiesStr.map(entityStr => {
             if (entityStr == '$User') return $User;
@@ -184,25 +185,25 @@ export class MetadataStore {
     }
 
     public async getEntity(tenantName: string, appName: string, entityId: string): Promise<Entity | null> {
-        let str = await this.readFile(`${ROOT}/db/${entityId}.yaml`);
+        let str = await this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;
     }
 
     public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
-        await this.writeFile(`${ROOT}/db/${entity._id}.yaml`, this.toYaml(entity))
+        await this.writeFile(`${FRMDB_ENV_DIR}/db/${entity._id}.yaml`, this.toYaml(entity))
 
         return entity;
     }
 
     public async delEntity(tenantName: string, appName: string, entityId: string): Promise<Entity> {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
-            await this.readFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`)
+            await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`)
         );
         schemaNoEntities.entityIds = schemaNoEntities.entityIds.filter(e => e != entityId);
-        await this.writeFile(`${ROOT}/${tenantName}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
 
-        let entityFile = `${ROOT}/db/${entityId}.yaml`;
+        let entityFile = `${FRMDB_ENV_DIR}/db/${entityId}.yaml`;
         let entity: Entity = await this.fromYaml<Entity>(entityFile);
         await this.delFile(entityFile);
 
@@ -210,45 +211,45 @@ export class MetadataStore {
     }
 
     async getApps(tenantName: string): Promise<string[]> {
-        let apps = await this.listDir(`${ROOT}/${tenantName}`);
+        let apps = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}`);
         return apps.map(fName => fName.replace(/.*\//, ''));
     }
 
     async getApp(tenantName: string, appName: string): Promise<App | null> {
         let app: App = this.fromYaml(
-            await this.readFile(`${ROOT}/${tenantName}/${appName}/app.yaml`)
+            await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/app.yaml`)
         );
 
-        let htmlPages = await this.listDir(`${ROOT}/${tenantName}/${appName}`, /\.html$/);
+        let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
         app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
 
         return app;
     }
 
     async getThemes() {
-        let themeFiles = await this.listDir(`${ROOT}/themes`, /\.json$/);
+        let themeFiles = await this.listDir(`${FRMDB_ENV_DIR}/themes`, /\.json$/);
         return themeFiles.map(t => t.replace(/.*\//, '').replace(/\.json$/, ''));
     }
 
     async getLooks() {
-        let cssFiles = await this.listDir(`${ROOT}/css`, /\.css$/);
+        let cssFiles = await this.listDir(`${FRMDB_ENV_DIR}/css`, /\.css$/);
         return cssFiles;
     }
 
     async newApp(tenantName: string, appName: string, basedOnApp?: string): Promise<App | null> {
         if (basedOnApp) {
-            await execShell(`cp -ar ${ROOT}/${tenantName}/${basedOnApp} ${ROOT}/${tenantName}/${appName}`);
+            await execShell(`cp -ar ${FRMDB_ENV_DIR}/${tenantName}/${basedOnApp} ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
         } else {
-            await execShell(`cp -ar ${ROOT}/frmdb-apps/themes ${ROOT}/${tenantName}/${appName}`);
+            await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/themes ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
         }
-        await execShell(`mkdir -p ${ROOT}/static/${tenantName}/${appName}`);
+        await execShell(`mkdir -p ${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
         return this.getApp("apps", appName);
     }
 
     async newPage(newPageName: string, startTemplateUrl: string) {
         let [tenantName, appName, pageName] = startTemplateUrl.split(/\//).filter(x => x);
-        let content = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName}`);
-        await this.writeFile(`${ROOT}/${tenantName}/${appName}/${newPageName}`, content);
+        let content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}`);
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${newPageName}`, content);
     }
 
     async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
@@ -279,7 +280,7 @@ export class MetadataStore {
             let headMarker = htmlTools.doc.createElement('head');
             if (titleEl) headMarker.appendChild(titleEl.cloneNode(true));
             cleanedUpDOM.replaceChild(headMarker, headEl);
-            await this.writeFile(`${ROOT}/${tenantName}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
+            await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
         }
 
         for (let fragmentEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-fragment]'))) {
@@ -289,22 +290,22 @@ export class MetadataStore {
             fragmentMarker.setAttribute('data-frmdb-fragment', fragmentName);
             fragmentEl.parentNode!.replaceChild(fragmentMarker, fragmentEl);
 
-            await this.writeFile(`${ROOT}/${tenantName}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
+            await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
         }
 
         //TODO: find all img data url(s) and save them as images
 
-        await this.writeFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
     }
 
     async getLookCss(pageOpts: PageOpts): Promise<string> {
-        let lookCss = await this.readFile(`${ROOT}/css/${pageOpts.look}-${pageOpts.primaryColor}-${pageOpts.secondaryColor}.css`);
+        let lookCss = await this.readFile(`${FRMDB_ENV_DIR}/css/${pageOpts.look}-${pageOpts.primaryColor}-${pageOpts.secondaryColor}.css`);
         return lookCss;
     }
 
     async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
         let {tenantName, appName, pageName} = pageOpts;
-        let pageHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${pageName || 'index.html'}`);
+        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
             features: {
@@ -322,7 +323,7 @@ export class MetadataStore {
             let pageTitleEl = headEl.querySelector('title');
             if (pageTitleEl != null) pageTitleEl = pageTitleEl.cloneNode(true) as HTMLTitleElement;
 
-            let headHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/_head.html`);
+            let headHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`);
             headEl.outerHTML = headHtml;
             let titleEl = headEl.querySelector('title');
             if (pageTitleEl) {
@@ -335,7 +336,7 @@ export class MetadataStore {
             let fragmentName = fragmentEl.getAttribute('data-frmdb-fragment');
             if (!fragmentName) throw new Error("fragmentName not found for" + fragmentEl.outerHTML);
 
-            let fragmentHtml = await this.readFile(`${ROOT}/${tenantName}/${appName}/${fragmentName}`);
+            let fragmentHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${fragmentName}`);
             let fragmentDom = htmlTools.html2dom(fragmentHtml);
             if (isHTMLElement(fragmentDom)) {
                 let savedFragmentName = fragmentDom.getAttribute('data-frmdb-fragment');
@@ -344,7 +345,7 @@ export class MetadataStore {
             }
         }
 
-        let themeRulesJson = await this.readFile(`${ROOT}/themes/${pageOpts.theme}.json`);
+        let themeRulesJson = await this.readFile(`${FRMDB_ENV_DIR}/themes/${pageOpts.theme}.json`);
         let themeRules: ThemeRules = JSON.parse(themeRulesJson);
         await applyTheme(themeRules, pageDom);
         I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, dictionaryCache);
@@ -355,11 +356,11 @@ export class MetadataStore {
 
     async deletePage(deletedPagePath: string): Promise<void> {
         let [tenantName, appName, pageName] = deletedPagePath.split(/\//).filter(x => x);
-        this.delFile(`${ROOT}/${tenantName}/${appName}/${pageName}`);
+        this.delFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}`);
     }
 
     async saveMediaObject(tenantName: string, appName: string, fileName: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${ROOT}/static/${tenantName}/${appName}/${fileName}`, new Buffer(base64Content, 'base64'));
+        await this.writeFile(`${FRMDB_ENV_DIR}/static/${tenantName}/${appName}/${fileName}`, new Buffer(base64Content, 'base64'));
     }
 
     async saveIcon(tenantName: string, appName: string, iconId: string): Promise<string> {
@@ -370,17 +371,17 @@ export class MetadataStore {
             },
         }).then(r => r.text());
 
-        await this.writeFile(`${ROOT}/icons/formuladb/svg/${icon.name}.svg`, new Buffer(svgContent, 'utf8'));
+        await this.writeFile(`${FRMDB_ENV_DIR}/icons/formuladb/svg/${icon.name}.svg`, new Buffer(svgContent, 'utf8'));
         await execShell(`npm run generate-user-icons`);
         return `frmdb-i-${icon.name}`;
     }
 
     async getMediaObjects(tenantName: string, appName: string) {
-        return this.listDir(`${ROOT}/static/${tenantName}/${appName}`);
+        return this.listDir(`${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
     }
 
     async getAvailableIcons(tenantName: string, appName: string) {
-        return this.listDir(`${ROOT}/icons/formuladb/svg`);
+        return this.listDir(`${FRMDB_ENV_DIR}/icons/formuladb/svg`);
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

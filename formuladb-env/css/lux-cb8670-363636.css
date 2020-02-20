@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Nunito+Sans:400,600");
 :root {
-  --frmdb-look-name: lux
-; }
+  --frmdb-look-name: lux; }
 
 /*!
  * Bootstrap v4.4.1 (https://getbootstrap.com/)
@@ -9559,6 +9558,54 @@ input[type="checkbox"]:checked:focus ~ .frmdb-dropdown .dropdown-menu {
   top: 50%;
   left: 0;
   transform: translate(calc(-100% - 5px), -50%) rotate(45deg); }
+
+frmdb-icon, frmdb-icon.sz-1p2 {
+  height: 1.2em;
+  width: 1.2em; }
+
+frmdb-icon.sz-1p5 {
+  height: 1.5em;
+  width: 1.5em; }
+
+frmdb-icon.sz-1 {
+  height: 1em;
+  width: 1em; }
+
+frmdb-icon.sz-2 {
+  height: 2em;
+  width: 2em; }
+
+frmdb-icon.sz-3 {
+  height: 3em;
+  width: 3em; }
+
+frmdb-icon.sz-4 {
+  height: 4em;
+  width: 4em; }
+
+frmdb-icon.sz-5 {
+  height: 5em;
+  width: 5em; }
+
+frmdb-icon.sz-6 {
+  height: 6em;
+  width: 6em; }
+
+frmdb-icon.sz-7 {
+  height: 7em;
+  width: 7em; }
+
+frmdb-icon.sz-8 {
+  height: 8em;
+  width: 8em; }
+
+frmdb-icon.sz-9 {
+  height: 9em;
+  width: 9em; }
+
+frmdb-icon.sz-10 {
+  height: 10em;
+  width: 10em; }
 
 .fa {
   font-family: 'Font Awesome 5 Free'; }

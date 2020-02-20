@@ -30,6 +30,9 @@ import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 import { $Dictionary } from "@domain/metadata/default-metadata";
 
+const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
+const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
+
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();
 
 const URL_REGEX = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
@@ -141,12 +144,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     // themes, icons, images & other static content
     //////////////////////////////////////////////////////////////////////////////////////
 
-    app.use('/formuladb-env/themes', express.static('/wwwroot/git/formuladb-env/themes'));
-    app.use('/formuladb-env/css/', express.static('wwwroot/git/formuladb-env/css'));
-    app.use('/formuladb-env/icons/', express.static('wwwroot/git/formuladb-env/icons'));
-    app.use('/formuladb-env/static/', express.static('/wwwroot/git/formuladb-env/static'));
-    app.use('/formuladb-env/plugins/', express.static('/wwwroot/git/formuladb-env/plugins'));
-    app.use('/formuladb-env/frmdb-apps/themes/', express.static('/wwwroot/git/formuladb-env/frmdb-apps/themes/'));
+    app.use('/formuladb-env/', express.static(`${FRMDB_ENV_DIR}/`));
 
     //////////////////////////////////////////////////////////////////////////////////////
     // apps
@@ -157,7 +155,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);
 
-    app.get('/formuladb/*', express.static('/wwwroot'));
+    app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
     app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/:page.html', async function (req, res, next) {
         let coreFrmdbEngine = await getCoreFrmdbEngine();

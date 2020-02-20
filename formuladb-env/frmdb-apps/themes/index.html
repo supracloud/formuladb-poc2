@@ -6,16 +6,18 @@
 </head>
 
 <body>
-    <div class="row">
-        <div class="vh-95 col-2 border-right overflow-auto">
-            <iframe src="./components-nav.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="pl-5 vh-95 col-2 border-right overflow-auto">
+                <iframe src="./components-nav.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+            </div>
 
-        <div class="col-10 p-0">
-            <iframe name="frmdb-theme-page" class="vh-95 w-100 border-0" src="./landing-page.html"></iframe>
+            <div class="col-10 px-0">
+                <iframe name="frmdb-theme-page" class="vh-95 w-100 border-0" src="./landing-page.html"></iframe>
+            </div>
         </div>
     </div>
-    
+
     <div data-frmdb-fragment="_scripts.html"></div>
 
 </body>

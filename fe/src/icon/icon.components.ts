@@ -17,7 +17,7 @@ class IconComponent extends HTMLElement {
     }
 
     render() {
-        this.svg.innerHTML = `<use xlink:href="${this.getAttribute("href")}#frmdb-icon"></use>`;
+        this.svg.innerHTML = `<use xlink:href="/formuladb-env/icons/svg/${this.getAttribute("href")}#frmdb-icon"></use>`;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -26,3 +26,4 @@ class IconComponent extends HTMLElement {
 }
 
 customElements.define('frmdb-icon', IconComponent);
+customElements.whenDefined('frmdb-icon').then(() => console.info('frmdb-icon is defined'));
