@@ -2,7 +2,7 @@
 const STYLE: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/icon/icon.component.scss').default;
 
 class IconComponent extends HTMLElement {
-    static observedAttributes = ['href'];
+    static observedAttributes = ['name'];
     svg: SVGElement;
 
     constructor() {
@@ -17,7 +17,7 @@ class IconComponent extends HTMLElement {
     }
 
     render() {
-        this.svg.innerHTML = `<use xlink:href="/formuladb-env/icons/svg/${this.getAttribute("href")}#frmdb-icon"></use>`;
+        this.svg.innerHTML = `<use xlink:href="/formuladb-env/icons/svg/${this.getAttribute("name")}.svg#frmdb-icon"></use>`;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
