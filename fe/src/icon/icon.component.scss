@@ -1,0 +1,42 @@
+$theme-colors: (
+  "primary": var(--primary),
+  "secondary": var(--secondary),
+  "success": var(--success),
+  "info": var(--info),
+  "warning": var(--warning),
+  "danger": var(--danger),
+  "light": var(--light),
+  "dark": var(--dark)
+);
+
+:host {
+    @each $color, $value in $theme-colors {
+        &.fill-#{$color} svg {
+            fill: $value;
+        }
+    }
+}
+
+svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+svg.frmdb-i-fill {
+  stroke-opacity: 0;
+}
+svg.frmdb-i-outline {
+  stroke-opacity: 0;
+}
+svg.frmdb-i-fill-slim {
+  stroke-opacity: 0;
+}
+svg.frmdb-i-outline-slim {
+  stroke-opacity: 0;
+}
+svg.frmdb-i-fill-thick {
+  stroke-opacity: 1;
+}
+svg.frmdb-i-outline-thick {
+  stroke-opacity: 1;
+}

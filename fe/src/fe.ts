@@ -2,6 +2,7 @@ import './router';
 import './fragment/fragment.component';
 import { initFrmdb } from './init';
 import './form/form.component';
+import './icon/icon.components';
 
 import './directives/data-frmdb-select.directive';
 import './fe-functions';
