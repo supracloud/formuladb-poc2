@@ -15,7 +15,7 @@ require.extensions['.scss'] = function (module, filename) {
     module.exports = '';//we would need to run sass to make this work
 }
 
-process.env.FRMDB_SPECS = "true";
+process.env.FRMDB_ENV_ROOT_DIR = "/tmp/frmdb-metadata-store-for-specs";
 process.env.GOOGLE_APPLICATION_CREDENTIALS = `${process.cwd()}/ci/FormulaDB-storage-full.json`;
 
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;

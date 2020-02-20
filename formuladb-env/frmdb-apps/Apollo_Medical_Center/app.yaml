@@ -1,0 +1,12 @@
+_id: themes
+description: themes
+pages:
+    - index.html
+    - _footer.html
+    - _form.html
+    - _nav.html
+    - elements.html
+    - page-elements.html
+    - sections.html
+    - test.html
+    - widgets.html
