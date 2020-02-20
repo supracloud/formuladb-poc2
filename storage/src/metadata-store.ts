@@ -348,6 +348,7 @@ export class MetadataStore {
         let themeRules: ThemeRules = JSON.parse(themeRulesJson);
         await applyTheme(themeRules, pageDom);
         I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, dictionaryCache);
+        pageDom.lang = pageOpts.lang;
 
         return htmlTools.document2html(pageDom);
     }

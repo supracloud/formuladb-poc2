@@ -45,6 +45,7 @@ describe('MetadataStore', () => {
 
     const PageHtmlFromClientBrowser = /*html*/`
     <!DOCTYPE html>
+    <html>
     <head>
         <title>FormulaDB - Build Applications Without Code</title>
         <link href="/formuladb-env/static/formuladb_io/favicon.png" rel="icon" type="image/png">
@@ -69,12 +70,12 @@ describe('MetadataStore', () => {
 
     it("Should save page without fragments/themes and default language", async () => {
         await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
-            parsePageUrl('/na-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test.html'),
+            parsePageUrl('/na-basic-1a1a1a-ffffff-Clean-$E$/frmdb-apps/testApp/test.html'),
             PageHtmlFromClientBrowser);
 
         expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/testApp/test.html', /*html*/`
 <!DOCTYPE html>
-
+<html>
 <head>
     <title>FormulaDB - Build Applications Without Code</title>
 </head>
@@ -123,14 +124,16 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Clean theme and i18n", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/fr-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test.html'),
+                parsePageUrl('/fr-basic-1a1a1a-ffffff-Clean-$E$/frmdb-apps/testApp/test.html'),
                 new Map().set('main content', { fr: 'contenu principal' })
             ));
 
-        let expectedHtmlWithCleanThemeAndFrenchLang = PageHtmlFromClientBrowser.replace(
-            `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
-            `class="jumbotron w-100 text-center bg-transparent" data-frmdb-theme-classes="w-100 text-center bg-transparent"`,
-        )
+        let expectedHtmlWithCleanThemeAndFrenchLang = PageHtmlFromClientBrowser
+            .replace('<html>', '<html lang="fr">')
+            .replace(
+                `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
+                `class="jumbotron w-100 text-center bg-transparent" data-frmdb-theme-classes="w-100 text-center bg-transparent"`,
+            )
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1 data-i18n-key="main content">contenu principal</h1>')
             .replace('<span>some footer</span>', '<span data-i18n-key="some footer">fr:some footer</span>')
             .replace('<input placeholder="some placeholder"', '<input placeholder="fr:some placeholder" data-i18n-key="some placeholder"')
@@ -143,12 +146,14 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Frames theme", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames-e/frmdb-apps/testApp/test.html'), new Map()));
+                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames-$E$/frmdb-apps/testApp/test.html'), new Map()));
 
-        let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser.replace(
-            `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
-            `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
-        )
+        let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
+            .replace('<html>', '<html lang="en">')
+            .replace(
+                `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
+                `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
+            )
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1>main content</h1>')
             ;
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithFramesTheme);
@@ -157,15 +162,15 @@ describe('MetadataStore', () => {
 
     it("Should read the correct look css", async () => {
         let [lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName] =
-            ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', 'e', 'frmdb-apps', 'testApp'];
-        let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName} as PageOpts);
+            ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', '$E$', 'frmdb-apps', 'testApp'];
+        let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName } as PageOpts);
         expect(cssStr.indexOf('--frmdb-look-name: basic')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--primary: #1a1a1a')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #fff')).toBeGreaterThan(0);
 
         [lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName] =
-            ['en', 'lux', 'cb8670', '363636', 'Clean', 'e', 'frmdb-apps', 'testApp'];
-        cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName} as PageOpts);
+            ['en', 'lux', 'cb8670', '363636', 'Clean', '$E$', 'frmdb-apps', 'testApp'];
+        cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName } as PageOpts);
         expect(cssStr.indexOf('--frmdb-look-name: lux')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--primary: #cb8670')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);

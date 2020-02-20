@@ -554,10 +554,10 @@ export class FrmdbEditorDirective {
 
         if (isElementWithTextContent(el)) {
             let recordId = `$Dictionary~~${getTranslationKey(el)}`;
-            let columnId = document.querySelector('#frmdb-editor-i18n-select')!.getAttribute('data-i18n') || 'n/a';
+            let columnId = document.documentElement.lang;
             if (columnId == DEFAULT_LANGUAGE) columnId = '_id';
-            // return { recordId, columnId };
-            return null; //disable highlight on $Dictionary table for now, because it is not a "normal" dynamic data-binding, the $Dictionary table is used only during server side rendering
+            return { recordId, columnId };
+            // return null; //disable highlight on $Dictionary table for now, because it is not a "normal" dynamic data-binding, the $Dictionary table is used only during server side rendering
         }
 
         return null;
