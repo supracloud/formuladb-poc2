@@ -422,7 +422,7 @@ export class IconInput extends Input {
 
 	setValue(value) {
 		(this.querySelector('input[type="text"]') as HTMLInputElement).value = value;
-		(this.querySelector('i') as HTMLElement).setAttribute('class', value);
+		(this.querySelector('frmdb-icon') as HTMLElement).setAttribute('name', value);
 	}
 
 	init(data) {
@@ -430,7 +430,7 @@ export class IconInput extends Input {
 		return this.render(/*html*/`
 			<div class="d-flex flex-column align-items-center">
 				<a id="frmdb-chose-icon-button" href="javascript:void(0)">
-					<h1><i></i></h1>
+					<h1><frmdb-icon></frmdb-icon></h1>
 				</a>
 				<input disabled name="{%=key%}" type="text" class="form-control ml-2"/>
 			</div>		

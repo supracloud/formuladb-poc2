@@ -150,7 +150,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     // apps
     //////////////////////////////////////////////////////////////////////////////////////
 
-    let formuladbIoStatic = express.static('/wwwroot/git/formuladb-env/frmdb-apps/formuladb_io', { index: "index.html" });
+    app.get('/', function (req, res, next) {
+        res.redirect('en-cerulean-7795f8-6c757d-_none_-_n_/frmdb-apps/formuladb_io/index.html');
+    });
+
+    let formuladbIoStatic = express.static(`${FRMDB_ENV_DIR}/frmdb-apps/formuladb_io`, { index: "index.html" });
     app.get('/', formuladbIoStatic);
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);
@@ -162,7 +166,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
         if (req.params.editorOpts === '$E$') {
             res.set('Content-Type', 'text/html')
-            res.sendFile('/wwwroot/formuladb/editor.html');
+            res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
             let pageHtml = await kvsFactory.metadataStore.getPageHtml({
                 lang: req.params.lang,

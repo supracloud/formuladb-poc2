@@ -2,13 +2,13 @@
     <div class="btn-group mr-3 dropdown frmdb-dropdown-hover" data-frmdb-select="i" role="menu">
         <button class="btn text-nowrap" title="Choose Color Palette" id="frmdb-editor-color-palette-select" type="button" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-square" data-frmdb-attr="style.color::selectedColor.primary"></i>
-            <i class="fa fa-square" data-frmdb-attr="style.color::selectedColor.secondary"></i>
+            <i class="rounded px-2 py-1" data-frmdb-attr="style.background-color::selectedColor.primary">&nbsp;&nbsp;</i>
+            <i class="rounded px-2 py-1" data-frmdb-attr="style.background-color::selectedColor.secondary">&nbsp;&nbsp;</i>
         </button>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="frmdb-editor-color-palette-select">
             <a class="dropdown-item text-nowrap" data-frmdb-table="colors[]" data-frmdb-attr="href:colors[].urlPathname" data-frmdb-editor-link>
-                <i class="fa fa-square" data-frmdb-attr="style.color::colors[].primary"></i> Primary color
-                <i class="fa fa-square" data-frmdb-attr="style.color::colors[].secondary"></i> Secondary color
+                <i class="rounded px-2 py-1" data-frmdb-attr="style.background-color::colors[].primary">Primary color</i>
+                <i class="rounded px-2 py-1" data-frmdb-attr="style.background-color::colors[].secondary">Secondary color</i>
             </a>
         </div>
     </div>

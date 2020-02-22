@@ -86,8 +86,8 @@ export function frmdbSetImageSrc(element: HTMLElement, value: string, input: Inp
 }
 
 function grabIcon(element: HTMLElement) {
-    if (element.tagName.toLowerCase() === 'i') {
-        return element.getAttribute('class');
+    if (element.tagName.toLowerCase() === 'frmdb-icon') {
+        return element.getAttribute('name');
     }
 }
 

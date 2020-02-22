@@ -345,9 +345,11 @@ export class MetadataStore {
             }
         }
 
-        let themeRulesJson = await this.readFile(`${FRMDB_ENV_DIR}/themes/${pageOpts.theme}.json`);
-        let themeRules: ThemeRules = JSON.parse(themeRulesJson);
-        await applyTheme(themeRules, pageDom);
+        if ("_none_" != pageOpts.theme) {
+            let themeRulesJson = await this.readFile(`${FRMDB_ENV_DIR}/themes/${pageOpts.theme}.json`);
+            let themeRules: ThemeRules = JSON.parse(themeRulesJson);
+            await applyTheme(themeRules, pageDom);
+        }
         I18N_UTILS.applyLanguageOnCleanHtmlPage(pageDom, pageOpts.lang as I18nLang, dictionaryCache);
         pageDom.lang = pageOpts.lang;
 
