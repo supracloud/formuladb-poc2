@@ -8,7 +8,7 @@ import * as _ from 'lodash';
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { BACKEND_SERVICE } from '@fe/backend.service';
 import { KeyEvent } from '@fe/key-event';
-import { SimpleAddHocQuery, FilterItem } from '@domain/metadata/simple-add-hoc-query';
+import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem } from '@domain/metadata/simple-add-hoc-query';
 import { onEvent } from '@fe/delegated-events';
 import { elvis } from '@core/elvis';
 
@@ -99,7 +99,7 @@ export class AutocompleteComponent extends FrmdbElementBase<AutocompleteAttrs, A
         if (val.length >= 2) {
             this.frmdbState.relatedControls = this.getRelatedControls();
             let filterModel: {
-                [x: string]: FilterItem;
+                [x: string]: SimpleAddHocQueryFilterItem;
             } = {};
             for (let ctrl of this.frmdbState.relatedControls) {
                 if (this.frmdbState.ref_property_name === ctrl.ref_property_name) {

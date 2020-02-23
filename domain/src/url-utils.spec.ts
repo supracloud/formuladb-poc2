@@ -2,7 +2,7 @@ import { parsePageUrl, PageOpts } from "./url-utils";
 
 describe('url-utils', () => {
     it('should parse page URL', () => {
-        let ret = parsePageUrl('/en-basic-1a1a1a-ffffff-Clean-e/frmdb-apps/testApp/test-page.html');
+        let ret = parsePageUrl('/en-basic-1a1a1a-ffffff-Clean-$E$/frmdb-apps/test-app/test-page.html');
 
         let expectedPageOpts: PageOpts = { 
             lang: 'en', 
@@ -11,8 +11,8 @@ describe('url-utils', () => {
             secondaryColor: "ffffff", 
             theme: "Clean" ,
             editorOpts: '$E$',
-            tenantName: 'apps',
-            appName: 'testApp',
+            tenantName: 'frmdb-apps',
+            appName: 'test-app',
             pageName: 'test-page.html',
         };
 

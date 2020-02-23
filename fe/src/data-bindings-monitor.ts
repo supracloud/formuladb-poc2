@@ -8,9 +8,24 @@ import { entityNameFromDataObjId, parseDataObjId } from "@domain/metadata/data_o
 import { FeFunctionsForDataBinding } from "./fe-functions";
 import { generateTimestampUUID } from "@domain/uuid";
 import { DataGridComponentI } from "./data-grid/data-grid.component.i";
+import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFilterItem_filterType, makeSimpleAddHocQueryFilterItem_type } from "@domain/metadata/simple-add-hoc-query";
+import { onEventChildren, onEvent } from "./delegated-events";
+import { regexExtract } from "@domain/ts-utils";
 
 const CLIENT_ID = generateTimestampUUID();
 declare var $: any;
+
+const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
+    startRow: 0,
+    endRow: 100,
+    rowGroupCols: [],
+    valueCols: [],
+    pivotCols: [],
+    pivotMode: false,
+    groupKeys: [],
+    filterModel: {},
+    sortModel: [],
+};
 
 export class DataBindingsMonitor {
     constructor(private rootEl: HTMLElement) {
@@ -42,6 +57,18 @@ export class DataBindingsMonitor {
         });
 
         observer.observe(rootEl, { attributes: true, childList: true, subtree: true });
+        onEvent(rootEl, ["change"], 'input[data-frmdb-value^="$FRMDBQ."]', async (event) => {
+            if (!event.target || !event.target.outerHTML) return;
+            let valExpr = event.target.getAttribute('data-frmdb-value');
+            if (!valExpr) { console.warn("query expr not found ", event.target.outerHTML); return }
+
+            let m: RegExpMatchArray;
+            if (m = valExpr.match(/^\$FRMDBQ\.(\w+)\[\]\./)) {
+                let tableName = m[1];
+                let tableEl = rootEl.querySelectorAll(`data-frmdb-table=["$FRMDB.${tableName}[]"]`)
+                this.debouncedUpdateDOMForTable(tableEl);
+            }
+        });
         this.updateDOMOnDataUpdatesFromServer();
     }
 
@@ -79,18 +106,39 @@ export class DataBindingsMonitor {
             if (!tableName) { console.warn("Empty table name " + el.outerHTML); return }
             if (!el.parentElement) { console.warn("Parent not found for table data binding " + el.outerHTML); return }
             let limit = parseInt(el.getAttribute('data-frmdb-table-limit') || '') || 3;
-            this.updateDOMForTableParent(el.parentElement, tableName, limit);
+            let query = this.getQueryForTable(tableName)
+            await this.updateDOMForTableParent(el.parentElement, tableName, query, limit);
         } catch (err) {
             console.error(err);
         }
     }
 
-    async updateDOMForTableParent(parentEl: HTMLElement, tableName: string, limit: number) {
+    getQueryForTable(tableName: string): SimpleAddHocQuery {
+        let ret: SimpleAddHocQuery = _.cloneDeep(DefaultSimpleAddHocQuery);
+        
+        let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-value^="$FRMDBQ.${tableName}.filter"]`));
+        for (let filterEl of filterEls) {
+            let [type, fieldName] = regexExtract(filterEl.getAttribute('data-frmdb-value')!.replace(`$FRMDBQ.${tableName}.filter`, ''),
+                /(\w+)\.(\w+)/);
+            let filterType: SimpleAddHocQueryFilterItem['filterType'] = makeSimpleAddHocQueryFilterItem_filterType(filterEl.type);
+            let filter = filterEl.value;
+            ret.filterModel[fieldName] = {
+                filterType,
+                filter,
+                type: makeSimpleAddHocQueryFilterItem_type(type, filterType),
+            }
+        }
+
+        return ret;
+    }
+
+    async updateDOMForTableParent(parentEl: HTMLElement, tableName: string, query: SimpleAddHocQuery, limit: number) {
         try {
             if (!parentEl) return;
             let bes = BACKEND_SERVICE();
-            if (null == bes.currentSchema.entities[tableName]) return;
-            let data = await bes.getTableData(tableName + '~~');
+            if (null == bes?.currentSchema?.entities?.[tableName]) { console.warn("BE not initialized yet"); return };
+
+            let data = await bes.simpleAdHocQuery(tableName, query);
             updateDOM({
                 $FRMDB: { [tableName]: data.slice(0, limit) },
                 ...FeFunctionsForDataBinding
@@ -142,6 +190,7 @@ export class DataBindingsMonitor {
         }
 
         let pollTime = new Date().getTime() - startTime;
-        setTimeout(() => this.updateDOMOnDataUpdatesFromServer(), Math.max(500, 1000 - pollTime));
+        let intervalFloodProtection = Math.max(500, 1000 - pollTime);
+        setTimeout(() => this.updateDOMOnDataUpdatesFromServer(), intervalFloodProtection);
     }
 }

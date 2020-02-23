@@ -1,6 +1,5 @@
 import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
-import { instance } from "gaxios";
 import { emit } from "@fe/delegated-events";
 const LOG = new FrmdbLogger('live-dom-template');
 

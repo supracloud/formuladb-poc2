@@ -20,6 +20,8 @@ export function isType<K extends keyof typeof NN, T>(t: K, p: any): p is T {
     return p !== null && p.frmdbt_ === t;
 }
 
+export type ValuesOf<T extends any[]>= T[number];
+
 export async function waitUntil<T>(callback: () => T | Promise<T>, retries = 10, sleepTime = 50): Promise<T> {
     let retryNb = 0;
     return new Promise<T>((resolve, reject) => {
@@ -60,4 +62,11 @@ export function applyMixins(derivedCtor: any, baseCtors: any[]) {
             // Object.defineProperty(derivedCtor.prototype, name, Object.getOwnPropertyDescriptor(baseCtor.prototype, name));
         });
     });
+}
+
+export function regexExtract(val: string, regex: RegExp): RegExpMatchArray {
+    let ret: RegExpMatchArray | null = val.match(regex);
+    if (ret) {
+        return ret;
+    } else throw new Error(`${val} does not match ${regex}`);
 }

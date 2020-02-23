@@ -42,7 +42,7 @@ export async function getTestFrmdbEngineStore(schema: Schema): Promise<FrmdbEngi
     fs.mkdirSync('/tmp/frmdb-metadata-store-for-specs', { recursive: true });
     console.log("mkdir finished")
     let kvsFactory = await getKeyValueStoreFactory();
-    return new FrmdbEngineStore('apps', 'testApp', kvsFactory, schema);
+    return new FrmdbEngineStore('spec-apps', 'test-app', kvsFactory, schema);
 }
 export async function getTestFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
     return new FrmdbEngine(await getTestFrmdbEngineStore(schema));

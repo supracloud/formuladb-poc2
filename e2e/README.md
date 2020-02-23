@@ -1,9 +1,7 @@
 
 # How to start
 
-Please read the instructions in this document.
-
-Then start with this [example intro video test case](./src/frmdb-apps/Hotel_Booking/IntroVideo.scenario.ts). Then go back to this document any time things are unclear in this example.
+Then start with existing tests nd go back to this document any time things are unclear.
 
 # Selecting elements from the page
 
@@ -11,7 +9,9 @@ HTML is not like pen and paper where you put the pen wherever you want and start
 
 Each box can be clicked and verified by *selecting* it first using a **selector**, please see below  the details about selectors. 
 
-**Writing reliable selectors is the biggest challenge in writing these tests. Also you must chose selectors that are the least likely to change in the near future.**
+**WARNING 1: Writing reliable selectors is the biggest challenge in writing these tests. You must chose selectors relevant for the end-user that are the least likely to change in the near future.**
+
+**WARNING 2: These tests must run on production environment too, make sure to make repeatable changes!**
 
 FormulaDB editor itself can be used to browse through the boxes on the application page. 
 
@@ -50,6 +50,4 @@ Special case: `.card .card-img-overlay` Selenium will not give an error, but wil
 
 * `FullTestWithVideo, Scenario, Step, StepWithVideo` are just a way to organize the test, they are called without `await`.
 
-* To save time and not wait for the whole test to run each time you try someting, you can focus on just one or a few scenarios using `ScenarioFocused`. But don't forget to change back the `ScenarioFocused` to `Scenario` before you commit in git. The tests are considered `INCOMPLETE`, meaning failed, if you use `Focused`. `Focused` must be used only when you develop the test case and removed before you commit in gitlab.
-
-    **WARNING** almost always also focus on the part wich does `GoTo(some page...)` in addition to the scenario you are working on, otherwise you will attempt to test an empty page!
+* To save time and not wait for the whole test to run each time you try someting, you can focus on just one or a few scenarios using `ScenarioFocused`. But don't forget to change back the `ScenarioFocused` to `Scenario` before you commit in git. The tests are considered `INCOMPLETE`, meaning failed, if you use `Focused`. `Focused` must be used only when you develop the test case and removed before you push in upstream git.

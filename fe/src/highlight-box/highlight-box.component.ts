@@ -1,8 +1,8 @@
 import * as _ from "lodash";
 import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { WysiwygEditor } from "./wysiwyg-editor";
-import { isElementWithTextContentEditable } from "@fe/i18n-fe";
 import { FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
+import { isElementWithTextContentEditable } from "@core/i18n-utils";
 
 const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;

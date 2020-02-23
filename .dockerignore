@@ -10,4 +10,3 @@ dist-be/**.js.map
 !ssh
 !scripts
 !formuladb-env
-!.git/modules/formuladb-env

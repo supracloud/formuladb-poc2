@@ -10,7 +10,7 @@ import { ReduceFunDefaultValue, SumReduceFunN, CountReduceFunN, TextjoinReduceFu
 import { Entity, Schema } from "@domain/metadata/entity";
 import { Expression } from "jsep";
 import { evalExpression } from "@functions/map_reduce_utils";
-import { FilterItem, AggFunc, SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
+import { SimpleAddHocQueryFilterItem, AggFunc, SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { MetadataStore } from "@storage/metadata-store";
 import { GitStorageMem } from "@storage/git-storage-mem";
 
@@ -111,7 +111,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
     async updateEntity(entity: Entity) {
     }
 
-    public evalNumberFilter(val, item: FilterItem): boolean {
+    public evalNumberFilter(val, item: SimpleAddHocQueryFilterItem): boolean {
         switch (item.type) {
             case 'equals':
                 return val == item.filter;
@@ -132,7 +132,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
         }
     }
 
-    public evalTextFilter(val: string, item: FilterItem): boolean {
+    public evalTextFilter(val: string, item: SimpleAddHocQueryFilterItem): boolean {
         switch (item.type) {
             case 'equals':
                 return val == item.filter;
@@ -150,7 +150,7 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
                 throw new Error('unknown text filter type: ' + item.type);
         }
     }
-    private evaluateFilter(value: any, filter: FilterItem): boolean {
+    private evaluateFilter(value: any, filter: SimpleAddHocQueryFilterItem): boolean {
         switch (filter.filterType) {
             case 'text': return this.evalTextFilter(value, filter);
             case 'number': return this.evalNumberFilter(value, filter);

@@ -1,4 +1,4 @@
-import { FilterItem, AggFunc } from "@domain/metadata/simple-add-hoc-query";
+import { SimpleAddHocQueryFilterItem, AggFunc } from "@domain/metadata/simple-add-hoc-query";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 
 export class CreateSqlQuery {
@@ -40,7 +40,7 @@ export class CreateSqlQuery {
         }
     }
 
-    public createNumberFilterSql(key, item: FilterItem) {
+    public createNumberFilterSql(key, item: SimpleAddHocQueryFilterItem) {
         switch (item.type) {
             case 'equals':
                 return key + ' = ' + item.filter;
