@@ -66,6 +66,25 @@ function test_stress {
 function test_e2e {
     set -x
 
+    if [ ! -d "formuladb-e2e" ]; then
+        chmod og-rwx ssh
+        chmod og-r ssh/*
+        chmod uog-wx ssh/*
+        pwd
+        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git clone --depth 1
+        if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-e2e.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
+            git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-e2e.git
+        else
+            git clone --branch master --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-e2e.git
+        fi
+
+        cd formuladb-e2e
+        npm install
+        npm run compile
+    else
+        cd formuladb-e2e
+    fi
+
     FRMDB_ENV_NAME=$1
     if [ -z "FRMDB_ENV_NAME" ]; then echo "pls provide FRMDB_ENV_NAME"; exit 1; fi
     URL=$2
@@ -79,7 +98,7 @@ function test_e2e {
     if uname -a | grep 'Linux.*Microsoft'; then 
         target=""
     fi
-    TARGET=$target npm run e2e -- --baseUrl="$URL"
+    TARGET=$target npm test -- --baseUrl="$URL"
 }
 
 function e2e_dev_env {

@@ -4,7 +4,6 @@
 */
 
 import * as _ from 'lodash';
-import * as lolex from "lolex";
 import { Pn, Entity } from '@domain/metadata/entity';
 import { DataBindingsMonitor } from './data-bindings-monitor';
 import { HTMLTools } from '@core/html-tools';
@@ -17,7 +16,7 @@ const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;
 
 const HTML = /*html*/`
-    <input type="text" data-frmdb-value="$FRMDBQ.A[].f1" />
+    <input type="text" data-frmdb-value="$FRMDBQ.A[].filter.f1.contains" />
     <div data-frmdb-table="$FRMDB.A[]">
         <span data-frmdb-value="$FRMDB.A[].f1"></span>
         <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123" />
@@ -25,9 +24,7 @@ const HTML = /*html*/`
 `;
 
 describe('DataBindingsMonitor', () => {
-    let clock;
-
-    beforeEach(() => {
+    beforeAll(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
         fetchMock.post(/\/formuladb-api\/changes-feed/, []);
@@ -52,12 +49,11 @@ describe('DataBindingsMonitor', () => {
         });
     });
 
-    afterEach(() => {
+    afterAll(() => {
         fetchMock.restore();
-        if (clock) clock.uninstall();
     })
 
-    it('should update on filter change', async (done) => {
+    it('should update page when filter is empty', async () => {
 
         document.body.innerHTML = HTML;
         window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$E$/spec-apps/test-app/test-page.html';
@@ -71,8 +67,8 @@ describe('DataBindingsMonitor', () => {
         await dataBindingMonitor.updateDOMForRoot();
 
         let normalizedHtml = htmlTools.normalizeHTML(document.body.innerHTML);
-        let expectedNonFilteredHtml = /*html*/`
-            <input type="text" data-frmdb-value="$FRMDBQ.A[].filter-contains.f1">
+        let expectedNonFilteredHtml = htmlTools.normalizeHTML(/*html*/`
+            <input type="text" data-frmdb-value="$FRMDBQ.A[].filter.f1.contains">
             <div data-frmdb-table="$FRMDB.A[]" data-frmdb-record="A~~1">
                 <span data-frmdb-value="$FRMDB.A[].f1">f1.1</span>
                 <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123">
@@ -80,30 +76,38 @@ describe('DataBindingsMonitor', () => {
             <div data-frmdb-table="$FRMDB.A[]" data-frmdb-record="A~~2">
                 <span data-frmdb-value="$FRMDB.A[].f1">f1.2</span>
                 <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123">
-            </div>"
-        `;
+            </div>
+        `);
         expect(normalizedHtml).toEqual(expectedNonFilteredHtml);
+    });
 
+    it('should filter records and update page', async () => {
 
         fetchMock.post('/formuladb-api/spec-apps/test-app/A/SimpleAddHocQuery', (url, req) => {
+            expect(JSON.parse(req.body)?.filterModel?.f1).toEqual({
+                filterType: "text",
+                filter: '.2',
+                type: "contains",
+            });
             return [
-                { _id: "A~~1", f1: "f1.1", f2: 101 },
+                { _id: "A~~2", f1: "f1.2", f2: 102 },
             ];
         });
-        (document.body.querySelector('input[data-frmdb-value="$FRMDBQ.A[].f1"]') as HTMLInputElement).value = ".1";
-        clock = lolex.install();
-        clock.tick(101);
 
-        normalizedHtml = htmlTools.normalizeHTML(document.body.innerHTML);
-        let expectedFilteredHtml = /*html*/`
-            <input type="text" data-frmdb-value="$FRMDBQ.A[].f1">
-            <div data-frmdb-table="$FRMDB.A[]" data-frmdb-record="A~~1">
-                <span data-frmdb-value="$FRMDB.A[].f1">f1.1</span>
+        let filterInputEl = document.body.querySelector('input[data-frmdb-value="$FRMDBQ.A[].filter.f1.contains"]') as HTMLInputElement;
+        filterInputEl.value = ".2";
+        filterInputEl.dispatchEvent(new Event('change', { bubbles: true }));
+
+        await new Promise(resolve => setTimeout(resolve, 250));
+
+        let normalizedHtml = htmlTools.normalizeHTML(document.body.innerHTML);
+        let expectedFilteredHtml = htmlTools.normalizeHTML(/*html*/`
+            <input type="text" data-frmdb-value="$FRMDBQ.A[].filter.f1.contains">
+            <div data-frmdb-table="$FRMDB.A[]" data-frmdb-record="A~~2">
+                <span data-frmdb-value="$FRMDB.A[].f1">f1.2</span>
                 <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123">
             </div>
-        `;
+        `);
         expect(normalizedHtml).toEqual(expectedFilteredHtml);
-
-        done();
     });
 });

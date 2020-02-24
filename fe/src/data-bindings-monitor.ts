@@ -65,7 +65,7 @@ export class DataBindingsMonitor {
             let m: RegExpMatchArray;
             if (m = valExpr.match(/^\$FRMDBQ\.(\w+)\[\]\./)) {
                 let tableName = m[1];
-                let tableEl = rootEl.querySelectorAll(`data-frmdb-table=["$FRMDB.${tableName}[]"]`)
+                let tableEl = rootEl.querySelector(`[data-frmdb-table="$FRMDB.${tableName}[]"]`);
                 this.debouncedUpdateDOMForTable(tableEl);
             }
         });
@@ -116,16 +116,18 @@ export class DataBindingsMonitor {
     getQueryForTable(tableName: string): SimpleAddHocQuery {
         let ret: SimpleAddHocQuery = _.cloneDeep(DefaultSimpleAddHocQuery);
         
-        let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-value^="$FRMDBQ.${tableName}.filter"]`));
+        let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-value^="$FRMDBQ.${tableName}[].filter."]`));
         for (let filterEl of filterEls) {
-            let [type, fieldName] = regexExtract(filterEl.getAttribute('data-frmdb-value')!.replace(`$FRMDBQ.${tableName}.filter`, ''),
-                /(\w+)\.(\w+)/);
+            let [x, fieldName, type] = regexExtract(filterEl.getAttribute('data-frmdb-value')!.replace(`$FRMDBQ.${tableName}[].filter.`, ''),
+                /(\w+?)\.(\w+)/);
             let filterType: SimpleAddHocQueryFilterItem['filterType'] = makeSimpleAddHocQueryFilterItem_filterType(filterEl.type);
             let filter = filterEl.value;
-            ret.filterModel[fieldName] = {
-                filterType,
-                filter,
-                type: makeSimpleAddHocQueryFilterItem_type(type, filterType),
+            if (filter) {
+                ret.filterModel[fieldName] = {
+                    filterType,
+                    filter,
+                    type: makeSimpleAddHocQueryFilterItem_type(type, filterType),
+                }
             }
         }
 
