@@ -9559,6 +9559,9 @@ input[type="checkbox"]:checked:focus ~ .frmdb-dropdown .dropdown-menu {
   left: 0;
   transform: translate(calc(-100% - 5px), -50%) rotate(45deg); }
 
+frmdb-icon {
+  vertical-align: middle; }
+
 frmdb-icon, frmdb-icon.sz-1p2 {
   height: 1.2em;
   width: 1.2em; }
