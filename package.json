@@ -5,7 +5,7 @@
     "scripts": {
         "start": "bash scripts/init-be.sh && node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "start_dev": "bash scripts/init-be.sh && nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
-        "precompile": "patch --merge node_modules/protractor/built/index.d.ts  e2e/protractor.patch",
+        "_rem_precompile": "patch --merge node_modules/protractor/built/index.d.ts  e2e/protractor.patch",
         "compile": "tsc --sourceMap -p .",
         "start-dev-fe": "BUILD_DEVELOPMENT=1 FRMDB_ENV_ROOT_DIR=$PWD nodemon --watch dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "watch-x-compile": "npm run compile -- -w --preserveWatchOutput",
@@ -37,7 +37,7 @@
         "preprocess-user-env-icons": "svgo -f /wwwroot/git/formuladb-env/icons/formuladb/svg -o /wwwroot/git/formuladb-env/icons/formuladb/svgo --disable=removeViewBox --enable=removeDimensions --config '{\"plugins\": [{\"convertPathData\": {\"noSpaceAfterFlags\": false}}, {\"mergePaths\": {\"noSpaceAfterFlags\": false}}]}'",
         "generate-user-env-icons": "icon-font-generator -p frmdb-i /wwwroot/git/formuladb-env/icons/formuladb/svgo/*.svg -o /wwwroot/git/formuladb-env/icons/formuladb -n fdb-i",
         "generate-json-schemas": "for i in App Entity SchemaEntityList; do typescript-json-schema ./tsconfig.json $i > core/src/schemas/$i.schema.json ; done",
-        "generate-theme-css": "cd themes; bash ci/build.sh --compile",
+        "generate-look-css": "cd themes; bash ci/build.sh --compile",
         "sync-dev-static-assets": "watch 'bash ci/copy-static-assets-to-dev-ngunx-pod.sh' formuladb-env/static formuladb-themes"
     },
     "author": "",

@@ -62,23 +62,23 @@ configBe = {
     },
 };
 
-configBeTools = {
-    ...configBaseNode,
-    entry: './tsc-out/test/src/load_test_data.js',
-    output: {
-        path: path.resolve(__dirname, 'dist-be'),
-        filename: 'frmdb-be-load-test-data.js'
-    },
-};
+// configBeTools = {
+//     ...configBaseNode,
+//     entry: './tsc-out/test/src/load_test_data.js',
+//     output: {
+//         path: path.resolve(__dirname, 'dist-be'),
+//         filename: 'frmdb-be-load-test-data.js'
+//     },
+// };
 
-configDataGrid = {
-    ...configBaseWeb,
-    entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
-    output: {
-        path: path.resolve(__dirname, 'formuladb'),
-        filename: 'frmdb-data-grid.js'
-    },
-};
+// configDataGrid = {
+//     ...configBaseWeb,
+//     entry: './tsc-out/fe/src/data-grid/data-grid.component.js',
+//     output: {
+//         path: path.resolve(__dirname, 'formuladb'),
+//         filename: 'frmdb-data-grid.js'
+//     },
+// };
 
 configFe = {
     ...configBaseWeb,
@@ -86,22 +86,22 @@ configFe = {
     output: {
         path: path.resolve(__dirname, 'formuladb'),
         filename: 'frmdb-fe.js'
-    },
+    }
 };
 
-configFrmdbEditor = {
-    ...configBaseWeb,
-    entry: './tsc-out/fe/src/frmdb-editor/frmdb-editor.directive.js',
-    output: {
-        path: path.resolve(__dirname, 'formuladb'),
-        filename: 'frmdb-editor.js'
-    },
-};
+// configFrmdbEditor = {
+//     ...configBaseWeb,
+//     entry: './tsc-out/fe/src/frmdb-editor/frmdb-editor.directive.js',
+//     output: {
+//         path: path.resolve(__dirname, 'formuladb'),
+//         filename: 'frmdb-editor.js'
+//     },
+// };
 
 module.exports = [
     configBe,
-    configBeTools,
-    configDataGrid, 
+    // configBeTools,
+    // configDataGrid, 
     configFe,
-    configFrmdbEditor
+    // configFrmdbEditor
 ];

@@ -70,7 +70,7 @@ describe('MetadataStore', () => {
 
     it("Should save page without fragments/themes and default language", async () => {
         await frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(
-            parsePageUrl('/na-basic-1a1a1a-ffffff-Clean-$E$/frmdb-apps/test-app/test.html'),
+            parsePageUrl('/na-basic-1a1a1a-ffffff-Clean-$EDIT$/frmdb-apps/test-app/test.html'),
             PageHtmlFromClientBrowser);
 
         expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/test-app/test.html', /*html*/`
@@ -124,7 +124,7 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Clean theme and i18n", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/fr-basic-1a1a1a-ffffff-Clean-$E$/frmdb-apps/test-app/test.html'),
+                parsePageUrl('/fr-basic-1a1a1a-ffffff-Clean-$EDIT$/frmdb-apps/test-app/test.html'),
                 new Map().set('main content', { fr: 'contenu principal' })
             ));
 
@@ -146,7 +146,7 @@ describe('MetadataStore', () => {
     it("Should read page with SSR for fragments and Frames theme", async () => {
         let readPageHtmlNormalize = htmlTools.normalizeHTMLDoc(
             await frmdbEngineStore.kvsFactory.metadataStore.getPageHtml(
-                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames-$E$/frmdb-apps/test-app/test.html'), new Map()));
+                parsePageUrl('/en-basic-1a1a1a-ffffff-Frames-$EDIT$/frmdb-apps/test-app/test.html'), new Map()));
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="en">')
@@ -162,14 +162,14 @@ describe('MetadataStore', () => {
 
     it("Should read the correct look css", async () => {
         let [lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName] =
-            ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', '$E$', 'frmdb-apps', 'test-app'];
+            ['en', 'basic', '1a1a1a', 'ffffff', 'Frames', '$EDIT$', 'frmdb-apps', 'test-app'];
         let cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName } as PageOpts);
         expect(cssStr.indexOf('--frmdb-look-name: basic')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--primary: #1a1a1a')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--secondary: #fff')).toBeGreaterThan(0);
 
         [lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName] =
-            ['en', 'lux', 'cb8670', '363636', 'Clean', '$E$', 'frmdb-apps', 'test-app'];
+            ['en', 'lux', 'cb8670', '363636', 'Clean', '$EDIT$', 'frmdb-apps', 'test-app'];
         cssStr = await frmdbEngineStore.kvsFactory.metadataStore.getLookCss({ lang, look, primaryColor, secondaryColor, theme, editorOpts, tenantName, appName } as PageOpts);
         expect(cssStr.indexOf('--frmdb-look-name: lux')).toBeGreaterThan(0);
         expect(cssStr.indexOf('--primary: #cb8670')).toBeGreaterThan(0);

@@ -4,6 +4,7 @@ import { waitUntil } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
 import { initRoutes } from "./router";
 import { DataBindingsMonitor } from "./data-bindings-monitor";
+import { stopChangesFeedLoop } from "./changes-feed-client";
 
 let dataBindingMonitor: DataBindingsMonitor | null = null;
 export async function initFrmdb() {
@@ -20,7 +21,7 @@ export async function initFrmdb() {
 
 export function deinitFrmdb() {
     if (dataBindingMonitor) {
-        dataBindingMonitor.stop = true;
+        stopChangesFeedLoop();
         dataBindingMonitor = null;
     } 
 }

@@ -4,14 +4,14 @@ export interface PageOpts {
     primaryColor: string;
     secondaryColor: string;
     theme: string;
-    editorOpts: '$E$' | '_n_';
+    editorOpts: '$EDIT$' | '$normal$' | '$view$';
     tenantName: string;
     appName: string;
     pageName: string;
 }
 
 export function parsePageUrl(path: string): PageOpts {
-    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)-(\$E\$|_n_)\/(.+?)\/(.+?)\/(.+?\.html)/);
+    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)-(\$EDIT\$|\$normal\$|\$view\$)\/(.+?)\/(.+?)\/(.+?\.html)/);
     if (m && m.length == 10) {
         return {
             lang: m[1],
@@ -28,7 +28,16 @@ export function parsePageUrl(path: string): PageOpts {
 }
 
 export function switchEditorOffInPath(path: string) {
-    return path.replace(/\$E\$/, '_n_');
+    return path.replace(/\$EDIT\$/, '$normal$');
+}
+export function makeViewOnlyUrlNoScripts(path: string) {
+    return path.replace(/(-\$EDIT\$\/)|(-\$normal\$\/)/, '-$view$/');
+}
+export function isEditorMode(path: string) {
+    return path.indexOf('-$EDIT$') > 0;
+}
+export function isViewMode(path: string) {
+    return path.indexOf('-$view$') > 0;
 }
 
 export function makeUrlPath(pageOpts: PageOpts) {

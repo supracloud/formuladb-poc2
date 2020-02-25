@@ -5,6 +5,7 @@
 
 import * as _ from 'lodash';
 import * as lolex from "lolex";
+import { Pn, Entity } from '@domain/metadata/entity';
 
 const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;

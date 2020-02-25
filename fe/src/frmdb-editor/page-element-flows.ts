@@ -69,7 +69,7 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     onEvent(editor.highlightBox, 'FrmdbSelectPageElementAction', '*', (event: { detail: FrmdbSelectPageElementAction }) => {
         let action = event.detail.action;
         if (action === "add-after" || action === "add-inside") {
-            editor.addElementCmp.start(editor.themeCustomizer.cssFile, editor.frameDoc.body.getAttribute('data-frmdb-theme') || 'NoTheme', event.detail.el, event.detail.action)
+            editor.addElementCmp.start(event.detail.el, event.detail.action);
         }
         else if (action === "paste-after" || action === "paste-inside") {
             if (!currentCutElement) { alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return;}

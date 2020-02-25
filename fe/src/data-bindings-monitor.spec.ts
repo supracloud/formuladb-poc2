@@ -56,7 +56,7 @@ describe('DataBindingsMonitor', () => {
     it('should update page when filter is empty', async () => {
 
         document.body.innerHTML = HTML;
-        window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$E$/spec-apps/test-app/test-page.html';
+        window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$EDIT$/spec-apps/test-app/test-page.html';
 
         await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
         let dataBindingMonitor = new DataBindingsMonitor(document.body);

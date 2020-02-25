@@ -29,6 +29,7 @@ import { initPassport, handleAuth } from "./auth";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 import { $Dictionary } from "@domain/metadata/default-metadata";
+import { makeViewOnlyUrlNoScripts, isEditorMode, isViewMode } from "@domain/url-utils";
 
 const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
 const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
@@ -151,7 +152,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
 
     app.get('/', function (req, res, next) {
-        res.redirect('en-cerulean-7795f8-6c757d-_none_-_n_/frmdb-apps/formuladb_io/index.html');
+        res.redirect('en-cerulean-7795f8-6c757d-_none_-$normal$/frmdb-apps/formuladb_io/index.html');
     });
 
     let formuladbIoStatic = express.static(`${FRMDB_ENV_DIR}/frmdb-apps/formuladb_io`, { index: "index.html" });
@@ -162,12 +163,15 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
     app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/:page.html', async function (req, res, next) {
-        let coreFrmdbEngine = await getCoreFrmdbEngine();
-        let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
-        if (req.params.editorOpts === '$E$') {
+        if (!isViewMode(req.path) && req.params.page === 'page-components-reference') {
+            res.redirect(makeViewOnlyUrlNoScripts(req.path));
+        }
+        else if (isEditorMode(req.path)) {
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
+            let coreFrmdbEngine = await getCoreFrmdbEngine();
+            let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
             let pageHtml = await kvsFactory.metadataStore.getPageHtml({
                 lang: req.params.lang,
                 look: req.params.look,

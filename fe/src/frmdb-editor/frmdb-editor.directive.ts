@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
-import { BACKEND_SERVICE, RESET_BACKEND_SERVICE } from "@fe/backend.service";
+import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
@@ -76,7 +76,6 @@ class FrmdbEditorState {
 
 export class FrmdbEditorDirective {
     static observedAttributes = ['root-element'];
-    backendService = BACKEND_SERVICE();
     EditorState: FrmdbEditorState;
     frmdbFe: FrmdbFeComponentI;
     iframe: HTMLIFrameElement;
@@ -99,8 +98,10 @@ export class FrmdbEditorDirective {
 
     }
 
-    constructor() {
-        this.EditorState = new FrmdbEditorState(this.backendService.tenantName, this.backendService.appName);
+    init() {
+        let tenantName = BACKEND_SERVICE().tenantName;
+        let appName = BACKEND_SERVICE().appName;
+        this.EditorState = new FrmdbEditorState(tenantName, appName);
 
         window.addEventListener('load', () => {
             this.iframe = document.body.querySelector('iframe#app')! as HTMLIFrameElement;
@@ -144,7 +145,6 @@ export class FrmdbEditorDirective {
 
             if (currentAppName != appName) {
                 RESET_BACKEND_SERVICE();
-                this.backendService = BACKEND_SERVICE();
                 this.loadTables();
                 this.loadPages();
                 this.updateCurrentApp();
@@ -489,14 +489,14 @@ export class FrmdbEditorDirective {
     }
 
     async loadApps() {
-        let apps: string[] = await fetch(`/formuladb-api/${this.backendService.tenantName}/app-names`)
+        let apps: string[] = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/app-names`)
             .then(response => {
                 return response.json();
             });
 
         this.EditorState.apps = apps.map(a => ({
             name: a,
-            url: `#/${this.backendService.tenantName}/${a}/index.html`
+            url: `#/${BACKEND_SERVICE().tenantName}/${a}/index.html`
         }));
         this.updateCurrentApp();
     }
@@ -519,13 +519,13 @@ export class FrmdbEditorDirective {
     }
 
     async loadPages() {
-        let app: App | null = await this.backendService.getApp();
+        let app: App | null = await BACKEND_SERVICE().getApp();
         if (!app) throw new Error(`App not found for ${window.location}`);
         this.EditorState.pages = app.pages
             .filter(p => p.indexOf('_') != 0)
             .map(p => ({
                 name: p.replace(/\.html$/, '')/*.replace(/^index$/, 'Home Page')*/,
-                url: `#/${this.backendService.tenantName}/${this.backendService.appName}/${p}`
+                url: `#/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/${p}`
             }));
         this.updateCurrentPage();
     }
@@ -591,5 +591,3 @@ export class FrmdbEditorDirective {
         }
     }
 }
-
-new FrmdbEditorDirective();

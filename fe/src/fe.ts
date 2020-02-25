@@ -8,6 +8,11 @@ import './directives/data-frmdb-select.directive';
 import './fe-functions';
 import * as _ from "lodash";
 
+import './data-grid/data-grid.component';
+
+import {FrmdbEditorDirective} from './frmdb-editor/frmdb-editor.directive';
+import { isEditorMode } from '@domain/url-utils';
+
 export class FrmdbFeComponent extends HTMLElement {
     rootEl: HTMLElement | undefined;
     highlightEl: HTMLElement | undefined;
@@ -31,11 +36,17 @@ export class FrmdbFeComponent extends HTMLElement {
                 <a href="/formuladb/editor.html#${window.location.pathname}"><img src="/formuladb-env/static/formuladb_io/favicon.png" /></a>
             `}
         `;
-        
-        initFrmdb();
+
     }
 
     connectedCallback() {
+        initFrmdb();
+
+        if (isEditorMode(window.location.pathname)) {
+            new FrmdbEditorDirective()
+                .init();
+        }
+
         this.addEventListener('click', () => {
             this.toggleFrmdbEditor();
         });

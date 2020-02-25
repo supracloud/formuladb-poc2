@@ -12,11 +12,8 @@ export class AddElementComponent extends HTMLElement {
     iframe: HTMLIFrameElement;
     highlightBox: HighlightBoxComponent;
     nav: HTMLElement;
-    link: HTMLLinkElement | undefined = undefined;
     selectedEl: HTMLElement | undefined = undefined;
     action: FrmdbSelectPageElementAction['action'];
-    lookCssFile: string | undefined;
-    themeName: string | undefined;
 
     connectedCallback() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
@@ -27,14 +24,6 @@ export class AddElementComponent extends HTMLElement {
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document;
-            this.link = this.iframe.contentWindow!.document.head.querySelector('#frmdb-look-css') as HTMLLinkElement;
-            if (!this.link) console.warn("link #frmdb-look-css not found!");
-            if (this.lookCssFile) this.link.href = this.lookCssFile;
-            if (this.themeName) {
-                fetch(`/formuladb-env/themes/${this.themeName}.json`)
-                    .then(response => response.json())
-                    .then(themeRules => applyTheme(themeRules, this.iframe.contentWindow!.document));
-            }
             this.iframe.contentWindow!.document.querySelector('[data-frmdb-fragment="_nav.html"]')?.setAttribute("data-frmdb-highlight-ignore", "");
         }
 
@@ -74,12 +63,9 @@ export class AddElementComponent extends HTMLElement {
         });
     }
 
-    start(lookCssFile: string | undefined, themeName: string, selectedEl: HTMLElement, action: FrmdbSelectPageElementAction['action']) {
-        if (!this.link) return;
+    start(selectedEl: HTMLElement, action: FrmdbSelectPageElementAction['action']) {
         this.selectedEl = selectedEl;
         this.action = action;
-        this.lookCssFile = lookCssFile;
-        this.themeName = themeName;
         this.iframe.contentWindow!.location.reload();
                 
         $FMODAL('#add-element-modal');

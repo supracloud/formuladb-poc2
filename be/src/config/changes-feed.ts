@@ -37,6 +37,7 @@ export async function logPoll(clientId: string): Promise<events.MwzEvents[]> {
 export function setupChangesFeedRoutes(app: express.Express, kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/changes-feed/:clientId', async function (req, res, next) {
         let events = await logPoll(req.params.clientId);
+        res.set('Cache-Control', 'no-cache');
         res.send(events);
     });
 }

@@ -11,8 +11,8 @@ import { DataGridComponentI } from "./data-grid/data-grid.component.i";
 import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFilterItem_filterType, makeSimpleAddHocQueryFilterItem_type } from "@domain/metadata/simple-add-hoc-query";
 import { onEventChildren, onEvent } from "./delegated-events";
 import { regexExtract } from "@domain/ts-utils";
+import { registerChangesFeedHandler } from "./changes-feed-client";
 
-const CLIENT_ID = generateTimestampUUID();
 declare var $: any;
 
 const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
@@ -162,37 +162,26 @@ export class DataBindingsMonitor {
         }
     }
 
-    public stop: boolean = false;
     async updateDOMOnDataUpdatesFromServer() {
-        if (this.stop) return;
 
-        let startTime = new Date().getTime();
-
-        let events: events.MwzEvents[] = await postData<any, events.MwzEvents[]>(
-            `/formuladb-api/changes-feed/${CLIENT_ID}`, {});
-
-        //FIXME: take into account pagination, sorting, filters, now we update the whole table :(
-
-        let tableNames: Set<string> = new Set<string>();
-        for (let event of events) {
-            if (event.type_ === "ServerEventModifiedFormData") {
-                let { entityId } = parseDataObjId(event.obj._id);
-                tableNames.add(entityId);
+        registerChangesFeedHandler("dataBindingsMonitor", async (events: events.MwzEvents[]) => {
+            let tableNames: Set<string> = new Set<string>();
+            for (let event of events) {
+                if (event.type_ === "ServerEventModifiedFormData") {
+                    let { entityId } = parseDataObjId(event.obj._id);
+                    tableNames.add(entityId);
+                }
             }
-        }
-
-        for (let tableName of tableNames.values()) {
-            for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"]`))) {
-                this.debouncedUpdateDOMForTable(el);
+    
+            for (let tableName of tableNames.values()) {
+                for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"]`))) {
+                    this.debouncedUpdateDOMForTable(el);
+                }
+                for (let el of Array.from(this.rootEl.querySelectorAll(`frmdb-data-grid[table-name="${tableName}"]`))) {
+                    let dataGrid: DataGridComponentI = el as DataGridComponentI;
+                    dataGrid.forceReloadData();
+                }
             }
-            for (let el of Array.from(this.rootEl.querySelectorAll(`frmdb-data-grid[table-name="${tableName}"]`))) {
-                let dataGrid: DataGridComponentI = el as DataGridComponentI;
-                dataGrid.forceReloadData();
-            }
-        }
-
-        let pollTime = new Date().getTime() - startTime;
-        let intervalFloodProtection = Math.max(500, 1000 - pollTime);
-        setTimeout(() => this.updateDOMOnDataUpdatesFromServer(), intervalFloodProtection);
+        });
     }
 }
