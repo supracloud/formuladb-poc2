@@ -1,6 +1,6 @@
 import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
 
-export const $User: Entity = {
+export const _$User = {
     _id: "$User",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -10,6 +10,8 @@ export const $User: Entity = {
         details: { name: "details", propType_: Pn.STRING } as EntityProperty,
     }
 };
+export const $User: Entity = _$User;
+export type $UserObjT = {[K in keyof typeof _$User['props']]: string};
 
 const _$Dictionary = {
     _id: "$Dictionary",
@@ -39,3 +41,30 @@ export const $Currency: Entity = {
         code: { name: "code", propType_: Pn.STRING } as EntityProperty,
     },
 };
+
+export const _$Icon = {
+    _id: "$Icon",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $Icon: Entity = _$Icon;
+export type $IconObjT = {[K in keyof typeof _$Icon['props']]: string};
+
+export function isMetadataEntity(tableName: string) {
+    return [
+        $Icon._id, 
+        "$Images_TBD", 
+        "$Apps_TBD", 
+        "$Tables_TBD",
+        "$Pages_TBD"
+    ].includes(tableName);
+}
+
+export function isDefaultEntity(tableName: string) {
+    return isMetadataEntity(tableName) || [
+        $User._id, 
+        "$Role_TBD", 
+        $Dictionary._id, 
+    ].includes(tableName);
+}

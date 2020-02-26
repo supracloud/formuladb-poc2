@@ -16,10 +16,19 @@
                 </nav>
                 <div class="tab-content h-100 overflow-auto">
                     <div class="tab-pane active" id="Available_Icons" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="d-flex align-items-center">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" data-frmdb-value="$FRMDBQ.$Icon[].filter._id.contains"
+                                    placeholder="Search icons: hotels, water sports, beauty, consulting ...">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="frmdb-i-search"></i></span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card-deck frmdb-cards-wrap-5 text-center">
-                            <a style="cursor: pointer" class="card border-0" data-frmdb-table="freeIconsNames[]">
-                                <h1><frmdb-icon data-frmdb-attr="name::freeIconsNames[]"></frmdb-icon></h1>
-                                <span data-frmdb-value="freeIconsNames[]"></span>
+                            <a style="cursor: pointer" class="card border-0" data-frmdb-table="$FRMDB.$Icon[]" data-frmdb-table-limit="50">
+                                <h1><frmdb-icon data-frmdb-attr="name::$FRMDB.$Icon[]._id"></frmdb-icon></h1>
+                                <span data-frmdb-value="$FRMDB.$Icon[]._id"></span>
                             </a>
                         </div>
                     </div>

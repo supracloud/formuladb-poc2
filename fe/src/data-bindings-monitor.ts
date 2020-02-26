@@ -63,7 +63,7 @@ export class DataBindingsMonitor {
             if (!valExpr) { console.warn("query expr not found ", event.target.outerHTML); return }
 
             let m: RegExpMatchArray;
-            if (m = valExpr.match(/^\$FRMDBQ\.(\w+)\[\]\./)) {
+            if (m = valExpr.match(/^\$FRMDBQ\.(\$?\w+)\[\]\./)) {
                 let tableName = m[1];
                 let tableEl = rootEl.querySelector(`[data-frmdb-table="$FRMDB.${tableName}[]"]`);
                 this.debouncedUpdateDOMForTable(tableEl);
@@ -73,7 +73,7 @@ export class DataBindingsMonitor {
     }
 
     public async updateDOMForRoot() {
-        let tableNames = _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-table]'))
+        let tableNames = _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-table^="$FRMDB."]'))
             .map(el => el.getAttribute('data-frmdb-table')));
         for (let tableName of tableNames) {
             let tableEl = this.rootEl.querySelector(`[data-frmdb-table="${tableName}"]`);

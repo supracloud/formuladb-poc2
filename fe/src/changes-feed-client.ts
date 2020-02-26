@@ -48,6 +48,7 @@ async function changesFeedLoop() {
         let events: events.MwzEvents[] = await response.json();
         await Promise.all(Object.values(Handlers).map(h => h(events)));
         // Call subscribe() again to get the next message
+        await new Promise(resolve => setTimeout(resolve, 250));//release the connection for 250ms
         await changesFeedLoop();
     }
 }

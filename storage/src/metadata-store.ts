@@ -5,7 +5,7 @@ import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/ke
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency, $DictionaryObjT } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -162,6 +162,8 @@ export class MetadataStore {
             acc[ent._id] = ent; return acc;
         }, {});
 
+        entitiesDictionary[$Icon._id] = $Icon;
+        
         let schema: Schema = {
             _id: schemaNoEntities._id,
             entities: entitiesDictionary,
@@ -385,7 +387,7 @@ export class MetadataStore {
     }
 
     async getAvailableIcons(tenantName: string, appName: string) {
-        return this.listDir(`${FRMDB_ENV_DIR}/icons/formuladb/svg`);
+        return this.listDir(`${FRMDB_ENV_DIR}/icons/svg`);
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

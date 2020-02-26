@@ -28,8 +28,9 @@ import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 import { initPassport, handleAuth } from "./auth";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
-import { $Dictionary } from "@domain/metadata/default-metadata";
+import { $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata";
 import { makeViewOnlyUrlNoScripts, isEditorMode, isViewMode } from "@domain/url-utils";
+import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
 
 const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
 const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
@@ -314,7 +315,13 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/:tenant/:app/:table/SimpleAddHocQuery', async function (req, res, next) {
         try {
             let query = req.body as SimpleAddHocQuery;
-            let ret = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
+
+            let ret;
+            if (isMetadataEntity(req.params.table)) {
+                ret  = await simpleAdHocQueryForMetadataEntities(req.params.tenant, req.params.app, kvsFactory, req.params.table, query);
+            } else {
+                ret = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
+            }
             res.json(ret);
         } catch (err) {
             console.error(err);

@@ -11,9 +11,9 @@ build:
       - src: formuladb/**/*
         dest: /wwwroot/formuladb
         strip: formuladb
-      - src: formuladb-env/**/*
+      - src: git/formuladb-env/**/*
         dest: /wwwroot/git/formuladb-env
-        strip: formuladb-env
+        strip: git/formuladb-env
       - src: skaffold.yaml
         dest: /
       - src: k8s/**/*
