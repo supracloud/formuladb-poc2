@@ -377,9 +377,9 @@ export class MetadataStore {
             },
         }).then(r => r.text());
 
-        await this.writeFile(`${FRMDB_ENV_DIR}/icons/formuladb/svg/${icon.name}.svg`, new Buffer(svgContent, 'utf8'));
-        await execShell(`npm run generate-user-icons`);
-        return `frmdb-i-${icon.name}`;
+        await this.writeFile(`${FRMDB_ENV_DIR}/icons/svg/${icon.name}.svg`, new Buffer(svgContent, 'utf8'));
+        // await execShell(`npm run generate-user-icons`);
+        return icon.name;
     }
 
     async getMediaObjects(tenantName: string, appName: string) {

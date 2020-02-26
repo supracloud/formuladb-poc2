@@ -34,10 +34,10 @@ export class IconEditorComponent extends HTMLElement {
 
         });
 
-        onEventChildren(this, 'click', '[data-frmdb-table="freeIconsNames[]"]', event => {
+        onEventChildren(this, 'click', '[data-frmdb-table="$FRMDB.$Icon[]"]', event => {
             if (!this.iconInputProperty) return;
-            let iconClass = event.target.closest('a').querySelector('i').getAttribute('class');
-            this.iconInputProperty.setValue(iconClass);
+            let iconName = event.target.closest('[data-frmdb-table="$FRMDB.$Icon[]"]').querySelector('frmdb-icon').getAttribute('name');
+            this.iconInputProperty.setValue(iconName);
             this.iconInputProperty.emitChange();
             $FMODAL('#icon-editor-modal', 'hide');
             this.iconInputProperty = null;

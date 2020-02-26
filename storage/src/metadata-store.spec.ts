@@ -2,8 +2,8 @@ import * as fs from 'fs';
 var rimraf = require("rimraf");
 import { HTMLTools } from "@core/html-tools";
 
-import * as CleanTheme from '../../formuladb-env/themes/Clean.json';
-import * as FramesTheme from '../../formuladb-env/themes/Frames.json';
+import * as CleanTheme from '../../git/formuladb-env/themes/Clean.json';
+import * as FramesTheme from '../../git/formuladb-env/themes/Frames.json';
 
 const { JSDOM } = require('jsdom');
 const jsdom = new JSDOM('', {}, {

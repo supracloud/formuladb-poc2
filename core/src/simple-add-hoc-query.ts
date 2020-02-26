@@ -1,7 +1,7 @@
 import { SimpleAddHocQuery, AggFunc, SimpleAddHocQueryFilterItem } from "@domain/metadata/simple-add-hoc-query";
 import * as _ from "lodash";
 
-export async function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery, objects: any[]): Promise<any[]> {
+export function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery, objects: any[]): any[] {
     let { rowGroupCols, groupKeys } = query;
     //First we filter the rows
     if (objects.length == 0) return [];
@@ -32,8 +32,8 @@ export async function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery,
     let groupedFiltered: any[] = [];
     for (let obj of objects) {
         let matchesFilter: boolean = true;
-        for (let [_id, filter] of Object.entries(query.filterModel)) {
-            if (!evaluateFilter(obj[_id], filter)) {
+        for (let [field, filter] of Object.entries(query.filterModel)) {
+            if (!evaluateFilter(obj[field], filter)) {
                 matchesFilter = false;
                 break;
             }

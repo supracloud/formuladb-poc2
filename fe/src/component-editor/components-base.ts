@@ -128,19 +128,19 @@ export const ComponentsBase: Partial<Component> = {
             inline: true,
             col: 12,
             beforeInit: function (node: HTMLElement) {
-                let iconClass = grabIcon(node);
-                if (!iconClass) this.hide = true;
+                let iconName = grabIcon(node);
+                if (!iconName) this.hide = true;
                 else this.hide = false;
             },
             onChange: function (element: HTMLElement, value: string) {
                 Undo.addMutation({
                     type: 'attributes',
                     target: element,
-                    attributeName: 'class',
-                    oldValue: element.getAttribute('class'),
+                    attributeName: 'name',
+                    oldValue: element.getAttribute('name'),
                     newValue: value
                 });
-                element.setAttribute('class', value);
+                element.setAttribute('name', value);
                 return element;
             },
             init: function (node: HTMLElement) {
