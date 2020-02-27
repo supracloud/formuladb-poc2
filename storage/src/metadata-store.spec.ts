@@ -26,15 +26,15 @@ describe('MetadataStore', () => {
 
     beforeAll(async () => {
         frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
-        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/frmdb-apps");
-        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/themes");
-        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/css");
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/themes");
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/css");
-        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/themes/Clean.json', JSON.stringify(CleanTheme));
-        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/themes/Frames.json', JSON.stringify(FramesTheme));
-        fs.copyFileSync('./formuladb-env/css/basic-1a1a1a-ffffff.css', '/tmp/frmdb-metadata-store-for-specs/css/basic-1a1a1a-ffffff.css');
-        fs.copyFileSync('./formuladb-env/css/lux-cb8670-363636.css', '/tmp/frmdb-metadata-store-for-specs/css/lux-cb8670-363636.css');
+        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps");
+        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
+        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
+        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Clean.json', JSON.stringify(CleanTheme));
+        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Frames.json', JSON.stringify(FramesTheme));
+        fs.copyFileSync('./git/formuladb-env/css/basic-1a1a1a-ffffff.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/basic-1a1a1a-ffffff.css');
+        fs.copyFileSync('./git/formuladb-env/css/lux-cb8670-363636.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/lux-cb8670-363636.css');
     });
 
     function expectSavedPageToEqual(pagePath: string, html: string) {
@@ -73,7 +73,7 @@ describe('MetadataStore', () => {
             parsePageUrl('/na-basic-1a1a1a-ffffff-Clean-$EDIT$/frmdb-apps/test-app/test.html'),
             PageHtmlFromClientBrowser);
 
-        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/test-app/test.html', /*html*/`
+        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/test.html', /*html*/`
 <!DOCTYPE html>
 <html>
 <head>
@@ -98,7 +98,7 @@ describe('MetadataStore', () => {
 
     it("Should save head fragment", async () => {
 
-        let headHtml = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/test-app/_head.html', 'utf8');
+        let headHtml = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/_head.html', 'utf8');
         expect(headHtml).toEqual(/*html*/`<head>
 <title>FormulaDB - Build Applications Without Code</title>
 <link href="/formuladb-env/static/formuladb_io/favicon.png" rel="icon" type="image/png">
@@ -106,7 +106,7 @@ describe('MetadataStore', () => {
     });
 
     it("Should save nav fragment", async () => {
-        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/test-app/_nav.html', /*html*/`
+        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/_nav.html', /*html*/`
             <nav class="navbar" data-frmdb-fragment="_nav.html">
                 nav content
             </nav>
@@ -114,7 +114,7 @@ describe('MetadataStore', () => {
     });
 
     it("Should save scripts fragment", async () => {
-        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/frmdb-apps/test-app/_scripts.html', /*html*/`
+        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/_scripts.html', /*html*/`
             <div style="display: none; pointer-events: none;" data-frmdb-fragment="_scripts.html">
                 <script src="/formuladb-env/plugins/vendor/js/jquery-3.4.1.min.js"></script>
             </div>
