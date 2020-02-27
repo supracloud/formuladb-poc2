@@ -43,7 +43,10 @@ const SECRET = 'bla-bla-secret';
 export default function (kvsFactory: KeyValueStoreFactoryI) {
     var app: express.Express = express();
 
+    let coreFrmdbEngine: FrmdbEngine | undefined;
     async function getCoreFrmdbEngine(): Promise<FrmdbEngine> {
+        if (coreFrmdbEngine) return coreFrmdbEngine;
+
         let coreFrmdbEngineInit = new LazyInit(async () => {
             let engine = new FrmdbEngine(new FrmdbEngineStore('frmdb-apps', 'core-formuladb', kvsFactory, {
                 _id: "FRMDB_SCHEMA",
@@ -52,6 +55,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
                 }
             }));
             await engine.init();
+            coreFrmdbEngine = engine;
             return engine;
         });
         return coreFrmdbEngineInit.get();
