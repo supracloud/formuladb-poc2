@@ -18,7 +18,7 @@ for theme in ${THEME_FILTER}*/[a-z]*.scss; do
         scssFile=".scss/${themeFile/.scss/}-${colorFile/_color-/}"
         k=${colorFile/.scss/}
         color=${k/_color-/}
-        cssFile="../formuladb-env/css/${themeFile/.scss/}-${color}.css"
+        cssFile="../git/formuladb-env/css/${themeFile/.scss/}-${color}.css"
 
         cat $theme | sed -e "s!_color-TBDTBD-TBDTBD.scss!${colorFile}!" > $scssFile
 
