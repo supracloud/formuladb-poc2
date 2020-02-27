@@ -16,13 +16,9 @@ spec:
           value: "false"
         - name: FRMDB_IS_PROD_ENV
           value: "true"
-        volumeMounts:
-          - mountPath: /wwwroot/git
-            $patch: delete
       volumes:
       - name: git-persistence
-        $patch: delete
-        # persistentVolumeClaim:
-        # hostPath:
-        #   path: /d/code/metawiz/febegit
-        #   type: Directory
+        persistentVolumeClaim:
+        hostPath:
+          path: /d/code/metawiz/febe/git #TDB_PWD_ENV_DIR
+          type: Directory
