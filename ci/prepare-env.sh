@@ -67,7 +67,17 @@ chmod og-r ssh/*
 chmod uog-wx ssh/*
 pwd
 
-export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $BASEDIR/../ssh/frmdb.id_rsa"
+if uname -a | grep 'Linux.*Microsoft'; then
+  mkdir -p ~/.ssh
+  cp $BASEDIR/../ssh/frmdb.id_rsa* ~/.ssh/
+  chmod 700 ~/.ssh
+  chmod 644 ~/.ssh/frmdb.id_rsa.pub
+  chmod 600 ~/.ssh/frmdb.id_rsa
+  export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i ~/.ssh/frmdb.id_rsa"
+else
+  export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $BASEDIR/../ssh/frmdb.id_rsa"
+fi
+
 if [ ! -d "formuladb-env" ]; then
 
   if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then

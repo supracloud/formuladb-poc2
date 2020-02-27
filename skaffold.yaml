@@ -12,7 +12,7 @@ build:
         dest: /wwwroot/formuladb
         strip: formuladb
       - src: git/formuladb-env/**/*
-        dest: /wwwroot/git/formuladb-env
+        dest: /formuladb-env
         strip: git/formuladb-env
       - src: skaffold.yaml
         dest: /

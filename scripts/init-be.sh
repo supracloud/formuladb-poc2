@@ -6,7 +6,9 @@ export BASEDIR=`dirname $0`
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /ssh/frmdb.id_rsa"
 
 if [ -n "$BUILD_DEVELOPMENT" ]; then 
-    cp -ar /formuladb-env /wwwroot/git/
+    echo "using hostPath volume"
+    mount
+    ls /wwwroot/git/formuladb-env/db
 else
     cd /wwwroot/git
     if [ ! -d "formuladb-env" ]; then
