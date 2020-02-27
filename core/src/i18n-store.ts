@@ -26,6 +26,8 @@ export class I18nStore {
     }
 
     async updateDictionaryEntry(dictEntry: $DictionaryObjT) {
-        return this.frmdbEngine.processEvent(new ServerEventModifiedFormData(dictEntry))
+        await this.frmdbEngine.processEvent(new ServerEventModifiedFormData(dictEntry));
+        let dictCache = await this.getDictionaryCache();
+        dictCache.set(dictEntry._id, Object.assign(dictCache.get(dictEntry._id), dictEntry));
     }
 }

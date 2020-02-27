@@ -24,7 +24,7 @@ for theme in ${THEME_FILTER}*/[a-z]*.scss; do
 
         echo "${scssFile} ${cssFile}"
         if [[ -n "$COMPILE" ]]; then 
-            node-sass ${scssFile} ${cssFile} &
+            node-sass --output-style=compressed ${scssFile} ${cssFile} &
         fi
     done
     wait

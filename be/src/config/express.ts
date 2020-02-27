@@ -254,7 +254,8 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
-            res.json(await i18nTranslateText(coreFrmdbEngine, req.body.texts, req.body.to));
+            let translations = await i18nTranslateText(coreFrmdbEngine, req.body.texts, req.body.to);
+            res.json(translations);
         } catch (err) {
             console.error(err);
             next(err);

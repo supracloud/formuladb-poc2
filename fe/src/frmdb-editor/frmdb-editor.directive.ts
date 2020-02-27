@@ -162,16 +162,6 @@ export class FrmdbEditorDirective {
         });
     }
 
-    translatePage() {
-        const currentLanguage = I18N_UTILS.getLangDesc(localStorage.getItem('editor-lang') || I18N_UTILS.defaultLanguage)!;
-        if (currentLanguage.lang != I18N_UTILS.defaultLanguage) {
-            setTimeout(() =>
-                I18N_UTILS.translateAll((window as any).FrameDocument, I18N_UTILS.defaultLanguage,
-                    currentLanguage.lang as I18nLang, feTranslateApi)
-            );
-        }
-    }
-
     checkSafeNavigation(): boolean {
         let safeToNavigate = false;
         if (Undo.hasChanges()) {

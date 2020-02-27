@@ -18,7 +18,7 @@
         "_skaffold_": "KUBECONFIG=k8s/production-kube-config.conf skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "skaffold": "skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "watch-skaffold": "npm run skaffold",
-        "watch-x-sass": "sleep 10; sass --style compressed --watch fe/src/frmdb-editor/frmdb-editor.directive.scss:formuladb/frmdb-editor.min.css",
+        "watch-x-sass": "sleep 10; node-sass --watch --output-style=compressed fe/src/frmdb-editor/frmdb-editor.directive.scss formuladb/frmdb-editor.min.css",
         "_rem_watch-rsync": "sleep 15; while true; do sleep 3; bash rsync.sh 2>/dev/null; done",
         "live-server": "concurrently -k \"npm run watch-rsync\" \"bash serve.sh\" ",
         "-rem-watch-live-server": "bash serve.sh",

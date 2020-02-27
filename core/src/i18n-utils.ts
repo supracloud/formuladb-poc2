@@ -1,5 +1,5 @@
 import { LANGUAGES, DEFAULT_LANGUAGE, I18nLang, DEFAULT_FLAG } from "@domain/i18n";
-import { $DictionaryObjT } from "@domain/metadata/default-metadata";
+import { $DictionaryObjT, $Dictionary } from "@domain/metadata/default-metadata";
 
 const translatableSelector = 'p,div,span,h1,h2,h3,h4,h5,h6,li,button,a,label,[placeholder]';
 const allowedInnerTags = 'b,strong,i,br,hr,em,q';
@@ -94,16 +94,6 @@ export class I18Utils {
 
         console.log("Parsed HTML, sending translations", targetLang, Object.keys(toTranslateMap));
         let returnedTranslations = await translate(targetLang, Object.keys(toTranslateMap));
-
-        console.log("translation done, updating html");
-        for (let k of Object.keys(toTranslateMap)) {
-            toTranslateMap[k].forEach(el => {
-                if (targetLang != DEFAULT_LANGUAGE && !el.hasAttribute('data-i18n-key')) {
-                    el.setAttribute('data-i18n-key', getTextValue(el));
-                }
-                this.setTextValue(el, returnedTranslations[k]);
-            });
-        };
     }
 
     cleanI18nTranslations(rootEl: Document | ShadowRoot | HTMLElement) {
@@ -121,7 +111,7 @@ export class I18Utils {
             let textDefaultLanguage = getTextValue(el as HTMLElement);
             el.setAttribute('data-i18n-key', textDefaultLanguage);
             this.setTextValue(el as HTMLElement, 
-                dictionary.get(textDefaultLanguage)?.[targetLang] || `${targetLang}:${textDefaultLanguage}`);
+                dictionary.get($Dictionary._id + '~~' + textDefaultLanguage)?.[targetLang] || `${targetLang}:${textDefaultLanguage}`);
         }
     }
 }

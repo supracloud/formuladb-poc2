@@ -58,6 +58,12 @@ export class ElemList {
         }
     }
 
+    public lastElem() {
+        let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
+        if (list.length == 0) return null;
+        else return list[list.length - 1] as Elem;
+    }
+
     public at(idx: number): Elem | null {
         let list = this.parentEl.querySelectorAll(`[data-frmdb-table="${this.key}"]`);
         if (list.length < idx) return null;
@@ -65,7 +71,11 @@ export class ElemList {
     }
 
     public remove(el: Elem) {
-        return this.parentEl.removeChild(el);
+        try {
+            return this.parentEl.removeChild(el);
+        } catch (err) {
+            throw err;
+        } 
     }
 }
 

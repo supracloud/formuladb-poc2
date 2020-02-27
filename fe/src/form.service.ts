@@ -74,7 +74,9 @@ export class FormService {
     private debounced_newRecordCache = _.debounce((inputEl: InputElem) => this.putObjInNewRecordCache(inputEl), 100);
 
     async manageInput(inputEl: InputElem): Promise<ServerEventModifiedFormData|void> {
-        let {parentEl, parentObj} = this.getParentObj(inputEl);
+        let pObj = this.getParentObj(inputEl);
+        if (!pObj) return;
+        let {parentEl, parentObj} = pObj;
         if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
 
         if (this.validateOnClient(parentEl, parentObj)) {
@@ -103,6 +105,7 @@ export class FormService {
 
     private putObjInNewRecordCache(inputEl: InputElem) {
         let parentEl = this.getParentEl(inputEl);
+        if (!parentEl) return;
         let parentObjId = parentEl.getAttribute('data-frmdb-record');
         if (parentObjId && isNewDataObjId(parentObjId)) {
             let parentObj = serializeElemToObj(parentEl) as DataObj;
@@ -141,14 +144,15 @@ export class FormService {
         })
     }
 
-    private getParentEl(control: HTMLElement): HTMLElement {
+    private getParentEl(control: HTMLElement): HTMLElement | null {
         let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
-        if (!parentEl) throw new Error("Could not get parent of " + control);
+        if (!parentEl) {console.warn("Could not get parent of " + control); return null;};
         return parentEl;
     }
 
-    public getParentObj(control: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} {
+    public getParentObj(control: HTMLElement): {parentEl: HTMLElement, parentObj: DataObj} | null {
         let parentEl = this.getParentEl(control);
+        if (!parentEl) return null;
         let parentObj = serializeElemToObj(parentEl) as DataObj;
         parentObj._id = parentEl.getAttribute('data-frmdb-record') || '';
         if (!parentObj._id) throw new Error("Cannot find obj id for " + control);

@@ -93,7 +93,8 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
                 let elemListBeforeRemovalOfExtraElems = elemListForKey.elems();
                 const oneElementMustRemain = 1;//if you want to hide elements use data-frmdb-if, one DOM element must remain in order to define the data binding
                 for (let i = 0; i <= elemListBeforeRemovalOfExtraElems.length - objValForKey.length - oneElementMustRemain; i++ ) {
-                    let elToRemove = elemListForKey.at(i)!;
+                    let elToRemove = elemListForKey.lastElem();
+                    if (!elToRemove) {console.error(`Element at index ${i} not found`); break;}
                     emit(document, {type: "FrmdbRemovePageElement", el: elToRemove});
                     elemListForKey.remove(elToRemove);
                 }

@@ -69,10 +69,9 @@ export async function i18nTranslateText(frdbEngine: FrmdbEngine, texts: string[]
         }
     }
 
-    for (let dirtyDictEntry of dirtyDictionaryEntries.values()) {
-        dictionaryCache.set(dirtyDictEntry._id, dirtyDictEntry);
-            /*no-await*/ frdbEngine.i18nStore.updateDictionaryEntry(dirtyDictEntry);
-    }
+    let promises2 = Array.from(dirtyDictionaryEntries.values())
+        .map(dirtyDictEntry => frdbEngine.i18nStore.updateDictionaryEntry(dirtyDictEntry));
+    await Promise.all(promises2);
 
     return returnedTranslations;
 }
