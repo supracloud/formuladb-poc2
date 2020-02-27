@@ -65,8 +65,6 @@ export class IconEditorComponent extends HTMLElement {
     }
 
     async start(iconInputProperty: IconInput) {
-        if (this.iconInputProperty) return;
-
         this.iconInputProperty = iconInputProperty;
         $FMODAL('#icon-editor-modal');
     }

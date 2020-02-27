@@ -377,6 +377,8 @@ export class MetadataStore {
             },
         }).then(r => r.text());
 
+        svgContent = svgContent.replace(/<svg /, '<svg id="frmdb-icon" ');
+
         await this.writeFile(`${FRMDB_ENV_DIR}/icons/svg/${icon.name}.svg`, new Buffer(svgContent, 'utf8'));
         // await execShell(`npm run generate-user-icons`);
         return icon.name;
