@@ -42,7 +42,7 @@
     ],
     ".frmdb-t-card-img .frmdb-t-img": [
         "grid-row-1-1",
-        "grid-column-1-1"
+        "grid-col-1-1"
     ],
     ".frmdb-t-card-img .card-body": [
         "text-center"
@@ -54,9 +54,9 @@
     ],
     ".frmdb-t-card-img .frmdb-t-card-action": [
         "grid-row-1-1",
-        "grid-column-1-1",
-        "align-self-end",
-        "justify-self-center",
+        "grid-col-1-1",
+        "grid-align-self-end",
+        "grid-justify-self-center",
         "mb-2"
     ],
     ".frmdb-t-card-img .frmdb-t-card-action a": [

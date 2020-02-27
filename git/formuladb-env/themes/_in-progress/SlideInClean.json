@@ -89,8 +89,8 @@
             "addStyles": {
                 "grid-row": "1 / 1",
                 "grid-column": "1 / 1",
-                "align-self": "end",
-                "justify-self": "center"
+                "grid-align-self": "end",
+                "grid-justify-self": "center"
             },
             "addClasses": [
                 "mb-2"
