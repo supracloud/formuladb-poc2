@@ -53,7 +53,7 @@ import { Undo } from "./undo";
 import { $FMODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
-import { parsePageUrl, switchEditorOffInPath, PageOpts } from "@domain/url-utils";
+import { parsePageUrl, PageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "./frmdb-editor-router";
 import { registerChangesFeedHandler } from "@fe/changes-feed-client";
 
@@ -135,14 +135,14 @@ export class FrmdbEditorDirective {
             //FIXME: Ugly Workaround for e2e where onload is not getting called:
             setTimeout(ff, 2000);
 
-            this.iframe.src = switchEditorOffInPath(window.location.pathname);
+            this.iframe.src = window.location.pathname;
         });
 
         registerFrmdbEditorRouterHandler('editor-iframe-src', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
             let { appName: currentAppName } = parsePageUrl(new URL(this.iframe.src).pathname);
             let { appName } = newPageOpts;
 
-            this.iframe.src = switchEditorOffInPath(newPath);
+            this.iframe.src = newPath;
 
             if (currentAppName != appName) {
                 RESET_BACKEND_SERVICE();

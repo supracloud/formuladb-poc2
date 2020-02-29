@@ -45,17 +45,19 @@ export class HighlightBoxComponent extends HTMLElement {
         this.selectedBox = this.shadowRoot!.querySelector('#selected') as HighlightBoxElement;
     }
 
-    addBox(highlightEl: HTMLElement, boxType: "highlight" | "selected", elemType: "sibling" | "parent" | "sibling-of-parent" | "grand-parent"): HighlightBoxElement {
+    addBox(highlightEl: HTMLElement, boxType: "highlight" | "selected", elemType: "previous-sibling" | "next-sibling" | "parent" | "sibling-of-parent" | "grand-parent"): HighlightBoxElement {
         let box: HighlightBoxElement = getDoc(this).createElement('div') as HighlightBoxElement;
         box.classList.add('box', elemType + '-' + boxType);
         if (boxType === "selected") {
             let selectWhat = elemType.replace(/-/g, ' ').replace(/(^| )\w/g, c => c.toUpperCase());
-            let icon = elemType == "sibling-of-parent" ? "parent" : elemType;
+            let iconClass = "frmdb-i-hand-point-up";
+            if (elemType == "previous-sibling") iconClass = "frmdb-i-hand-point-left";
+            else if (elemType === "next-sibling") iconClass = "frmdb-i-flip-horizontal frmdb-i-hand-point-left";
             box.innerHTML = /*html*/`
                 <div class="actions related" onmouseover="$FCMP(this).hoverOverAction(event)">
                     <a class="btn p-0" onclick="$FCMP(this).clickSelectElement(this)" 
                         href="javascript:void(0)" title="Select ${selectWhat} Element">
-                        <i class="frmdb-i-hand-point-up"></i>
+                        <i class="${iconClass}"></i>
                     </a>
                 </div>
             `;
@@ -173,32 +175,32 @@ export class HighlightBoxComponent extends HTMLElement {
 
         el = highlightEl.previousElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, "highlight", "sibling");
+            let box = this.addBox(el, "highlight", "previous-sibling");
             this.relatedHighlightBoxes.push(box);
             el = el.previousElementSibling as HTMLElement | null;
         }
 
         el = highlightEl.nextElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, "highlight", "sibling");
+            let box = this.addBox(el, "highlight", "next-sibling");
             this.relatedHighlightBoxes.push(box);
             el = el.nextElementSibling as HTMLElement | null;
         }
     }
 
-    selectSiblings(selectedEl: HTMLElement, elemType: 'sibling-of-parent' | 'sibling') {
+    selectSiblings(selectedEl: HTMLElement) {
         let el: HTMLElement | null;
 
         el = selectedEl.previousElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, "selected", elemType);
+            let box = this.addBox(el, "selected", 'previous-sibling');
             this.relatedSelectBoxes.push(box);
             el = el.previousElementSibling as HTMLElement | null;
         }
 
         el = selectedEl.nextElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, "selected", elemType);
+            let box = this.addBox(el, "selected", 'next-sibling');
             this.relatedSelectBoxes.push(box);
             el = el.nextElementSibling as HTMLElement | null;
         }
@@ -228,14 +230,14 @@ export class HighlightBoxComponent extends HTMLElement {
         this.selectedEl = selectedEl;
         this.removeBoxes(this.relatedSelectBoxes);
         this.showBox(this.selectedBox, selectedEl);
-        this.selectSiblings(selectedEl, 'sibling');
+        this.selectSiblings(selectedEl);
 
         let el: HTMLElement | null;
         el = selectedEl.parentElement as HTMLElement | null;
         if (el) {
             let box = this.addBox(el, "selected", "parent");
             this.relatedSelectBoxes.push(box);
-            this.selectSiblings(el, "sibling-of-parent");
+            // this.selectSiblings(el, "sibling-of-parent");
         }
 
         el = selectedEl.parentElement?.parentElement as HTMLElement | null;

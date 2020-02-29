@@ -32,3 +32,10 @@ export function makeUrlPath(pageOpts: PageOpts) {
     let {lang, look, primaryColor, secondaryColor, theme, tenantName, appName, pageName} = pageOpts;
     return `/${lang}-${look}-${primaryColor}-${secondaryColor}-${theme}/${tenantName}/${appName}/${pageName}`;
 }
+
+
+//URLSearchParams works in nodejs too
+export function isEditorMode(search: string) {
+    let query = new URLSearchParams(search);
+    return query.get('frmdbRender') === "editor";
+}

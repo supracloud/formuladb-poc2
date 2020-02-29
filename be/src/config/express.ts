@@ -169,7 +169,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
-    app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/:page.html', async function (req, res, next) {
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/:page.html', async function (req, res, next) {
         let query: PageOpts['query'] = req.query;
         if (query?.frmdbRender != "view" && req.params.page === 'page-components-reference') {
             res.redirect(url.format({
@@ -201,7 +201,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             res.send(pageHtml);
         }
     });
-    app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/formuladb-look.css', async function (req, res, next) {
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/formuladb-look.css', async function (req, res, next) {
         let css = await kvsFactory.metadataStore.getLookCss({
             lang: req.params.land,
             look: req.params.look,

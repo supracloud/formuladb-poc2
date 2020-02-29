@@ -11,7 +11,7 @@ import * as _ from "lodash";
 import './data-grid/data-grid.component';
 
 import {FrmdbEditorDirective} from './frmdb-editor/frmdb-editor.directive';
-import { isEditorMode } from '@domain/url-utils';
+import { PageOpts, isEditorMode } from '@domain/url-utils';
 
 export class FrmdbFeComponent extends HTMLElement {
     rootEl: HTMLElement | undefined;
@@ -42,7 +42,7 @@ export class FrmdbFeComponent extends HTMLElement {
     connectedCallback() {
         initFrmdb();
 
-        if (isEditorMode(window.location.pathname)) {
+        if (isEditorMode(window.location.search)) {
             new FrmdbEditorDirective()
                 .init();
         }

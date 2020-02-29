@@ -147,14 +147,5 @@ export const ComponentsBase: Partial<Component> = {
                 return grabIcon(node);
             },
         },
-        {
-            name: "Class (Advanced, for web developers)",
-            key: "class",
-            htmlAttr: "class",
-            inline: true,
-            col: 12,
-            inputtype: "TextareaInput",
-            tab: "left-panel-tab-content",
-        },
     ]
 };

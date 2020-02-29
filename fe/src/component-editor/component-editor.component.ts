@@ -7,6 +7,8 @@ import { FrmdbModifyPageElement } from "@fe/frmdb-user-events";
 import { ComponentsBase } from "./components-base";
 import { ComponentsBaseSyleClasses } from "./components-base-style-classes";
 import { ComponentsBaseDataBinding } from "./components-base-data-binding";
+import { ComponentLink } from "./component-link";
+import { ComponentsBaseRawAttributes } from "./components-base-raw-attributes";
 
 export const defaultComponent = "_base";
 export const preservePropertySections = true;
@@ -93,7 +95,9 @@ export class ElementEditorComponent extends HTMLElement {
 	initializeComponents() {
 		this.extend("_base", "_base", ComponentsBase);
 		this.extend("_base", "_base", ComponentsBaseSyleClasses);
+		this.extend("_base", "_base", ComponentsBaseRawAttributes);
 		this.extend("_base", "_base", ComponentsBaseDataBinding);
+		this.extend("_base", ComponentLink.type, ComponentLink); 
 	}
 
 	selectedEl: HTMLElement;

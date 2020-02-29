@@ -19,7 +19,8 @@
         transform: translateY(0%); 
     }
 
-    &.sibling-highlight {
+    &.previous-sibling-highlight,
+    &.next-sibling-highlight {
         border: 1px dashed rgba(61, 133, 253, 1);
     }
     &.parent-highlight,
@@ -32,44 +33,45 @@
 
     &#selected {
         border-style: solid;
-        background-color: rgba(61, 131, 253, 0.35);
+        background-color: rgba(161, 161, 161, 0.35);
         border: 2px solid rgb(61, 133, 253);
     }
-    &.sibling-selected {
+    &.previous-sibling-selected,
+    &.next-sibling-selected {
         border: 0;
         .actions.related {
-            transform: scale(0.75) translateY(-5%);
+            background-color: rgba(61, 133, 253, 0.75);
+            transform: scale(1) translateY(5%);
         }
         &:hover {
-            border: 2px solid rgb(61, 133, 253);
+            border: 2px dotted rgb(61, 133, 253);
         }        
     }
     &.parent-selected,
     &.sibling-of-parent-selected {
         border: 0;
         .actions.related {
-            transform: scale(0.95) translateY(-5%) translateX(-65%);
+            transform: scale(1) translateY(5%) translateX(-85%);
             .btn {
-                // background-color: rgba(255, 0, 0, 0.75);
-                background-color: rgba(0, 128, 0, 0.75);
+                background-color: rgba(61, 133, 253, 0.75);
                 color: white;
             }
         }
         &:hover {
-            border: 2px solid rgb(0, 128, 0);
+            border: 2px dotted rgb(61, 133, 253);
         }
     }
     &.grand-parent-selected {
         border: 0;
         .actions.related {
-            transform: scale(1.15) translateY(-75%) translateX(-85%);
+            transform: scale(1) translateY(-75%) translateX(-95%);
             .btn {
-                background-color: rgba(0, 128, 0, 0.75);
+                background-color: rgba(61, 133, 253, 0.75);
                 color: white;
             }
         }
         &:hover {
-            border: 2px solid rgb(0, 128, 0);
+            border: 2px dotted rgb(61, 133, 253);
         }
     }
 
