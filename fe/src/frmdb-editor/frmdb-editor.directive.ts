@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import * as events from "@domain/event";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
 import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
@@ -28,8 +29,8 @@ import { launchFullScreen } from "@fe/frmdb-editor-gui";
 import "@fe/component-editor/component-editor.component";
 import { ElementEditorComponent } from "../component-editor/component-editor.component";
 
-import "./element-tree.component";
-import { ElementTreeComponent } from "./element-tree.component";
+// import "./element-tree.component";
+// import { ElementTreeComponent } from "./element-tree.component";
 
 import "@fe/theme-customizer/theme-customizer.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
@@ -52,9 +53,9 @@ import { Undo } from "./undo";
 import { $FMODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
-import { feTranslateApi } from "@fe/i18n-fe";
 import { parsePageUrl, switchEditorOffInPath, PageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "./frmdb-editor-router";
+import { registerChangesFeedHandler } from "@fe/changes-feed-client";
 
 declare var $: null, jQuery: null;
 
@@ -86,7 +87,7 @@ export class FrmdbEditorDirective {
     addElementCmp: AddElementComponent;
     imgEditorCmp: ImgEditorComponent;
     iconEditorCmp: IconEditorComponent;
-    elementTree: ElementTreeComponent;
+    // elementTree: ElementTreeComponent;
     elementEditor: ElementEditorComponent;
     themeCustomizer: ThemeCustomizerComponent;
 
@@ -114,7 +115,7 @@ export class FrmdbEditorDirective {
             this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
             this.imgEditorCmp = document.body.querySelector('frmdb-img-editor') as ImgEditorComponent;
             this.iconEditorCmp = document.body.querySelector('frmdb-icon-editor') as IconEditorComponent;
-            this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
+            // this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
             this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
 
             this.tableManagementFlows();
@@ -127,6 +128,7 @@ export class FrmdbEditorDirective {
                 this.highlightBox.rootEl = this.iframe.contentWindow!.document;
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
                 pageElementFlows(this);
+                this.hookIframeChangesFeed(this.iframe.contentWindow!);
             }
             this.iframe.onload = ff;
 
@@ -135,7 +137,6 @@ export class FrmdbEditorDirective {
 
             this.iframe.src = switchEditorOffInPath(window.location.pathname);
         });
-
 
         registerFrmdbEditorRouterHandler('editor-iframe-src', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
             let { appName: currentAppName } = parsePageUrl(new URL(this.iframe.src).pathname);
@@ -152,6 +153,15 @@ export class FrmdbEditorDirective {
                 this.updateCurrentPage();
             }
         }, () => this.checkSafeNavigation());
+    }
+
+    hookIframeChangesFeed(iframeWindow: Window) {
+        registerChangesFeedHandler('editor-iframe-handlers-hook', async (events: events.MwzEvents[]) => {
+            let handlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = 
+                (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS_IN_IFRAME$;
+
+            await Promise.all(Object.values(handlers).map(h => h(events)));
+        });
     }
 
     showIntroVideoModal() {
@@ -190,7 +200,7 @@ export class FrmdbEditorDirective {
         if (el) {
             this.highlightDataGridCell(el);
             this.elementEditor.setEditedEl(el);
-            this.elementTree.render(el);
+            // this.elementTree.render(el);
         }
     }
 

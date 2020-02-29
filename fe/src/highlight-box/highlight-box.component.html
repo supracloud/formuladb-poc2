@@ -33,10 +33,9 @@
                 <a class="btn" data-frmdb-action="move-after" href="javascript:void(0)" style="transform: rotate(45deg);" title="Move element before previous sibling"><i class="frmdb-i-arrow-up"></i></a>
                 <a class="btn" data-frmdb-action="move-up" href="javascript:void(0)" title="Move element up, before parent element"><i class="frmdb-i-arrow-up"></i></a>
                 <a class="btn" data-frmdb-action="move-down" href="javascript:void(0)" title="Move element down, inside next sibling"><i class="frmdb-i-arrow-down"></i></a>
-                <a class="btn" data-frmdb-action="cut" href="javascript:void(0)" title="Cut element"><i class="frmdb-i-cut"></i></a>
             </div>
         </div>
-        <div class="btn dropdown frmdb-dropdown-hover" title="Select nearby element">
+        <!-- <div class="btn dropdown frmdb-dropdown-hover" title="Select nearby element">
             <i class="frmdb-i-hand-point-up"></i>
             <div class="dropdown-menu px-2 text-nowrap">
                 <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i
@@ -44,13 +43,20 @@
                 <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i
                         class="frmdb-i-hand-point-left"></i></a>
             </div>
+        </div> -->
+        <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
+            <i class="frmdb-i-edit"></i>
+            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
+                <a class="btn" data-frmdb-action="edit" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-pen-fancy"></i></a>
+                <a class="btn" data-frmdb-action="clone" href="javascript:void(0)" title="Clone element"><i class="frmdb-i-copy"></i></a>
+                <a class="btn" data-frmdb-action="cut" href="javascript:void(0)" title="Cut element"><i class="frmdb-i-cut"></i></a>
+                <a class="btn" data-frmdb-action="delete" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
+            </div>
         </div>
-        <a class="btn" data-frmdb-action="edit" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
-        <a class="btn" data-frmdb-action="delete" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
+
         <div class="btn dropdown frmdb-dropdown-hover" title="Add Element">
             <i class="frmdb-i-plus"></i>
             <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
-                <a class="btn" data-frmdb-action="clone" href="javascript:void(0)" title="Clone element"><i class="frmdb-i-copy"></i></a>
                 <a class="btn" data-frmdb-action="add-inside" href="javascript:void(0)" title="Add element inside"><i class="frmdb-i-plus-circle"></i></a>
                 <a class="btn" data-frmdb-action="add-after" href="javascript:void(0)" title="Add element after"><i class="frmdb-i-plus"></i></a>
                 <a class="btn" data-frmdb-action="paste-inside" href="javascript:void(0)" title="Paste element inside"><i class="frmdb-i-0000105-paste-inside"></i></a>
@@ -59,9 +65,9 @@
         </div>
     </div>
     <div class="actions add-elements">
-        <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i class="frmdb-i-level-down-alt fa-rotate-180"></i></a>
+        <!-- <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i class="frmdb-i-level-down-alt fa-rotate-180"></i></a>
         <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i
-                class="frmdb-i-level-down-alt fa-rotate-90"></i></a>
+                class="frmdb-i-level-down-alt fa-rotate-90"></i></a> -->
         <a class="btn" data-frmdb-action="choose" href="javascript:void(0)" title="Choose Element"><i class="frmdb-i-hand-point-up"></i></a>
     </div>
     <div class="actions editing">

@@ -16,6 +16,9 @@ export class AddElementComponent extends HTMLElement {
     action: FrmdbSelectPageElementAction['action'];
 
     connectedCallback() {
+        setTimeout(() => this.init(), 6000);
+    }
+    init() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
         this.iframe = this.querySelector('iframe')!;
         this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;

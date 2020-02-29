@@ -1,9 +1,13 @@
 export function isDocument(param): param is Document {
-    return param.defaultView && param.defaultView.Document && param instanceof param.defaultView.Document;
+    return param?.defaultView?.Document && param instanceof param.defaultView.Document;
+}
+
+export function isShadowRoot(param): param is ShadowRoot {
+    return param?.ownerDocument?.defaultView?.ShadowRoot && param instanceof param.ownerDocument.defaultView.ShadowRoot;
 }
 
 export function isHTMLElement(param): param is HTMLElement {
-    return param.ownerDocument && param.ownerDocument.defaultView && param.ownerDocument.defaultView.HTMLElement && param instanceof param.ownerDocument.defaultView.HTMLElement;
+    return param?.ownerDocument?.defaultView?.HTMLElement && param instanceof param.ownerDocument.defaultView.HTMLElement;
 }
 
 export function getWindow(param: Document | ShadowRoot | HTMLElement): Window {
@@ -11,4 +15,16 @@ export function getWindow(param: Document | ShadowRoot | HTMLElement): Window {
     if (p.defaultView) return p.defaultView;
     if (p.ownerDocument && p.ownerDocument.defaultView) return p.ownerDocument.defaultView;
     throw new Error("window not found for " + p); 
+}
+
+export function getDoc(param: Document | ShadowRoot | HTMLElement): Document {
+    return getWindow(param).document;
+}
+
+export function inIframe () {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
 }

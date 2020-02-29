@@ -13,7 +13,11 @@ export class IconEditorComponent extends HTMLElement {
     iconInputProperty: IconInput | null = null;
 
     connectedCallback() {
-        this.innerHTML = `<style>${CSS}</style> ${HTML}`;
+        setTimeout(() => this.init, 5000);
+    }
+
+    init() {
+            this.innerHTML = `<style>${CSS}</style> ${HTML}`;
 
         onEvent(this, 'change', '#frmdb-search-premium-icons', async (event) => {
             let res: PremiumIconRespose = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/premium-icons/${event.target!.value}`)

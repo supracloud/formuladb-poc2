@@ -20,30 +20,37 @@
         transform: translateY(0%); 
     }
 
-    &#grand-parent-highlight {
-        border: 2px dashed yellow;
-        margin: -4px 0 0 -4px;
-        padding: 4px;
+    &.sibling-highlight {
+        border: 1px dashed rgba(61, 133, 253, 1);
     }
-    &#parent-highlight {
-        border: 2px dotted red;
-        margin: -2px 0 0 -2px;
-        padding: 2px;
-    }
-    &#prev-highlight {
-        border: 2px dotted rgb(61, 133, 253);
-        border-style: dotted dashed;
-    }
-    &#parent-selected {
-        border: 2px solid red;
-        margin: -2px 0 0 -2px;
-        padding: 2px;
+    &.parent-highlight {
+        border: 1px solid red;
+    }   
+    &.grand-parent-highlight {
+        border: 4px dotted yellow;
     }
 
     &#selected {
         border-style: solid;
         background-color: rgba(61, 131, 253, 0.35);
         border: 2px solid rgba(61, 133, 253, 0.5);
+    }
+    &.sibling-selected {
+        border: 0;
+    }
+    &.parent-selected {
+        border: 0;
+        .actions.related * {
+            background-color: red;
+            color: white;
+        }
+    }
+    &.grand-parent-selected {
+        border: 0;
+        .actions.related * {
+            background-color: yellow;
+            color: black;
+        }
     }
 
     &#selected.editing {
@@ -95,6 +102,7 @@
 
     .actions {
         position: absolute;
+        z-index: 11;
         top: 0;
         transform: translateY(-100%);
         right: 0px;
@@ -116,6 +124,18 @@
             padding: 4px;
             text-decoration: none;
             pointer-events: initial;
+        }
+
+        &.related {
+            transform: scale(0.75) translateY(-100%);
+            top: 0;
+            left: 0;
+            right: initial;
+            padding: 2px;
+
+            * {
+                padding: 0;
+            }
         }
         
         &.bottom {

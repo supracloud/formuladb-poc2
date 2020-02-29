@@ -1,5 +1,6 @@
 import * as events from "@domain/event";
 import { generateTimestampUUID } from "@domain/uuid";
+import { inIframe } from "@core/dom-utils";
 
 const CLIENT_ID = generateTimestampUUID();
 
@@ -14,7 +15,7 @@ export function stopChangesFeedLoop() {
 let AlreadyStarted = false;
 async function changesFeedLoop() {
     if (AlreadyStarted) return;
-    console.warn("changesFeedLoop START", new Date(), document, AlreadyStarted);
+    console.warn("changesFeedLoop START", new Date(), document?.defaultView?.location?.href, AlreadyStarted);
     AlreadyStarted = true;
 
     let response = await fetch(`/formuladb-api/changes-feed/${CLIENT_ID}`, {
@@ -52,7 +53,12 @@ async function changesFeedLoop() {
         await changesFeedLoop();
     }
 }
-changesFeedLoop();
+
+if (inIframe()) {
+    (window as any).$FRMDB_CHANGES_FEED_HANDLERS_IN_IFRAME$ = Handlers;
+} else {
+    changesFeedLoop();
+}
 
 export function registerChangesFeedHandler(name: string, handler: (events: events.MwzEvents[]) => Promise<void>) {
     Handlers[name] = handler;

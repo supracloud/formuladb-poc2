@@ -26,6 +26,9 @@ export class ThemeCustomizerComponent extends HTMLElement {
     state = dataBindStateToElement(this, new State());
 
     connectedCallback() {
+        setTimeout(() => this.initHtml(), 4000);
+    }
+    initHtml() {
         this.innerHTML = HTML;
         this.init();
     }

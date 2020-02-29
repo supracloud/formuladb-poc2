@@ -3,9 +3,7 @@ import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
 import { dataBindStateToElement } from "@fe/frmdb-element-urils";
 import { onEventChildren } from "@fe/delegated-events";
-import { BACKEND_SERVICE } from "@fe/backend.service";
 import { I18nLang } from "@domain/i18n";
-import { feTranslateApi } from "@fe/i18n-fe";
 
 const HTML: string = require('raw-loader!@fe-assets/i18n-customizer/i18n-customizer.component.html').default;
 
