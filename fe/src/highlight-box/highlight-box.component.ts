@@ -45,17 +45,22 @@ export class HighlightBoxComponent extends HTMLElement {
         this.selectedBox = this.shadowRoot!.querySelector('#selected') as HighlightBoxElement;
     }
 
-    addBox(highlightEl: HTMLElement, className: string, isSelected?: boolean): HighlightBoxElement {
+    addBox(highlightEl: HTMLElement, boxType: "highlight" | "selected", elemType: "sibling" | "parent" | "sibling-of-parent" | "grand-parent"): HighlightBoxElement {
         let box: HighlightBoxElement = getDoc(this).createElement('div') as HighlightBoxElement;
-        box.classList.add('box', className);
-        if (isSelected) {
+        box.classList.add('box', elemType + '-' + boxType);
+        if (boxType === "selected") {
+            let selectWhat = elemType.replace(/-/g, ' ').replace(/(^| )\w/g, c => c.toUpperCase());
+            let icon = elemType == "sibling-of-parent" ? "parent" : elemType;
             box.innerHTML = /*html*/`
-                <div class="actions related">
-                    <a class="btn" data-frmdb-action="choose" href="javascript:void(0)" title="Select Element"><i class="frmdb-i-hand-point-up"></i></a>
+                <div class="actions related" onmouseover="$FCMP(this).hoverOverAction(event)">
+                    <a class="btn p-0" onclick="$FCMP(this).clickSelectElement(this)" 
+                        href="javascript:void(0)" title="Select ${selectWhat} Element">
+                        <i class="frmdb-i-hand-point-up"></i>
+                    </a>
                 </div>
             `;
         }
-        this.shadowRoot!.appendChild(box);
+        this.shadowRoot!.prepend(box);
         box.$frmdbHighlightedEl$ = highlightEl;
         this.positionBox(box, highlightEl);
 
@@ -85,13 +90,15 @@ export class HighlightBoxComponent extends HTMLElement {
 
         onEvent(this._rootEl, ['mousemove'], '*', (event) => {
             if (this._disabled) return;
-            if ((event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore') || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')) return;
+            if (
+                (event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore')
+                || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')
+            ) return;
             // event.preventDefault();
             this.highlightEl = event.target as HTMLElement;
             this.highlightElement(this.highlightEl);
             emit(this, { type: "FrmdbHoverPageElement", el: this.highlightEl });
         });
-
 
         onEvent(this._rootEl, ['click'], '*', (event: MouseEvent) => {
             if (this._disabled) return;
@@ -107,15 +114,6 @@ export class HighlightBoxComponent extends HTMLElement {
             emit(this, { type: "FrmdbSelectPageElement", el: this.selectedEl });
         });
 
-        onEventChildren(this.selectedBox, ['mouseover'], '.actions [data-frmdb-action], .actions .dropdown', (event) => {
-            this.highlightBox.style.display = 'none';
-            for (let hbox of this.relatedHighlightBoxes) {
-                this.shadowRoot!
-            }
-            this.removeBoxes(this.relatedHighlightBoxes);
-        });
-
-
         if (this.enableSelectedActionsEvents) {
             this.enableSelectedActionsEvents = false;
 
@@ -128,7 +126,7 @@ export class HighlightBoxComponent extends HTMLElement {
                     if (!this.selectedEl || !isElementWithTextContentEditable(this.selectedEl)) return;
                     this.toggleWysiwygEditor(true);
                     emit(this, { type: "FrmdbEditWysiwygPageElement", el: this.selectedEl });
-                } else if (el.dataset.frmdbAction === "choose") {
+                } else if (el.dataset.frmdbAction === "select") {
                 } else {
                     if (el.dataset.frmdbAction === "cut") {
                         this.selectedBox.style.transition = "background-color 1s";
@@ -170,37 +168,37 @@ export class HighlightBoxComponent extends HTMLElement {
         })
     }
 
-    highlightSiblings(highlightEl: HTMLElement, className: string) {
+    highlightSiblings(highlightEl: HTMLElement) {
         let el: HTMLElement | null;
 
         el = highlightEl.previousElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, className);
+            let box = this.addBox(el, "highlight", "sibling");
             this.relatedHighlightBoxes.push(box);
             el = el.previousElementSibling as HTMLElement | null;
         }
 
         el = highlightEl.nextElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, className);
+            let box = this.addBox(el, "highlight", "sibling");
             this.relatedHighlightBoxes.push(box);
             el = el.nextElementSibling as HTMLElement | null;
         }
     }
 
-    selectSiblings(selectedEl: HTMLElement, className: string) {
+    selectSiblings(selectedEl: HTMLElement, elemType: 'sibling-of-parent' | 'sibling') {
         let el: HTMLElement | null;
 
         el = selectedEl.previousElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, className, true);
+            let box = this.addBox(el, "selected", elemType);
             this.relatedSelectBoxes.push(box);
             el = el.previousElementSibling as HTMLElement | null;
         }
 
         el = selectedEl.nextElementSibling as HTMLElement | null;
         while (el) {
-            let box = this.addBox(el, className, true);
+            let box = this.addBox(el, "selected", elemType);
             this.relatedSelectBoxes.push(box);
             el = el.nextElementSibling as HTMLElement | null;
         }
@@ -209,40 +207,40 @@ export class HighlightBoxComponent extends HTMLElement {
     highlightElement(highlightEl: HTMLElement) {
         this.removeBoxes(this.relatedHighlightBoxes);
         this.showBox(this.highlightBox, highlightEl);
-        this.highlightSiblings(highlightEl, 'sibling-highlight');
+        // this.highlightSiblings(highlightEl);
 
-        let el: HTMLElement | null;
-        el = highlightEl.parentElement as HTMLElement | null;
-        if (el) {
-            let box = this.addBox(el, 'parent-highlight');
-            this.relatedHighlightBoxes.push(box);
-            this.highlightSiblings(el, 'parent-highlight');
-        }
+        // let el: HTMLElement | null;
+        // el = highlightEl.parentElement as HTMLElement | null;
+        // if (el) {
+        //     let box = this.addBox(el, 'highlight', "parent");
+        //     this.relatedHighlightBoxes.push(box);
+        //     this.highlightSiblings(el);
+        // }
 
-        el = highlightEl.parentElement?.parentElement as HTMLElement | null;
-        if (el) {
-            let box = this.addBox(el, 'grand-parent-highlight');
-            this.relatedHighlightBoxes.push(box);
-        }
+        // el = highlightEl.parentElement?.parentElement as HTMLElement | null;
+        // if (el) {
+        //     let box = this.addBox(el, 'highlight', "grand-parent");
+        //     this.relatedHighlightBoxes.push(box);
+        // }
     }
 
     showSelectBox(selectedEl: HTMLElement) {
         this.selectedEl = selectedEl;
         this.removeBoxes(this.relatedSelectBoxes);
         this.showBox(this.selectedBox, selectedEl);
-        this.selectSiblings(selectedEl, 'sibling-selected');
+        this.selectSiblings(selectedEl, 'sibling');
 
         let el: HTMLElement | null;
         el = selectedEl.parentElement as HTMLElement | null;
         if (el) {
-            let box = this.addBox(el, 'parent-selected', true);
+            let box = this.addBox(el, "selected", "parent");
             this.relatedSelectBoxes.push(box);
-            this.selectSiblings(el, 'parent-selected');
+            this.selectSiblings(el, "sibling-of-parent");
         }
 
         el = selectedEl.parentElement?.parentElement as HTMLElement | null;
         if (el) {
-            let box = this.addBox(el, 'grand-parent-selected', true);
+            let box = this.addBox(el, "selected", "grand-parent");
             this.relatedSelectBoxes.push(box);
         }
     }
@@ -302,11 +300,21 @@ export class HighlightBoxComponent extends HTMLElement {
         if (offset.top <= 20) box.classList.add('is-at-top')
         else box.classList.remove('is-at-top');
 
+        let margin = 0;
+        if (box.classList.contains('parent-highlight')
+            || box.classList.contains('parent-selected')
+            || box.classList.contains('sibling-of-parent-highlight')
+            || box.classList.contains('sibling-of-parent-selected')
+        ) { margin = 2; }
+        if (box.classList.contains('grand-parent-highlight')
+            || box.classList.contains('grand-parent-selected')
+        ) { margin = 4; }
+
         box.style.display = 'block';
-        box.style.top = (offset.top) + 'px';
-        box.style.left = (offset.left) + 'px';
-        box.style.height = height + 'px';
-        box.style.width = width + 'px';
+        box.style.top = Math.max(offset.top - margin, 0) + 'px';
+        box.style.left = Math.max(offset.left - margin, 0) + 'px';
+        box.style.height = (height + 2 * margin) + 'px';
+        box.style.width = (width + 2 * margin) + 'px';
     }
 
     repositionBoxes() {
@@ -327,6 +335,23 @@ export class HighlightBoxComponent extends HTMLElement {
 
     getElName(el: HTMLElement) {
         return el.tagName + '.' + Array.from(el.classList).join('.');
+    }
+
+    hoverOverAction(event: MouseEvent) {
+        event.stopPropagation();
+        this.removeBoxes(this.relatedHighlightBoxes);
+        this.highlightBox.style.display = 'none';
+    }
+
+    clickSelectElement(btn: HTMLElement) {
+        let el = (btn.closest('.box') as HighlightBoxElement)?.$frmdbHighlightedEl$;
+        if (!el) { console.error('Cannot find highlighted elem for ', btn); return }
+
+        this.selectElement(el);
+        this.selectedEl = el;
+        this.showSelectBox(this.selectedEl);
+        this.toggleWysiwygEditor(false);
+        emit(this, { type: "FrmdbSelectPageElement", el: this.selectedEl });
     }
 }
 

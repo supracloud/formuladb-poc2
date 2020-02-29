@@ -11,8 +11,7 @@
 .box {
     position: absolute;
     display: block;
-    border: 2px solid rgb(61, 133, 253);
-    // background-color: rgba(61, 133, 253, 0.05);
+    border: 2px dotted rgb(61, 133, 253);
     pointer-events: none;
     z-index: 10;
 
@@ -23,8 +22,9 @@
     &.sibling-highlight {
         border: 1px dashed rgba(61, 133, 253, 1);
     }
-    &.parent-highlight {
-        border: 1px solid red;
+    &.parent-highlight,
+    &.sibling-of-parent-highlight {
+        border: 1px dotted red;
     }   
     &.grand-parent-highlight {
         border: 4px dotted yellow;
@@ -33,23 +33,43 @@
     &#selected {
         border-style: solid;
         background-color: rgba(61, 131, 253, 0.35);
-        border: 2px solid rgba(61, 133, 253, 0.5);
+        border: 2px solid rgb(61, 133, 253);
     }
     &.sibling-selected {
         border: 0;
+        .actions.related {
+            transform: scale(0.75) translateY(-5%);
+        }
+        &:hover {
+            border: 2px solid rgb(61, 133, 253);
+        }        
     }
-    &.parent-selected {
+    &.parent-selected,
+    &.sibling-of-parent-selected {
         border: 0;
-        .actions.related * {
-            background-color: red;
-            color: white;
+        .actions.related {
+            transform: scale(0.95) translateY(-5%) translateX(-65%);
+            .btn {
+                // background-color: rgba(255, 0, 0, 0.75);
+                background-color: rgba(0, 128, 0, 0.75);
+                color: white;
+            }
+        }
+        &:hover {
+            border: 2px solid rgb(0, 128, 0);
         }
     }
     &.grand-parent-selected {
         border: 0;
-        .actions.related * {
-            background-color: yellow;
-            color: black;
+        .actions.related {
+            transform: scale(1.15) translateY(-75%) translateX(-85%);
+            .btn {
+                background-color: rgba(0, 128, 0, 0.75);
+                color: white;
+            }
+        }
+        &:hover {
+            border: 2px solid rgb(0, 128, 0);
         }
     }
 
@@ -114,27 +134,34 @@
 
         a:hover {
             background-color: #2777f8;
+            color: white;
             transform: scale(1.2);
         }
 
-        * {
+        .btn, .dropdown-menu {
             background-color: #4285f4;
             color: white;
             font-size: 14px;
             padding: 4px;
             text-decoration: none;
             pointer-events: initial;
+
+            i {
+                display: block;
+            }
+            i:before {
+                display: block;
+            }
         }
 
         &.related {
-            transform: scale(0.75) translateY(-100%);
             top: 0;
             left: 0;
             right: initial;
-            padding: 2px;
+            padding: 0;
 
-            * {
-                padding: 0;
+            .btn > {
+                padding: 2;
             }
         }
         

@@ -7,6 +7,7 @@ export type EventType =
     | "click" 
     | "mouseover" 
     | "mousemove"
+    | "mouseenter"
     | "blur" 
     | "keydown" 
     | "keyup" 

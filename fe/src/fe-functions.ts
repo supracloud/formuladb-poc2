@@ -8,6 +8,7 @@ import { ServerEventPutPageHtml } from "@domain/event";
 import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "../../core/src/page-utils";
 import { parsePageUrl } from "@domain/url-utils";
+import { isShadowRoot, isHTMLElement } from "@core/dom-utils";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -167,10 +168,11 @@ export const FeFunctionsForDataBinding = {
 (window as any).$ID = $ID;
 (window as any).$SAVE_DOC_PAGE = $SAVE_DOC_PAGE;
 (window as any).$FCMP = function (el: HTMLElement) {
-    let parent: HTMLElement | null = el;
+    let parent: Node | null = el;
     while (parent) {
-        if (parent.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent;
-        else parent = parent.parentElement;
+        if (isHTMLElement(parent) && parent.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent;
+        else if (isShadowRoot(parent) && parent.host.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent.host;
+        else parent = parent.parentNode;
     }
     return parent;
 }
