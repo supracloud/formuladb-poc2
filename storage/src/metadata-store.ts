@@ -338,7 +338,7 @@ export class MetadataStore {
             let fragmentName = fragmentEl.getAttribute('data-frmdb-fragment');
             if (!fragmentName) throw new Error("fragmentName not found for" + fragmentEl.outerHTML);
 
-            if (pageOpts.editorOpts === '$view$' && '_scripts.html' === fragmentName) continue;
+            if (pageOpts.query?.frmdbRender === 'view' && '_scripts.html' === fragmentName) continue;
 
             let fragmentHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${fragmentName}`);
             let fragmentDom = htmlTools.html2dom(fragmentHtml);

@@ -3,7 +3,6 @@ import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
 import { applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
-import { loadPage } from "@fe/fe-functions";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;

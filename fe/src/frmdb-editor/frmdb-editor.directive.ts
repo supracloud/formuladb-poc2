@@ -48,7 +48,7 @@ import { ImgEditorComponent } from "./img-editor.component";
 import "@fe/frmdb-editor/icon-editor.component";
 import { IconEditorComponent } from "./icon-editor.component";
 import { BLOBS } from "./blobs";
-import { frmdbSetImageSrc } from "@fe/component-editor/components-frmdb";
+import { frmdbSetImageSrc } from "@fe/component-editor/_old_components-frmdb";
 import { Undo } from "./undo";
 import { $FMODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";

@@ -13,6 +13,8 @@ import * as csv from 'csv';
 import * as mime from 'mime';
 import * as serveIndex from 'serve-index';
 let debug = require('debug');
+const url = require('url');
+
 import * as timeout from 'connect-timeout';
 
 
@@ -29,8 +31,8 @@ import { initPassport, handleAuth } from "./auth";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 import { $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata";
-import { makeViewOnlyUrlNoScripts, isEditorMode, isViewMode } from "@domain/url-utils";
 import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
+import { PageOpts } from "@domain/url-utils";
 
 const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
 const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
@@ -168,10 +170,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
     app.get('/:lang-:look-:primary-:secondary-:theme-:editorOpts/:tenant/:app/:page.html', async function (req, res, next) {
-        if (!isViewMode(req.path) && req.params.page === 'page-components-reference') {
-            res.redirect(makeViewOnlyUrlNoScripts(req.path));
+        let query: PageOpts['query'] = req.query;
+        if (query?.frmdbRender != "view" && req.params.page === 'page-components-reference') {
+            res.redirect(url.format({
+                pathname: req.path,
+                query: {
+                    ...query,
+                    frmdbRender: "view",
+                }
+            }));
         }
-        else if (isEditorMode(req.path)) {
+        else if (query?.frmdbRender === "editor") {
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
@@ -183,10 +192,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
                 primaryColor: req.params.primary,
                 secondaryColor: req.params.secondary,
                 theme: req.params.theme,
-                editorOpts: req.params.editorOpts,
                 tenantName: req.params.tenant,
                 appName: req.params.app,
                 pageName: `${req.params.page}.html`,
+                query: req.query,
             }, dictionaryCache);
             res.set('Content-Type', 'text/html')
             res.send(pageHtml);
@@ -199,10 +208,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             primaryColor: req.params.primary,
             secondaryColor: req.params.secondary,
             theme: req.params.theme,
-            editorOpts: req.params.editorOpts,
             tenantName: req.params.tenant,
             appName: req.params.app,
             pageName: `${req.params.page}.html`,
+            query: req.query,
         });
         res.set('Content-Type', 'text/css')
         res.send(css);
@@ -323,7 +332,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
             let ret;
             if (isMetadataEntity(req.params.table)) {
-                ret  = await simpleAdHocQueryForMetadataEntities(req.params.tenant, req.params.app, kvsFactory, req.params.table, query);
+                ret = await simpleAdHocQueryForMetadataEntities(req.params.tenant, req.params.app, kvsFactory, req.params.table, query);
             } else {
                 ret = await (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
             }
