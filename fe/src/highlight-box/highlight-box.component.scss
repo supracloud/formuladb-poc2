@@ -36,10 +36,27 @@
         background-color: rgba(161, 161, 161, 0.35);
         border: 2px solid rgb(61, 133, 253);
     }
-    &.previous-sibling-selected,
+    &.previous-sibling-selected {
+        border: 0;
+        .actions.related {
+            top: initial;
+            left: initial;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(61, 133, 253, 0.75);
+            transform: scale(1) translateY(5%);
+        }
+        &:hover {
+            border: 2px dotted rgb(61, 133, 253);
+        }        
+    }
     &.next-sibling-selected {
         border: 0;
         .actions.related {
+            top: initial;
+            left: 0;
+            right: initial;
+            bottom: 0;
             background-color: rgba(61, 133, 253, 0.75);
             transform: scale(1) translateY(5%);
         }

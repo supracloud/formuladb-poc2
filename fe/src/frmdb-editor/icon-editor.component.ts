@@ -13,7 +13,7 @@ export class IconEditorComponent extends HTMLElement {
     iconInputProperty: IconInput | null = null;
 
     connectedCallback() {
-        setTimeout(() => this.init, 5000);
+        setTimeout(() => this.init(), 5000);
     }
 
     init() {
