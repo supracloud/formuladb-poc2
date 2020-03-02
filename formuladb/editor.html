@@ -23,6 +23,11 @@
                 <button class="btn btn-light" title="Redo change" id="redo-btn" data-frmdb-action="redo" data-vvveb-shortcut="ctrl+shift+z">
                     <i class="frmdb-i-undo frmdb-i-flip-horizontal"></i>
                 </button>
+
+                <button class="btn btn-light" onclick="$FRMDB_EDITOR.addPageElement()" href="javascript:void(0)" title="Add Page Element">
+                    <i class="frmdb-i-plus-circle"></i>
+                </button>
+
             </div>
 
             <div class="btn-group mr-3" role="group">
@@ -157,15 +162,15 @@
             </li>
         </ul>
 
-        <!-- <div class="left-panel-tree border-top overflow-auto">
+        <div class="left-panel-tree border-top overflow-auto">
             <frmdb-element-tree></frmdb-element-tree>
-        </div> -->
+        </div>
 
-        <frmdb-element-editor class="d-flex flex-column"></frmdb-element-editor>
+        <frmdb-component-editor class="d-flex flex-column"></frmdb-component-editor>
     </div>
     <div id="canvas" class="position-relative overflow-hidden">
         <iframe id="app" src='about:blank'></iframe>
-        <frmdb-highlight-box></frmdb-highlight-box>
+        <frmdb-element-editor></frmdb-element-editor>
     </div>
 
     <!-- new page modal-->

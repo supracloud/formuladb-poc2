@@ -82,7 +82,7 @@ export interface ComponentProperty {
 
 const HTML: string = require('raw-loader!@fe-assets/component-editor/component-editor.component.html').default;
 
-export class ElementEditorComponent extends HTMLElement {
+export class ComponentEditorComponent extends HTMLElement {
 	
 	componentsInitialized: boolean = false;
 	
@@ -108,7 +108,7 @@ export class ElementEditorComponent extends HTMLElement {
 			this.componentsInitialized = true;
 		}
 		let cmp = this.matchNode(this.selectedEl);
-		let componentType = cmp ? cmp.type : defaultComponent;
+		let componentType = cmp ? cmp.type || 'naa' : defaultComponent;
 		this.render(componentType, this.selectedEl);
 	}
 	
@@ -217,10 +217,10 @@ export class ElementEditorComponent extends HTMLElement {
 	}
 	
 	
-	matchNode(node) {
-		let component = {};
+	matchNode(node): Component | null {
+		let component;
 		
-		if (!node || !node.tagName) return false;
+		if (!node || !node.tagName) return null;
 		
 		if (node.attributes && node.attributes.length) {
 			//search for attributes
@@ -270,7 +270,7 @@ export class ElementEditorComponent extends HTMLElement {
 		let tagName = node.tagName.toLowerCase();
 		if (tagName in this._nodesLookup) return this._nodesLookup[tagName];
 		
-		if (tagName === "script" || tagName === "iframe") return false;
+		if (tagName === "script" || tagName === "iframe") return null;
 		
 		let clonedNode = node.cloneNode();
 		{
@@ -442,7 +442,7 @@ export class ElementEditorComponent extends HTMLElement {
 	};
 };
 
-customElements.define('frmdb-element-editor', ElementEditorComponent);
+customElements.define('frmdb-component-editor', ComponentEditorComponent);
 
 export class BlocksClass {
 	

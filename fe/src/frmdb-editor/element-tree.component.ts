@@ -1,4 +1,5 @@
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
+import { getSiblingIndex } from "@core/dom-utils";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/element-tree.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/element-tree.component.scss').default;
@@ -17,7 +18,8 @@ export class ElementTreeComponent extends HTMLElement {
         if (el.parentElement) parentElName = this.getElName(el.parentElement);
         if (el.previousElementSibling) prevName = this.getElName(el.previousElementSibling as HTMLElement);
         let hasPrev: boolean = prevName != null && prevName != '';
-        updateDOM({grandParentElName, parentElName, prevName, elName, hasPrev}, this.shadowRoot! as any as HTMLElement /*WTF?!*/);
+        let elIndex = 'S' + getSiblingIndex(el);
+        updateDOM({grandParentElName, parentElName, prevName, elName, hasPrev, elIndex}, this.shadowRoot! as any as HTMLElement /*WTF?!*/);
     }
 
     getElName(el: HTMLElement) {

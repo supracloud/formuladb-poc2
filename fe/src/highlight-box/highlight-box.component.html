@@ -3,78 +3,8 @@
 <link rel="stylesheet" href="/formuladb/icons/frmdb-icons.css" />
 <link rel="stylesheet" href="/formuladb-env/css/_transform.css">
 
-<div id="grand-parent-highlight" class="box">
-</div>
-<div id="parent-highlight" class="box">
-</div>
-<div id="prev-highlight" class="box">
-</div>
-
-<div id="highlight" class="box">
-    <div class="name">
-        <!-- <div class="grand-parent"></div>
-        <div class="parent"></div> -->
-        <div class="elem"></div>
+<frmdb-highlight id="selected-box">
+    <div slot="actions-top">
+        <slot name="actions-for-selected-elem"></slot>
     </div>
-    <div class="actions bottom">
-        <!-- <a id="add-section-btn" href="javascript:void(0)" title="Add element"><i class="frmdb-i-plus-circle"></i></a> -->
-    </div>
-</div>
-
-<div id="parent-selected" class="box">
-</div>
-<div id="selected" class="box">
-    <div class="actions selected" onmouseover="$FCMP(this).hoverOverAction(event)">
-        <!-- <a class="btn" data-frmdb-action="drag" href="javascript:void(0)" title="Drag element"><i class="frmdb-i-arrows"></i></a> -->
-        <div class="btn dropdown frmdb-dropdown-hover" title="Move Element">
-            <i class="frmdb-i-arrows-alt"></i>
-            <div class="dropdown-menu px-2 text-nowrap">
-                <a class="btn" data-frmdb-action="move-before" href="javascript:void(0)" style="transform: rotate(-45deg);" title="Move element before previous sibling"><i class="frmdb-i-arrow-up"></i></a>
-                <a class="btn" data-frmdb-action="move-after" href="javascript:void(0)" style="transform: rotate(45deg);" title="Move element before previous sibling"><i class="frmdb-i-arrow-up"></i></a>
-                <a class="btn" data-frmdb-action="move-up" href="javascript:void(0)" title="Move element up, before parent element"><i class="frmdb-i-arrow-up"></i></a>
-                <a class="btn" data-frmdb-action="move-down" href="javascript:void(0)" title="Move element down, inside next sibling"><i class="frmdb-i-arrow-down"></i></a>
-            </div>
-        </div>
-        <!-- <div class="btn dropdown frmdb-dropdown-hover" title="Select nearby element">
-            <i class="frmdb-i-hand-point-up"></i>
-            <div class="dropdown-menu px-2 text-nowrap">
-                <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i
-                        class="frmdb-i-hand-point-up"></i></a>
-                <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i
-                        class="frmdb-i-hand-point-left"></i></a>
-            </div>
-        </div> -->
-        <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
-            <i class="frmdb-i-edit"></i>
-            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
-                <a class="btn" data-frmdb-action="edit" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-pen-fancy"></i></a>
-                <a class="btn" data-frmdb-action="clone" href="javascript:void(0)" title="Clone element"><i class="frmdb-i-copy"></i></a>
-                <a class="btn" data-frmdb-action="cut" href="javascript:void(0)" title="Cut element"><i class="frmdb-i-cut"></i></a>
-                <a class="btn" data-frmdb-action="delete" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
-            </div>
-        </div>
-
-        <div class="btn dropdown frmdb-dropdown-hover" title="Add Element">
-            <i class="frmdb-i-plus"></i>
-            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
-                <a class="btn" data-frmdb-action="add-inside" href="javascript:void(0)" title="Add element inside"><i class="frmdb-i-plus-circle"></i></a>
-                <a class="btn" data-frmdb-action="add-after" href="javascript:void(0)" title="Add element after"><i class="frmdb-i-plus"></i></a>
-                <a class="btn" data-frmdb-action="paste-inside" href="javascript:void(0)" title="Paste element inside"><i class="frmdb-i-0000105-paste-inside"></i></a>
-                <a class="btn" data-frmdb-action="paste-after" href="javascript:void(0)" title="Paste element after"><i class="frmdb-i-0000106-paste-after"></i></a>
-            </div>
-        </div>
-    </div>
-    <div class="actions add-elements" onmouseover="$FCMP(this).hoverOverAction(event)">
-        <!-- <a class="btn" data-frmdb-action="parent" href="javascript:void(0)" title="Select parent element"><i class="frmdb-i-level-down-alt fa-rotate-180"></i></a>
-        <a class="btn" data-frmdb-action="prev" href="javascript:void(0)" title="Select previous sibling element"><i
-                class="frmdb-i-level-down-alt fa-rotate-90"></i></a> -->
-        <a class="btn" data-frmdb-action="choose" href="javascript:void(0)" title="Choose Element"><i class="frmdb-i-cursor-select"></i></a>
-    </div>
-    <div class="actions editing">
-        <a class="btn" id="bold-btn" href="javascript:void(0)" title="Bold"><i><strong>B</strong></i></a>
-        <a class="btn" id="italic-btn" href="javascript:void(0)" title="Italic"><i>I</i></a>
-        <a class="btn" id="underline-btn" href="javascript:void(0)" title="Underline"><u>u</u></a>
-        <a class="btn" id="strike-btn" href="javascript:void(0)" title="Strikeout"><del>S</del></a>
-        <a class="btn" id="link-btn" href="javascript:void(0)" title="Create link"><strong>a</strong></a>
-    </div>
-</div>
+</frmdb-highlight>

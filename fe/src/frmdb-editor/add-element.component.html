@@ -15,7 +15,12 @@
                         </div>
                         <div class="col-10">
                             <iframe class="vh-85" src="../../frmdb-apps/themes/landing-page.html"></iframe>
-                            <frmdb-highlight-box class="names-hidden"></frmdb-highlight-box>
+                            <frmdb-highlight-box class="names-hidden">
+                                <div slot="actions-for-selected-elem">
+                                    <a class="btn" onclick="$FCMP(this).triggerAddElementFlow()" href="javascript:void(0)" title="Choose Element"><i
+                                            class="frmdb-i-cursor-select"></i></a>
+                                </div>
+                            </frmdb-highlight-box>
                         </div>
                     </div>
                 </div>

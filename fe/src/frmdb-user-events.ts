@@ -76,6 +76,16 @@ export interface FrmdbAddPageElement {
     el: HTMLElement;
 }
 
+export interface FrmdbAddPageElementStart {
+    type: 'FrmdbAddPageElementStart';
+    html: string;
+}
+
+export interface FrmdbMovePageElementStart {
+    type: 'FrmdbMovePageElementStart';
+    el: HTMLElement;
+}
+
 export interface FrmdbRemovePageElement {
     type: 'FrmdbRemovePageElement';
     el: HTMLElement;
@@ -88,33 +98,7 @@ export interface FrmdbHoverPageElement {
 
 export interface FrmdbSelectPageElement {
     type: 'FrmdbSelectPageElement';
-    el: HTMLElement;
-}
-
-export interface FrmdbChoosePageElement {
-    type: 'FrmdbChoosePageElement';
-    el: HTMLElement;
-}
-
-export interface FrmdbSelectPageElementAction {
-    type: 'FrmdbSelectPageElementAction';
-    el: HTMLElement;
-    action: 
-        | "parent"
-        | "prev"
-        | "add-inside" 
-        | "add-after"
-        | "paste-inside" 
-        | "paste-after"
-        | "move-before"
-        | "move-after"
-        | "move-up"
-        | "move-down"
-        | "cut"
-        | "edit"
-        | "clone"
-        | "delete"
-    ;
+    el: HTMLElement | null;
 }
 
 export interface FrmdbEditWysiwygPageElement {
@@ -151,9 +135,9 @@ export type FrmdbUserEvent =
     | FrmdbRemovePageElement
     | FrmdbHoverPageElement
     | FrmdbSelectPageElement
-    | FrmdbChoosePageElement
-    | FrmdbSelectPageElementAction
     | FrmdbEditWysiwygPageElement
     | FrmdbModifyPageElement
     | FrmdbIconsCssChanged
+    | FrmdbAddPageElementStart
+    | FrmdbMovePageElementStart
 ;

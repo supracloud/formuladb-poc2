@@ -17,7 +17,7 @@ https://github.com/givanz/Vvvebjs
 */
 
 import { createInput, Input } from "./inputs";
-import { incrementSort, ElementEditorComponent, incrementCommonPropsSort } from "@fe/component-editor/component-editor.component";
+import { incrementSort, ComponentEditorComponent, incrementCommonPropsSort } from "@fe/component-editor/component-editor.component";
 import { Undo } from "@fe/frmdb-editor/undo";
 
 declare var $: null, jQuery: null;
@@ -163,7 +163,7 @@ function grabIcon(element: HTMLElement) {
 // ComponentsGroup['Basic Components'] =
 // ["html/container", "html/gridrow", "html/button", "html/buttongroup", "html/buttontoolbar", "html/heading", "html/image", "html/jumbotron", "html/alert", "html/card", "html/listgroup", "html/hr", "html/taglabel", "html/badge", "html/progress", "html/navbar", "html/breadcrumbs", "html/pagination", "html/form", "html/textinput", "html/textareainput", "html/selectinput", "html/fileinput", "html/checkbox", "html/radiobutton", "html/table", "html/paragraph", "html/link", "html/video", "html/button"];
 
-export function addComponents(Components: ElementEditorComponent, baseUrl: string) {
+export function addComponents(Components: ComponentEditorComponent, baseUrl: string) {
 
     Components.extend("_base", "html/container", {
         classes: ["container", "container-fluid"],

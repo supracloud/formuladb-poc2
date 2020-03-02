@@ -1,6 +1,6 @@
-import { incrementSort, ElementEditorComponent } from "./component-editor.component";
+import { incrementSort, ComponentEditorComponent } from "./component-editor.component";
 
-export function addComponents(Components: ElementEditorComponent, baseUrl: string) {
+export function addComponents(Components: ComponentEditorComponent, baseUrl: string) {
     Components.extend("_base", "_base", {
         properties: [
             {

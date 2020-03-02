@@ -7,7 +7,7 @@ import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
-import { UserDeleteColumn, FrmdbSelectPageElement, FrmdbSelectPageElementAction, UserSelectedCell } from "@fe/frmdb-user-events";
+import { UserDeleteColumn } from "@fe/frmdb-user-events";
 import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
@@ -21,16 +21,13 @@ import '../directives/data-toggle-modal.directive';
 import { App } from "@domain/app";
 import { $SAVE_DOC_PAGE } from "@fe/fe-functions";
 
-import "@fe/highlight-box/highlight-box.component";
-import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
-
 import { launchFullScreen } from "@fe/frmdb-editor-gui";
 
 import "@fe/component-editor/component-editor.component";
-import { ElementEditorComponent } from "../component-editor/component-editor.component";
+import { ComponentEditorComponent } from "../component-editor/component-editor.component";
 
-// import "./element-tree.component";
-// import { ElementTreeComponent } from "./element-tree.component";
+import "./element-tree.component";
+import { ElementTreeComponent } from "./element-tree.component";
 
 import "@fe/theme-customizer/theme-customizer.component";
 import { ThemeCustomizerComponent } from "@fe/theme-customizer/theme-customizer.component";
@@ -56,6 +53,7 @@ import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
 import { parsePageUrl, PageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "./frmdb-editor-router";
 import { registerChangesFeedHandler } from "@fe/changes-feed-client";
+import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 
 declare var $: null, jQuery: null;
 
@@ -83,12 +81,12 @@ export class FrmdbEditorDirective {
     canvas: HTMLDivElement;
     dataGrid: DataGridComponentI;
     letPanel: HTMLElement;
-    highlightBox: HighlightBoxComponent;
+    elementEditor: ElementEditorComponent;
     addElementCmp: AddElementComponent;
     imgEditorCmp: ImgEditorComponent;
     iconEditorCmp: IconEditorComponent;
-    // elementTree: ElementTreeComponent;
-    elementEditor: ElementEditorComponent;
+    elementTree: ElementTreeComponent;
+    componentEditor: ComponentEditorComponent;
     themeCustomizer: ThemeCustomizerComponent;
 
     get frameDoc(): Document {
@@ -104,18 +102,19 @@ export class FrmdbEditorDirective {
         let appName = BACKEND_SERVICE().appName;
         this.EditorState = new FrmdbEditorState(tenantName, appName);
 
+        (window as any).$FRMDB_EDITOR = this;
         window.addEventListener('load', () => {
             this.iframe = document.body.querySelector('iframe#app')! as HTMLIFrameElement;
             this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
-            this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
+            this.componentEditor = document.body.querySelector('frmdb-component-editor') as ComponentEditorComponent;
             this.frmdbFe = queryFrmdbFe();
             this.dataGrid = queryDataGrid(document.body);
             this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
-            this.highlightBox = document.body.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
+            this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
             this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
             this.imgEditorCmp = document.body.querySelector('frmdb-img-editor') as ImgEditorComponent;
             this.iconEditorCmp = document.body.querySelector('frmdb-icon-editor') as IconEditorComponent;
-            // this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
+            this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
             this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
 
             this.tableManagementFlows();
@@ -125,7 +124,7 @@ export class FrmdbEditorDirective {
             this.loadPages();
             this.viewManagementFlows();
             let ff = () => {
-                this.highlightBox.rootEl = this.iframe.contentWindow!.document;
+                this.elementEditor.rootEl = this.iframe.contentWindow!.document.body;
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
                 pageElementFlows(this);
                 this.hookIframeChangesFeed(this.iframe.contentWindow!);
@@ -196,11 +195,13 @@ export class FrmdbEditorDirective {
     }
 
     selectElement(el: HTMLElement | null) {
-        this.highlightBox.selectElement(el);
+        if (el != this.elementEditor.state.selectedEl) {
+            this.elementEditor.selectElement(el);
+        }
         if (el) {
             this.highlightDataGridCell(el);
-            this.elementEditor.setEditedEl(el);
-            // this.elementTree.render(el);
+            this.componentEditor.setEditedEl(el);
+            this.elementTree.render(el);
         }
     }
 
@@ -458,7 +459,7 @@ export class FrmdbEditorDirective {
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "0px");
                 this.dataGrid.style.display = 'none';
                 this.letPanel.style.display = 'none';
-                this.highlightBox.disabled = true;
+                this.elementEditor.disabled = true;
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-preview');
                 this.iframe.contentWindow!.document.body.classList.remove('frmdb-editor-normal');
             } else {
@@ -466,7 +467,7 @@ export class FrmdbEditorDirective {
                 document.body.style.setProperty('--frmdb-editor-left-panel-width', "14vw");
                 this.dataGrid.style.display = 'block';
                 this.letPanel.style.display = 'block';
-                this.highlightBox.disabled = false;
+                this.elementEditor.disabled = false;
                 this.iframe.contentWindow!.document.body.classList.remove('frmdb-editor-preview');
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
             }
@@ -589,5 +590,9 @@ export class FrmdbEditorDirective {
                 frmdbSetImageSrc(frmdbBlob.el, newSrc);
             }
         }
+    }
+
+    addPageElement() {
+        this.addElementCmp.start();
     }
 }

@@ -1,6 +1,6 @@
 import { FrmdbEditorDirective } from "./frmdb-editor.directive";
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
-import { FrmdbSelectPageElement, FrmdbSelectPageElementAction, FrmdbAddPageElement, FrmdbRemovePageElement } from "@fe/frmdb-user-events";
+import { FrmdbSelectPageElement, FrmdbAddPageElement, FrmdbRemovePageElement } from "@fe/frmdb-user-events";
 import { Undo } from "./undo";
 import { ImageInput } from "@fe/component-editor/inputs";
 import { ImagePropertyListener } from "./img-editor.component";
@@ -14,8 +14,8 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     onEventChildren(document.body, 'click', '#undo-btn', (event) => {
         event.preventDefault();
 
-        if (editor.highlightBox.wysiwygEditor.isActive) {
-            editor.highlightBox.wysiwygEditor.undo();
+        if (editor.elementEditor?.wysiwygEditor?.isActive) {
+            editor.elementEditor.wysiwygEditor.undo();
         } else {
             Undo.undo();
             editor.selectElement(null);
@@ -24,8 +24,8 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
     onEventChildren(document.body, 'click', '#redo-btn', (event) => {
         event.preventDefault();
 
-        if (editor.highlightBox.wysiwygEditor.isActive) {
-            editor.highlightBox.wysiwygEditor.redo();
+        if (editor.elementEditor?.wysiwygEditor?.isActive) {
+            editor.elementEditor.wysiwygEditor.redo();
         } else {
             Undo.redo();
             editor.selectElement(null);
@@ -58,119 +58,12 @@ export function pageElementFlows(editor: FrmdbEditorDirective) {
         }
     });
 
-    onEvent(editor.highlightBox, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
+    onEvent(editor.elementEditor, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
         console.warn("FrmdbSelectPageElement");
         editor.selectElement(event.detail.el);
     });
-    onEvent(editor.elementEditor, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
+    onEvent(editor.componentEditor, 'FrmdbSelectPageElement', '*', (event: { detail: FrmdbSelectPageElement }) => {
         editor.selectElement(event.detail.el);
-    });
-
-    onEvent(editor.highlightBox, 'FrmdbSelectPageElementAction', '*', (event: { detail: FrmdbSelectPageElementAction }) => {
-        let action = event.detail.action;
-        if (action === "add-after" || action === "add-inside") {
-            editor.addElementCmp.start(event.detail.el, event.detail.action);
-        }
-        else if (action === "paste-after" || action === "paste-inside") {
-            if (!currentCutElement) { alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return;}
-            let node = event.detail.el;
-            let oldParent = currentCutElement.parentElement!;
-            let oldNextSibling = currentCutElement.nextElementSibling;
-
-            if (action === 'paste-inside') {
-                node.appendChild(currentCutElement);
-            } else if (action === 'paste-after') {
-                let p = node.parentElement;
-                if (p) {
-                    p.insertBefore(currentCutElement, node.nextSibling);
-                }
-            }
-            Undo.addMutation({
-                type: 'move',
-                target: currentCutElement,
-                oldParent: oldParent,
-                newParent: currentCutElement.parentElement!,
-                oldNextSibling: oldNextSibling,
-                newNextSibling: currentCutElement.nextElementSibling,
-            });
-            editor.selectElement(currentCutElement);
-        }
-        else if (action === "move-before" || action === "move-after" || action === "move-up" || action === "move-down") {
-            let node = event.detail.el;
-            let oldParent = node.parentElement!;
-            let oldNextSibling = node.nextElementSibling;
-
-            if ("move-before" == action) {
-                let next = node.previousElementSibling;
-                if (next) {
-                    oldParent.insertBefore(node, next);
-                } else alert("Selected Page Element is already the first element.")
-            } else if ("move-after" == action) {
-                let nextS = node.nextElementSibling;
-                if (nextS) {
-                    let next = nextS.nextElementSibling;
-                    oldParent.insertBefore(node, next);
-                } else alert("Selected Page Element is already the last element.")
-            } else if ("move-up" == action) {
-                let p = node.parentElement;
-                if (!p || !p.parentElement) alert("Selected Page Element does not have a parent");
-                else p.parentElement.insertBefore(node, p);
-            } else if ("move-down" == action) {
-                let next = node.nextElementSibling;
-                if (next) {
-                    next.appendChild(node);
-                } else alert("Selected Page Element cannot be moved inside a non-existent sibling.")
-            }
-
-            Undo.addMutation({
-                type: 'move',
-                target: node,
-                oldParent: oldParent,
-                newParent: node.parentElement!,
-                oldNextSibling: oldNextSibling,
-                newNextSibling: node.nextElementSibling,
-            });
-            editor.selectElement(node);
-        }
-        else if (event.detail.action === "cut") {
-            currentCutElement = event.detail.el;
-        }
-        else if (event.detail.action === "clone") {
-
-            event.detail.el.insertAdjacentHTML('afterend', event.detail.el.outerHTML);
-            let node = event.detail.el.nextElementSibling as HTMLElement;
-            editor.selectElement(node);
-
-            Undo.addMutation({
-                type: 'childList',
-                target: node.parentElement!,
-                addedNodes: [node],
-                nextSibling: node.nextElementSibling
-            });
-        }
-        else if (action === "delete") {
-
-            if (confirm("Please confirm! Deletion the selected page element ?")) {
-
-                let node = event.detail.el;
-
-                Undo.addMutation({
-                    type: 'childList',
-                    target: node.parentElement!,
-                    removedNodes: [node],
-                    nextSibling: node.nextElementSibling
-                });
-
-                node.parentNode!.removeChild(node);
-                editor.selectElement(null);
-            }
-        }
-        else if (action === "parent") {
-            if (event.detail.el.parentElement) editor.selectElement(event.detail.el.parentElement);
-        }
-        else if (action === "prev") {
-            if (event.detail.el.previousElementSibling) editor.selectElement(event.detail.el.previousElementSibling as HTMLElement);
-        }
     });
 
     editor.frameDoc.addEventListener("FrmdbAddPageElement" as any, (event: {detail: FrmdbAddPageElement}) => {

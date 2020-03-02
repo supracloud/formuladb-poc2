@@ -56,6 +56,7 @@
             "type": "chrome",
             "request": "launch",
             "url": "http://frmdb.localhost/en-lux-cb8670-363636-Clean/frmdb-apps/themes/elements.html?frmdbRender=editor",
+            "_url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/frmdb-apps/themes/overlays.html",
             "webRoot": "${workspaceFolder}",
             "trace": true,
             "sourceMapPathOverrides": {

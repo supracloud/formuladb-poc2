@@ -9,6 +9,9 @@ import './fe-functions';
 import * as _ from "lodash";
 
 import './data-grid/data-grid.component';
+import './highlight/highlight.component';
+import './element-editor/element-editor.component';
+import './wysiwyg-editor/wysiwyg-editor.component';
 
 import {FrmdbEditorDirective} from './frmdb-editor/frmdb-editor.directive';
 import { PageOpts, isEditorMode } from '@domain/url-utils';

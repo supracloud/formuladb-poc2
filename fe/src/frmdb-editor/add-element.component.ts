@@ -1,18 +1,14 @@
-import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
-import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
-import { FrmdbSelectPageElement, FrmdbSelectPageElementAction } from "@fe/frmdb-user-events";
-import { applyTheme, ThemeRules } from "@core/frmdb-themes";
+import { onEventChildren, emit } from "@fe/delegated-events";
 import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
+import { HighlightComponent } from "@fe/highlight/highlight.component";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;
 
 export class AddElementComponent extends HTMLElement {
     iframe: HTMLIFrameElement;
-    highlightBox: HighlightBoxComponent;
+    highlightBox: HighlightComponent;
     nav: HTMLElement;
-    selectedEl: HTMLElement | undefined = undefined;
-    action: FrmdbSelectPageElementAction['action'];
 
     connectedCallback() {
         setTimeout(() => this.init(), 6000);
@@ -20,12 +16,10 @@ export class AddElementComponent extends HTMLElement {
     init() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
         this.iframe = this.querySelector('iframe')!;
-        this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
-        this.highlightBox.enableSelectedActionsEvents = false;
-        this.highlightBox.enableAddElementActionsEvents = true;
+        this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightComponent;
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
-            this.highlightBox.rootEl = this.iframe.contentWindow!.document;
+            this.highlightBox.rootEl = this.iframe.contentWindow!.document.body;
             this.iframe.contentWindow!.document.querySelector('[data-frmdb-fragment="_nav.html"]')?.setAttribute("data-frmdb-highlight-ignore", "");
         }
 
@@ -42,34 +36,17 @@ export class AddElementComponent extends HTMLElement {
             ev.preventDefault();
             this.iframe.src = (ev.target as any)?.href;
         })
-
-        onEvent(this.highlightBox, 'FrmdbChoosePageElement', '*', (event: {detail: FrmdbSelectPageElement}) => {
-            if (!this.selectedEl) {console.warn("selectedEl not found"); return;}
-            let targetDoc = this.selectedEl.ownerDocument;
-            if (!targetDoc) {console.warn("owner doc not found"); return;}
-
-            if (this.action === 'add-inside') {
-                let newEl = targetDoc.importNode(event.detail.el, true);
-                this.selectedEl.appendChild(newEl);
-                emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
-            } else if (this.action === 'add-after') {
-                let newEl = targetDoc.importNode(event.detail.el, true);
-                let p = this.selectedEl.parentElement;
-                if (p) {
-                    p.insertBefore(newEl, this.selectedEl.nextSibling);
-                    emit(newEl.ownerDocument!, {type: "FrmdbAddPageElement", el: newEl});
-                }
-            }
-
-            $FMODAL('#add-element-modal', 'hide');
-        });
     }
 
-    start(selectedEl: HTMLElement, action: FrmdbSelectPageElementAction['action']) {
-        this.selectedEl = selectedEl;
-        this.action = action;
+    triggerAddElementFlow(event: MouseEvent) {
+        if (!this.highlightBox.highlightEl) return;
+        let newEl: HTMLElement = this.highlightBox.highlightEl.cloneNode(true) as HTMLElement;
+        emit(this, {type: "FrmdbAddPageElementStart", html: newEl.outerHTML});
+        $FMODAL('#add-element-modal', 'hide');
+    }
+
+    start() {
         this.iframe.contentWindow!.location.reload();
-                
         $FMODAL('#add-element-modal');
     }
 }

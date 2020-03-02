@@ -16,13 +16,28 @@ li {
     // background-color: green;
     // color: white;
     // background-clip: padding-box;
-    border: 2px dashed yellow;
+    // border: 2px dashed yellow;
+    i {
+        background-color: rgba(61, 133, 253, 1);
+        color: white;
+        border-radius: 2px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 }
 .parent {
     // background-color: yellow;
     // background-clip: padding-box;
     // color: black;
-    border: 2px dotted red;
+    // border: 2px dotted red;
+    i {
+        background-color: rgba(61, 133, 253, 1);
+        color: white;
+        border-radius: 2px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
 }
 .prev {
     // background-color: red;
@@ -31,6 +46,14 @@ li {
     border: 2px dotted #4285f4;
 }
 .elem {
+    i {
+        background-color: rgba(61, 133, 253, 1);
+        color: white;
+        border-radius: 2px;
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+
     background-color: rgba(61, 131, 253, 0.2);
     border: 2px solid #4285f4;
 }

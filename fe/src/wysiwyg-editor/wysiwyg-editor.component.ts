@@ -1,13 +1,24 @@
 import { onEvent } from "@fe/delegated-events";
 import { Undo } from "@fe/frmdb-editor/undo";
+import { HighlightComponent } from "@fe/highlight/highlight.component";
 
 declare var $: null, jQuery: null;
 
-export class WysiwygEditor {
+const HTML: string = require('raw-loader!@fe-assets/wysiwyg-editor/wysiwyg-editor.component.html').default;
+
+export class WysiwygEditorComponent extends HighlightComponent {
 
 	oldValue: string = '';
-	elem: HTMLElement | null = null;
 	private doc: Document | null = null;
+
+	set highlightEl(el: HTMLElement | null) {
+		super.highlightEl = el;
+		this.start();
+	}
+
+	connectedCallback() {
+		this.innerHTML = HTML;
+	}
 
 	init(doc: Document, actions: HTMLElement) {
 		this.doc = doc;
@@ -53,28 +64,36 @@ export class WysiwygEditor {
 		this.doc.execCommand('redo', false, undefined);
     }
 
-	get isActive() { return this.elem != null; }
-	start(elem: HTMLElement) {
-		this.elem = elem;
+	get isActive() { return this.highlightEl != null; }
+	start() {
+		let elem = this.highlightEl;
+		if (!elem) return;
 		this.oldValue = elem.innerHTML;
 		elem.setAttribute('contenteditable', 'true');
 		elem.setAttribute('spellcheckker', 'false');
-
+	}
+	
+	disconnectedCallback() {
+		this.destroy();
 	}
 	destroy() {
-		if (!this.elem) return;
-		this.elem.removeAttribute('contenteditable');
-		this.elem.removeAttribute('spellcheckker');
+		if (!this.highlightEl) return;
+		this.highlightEl.removeAttribute('contenteditable');
+		this.highlightEl.removeAttribute('spellchecker');
 
-		const nodeValue = this.elem.innerHTML;
+		const nodeValue = this.highlightEl.innerHTML;
 
-		Undo.addMutation({
-			type: 'characterData',
-			target: this.elem,
-			oldValue: this.oldValue,
-			newValue: nodeValue
-		});
+		if (nodeValue != this.oldValue) {
+			Undo.addMutation({
+				type: 'characterData',
+				target: this.highlightEl,
+				oldValue: this.oldValue,
+				newValue: nodeValue
+			});
+		}
 		
-		this.elem = null;
+		this.highlightEl = null;
 	}
 }
+
+customElements.define('frmdb-wysiwyg-editor', WysiwygEditorComponent);

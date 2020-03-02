@@ -28,3 +28,15 @@ export function inIframe () {
         return true;
     }
 }
+
+export function getSiblingIndex(el: HTMLElement) {
+    if (!el) return 0;
+    
+    let siblingIndex: number = 1;
+    let prev = el.previousElementSibling;
+    while (prev) {
+        siblingIndex++;
+        prev = prev.previousElementSibling;
+    }
+    return siblingIndex;
+}

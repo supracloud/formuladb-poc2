@@ -1,12 +1,12 @@
 <ul class="grand-parent">
-    <li><span data-frmdb-value="grandParentElName" title="Grandparent Element Box">Grandparent Box</span></li>
+    <li><i>GP</i> <span data-frmdb-value="grandParentElName" title="Grandparent Element Box">Grandparent Box</span></li>
     <li>
         <ul class="parent">
-            <li><span data-frmdb-value="parentElName" title="Parent Element Box">Parent Element Box</span></li>
+            <li><i>P</i> <span data-frmdb-value="parentElName" title="Parent Element Box">Parent Element Box</span></li>
             <li>
                 <ul>
                     <li data-frmdb-if="hasPrev" class="prev" style="display: none;" ><span data-frmdb-value="prevName" title="Previous Sibling Element Box">Previous Sibling Box</span></li>
-                    <li class="elem" ><span data-frmdb-value="elName" title="Current Element Box">Selected Page Element</span></li>
+                    <li class="elem" ><i data-frmdb-value="elIndex" ></i> <span data-frmdb-value="elName" title="Current Element Box">Selected Page Element</span></li>
                 </ul>
             </li>
         </ul>
