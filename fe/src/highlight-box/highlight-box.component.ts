@@ -19,6 +19,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
     static observedAttributes = ['disabled'];
     state: State = dataBindStateToElement(this, new State());
     selectedBox: HighlightComponent;
+    highlightBox: HighlightComponent;
 
     set disabled(d: boolean) {
         this.setAttribute('disabled', new Boolean(d).toString());
@@ -28,6 +29,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
     public enableAddElementActionsEvents: boolean = false;
 
     set rootEl(el: HTMLElement) {
+        if (el === this.state.rootEl) return;
         this.state.rootEl = el;
         this.selectedBox.rootEl = el;
         this.init();
@@ -39,32 +41,35 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = `<style>${CSS}</style>${HTML}`;
         this.selectedBox = this.shadowRoot!.querySelector('frmdb-highlight#selected-box') as HighlightComponent;
+        this.highlightBox = this.shadowRoot!.querySelector('frmdb-highlight#highlight-box') as HighlightComponent;
     }
+    
 
     frmdbRender() {
         this.removeBoxes();
         let el: HTMLElement | null;
 
-        if (this.state.highlightedEl) {
-            this.addBox(this.state.highlightedEl, "highlighted", "focused-element", /*html*/`
-                <div slot="actions-top">
-                    <span class="component-name text-nowrap">${this.getElemName(this.state.highlightedEl)}</span>
-                </div>
-            `);
-        } 
+        if (this.state.highlightedEl && this.state.selectedEl != this.state.highlightedEl) {
+            this.highlightBox.highlightEl = this.state.highlightedEl;
+            this.highlightBox.querySelector('.component-name')!.innerHTML = this.getElemName(this.state.highlightedEl);
+            this.highlightBox.style.display = 'block';
+        } else {
+            this.highlightBox.style.display = 'none';
+        }
         
         if (this.state.selectedEl) {
             this.selectedBox.highlightEl = this.state.selectedEl;
+            this.selectedBox.style.display = 'block';
 
             el = this.state.selectedEl;
             while (el = el.previousElementSibling as HTMLElement | null) {
                 let sidx = getSiblingIndex(el);
                 this.addBox(el, "selected", 'previous-sibling', /*html*/`
                     <div slot="actions-bottom">
-                        <div class="actions related" onmouseover="$FCMP(this).hoverOverAction(event)">
-                            <a class="btn p-0" onclick="$FCMP(this).clickSelectElement(this)" 
+                        <div class="actions related" onmouseover="$FSCMP(this).hoverOverAction(event)">
+                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i>S${sidx}</i>
+                                <i class="frmdb-i-hand-point-left"></i>
                             </a>
                         </div>
                     </div>
@@ -76,10 +81,10 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 let sidx = getSiblingIndex(el);
                 this.addBox(el, "selected", 'next-sibling', /*html*/`
                     <div slot="actions-bottom">
-                        <div class="actions related" onmouseover="$FCMP(this).hoverOverAction(event)">
-                            <a class="btn p-0" onclick="$FCMP(this).clickSelectElement(this)" 
+                        <div class="actions related" onmouseover="$FSCMP(this).hoverOverAction(event)">
+                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i>S${sidx}</i>
+                                <i class="frmdb-i-flip-horizontal frmdb-i-hand-point-left"></i>
                             </a>
                         </div>
                     </div>
@@ -88,34 +93,37 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             if (el = this.state.selectedEl.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "parent", /*html*/`
                     <div slot="actions-top-left">
-                        <div class="actions related" onmouseover="$FCMP(this).hoverOverAction(event)">
-                            <a class="btn p-0" onclick="$FCMP(this).clickSelectElement(this)" 
+                        <div class="actions related" onmouseover="event.stopPropagation()">
+                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Parent Element">
-                                <i>P</i>
+                                <i class="frmdb-i-hand-point-up"></i>
                             </a>
                         </div>
                     </div>
-                `);
+                `, 2);
             }
             if (el = this.state.selectedEl.parentElement?.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "grand-parent", /*html*/`
-                    <div slot="actions-top-left">
-                        <div class="actions related" onmouseover="$FCMP(this).hoverOverAction(event)">
-                            <a class="btn p-0" onclick="$FCMP(this).clickSelectElement(this)" 
+                    <div slot="actions-top-left" class="d-flex flex-nowrap">
+                        <div class="actions related" onmouseover="$FSCMP(this).hoverOverAction(event)">
+                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Grand Parent Element">
-                                <i>GP</i>
+                                <i class="frmdb-i-hand-point-up"></i>
                             </a>
                         </div>
                     </div>
-                `);
+                `, 4);
             }
+        } else {
+            this.selectedBox.style.display = 'none';
         }
     }
 
-    addBox(highlightEl: HTMLElement, boxType: "highlighted" | "selected", elemType: "focused-element" | "previous-sibling" | "next-sibling" | "parent" | "sibling-of-parent" | "grand-parent", actions: string | null, boxTagName = 'frmdb-highlight'): HighlightComponent {
+    addBox(highlightEl: HTMLElement | null, boxType: "highlighted" | "selected" | "editor", elemType: "focused-element" | "previous-sibling" | "next-sibling" | "parent" | "sibling-of-parent" | "grand-parent", actions: string | null, margin: number = 0, boxTagName = 'frmdb-highlight'): HighlightComponent {
         let box: HighlightComponent = getDoc(this).createElement(boxTagName) as HighlightComponent;
 
         box.classList.add('box', boxType, elemType);
+        box.margin = margin;
         if (actions) {
             box.innerHTML = actions;
         }
@@ -146,13 +154,14 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         if (!this.state.rootEl) return;
 
         onEvent(this.state.rootEl, ['mousemove'], '*', (event) => {
+            let targetEl = event.target as HTMLElement;
+            if (targetEl === this.state.highlightedEl) return;
             if (this.state.disabled) return;
             if (
                 (event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore')
                 || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')
             ) return;
 
-            let targetEl = event.target as HTMLElement;
             this.state.highlightedEl = targetEl;
             this.frmdbRender();
             emit(this, { type: "FrmdbHoverPageElement", el: targetEl });
@@ -165,10 +174,10 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             this.selectElement(event.target as HTMLElement);
         });
 
-        this.state.rootEl.addEventListener('scroll', (event) => {
+        this.state.rootEl?.ownerDocument?.addEventListener('scroll', (event) => {
             this.repositionBoxes();
         });
-        (this.state.rootEl.ownerDocument || (this.state.rootEl as Document)).defaultView!.addEventListener('resize', (event) => {
+        (this.state.rootEl.ownerDocument || (this.state.rootEl as Document)).defaultView?.addEventListener('resize', (event) => {
             this.repositionBoxes();
         })
     }
@@ -178,8 +187,11 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         this.frmdbRender();
     }
 
+    allBoxes() {
+        return this.state.boxes.concat(this.selectedBox, this.highlightBox);
+    }
     repositionBoxes() {
-        for (let box of this.state.boxes) {
+        for (let box of this.allBoxes()) {
             box.render();
         }
     }

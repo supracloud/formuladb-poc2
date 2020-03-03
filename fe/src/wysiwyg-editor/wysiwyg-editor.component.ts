@@ -1,6 +1,7 @@
 import { onEvent } from "@fe/delegated-events";
 import { Undo } from "@fe/frmdb-editor/undo";
 import { HighlightComponent } from "@fe/highlight/highlight.component";
+import { getDoc } from "@core/dom-utils";
 
 declare var $: null, jQuery: null;
 
@@ -13,45 +14,23 @@ export class WysiwygEditorComponent extends HighlightComponent {
 
 	set highlightEl(el: HTMLElement | null) {
 		super.highlightEl = el;
+		this.doc = el ? getDoc(el) : null;
 		this.start();
+	}
+	get highlightEl() {
+		return super.highlightEl;
 	}
 
 	connectedCallback() {
 		this.innerHTML = HTML;
+		this.style.border = '1px solid rgb(61, 133, 253)';
 	}
 
-	init(doc: Document, actions: HTMLElement) {
-		this.doc = doc;
-
-		onEvent(actions, "click", "#bold-btn, #bold-btn *",  (e) => {
-			doc.execCommand('bold', false, undefined);
-			e.preventDefault();
-			return false;
-		});
-
-		onEvent(actions, "click", "#italic-btn, #italic-btn *",  (e) => {
-			doc.execCommand('italic', false, undefined);
-			e.preventDefault();
-			return false;
-		});
-
-		onEvent(actions, "click", "#underline-btn, #underline-btn *",  (e) => {
-			doc.execCommand('underline', false, undefined);
-			e.preventDefault();
-			return false;
-		});
-
-		onEvent(actions, "click", "#strike-btn, #strike-btn *",  (e) => {
-			doc.execCommand('strikeThrough', false, undefined);
-			e.preventDefault();
-			return false;
-		});
-
-		onEvent(actions, "click", "#link-btn, #link-btn *",  (e) => {
-			doc.execCommand('createLink', false, "#");
-			e.preventDefault();
-			return false;
-		});
+	action(event: MouseEvent, action: "bold" | "italic" | "underline" | "strikeThrough" | "createLink") {
+		if (!this.doc) return;
+		this.doc.execCommand(action, false, undefined);
+		event.preventDefault();
+		return false;
 	}
 
 	undo() {

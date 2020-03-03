@@ -162,17 +162,28 @@ export const FeFunctionsForDataBinding = {
     '$ID': $ID,
 };
 
+function $FCMP (el: HTMLElement): HTMLElement | null {
+    let parent: Node | null = el;
+    while (parent) {
+        if (isHTMLElement(parent) && parent.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent;
+        else parent = parent.parentNode;
+    }
+    return parent;
+}
+function $FSCMP(el: HTMLElement): HTMLElement | null {
+    let parent: Node | null = el;
+    while (parent) {
+        if (isShadowRoot(parent) && parent.host.tagName.toLowerCase().indexOf('frmdb-') === 0) {
+            return parent.host as HTMLElement;
+        } else parent = parent.parentNode;
+    }
+    return parent;
+}
+
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;
 (window as any).$DATA_COLUMNS_FOR_ELEM = $DATA_COLUMNS_FOR_ELEM;
 (window as any).$ID = $ID;
 (window as any).$SAVE_DOC_PAGE = $SAVE_DOC_PAGE;
-(window as any).$FCMP = function (el: HTMLElement) {
-    let parent: Node | null = el;
-    while (parent) {
-        if (isHTMLElement(parent) && parent.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent;
-        else if (isShadowRoot(parent) && parent.host.tagName.toLowerCase().indexOf('frmdb-') === 0) return parent.host;
-        else parent = parent.parentNode;
-    }
-    return parent;
-}
+(window as any).$FCMP = $FCMP;
+(window as any).$FSCMP = $FSCMP;

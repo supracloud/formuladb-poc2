@@ -6,6 +6,7 @@ import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-uri
 import { State as HighlightBoxState, HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { WysiwygEditorComponent } from "@fe/wysiwyg-editor/wysiwyg-editor.component";
 import { Undo } from "@fe/frmdb-editor/undo";
+import { getDoc } from "@core/dom-utils";
 
 class State extends HighlightBoxState {
     wysiwygEditorOn: boolean = false;
@@ -15,7 +16,16 @@ class State extends HighlightBoxState {
 export class ElementEditorComponent extends HighlightBoxComponent implements FrmdbCustomRender {
     static observedAttributes = ['disabled'];
     state: State = dataBindStateToElement(this, new State());
-    wysiwygEditor: WysiwygEditorComponent | null;
+    wysiwygEditor: WysiwygEditorComponent;
+
+    constructor() {
+        super();
+
+        this.wysiwygEditor = getDoc(this).createElement('frmdb-wysiwyg-editor') as WysiwygEditorComponent;
+        this.wysiwygEditor.id = 'highlight-box';
+        this.wysiwygEditor.style.display = 'none';
+        this.shadowRoot!.appendChild(this.wysiwygEditor);
+    }
 
     set disabled(d: boolean) {
         this.setAttribute('disabled', new Boolean(d).toString());
@@ -29,14 +39,15 @@ export class ElementEditorComponent extends HighlightBoxComponent implements Frm
         if (this.state.selectedEl) {
             this.selectedBox.style.display = 'block';
             this.selectedBox.innerHTML = /*html*/`
-                <div slot="actions-top">
-                    <div class="btn dropdown frmdb-dropdown-hover" title="Move Element">
-                        <span class=component-name>${this.getElemName(this.state.selectedEl)}</span> <i class="frmdb-i-ellipsis-v"></i>
+                <div slot="actions-top" class="d-flex flex-nowrap">
+                    <span class="component-name text-nowrap">${this.getElemName(this.state.selectedEl)}</span>
+                    <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
+                        <i class="pl-1 frmdb-i-ellipsis-v"></i>
                         <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
                             <a class="btn" data-frmdb-action="move-start" href="javascript:void(0)" title="Move element"><i class="frmdb-i-arrows-alt"></i></a>
-                            <a class="btn" onclick="$FCMP(this).editSelectedElement()" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
+                            <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
                             <a class="btn" data-frmdb-action="copy-start" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
-                            <a class="btn" data-frmdb-action="delete" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
+                            <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
                         </div>
                     </div>
                 </div>
@@ -45,8 +56,12 @@ export class ElementEditorComponent extends HighlightBoxComponent implements Frm
 
         if (this.state.selectedEl && this.state.wysiwygEditorOn) {
             this.selectedBox.style.display = 'none';
-            this.wysiwygEditor = this.addBox(this.state.selectedEl, "selected", "focused-element", null, 'frmdb-wysiwyg-editor') as WysiwygEditorComponent;
-        }
+            this.wysiwygEditor.highlightEl = this.state.selectedEl;
+        } else this.wysiwygEditor.style.display = 'none';
+    }
+
+    allBoxes() {
+        return super.allBoxes().concat(this.wysiwygEditor);
     }
 
     selectElement(targetEl: HTMLElement | null) {

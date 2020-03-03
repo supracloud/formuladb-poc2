@@ -19,6 +19,9 @@ export class HighlightComponent extends HTMLElement {
         this._highlightEl = el;
         this.render();
     }
+    get highlightEl(): HTMLElement | null {
+        return this._highlightEl;
+    }
 
     set rootEl(el: HTMLElement) {
         this._rootEl = el;
