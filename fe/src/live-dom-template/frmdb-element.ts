@@ -5,6 +5,7 @@ import { emit } from "../delegated-events";
 import { updateDOM } from "./live-dom-template";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbUserEvent } from '@fe/frmdb-user-events';
+import { dataBindStateToElement } from '@fe/frmdb-element-utils';
 
 interface FrmdbElementConfig<ATTR, STATE> {
     tag: string;
@@ -97,18 +98,7 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     protected LOG: FrmdbLogger;
     frmdbConfig: FrmdbElementConfig<ATTR, STATE>;
 
-    frmdbState: Partial<STATE> = new Proxy({}, {
-        set: (obj, propName: keyof STATE, propValue, receiver) => {
-            let ret = true;
-            let oldValue = this.frmdbState[propName];
-            if (!_.isEqual(oldValue, propValue)) {
-                ret = Reflect.set(obj, propName, propValue);
-                this.frmdbPropertyChangedCallback(propName, oldValue, propValue);
-                this.debouncedUpdateDOM();
-            }
-            return ret;
-        }
-    });
+    frmdbState: Partial<STATE> = dataBindStateToElement<STATE>(this, {} as STATE);
 
     emit: (event: FrmdbUserEvent) => void = emit.bind(null, this);
 
@@ -126,25 +116,6 @@ export class FrmdbElementBase<ATTR, STATE> extends HTMLElement {
     frmdbPropertyChangedCallback<T extends keyof STATE>(propName: T, oldVal: STATE[T] | undefined, newVal: STATE[T]) {
     }
 
-    protected updateDOM() {
-        let el = this.frmdbConfig.noShadow ? this : (this.shadowRoot as any as HTMLElement) || this;
-        updateDOM(this.frmdbState, el);
-    }
-
-    private debouncedUpdateDOM = _.debounce(() => this.updateDOM(), 100);
-
-    public setAttributeTyped<T extends keyof ATTR>(qualifiedName: T, value: string) {
-        super.setAttribute(qualifiedName as string, value);
-    }
-    public getAttributeTyped<T extends keyof ATTR>(qualifiedName: T, example?: ATTR[T]): ATTR[T] | null {
-        let strValue = this.getAttribute(qualifiedName as string);
-        if (null == strValue) return strValue;
-        if (typeof example === 'boolean') {
-            return ('true' === strValue.toLowerCase()) as any as ATTR[T];
-        } else if (typeof example === 'number') {
-            return parseInt(strValue) as any as ATTR[T];
-        } else return strValue as any as ATTR[T];
-    }
 }
 
 // (<any>Element.prototype).debugStr = function () {

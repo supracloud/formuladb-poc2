@@ -8,6 +8,7 @@ import * as _ from 'lodash';
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { FrmdbElementBase, FrmdbElementDecorator } from '@fe/live-dom-template/frmdb-element';
 import { loadPage } from '@fe/fe-functions';
+import { updateDOM } from '@fe/live-dom-template/live-dom-template';
 const LOG = new FrmdbLogger('frmdb-fragment');
 
 /** Component constants (loaded by webpack) **********************************/
@@ -45,7 +46,7 @@ export class FragmentComponent extends FrmdbElementBase<FragmentComponentAttr, F
         if (attrName === "name") {
             loadPage(newVal as string).then(html => {
                 this.innerHTML = html;
-                this.updateDOM();
+                updateDOM(this.frmdbState, this);
             });
         }
 

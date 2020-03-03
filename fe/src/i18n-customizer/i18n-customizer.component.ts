@@ -1,7 +1,7 @@
 import { I18N_UTILS } from "@core/i18n-utils";
 import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
-import { dataBindStateToElement } from "@fe/frmdb-element-urils";
+import { dataBindStateToElement } from "@fe/frmdb-element-utils";
 import { onEventChildren } from "@fe/delegated-events";
 import { I18nLang } from "@domain/i18n";
 

@@ -1,7 +1,7 @@
 import "./look-preview.component";
 import "./theme-preview.component";
 import { _old_ThemeRules, translateThemeRulesByReplacingClasses, __old__unloadThemeRules, applyTheme, unloadCurrentTheme } from "@core/frmdb-themes";
-import { dataBindStateToElement } from "@fe/frmdb-element-urils";
+import { dataBindStateToElement } from "@fe/frmdb-element-utils";
 import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "@fe/frmdb-editor/frmdb-editor-router";
 

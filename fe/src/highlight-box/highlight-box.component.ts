@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { getDoc, getSiblingIndex } from "@core/dom-utils";
 import { HighlightComponent } from "@fe/highlight/highlight.component";
-import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-urils";
+import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-utils";
 
 const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;
@@ -17,7 +17,7 @@ export class State {
 
 export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRender {
     static observedAttributes = ['disabled'];
-    state: State = dataBindStateToElement(this, new State());
+    state: State = new State();
     selectedBox: HighlightComponent;
     highlightBox: HighlightComponent;
 

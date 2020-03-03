@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { isElementWithTextContentEditable } from "@core/i18n-utils";
 import { HighlightComponent } from "@fe/highlight/highlight.component";
-import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-urils";
+import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-utils";
 import { State as HighlightBoxState, HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { WysiwygEditorComponent } from "@fe/wysiwyg-editor/wysiwyg-editor.component";
 import { Undo } from "@fe/frmdb-editor/undo";
@@ -13,10 +13,9 @@ class State extends HighlightBoxState {
     currentCutElement: HTMLElement | null = null;
 }
 
-export class ElementEditorComponent extends HighlightBoxComponent implements FrmdbCustomRender {
-    static observedAttributes = ['disabled'];
-    state: State = dataBindStateToElement(this, new State());
+export class ElementEditorComponent extends HighlightBoxComponent {
     wysiwygEditor: WysiwygEditorComponent;
+    state = new State();
 
     constructor() {
         super();
@@ -57,7 +56,11 @@ export class ElementEditorComponent extends HighlightBoxComponent implements Frm
         if (this.state.selectedEl && this.state.wysiwygEditorOn) {
             this.selectedBox.style.display = 'none';
             this.wysiwygEditor.highlightEl = this.state.selectedEl;
-        } else this.wysiwygEditor.style.display = 'none';
+        }
+
+        if (this.wysiwygEditor.isActive && !this.state.wysiwygEditorOn) {
+            this.wysiwygEditor.highlightEl = null;
+        }
     }
 
     allBoxes() {

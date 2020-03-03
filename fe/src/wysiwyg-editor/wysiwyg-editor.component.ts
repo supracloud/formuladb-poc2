@@ -12,10 +12,22 @@ export class WysiwygEditorComponent extends HighlightComponent {
 	oldValue: string = '';
 	private doc: Document | null = null;
 
-	set highlightEl(el: HTMLElement | null) {
-		super.highlightEl = el;
-		this.doc = el ? getDoc(el) : null;
-		this.start();
+	set highlightEl(elem: HTMLElement | null) {
+		if (this.highlightEl === elem) return;
+
+		if (this.highlightEl) {
+			this.destroy();
+		}
+
+		if (elem) {
+			this.oldValue = elem.innerHTML;
+			elem.setAttribute('contenteditable', 'true');
+			elem.setAttribute('spellcheckker', 'false');
+			this.style.display = 'block';
+		}
+
+		this.doc = elem ? getDoc(elem) : null;
+		super.highlightEl = elem;
 	}
 	get highlightEl() {
 		return super.highlightEl;
@@ -44,18 +56,12 @@ export class WysiwygEditorComponent extends HighlightComponent {
     }
 
 	get isActive() { return this.highlightEl != null; }
-	start() {
-		let elem = this.highlightEl;
-		if (!elem) return;
-		this.oldValue = elem.innerHTML;
-		elem.setAttribute('contenteditable', 'true');
-		elem.setAttribute('spellcheckker', 'false');
-	}
 	
 	disconnectedCallback() {
 		this.destroy();
 	}
-	destroy() {
+
+	protected destroy() {
 		if (!this.highlightEl) return;
 		this.highlightEl.removeAttribute('contenteditable');
 		this.highlightEl.removeAttribute('spellchecker');
@@ -71,7 +77,8 @@ export class WysiwygEditorComponent extends HighlightComponent {
 			});
 		}
 		
-		this.highlightEl = null;
+		super.highlightEl = null;
+		this.style.display = 'none';
 	}
 }
 
