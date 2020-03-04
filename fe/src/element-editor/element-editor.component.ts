@@ -1,8 +1,6 @@
 import * as _ from "lodash";
-import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
+import { emit } from "@fe/delegated-events";
 import { isElementWithTextContentEditable } from "@core/i18n-utils";
-import { HighlightComponent } from "@fe/highlight/highlight.component";
-import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-utils";
 import { State as HighlightBoxState, HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 import { WysiwygEditorComponent } from "@fe/wysiwyg-editor/wysiwyg-editor.component";
 import { Undo } from "@fe/frmdb-editor/undo";
@@ -11,6 +9,7 @@ import { getDoc } from "@core/dom-utils";
 class State extends HighlightBoxState {
     wysiwygEditorOn: boolean = false;
     currentCutElement: HTMLElement | null = null;
+    currentCopiedElement: HTMLElement | null = null;
 }
 
 export class ElementEditorComponent extends HighlightBoxComponent {
@@ -35,6 +34,16 @@ export class ElementEditorComponent extends HighlightBoxComponent {
 
     frmdbRender() {
         super.frmdbRender();
+
+        if (this.state.highlightedEl && this.state.selectedEl != this.state.highlightedEl) {
+            this.selectedBox.innerHTML = /*html*/`
+                <div slot="actions-top" class="d-flex flex-nowrap">
+                    <a class="btn" onclick="$FSCMP(this).paste(true)" href="javascript:void(0)" title="Inser inside"><i class="frmdb-i-inside-box"></i></a>
+                    <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
+                </div>
+            `;
+        }
+
         if (this.state.selectedEl) {
             this.selectedBox.style.display = 'block';
             this.selectedBox.innerHTML = /*html*/`
@@ -43,9 +52,9 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                     <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
                         <i class="pl-1 frmdb-i-ellipsis-v"></i>
                         <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
-                            <a class="btn" data-frmdb-action="move-start" href="javascript:void(0)" title="Move element"><i class="frmdb-i-arrows-alt"></i></a>
+                            <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Move element"><i class="frmdb-i-cut"></i></a>
                             <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
-                            <a class="btn" data-frmdb-action="copy-start" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
+                            <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
                             <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
                         </div>
                     </div>
@@ -84,6 +93,11 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         }
     }
 
+    moveSelectedElement() {
+        if (!this.state.selectedEl) return;
+
+    }
+
     deleteElement() {
         if (!this.state.selectedEl) return;
 
@@ -105,32 +119,64 @@ export class ElementEditorComponent extends HighlightBoxComponent {
     cutElement() {
         if (!this.state.selectedEl) return;
         this.state.currentCutElement = this.state.selectedEl;
+        this.frmdbRender();
+    }
+    copyElement() {
+        if (!this.state.selectedEl) return;
+        this.state.currentCopiedElement = this.state.selectedEl;
+        this.frmdbRender();
+    }
+
+    cancelPaste() {
+        this.state.currentCopiedElement = null;
+        this.state.currentCutElement = null;
+        this.frmdbRender();
     }
 
     paste(node: HTMLElement, inside: boolean) {
-        if (!this.state.currentCutElement) { alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return; }
-        let oldParent = this.state.currentCutElement.parentElement!;
-        let oldNextSibling = this.state.currentCutElement.nextElementSibling;
+        let newElement: Element, oldParent: Element | null, oldNextSibling: Element | null;
+        if (this.state.currentCutElement) {
+            oldParent = this.state.currentCutElement?.parentElement;
+            oldNextSibling = this.state.currentCutElement?.nextElementSibling;
+            newElement = this.state.currentCutElement;
+        } 
+        else if (this.state.currentCopiedElement) {
+            newElement = getDoc(node).importNode(this.state.currentCopiedElement, true);
+            oldParent = null;
+            oldNextSibling = null;
+        }
+        else {alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return; }
 
         if (inside) {
-            node.appendChild(this.state.currentCutElement);
+            node.appendChild(newElement);
         } else {
             let p = node.parentElement;
             if (p) {
-                p.insertBefore(this.state.currentCutElement, node.nextSibling);
+                p.insertBefore(newElement, node.nextSibling);
             }
         }
 
-        Undo.addMutation({
-            type: 'move',
-            target: this.state.currentCutElement,
-            oldParent: oldParent,
-            newParent: this.state.currentCutElement.parentElement!,
-            oldNextSibling: oldNextSibling,
-            newNextSibling: this.state.currentCutElement.nextElementSibling,
-        });
+        if (null == oldParent) {
+            Undo.addMutation({
+                type: 'childList',
+                target: newElement.parentElement!,
+                addedNodes: [newElement],
+                nextSibling: newElement.nextElementSibling
+            });
+        } else {
+            Undo.addMutation({
+                type: 'move',
+                target: newElement,
+                oldParent: oldParent,
+                newParent: newElement.parentElement!,
+                oldNextSibling: oldNextSibling,
+                newNextSibling: newElement.nextElementSibling,
+            });
+        }
 
-        this.selectElement(this.state.currentCutElement);
+        this.selectElement(newElement as HTMLElement);
+        this.state.currentCopiedElement = null;
+        this.state.currentCutElement = null;
     }
 
     cloneElement() {

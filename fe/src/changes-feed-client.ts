@@ -6,6 +6,7 @@ const CLIENT_ID = generateTimestampUUID();
 
 
 const Handlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = {};
+(window as any).$FRMDB_CHANGES_FEED_HANDLERS$ = Handlers;
 
 let Stop = false;
 export function stopChangesFeedLoop() {
@@ -13,7 +14,8 @@ export function stopChangesFeedLoop() {
 }
 
 let AlreadyStarted = false;
-async function changesFeedLoop() {
+export async function changesFeedLoop() {
+    if (Stop) return;
     if (AlreadyStarted) return;
     console.warn("changesFeedLoop START", new Date(), document?.defaultView?.location?.href, AlreadyStarted);
     AlreadyStarted = true;
@@ -54,12 +56,15 @@ async function changesFeedLoop() {
     }
 }
 
-if (inIframe()) {
-    (window as any).$FRMDB_CHANGES_FEED_HANDLERS_IN_IFRAME$ = Handlers;
-} else {
-    changesFeedLoop();
-}
-
 export function registerChangesFeedHandler(name: string, handler: (events: events.MwzEvents[]) => Promise<void>) {
     Handlers[name] = handler;
+}
+
+export function hookIframeChangesFeedHandlers(iframeWindow: Window) {
+    let iframeHandlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = 
+        (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$;
+
+    for (let handlerName of Object.keys(iframeHandlers)) {
+        Handlers['iframe-' + handlerName] = iframeHandlers[handlerName];
+    }
 }

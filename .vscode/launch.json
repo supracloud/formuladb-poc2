@@ -50,7 +50,7 @@
             "outFiles": [
                 "${workspaceRoot}/tsc-out/**/*.js",
             ]
-        },        
+        },
         {
             "name": "FE serve",
             "type": "chrome",

@@ -24,6 +24,8 @@ const HTML = /*html*/`
 `;
 
 describe('DataBindingsMonitor', () => {
+    let dataBindingMonitor: DataBindingsMonitor;
+
     beforeAll(() => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
@@ -59,7 +61,7 @@ describe('DataBindingsMonitor', () => {
         window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$EDIT$/spec-apps/test-app/test-page.html';
 
         await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
-        let dataBindingMonitor = new DataBindingsMonitor(document.body);
+        dataBindingMonitor = new DataBindingsMonitor(document.body);
         fetchMock.post('/formuladb-api/spec-apps/test-app/A/SimpleAddHocQuery', [
             { _id: "A~~1", f1: "f1.1", f2: 101 },
             { _id: "A~~2", f1: "f1.2", f2: 102 },

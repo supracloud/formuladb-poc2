@@ -61,8 +61,9 @@ function setJsdomGlobals() {
     nodeGlobal.HTMLUnknownElement = window.HTMLUnknownElement;
     nodeGlobal.HTMLElement = window.HTMLElement;
 
-    const fetch = require('node-fetch');
-    nodeGlobal.fetch = fetch;
+    nodeGlobal.fetch = function () {
+        throw new Error("fetch must be mocked in browser specs: " + Array.from(arguments).join(", "));
+    }
 
 
     const jsdomDevtoolsFormatter = require('jsdom-devtools-formatter');

@@ -4,7 +4,8 @@ import { waitUntil } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
 import { initRoutes } from "./router";
 import { DataBindingsMonitor } from "./data-bindings-monitor";
-import { stopChangesFeedLoop } from "./changes-feed-client";
+import { stopChangesFeedLoop, changesFeedLoop } from "./changes-feed-client";
+import { inIframe } from "@core/dom-utils";
 
 let dataBindingMonitor: DataBindingsMonitor | null = null;
 export async function initFrmdb() {
@@ -17,11 +18,15 @@ export async function initFrmdb() {
 
     dataBindingMonitor = new DataBindingsMonitor(document.body);
     dataBindingMonitor.updateDOMForRoot();
+
+    if (!inIframe()) {
+        changesFeedLoop();
+    }
 }
 
 export function deinitFrmdb() {
     if (dataBindingMonitor) {
-        stopChangesFeedLoop();
         dataBindingMonitor = null;
-    } 
+    }
+    stopChangesFeedLoop();
 }

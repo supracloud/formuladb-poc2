@@ -1,5 +1,5 @@
 import { HotelBookingApp, HotelBookingSchema } from "./metadata";
-import { navigate, setValue, testSleep } from "@fe/fe-test-urils.spec";
+import { navigate, setValue, testSleep } from "@fe/fe-test-utils.spec";
 
 /**
 * © 2018 S.C. FORMULA DATABASE S.R.L.
@@ -70,7 +70,7 @@ describe('[FE] Hotel Booking', () => {
         };
 
         it("user navigates to index page, and fills in preliminary data for a new booking", async (done) => {
-            await navigate('/test-tenant/hotel_booking', index_html);
+            await navigate('/en-basic-1a1a1a-ffffff-Clean/test-tenant/hotel_booking/index.html', index_html);
 
             expect(document.querySelector('frmdb-fragment') instanceof FragmentComponent).toEqual(true);
 
@@ -91,7 +91,7 @@ describe('[FE] Hotel Booking', () => {
 
         it("user clicks 'Book Now', navigates to the booking page, all data introduced on index page is visible", async (done) => {
 
-            await navigate('/test-tenant/hotel_booking/booking', booking_html);
+            await navigate('/en-basic-1a1a1a-ffffff-Clean/test-tenant/hotel_booking/index.html', booking_html);
 
             start_date_El = document.querySelector('[data-frmdb-value="::start_date"]') as HTMLInputElement;
             end_date_El = document.querySelector('[data-frmdb-value="::end_date" ]') as HTMLInputElement;

@@ -10,7 +10,7 @@ import { Entity, Pn } from "@domain/metadata/entity";
 import { FormService } from "./form.service";
 import { waitUntil } from "@domain/ts-utils";
 import { BACKEND_SERVICE } from "./backend.service";
-import { setValue, navigate } from "./fe-test-urils.spec";
+import { setValue, navigate } from "./fe-test-utils.spec";
 import { ServerEventModifiedFormData } from '@domain/event';
 import { deinitFrmdb } from './init';
 
@@ -78,7 +78,7 @@ describe('FormService', () => {
     });
 
     it('should allow editing of records', async (done) => {
-        navigate('/test-tenant/test_app', HTML);
+        navigate('/en-basic-1a1a1a-ffffff-Clean/test-tenant/test_app/index.html', HTML);
 
         let f1Input: HTMLInputElement = document.querySelector('[data-frmdb-value="::f1"]') as HTMLInputElement;
         let f2Input: HTMLInputElement = document.querySelector('[data-frmdb-value="::f2"]') as HTMLInputElement;

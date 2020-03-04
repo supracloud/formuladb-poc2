@@ -52,7 +52,7 @@ import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
 import { parsePageUrl, PageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler } from "./frmdb-editor-router";
-import { registerChangesFeedHandler } from "@fe/changes-feed-client";
+import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 
 declare var $: null, jQuery: null;
@@ -127,7 +127,7 @@ export class FrmdbEditorDirective {
                 this.elementEditor.rootEl = this.iframe.contentWindow!.document.body;
                 this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
                 pageElementFlows(this);
-                this.hookIframeChangesFeed(this.iframe.contentWindow!);
+                hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
             }
             this.iframe.onload = ff;
 
@@ -154,14 +154,6 @@ export class FrmdbEditorDirective {
         }, () => this.checkSafeNavigation());
     }
 
-    hookIframeChangesFeed(iframeWindow: Window) {
-        registerChangesFeedHandler('editor-iframe-handlers-hook', async (events: events.MwzEvents[]) => {
-            let handlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = 
-                (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS_IN_IFRAME$;
-
-            await Promise.all(Object.values(handlers).map(h => h(events)));
-        });
-    }
 
     showIntroVideoModal() {
         let introVideoModal = $FMODAL('#intro-video-modal');
