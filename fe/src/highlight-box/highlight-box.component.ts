@@ -66,10 +66,10 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 let sidx = getSiblingIndex(el);
                 this.addBox(el, "selected", 'previous-sibling', /*html*/`
                     <div slot="actions-bottom">
-                        <div class="actions related" onmouseover="$FSCMP(this).hoverOverAction(event)">
-                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
+                        <div class="actions related" onmouseover="event.stopPropagation()">
+                            <a class="btn py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i class="frmdb-i-hand-point-left"></i>
+                                <i class="frmdb-i-hand-point-up"></i>
                             </a>
                         </div>
                     </div>
@@ -81,10 +81,10 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 let sidx = getSiblingIndex(el);
                 this.addBox(el, "selected", 'next-sibling', /*html*/`
                     <div slot="actions-bottom">
-                        <div class="actions related" onmouseover="$FSCMP(this).hoverOverAction(event)">
-                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
+                        <div class="actions related" onmouseover="event.stopPropagation()">
+                            <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i class="frmdb-i-flip-horizontal frmdb-i-hand-point-left"></i>
+                                <i class="frmdb-i-hand-point-up"></i>
                             </a>
                         </div>
                     </div>
@@ -92,9 +92,9 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             }
             if (el = this.state.selectedEl.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "parent", /*html*/`
-                    <div slot="actions-top-left">
+                    <div slot="actions-left">
                         <div class="actions related" onmouseover="event.stopPropagation()">
-                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
+                            <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Parent Element">
                                 <i class="frmdb-i-hand-point-up"></i>
                             </a>
@@ -105,8 +105,8 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             if (el = this.state.selectedEl.parentElement?.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "grand-parent", /*html*/`
                     <div slot="actions-top-left" class="d-flex flex-nowrap">
-                        <div class="actions related" onmouseover="$FSCMP(this).hoverOverAction(event)">
-                            <a class="btn py-1 px-2" onclick="$FSCMP(this).clickSelectElement(this)" 
+                        <div class="actions related" onmouseover="event.stopPropagation()">
+                            <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Grand Parent Element">
                                 <i class="frmdb-i-hand-point-up"></i>
                             </a>

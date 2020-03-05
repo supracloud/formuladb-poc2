@@ -40,15 +40,17 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                     <span class="component-name text-nowrap"></span>
                 </div>
                 <div slot="actions-middle">
-                    <i class="frmdb-i-bullseye"></i>
+                    <i class="frmdb-i-bullseye" title="Paste Before/Inside/After this Element" onclick="$FSCMP(this).clickSelectElement(this)" ></i>
                 </div>
             `;
+            this.highlightBox.style.backgroundColor = 'rgba(61, 133, 253, 0.25)';
         } else {
             this.highlightBox.innerHTML = /*html*/`
                 <div slot="actions-top">
                     <span class="component-name text-nowrap"></span>
                 </div>
             `;
+            this.highlightBox.style.backgroundColor = '';
         }
 
         super.frmdbRender();
@@ -58,8 +60,9 @@ export class ElementEditorComponent extends HighlightBoxComponent {
             if (this.state.currentCopiedElement || this.state.currentCutElement) {
                 this.selectedBox.innerHTML = /*html*/`
                     <div slot="actions-top" class="d-flex flex-nowrap">
-                        <a class="btn" onclick="$FSCMP(this).paste(true)" href="javascript:void(0)" title="Inser inside"><i class="frmdb-i-inside-box"></i></a>
-                        <a class="btn" onclick="$FSCMP(this).paste(false)" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).paste('before')" href="javascript:void(0)" title="Insert before"><i class="frmdb-i-before-box"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).paste('inside')" href="javascript:void(0)" title="Insert inside"><i class="frmdb-i-inside-box"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).paste('after')" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
                     </div>
                 `;
             } else {
@@ -153,7 +156,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         this.frmdbRender();
     }
 
-    paste(inside: boolean) {
+    paste(position: 'before' | 'inside' | 'after') {
         if (!this.state.selectedEl) return;
 
         let newElement: Element, oldParent: Element | null, oldNextSibling: Element | null;
@@ -170,7 +173,12 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         }
         else {alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return; }
 
-        if (inside) {
+        if ('before' == position) {
+            let p = node.parentElement;
+            if (p) {
+                p.insertBefore(newElement, node);
+            }
+        } else if ('inside' == position) {
             node.appendChild(newElement);
         } else {
             let p = node.parentElement;
