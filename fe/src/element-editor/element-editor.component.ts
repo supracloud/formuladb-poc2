@@ -33,33 +33,51 @@ export class ElementEditorComponent extends HighlightBoxComponent {
     public enableAddElementActionsEvents: boolean = false;
 
     frmdbRender() {
-        super.frmdbRender();
 
-        if (this.state.highlightedEl && this.state.selectedEl != this.state.highlightedEl) {
-            this.selectedBox.innerHTML = /*html*/`
-                <div slot="actions-top" class="d-flex flex-nowrap">
-                    <a class="btn" onclick="$FSCMP(this).paste(true)" href="javascript:void(0)" title="Inser inside"><i class="frmdb-i-inside-box"></i></a>
-                    <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
+        if (this.state.highlightedEl && (this.state.currentCopiedElement || this.state.currentCutElement)) {
+            this.highlightBox.innerHTML = /*html*/`
+                <div slot="actions-top">
+                    <span class="component-name text-nowrap"></span>
+                </div>
+                <div slot="actions-middle">
+                    <i class="frmdb-i-bullseye"></i>
+                </div>
+            `;
+        } else {
+            this.highlightBox.innerHTML = /*html*/`
+                <div slot="actions-top">
+                    <span class="component-name text-nowrap"></span>
                 </div>
             `;
         }
 
+        super.frmdbRender();
+
         if (this.state.selectedEl) {
             this.selectedBox.style.display = 'block';
-            this.selectedBox.innerHTML = /*html*/`
-                <div slot="actions-top" class="d-flex flex-nowrap">
-                    <span class="component-name text-nowrap">${this.getElemName(this.state.selectedEl)}</span>
-                    <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
-                        <i class="pl-1 frmdb-i-ellipsis-v"></i>
-                        <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
-                            <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Move element"><i class="frmdb-i-cut"></i></a>
-                            <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
-                            <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
-                            <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
+            if (this.state.currentCopiedElement || this.state.currentCutElement) {
+                this.selectedBox.innerHTML = /*html*/`
+                    <div slot="actions-top" class="d-flex flex-nowrap">
+                        <a class="btn" onclick="$FSCMP(this).paste(true)" href="javascript:void(0)" title="Inser inside"><i class="frmdb-i-inside-box"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).paste(false)" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
+                    </div>
+                `;
+            } else {
+                this.selectedBox.innerHTML = /*html*/`
+                    <div slot="actions-top" class="d-flex flex-nowrap">
+                        <span class="component-name text-nowrap">${this.getElemName(this.state.selectedEl)}</span>
+                        <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
+                            <i class="pl-1 frmdb-i-ellipsis-v"></i>
+                            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
+                                <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
+                                <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
+                                <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
+                                <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         if (this.state.selectedEl && this.state.wysiwygEditorOn) {
@@ -119,11 +137,13 @@ export class ElementEditorComponent extends HighlightBoxComponent {
     cutElement() {
         if (!this.state.selectedEl) return;
         this.state.currentCutElement = this.state.selectedEl;
+        this.state.selectedEl = null;
         this.frmdbRender();
     }
     copyElement() {
         if (!this.state.selectedEl) return;
         this.state.currentCopiedElement = this.state.selectedEl;
+        this.state.selectedEl = null;
         this.frmdbRender();
     }
 
@@ -133,8 +153,11 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         this.frmdbRender();
     }
 
-    paste(node: HTMLElement, inside: boolean) {
+    paste(inside: boolean) {
+        if (!this.state.selectedEl) return;
+
         let newElement: Element, oldParent: Element | null, oldNextSibling: Element | null;
+        let node = this.state.selectedEl;
         if (this.state.currentCutElement) {
             oldParent = this.state.currentCutElement?.parentElement;
             oldNextSibling = this.state.currentCutElement?.nextElementSibling;

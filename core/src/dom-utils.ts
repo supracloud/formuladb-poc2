@@ -18,7 +18,10 @@ export function getWindow(param: Document | ShadowRoot | HTMLElement): Window {
 }
 
 export function getDoc(param: Document | ShadowRoot | HTMLElement): Document {
-    return getWindow(param).document;
+    let p: any = param;
+    if (p.defaultView) return p.defaultView.document;
+    if (p.ownerDocument) return p.ownerDocument;
+    throw new Error("document not found for " + p); 
 }
 
 export function inIframe () {
