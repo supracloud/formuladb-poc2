@@ -18,7 +18,7 @@
                         <div class="col-sm-9 input">
                             <div>
                                 <input name="tableName" type="text" class="form-control" placeholder="New_Table_Name" required pattern="[a-zA-Z_]+"
-                                    oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+                                    oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_').replace(/^./, function(v) { return v.toUpperCase(); });">
                             </div>
 
                             <div class="alert alert-danger" role="alert" style="display: none">

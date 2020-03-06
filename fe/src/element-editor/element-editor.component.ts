@@ -68,7 +68,6 @@ export class ElementEditorComponent extends HighlightBoxComponent {
             } else {
                 this.selectedBox.innerHTML = /*html*/`
                     <div slot="actions-top" class="d-flex flex-nowrap">
-                        <span class="component-name text-nowrap">${this.getElemName(this.state.selectedEl)}</span>
                         <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
                             <i class="pl-1 frmdb-i-ellipsis-v"></i>
                             <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
@@ -78,6 +77,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                                 <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
                             </div>
                         </div>
+                        <span class="component-name text-nowrap">${this.getElemName(this.state.selectedEl)}</span>
                     </div>
                 `;
             }

@@ -66,7 +66,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 let sidx = getSiblingIndex(el);
                 this.addBox(el, "selected", 'previous-sibling', /*html*/`
                     <div slot="actions-bottom">
-                        <div class="actions related" onmouseover="event.stopPropagation()">
+                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class="btn py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
                                 <i class="frmdb-i-hand-point-up"></i>
@@ -81,7 +81,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                 let sidx = getSiblingIndex(el);
                 this.addBox(el, "selected", 'next-sibling', /*html*/`
                     <div slot="actions-bottom">
-                        <div class="actions related" onmouseover="event.stopPropagation()">
+                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
                                 <i class="frmdb-i-hand-point-up"></i>
@@ -93,7 +93,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             if (el = this.state.selectedEl.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "parent", /*html*/`
                     <div slot="actions-left">
-                        <div class="actions related" onmouseover="event.stopPropagation()">
+                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Parent Element">
                                 <i class="frmdb-i-hand-point-up"></i>
@@ -105,7 +105,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             if (el = this.state.selectedEl.parentElement?.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "grand-parent", /*html*/`
                     <div slot="actions-top-left" class="d-flex flex-nowrap">
-                        <div class="actions related" onmouseover="event.stopPropagation()">
+                        <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Grand Parent Element">
                                 <i class="frmdb-i-hand-point-up"></i>
@@ -156,11 +156,14 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         onEvent(this.state.rootEl, ['mousemove'], '*', (event) => {
             let targetEl = event.target as HTMLElement;
             if (targetEl === this.state.highlightedEl) return;
-            if (this.state.disabled) return;
             if (
-                (event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore')
+                this.state.disabled
+                || (event.target as HTMLElement)?.hasAttribute('data-frmdb-highlight-ignore')
                 || (event.target as HTMLElement)?.closest('[data-frmdb-highlight-ignore]')
-            ) return;
+            ) {
+                this.highlightBox.style.display = 'none';
+                return;
+            }
 
             this.state.highlightedEl = targetEl;
             this.frmdbRender();
@@ -206,6 +209,9 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
 
         this.state.selectedEl = el;
         this.frmdbRender();
+    }
+    selectElementHover() {
+        this.highlightBox.style.display = 'none';
     }
 
 }

@@ -17,8 +17,8 @@
                         <label class="col-sm-3 control-label">App name</label>
                         <div class="col-sm-9 input">
                             <div>
-                                <input name="appName" type="text" class="form-control" placeholder="New_App_Name" required pattern="[a-zA-Z_]+"
-                                    oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+                                <input name="appName" type="text" class="form-control" placeholder="New_App_Name" required pattern="[-a-z]+"
+                                    oninput="this.value = this.value.replace(/[^-a-z]/g, '-')">
                             </div>
 
                             <div class="alert alert-danger" role="alert" style="display: none">

@@ -18,8 +18,8 @@
                         <label class="col-sm-3 control-label">Column name</label>
                         <div class="col-sm-9 input">
                             <div>
-                                <input name="columnName" type="text" class="form-control" placeholder="new_column_name" required pattern="[a-zA-Z_]+"
-                                    oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '_')">
+                                <input name="columnName" type="text" class="form-control" placeholder="new_column_name" required pattern="[a-z0-9_]+"
+                                    oninput="this.value = this.value.replace(/[^a-z0-9_]/g, '_')">
                             </div>
 
                             <div class="alert alert-danger" role="alert" style="display: none">
