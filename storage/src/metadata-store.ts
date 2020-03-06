@@ -245,7 +245,7 @@ export class MetadataStore {
             await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/themes ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
         }
         await execShell(`mkdir -p ${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
-        return this.getApp("apps", appName);
+        return this.getApp(tenantName, appName);
     }
 
     async newPage(newPageName: string, startTemplateUrl: string) {
