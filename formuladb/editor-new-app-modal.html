@@ -17,8 +17,22 @@
                         <label class="col-sm-3 control-label">App name</label>
                         <div class="col-sm-9 input">
                             <div>
-                                <input name="appName" type="text" class="form-control" placeholder="New_App_Name" required pattern="[-a-z]+"
-                                    oninput="this.value = this.value.replace(/[^-a-z]/g, '-')">
+                                <input name="appName" type="text" class="form-control" placeholder="new-app-name" required pattern="[-a-z]+"
+                                    oninput="this.value = this.value.replace(/[A-Z]/g, v => v.toLowerCase()).replace(/[^-a-z]/g, '-'); 
+                                        this.closest('form').querySelector('#appDisplayName').value = this.value.replace(/-/g, ' ').replace(/(^|(?<= ))[a-z]/g, v => v.toUpperCase())">
+                            </div>
+
+                            <div class="alert alert-danger" role="alert" style="display: none">
+                                A simple danger alert—check it out!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row" data-key="href">
+                        <label class="col-sm-3 control-label">App Label</label>
+                        <div class="col-sm-9 input">
+                            <div>
+                                <input id="appDisplayName" type="text" class="form-control" placeholder="New App Name" disabled>
                             </div>
 
                             <div class="alert alert-danger" role="alert" style="display: none">
