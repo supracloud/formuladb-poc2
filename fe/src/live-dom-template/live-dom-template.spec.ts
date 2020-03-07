@@ -20,9 +20,11 @@ function fakeAsync<T>(x: T): Promise<T> {
 }
 
 const template = /*html*/`
+<h1 data-frmdb-value=":CONCATENATE('bla-', x):topObj.o"></h1>
 <i data-frmdb-table="array[]" data-frmdb-value="array[]"></i>
 <h4 data-frmdb-table="topObj.emptyArray[]"></h4>
 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name">
+    <a data-frmdb-attr="href:CONCATENATE('../', name):tableName[]">Link</a>
     <span data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
         <strong data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" 
             data-frmdb-attr2="second-attr::tableName[].atr">blabla</strong>
@@ -39,7 +41,7 @@ const template = /*html*/`
 `;
 
 let data = {
-    topObj: {a: 12, b: 15, emptyArray: []},
+    topObj: {a: 12, b: 15, emptyArray: [], o: {x: 1234}},
     array: ['a', 'b', 'c', 'd'],
     tableName: [
         { name: "row1", description: "desc of row 1", bg: () => "red", cls: true, atr: "attr1", childTable: [{x: "1.1"}, {x: "1.2"}] },
@@ -69,12 +71,14 @@ describe('[FE] FrmdbTemplate', () => {
         let expectedNormalizedHTML = htmlTools.normalizeHTML(    
             /*html*/`
             <div>
+                <h1 data-frmdb-value=":CONCATENATE('bla-', x):topObj.o">bla-1234</h1>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">a</i>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">b</i>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">c</i>
                 <i data-frmdb-table="array[]" data-frmdb-value="array[]">d</i>
                 <h4 data-frmdb-table="topObj.emptyArray[]"></h4>
                 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row1">
+                    <a data-frmdb-attr="href:CONCATENATE('../', name):tableName[]" href="../row1">Link</a>
                     <span data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls" disabled="disabled">
                         <strong data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr1">1.1</strong>
                         <p data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F1.1" at1="12">15</p>
@@ -94,6 +98,7 @@ describe('[FE] FrmdbTemplate', () => {
                     <h1 data-frmdb-prop="complex::tableName[].childTable"></h1>
                 </div>
                 <div data-frmdb-table="tableName[]" data-frmdb-attr="class[row1|row2]::tableName[].name" class="row2">
+                    <a data-frmdb-attr="href:CONCATENATE('../', name):tableName[]" href="../row2">Link</a>
                     <span data-frmdb-table="tableName[].childTable[]" data-frmdb-attr="!disabled::tableName[].cls">
                         <strong data-frmdb-value="::tableName[].childTable[].x" data-frmdb-attr="attr-from-parent::topObj.a" data-frmdb-attr2="second-attr::tableName[].atr" attr-from-parent="12" second-attr="attr2">2.1</strong>
                         <p data-frmdb-value=":topObj:secondTopObj.f1" data-frmdb-attr="at1:topObj:secondTopObj.f2" data-frmdb-attr3="at2:secondTopObj:tableName[].childTable[].x" at2="F2.1" at1="12">15</p>

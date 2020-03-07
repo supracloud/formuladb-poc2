@@ -2,6 +2,7 @@ import * as _ from "lodash";//TODO: optimization include only the needed functio
 import * as DOMPurify from "dompurify";
 import { generate } from "short-uuid";
 import { generateUUID } from "@domain/uuid";
+import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
 
 let parser = new DOMParser(), serializer = new XMLSerializer();
 
@@ -113,9 +114,16 @@ export enum DATA_FRMDB_ATTRS_Enum {
     'data-frmdb-prop4' = 'data-frmdb-prop4',
     'data-frmdb-if' = 'data-frmdb-if',
 };
+function getDataBindingSelectorForKey(key: string): string {
+    return Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"],[${a}="${key}"]`).join(',');
+}
 export function getElemForKey(el: Elem, key: string): Elem[] {
-    let sel = Object.keys(DATA_FRMDB_ATTRS_Enum).map(a => `[${a}$=":${key}"],[${a}="${key}"]`).join(',');
+    let sel = getDataBindingSelectorForKey(key);
     return _getElemForKey(el, sel);
+}
+export function elemHasDataBindingForKey(el: Elem, key: string): boolean {
+    let sel = getDataBindingSelectorForKey(key);
+    return el.matches(sel);
 }
 export function getAllElemsWithDataBindingAttrs(el: Elem): Elem[] {
     let ret: Elem[] = [];
@@ -231,13 +239,18 @@ function computeValuesForDataBindingAttrs(attrib: Attr, objValForKey: any, el: E
     if ("objValForKey-needs-to-be-computed-for-ifKey" === objValForKey) {
         valueForKey = getValueForDomExpandedKey(ctxKeyExpanded, context);
     }
+
     if (metaKey === '') {
         value = valueForKey;
     } else {
-        metaKeyExpanded = domExpandedKey(metaKey, arrayCurrentIndexes);
-        let metaCtx = getValueForDomExpandedKey(metaKeyExpanded, context);
-        let keyForSearchingInMetaContext = valueForKey;
-        value = getValueForDomKey(keyForSearchingInMetaContext, metaCtx, arrayCurrentIndexes) || '';
+        if (metaKey.indexOf('(') >= 0) {
+            value = scalarFormulaEvaluate(valueForKey, metaKey);
+        } else {
+            metaKeyExpanded = domExpandedKey(metaKey, arrayCurrentIndexes);
+            let metaCtx = getValueForDomExpandedKey(metaKeyExpanded, context);
+            let keyForSearchingInMetaContext = valueForKey;
+            value = getValueForDomKey(keyForSearchingInMetaContext, metaCtx, arrayCurrentIndexes) || '';
+        }
     }
 
     return {valueName, metaKey, ctxKey, value, metaKeyExpanded, ctxKeyExpanded};

@@ -1,4 +1,4 @@
-import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs } from "./dom-node";
+import { getElemForKey, Elem, getElemList, setElemValue, getElemWithComplexPropertyDataBinding, getAllElemsWithDataBindingAttrs, elemHasDataBindingForKey } from "./dom-node";
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { emit } from "@fe/delegated-events";
 const LOG = new FrmdbLogger('live-dom-template');
@@ -118,7 +118,11 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
                 }
                 if (isScalar(o)) {
                     updateDOMForScalarValue(o, elemListToDataBind[i]!, context, domKey, arrayCurrentIndexes.concat(i), '', '');
-                } else updateDOMForScope(o, elemListToDataBind[i]!, context, domKey, arrayCurrentIndexes.concat(i));
+                } else {
+                    let elemsForKey = getElemForKey(elemListToDataBind[i]!, domKey);
+                    setElemValue(o, elemsForKey, domKey, context, arrayCurrentIndexes, key);
+                }
+                updateDOMForScope(o, elemListToDataBind[i]!, context, domKey, arrayCurrentIndexes.concat(i));
             };
 
             elemListForKey.addAll(newElemsAdded);
@@ -134,6 +138,8 @@ function updateDOMForKey(domKeySep: string, key: string, objValForKey: any, newD
         LOG.debug("updateDOMForKeyObj", "", key, objValForKey, domKey, elemsForKey);
         if (0 == elemsForKey.length) {
             elemsForKey.push(el);
+        } else {
+            setElemValue(objValForKey, elemsForKey, `${currentScopePrefix}${domKeySep}${key}`, context, arrayCurrentIndexes, key);
         }
         for (let elForKey of elemsForKey) {
             elForKey['$DATA-FRMDB-OBJ$'] = objValForKey;
