@@ -22,7 +22,7 @@ export class WysiwygEditorComponent extends HighlightComponent {
 		if (elem) {
 			this.oldValue = elem.innerHTML;
 			elem.setAttribute('contenteditable', 'true');
-			elem.setAttribute('spellcheckker', 'false');
+			elem.setAttribute('spellchecker', 'false');
 			this.style.display = 'block';
 		}
 
