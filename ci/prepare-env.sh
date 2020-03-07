@@ -78,34 +78,6 @@ else
   export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $BASEDIR/../ssh/frmdb.id_rsa"
 fi
 
-if [ ! -d "formuladb-env" ]; then
-
-  if [[ "`git ls-remote --heads git@gitlab.formuladb.io:formuladb/formuladb-env.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
-      git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
-  else
-      git clone --branch master --single-branch --depth 1 git@gitlab.formuladb.io:formuladb/formuladb-env.git
-  fi
-fi
-
-cd formuladb-env
-if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
-    git pull origin ${FRMDB_ENV_NAME}
-else
-    git checkout -b "${FRMDB_ENV_NAME}"
-    git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
-fi
-
-# # -------------------------------------------------------------------------
-# # External dependency: obj storage
-# # -------------------------------------------------------------------------
-
-# if ! gcloud auth list|grep formuladb-env/static-assets; then
-#     gcloud auth activate-service-account --key-file $BASEDIR/FormulaDB-storage-full.json
-# fi
-
-# ### using a single central bucket for now...
-# # node $BASEDIR/gcloud.js 'createBucketIfNotExists("'$FRMDB_ENV_NAME'")'
-
 # -------------------------------------------------------------------------
 # k8s
 # -------------------------------------------------------------------------
