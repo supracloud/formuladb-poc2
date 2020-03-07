@@ -55,8 +55,8 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/frmdb-apps/themes/landing-page.html?frmdbRender=editor",
-            "_url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/frmdb-apps/themes/overlays.html",
+            "url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/frmdb-apps/base-app/landing-page.html?frmdbRender=editor",
+            "_url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/frmdb-apps/base-app/overlays.html",
             "webRoot": "${workspaceFolder}",
             "trace": true,
             "sourceMapPathOverrides": {

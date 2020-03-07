@@ -24,7 +24,7 @@
             "frmdb-bg-tint-secondary-50"
         ],
         "addCssVars": {
-            "--frmdb-bg-img": "url(\"/formuladb-env/static/frmdb-apps/themes/bg1.jpg\")"
+            "--frmdb-bg-img": "url(\"/formuladb-env/static/frmdb-apps/base-app/bg1.jpg\")"
         }
     },
     ".frmdb-t-cover .frmdb-t-main": {

@@ -23,7 +23,7 @@ export class AddElementComponent extends HTMLElement {
             this.iframe.contentWindow!.document.querySelector('[data-frmdb-fragment="_nav.html"]')?.setAttribute("data-frmdb-highlight-ignore", "");
         }
 
-        fetch('/formuladb-env/frmdb-apps/themes/components-nav.html', {
+        fetch('/formuladb-env/frmdb-apps/base-app/components-nav.html', {
             headers: {
                 'accept': 'text/html',
             },

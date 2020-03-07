@@ -242,7 +242,10 @@ export class MetadataStore {
         if (basedOnApp) {
             await execShell(`cp -ar ${FRMDB_ENV_DIR}/${tenantName}/${basedOnApp} ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
         } else {
-            await execShell(`cp -ar ${FRMDB_ENV_DIR}/frmdb-apps/themes ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
+            await execShell(`mkdir -p ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landig-page.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/home-page.html`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
         }
         await execShell(`mkdir -p ${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
         return this.getApp(tenantName, appName);
