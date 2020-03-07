@@ -163,6 +163,10 @@ export class MetadataStore {
         }, {});
 
         entitiesDictionary[$Icon._id] = $Icon;
+        entitiesDictionary[$Image._id] = $Image;
+        entitiesDictionary[$App._id] = $App;
+        entitiesDictionary[$Table._id] = $Table;
+        entitiesDictionary[$Page._id] = $Page;
         
         let schema: Schema = {
             _id: schemaNoEntities._id,

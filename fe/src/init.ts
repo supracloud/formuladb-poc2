@@ -12,7 +12,7 @@ export async function initFrmdb() {
     let [tenantName, appName, appRootEl] = APP_AND_TENANT_ROOT();
     let formService = new FormService(appRootEl);
     FORM_SERVICE.instance = formService;
-    await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
+    await BACKEND_SERVICE().waitFrmdbEngineTools();
     formService.initFormsFromNewRecordCache();
     initRoutes();
 

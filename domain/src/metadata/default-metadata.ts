@@ -90,10 +90,10 @@ export type $ImageObjT = {[K in keyof typeof _$Image['props']]: string};
 export function isMetadataEntity(tableName: string) {
     return [
         $Icon._id, 
-        "$Images_TBD", 
-        "$Apps_TBD", 
-        "$Tables_TBD",
-        "$Pages_TBD"
+        $Image._id, 
+        $App._id, 
+        $Table._id,
+        $Page._id
     ].includes(tableName);
 }
 

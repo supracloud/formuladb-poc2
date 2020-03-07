@@ -15,6 +15,16 @@ onEventChildren(document, 'click', '[data-frmdb-editor-link]', (event) => {
     }
 });
 
+export function navigateEditorToPage(pageName: string) {
+    let path = new URL(`../${pageName}.html`, window.location.href).pathname;
+    apply(path);
+}
+
+export function navigateEditorToAppAndPage(appName: string, pageName: string) {
+    let path = new URL(`../${appName}/${pageName}`, window.location.href).pathname;
+    apply(path);
+}
+
 const Validators: {[name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean} = {};
 const Handlers: {[name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void} = {};
 export function registerFrmdbEditorRouterHandler(name: string, 

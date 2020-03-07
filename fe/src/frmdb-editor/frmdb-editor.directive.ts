@@ -51,9 +51,10 @@ import { $FMODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
 import { parsePageUrl, PageOpts } from "@domain/url-utils";
-import { registerFrmdbEditorRouterHandler } from "./frmdb-editor-router";
+import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
+import { FrmdbElementState } from "@fe/frmdb-element-utils";
 
 declare var $: null, jQuery: null;
 
@@ -75,7 +76,7 @@ class FrmdbEditorState {
 
 export class FrmdbEditorDirective {
     static observedAttributes = ['root-element'];
-    EditorState: FrmdbEditorState;
+    editorState: FrmdbElementState<FrmdbEditorState>;
     frmdbFe: FrmdbFeComponentI;
     iframe: HTMLIFrameElement;
     canvas: HTMLDivElement;
@@ -100,7 +101,7 @@ export class FrmdbEditorDirective {
     init() {
         let tenantName = BACKEND_SERVICE().tenantName;
         let appName = BACKEND_SERVICE().appName;
-        this.EditorState = new FrmdbEditorState(tenantName, appName);
+        this.editorState = new FrmdbElementState(document.body, new FrmdbEditorState(tenantName, appName));
 
         (window as any).$FRMDB_EDITOR = this;
         window.addEventListener('load', () => {
@@ -119,9 +120,6 @@ export class FrmdbEditorDirective {
 
             this.tableManagementFlows();
             this.tableColumnManagementFlows();
-            this.loadApps();
-            this.loadTables();
-            this.loadPages();
             this.viewManagementFlows();
             let ff = () => {
                 this.elementEditor.rootEl = this.iframe.contentWindow!.document.body;
@@ -138,18 +136,17 @@ export class FrmdbEditorDirective {
         });
 
         registerFrmdbEditorRouterHandler('editor-iframe-src', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
-            let { appName: currentAppName } = parsePageUrl(new URL(this.iframe.src).pathname);
-            let { appName } = newPageOpts;
+            let { appName: currentAppName } = newPageOpts;
 
             this.iframe.src = newPath;
+            
+            this.editorState.emitChange({
+                selectedAppName: appName,
+                selectedPageName: newPageOpts.pageName,
+            });
 
             if (currentAppName != appName) {
                 RESET_BACKEND_SERVICE();
-                this.loadTables();
-                this.loadPages();
-                this.updateCurrentApp();
-            } else {
-                this.updateCurrentPage();
             }
         }, () => this.checkSafeNavigation());
     }
@@ -181,9 +178,8 @@ export class FrmdbEditorDirective {
     }
 
     changeSelectedTableIdIfDifferent(tableName: string) {
-        if (tableName === this.EditorState.selectedTableId) return;
-        this.EditorState.selectedTableId = tableName;
-        updateDOM({ $frmdb: { selectedTableId: this.EditorState.selectedTableId } }, document.body);
+        if (tableName === this.editorState.data.selectedTableId) return;
+        this.editorState.emitChange({ selectedTableId: tableName });
     }
 
     selectElement(el: HTMLElement | null) {
@@ -232,10 +228,9 @@ export class FrmdbEditorDirective {
                 BACKEND_SERVICE().putEvent(new ServerEventNewApp(tenantName, appName, basedOnApp != '-' ? basedOnApp : undefined))
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
-                            await this.loadApps();
                             newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
                             $FMODAL(newAppModal, 'hide');
-                            window.location.hash = `#/${tenantName}/${appName}/index.html`;
+                            navigateEditorToAppAndPage(appName, 'index');
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -262,9 +257,9 @@ export class FrmdbEditorDirective {
                 BACKEND_SERVICE().putEvent(new ServerEventNewEntity(name))
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
-                            await this.loadTables(ev.path);
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FMODAL(newTableModal, "hide");
+                            this.editorState.emitChange({selectedTableId: ev.path});
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -295,9 +290,9 @@ export class FrmdbEditorDirective {
                 BACKEND_SERVICE().putEvent(new ServerEventNewPage(name, startTemplateUrl))
                     .then(async (ev: ServerEventNewPage) => {
                         if (ev.state_ != 'ABORT' || ev.error_) {
-                            window.location.hash = `${this.EditorState.tenantName}/${this.EditorState.appName}/${ev.newPageName}`;
                             newPageModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FMODAL(newPageModal, "hide");
+                            navigateEditorToPage(ev.newPageName);
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -323,7 +318,7 @@ export class FrmdbEditorDirective {
                 BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName))
                     .then(async (ev: ServerEventDeleteEntity) => {
                         if (ev.state_ != 'ABORT') {
-                            await this.loadTables(ev.entityId);
+                            this.editorState.emitChange({selectedTableId: this.editorState.data.tables[0]?._id});
                         }
                         return ev;
                     });
@@ -341,7 +336,7 @@ export class FrmdbEditorDirective {
                 BACKEND_SERVICE().putEvent(new ServerEventDeletePage(pagePathToDelete))
                     .then(async (ev: ServerEventDeletePage) => {
                         if (ev.state_ != 'ABORT') {
-                            window.location.hash = `${this.EditorState.tenantName}/${this.EditorState.appName}/index.html`;
+                            navigateEditorToPage('index');
                         }
                         return ev;
                     });
@@ -380,8 +375,8 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
-            let currentEntity: Entity | undefined = this.EditorState.tables.find(e => e._id == this.EditorState.selectedTableId);
-            if (!currentEntity) { console.warn(`Entity ${this.EditorState.selectedTableId} does not exist`); return; }
+            let currentEntity: Entity | undefined = this.editorState.data.tables.find(e => e._id == this.editorState.data.selectedTableId);
+            if (!currentEntity) { console.warn(`Entity ${this.editorState.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
             var newColumnModal = $FMODAL('#new-column-modal');
@@ -404,7 +399,6 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             let dataGrid = queryDataGrid(document.body);
                             await dataGrid.initAgGrid();
-                            await this.loadTables(this.EditorState.selectedTableId);
                             newColumnModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FMODAL(newColumnModal, "hide");
 
@@ -417,8 +411,8 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
-            let currentEntity: Entity | undefined = this.EditorState.tables.find(e => e._id == this.EditorState.selectedTableId);
-            if (!currentEntity) { console.warn(`Entity ${this.EditorState.selectedTableId} does not exist`); return; }
+            let currentEntity: Entity | undefined = this.editorState.data.tables.find(e => e._id == this.editorState.data.selectedTableId);
+            if (!currentEntity) { console.warn(`Entity ${this.editorState.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
             if (confirm(`Please confirm deletion of table ${event.detail.tableName}.${event.detail.columnName} ?`)) {
@@ -428,7 +422,6 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             let dataGrid = queryDataGrid(document.body);
                             await dataGrid.initAgGrid();
-                            await this.loadTables(this.EditorState.selectedTableId);
                         }
                         return ev;
                     });
@@ -479,55 +472,6 @@ export class FrmdbEditorDirective {
                 this.canvas.style.marginLeft = 'calc((100vw - 320px - var(--frmdb-editor-left-panel-width)) / 2)';
             }
         });
-    }
-
-    async loadApps() {
-        let apps: string[] = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/app-names`)
-            .then(response => {
-                return response.json();
-            });
-
-        this.EditorState.apps = apps.map(a => ({
-            name: a,
-            url: `#/${BACKEND_SERVICE().tenantName}/${a}/index.html`
-        }));
-        this.updateCurrentApp();
-    }
-
-    updateCurrentApp() {
-        let { tenantName, appName } = parsePageUrl(window.location.pathname);
-        this.EditorState.selectedAppName = appName;
-        updateDOM({ $frmdb: this.EditorState }, document.body);
-    }
-
-    async loadTables(selectedTable?: string) {
-        return BACKEND_SERVICE().getEntities().then(entities => {
-
-            this.EditorState.tables = entities;
-            this.EditorState.selectedTableId = selectedTable || entities[0]._id;
-            setTimeout(() => elvis(elvis((window as any).Vvveb).Gui).CurrentTableId = entities[0]._id, 500);
-            updateDOM({ $frmdb: this.EditorState }, document.body);
-        })
-            .catch(err => console.error(err));
-    }
-
-    async loadPages() {
-        let app: App | null = await BACKEND_SERVICE().getApp();
-        if (!app) throw new Error(`App not found for ${window.location}`);
-        this.EditorState.pages = app.pages
-            .filter(p => p.indexOf('_') != 0)
-            .map(p => ({
-                name: p.replace(/\.html$/, '')/*.replace(/^index$/, 'Home Page')*/,
-                url: `#/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/${p}`
-            }));
-        this.updateCurrentPage();
-    }
-
-    updateCurrentPage() {
-        let pagePath = window.location.hash.replace(/^#/, '');
-        this.EditorState.selectedPagePath = pagePath;
-        this.EditorState.selectedPageName = (pagePath || 'index').replace(/.*\//, '').replace(/\.html$/, '');
-        updateDOM({ $frmdb: this.EditorState }, document.body);
     }
 
     getCellFromEl(el: HTMLElement): { recordId: string, columnId: string } | null {

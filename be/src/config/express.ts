@@ -258,12 +258,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         let looks = await kvsFactory.metadataStore.getLooks();
         res.send(looks);
     });
-
-    app.get('/formuladb-api/:tenant/app-names', async function (req, res, next) {
-        let apps = await kvsFactory.metadataStore.getApps(req.params.tenant);
-        res.send(apps);
-    });
-
+    
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
@@ -299,16 +294,6 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/formuladb-api/:tenant/:app/media', async function (req, res, next) {
         try {
             let paths: string[] = await kvsFactory.metadataStore.getMediaObjects(req.params.tenant, req.params.app);
-            res.json(paths);
-        } catch (err) {
-            console.error(err);
-            next(err);
-        }
-    });
-
-    app.get('/formuladb-api/:tenant/:app/icons', async function (req, res, next) {
-        try {
-            let paths: string[] = await kvsFactory.metadataStore.getAvailableIcons(req.params.tenant, req.params.app);
             res.json(paths);
         } catch (err) {
             console.error(err);

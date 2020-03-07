@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { getDoc, getSiblingIndex } from "@core/dom-utils";
 import { HighlightComponent } from "@fe/highlight/highlight.component";
-import { FrmdbCustomRender, dataBindStateToElement } from "@fe/frmdb-element-utils";
+import { FrmdbCustomRender } from "@fe/frmdb-element-utils";
 
 const HTML: string = require('raw-loader!@fe-assets/highlight-box/highlight-box.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/highlight-box/highlight-box.component.scss').default;

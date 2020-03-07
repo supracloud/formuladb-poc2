@@ -138,7 +138,8 @@ export class DataBindingsMonitor {
         try {
             if (!parentEl) return;
             let bes = BACKEND_SERVICE();
-            if (null == bes?.currentSchema?.entities?.[tableName]) { console.warn("BE not initialized yet"); return };
+            await BACKEND_SERVICE().waitFrmdbEngineTools();
+            if (null == bes?.currentSchema?.entities?.[tableName]) throw new Error("BE not initialized yet");
 
             let data = await bes.simpleAdHocQuery(tableName, query);
             updateDOM({

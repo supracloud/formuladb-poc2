@@ -65,6 +65,11 @@ export class BackendService {
         return this.frmdbEngineTools;
     }
 
+    public async waitFrmdbEngineTools() {
+        await waitUntil(() => Promise.resolve(this.getFrmdbEngineTools()));
+        return this.frmdbEngineTools;
+    }
+
     async getApp(): Promise<App | null> {
         return getData<App | null>(`/formuladb-api/${this.tenantName}/${this.appName}`);
     }
