@@ -5,7 +5,7 @@ import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/ke
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $TableObjT, $PageObjT, $App, $Table, $Page, $Image } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -212,11 +212,6 @@ export class MetadataStore {
         return entity;
     }
 
-    async getApps(tenantName: string): Promise<string[]> {
-        let apps = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}`);
-        return apps.map(fName => fName.replace(/.*\//, ''));
-    }
-
     async getApp(tenantName: string, appName: string): Promise<App | null> {
         let app: App = this.fromYaml(
             await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/app.yaml`)
@@ -391,8 +386,30 @@ export class MetadataStore {
         return this.listDir(`${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
     }
 
-    async getAvailableIcons(tenantName: string, appName: string) {
-        return this.listDir(`${FRMDB_ENV_DIR}/icons/svg`);
+    async getAvailableIcons(tenantName: string, appName: string): Promise<$IconObjT[]> {
+        let iconNames = await this.listDir(`${FRMDB_ENV_DIR}/icons/svg`);
+        return iconNames.map(i => ({ _id: i.replace(/^.*\/svg\//, '').replace(/\.svg$/, '') }))
+    }
+
+    async getApps(tenantName: string, appName: string): Promise<$AppObjT[]> {
+        let appDirs = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}`);
+        return appDirs.map(i => ({ _id: i.replace(/^.*\//, '') }))
+    }
+
+    async getPages(tenantName: string, appName: string): Promise<$PageObjT[]> {
+        let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
+        return pageFiles.map(i => ({ _id: i.replace(/^.*\//, '') }))
+    }
+
+    async getTables(tenantName: string, appName: string): Promise<$TableObjT[]> {
+        let schema = await this.getSchema(tenantName, appName);
+        if (!schema) return [];
+
+        return Object.values(schema.entities)
+            .filter(e => ! [$App._id, $Table._id, $Page._id, $Icon._id, $Image._id].includes(e._id))
+            .map(e => ({
+                _id: e._id,
+            }));
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

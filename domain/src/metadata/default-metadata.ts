@@ -1,5 +1,32 @@
 import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
 
+export const _$App = {
+    _id: "$App",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $App: Entity = _$App;
+export type $AppObjT = {[K in keyof typeof _$App['props']]: string};
+
+export const _$Page = {
+    _id: "$Page",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $Page: Entity = _$Page;
+export type $PageObjT = {[K in keyof typeof _$Page['props']]: string};
+
+export const _$Table = {
+    _id: "$Table",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $Table: Entity = _$Table;
+export type $TableObjT = {[K in keyof typeof _$Table['props']]: string};
+
 export const _$User = {
     _id: "$User",
     props: {
@@ -50,6 +77,15 @@ export const _$Icon = {
 };
 export const $Icon: Entity = _$Icon;
 export type $IconObjT = {[K in keyof typeof _$Icon['props']]: string};
+
+export const _$Image = {
+    _id: "$Image",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $Image: Entity = _$Image;
+export type $ImageObjT = {[K in keyof typeof _$Image['props']]: string};
 
 export function isMetadataEntity(tableName: string) {
     return [

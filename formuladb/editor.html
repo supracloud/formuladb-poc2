@@ -87,11 +87,11 @@
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
                 <a href="javascript:void(0)" title="Apps List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="$frmdb.appName">
+                    aria-expanded="false" data-frmdb-value="$FRMDB.$App[]._id">
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$frmdb.apps[]" data-frmdb-value="$frmdb.apps[].name"
-                        data-frmdb-attr="href::$frmdb.apps[].url">app 1</a>
+                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$App[]" data-frmdb-value="$FRMDB.$App[]._id"
+                        data-frmdb-attr="href:CONCATENATE('../', $_):$FRMDB.$App[]._id">app 1</a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
