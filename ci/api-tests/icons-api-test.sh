@@ -1,6 +1,6 @@
 set -ex
 
-curl -s -XPOST  -H "Content-Type: application/json" http://frmdb.localhost/formuladb-api/frmdb-apps/themes/\$Icon/SimpleAddHocQuery \
+curl -s -XPOST  -H "Content-Type: application/json" http://frmdb.localhost/formuladb-api/frmdb-apps/base-app/\$Icon/SimpleAddHocQuery \
 --data-binary '{
     "filterModel": {
         "_id": {
