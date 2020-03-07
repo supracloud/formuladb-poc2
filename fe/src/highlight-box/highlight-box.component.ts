@@ -49,6 +49,12 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         this.removeBoxes();
         let el: HTMLElement | null;
 
+        if (this.state.disabled) {
+            this.selectedBox.style.display = 'none';
+            this.highlightBox.style.display = 'none';
+            return;
+        }
+
         if (this.state.highlightedEl && this.state.selectedEl != this.state.highlightedEl) {
             this.highlightBox.highlightEl = this.state.highlightedEl;
             this.highlightBox.querySelector('.component-name')!.innerHTML = this.getElemName(this.state.highlightedEl);
@@ -146,7 +152,12 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             this.selectedBox.rootEl = this.state.rootEl;
             this.init();
         } else if ('disabled' === name) {
-            this.state.disabled = (newVal.toLowerCase() == "true");
+            let newBoolVal = (newVal.toLowerCase() == "true");
+            if (this.state.disabled && !newBoolVal) {
+                this.repositionBoxes();
+            }
+            this.state.disabled = newBoolVal;
+            this.frmdbRender();
         }
     }
 
@@ -194,6 +205,8 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         return this.state.boxes.concat(this.selectedBox, this.highlightBox);
     }
     repositionBoxes() {
+        if (this.state.disabled) return;
+
         for (let box of this.allBoxes()) {
             box.render();
         }

@@ -20,19 +20,21 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         super();
 
         this.wysiwygEditor = getDoc(this).createElement('frmdb-wysiwyg-editor') as WysiwygEditorComponent;
-        this.wysiwygEditor.id = 'highlight-box';
+        this.wysiwygEditor.id = 'wysiwyg-editor-box';
         this.wysiwygEditor.style.display = 'none';
         this.shadowRoot!.appendChild(this.wysiwygEditor);
-    }
-
-    set disabled(d: boolean) {
-        this.setAttribute('disabled', new Boolean(d).toString());
     }
 
     public enableSelectedActionsEvents: boolean = true;
     public enableAddElementActionsEvents: boolean = false;
 
     frmdbRender() {
+
+        if (this.state.disabled) {
+            this.wysiwygEditor.style.display = 'none';
+            super.frmdbRender();
+            return;
+        }
 
         if (this.state.highlightedEl && (this.state.currentCopiedElement || this.state.currentCutElement)) {
             this.highlightBox.innerHTML = /*html*/`
@@ -70,7 +72,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                     <div slot="actions-top" class="d-flex flex-nowrap">
                         <div class="btn dropdown frmdb-dropdown-hover" title="Edit Element">
                             <i class="pl-1 frmdb-i-ellipsis-v"></i>
-                            <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
+                            <div class="dropdown-menu px-2 text-nowrap">
                                 <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
                                 <a class="btn" onclick="$FSCMP(this).editSelectedElement()" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
                                 <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
