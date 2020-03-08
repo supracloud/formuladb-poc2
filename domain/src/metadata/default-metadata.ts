@@ -25,7 +25,6 @@ export const _$Table = {
     }
 };
 export const $Table: Entity = _$Table;
-export type $TableObjT = {[K in keyof typeof _$Table['props']]: string};
 
 export const _$User = {
     _id: "$User",

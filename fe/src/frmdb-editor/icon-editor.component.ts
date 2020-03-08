@@ -1,7 +1,7 @@
 import { onEvent, onEventChildren, emit } from "@fe/delegated-events";
 import { ImageInput, IconInput } from "@fe/component-editor/inputs";
 import { updateDOM } from "@fe/live-dom-template/live-dom-template";
-import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
+import { $FRMDB_MODAL } from "@fe/directives/data-toggle-modal.directive";
 import { BACKEND_SERVICE } from "@fe/backend.service";
 import { PremiumIconRespose } from "@storage/icon-api";
 import { ServerEventPutIcon } from "@domain/event";
@@ -43,7 +43,7 @@ export class IconEditorComponent extends HTMLElement {
             let iconName = event.target.closest('[data-frmdb-table="$FRMDB.$Icon[]"]').querySelector('frmdb-icon').getAttribute('name');
             this.iconInputProperty.setValue(iconName);
             this.iconInputProperty.emitChange();
-            $FMODAL('#icon-editor-modal', 'hide');
+            $FRMDB_MODAL('#icon-editor-modal', 'hide');
             this.iconInputProperty = null;
         });
         
@@ -63,14 +63,14 @@ export class IconEditorComponent extends HTMLElement {
 
             this.iconInputProperty.setValue(ev.savedIconClass);
             this.iconInputProperty.emitChange();
-            $FMODAL('#icon-editor-modal', 'hide');
+            $FRMDB_MODAL('#icon-editor-modal', 'hide');
             this.iconInputProperty = null;
         });
     }
 
     async start(iconInputProperty: IconInput) {
         this.iconInputProperty = iconInputProperty;
-        $FMODAL('#icon-editor-modal');
+        $FRMDB_MODAL('#icon-editor-modal');
     }
 }
 customElements.define('frmdb-icon-editor', IconEditorComponent);

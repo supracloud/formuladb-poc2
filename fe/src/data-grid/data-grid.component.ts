@@ -403,7 +403,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         let expandRowTarget = this.expandRow;
         if (expandRowTarget && col.name === '_id') {
             return (params) => {
-                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); s=m.querySelector('frmdb-form').frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; $FMODAL(m)">${this.valueFormatter(params)}</a>`;
+                return `<a href="javascript:void(0)" onclick="m=this.ownerDocument.querySelector('${expandRowTarget}'); s=m.querySelector('frmdb-form').frmdbState; s.rowid='${params.value}'; s.table_name='${entityId}'; $FRMDB_MODAL(m)">${this.valueFormatter(params)}</a>`;
             }
         } else return null;
     }

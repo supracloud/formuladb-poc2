@@ -245,8 +245,6 @@ export function RESET_BACKEND_SERVICE() {
     _backendService = new BackendService(tenantName, appName);
 }
 
-(window as any).FrmdbBackendService = BackendService;
-
 export function _testResetBackendService() {
     _backendService = null;
 }

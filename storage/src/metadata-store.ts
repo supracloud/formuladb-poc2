@@ -5,7 +5,7 @@ import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/ke
 import * as _ from "lodash";
 import * as fs from 'fs';
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $TableObjT, $PageObjT, $App, $Table, $Page, $Image } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -405,15 +405,13 @@ export class MetadataStore {
         return pageFiles.map(i => ({ _id: i.replace(/^.*\//, '') }))
     }
 
-    async getTables(tenantName: string, appName: string): Promise<$TableObjT[]> {
+    async getTables(tenantName: string, appName: string): Promise<Entity[]> {
         let schema = await this.getSchema(tenantName, appName);
         if (!schema) return [];
 
         return Object.values(schema.entities)
             .filter(e => ! [$App._id, $Table._id, $Page._id, $Icon._id, $Image._id].includes(e._id))
-            .map(e => ({
-                _id: e._id,
-            }));
+        ;
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {

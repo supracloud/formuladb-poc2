@@ -1,14 +1,11 @@
 import * as _ from "lodash";
-import * as events from "@domain/event";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
 import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
-import { updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
 import { UserDeleteColumn } from "@fe/frmdb-user-events";
-import { elvis } from "@core/elvis";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
@@ -47,7 +44,7 @@ import { IconEditorComponent } from "./icon-editor.component";
 import { BLOBS } from "./blobs";
 import { frmdbSetImageSrc } from "@fe/component-editor/_old_components-frmdb";
 import { Undo } from "./undo";
-import { $FMODAL } from "../directives/data-toggle-modal.directive";
+import { $FRMDB_MODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
 import { parsePageUrl, PageOpts } from "@domain/url-utils";
@@ -55,28 +52,23 @@ import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorT
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 import { FrmdbElementState } from "@fe/frmdb-element-utils";
+import { $FRMDB } from "@fe/data-bindings-monitor";
 
 declare var $: null, jQuery: null;
 
 class FrmdbEditorState {
-    apps: { name: string, url: string }[] = [];
-    tables: Entity[] = [];
-    pages: { name: string, url: string }[];
     selectedAppName: string;
     selectedPageName: string;
     selectedPagePath: string;
     selectedTableId: string;
 
     constructor(public tenantName: string, public appName: string) {
-        this.pages = [{ name: 'index.html', url: `${tenantName}/${appName}/index.html` }];
-        this.selectedPageName = this.pages[0].name;
-        this.selectedPagePath = this.pages[0].url;
     }
 }
 
 export class FrmdbEditorDirective {
     static observedAttributes = ['root-element'];
-    editorState: FrmdbElementState<FrmdbEditorState>;
+    state: FrmdbElementState<FrmdbEditorState>;
     frmdbFe: FrmdbFeComponentI;
     iframe: HTMLIFrameElement;
     canvas: HTMLDivElement;
@@ -101,7 +93,7 @@ export class FrmdbEditorDirective {
     init() {
         let tenantName = BACKEND_SERVICE().tenantName;
         let appName = BACKEND_SERVICE().appName;
-        this.editorState = new FrmdbElementState(document.body, new FrmdbEditorState(tenantName, appName));
+        this.state = new FrmdbElementState(document.body, new FrmdbEditorState(tenantName, appName));
 
         (window as any).$FRMDB_EDITOR = this;
         window.addEventListener('load', () => {
@@ -140,7 +132,7 @@ export class FrmdbEditorDirective {
 
             this.iframe.src = newPath;
             
-            this.editorState.emitChange({
+            this.state.emitChange({
                 selectedAppName: appName,
                 selectedPageName: newPageOpts.pageName,
             });
@@ -151,9 +143,8 @@ export class FrmdbEditorDirective {
         }, () => this.checkSafeNavigation());
     }
 
-
     showIntroVideoModal() {
-        let introVideoModal = $FMODAL('#intro-video-modal');
+        let introVideoModal = $FRMDB_MODAL('#intro-video-modal');
         introVideoModal.querySelector('video')!.setAttribute('src', `/formuladb-env/static/${BACKEND_SERVICE().appName}/intro.webm`);
         introVideoModal.addEventListener('FrmdbModalCloseEvent', (e) => {
             (introVideoModal.querySelector('video')! as HTMLVideoElement).pause();
@@ -172,14 +163,13 @@ export class FrmdbEditorDirective {
         return safeToNavigate;
     }
 
-
     checkSafeNavigationForEvent(event) {
         if (!this.checkSafeNavigation()) event.preventDefault();
     }
 
     changeSelectedTableIdIfDifferent(tableName: string) {
-        if (tableName === this.editorState.data.selectedTableId) return;
-        this.editorState.emitChange({ selectedTableId: tableName });
+        if (tableName === this.state.data.selectedTableId) return;
+        this.state.emitChange({ selectedTableId: tableName });
     }
 
     selectElement(el: HTMLElement | null) {
@@ -209,7 +199,7 @@ export class FrmdbEditorDirective {
 
 
         onEventChildren(document.body, 'click', '#new-app-btn', (event) => {
-            var newAppModal = $FMODAL('#new-app-modal');
+            var newAppModal = $FRMDB_MODAL('#new-app-modal');
             let alert = newAppModal.querySelector('.alert')!;
             alert.classList.add('d-none');
             let nameInput: HTMLInputElement = newAppModal.querySelector('input[name="appName"]') as HTMLInputElement;
@@ -229,7 +219,7 @@ export class FrmdbEditorDirective {
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
                             newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
-                            $FMODAL(newAppModal, 'hide');
+                            $FRMDB_MODAL(newAppModal, 'hide');
                             navigateEditorToAppAndPage(appName, 'index');
                         } else {
                             alert.classList.replace('d-none', 'd-block');
@@ -242,7 +232,7 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'click', '#new-table-btn, #new-table-btn *', (event) => {
-            var newTableModal = $FMODAL('#new-table-modal');
+            var newTableModal = $FRMDB_MODAL('#new-table-modal');
             let alert = newTableModal.querySelector('.alert')!;
             alert.classList.add('d-none');
             let nameInput: HTMLInputElement = newTableModal.querySelector('input[name="tableName"]') as HTMLInputElement;
@@ -258,8 +248,8 @@ export class FrmdbEditorDirective {
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
-                            $FMODAL(newTableModal, "hide");
-                            this.editorState.emitChange({selectedTableId: ev.path});
+                            $FRMDB_MODAL(newTableModal, "hide");
+                            this.state.emitChange({selectedTableId: ev.path});
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -272,7 +262,7 @@ export class FrmdbEditorDirective {
 
         onEvent(document.body, 'click', '#new-page-btn, #new-page-btn *', (event) => {
 
-            var newPageModal = $FMODAL('#new-page-modal');
+            var newPageModal = $FRMDB_MODAL('#new-page-modal');
             let titleInput: HTMLInputElement = newPageModal.querySelector('input[name="title"]') as HTMLInputElement;
             let startTemplateSel: HTMLSelectElement = newPageModal.querySelector('select[name=startTemplateUrl]') as HTMLSelectElement;
             let alert = newPageModal.querySelector('.alert')!;
@@ -291,7 +281,7 @@ export class FrmdbEditorDirective {
                     .then(async (ev: ServerEventNewPage) => {
                         if (ev.state_ != 'ABORT' || ev.error_) {
                             newPageModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
-                            $FMODAL(newPageModal, "hide");
+                            $FRMDB_MODAL(newPageModal, "hide");
                             navigateEditorToPage(ev.newPageName);
                         } else {
                             alert.classList.replace('d-none', 'd-block');
@@ -318,7 +308,7 @@ export class FrmdbEditorDirective {
                 BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName))
                     .then(async (ev: ServerEventDeleteEntity) => {
                         if (ev.state_ != 'ABORT') {
-                            this.editorState.emitChange({selectedTableId: this.editorState.data.tables[0]?._id});
+                            this.state.emitChange({selectedTableId: $FRMDB.$Table?.[0]?._id});
                         }
                         return ev;
                     });
@@ -375,11 +365,11 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
-            let currentEntity: Entity | undefined = this.editorState.data.tables.find(e => e._id == this.editorState.data.selectedTableId);
-            if (!currentEntity) { console.warn(`Entity ${this.editorState.data.selectedTableId} does not exist`); return; }
+            let currentEntity: Entity | undefined = $FRMDB.$Table?.find(e => e._id == this.state.data.selectedTableId);
+            if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
-            var newColumnModal = $FMODAL('#new-column-modal');
+            var newColumnModal = $FRMDB_MODAL('#new-column-modal');
             newColumnModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
             let colNameInput = newColumnModal.querySelector('input[name=columnName]') as HTMLInputElement;
             colNameInput.value = '';
@@ -400,7 +390,7 @@ export class FrmdbEditorDirective {
                             let dataGrid = queryDataGrid(document.body);
                             await dataGrid.initAgGrid();
                             newColumnModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
-                            $FMODAL(newColumnModal, "hide");
+                            $FRMDB_MODAL(newColumnModal, "hide");
 
                         } else {
                             alert.classList.replace('d-none', 'd-block');
@@ -411,8 +401,8 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
-            let currentEntity: Entity | undefined = this.editorState.data.tables.find(e => e._id == this.editorState.data.selectedTableId);
-            if (!currentEntity) { console.warn(`Entity ${this.editorState.data.selectedTableId} does not exist`); return; }
+            let currentEntity: Entity | undefined = $FRMDB.$Table?.find(e => e._id == this.state.data.selectedTableId);
+            if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
             if (confirm(`Please confirm deletion of table ${event.detail.tableName}.${event.detail.columnName} ?`)) {

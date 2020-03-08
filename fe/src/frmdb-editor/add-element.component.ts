@@ -1,5 +1,5 @@
 import { onEventChildren, emit } from "@fe/delegated-events";
-import { $FMODAL } from "@fe/directives/data-toggle-modal.directive";
+import { $FRMDB_MODAL } from "@fe/directives/data-toggle-modal.directive";
 import { HighlightComponent } from "@fe/highlight/highlight.component";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
@@ -42,12 +42,12 @@ export class AddElementComponent extends HTMLElement {
         if (!this.highlightBox.highlightEl) return;
         let newEl: HTMLElement = this.highlightBox.highlightEl.cloneNode(true) as HTMLElement;
         emit(this, {type: "FrmdbAddPageElementStart", html: newEl.outerHTML});
-        $FMODAL('#add-element-modal', 'hide');
+        $FRMDB_MODAL('#add-element-modal', 'hide');
     }
 
     start() {
         this.iframe.contentWindow!.location.reload();
-        $FMODAL('#add-element-modal');
+        $FRMDB_MODAL('#add-element-modal');
     }
 }
 customElements.define('frmdb-add-element', AddElementComponent);

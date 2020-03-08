@@ -7,7 +7,7 @@ function hide(modal: HTMLElement) {
     modal.classList.remove('show', 'd-block');
 }
 
-export function $FMODAL(modalEl: HTMLElement | string, action?: 'show' | 'hide' | 'toggle'): HTMLElement {
+export function $FRMDB_MODAL(modalEl: HTMLElement | string, action?: 'show' | 'hide' | 'toggle'): HTMLElement {
     let modal: HTMLElement;
     if (typeof modalEl === "string") {
         modal = document.querySelector(modalEl) as HTMLElement;
@@ -39,7 +39,7 @@ export function $FMODAL(modalEl: HTMLElement | string, action?: 'show' | 'hide' 
 
     return modal;
 }
-(window as any).$FMODAL = $FMODAL;
+(window as any).$FRMDB_MODAL = $FRMDB_MODAL;
 
 onEventChildren(document, 'click', '[data-toggle="modal"]', (event) => {
     event.preventDefault();
@@ -50,5 +50,5 @@ onEventChildren(document, 'click', '[data-toggle="modal"]', (event) => {
     let modal: HTMLElement = document.querySelector(modalToggle.href.replace(/^.*#/, '#')) as HTMLElement;
     if (!modal || !modal.matches('.modal')) return;
     
-    $FMODAL(modal);
+    $FRMDB_MODAL(modal);
 });

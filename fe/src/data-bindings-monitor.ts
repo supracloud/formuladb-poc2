@@ -4,7 +4,7 @@ import * as events from "@domain/event";
 import { BACKEND_SERVICE, postData } from "./backend.service";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { DATA_FRMDB_ATTRS_Enum } from "./live-dom-template/dom-node";
-import { entityNameFromDataObjId, parseDataObjId } from "@domain/metadata/data_obj";
+import { entityNameFromDataObjId, parseDataObjId, DataObj } from "@domain/metadata/data_obj";
 import { FeFunctionsForDataBinding } from "./fe-functions";
 import { generateTimestampUUID } from "@domain/uuid";
 import { DataGridComponentI } from "./data-grid/data-grid.component.i";
@@ -12,6 +12,8 @@ import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFi
 import { onEventChildren, onEvent } from "./delegated-events";
 import { regexExtract } from "@domain/ts-utils";
 import { registerChangesFeedHandler } from "./changes-feed-client";
+import { $ImageObjT, $AppObjT, $PageObjT } from "@domain/metadata/default-metadata";
+import { Entity } from "@domain/metadata/entity";
 
 declare var $: any;
 
@@ -26,6 +28,15 @@ const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
     filterModel: {},
     sortModel: [],
 };
+
+export const $FRMDB: {
+    $Table?: Entity[],
+    $Image?: $ImageObjT[],
+    $App?: $AppObjT[],
+    $Page?: $PageObjT[],
+    [tableName: string]: any[] | undefined,
+} = {};
+(window as any).$FRMDB = $FRMDB;
 
 export class DataBindingsMonitor {
     constructor(private rootEl: HTMLElement) {
@@ -142,6 +153,7 @@ export class DataBindingsMonitor {
             if (null == bes?.currentSchema?.entities?.[tableName]) throw new Error("BE not initialized yet");
 
             let data = await bes.simpleAdHocQuery(tableName, query);
+            $FRMDB[tableName] = data;
             updateDOM({
                 $FRMDB: { [tableName]: data.slice(0, limit) },
                 ...FeFunctionsForDataBinding
