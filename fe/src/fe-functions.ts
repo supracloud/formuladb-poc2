@@ -138,8 +138,6 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
 // }
 
 export function $SAVE_DOC_PAGE(pagePath: string, doc: Document) {
-    let [tenantName, appName, pageName] = pagePath.split(/\//).filter(x => x);
-
     let htmlTools = new HTMLTools(doc, new DOMParser());
     let cleanedUpDOM = cleanupDocumentDOM(doc);
     let html = htmlTools.document2html(cleanedUpDOM);

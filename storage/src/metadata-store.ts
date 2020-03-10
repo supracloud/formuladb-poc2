@@ -258,7 +258,7 @@ export class MetadataStore {
 
     async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
         let {tenantName, appName, pageName} = pageOpts;
-        let pagePath = `${tenantName}/${appName}/${pageName}`;
+        let pagePath = `${tenantName}/${appName}/${pageName}.html`;
 
         const jsdom = new JSDOM(html, {}, {
             features: {
@@ -299,7 +299,7 @@ export class MetadataStore {
 
         //TODO: find all img data url(s) and save them as images
 
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName || 'index.html'}`, htmlTools.document2html(cleanedUpDOM));
+        await this.writeFile(`${FRMDB_ENV_DIR}/${pagePath}`, htmlTools.document2html(cleanedUpDOM));
     }
 
     async getLookCss(pageOpts: PageOpts): Promise<string> {
@@ -309,7 +309,7 @@ export class MetadataStore {
 
     async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
         let {tenantName, appName, pageName} = pageOpts;
-        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName || 'index.html'}`);
+        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName+'.html' || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
             features: {

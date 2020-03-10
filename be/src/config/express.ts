@@ -194,7 +194,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
                 theme: req.params.theme,
                 tenantName: req.params.tenant,
                 appName: req.params.app,
-                pageName: `${req.params.page}.html`,
+                pageName: req.params.page,
                 query: req.query,
             }, dictionaryCache);
             res.set('Content-Type', 'text/html')
