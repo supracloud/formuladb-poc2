@@ -160,7 +160,7 @@ export const CommonEntities = [
 
 const Schemas = [
     { tenantName: "apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp },
-    { tenantName: "apps", appName: "Hotel_Booking", schema: HotelBookingSchema, app: HotelBookingApp },
+    { tenantName: "apps", appName: "hotel-booking", schema: HotelBookingSchema, app: HotelBookingApp },
     // {
     //     tenantName: "formuladb-env/frmdb-apps", appName: "Hotel_Booking_2",
     //     schema: {

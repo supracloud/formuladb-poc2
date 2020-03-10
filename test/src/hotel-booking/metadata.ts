@@ -80,7 +80,7 @@ export const Booking = {
 }
 
 export const HotelBookingApp: App = {
-    _id: "Hotel_Booking",
+    _id: "hotel-booking",
     description: "Booking app for King Hotel",
     homePage: "index.html",
     pages: [

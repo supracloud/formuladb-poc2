@@ -6,6 +6,9 @@
     #selected-box {
         border: 2px solid rgb(61, 133, 253);
     }
+    .selected {
+        border: 4px dotted transparent;
+    }
     .selected:hover {
         border: 4px dotted yellow;
         [slot^="actions"] { 

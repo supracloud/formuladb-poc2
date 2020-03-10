@@ -75,7 +75,7 @@ export function handleAuth(app: express.Express) {
     });
 
     app.get('/login', function(req, res) {
-        res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb_io/login.html');
+        res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb-io/login.html');
     });
 
     app.post('/login',

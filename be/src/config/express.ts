@@ -116,7 +116,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/register', function (req, res, next) {
         if (process.env.FRMDB_IS_PROD_ENV) {
-            res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb_io/register.html');
+            res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb-io/register.html');
         } else {
             next();
         }
@@ -159,10 +159,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
 
     app.get('/', function (req, res, next) {
-        res.redirect('en-cerulean-7795f8-6c757d-_none_-$normal$/frmdb-apps/formuladb_io/index.html');
+        res.redirect('en-cerulean-7795f8-6c757d-_none_-$normal$/frmdb-apps/formuladb-io/index.html');
     });
 
-    let formuladbIoStatic = express.static(`${FRMDB_ENV_DIR}/frmdb-apps/formuladb_io`, { index: "index.html" });
+    let formuladbIoStatic = express.static(`${FRMDB_ENV_DIR}/frmdb-apps/formuladb-io`, { index: "index.html" });
     app.get('/', formuladbIoStatic);
     app.get('/*.html', formuladbIoStatic);
     app.get('/*.yaml', formuladbIoStatic);

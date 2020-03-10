@@ -30,7 +30,7 @@ export function parsePageUrl(path: string): PageOpts {
 
 export function makeUrlPath(pageOpts: PageOpts) {
     let {lang, look, primaryColor, secondaryColor, theme, tenantName, appName, pageName} = pageOpts;
-    return `/${lang}-${look}-${primaryColor}-${secondaryColor}-${theme}/${tenantName}/${appName}/${pageName}`;
+    return `/${lang}-${look}-${primaryColor}-${secondaryColor}-${theme}/${tenantName}/${appName}/${pageName}.html`;
 }
 
 

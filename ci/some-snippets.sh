@@ -1,4 +1,3 @@
-GIT_SSH_COMMAND="ssh -i /mnt/d/code/metawiz/febe/ssh/frmdb.id_rsa" git clone git@gitlab.com:formuladb-env/frmdb-apps/Hotel_Booking.git
 GIT_SSH_COMMAND="ssh -i /mnt/d/code/metawiz/febe/ssh/frmdb.id_rsa" git clone git@gitlab.com:formuladb-internal-apps/formuladb.io.git
 
 ## Create new App ##############
