@@ -1,4 +1,4 @@
-_id: FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking
+_id: FRMDB_SCHEMA~~formuladb-examples--hotel-booking
 entityIds:
     - RoomType
     - Room

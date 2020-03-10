@@ -48,9 +48,9 @@ describe('MetadataStore', () => {
     <html>
     <head>
         <title>FormulaDB - Build Applications Without Code</title>
-        <link href="/formuladb-env/static/formuladb_io/favicon.png" rel="icon" type="image/png">
+        <link href="/formuladb-env/static/formuladb-io/favicon.png" rel="icon" type="image/png">
     </head>
-    <body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb_io">
+    <body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb-io">
         <header>
             <div class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"></div>
             <nav class="navbar" data-frmdb-fragment="_nav.html">
@@ -80,7 +80,7 @@ describe('MetadataStore', () => {
     <title>FormulaDB - Build Applications Without Code</title>
 </head>
 
-<body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb_io">
+<body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb-io">
     <header>
         <div class="jumbotron"></div>
         <div data-frmdb-fragment="_nav.html"></div>
@@ -101,7 +101,7 @@ describe('MetadataStore', () => {
         let headHtml = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/_head.html', 'utf8');
         expect(headHtml).toEqual(/*html*/`<head>
 <title>FormulaDB - Build Applications Without Code</title>
-<link href="/formuladb-env/static/formuladb_io/favicon.png" rel="icon" type="image/png">
+<link href="/formuladb-env/static/formuladb-io/favicon.png" rel="icon" type="image/png">
 </head>`);
     });
 

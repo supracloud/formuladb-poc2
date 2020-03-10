@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>FormulaDB Themes</title>
 </head>
 <body data-frmdb-theme="GrandFrames" data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0" class="frmdb-editor-normal">
-    <div class="frmdb-t-main-nav fixed-top row frmdb-bg-dark-30 shadow py-4 border-bottom border-bottom-2 border-primary justify-content-center">
+    <div class="frmdb-t-main-nav row frmdb-bg-dark-30 py-4 border-bottom border-bottom-2 border-primary justify-content-center">
         <div data-frmdb-fragment="_nav.html"></div>
     </div>
     <header class="frmdb-t-cover frmdb-transform-preserve-3d">
-        <div class="frmdb-t-main min-vh-100 d-flex align-items-center justify-content-center frmdb-bg-zoom-in overflow-hidden px-md-0 px-3" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/design-therapy/static/55e1d144425bae14f6da8c7dda79367f1c37dfe752506c4870277bdd974fc45db8_1280.jpg&quot;);">
-            <div class="jumbotron animated slideInUp col-12 col-lg-8 min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-aos="slideInUp">
+        <div class="frmdb-t-main min-vh-100 align-items-center frmdb-bg-zoom-in overflow-hidden px-md-0 px-3" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/design-therapy/static/55e1d144425bae14f6da8c7dda79367f1c37dfe752506c4870277bdd974fc45db8_1280.jpg&quot;);">
+            <div class="jumbotron animated slideInUp col-12 col-lg-8 min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around" data-aos="slideInUp">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
                 <h1 class="display-4" data-i18n="en">design therapy</h1>
                 <p>Lead paragraph providing a short introduction to you website or app,
@@ -18,7 +18,7 @@
                 <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
             </div>
         </div>
-        <div class="frmdb-t-aside container p-0 frmdb-section-dark mt-n5"></div>
+        <div class="frmdb-t-aside p-0 mt-n5"></div>
     </header>
     <section class="container py-5 my-5">
         <div class="row">
@@ -26,7 +26,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/54e1d0464955aa14f6da8c7dda79367f1c37dfe752506c4870277bdd974dcd5cbd_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-aos="slideInUp">
+                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around" data-aos="slideInUp">
                     <h2 data-i18n="en">great project - diana's apartment&nbsp;</h2>
                     <p data-i18n="en">Pretium quis neque a faucibus. Quisque tempus pharetra tellus, sed molestie velit mattis ut. Suspendisse feugiat ligula dui, at
                         convallis turpis&nbsp;</p>
@@ -41,7 +41,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/55e1d1464956ad14f6da8c7dda79367f1c37dfe752506c4870277bdd974cc759bd_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-aos="slideInUp">
+                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around" data-aos="slideInUp">
                     <h2 data-i18n="en">first room for your baby</h2>
                     <p>Etiam porta magna eu rutrum rhoncus. Sed ut tempor nibh. Nullam tempus egestas ullamcorper. Proin sollicitudin diam vel risus egestas, in
                         fringilla ligula finibus.</p>
@@ -56,7 +56,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/57e1d2424e54ae14f6da8c7dda79367f1c37dfe752506c4870277bdd974cc75cb8_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-aos="slideInUp">
+                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around" data-aos="slideInUp">
                     <h2 data-i18n="en">playing with textures</h2>
                     <p>Etiam porta magna eu rutrum rhoncus. Sed ut tempor nibh. Nullam tempus egestas ullamcorper. Proin sollicitudin diam vel risus egestas, in
                         fringilla ligula finibus.</p>
@@ -71,7 +71,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/52e2d0434a5aa914f6da8c7dda79367f1c37dfe752506c4870277bdd974cc659bd_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-aos="slideInUp">
+                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around" data-aos="slideInUp">
                     <h2 data-i18n="en">small details - big impact</h2>
                     <p>Etiam porta magna eu rutrum rhoncus. Sed ut tempor nibh. Nullam tempus egestas ullamcorper. Proin sollicitudin diam vel risus egestas, in
                         fringilla ligula finibus.</p>
@@ -86,7 +86,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/57e0dd424d52a414f6da8c7dda79367f1c37dfe752506c4870277bdd974cc158b1_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-aos="slideInUp">
+                <div class="jumbotron animated slideInUp min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around" data-aos="slideInUp">
                     <h2 data-i18n="en">work from home</h2>
                     <p>Etiam porta magna eu rutrum rhoncus. Sed ut tempor nibh. Nullam tempus egestas ullamcorper. Proin sollicitudin diam vel risus egestas, in
                         fringilla ligula finibus.</p>
@@ -141,7 +141,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/54e1dd424354ac14f6da8c7dda79367f1c37dfe752506c4870277bdd974cc550bd_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
+                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
                     <h2 data-i18n="en">rent our meeting room</h2>
                     <p>Etiam porta magna eu rutrum rhoncus. Sed ut tempor nibh. Nullam tempus egestas ullamcorper. Proin sollicitudin diam vel risus egestas, in
                         fringilla ligula finibus.</p>
@@ -156,7 +156,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/54e5d34a4950a914f6da8c7dda79367f1c37dfe752506c4870277bdd974cc758b8_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
+                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
                     <h2 data-i18n="en">visit our showroom</h2>
                     <p data-i18n="en">Here's the place where you can find and test lots of chairs, armchairs, seat sofas, etc. We also have decorations, plants, handmade products. Our colleagues will guide into this universe and will help you find the perfect products that you need for your home or special gifts for your beloved ones. Hit the "contact" button to see the address and the opening hours. Come! We can't wait to meet you!</p>
                     <a class="btn btn-primary mx-auto" href="javascript:void(0)" data-i18n="en">contact&nbsp;</a>
@@ -170,7 +170,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/57e1d14a4e53a814f6da8c7dda79367f1c37dfe752506c4870277bdd974fc05bbf_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
+                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
                     <h2 data-i18n="en">online shop</h2>
                     <p data-i18n="en">We also have an online shop for those who can't come to our showroom. You will be delighted with great products and we also made a special app that will help you find out what is your home style, how to pick colors and many more. Enjoy!</p>
                     <a class="btn btn-primary mx-auto" href="javascript:void(0)" data-i18n="en">shop</a>
@@ -184,7 +184,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/57e8d1434f50aa14f6da8c7dda79367f1c37dfe752506c4870277bdd974dcd5cbd_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
+                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
                     <h2 data-i18n="en">cozy reading in greenhouse</h2>
                     <p data-i18n="en">Etiam porta magna eu rutrum rhoncus. Sed ut tempor nibh. Nullam tempus egestas ullamcorper. Proin sollicitudin diam vel risus egestas, in
                         fringilla ligula finibus.</p>
@@ -199,7 +199,7 @@
                 <img class="img-fluid" src="/formuladb-env/frmdb-apps/design-therapy/static/55e3d5454f52ad14f6da8c7dda79367f1c37dfe752506c4870277bdd974ccc5cb9_640.jpg" alt="...">
             </div>
             <div class="col text-center d-flex flex-column justify-content-center">
-                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
+                <div class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary d-flex flex-column justify-content-around animated slideInUp" data-aos="slideInUp">
                     <h2 data-i18n="en">bedroom dreams</h2>
                     <p data-i18n="en">The legendary space where the dream factory is. Even if the dreams don't come true (all the time) you still have to personalise this room because this is the place where you sleep and you charge your batteries and you need to feel comfortable. We have some ideas that may inspire you.&nbsp;</p>
                     <a class="btn btn-primary mx-auto" href="javascript:void(0)" data-i18n="en">more photos</a>
@@ -209,6 +209,7 @@
     </section>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>

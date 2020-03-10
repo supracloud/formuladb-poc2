@@ -402,7 +402,7 @@ export class MetadataStore {
 
     async getPages(tenantName: string, appName: string): Promise<$PageObjT[]> {
         let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
-        return pageFiles.map(i => ({ _id: i.replace(/^.*\//, '') }))
+        return pageFiles.map(i => ({ _id: i.replace(/^.*\//, '').replace(/\.html$/, '') }))
     }
 
     async getTables(tenantName: string, appName: string): Promise<Entity[]> {
