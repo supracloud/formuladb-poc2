@@ -78,7 +78,7 @@ export interface FrmdbAddPageElement {
 
 export interface FrmdbAddPageElementStart {
     type: 'FrmdbAddPageElementStart';
-    html: string;
+    htmlElement: HTMLElement;
 }
 
 export interface FrmdbMovePageElementStart {

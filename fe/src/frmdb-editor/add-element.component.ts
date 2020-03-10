@@ -1,13 +1,13 @@
 import { onEventChildren, emit } from "@fe/delegated-events";
 import { $FRMDB_MODAL } from "@fe/directives/data-toggle-modal.directive";
-import { HighlightComponent } from "@fe/highlight/highlight.component";
+import { HighlightBoxComponent } from "@fe/highlight-box/highlight-box.component";
 
 const HTML: string = require('raw-loader!@fe-assets/frmdb-editor/add-element.component.html').default;
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/frmdb-editor/add-element.component.scss').default;
 
 export class AddElementComponent extends HTMLElement {
     iframe: HTMLIFrameElement;
-    highlightBox: HighlightComponent;
+    highlightBox: HighlightBoxComponent;
     nav: HTMLElement;
 
     connectedCallback() {
@@ -16,7 +16,7 @@ export class AddElementComponent extends HTMLElement {
     init() {
         this.innerHTML = `<style>${CSS}</style> ${HTML}`;
         this.iframe = this.querySelector('iframe')!;
-        this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightComponent;
+        this.highlightBox = this.querySelector('frmdb-highlight-box') as HighlightBoxComponent;
         this.nav = this.querySelector('nav') as HTMLElement;
         this.iframe.onload = () => {
             this.highlightBox.rootEl = this.iframe.contentWindow!.document.body;
@@ -39,9 +39,9 @@ export class AddElementComponent extends HTMLElement {
     }
 
     triggerAddElementFlow(event: MouseEvent) {
-        if (!this.highlightBox.highlightEl) return;
-        let newEl: HTMLElement = this.highlightBox.highlightEl.cloneNode(true) as HTMLElement;
-        emit(this, {type: "FrmdbAddPageElementStart", html: newEl.outerHTML});
+        if (!this.highlightBox.selectedBox.highlightEl) return;
+        let newEl: HTMLElement = this.highlightBox.selectedBox.highlightEl.cloneNode(true) as HTMLElement;
+        emit(this, {type: "FrmdbAddPageElementStart", htmlElement: newEl});
         $FRMDB_MODAL('#add-element-modal', 'hide');
     }
 

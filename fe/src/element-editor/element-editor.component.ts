@@ -151,6 +151,11 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         this.state.selectedEl = null;
         this.frmdbRender();
     }
+    addElement(el: HTMLElement) {
+        this.state.currentCopiedElement = el;
+        this.state.selectedEl = null;
+        this.frmdbRender();
+    }
 
     cancelPaste() {
         this.state.currentCopiedElement = null;

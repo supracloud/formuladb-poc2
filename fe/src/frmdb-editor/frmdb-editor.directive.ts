@@ -5,7 +5,7 @@ import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { ServerEventNewEntity, ServerEventNewPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
-import { UserDeleteColumn } from "@fe/frmdb-user-events";
+import { UserDeleteColumn, FrmdbAddPageElementStart } from "@fe/frmdb-user-events";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
 import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
@@ -160,6 +160,11 @@ export class FrmdbEditorDirective {
                     }
                 });
             });
+
+            this.addElementCmp.addEventListener('FrmdbAddPageElementStart', (event: CustomEvent) => {
+                let evDetail: FrmdbAddPageElementStart = event.detail;
+                this.elementEditor.addElement(evDetail.htmlElement);
+            })
         });
 
         registerFrmdbEditorRouterHandler('editor-iframe-src',
