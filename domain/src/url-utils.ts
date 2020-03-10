@@ -13,7 +13,7 @@ export interface PageOpts {
 }
 
 export function parsePageUrl(path: string): PageOpts {
-    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)\/(.+?)\/(.+?)\/(.+?\.html)/);
+    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)\/(.+?)\/(.+?)\/(.+?)\.html/);
     if (m && m.length == 9) {
         return {
             lang: m[1],

@@ -8,21 +8,25 @@ onEventChildren(document, 'click', '[data-frmdb-editor-link]', (event) => {
     if (!frmdbLink.hasAttribute('data-frmdb-editor-link')) {
         frmdbLink = event.target.closest('[data-frmdb-editor-link]');
     }
-    let path = new URL(frmdbLink.href).pathname;
-    if (validate(path)) {
-        apply(path);
-        window.history.pushState({newPath: path}, `FormulaDB: ${path}`, path);
+    let url = new URL(frmdbLink.href);
+    if (validate(url)) {
+        navigateTo(url.href)
     }
 });
 
+export function navigateTo(relativePathOrHref: string) {
+    let oldPageOpts = parsePageUrl(window.location.pathname);
+    let url = new URL(relativePathOrHref, window.location.href);
+    window.history.pushState({urlHref: url.href}, `FormulaDB: ${url.pathname}`, url.href);
+    apply(oldPageOpts, url);
+}
+
 export function navigateEditorToPage(pageName: string) {
-    let path = new URL(`../${pageName}.html`, window.location.href).pathname;
-    apply(path);
+    navigateTo(`../${pageName}.html`);
 }
 
 export function navigateEditorToAppAndPage(appName: string, pageName: string) {
-    let path = new URL(`../${appName}/${pageName}`, window.location.href).pathname;
-    apply(path);
+    navigateTo(`../${appName}/${pageName}`);
 }
 
 const Validators: {[name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean} = {};
@@ -35,24 +39,22 @@ export function registerFrmdbEditorRouterHandler(name: string,
         if (validator) Validators[name] = validator;
 }
 
-function apply(newPath: string) {
-    let oldPageOpts = parsePageUrl(window.location.pathname);
-    let newPageOpts = parsePageUrl(newPath);
+function apply(oldPageOpts: PageOpts, url: URL) {
+    let newPageOpts = parsePageUrl(url.pathname);
     for (let handler of Object.values(Handlers)) {
-        handler(newPath, oldPageOpts, newPageOpts);
+        handler(url.pathname, oldPageOpts, newPageOpts);
     }
 }
-function validate(newPath: string): boolean {
+function validate(url: URL): boolean {
     let oldPageOpts = parsePageUrl(window.location.pathname);
-    let newPageOpts = parsePageUrl(newPath);
+    let newPageOpts = parsePageUrl(url.pathname);
     for (let validator of Object.values(Validators)) {
-        let ret = validator(newPath, oldPageOpts, newPageOpts);
+        let ret = validator(url.pathname, oldPageOpts, newPageOpts);
         if (!ret) return false;
     }
     return true;
 }
 
 window.onpopstate = (event: PopStateEvent) => {
-    let newPath = event.state.newPath;
-    apply(newPath);
+    navigateTo(event.state.urlHref)
 };

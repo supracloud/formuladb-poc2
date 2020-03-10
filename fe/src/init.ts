@@ -7,7 +7,7 @@ import { DataBindingsMonitor } from "./data-bindings-monitor";
 import { stopChangesFeedLoop, changesFeedLoop } from "./changes-feed-client";
 import { inIframe } from "@core/dom-utils";
 
-let dataBindingMonitor: DataBindingsMonitor | null = null;
+export var DATA_BINDING_MONITOR: DataBindingsMonitor | null = null;
 export async function initFrmdb() {
     let [tenantName, appName, appRootEl] = APP_AND_TENANT_ROOT();
     let formService = new FormService(appRootEl);
@@ -16,8 +16,8 @@ export async function initFrmdb() {
     formService.initFormsFromNewRecordCache();
     initRoutes();
 
-    dataBindingMonitor = new DataBindingsMonitor(document.body);
-    dataBindingMonitor.updateDOMForRoot();
+    DATA_BINDING_MONITOR = new DataBindingsMonitor(document.body);
+    DATA_BINDING_MONITOR.updateDOMForRoot();
 
     if (!inIframe()) {
         changesFeedLoop();
@@ -25,8 +25,8 @@ export async function initFrmdb() {
 }
 
 export function deinitFrmdb() {
-    if (dataBindingMonitor) {
-        dataBindingMonitor = null;
+    if (DATA_BINDING_MONITOR) {
+        DATA_BINDING_MONITOR = null;
     }
     stopChangesFeedLoop();
 }

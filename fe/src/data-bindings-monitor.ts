@@ -12,8 +12,7 @@ import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFi
 import { onEventChildren, onEvent } from "./delegated-events";
 import { regexExtract } from "@domain/ts-utils";
 import { registerChangesFeedHandler } from "./changes-feed-client";
-import { $ImageObjT, $AppObjT, $PageObjT } from "@domain/metadata/default-metadata";
-import { Entity } from "@domain/metadata/entity";
+import { $ImageObjT, $AppObjT, $PageObjT, $Table, $App, $Page } from "@domain/metadata/default-metadata";
 
 declare var $: any;
 
@@ -29,16 +28,9 @@ const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
     sortModel: [],
 };
 
-export const $FRMDB: {
-    $Table?: Entity[],
-    $Image?: $ImageObjT[],
-    $App?: $AppObjT[],
-    $Page?: $PageObjT[],
-    [tableName: string]: any[] | undefined,
-} = {};
-(window as any).$FRMDB = $FRMDB;
-
 export class DataBindingsMonitor {
+    tablesCache = {};
+
     constructor(private rootEl: HTMLElement) {
         const observer = new MutationObserver((mutationsList, observer) => {
             for (let mutation of mutationsList) {
@@ -83,8 +75,8 @@ export class DataBindingsMonitor {
         this.updateDOMOnDataUpdatesFromServer();
     }
 
-    public async updateDOMForRoot() {
-        let tableNames = _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-table^="$FRMDB."]'))
+    public async updateDOMForRoot(forceTableName?: string) {
+        let tableNames = forceTableName ? [`$FRMDB.${forceTableName}[]`] : _.uniq(Array.from(this.rootEl.querySelectorAll('[data-frmdb-table^="$FRMDB."]'))
             .map(el => el.getAttribute('data-frmdb-table')));
         for (let tableName of tableNames) {
             let tableEl = this.rootEl.querySelector(`[data-frmdb-table="${tableName}"]`);
@@ -94,6 +86,14 @@ export class DataBindingsMonitor {
 
     private debouncedUpdateDOMForTable = _.debounce((el) => this.updateDOMForTable(el), 100);
     private debouncedUpdateDOMForRecord = _.debounce((el) => this.updateDOMForTable(el), 100);
+
+    handlers: { [name: string]: (tableNme: string, data: any[]) => Promise<void> } = {};
+    public registerDataBindingChangeHandler(name: string, handler: (tableName: string, data: any[]) => Promise<void>) {
+        this.handlers[name] = handler;
+        for (let tableName of Object.keys(this.tablesCache)) {
+            handler(tableName, this.tablesCache[tableName]);
+        }
+    }
 
     async updateDOMForRecord(el: HTMLElement) {
         try {
@@ -153,7 +153,10 @@ export class DataBindingsMonitor {
             if (null == bes?.currentSchema?.entities?.[tableName]) throw new Error("BE not initialized yet");
 
             let data = await bes.simpleAdHocQuery(tableName, query);
-            $FRMDB[tableName] = data;
+            this.tablesCache[tableName] = data;
+            for (let handler of Object.values(this.handlers)) {
+                await handler(tableName, data);
+            }
             updateDOM({
                 $FRMDB: { [tableName]: data.slice(0, limit) },
                 ...FeFunctionsForDataBinding
@@ -183,6 +186,12 @@ export class DataBindingsMonitor {
                 if (event.type_ === "ServerEventModifiedFormData") {
                     let { entityId } = parseDataObjId(event.obj._id);
                     tableNames.add(entityId);
+                } else if (event.type_ === "ServerEventDeleteEntity" || event.type_ === "ServerEventNewEntity") {
+                    tableNames.add($Table._id);
+                } else if (event.type_ === "ServerEventNewApp") {
+                    tableNames.add($App._id);
+                } else if (event.type_ === "ServerEventNewPage" || event.type_ === "ServerEventDeletePage") {
+                    tableNames.add($Page._id);
                 }
             }
     

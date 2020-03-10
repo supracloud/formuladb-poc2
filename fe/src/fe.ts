@@ -43,7 +43,11 @@ export class FrmdbFeComponent extends HTMLElement {
     }
 
     connectedCallback() {
-        initFrmdb();
+        this.init();
+    }
+
+    async init() {
+        await initFrmdb();
 
         if (isEditorMode(window.location.search)) {
             new FrmdbEditorDirective()

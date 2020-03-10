@@ -10,7 +10,7 @@
 
 <body>
     <div class="top-panel d-flex flex-column shadow-sm">
-        <frmdb-data-grid class="flex-grow-1" data-frmdb-attr="table-name:$frmdb.selectedTableId" expand-row="#edit-record-modal" no-floating-filters="true">
+        <frmdb-data-grid class="flex-grow-1" data-frmdb-attr="table-name:selectedTableId" expand-row="#edit-record-modal" no-floating-filters="true">
         </frmdb-data-grid>
         <div class="button-bar flex-grow-0 d-flex">
             <frmdb-formula-editor></frmdb-formula-editor>
@@ -65,7 +65,8 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="screen-size-dropdown-toggle">
                         <a class="dropdown-item" title="Mobile view" data-frmdb-action="viewport-mobile"><i class=" frmdb-i-mobile-alt"></i> Mobile</a>
-                        <a class="dropdown-item" title="Tablet view" data-frmdb-action="viewport-tablet"><i class="frmdb-i-tablet-alt fa-rotate-90"></i> Tablet</a>
+                        <a class="dropdown-item" title="Tablet view" data-frmdb-action="viewport-tablet"><i class="frmdb-i-tablet-alt fa-rotate-90"></i>
+                            Tablet</a>
                         <a class="dropdown-item" title="Desktop view" data-frmdb-action="viewport-laptop"><i class="frmdb-i-laptop"></i> Desktop</a>
                     </div>
                 </div>
@@ -87,11 +88,11 @@
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
                 <a href="javascript:void(0)" title="Apps List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="$FRMDB.$App[]._id">
+                    aria-expanded="false" data-frmdb-value="selectedAppName">
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$App[]" data-frmdb-value="$FRMDB.$App[]._id"
-                        data-frmdb-attr="href:CONCATENATE('../', _id, '/index.html'):$FRMDB.$App[]">app 1</a>
+                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$App[]" data-frmdb-table-limit="50" data-frmdb-editor-link
+                        data-frmdb-value="$FRMDB.$App[]._id" data-frmdb-attr="href:CONCATENATE('../', _id, '/index.html?frmdbRender=editor'):$FRMDB.$App[]">app 1</a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
@@ -115,10 +116,11 @@
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover flex-grow-1">
                 <a href="javascript:void(0)" title="App Table List" class="nav-link dropdown-toggle text-primary text-center" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="$frmdb.selectedTableId">
+                    aria-expanded="false" data-frmdb-value="selectedTableId">
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Table[]" data-frmdb-value="$FRMDB.$Table[]._id" href="javascript:void(0)">table 1</a>
+                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Table[]" data-frmdb-table-limit="50" data-frmdb-value="$FRMDB.$Table[]._id"
+                        href="javascript:void(0)">table 1</a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
@@ -142,11 +144,11 @@
             </li>
             <li class="nav-item dropdown flex-grow-1 frmdb-dropdown-hover">
                 <a href="javascript:void(0)" title="App Page List" class="nav-link dropdown-toggle text-center" role="button" aria-haspopup="true"
-                    aria-expanded="false" data-frmdb-value="$frmdb.selectedPageName">
+                    aria-expanded="false" data-frmdb-value="selectedPageName">
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
-                        data-frmdb-attr="href::$frmdb.pages[].url"></a>
+                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Page[]" data-frmdb-editor-link data-frmdb-value="$FRMDB.$Page[]._id"
+                        data-frmdb-table-limit="50" data-frmdb-attr="href:CONCATENATE('./', _id, '.html?frmdbRender=editor'):$FRMDB.$Page[]"></a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
@@ -196,8 +198,8 @@
                             <div class="col-sm-9 input">
                                 <div>
                                     <select class="form-control custom-select" name="startTemplateUrl">
-                                        <option class="dropdown-item" data-frmdb-table="$frmdb.pages[]" data-frmdb-value="$frmdb.pages[].name"
-                                            data-frmdb-attr="value::$frmdb.pages[].url"></option>
+                                        <option class="dropdown-item" data-frmdb-table="$FRMDB.$Page[]" data-frmdb-value="$FRMDB.$Page[].name"
+                                            data-frmdb-attr="value::$FRMDB.$Page[].url"></option>
                                     </select>
                                 </div>
                             </div>
@@ -236,11 +238,16 @@
     <frmdb-img-editor></frmdb-img-editor>
     <frmdb-icon-editor></frmdb-icon-editor>
 
-    <iframe src="/formuladb/editor-edit-record-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="/formuladb/editor-intro-video-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="/formuladb/editor-new-column-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="/formuladb/editor-new-table-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-    <iframe src="/formuladb/editor-new-app-modal.html" onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-edit-record-modal.html"
+        onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-intro-video-modal.html"
+        onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-new-column-modal.html"
+        onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-new-table-modal.html"
+        onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <iframe src="/formuladb/editor-new-app-modal.html"
+        onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
 
     <script src="/formuladb/frmdb-fe.js"></script>
     <!-- <script src="/formuladb/frmdb-editor.js"></script> -->

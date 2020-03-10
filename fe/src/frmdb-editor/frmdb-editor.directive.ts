@@ -51,8 +51,10 @@ import { parsePageUrl, PageOpts } from "@domain/url-utils";
 import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
-import { FrmdbElementState } from "@fe/frmdb-element-utils";
-import { $FRMDB } from "@fe/data-bindings-monitor";
+import { DATA_BINDING_MONITOR } from "@fe/init";
+import { $Table } from "@domain/metadata/default-metadata";
+import { waitUntil } from "@domain/ts-utils";
+import { FrmdbElementState } from "@fe/frmdb-element-state";
 
 declare var $: null, jQuery: null;
 
@@ -61,6 +63,7 @@ class FrmdbEditorState {
     selectedPageName: string;
     selectedPagePath: string;
     selectedTableId: string;
+    tables: Entity[];
 
     constructor(public tenantName: string, public appName: string) {
     }
@@ -86,8 +89,23 @@ export class FrmdbEditorDirective {
         return this.iframe.contentWindow!.document;
     }
 
-    updateStateFromUrl() {
+    updateStateFromUrl(newPageOpts: PageOpts, newPath: string) {
+        let { appName } = newPageOpts;
 
+        this.iframe.src = newPath;
+
+        if (this.state.data.selectedAppName != appName) {
+            RESET_BACKEND_SERVICE();
+            BACKEND_SERVICE().waitFrmdbEngineTools()
+                .then(async () => {
+                    await DATA_BINDING_MONITOR?.updateDOMForRoot();
+                });
+        }
+
+        this.state.emitChange({
+            selectedAppName: appName,
+            selectedPageName: newPageOpts.pageName,
+        });
     }
 
     init() {
@@ -123,24 +141,31 @@ export class FrmdbEditorDirective {
 
             //FIXME: Ugly Workaround for e2e where onload is not getting called:
             setTimeout(ff, 2000);
-
             this.iframe.src = window.location.pathname;
-        });
 
-        registerFrmdbEditorRouterHandler('editor-iframe-src', (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
-            let { appName: currentAppName } = newPageOpts;
-
-            this.iframe.src = newPath;
-            
+            let newPageOpts = parsePageUrl(window.location.pathname);
             this.state.emitChange({
-                selectedAppName: appName,
+                selectedAppName: newPageOpts.appName,
                 selectedPageName: newPageOpts.pageName,
             });
 
-            if (currentAppName != appName) {
-                RESET_BACKEND_SERVICE();
-            }
-        }, () => this.checkSafeNavigation());
+            waitUntil(() => DATA_BINDING_MONITOR)
+            .then(() => {
+                DATA_BINDING_MONITOR!.registerDataBindingChangeHandler('frmdb-editor', async (tableName: string, data: any[]) => {
+                    if (tableName == $Table._id) {
+                        this.state.emitChange({
+                            selectedTableId: data?.[0]?._id,
+                            tables: data as Entity[],
+                        })
+                    }
+                });
+            });
+        });
+
+        registerFrmdbEditorRouterHandler('editor-iframe-src',
+            (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newPath),
+            () => this.checkSafeNavigation()
+        );
     }
 
     showIntroVideoModal() {
@@ -249,7 +274,7 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FRMDB_MODAL(newTableModal, "hide");
-                            this.state.emitChange({selectedTableId: ev.path});
+                            this.state.emitChange({ selectedTableId: ev.path });
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);
@@ -304,14 +329,7 @@ export class FrmdbEditorDirective {
             if (!tableName) return;
 
             if (confirm(`Please confirm deletion of table ${link.dataset.id} ?`)) {
-
-                BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName))
-                    .then(async (ev: ServerEventDeleteEntity) => {
-                        if (ev.state_ != 'ABORT') {
-                            this.state.emitChange({selectedTableId: $FRMDB.$Table?.[0]?._id});
-                        }
-                        return ev;
-                    });
+                BACKEND_SERVICE().putEvent(new ServerEventDeleteEntity(tableName));
             }
         });
 
@@ -365,7 +383,7 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'FrmdbAddColumn', '*', (event) => {
-            let currentEntity: Entity | undefined = $FRMDB.$Table?.find(e => e._id == this.state.data.selectedTableId);
+            let currentEntity: Entity | undefined = this.state.data.tables?.find(e => e._id == this.state.data.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
@@ -401,7 +419,7 @@ export class FrmdbEditorDirective {
         });
 
         onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
-            let currentEntity: Entity | undefined = $FRMDB.$Table?.find(e => e._id == this.state.data.selectedTableId);
+            let currentEntity: Entity | undefined = this.state.data.tables?.find(e => e._id == this.state.data.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
