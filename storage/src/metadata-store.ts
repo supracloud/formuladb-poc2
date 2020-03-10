@@ -246,7 +246,7 @@ export class MetadataStore {
             await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
             await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
         }
-        await execShell(`mkdir -p ${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
+        await execShell(`mkdir -p ${FRMDB_ENV_DIR}/${tenantName}/${appName}/static`);
         return this.getApp(tenantName, appName);
     }
 
@@ -368,7 +368,7 @@ export class MetadataStore {
     }
 
     async saveMediaObject(tenantName: string, appName: string, fileName: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${FRMDB_ENV_DIR}/static/${tenantName}/${appName}/${fileName}`, new Buffer(base64Content, 'base64'));
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static/${fileName}`, new Buffer(base64Content, 'base64'));
     }
 
     async saveIcon(tenantName: string, appName: string, iconId: string): Promise<string> {
@@ -387,7 +387,7 @@ export class MetadataStore {
     }
 
     async getMediaObjects(tenantName: string, appName: string) {
-        return this.listDir(`${FRMDB_ENV_DIR}/static/${tenantName}/${appName}`);
+        return this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static`);
     }
 
     async getAvailableIcons(tenantName: string, appName: string): Promise<$IconObjT[]> {

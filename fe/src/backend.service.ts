@@ -194,7 +194,7 @@ export class BackendService {
 
     public async saveMedia(fileName: string, blob: Blob): Promise<string> {
     
-        let newSrc = `/formuladb-env/static/${this.tenantName}/${this.appName}/${fileName}`;
+        let newSrc = `/formuladb-env/${this.tenantName}/${this.appName}/static/${fileName}`;
     
         var reader = new FileReader();
         let p = new Promise((resolve, reject) => {
