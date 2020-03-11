@@ -6,6 +6,9 @@
     .actions.top { 
         transform: translateY(0%); 
     }
+    .actions.left { 
+        transform: translateX(-25%) translateY(25%); 
+    }
 }
 
 :host {

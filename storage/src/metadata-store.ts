@@ -17,6 +17,8 @@ import { PageOpts } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
+import { ServerEventSetPage } from "@domain/event";
+import { getPageProperties, setPageProperties } from "@core/dom-utils";
 const STORAGE = new Storage({
     projectId: "seismic-plexus-232506",
 });
@@ -250,12 +252,14 @@ export class MetadataStore {
         return this.getApp(tenantName, appName);
     }
 
-    async newPage(tenantName: string, appName: string, newPageObj: $PageObjT, startPageName: string) {
+    async setPage(tenantName: string, appName: string, newPageObj: $PageObjT, startPageName: string) {
         let content;
         if ('$LANDING-PAGE$' === startPageName) {
             content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html`);
+        } else if ('$BLOG-POST-PAGE$' === startPageName) {
+            content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/blog-post-page.html`);
         } else {
-            content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${startPageName}`);
+            content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${startPageName}.html`);
         }
 
         const jsdom = new JSDOM(content, {}, {
@@ -292,6 +296,7 @@ export class MetadataStore {
             }
         });
         const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
+        let pageProps = getPageProperties(htmlTools.doc);
 
         let cleanedUpDOM = cleanupDocumentDOM(htmlTools.doc);
 
@@ -305,10 +310,9 @@ export class MetadataStore {
         {
             let headEl = cleanedUpDOM.querySelector('head');
             if (!headEl) throw new Error(`could not find head elem for ${pagePath} with html ${html}`);
-            let titleEl = headEl.querySelector('title');
-            let headMarker = htmlTools.doc.createElement('head');
-            if (titleEl) headMarker.appendChild(titleEl.cloneNode(true));
-            cleanedUpDOM.replaceChild(headMarker, headEl);
+            let cleanedUpHeadEl = htmlTools.doc.createElement('head');
+            setPageProperties(cleanedUpHeadEl, pageProps);
+            cleanedUpDOM.replaceChild(cleanedUpHeadEl, headEl);
             await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
         }
 
@@ -344,21 +348,16 @@ export class MetadataStore {
         });
         const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
         let pageDom = htmlTools.doc.documentElement;
+        let pageProps = getPageProperties(htmlTools.doc);
 
         //<head> is managed like a special type of fragment
         {
             let headEl = pageDom.querySelector('head');
             if (!headEl) throw new Error(`could not find head elem for ${tenantName}/${appName}/${pageName} with html ${pageHtml}`);
-            let pageTitleEl = headEl.querySelector('title');
-            if (pageTitleEl != null) pageTitleEl = pageTitleEl.cloneNode(true) as HTMLTitleElement;
 
             let headHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`);
             headEl.outerHTML = headHtml;
-            let titleEl = headEl.querySelector('title');
-            if (pageTitleEl) {
-                if (titleEl) titleEl.innerText = pageTitleEl.innerText;
-                else headEl.appendChild(pageTitleEl);
-            }
+            setPageProperties(headEl, pageProps);
         }
 
         for (let fragmentEl of Array.from(pageDom.querySelectorAll('[data-frmdb-fragment]'))) {
@@ -443,10 +442,7 @@ export class MetadataStore {
             let pageObj: $PageObjT = { 
                 _id: `${tenantName}/${appName}/${pageName}`,
                 name: pageName,
-                title: htmlTools.doc.querySelector<HTMLTitleElement>('head title')?.textContent || '',
-                author: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="author"]')?.getAttribute('content') || '',
-                description: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="description"]')?.getAttribute('content') || '',
-                frmdb_display_date: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="frmdb_display_date"]')?.getAttribute('content') || '',
+                ...getPageProperties(htmlTools.doc),
             }
             ret.push(pageObj);
         };

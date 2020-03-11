@@ -45,6 +45,17 @@
         "border-2",
         "border-primary"
     ],
+    ".frmdb-t-header": [
+        "min-vh-50",
+        "overflow-hidden",
+        "d-flex",
+        "flex-column",
+        "align-items-center",
+        "justify-content-center",
+        "frmdb-bg-zoom-in",
+        "px-md-0",
+        "px-3"
+    ],    
     ".jumbotron": [
         "min-vh-50",
         "text-light",

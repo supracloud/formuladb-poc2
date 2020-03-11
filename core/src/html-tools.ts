@@ -107,6 +107,6 @@ export class HTMLTools {
     }
 }
 
-export function isHTMLElement(node: Node | null): node is HTMLElement {
+export function isHTMLElement(node: Node | EventTarget | null ): node is HTMLElement {
     return node != null && (node as any).tagName != null;
 }

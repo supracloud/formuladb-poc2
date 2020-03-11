@@ -36,8 +36,7 @@ describe('MetadataStore', () => {
     let dictionaryCache: Map<string, $DictionaryObjT> = new Map<string, $DictionaryObjT>()
         .set('main content', { 'fr': "contenu principal" } as $DictionaryObjT);
 
-    beforeAll(async () => {
-        frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
+    function resetEnv() {
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps");
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
@@ -50,12 +49,17 @@ describe('MetadataStore', () => {
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app/landing-page.html', templatePage);
         fs.copyFileSync('./git/formuladb-env/css/basic-1a1a1a-ffffff.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/basic-1a1a1a-ffffff.css');
         fs.copyFileSync('./git/formuladb-env/css/lux-cb8670-363636.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/lux-cb8670-363636.css');
+    }
+    beforeAll(async () => {
+        frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
+        resetEnv();
     });
 
     function expectSavedPageToEqual(pagePath: string, html: string) {
         let htmlFromFile = fs.readFileSync(pagePath, 'utf8');
         let savedHtmlNormalized = htmlTools.normalizeHTML(htmlFromFile);
-        expect(savedHtmlNormalized).toEqual(htmlTools.normalizeHTML(html));
+        let expectedNormalized = htmlTools.normalizeHTML(html);
+        expect(savedHtmlNormalized).toEqual(expectedNormalized);
     }
 
     const PageHtmlFromClientBrowser = /*html*/`
@@ -63,6 +67,8 @@ describe('MetadataStore', () => {
     <html>
     <head>
         <title>FormulaDB - Build Applications Without Code</title>
+        <meta name="description" content="Some page description">
+        <meta name="author" content="John Author">
         <link href="/formuladb-env/static/formuladb-io/favicon.png" rel="icon" type="image/png">
     </head>
     <body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb-io">
@@ -93,6 +99,9 @@ describe('MetadataStore', () => {
 <html>
 <head>
     <title>FormulaDB - Build Applications Without Code</title>
+    <meta name="author" content="John Author">
+    <meta name="description" content="Some page description">
+    <meta name="frmdb_display_date" content="">
 </head>
 
 <body data-frmdb-tenant="formuladb-env/frmdb-apps" data-frmdb-app="formuladb-io">
@@ -116,6 +125,8 @@ describe('MetadataStore', () => {
         let headHtml = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/_head.html', 'utf8');
         expect(headHtml).toEqual(/*html*/`<head>
 <title>FormulaDB - Build Applications Without Code</title>
+<meta name="description" content="Some page description">
+<meta name="author" content="John Author">
 <link href="/formuladb-env/static/formuladb-io/favicon.png" rel="icon" type="image/png">
 </head>`);
     });
@@ -191,15 +202,18 @@ describe('MetadataStore', () => {
         expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);
     });
 
-    fit("Should create new page and read table of pages", async () => {
-        await frmdbEngineStore.kvsFactory.metadataStore.newPage('frmdb-apps', 'test-app', {
+    it("Should create new page and read table of pages", async () => {
+        resetEnv();
+
+        let page1Obj = {
             _id: '',
             name: "new-page",
             title: "New Page Title",
             author: "John",
             description: "some description",
             frmdb_display_date: "2020-11-03",
-        }, "$LANDING-PAGE$");
+        };
+        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page1Obj , "$LANDING-PAGE$");
 
         let savedPage = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/new-page.html').toString();
         let expected = htmlTools.normalizeHTMLDoc(/*html*/`
@@ -219,38 +233,27 @@ describe('MetadataStore', () => {
 
         let pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('frmdb-apps', 'test-app');
         expect(pages).toEqual([{
+            ...page1Obj,
             _id: 'frmdb-apps/test-app/new-page',
-            name: "new-page",
-            title: "New Page Title",
-            author: "John",
-            description: "some description",
-            frmdb_display_date: "2020-11-03",
-        }])
+        }]);
 
-        await frmdbEngineStore.kvsFactory.metadataStore.newPage('frmdb-apps', 'test-app', {
+        let page2Obj = {
             _id: '',
             name: "new-page-2",
             title: "New Page Title 2",
             author: "John",
             description: "some description 2",
             frmdb_display_date: "2020-11-03",
-        }, "$LANDING-PAGE$");
+        };
+        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page2Obj , "new-page");
 
         pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('frmdb-apps', 'test-app');
         expect(pages).toEqual([{
+            ...page2Obj,
             _id: 'frmdb-apps/test-app/new-page-2',
-            name: "new-page-2",
-            title: "New Page Title 2",
-            author: "John",
-            description: "some description 2",
-            frmdb_display_date: "2020-11-03",
         }, {
+            ...page1Obj,
             _id: 'frmdb-apps/test-app/new-page',
-            name: "new-page",
-            title: "New Page Title",
-            author: "John",
-            description: "some description",
-            frmdb_display_date: "2020-11-03",
-        }])
+        }]);
     });
 });

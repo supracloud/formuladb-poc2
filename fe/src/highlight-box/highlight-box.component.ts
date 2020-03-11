@@ -114,7 +114,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Grand Parent Element">
-                                <i class="frmdb-i-hand-point-up"></i> <i class="frmdb-i-hand-point-up"></i>
+                                <i class="frmdb-i-hand-point-up" style="display: inline-block; transform: translate(0,25%) scale(0.75)"></i><i class="frmdb-i-hand-point-up" style="margin-left: -0.25em; display: inline-block; transform: scale(0.7)"></i>
                             </a>
                         </div>
                     </div>

@@ -22,7 +22,7 @@ export function navigateTo(relativePathOrHref: string) {
 }
 
 export function navigateEditorToPage(pageName: string) {
-    navigateTo(`../${pageName}.html`);
+    navigateTo(`${pageName}.html`);
 }
 
 export function navigateEditorToAppAndPage(appName: string, pageName: string) {

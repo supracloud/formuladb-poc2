@@ -147,8 +147,8 @@
                     aria-expanded="false" data-frmdb-value="selectedPageName">
                 </a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Page[]" data-frmdb-editor-link data-frmdb-value="$FRMDB.$Page[]._id"
-                        data-frmdb-table-limit="50" data-frmdb-attr="href:CONCATENATE('./', _id, '.html?frmdbRender=editor'):$FRMDB.$Page[]"></a>
+                    <a class="dropdown-item" data-frmdb-table="$FRMDB.$Page[]" data-frmdb-editor-link data-frmdb-value="$FRMDB.$Page[].name"
+                        data-frmdb-table-limit="50" data-frmdb-attr="href:CONCATENATE('./', name, '.html?frmdbRender=editor'):$FRMDB.$Page[]"></a>
                 </div>
             </li>
             <li class="nav-item dropdown frmdb-dropdown-hover">
@@ -157,6 +157,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="table-options">
                     <a class="dropdown-item" id="new-page-btn" title="New Page"><i class="frmdb-i-plus-circle"></i> New Page</a>
+                    <a class="dropdown-item" id="edit-page-btn" title="New Page"><i class="frmdb-i-edit"></i> Edit Page</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" id="delete-page-btn" title="Delete Page" data-frmdb-prop="pagePathToDelete::$frmdb.selectedPagePath"><i
                             class="frmdb-i-trash"></i> Delete Page <span data-frmdb-value="$frmdb.selectedPageName"></span></a>

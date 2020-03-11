@@ -191,7 +191,7 @@ export class DataBindingsMonitor {
                     tableNames.add($Table._id);
                 } else if (event.type_ === "ServerEventNewApp") {
                     tableNames.add($App._id);
-                } else if (event.type_ === "ServerEventNewPage" || event.type_ === "ServerEventDeletePage") {
+                } else if (event.type_ === "ServerEventSetPage" || event.type_ === "ServerEventDeletePage") {
                     tableNames.add($Page._id);
                 }
             }

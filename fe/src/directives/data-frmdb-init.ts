@@ -1,26 +1,30 @@
 import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
 import { $_FRMDB_SCOPE } from "@fe/fe-functions";
+import { isHTMLElement } from "@core/html-tools";
 
+const selector = 'input[data-frmdb-init], select[data-frmdb-init], textarea[data-frmdb-init]';
 export function setupDataFrmdbInitDirective(rootEl: HTMLElement) {
 
-    for (let el of Array.from(rootEl.querySelectorAll('[data-frmdb-init]'))) {
+    for (let el of Array.from(rootEl.querySelectorAll(selector))) {
         apply(el as any);
     }
 
-    // Create an observer instance linked to the callback function
-    const observer = new MutationObserver((mutationsList, observer) => {
-        for(let mutation of mutationsList) {
-            if (mutation.type === 'childList') {
-                //TODO apply directive if necessary
-            }
-            else if (mutation.type === 'attributes') {
-                //TODO apply directive if necessary
-            }
-        }
-    });
-
-    // Start observing the target node for configured mutations
-    observer.observe(rootEl, { attributes: true, childList: true, subtree: true });
+    // const observer = new MutationObserver((mutationsList, observer) => {
+    //     let els: HTMLElement[] = [];
+    //     for(let mutation of mutationsList) {
+    //         if (mutation.type === 'childList') {
+    //             for (let el of Array.from(mutation.addedNodes)) {
+    //                 if (isHTMLElement(el) && el.matches(selector)) els.push(el);
+    //             }
+    //         }
+    //         else if (mutation.type === 'attributes') {
+    //             let el = mutation.target;
+    //             if (isHTMLElement(el) && el.matches(selector)) els.push(el);
+    //         }
+    //     }
+    //     for (let el of els) apply(el as any);
+    // });
+    // observer.observe(rootEl, { attributes: true, childList: true, subtree: true, attributeFilter: ['data-frmdb-init'] });
 }
 
 function apply(el: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement) {

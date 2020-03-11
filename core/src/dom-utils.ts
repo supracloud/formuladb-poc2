@@ -1,3 +1,6 @@
+import { $PageObjT } from "@domain/metadata/default-metadata";
+import { PickOmit } from "@domain/ts-utils";
+
 export function isDocument(param): param is Document {
     return param?.defaultView?.Document && param instanceof param.defaultView.Document;
 }
@@ -42,4 +45,35 @@ export function getSiblingIndex(el: HTMLElement) {
         prev = prev.previousElementSibling;
     }
     return siblingIndex;
+}
+
+export function getPageProperties(doc: Document): PickOmit<$PageObjT, '_id' | 'name'> {
+    return {
+        title: doc.querySelector<HTMLTitleElement>('head title')?.textContent || '',
+        author: doc.querySelector<HTMLMetaElement>('head meta[name="author"]')?.getAttribute('content') || '',
+        description: doc.querySelector<HTMLMetaElement>('head meta[name="description"]')?.getAttribute('content') || '',
+        frmdb_display_date: doc.querySelector<HTMLMetaElement>('head meta[name="frmdb_display_date"]')?.getAttribute('content') || '',
+    };
+}
+export function setPageProperties(headEl: HTMLHeadElement, pageProps: PickOmit<$PageObjT, '_id' | 'name'>) {
+    let title: HTMLHeadElement | null = headEl.querySelector('title');
+    if (!title) {
+        title = getDoc(headEl).createElement('title');
+        headEl.appendChild(title);
+    } 
+    title.textContent = pageProps.title;
+    
+    for (let [metaName, metaValue] of [
+        ['author', pageProps.author ],
+        ['description', pageProps.description ],
+        ['frmdb_display_date', pageProps.frmdb_display_date ],
+    ]) {
+        let el: HTMLMetaElement | null = headEl.querySelector(`meta[name="${metaName}"]`);
+        if (!el) {
+            el = getDoc(headEl).createElement('meta');
+            el.setAttribute('name', metaName);
+            headEl.appendChild(el);
+        } 
+        el.setAttribute('content', metaValue);
+    }
 }

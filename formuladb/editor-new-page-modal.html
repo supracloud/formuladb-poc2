@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="modal-body text">
-                    <div class="form-group row" data-key="type">
+                    <div class="form-group row" data-key="type" data-frmdb-attr="class.d-none:isNewPage">
                         <label class="col-sm-3 control-label">
                             Start from
                             <abbr class="badge badge-pill badge-secondary" title="This selectd page will be copied to create the new one">?</abbr>
@@ -20,9 +20,10 @@
                         <div class="col-sm-9 input">
                             <div>
                                 <select class="form-control custom-select" name="startTemplateUrl">
-                                    <option selected="selected" value="$LANDING-PAGE$">Default Landing Page</option>
-                                    <option data-frmdb-table="$FRMDB.$Page[]" data-frmdb-value="$FRMDB.$Page[]._id"
-                                        data-frmdb-attr="value::$FRMDB.$Page[]._id"></option>
+                                    <option selected="selected" value="$LANDING-PAGE$">Landing Page Example</option>
+                                    <option value="$BLOG-POST-PAGE$">Blog Post Example Page</option>
+                                    <option data-frmdb-table="$FRMDB.$Page[]" data-frmdb-value="$FRMDB.$Page[].name" data-frmdb-table-limit="50"
+                                        data-frmdb-attr="value::$FRMDB.$Page[].name"></option>
                                 </select>
                             </div>
                         </div>
@@ -31,8 +32,8 @@
                     <div class="form-group row" data-key="href">
                         <label class="col-sm-3 control-label">Page name</label>
                         <div class="col-sm-9 input-group">
-                            <input name="name" data-frmdb-value="name" type="text" class="form-control" placeholder="new-page-name" required pattern="[-a-zA-Z]+"
-                                oninput="this.value = this.value.replace(/[^a-zA-Z_+]/g, '-')">
+                            <input name="name" data-frmdb-value="name" type="text" class="form-control" placeholder="new-page-name" required pattern="[-a-zA-Z][-a-zA-Z0-9]+"
+                                oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '-')">
                             <div class="input-group-append">
                                 <div class="input-group-text">.html</div>
                             </div>
@@ -42,7 +43,7 @@
                     <div class="form-group row" data-key="href">
                         <label class="col-sm-3 control-label">Title</label>
                         <div class="col-sm-9 input-group">
-                            <input name="title" data-frmdb-value="title" type="text" class="form-control" placeholder="Page Title" required pattern="[- a-zA-Z]+">
+                            <input name="title" data-frmdb-value="title" type="text" class="form-control" placeholder="Page Title" required pattern="[- a-zA-Z0-9]+">
                         </div>
                     </div>
 
@@ -74,7 +75,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-primary btn-lg" type="submit"><i class="frmdb-i-check"></i> Create page</button>
+                    <button class="btn btn-primary btn-lg" type="submit"><i class="frmdb-i-check"></i> <span data-frmdb-value="buttonText">button</span></button>
                     <button class="btn btn-secondary btn-lg" type="reset" data-dismiss="modal"><i class="frmdb-i-close"></i> Cancel</button>
                 </div>
             </div>

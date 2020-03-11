@@ -31,6 +31,15 @@
     ".frmdb-t-cover .frmdb-t-aside > *": [
         "m-3"
     ],
+    ".frmdb-t-header": [
+        "min-vh-50",
+        "overflow-hidden",
+        "d-flex",
+        "flex-column",
+        "justify-content-center",
+        "frmdb-bg-tint-parallax",
+        "frmdb-bg-tint-secondary-50"
+    ],    
     ".jumbotron": [
         "w-100",
         "text-center",
