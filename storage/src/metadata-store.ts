@@ -24,8 +24,8 @@ const STORAGE = new Storage({
 const os = require('os');
 const path = require('path');
 
-const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
-const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
+const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
+const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
 
 export interface SchemaEntityList {
     _id: string;
@@ -64,7 +64,7 @@ export class MetadataStore {
                 if (err) {
                     reject(err);
                 }
-                let retFiles = files.map(file => `${directoryPath.slice('/wwwroot/git'.length)}/${file}`);
+                let retFiles = files.map(file => `${directoryPath.slice(FRMDB_ENV_ROOT_DIR.length)}/${file}`);
                 if (filter) {
                     retFiles = retFiles.filter(fileName => filter.test(fileName));
                 }
@@ -430,7 +430,7 @@ export class MetadataStore {
         let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
         for (let pageFilePath of pageFiles) {
             let pageName = pageFilePath.replace(/^.*\//, '').replace(/\.html$/, '');
-            let htmlContent = await this.readFile(pageFilePath);
+            let htmlContent = await this.readFile(FRMDB_ENV_ROOT_DIR + '/' + pageFilePath);
 
             const jsdom = new JSDOM(htmlContent, {}, {
                 features: {
@@ -443,7 +443,7 @@ export class MetadataStore {
             let pageObj: $PageObjT = { 
                 _id: `${tenantName}/${appName}/${pageName}`,
                 name: pageName,
-                title: htmlTools.doc.querySelector<HTMLTitleElement>('head title')?.innerText || '',
+                title: htmlTools.doc.querySelector<HTMLTitleElement>('head title')?.textContent || '',
                 author: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="author"]')?.getAttribute('content') || '',
                 description: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="description"]')?.getAttribute('content') || '',
                 frmdb_display_date: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="frmdb_display_date"]')?.getAttribute('content') || '',

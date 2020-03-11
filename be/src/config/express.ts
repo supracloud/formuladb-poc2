@@ -34,7 +34,8 @@ import { $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata
 import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
 import { PageOpts } from "@domain/url-utils";
 
-const FRMDB_ENV_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb-env` : '/wwwroot/git/formuladb-env';
+const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
+const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
 const FRMDB_DIR = process.env.FRMDB_ENV_ROOT_DIR ? `${process.env.FRMDB_ENV_ROOT_DIR}/formuladb` : '/wwwroot/formuladb';
 
 let frmdbEngines: Map<string, LazyInit<FrmdbEngine>> = new Map();

@@ -191,7 +191,7 @@ describe('MetadataStore', () => {
         expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);
     });
 
-    it("Should create new page and read table of pages", async () => {
+    fit("Should create new page and read table of pages", async () => {
         await frmdbEngineStore.kvsFactory.metadataStore.newPage('frmdb-apps', 'test-app', {
             _id: '',
             name: "new-page",
@@ -216,5 +216,41 @@ describe('MetadataStore', () => {
             </body>
         `);
         expect(expected).toEqual(htmlTools.normalizeHTMLDoc(savedPage));
+
+        let pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('frmdb-apps', 'test-app');
+        expect(pages).toEqual([{
+            _id: 'frmdb-apps/test-app/new-page',
+            name: "new-page",
+            title: "New Page Title",
+            author: "John",
+            description: "some description",
+            frmdb_display_date: "2020-11-03",
+        }])
+
+        await frmdbEngineStore.kvsFactory.metadataStore.newPage('frmdb-apps', 'test-app', {
+            _id: '',
+            name: "new-page-2",
+            title: "New Page Title 2",
+            author: "John",
+            description: "some description 2",
+            frmdb_display_date: "2020-11-03",
+        }, "$LANDING-PAGE$");
+
+        pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('frmdb-apps', 'test-app');
+        expect(pages).toEqual([{
+            _id: 'frmdb-apps/test-app/new-page-2',
+            name: "new-page-2",
+            title: "New Page Title 2",
+            author: "John",
+            description: "some description 2",
+            frmdb_display_date: "2020-11-03",
+        }, {
+            _id: 'frmdb-apps/test-app/new-page',
+            name: "new-page",
+            title: "New Page Title",
+            author: "John",
+            description: "some description",
+            frmdb_display_date: "2020-11-03",
+        }])
     });
 });
