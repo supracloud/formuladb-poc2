@@ -7,7 +7,11 @@ export const ScalarFunctionsImplementations = {
     MAX: function (x, y) { return Math.max(x, y) },
     ABS: function (x) { return Math.abs(x) },
     TEXT: function TEXT(expr, format) {
-        //TODO
+        if (typeof expr == "number" ) {
+            return formulajs.TEXT(expr, format);
+        } else if (expr instanceof Date) {
+            return moment(expr).format(format);
+        }
     },
     FIND: function (find_text, within_text, position?) {
         position = (position === undefined) ? 0 : position;
@@ -19,9 +23,8 @@ export const ScalarFunctionsImplementations = {
     CONCATENATE: formulajs.CONCATENATE,
     REGEXREPLACE: formulajs.REGEXREPLACE,
     SUBSTITUTE: formulajs.SUBSTITUTE,
-    EOMONTH: function EOMONTH(expr, numMonths) {
-        //TODO
-    },
+    TODAY: formulajs.TODAY,
+    EOMONTH: formulajs.EOMONTH,
     SQRT: function SQRT(expr) {
         //TODO
     },

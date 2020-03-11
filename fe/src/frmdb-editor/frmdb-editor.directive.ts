@@ -52,9 +52,10 @@ import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorT
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 import { DATA_BINDING_MONITOR } from "@fe/init";
-import { $Table } from "@domain/metadata/default-metadata";
+import { $Table, $PageObjT } from "@domain/metadata/default-metadata";
 import { waitUntil } from "@domain/ts-utils";
 import { FrmdbElementState } from "@fe/frmdb-element-state";
+import { serializeElemToObj } from "@fe/live-dom-template/live-dom-template";
 
 declare var $: null, jQuery: null;
 
@@ -114,63 +115,65 @@ export class FrmdbEditorDirective {
         this.state = new FrmdbElementState(document.body, new FrmdbEditorState(tenantName, appName));
 
         (window as any).$FRMDB_EDITOR = this;
-        window.addEventListener('load', () => {
-            this.iframe = document.body.querySelector('iframe#app')! as HTMLIFrameElement;
-            this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
-            this.componentEditor = document.body.querySelector('frmdb-component-editor') as ComponentEditorComponent;
-            this.frmdbFe = queryFrmdbFe();
-            this.dataGrid = queryDataGrid(document.body);
-            this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
-            this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
-            this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
-            this.imgEditorCmp = document.body.querySelector('frmdb-img-editor') as ImgEditorComponent;
-            this.iconEditorCmp = document.body.querySelector('frmdb-icon-editor') as IconEditorComponent;
-            this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
-            this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
+        this.iframe = document.body.querySelector('iframe#app')! as HTMLIFrameElement;
+        this.canvas = document.body.querySelector('#canvas') as HTMLDivElement;
+        this.componentEditor = document.body.querySelector('frmdb-component-editor') as ComponentEditorComponent;
+        this.frmdbFe = queryFrmdbFe();
+        this.dataGrid = queryDataGrid(document.body);
+        this.letPanel = document.body.querySelector('.left-panel') as HTMLElement;
+        this.elementEditor = document.body.querySelector('frmdb-element-editor') as ElementEditorComponent;
+        this.addElementCmp = document.body.querySelector('frmdb-add-element') as AddElementComponent;
+        this.imgEditorCmp = document.body.querySelector('frmdb-img-editor') as ImgEditorComponent;
+        this.iconEditorCmp = document.body.querySelector('frmdb-icon-editor') as IconEditorComponent;
+        this.elementTree = document.body.querySelector('frmdb-element-tree') as ElementTreeComponent;
+        this.themeCustomizer = document.body.querySelector('frmdb-theme-customizer') as ThemeCustomizerComponent;
 
-            this.tableManagementFlows();
-            this.tableColumnManagementFlows();
-            this.viewManagementFlows();
-            let ff = () => {
-                this.elementEditor.rootEl = this.iframe.contentWindow!.document.body;
-                this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
-                pageElementFlows(this);
-                hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
-            }
-            this.iframe.onload = ff;
+        this.tableManagementFlows();
+        this.tableColumnManagementFlows();
+        this.viewManagementFlows();
+        let ff = () => {
+            this.elementEditor.rootEl = this.iframe.contentWindow!.document.body;
+            this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
+            pageElementFlows(this);
+            hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
+        }
+        this.iframe.onload = ff;
 
-            //FIXME: Ugly Workaround for e2e where onload is not getting called:
-            setTimeout(ff, 2000);
-            this.iframe.src = window.location.pathname;
+        //FIXME: Ugly Workaround for e2e where onload is not getting called:
+        setTimeout(ff, 2000);
+        this.iframe.src = window.location.pathname;
 
-            let newPageOpts = parsePageUrl(window.location.pathname);
-            this.state.emitChange({
-                selectedAppName: newPageOpts.appName,
-                selectedPageName: newPageOpts.pageName,
-            });
-
-            waitUntil(() => DATA_BINDING_MONITOR)
-            .then(() => {
-                DATA_BINDING_MONITOR!.registerDataBindingChangeHandler('frmdb-editor', async (tableName: string, data: any[]) => {
-                    if (tableName == $Table._id) {
-                        this.state.emitChange({
-                            selectedTableId: data?.[0]?._id,
-                            tables: data as Entity[],
-                        })
-                    }
-                });
-            });
-
-            this.addElementCmp.addEventListener('FrmdbAddPageElementStart', (event: CustomEvent) => {
-                let evDetail: FrmdbAddPageElementStart = event.detail;
-                this.elementEditor.addElement(evDetail.htmlElement);
-            })
+        let newPageOpts = parsePageUrl(window.location.pathname);
+        this.state.emitChange({
+            selectedAppName: newPageOpts.appName,
+            selectedPageName: newPageOpts.pageName,
         });
+
+        waitUntil(() => DATA_BINDING_MONITOR)
+        .then(() => {
+            DATA_BINDING_MONITOR!.registerDataBindingChangeHandler('frmdb-editor', async (tableName: string, data: any[]) => {
+                if (tableName == $Table._id) {
+                    this.state.emitChange({
+                        selectedTableId: data?.[0]?._id,
+                        tables: data as Entity[],
+                    })
+                }
+            });
+        });
+
+        this.addElementCmp.addEventListener('FrmdbAddPageElementStart', (event: CustomEvent) => {
+            let evDetail: FrmdbAddPageElementStart = event.detail;
+            this.elementEditor.addElement(evDetail.htmlElement);
+        })
 
         registerFrmdbEditorRouterHandler('editor-iframe-src',
             (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newPath),
             () => this.checkSafeNavigation()
         );
+    }
+
+    public changeTable(a: HTMLAnchorElement) {
+        this.state.emitChange({selectedTableId: a.innerText});
     }
 
     showIntroVideoModal() {
@@ -293,26 +296,24 @@ export class FrmdbEditorDirective {
         onEvent(document.body, 'click', '#new-page-btn, #new-page-btn *', (event) => {
 
             var newPageModal = $FRMDB_MODAL('#new-page-modal');
-            let titleInput: HTMLInputElement = newPageModal.querySelector('input[name="title"]') as HTMLInputElement;
             let startTemplateSel: HTMLSelectElement = newPageModal.querySelector('select[name=startTemplateUrl]') as HTMLSelectElement;
             let alert = newPageModal.querySelector('.alert')!;
             alert.classList.add('d-none');
 
             newPageModal.querySelector("form")!.onsubmit = (event) => {
+                event.preventDefault();
 
-                var title = titleInput.value;
-                var startTemplateUrl = startTemplateSel.value.replace(/^#/, '');
+                let pageObj: $PageObjT = serializeElemToObj(newPageModal) as any;
 
                 //replace nonalphanumeric with dashes and lowercase for name
-                var name = title.replace(/\W+/g, '-').replace(/[^_A-Za-z0-9]+/g, '_').toLowerCase() + '.html';
+                pageObj.name = pageObj.name.replace(/[^a-zA-Z_+]/g, '-');
 
-                event.preventDefault();
-                BACKEND_SERVICE().putEvent(new ServerEventNewPage(name, startTemplateUrl))
+                BACKEND_SERVICE().putEvent(new ServerEventNewPage(BACKEND_SERVICE().tenantName, BACKEND_SERVICE().appName, pageObj, startTemplateSel.value))
                     .then(async (ev: ServerEventNewPage) => {
                         if (ev.state_ != 'ABORT' || ev.error_) {
                             newPageModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FRMDB_MODAL(newPageModal, "hide");
-                            navigateEditorToPage(ev.newPageName);
+                            navigateEditorToPage(ev.pageObj.name);
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);

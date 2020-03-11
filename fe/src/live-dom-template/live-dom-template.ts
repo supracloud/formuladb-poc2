@@ -48,6 +48,11 @@ export function deleteElem(el: Elem) {
  */
 export function updateDOM(newData: {}, el: Elem): void {
     updateDOMForScope(newData, el, newData, '', []);
+    let oldScope = (el as any).$_FRMDB_SCOPE;
+    (el as any).$_FRMDB_SCOPE = {
+        ...oldScope,
+        ...newData,
+    };
 }
 
 function updateDOMForScope(newData: {}, el: Elem, context: {}, currentScopePrefix: string, arrayCurrentIndexes: number[]) {

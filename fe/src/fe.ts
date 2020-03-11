@@ -6,6 +6,7 @@ import './icon/icon.components';
 
 import './directives/data-frmdb-select.directive';
 import './fe-functions';
+import './update';
 import * as _ from "lodash";
 
 import './data-grid/data-grid.component';

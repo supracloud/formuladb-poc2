@@ -108,7 +108,7 @@ export class FrmdbEngine {
     }
 
     private async newPage(event: events.ServerEventNewPage): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.newPage(event.newPageName, event.startTemplateUrl);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.newPage(event.tenantName, event.appName, event.pageObj, event.startPageName);
         return event;
     }
 

@@ -10,9 +10,10 @@ import { generateTimestampUUID } from "@domain/uuid";
 import { DataGridComponentI } from "./data-grid/data-grid.component.i";
 import { SimpleAddHocQuery, SimpleAddHocQueryFilterItem, makeSimpleAddHocQueryFilterItem_filterType, makeSimpleAddHocQueryFilterItem_type } from "@domain/metadata/simple-add-hoc-query";
 import { onEventChildren, onEvent } from "./delegated-events";
-import { regexExtract } from "@domain/ts-utils";
+import { regexExtract, waitUntil } from "@domain/ts-utils";
 import { registerChangesFeedHandler } from "./changes-feed-client";
 import { $ImageObjT, $AppObjT, $PageObjT, $Table, $App, $Page } from "@domain/metadata/default-metadata";
+import { isHTMLElement } from "@core/dom-utils";
 
 declare var $: any;
 

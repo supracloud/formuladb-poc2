@@ -8,6 +8,7 @@ import { DataObj } from "./metadata/data_obj";
 import { Entity, EntityProperty } from "./metadata/entity";
 import { generateUUID } from "./uuid";
 import { PageOpts } from "./url-utils";
+import { $PageObjT } from "./metadata/default-metadata";
 
 /**
  * The events sent by the clients become transactions on the back-end
@@ -72,7 +73,9 @@ export class ServerEventDeleteEntity extends MwzEvent {
 export class ServerEventNewPage extends MwzEvent {
     readonly type_ = "ServerEventNewPage";
 
-    constructor(public newPageName: string, public startTemplateUrl: string) {
+    constructor(public tenantName: string, public appName: string, public pageObj: $PageObjT, 
+        public startPageName: string | '$LANDING-PAGE$') 
+    {
         super();
     }
 }

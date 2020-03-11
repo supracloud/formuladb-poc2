@@ -75,7 +75,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class="btn py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i class="frmdb-i-hand-point-up"></i>
+                                <i class="frmdb-i-hand-point-left"></i> ${sidx}
                             </a>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Sibling ${sidx} Element">
-                                <i class="frmdb-i-hand-point-up"></i>
+                                <i class="frmdb-i-flip-horizontal frmdb-i-hand-point-left"></i> ${sidx}
                             </a>
                         </div>
                     </div>
@@ -110,11 +110,11 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
             }
             if (el = this.state.selectedEl.parentElement?.parentElement as HTMLElement | null) {
                 this.addBox(el, "selected", "grand-parent", /*html*/`
-                    <div slot="actions-top-left" class="d-flex flex-nowrap">
+                    <div slot="actions-right" class="d-flex flex-nowrap">
                         <div class="actions related" onmouseover="$FSCMP(this).selectElementHover()">
                             <a class=" py-0 px-1 rounded" onclick="$FSCMP(this).clickSelectElement(this)" 
                                 href="javascript:void(0)" title="Select Grand Parent Element">
-                                <i class="frmdb-i-hand-point-up"></i>
+                                <i class="frmdb-i-hand-point-up"></i> <i class="frmdb-i-hand-point-up"></i>
                             </a>
                         </div>
                     </div>
@@ -220,8 +220,7 @@ export class HighlightBoxComponent extends HTMLElement implements FrmdbCustomRen
         let el = (btn.closest('.box') as HighlightComponent)?.highlightEl;
         if (!el) { console.error('Cannot find highlighted elem for ', btn); return }
 
-        this.state.selectedEl = el;
-        this.frmdbRender();
+        this.selectElement(el);
     }
     selectElementHover() {
         this.highlightBox.style.display = 'none';

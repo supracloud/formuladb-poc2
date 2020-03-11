@@ -8,6 +8,9 @@
     }
     .selected {
         border: 4px dotted transparent;
+        .actions.related * {
+            transform: scale(0.75);
+        }
     }
     .selected:hover {
         border: 4px dotted yellow;

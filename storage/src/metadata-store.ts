@@ -242,7 +242,7 @@ export class MetadataStore {
             await execShell(`cp -ar ${FRMDB_ENV_DIR}/${tenantName}/${basedOnApp} ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
         } else {
             await execShell(`mkdir -p ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landig-page.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/home-page.html`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/index.html`);
             await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
             await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
         }
@@ -250,10 +250,35 @@ export class MetadataStore {
         return this.getApp(tenantName, appName);
     }
 
-    async newPage(newPageName: string, startTemplateUrl: string) {
-        let [tenantName, appName, pageName] = startTemplateUrl.split(/\//).filter(x => x);
-        let content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}`);
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${newPageName}`, content);
+    async newPage(tenantName: string, appName: string, newPageObj: $PageObjT, startPageName: string) {
+        let content;
+        if ('$LANDING-PAGE$' === startPageName) {
+            content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html`);
+        } else {
+            content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${startPageName}`);
+        }
+
+        const jsdom = new JSDOM(content, {}, {
+            features: {
+                'FetchExternalResources': false,
+                'ProcessExternalResources': false
+            }
+        });
+        const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
+        let cleanedUpDOM = cleanupDocumentDOM(htmlTools.doc);
+
+        let headEl = cleanedUpDOM.querySelector('head');
+        if (!headEl) throw new Error(`could not find head elem for ${newPageObj._id} with html ${content}`);
+        let newHeadEl = htmlTools.doc.createElement('head');
+        newHeadEl.innerHTML = /*html*/`
+            <title>${newPageObj.title}</title>
+            <meta name="description" content="${newPageObj.description}">
+            <meta name="author" content="${newPageObj.author}">
+            <meta name="frmdb_display_date" content="${newPageObj.frmdb_display_date}">
+        `;
+        cleanedUpDOM.replaceChild(newHeadEl, headEl);
+
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${newPageObj.name}.html`, htmlTools.document2html(cleanedUpDOM));
     }
 
     async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
@@ -401,8 +426,31 @@ export class MetadataStore {
     }
 
     async getPages(tenantName: string, appName: string): Promise<$PageObjT[]> {
+        let ret: $PageObjT[] = [];
         let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
-        return pageFiles.map(i => ({ _id: i.replace(/^.*\//, '').replace(/\.html$/, '') }))
+        for (let pageFilePath of pageFiles) {
+            let pageName = pageFilePath.replace(/^.*\//, '').replace(/\.html$/, '');
+            let htmlContent = await this.readFile(pageFilePath);
+
+            const jsdom = new JSDOM(htmlContent, {}, {
+                features: {
+                    'FetchExternalResources': false,
+                    'ProcessExternalResources': false
+                }
+            });
+            const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
+
+            let pageObj: $PageObjT = { 
+                _id: `${tenantName}/${appName}/${pageName}`,
+                name: pageName,
+                title: htmlTools.doc.querySelector<HTMLTitleElement>('head title')?.innerText || '',
+                author: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="author"]')?.getAttribute('content') || '',
+                description: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="description"]')?.getAttribute('content') || '',
+                frmdb_display_date: htmlTools.doc.querySelector<HTMLMetaElement>('head meta[name="frmdb_display_date"]')?.getAttribute('content') || '',
+            }
+            ret.push(pageObj);
+        };
+        return ret;
     }
 
     async getTables(tenantName: string, appName: string): Promise<Entity[]> {

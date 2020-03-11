@@ -19,6 +19,18 @@ import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { parsePageUrl, PageOpts } from '@domain/url-utils';
 import { $DictionaryObjT } from '@domain/metadata/default-metadata.js';
 
+const templatePage =  /*html*/`
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FormulaDB - Build Applications Without Code</title>
+    <link href="/formuladb-env/static/formuladb-io/favicon.png" rel="icon" type="image/png">
+</head>
+<body>
+    <h1>Template Page</h1>
+</body>
+`;
+
 describe('MetadataStore', () => {
     let frmdbEngineStore: FrmdbEngineStore;
     let dictionaryCache: Map<string, $DictionaryObjT> = new Map<string, $DictionaryObjT>()
@@ -31,8 +43,11 @@ describe('MetadataStore', () => {
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
         fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
         fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app", {recursive: true});
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app", {recursive: true});
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Clean.json', JSON.stringify(CleanTheme));
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Frames.json', JSON.stringify(FramesTheme));
+        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app/landing-page.html', templatePage);
         fs.copyFileSync('./git/formuladb-env/css/basic-1a1a1a-ffffff.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/basic-1a1a1a-ffffff.css');
         fs.copyFileSync('./git/formuladb-env/css/lux-cb8670-363636.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/lux-cb8670-363636.css');
     });
@@ -176,4 +191,30 @@ describe('MetadataStore', () => {
         expect(cssStr.indexOf('--secondary: #363636')).toBeGreaterThan(0);
     });
 
+    it("Should create new page and read table of pages", async () => {
+        await frmdbEngineStore.kvsFactory.metadataStore.newPage('frmdb-apps', 'test-app', {
+            _id: '',
+            name: "new-page",
+            title: "New Page Title",
+            author: "John",
+            description: "some description",
+            frmdb_display_date: "2020-11-03",
+        }, "$LANDING-PAGE$");
+
+        let savedPage = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/new-page.html').toString();
+        let expected = htmlTools.normalizeHTMLDoc(/*html*/`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>New Page Title</title>
+                <meta name="description" content="some description">
+                <meta name="author" content="John">
+                <meta name="frmdb_display_date" content="2020-11-03">
+            </head>
+            <body>
+                <h1>Template Page</h1>
+            </body>
+        `);
+        expect(expected).toEqual(htmlTools.normalizeHTMLDoc(savedPage));
+    });
 });

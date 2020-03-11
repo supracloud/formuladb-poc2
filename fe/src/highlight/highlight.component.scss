@@ -26,17 +26,17 @@
             left: 0;
             justify-content: left;
         }
-        &.top-left {
-            top: 0;
-            transform: translateX(-75%) translateY(-65%);
-            left: 0;
-            justify-content: left;
-        }
         &.left {
-            transform: translateX(-105%);
             top: 0;
             bottom: 0;
             left: 0;
+            justify-content: center;
+            align-items: center;
+        }        
+        &.right {
+            top: 0;
+            bottom: 0;
+            right: 0;
             justify-content: center;
             align-items: center;
         }        

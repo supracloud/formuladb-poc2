@@ -177,6 +177,14 @@ function $FSCMP(el: HTMLElement): HTMLElement | null {
     }
     return parent;
 }
+export function $_FRMDB_SCOPE(el: HTMLElement): any {
+    let parent: Node | null = el;
+    while (parent) {
+        if ((parent as any).$_FRMDB_SCOPE) return (parent as any).$_FRMDB_SCOPE;
+        else parent = parent.parentNode;
+    }
+    return null;
+}
 
 (window as any).$MODAL = $MODAL;
 (window as any).$TABLES = $TABLES;

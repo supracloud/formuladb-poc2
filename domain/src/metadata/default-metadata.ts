@@ -13,6 +13,11 @@ export const _$Page = {
     _id: "$Page",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        name: { name: "name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        title: { name: "title", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        author: { name: "author", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        frmdb_display_date: { name: "display_date", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
     }
 };
 export const $Page: Entity = _$Page;

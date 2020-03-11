@@ -6,6 +6,7 @@ import { initRoutes } from "./router";
 import { DataBindingsMonitor } from "./data-bindings-monitor";
 import { stopChangesFeedLoop, changesFeedLoop } from "./changes-feed-client";
 import { inIframe } from "@core/dom-utils";
+import { setupDataFrmdbInitDirective } from "./directives/data-frmdb-init";
 
 export var DATA_BINDING_MONITOR: DataBindingsMonitor | null = null;
 export async function initFrmdb() {
@@ -22,6 +23,8 @@ export async function initFrmdb() {
     if (!inIframe()) {
         changesFeedLoop();
     }
+
+    setupDataFrmdbInitDirective(document.body);
 }
 
 export function deinitFrmdb() {

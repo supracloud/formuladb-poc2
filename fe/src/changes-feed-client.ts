@@ -1,6 +1,7 @@
 import * as events from "@domain/event";
 import { generateTimestampUUID } from "@domain/uuid";
 import { inIframe } from "@core/dom-utils";
+import { waitUntil } from "@domain/ts-utils";
 
 const CLIENT_ID = generateTimestampUUID();
 
@@ -60,10 +61,11 @@ export function registerChangesFeedHandler(name: string, handler: (events: event
     Handlers[name] = handler;
 }
 
-export function hookIframeChangesFeedHandlers(iframeWindow: Window) {
-    let iframeHandlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = 
+export async function hookIframeChangesFeedHandlers(iframeWindow: Window) {
+    await waitUntil(() => (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$, 10, 500);
+    let iframeHandlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } =
         (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$;
-
+    if (!iframeHandlers) { console.warn('no changes feed handlers for iframe window', iframeWindow); return; }
     for (let handlerName of Object.keys(iframeHandlers)) {
         Handlers['iframe-' + handlerName] = iframeHandlers[handlerName];
     }
