@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const puppeteer = require('puppeteer');
 import { App } from "@domain/app";
 import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -13,7 +14,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
-import { PageOpts } from "@domain/url-utils";
+import { PageOpts, makeUrlPath } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
@@ -334,6 +335,30 @@ export class MetadataStore {
     async getLookCss(pageOpts: PageOpts): Promise<string> {
         let lookCss = await this.readFile(`${FRMDB_ENV_DIR}/css/${pageOpts.look}-${pageOpts.primaryColor}-${pageOpts.secondaryColor}.css`);
         return lookCss;
+    }
+
+    async getPageScreenshot(pageOpts: PageOpts): Promise<Buffer> {
+        const browser = await puppeteer.launch({
+            executablePath: process.env.CHROMIUM_PATH,
+            args: ['--no-sandbox'], // This was important. Can't remember why
+        });
+        const page = await browser.newPage();
+        await page.goto('http://localhost:3000' + makeUrlPath(pageOpts));
+        let img: Buffer = await page.screenshot();
+        await browser.close();
+        return img;
+    }
+
+    async getPagePdf(pageOpts: PageOpts): Promise<Buffer> {
+        const browser = await puppeteer.launch({
+            executablePath: process.env.CHROMIUM_PATH,
+            args: ['--no-sandbox'], // This was important. Can't remember why
+        });
+        const page = await browser.newPage();
+        await page.goto('http://localhost:3000' + makeUrlPath(pageOpts));
+        let pdf: Buffer = await page.pdf({format: 'A4'});
+        await browser.close();
+        return pdf;
     }
 
     async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {

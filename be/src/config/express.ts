@@ -172,6 +172,31 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/:page.html', async function (req, res, next) {
         let query: PageOpts['query'] = req.query;
+
+        let pageOpts = {
+            lang: req.params.lang,
+            look: req.params.look,
+            primaryColor: req.params.primary,
+            secondaryColor: req.params.secondary,
+            theme: req.params.theme,
+            tenantName: req.params.tenant,
+            appName: req.params.app,
+            pageName: req.params.page,
+            query: req.query,
+        };
+
+        if (query?.frmdbRender === "screenshot") {
+            let screenshot = await kvsFactory.metadataStore.getPageScreenshot(pageOpts);
+            res.set('Content-Type', 'image/png')
+            res.send(screenshot);
+            return;
+        } else if (query?.frmdbRender === "pdf") {
+            let pdf = await kvsFactory.metadataStore.getPagePdf(pageOpts);
+            res.set('Content-Type', 'application/pdf')
+            res.send(pdf);
+            return;
+        }
+
         if (query?.frmdbRender != "view" && req.params.page === 'page-components-reference') {
             res.redirect(url.format({
                 pathname: req.path,
@@ -187,17 +212,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         } else {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
             let dictionaryCache = await coreFrmdbEngine.i18nStore.getDictionaryCache();
-            let pageHtml = await kvsFactory.metadataStore.getPageHtml({
-                lang: req.params.lang,
-                look: req.params.look,
-                primaryColor: req.params.primary,
-                secondaryColor: req.params.secondary,
-                theme: req.params.theme,
-                tenantName: req.params.tenant,
-                appName: req.params.app,
-                pageName: req.params.page,
-                query: req.query,
-            }, dictionaryCache);
+            let pageHtml = await kvsFactory.metadataStore.getPageHtml(pageOpts, dictionaryCache);
             res.set('Content-Type', 'text/html')
             res.send(pageHtml);
         }

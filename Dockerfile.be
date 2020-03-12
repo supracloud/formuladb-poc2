@@ -41,6 +41,10 @@ COPY package.json /package.json
 
 RUN npm install --only=production
 
+RUN apk add --no-cache udev ttf-freefont chromium git
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
+
 COPY k8s /k8s/
 COPY skaffold.yaml /skaffold.yaml
 ADD ./ssh /ssh

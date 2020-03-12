@@ -8,7 +8,7 @@ export interface PageOpts {
     appName: string;
     pageName: string;
     query?: {
-        frmdbRender?: "editor" | "view",
+        frmdbRender?: "editor" | "view" | "screenshot" | "pdf",
     }
 }
 
