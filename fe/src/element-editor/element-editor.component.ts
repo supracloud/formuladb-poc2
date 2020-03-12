@@ -70,7 +70,11 @@ export class ElementEditorComponent extends HighlightBoxComponent {
             } else {
                 this.selectedBox.innerHTML = /*html*/`
                     <div slot="actions-top" class="d-flex flex-nowrap">
-                        <div class="btn dropdown frmdb-dropdown-hover">
+                        <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
+                        <a ${isElementWithTextContentEditable(this.state.selectedEl) ? `class="btn" onclick="$FSCMP(this).editSelectedElement()" title="Edit element text"` : `class="btn disabled" title="Complex elements cannot use the plain text editor"`} href="javascript:void(0)"><i class="frmdb-i-pen-fancy"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).copyElement()" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).deleteElement()" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
+                        <!--<div class="btn dropdown frmdb-dropdown-hover">
                             <i class="frmdb-i-edit" title="Edit Element"></i>
                             <div class="dropdown-menu px-2 text-nowrap">
                                 <a class="btn" onclick="$FSCMP(this).cutElement()" href="javascript:void(0)" title="Cut/Move element"><i class="frmdb-i-cut"></i></a>
@@ -87,7 +91,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                                 <a class="btn" data-frmdb-action="move-up" href="javascript:void(0)" title="Move element up, before parent element"><i class="frmdb-i-arrow-up"></i></a>
                                 <a class="btn" data-frmdb-action="move-down" href="javascript:void(0)" title="Move element down, inside next sibling"><i class="frmdb-i-arrow-down"></i></a>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 `;
             }

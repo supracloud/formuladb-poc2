@@ -42,8 +42,8 @@ describe('MetadataStore', () => {
         rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
         fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
         fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app", {recursive: true});
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app", {recursive: true});
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app", { recursive: true });
+        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app", { recursive: true });
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Clean.json', JSON.stringify(CleanTheme));
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Frames.json', JSON.stringify(FramesTheme));
         fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app/landing-page.html', templatePage);
@@ -156,6 +156,7 @@ describe('MetadataStore', () => {
 
         let expectedHtmlWithCleanThemeAndFrenchLang = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="fr">')
+            .replace('</head>', '<meta name="frmdb_display_date" content=""></head>')
             .replace(
                 `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
                 `class="jumbotron w-100 text-center bg-transparent" data-frmdb-theme-classes="w-100 text-center bg-transparent"`,
@@ -176,6 +177,7 @@ describe('MetadataStore', () => {
 
         let expectedHtmlWithFramesTheme = PageHtmlFromClientBrowser
             .replace('<html>', '<html lang="en">')
+            .replace('</head>', '<meta name="frmdb_display_date" content=""></head>')
             .replace(
                 `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
                 `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
@@ -213,7 +215,7 @@ describe('MetadataStore', () => {
             description: "some description",
             frmdb_display_date: "2020-11-03",
         };
-        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page1Obj , "$LANDING-PAGE$");
+        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page1Obj, "$LANDING-PAGE$");
 
         let savedPage = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/new-page.html').toString();
         let expected = htmlTools.normalizeHTMLDoc(/*html*/`
@@ -245,7 +247,7 @@ describe('MetadataStore', () => {
             description: "some description 2",
             frmdb_display_date: "2020-11-03",
         };
-        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page2Obj , "new-page");
+        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page2Obj, "new-page");
 
         pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('frmdb-apps', 'test-app');
         expect(pages).toEqual([{

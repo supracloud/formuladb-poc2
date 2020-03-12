@@ -356,7 +356,7 @@ export class MetadataStore {
             if (!headEl) throw new Error(`could not find head elem for ${tenantName}/${appName}/${pageName} with html ${pageHtml}`);
 
             let headHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`);
-            headEl.outerHTML = headHtml;
+            headEl.innerHTML = headHtml.replace('<head>', '').replace('</head>', '');
             setPageProperties(headEl, pageProps);
         }
 
