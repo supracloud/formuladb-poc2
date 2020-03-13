@@ -51,7 +51,7 @@
                     <p data-frmdb-value="$FRMDB.$Page[].description">desc</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="position-relative">Read Post</a>
+                    <a href="./blog-post-1.html" class="position-relative" data-frmdb-value="" data-frmdb-attr="href:CONCATENATE('./', name, '.html'):$FRMDB.$Page[]">Read Post</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -68,7 +68,24 @@
                     <p data-frmdb-value="$FRMDB.$Page[].description">desc</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="position-relative">Read Post</a>
+                    <a href="./blog-post-2.html" class="position-relative" data-frmdb-attr="href:CONCATENATE('./', name, '.html'):$FRMDB.$Page[]">Read Post</a>
+                </div>
+                <div class="frmdb-t-card-note">
+                    <span>INFO 
+                        <small>info</small>
+                    </span>
+                </div>
+            </div>
+            <div class="card frmdb-t-card-img" data-frmdb-table-limit="10" data-frmdb-table="$FRMDB.$Page[]">
+                <div class="frmdb-t-img overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/blog-add-on-app/static/blog-post-3.png" alt="" data-frmdb-value="$FRMDB.$Page[].screenshot" class="opacity-0p3">
+                </div>
+                <div class="card-body">
+                    <h5 data-frmdb-value="$FRMDB.$Page[].title">Blog Post 3</h5>
+                    <p data-frmdb-value="$FRMDB.$Page[].description"></p>
+                </div>
+                <div class="frmdb-t-card-action">
+                    <a href="./blog-post-3.html" class="position-relative" data-frmdb-attr="href:CONCATENATE('./', name, '.html'):$FRMDB.$Page[]">Read Post</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -171,6 +188,9 @@
     </section>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
