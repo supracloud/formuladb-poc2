@@ -346,13 +346,13 @@ export class FrmdbEditorDirective {
         let alert = newPageModal.querySelector('.alert')!;
         alert.classList.add('d-none');
 
-        let pageProps: any = {
+        let setPageModalState: any = {
             isNewPage,
             isExisingPage: !isNewPage,
             buttonText: isNewPage ? 'Create Page' : 'Save Page Properties',
         };
-        if (!isNewPage) pageProps = {...pageProps, ...getPageProperties(this.frameDoc), name: this.state.data.selectedPageName}
-        updateDOM(pageProps, newPageModal);
+        if (!isNewPage) setPageModalState = {...setPageModalState, ...getPageProperties(this.frameDoc), name: this.state.data.selectedPageName}
+        updateDOM(setPageModalState, newPageModal);
 
         newPageModal.querySelector("form")!.onsubmit = (event) => {
             event.preventDefault();
@@ -362,8 +362,13 @@ export class FrmdbEditorDirective {
             //replace nonalphanumeric with dashes and lowercase for name
             pageObj.name = pageObj.name.replace(/[^a-zA-Z0-9]/g, '-');
 
+            let pageOpts = parsePageUrl(window.location.pathname);
+            if (isNewPage) pageOpts = {...pageOpts, pageName: pageObj.name};
+
             BACKEND_SERVICE().putEvent(
-                new ServerEventSetPage(parsePageUrl(window.location.pathname), pageObj,
+                new ServerEventSetPage(
+                    pageOpts, 
+                    pageObj,
                     isNewPage ? startTemplateSel.value : this.state.data.selectedPageName
                 )
             )

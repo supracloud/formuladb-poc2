@@ -341,7 +341,10 @@ export class MetadataStore {
         try {
             let img = await this.getPageScreenshot(pageOpts);
             let {tenantName, appName, pageName} = pageOpts;
-            await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static/${pageName}.png`, img);
+            console.info('Saving screenshot for ', pageOpts);
+            let path = `${tenantName}/${appName}/static/${pageName}.png`;
+            await this.writeFile(`${FRMDB_ENV_DIR}/${path}`, img);
+            console.info('saved ', path);
         } catch (err) {
             console.error(err);
             throw err;
@@ -354,13 +357,18 @@ export class MetadataStore {
     }
 
     async getPageScreenshot(pageOpts: PageOpts): Promise<Buffer> {
+        console.info("generating screenshot for ", pageOpts);
         const browser = await puppeteer.launch({
             executablePath: process.env.CHROMIUM_PATH,
             args: ['--no-sandbox'], // This was important. Can't remember why
         });
         const page = await browser.newPage();
-        await page.goto('http://localhost:3000' + makeUrlPath(pageOpts));
+        let url = makeUrlPath(pageOpts);
+        console.info("got to page ", url);
+        await page.goto('http://localhost:3000' + url);
+        console.info("generate screenshot for ", url);
         let img: Buffer = await page.screenshot();
+        console.info("close browser ", url);
         await browser.close();
         return img;
     }
