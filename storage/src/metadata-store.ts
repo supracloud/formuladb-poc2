@@ -338,9 +338,14 @@ export class MetadataStore {
     }
 
     async setPageScreenshot(pageOpts: PageOpts) {
-        let img = await this.getPageScreenshot(pageOpts);
-        let {tenantName, appName, pageName} = pageOpts;
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static/${pageName}.png`, img);
+        try {
+            let img = await this.getPageScreenshot(pageOpts);
+            let {tenantName, appName, pageName} = pageOpts;
+            await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static/${pageName}.png`, img);
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
     }
 
     async getLookCss(pageOpts: PageOpts): Promise<string> {

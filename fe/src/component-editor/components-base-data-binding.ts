@@ -93,7 +93,7 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 				this.validValues = opts.map(o => o.value);
 				this.data.options = opts;
 			},
-		},
+		},	
 		{
 			name: "Initialize Width",
 			key: "data-frmdb-init",
@@ -108,6 +108,16 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			name: "Show Only If",
 			key: "data-frmdb-if",
 			htmlAttr: "data-frmdb-if",
+			tab: "left-panel-tab-data",
+			sort: propsSort++,
+			inline: true,
+			col: 12,
+			inputtype: "TextInput",
+		},
+		{
+			name: "Computed Value",
+			key: "data-frmdb-value",
+			htmlAttr: "data-frmdb-value",
 			tab: "left-panel-tab-data",
 			sort: propsSort++,
 			inline: true,

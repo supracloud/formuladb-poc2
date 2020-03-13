@@ -104,14 +104,7 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     return Object.values(entity.props).map(p => ({
         text: `${tableName}.${p.name}`,
         value: `$FRMDB.${tableName}[].${p.name}`,
-    })).concat(
-        Object.values(entity.props)
-            .filter(p => p.name === "_id" || p.propType_ === Pn.REFERENCE_TO)
-            .map(p => ({
-                text: `$ID(${tableName}.${p.name})`,
-                value: `:$ID:$FRMDB.${tableName}[].${p.name}`,
-            }))
-    );
+    }));
 }
 
 // function uploadBlob(blobUrl: string, contentType: string){
