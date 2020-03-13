@@ -81,6 +81,9 @@
         "grid-row-1-1",
         "grid-col-1-1"
     ],
+    ".frmdb-t-card-img .frmdb-t-img img": [
+        "w-100"
+    ],
     ".frmdb-t-card-img .card-body": [
         "text-center",
         "border",

@@ -18,6 +18,7 @@ export const _$Page = {
         author: { name: "author", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         frmdb_display_date: { name: "display_date", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         description: { name: "description", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        screenshot: { name: "screenshot", propType_: Pn.STRING, allowNull: false } as EntityProperty,
     }
 };
 export const $Page: Entity = _$Page;

@@ -320,15 +320,10 @@ export class FrmdbEditorDirective {
             }
         });
 
-        onDoc('click', '#delete-page-btn *', (event) => {
-            let link: HTMLAnchorElement = getTarget(event)!.closest('a')!;
-            event.preventDefault();
-            let pagePathToDelete: string | undefined = (link as any).pagePathToDelete;
-            if (!pagePathToDelete) return;
+        onEventChildren(document.body, 'click', '#delete-page-btn', (event) => {
+            if (confirm(`Please confirm deletion of page ${this.state.data.selectedPageName} ?`)) {
 
-            if (confirm(`Please confirm deletion of page ${pagePathToDelete} ?`)) {
-
-                BACKEND_SERVICE().putEvent(new ServerEventDeletePage(pagePathToDelete))
+                BACKEND_SERVICE().putEvent(new ServerEventDeletePage(window.location.pathname))
                     .then(async (ev: ServerEventDeletePage) => {
                         if (ev.state_ != 'ABORT') {
                             navigateEditorToPage('index');
@@ -353,6 +348,7 @@ export class FrmdbEditorDirective {
 
         let pageProps: any = {
             isNewPage,
+            isExisingPage: !isNewPage,
             buttonText: isNewPage ? 'Create Page' : 'Save Page Properties',
         };
         if (!isNewPage) pageProps = {...pageProps, ...getPageProperties(this.frameDoc), name: this.state.data.selectedPageName}
@@ -367,8 +363,7 @@ export class FrmdbEditorDirective {
             pageObj.name = pageObj.name.replace(/[^a-zA-Z0-9]/g, '-');
 
             BACKEND_SERVICE().putEvent(
-                new ServerEventSetPage(BACKEND_SERVICE().tenantName,
-                    BACKEND_SERVICE().appName, pageObj,
+                new ServerEventSetPage(parsePageUrl(window.location.pathname), pageObj,
                     isNewPage ? startTemplateSel.value : this.state.data.selectedPageName
                 )
             )

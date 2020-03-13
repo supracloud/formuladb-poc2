@@ -1,0 +1,5 @@
+@each $cls, $size in (0p1: 0.1, 0p2: 0.2, 0p3: 0.3, 0p4: 0.4, 0p5: 0.5, 0p6: 0.6, 0p7: 0.7, 0p8: 0.8, 0p9: 0.9, 1: 1) {
+    .opacity-#{$cls} {
+        opacity: $size !important;
+    }
+}

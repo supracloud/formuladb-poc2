@@ -73,7 +73,7 @@ export class ServerEventDeleteEntity extends MwzEvent {
 export class ServerEventSetPage extends MwzEvent {
     readonly type_ = "ServerEventSetPage";
 
-    constructor(public tenantName: string, public appName: string, public pageObj: $PageObjT, 
+    constructor(public pageOpts: PageOpts, public pageObj: $PageObjT, 
         public startPageName: string | '$LANDING-PAGE$' | '$BLOG-POST-PAGE$') 
     {
         super();

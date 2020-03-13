@@ -21,7 +21,7 @@ $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
 @each $name, $breakpoint in $grid-breakpoints {
     @media (min-width: $breakpoint) {
         .card-deck.frmdb-cards-wrap-2 .card {
-            flex: 0 0 calc(#{100/map-get($cards-per-line-2, $name)}% - 2%);
+            flex: 0 0 calc(#{100/map-get($cards-per-line-2, $name)}% - 1% - #{$grid-gutter-width});
         }
         .card-deck.frmdb-cards-wrap-3 .card {
             flex: 0 0 calc(#{100/map-get($cards-per-line-3, $name)}% - #{$grid-gutter-width});

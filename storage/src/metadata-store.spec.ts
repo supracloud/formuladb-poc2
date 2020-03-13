@@ -214,8 +214,11 @@ describe('MetadataStore', () => {
             author: "John",
             description: "some description",
             frmdb_display_date: "2020-11-03",
+            screenshot: '',
         };
-        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page1Obj, "$LANDING-PAGE$");
+        await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
+            parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/frmdb-apps/test-app/${page1Obj.name}.html`),
+            page1Obj, "$LANDING-PAGE$");
 
         let savedPage = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/test-app/new-page.html').toString();
         let expected = htmlTools.normalizeHTMLDoc(/*html*/`
@@ -246,8 +249,11 @@ describe('MetadataStore', () => {
             author: "John",
             description: "some description 2",
             frmdb_display_date: "2020-11-03",
+            screenshot: '',
         };
-        await frmdbEngineStore.kvsFactory.metadataStore.setPage('frmdb-apps', 'test-app', page2Obj, "new-page");
+        await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
+            parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/frmdb-apps/test-app/${page2Obj.name}.html`),
+            page2Obj, "new-page");
 
         pages = await frmdbEngineStore.kvsFactory.metadataStore.getPages('frmdb-apps', 'test-app');
         expect(pages).toEqual([{

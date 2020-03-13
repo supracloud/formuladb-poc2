@@ -12,7 +12,7 @@ describe('url-utils', () => {
             theme: "Clean" ,
             tenantName: 'frmdb-apps',
             appName: 'test-app',
-            pageName: 'test-page.html',
+            pageName: 'test-page',
         };
 
         expect(ret).toEqual(expectedPageOpts);

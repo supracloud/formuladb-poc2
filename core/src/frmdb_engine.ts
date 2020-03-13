@@ -81,7 +81,7 @@ export class FrmdbEngine {
             case "ServerEventPutIcon":
                 return this.putIcon(event);
             case "ServerEventSetPage":
-                return this.newPage(event);
+                return this.setPage(event);
             case "ServerEventDeletePage":
                 return this.deletePage(event);
             case "ServerEventNewApp":
@@ -107,8 +107,8 @@ export class FrmdbEngine {
         return event;
     }
 
-    private async newPage(event: events.ServerEventSetPage): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.setPage(event.tenantName, event.appName, event.pageObj, event.startPageName);
+    private async setPage(event: events.ServerEventSetPage): Promise<events.MwzEvents> {
+        await this.frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(event.pageOpts, event.pageObj, event.startPageName);
         return event;
     }
 

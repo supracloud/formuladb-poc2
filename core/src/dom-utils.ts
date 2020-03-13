@@ -47,7 +47,7 @@ export function getSiblingIndex(el: HTMLElement) {
     return siblingIndex;
 }
 
-export function getPageProperties(doc: Document): PickOmit<$PageObjT, '_id' | 'name'> {
+export function getPageProperties(doc: Document): PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'> {
     return {
         title: doc.querySelector<HTMLTitleElement>('head title')?.textContent || '',
         author: doc.querySelector<HTMLMetaElement>('head meta[name="author"]')?.getAttribute('content') || '',
@@ -55,7 +55,7 @@ export function getPageProperties(doc: Document): PickOmit<$PageObjT, '_id' | 'n
         frmdb_display_date: doc.querySelector<HTMLMetaElement>('head meta[name="frmdb_display_date"]')?.getAttribute('content') || '',
     };
 }
-export function setPageProperties(headEl: HTMLHeadElement, pageProps: PickOmit<$PageObjT, '_id' | 'name'>) {
+export function setPageProperties(headEl: HTMLHeadElement, pageProps: PickOmit<$PageObjT, '_id' | 'name' | 'screenshot'>) {
     let title: HTMLHeadElement | null = headEl.querySelector('title');
     if (!title) {
         title = getDoc(headEl).createElement('title');

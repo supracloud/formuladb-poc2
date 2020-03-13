@@ -14,7 +14,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import { Storage } from '@google-cloud/storage';
 import { cleanupDocumentDOM } from "@core/page-utils";
 import { getPremiumIcon } from "./icon-api";
-import { PageOpts, makeUrlPath } from "@domain/url-utils";
+import { PageOpts, makeUrlPath, parsePageUrl } from "@domain/url-utils";
 import { unloadCurrentTheme, applyTheme, ThemeRules } from "@core/frmdb-themes";
 import { I18N_UTILS } from "@core/i18n-utils";
 import { I18nLang } from "@domain/i18n";
@@ -253,7 +253,8 @@ export class MetadataStore {
         return this.getApp(tenantName, appName);
     }
 
-    async setPage(tenantName: string, appName: string, newPageObj: $PageObjT, startPageName: string) {
+    async setPageProperties(pageOpts: PageOpts, newPageObj: $PageObjT, startPageName: string) {
+        let {tenantName, appName} = pageOpts;
         let content;
         if ('$LANDING-PAGE$' === startPageName) {
             content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html`);
@@ -284,6 +285,8 @@ export class MetadataStore {
         cleanedUpDOM.replaceChild(newHeadEl, headEl);
 
         await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${newPageObj.name}.html`, htmlTools.document2html(cleanedUpDOM));
+
+        setTimeout(() => this.setPageScreenshot(pageOpts), 500);
     }
 
     async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
@@ -330,6 +333,14 @@ export class MetadataStore {
         //TODO: find all img data url(s) and save them as images
 
         await this.writeFile(`${FRMDB_ENV_DIR}/${pagePath}`, htmlTools.document2html(cleanedUpDOM));
+
+        setTimeout(() => this.setPageScreenshot(pageOpts), 500);
+    }
+
+    async setPageScreenshot(pageOpts: PageOpts) {
+        let img = await this.getPageScreenshot(pageOpts);
+        let {tenantName, appName, pageName} = pageOpts;
+        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static/${pageName}.png`, img);
     }
 
     async getLookCss(pageOpts: PageOpts): Promise<string> {
@@ -412,8 +423,8 @@ export class MetadataStore {
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {
-        let [tenantName, appName, pageName] = deletedPagePath.split(/\//).filter(x => x);
-        this.delFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}`);
+        let {tenantName, appName, pageName} = parsePageUrl(deletedPagePath);
+        await this.delFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}.html`);
     }
 
     async saveMediaObject(tenantName: string, appName: string, fileName: string, base64Content: string): Promise<void> {
@@ -454,6 +465,7 @@ export class MetadataStore {
         let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
         for (let pageFilePath of pageFiles) {
             let pageName = pageFilePath.replace(/^.*\//, '').replace(/\.html$/, '');
+            if (pageName.indexOf('_') === 0) continue;
             let htmlContent = await this.readFile(FRMDB_ENV_ROOT_DIR + '/' + pageFilePath);
 
             const jsdom = new JSDOM(htmlContent, {}, {
@@ -468,6 +480,7 @@ export class MetadataStore {
                 _id: `${tenantName}/${appName}/${pageName}`,
                 name: pageName,
                 ...getPageProperties(htmlTools.doc),
+                screenshot: `/formuladb-env/${tenantName}/${appName}/static/${pageName}.png`,
             }
             ret.push(pageObj);
         };
@@ -479,7 +492,7 @@ export class MetadataStore {
         if (!schema) return [];
 
         return Object.values(schema.entities)
-            .filter(e => ! [$App._id, $Table._id, $Page._id, $Icon._id, $Image._id].includes(e._id))
+            // .filter(e => ! [$App._id, $Table._id, $Page._id, $Icon._id, $Image._id].includes(e._id))
         ;
     }
 

@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <title>FormulaDB Themes</title>
+    <meta name="author" content="">
+    <meta name="description" content="">
+    <meta name="frmdb_display_date" content="">
 </head>
 <body class="frmdb-editor-normal">
     <div class="frmdb-t-main-nav">
@@ -19,21 +22,36 @@
     </header>
     <section class="container py-5">
         <div class="text-center mb-5">
-            <h2 id="thememediacards">Cards with Images</h2>
+            <h2 id="thememediacards">Blog Posts</h2>
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
+        <div class="row">
+            <div class="form-group col-md-8">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <frmdb-icon name="fontawesome-solid-search-bigger-enlarge-find-magnify-preview-zoom" class="sz-1p5"></frmdb-icon>
+                        </span>
+                    </div>
+                    <input type="text" class="form-control w-10-em" value="blog-post" disabled="" data-frmdb-value="$FRMDBQ.$Page[].filter.name.contains">
+                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" data-frmdb-value="$FRMDBQ.$Page[].filter.title.contains">
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <div class="input-group mb-3"></div>
+            </div>
+        </div>
         <div class="card-deck frmdb-cards-wrap-3">
-            <div class="card frmdb-t-card-img">
+            <div class="card frmdb-t-card-img" data-frmdb-table-limit="10" data-frmdb-table="$FRMDB.$Page[]">
                 <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="">
+                    <img src="/formuladb-env/frmdb-apps/blog-add-on-app/static/blog-post-1.png" alt="" data-frmdb-value="$FRMDB.$Page[].screenshot" class="opacity-0p3">
                 </div>
                 <div class="card-body">
-                    <h5>Card 1 title</h5>
-                    <h6>Card 1 subtitle</h6>
-                    <p>Quisque ornare, quam a blandit malesuada</p>
+                    <h5 data-frmdb-value="$FRMDB.$Page[].title">Post 1</h5>
+                    <p data-frmdb-value="$FRMDB.$Page[].description">desc</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
+                    <a href="javascript:void(0)" class="position-relative">Read Post</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -41,53 +59,16 @@
                     </span>
                 </div>
             </div>
-            <div class="card frmdb-t-card-img">
+            <div class="card frmdb-t-card-img" data-frmdb-table-limit="10" data-frmdb-table="$FRMDB.$Page[]">
                 <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card2.jpg" alt="">
+                    <img src="/formuladb-env/frmdb-apps/blog-add-on-app/static/blog-post-2.png" alt="" data-frmdb-value="$FRMDB.$Page[].screenshot" class="opacity-0p3">
                 </div>
                 <div class="card-body">
-                    <h5>Card 2 title</h5>
-                    <h6>Card 2 subtitle</h6>
-                    <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
+                    <h5 data-frmdb-value="$FRMDB.$Page[].title">Post 2</h5>
+                    <p data-frmdb-value="$FRMDB.$Page[].description">desc</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
-                </div>
-                <div class="frmdb-t-card-note">
-                    <span>INFO 
-                        <small>info</small>
-                    </span>
-                </div>
-            </div>
-            <div class="card frmdb-t-card-img">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card3.jpg" alt="">
-                </div>
-                <div class="card-body">
-                    <h5>Card 3 title</h5>
-                    <h6>Card 3 subtitle</h6>
-                    <p>Curabitur suscipit, massa eu maximus fringilla</p>
-                </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
-                </div>
-                <div class="frmdb-t-card-note">
-                    <span>INFO 
-                        <small>info</small>
-                    </span>
-                </div>
-            </div>
-            <div class="card frmdb-t-card-img">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card4.jpg" alt="">
-                </div>
-                <div class="card-body">
-                    <h5>Card 4 title</h5>
-                    <h6>Card 4 subtitle</h6>
-                    <p>Etiam porta magna eu rutrum rhoncus</p>
-                </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
+                    <a href="javascript:void(0)" class="position-relative">Read Post</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -190,6 +171,13 @@
     </section>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
