@@ -19,9 +19,10 @@ else
             cp -ar /formuladb-env /wwwroot/git/
 
             cd /wwwroot/git/formuladb-env
+            git init
+            git remote add origin git@gitlab.formuladb.io:formuladb/formuladb-env.git
             git config user.email "git.bot@formuladb.io"
             git config user.name "Git Bot"
-            git remote set-url origin git@gitlab.formuladb.io:formuladb/formuladb-env.git
         fi
     fi
 
@@ -29,6 +30,8 @@ else
     if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
         git pull origin ${FRMDB_ENV_NAME}
     else
+        git config user.email "git.bot@formuladb.io"
+        git config user.name "Git Bot"
         git checkout -b "${FRMDB_ENV_NAME}"
         git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
     fi

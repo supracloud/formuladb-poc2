@@ -5,7 +5,7 @@ trap _cleanup ERR
 trap _cleanup EXIT
 
 FRMDB_ENV_NAME="n${CI_COMMIT_SHA}"
-if [[ -z "$FRMDB_ENV_NAME" ]]; then
+if [[ "n" = "$FRMDB_ENV_NAME" ]]; then
     FRMDB_ENV_NAME="n`git log -1 --format=%H`"
 fi
 echo "FRMDB_ENV_NAME=${FRMDB_ENV_NAME}"
