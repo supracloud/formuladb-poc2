@@ -52,7 +52,7 @@ import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorT
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 import { DATA_BINDING_MONITOR } from "@fe/init";
-import { $Table, $PageObjT } from "@domain/metadata/default-metadata";
+import { $Table, $PageObjT, $Page } from "@domain/metadata/default-metadata";
 import { waitUntil } from "@domain/ts-utils";
 import { FrmdbElementState } from "@fe/frmdb-element-state";
 import { serializeElemToObj, updateDOM } from "@fe/live-dom-template/live-dom-template";
@@ -104,6 +104,11 @@ export class FrmdbEditorDirective {
                     await DATA_BINDING_MONITOR?.updateDOMForRoot();
                 });
         }
+
+        waitUntil(() => DATA_BINDING_MONITOR)
+            .then(() => {
+                DATA_BINDING_MONITOR!.updateDOMForRoot($Page._id);
+            });
 
         this.state.emitChange({
             selectedAppName: appName,
