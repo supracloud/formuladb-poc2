@@ -17,6 +17,7 @@ import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 import { I18nStore } from "./i18n-store";
+import { isMetadataObject, isMetadataEntity } from "@domain/metadata/default-metadata";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
@@ -61,8 +62,14 @@ export class FrmdbEngine {
 
         switch (event.type_) {
             case "ServerEventModifiedFormData":
+                if (isMetadataObject(event.obj._id)) {
+                    throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
+                }
                 return this.transactionRunner.computeFormulasAndSave(event);
             case "ServerEventDeletedFormData":
+                if (isMetadataObject(event.obj._id)) {
+                    throw new Error('Delete data in record storage not allowed for metadata objects ' + JSON.stringify(event));
+                }
                 return this.transactionRunner.computeFormulasAndSave(event);
             case "ServerEventNewEntity":
                 return this.newEntity(event)
@@ -71,8 +78,14 @@ export class FrmdbEngine {
             case "ServerEventPreviewFormula":
                 return this.transactionRunner.previewFormula(event);
             case "ServerEventSetProperty":
+                if (isMetadataEntity(event.targetEntity._id)) {
+                    throw new Error('Modification of metadata entities not allowed ' + JSON.stringify(event));
+                }
                 return this.transactionRunner.setEntityProperty(event);
             case "ServerEventDeleteProperty":
+                if (isMetadataEntity(event.targetEntity._id)) {
+                    throw new Error('Deletion of metadata entities not allowed ' + JSON.stringify(event));
+                }
                 return this.transactionRunner.deleteEntityProperty(event);
             case "ServerEventPutPageHtml":
                 return this.putPageHtml(event);

@@ -14,7 +14,7 @@ import * as _ from "lodash";
 import { CircularJSON } from "@domain/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
-import { $User, $Dictionary } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { I18nStore } from "./i18n-store";
 
@@ -26,7 +26,9 @@ export class FrmdbStore {
     }
 
     public async init(schema: Schema) {
-        let kvsList = await Promise.all(Object.keys(this.schema.entities).map(entityId => this.getDataKvs(entityId)));
+        let kvsList = await Promise.all(Object.keys(this.schema.entities)
+            .filter(entityId => !isMetadataEntity(entityId))
+            .map(entityId => this.getDataKvs(entityId)));
         return Promise.all(kvsList.map(kvs => kvs.init()));
     }
 

@@ -151,17 +151,6 @@ CREATE TABLE public.t_dictionary (
 ALTER TABLE public.t_dictionary OWNER TO postgres;
 
 --
--- Name: t_icon; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.t_icon (
-    _id character varying NOT NULL COLLATE pg_catalog."C"
-);
-
-
-ALTER TABLE public.t_icon OWNER TO postgres;
-
---
 -- Name: t_user; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -527,14 +516,6 @@ ALTER TABLE ONLY public.t_currency
 
 ALTER TABLE ONLY public.t_dictionary
     ADD CONSTRAINT t_dictionary_pkey PRIMARY KEY (_id);
-
-
---
--- Name: t_icon t_icon_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.t_icon
-    ADD CONSTRAINT t_icon_pkey PRIMARY KEY (_id);
 
 
 --

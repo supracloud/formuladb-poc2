@@ -92,14 +92,20 @@ export const _$Image = {
 export const $Image: Entity = _$Image;
 export type $ImageObjT = {[K in keyof typeof _$Image['props']]: string};
 
+const MetadataEntities = [
+    $Icon, 
+    $Image, 
+    $App, 
+    $Table,
+    $Page
+];
+const MetadataEntityNames = MetadataEntities.map(e => e._id);
 export function isMetadataEntity(tableName: string) {
-    return [
-        $Icon._id, 
-        $Image._id, 
-        $App._id, 
-        $Table._id,
-        $Page._id
-    ].includes(tableName);
+    return MetadataEntityNames.includes(tableName);
+}
+
+export function isMetadataObject(tableName: string) {
+    return MetadataEntityNames.includes(tableName);
 }
 
 export function isDefaultEntity(tableName: string) {
