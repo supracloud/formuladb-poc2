@@ -16,8 +16,10 @@ onEventChildren(document, 'click', '[data-frmdb-editor-link]', (event) => {
 
 export function navigateTo(relativePathOrHref: string) {
     let oldPageOpts = parsePageUrl(window.location.pathname);
+    let existingSearch = window.location.search;
     let url = new URL(relativePathOrHref, window.location.href);
-    window.history.pushState({urlHref: url.href}, `FormulaDB: ${url.pathname}`, url.href);
+    let newHref = url.href + (url.search ? '' : existingSearch);
+    window.history.pushState({urlHref: newHref}, `FormulaDB: ${url.pathname}`, newHref);
     apply(oldPageOpts, url);
 }
 

@@ -48,7 +48,7 @@ import { $FRMDB_MODAL } from "../directives/data-toggle-modal.directive";
 import { I18N_UTILS, isElementWithTextContent, getTranslationKey } from "@core/i18n-utils";
 import { DEFAULT_LANGUAGE, I18nLang } from "@domain/i18n";
 import { parsePageUrl, PageOpts } from "@domain/url-utils";
-import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage } from "./frmdb-editor-router";
+import { registerFrmdbEditorRouterHandler, navigateEditorToPage, navigateEditorToAppAndPage, navigateTo } from "./frmdb-editor-router";
 import { registerChangesFeedHandler, hookIframeChangesFeedHandlers } from "@fe/changes-feed-client";
 import { ElementEditorComponent } from "@fe/element-editor/element-editor.component";
 import { DATA_BINDING_MONITOR } from "@fe/init";
@@ -143,6 +143,7 @@ export class FrmdbEditorDirective {
             this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
             pageElementFlows(this);
             hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
+            this.manageIframeNavigation();
         }
         this.iframe.onload = ff;
 
@@ -188,6 +189,23 @@ export class FrmdbEditorDirective {
         introVideoModal.querySelector('video')!.setAttribute('src', `/formuladb-env/static/${BACKEND_SERVICE().appName}/intro.webm`);
         introVideoModal.addEventListener('FrmdbModalCloseEvent', (e) => {
             (introVideoModal.querySelector('video')! as HTMLVideoElement).pause();
+        });
+    }
+
+    manageIframeNavigation() {
+        onEventChildren(this.frameDoc.body, ['click'], 'a', (event: MouseEvent) => {
+            let link: HTMLLinkElement | null = null;
+            if (isHTMLElement(event.target)) {
+                if (event.target.matches('a')) link = event.target as HTMLLinkElement;
+                else link = event.target.closest('a') as any as HTMLLinkElement;
+            }
+            if (link) {
+                let newPathname = new URL(link.href).pathname;
+                if (window.location.pathname != newPathname) {
+                    let {appName, pageName} = parsePageUrl(newPathname);
+                    navigateEditorToAppAndPage(appName, pageName);
+                }
+            }
         });
     }
 
