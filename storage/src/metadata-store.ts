@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const puppeteer = require('puppeteer');
+import * as puppeteer from 'puppeteer';
 import { App } from "@domain/app";
 import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
@@ -356,28 +356,43 @@ export class MetadataStore {
         return lookCss;
     }
 
-    async getPageScreenshot(pageOpts: PageOpts): Promise<Buffer> {
-        console.info("generating screenshot for ", pageOpts);
+    private async runPuppeteer() {
         const browser = await puppeteer.launch({
             executablePath: process.env.CHROMIUM_PATH,
-            args: ['--no-sandbox'], // This was important. Can't remember why
+            args: [
+                "--disable-gpu",
+                "--renderer",
+                "--no-sandbox",
+                "--no-service-autorun",
+                "--no-experiments",
+                "--no-default-browser-check",
+                "--disable-dev-shm-usage",
+                "--disable-setuid-sandbox",
+                "--no-first-run",
+                "--no-zygote",
+                "--single-process",
+                "--disable-extensions"
+            ], // This was important. Can't remember why
         });
-        const page = await browser.newPage();
+        return browser;
+    }
+
+    async getPageScreenshot(pageOpts: PageOpts): Promise<Buffer> {
+        console.info("generating screenshot for ", pageOpts);
         let url = makeUrlPath(pageOpts);
         console.info("got to page ", url);
+        let browser = await this.runPuppeteer();
+        const page = await browser.newPage();
         await page.goto('http://localhost:3000' + url);
         console.info("generate screenshot for ", url);
-        let img: Buffer = await page.screenshot();
+        let img: Buffer = await page.screenshot({encoding: "binary"});
         console.info("close browser ", url);
         await browser.close();
         return img;
     }
 
     async getPagePdf(pageOpts: PageOpts): Promise<Buffer> {
-        const browser = await puppeteer.launch({
-            executablePath: process.env.CHROMIUM_PATH,
-            args: ['--no-sandbox'], // This was important. Can't remember why
-        });
+        let browser = await this.runPuppeteer();
         const page = await browser.newPage();
         await page.goto('http://localhost:3000' + makeUrlPath(pageOpts));
         let pdf: Buffer = await page.pdf({format: 'A4'});

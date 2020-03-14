@@ -1,5 +1,8 @@
 set -xe
 
+#for puppeteer
+sudo apt-get install libxss1
+
 bash ci/prepare-env.sh
 if [ ! -d 'tsc-out' ]; then
     npm run compile

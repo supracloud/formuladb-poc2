@@ -214,7 +214,7 @@ describe('MetadataStore', () => {
             author: "John",
             description: "some description",
             frmdb_display_date: "2020-11-03",
-            screenshot: '',
+            screenshot: '/formuladb-env/frmdb-apps/test-app/static/new-page.png',
         };
         await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
             parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/frmdb-apps/test-app/${page1Obj.name}.html`),
@@ -249,7 +249,7 @@ describe('MetadataStore', () => {
             author: "John",
             description: "some description 2",
             frmdb_display_date: "2020-11-03",
-            screenshot: '',
+            screenshot: '/formuladb-env/frmdb-apps/test-app/static/new-page-2.png',
         };
         await frmdbEngineStore.kvsFactory.metadataStore.setPageProperties(
             parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/frmdb-apps/test-app/${page2Obj.name}.html`),
