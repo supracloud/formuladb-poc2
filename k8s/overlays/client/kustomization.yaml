@@ -1,8 +1,4 @@
 bases:
-- ../../base
-patches:
-- patches/be-deployment.yaml
-- patches/pg-backup-deployment.yaml
+- ../live
 resources:
 - resources/ingress.yaml
-- resources/production-issuer.yaml

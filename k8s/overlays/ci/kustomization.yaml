@@ -2,6 +2,5 @@ bases:
 - ../live
 patches:
 - patches/be-deployment.yaml
-- patches/pg-backup-deployment.yaml
 resources:
 - resources/ingress.yaml

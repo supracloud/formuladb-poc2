@@ -11,9 +11,19 @@ spec:
   tls:
   - hosts:
     - $(NAMESPACE_NAME).formuladb.io
-    secretName: certificate-formuladb-prod
+    secretName: certificate-formuladb-prod-root
+  - hosts:
+    - www.$(NAMESPACE_NAME).formuladb.io
+    secretName: certificate-formuladb-prod-www
   rules:
   - host: $(NAMESPACE_NAME).formuladb.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: be
+          servicePort: 8084
+  - host: www.$(NAMESPACE_NAME).formuladb.io
     http:
       paths:
       - path: /
