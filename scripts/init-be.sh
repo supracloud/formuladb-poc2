@@ -1,10 +1,10 @@
 set -ex
-    ls -ltr /wwwroot/git/formuladb-env || true
-    ls -ltr /wwwroot/formuladb
-date >> /wwwroot/git/formuladb-env/date.txt || true
-cat /wwwroot/git/formuladb-env/date.txt || true
 
-echo "env: $FRMDB_ENV_NAME"
+echo "###################################################################"
+echo "Starting formuladb-be for env: $FRMDB_ENV_NAME"
+echo "###################################################################"
+ls -ltr /wwwroot/git/formuladb-env || true
+ls -ltr /wwwroot/formuladb
 
 export BASEDIR=`dirname $0`
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /ssh/frmdb.id_rsa"
@@ -32,6 +32,8 @@ else
         echo "env already exists"
         pwd
 	ls $PWD/formuladb-env
+        date >> /wwwroot/git/formuladb-env/date.txt || true
+        cat /wwwroot/git/formuladb-env/date.txt || true
     fi
 
     cd /wwwroot/git/formuladb-env
@@ -41,6 +43,8 @@ else
         git config user.email "git.bot@formuladb.io"
         git config user.name "Git Bot"
         git checkout -b "${FRMDB_ENV_NAME}"
+        git add .
+        git commit -m "new branch ${FRMDB_ENV_NAME}"
         git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
     fi
 fi

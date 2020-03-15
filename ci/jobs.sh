@@ -71,7 +71,7 @@ function test_e2e {
         chmod og-r ssh/*
         chmod uog-wx ssh/*
         pwd
-        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa" git clone --depth 1
+        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa"
         if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-e2e.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
             git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-e2e.git
         else

@@ -62,4 +62,4 @@ ADD ./git/formuladb-env /formuladb-env
 
 EXPOSE 3000
 
-CMD npm run $NPM_SCRIPT
+CMD ls -ltra /wwwroot/git/formuladb-env; npm run $NPM_SCRIPT
