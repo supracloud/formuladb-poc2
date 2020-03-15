@@ -71,7 +71,7 @@ function test_e2e {
         chmod og-r ssh/*
         chmod uog-wx ssh/*
         pwd
-        GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa"
+        export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i $PWD/ssh/frmdb.id_rsa"
         if [[ "`git ls-remote --heads git@gitlab.com:metawiz/formuladb-e2e.git \"${FRMDB_ENV_NAME}\"| wc -l`" -gt 0 ]]; then
             git clone --branch ${FRMDB_ENV_NAME} --single-branch --depth 1 git@gitlab.com:metawiz/formuladb-e2e.git
         else
@@ -89,6 +89,7 @@ function test_e2e {
     if [ -z "FRMDB_ENV_NAME" ]; then echo "pls provide FRMDB_ENV_NAME"; exit 1; fi
     URL=$2
     if [ -z "URL" ]; then echo "pls provide URL"; exit 2; fi
+    SUCCESS_RATE=$3
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
@@ -98,7 +99,8 @@ function test_e2e {
     if uname -a | grep 'Linux.*Microsoft'; then 
         target=""
     fi
-    TARGET=$target npm test -- --baseUrl="$URL"
+    TARGET=$target npm test -- --baseUrl="$URL" || true
+    bash check_success_rate.sh reports/xml/xmlresults.xml $SUCESS_RATE
 }
 
 function e2e_dev_env {

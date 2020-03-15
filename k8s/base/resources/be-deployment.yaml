@@ -32,7 +32,7 @@ spec:
         - name: GOOGLE_APPLICATION_CREDENTIALS
           value: /etc/gcp/sa_credentials.json
         - name: FRMDB_AUTH_ENABLED
-          value: "true"
+          value: "false"
         - name: FRMDB_ENV_NAME
           value: $(NAMESPACE_NAME)
         image: registry.gitlab.com/metawiz/febe/formuladb-be
