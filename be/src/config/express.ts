@@ -32,7 +32,7 @@ import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
 import { $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata";
 import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
-import { PageOpts } from "@domain/url-utils";
+import { PageOpts, makeUrlPath } from "@domain/url-utils";
 
 const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
 const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
@@ -160,7 +160,16 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
 
     app.get('/', function (req, res, next) {
-        res.redirect('en-cerulean-7795f8-6c757d-_none_-$normal$/frmdb-apps/formuladb-io/index.html');
+        res.redirect(makeUrlPath({
+            lang: 'en',
+            look: 'cerulean',
+            primaryColor: '7795f8',
+            secondaryColor: '6c757d',
+            tenantName: 'frmdb-apps',
+            appName: 'formuladb-io',
+            pageName: 'index',
+            theme: '_none_',
+        }));
     });
 
     let formuladbIoStatic = express.static(`${FRMDB_ENV_DIR}/frmdb-apps/formuladb-io`, { index: "index.html" });
