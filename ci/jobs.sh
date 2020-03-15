@@ -113,7 +113,7 @@ function e2e_dev_env {
 }
 
 function build_images_and_deploy_staging {
-    build_images_and_deploy staging staging
+    build_images_and_deploy staging client
 }
 
 function e2e_staging {
