@@ -1,4 +1,8 @@
 set -ex
+    ls -ltr /wwwroot/git/formuladb-env || true
+    ls -ltr /wwwroot/formuladb
+date >> /wwwroot/git/formuladb-env/date.txt || true
+cat /wwwroot/git/formuladb-env/date.txt || true
 
 echo "env: $FRMDB_ENV_NAME"
 
@@ -24,6 +28,10 @@ else
             git config user.email "git.bot@formuladb.io"
             git config user.name "Git Bot"
         fi
+    else 
+        echo "env already exists"
+        pwd
+	ls $PWD/formuladb-env
     fi
 
     cd /wwwroot/git/formuladb-env

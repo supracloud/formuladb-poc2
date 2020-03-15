@@ -59,7 +59,6 @@ RUN chmod 0600 /root/.pgpass
 COPY dist-be/frmdb-be* /dist-be/
 ADD ./formuladb /wwwroot/formuladb
 ADD ./git/formuladb-env /formuladb-env
-RUN mkdir -p /wwwroot/git/formuladb-env
 
 EXPOSE 3000
 
