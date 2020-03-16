@@ -31,9 +31,17 @@ export class FormService {
     
     constructor(private appRootEl: HTMLElement) {
         onEvent(appRootEl, ["change", "input"], "*", async (event) => {
-            if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
+            if (!appRootEl.contains(event.target)) return;
             let inputEl = event.target;
             if (!isFormEl(inputEl)) return;
+
+            let pObj = this.getParentObj(inputEl);
+            if (!pObj) return;
+            let {parentEl, parentObj} = pObj;
+            if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
+            this.validateOnClient(parentEl, parentObj);
+    
+            if (!event.target.closest('[data-frmdb-form-autosave]')) return;
             
             this.debounced_newRecordCache(inputEl);
             this.debounced_manageInput(inputEl);
@@ -41,11 +49,15 @@ export class FormService {
 
         onEvent(appRootEl, ["click", "submit"], 'button[type="submit"]', async (event) => {
             if (event.target.closest('[data-frmdb-ignore-form]') || !appRootEl.contains(event.target)) return;
-            event.preventDefault();
             let button = event.target;
             if (!(button instanceof HTMLButtonElement)) throw new Error("invalid button " + event.target);
+
             let form: HTMLFormElement | null = button.closest('form');
             if (!form) throw new Error("Form not found for button " + button.outerHTML);
+            if (form.getAttribute('method')?.toLowerCase() === 'get') return;
+
+            event.preventDefault();
+
             let inputEl: InputElem | null = form.querySelector('input,select,textarea');
             if (!inputEl) throw new Error("No input found for form " + form.outerHTML);
             let alertEl: HTMLElement | null = form.querySelector('[data-frmdb-submit-status]');

@@ -55,7 +55,7 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/frmdb-apps/base-app/landing-page.html?frmdbRender=editor",
+            "url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/frmdb-apps/hotel-booking/index.html?frmdbRender=editor",
             "_url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/frmdb-apps/base-app/overlays.html",
             "webRoot": "${workspaceFolder}",
             "trace": true,

@@ -1,4 +1,4 @@
-<form class="frmdb-form-dark px-3" data-frmdb-record="Booking~~" data-frmdb-record-no-autosave="" data-frmdb-fragment="_form.html">
+<form class="frmdb-form-dark px-3" data-frmdb-record="Booking~~" data-frmdb-record-no-autosave="" data-frmdb-fragment="_form.html" method="GET" action="booking.html">
 <div class="row pt-3 pb-2">
     <div class="col-md-3">
         <h2 class="text-light">Book
@@ -10,7 +10,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <div class="input-group date">
-                        <input type="date" class="form-control" placeholder="Arrival Date" required="" data-frmdb-value="$FRMDB.Booking[].start_date">
+                        <input type="date" class="form-control" placeholder="Arrival Date" required="" name="start_date" data-frmdb-value="$FRMDB.RoomBooking[].start_date">
                         <div class="input-group-append">
                             <span class="input-group-text">
                                 <i class="frmdb-i-calendar" aria-hidden="true"></i>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="form-group">
                     <div class="input-group date">
-                        <input type="date" class="form-control" placeholder="Departure Date" required="" data-frmdb-value="$FRMDB.Booking[].end_date">
+                        <input type="date" class="form-control" placeholder="Departure Date" required="" name="end_date" data-frmdb-value="$FRMDB.RoomBooking[].end_date">
                         <div class="input-group-append">
                             <span class="input-group-text">
                                 <i class="frmdb-i-calendar" aria-hidden="true"></i>
@@ -32,12 +32,12 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <div class="input-group">
-                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" data-frmdb-value="$FRMDB.Booking[].nb_adults">
+                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" name="nb_adults" data-frmdb-value="$FRMDB.RoomBooking[].nb_adults">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
-                        <input type="number" class="form-control" title="Nb Children" value="0" data-frmdb-value="$FRMDB.Booking[].nb_children">
+                        <input type="number" class="form-control" title="Nb Children" value="0" data-frmdb-value="$FRMDB.RoomBooking[].nb_children">
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                         <input type="number" class="form-control" placeholder="Nb Rooms">
                     </div>
                 </div>
-                <a class="btn btn-primary" href="booking.html">Book Now</a>
+                <button type="submit" class="btn btn-primary">Book Now</button>
             </div>
         </div>
     </div>
