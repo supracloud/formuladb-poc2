@@ -159,7 +159,7 @@ describe('MetadataStore', () => {
             .replace('</head>', '<meta name="frmdb_display_date" content=""></head>')
             .replace(
                 `class="jumbotron bg-transparent some-class" data-frmdb-theme-classes="bg-transparent some-class"`,
-                `class="jumbotron w-100 text-center bg-transparent" data-frmdb-theme-classes="w-100 text-center bg-transparent"`,
+                `class="jumbotron w-100 text-center bg-transparent border-0" data-frmdb-theme-classes="w-100 text-center bg-transparent border-0"`,
             )
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1 data-i18n-key="main content">contenu principal</h1>')
             .replace('<span>some footer</span>', '<span data-i18n-key="some footer">fr:some footer</span>')
