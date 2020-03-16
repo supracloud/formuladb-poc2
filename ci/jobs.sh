@@ -101,7 +101,7 @@ function test_e2e {
     fi
 
     TARGET=$target npm test -- --baseUrl="$URL" || true
-    bash check_success_rate.sh reports/xml/xmlresults.xml $SUCESS_RATE
+    bash check_success_rate.sh reports/xml/xmlresults.xml $SUCCESS_RATE
 }
 
 function e2e_dev_env {
