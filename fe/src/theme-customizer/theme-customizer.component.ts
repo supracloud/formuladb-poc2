@@ -45,17 +45,21 @@ export class ThemeCustomizerComponent extends HTMLElement {
             let m = this.parseCssFileName(cssFile);
             if (m) {
                 let { look, primary, secondary } = m;
-                let urlPathname = makeUrlPath({
+                
+                let lookUrlPathname = makeUrlPath({
                     ...pageOpts,
                     look: look,
+                });
+                let colorUrlPathname = makeUrlPath({
+                    ...pageOpts,
                     primaryColor: primary.replace(/^#/, ''),
                     secondaryColor: secondary.replace(/^#/, ''),
-                });
+                });                
                 if (!newState.looks.find(x => x.name == look)) {
-                    newState.looks.push({ name: look, active: false, urlPathname });
+                    newState.looks.push({ name: look, active: false, urlPathname: lookUrlPathname });
                 }
                 if (!newState.colors.find(x => x.primary == primary && x.secondary == secondary)) {
-                    newState.colors.push(new Color(primary, secondary, urlPathname));
+                    newState.colors.push(new Color(primary, secondary, colorUrlPathname));
                 }
             }
         }

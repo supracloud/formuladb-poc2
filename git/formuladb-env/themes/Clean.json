@@ -43,7 +43,8 @@
     ".jumbotron": [
         "w-100",
         "text-center",
-        "bg-transparent"
+        "bg-transparent",
+        "border-0"
     ],
     ".frmdb-t-card-img": [
         "border-0",
