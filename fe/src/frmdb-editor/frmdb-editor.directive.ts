@@ -95,7 +95,7 @@ export class FrmdbEditorDirective {
     updateStateFromUrl(newPageOpts: PageOpts, newPath: string) {
         let { appName } = newPageOpts;
 
-        this.iframe.src = newPath;
+        if (this.iframe.src != newPath) this.iframe.src = newPath;
 
         if (this.state.data.selectedAppName != appName) {
             RESET_BACKEND_SERVICE();
@@ -143,7 +143,11 @@ export class FrmdbEditorDirective {
             this.iframe.contentWindow!.document.body.classList.add('frmdb-editor-on', 'frmdb-editor-normal');
             pageElementFlows(this);
             hookIframeChangesFeedHandlers(this.iframe.contentWindow!);
-            this.manageIframeNavigation();
+            // this.manageIframeNavigation();
+            if (this.iframe.contentWindow?.location && window.location.pathname != this.iframe.contentWindow.location.pathname) {
+                let {appName, pageName} = parsePageUrl(this.iframe.contentWindow.location.pathname);
+                navigateEditorToAppAndPage(appName, pageName);
+            }
         }
         this.iframe.onload = ff;
 
@@ -192,7 +196,18 @@ export class FrmdbEditorDirective {
         });
     }
 
+    iframeHistory: string[] = [];
     manageIframeNavigation() {
+
+        if (this.iframe.contentWindow) this.iframe.contentWindow.onpopstate = () => {
+            let prevUrl = this.iframeHistory.pop();
+            if (prevUrl) {
+                let url = new URL(prevUrl);
+                let {appName, pageName} = parsePageUrl(url.pathname);
+                navigateEditorToAppAndPage(appName, pageName);
+            } 
+        };
+
         onEventChildren(this.frameDoc.body, ['click'], 'a', (event: MouseEvent) => {
             let link: HTMLLinkElement | null = null;
             if (isHTMLElement(event.target)) {
@@ -202,6 +217,9 @@ export class FrmdbEditorDirective {
             if (link) {
                 let newPathname = new URL(link.href).pathname;
                 if (window.location.pathname != newPathname) {
+
+                    if (this.iframe.contentWindow?.location.href) this.iframeHistory.push(this.iframe.contentWindow?.location.href);
+
                     let {appName, pageName} = parsePageUrl(newPathname);
                     navigateEditorToAppAndPage(appName, pageName);
                 }
@@ -329,7 +347,10 @@ export class FrmdbEditorDirective {
         onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
             await this.saveBlobs();
 
-            $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc);
+            $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
+            .then(b => {
+                if (b) Undo.clear();
+            });
         });
 
         onDoc('click', '#delete-table-btn *', (event) => {

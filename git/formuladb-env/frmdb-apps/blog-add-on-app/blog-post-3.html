@@ -1,57 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>FormulaDB Themes</title>
-    <meta name="author" content="">
+    <title>Blog Post 3</title>
+    <meta name="author" content="alex">
     <meta name="description" content="">
-    <meta name="frmdb_display_date" content="">
+    <meta name="frmdb_display_date" content="2020-03-16">
 </head>
 <body class="frmdb-editor-normal">
     <div class="frmdb-t-main-nav">
         <div data-frmdb-fragment="_nav.html"></div>
     </div>
-    <header class="frmdb-t-cover min-vh-50" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
+    <header class="frmdb-t-cover" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
         <div class="frmdb-t-main" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg2.jpg')">
             <div class="jumbotron">
-                <h1 class="display-4">Our Blog</h1>
-                <p>Lead paragraph providing a short introduction to you blog.&nbsp;
-                    <br>
+                <h6>Subtitle of app, can be a bit longer in words</h6>
+                <h1 class="display-4">Blog Post 3</h1>
+                <p>Lead paragraph providing a short introduction to you website or app,
+                    <br>it would be good to keep it under two lines of text
                 </p>
+                <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
             </div>
+        </div>
+        <div class="frmdb-t-aside">
+            <div data-frmdb-fragment="_form.html"></div>
         </div>
     </header>
     <section class="container py-5">
         <div class="text-center mb-5">
-            <h2 id="thememediacards">Blog Posts</h2>
+            <h2 id="thememediacards">Cards with Images</h2>
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
-        <div class="row">
-            <div class="form-group col-md-8">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <frmdb-icon name="fontawesome-solid-search-bigger-enlarge-find-magnify-preview-zoom" class="sz-1p5"></frmdb-icon>
-                        </span>
-                    </div>
-                    <input type="text" class="form-control w-10-em" value="blog-post" disabled="" data-frmdb-value="$FRMDBQ.$Page[].filter.name.contains">
-                    <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" data-frmdb-value="$FRMDBQ.$Page[].filter.title.contains">
-                </div>
-            </div>
-            <div class="form-group col-md-4">
-                <div class="input-group mb-3"></div>
-            </div>
-        </div>
-        <div class="card-deck frmdb-cards-wrap-3">
-            <div class="card frmdb-t-card-img" data-frmdb-table-limit="10" data-frmdb-table="$FRMDB.$Page[]">
-                <div class="frmdb-t-img overflow-hidden frmdb-bg-dark-20">
-                    <img src="/formuladb-env/frmdb-apps/blog-add-on-app/static/blog-post-1.png" alt="" data-frmdb-value="$FRMDB.$Page[].screenshot" class="opacity-0p3">
+        <div class="card-deck">
+            <div class="card frmdb-t-card-img">
+                <div class="frmdb-t-img overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="" class="">
                 </div>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.$Page[].title">Post 1</h5>
-                    <p data-frmdb-value="$FRMDB.$Page[].description">desc</p>
+                    <h5>Card 1 title</h5>
+                    <h6>Card 1 subtitle</h6>
+                    <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="./blog-post-1.html" class="position-relative" data-frmdb-value="" data-frmdb-attr="href:CONCATENATE('./', name, '.html'):$FRMDB.$Page[]">Read Post</a>
+                    <a href="javascript:void(0)" class="">Action</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -59,16 +49,17 @@
                     </span>
                 </div>
             </div>
-            <div class="card frmdb-t-card-img" data-frmdb-table-limit="10" data-frmdb-table="$FRMDB.$Page[]">
-                <div class="frmdb-t-img overflow-hidden frmdb-bg-dark-20">
-                    <img src="/formuladb-env/frmdb-apps/blog-add-on-app/static/blog-post-2.png" alt="" data-frmdb-value="$FRMDB.$Page[].screenshot" class="opacity-0p3">
+            <div class="card frmdb-t-card-img">
+                <div class="frmdb-t-img overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/base-app/static/card2.jpg" alt="" class="">
                 </div>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.$Page[].title">Post 2</h5>
-                    <p data-frmdb-value="$FRMDB.$Page[].description">desc</p>
+                    <h5>Card 2 title</h5>
+                    <h6>Card 2 subtitle</h6>
+                    <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="./blog-post-2.html" class="position-relative" data-frmdb-attr="href:CONCATENATE('./', name, '.html'):$FRMDB.$Page[]">Read Post</a>
+                    <a href="javascript:void(0)" class="">Action</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -76,16 +67,35 @@
                     </span>
                 </div>
             </div>
-            <div class="card frmdb-t-card-img" data-frmdb-table-limit="10" data-frmdb-table="$FRMDB.$Page[]">
-                <div class="frmdb-t-img overflow-hidden frmdb-bg-dark-20">
-                    <img src="/formuladb-env/frmdb-apps/blog-add-on-app/static/blog-post-3.png" alt="" data-frmdb-value="$FRMDB.$Page[].screenshot" class="opacity-0p3">
+            <div class="card frmdb-t-card-img">
+                <div class="frmdb-t-img overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/base-app/static/card3.jpg" alt="" class="">
                 </div>
                 <div class="card-body">
-                    <h5 data-frmdb-value="$FRMDB.$Page[].title">Blog Post 3</h5>
-                    <p data-frmdb-value="$FRMDB.$Page[].description"></p>
+                    <h5>Card 3 title</h5>
+                    <h6>Card 3 subtitle</h6>
+                    <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
                 <div class="frmdb-t-card-action">
-                    <a href="./blog-post-3.html" class="position-relative" data-frmdb-attr="href:CONCATENATE('./', name, '.html'):$FRMDB.$Page[]">Read Post</a>
+                    <a href="javascript:void(0)" class="">Action</a>
+                </div>
+                <div class="frmdb-t-card-note">
+                    <span>INFO 
+                        <small>info</small>
+                    </span>
+                </div>
+            </div>
+            <div class="card frmdb-t-card-img">
+                <div class="frmdb-t-img overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/base-app/static/card4.jpg" alt="" class="">
+                </div>
+                <div class="card-body">
+                    <h5>Card 4 title</h5>
+                    <h6>Card 4 subtitle</h6>
+                    <p>Etiam porta magna eu rutrum rhoncus</p>
+                </div>
+                <div class="frmdb-t-card-action">
+                    <a href="javascript:void(0)" class="">Action</a>
                 </div>
                 <div class="frmdb-t-card-note">
                     <span>INFO 
@@ -188,19 +198,6 @@
     </section>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
-    <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>

@@ -1,4 +1,4 @@
-_id: Booking
+_id: RoomBooking
 isEditable: true
 stateGraph:
     nodes:
