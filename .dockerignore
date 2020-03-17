@@ -1,8 +1,11 @@
 *
-formuladb/*.js.map
-dist-be/**.js.map
 !dist-be/frmdb-be*.js
-!formuladb
+!formuladb/*.html
+!formuladb/*.js
+!formuladb/*.css
+!formuladb/css
+!formuladb/icons
+!formuladb/img
 !package.json
 !k8s
 !skaffold.yaml

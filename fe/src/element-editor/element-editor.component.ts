@@ -65,6 +65,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
                         <a class="btn" onclick="$FSCMP(this).paste('before')" href="javascript:void(0)" title="Insert before"><i class="frmdb-i-before-box"></i></a>
                         <a class="btn" onclick="$FSCMP(this).paste('inside')" href="javascript:void(0)" title="Insert inside"><i class="frmdb-i-inside-box"></i></a>
                         <a class="btn" onclick="$FSCMP(this).paste('after')" href="javascript:void(0)" title="Insert after"><i class="frmdb-i-after-box"></i></a>
+                        <a class="btn" onclick="$FSCMP(this).paste('cancel')" href="javascript:void(0)" title="Cancel"><i class="frmdb-i-window-close"></i></a>
                     </div>
                 `;
             } else {
@@ -175,7 +176,7 @@ export class ElementEditorComponent extends HighlightBoxComponent {
         this.frmdbRender();
     }
 
-    paste(position: 'before' | 'inside' | 'after') {
+    paste(position: 'before' | 'inside' | 'after' | 'cancel') {
         if (!this.state.selectedEl) return;
 
         let newElement: Element, oldParent: Element | null, oldNextSibling: Element | null;
@@ -191,8 +192,10 @@ export class ElementEditorComponent extends HighlightBoxComponent {
             oldNextSibling = null;
         }
         else {alert("Please \"clone\" and/or \"cut\" an element before pasting into another location on the page."); return; }
-
-        if ('before' == position) {
+        if ('cancel' === position) {
+            this.state.currentCopiedElement = null;
+            this.state.currentCutElement = null;    
+        } else if ('before' == position) {
             let p = node.parentElement;
             if (p) {
                 p.insertBefore(newElement, node);
