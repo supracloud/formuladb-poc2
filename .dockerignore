@@ -2,6 +2,7 @@
 !dist-be/frmdb-be*.js
 !formuladb/*.html
 !formuladb/*.js
+!formuladb/*.js.map
 !formuladb/*.css
 !formuladb/css
 !formuladb/icons
