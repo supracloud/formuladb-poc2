@@ -19,6 +19,7 @@ export async function initFrmdb() {
 
     DATA_BINDING_MONITOR = new DataBindingsMonitor(document.body);
     DATA_BINDING_MONITOR.updateDOMForRoot();
+    DATA_BINDING_MONITOR.updateDOMWithUrlParameters();
 
     if (!inIframe()) {
         changesFeedLoop();

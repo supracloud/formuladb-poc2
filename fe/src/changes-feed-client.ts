@@ -62,7 +62,7 @@ export function registerChangesFeedHandler(name: string, handler: (events: event
 }
 
 export async function hookIframeChangesFeedHandlers(iframeWindow: Window) {
-    await waitUntil(() => (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$, 10, 500);
+    await waitUntil(() => (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$, 25, 500);
     let iframeHandlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } =
         (iframeWindow as any).$FRMDB_CHANGES_FEED_HANDLERS$;
     if (!iframeHandlers) { console.warn('no changes feed handlers for iframe window', iframeWindow); return; }

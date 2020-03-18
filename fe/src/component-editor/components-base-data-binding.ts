@@ -115,7 +115,7 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 			inputtype: "TextInput",
 		},
 		{
-			name: "Computed Value",
+			name: "Formula",
 			key: "data-frmdb-value",
 			htmlAttr: "data-frmdb-value",
 			tab: "left-panel-tab-data",

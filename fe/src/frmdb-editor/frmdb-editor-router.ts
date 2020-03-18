@@ -27,8 +27,8 @@ export function navigateEditorToPage(pageName: string) {
     navigateTo(`${pageName}.html`);
 }
 
-export function navigateEditorToAppAndPage(appName: string, pageName: string) {
-    navigateTo(`../${appName}/${pageName}.html`);
+export function navigateEditorToAppAndPage(appName: string, pageName: string, search: string) {
+    navigateTo(`../${appName}/${pageName}.html${search}`);
 }
 
 const Validators: {[name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean} = {};

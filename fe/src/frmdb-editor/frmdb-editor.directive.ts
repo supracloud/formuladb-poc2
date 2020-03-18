@@ -146,7 +146,7 @@ export class FrmdbEditorDirective {
             // this.manageIframeNavigation();
             if (this.iframe.contentWindow?.location && window.location.pathname != this.iframe.contentWindow.location.pathname) {
                 let {appName, pageName} = parsePageUrl(this.iframe.contentWindow.location.pathname);
-                navigateEditorToAppAndPage(appName, pageName);
+                navigateEditorToAppAndPage(appName, pageName, this.iframe.contentWindow.location.search);
             }
         }
         this.iframe.onload = ff;
@@ -204,7 +204,7 @@ export class FrmdbEditorDirective {
             if (prevUrl) {
                 let url = new URL(prevUrl);
                 let {appName, pageName} = parsePageUrl(url.pathname);
-                navigateEditorToAppAndPage(appName, pageName);
+                navigateEditorToAppAndPage(appName, pageName, url.search);
             } 
         };
 
@@ -215,13 +215,14 @@ export class FrmdbEditorDirective {
                 else link = event.target.closest('a') as any as HTMLLinkElement;
             }
             if (link) {
-                let newPathname = new URL(link.href).pathname;
+                let url = new URL(link.href);
+                let newPathname = url.pathname;
                 if (window.location.pathname != newPathname) {
 
                     if (this.iframe.contentWindow?.location.href) this.iframeHistory.push(this.iframe.contentWindow?.location.href);
 
                     let {appName, pageName} = parsePageUrl(newPathname);
-                    navigateEditorToAppAndPage(appName, pageName);
+                    navigateEditorToAppAndPage(appName, pageName, url.search);
                 }
             }
         });
@@ -296,7 +297,7 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');
                             $FRMDB_MODAL(newAppModal, 'hide');
-                            navigateEditorToAppAndPage(appName, 'index');
+                            navigateEditorToAppAndPage(appName, 'index', '');
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);

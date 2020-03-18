@@ -13,7 +13,7 @@ import { onEventChildren, onEvent } from "./delegated-events";
 import { regexExtract, waitUntil } from "@domain/ts-utils";
 import { registerChangesFeedHandler } from "./changes-feed-client";
 import { $ImageObjT, $AppObjT, $PageObjT, $Table, $App, $Page } from "@domain/metadata/default-metadata";
-import { isHTMLElement } from "@core/dom-utils";
+import { isHTMLElement, getWindow } from "@core/dom-utils";
 
 declare var $: any;
 
@@ -61,13 +61,13 @@ export class DataBindingsMonitor {
         });
 
         observer.observe(rootEl, { attributes: true, childList: true, subtree: true });
-        onEvent(rootEl, ["change"], 'input[data-frmdb-value^="$FRMDBQ."]', async (event) => {
+        onEvent(rootEl, ["change"], 'input[data-frmdb-filter^="$FRMDB."]', async (event) => {
             if (!event.target || !event.target.outerHTML) return;
-            let valExpr = event.target.getAttribute('data-frmdb-value');
+            let valExpr = event.target.getAttribute('data-frmdb-filter');
             if (!valExpr) { console.warn("query expr not found ", event.target.outerHTML); return }
 
             let m: RegExpMatchArray;
-            if (m = valExpr.match(/^\$FRMDBQ\.(\$?\w+)\[\]\./)) {
+            if (m = valExpr.match(/^\$FRMDB\.(\$?\w+)\[\]\./)) {
                 let tableName = m[1];
                 let tableEl = rootEl.querySelector(`[data-frmdb-table="$FRMDB.${tableName}[]"]`);
                 this.debouncedUpdateDOMForTable(tableEl);
@@ -83,6 +83,18 @@ export class DataBindingsMonitor {
             let tableEl = this.rootEl.querySelector(`[data-frmdb-table="${tableName}"]`);
             await this.updateDOMForTable(tableEl as HTMLElement);
         }
+    }
+
+    public updateDOMWithUrlParameters() {
+        let urlParams = new URLSearchParams(getWindow(this.rootEl).location.search);
+        urlParams.forEach((val, key) => {
+            let elems: (HTMLInputElement|HTMLSelectElement)[] = Array.from(
+                this.rootEl.querySelectorAll(`input[data-frmdb-value$=":${key}"],input[data-frmdb-value="${key}"]`));
+            for (let el of elems) {
+                el.value = val;
+                el.dispatchEvent(new Event('change', {bubbles: true}));
+            }
+        });
     }
 
     private debouncedUpdateDOMForTable = _.debounce((el) => this.updateDOMForTable(el), 100);
@@ -128,9 +140,9 @@ export class DataBindingsMonitor {
     getQueryForTable(tableName: string): SimpleAddHocQuery {
         let ret: SimpleAddHocQuery = _.cloneDeep(DefaultSimpleAddHocQuery);
         
-        let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-value^="$FRMDBQ.${tableName}[].filter."]`));
+        let filterEls: HTMLInputElement[] = Array.from(this.rootEl.querySelectorAll(`input[data-frmdb-filter^="$FRMDB.${tableName}[].filter."]`));
         for (let filterEl of filterEls) {
-            let [x, fieldName, type] = regexExtract(filterEl.getAttribute('data-frmdb-value')!.replace(`$FRMDBQ.${tableName}[].filter.`, ''),
+            let [x, fieldName, type] = regexExtract(filterEl.getAttribute('data-frmdb-filter')!.replace(`$FRMDB.${tableName}[].filter.`, ''),
                 /(\w+?)\.(\w+)/);
             let filterType: SimpleAddHocQueryFilterItem['filterType'] = makeSimpleAddHocQueryFilterItem_filterType(filterEl.type);
             let filter = filterEl.value;

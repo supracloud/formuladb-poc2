@@ -16,7 +16,7 @@ const fetchMock = require('fetch-mock');
 fetchMock.config.overwriteRoutes = true;
 
 const HTML = /*html*/`
-    <input type="text" data-frmdb-value="$FRMDBQ.A[].filter.f1.contains" />
+    <input type="text" data-frmdb-filter="$FRMDB.A[].filter.f1.contains" />
     <div data-frmdb-table="$FRMDB.A[]">
         <span data-frmdb-value="$FRMDB.A[].f1"></span>
         <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123" />
@@ -70,7 +70,7 @@ describe('DataBindingsMonitor', () => {
 
         let normalizedHtml = htmlTools.normalizeHTML(document.body.innerHTML);
         let expectedNonFilteredHtml = htmlTools.normalizeHTML(/*html*/`
-            <input type="text" data-frmdb-value="$FRMDBQ.A[].filter.f1.contains">
+            <input type="text" data-frmdb-filter="$FRMDB.A[].filter.f1.contains">
             <div data-frmdb-table="$FRMDB.A[]" data-frmdb-record="A~~1">
                 <span data-frmdb-value="$FRMDB.A[].f1">f1.1</span>
                 <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123">
@@ -96,7 +96,7 @@ describe('DataBindingsMonitor', () => {
             ];
         });
 
-        let filterInputEl = document.body.querySelector('input[data-frmdb-value="$FRMDBQ.A[].filter.f1.contains"]') as HTMLInputElement;
+        let filterInputEl = document.body.querySelector('input[data-frmdb-filter="$FRMDB.A[].filter.f1.contains"]') as HTMLInputElement;
         filterInputEl.value = ".2";
         filterInputEl.dispatchEvent(new Event('change', { bubbles: true }));
 
@@ -104,7 +104,7 @@ describe('DataBindingsMonitor', () => {
 
         let normalizedHtml = htmlTools.normalizeHTML(document.body.innerHTML);
         let expectedFilteredHtml = htmlTools.normalizeHTML(/*html*/`
-            <input type="text" data-frmdb-value="$FRMDBQ.A[].filter.f1.contains">
+            <input type="text" data-frmdb-filter="$FRMDB.A[].filter.f1.contains">
             <div data-frmdb-table="$FRMDB.A[]" data-frmdb-record="A~~2">
                 <span data-frmdb-value="$FRMDB.A[].f1">f1.2</span>
                 <input type="number" data-frmdb-value="$FRMDB.A[].f2" max="123">
