@@ -29,3 +29,7 @@ props:
     parking:
         name: parking
         propType_: BOOLEAN
+    total_rooms:
+        name: total_rooms
+        propType_: FORMULA
+        formula: 'SUMIF(Room, room_type == @[_id])'

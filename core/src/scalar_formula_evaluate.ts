@@ -28,15 +28,58 @@ function compileScalarFormula(scalarFormula: string): CompiledScalarFormula {
 function preProcessAst(node: Expression) {
     switch (node.type) {
 
+        case 'ArrayExpression':
+            for (let n of node.elements) {
+                preProcessAst(n);
+            }
+            break;
+            // return evaluateArray(node.elements, context);
+
+        case 'BinaryExpression':
+            preProcessAst(node.left);
+            preProcessAst(node.right);
+            break;
+
         case 'CallExpression':
             if (isIdentifier(node.callee)) {
                 node.callee.name = 'Ctx.' + node.callee.name;
             } else preProcessAst(node.callee);
             node.arguments.forEach(a => preProcessAst(a));
             break;
+        case 'ConditionalExpression':
+            preProcessAst(node.test);
+            preProcessAst(node.consequent);
+            preProcessAst(node.alternate);
+            break;
+
         case 'Identifier':
             node.name = 'Obj.' + node.name;
             break;
+            
+        case 'Literal':
+            break;
+        case 'NumberLiteral':
+        case 'StringLiteral':
+            break;
+
+        case 'LogicalExpression':
+            preProcessAst(node.left);
+            preProcessAst(node.right);
+            break;
+
+        case 'MemberExpression':
+            if (isIdentifier(node.object)) preProcessAst(node.object);
+            break;
+
+        case 'ThisExpression':
+            break;
+
+        case 'UnaryExpression':
+            preProcessAst(node.argument);
+            break;
+
+        default:
+            return undefined;            
     }
 }
 

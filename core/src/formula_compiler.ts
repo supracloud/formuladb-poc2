@@ -8,7 +8,7 @@ import { CircularJSON } from "@domain/json-stringify";
 
 import {
     Expression, CallExpression, BinaryExpression, isExpression, isIdentifier,
-    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral, Identifier
+    LogicalExpression, isBinaryExpression, isNumberLiteral, isMemberExpression, MemberExpression, isLogicalExpression, isArrayExpression, UnaryExpression, isLiteral, Identifier, isCallExpression
 } from "jsep";
 import * as jsep from 'jsep';
 jsep.addLiteral('@', '@');
@@ -49,6 +49,7 @@ export class FormulaCompilerContextType {
 export class FuncCommon {
     context: FormulaCompilerContextType;
     funcExpr: CallExpression;
+    requestedRetType?: ExecPlanN;
 }
 
 export class FormulaCompilerError {
@@ -64,10 +65,39 @@ function mergeBinaryNodes(node: BinaryExpression | LogicalExpression, left: Exec
 }
 
 const logicalOperators = ['==', '!=', '<', '<=', '>', '>='];
-function isLogicalOpBinaryExpression(expr: Expression): expr is BinaryExpression {
+export function isLogicalOpBinaryExpression(expr: Expression): expr is BinaryExpression {
     return isBinaryExpression(expr) && logicalOperators.includes(expr.operator);
 }
 
+enum LogicalFunctions {
+    AND= 'AND', 
+    OR ='OR', 
+    NOT = 'NOT',
+};
+export interface LogicalCallExpressionCallee extends Identifier {
+    type: 'Identifier';
+    name: LogicalFunctions;
+}
+export interface LogicalCallExpression extends CallExpression {
+    callee: LogicalCallExpressionCallee;
+}
+export function isLogicalCallExpression(expr: Expression): expr is LogicalCallExpression {
+    return isCallExpression(expr) && isIdentifier(expr.callee) && Object.values(LogicalFunctions).includes(expr.callee.name as any);
+}
+
+enum BooleanFunctions {
+    INTERSECTS = 'INTERSECTS', 
+};
+export interface BooleanCallExpressionCallee extends Identifier {
+    type: 'Identifier';
+    name: BooleanFunctions;
+}
+export interface BooleanCallExpression extends CallExpression {
+    callee: BooleanCallExpressionCallee;
+}
+export function isBooleanCallExpression(expr: Expression): expr is BooleanCallExpression {
+    return isCallExpression(expr) && isIdentifier(expr.callee) && Object.values(BooleanFunctions).includes(expr.callee.name as any);
+}
 
 export function getQueryKeys(op: string, node: Expression, reverse?: boolean): MapQuery {
     switch (op) {
@@ -119,17 +149,7 @@ export function extractKeysAndQueriesFromBinaryExpression(logicalOpBinaryExpr: B
     };
 }
 
-function specialLogicalExpressions(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries | null {
-    let node = logicalExpr;
-    if (!isLogicalOpBinaryExpression(logicalExpr.left))
-        throw new FormulaCompilerError(node, "Only logical operators are currently allowed in left LogicalExpession, at: " + logicalExpr.origExpr);
-    
-    if (jsep.isCallExpression(logicalExpr.right) && isIdentifier(logicalExpr.right.callee) && 'OVERLAP' === logicalExpr.right.callee.name) {
-        let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
-        return left;
-    } else return null;
-}
-
+/**  */
 export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalExpression, context: FormulaCompilerContextType): MapReduceKeysAndQueries {
     let node = logicalExpr;
     if (logicalExpr.operator !== '&&') throw new FormulaCompilerError(node, `Only && operator is supported currently. 
@@ -138,10 +158,7 @@ export function extractKeysAndQueriesFromLogicalExpression(logicalExpr: LogicalE
             At ` + logicalExpr.origExpr);
     if (!isLogicalOpBinaryExpression(logicalExpr.left))
         throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
-    
-    let specialNode = specialLogicalExpressions(logicalExpr, context);
-    if (specialNode) return specialNode;
-
+        
     if (!isLogicalOpBinaryExpression(logicalExpr.right)) 
         throw new FormulaCompilerError(node, "Only logical operators are currently allowed inside LogicalExpession, at: " + logicalExpr.origExpr);
     let left = extractKeysAndQueriesFromBinaryExpression(logicalExpr.left, context);
@@ -212,6 +229,7 @@ export function compileExpression(node: Expression, context: FormulaCompilerCont
                 return fn.call(null, {
                     context: context,
                     funcExpr: node,
+                    requestedRetType
                 } as FuncCommon, ...node.arguments);
             } else throw new FormulaCompilerError(node, "Unknown function: " + node.origExpr);
 

@@ -60,7 +60,7 @@ export class MapReduceView {
         private viewHashCode: string,
         public map: MapFunctionT,
         private use$ROW$?: boolean,
-        reduceFun?: ReduceFun
+        public reduceFun?: ReduceFun
     ) {
         if (!reduceFun) {
             this.mapKVS = new KeyValueStoreArrayKeys(this.kvsFactory.createKeyValS<any>(viewHashCode + '-map', null));

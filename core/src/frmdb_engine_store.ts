@@ -5,7 +5,7 @@
 
 import { CircularJSON } from "@domain/json-stringify";
 
-import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI } from "@storage/key_value_store_i";
+import { KeyObjStoreI, KVSArrayKeyType, KeyValueStoreFactoryI, KeyValueStoreArrayKeys, RangeQueryOptsI, RangeQueryOptsArrayKeysI, kvsKey2Str, KeyTableStoreI, kvsReduceValues } from "@storage/key_value_store_i";
 import { MapReduceTrigger, CompiledFormula, MapFunctionT } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { FrmdbStore } from './frmdb_store';
@@ -113,11 +113,11 @@ export class FrmdbEngineStore extends FrmdbStore {
         let obsNew = _.cloneDeep(observerObj);
         for (let triggerOfFormula of compiledFormula.triggers || []) {
             let aggsTrg = triggerOfFormula.mapreduceAggsOfManyObservablesQueryableFromOneObs;
-            let startkey = kvsKey2Str(evalExpression({$ROW$: observerObj}, aggsTrg.map.query.startkeyExpr));
-            let endkey = kvsKey2Str(evalExpression({$ROW$: observerObj}, aggsTrg.map.query.endkeyExpr));
+            let startkey = kvsKey2Str(evalExpression({ $ROW$: observerObj }, aggsTrg.map.query.startkeyExpr));
+            let endkey = kvsKey2Str(evalExpression({ $ROW$: observerObj }, aggsTrg.map.query.endkeyExpr));
             let inclusive_start = aggsTrg.map.query.inclusive_start;
             let inclusive_end = aggsTrg.map.query.inclusive_end;
-        
+
             let all = await this.all(aggsTrg.map.entityId);
             let filteredObjs: any[] = [];
             for (let obj of all) {
@@ -218,12 +218,26 @@ export class FrmdbEngineStore extends FrmdbStore {
                 endkey: evalExpression(observableObj, mapQuery.endkeyExpr),
                 inclusive_start: mapQuery.inclusive_start,
                 inclusive_end: mapQuery.inclusive_end,
-            }).then(rows => Promise.all(
-                rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row._id))))
-            ).then(objs => objs.filter(o => {
-                if (o == null) console.error("map query returned null object", CircularJSON.stringify({observableObj, trigger}));
-                return o != null;
-            })) as DataObj[];
+            })
+                .then(rows => Promise.all(
+                    rows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row._id))))
+                )
+                .then(rows => {
+                    let filterExpr = trigger.mapObserversImpactedByOneObservable.query.filter;
+                    if (filterExpr) {
+                        return rows.filter(row => {
+                            let matchesFilter = filterExpr && evalExpression({
+                                ...observableObj,
+                                $ROW$: row,
+                            }, filterExpr);
+                            return matchesFilter;
+                        });
+                    } else return rows;
+                })
+                .then(objs => objs.filter(o => {
+                    if (o == null) console.error("map query returned null object", CircularJSON.stringify({ observableObj, trigger }));
+                    return o != null;
+                })) as DataObj[];
         }
         return ret;
     }
@@ -242,7 +256,43 @@ export class FrmdbEngineStore extends FrmdbStore {
     public async getAggValueForObserver(observerObj: DataObj, trigger: MapReduceTrigger): Promise<number | string> {
         // let defaultValue = this.getAggDefaultValue(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
         let mapQuery = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query;
-        return this.reduceQuery(
+        if (trigger.mapObserversImpactedByOneObservable.query.filter) {
+            let viewHashCode = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName;
+            let queryOpts = {
+                startkey: evalExpression({$ROW$: observerObj}, mapQuery.startkeyExpr),
+                endkey: evalExpression({$ROW$: observerObj}, mapQuery.endkeyExpr),
+                inclusive_start: mapQuery.inclusive_start,
+                inclusive_end: mapQuery.inclusive_end,
+            };
+            let view = this.view(viewHashCode, queryOpts);
+            if (!view.reduceFun) throw new Error(`view for trigger ${trigger.rawExpr.origExpr} does not have reduce function`);
+            let viewRows = await view.mapQueryWithKeys(queryOpts);
+
+            let observables = await Promise.all(viewRows.map(row => this.getDataObj(MapReduceView.extractObjIdFromMapKey(row._id))));
+            if (observables.length != viewRows.length) {
+                console.error(`expected obs to have the same length as view rows`, viewRows, observables);
+                throw new Error(`expected obs to have the same length as view rows`);
+            }
+
+            let filteredViewRecords: { row: { _id: KVSArrayKeyType, val }, obj: DataObj }[] = [];
+            let filterExpr = trigger.mapObserversImpactedByOneObservable.query.filter;
+            for (let [i, row] of viewRows.entries()) {
+                let obj = observables[i];
+                if (!obj) { console.warn(`obj null for row ${JSON.stringify(row)}`); continue; }
+                let matchesFilter;
+                if (filterExpr) {
+                    matchesFilter = filterExpr && evalExpression({
+                        ...obj,
+                        $ROW$: observerObj,
+                    }, filterExpr);
+                } else matchesFilter = true;
+
+                if (matchesFilter) filteredViewRecords.push({ row, obj });
+            }
+
+            return kvsReduceValues(filteredViewRecords.map(x => x.row.val),
+                view.reduceFun, viewHashCode, true);
+        } else return this.reduceQuery(
             trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.aggsViewName,
             Object.assign({}, {
                 startkey: evalExpression({ $ROW$: observerObj }, mapQuery.startkeyExpr),
@@ -250,7 +300,7 @@ export class FrmdbEngineStore extends FrmdbStore {
                 inclusive_start: mapQuery.inclusive_start,
                 inclusive_end: mapQuery.inclusive_end,
             }
-        ));
+            ));
     }
 
     public async preComputeAggForObserverAndObservable(

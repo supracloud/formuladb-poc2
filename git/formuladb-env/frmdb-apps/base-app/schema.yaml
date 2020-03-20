@@ -3,3 +3,4 @@ entityIds:
     - $User
     - $Dictionary
     - $Currency
+    - RoomBooking

@@ -9,6 +9,7 @@ import { MapFunctionAndQuery, MapFunctionAndQueryT, MapFunctionT } from "@domain
 import { Expression } from "jsep";
 import { ScalarFunctionsImplementations } from './scalar_functions_implementations'
 import { parseDataObjIdES5 } from "@domain/metadata/data_obj";
+import { scalarFormulaEvaluate } from "@core/scalar_formula_evaluate";
 
 declare var emit: any;
 
@@ -21,6 +22,14 @@ export function isPlainObjES5(o) {
 
 export function jsonPathMapGetterExpr(jsonPath: string) {
     return 'doc.' + jsonPath.replace(/^\$\./, '').replace(/\[.*?\]/g, '');
+}
+
+export function __new_TODO__evalExpression(doc: {}, expr: Expression | Expression[]) {
+    if (expr instanceof Array) {
+        return expr.map(function (e) {
+            return scalarFormulaEvaluate(doc, e.origExpr.replace(/@/g, 'Obj.$ROW$')); 
+        });
+    } else return scalarFormulaEvaluate(doc, expr.origExpr.replace(/@/g, 'Obj.$ROW$'));
 }
 
 export function evalExpression(doc: {}, expr: Expression | Expression[]) {

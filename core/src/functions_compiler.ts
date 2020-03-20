@@ -39,8 +39,8 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "@domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError } from './formula_compiler';
-import { _throw } from "./throw";
+import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError, isLogicalCallExpression, isLogicalOpBinaryExpression, extractKeysAndQueriesFromBinaryExpression, BooleanCallExpression, isBooleanCallExpression } from './formula_compiler';
+import { _throw, _throwEx } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { $s2e } from "@functions/s2e";
 
@@ -197,13 +197,15 @@ function IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpr
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     return _IF(fc, inputRange, compiledLogicalExpression);
 }
-function __IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression): [ExecPlanCompiledExpression, MapReduceKeysAndQueries] {
+function __IF(fc: FuncCommon, tableRange: Identifier | MemberExpression | CallExpression, logicalExpression: LogicalExpression | BinaryExpression | CallExpression): [ExecPlanCompiledExpression, MapReduceKeysAndQueries] {
     let inputRange = compileArgNV(fc, 'basicRange', tableRange, [isIdentifier, isMemberExpression], fc.context, MapFunctionN);
-    let logicalExpressionContext = {...fc.context};
+    let logicalExpressionContext = { ...fc.context };
     if (includesMapValue(inputRange)) {
         logicalExpressionContext.currentEntityName = inputRange.entityId;
     }
-    let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression, [isLogicalExpression, isBinaryExpression], logicalExpressionContext, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
+    let compiledLogicalExpression = compileArg(fc, 'logicalExpression', logicalExpression,
+        [isLogicalExpression, isLogicalOpBinaryExpression, isLogicalCallExpression],
+        logicalExpressionContext, MapReduceKeysAndQueriesN, isMapReduceKeysAndQueries);
     return [inputRange, compiledLogicalExpression];
 }
 function _IF(fc: FuncCommon, inputRange: ExecPlanCompiledExpression, compiledLogicalExpression: MapReduceKeysAndQueries): MapReduceKeysAndQueries | MapReduceKeysQueriesAndValue {
@@ -367,7 +369,7 @@ function _REDUCE(fc: FuncCommon, inputRange: MapValue | MapFunction | MapFunctio
 
 function SUM(fc: FuncCommon, tableRange: MemberExpression | CallExpression): MapReduceTrigger {
     let inputRange = compileArg(fc, 'basicRange', tableRange, [isMemberExpression, isCallExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
-    return _REDUCE(fc, inputRange, {name: SumReduceFunN});
+    return _REDUCE(fc, inputRange, { name: SumReduceFunN });
 }
 
 function propertyTypeFunction(fc: FuncCommon): CompiledScalar {
@@ -398,24 +400,35 @@ function SUMIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, lo
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
     if (!isMapReduceKeysQueriesAndValue(range)) throw new FormulaCompilerError(fc.funcExpr, "SUMIF expects a value to sum at " + fc.funcExpr.origExpr);
-    return _REDUCE(fc, range, {name: SumReduceFunN});
+    return _REDUCE(fc, range, { name: SumReduceFunN });
 }
 function COUNT(fc: FuncCommon, tableRange: MemberExpression | CallExpression) {
     let inputRange = compileArg(fc, 'basicRange', tableRange, [isMemberExpression, isCallExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
-    return _REDUCE(fc, inputRange, {name: CountReduceFunN});
+    return _REDUCE(fc, inputRange, { name: CountReduceFunN });
 }
-function COUNTIF(fc: FuncCommon, tableRange: MemberExpression | CallExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
+function COUNTIF(fc: FuncCommon, tableRange: Identifier | MemberExpression, logicalExpression: BinaryExpression | LogicalExpression): MapReduceTrigger {
     if (!tableRange || !logicalExpression) throw new FormulaCompilerError(fc.funcExpr, "Expected arguments tableRange, logicalExpression");
     let [inputRange, compiledLogicalExpression] = __IF(fc, tableRange, logicalExpression);
     let range = _IF(fc, inputRange, compiledLogicalExpression);
-    if (!isMapReduceKeysQueriesAndValue(range)) throw new FormulaCompilerError(fc.funcExpr, "COUNTIF expects a value to sum at " + fc.funcExpr.origExpr);
     let rangeTmp = _.cloneDeep(range);
-    rangeTmp.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.valueExpr = $s2e('1');
-    return _REDUCE(fc, rangeTmp, {name: CountReduceFunN});
+    let countRange: MapReduceKeysQueriesAndValue = {
+        ...rangeTmp,
+        type_: MapReduceKeysQueriesAndValueN,
+        mapreduceAggsOfManyObservablesQueryableFromOneObs: {
+            ...rangeTmp.mapreduceAggsOfManyObservablesQueryableFromOneObs,
+            map: {
+                ...rangeTmp.mapreduceAggsOfManyObservablesQueryableFromOneObs.map,
+                entityId: isIdentifier(tableRange) ? tableRange.name : (
+                    isIdentifier(tableRange.object) ? tableRange.object.name : _throw(`Simple MemberExpression expected`, tableRange, fc.funcExpr)),
+                valueExpr: $s2e('1'),
+            }
+        }
+    }
+    return _REDUCE(fc, countRange, { name: CountReduceFunN });
 }
 function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiteral): MapReduceTrigger {
     let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapReduceKeysQueriesAndValueN, isMapReduceKeysQueriesAndValue);
-    
+
     return {
         ...inputRange,
         type_: MapReduceTriggerN,
@@ -441,7 +454,7 @@ function TEXTJOIN(fc: FuncCommon, tableRange: Expression, delimiter: StringLiter
                     inclusive_end: inputRange.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
                 }
             },
-            reduceFun: {name: TextjoinReduceFunN , delimiter: delimiter.value},
+            reduceFun: { name: TextjoinReduceFunN, delimiter: delimiter.value },
         },
     }
 }
@@ -456,7 +469,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
     if (!isCompiledScalar(compiledLookupExpr) || !compiledLookupExpr.has$Identifier || compiledLookupExpr.hasNon$Identifier)
         throw new FormulaCompilerError(fc.funcExpr, "RANK expects lookup expression to be a scalar expression (using $ as the current table row) " + lookupExpr.origExpr + "; " + CircularJSON.stringify(compiledLookupExpr, null, 4));
     let inputRange = compileArg(fc, 'tableRange', tableRange, [isExpression], fc.context, MapFunctionN, isMapFunction);
-    
+
     return {
         type_: MapReduceTriggerN,
         rawExpr: fc.funcExpr,
@@ -473,7 +486,7 @@ function RANK(fc: FuncCommon, lookupExpr: Expression, tableRange: CallExpression
                     inclusive_end: true,
                 }
             },
-            reduceFun: {name: CountReduceFunN},
+            reduceFun: { name: CountReduceFunN },
         },
         mapObserversImpactedByOneObservable: {
             obsViewName: getViewName(false, fc.context.targetEntityName, fc.funcExpr),
@@ -515,7 +528,7 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
         //FIXME: this is not true, arguments of scalar functions can be the results of trigger calculations, e.g. MAX(SUMIF(blabla...), 20)
         //to fix this and implement spec "scalar-functions having table-functions as argument"
         if (!isCompiledScalar(ret)) throw new FormulaCompilerError(fc.funcExpr, "Arguments of scalar functions must be scalar expressions at " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
-        
+
         if (!isExpression(ret.rawExpr)) throw new FormulaCompilerError(fc.funcExpr, "Arguments of scalar functions must be scalar expressions " + CircularJSON.stringify(arg) + '; ' + CircularJSON.stringify(fc.funcExpr));
         return ret;
     });
@@ -531,6 +544,98 @@ function compileScalarFunction(fc: FuncCommon, ...args: Expression[]): ExecPlanC
     };
 }
 
+function AND(fc: FuncCommon, leftExpr: BinaryExpression | BooleanCallExpression, rightExpr: BinaryExpression | BooleanCallExpression): CompiledScalar | MapReduceKeysAndQueries {
+    if (fc.requestedRetType == CompiledScalarN) return compileScalarFunction.apply(null, arguments);
+
+    let left: MapReduceKeysAndQueries | null = null;
+    let right: MapReduceKeysAndQueries | null = null;
+    if (isLogicalOpBinaryExpression(leftExpr)) left = extractKeysAndQueriesFromBinaryExpression(leftExpr, fc.context);
+    if (isLogicalOpBinaryExpression(rightExpr)) right = extractKeysAndQueriesFromBinaryExpression(rightExpr, fc.context);
+
+    if (left && right) {
+
+        return {
+            type_: MapReduceKeysAndQueriesN,
+            rawExpr: fc.funcExpr,
+            mapreduceAggsOfManyObservablesQueryableFromOneObs: {
+                map: {
+                    keyExpr: left.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr
+                        .concat(right.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.keyExpr),
+                    query: {
+                        startkeyExpr: left.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr
+                            .concat(right.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.startkeyExpr),
+                        endkeyExpr: left.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr
+                            .concat(right.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.endkeyExpr),
+                        inclusive_start: left.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
+                        inclusive_end: right.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
+                    }
+                },
+            },
+            mapObserversImpactedByOneObservable: {
+                keyExpr: left.mapObserversImpactedByOneObservable.keyExpr
+                    .concat(right.mapObserversImpactedByOneObservable.keyExpr),
+                query: {
+                    startkeyExpr: left.mapObserversImpactedByOneObservable.query.startkeyExpr
+                        .concat(right.mapObserversImpactedByOneObservable.query.startkeyExpr),
+                    endkeyExpr: left.mapObserversImpactedByOneObservable.query.endkeyExpr
+                        .concat(right.mapObserversImpactedByOneObservable.query.endkeyExpr),
+                    inclusive_start: left.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query.inclusive_end,
+                    inclusive_end: right.mapObserversImpactedByOneObservable.query.inclusive_end,
+                }
+            },
+        };
+    } else if (left) {
+        let ret: MapReduceKeysAndQueries = {
+            ...left,
+            type_: MapReduceKeysAndQueriesN,
+            rawExpr: fc.funcExpr,
+        };
+        ret.mapObserversImpactedByOneObservable.query.filter = rightExpr;
+        return ret;
+    } else if (right) {
+        let ret: MapReduceKeysAndQueries = {
+            ...right,
+            type_: MapReduceKeysAndQueriesN,
+            rawExpr: fc.funcExpr,
+        };
+        ret.mapObserversImpactedByOneObservable.query.filter = leftExpr;
+        return ret;
+    } else return compileScalarFunction.apply(null, arguments);
+}
+
+function OR(fc: FuncCommon, leftExpr: BinaryExpression | BooleanCallExpression, rightExpr: BinaryExpression | BooleanCallExpression): CompiledScalar | MapReduceKeysAndQueries {
+    return compileScalarFunction.apply(null, arguments);
+}
+
+function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): CompiledScalar | MapReduceKeysAndQueries {
+    if (fc.requestedRetType == CompiledScalarN) return compileScalarFunction.apply(null, arguments);
+    else if (isLogicalOpBinaryExpression(expr)) {
+        let negatedExpr = _.cloneDeep(expr);
+
+        switch (expr.operator) {
+            case '==':
+                break;
+            case '<':
+                negatedExpr.operator = '>=';
+                break;
+            case '<=':
+                negatedExpr.operator = '>';
+                break;
+            case '>':
+                negatedExpr.operator = '<=';
+                break;
+            case '>=':
+                negatedExpr.operator = '<';
+                break;
+            default: throw new FormulaCompilerError(expr, "Expected logical binary operator but found " + expr.operator);
+        }
+
+        return extractKeysAndQueriesFromBinaryExpression(negatedExpr, fc.context);
+
+    } else if (isBooleanCallExpression(expr)) {
+        return compileScalarFunction.apply(null, arguments);
+    } else throw new FormulaCompilerError(fc.funcExpr, "Expected Logical BinaryExpression");
+}
 function TEXT(fc: FuncCommon, expr: Expression, format: StringLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
@@ -564,11 +669,20 @@ function FLOOR(fc: FuncCommon, expr: Expression, significance: NumberLiteral): C
 function DATEDIF(fc: FuncCommon, start_date: Expression, end_date: Expression, unit: StringLiteral): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
-function OVERLAP(fc: FuncCommon, start_date_1: Expression, end_date_1: Expression, start_date_2: Expression, end_date_2: Expression, max_interval: StringLiteral): CompiledScalar {
+function INTERSECTS(fc: FuncCommon, range_1: Expression, range_2: Expression): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
+function NUMRANGE(fc: FuncCommon, start: Expression, end: Expression): CompiledScalar {
+    return compileScalarFunction.apply(null, arguments);
+}
+function DATERANGE(fc: FuncCommon, start: Expression, end: Expression): CompiledScalar {
     return compileScalarFunction.apply(null, arguments);
 }
 
 export const ScalarFunctions = {
+    AND: AND,
+    OR: OR,
+    NOT: NOT,
     TEXT: TEXT,
     CONCATENATE: CONCATENATE,
     REGEXREPLACE: REGEXREPLACE,
@@ -580,7 +694,9 @@ export const ScalarFunctions = {
     HLOOKUP: HLOOKUP,
     FLOOR: FLOOR,
     DATEDIF: DATEDIF,
-    OVERLAP: OVERLAP,
+    INTERSECTS: INTERSECTS,
+    NUMRANGE: NUMRANGE,
+    DATERANGE: NUMRANGE,
 }
 
 export const PropertyTypeFunctions = {
@@ -591,12 +707,12 @@ export const PropertyTypeFunctions = {
     REFERENCE_TO: REFERENCE_TO,
 }
 
-export const FunctionsDict: {[x: string]: Function} = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
+export const FunctionsDict: { [x: string]: Function } = Object.assign({}, ScalarFunctions, MapFunctions, MapReduceFunctions, PropertyTypeFunctions);
 export const FunctionsList = Object.keys(ScalarFunctions)
     .concat(Object.keys(MapFunctions))
     .concat(Object.keys(MapReduceFunctions))
     .concat(Object.keys(PropertyTypeFunctions))
-;
+    ;
 
 //cat core/src/functions_compiler.ts | perl -ne 'if (/^function ([A-Z_]+)\(/) {my $f=$1; s!:[\w \|]+([,)])!$1!g; s!\).*!)!; chomp; print "$f: `$_`,\n"}'
 export const FunctionSignatures = {
@@ -631,5 +747,5 @@ export const FunctionSignatures = {
     HLOOKUP: `function HLOOKUP(fc, expr)`,
     FLOOR: `function FLOOR(fc, expr, significance)`,
     DATEDIF: `function DATEDIF(fc, start_date, end_date, unit)`,
-    OVERLAP: `function OVERLAP(fc, start_date_1, end_date_1, start_date_2, end_date_2, max_interval)`,
+    INTERSECTS: `function INTERSECTS(fc, start_date_1, end_date_1, start_date_2, end_date_2, max_interval)`,
 }

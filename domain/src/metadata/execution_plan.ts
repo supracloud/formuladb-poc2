@@ -26,6 +26,9 @@ import { PickOmit } from "../ts-utils";
 import { ReduceFun } from "./reduce_functions";
 
 export const ScalarFunctions = {
+    AND: true,
+    OR: true,
+    NOT: true,
     TEXT: true,
     REGEXREPLACE: true,
     EOMONTH: true,
@@ -35,7 +38,9 @@ export const ScalarFunctions = {
     HLOOKUP: true,
     FLOOR: true,
     DATEDIF: true,
-    OVERLAP: true,
+    INTERSECTS: true,
+    NUMRANGE: true,
+    DATERANGE: true,
 }
 
 export type ScalarCallExpression = CallExpression;
@@ -151,11 +156,10 @@ export class MapQuery {
     endkeyExpr: KeyExpression;
     inclusive_start: boolean;
     inclusive_end: boolean;
+    filter?: Expression;
 }
 
 export type KeyExpression = Expression[];
-
-
 
 export const MapFunctionN = ExecPlanN.MapFunctionN;
 export class MapFunction implements ExecPlanBase {

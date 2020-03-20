@@ -13,7 +13,7 @@ import { $User } from "@domain/metadata/default-metadata";
 //     props: {
 //         date: { name: "date", propType_: Pn.DATETIME},
 //         occupancy: { name: "occupancy", propType_: Pn.FORMULA, 
-//             formula: 'COUNTIF(Booking, $OVERLAP(@[start_date], @[end_Date], date, date, "D")) / COUNT(BookingItem) * 100' } as EntityProperty,
+//             formula: 'COUNTIF(Booking, $INTERSECTS(@[start_date], @[end_Date], date, date, "D")) / COUNT(BookingItem) * 100' } as EntityProperty,
 //     }
 // };
 
@@ -28,7 +28,7 @@ export const BookingItem = {
         price: { name: "price", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
         wifi: { name: "wifi", propType_: Pn.BOOLEAN } as EntityProperty,
         parking: { name: "parking", propType_: Pn.BOOLEAN } as EntityProperty,
-        // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $OVERLAP(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
+        // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.price, @[booking_item_id] == booking_item_id, $INTERSECTS(start_date, end_date, @[start_date], @[end_date], "D"))' } as EntityProperty,
         // overlapping: { name: "overlapping", propType_: Pn.FORMULA, formula: 'COUNTIF(Booking.cost, booking_item_id == @[_id])' } as EntityProperty,
         // booking_table: {
         //     name: 'booking_table',

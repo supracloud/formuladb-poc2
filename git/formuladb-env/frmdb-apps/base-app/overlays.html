@@ -11,9 +11,7 @@
 </head>
 
 <body>
-
     <div class="container" data-offset="0">
-
         <h1 id="modals">Modals</h1>
         <div class="modal show position-static d-block">
             <div class="modal-dialog" role="document">
@@ -79,27 +77,6 @@
             </div>
             <button class="source-button btn btn-primary btn-xs" role="button" tabindex="0">&lt; &gt;</button>
         </div>
-
-        <h1 id="highlight">Highlight</h1>
-        <div id="highlight-root-el">
-            <h2>Heading 2</h2>
-            <p id="highlight-p">Paragraph that can be highlighted</p>
-            <button class="btn btn-primary">Some Button</button>
-            <frmdb-highlight highlighted-element="#highlight-p">
-                <div slot="actions-top">
-                    <div class="btn dropdown frmdb-dropdown-hover" title="Move Element">
-                        Paragraph <i class="frmdb-i-ellipsis-v"></i>
-                        <div class="dropdown-menu dropdown-menu-right px-2 text-nowrap">
-                            <a class="btn" data-frmdb-action="move-start" href="javascript:void(0)" title="Move element"><i class="frmdb-i-arrows-alt"></i></a>
-                            <a class="btn" data-frmdb-action="edit" href="javascript:void(0)" title="Edit element text"><i class="frmdb-i-edit"></i></a>
-                            <a class="btn" data-frmdb-action="copy-start" href="javascript:void(0)" title="Copy element"><i class="frmdb-i-copy"></i></a>
-                            <a class="btn" data-frmdb-action="delete" href="javascript:void(0)" title="Remove element"><i class="frmdb-i-trash"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </frmdb-highlight>
-        </div>
-
     </div>
 
     <div id="source-modal" class="modal fade">
@@ -117,7 +94,6 @@
     </div>
 
     <div data-frmdb-fragment="_footer.html" src="_footer.html"></div>
-
     <div data-frmdb-fragment="_scripts.html"></div>
 </body>
 

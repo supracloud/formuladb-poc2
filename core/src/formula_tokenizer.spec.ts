@@ -279,7 +279,7 @@ describe('FormulaTokenizer', () => {
         type: TokenType.FUNCTION_NAME,
         value: "num",
     }], [
-        [{suggestion: "NUMBER"}]
+        [{suggestion: "NUMRANGE"}, {suggestion: "NUMBER"}]
     ]);
 
 });

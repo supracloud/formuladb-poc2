@@ -25,10 +25,10 @@ props:
         propType_: REFERENCE_TO
         referencedEntityName: $User
         referencedPropertyName: _id
-    room:
-        name: room
+    room_type:
+        name: room_type
         propType_: REFERENCE_TO
-        referencedEntityName: Room
+        referencedEntityName: RoomType
         referencedPropertyName: _id
     start_date:
         name: start_date
@@ -54,7 +54,16 @@ props:
         name: cost
         propType_: FORMULA
         formula: days * 100
-    bookings_for_the_same_room:
-        name: bookings_for_the_same_room
+    total_rooms:
+        name: total_rooms
+        propType_: REFERENCE_TO
+        referencedEntityName: RoomType
+        referencedPropertyName: total_rooms
+    booked_rooms:
+        name: booked_rooms
         propType_: FORMULA
-        formula: '"FILTER(Booking, @[booking_item_id] == booking_item_id)"'
+        formula: 'COUNTIF(RoomBooking, AND(room_type == @[room_type], INTERSECTS(DATERANGE(start_date, end_date),DATERANGE(@[start_date], @[end_date]))))'
+    available_rooms:
+        name: available_rooms
+        propType_: FORMULA
+        formula: 'total_rooms - booked_rooms'
