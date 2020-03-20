@@ -67,7 +67,7 @@ describe('FrmdbEngineStore _count.INTERSECTS', () => {
             let a4 = { _id: "A~~4", type: "t1", start: 5, end: 7 }; await putAndForceUpdateView(null, a4, true); await putAndForceUpdateView(null, a4, false);
             let a5 = { _id: "A~~5", type: "t2", start: 1, end: 8 }; await putAndForceUpdateView(null, a5, true); await putAndForceUpdateView(null, a5, false);
             let a6 = { _id: "A~~6", type: "t2", start: 5, end: 7 }; await putAndForceUpdateView(null, a6, true); await putAndForceUpdateView(null, a6, false);
-            let a7 = { _id: "A~~7", type: "t3", start: 5, end: 7 }; await putAndForceUpdateView(null, a7, true); await putAndForceUpdateView(null, a7, false);
+            let a7 = { _id: "A~~7", type: "t3", start: 8, end: 8 }; await putAndForceUpdateView(null, a7, true); await putAndForceUpdateView(null, a7, false);
 
             let obs1 = await frmdbTStore.getObserversOfObservable(a1, compiledFormula.triggers![0]);
             expect(obs1.length).toEqual(3);
@@ -109,7 +109,28 @@ describe('FrmdbEngineStore _count.INTERSECTS', () => {
             expect(count).toEqual(2);
             count = await frmdbTStore.getAggValueForObserver(a7, compiledFormula.triggers![0]);
             expect(count).toEqual(1);
+
+            count = await frmdbTStore.preComputeAggForObserverAndObservable(a4, a4, a4new, compiledFormula.triggers![0]);
+            expect(count).toEqual(3);
     
+            let a7new = _.cloneDeep(a7);
+            a7new.type = 't2';
+            obss = await frmdbTStore.getObserversOfObservableOldAndNew(a7, a7new, compiledFormula.triggers![0])
+            expect(obss.length).toEqual(2);
+            expect(obss[0]).toEqual(a7);
+            expect(obss[1]).toEqual(a5);
+            count = await frmdbTStore.preComputeAggForObserverAndObservable(a5, a7, a7new, compiledFormula.triggers![0]);
+            expect(count).toEqual(3);
+
+            a7new.start = 6;
+            obss = await frmdbTStore.getObserversOfObservableOldAndNew(a7, a7new, compiledFormula.triggers![0])
+            expect(obss.length).toEqual(3);
+            expect(obss[0]).toEqual(a7);
+            expect(obss[1]).toEqual(a5);
+            expect(obss[2]).toEqual(a6);
+            count = await frmdbTStore.preComputeAggForObserverAndObservable(a6, a7, a7new, compiledFormula.triggers![0]);
+            expect(count).toEqual(3);
+
         } catch (err) {
             console.error(err);
             throw err;

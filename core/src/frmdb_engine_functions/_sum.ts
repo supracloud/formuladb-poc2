@@ -18,7 +18,7 @@ export async function _sum_preComputeAggForObserverAndObservable(
 
     try {
         let args = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map;
-        let getSumValue = await store.getAggValueForObserver(observerObj, trigger);
+        let getSumValue = await store.getAggValueForObserverAndObservable(observerObj, observableOld, observableNew, trigger);
         if (typeof getSumValue === 'string') throw new Error("SUM aggregation returned a text value");
         let current: number = getSumValue;
         let oldVal = observableOld ? evalExpression(observableOld, args.valueExpr) : 0;

@@ -252,7 +252,16 @@ export class FrmdbEngineStore extends FrmdbStore {
         let newObs = observableNew ? await this.getObserversOfObservable(observableNew, trigger) : [];
         return _.unionBy(oldObs, newObs, '_id');
     }
-
+    public async getAggValueForObserverAndObservable(
+        observerObj: DataObj, 
+        observableOld: DataObj | null,
+        observableNew: DataObj | null,
+        trigger: MapReduceTrigger): Promise<number | string> 
+    {
+        if (observableNew && observableNew._id === observerObj._id) {
+            return this.getAggValueForObserver(observableNew, trigger);
+        } else return this.getAggValueForObserver(observerObj, trigger);
+    }
     public async getAggValueForObserver(observerObj: DataObj, trigger: MapReduceTrigger): Promise<number | string> {
         // let defaultValue = this.getAggDefaultValue(trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.reduceFun);
         let mapQuery = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map.query;

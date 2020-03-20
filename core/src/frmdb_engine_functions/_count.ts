@@ -17,7 +17,7 @@ export async function _count_preComputeAggForObserverAndObservable(
     trigger: MapReduceTrigger): Promise<string | number> {
     
     let args = trigger.mapreduceAggsOfManyObservablesQueryableFromOneObs.map;
-    let countValue = await store.getAggValueForObserver(observerObj, trigger);
+    let countValue = await store.getAggValueForObserverAndObservable(observerObj, observableOld, observableNew, trigger);
     if (typeof countValue === 'string') throw new Error("_count aggregation returned a text value");
     let current: number = countValue;
     let oldKey = observableOld ? evalExpression(observableOld, args.keyExpr) : null;
