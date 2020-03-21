@@ -112,7 +112,7 @@ function e2e_dev_env {
         kubectl -n "$FRMDB_ENV_NAME" logs service/be
     fi
 
-    test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io" 25
+    test_e2e "$FRMDB_ENV_NAME" "http://$FRMDB_ENV_NAME.formuladb.io" 20
 }
 
 function build_images_and_deploy_staging {
