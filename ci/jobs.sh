@@ -120,7 +120,7 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    while ! curl $URL/formuladb-api/frmdb-apps/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/frmdb-apps/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
     # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io" 100
 }
@@ -130,6 +130,7 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
+    while ! curl -s https://staging.formuladb.io/formuladb-api/frmdb-apps/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
     #WARNING: make sure only safe tests
     echo test_e2e production "https://formuladb.io" 100
 }
