@@ -141,10 +141,11 @@ export class FormService {
         );
 
         if (!el.parentElement) {console.warn('update dom for references table called for element without parent', el); return}
+        let limit = parseInt(el.getAttribute('data-frmdb-table-limit') || '') || 3;
         updateDOM({
             $FRMDB: {
                 $REFERENCE_TO_OPTIONS: {
-                    [aliasName]: options,
+                    [aliasName]: options.slice(0, limit),
                 }
             }
         }, el.parentElement);

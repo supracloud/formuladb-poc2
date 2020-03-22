@@ -89,7 +89,7 @@ export function $TABLES(): { name: string }[] {
 }
 
 export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: string}[] {
-    let recordEl = el.closest('[data-frmdb-record]');
+    let recordEl = el.parentElement?.closest('[data-frmdb-record]');
     if (!recordEl) return [];
     if (!BACKEND_SERVICE().currentSchema) {console.warn(`currentSchema not initialized yet`); return []}
     let entityId = recordEl.getAttribute('data-frmdb-record')!.replace(/~~.*/, '');
