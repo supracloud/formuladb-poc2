@@ -4,12 +4,18 @@ const TextFilterTEnum = { 'equals': 1 , 'notEqual': 1 , 'contains': 1 , 'notCont
 type NumberFilterT = keyof typeof NumberFilterTEnum;
 type TextFilterT = keyof typeof TextFilterTEnum;
 
-export interface SimpleAddHocQueryFilterItem {
+interface FilterItem {
     filterType: 'text' | 'number';
     type: NumberFilterT | TextFilterT;
     filter: string;
     filterTo?: string;
 }
+export interface SimpleAddHocQueryFilterItem extends FilterItem {
+    operator?: 'AND' | 'OR';
+    condition1?: FilterItem;
+    condition2?: FilterItem;
+}
+
 export function makeSimpleAddHocQueryFilterItem_filterType(param: string): SimpleAddHocQueryFilterItem['filterType'] {
     if (param === "text" || param === "number") return param;
     else {console.warn(`${param} is not text OR number`); return "text"; }

@@ -1,10 +1,11 @@
 import * as _ from 'lodash';
 
-import { DataObj, isNewDataObjId } from '@domain/metadata/data_obj';
+import { DataObj, isNewDataObjId, parseDataObjId } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
 import { BACKEND_SERVICE } from './backend.service';
 import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
 import { ServerEventModifiedFormData } from '@domain/event';
+import { Pn, ReferenceToProperty } from '@domain/metadata/entity';
 
 function currentTimestamp() {
     let d = new Date();
@@ -17,7 +18,6 @@ function currentTimestamp() {
         + d.getFullYear() * 1000*100*100*100*10000
     ;
 }
-
 
 export function getParentObjId(control: HTMLElement): string | null {
     let parentEl: HTMLElement = control.closest('[data-frmdb-record]') as HTMLElement;
@@ -41,9 +41,7 @@ export class FormService {
             if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
             this.validateOnClient(parentEl, parentObj);
     
-            if (!event.target.closest('[data-frmdb-form-autosave]')) return;
-            
-            this.debounced_newRecordCache(inputEl);
+            // this.debounced_newRecordCache(inputEl);
             this.debounced_manageInput(inputEl);
         });
 
@@ -95,8 +93,10 @@ export class FormService {
             for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
                 control.dataset.frmdbPending = "";//TODO: set this only on dirty controls
             }
-            if (undefined == parentEl.getAttribute('data-frmdb-record-no-autosave')) {
-                let event: ServerEventModifiedFormData = await BACKEND_SERVICE().putEvent(new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
+
+            if (inputEl.closest('[data-frmdb-form-autosave]')) {
+                let event: ServerEventModifiedFormData = await BACKEND_SERVICE().putEvent(
+                    new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
                 for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {
                     control.dataset.frmdbPending = undefined;
                 }
@@ -111,7 +111,55 @@ export class FormService {
                     }
                 }
                 return event;
+            } else {
+                let entityId = parseDataObjId(parentObj._id).entityId;
+                let entity = BACKEND_SERVICE().currentSchema?.entities?.[entityId];
+                if (!entity) {console.warn(entityId, "not found"); return}
+                let references: {[aliasName: string]: {refs: ReferenceToProperty[], entityName: string}} = {};
+                for (let prop of Object.values(entity.props)) {
+                    if (prop.propType_ === Pn.REFERENCE_TO) {
+                        let ref = references[prop.referencedEntityAlias || prop.referencedEntityName];
+                        if (!ref) {
+                            ref = {refs: [], entityName: prop.referencedEntityName};
+                            references[prop.referencedEntityAlias || prop.referencedEntityName] = ref;
+                        }
+                        ref.refs.push(prop);
+                    }
+                }
+            
+                for (let [aliasName, refsForEntity] of Object.entries(references)) {   
+                    await this.updateDomForReference(aliasName, parentEl, parentObj);
+                }
             }
+        }
+    }
+
+    public async updateDomForReference(aliasName: string, el: HTMLElement, obj: DataObj) {
+        let options: DataObj[] = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/options/${aliasName}`, {
+            method: 'GET',
+            body: JSON.stringify(obj)
+        })
+        .then(response => {
+            return response.json();
+        });
+
+        updateDOM({
+            $REFERENCE_TO_OPTIONS: {
+                [aliasName]: options,
+            }
+        }, el);
+    }
+
+    public async updateOptionsForRoot(forceAliasName?: string) {
+        let tableNames: string[] = forceAliasName ? [`$REFERENCE_TO_OPTIONS.${forceAliasName}[]`] : _.uniq(Array.from(this.appRootEl.querySelectorAll('[data-frmdb-table^="$REFERENCE_TO_OPTIONS."]'))
+            .map(el => el.getAttribute('data-frmdb-table')!));
+        for (let tableName of tableNames) {
+            let tableAlias = tableName.replace(/^\$REFERENCE_TO_OPTIONS\./, '').replace(/\[\]$/, '');
+            let tableEl = this.appRootEl.querySelector(`[data-frmdb-table="${tableName}"]`) as HTMLElement;
+            if (!tableEl) {console.warn("el not found for", tableName); continue;}
+            let pObj = this.getParentObj(tableEl);
+            if (!pObj?.parentObj) {console.warn("parent record not found for", tableName); continue;}
+            await this.updateDomForReference(tableAlias, tableEl, pObj?.parentObj);
         }
     }
 

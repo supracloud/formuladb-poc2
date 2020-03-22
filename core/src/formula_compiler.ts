@@ -64,9 +64,20 @@ function mergeBinaryNodes(node: BinaryExpression | LogicalExpression, left: Exec
     return combine2Nodes(node, 'left', left, 'right', right, context);
 }
 
-const logicalOperators = ['==', '!=', '<', '<=', '>', '>='];
-export function isLogicalOpBinaryExpression(expr: Expression): expr is BinaryExpression {
-    return isBinaryExpression(expr) && logicalOperators.includes(expr.operator);
+export enum LogicalOperator {
+    '==' = '==',
+    '!=' = '!=',
+    '<' = '<',
+    '<=' = '<=',
+    '>' = '>',
+    '>=' = '>=',
+}
+const logicalOperators = Object.values(LogicalOperator);
+export interface LogicalOpBinaryExpression extends BinaryExpression {
+    operator: LogicalOperator;
+}
+export function isLogicalOpBinaryExpression(expr: Expression): expr is LogicalOpBinaryExpression {
+    return isBinaryExpression(expr) && logicalOperators.includes(expr.operator as any);
 }
 
 enum LogicalFunctions {

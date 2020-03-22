@@ -51,7 +51,7 @@ export class BackendService {
 
     public applications: Map<string, App> = new Map();
     private frmdbEngineTools: FrmdbEngineTools;
-    public currentSchema: Schema;
+    public currentSchema: Schema | null = null;
 
     constructor(public tenantName: string, public appName: string) {
         this.getSchema().then(schema => {
@@ -162,7 +162,7 @@ export class BackendService {
         let entity = await this.getEntity(entityId);
         if (!entity) throw new Error("cannot find entity: " + entityId + ", for getting children");
         for (const prop of Object.values(entity.props)) {
-            if (prop.propType_ === Pn.CHILD_TABLE) {
+            if (prop.propType_ === Pn.CHILD_TABLE && prop.referencedEntityName) {
                 const subtableData = await this.getTableData(getChildrenPrefix(prop.referencedEntityName, parentUUID));
                 dataObj[prop.name] = subtableData;
             }

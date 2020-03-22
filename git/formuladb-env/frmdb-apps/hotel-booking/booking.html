@@ -1,136 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>King Hotel Booking Page</title>
     <meta name="author" content="">
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-
-<body>
-    <!--================Header Area =================-->
+<body data-frmdb-record="RoomBooking~~" class="frmdb-editor-normal">
     <header class="frmdb-t-header" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
         <div class="jumbotron">
             <h1 class="display-4">Book Now</h1>
         </div>
         <div class="container frmdb-section-dark">
-            <div data-frmdb-fragment="_form.html"></div>
+            <form class="frmdb-form-dark px-3">
+                <div class="row pt-3 pb-2">
+                    <div class="col-md-3">
+                        <h2 class="text-light">Book
+                            <br> Your Room
+                        </h2>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group date">
+                                        <input type="date" class="form-control" placeholder="Arrival Date" required="" name="$FRMDB.RoomBooking[].start_date" data-frmdb-value="$FRMDB.RoomBooking[].start_date">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="frmdb-i-calendar" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group date">
+                                        <input type="date" class="form-control" placeholder="Departure Date" required="" name="$FRMDB.RoomBooking[].end_date" data-frmdb-value="$FRMDB.RoomBooking[].end_date">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                                <i class="frmdb-i-calendar" aria-hidden="true"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" name="$FRMDB.RoomBooking[].nb_adults" data-frmdb-value="$FRMDB.RoomBooking[].nb_adults">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" title="Nb Children" value="0" name="$FRMDB.RoomBooking[].nb_children" data-frmdb-value="$FRMDB.RoomBooking[].nb_children">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="Nb Rooms">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </header>
-    <!--================Header Area =================-->
-
-    <!--================ Accomodation Area  =================-->
     <section class="accomodation_area pt-3">
         <div class="container">
             <div class="section_title text-center mb-3">
                 <h2 class="title_color">Available Rooms</h2>
                 <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast,</p>
-            </div>
-            <div class="row accomodation_two">
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room1.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                <div class="card-deck">
+                    <div class="card frmdb-t-card-img" data-frmdb-table="$REFERENCE_TO_OPTIONS.RoomType[]">
+                        <div class="frmdb-t-img overflow-hidden">
+                            <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="" class="">
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Double Deluxe Room</h4>
-                        </a>
-                        <h5>$250<small>/night</small></h5>
+                        <div class="card-body">
+                            <h5>Card 1 title</h5>
+                            <h6>Card 1 subtitle</h6>
+                            <p>Quisque ornare, quam a blandit malesuada</p>
+                        </div>
+                        <div class="frmdb-t-card-action">
+                            <a href="javascript:void(0)" class="">Action</a>
+                        </div>
+                        <div class="frmdb-t-card-note">
+                            <span>INFO 
+                                <small>info</small>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room2.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                    <div class="card frmdb-t-card-img">
+                        <div class="frmdb-t-img overflow-hidden">
+                            <img src="/formuladb-env/frmdb-apps/base-app/static/card2.jpg" alt="" class="">
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Single Deluxe Room</h4>
-                        </a>
-                        <h5>$200<small>/night</small></h5>
+                        <div class="card-body">
+                            <h5>Card 2 title</h5>
+                            <h6>Card 2 subtitle</h6>
+                            <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
+                        </div>
+                        <div class="frmdb-t-card-action">
+                            <a href="javascript:void(0)" class="">Action</a>
+                        </div>
+                        <div class="frmdb-t-card-note">
+                            <span>INFO 
+                                <small>info</small>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room3.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                    <div class="card frmdb-t-card-img">
+                        <div class="frmdb-t-img overflow-hidden">
+                            <img src="/formuladb-env/frmdb-apps/base-app/static/card3.jpg" alt="" class="">
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Honeymoon Suit</h4>
-                        </a>
-                        <h5>$750<small>/night</small></h5>
+                        <div class="card-body">
+                            <h5>Card 3 title</h5>
+                            <h6>Card 3 subtitle</h6>
+                            <p>Curabitur suscipit, massa eu maximus fringilla</p>
+                        </div>
+                        <div class="frmdb-t-card-action">
+                            <a href="javascript:void(0)" class="">Action</a>
+                        </div>
+                        <div class="frmdb-t-card-note">
+                            <span>INFO 
+                                <small>info</small>
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room4.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                    <div class="card frmdb-t-card-img">
+                        <div class="frmdb-t-img overflow-hidden">
+                            <img src="/formuladb-env/frmdb-apps/base-app/static/card4.jpg" alt="" class="">
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Economy Double</h4>
-                        </a>
-                        <h5>$200<small>/night</small></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room1.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                        <div class="card-body">
+                            <h5>Card 4 title</h5>
+                            <h6>Card 4 subtitle</h6>
+                            <p>Etiam porta magna eu rutrum rhoncus</p>
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Double Deluxe Room</h4>
-                        </a>
-                        <h5>$250<small>/night</small></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room2.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                        <div class="frmdb-t-card-action">
+                            <a href="javascript:void(0)" class="">Action</a>
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Single Deluxe Room</h4>
-                        </a>
-                        <h5>$200<small>/night</small></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room3.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
+                        <div class="frmdb-t-card-note">
+                            <span>INFO 
+                                <small>info</small>
+                            </span>
                         </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Honeymoon Suit</h4>
-                        </a>
-                        <h5>$750<small>/night</small></h5>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="accomodation_item text-center">
-                        <div class="hotel_img">
-                            <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room4.jpg" alt="">
-                            <a href="#" class="btn theme_btn button_hover">Book Now</a>
-                        </div>
-                        <a href="#">
-                            <h4 class="sec_h4">Economy Double</h4>
-                        </a>
-                        <h5>$200<small>/night</small></h5>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!--================ Accomodation Area  =================-->
-
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
 </body>
-
+</html>
 </html>

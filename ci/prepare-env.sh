@@ -53,11 +53,12 @@ hash gsutil || {
     fi
 }
 
-if uname -a | grep 'Linux.*Microsoft' && ! kubectl get namespace | grep local-path-storage; then 
-  kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
-  kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
-  kubectl patch storageclass hostpath -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-fi
+# # remve local-path, using hostpath
+# if uname -a | grep 'Linux.*Microsoft' && ! kubectl get namespace | grep local-path-storage; then 
+#   kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+#   kubectl patch storageclass local-path -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+#   kubectl patch storageclass hostpath -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+# fi
 
 # -------------------------------------------------------------------------
 # External dependency: git

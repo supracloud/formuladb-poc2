@@ -29,7 +29,7 @@ const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
     sortModel: [],
 };
 
-export class DataBindingsMonitor {
+export class DataBindingsService {
     tablesCache = {};
 
     constructor(private rootEl: HTMLElement) {

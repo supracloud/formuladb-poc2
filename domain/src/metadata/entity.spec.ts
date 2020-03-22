@@ -6,7 +6,7 @@
 // import * as _ from 'lodash';
 // import { InventoryProduct, InventoryOrder } from "@test/inventory/metadata";
 // import { Forms__ServiceForm } from "@test/mocks/forms-metadata";
-// import { Entity, queryEntityWithDeepPath, extendEntityProperties, HasEntityProperties, ChildTableProperty, isSubTableProperty } from "@domain/metadata/entity";
+// import { Entity, queryEntityWithDeepPath, extendEntityProperties, HasEntityProperties, ChildTableProperty, isChildTableProperty } from "@domain/metadata/entity";
 
 // describe('Entity', () => {
 //   beforeEach(() => {
@@ -18,7 +18,7 @@
 //     expected.props!.sales_agent = _.cloneDeep(InventoryOrder.props.sales_agent);
 //     expected.props!.creation_date = _.cloneDeep(InventoryOrder.props.creation_date);
     
-//     if (isSubTableProperty(Forms__ServiceForm.props.service_form_units)) {
+//     if (isChildTableProperty(Forms__ServiceForm.props.service_form_units)) {
 //       extendEntityProperties(Forms__ServiceForm.props.service_form_units, InventoryOrder.props);
 //     }
 

@@ -18,6 +18,7 @@ import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 import { I18nStore } from "./i18n-store";
 import { isMetadataObject, isMetadataEntity } from "@domain/metadata/default-metadata";
+import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
@@ -102,6 +103,17 @@ export class FrmdbEngine {
             default:
                 return Promise.reject("n/a event");
         }
+    }
+
+    public async getOptionsForReferenceToProperties(obj: DataObj, referencedTableAlias: string) {
+        let ret = await getOptionsForReferenceToProperty(
+            this.transactionRunner, 
+            this.frmdbEngineStore,
+            this.frmdbEngineTools, 
+            new events.ServerEventModifiedFormData(obj),
+            referencedTableAlias
+        );
+        return ret;
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {

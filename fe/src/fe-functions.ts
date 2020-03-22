@@ -1,7 +1,7 @@
 import * as DOMPurify from "dompurify";
 
 import { BACKEND_SERVICE } from "./backend.service";
-import { DataObj, isNewDataObjId, entityNameFromDataObjId } from "@domain/metadata/data_obj";
+import { DataObj, isNewDataObjId, entityNameFromDataObjId, parseDataObjId } from "@domain/metadata/data_obj";
 import { updateDOM } from "./live-dom-template/live-dom-template";
 import { Pn } from "@domain/metadata/entity";
 import { ServerEventPutPageHtml } from "@domain/event";
@@ -9,6 +9,7 @@ import { HTMLTools } from "@core/html-tools";
 import { cleanupDocumentDOM } from "../../core/src/page-utils";
 import { parsePageUrl } from "@domain/url-utils";
 import { isShadowRoot, isHTMLElement } from "@core/dom-utils";
+import { APP_AND_TENANT_ROOT } from "./app.service";
 
 DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     if (node.nodeName && node.nodeName.match(/^\w+-[-\w]+$/)
@@ -82,8 +83,27 @@ async function $MODAL(modalPageName: string, initDataBindingId?: string, recordD
 
 export function $TABLES(): { name: string }[] {
     let appBackend = BACKEND_SERVICE();
-    return Object.values(appBackend.currentSchema.entities).map(ent => ({
+    return Object.values(appBackend?.currentSchema?.entities || {}).map(ent => ({
         name: ent._id,
+    }));
+}
+
+export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: string}[] {
+    let recordEl = el.closest('[data-frmdb-record]');
+    if (!recordEl) return [];
+    if (!BACKEND_SERVICE().currentSchema) {console.warn(`currentSchema not initialized yet`); return []}
+    let entityId = recordEl.getAttribute('data-frmdb-record')!.replace(/~~.*/, '');
+    let entity = BACKEND_SERVICE().currentSchema?.entities[entityId];
+    if (!entity) {console.warn(`entity ${entityId} not known`, BACKEND_SERVICE().currentSchema?.entities); return []}
+    let references: Set<string> = new Set();
+    for (let prop of Object.values(entity.props)) {
+        if (prop.propType_ === Pn.REFERENCE_TO) {
+            references.add(prop.referencedEntityAlias || prop.referencedEntityName);
+        }
+    }
+    return Array.from(references).map(r => ({
+        name: `$REFERENCE_TO_OPTIONS.${r}`,
+        value: `$REFERENCE_TO_OPTIONS.${r}[]`,
     }));
 }
 
@@ -95,11 +115,11 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     if (!tableName) {
         tableName = entityNameFromDataObjId(parentRecordEl.getAttribute('data-frmdb-record') || '');
     } else {
-        tableName = tableName.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+        tableName = tableName.replace(/^(\$FRMDB|\$REFERENCE_TO_OPTIONS)\./, '').replace(/\[\]$/, '');
     }
     if (!tableName) { console.warn("table not found", tableName, el.outerHTML); return [] }
     let appBackend = BACKEND_SERVICE();
-    let entity = appBackend.currentSchema.entities[tableName];
+    let entity = appBackend.currentSchema?.entities?.[tableName];
     if (!entity) { console.warn("entity not found", tableName, el.outerHTML); return [] }
     return Object.values(entity.props).map(p => ({
         text: `${tableName}.${p.name}`,

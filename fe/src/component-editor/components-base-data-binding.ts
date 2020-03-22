@@ -1,5 +1,5 @@
 import { Component } from "./component-editor.component";
-import { $TABLES, $DATA_COLUMNS_FOR_ELEM } from "@fe/fe-functions";
+import { $TABLES, $DATA_COLUMNS_FOR_ELEM, $REFERENCE_TO_OPTIONS } from "@fe/fe-functions";
 
 let propsSort = 2500;
 
@@ -31,12 +31,16 @@ export const ComponentsBaseDataBinding: Partial<Component> = {
 				let dataFrmdbTableProp = this;
 				if (dataFrmdbTableProp) {
 					let tables = $TABLES();
+					let tablesForReferenceOptions = $REFERENCE_TO_OPTIONS(node);
 					dataFrmdbTableProp.validValues = tables.map(t => t.name);
 					dataFrmdbTableProp.data.options = [{
 						value: '',
 						text: '-',
 					}].concat(tables.map(t => ({
 						value: '$FRMDB.' + t.name + '[]',
+						text: t.name,
+					}))).concat(tablesForReferenceOptions.map(t => ({
+						value: t.value,
 						text: t.name,
 					})));
 				}

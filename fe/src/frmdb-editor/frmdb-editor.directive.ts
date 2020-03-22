@@ -436,7 +436,7 @@ export class FrmdbEditorDirective {
             let formulaEditor: FormulaEditorComponent = queryFormulaEditor(document);
             let dataGrid = queryDataGrid(document);
 
-            let entity: Entity = BACKEND_SERVICE().currentSchema.entities[dataGrid.tableName || ''];
+            let entity: Entity = (await BACKEND_SERVICE().getCurrentSchema()).entities[dataGrid.tableName || ''];
             let prop: EntityProperty | undefined = entity.props[dataGrid.selectedColumnName || ''];
             formulaEditor.frmdbState.editedEntity = entity;
             formulaEditor.frmdbState.editedProperty = prop;

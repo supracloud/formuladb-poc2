@@ -39,7 +39,7 @@ import {
     MapKeyQuery,
     includesMapFunctionAndQuery,
 } from "@domain/metadata/execution_plan";
-import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError, isLogicalCallExpression, isLogicalOpBinaryExpression, extractKeysAndQueriesFromBinaryExpression, BooleanCallExpression, isBooleanCallExpression } from './formula_compiler';
+import { FuncCommon, FormulaCompilerContextType, compileExpression, getViewName, FormulaCompilerError, isLogicalCallExpression, isLogicalOpBinaryExpression, extractKeysAndQueriesFromBinaryExpression, BooleanCallExpression, isBooleanCallExpression, LogicalOperator } from './formula_compiler';
 import { _throw, _throwEx } from "./throw";
 import { ReduceFun, TextjoinReduceFunN, SumReduceFunN, CountReduceFunN } from "@domain/metadata/reduce_functions";
 import { $s2e } from "@functions/s2e";
@@ -616,16 +616,16 @@ function NOT(fc: FuncCommon, expr: BinaryExpression | BooleanCallExpression): Co
             case '==':
                 break;
             case '<':
-                negatedExpr.operator = '>=';
+                negatedExpr.operator = '>=' as LogicalOperator;
                 break;
             case '<=':
-                negatedExpr.operator = '>';
+                negatedExpr.operator = '>' as LogicalOperator;
                 break;
             case '>':
-                negatedExpr.operator = '<=';
+                negatedExpr.operator = '<=' as LogicalOperator;
                 break;
             case '>=':
-                negatedExpr.operator = '<';
+                negatedExpr.operator = '<' as LogicalOperator;
                 break;
             default: throw new FormulaCompilerError(expr, "Expected logical binary operator but found " + expr.operator);
         }

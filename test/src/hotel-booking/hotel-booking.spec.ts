@@ -18,7 +18,7 @@ const booking_fragment_html = /*html*/`
 
 const index_html = /*html*/`
     <div class="container">
-        <div data-frmdb-record="Booking~~" data-frmdb-record-no-autosave>
+        <div data-frmdb-record="Booking~~">
             <frmdb-fragment name="booking-F.html" data-vvveb-disabled></frmdb-fragment>
         </div>
     </div>

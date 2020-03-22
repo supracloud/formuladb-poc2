@@ -382,6 +382,14 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             })
             .catch(err => { console.error(err); next(err) });
     });
+    app.get('/formuladb-api/:tenant/:app/options/:referencedTableAlias', async function (req, res, next) {
+        return (await getFrmdbEngine(req.params.tenant, req.params.app))
+            .getOptionsForReferenceToProperties(req.body, req.params.referencedTableAlias)
+            .then(optsObjs => {
+                res.json(optsObjs);
+            })
+            .catch(err => { console.error(err); next(err) });
+    });
 
     app.patch('/formuladb-api/:tenant/:app/:id', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.tenant, req.params.app)).frmdbEngineStore.patchDataObj(req.body)

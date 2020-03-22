@@ -21,6 +21,7 @@ import { MapReduceViewUpdates, MapReduceView, MapViewUpdates } from "./map_reduc
 import { compileFormula } from "./formula_compiler";
 import { ScalarType } from "@storage/key_value_store_i";
 import { Pn, FormulaProperty } from "@domain/metadata/entity";
+import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 
 function ll(transacDAG: TransactionDAG): string {
     return new Date().toISOString() + "|" + transacDAG.eventId + "|" + transacDAG.retry;
@@ -284,7 +285,7 @@ export class FrmdbTransactionRunner {
         let entity = await this.frmdbEngineStore.getEntity(entityId);
         if (!entity) throw new Error("Cannot find children of object with missing entity " + obj._id);
         for (let prop of Object.values(entity.props)) {
-            if (prop.propType_ === Pn.CHILD_TABLE) {
+            if (prop.propType_ === Pn.CHILD_TABLE && prop.referencedEntityName) {
                 ret = ret.concat(await this.frmdbEngineStore.getDataListByPrefix(getChildrenPrefix(prop.referencedEntityName, uid)));
             }
         }
@@ -293,8 +294,7 @@ export class FrmdbTransactionRunner {
 
     private async prepareTransaction(event: events.ServerEventModifiedFormData
         | events.ServerEventDeletedFormData, transacDAG: TransactionDAG,
-        originalObj: DataObj, isNewObj: boolean) 
-    {
+        originalObj: DataObj, isNewObj: boolean) {
         Object.assign(event.obj, originalObj);
 
         for (let failedValidationRetry = 1; failedValidationRetry <= 2; failedValidationRetry++) {
@@ -303,17 +303,11 @@ export class FrmdbTransactionRunner {
             let oldObj: DataObj | null = null;
             if (!isNewObj) {
                 oldObj = await this.frmdbEngineStore.getDataObj(event.obj._id);
-                if (false/* TODO: with CouchDB it would be possible to detect conflicts based on _rev, we could implement _rev(s) in the generic storage layer since we already read the old version of objects before writing them */) {
-                    //Someone has updated the object before us, we need to do auto-merging and overwrite only fields changed by us
-                    //Currently we don't have this in our use-cases, the contention is on the computed formulas not on the observable objects (like OrderItem or FinancialTransaction)
-                    //TODO
-                    // throw new Error("Auto-merging needed for " + [event.obj._id, oldObj._rev, event.obj._rev].join(", "));
-                }
             }
             if (event.type_ === "ServerEventDeletedFormData") {
                 let obsViewUpdates: MapViewUpdates<string | number>[] = [];
                 for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
-                    obsViewUpdates.push.apply(obsViewUpdates, 
+                    obsViewUpdates.push.apply(obsViewUpdates,
                         await this.preComputeNonSelfFormulaOfTransactionRootObj(event.obj, null, compiledFormula));
                 }
                 //TODO: this is not transactional
@@ -326,7 +320,7 @@ export class FrmdbTransactionRunner {
             } else {
                 let obsViewUpdates: MapViewUpdates<string | number>[] = [];
                 for (let compiledFormula of this.schemaDAO.getFormulas(event.obj._id)) {
-                    obsViewUpdates.push.apply(obsViewUpdates, 
+                    obsViewUpdates.push.apply(obsViewUpdates,
                         await this.preComputeNonSelfFormulaOfTransactionRootObj(oldObj, event.obj, compiledFormula));
                 }
                 for (let selfFormula of this.schemaDAO.getSelfFormulas(event.obj._id)) {
@@ -336,7 +330,7 @@ export class FrmdbTransactionRunner {
                 let failedValidations = this.validateObj(event.obj);
                 if (failedValidations.length > 0) {
                     throw new FailedValidationsError(failedValidations);
-                }        
+                }
                 transacDAG.addObj(event.obj, oldObj, [], obsViewUpdates);
             }
 
@@ -356,6 +350,18 @@ export class FrmdbTransactionRunner {
         if (transacDAG.haveFailedValidations) throw new RetryableError("still haveFailedValidations after retries");
 
         return transacDAG.getAllImpactedObjectIdsAndViewKeys();
+    }
+
+    public async preComputeOnly(event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData) {
+        let isNewObj: boolean = false;
+        if (isNewDataObjId(event.obj._id)) {
+            if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
+            event.obj._id = event.obj._id.replace('__FRMDB_NEW_RECORD__', '') + generateUUID();
+            isNewObj = true;
+        }
+        let originalObj = _.cloneDeep(event.obj);
+        let transacDAG = new TransactionDAG(event._id, '|0');
+        await this.prepareTransaction(event, transacDAG, originalObj, isNewObj);
     }
 
     public async computeFormulasAndSave(
@@ -393,7 +399,7 @@ export class FrmdbTransactionRunner {
                 }
                 transacDAG.finished = true;
             }
-            
+
             await this.frmdbEngineStore.withLock(event._id,
                 0,
                 getObjectIdsToSave,
