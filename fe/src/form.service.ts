@@ -2,9 +2,9 @@ import * as _ from 'lodash';
 
 import { DataObj, isNewDataObjId, parseDataObjId } from '@domain/metadata/data_obj';
 import { onEvent } from './delegated-events';
-import { BACKEND_SERVICE } from './backend.service';
+import { BACKEND_SERVICE, postData } from './backend.service';
 import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
-import { ServerEventModifiedFormData } from '@domain/event';
+import { ServerEventModifiedFormData, ServerEventPreComputeFormData } from '@domain/event';
 import { Pn, ReferenceToProperty } from '@domain/metadata/entity';
 
 function currentTimestamp() {
@@ -135,32 +135,28 @@ export class FormService {
     }
 
     public async updateDomForReference(aliasName: string, el: HTMLElement, obj: DataObj) {
-        let options: DataObj[] = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/options/${aliasName}`, {
-            method: 'GET',
-            body: JSON.stringify(obj)
-        })
-        .then(response => {
-            return response.json();
-        });
+        let options: DataObj[] = await postData(
+            `/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/reference_to_options/${aliasName}`,
+            new ServerEventPreComputeFormData(obj)
+        );
 
+        if (!el.parentElement) {console.warn('update dom for references table called for element without parent', el); return}
         updateDOM({
-            $REFERENCE_TO_OPTIONS: {
-                [aliasName]: options,
+            $FRMDB: {
+                $REFERENCE_TO_OPTIONS: {
+                    [aliasName]: options,
+                }
             }
-        }, el);
+        }, el.parentElement);
     }
 
-    public async updateOptionsForRoot(forceAliasName?: string) {
-        let tableNames: string[] = forceAliasName ? [`$REFERENCE_TO_OPTIONS.${forceAliasName}[]`] : _.uniq(Array.from(this.appRootEl.querySelectorAll('[data-frmdb-table^="$REFERENCE_TO_OPTIONS."]'))
-            .map(el => el.getAttribute('data-frmdb-table')!));
-        for (let tableName of tableNames) {
-            let tableAlias = tableName.replace(/^\$REFERENCE_TO_OPTIONS\./, '').replace(/\[\]$/, '');
-            let tableEl = this.appRootEl.querySelector(`[data-frmdb-table="${tableName}"]`) as HTMLElement;
-            if (!tableEl) {console.warn("el not found for", tableName); continue;}
-            let pObj = this.getParentObj(tableEl);
-            if (!pObj?.parentObj) {console.warn("parent record not found for", tableName); continue;}
-            await this.updateDomForReference(tableAlias, tableEl, pObj?.parentObj);
-        }
+    public async updateOptionsForEl(el: HTMLElement) {
+        let attr = el.getAttribute('data-frmdb-table');
+        if (!attr) {console.warn("data-frmdb-table attribute not found for ", el); return;}
+        let tableAlias = attr.replace(/^\$FRMDB\.\$REFERENCE_TO_OPTIONS\./, '').replace(/\[\]$/, '');
+        let pObj = this.getParentObj(el);
+        if (!pObj?.parentObj) {console.warn("parent record not found for ", el); return;}
+        await this.updateDomForReference(tableAlias, el, pObj?.parentObj);
     }
 
     private putObjInNewRecordCache(inputEl: InputElem) {

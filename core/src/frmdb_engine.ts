@@ -105,12 +105,12 @@ export class FrmdbEngine {
         }
     }
 
-    public async getOptionsForReferenceToProperties(obj: DataObj, referencedTableAlias: string) {
+    public async getOptionsForReferenceToProperties(event: events.ServerEventPreComputeFormData, referencedTableAlias: string) {
         let ret = await getOptionsForReferenceToProperty(
             this.transactionRunner, 
             this.frmdbEngineStore,
             this.frmdbEngineTools, 
-            new events.ServerEventModifiedFormData(obj),
+            event,
             referencedTableAlias
         );
         return ret;

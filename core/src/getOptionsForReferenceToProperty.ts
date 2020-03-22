@@ -8,7 +8,7 @@ import { FrmdbEngineStore } from "./frmdb_engine_store";
 import { SimpleAddHocQuery } from '@domain/metadata/simple-add-hoc-query';
 import { logicalExpr2FilterModel } from './logicalExpr2FilterModel';
 
-export async function getOptionsForReferenceToProperty(frmdbTransactionRunner: FrmdbTransactionRunner, frmdbEngineStore: FrmdbEngineStore, frmdbEngineTools: FrmdbEngineTools, event: events.ServerEventModifiedFormData, referencedTableAlias: string): Promise<DataObj[]> {
+export async function getOptionsForReferenceToProperty(frmdbTransactionRunner: FrmdbTransactionRunner, frmdbEngineStore: FrmdbEngineStore, frmdbEngineTools: FrmdbEngineTools, event: events.ServerEventPreComputeFormData, referencedTableAlias: string): Promise<DataObj[]> {
     let ret: DataObj[] = [];
     let objId = event.obj._id;
     let entity = frmdbEngineTools.schemaDAO.getEntityForDataObj(objId);

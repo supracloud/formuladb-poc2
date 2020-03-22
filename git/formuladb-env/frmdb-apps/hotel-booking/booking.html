@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-<body data-frmdb-record="RoomBooking~~" class="frmdb-editor-normal">
+<body data-frmdb-record="RoomBooking~~__FRMDB_NEW_RECORD__" class="frmdb-editor-normal">
     <header class="frmdb-t-header" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
         <div class="jumbotron">
             <h1 class="display-4">Book Now</h1>
@@ -75,12 +75,12 @@
                 <h2 class="title_color">Available Rooms</h2>
                 <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast,</p>
                 <div class="card-deck">
-                    <div class="card frmdb-t-card-img" data-frmdb-table="$REFERENCE_TO_OPTIONS.RoomType[]">
+                    <div class="card frmdb-t-card-img" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="" class="">
+                            <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="" class="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
                         </div>
                         <div class="card-body">
-                            <h5>Card 1 title</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Card 1 title</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -153,6 +153,10 @@
     </section>
     <div data-frmdb-fragment="_footer.html"></div>
     <div data-frmdb-fragment="_scripts.html"></div>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
+    <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
     <frmdb-fe></frmdb-fe>
 </body>

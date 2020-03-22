@@ -352,16 +352,16 @@ export class FrmdbTransactionRunner {
         return transacDAG.getAllImpactedObjectIdsAndViewKeys();
     }
 
-    public async preComputeOnly(event: events.ServerEventModifiedFormData | events.ServerEventDeletedFormData) {
+    public async preComputeOnly(event: events.ServerEventPreComputeFormData) {
         let isNewObj: boolean = false;
         if (isNewDataObjId(event.obj._id)) {
-            if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
             event.obj._id = event.obj._id.replace('__FRMDB_NEW_RECORD__', '') + generateUUID();
             isNewObj = true;
         }
         let originalObj = _.cloneDeep(event.obj);
         let transacDAG = new TransactionDAG(event._id, '|0');
-        await this.prepareTransaction(event, transacDAG, originalObj, isNewObj);
+        await this.prepareTransaction(events.ServerEventModifiedFormData.fromPreComputeEvent(event), 
+            transacDAG, originalObj, isNewObj);
     }
 
     public async computeFormulasAndSave(

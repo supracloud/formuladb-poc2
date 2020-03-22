@@ -9,6 +9,7 @@ import { DataBindingsService } from './data-bindings.service';
 import { HTMLTools } from '@core/html-tools';
 import { BACKEND_SERVICE } from './backend.service';
 import { waitUntil } from '@domain/ts-utils';
+import { FormService } from './form.service';
 
 const htmlTools = new HTMLTools(document, new DOMParser());
 
@@ -61,7 +62,7 @@ describe('DataBindingsMonitor', () => {
         window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$EDIT$/spec-apps/test-app/test-page.html';
 
         await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
-        dataBindingMonitor = new DataBindingsService(document.body);
+        dataBindingMonitor = new DataBindingsService(document.body, new FormService(document.body));
         fetchMock.post('/formuladb-api/spec-apps/test-app/A/SimpleAddHocQuery', [
             { _id: "A~~1", f1: "f1.1", f2: 101 },
             { _id: "A~~2", f1: "f1.2", f2: 102 },

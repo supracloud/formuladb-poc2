@@ -14,6 +14,7 @@ import { regexExtract, waitUntil } from "@domain/ts-utils";
 import { registerChangesFeedHandler } from "./changes-feed-client";
 import { $ImageObjT, $AppObjT, $PageObjT, $Table, $App, $Page } from "@domain/metadata/default-metadata";
 import { isHTMLElement, getWindow } from "@core/dom-utils";
+import { FormService } from "./form.service";
 
 declare var $: any;
 
@@ -32,7 +33,7 @@ const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
 export class DataBindingsService {
     tablesCache = {};
 
-    constructor(private rootEl: HTMLElement) {
+    constructor(private rootEl: HTMLElement, private formService: FormService) {
         const observer = new MutationObserver((mutationsList, observer) => {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList') {
@@ -128,10 +129,16 @@ export class DataBindingsService {
         try {
             let tableName = el.getAttribute('data-frmdb-table')!.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
             if (!tableName) { console.warn("Empty table name " + el.outerHTML); return }
-            if (!el.parentElement) { console.warn("Parent not found for table data binding " + el.outerHTML); return }
-            let limit = parseInt(el.getAttribute('data-frmdb-table-limit') || '') || 3;
-            let query = this.getQueryForTable(tableName)
-            await this.updateDOMForTableParent(el.parentElement, tableName, query, limit);
+            let promises: Promise<any>[] = [];
+            if (tableName.indexOf('$REFERENCE_TO_OPTIONS') === 0) {
+                promises.push(this.formService.updateOptionsForEl(el));
+            } else {
+                if (!el.parentElement) { console.warn("Parent not found for table data binding " + el.outerHTML); return }
+                let limit = parseInt(el.getAttribute('data-frmdb-table-limit') || '') || 3;
+                let query = this.getQueryForTable(tableName)
+                promises.push(this.updateDOMForTableParent(el.parentElement, tableName, query, limit));
+            }
+            await Promise.all(promises);
         } catch (err) {
             console.error(err);
         }

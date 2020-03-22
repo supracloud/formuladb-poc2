@@ -17,10 +17,9 @@ export async function initFrmdb() {
     formService.initFormsFromNewRecordCache();
     initRoutes();
 
-    DATA_BINDING_MONITOR = new DataBindingsService(appRootEl);
+    DATA_BINDING_MONITOR = new DataBindingsService(appRootEl, formService);
     DATA_BINDING_MONITOR.updateDOMWithUrlParameters();
     await DATA_BINDING_MONITOR.updateDOMForRoot();
-    await formService.updateOptionsForRoot();
 
     if (!inIframe()) {
         changesFeedLoop();

@@ -559,7 +559,7 @@ export class FrmdbEditorDirective {
         for (let i = 0; i < (el.attributes || []).length; i++) {
             let attrib = el.attributes[i];
             if (attrib.name === 'data-frmdb-table') {
-                let tableName = attrib.value.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
+                let tableName = attrib.value.replace(/^\$FRMDB(\.\$REFERENCE_TO_OPTIONS)?\./, '').replace(/\[\]$/, '');
                 return { recordId: el.getAttribute('data-frmdb-record') || `${tableName}~~xyz`, columnId: '_id' };
             } else if (attrib.value && Object.values(DATA_FRMDB_ATTRS_Enum).includes(attrib.name as any)) {
                 let recordId = getParentObjId(el);

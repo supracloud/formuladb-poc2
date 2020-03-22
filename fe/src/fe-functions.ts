@@ -103,7 +103,7 @@ export function $REFERENCE_TO_OPTIONS(el: HTMLElement): {name: string, value: st
     }
     return Array.from(references).map(r => ({
         name: `$REFERENCE_TO_OPTIONS.${r}`,
-        value: `$REFERENCE_TO_OPTIONS.${r}[]`,
+        value: `$FRMDB.$REFERENCE_TO_OPTIONS.${r}[]`,
     }));
 }
 
@@ -111,19 +111,22 @@ export function $DATA_COLUMNS_FOR_ELEM(el: HTMLElement): { text: string, value: 
     let parentRecordEl: HTMLElement | null = el.getAttribute('data-frmdb-table') || el.getAttribute('data-frmdb-record') ? el : el.closest('[data-frmdb-table],[data-frmdb-record]') as HTMLElement | null;
     if (!parentRecordEl) { return [] }
 
-    let tableName = parentRecordEl.getAttribute('data-frmdb-table');
-    if (!tableName) {
+    let tableDataBindingName = parentRecordEl.getAttribute('data-frmdb-table');
+    let tableName: string, prefix: string;
+    if (!tableDataBindingName) {
         tableName = entityNameFromDataObjId(parentRecordEl.getAttribute('data-frmdb-record') || '');
+        prefix = tableName;
     } else {
-        tableName = tableName.replace(/^(\$FRMDB|\$REFERENCE_TO_OPTIONS)\./, '').replace(/\[\]$/, '');
+        tableName = tableDataBindingName.replace(/^\$FRMDB(\.\$REFERENCE_TO_OPTIONS)?\./, '').replace(/\[\]$/, '');
+        prefix = tableDataBindingName.replace(/^\$FRMDB\./, '').replace(/\[\]$/, '');
     }
     if (!tableName) { console.warn("table not found", tableName, el.outerHTML); return [] }
     let appBackend = BACKEND_SERVICE();
     let entity = appBackend.currentSchema?.entities?.[tableName];
     if (!entity) { console.warn("entity not found", tableName, el.outerHTML); return [] }
     return Object.values(entity.props).map(p => ({
-        text: `${tableName}.${p.name}`,
-        value: `$FRMDB.${tableName}[].${p.name}`,
+        text: `${prefix}.${p.name}`,
+        value: `${tableDataBindingName}.${p.name}`,
     }));
 }
 

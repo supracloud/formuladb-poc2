@@ -36,6 +36,21 @@ export class ServerEventModifiedFormData extends MwzEvent {
     constructor(public obj: DataObj) {
         super();
     }
+
+    static fromPreComputeEvent(e: ServerEventPreComputeFormData): ServerEventModifiedFormData {
+        let ret = new ServerEventModifiedFormData(e.obj);
+        ret._id = e._id;
+        ret.clientId_ = e.clientId_;
+        return ret;
+    }
+}
+
+export class ServerEventPreComputeFormData extends MwzEvent {
+    readonly type_ = "ServerEventPreComputeFormData";
+
+    constructor(public obj: DataObj) {
+        super();
+    }
 }
 
 export class ServerEventDeletedFormData extends MwzEvent {
@@ -139,6 +154,7 @@ export class ServerEventDeleteProperty extends MwzEvent {
 
 export type MwzEvents = 
     | ServerEventModifiedFormData
+    | ServerEventPreComputeFormData
     | ServerEventDeletedFormData
     | ServerEventNewEntity
     | ServerEventDeleteEntity
