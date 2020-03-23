@@ -64,5 +64,6 @@
     "git.ignoreLimitWarning": true,
     "files.eol": "\n",
     "html.format.wrapLineLength": 160,
-    "svg.preview.background": "transparent"
+    "svg.preview.background": "transparent",
+    "terminal.integrated.allowChords": false
 }

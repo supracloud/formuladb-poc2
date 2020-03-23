@@ -1,0 +1,23 @@
+_id: Order
+    props:
+        _id: { "name": "_id", "propType_": "STRING"},
+        order_nb: { "name": "order_nb", "propType_": "STRING", "allowNull": false },
+        client: { "name": "client", "propType_": "STRING", "allowNull": false },
+        quantity_error: { "name": "quantity_error", "propType_": "NUMBER", "allowNull": false },
+        quantity: { "name": "quantity", "propType_": "NUMBER", "allowNull": false },
+        price: { "name": "price", "propType_": "NUMBER", "allowNull": false },
+        address_name: { "name": "address_name", "propType_": "STRING", "allowNull": false },
+        address: { "name": "address", "propType_": "STRING", "allowNull": false },
+        external_order_nb: { "name": "external_order_nb", "propType_": "STRING", "allowNull": false },
+        order_creation_date: { "name": "order_creation_date", "propType_": "STRING", "allowNull": false },
+        client_code: { "name": "client_code", "propType_": "STRING", "allowNull": false },
+        address_code: { "name": "address_code", "propType_": "STRING", "allowNull": false },
+        group1: { "name": "group1", "propType_": "STRING", "allowNull": false },
+        group2: { "name": "group2", "propType_": "STRING", "allowNull": false },
+        group3: { "name": "group3", "propType_": "STRING", "allowNull": false },
+        group4: { "name": "group4", "propType_": "STRING", "allowNull": false },
+        location: { "name": "location", "propType_": "STRING", "allowNull": false },
+        product_code: { "name": "product_code", "propType_": "STRING", "allowNull": false },
+        barcode: { "name": "barcode", "propType_": "STRING", "allowNull": false },
+        ordstate: { "name": "ordstate", "propType_": "STRING", "allowNull": false },
+        agentcode: { "name": "agentcode", "propType_": "STRING", "allowNull": false }
