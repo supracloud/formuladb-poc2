@@ -92,13 +92,13 @@
         "whatwg-fetch": "^3.0.0"
     },
     "dependencies": {
+        "@ag-grid-community/core": "^23.0.2",
+        "@ag-grid-community/infinite-row-model": "^23.0.2",
         "@google-cloud/storage": "^4.2.0",
         "@google-cloud/translate": "^5.1.4",
         "@types/jasmine": "^3.4.6",
         "@types/puppeteer": "^2.0.1",
         "acorn": "^7.1.0",
-        "ag-grid-community": "^22.1.1",
-        "ag-grid-enterprise": "^22.1.1",
         "animate.css": "^3.7.2",
         "aos": "^3.0.0-beta.6",
         "body-parser": "~1.19.0",

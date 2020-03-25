@@ -33,9 +33,10 @@ ENV BUILD_DEVELOPMENT=${BUILD_DEVELOPMENT}
 ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
 
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache less bash git git-lfs perl postgresql-client vim openssh vimdiff curl rsync findutils
+    apk add --no-cache less bash git git-lfs perl postgresql-client \
+    vim openssh vimdiff curl rsync findutils \
+    udev ttf-freefont chromium
 
-RUN apk add --no-cache udev ttf-freefont chromium git
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 ENV CHROMIUM_PATH /usr/bin/chromium-browser
 

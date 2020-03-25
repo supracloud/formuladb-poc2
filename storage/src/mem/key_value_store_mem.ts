@@ -116,7 +116,6 @@ export class KeyTableStoreMem<OBJT extends KeyValueObj> extends KeyObjStoreMem<O
     }
 
     public async simpleAdHocQuery(query: SimpleAddHocQuery): Promise<any[]> {
-        let { rowGroupCols, groupKeys } = query;
         //First we filter the rows
         let objects: any[] = Object.values(this.db);
         let groupedFiltered = simpleAdHocQueryOnArrayOfOBjects(query, objects);

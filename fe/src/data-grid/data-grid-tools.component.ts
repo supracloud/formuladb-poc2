@@ -3,7 +3,7 @@
  * License TBD
  */
 
-import { IToolPanelParams, GridApi, IToolPanelComp } from "ag-grid-community";
+import { IToolPanelParams, GridApi, IToolPanelComp } from "@ag-grid-community/core";
 import { onEvent, emit } from '@fe/delegated-events';
 
 import '@fe/graph-editor/graph-editor.component';

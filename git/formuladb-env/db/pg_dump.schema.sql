@@ -447,6 +447,30 @@ CREATE TABLE public.ttransaction (
 ALTER TABLE public.ttransaction OWNER TO postgres;
 
 --
+-- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tvaggs_room_countif_room__room_type_______id___reduce (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.tvaggs_room_countif_room__room_type_______id___reduce OWNER TO postgres;
+
+--
+-- Name: tvobs_roomtype_countif_room__room_type_______id___map; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tvobs_roomtype_countif_room__room_type_______id___map (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.tvobs_roomtype_countif_room__room_type_______id___map OWNER TO postgres;
+
+--
 -- Name: twishlistrequest; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -682,6 +706,22 @@ ALTER TABLE ONLY public.tsampleapp
 
 ALTER TABLE ONLY public.ttransaction
     ADD CONSTRAINT ttransaction_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tvaggs_room_countif_room__room_type_______id___reduce tvaggs_room_countif_room__room_type_______id___reduce_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tvaggs_room_countif_room__room_type_______id___reduce
+    ADD CONSTRAINT tvaggs_room_countif_room__room_type_______id___reduce_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tvobs_roomtype_countif_room__room_type_______id___map tvobs_roomtype_countif_room__room_type_______id___map_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tvobs_roomtype_countif_room__room_type_______id___map
+    ADD CONSTRAINT tvobs_roomtype_countif_room__room_type_______id___map_pkey PRIMARY KEY (_id);
 
 
 --

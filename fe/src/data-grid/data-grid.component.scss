@@ -5,8 +5,8 @@
 
 
 @import "../../../node_modules/bootstrap/scss/bootstrap";
-@import "../../../node_modules/ag-grid-community/dist/styles/ag-grid";
-@import "../../../node_modules/ag-grid-community/dist/styles/ag-theme-balham";
+@import "../../../node_modules/@ag-grid-community/core/dist/styles/ag-grid";
+@import "../../../node_modules/@ag-grid-community/core/dist/styles/ag-theme-balham-dark/sass/ag-theme-balham-dark-mixin";
 
 :host {
   min-width: 28vw;

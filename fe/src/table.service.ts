@@ -1,5 +1,5 @@
 
-import { IServerSideDatasource, IServerSideGetRowsParams } from 'ag-grid-community';
+import { IServerSideDatasource, IServerSideGetRowsParams, IDatasource, IGetRowsParams } from '@ag-grid-community/core';
 import * as _ from "lodash";
 
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
@@ -10,12 +10,12 @@ import { TableColumn } from '@domain/uimetadata/node-elements';
 
 export class TableService {
 
-    public getDataSource(entityId: string): IServerSideDatasource {
+    public getDatasource(entityId: string): IDatasource {
         return {
-            getRows: async (params: IServerSideGetRowsParams): Promise<void> =>
+            getRows: async (params: IGetRowsParams): Promise<void> =>
                         this.getTableRows(entityId, params)
-        }
-    };
+        }        
+    }
 
     public async getColumns(entityId: string): Promise<TableColumn[]> {
         let entity = await BACKEND_SERVICE().getEntity(entityId);
@@ -27,8 +27,8 @@ export class TableService {
         } as TableColumn));
     } 
 
-    public getTableRows(entityId: string, params: PickOmit<IServerSideGetRowsParams, 'parentNode'>) {
-        let req = params.request;
+    public getTableRows(entityId: string, params: IGetRowsParams) {
+        let req = params;
         BACKEND_SERVICE().simpleAdHocQuery(entityId, req as SimpleAddHocQuery)
             .then((data: any[]) => {
                 console.log("%c <---- simpleAdHocQuery: ",
@@ -41,6 +41,7 @@ export class TableService {
                 params.failCallback();
             });
     }
+
 
     private getRowCount(startRow: number, pageSize: number, resultsLength: number) {
         // if no results (maybe an error, or user is seeking for a block well past
