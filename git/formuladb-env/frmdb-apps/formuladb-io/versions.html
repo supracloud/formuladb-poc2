@@ -1,0 +1,14 @@
+<div class="btn-group mr-3 dropdown frmdb-dropdown-hover" style="width: 12em; position: fixed; top: 5px; right: 5px;" role="menu">
+    <span class="badge badge-danger shadow" >Alpha 0.0.22</span>
+    <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <frmdb-icon data-frmdb-attr="name:selectedFlag"></frmdb-icon>
+    </button>
+    <div class="dropdown-menu" aria-labelledby="frmdb-editor-i18n-select">
+        <a class="dropdown-item text-nowrap" data-frmdb-table="languages[]" 
+            data-frmdb-attr="href:languages[].urlPathname" data-frmdb-editor-link>
+            <frmdb-icon data-frmdb-attr="name:languages[].flag"></frmdb-icon>
+            <span data-frmdb-value="languages[].fullLanguage"></span>
+            <button data-frmdb-if="languages[].canAutoTranslate" class="badge" data-frmdb-attr="title:languages[].titleAutoTranslate"><frmdb-icon name="fontawesome-solid-robot-android-automate-computer-cyborg"></frmdb-icon></button>
+        </a>
+    </div>
+</div>
