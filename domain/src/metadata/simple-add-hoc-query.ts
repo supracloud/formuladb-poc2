@@ -40,13 +40,13 @@ export interface ColumnParams {
 export interface SimpleAddHocQuery {
     startRow: number;
     endRow: number;
-    rowGroupCols: {
-        field: string;
-    }[];
-    valueCols: ColumnParams[];
-    pivotCols: ColumnParams[];
-    pivotMode: boolean;
-    groupKeys: string[];
+    // rowGroupCols: {
+    //     field: string;
+    // }[];
+    // valueCols: ColumnParams[];
+    // pivotCols: ColumnParams[];
+    // pivotMode: boolean;
+    // groupKeys: string[];
     filterModel: {
         [x: string]: SimpleAddHocQueryFilterItem;
     };

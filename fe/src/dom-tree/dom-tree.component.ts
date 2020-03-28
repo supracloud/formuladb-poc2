@@ -1,7 +1,7 @@
 import {
     Grid, GridOptions, GridApi, GridReadyEvent,
-} from 'ag-grid-community';import * as _ from "lodash";
-import { setAgGridLicense } from '@fe/licenses';
+} from '@ag-grid-community/core';
+import * as _ from "lodash";
 
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/dom-tree/dom-tree.component.scss').default;
 const HTML: string = /*html*/`
@@ -52,7 +52,6 @@ export class DomTreeComponent extends HTMLElement {
 
     constructor() {
         super();
-        setAgGridLicense();
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = HTML;

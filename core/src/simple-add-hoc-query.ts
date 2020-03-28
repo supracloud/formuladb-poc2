@@ -2,7 +2,10 @@ import { SimpleAddHocQuery, AggFunc, SimpleAddHocQueryFilterItem } from "@domain
 import * as _ from "lodash";
 
 export function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery, objects: any[]): any[] {
-    let { rowGroupCols, groupKeys } = query;
+    let rowGroupCols: any = {};
+    let valueCols: any[] = [];
+    let groupKeys = [];
+
     //First we filter the rows
     if (objects.length == 0) return [];
 
@@ -17,7 +20,7 @@ export function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery, objec
         objects = [];
         for (let [_id, objs] of Object.entries(grouped)) {
             let obj: any = { [rowGroupCol.field]: _id };
-            for (let groupAgg of query.valueCols) {
+            for (let groupAgg of valueCols) {
                 obj[groupAgg.field.toLowerCase()] = objs.reduce((agg, currentObj) =>
                     ({
                         [groupAgg.field]: evaluateAggregation(currentObj[groupAgg.field], groupAgg.aggFunc, agg[groupAgg.field])

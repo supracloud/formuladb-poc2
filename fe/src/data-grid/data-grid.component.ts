@@ -7,8 +7,15 @@ import {
     Grid, GridOptions,
     GridApi, GridReadyEvent,
     RowDoubleClickedEvent, ColumnResizedEvent, ColumnMovedEvent,
-    RowClickedEvent, CellFocusedEvent, ColDef, VanillaFrameworkOverrides, RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef
-} from 'ag-grid-community';
+    RowClickedEvent, CellFocusedEvent, ColDef, 
+    RefreshCellsParams, GetMainMenuItemsParams, MenuItemDef,
+    ModuleRegistry
+} from '@ag-grid-community/core';
+import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
+ModuleRegistry.registerModules([
+    InfiniteRowModelModule,
+]);
+
 import * as _ from 'lodash';
 import { waitUntil } from '@domain/ts-utils';
 
@@ -22,7 +29,6 @@ import { I18N } from '@fe/i18n.service';
 import { TABLE_SERVICE } from '@fe/table.service';
 import { Pn } from '@domain/metadata/entity';
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from '@domain/constants';
-import { setAgGridLicense } from '@fe/licenses';
 import { DataGridComponentI } from './data-grid.component.i';
 import { emit, getTarget } from '@fe/delegated-events';
 
@@ -31,6 +37,10 @@ const HTML: string = require('raw-loader!@fe-assets/data-grid/data-grid.componen
 const CSS: string = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/data-grid/data-grid.component.scss').default;
 
 export class DataGridComponent extends HTMLElement implements DataGridComponentI {
+    /** example:
+        "conditionalFormatting": {
+            "yellowBackground": "ISNUMBER(FIND(\"-total\", _id))"
+        }*/
     conditionalFormatting?: { tbdCssClassName: string };
     selectedRow: DataObj;
     selectedColumnName: string;
@@ -58,7 +68,6 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
 
     constructor() {
         super();
-        setAgGridLicense();
 
         this.attachShadow({ mode: 'open' });
         this.shadowRoot!.innerHTML = `<style>${CSS}</style> ${HTML}`;
@@ -223,7 +232,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             // this.gridColumnApi.autoSizeColumns(allColumnIds);
         },
         suppressClipboardPaste: true,
-        rowModelType: "serverSide",
+        rowModelType: "infinite",
         enableRangeSelection: true,
         statusBar: {
             statusPanels: [
@@ -330,7 +339,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         //     pattern: "Solid",
         // };
         await waitUntil(() => Promise.resolve(this.gridApi));
-        this.gridApi.setServerSideDatasource(TABLE_SERVICE.getDataSource(tableName));
+        this.gridApi.setDatasource(TABLE_SERVICE.getDatasource(tableName));
         try {
 
             let cssClassRules: ColDef['cellClassRules'] = {};

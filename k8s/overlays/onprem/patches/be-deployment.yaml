@@ -16,9 +16,4 @@ spec:
           value: "false"
         - name: FRMDB_IS_PROD_ENV
           value: "true"
-      volumes:
-      - name: git-persistence
-        persistentVolumeClaim:
-        hostPath:
-          path: /d/code/metawiz/febe/git #TDB_PWD_ENV_DIR
-          type: Directory
+

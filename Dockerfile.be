@@ -33,17 +33,18 @@ ENV BUILD_DEVELOPMENT=${BUILD_DEVELOPMENT}
 ENV GIT_SSH_COMMAND="ssh -i /ssh/frmdb.id_rsa"
 
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache less bash git git-lfs perl postgresql-client vim openssh vimdiff curl rsync findutils
+    apk add --no-cache less bash git git-lfs perl postgresql-client \
+    vim openssh vimdiff curl rsync findutils \
+    udev ttf-freefont chromium
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
 ENV KUBECONFIG=k8s/production-kube-config.conf
 
 COPY package.json /package.json
 
 RUN npm install --only=production
-
-RUN apk add --no-cache udev ttf-freefont chromium git
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
-ENV CHROMIUM_PATH /usr/bin/chromium-browser
 
 COPY k8s /k8s/
 COPY skaffold.yaml /skaffold.yaml

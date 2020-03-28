@@ -32,4 +32,4 @@ props:
     total_number_of_rooms:
         name: total_number_of_rooms
         propType_: FORMULA
-        formula: 'SUMIF(Room, room_type == @[_id])'
+        formula: 'COUNTIF(Room, room_type == @[_id])'

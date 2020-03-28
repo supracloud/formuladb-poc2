@@ -52,3 +52,8 @@ profiles:
   - op: replace
     path: /deploy/kustomize/paths/0
     value: k8s/overlays/production
+- name: onprem
+  patches:
+  - op: replace
+    path: /deploy/kustomize/paths/0
+    value: k8s/overlays/onprem

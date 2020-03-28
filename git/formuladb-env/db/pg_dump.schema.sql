@@ -373,6 +373,28 @@ CREATE TABLE public.troom (
 ALTER TABLE public.troom OWNER TO postgres;
 
 --
+-- Name: troombooking; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.troombooking (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    guest character varying,
+    room_type character varying,
+    start_date character varying,
+    end_date character varying,
+    nb_adults numeric(12,5),
+    nb_children numeric(12,5),
+    days numeric(12,5),
+    cost character varying,
+    total_rooms character varying,
+    booked_rooms numeric(12,5),
+    available_rooms numeric(12,5)
+);
+
+
+ALTER TABLE public.troombooking OWNER TO postgres;
+
+--
 -- Name: troomtype; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -423,6 +445,30 @@ CREATE TABLE public.ttransaction (
 
 
 ALTER TABLE public.ttransaction OWNER TO postgres;
+
+--
+-- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tvaggs_room_countif_room__room_type_______id___reduce (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.tvaggs_room_countif_room__room_type_______id___reduce OWNER TO postgres;
+
+--
+-- Name: tvobs_roomtype_countif_room__room_type_______id___map; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tvobs_roomtype_countif_room__room_type_______id___map (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.tvobs_roomtype_countif_room__room_type_______id___map OWNER TO postgres;
 
 --
 -- Name: twishlistrequest; Type: TABLE; Schema: public; Owner: postgres
@@ -631,6 +677,14 @@ ALTER TABLE ONLY public.troom
 
 
 --
+-- Name: troombooking troombooking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.troombooking
+    ADD CONSTRAINT troombooking_pkey PRIMARY KEY (_id);
+
+
+--
 -- Name: troomtype troomtype_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -652,6 +706,22 @@ ALTER TABLE ONLY public.tsampleapp
 
 ALTER TABLE ONLY public.ttransaction
     ADD CONSTRAINT ttransaction_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tvaggs_room_countif_room__room_type_______id___reduce tvaggs_room_countif_room__room_type_______id___reduce_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tvaggs_room_countif_room__room_type_______id___reduce
+    ADD CONSTRAINT tvaggs_room_countif_room__room_type_______id___reduce_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tvobs_roomtype_countif_room__room_type_______id___map tvobs_roomtype_countif_room__room_type_______id___map_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tvobs_roomtype_countif_room__room_type_______id___map
+    ADD CONSTRAINT tvobs_roomtype_countif_room__room_type_______id___map_pkey PRIMARY KEY (_id);
 
 
 --

@@ -1,4 +1,4 @@
-import { ExcelStyle } from "ag-grid-community";
+import { ExcelStyle } from "@ag-grid-community/core";
 
 type RecursivePartial<T> = {
     [P in keyof T]?:
