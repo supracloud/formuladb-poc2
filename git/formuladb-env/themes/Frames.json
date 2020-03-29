@@ -70,8 +70,7 @@
         "flex-column",
         "justify-content-around"
     ],
-    ".card-deck": [
-        "frmdb-card-h-50"
+    ".frmdb-t-card-deck": [
     ],
     ".frmdb-t-card-media-main": [
         "border-0",
@@ -82,14 +81,16 @@
         "grid-col-1-1"
     ],
     ".frmdb-t-card-media-main .frmdb-t-img img": [
-        "w-100"
+        
     ],
     ".frmdb-t-card-media-main .card-body": [
         "text-center",
         "border",
         "border-2",
         "border-primary",
-        "m-3",
+        "mx-3",
+        "mt-5",
+        "mb-2",
         "frmdb-bg-dark-40",
         "text-light",
         "grid-row-1-1",

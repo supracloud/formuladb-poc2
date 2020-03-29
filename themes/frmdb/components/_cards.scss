@@ -6,14 +6,13 @@ $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
 .frmdb-t-card-deck {
     display: grid;
     grid-template-rows: auto 1fr auto;
-    counter-reset: frmdb_t_card_deck_counter;
     grid-column-gap: $card-spacer-x;
+    grid-auto-flow: column;
 }
 .frmdb-t-card-media-main {
     display: contents;
 
     .frmdb-t-img img {
-        width: 100%;
         height: 100%;
         object-fit: cover;
     }

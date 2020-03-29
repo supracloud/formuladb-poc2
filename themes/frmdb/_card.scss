@@ -7,10 +7,10 @@ $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
     margin-bottom: $card-spacer-x;
 }
 
-.card-deck .card img {
-    object-fit: cover;
-    max-height: 35vh;
-}
+// .card-deck .card img {
+//     object-fit: cover;
+//     max-height: 35vh;
+// }
 .card-deck.frmdb-card-h-50 .card img {
     max-height: 50vh;
 }
@@ -20,17 +20,36 @@ $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
 
 @each $name, $breakpoint in $grid-breakpoints {
     @media (min-width: $breakpoint) {
-        .card-deck.frmdb-cards-wrap-2 .card {
+        .card-deck.frmdb-cards-2 .card {
             flex: 0 0 calc(#{100/map-get($cards-per-line-2, $name)}% - 1% - #{$grid-gutter-width});
         }
-        .card-deck.frmdb-cards-wrap-3 .card {
+        .card-deck.frmdb-cards-3 .card {
             flex: 0 0 calc(#{100/map-get($cards-per-line-3, $name)}% - #{$grid-gutter-width});
         }
-        .card-deck.frmdb-cards-wrap-4 .card {
+        .card-deck.frmdb-cards-4 .card {
             flex: 0 0 calc(#{100/map-get($cards-per-line-4, $name)}% - #{$grid-gutter-width});
         }
-        .card-deck.frmdb-cards-wrap-5 .card {
+        .card-deck.frmdb-cards-5 .card {
             flex: 0 0 calc(#{100/map-get($cards-per-line-5, $name)}% - #{$grid-gutter-width});
         }
+    }
+}
+
+.frmdb-t-card-media-main {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    @for $i from 5 through 20 {
+        .frmdb-card-img-#{$i} {
+            grid-template-rows: #{$i}rem auto auto auto auto auto;
+        }
+    }
+
+    > * {
+        grid-column: 1 / span 1;
+    }
+
+    .frmdb-t-img {
+        height: 15rem;
     }
 }

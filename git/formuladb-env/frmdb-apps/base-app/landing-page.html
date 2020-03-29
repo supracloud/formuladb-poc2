@@ -7,10 +7,7 @@
     <div class="frmdb-t-main-nav">
         <div data-frmdb-fragment="_nav.html"></div>
     </div>
-    <header class="frmdb-t-cover">
-        <div class="frmdb-t-background" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
-            <div class="frmdb-t-section-divider"></div>
-        </div>
+    <header class="frmdb-t-cover" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
         <div class="frmdb-t-main">
             <div class="jumbotron">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
@@ -24,6 +21,7 @@
         <div class="frmdb-t-aside">
             <div data-frmdb-fragment="_form.html"></div>
         </div>
+        <div class="frmdb-t-section-divider"></div>
     </header>
     <section class="frmdb-section-light container py-5">
         <div class="text-center mb-5">
@@ -31,13 +29,13 @@
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
         <div class="frmdb-t-card-deck frmdb-cards-4">
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="">
+            <div class="frmdb-t-card-media-main ">
+                <div class="frmdb-t-img overflow-hidden"
+                    style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card1.jpg')">
                 </div>
-                <div class="card-body">
-                    <h5>Card 1 title</h5>
-                    <h6>Card 1 subtitle</h6>
+                <div class="frmdb-t-card-title">Card 1 title</div>
+                <div class="frmdb-t-card-subtitle">Card 1 subtitle</div>
+                <div class="frmdb-t-card-body">
                     <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
                 <div class="frmdb-t-card-action">
@@ -50,13 +48,13 @@
                 </div>
             </div>
             <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card2.jpg" alt="">
+                <div class="frmdb-t-img overflow-hidden"
+                    style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card2.jpg')">
                 </div>
-                <div class="card-body">
-                    <h5>Card 2 title</h5>
-                    <h6>Card 2 subtitle</h6>
-                    <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
+                <div class="frmdb-t-card-title">Card 2 title</div>
+                <div class="frmdb-t-card-subtitle">Card 2 subtitle</div>
+                <div class="frmdb-t-card-body">
+                    <p>Integer sit amet nisi viverra, pharetra nibh</p>
                 </div>
                 <div class="frmdb-t-card-action">
                     <a href="javascript:void(0)" class="">Action</a>
@@ -67,13 +65,13 @@
                     </span>
                 </div>
             </div>
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card3.jpg" alt="">
+            <div class="frmdb-t-card-media-main ">
+                <div class="frmdb-t-img overflow-hidden"
+                    style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card3.jpg')">
                 </div>
-                <div class="card-body">
-                    <h5>Card 3 title</h5>
-                    <h6>Card 3 subtitle</h6>
+                <div class="frmdb-t-card-title">Card 3 title</div>
+                <div class="frmdb-t-card-subtitle">Card 3 subtitle</div>
+                <div class="frmdb-t-card-body">
                     <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
                 <div class="frmdb-t-card-action">
@@ -85,13 +83,13 @@
                     </span>
                 </div>
             </div>
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card4.jpg" alt="">
+            <div class="frmdb-t-card-media-main ">
+                <div class="frmdb-t-img overflow-hidden"
+                    style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card4.jpg')">
                 </div>
-                <div class="card-body">
-                    <h5>Card 4 title</h5>
-                    <h6>Card 4 subtitle</h6>
+                <div class="frmdb-t-card-title">Card 4 title</div>
+                <div class="frmdb-t-card-subtitle">Card 4 subtitle</div>
+                <div class="frmdb-t-card-body">
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
                 <div class="frmdb-t-card-action">
@@ -105,7 +103,8 @@
             </div>
         </div>
     </section>
-    <section class="frmdb-section-dark py-5 frmdb-bg frmdb-bg-parallax" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg-right.jpg')">
+    <section class="frmdb-t-media-section-main" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg-right.jpg')">
+        <div class="frmdb-t-section-divider"></div>
         <div class="container py-5">
             <div class="row py-5">
                 <div class="jumbotron col-md-5">
@@ -139,7 +138,7 @@
             <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur.</p>
         </div>
         <div class="container">
-            <div class="card-deck frmdb-cards-wrap-3">
+            <div class="card-deck frmdb-cards-3">
                 <div class="card frmdb-t-card-icon-main">
                     <h4>
                         <frmdb-icon name="fontawesome-solid-utensils-cutlery-dining-dinner-eat-food-fork-knife-restaurant"></frmdb-icon> Food
