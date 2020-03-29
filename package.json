@@ -34,6 +34,7 @@
         "generate-icons": "icon-font-generator -p frmdb-i formuladb/icons/svgo/*.svg -o formuladb/icons -n frmdb-icons",
         "generate-json-schemas": "for i in App Entity SchemaEntityList; do typescript-json-schema ./tsconfig.json $i > core/src/schemas/$i.schema.json ; done",
         "generate-look-css": "cd themes; bash ci/build.sh --compile",
+        "--example--watch-css": "export PATH=$PATH:../node_modules/.bin; watch 'cd themes; bash ci/build.sh --compile' themes",
         "sync-dev-static-assets": "watch 'bash ci/copy-static-assets-to-dev-ngunx-pod.sh' formuladb-env/static formuladb-themes"
     },
     "author": "",
