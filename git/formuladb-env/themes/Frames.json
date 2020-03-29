@@ -4,7 +4,7 @@
         "row",
         "frmdb-bg-dark-30",
         "shadow",
-        "py-4",
+        "py-2",
         "border-bottom",
         "border-bottom-2",
         "border-primary",
@@ -73,18 +73,18 @@
     ".card-deck": [
         "frmdb-card-h-50"
     ],
-    ".frmdb-t-card-img": [
+    ".frmdb-t-card-media-main": [
         "border-0",
         "d-grid"
     ],
-    ".frmdb-t-card-img .frmdb-t-img": [
+    ".frmdb-t-card-media-main .frmdb-t-img": [
         "grid-row-1-1",
         "grid-col-1-1"
     ],
-    ".frmdb-t-card-img .frmdb-t-img img": [
+    ".frmdb-t-card-media-main .frmdb-t-img img": [
         "w-100"
     ],
-    ".frmdb-t-card-img .card-body": [
+    ".frmdb-t-card-media-main .card-body": [
         "text-center",
         "border",
         "border-2",
@@ -97,7 +97,7 @@
         "grid-align-self-end",
         "grid-justify-self-center"
     ],
-    ".frmdb-t-card-img .frmdb-t-card-note": [
+    ".frmdb-t-card-media-main .frmdb-t-card-note": [
         "text-center",
         "border",
         "border-2",
@@ -111,23 +111,23 @@
         "grid-align-self-start",
         "grid-justify-self-center"
     ],
-    ".frmdb-t-card-img .frmdb-t-card-action": [
+    ".frmdb-t-card-media-main .frmdb-t-card-action": [
         "mt-n4",
         "text-center"
     ],
-    ".frmdb-t-card-img .frmdb-t-card-action a": [
+    ".frmdb-t-card-media-main .frmdb-t-card-action a": [
         "btn",
         "btn-primary",
         "btn-lg"
     ],
-    ".frmdb-t-card-icon": [
+    ".frmdb-t-card-icon-main": [
         "border",
         "border-2",
         "border-primary",
         "p-3",
         "frmdb-bg-dark-70"
     ],
-    ".frmdb-t-card-icon i": [
+    ".frmdb-t-card-icon-main i": [
         "text-primary",
         "m-2"
     ]

@@ -1,4 +1,4 @@
-namespace: orbicobeauty #TBD_ENV_NAME
+namespace: master #TBD_ENV_NAME
 resources:
 - resources/be-deployment.yaml
 - resources/be-service.yaml

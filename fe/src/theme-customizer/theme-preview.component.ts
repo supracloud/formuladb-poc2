@@ -61,7 +61,7 @@ export class ThemePreviewComponent extends HTMLElement {
                 <p>Section lead paragraph, some text about the content described in this section.</p>
             </div>
             <div class="card-deck">
-                <div class="card frmdb-t-card-img" style="display: grid;">
+                <div class="card frmdb-t-card-media-main" style="display: grid;">
                     <div class="frmdb-t-img overflow-hidden">
                         <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="" />
                     </div>
@@ -77,7 +77,7 @@ export class ThemePreviewComponent extends HTMLElement {
                         <span>INFO <small>info</small></span>
                     </div>
                 </div>
-                <div class="card frmdb-t-card-img">
+                <div class="card frmdb-t-card-media-main">
                     <div class="frmdb-t-img overflow-hidden">
                         <img src="/formuladb-env/frmdb-apps/base-app/static/card2.jpg" alt="">
                     </div>
@@ -93,7 +93,7 @@ export class ThemePreviewComponent extends HTMLElement {
                         <span>INFO <small>info</small></span>
                     </div>
                 </div>
-                <div class="card frmdb-t-card-img">
+                <div class="card frmdb-t-card-media-main">
                     <div class="frmdb-t-img overflow-hidden">
                         <img src="/formuladb-env/frmdb-apps/base-app/static/card3.jpg" alt="">
                     </div>
@@ -109,7 +109,7 @@ export class ThemePreviewComponent extends HTMLElement {
                         <span>INFO <small>info</small></span>
                     </div>
                 </div>
-                <div class="card frmdb-t-card-img">
+                <div class="card frmdb-t-card-media-main">
                     <div class="frmdb-t-img overflow-hidden">
                         <img src="/formuladb-env/frmdb-apps/base-app/static/card4.jpg" alt="">
                     </div>

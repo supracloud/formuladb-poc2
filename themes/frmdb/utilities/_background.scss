@@ -7,14 +7,6 @@
     background-size: cover;
 }
 
-.frmdb-bg-tint-parallax:before {
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
 .frmdb-bg {
     background-position: center;
     background-repeat: no-repeat;
@@ -50,7 +42,30 @@
     }
 }
 
+$bgImages: (
+    circles: str-replace(str-replace(str-replace(
+            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
+        ,"#", "%23"),"<", "%3c"),">", "%3e"),
+    divider_slope: str-replace(str-replace(str-replace(
+            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
+        ,"#", "%23"),"<", "%3c"),">", "%3e"),
+    user_img: var(--frmdb-bg-img),
+);
+
+// clip-path: polygon(0% 25%, 78% 0%, 90% 89%, 54% 101%, 0% 100%, 0% 75%, 0% 100%);
+
 @each $color, $value in $theme-colors {
+    $colorBasedImages: (
+        gradient: linear-gradient(180deg, mix($body-bg, $value, 15%), $value),
+    );
+
+    $imgMap: map-merge($bgImages, $colorBasedImages);
+
+    @each $imgName, $imgValue in $imgMap {
+        .frmdb-bg-#{$imgName} {
+            display: block;
+        }
+    }
 
     .frmdb-bg-#{$color}-circles-1 {
         position: relative;

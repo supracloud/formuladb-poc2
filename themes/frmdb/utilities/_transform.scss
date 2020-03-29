@@ -1,7 +1,11 @@
-.frmdb-transform-preserve-3d {
-  transform-style: preserve-3d;
-}
-
-.frmdb-translate3d-up-0-50-1 {
-    transform: translate3d(0, -50%, 1px);
+@each $angle in (2, 3, 4, 5, 10, 20) {
+  .skew-y-n#{$angle} {
+    transform: skewY(-#{$angle}deg);
+  }
+  .skew-y-n#{$angle}-up {
+    transform: skewY(-#{$angle}deg) translateY(-50%);
+  }
+  .skew-y-n#{$angle}-down {
+    transform: skewY(-#{$angle}deg) translateY(50%);
+  }
 }

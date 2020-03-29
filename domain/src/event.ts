@@ -89,7 +89,7 @@ export class ServerEventSetPage extends MwzEvent {
     readonly type_ = "ServerEventSetPage";
 
     constructor(public pageOpts: PageOpts, public pageObj: $PageObjT, 
-        public startPageName: string | '$LANDING-PAGE$' | '$BLOG-POST-PAGE$') 
+        public startPageName: string | '$LANDING-PAGE$' | '$CONTENT-PAGE$') 
     {
         super();
     }

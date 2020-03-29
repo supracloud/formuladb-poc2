@@ -258,8 +258,8 @@ export class MetadataStore {
         let content;
         if ('$LANDING-PAGE$' === startPageName) {
             content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html`);
-        } else if ('$BLOG-POST-PAGE$' === startPageName) {
-            content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/blog-post-page.html`);
+        } else if ('$CONTENT-PAGE$' === startPageName) {
+            content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/content-page.html`);
         } else {
             content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${startPageName}.html`);
         }
