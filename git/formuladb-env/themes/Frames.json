@@ -24,7 +24,7 @@
         "d-flex",
         "align-items-center",
         "justify-content-center",
-        "frmdb-bg-zoom-in",
+        "frmdb-bg-1-zoomInOut",
         "overflow-hidden",
         "px-md-0",
         "px-3"
@@ -52,7 +52,7 @@
         "flex-column",
         "align-items-center",
         "justify-content-center",
-        "frmdb-bg-zoom-in",
+        "frmdb-bg-1-zoomInOut",
         "px-md-0",
         "px-3"
     ],    
@@ -80,7 +80,8 @@
         "d-grid"
     ],
     ".frmdb-t-card-media-main .frmdb-t-img": [
-        "frmdb-bg",
+        "frmdb-bg-1",
+        "frmdb-bg-cover",
         "grid-row-1-4",
         "h-100"
     ],
@@ -122,6 +123,12 @@
         "btn-primary",
         "btn-lg"
     ],
+    ".frmdb-t-media-section-main": [
+        "frmdb-section-dark",
+        "py-5",
+        "frmdb-bg-1",
+        "frmdb-bg-parallax"
+    ],
     ".frmdb-t-card-icon-main": [
         "border",
         "border-2",
@@ -132,5 +139,10 @@
     ".frmdb-t-card-icon-main i": [
         "text-primary",
         "m-2"
+    ],
+    "body > footer": [
+        "pt-4",
+        "bg-dark",
+        "frmdb-section-dark"
     ]
 }

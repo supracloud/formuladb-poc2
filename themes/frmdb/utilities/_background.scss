@@ -7,30 +7,42 @@
     background-size: cover;
 }
 
-.frmdb-bg {
+@each $nb in (1, 2, 3) {
+    @each $animation in (zoomInOut) {
+        .frmdb-bg-#{$nb}-#{$animation} {
+            position: relative;
+
+            &:before {
+                content: "";
+                display: block;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: -1;
+                animation-name: #{$animation};
+                animation-duration: 20s;
+                animation-iteration-count: infinite;
+
+                @if $nb == 1 {
+                    background-image: var(--frmdb-bg-img);
+                } @else if $nb == 2 {
+                    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2);
+                    background-blend-mode: overlay;
+                } @else if $nb == 3 {
+                    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3);
+                    background-blend-mode: overlay;
+                }                
+            }
+        }
+    }
+}
+
+.frmdb-bg-cover {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    background-image: var(--frmdb-bg-img);
-}
-
-.frmdb-bg-zoom-in {
-    position: relative;
-
-    &:before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background-image: var(--frmdb-bg-img);
-        z-index: -1;
-        animation-name: zoomInOut;
-        animation-duration: 20s;
-        animation-iteration-count: infinite;
-    }
 }
 
 @each $color, $value in $theme-colors {
@@ -42,94 +54,86 @@
     }
 }
 
-$bgImages: (
-    circles: str-replace(str-replace(str-replace(
+:root {
+    --frmdb-img-circles: #{str-replace(str-replace(str-replace(
             url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
-        ,"#", "%23"),"<", "%3c"),">", "%3e"),
-    divider_slope: str-replace(str-replace(str-replace(
+        ,"#", "%23"),"<", "%3c"),">", "%3e")};
+    --frmdb-img-divider-slope: #{str-replace(str-replace(str-replace(
             url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
-        ,"#", "%23"),"<", "%3c"),">", "%3e"),
-    user_img: var(--frmdb-bg-img),
+        ,"#", "%23"),"<", "%3c"),">", "%3e")};
+}
+
+$svg-images-map: (
+    circles: var(--frmdb-img-circles),
+    divider-slope: var(--frmdb-img-divider-slope),
 );
+
 
 // clip-path: polygon(0% 25%, 78% 0%, 90% 89%, 54% 101%, 0% 100%, 0% 75%, 0% 100%);
 
+@each $repeat1 in (n, r, x, y) {
+    .frmdb-bg-repeat-#{$repeat1} {
+        background-repeat: #{$repeat1};
+    }
+    @each $repeat2 in (n, r, x, y) {
+        .frmdb-bg-repeat-#{$repeat1}-#{$repeat2} {
+            background-repeat: #{$repeat1}, #{$repeat2};
+        }
+        @each $repeat3 in (n, r, x, y) {
+            .frmdb-bg-repeat-#{$repeat1}-#{$repeat2}-#{$repeat3} {
+                background-repeat: #{$repeat1}, #{$repeat2}, #{$repeat3};
+            }    
+        }
+    }
+}
+
+.frmdb-bg-1 {
+    background-image: var(--frmdb-bg-img);
+}
+.frmdb-bg-2 {
+    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2);
+    background-blend-mode: overlay;
+}
+.frmdb-bg-3 {
+    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3);
+    background-blend-mode: overlay;
+}
+
+
 @each $color, $value in $theme-colors {
-    $colorBasedImages: (
-        gradient: linear-gradient(180deg, mix($body-bg, $value, 15%), $value),
+    $color-images-map: (
+        #{$color}-solid: linear-gradient($value, $value, $value),
+        #{color}-gradient: linear-gradient(180deg, mix($body-bg, $value, 15%), $value),
     );
 
-    $imgMap: map-merge($bgImages, $colorBasedImages);
-
-    @each $imgName, $imgValue in $imgMap {
-        .frmdb-bg-#{$imgName} {
-            display: block;
+    @each $img1Name in (user, #{$color}-solid, #{$color}-gradient) {
+        $color-1-map: map-merge($svg-images-map, $color-images-map);
+        @if $img1Name != user {
+            .frmdb-bg--#{$img1Name} {
+                --frmdb-bg-img: #{map-get($color-1-map, $img1Name)};
+            }
         }
-    }
 
-    .frmdb-bg-#{$color}-circles-1 {
-        position: relative;
+        @each $percent in 50, 75 {
+            $tintColor: mix($dark, $value);
+            $bgColor: rgba(red($tintColor), green($tintColor), blue($tintColor), $percent/100);
+            $color-tint-images-map: (
+                #{$color}-solid-tint-#{$percent}: linear-gradient($bgColor, $bgColor, $bgColor),
+                #{$color}-gradient-tint-#{$percent}: linear-gradient(180deg, mix($body-bg, $bgColor, 15%), $value),
+            );
+        
+            @each $img2Name in (circles, divider-slope, #{$color}-solid-tint-#{$percent}, #{$color}-gradient-tint-#{$percent}) {
+                $color-2-map: map-merge($color-1-map, $color-tint-images-map);
+                .frmdb-bg--#{$img1Name}--#{$img2Name} {
+                    --frmdb-bg-img-2: #{map-get($color-2-map, $img2Name)};
+                }
 
-        &:before {
-            content: "";
-            display: block;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: $value linear-gradient(180deg, mix($body-bg, $value, 15%), $value) repeat-x !important;
-            z-index: -1;
-        }
-        &:after {
-            content: "";
-            display: block;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-image: str-replace(str-replace(str-replace(
-                url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
-            ,"#", "%23"),"<", "%3c"),">", "%3e");
-            // background-size: 100% 100%;
-            background-size: cover;
-            z-index: -1;
-        }
-    }
-
-    // <polygon fill='#fff' points='0,500 2000,500 2000,400 0,500'></polygon>
-
-    @each $percent in 50, 75 {
-        $bgColor: mix($dark, $value, percentage($percent/100 + 0.18));
-
-        .frmdb-bg-tint-#{$color}-#{$percent} {
-            position: relative;
-            @include frmdb-section-dark-mixin($bgColor);
-        }
-        .frmdb-bg-tint-#{$color}-#{$percent}:before {
-            content: "";
-            display: block;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-image: var(--frmdb-bg-img);
-            z-index: -1;
-            background-size: cover;
-            background-position: center;
-        }
-        .frmdb-bg-tint-#{$color}-#{$percent}:after {
-            content: "";
-            display: block;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(red($bgColor), green($bgColor), blue($bgColor), $percent/100);
-            z-index: -1;
+                @each $img3Name in (divider-slope) {
+                    .frmdb-bg--#{$img1Name}--#{$img2Name}--#{$img3Name} {
+                        --frmdb-bg-img-3: #{map-get($color-2-map, $img2Name)};
+                    }
+                }
+            }
         }
     }
 }
