@@ -71,17 +71,18 @@
         "justify-content-around"
     ],
     ".frmdb-t-card-deck": [
+        "card-deck"
     ],
     ".frmdb-t-card-media-main": [
+        "frmdb-card-img-7",
+        "card",
         "border-0",
         "d-grid"
     ],
     ".frmdb-t-card-media-main .frmdb-t-img": [
-        "grid-row-1-1",
-        "grid-col-1-1"
-    ],
-    ".frmdb-t-card-media-main .frmdb-t-img img": [
-        
+        "frmdb-bg",
+        "grid-row-1-4",
+        "h-100"
     ],
     ".frmdb-t-card-media-main .card-body": [
         "text-center",
@@ -93,9 +94,8 @@
         "mb-2",
         "frmdb-bg-dark-40",
         "text-light",
-        "grid-row-1-1",
-        "grid-col-1-1",
-        "grid-align-self-end",
+        "grid-row-2-3",
+        "grid-align-self-start",
         "grid-justify-self-center"
     ],
     ".frmdb-t-card-media-main .frmdb-t-card-note": [
@@ -108,13 +108,14 @@
         "text-light",
         "mt-n3",
         "grid-row-1-1",
-        "grid-col-1-1",
         "grid-align-self-start",
         "grid-justify-self-center"
     ],
     ".frmdb-t-card-media-main .frmdb-t-card-action": [
         "mt-n4",
-        "text-center"
+        "mb-1",
+        "text-center",
+        "grid-row-3-4"
     ],
     ".frmdb-t-card-media-main .frmdb-t-card-action a": [
         "btn",

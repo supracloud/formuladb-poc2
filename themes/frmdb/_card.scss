@@ -39,8 +39,8 @@ $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
     display: grid;
     grid-template-columns: 1fr;
 
-    @for $i from 5 through 20 {
-        .frmdb-card-img-#{$i} {
+    @for $i from 1 through 25 {
+        &.frmdb-card-img-#{$i} {
             grid-template-rows: #{$i}rem auto auto auto auto auto;
         }
     }
