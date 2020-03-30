@@ -59,7 +59,7 @@
             url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
         ,"#", "%23"),"<", "%3c"),">", "%3e")};
     --frmdb-img-divider-slope: #{str-replace(str-replace(str-replace(
-            url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 500'><circle cx='0' cy='45' r='50' fill='#fff' fill-opacity='0.2' /><circle cx='70' cy='290' r='40' fill='#fff' fill-opacity='0.1' /><circle cx='200' cy='350' r='70' fill='#fff' fill-opacity='0.15' /><circle cx='370' cy='280' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='780' cy='85' r='50' fill='#fff' fill-opacity='0.1' /><circle cx='770' cy='280' r='50' fill='#fff' fill-opacity='0.3' /><circle cx='760' cy='320' r='50' fill='#fff' fill-opacity='0.3' /></svg>")
+            url("data:image/svg+xml,<svg x='0' y='0' viewBox='0 0 2560 100' preserveAspectRatio='none' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon fill='#fff' points='2560 0 2560 100 0 100'></polygon></svg>")
         ,"#", "%23"),"<", "%3c"),">", "%3e")};
 }
 
@@ -72,16 +72,48 @@ $svg-images-map: (
 // clip-path: polygon(0% 25%, 78% 0%, 90% 89%, 54% 101%, 0% 100%, 0% 75%, 0% 100%);
 
 @each $repeat1 in (n, r, x, y) {
-    .frmdb-bg-repeat-#{$repeat1} {
+    .frmdb-bg-repeat--#{$repeat1} {
         background-repeat: #{$repeat1};
     }
     @each $repeat2 in (n, r, x, y) {
-        .frmdb-bg-repeat-#{$repeat1}-#{$repeat2} {
+        .frmdb-bg-repeat--#{$repeat1}--#{$repeat2} {
             background-repeat: #{$repeat1}, #{$repeat2};
         }
         @each $repeat3 in (n, r, x, y) {
-            .frmdb-bg-repeat-#{$repeat1}-#{$repeat2}-#{$repeat3} {
+            .frmdb-bg-repeat--#{$repeat1}--#{$repeat2}--#{$repeat3} {
                 background-repeat: #{$repeat1}, #{$repeat2}, #{$repeat3};
+            }    
+        }
+    }
+}
+
+@each $size1 in (initial, cover, contain) {
+    .frmdb-bg-size--#{$size1} {
+        background-size: #{$size1};
+    }
+    @each $size2 in (initial, cover, contain) {
+        .frmdb-bg-size--#{$size1}--#{$size2} {
+            background-size: #{$size1}, #{$size2};
+        }
+        @each $size3 in (initial, cover, contain) {
+            .frmdb-bg-size--#{$size1}--#{$size2}--#{$size3} {
+                background-size: #{$size1}, #{$size2}, #{$size3};
+            }    
+        }
+    }
+}
+
+@each $position1 in (bottom, center, top) {
+    .frmdb-bg-position--#{$position1} {
+        background-position: #{$position1};
+    }
+    @each $position2 in (bottom, center, top) {
+        .frmdb-bg-position--#{$position1}--#{$position2} {
+            background-position: #{$position1}, #{$position2};
+        }
+        @each $position3 in (bottom, center, top) {
+            .frmdb-bg-position--#{$position1}--#{$position2}--#{$position3} {
+                background-position: #{$position1}, #{$position2}, #{$position3};
             }    
         }
     }
