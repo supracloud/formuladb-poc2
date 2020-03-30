@@ -7,6 +7,28 @@
     background-size: cover;
 }
 
+.frmdb-bg-cover {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.frmdb-bg-1 {
+    background-image: var(--frmdb-bg-img);
+}
+.frmdb-bg-2 {
+    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2);
+    background-blend-mode: overlay;
+}
+.frmdb-bg-3 {
+    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3);
+    background-blend-mode: overlay;
+}
+.frmdb-bg-4 {
+    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3), var(--frmdb-bg-img-4);
+    background-blend-mode: overlay;
+}
+
 @each $nb in (1, 2, 3) {
     @each $animation in (zoomInOut) {
         .frmdb-bg-#{$nb}-#{$animation} {
@@ -33,17 +55,15 @@
                 } @else if $nb == 3 {
                     background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3);
                     background-blend-mode: overlay;
-                }                
+                } @else if $nb == 4 {
+                    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3), var(--frmdb-bg-img-4);
+                    background-blend-mode: overlay;
+                }               
             }
         }
     }
 }
 
-.frmdb-bg-cover {
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
 
 @each $color, $value in $theme-colors {
 
@@ -61,76 +81,34 @@
     --frmdb-img-divider-slope: #{str-replace(str-replace(str-replace(
             url("data:image/svg+xml,<svg x='0' y='0' viewBox='0 0 2560 100' preserveAspectRatio='none' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon fill='#fff' points='2560 0 2560 100 0 100'></polygon></svg>")
         ,"#", "%23"),"<", "%3c"),">", "%3e")};
+    --frmdb-img-divider-slope-rv: #{str-replace(str-replace(str-replace(
+            url("data:image/svg+xml,<svg x='0' y='0' viewBox='0 0 2560 100' preserveAspectRatio='none' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon fill='#fff' points='0 0 2560 0 0 100 0 0'></polygon></svg>")
+        ,"#", "%23"),"<", "%3c"),">", "%3e")};
+}
+
+@mixin add-bg-classes($img-map) {
+    @each $imgName, $imgValue in $img-map {
+        .frmdb-bg-1-#{$imgName} {
+            --frmdb-bg-img: #{$imgValue};
+        }
+        .frmdb-bg-2-#{$imgName} {
+            --frmdb-bg-img-2: #{$imgValue};
+        }
+        .frmdb-bg-3-#{$imgName} {
+            --frmdb-bg-img-3: #{$imgValue};
+        }
+        .frmdb-bg-4-#{$imgName} {
+            --frmdb-bg-img-4: #{$imgValue};
+        }
+    }
 }
 
 $svg-images-map: (
     circles: var(--frmdb-img-circles),
     divider-slope: var(--frmdb-img-divider-slope),
+    divider-slope-rv: var(--frmdb-img-divider-slope-rv),
 );
-
-
-// clip-path: polygon(0% 25%, 78% 0%, 90% 89%, 54% 101%, 0% 100%, 0% 75%, 0% 100%);
-
-@each $repeat1 in (n, r, x, y) {
-    .frmdb-bg-repeat--#{$repeat1} {
-        background-repeat: #{$repeat1};
-    }
-    @each $repeat2 in (n, r, x, y) {
-        .frmdb-bg-repeat--#{$repeat1}--#{$repeat2} {
-            background-repeat: #{$repeat1}, #{$repeat2};
-        }
-        @each $repeat3 in (n, r, x, y) {
-            .frmdb-bg-repeat--#{$repeat1}--#{$repeat2}--#{$repeat3} {
-                background-repeat: #{$repeat1}, #{$repeat2}, #{$repeat3};
-            }    
-        }
-    }
-}
-
-@each $size1 in (initial, cover, contain) {
-    .frmdb-bg-size--#{$size1} {
-        background-size: #{$size1};
-    }
-    @each $size2 in (initial, cover, contain) {
-        .frmdb-bg-size--#{$size1}--#{$size2} {
-            background-size: #{$size1}, #{$size2};
-        }
-        @each $size3 in (initial, cover, contain) {
-            .frmdb-bg-size--#{$size1}--#{$size2}--#{$size3} {
-                background-size: #{$size1}, #{$size2}, #{$size3};
-            }    
-        }
-    }
-}
-
-@each $position1 in (bottom, center, top) {
-    .frmdb-bg-position--#{$position1} {
-        background-position: #{$position1};
-    }
-    @each $position2 in (bottom, center, top) {
-        .frmdb-bg-position--#{$position1}--#{$position2} {
-            background-position: #{$position1}, #{$position2};
-        }
-        @each $position3 in (bottom, center, top) {
-            .frmdb-bg-position--#{$position1}--#{$position2}--#{$position3} {
-                background-position: #{$position1}, #{$position2}, #{$position3};
-            }    
-        }
-    }
-}
-
-.frmdb-bg-1 {
-    background-image: var(--frmdb-bg-img);
-}
-.frmdb-bg-2 {
-    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2);
-    background-blend-mode: overlay;
-}
-.frmdb-bg-3 {
-    background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3);
-    background-blend-mode: overlay;
-}
-
+@include add-bg-classes($svg-images-map);
 
 @each $color, $value in $theme-colors {
     $color-images-map: (
@@ -138,35 +116,16 @@ $svg-images-map: (
         #{color}-gradient: linear-gradient(180deg, mix($body-bg, $value, 15%), $value),
     );
 
-    @each $img1Name in (user, #{$color}-solid, #{$color}-gradient) {
-        $color-1-map: map-merge($svg-images-map, $color-images-map);
-        @if $img1Name != user {
-            .frmdb-bg--#{$img1Name} {
-                --frmdb-bg-img: #{map-get($color-1-map, $img1Name)};
-            }
-        }
+    @include add-bg-classes($color-images-map);
 
-        @each $percent in 50, 75 {
-            $tintColor: mix($dark, $value);
-            $bgColor: rgba(red($tintColor), green($tintColor), blue($tintColor), $percent/100);
-            $color-tint-images-map: (
-                #{$color}-solid-tint-#{$percent}: linear-gradient($bgColor, $bgColor, $bgColor),
-                #{$color}-gradient-tint-#{$percent}: linear-gradient(180deg, mix($body-bg, $bgColor, 15%), $value),
-            );
-        
-            @each $img2Name in (circles, divider-slope, #{$color}-solid-tint-#{$percent}, #{$color}-gradient-tint-#{$percent}) {
-                $color-2-map: map-merge($color-1-map, $color-tint-images-map);
-                .frmdb-bg--#{$img1Name}--#{$img2Name} {
-                    --frmdb-bg-img-2: #{map-get($color-2-map, $img2Name)};
-                }
+    @each $percent in 50, 75 {
+        $tintColor: mix($dark, $value);
+        $bgColor: rgba(red($tintColor), green($tintColor), blue($tintColor), $percent/100);
+        $color-tint-images-map: (
+            #{$color}-solid-tint-#{$percent}: linear-gradient($bgColor, $bgColor, $bgColor),
+            #{$color}-gradient-tint-#{$percent}: linear-gradient(180deg, mix($body-bg, $bgColor, 15%), $value),
+        );
 
-                @each $img3Name in (divider-slope) {
-                    .frmdb-bg--#{$img1Name}--#{$img2Name}--#{$img3Name} {
-                        --frmdb-bg-img-2: #{map-get($color-2-map, $img2Name)};
-                        --frmdb-bg-img-3: #{map-get($color-2-map, $img3Name)};
-                    }
-                }
-            }
-        }
+        @include add-bg-classes($color-tint-images-map);
     }
 }

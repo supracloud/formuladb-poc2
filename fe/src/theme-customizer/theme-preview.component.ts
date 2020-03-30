@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { translateThemeRulesByReplacingClasses, _old_ThemeRules, ThemeRules } from "@core/frmdb-themes";
+import { translateThemeRulesByReplacingClasses, ThemeRules } from "@core/frmdb-themes";
 
 export class ThemePreviewComponent extends HTMLElement {
     static observedAttributes = ['color', 'look'];

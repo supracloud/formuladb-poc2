@@ -2,37 +2,57 @@ import { isDocument, getWindow } from "./dom-utils";
 import { isHTMLElement } from "@core/html-tools";
 import { debouncedAOSRefreshHard } from "../../fe/src/frmdb-plugins";
 
-export interface _old_ThemeRules {
+export interface ThemeRules {
     [themeRuleSelector: string]: {
         addClasses?: string[];
-        addCssVars?: { [varName: string]: string };
+        // addCssVars?: { [varName: string]: string };
         addStyles?: { [varName: string]: string };
         addAttributes?: { [attrName: string]: string };
     }
 }
 
-export interface ThemeRules {
-    [themeRuleSelector: string]: string[];
-}
-
-export async function __old__unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement): Promise<string | null> {
-
-    let currentThemeName: string | null = null;
-    if (isDocument(rootEl)) currentThemeName = rootEl.body.getAttribute('data-frmdb-theme');
-    if (isHTMLElement(rootEl)) currentThemeName = rootEl.getAttribute('data-frmdb-theme');
-
-    if (currentThemeName) {
-        let currentThemeRules = await fetch(`/formuladb-env/themes/${currentThemeName}.json`)
-            .then(response => response.json());
-        __old__unloadThemeRules(rootEl, currentThemeRules);
-    }
-
-    return currentThemeName;
-}
 
 export async function applyTheme(themeRules: ThemeRules, rootEl: Document | ShadowRoot | HTMLElement) {
     unloadCurrentTheme(rootEl);
     translateThemeRulesByReplacingClasses(rootEl, themeRules);
+}
+
+export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
+    let parentSelector = parentSelectorOpt || '';
+    let wnd = getWindow(rootEl);
+    for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
+        for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {
+            if (rule.addClasses) {
+                //TODO cleanup any previous theme
+                el.classList.add(...rule.addClasses);
+                el.setAttribute('data-frmdb-theme-classes', rule.addClasses.join(' '));
+            }
+            if (rule.addStyles) {
+                // for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) {
+                //     el.style.setProperty(styleProp, styleVal);
+                // }
+                //workaround for https://github.com/jsdom/jsdom/issues/1895
+                let oldStyle = el.getAttribute('style');
+                el.setAttribute('style', (oldStyle ? oldStyle + '; ' : '') + Object.entries(rule.addStyles)
+                    .map(([k, v]) => `${k}: ${v}`).join(';'));
+                el.setAttribute('data-frmdb-theme-styles', JSON.stringify(rule.addStyles));
+            }
+            // if (rule.addCssVars) {
+            //     for (let varToAdd of Object.entries(rule.addCssVars)) {
+            //         el.style.setProperty(varToAdd[0], varToAdd[1]);
+            //     }
+            // }
+            if (rule.addAttributes) {
+                for (let attrToAdd of Object.entries(rule.addAttributes)) {
+                    el.setAttribute(attrToAdd[0], attrToAdd[1]);
+                    if (attrToAdd[0] === "data-aos") {
+                        debouncedAOSRefreshHard(wnd);
+                    }
+                }
+                el.setAttribute('data-frmdb-theme-attributes', JSON.stringify(rule.addAttributes));
+            }
+        }
+    }
 }
 
 export function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement) {
@@ -41,69 +61,25 @@ export function unloadCurrentTheme(rootEl: Document | ShadowRoot | HTMLElement) 
         el.classList.remove(...themeClasses);
         el.removeAttribute('data-frmdb-theme-classes');
     }
-}
 
-export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules) {
-    let wnd = getWindow(rootEl);
-    for (let [themeRuleSelector, ruleClasses] of (Object.entries(themeRules))) {
-        for (let el of Array.from(rootEl.querySelectorAll(themeRuleSelector))) {
-            el.classList.add(...ruleClasses);
-            el.setAttribute('data-frmdb-theme-classes', ruleClasses.join(' '));
+    for (let el of Array.from(rootEl.querySelectorAll('[data-frmdb-theme-styles]'))) {
+        let themeStyles = JSON.parse(el.getAttribute('data-frmdb-theme-styles')||'{}');
+        let styleAttrValue = el.getAttribute('style') || '';
+        for (let [styleProp, styleVal] of Object.entries(themeStyles)) {
+            // (el as HTMLElement).style.removeProperty(styleProp);
+            //workaround for https://github.com/jsdom/jsdom/issues/1895
+            styleAttrValue = styleAttrValue.replace(new RegExp(`${styleProp}\\s*:\\s*${styleVal}\\s*;?`), '');
         }
+        el.setAttribute('style', styleAttrValue);
+        el.removeAttribute('data-frmdb-theme-styles');
     }
-}
 
-
-export function __old__translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: _old_ThemeRules, parentSelectorOpt = '') {
-    let parentSelector = parentSelectorOpt || '';
-    let wnd = getWindow(rootEl);
-    for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
-        for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {
-            if (rule.addClasses) {
-                //TODO cleanup any previous theme
-                el.classList.add(...rule.addClasses);
-            }
-            if (rule.addStyles) {
-                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) {
-                    el.style[styleProp] = styleVal;
-                }
-            }
-            if (rule.addCssVars) {
-                for (let varToAdd of Object.entries(rule.addCssVars)) {
-                    el.style.setProperty(varToAdd[0], varToAdd[1]);
-                }
-            }
-            if (rule.addAttributes) {
-                for (let attrToAdd of Object.entries(rule.addAttributes)) {
-                    el.setAttribute(attrToAdd[0], attrToAdd[1]);
-                    if (attrToAdd[0] === "data-aos") {
-                        debouncedAOSRefreshHard(wnd);
-                    }
-                }
-            }
+    for (let el of Array.from(rootEl.querySelectorAll('[data-frmdb-theme-attributes]'))) {
+        let themeAttributes = JSON.parse(el.getAttribute('data-frmdb-theme-attributes')||'{}');
+        for (let [attrName, attrVal] of Object.entries(themeAttributes)) {
+            el.removeAttribute(attrName);
         }
-    }
-}
-
-export function __old__unloadThemeRules(rootEl: Document | ShadowRoot | HTMLElement, themeRules: _old_ThemeRules, parentSelectorOpt = '') {
-    let parentSelector = parentSelectorOpt || '';
-    for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
-        for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {
-            if (rule.addClasses) {
-                //TODO cleanup any previous theme
-                el.classList.remove(...rule.addClasses);
-            }
-            if (rule.addStyles) {
-                for (let [styleProp, styleVal] of Object.entries(rule.addStyles)) {
-                    el.style.removeProperty(styleProp);
-                }
-            }
-            if (rule.addCssVars) {
-                for (let varToAdd of Object.entries(rule.addCssVars)) {
-                    el.style.removeProperty(varToAdd[0]);
-                }
-            }
-        }
+        el.removeAttribute('data-frmdb-theme-attributes');
     }
 }
 
