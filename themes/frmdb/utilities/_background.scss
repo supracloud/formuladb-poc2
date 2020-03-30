@@ -130,7 +130,8 @@ $svg-images-map: (
 
                 @each $img3Name in (divider-slope) {
                     .frmdb-bg--#{$img1Name}--#{$img2Name}--#{$img3Name} {
-                        --frmdb-bg-img-3: #{map-get($color-2-map, $img2Name)};
+                        --frmdb-bg-img-2: #{map-get($color-2-map, $img2Name)};
+                        --frmdb-bg-img-3: #{map-get($color-2-map, $img3Name)};
                     }
                 }
             }
