@@ -119,8 +119,7 @@ $svg-images-map: (
     @include add-bg-classes($color-images-map);
 
     @each $percent in 50, 75 {
-        $tintColor: mix($dark, $value);
-        $bgColor: rgba(red($tintColor), green($tintColor), blue($tintColor), $percent/100);
+        $bgColor: rgba(red($value), green($value), blue($value), $percent/100);
         $color-tint-images-map: (
             #{$color}-solid-tint-#{$percent}: linear-gradient($bgColor, $bgColor, $bgColor),
             #{$color}-gradient-tint-#{$percent}: linear-gradient(180deg, mix($body-bg, $bgColor, 15%), $value),
