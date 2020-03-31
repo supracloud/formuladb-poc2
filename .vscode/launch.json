@@ -87,6 +87,30 @@
                 "<node_internals>/**/*.js",
             ],
             "trace": true
-        }
-    ]
+        },
+        {
+            "name": "cli",
+            "type": "node",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect=0.0.0.0:9232"
+            ],
+            "env": {
+                "DEBUG": "formuladb:*"
+            },
+            "protocol": "inspector",
+            "port": 9232,
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceFolder}/dist-be/frmdb-cli.js",
+            "args": [
+                "${relativeFile}"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/tsc-out/**/*.js",
+            ]
+        },
+    ],
 }

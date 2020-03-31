@@ -1,5 +1,5 @@
 {
-    ".frmdb-t-main-nav": {
+    "frmdb-t-main-nav": {
         "addClasses": [
             "fixed-top",
             "row",
@@ -12,7 +12,7 @@
             "justify-content-center"
         ]
     },
-    ".frmdb-t-main-nav .navbar": {
+    "frmdb-t-main-nav .navbar": {
         "addClasses": [
             "navbar-dark",
             "navbar-expand-lg",
@@ -20,12 +20,12 @@
             "col-lg-8"
         ]
     },
-    ".frmdb-t-cover": {
+    "frmdb-t-cover": {
         "addClasses": [
             "frmdb-transform-preserve-3d"
         ]
     },
-    ".frmdb-t-cover .frmdb-t-main": {
+    "frmdb-t-cover frmdb-t-main": {
         "addClasses": [
             "min-vh-100",
             "d-flex",
@@ -37,13 +37,13 @@
             "px-3"
         ]
     },
-    ".frmdb-t-cover .frmdb-t-main .jumbotron": {
+    "frmdb-t-cover frmdb-t-main .jumbotron": {
         "addClasses": [
             "col-12",
             "col-lg-8"
         ]
     },
-    ".frmdb-t-cover .frmdb-t-aside": {
+    "frmdb-t-cover frmdb-t-aside": {
         "addClasses": [
             "container",
             "p-0",
@@ -51,7 +51,7 @@
             "mt-n5"
         ]
     },
-    ".frmdb-t-cover .frmdb-t-aside > *": {
+    "frmdb-t-cover frmdb-t-aside > *": {
         "addClasses": [
             "m-3",
             "border",
@@ -59,7 +59,7 @@
             "border-primary"
         ]
     },
-    ".frmdb-t-header": {
+    "frmdb-t-header": {
         "addClasses": [
             "min-vh-50",
             "overflow-hidden",
@@ -88,12 +88,12 @@
             "justify-content-around"
         ]
     },
-    ".frmdb-t-card-deck": {
+    "frmdb-t-card-deck": {
         "addClasses": [
             "card-deck"
         ]
     },
-    ".frmdb-t-card-media-main": {
+    "frmdb-t-card-media-main": {
         "addClasses": [
             "frmdb-card-img-7",
             "card",
@@ -101,7 +101,7 @@
             "d-grid"
         ]
     },
-    ".frmdb-t-card-media-main .frmdb-t-img": {
+    "frmdb-t-card-media-main frmdb-t-img": {
         "addClasses": [
             "frmdb-bg-1",
             "frmdb-bg-cover",
@@ -109,7 +109,7 @@
             "h-100"
         ]
     },
-    ".frmdb-t-card-media-main .card-body": {
+    "frmdb-t-card-media-main .card-body": {
         "addClasses": [
             "text-center",
             "border",
@@ -125,7 +125,7 @@
             "grid-justify-self-center"
         ]
     },
-    ".frmdb-t-card-media-main .frmdb-t-card-note": {
+    "frmdb-t-card-media-main frmdb-t-card-note": {
         "addClasses": [
             "text-center",
             "border",
@@ -140,7 +140,7 @@
             "grid-justify-self-center"
         ]
     },
-    ".frmdb-t-card-media-main .frmdb-t-card-action": {
+    "frmdb-t-card-media-main frmdb-t-card-action": {
         "addClasses": [
             "mt-n4",
             "mb-1",
@@ -148,14 +148,14 @@
             "grid-row-3-4"
         ]
     },
-    ".frmdb-t-card-media-main .frmdb-t-card-action a": {
+    "frmdb-t-card-media-main frmdb-t-card-action a": {
         "addClasses": [
             "btn",
             "btn-primary",
             "btn-lg"
         ]
     },
-    ".frmdb-t-media-section-main": {
+    "frmdb-t-media-section-main": {
         "addClasses": [
             "frmdb-section-dark",
             "py-5",
@@ -163,7 +163,7 @@
             "frmdb-bg-parallax"
         ]
     },
-    ".frmdb-t-section-cards-icon": {
+    "frmdb-t-section-cards-icon": {
         "addClasses": [
             "my-5",
             "py-5",
@@ -174,8 +174,9 @@
             "frmdb-bg-2-dark-solid-tint-75"
         ]
     },
-    ".frmdb-t-card-icon-main": {
+    "frmdb-t-card-icon-main": {
         "addClasses": [
+            "card",
             "border",
             "border-2",
             "border-primary",
@@ -183,7 +184,7 @@
             "frmdb-bg-dark-70"
         ]
     },
-    ".frmdb-t-card-icon-main i": {
+    "frmdb-t-card-icon-main i": {
         "addClasses": [
             "text-primary",
             "m-2"

@@ -3,16 +3,16 @@ $cards-per-line-3: (xs: 1, sm: 2, md: 3, lg: 3, xl: 3);
 $cards-per-line-4: (xs: 1, sm: 2, md: 3, lg: 4, xl: 4);
 $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
 
-.frmdb-t-card-deck {
+frmdb-t-card-deck {
     display: grid;
     grid-template-rows: auto 1fr auto;
     grid-column-gap: $card-spacer-x;
     grid-auto-flow: column;
 }
-.frmdb-t-card-media-main {
+frmdb-t-card-media-main {
     display: contents;
 
-    .frmdb-t-img img {
+    frmdb-t-img img {
         height: 100%;
         object-fit: cover;
     }
@@ -21,40 +21,40 @@ $cards-per-line-5: (xs: 1, sm: 2, md: 3, lg: 4, xl: 5);
 @each $name, $breakpoint in $grid-breakpoints {
     @media (min-width: $breakpoint) {
 
-        .frmdb-t-card-deck.frmdb-cards-2 {
+        frmdb-t-card-deck.frmdb-cards-2 {
             $cards-per-line: map-get($cards-per-line-2, $name);
             grid-template-columns: repeat($cards-per-line, 1fr);
 
             @for $i from 1 through $cards-per-line {
-                > .frmdb-t-card-media-main:nth-child(#{$cards-per-line}n+#{$i}) > * {
+                > frmdb-t-card-media-main:nth-child(#{$cards-per-line}n+#{$i}) > * {
                     grid-column: $i / span 1;
                 }
             }
         }
-        .frmdb-t-card-deck.frmdb-cards-3 {
+        frmdb-t-card-deck.frmdb-cards-3 {
             $cards-per-line: map-get($cards-per-line-3, $name);
             grid-template-columns: repeat($cards-per-line, 1fr);
 
             @for $i from 1 through $cards-per-line {
-                > .frmdb-t-card-media-main:nth-child(#{$cards-per-line}n+#{$i}) > * {
+                > frmdb-t-card-media-main:nth-child(#{$cards-per-line}n+#{$i}) > * {
                     grid-column: $i / span 1;
                 }
             }
         }
-        .frmdb-t-card-deck.frmdb-cards-4 {
+        frmdb-t-card-deck.frmdb-cards-4 {
             $cards-per-line: map-get($cards-per-line-4, $name);
             grid-template-columns: repeat($cards-per-line, 1fr);
 
             @for $i from 1 through $cards-per-line {
-                > .frmdb-t-card-media-main:nth-child(#{$cards-per-line}n+#{$i}) > * {
+                > frmdb-t-card-media-main:nth-child(#{$cards-per-line}n+#{$i}) > * {
                     grid-column: $i / span 1;
                 }
             }
         }
-        .frmdb-t-card-deck.frmdb-cards-5 {
+        frmdb-t-card-deck.frmdb-cards-5 {
             $cards-per-line: map-get($cards-per-line-5, $name);
             grid-template-columns: repeat($cards-per-line, 1fr);
-            > .frmdb-t-card-media-main > * {
+            > frmdb-t-card-media-main > * {
                 grid-column: counter(frmdb_t_card_deck_counter) / span 1;
             }
         }

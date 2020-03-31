@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import { cleanupDocumentDOM } from "@core/page-utils";
 
 export function replaceCssClassWithTag(filePath: string, name: string) {
-    let html = fs.readFileSync(process.argv[1]).toString();
+    let html = fs.readFileSync(filePath).toString();
     const jsdom = new JSDOM(html, {}, {
         features: {
             'FetchExternalResources': false,
@@ -20,8 +20,10 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
         for (let attr of Array.from(el.attributes)) {
             newEl.setAttribute(attr.name, attr.value);
         }
+        newEl.classList.remove(name);
         el.parentElement!.replaceChild(newEl, el);
     }
 
-    fs.writeFileSync(filePath, htmlTools.document2html(cleanedUpDOM));
+    let newHtml = htmlTools.document2html(cleanedUpDOM);
+    fs.writeFileSync(filePath, newHtml);
 }

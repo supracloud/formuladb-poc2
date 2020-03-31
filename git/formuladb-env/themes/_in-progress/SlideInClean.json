@@ -1,5 +1,5 @@
 {
-    ".frmdb-t-main-nav": {
+    "frmdb-t-main-nav": {
         "addClasses": [
             "container",
             "bg-white",
@@ -7,13 +7,13 @@
             "shadow"
         ]
     },
-    ".frmdb-t-main-nav .navbar": {
+    "frmdb-t-main-nav .navbar": {
         "addClasses": [
             "navbar-light",
             "navbar-expand-lg"
         ]
     },
-    ".frmdb-t-cover": {
+    "frmdb-t-cover": {
         "addClasses": [
             "min-vh-100",
             "overflow-hidden",
@@ -27,7 +27,7 @@
             "--frmdb-bg-img": "url(\"/formuladb-env/static/frmdb-apps/base-app/bg1.jpg\")"
         }
     },
-    ".frmdb-t-cover .frmdb-t-main": {
+    "frmdb-t-cover frmdb-t-main": {
         "addClasses": [
             "flex-grow-1",
             "d-flex",
@@ -35,13 +35,13 @@
             "justify-content-center"
         ]
     },
-    ".frmdb-t-cover .frmdb-t-aside": {
+    "frmdb-t-cover frmdb-t-aside": {
         "addClasses": [
             "container",
             "frmdb-section-dark"
         ]
     },
-    ".frmdb-t-cover .frmdb-t-aside > *": {
+    "frmdb-t-cover frmdb-t-aside > *": {
         "addClasses": [
             "m-3"
         ]
@@ -56,7 +56,7 @@
             "data-aos": "slideInUp"
         }
     },
-    ".frmdb-t-card-media-main": {
+    "frmdb-t-card-media-main": {
         "addClasses": [
             "border-0"
         ],
@@ -67,25 +67,25 @@
             "data-aos": "slideInLeft",
             "data-aos-once": "false"
         },
-        ".frmdb-t-card-media-main .frmdb-t-img": {
+        "frmdb-t-card-media-main frmdb-t-img": {
             "addStyles": {
                 "grid-row": "1 / 1",
                 "grid-column": "1 / 1"
             }
         },
-        ".frmdb-t-card-media-main .card-body": {
+        "frmdb-t-card-media-main .card-body": {
             "addClasses": [
                 "text-center"
             ]
         },
-        ".frmdb-t-card-media-main .frmdb-t-card-note": {
+        "frmdb-t-card-media-main frmdb-t-card-note": {
             "addClasses": [
                 "text-center",
                 "text-info",
                 "font-weight-bold"
             ]
         },
-        ".frmdb-t-card-media-main .frmdb-t-card-action": {
+        "frmdb-t-card-media-main frmdb-t-card-action": {
             "addStyles": {
                 "grid-row": "1 / 1",
                 "grid-column": "1 / 1",
@@ -96,7 +96,7 @@
                 "mb-2"
             ]
         },
-        ".frmdb-t-card-media-main .frmdb-t-card-action a": {
+        "frmdb-t-card-media-main frmdb-t-card-action a": {
             "addClasses": [
                 "btn",
                 "btn-primary",
@@ -104,8 +104,9 @@
             ]
         }
     },
-    ".frmdb-t-card-icon-main": {
+    "frmdb-t-card-icon-main": {
         "addClasses": [
+            "card",
             "border-light",
             "p-4",
             "bg-transparent"
