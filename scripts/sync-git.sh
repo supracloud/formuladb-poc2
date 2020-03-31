@@ -21,5 +21,6 @@ if [ -n "$(git status --porcelain)" ]; then
   #TODO make better conflict handling here!
   git push --set-upstream origin "${FRMDB_ENV_NAME}"
 else
+  git pull -Xtheirs
   echo "no changes";
 fi

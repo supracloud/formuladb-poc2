@@ -53,9 +53,10 @@
             "flex-column",
             "justify-content-center",
             "frmdb-bg-parallax",
+            "frmdb-section-dark",
             "frmdb-bg-2",
             "frmdb-bg-user",
-            "frmdb-bg-2-dark-solid-tint-50"
+            "frmdb-bg-2-dark-solid-tint-25"
         ]
     },
     ".jumbotron": {
