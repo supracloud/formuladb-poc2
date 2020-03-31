@@ -157,6 +157,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //////////////////////////////////////////////////////////////////////////////////////
     // apps
     //////////////////////////////////////////////////////////////////////////////////////
+    let formuladbEnvStatic = express.static('/wwwroot/git/formuladb-env');
 
     app.get('/', function (req, res, next) {
         res.redirect(makeUrlPath({
@@ -241,9 +242,14 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         res.send(css);
     });
 
-    let formuladbAppsStatic = express.static('/wwwroot/git/formuladb-env');
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        res.redirect(`${req.baseUrl}/formuladb-env/${req.params.tenant}/${req.params.app}/${req.params.fileName}`);
+    });
     app.get('/:tenant/:app/:name.yaml', function (req, res, next) {
-        formuladbAppsStatic(req, res, next);
+        formuladbEnvStatic(req, res, next);
+    });
+    app.get(/^\/formuladb-env\/.*\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$/, timeout('2s'), async function (req, res, next) {
+        formuladbEnvStatic(req, res, next);
     });
 
     //////////////////////////////////////////////////////////////////////////////////////

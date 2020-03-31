@@ -310,6 +310,17 @@ export class MetadataStore {
         //i18n texts are stored in $Dictionary table, not in the html page
         I18N_UTILS.cleanI18nTranslations(cleanedUpDOM);
 
+        //save favicon
+        {
+            let faviconIcon = cleanedUpDOM.querySelector('frmdb-icon#frmdb-nav-favicon');
+            if (faviconIcon) {
+                let iconName = faviconIcon.getAttribute("name");
+                if (iconName) {
+                    await execShell(`cp ${FRMDB_ENV_DIR}/icons/svg/${iconName}.svg ${FRMDB_ENV_DIR}/${tenantName}/${appName}/favicon.svg`);
+                }
+            }
+        }
+
         //<head> is managed like a special type of fragment
         {
             let headEl = cleanedUpDOM.querySelector('head');

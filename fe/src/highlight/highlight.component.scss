@@ -4,10 +4,10 @@
 
 :host(.is-at-top) {
     .actions.top { 
-        transform: translateY(0%); 
+        transform: translateX(10px) translateY(0%); 
     }
     .actions.left { 
-        transform: translateX(-25%) translateY(25%); 
+        transform: translateX(calc(min(-25%,-10px))) translateY(calc(max(25%,10px))); 
     }
 }
 
@@ -25,7 +25,7 @@
 
         &.top {
             top: 0;
-            transform: translateY(-100%);
+            transform: translateX(10px) translateY(-100%);
             left: 0;
             justify-content: left;
         }
