@@ -72,7 +72,7 @@ describe('KeyObjStoreI', () => {
         done();
     });
 
-    fit('run adHocQueries ' + KvsImplementation, async (done) => {
+    it('run adHocQueries ' + KvsImplementation, async (done) => {
         await kvt.put({ _id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1 });
         await kvt.put({ _id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2 });
         await kvt.put({ _id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3 });
