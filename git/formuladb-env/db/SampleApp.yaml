@@ -51,7 +51,7 @@ props:
         name: long_img
         propType_: IMAGE
         allowNull: false
-    order:
+    guiorder:
         name: _id
         propType_: STRING
         allowNull: false

@@ -5,7 +5,7 @@ props:
         name: _id
         propType_: STRING
         allowNull: false
-    order:
+    guiorder:
         name: _id
         propType_: STRING
         allowNull: false

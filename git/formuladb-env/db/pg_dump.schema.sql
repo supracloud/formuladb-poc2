@@ -170,7 +170,8 @@ ALTER TABLE public.t_user OWNER TO postgres;
 --
 
 CREATE TABLE public.tappcategory (
-    _id character varying NOT NULL COLLATE pg_catalog."C"
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    guiorder character varying
 );
 
 
@@ -428,7 +429,8 @@ CREATE TABLE public.tsampleapp (
     status character varying,
     call_to_action character varying,
     small_img character varying,
-    long_img character varying
+    long_img character varying,
+    guiorder character varying
 );
 
 
