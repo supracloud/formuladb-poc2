@@ -51,7 +51,15 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
         newEl.prepend(htmlTools.doc.createElement('frmdb-t-section-divider'));
         newEl.append(htmlTools.doc.createElement('frmdb-t-section-divider'));
         el.parentElement!.replaceChild(newEl, el);
-    }    
+    }
+
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll(`frmdb-t-main[style*="--frmdb-bg-img"]`))) {
+        let imgVar = el.getAttribute("style");
+        if (imgVar && (el.parentElement!.getAttribute("style")||'').indexOf('--frmdb-bg-img') < 0) {
+            el.parentElement!.setAttribute("style", imgVar);
+        }
+        el.removeAttribute('style');
+    }
 
     let newHtml = htmlTools.document2html(cleanedUpDOM);
     fs.writeFileSync(filePath, newHtml);

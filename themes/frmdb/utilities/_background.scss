@@ -84,6 +84,8 @@
     --frmdb-img-divider-slope-rv: #{str-replace(str-replace(str-replace(
             url("data:image/svg+xml,<svg x='0' y='0' viewBox='0 0 2560 100' preserveAspectRatio='none' version='1.1' xmlns='http://www.w3.org/2000/svg'><polygon fill='#fff' points='0 0 2560 0 0 100 0 0'></polygon></svg>")
         ,"#", "%23"),"<", "%3c"),">", "%3e")};
+    --frmdb-bg-img-2: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0),rgba(0,0,0,0));
+    --frmdb-bg-img-3: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0),rgba(0,0,0,0));
 }
 
 @mixin add-bg-classes($img-map) {
