@@ -29,7 +29,14 @@ export class TableService {
 
     public getTableRows(entityId: string, params: IGetRowsParams) {
         let req = params;
-        BACKEND_SERVICE().simpleAdHocQuery(entityId, req as SimpleAddHocQuery)
+        BACKEND_SERVICE().simpleAdHocQuery(entityId, {
+                    ...req,
+                    rowGroupCols: [],
+                    valueCols: [],
+                    pivotCols: [],
+                    pivotMode: false,
+                    groupKeys: [],                
+                } as SimpleAddHocQuery)
             .then((data: any[]) => {
                 console.log("%c <---- simpleAdHocQuery: ",
                     "color: green; font-size: 115%; font-weight: bold; text-decoration: underline;", data);

@@ -14,9 +14,7 @@ export class CreateSqlQuery {
         
     }
     public createSelectSql(req: SimpleAddHocQuery) {
-        let rowGroupCols = {};
-        let valueCols: any[] = [];
-        let groupKeys = [];
+        let {rowGroupCols, valueCols, groupKeys} = req;
         if (this.isDoingGrouping(rowGroupCols, groupKeys)) {
             let colsToSelect: string[] = [];
 
@@ -159,9 +157,9 @@ export class CreateSqlQuery {
 
     public createSqlQuery(tableName: string, request: SimpleAddHocQuery): string {
 
-        let rowGroupCols: any = {};
-        let valueCols: any[] = [];
-        let groupKeys = [];
+        let rowGroupCols = request.rowGroupCols;
+        let groupKeys = request.groupKeys;
+        let valueCols = request.valueCols;
         let filterModel = request.filterModel;
         let sortModel = request.sortModel;
 

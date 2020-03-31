@@ -21,11 +21,11 @@ declare var $: any;
 const DefaultSimpleAddHocQuery: SimpleAddHocQuery = {
     startRow: 0,
     endRow: 100,
-    // rowGroupCols: [],
-    // valueCols: [],
-    // pivotCols: [],
-    // pivotMode: false,
-    // groupKeys: [],
+    rowGroupCols: [],
+    valueCols: [],
+    pivotCols: [],
+    pivotMode: false,
+    groupKeys: [],
     filterModel: {},
     sortModel: [],
 };

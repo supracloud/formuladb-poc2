@@ -72,7 +72,7 @@ describe('KeyObjStoreI', () => {
         done();
     });
 
-    it('run adHocQueries ' + KvsImplementation, async (done) => {
+    fit('run adHocQueries ' + KvsImplementation, async (done) => {
         await kvt.put({ _id: 'o1', categ: 'C1', subcateg: 'sc1', val: 1 });
         await kvt.put({ _id: 'o2', categ: 'C1', subcateg: 'sc2', val: 2 });
         await kvt.put({ _id: 'o3', categ: 'C2', subcateg: 'sc1', val: 3 });
@@ -81,11 +81,11 @@ describe('KeyObjStoreI', () => {
         let query1: SimpleAddHocQuery = {
             startRow: 0,
             endRow: 10,
-            // rowGroupCols: [{ field: 'categ' }],
-            // valueCols: [{ field: 'val', aggFunc: "sum" }],
-            // pivotCols: [],
-            // pivotMode: false,
-            // groupKeys: [],
+            rowGroupCols: [{ field: 'categ' }],
+            valueCols: [{ field: 'val', aggFunc: "sum" }],
+            pivotCols: [],
+            pivotMode: false,
+            groupKeys: [],
             filterModel: {
                 val: { filterType: "number", type: "greaterThan", filter: "0" },
                 categ: { filterType: "text", type: "equals", filter: "C1" },

@@ -2,9 +2,7 @@ import { SimpleAddHocQuery, AggFunc, SimpleAddHocQueryFilterItem } from "@domain
 import * as _ from "lodash";
 
 export function simpleAdHocQueryOnArrayOfOBjects(query: SimpleAddHocQuery, objects: any[]): any[] {
-    let rowGroupCols: any = {};
-    let valueCols: any[] = [];
-    let groupKeys = [];
+    let { rowGroupCols, groupKeys, valueCols } = query;
 
     //First we filter the rows
     if (objects.length == 0) return [];
