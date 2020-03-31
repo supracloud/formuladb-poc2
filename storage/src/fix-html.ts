@@ -29,6 +29,30 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
         el.parentElement!.removeChild(el);
     }
 
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll(`section.my-5.py-5.frmdb-bg.frmdb-bg-parallax`))) {
+        let newEl = htmlTools.doc.createElement('frmdb-t-media-section-main');
+        newEl.innerHTML = el.innerHTML;
+        for (let attr of Array.from(el.attributes)) {
+            newEl.setAttribute(attr.name, attr.value);
+        }
+        newEl.removeAttribute("class");
+        newEl.prepend(htmlTools.doc.createElement('frmdb-t-section-divider'));
+        newEl.append(htmlTools.doc.createElement('frmdb-t-section-divider'));
+        el.parentElement!.replaceChild(newEl, el);
+    }
+    
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll(`section.my-5.py-5.frmdb-section-dark.frmdb-bg-tint-parallax.frmdb-bg-tint-secondary-75`))) {
+        let newEl = htmlTools.doc.createElement('frmdb-t-section-cards-icon');
+        newEl.innerHTML = el.innerHTML;
+        for (let attr of Array.from(el.attributes)) {
+            newEl.setAttribute(attr.name, attr.value);
+        }
+        newEl.removeAttribute("class");
+        newEl.prepend(htmlTools.doc.createElement('frmdb-t-section-divider'));
+        newEl.append(htmlTools.doc.createElement('frmdb-t-section-divider'));
+        el.parentElement!.replaceChild(newEl, el);
+    }    
+
     let newHtml = htmlTools.document2html(cleanedUpDOM);
     fs.writeFileSync(filePath, newHtml);
 }

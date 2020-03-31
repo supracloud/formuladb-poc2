@@ -33,9 +33,7 @@
         </div>
         <div class="card-deck">
             <frmdb-t-card-media-main style="display: grid;">
-                <frmdb-t-img class="overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card1.jpg" alt="">
-                </frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card1.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 1 title</h5>
                     <h6>Card 1 subtitle</h6>
@@ -51,9 +49,7 @@
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main>
-                <frmdb-t-img class="overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card2.jpg" alt="">
-                </frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card2.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 2 title</h5>
                     <h6>Card 2 subtitle</h6>
@@ -69,9 +65,7 @@
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main>
-                <frmdb-t-img class="overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card3.jpg" alt="">
-                </frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card3.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 3 title</h5>
                     <h6>Card 3 subtitle</h6>
@@ -87,9 +81,7 @@
                 </frmdb-t-card-note>
             </frmdb-t-card-media-main>
             <frmdb-t-card-media-main>
-                <frmdb-t-img class="overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/base-app/static/card4.jpg" alt="">
-                </frmdb-t-img>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/card4.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 4 title</h5>
                     <h6>Card 4 subtitle</h6>
@@ -106,7 +98,8 @@
             </frmdb-t-card-media-main>
         </div>
     </section>
-    <section class="my-5 py-5 frmdb-bg frmdb-bg-parallax" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg-right.jpg')">
+    <frmdb-t-media-section-main style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg-right.jpg')">
+        <frmdb-t-section-divider></frmdb-t-section-divider>
         <div class="container">
             <div class="row">
                 <div class="jumbotron col-md-5">
@@ -117,7 +110,8 @@
                 </div>
             </div>
         </div>
-    </section>
+        <frmdb-t-section-divider></frmdb-t-section-divider>
+    </frmdb-t-media-section-main>
     <section class="container py-5 my-5">
         <div class="row">
             <div class="col">
@@ -131,7 +125,8 @@
             </div>
         </div>
     </section>
-    <section class="my-5 py-5 frmdb-section-dark frmdb-bg-tint-parallax frmdb-bg-tint-secondary-75" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg3.jpg')">
+    <frmdb-t-section-cards-icon style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg3.jpg')">
+        <frmdb-t-section-divider></frmdb-t-section-divider>
         <div class="section_title text-center">
             <h2>Cards with Icons</h2>
             <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur.</p>
@@ -179,7 +174,8 @@
                 </frmdb-t-card-icon-main>
             </div>
         </div>
-    </section>
+        <frmdb-t-section-divider></frmdb-t-section-divider>
+    </frmdb-t-section-cards-icon>
     <section class="container py-5 my-5">
         <div class="row">
             <div class="col text-center d-flex flex-column justify-content-center">
