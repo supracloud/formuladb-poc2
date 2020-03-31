@@ -24,6 +24,11 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
         el.parentElement!.replaceChild(newEl, el);
     }
 
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll(`frmdb-t-img > img`))) {
+        el.parentElement!.setAttribute("style", `--frmdb-bg-img: url('${el.getAttribute("src")}')`);
+        el.parentElement!.removeChild(el);
+    }
+
     let newHtml = htmlTools.document2html(cleanedUpDOM);
     fs.writeFileSync(filePath, newHtml);
 }

@@ -4,11 +4,11 @@
     <title>FormulaDB Themes</title>
 </head>
 <body data-frmdb-theme="Comfort" class="text-center frmdb-editor-normal">
-    <div class="frmdb-t-main-nav container bg-white fixed-top shadow">
+    <frmdb-t-main-nav class="container bg-white fixed-top shadow">
         <div data-frmdb-fragment="_nav.html"></div>
-    </div>
-    <header class="frmdb-t-cover min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/summer-villa/static/50e9d4434a5ab108f5d08460962936771d3edce4524c704c7d2f72d49f4dc651_1280.jpg&quot;);">
-        <div class="frmdb-t-main flex-grow-1 d-flex flex-column justify-content-center" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/summer-villa/static/50e9d4434a5ab108f5d08460962936771d3edce4524c704c7d2f72d49f4dc651_640.jpg&quot;);">
+    </frmdb-t-main-nav>
+    <frmdb-t-cover class="min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/summer-villa/static/50e9d4434a5ab108f5d08460962936771d3edce4524c704c7d2f72d49f4dc651_1280.jpg&quot;);">
+        <frmdb-t-main class="flex-grow-1 d-flex flex-column justify-content-center" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/summer-villa/static/50e9d4434a5ab108f5d08460962936771d3edce4524c704c7d2f72d49f4dc651_640.jpg&quot;);">
             <div class="jumbotron w-100 text-center bg-transparent">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
                 <h1 class="display-4" data-i18n="en">summer villa</h1>
@@ -16,67 +16,67 @@
                     <br>it would be good to keep it under two lines of text
                 </p>
             </div>
-        </div>
-        <div class="frmdb-t-aside container frmdb-section-dark">
+        </frmdb-t-main>
+        <frmdb-t-aside class="container frmdb-section-dark">
             <div data-frmdb-fragment="_form.html"></div>
-        </div>
-    </header>
+        </frmdb-t-aside>
+    </frmdb-t-cover>
     <section class="container py-5 text-center">
         <div class="text-center mb-5">
             <h2 data-i18n="en">discover our villa</h2>
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
         <div class="card-deck">
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/52e3d2404a55a414f6da8c7dda79367f1c37dfe752506c4870277bdd964cc05cb1_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">relaxing at the pool</h5>
                     <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">BOOK A SUNBED</a>
-                </div>
-                <div class="frmdb-t-card-note"></div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">BOOK A SUNBED</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note></frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/52e4d4454f53a914f6da8c7dda79367f1c37dfe752506c4870277bdd964cc05cb1_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">which room do you prefer?</h5>
                     <p data-i18n="en">Integer sit amet nisi viverra, pharetra</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">SEE THE ROOMS</a>
-                </div>
-                <div class="frmdb-t-card-note"></div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">SEE THE ROOMS</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note></frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/52e4dc4a4f50b108f5d08460962936771d3edce4524c704c7d2f72d49f49c350_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">fresh menu daily</h5>
                     <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">SEE THE MENU</a>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">SEE THE MENU</a>
+                </frmdb-t-card-action>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/5fe0d0464f55b108f5d08460962936771d3edce4524c704c7d2f72d49f48c451_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">enjoy the sea view terrace</h5>
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">MORE PHOTOS</a>
-                </div>
-            </div>
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">MORE PHOTOS</a>
+                </frmdb-t-card-action>
+            </frmdb-t-card-media-main>
         </div>
     </section>
     <h2 data-i18n="en">a gourgeous place to enjoy your vacation</h2>
@@ -104,45 +104,45 @@
         </div>
         <div class="container">
             <div class="card-deck frmdb-cards-3">
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4>
                         <frmdb-icon name="fontawesome-solid-utensils-cutlery-dining-dinner-eat-food-fork-knife-restaurant"></frmdb-icon> Food
                     </h4>
                     <p>Integer placerat id risus imperdiet molestie. Donec tempor a tellus at vehicula.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4>
                         <frmdb-icon name="fontawesome-solid-biking-bicycle-bike-cycle-cycling-ride-wheel"></frmdb-icon> Sports
                     </h4>
                     <p>Maecenas tempor erat eget ornare vulputate. Praesent sem mauris, varius ornare mattis ac, iaculis eget neque.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4>
                         <frmdb-icon name="fontawesome-solid-car-auto-automobile-sedan-transportation-travel-vehicle"></frmdb-icon> Auto
                     </h4>
                     <p>Maecenas at maximus nisi, at porttitor libero. Morbi imperdiet, sem a maximus posuere, urna sem placerat libero, at accumsan nisi metus
                         eu nulla.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4>
                         <frmdb-icon name="fontawesome-solid-tv-computer-display-monitor-television"></frmdb-icon> TV
                     </h4>
                     <p>In sodales feugiat pellentesque. Ut eget metus eget nunc commodo finibus. Cras mattis dolor sit amet lectus laoreet fermentum.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4>
                         <frmdb-icon name="fontawesome-solid-glass-martini-alt-alcohol-bar-beverage-drink-liquor"></frmdb-icon> Drinks
                     </h4>
                     <p>Aliquam dignissim et risus et sagittis. Donec eros nibh, finibus ut nulla vel, volutpat fermentum libero. Donec malesuada varius risus.
                     </p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-water-lake-liquid-ocean-sea-swim-wet"></frmdb-icon> pool
                     </h4>
                     <p>Etiam odio augue, sagittis vel quam quis, ultricies mollis mi. Fusce elementum ipsum a vehicula vehicula. Nulla lacinia vel erat in
                         tempus.</p>
-                </div>
+                </frmdb-t-card-icon-main>
             </div>
         </div>
     </section>
@@ -152,54 +152,54 @@
             <p data-i18n="en">Section lead paragraph, some text about the content described in this you section.</p>
         </div>
         <div class="card-deck">
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/55e3d3474c57b108f5d08460962936771d3edce4524c704c7d2f72d49f4dc651_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">wine tour with lunch</h5>
                     <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">BOOK A TOUR</a>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">BOOK A TOUR</a>
+                </frmdb-t-card-action>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/55e8d3474e54ae14f6da8c7dda79367f1c37dfe752506c4870277bdd9745c45bbf_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">flavours day trip in the city&nbsp;</h5>
                     <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">BOOK A TRIP</a>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">BOOK A TRIP</a>
+                </frmdb-t-card-action>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/52e1dd464f54ae14f6da8c7dda79367f1c37dfe752506c4870277bdd964cc55fba_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">botanical gardens tour&nbsp;</h5>
                     <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">BOOK A TOUR</a>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">BOOK A TOUR</a>
+                </frmdb-t-card-action>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/summer-villa/static/52e5d5464d57ae14f6da8c7dda79367f1c37dfe752506c4870277bdd9745c651b8_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <div class="card-body">
                     <h5 data-i18n="en">antique market</h5>
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="" data-i18n="en">SEE THE ADDRESS</a>
-                </div>
-            </div>
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)" data-i18n="en">SEE THE ADDRESS</a>
+                </frmdb-t-card-action>
+            </frmdb-t-card-media-main>
         </div>
     </section>
     <div data-frmdb-fragment="_footer.html"></div>

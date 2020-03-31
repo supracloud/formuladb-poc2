@@ -4,11 +4,11 @@
     <title>FormulaDB Themes</title>
 </head>
 <body data-frmdb-theme="Comfort" class="frmdb-editor-normal">
-    <div class="frmdb-t-main-nav container bg-white fixed-top shadow">
+    <frmdb-t-main-nav class="container bg-white fixed-top shadow">
         <div data-frmdb-fragment="_nav.html"></div>
-    </div>
-    <header class="frmdb-t-cover min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/apollo-medical-center/static/54e3d64b4b57a814f6da8c7dda79367f1c37dfe752506c4870277ad5974dc25cbc_1280.jpg&quot;);">
-        <div class="frmdb-t-main flex-grow-1 d-flex flex-column justify-content-center" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg2.jpg')">
+    </frmdb-t-main-nav>
+    <frmdb-t-cover class="min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/apollo-medical-center/static/54e3d64b4b57a814f6da8c7dda79367f1c37dfe752506c4870277ad5974dc25cbc_1280.jpg&quot;);">
+        <frmdb-t-main class="flex-grow-1 d-flex flex-column justify-content-center" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg2.jpg')">
             <div class="jumbotron w-100 text-center bg-transparent">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
                 <h1 class="display-4">Title of website</h1>
@@ -17,11 +17,11 @@
                 </p>
                 <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
             </div>
-        </div>
-        <div class="frmdb-t-aside container frmdb-section-dark">
+        </frmdb-t-main>
+        <frmdb-t-aside class="container frmdb-section-dark">
             <div data-frmdb-fragment="_form.html"></div>
-        </div>
-    </header>
+        </frmdb-t-aside>
+    </frmdb-t-cover>
     <section class="container py-5 my-5">
         <div class="row">
             <div class="col">
@@ -44,45 +44,45 @@
         </div>
         <div class="container">
             <div class="card-deck frmdb-cards-3">
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-user-md-job-medical-nurse-occupation-physician-profile-surgeon"></frmdb-icon> Doctors
                     </h4>
                     <p>Integer placerat id risus imperdiet molestie. Donec tempor a tellus at vehicula.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-notes-medical-clipboard-doctor-ehr-health-history-records"></frmdb-icon> Patient records
                     </h4>
                     <p>Maecenas tempor erat eget ornare vulputate. Praesent sem mauris, varius ornare mattis ac, iaculis eget neque.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-hospital-alt-building-emergency_room-medical_center"></frmdb-icon>&nbsp;hospital equipment
                     </h4>
                     <p>Maecenas at maximus nisi, at porttitor libero. Morbi imperdiet, sem a maximus posuere, urna sem placerat libero, at accumsan nisi metus
                         eu nulla.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-procedures-EKG-bed-electrocardiogram-health-hospital-life-patient-vital"></frmdb-icon> medical procedures
                     </h4>
                     <p>In sodales feugiat pellentesque. Ut eget metus eget nunc commodo finibus. Cras mattis dolor sit amet lectus laoreet fermentum.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-x-ray-health-medical-radiological_images-radiology-skeleton"></frmdb-icon> x-rays
                     </h4>
                     <p>Aliquam dignissim et risus et sagittis. Donec eros nibh, finibus ut nulla vel, volutpat fermentum libero. Donec malesuada varius risus.
                     </p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h4 data-i18n="en">
                         <frmdb-icon name="fontawesome-solid-ambulance-emergency-emt-er-help-hospital-support-vehicle"></frmdb-icon> emergency
                     </h4>
                     <p>Etiam odio augue, sagittis vel quam quis, ultricies mollis mi. Fusce elementum ipsum a vehicula vehicula. Nulla lacinia vel erat in
                         tempus.</p>
-                </div>
+                </frmdb-t-card-icon-main>
             </div>
         </div>
     </section>

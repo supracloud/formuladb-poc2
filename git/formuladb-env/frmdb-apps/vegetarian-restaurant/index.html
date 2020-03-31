@@ -4,11 +4,11 @@
     <title>FormulaDB Themes</title>
 </head>
 <body data-frmdb-theme="Comfort" class="frmdb-editor-preview frmdb-editor-normal" style="opacity: 1;">
-    <div class="frmdb-t-main-nav container bg-white fixed-top shadow">
+    <frmdb-t-main-nav class="container bg-white fixed-top shadow">
         <div data-frmdb-fragment="_nav.html"></div>
-    </div>
-    <header class="frmdb-t-cover min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/vegetarian-restaurant/static/57e0d0434253af14f6da8c7dda79367f1c37dfe752506c4870277bd7964ac258b1_1280.jpg&quot;);">
-        <div class="frmdb-t-main">
+    </frmdb-t-main-nav>
+    <frmdb-t-cover class="min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/vegetarian-restaurant/static/57e0d0434253af14f6da8c7dda79367f1c37dfe752506c4870277bd7964ac258b1_1280.jpg&quot;);">
+        <frmdb-t-main>
             <div class="jumbotron w-100 text-center bg-transparent" style="color: rgb(128, 128, 128);">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
                 <h1 class="display-4" data-i18n="en">great Restaurant</h1>
@@ -19,9 +19,9 @@
                 <a href="javascript:void(0)" class="btn btn-primary mx-auto" data-i18n="en">Reservation</a>
                 <a href="javascript:void(0)" class="btn btn-primary mx-auto" data-i18n="en">order online</a>
             </div>
-        </div>
-        <div class="frmdb-t-aside"></div>
-    </header>
+        </frmdb-t-main>
+        <frmdb-t-aside></frmdb-t-aside>
+    </frmdb-t-cover>
     <div data-frmdb-fragment="_form.html"></div>
     <section class="container py-5 text-center" style="color: rgb(128, 128, 128);">
         <h2 data-i18n="en">Discover the great restaurant</h2>
@@ -57,7 +57,7 @@
         <div class="container">
             <div class="row">
                 <div class="jumbotron col-md-5 w-100 text-center bg-transparent">
-                    <h2 data-i18n="en" style="color: rgb(255, 255, 255);" class="">our story</h2>
+                    <h2 data-i18n="en" style="color: rgb(255, 255, 255);">our story</h2>
                     <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at,
                         tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
                     <a class="btn btn-primary mx-auto" href="javascript:void(0)" data-i18n="en">read more</a>

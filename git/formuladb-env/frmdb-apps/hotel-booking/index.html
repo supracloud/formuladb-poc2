@@ -7,11 +7,11 @@
     <meta name="frmdb_display_date" content="">
 </head>
 <body data-frmdb-theme="Clean" class="frmdb-editor-normal">
-    <div class="frmdb-t-main-nav">
+    <frmdb-t-main-nav>
         <div data-frmdb-fragment="_nav.html"></div>
-    </div>
-    <header class="frmdb-t-cover" style="--frmdb-bg-img:url('/formuladb-env/frmdb-apps/hotel-booking/static/resort-906102_1920.jpg');">
-        <div class="frmdb-t-main" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/resort-906102_1920.jpg')">
+    </frmdb-t-main-nav>
+    <frmdb-t-cover style="--frmdb-bg-img:url('/formuladb-env/frmdb-apps/hotel-booking/static/resort-906102_1920.jpg');">
+        <frmdb-t-main style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/resort-906102_1920.jpg')">
             <div class="jumbotron">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
                 <h1 class="display-4">Relax And Enjoy</h1>
@@ -21,90 +21,84 @@
                 </p>
                 <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
             </div>
-        </div>
-        <div class="frmdb-t-aside">
+        </frmdb-t-main>
+        <frmdb-t-aside>
             <div data-frmdb-fragment="_form.html"></div>
-        </div>
-        <div class="frmdb-t-section-divider"></div>
-    </header>
+        </frmdb-t-aside>
+        <frmdb-t-section-divider></frmdb-t-section-divider>
+    </frmdb-t-cover>
     <section class="frmdb-section-light container py-5">
-        <div class="frmdb-t-section-divider"></div>
+        <frmdb-t-section-divider></frmdb-t-section-divider>
         <div class="text-center mb-5">
             <h2 id="thememediacards">Hotel Accomodation</h2>
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
-        <div class="frmdb-t-card-deck frmdb-cards-4">
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/room4.jpg')"></div>
+        <frmdb-t-card-deck class="frmdb-cards-4">
+            <frmdb-t-card-media-main>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/room4.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 1 title</h5>
                     <h6>Card 1 subtitle</h6>
                     <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
-                </div>
-                <div class="frmdb-t-card-note">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)">Action</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note>
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room3.jpg" alt="" class="">
-                </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/room3.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 2 title</h5>
                     <h6>Card 2 subtitle</h6>
                     <p>Integer sit amet nisi viverra, pharetra nibh vitae</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
-                </div>
-                <div class="frmdb-t-card-note">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)">Action</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note>
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room1.jpg" alt="" class="">
-                </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/room1.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 3 title</h5>
                     <h6>Card 3 subtitle</h6>
                     <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
-                </div>
-                <div class="frmdb-t-card-note">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)">Action</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note>
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/hotel-booking/static/room4.jpg" alt="" class="">
-                </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main>
+                <frmdb-t-img class="overflow-hidden" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/hotel-booking/static/room4.jpg')"></frmdb-t-img>
                 <div class="card-body">
                     <h5>Card 4 title</h5>
                     <h6>Card 4 subtitle</h6>
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
-                <div class="frmdb-t-card-action">
-                    <a href="javascript:void(0)" class="">Action</a>
-                </div>
-                <div class="frmdb-t-card-note">
+                <frmdb-t-card-action>
+                    <a href="javascript:void(0)">Action</a>
+                </frmdb-t-card-action>
+                <frmdb-t-card-note>
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-        </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+        </frmdb-t-card-deck>
     </section>
     <section class="my-5 py-5 frmdb-bg frmdb-bg-parallax" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/hotel-booking/static/palm-966994_1920.jpg&quot;);">
         <div class="container">
@@ -140,45 +134,45 @@
         </div>
         <div class="container">
             <div class="card-deck frmdb-cards-3">
-                <div class="frmdb-t-card-icon-main">
+                <frmdb-t-card-icon-main>
                     <h4>
                         <frmdb-icon name="fontawesome-solid-utensils-cutlery-dining-dinner-eat-food-fork-knife-restaurant"></frmdb-icon> Food
                     </h4>
                     <p>Integer placerat id risus imperdiet molestie. Donec tempor a tellus at vehicula.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main>
                     <h4>
                         <frmdb-icon name="fontawesome-solid-biking-bicycle-bike-cycle-cycling-ride-wheel"></frmdb-icon> Sports
                     </h4>
                     <p>Maecenas tempor erat eget ornare vulputate. Praesent sem mauris, varius ornare mattis ac, iaculis eget neque.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main>
                     <h4>
                         <frmdb-icon name="fontawesome-solid-car-auto-automobile-sedan-transportation-travel-vehicle"></frmdb-icon> Auto
                     </h4>
                     <p>Maecenas at maximus nisi, at porttitor libero. Morbi imperdiet, sem a maximus posuere, urna sem placerat libero, at accumsan nisi metus
                         eu nulla.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main>
                     <h4>
                         <frmdb-icon name="fontawesome-solid-tv-computer-display-monitor-television"></frmdb-icon> TV
                     </h4>
                     <p>In sodales feugiat pellentesque. Ut eget metus eget nunc commodo finibus. Cras mattis dolor sit amet lectus laoreet fermentum.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main>
                     <h4>
                         <frmdb-icon name="fontawesome-solid-glass-martini-alt-alcohol-bar-beverage-drink-liquor"></frmdb-icon> Drinks
                     </h4>
                     <p>Aliquam dignissim et risus et sagittis. Donec eros nibh, finibus ut nulla vel, volutpat fermentum libero. Donec malesuada varius risus.
                     </p>
-                </div>
-                <div class="frmdb-t-card-icon-main">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main>
                     <h4>
                         <frmdb-icon name="fontawesome-solid-building-apartment-business-city-company-office-work"></frmdb-icon> Building
                     </h4>
                     <p>Etiam odio augue, sagittis vel quam quis, ultricies mollis mi. Fusce elementum ipsum a vehicula vehicula. Nulla lacinia vel erat in
                         tempus.</p>
-                </div>
+                </frmdb-t-card-icon-main>
             </div>
         </div>
     </section>

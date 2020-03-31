@@ -4,11 +4,11 @@
     <title>FormulaDB Themes</title>
 </head>
 <body data-frmdb-theme="Comfort" class="frmdb-editor-normal">
-    <div class="frmdb-t-main-nav container bg-white fixed-top shadow">
+    <frmdb-t-main-nav class="container bg-white fixed-top shadow">
         <div data-frmdb-fragment="_nav.html"></div>
-    </div>
-    <header class="frmdb-t-cover min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/dental-health/static/53e6d647485bb108f5d08460962936771d3edce4524c704c7d2f7fdc9648c458_1280.jpg&quot;);">
-        <div class="frmdb-t-main flex-grow-1 d-flex flex-column justify-content-center" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg2.jpg')">
+    </frmdb-t-main-nav>
+    <frmdb-t-cover class="min-vh-100 overflow-hidden d-flex flex-column justify-content-between frmdb-bg-tint-parallax frmdb-bg-tint-secondary-50" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/dental-health/static/53e6d647485bb108f5d08460962936771d3edce4524c704c7d2f7fdc9648c458_1280.jpg&quot;);">
+        <frmdb-t-main class="flex-grow-1 d-flex flex-column justify-content-center" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg2.jpg')">
             <div class="jumbotron w-100 text-center bg-transparent">
                 <h6>Subtitle of app, can be a bit longer in words</h6>
                 <h1 class="display-4" data-i18n="en">Dental health</h1>
@@ -17,157 +17,157 @@
                 </p>
                 <a href="javascript:void(0)" class="btn btn-primary mx-auto">Call To Action</a>
             </div>
-        </div>
-    </header>
+        </frmdb-t-main>
+    </frmdb-t-cover>
     <section class="container py-5">
         <div class="text-center mb-5">
             <h2 data-i18n="en">who we are and what we recommend</h2>
             <p>Section lead paragraph, some text about the content described in this section.</p>
         </div>
         <div class="card-deck">
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/dental-health/static/54e0d44a4e50ac14f6da8c7dda79367f1c37dfe752506c4870277bd09648c651b0_640.jpg" alt="" style="height: 152.319px;" class="">
-                </div>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/dental-health/static/54e0d44a4e50ac14f6da8c7dda79367f1c37dfe752506c4870277bd09648c651b0_640.jpg" alt="" style="height: 152.319px;">
+                </frmdb-t-img>
                 <h5 data-i18n="en" spellcheckker="false">MEET THE EXPERTS</h5>
                 <div class="card-body">
                     <h5 data-i18n="en"></h5>
                     <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span class="text-center">INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
                 <img src="/formuladb-env/frmdb-apps/dental-health/static/57e6d64a4c5aaf14f6da8c7dda79367f1c37dfe752506c4870277bd09f4cc059b8_640.jpg" alt="">
-                <div class="frmdb-t-img overflow-hidden"></div>
+                <frmdb-t-img class="overflow-hidden"></frmdb-t-img>
                 <h5 data-i18n="en">special treatments</h5>
                 <div class="card-body">
                     <p data-i18n="en">Integer sit amet nisi viverra</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/dental-health/static/53e2d4464f53b108f5d08460962936771d3edce4524c704c7d2f7fdc964acd58_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <h5 data-i18n="en" class="text-center">family card</h5>
                 <div class="card-body">
                     <p data-i18n="en">Curabitur suscipit, massa eu maximus&nbsp;</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/dental-health/static/52e7d7404d51ab14f6da8c7dda79367f1c37dfe752506c4870277bd09f4ccc5eb1_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <h5 data-i18n="en" class="text-center
 ">advices for seniors</h5>
                 <div class="card-body">
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
         </div>
     </section>
     <section class="container py-5">
         <div class="text-center mb-5"></div>
         <div class="card-deck">
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/dental-health/static/57e8d3474350ad14f6da8c7dda79367f1c37dfe752506c4870277bd1974fc05aba_640.jpg" alt="" style="height: 152.319px;" class="">
-                </div>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/dental-health/static/57e8d3474350ad14f6da8c7dda79367f1c37dfe752506c4870277bd1974fc05aba_640.jpg" alt="" style="height: 152.319px;">
+                </frmdb-t-img>
                 <h5 data-i18n="en">dental technology</h5>
                 <div class="card-body">
                     <h5 data-i18n="en"></h5>
                     <p>Quisque ornare, quam a blandit malesuada</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span class="text-center">INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
                 <img src="/formuladb-env/frmdb-apps/dental-health/static/55e5d641435aad14f6da8c7dda79367f1c37dfe752506c4870277bd1974fc35db0_640.jpg" alt="">
                 <h5 data-i18n="en">dental technology</h5>
-                <div class="frmdb-t-img overflow-hidden"></div>
+                <frmdb-t-img class="overflow-hidden"></frmdb-t-img>
                 <div class="card-body">
                     <p data-i18n="en">Integer sit amet nisi viverra</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
                     <img src="/formuladb-env/frmdb-apps/dental-health/static/54e3d64a4b54a414f6da8c7dda79367f1c37dfe752506c4870277bd1974fc35db0_640.jpg" alt="">
-                </div>
+                </frmdb-t-img>
                 <h5 data-i18n="en" class="text-center">dental veneers care</h5>
                 <div class="card-body">
                     <p>Curabitur suscipit, massa eu maximus fringilla</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
-            <div class="frmdb-t-card-media-main border-0" style="display: grid;">
-                <div class="frmdb-t-img overflow-hidden">
-                    <img src="/formuladb-env/frmdb-apps/dental-health/static/55e6d3404957b108f5d08460962936771d3edce4524c704c7d2f7ed4964ac459_640.jpg" alt="" class="">
-                </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
+            <frmdb-t-card-media-main class="border-0" style="display: grid;">
+                <frmdb-t-img class="overflow-hidden">
+                    <img src="/formuladb-env/frmdb-apps/dental-health/static/55e6d3404957b108f5d08460962936771d3edce4524c704c7d2f7ed4964ac459_640.jpg" alt="">
+                </frmdb-t-img>
                 <h5 data-i18n="en" class="text-center
 ">before getting braces</h5>
                 <div class="card-body">
                     <p>Etiam porta magna eu rutrum rhoncus</p>
                 </div>
-                <div class="frmdb-t-card-action text-center">
+                <frmdb-t-card-action class="text-center">
                     <a href="javascript:void(0)">Action</a>
-                </div>
-                <div class="frmdb-t-card-note text-center">
+                </frmdb-t-card-action>
+                <frmdb-t-card-note class="text-center">
                     <span>INFO 
                         <small>info</small>
                     </span>
-                </div>
-            </div>
+                </frmdb-t-card-note>
+            </frmdb-t-card-media-main>
         </div>
     </section>
     <section class="my-5 py-5 frmdb-section-dark frmdb-bg-tint-parallax frmdb-bg-tint-secondary-75" style="--frmdb-bg-img:url(&quot;/formuladb-env/frmdb-apps/dental-health/static/54e5dd474854ac14f6da8c7dda79367f1c37dfe752506c4870277bd09f4cc059b8_1280.jpg&quot;);">
@@ -177,38 +177,38 @@
         </div>
         <div class="container">
             <div class="card-deck frmdb-cards-3">
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h5 data-i18n="en">dental implant</h5>
                     <p>Integer placerat id risus imperdiet molestie. Donec tempor a tellus at vehicula.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h5 data-i18n="en">
                          dental aesthetics</h5>
                     <p>Maecenas tempor erat eget ornare vulputate. Praesent sem mauris, varius ornare mattis ac, iaculis eget neque.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h5 data-i18n="en">
                          dental x-ray</h5>
                     <p>Maecenas at maximus nisi, at porttitor libero. Morbi imperdiet, sem a maximus posuere, urna sem placerat libero, at accumsan nisi metus
                         eu nulla.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h5 data-i18n="en">
                          surgery</h5>
                     <p>In sodales feugiat pellentesque. Ut eget metus eget nunc commodo finibus. Cras mattis dolor sit amet lectus laoreet fermentum.</p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h5 data-i18n="en">
                          orthodontic treatment</h5>
                     <p>Aliquam dignissim et risus et sagittis. Donec eros nibh, finibus ut nulla vel, volutpat fermentum libero. Donec malesuada varius risus.
                     </p>
-                </div>
-                <div class="frmdb-t-card-icon-main border-light p-4 bg-transparent">
+                </frmdb-t-card-icon-main>
+                <frmdb-t-card-icon-main class="border-light p-4 bg-transparent">
                     <h5 data-i18n="en">
                          paradontology</h5>
                     <p>Etiam odio augue, sagittis vel quam quis, ultricies mollis mi. Fusce elementum ipsum a vehicula vehicula. Nulla lacinia vel erat in
                         tempus.</p>
-                </div>
+                </frmdb-t-card-icon-main>
             </div>
         </div>
     </section>
