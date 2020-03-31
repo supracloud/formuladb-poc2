@@ -20,8 +20,8 @@ export async function applyTheme(themeRules: ThemeRules, rootEl: Document | Shad
 export function translateThemeRulesByReplacingClasses(rootEl: Document | ShadowRoot | HTMLElement, themeRules: ThemeRules, parentSelectorOpt = '') {
     let parentSelector = parentSelectorOpt || '';
     let wnd = getWindow(rootEl);
-    for (let [themeRuleSelector, rule] of (Object.entries(themeRules) as any)) {
-        for (let el of (rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`) as any)) {
+    for (let [themeRuleSelector, rule] of Object.entries(themeRules)) {
+        for (let el of Array.from(rootEl.querySelectorAll(`${parentSelector} ${themeRuleSelector}`))) {
             if (rule.addClasses) {
                 //TODO cleanup any previous theme
                 el.classList.add(...rule.addClasses);

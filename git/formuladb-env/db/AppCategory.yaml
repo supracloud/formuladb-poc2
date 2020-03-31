@@ -5,3 +5,7 @@ props:
         name: _id
         propType_: STRING
         allowNull: false
+    order:
+        name: _id
+        propType_: STRING
+        allowNull: false

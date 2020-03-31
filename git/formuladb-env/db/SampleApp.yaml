@@ -51,3 +51,7 @@ props:
         name: long_img
         propType_: IMAGE
         allowNull: false
+    order:
+        name: _id
+        propType_: STRING
+        allowNull: false

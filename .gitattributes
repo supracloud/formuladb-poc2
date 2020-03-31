@@ -11,3 +11,4 @@ static/**/*.svg filter=lfs diff=lfs merge=lfs -text
 icons/**/*.svg filter=lfs diff=lfs merge=lfs -text
 css/**.css filter=lfs diff=lfs merge=lfs -text
 **/*.svg filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text

@@ -1,11 +1,11 @@
-_id
-AppCategory~~010 Distribution
-AppCategory~~020 Booking & Appointments
-AppCategory~~030 Business Administration
-AppCategory~~040 Maintenance & Support
-AppCategory~~050 Design & Media
-AppCategory~~060 Medical & Health
-AppCategory~~070 Startup Management
-AppCategory~~080 Consulting
-AppCategory~~090 Sports & Fitness
-AppCategory~~100 Food & Travel
+_id,order
+AppCategory~~Distribution,010
+AppCategory~~Booking & Appointments,020
+AppCategory~~Business Administration,030
+AppCategory~~Maintenance & Support,040
+AppCategory~~Design & Media,050
+AppCategory~~Medical & Health,060
+AppCategory~~Startup Management,070
+AppCategory~~Consulting,080
+AppCategory~~Sports & Fitness,090
+AppCategory~~Food & Travel,100
