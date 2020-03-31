@@ -7,7 +7,7 @@ stages:
   - test_postgres
   - test_stress
   - test_api
-  - e2e_dev_env
+  # - e2e_dev_env
   - build_images_and_deploy_staging
   - e2e_staging
   - build_images_and_deploy_production
@@ -93,7 +93,7 @@ test_api:
     when: always    
   <<: *cache_node_modules_and_artifacts
 
-e2e_dev_env:
+.e2e_dev_env:
   stage: e2e_dev_env
   retry: 2
   script:
