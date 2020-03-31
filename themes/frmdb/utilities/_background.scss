@@ -115,7 +115,7 @@ $svg-images-map: (
 @each $color, $value in $theme-colors {
     $color-images-map: (
         #{$color}-solid: linear-gradient($value, $value, $value),
-        #{color}-gradient: linear-gradient(180deg, mix($body-bg, $value, 15%), $value),
+        #{$color}-gradient: linear-gradient(180deg, mix($body-bg, $value, 15%), $value),
     );
 
     @include add-bg-classes($color-images-map);
