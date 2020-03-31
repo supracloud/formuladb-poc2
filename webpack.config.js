@@ -62,14 +62,14 @@ configBe = {
     },
 };
 
-// configBeTools = {
-//     ...configBaseNode,
-//     entry: './tsc-out/test/src/load_test_data.js',
-//     output: {
-//         path: path.resolve(__dirname, 'dist-be'),
-//         filename: 'frmdb-be-load-test-data.js'
-//     },
-// };
+configFrmdbCli = {
+    ...configBaseNode,
+    entry: './tsc-out/storage/src/frmdb-cli.js',
+    output: {
+        path: path.resolve(__dirname, 'dist-be'),
+        filename: 'frmdb-cli.js'
+    },
+};
 
 // configDataGrid = {
 //     ...configBaseWeb,
@@ -100,7 +100,7 @@ configFe = {
 
 module.exports = [
     configBe,
-    // configBeTools,
+    configFrmdbCli,
     // configDataGrid, 
     configFe,
     // configFrmdbEditor
