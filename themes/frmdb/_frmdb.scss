@@ -19,6 +19,10 @@
     font-family: 'Font Awesome 5 Free';
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     --frmdb-editor-top-panel-height: 0px;

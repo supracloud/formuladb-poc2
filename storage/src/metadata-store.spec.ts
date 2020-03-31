@@ -164,6 +164,7 @@ describe('MetadataStore', () => {
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1 data-i18n-key="main content">contenu principal</h1>')
             .replace('<span>some footer</span>', '<span data-i18n-key="some footer">fr:some footer</span>')
             .replace('<input placeholder="some placeholder"', '<input placeholder="fr:some placeholder" data-i18n-key="some placeholder"')
+            .replace('<footer>', '<footer class="pt-4 bg-dark frmdb-section-dark" data-frmdb-theme-classes="pt-4 bg-dark frmdb-section-dark">')
             ;
 
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithCleanThemeAndFrenchLang);
@@ -183,7 +184,8 @@ describe('MetadataStore', () => {
                 `class="jumbotron min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around" data-frmdb-theme-classes="min-vh-50 text-light frmdb-bg-dark-40 m-3 p-3 border border-2 border-primary text-center d-flex flex-column justify-content-around"`,
             )
             .replace('<h1 data-i18n-key="main content">main content IN OTHER LANGUAGE</h1>', '<h1>main content</h1>')
-            ;
+            .replace('<footer>', '<footer class="pt-4 bg-dark frmdb-section-dark" data-frmdb-theme-classes="pt-4 bg-dark frmdb-section-dark">')
+        ;
         let expectedNormalizedPage = htmlTools.normalizeHTMLDoc(expectedHtmlWithFramesTheme);
         expect(expectedNormalizedPage).toEqual(readPageHtmlNormalize);
     });

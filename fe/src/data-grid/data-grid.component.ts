@@ -139,6 +139,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         },
         defaultColDef: {
             width: 100,
+            sortable: true,
             headerComponentParams: { menuIcon: 'fa-bars' }
         },
         onRowDoubleClicked: (event: RowDoubleClickedEvent) => {

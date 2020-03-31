@@ -19,7 +19,7 @@ export function navigateTo(relativePathOrHref: string) {
     let existingSearch = window.location.search;
     let url = new URL(relativePathOrHref, window.location.href);
     let newHref = url.href + (url.search ? '' : existingSearch);
-    window.history.pushState({urlHref: newHref}, `FormulaDB: ${url.pathname}`, newHref);
+    window.history.pushState({ urlHref: newHref }, `FormulaDB: ${url.pathname}`, newHref);
     apply(oldPageOpts, url);
 }
 
@@ -31,14 +31,14 @@ export function navigateEditorToAppAndPage(appName: string, pageName: string, se
     navigateTo(`../${appName}/${pageName}.html${search}`);
 }
 
-const Validators: {[name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean} = {};
-const Handlers: {[name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void} = {};
-export function registerFrmdbEditorRouterHandler(name: string, 
+const Validators: { [name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean } = {};
+const Handlers: { [name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void } = {};
+export function registerFrmdbEditorRouterHandler(name: string,
     handler: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void,
     validator?: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean) {
 
-        Handlers[name] = handler;
-        if (validator) Validators[name] = validator;
+    Handlers[name] = handler;
+    if (validator) Validators[name] = validator;
 }
 
 function apply(oldPageOpts: PageOpts, url: URL) {
@@ -58,5 +58,6 @@ function validate(url: URL): boolean {
 }
 
 window.onpopstate = (event: PopStateEvent) => {
-    navigateTo(event.state.urlHref)
+    if (!event.state) { console.info("Navigation not intercepted by editor for ", event); return }
+    navigateTo(event.state.urlHref);
 };
