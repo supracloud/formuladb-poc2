@@ -389,7 +389,8 @@ CREATE TABLE public.troombooking (
     cost character varying,
     total_rooms character varying,
     booked_rooms numeric(12,5),
-    available_rooms numeric(12,5)
+    available_rooms numeric(12,5),
+    sadasd character varying
 );
 
 

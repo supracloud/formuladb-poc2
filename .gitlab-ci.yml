@@ -1,12 +1,11 @@
 stages:
   - build
-  - test_mem
-  - test_fe
+  - test
+  - test
   - bundle
   - build_images_and_deploy_dev
   - test_postgres
   - test_stress
-  - test_api
   # - e2e_dev_env
   - build_images_and_deploy_staging
   - e2e_staging
@@ -57,13 +56,13 @@ build_images_and_deploy_dev:
   <<: *cache_node_modules_and_artifacts
 
 test_mem:
-  stage: test_mem
+  stage: test
   script:
     - npm test
   <<: *cache_node_modules_and_artifacts
 
 test_fe:
-  stage: test_fe
+  stage: test
   script:
     - npm run test:fe
   <<: *cache_node_modules_and_artifacts

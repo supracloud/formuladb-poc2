@@ -20,7 +20,7 @@ import * as _ from 'lodash';
 import { waitUntil } from '@domain/ts-utils';
 
 import { elvis } from '@core/elvis';
-import { DataGridToolsComponent } from './data-grid-tools.component';
+import { TableEditorComponent } from '../table-editor/table-editor.component';
 import { DataGrid, TableColumn } from '@domain/uimetadata/node-elements';
 import { scalarFormulaEvaluate } from '@core/scalar_formula_evaluate';
 import { DataObj } from '@domain/metadata/data_obj';
@@ -135,7 +135,6 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         onGridSizeChanged: this.onGridSizeChanged.bind(this),
         components: {
             // agColumnHeader: TableHeaderComponent,
-            tableActionsToolPanel: DataGridToolsComponent,
         },
         defaultColDef: {
             width: 100,

@@ -5,6 +5,7 @@ import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { ServerEventNewEntity, ServerEventSetPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
 import { queryFormulaEditor, FormulaEditorComponent } from "@fe/formula-editor/formula-editor.component";
+import { queryTableEditor, TableEditorComponent } from "@fe/table-editor/table-editor.component";
 import { UserDeleteColumn, FrmdbAddPageElementStart } from "@fe/frmdb-user-events";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
@@ -480,6 +481,7 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             let dataGrid = queryDataGrid(document.body);
                             await dataGrid.initAgGrid();
+                            let tableEditor = queryTableEditor(document.body);
                             newColumnModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FRMDB_MODAL(newColumnModal, "hide");
 

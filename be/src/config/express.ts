@@ -245,6 +245,15 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
         res.redirect(`${req.baseUrl}/formuladb-env/${req.params.tenant}/${req.params.app}/${req.params.fileName}`);
     });
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/static/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        res.redirect(`${req.baseUrl}/formuladb-env/${req.params.tenant}/${req.params.app}/static/${req.params.fileName}`);
+    });    
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/static/:dirName/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        res.redirect(`${req.baseUrl}/formuladb-env/${req.params.tenant}/${req.params.app}/static/${req.params.dirName}/${req.params.fileName}`);
+    });    
+    app.get('/:lang-:look-:primary-:secondary-:theme/:tenant/:app/static/:dirName/:dirName2/:fileName([-_a-zA-Z0-9/]+\.(png|jpg|jpeg|svg|gif|webm|eot|ttf|woff|woff2|otf|css|js)$)', async function (req, res, next) {
+        res.redirect(`${req.baseUrl}/formuladb-env/${req.params.tenant}/${req.params.app}/static/${req.params.dirName}/${req.params.dirName2}/${req.params.fileName}`);
+    });    
     app.get('/:tenant/:app/:name.yaml', function (req, res, next) {
         formuladbEnvStatic(req, res, next);
     });
