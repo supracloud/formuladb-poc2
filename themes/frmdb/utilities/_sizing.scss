@@ -2,6 +2,9 @@
   .min-vh-#{$size}0 { min-height: #{$size}0vh !important; }
 }
 
+.m-w-0 {
+  min-width: 0;
+}
 
 // // .frmdb-vh-100 {
 // //     height: calc(100vh - var(--frmdb-editor-top-panel-height))
