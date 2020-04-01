@@ -178,26 +178,6 @@ CREATE TABLE public.tappcategory (
 ALTER TABLE public.tappcategory OWNER TO postgres;
 
 --
--- Name: tbooking; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.tbooking (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    guest character varying,
-    room character varying,
-    start_date character varying,
-    end_date character varying,
-    nb_adults numeric(12,5),
-    nb_children numeric(12,5),
-    days numeric(12,5),
-    cost character varying,
-    bookings_for_the_same_room character varying
-);
-
-
-ALTER TABLE public.tbooking OWNER TO postgres;
-
---
 -- Name: tcontactrequest; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -581,14 +561,6 @@ ALTER TABLE ONLY public.t_user
 
 ALTER TABLE ONLY public.tappcategory
     ADD CONSTRAINT tappcategory_pkey PRIMARY KEY (_id);
-
-
---
--- Name: tbooking tbooking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.tbooking
-    ADD CONSTRAINT tbooking_pkey PRIMARY KEY (_id);
 
 
 --
