@@ -77,6 +77,7 @@ export class KeyValueStorePostgres<VALUET> implements KeyValueStoreI<VALUET> {
     protected async createTable() {
         try {
             let query: string = 'CREATE TABLE IF NOT EXISTS ' + this.table_id + ' (_id VARCHAR COLLATE "C" NOT NULL PRIMARY KEY, val json)';
+            console.log(query);
             await this.getDB().any(query);
         } catch (err) {
             // When 2 or more workers are trying to create table on the same session
@@ -328,6 +329,7 @@ export class KeyTableStorePostgres<OBJT extends KeyValueObj> extends KeyObjStore
             CREATE TABLE IF NOT EXISTS ${this.table_id} (
                 ${Object.values(entity.props).map(p => this.prop2sqlCol(p)).join(",\n")}
             )`;
+        console.log(query);
         await this.getDB().any(query);
     }
     
