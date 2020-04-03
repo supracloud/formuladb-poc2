@@ -97,7 +97,8 @@
                 "--inspect=0.0.0.0:9232"
             ],
             "env": {
-                "DEBUG": "formuladb:*"
+                "DEBUG": "formuladb:*",
+                "FRMDB_ENV_ROOT_DIR": "/mnt/d/code/metawiz/febe/git",
             },
             "protocol": "inspector",
             "port": 9232,

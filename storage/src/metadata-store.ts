@@ -150,11 +150,11 @@ export class MetadataStore {
     public async getSchema(tenantName: string | null, appName: string | null): Promise<Schema | null> {
         let schemaNoEntities: SchemaEntityList;
         if (null == tenantName) {
-            let entityFiles = await this.listDir(`${FRMDB_ENV_DIR}/db`, /[A-Z].*\.html$/);
+            let entityFiles = await this.listDir(`${FRMDB_ENV_DIR}/db`, /[A-Z].*\.yaml$/);
 
             schemaNoEntities = {
                 _id: 'FRMDB_SCHEMA~~COMPLETE_DB',
-                entityIds: entityFiles.map(entityFile => entityFile.replace(/.*\//, '')),
+                entityIds: entityFiles.map(entityFile => entityFile.replace(/.*\//, '').replace(/\.yaml$/, '')),
             };
         }
         else {
@@ -173,7 +173,12 @@ export class MetadataStore {
             if (entityStr == '$Currency') return $Currency;
             if (entityStr == '$Dictionary') return $Dictionary;
 
-            return this.fromYaml(entityStr)
+            try {
+                return this.fromYaml(entityStr)
+            } catch (err) {
+                console.error("Cannot parse entity ", entityStr);
+                throw err;
+            }
         });
 
         let entitiesDictionary = entities.reduce((acc, ent, i) => {

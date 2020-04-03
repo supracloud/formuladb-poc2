@@ -10,6 +10,7 @@ export async function initDb(kvsFactory: KeyValueStoreFactoryI) {
     if (!schema) throw new Error("Cannot get schema");
 
     for (let entity of Object.values(schema.entities)) {
+        if (entity._id.indexOf('$') == 0) continue;
         let kvs = kvsFactory.createKeyTableS<DataObj>(entity);
         let csvSource: stream.Readable = await kvsFactory.metadataStore.getEntityBackupData(entity._id);
         await new Promise((resolve, reject) => {

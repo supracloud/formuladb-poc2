@@ -82,6 +82,47 @@ CREATE TABLE public.troom (
 ALTER TABLE public.troom OWNER TO postgres;
 
 --
+-- Name: troom_booking; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.troom_booking (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    guest character varying,
+    room_type character varying,
+    start_date character varying,
+    end_date character varying,
+    nb_adults numeric(12,5),
+    nb_children numeric(12,5),
+    days numeric(12,5),
+    cost character varying,
+    total_number_of_rooms character varying,
+    number_of_booked_rooms numeric(12,5),
+    number_of_available_rooms numeric(12,5)
+);
+
+
+ALTER TABLE public.troom_booking OWNER TO postgres;
+
+--
+-- Name: troom_type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.troom_type (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    name character varying,
+    description character varying,
+    picture character varying,
+    long_description character varying,
+    price numeric(12,5),
+    wifi character varying,
+    parking character varying,
+    total_number_of_rooms numeric(12,5)
+);
+
+
+ALTER TABLE public.troom_type OWNER TO postgres;
+
+--
 -- Name: troombooking; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -104,10 +145,10 @@ CREATE TABLE public.troombooking (
 ALTER TABLE public.troombooking OWNER TO postgres;
 
 --
--- Name: troomtype; Type: TABLE; Schema: public; Owner: postgres
+-- Name: troom_type; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.troomtype (
+CREATE TABLE public.troom_type (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     name character varying,
     description character varying,
@@ -120,7 +161,7 @@ CREATE TABLE public.troomtype (
 );
 
 
-ALTER TABLE public.troomtype OWNER TO postgres;
+ALTER TABLE public.troom_type OWNER TO postgres;
 
 --
 -- Name: t_dictionary t_dictionary_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -139,11 +180,27 @@ ALTER TABLE ONLY public.t_user
 
 
 --
+-- Name: troom_booking troom_booking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.troom_booking
+    ADD CONSTRAINT troom_booking_pkey PRIMARY KEY (_id);
+
+
+--
 -- Name: troom troom_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.troom
     ADD CONSTRAINT troom_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: troom_type troom_type_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.troom_type
+    ADD CONSTRAINT troom_type_pkey PRIMARY KEY (_id);
 
 
 --
@@ -155,10 +212,10 @@ ALTER TABLE ONLY public.troombooking
 
 
 --
--- Name: troomtype troomtype_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: troom_type troomtype_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.troomtype
+ALTER TABLE ONLY public.troom_type
     ADD CONSTRAINT troomtype_pkey PRIMARY KEY (_id);
 
 

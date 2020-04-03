@@ -31,8 +31,7 @@ import { initDb } from './frmdb-cli/init-db';
 
 require('yargs')
     .scriptName("frmdb-be")
-    .usage('$0 <cmd> [args]')
-    .command('start [opts]', 'start http server', (yargs) => {
+    .command(['start', '$0'], 'start http server', (yargs) => {
         yargs.option('port', {
             type: 'number',
             default: '3000',
@@ -70,6 +69,7 @@ async function startServer(port: number) {
         server.on('listening', () => {
             console.log('Server started on port ' + port);
             startGitSync();
+            startBackupDb();
         });
     } catch (ex) {
         console.error('error', ex), process.exit(1);
@@ -77,10 +77,17 @@ async function startServer(port: number) {
 }
 
 function startGitSync() {
-    console.log("Starting git-sync each 20 sec");
+    console.log("Starting git-sync each 5 sec");
     setInterval(() => {
         runCmd('bash', '/scripts/sync-git.sh');
-    }, 20000)
+    }, 5000)
+}
+
+function startBackupDb() {
+    console.log("Starting backup-db every hour");
+    setInterval(() => {
+        runCmd('bash', '/scripts/backup-db.sh');
+    }, 3600000)
 }
 
 var spawn = require('child_process').spawn;
