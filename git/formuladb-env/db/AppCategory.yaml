@@ -6,6 +6,6 @@ props:
         propType_: STRING
         allowNull: false
     guiorder:
-        name: _id
+        name: guiorder
         propType_: STRING
         allowNull: false

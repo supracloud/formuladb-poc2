@@ -27,7 +27,7 @@ import * as http from 'http';
 //FIXME: use this only for dev/test environment
 import { getKeyValueStoreFactory } from '@storage/key_value_store_impl_selector';
 import { fixHtml } from './frmdb-cli/fix-html';
-import { initDb } from './frmdb-cli/init-db';
+import { initTestDb } from './frmdb-cli/init-test-db';
 
 require('yargs')
     .scriptName("frmdb-be")
@@ -43,7 +43,7 @@ require('yargs')
     .command('init-db', 'initialize database from git lfs backup', {}, async (argv) => {
         try {
             let kvsFactory = await getKeyValueStoreFactory();
-            await initDb(kvsFactory);
+            await initTestDb(kvsFactory);
             console.log("finished db init");
         } catch (err) {
             console.error(err);
@@ -60,6 +60,11 @@ require('yargs')
 async function startServer(port: number) {
     try {
         let kvsFactory = await getKeyValueStoreFactory();
+
+        if (process.env.BUILD_DEVELOPMENT) {
+            await kvsFactory.clearAllForTestingPurposes();
+            await initTestDb(kvsFactory);
+        }
 
         // Init the express application
         const app = require('./config/express').default(kvsFactory);

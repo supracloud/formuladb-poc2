@@ -40,25 +40,6 @@
                     "endsPattern": "^\\s*\\d{1,2}:\\d{1,2}:\\d{1,2}(?: AM| PM)? - Compilation complete\\. Watching for file changes\\."
                 }
             }
-        },
-        {
-            "label": "watch-skaffold",
-            "command": "npm run skaffold",
-            "type": "shell",
-            "group": "none",
-            "isBackground": true
-        },
-        {
-            "label": "watch",
-            "command": "while true; do sleep 10; done",
-            "type": "shell",
-            "group": "none",
-            "isBackground": true,
-            "dependsOn":[
-                "watch-x-compile",
-                "watch-x-bundle",
-                "watch-skaffold"
-            ]
-        },
+        }
     ]
 }

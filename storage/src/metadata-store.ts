@@ -5,9 +5,6 @@ import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
 import * as _ from "lodash";
 import * as fs from 'fs';
-import * as zlib from 'zlib';
-import * as stream from 'stream';
-import * as parse from 'csv-parse';
 import * as util from 'util';
 const exists = util.promisify(fs.exists);
 
@@ -218,24 +215,6 @@ export class MetadataStore {
         let str = await this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;
-    }
-
-    public async getEntityBackupData(entityId: string): Promise<stream.Readable|null> {
-        let csvRawStream: stream.Readable;
-        if (process.env.BUILD_DEVELOPMENT) {
-            let hasData = await exists(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv`);
-            if (hasData) {
-                csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv`);
-            } else return null;
-        } else {
-            let source = fs.createReadStream(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv.gz`);
-            let gunzip = zlib.createGunzip();
-            stream.pipeline(source, gunzip);
-            csvRawStream = gunzip;
-        }
-        const csvParser = parse();
-        csvRawStream.pipe(csvParser);
-        return csvParser;
     }
 
     public async putEntity(entity: Entity): Promise<Entity> {
