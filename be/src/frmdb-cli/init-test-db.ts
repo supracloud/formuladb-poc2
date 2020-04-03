@@ -22,29 +22,14 @@ async function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
 
 export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
     try {
-        let csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/troom.csv`);
-
-        // Initialise the parser by generating random records
-        const parser = csvRawStream.pipe(
-            parse({ columns: true })
-        )
-        // Intialise count
-        let count = 0;
-        // Report start
-        process.stdout.write('start\n')
-        // Iterate through each records
-        for await (const record of parser) {
-            // Report current line
-            console.log(record);
-            // Fake asynchronous operation
-            await new Promise((resolve) => setTimeout(resolve, 100))
-        }
-        // Report end
-        process.stdout.write('...done\n')
+        let start = new Date();
+        console.log("loading test data start", start);
+        let nbRecords = 0;
 
         let schema = await kvsFactory.metadataStore.getSchema(null);
         if (!schema) throw new Error("Cannot get schema");
         let frmdbEngine = await getFrmdbEngine(schema);
+        await frmdbEngine.init();
 
         console.log("loading test data for schema", schema);
         for (let entity of Object.values(schema.entities)) {
@@ -60,11 +45,16 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
 
             let parser = csvRawStream.pipe(parse({ columns: true }));
             for await (const record of parser) {
+                // nbRecords++;
                 await putObj(frmdbEngine, record);
             }
 
             console.log("finished loading test data for entity", entity._id);
         }
+
+        let end = new Date();
+        console.log("loading test data end", new Date(), "nbRecords=" + nbRecords + " in " + ((end.getTime() - start.getTime())/1000) + "sec");
+
     } catch (err) {
         console.error(err);
         process.exit(1);
