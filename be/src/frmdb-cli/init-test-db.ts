@@ -32,6 +32,7 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
         await frmdbEngine.init();
 
         console.log("loading test data for schema", schema);
+        let records: any[] = [];
         for (let entity of Object.values(schema.entities)) {
             if (entity._id.indexOf('$') == 0) continue;
             console.log("loading test data for entity", entity._id);
@@ -45,12 +46,14 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
 
             let parser = csvRawStream.pipe(parse({ columns: true }));
             for await (const record of parser) {
-                // nbRecords++;
-                await putObj(frmdbEngine, record);
+                records.push(record);
             }
 
             console.log("finished loading test data for entity", entity._id);
         }
+
+        await Promise.all(records.map(r => putObj(frmdbEngine, r)));
+        nbRecords = records.length;
 
         let end = new Date();
         console.log("loading test data end", new Date(), "nbRecords=" + nbRecords + " in " + ((end.getTime() - start.getTime())/1000) + "sec");

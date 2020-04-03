@@ -19,6 +19,126 @@ SET row_security = off;
 SET default_tablespace = '';
 
 --
+-- Name: f_10010; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_10010 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_10010 OWNER TO postgres;
+
+--
+-- Name: f_10820; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_10820 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_10820 OWNER TO postgres;
+
+--
+-- Name: f_11552; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_11552 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_11552 OWNER TO postgres;
+
+--
+-- Name: f_12671; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_12671 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_12671 OWNER TO postgres;
+
+--
+-- Name: f_12849; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_12849 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_12849 OWNER TO postgres;
+
+--
+-- Name: f_4914; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_4914 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_4914 OWNER TO postgres;
+
+--
+-- Name: f_6844; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_6844 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_6844 OWNER TO postgres;
+
+--
+-- Name: f_808; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_808 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_808 OWNER TO postgres;
+
+--
+-- Name: f_9745; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_9745 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_9745 OWNER TO postgres;
+
+--
+-- Name: f_9829; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.f_9829 (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.f_9829 OWNER TO postgres;
+
+--
 -- Name: t_currency; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -67,6 +187,181 @@ CREATE TABLE public.t_user (
 
 
 ALTER TABLE public.t_user OWNER TO postgres;
+
+--
+-- Name: tappcategory; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tappcategory (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    guiorder character varying
+);
+
+
+ALTER TABLE public.tappcategory OWNER TO postgres;
+
+--
+-- Name: tcontactrequest; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tcontactrequest (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    email character varying,
+    comments character varying
+);
+
+
+ALTER TABLE public.tcontactrequest OWNER TO postgres;
+
+--
+-- Name: tinventoryorder; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tinventoryorder (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    sales_agent character varying,
+    creation_date character varying,
+    order_item_table character varying
+);
+
+
+ALTER TABLE public.tinventoryorder OWNER TO postgres;
+
+--
+-- Name: tinventoryproduct; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tinventoryproduct (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    code character varying,
+    barcode character varying,
+    name character varying,
+    description character varying,
+    inventory_location character varying
+);
+
+
+ALTER TABLE public.tinventoryproduct OWNER TO postgres;
+
+--
+-- Name: tinventoryproductunit; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tinventoryproductunit (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    code character varying,
+    product_code character varying,
+    product_name character varying,
+    inventory_location character varying,
+    serial1 character varying,
+    serial2 character varying,
+    serial3 character varying,
+    serial4 character varying,
+    serial5 character varying,
+    serial6 character varying,
+    serial7 character varying,
+    install_date character varying,
+    state character varying,
+    nb_piston_cycles character varying,
+    brita_counter character varying,
+    washing_cycles character varying
+);
+
+
+ALTER TABLE public.tinventoryproductunit OWNER TO postgres;
+
+--
+-- Name: tinventoryreceipt; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tinventoryreceipt (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    receipt_item_table character varying
+);
+
+
+ALTER TABLE public.tinventoryreceipt OWNER TO postgres;
+
+--
+-- Name: tlargesalesproduct; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tlargesalesproduct (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    product_id character varying,
+    product_name character varying,
+    large_sales_value numeric(12,5)
+);
+
+
+ALTER TABLE public.tlargesalesproduct OWNER TO postgres;
+
+--
+-- Name: tlargesalesreport; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tlargesalesreport (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    client character varying,
+    month character varying,
+    large_sales_product_table character varying
+);
+
+
+ALTER TABLE public.tlargesalesreport OWNER TO postgres;
+
+--
+-- Name: torderitem; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.torderitem (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    product_id character varying,
+    quantity numeric(12,5),
+    error_quantity numeric(12,5),
+    client_stock numeric(12,5),
+    units character varying
+);
+
+
+ALTER TABLE public.torderitem OWNER TO postgres;
+
+--
+-- Name: tproductlocation; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tproductlocation (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    product_id character varying,
+    location_code character varying,
+    category character varying,
+    received_stock__ numeric(12,5),
+    available_stock__ numeric(12,5),
+    ordered_stock__ numeric(12,5),
+    price numeric(12,5),
+    currency__ character varying,
+    minimal_stock numeric(12,5),
+    moving_stock numeric(12,5),
+    state character varying
+);
+
+
+ALTER TABLE public.tproductlocation OWNER TO postgres;
+
+--
+-- Name: treceiptitem; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.treceiptitem (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    product_id character varying,
+    quantity numeric(12,5),
+    price character varying,
+    units character varying
+);
+
+
+ALTER TABLE public.treceiptitem OWNER TO postgres;
 
 --
 -- Name: troom; Type: TABLE; Schema: public; Owner: postgres
@@ -123,45 +418,145 @@ CREATE TABLE public.troom_type (
 ALTER TABLE public.troom_type OWNER TO postgres;
 
 --
--- Name: troombooking; Type: TABLE; Schema: public; Owner: postgres
+-- Name: tsampleapp; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.troombooking (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    guest character varying,
-    room_type character varying,
-    start_date character varying,
-    end_date character varying,
-    nb_adults numeric(12,5),
-    nb_children numeric(12,5),
-    days numeric(12,5),
-    cost character varying,
-    total_number_of_rooms character varying,
-    number_of_booked_rooms numeric(12,5),
-    number_of_available_rooms numeric(12,5)
-);
-
-
-ALTER TABLE public.troombooking OWNER TO postgres;
-
---
--- Name: troom_type; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.troom_type (
+CREATE TABLE public.tsampleapp (
     _id character varying NOT NULL COLLATE pg_catalog."C",
     name character varying,
-    description character varying,
-    picture character varying,
-    long_description character varying,
-    price numeric(12,5),
-    wifi character varying,
-    parking character varying,
-    total_number_of_rooms numeric(12,5)
+    category character varying,
+    category2 character varying,
+    categories character varying,
+    app_url character varying,
+    short_description character varying,
+    wish_list_count numeric(12,5),
+    status character varying,
+    call_to_action character varying,
+    small_img character varying,
+    long_img character varying,
+    guiorder character varying
 );
 
 
-ALTER TABLE public.troom_type OWNER TO postgres;
+ALTER TABLE public.tsampleapp OWNER TO postgres;
+
+--
+-- Name: tvaggs_room_countif_room__room_type_______id___reduce; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tvaggs_room_countif_room__room_type_______id___reduce (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.tvaggs_room_countif_room__room_type_______id___reduce OWNER TO postgres;
+
+--
+-- Name: tvobs_room_type_countif_room__room_type_______id___map; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tvobs_room_type_countif_room__room_type_______id___map (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    val json
+);
+
+
+ALTER TABLE public.tvobs_room_type_countif_room__room_type_______id___map OWNER TO postgres;
+
+--
+-- Name: twishlistrequest; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.twishlistrequest (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    app character varying,
+    email character varying,
+    comments character varying
+);
+
+
+ALTER TABLE public.twishlistrequest OWNER TO postgres;
+
+--
+-- Name: f_10010 f_10010_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_10010
+    ADD CONSTRAINT f_10010_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_10820 f_10820_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_10820
+    ADD CONSTRAINT f_10820_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_11552 f_11552_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_11552
+    ADD CONSTRAINT f_11552_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_12671 f_12671_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_12671
+    ADD CONSTRAINT f_12671_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_12849 f_12849_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_12849
+    ADD CONSTRAINT f_12849_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_4914 f_4914_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_4914
+    ADD CONSTRAINT f_4914_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_6844 f_6844_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_6844
+    ADD CONSTRAINT f_6844_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_808 f_808_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_808
+    ADD CONSTRAINT f_808_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_9745 f_9745_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_9745
+    ADD CONSTRAINT f_9745_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: f_9829 f_9829_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.f_9829
+    ADD CONSTRAINT f_9829_pkey PRIMARY KEY (_id);
+
 
 --
 -- Name: t_dictionary t_dictionary_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
@@ -177,6 +572,94 @@ ALTER TABLE ONLY public.t_dictionary
 
 ALTER TABLE ONLY public.t_user
     ADD CONSTRAINT t_user_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tappcategory tappcategory_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tappcategory
+    ADD CONSTRAINT tappcategory_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tcontactrequest tcontactrequest_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tcontactrequest
+    ADD CONSTRAINT tcontactrequest_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tinventoryorder tinventoryorder_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tinventoryorder
+    ADD CONSTRAINT tinventoryorder_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tinventoryproduct tinventoryproduct_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tinventoryproduct
+    ADD CONSTRAINT tinventoryproduct_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tinventoryproductunit tinventoryproductunit_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tinventoryproductunit
+    ADD CONSTRAINT tinventoryproductunit_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tinventoryreceipt tinventoryreceipt_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tinventoryreceipt
+    ADD CONSTRAINT tinventoryreceipt_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tlargesalesproduct tlargesalesproduct_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tlargesalesproduct
+    ADD CONSTRAINT tlargesalesproduct_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tlargesalesreport tlargesalesreport_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tlargesalesreport
+    ADD CONSTRAINT tlargesalesreport_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: torderitem torderitem_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.torderitem
+    ADD CONSTRAINT torderitem_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tproductlocation tproductlocation_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tproductlocation
+    ADD CONSTRAINT tproductlocation_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: treceiptitem treceiptitem_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.treceiptitem
+    ADD CONSTRAINT treceiptitem_pkey PRIMARY KEY (_id);
 
 
 --
@@ -204,19 +687,35 @@ ALTER TABLE ONLY public.troom_type
 
 
 --
--- Name: troombooking troombooking_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tsampleapp tsampleapp_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.troombooking
-    ADD CONSTRAINT troombooking_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY public.tsampleapp
+    ADD CONSTRAINT tsampleapp_pkey PRIMARY KEY (_id);
 
 
 --
--- Name: troom_type troomtype_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tvaggs_room_countif_room__room_type_______id___reduce tvaggs_room_countif_room__room_type_______id___reduce_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.troom_type
-    ADD CONSTRAINT troomtype_pkey PRIMARY KEY (_id);
+ALTER TABLE ONLY public.tvaggs_room_countif_room__room_type_______id___reduce
+    ADD CONSTRAINT tvaggs_room_countif_room__room_type_______id___reduce_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: tvobs_room_type_countif_room__room_type_______id___map tvobs_room_type_countif_room__room_type_______id___map_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tvobs_room_type_countif_room__room_type_______id___map
+    ADD CONSTRAINT tvobs_room_type_countif_room__room_type_______id___map_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: twishlistrequest twishlistrequest_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.twishlistrequest
+    ADD CONSTRAINT twishlistrequest_pkey PRIMARY KEY (_id);
 
 
 --
