@@ -4,7 +4,7 @@ if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" ]; then
     while read t; do 
         psql -h db -U postgres -c "COPY (SELECT * FROM public.${t} ORDER BY _id) TO STDOUT WITH CSV HEADER" | $zipCmd > /wwwroot/git/formuladb-env/db/$t.csv${zipSuffix}
     done
-    bash /scripts/backupdb-git.sh
+    bash /scripts/backup-db.sh
 fi
 
 if [ -n "$BUILD_DEVELOPMENT" ]; then exit 0; fi

@@ -41,8 +41,14 @@ require('yargs')
         startServer(argv.port)
     })
     .command('init-db', 'initialize database from git lfs backup', {}, async (argv) => {
-        let kvsFactory = await getKeyValueStoreFactory();
-        initDb(kvsFactory);
+        try {
+            let kvsFactory = await getKeyValueStoreFactory();
+            await initDb(kvsFactory);
+            console.log("finished db init");
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
     })
     .command('fix-html [files..]', 'fix html', {}, (argv) => {
         fixHtml(argv.files)
@@ -111,3 +117,7 @@ function runCmd(cmd: string, ...args: string[]) {
         console.log('process exit code ' + code);
     });
 }
+
+process.on('unhandledRejection', (reason, p) => {
+    console.error('Unhandled Rejection at: Promise', p, 'reason:', reason);
+});

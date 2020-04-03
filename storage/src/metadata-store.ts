@@ -8,7 +8,8 @@ import * as fs from 'fs';
 import * as zlib from 'zlib';
 import * as stream from 'stream';
 import * as parse from 'csv-parse';
-
+import * as util from 'util';
+const exists = util.promisify(fs.exists);
 
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image } from "@domain/metadata/default-metadata";
@@ -219,10 +220,13 @@ export class MetadataStore {
         return entity;
     }
 
-    public async getEntityBackupData(entityId: string): Promise<stream.Readable> {
+    public async getEntityBackupData(entityId: string): Promise<stream.Readable|null> {
         let csvRawStream: stream.Readable;
         if (process.env.BUILD_DEVELOPMENT) {
-            csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv`);
+            let hasData = await exists(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv`);
+            if (hasData) {
+                csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv`);
+            } else return null;
         } else {
             let source = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv.gz`);
             let gunzip = zlib.createGunzip();
