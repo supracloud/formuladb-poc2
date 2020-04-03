@@ -225,10 +225,10 @@ export class MetadataStore {
         if (process.env.BUILD_DEVELOPMENT) {
             let hasData = await exists(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv`);
             if (hasData) {
-                csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv`);
+                csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv`);
             } else return null;
         } else {
-            let source = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv.gz`);
+            let source = fs.createReadStream(`${FRMDB_ENV_DIR}/db/t${entityId.toLowerCase()}.csv.gz`);
             let gunzip = zlib.createGunzip();
             stream.pipeline(source, gunzip);
             csvRawStream = gunzip;

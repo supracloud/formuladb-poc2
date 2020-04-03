@@ -29,8 +29,8 @@ export async function initDb(kvsFactory: KeyValueStoreFactoryI) {
                 continue;
             }
             await new Promise((resolve, reject) => {
+                if (!csvSource) { resolve(); return }
                 console.log("waiting for loading of test data for entity", entity._id);
-                let records: any[] = [];
                 csvSource.on("readable", async function () {
                     let record;
                     while (record = this.read()) {
