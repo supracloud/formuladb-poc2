@@ -1,1 +1,7 @@
-_id,guest,room_type,start_date,end_date,nb_adults,nb_children,days,cost,total_number_of_rooms,number_of_booked_rooms,number_of_available_rooms
+_id,guest,room,start_date,end_date,nb_adults,nb_children,days,cost,bookings_for_the_same_room
+RoomBooking~~1__1,$User~~4,RoomType~~01-DoubleDeluxe,2019-04-03,2019-04-08,2.00000,2.00000,6.00000,600,"FILTER(Booking, @[booking_item_id] == booking_item_id)"
+RoomBooking~~1__2,$User~~1,RoomType~~01-DoubleDeluxe,2019-04-19,2019-04-24,2.00000,2.00000,6.00000,600,"FILTER(Booking, @[booking_item_id] == booking_item_id)"
+RoomBooking~~2__3,$User~~2,RoomType~~02-SigleDeluxe,2019-04-10,2019-04-15,1.00000,0.00000,6.00000,600,"FILTER(Booking, @[booking_item_id] == booking_item_id)"
+RoomBooking~~2__4,$User~~3,RoomType~~02-SigleDeluxe,2019-04-24,2019-04-28,1.00000,0.00000,5.00000,500,"FILTER(Booking, @[booking_item_id] == booking_item_id)"
+RoomBooking~~3__5,$User~~5,Room~~Honeymoon,2019-04-06,2019-04-09,2.00000,0.00000,4.00000,400,"FILTER(Booking, @[booking_item_id] == booking_item_id)"
+RoomBooking~~3__6,$User~~7,Room~~Honeymoon,2019-04-26,2019-04-30,2.00000,0.00000,5.00000,500,"FILTER(Booking, @[booking_item_id] == booking_item_id)"

@@ -16,7 +16,7 @@
         "docker:fe": "docker build -t formuladb-maps -f Dockerfile.fe . && docker tag formuladb-fe registry.gitlab.com/metawiz/febe/formuladb-fe:${npm_package_version}",
         "docker:maps": "docker build -t formuladb-maps -f Dockerfile.maps . && docker tag formuladb-maps registry.gitlab.com/metawiz/febe/formuladb-maps:${npm_package_version}",
         "_skaffold_": "KUBECONFIG=k8s/production-kube-config.conf skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
-        "skaffold": "skaffold dev -n \"`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
+        "skaffold": "skaffold dev -n \"frmdb-`git branch|grep '^*'|cut -d ' ' -f2`\" -p dev --port-forward=true",
         "watch-skaffold": "npm run skaffold",
         "watch-x-sass": "sleep 10; node-sass --watch --output-style=compressed fe/src/frmdb-editor/frmdb-editor.directive.scss formuladb/frmdb-editor.min.css",
         "_rem_watch-rsync": "sleep 15; while true; do sleep 3; bash rsync.sh 2>/dev/null; done",

@@ -2,7 +2,7 @@ set -xe
 
 FRMDB_ENV_NAME="$1"
 if [[ -z "${FRMDB_ENV_NAME}" ]]; then
-    FRMDB_ENV_NAME="`git branch|grep '^*'|cut -d ' ' -f2`"
+    FRMDB_ENV_NAME="frmdb-`git branch|grep '^*'|cut -d ' ' -f2`"
 fi
 
 export BASEDIR="${PWD}/`dirname $0`"

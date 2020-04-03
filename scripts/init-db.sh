@@ -9,7 +9,8 @@ ls -ltr /wwwroot/formuladb
 export BASEDIR=`dirname $0`
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -i /ssh/frmdb.id_rsa"
 
-if psql -e -h db -U postgres -c "SELECT * FROM tparameter WHERE _id = 'Parameter~~DB_STATE'" | grep FRMDB_INITIALIZED; then
+psql -e -h db -U postgres -c "\d" || true
+if psql -e -h db -U postgres -c "\d" | egrep 't_dictionary|t_currency|t_user'; then
     echo "database already initialized"
 else
     zipCmd=zcat
@@ -19,7 +20,7 @@ else
     zipSuffix=
     fi
 
-    $zipCmd /wwwroot/git/formuladb-env/db/pg_dump.schema.sql${zipSuffix} | psql -e -h db -U postgres 
+    /wwwroot/git/formuladb-env/db/pg_dump.schema.sql | psql -e -h db -U postgres 
     for csv in /wwwroot/git/formuladb-env/db/*.csv${zipSuffix}; do 
         ls -lh $csv
         t=`basename $csv|sed -e 's/\.csv$//; s/\.csv.gz$//'`
