@@ -6,7 +6,7 @@ import { DataObj } from "@domain/metadata/data_obj";
 const batchSize = 100;
 
 export async function initDb(kvsFactory: KeyValueStoreFactoryI) {
-    let schema = await kvsFactory.metadataStore.getSchema(null, null);
+    let schema = await kvsFactory.metadataStore.getSchema(null);
     if (!schema) throw new Error("Cannot get schema");
 
     for (let entity of Object.values(schema.entities)) {

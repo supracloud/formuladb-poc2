@@ -10,7 +10,7 @@ import { setupDataFrmdbInitDirective } from "./directives/data-frmdb-init";
 
 export var DATA_BINDING_MONITOR: DataBindingsService | null = null;
 export async function initFrmdb() {
-    let [tenantName, appName, appRootEl] = APP_AND_TENANT_ROOT();
+    let [appName, appRootEl] = APP_AND_TENANT_ROOT();
     let formService = new FormService(appRootEl);
     FORM_SERVICE.instance = formService;
     await BACKEND_SERVICE().waitFrmdbEngineTools();

@@ -20,7 +20,7 @@ export class IconEditorComponent extends HTMLElement {
             this.innerHTML = `<style>${CSS}</style> ${HTML}`;
 
         onEvent(this, 'change', '#frmdb-search-premium-icons', async (event) => {
-            let res: PremiumIconRespose = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/premium-icons/${event.target!.value}`)
+            let res: PremiumIconRespose = await fetch(`/formuladb-api/${BACKEND_SERVICE().appName}/premium-icons/${event.target!.value}`)
                 .then(response => {
                     return response.json();
                 });
@@ -52,7 +52,7 @@ export class IconEditorComponent extends HTMLElement {
             
             let iconId = event.target!.closest('[data-frmdb-premium-icon-id]').getAttribute('data-frmdb-premium-icon-id');
             let ev: ServerEventPutIcon = await BACKEND_SERVICE().putEvent(new ServerEventPutIcon(
-                BACKEND_SERVICE().tenantName, BACKEND_SERVICE().appName, iconId)) as ServerEventPutIcon;
+                BACKEND_SERVICE().appName, iconId)) as ServerEventPutIcon;
 
             if (ev.state_ == 'ABORT' || ev.error_) {
                 alert(`Error adding premium icon: ${ev.state_}, ${ev.error_}`);

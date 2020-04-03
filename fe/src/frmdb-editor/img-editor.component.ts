@@ -64,7 +64,7 @@ export class ImgEditorComponent extends HTMLElement {
 
     async start(imageProperty: ImagePropertyListener) {
         this.imagePropertyListener = imageProperty;
-        let mediaObjectsUrls = await fetch(`/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/media`, {
+        let mediaObjectsUrls = await fetch(`/formuladb-api/${BACKEND_SERVICE().appName}/media`, {
             method: 'GET',
         })
             .then(function (response) {

@@ -49,8 +49,8 @@ export class FrmdbEngine {
         };
     }
 
-    public async putSchema(schema: Schema): Promise<Schema> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.putSchema(this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, schema);
+    public async putSchema(appName: string, schema: Schema): Promise<Schema> {
+        await this.frmdbEngineStore.kvsFactory.metadataStore.putSchema(appName, schema);
         this.schemaDAO = new SchemaCompiler(this.frmdbEngineStore.schema).compileSchema();
         this.frmdbEngineTools = new FrmdbEngineTools(this.schemaDAO);
         this.transactionRunner = new FrmdbTransactionRunner(this.frmdbEngineStore, this.frmdbEngineTools);
@@ -122,12 +122,12 @@ export class FrmdbEngine {
     }
 
     private async putMediaObject(event: events.ServerEventPutMediaObject): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.saveMediaObject(event.tenantName, event.appName, event.fileName, event.base64Content);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.saveMediaObject(event.appName, event.fileName, event.base64Content);
         return event;
     }
 
     private async putIcon(event: events.ServerEventPutIcon): Promise<events.MwzEvents> {
-        let iconClass = await this.frmdbEngineStore.kvsFactory.metadataStore.saveIcon(event.tenantName, event.appName, event.iconId);
+        let iconClass = await this.frmdbEngineStore.kvsFactory.metadataStore.saveIcon(event.appName, event.iconId);
         event.savedIconClass = iconClass;
         return event;
     }
@@ -139,7 +139,6 @@ export class FrmdbEngine {
 
     private async newApp(event: events.ServerEventNewApp): Promise<events.MwzEvents> {
         await this.frmdbEngineStore.kvsFactory.metadataStore.newApp(
-            event.tenantName, 
             event.appName,
             event.basedOnApp);
         return event;
@@ -154,7 +153,7 @@ export class FrmdbEngine {
         if (!event.path.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
         let newEntity: Entity = { _id: event.path, props: {} };
 
-        return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, newEntity)
+        return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(newEntity)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;
@@ -164,7 +163,7 @@ export class FrmdbEngine {
     }
 
     private deleteEntity(event: events.ServerEventDeleteEntity): Promise<events.MwzEvents> {
-        return this.frmdbEngineStore.kvsFactory.metadataStore.delEntity(this.frmdbEngineStore.tenantName, this.frmdbEngineStore.appName, event.entityId)
+        return this.frmdbEngineStore.kvsFactory.metadataStore.delEntity(event.entityId)
             .then(() => {
                 event.notifMsg_ = 'OK';//TODO; if there are errors, update the notif accordingly
                 delete event._rev;

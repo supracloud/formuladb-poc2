@@ -53,7 +53,7 @@ export class BackendService {
     private frmdbEngineTools: FrmdbEngineTools;
     public currentSchema: Schema | null = null;
 
-    constructor(public tenantName: string, public appName: string) {
+    constructor(public appName: string) {
         this.getSchema().then(schema => {
             if (!schema) throw new Error("Schema " + appName + " not found");
             this.currentSchema = schema;
@@ -71,7 +71,7 @@ export class BackendService {
     }
 
     async getApp(): Promise<App | null> {
-        return getData<App | null>(`/formuladb-api/${this.tenantName}/${this.appName}`);
+        return getData<App | null>(`/formuladb-api/${this.appName}`);
     }
 
     // // tslint:disable-next-line:member-ordering
@@ -116,7 +116,7 @@ export class BackendService {
     // }
 
     public putEvent(event: MwzEvents): Promise<MwzEvents> {
-        return postData<MwzEvents, MwzEvents>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/event', event);
+        return postData<MwzEvents, MwzEvents>('/formuladb-api/' + this.appName + '/event', event);
     }
 
     public async getApplications(): Promise<Map<string, App> | null> {
@@ -133,7 +133,7 @@ export class BackendService {
     }
 
     public async getTableData(prefix: string): Promise<DataObj[]> {
-        let ret = await getData<DataObj[]>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/byprefix/' + encodeURIComponent(prefix));
+        let ret = await getData<DataObj[]>('/formuladb-api/' + this.appName + '/byprefix/' + encodeURIComponent(prefix));
         return ret || [];
     }
 
@@ -148,12 +148,12 @@ export class BackendService {
 
     public simpleAdHocQuery(entityId: string, query: SimpleAddHocQuery): Promise<any[]> {
         LOG.debug("simpleAdHocQuery", entityId + " %o", query);
-        return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/' + entityId + '/SimpleAddHocQuery',
+        return postData<SimpleAddHocQuery, DataObj[]>('/formuladb-api/' + this.appName + '/' + entityId + '/SimpleAddHocQuery',
             query);
     }
 
     public async getDataObj(id: string): Promise<DataObj> {
-        let http = await getData<DataObj | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/obj/' + encodeURIComponent(id));
+        let http = await getData<DataObj | null>('/formuladb-api/' + this.appName + '/obj/' + encodeURIComponent(id));
         if (!http) throw new Error('Asked for non-existent object ' + id + '.');
         let dataObj = http;
         if (!isDataObj(dataObj)) throw new Error("response is not DataObj " + CircularJSON.stringify(dataObj));
@@ -176,8 +176,8 @@ export class BackendService {
     }
 
     public async getSchema(): Promise<Schema> {
-        let http = await getData<Schema | null>('/formuladb-api/' + this.tenantName + '/' + this.appName + '/schema');
-        if (!http) throw new Error("no schema for " + this.tenantName + "/" + this.appName);
+        let http = await getData<Schema | null>('/formuladb-api/' + this.appName + '/schema');
+        if (!http) throw new Error("no schema for " + this.appName);
         if (!isSchema(http)) throw new Error("response is not Schema " + CircularJSON.stringify(http));
         this.currentSchema = http;
         return http;
@@ -194,14 +194,14 @@ export class BackendService {
 
     public async saveMedia(fileName: string, blob: Blob): Promise<string> {
     
-        let newSrc = `/formuladb-env/${this.tenantName}/${this.appName}/static/${fileName}`;
+        let newSrc = `/formuladb-env/${this.appName}/static/${fileName}`;
     
         var reader = new FileReader();
         let p = new Promise((resolve, reject) => {
             reader.onload = (e) => {
                 if (!e.target) return;
                 let buf = e.target.result as ArrayBuffer;
-                this.putEvent(new ServerEventPutMediaObject(this.tenantName, this.appName, fileName, this._arrayBufferToBase64(buf)))
+                this.putEvent(new ServerEventPutMediaObject(this.appName, fileName, this._arrayBufferToBase64(buf)))
                     .then(async (ev: ServerEventPutMediaObject) => {
                         if (ev.state_ != 'ABORT' && !ev.error_) {
                             resolve(`Saved ${newSrc}`);
@@ -234,15 +234,15 @@ export class BackendService {
 let _backendService: BackendService | null = null;
 export function BACKEND_SERVICE(): BackendService {
     if (_backendService == null) {
-        let [tenantName, appName] = APP_AND_TENANT_ROOT();
-        _backendService = new BackendService(tenantName, appName);
+        let [appName] = APP_AND_TENANT_ROOT();
+        _backendService = new BackendService(appName);
     }
     return _backendService;
 }
 export function RESET_BACKEND_SERVICE() {
     _resetAppAndTenant();
-    let [tenantName, appName] = APP_AND_TENANT_ROOT();
-    _backendService = new BackendService(tenantName, appName);
+    let [appName] = APP_AND_TENANT_ROOT();
+    _backendService = new BackendService(appName);
 }
 
 export function _testResetBackendService() {

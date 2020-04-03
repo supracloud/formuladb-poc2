@@ -163,7 +163,7 @@ describe('FrmdbEngine', () => {
         });
 
         it("Should allow consistent concurrent transactions with auto-correct (account balance transfer) " + TestRun, async (done) => {
-            frmdbTStore = await getFrmdbEngineStore(accountTransferSchema, '', '');
+            frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
             frmdbEngine = new FrmdbEngine(frmdbTStore);
             await frmdbEngine.init();
 

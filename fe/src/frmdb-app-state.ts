@@ -6,8 +6,8 @@ export class FrmdbAppState {
     selectedPageName: string;
     selectedPagePath: string;
 
-    constructor(public tenantName: string, public appName: string) {
-        this.pages = [{ name: 'index.html', url: `${tenantName}/${appName}/index.html`}];
+    constructor(public appName: string) {
+        this.pages = [{ name: 'index.html', url: `${appName}/index.html`}];
         this.selectedPageName = this.pages[0].name;
         this.selectedPagePath = this.pages[0].url;
     }

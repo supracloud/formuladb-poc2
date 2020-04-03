@@ -38,8 +38,8 @@ export class FrmdbEngineStore extends FrmdbStore {
     protected transactionManager: TransactionManager;
     protected mapReduceViews: Map<string, MapReduceView> = new Map();
 
-    constructor(tenantName: string, appName: string, public kvsFactory: KeyValueStoreFactoryI, schema: Schema) {
-        super(tenantName, appName, kvsFactory, _.cloneDeep(schema));
+    constructor(public kvsFactory: KeyValueStoreFactoryI, schema: Schema) {
+        super(kvsFactory, _.cloneDeep(schema));
         this.transactionManager = new TransactionManager(kvsFactory);
     }
 
@@ -340,6 +340,5 @@ export class FrmdbEngineStore extends FrmdbStore {
 
     public async clearAllForTestingPurposes() {
         await this.kvsFactory.clearAllForTestingPurposes();
-        await this.kvsFactory.metadataStore.putSchema(this.tenantName, this.appName, this.schema);
     }
 }

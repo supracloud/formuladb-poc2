@@ -25,7 +25,7 @@ export async function loadPage(pageName: string): Promise<string> {
     let page: string | undefined = app.pages.find(p => p == pageName);
     if (!page) throw new Error("App not found");
 
-    let url = `/${appBackend.tenantName}/${appBackend.appName}/${page}`;
+    let url = `/${appBackend.appName}/${page}`;
     console.log(`fetching ${url}...`);
     let res = await fetch(url, {
         headers: {

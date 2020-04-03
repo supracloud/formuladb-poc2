@@ -159,10 +159,9 @@ export const CommonEntities = [
 ];
 
 const Schemas = [
-    { tenantName: "apps", appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp },
-    { tenantName: "apps", appName: "hotel-booking", schema: HotelBookingSchema, app: HotelBookingApp },
+    { appName: "Basic_Inventory", schema: InventorySchema, app: InventoryApp },
+    { appName: "hotel-booking", schema: HotelBookingSchema, app: HotelBookingApp },
     // {
-    //     tenantName: "formuladb-env/frmdb-apps", appName: "Hotel_Booking_2",
     //     schema: {
     //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_2',
     //         ...HotelBookingSchema,
@@ -172,7 +171,6 @@ const Schemas = [
     //     }
     // },
     // {
-    //     tenantName: "formuladb-env/frmdb-apps", appName: "Hotel_Booking_3",
     //     schema: {
     //         _id: 'FRMDB_SCHEMA~~formuladb-examples--Hotel_Booking_3',
     //         ...HotelBookingSchema,
@@ -181,7 +179,7 @@ const Schemas = [
     //         ...HotelBookingApp,
     //     }
     // },
-    { tenantName: "frmdb-apps", appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
+    { appName: "formuladb.io", schema: FormuladbIoSchema, app: FormuladbIoApp },
 ];
 
 for (let sch of Schemas) {

@@ -31,14 +31,14 @@ describe('DataBindingsMonitor', () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 25000;
 
         fetchMock.post(/\/formuladb-api\/changes-feed/, []);
-        fetchMock.get('/formuladb-api/spec-apps/test-app', {
-            _id: "test-app", description: "test-app-desc",
+        fetchMock.get('/formuladb-api/kvsf-test-tenant-for-specs/kvsf-test-app-for-specs', {
+            _id: "kvsf-test-app-for-specs", description: "kvsf-test-app-for-specs-desc",
             pages: [
                 { name: "index", html: "test-page.html" },
             ],
         });
-        fetchMock.get('/formuladb-api/spec-apps/test-app/schema', {
-            _id: "FRMDB_SCHEMA~~test-app",
+        fetchMock.get('/formuladb-api/kvsf-test-tenant-for-specs/kvsf-test-app-for-specs/schema', {
+            _id: "FRMDB_SCHEMA~~kvsf-test-app-for-specs",
             entities: {
                 A: {
                     _id: 'A',
@@ -59,11 +59,11 @@ describe('DataBindingsMonitor', () => {
     it('should update page when filter is empty', async () => {
 
         document.body.innerHTML = HTML;
-        window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$EDIT$/spec-apps/test-app/test-page.html';
+        window.location.pathname = '/en-basic-1a1a1a-ffffff-Clean-$EDIT$/kvsf-test-tenant-for-specs/kvsf-test-app-for-specs/test-page.html';
 
         await waitUntil(() => Promise.resolve(BACKEND_SERVICE().getFrmdbEngineTools()));
         dataBindingMonitor = new DataBindingsService(document.body, new FormService(document.body));
-        fetchMock.post('/formuladb-api/spec-apps/test-app/A/SimpleAddHocQuery', [
+        fetchMock.post('/formuladb-api/kvsf-test-tenant-for-specs/kvsf-test-app-for-specs/A/SimpleAddHocQuery', [
             { _id: "A~~1", f1: "f1.1", f2: 101 },
             { _id: "A~~2", f1: "f1.2", f2: 102 },
         ]);
@@ -86,7 +86,7 @@ describe('DataBindingsMonitor', () => {
 
     it('should filter records and update page', async () => {
 
-        fetchMock.post('/formuladb-api/spec-apps/test-app/A/SimpleAddHocQuery', (url, req) => {
+        fetchMock.post('/formuladb-api/kvsf-test-tenant-for-specs/kvsf-test-app-for-specs/A/SimpleAddHocQuery', (url, req) => {
             expect(JSON.parse(req.body)?.filterModel?.f1).toEqual({
                 filterType: "text",
                 filter: '.2',

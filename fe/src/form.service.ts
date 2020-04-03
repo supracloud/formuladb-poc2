@@ -136,7 +136,7 @@ export class FormService {
 
     public async updateDomForReference(aliasName: string, el: HTMLElement, obj: DataObj) {
         let options: DataObj[] = await postData(
-            `/formuladb-api/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/reference_to_options/${aliasName}`,
+            `/formuladb-api/${BACKEND_SERVICE().appName}/reference_to_options/${aliasName}`,
             new ServerEventPreComputeFormData(obj)
         );
 

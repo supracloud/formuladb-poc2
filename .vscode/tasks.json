@@ -2,24 +2,21 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
-    "_runner": "terminal",
+    "runner": "terminal",
     "tasks": [
         {
-            "label": "watch-compile",
-            "command": "npm run watch-compile",
+            "label": "watch-x-compile",
+            "command": "npm run watch-x-compile",
             "type": "shell",
             "group": "build",
             "problemMatcher": "$tsc-watch",
             "isBackground": true
         },
         {
-            "label": "watch-bundle",
-            "command": "npm run watch-bundle",
+            "label": "watch-x-bundle",
+            "command": "npm run watch-x-bundle",
             "type": "shell",
             "group": "build",
-            "dependsOn": [
-                "watch-compile"
-            ],
             "isBackground": true,
             "problemMatcher": {
                 "owner": "webpack",
@@ -45,29 +42,23 @@
             }
         },
         {
-            "label": "BE serve",
-            "command": "npm",
+            "label": "watch-skaffold",
+            "command": "npm run skaffold",
             "type": "shell",
-            "options": {
-                "cwd": "./be"
-            },
-            "args": [
-                "run",
-                "serve"
-            ],
-            "terminalGroup": "run_febe",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            },
+            "group": "none",
+            "isBackground": true
+        },
+        {
+            "label": "watch",
+            "command": "while true; do sleep 10; done",
+            "type": "shell",
+            "group": "none",
             "isBackground": true,
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": []
-        }
+            "dependsOn":[
+                "watch-x-compile",
+                "watch-x-bundle",
+                "watch-skaffold"
+            ]
+        },
     ]
 }

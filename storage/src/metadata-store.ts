@@ -129,16 +129,16 @@ export class MetadataStore {
         });
     }
 
-    async putApp(tenantName: string, appName: string, app: App): Promise<App> {
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/app.yaml`, this.toYaml(app));
+    async putApp(appName: string, app: App): Promise<App> {
+        await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`, this.toYaml(app));
 
         return app;
     }
-    async putSchema(tenantName: string, appName: string, schema: Schema): Promise<Schema> {
+    async putSchema(appName: string, schema: Schema): Promise<Schema> {
         await Promise.all(Object.values(schema.entities)
-            .map(entity => this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${entity._id}.yaml`,
+            .map(entity => this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${entity._id}.yaml`,
                 this.toYaml(entity)))
-            .concat(this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`, this.toYaml({
+            .concat(this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`, this.toYaml({
                 _id: schema._id,
                 entityIds: Object.keys(schema.entities),
             })))
@@ -147,9 +147,9 @@ export class MetadataStore {
         return schema;
     }
 
-    public async getSchema(tenantName: string | null, appName: string | null): Promise<Schema | null> {
+    public async getSchema(appName: string | null): Promise<Schema | null> {
         let schemaNoEntities: SchemaEntityList;
-        if (null == tenantName) {
+        if (null == appName) {
             let entityFiles = await this.listDir(`${FRMDB_ENV_DIR}/db`, /[A-Z].*\.yaml$/);
 
             schemaNoEntities = {
@@ -159,7 +159,7 @@ export class MetadataStore {
         }
         else {
             schemaNoEntities = this.fromYaml(
-                await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`));
+                await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
         }
         let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => {
             if (entityId == '$User') return entityId;
@@ -198,11 +198,11 @@ export class MetadataStore {
         return schema;
     }
 
-    public getEntities(tenantName: string, appName: string): Promise<Entity[]> {
-        return this.getSchema(tenantName, appName).then(s => s ? Object.values(s.entities) : []);
+    public getEntities(appName: string): Promise<Entity[]> {
+        return this.getSchema(appName).then(s => s ? Object.values(s.entities) : []);
     }
 
-    public getDefaultEntity(tenantName: string, appName: string, path: string): Entity | null {
+    public getDefaultEntity(path: string): Entity | null {
         switch (path) {
             case $User._id:
                 return $User;
@@ -213,7 +213,7 @@ export class MetadataStore {
         }
     }
 
-    public async getEntity(tenantName: string, appName: string, entityId: string): Promise<Entity | null> {
+    public async getEntity(appName: string, entityId: string): Promise<Entity | null> {
         let str = await this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;
@@ -234,18 +234,26 @@ export class MetadataStore {
         return csvParser;
     }
 
-    public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
+    public async putEntity(entity: Entity): Promise<Entity> {
         await this.writeFile(`${FRMDB_ENV_DIR}/db/${entity._id}.yaml`, this.toYaml(entity))
 
         return entity;
     }
 
-    public async delEntity(tenantName: string, appName: string, entityId: string): Promise<Entity> {
+    public async delEntityFromApp(appName: string, entityId: string): Promise<Entity> {
         let schemaNoEntities: SchemaEntityList = this.fromYaml(
-            await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`)
+            await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`)
         );
         schemaNoEntities.entityIds = schemaNoEntities.entityIds.filter(e => e != entityId);
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+        await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`, this.toYaml(schemaNoEntities));
+
+        let entityFile = `${FRMDB_ENV_DIR}/db/${entityId}.yaml`;
+        let entity: Entity = await this.fromYaml<Entity>(entityFile);
+
+        return entity;
+    }
+
+    public async delEntity(entityId: string): Promise<Entity> {
 
         let entityFile = `${FRMDB_ENV_DIR}/db/${entityId}.yaml`;
         let entity: Entity = await this.fromYaml<Entity>(entityFile);
@@ -254,12 +262,12 @@ export class MetadataStore {
         return entity;
     }
 
-    async getApp(tenantName: string, appName: string): Promise<App | null> {
+    async getApp(appName: string): Promise<App | null> {
         let app: App = this.fromYaml(
-            await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/app.yaml`)
+            await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/app.yaml`)
         );
 
-        let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
+        let htmlPages = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}`, /\.html$/);
         app.pages = htmlPages.map(fName => fName.replace(/.*\//, ''));
 
         return app;
@@ -275,28 +283,28 @@ export class MetadataStore {
         return cssFiles;
     }
 
-    async newApp(tenantName: string, appName: string, basedOnApp?: string): Promise<App | null> {
+    async newApp(appName: string, basedOnApp?: string): Promise<App | null> {
         if (basedOnApp) {
-            await execShell(`cp -ar ${FRMDB_ENV_DIR}/${tenantName}/${basedOnApp} ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
+            await execShell(`cp -ar ${FRMDB_ENV_DIR}/${basedOnApp} ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
         } else {
-            await execShell(`mkdir -p ${FRMDB_ENV_DIR}/${tenantName}/${appName}`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/index.html`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
-            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/${tenantName}/${appName}/`);
+            await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/index.html`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/_[a-z]*.html ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/`);
+            await execShell(`cp ${FRMDB_ENV_DIR}/frmdb-apps/base-app/*.yaml ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/`);
         }
-        await execShell(`mkdir -p ${FRMDB_ENV_DIR}/${tenantName}/${appName}/static`);
-        return this.getApp(tenantName, appName);
+        await execShell(`mkdir -p ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
+        return this.getApp(appName);
     }
 
     async setPageProperties(pageOpts: PageOpts, newPageObj: $PageObjT, startPageName: string) {
-        let { tenantName, appName } = pageOpts;
+        let { appName } = pageOpts;
         let content;
         if ('$LANDING-PAGE$' === startPageName) {
             content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html`);
         } else if ('$CONTENT-PAGE$' === startPageName) {
             content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/content-page.html`);
         } else {
-            content = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${startPageName}.html`);
+            content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${startPageName}.html`);
         }
 
         const jsdom = new JSDOM(content, {}, {
@@ -319,14 +327,14 @@ export class MetadataStore {
         `;
         cleanedUpDOM.replaceChild(newHeadEl, headEl);
 
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${newPageObj.name}.html`, htmlTools.document2html(cleanedUpDOM));
+        await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${newPageObj.name}.html`, htmlTools.document2html(cleanedUpDOM));
 
         setTimeout(() => this.setPageScreenshot(pageOpts), 500);
     }
 
     async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
-        let { tenantName, appName, pageName } = pageOpts;
-        let pagePath = `${tenantName}/${appName}/${pageName}.html`;
+        let { appName, pageName } = pageOpts;
+        let pagePath = `frmdb-apps/${appName}/${pageName}.html`;
 
         const jsdom = new JSDOM(html, {}, {
             features: {
@@ -351,7 +359,7 @@ export class MetadataStore {
             if (faviconIcon) {
                 let iconName = faviconIcon.getAttribute("name");
                 if (iconName) {
-                    await execShell(`cp ${FRMDB_ENV_DIR}/icons/svg/${iconName}.svg ${FRMDB_ENV_DIR}/${tenantName}/${appName}/favicon.svg`);
+                    await execShell(`cp ${FRMDB_ENV_DIR}/icons/svg/${iconName}.svg ${FRMDB_ENV_DIR}/frmdb-apps/${appName}/favicon.svg`);
                 }
             }
         }
@@ -363,7 +371,7 @@ export class MetadataStore {
             let cleanedUpHeadEl = htmlTools.doc.createElement('head');
             setPageProperties(cleanedUpHeadEl, pageProps);
             cleanedUpDOM.replaceChild(cleanedUpHeadEl, headEl);
-            await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
+            await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/_head.html`, htmlTools.normalizeDOM2HTML(headEl));
         }
 
         for (let fragmentEl of Array.from(cleanedUpDOM.querySelectorAll('[data-frmdb-fragment]'))) {
@@ -373,7 +381,7 @@ export class MetadataStore {
             fragmentMarker.setAttribute('data-frmdb-fragment', fragmentName);
             fragmentEl.parentNode!.replaceChild(fragmentMarker, fragmentEl);
 
-            await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
+            await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${fragmentName}`, htmlTools.normalizeDOM2HTML(fragmentEl));
         }
 
         //TODO: find all img data url(s) and save them as images
@@ -386,9 +394,9 @@ export class MetadataStore {
     async setPageScreenshot(pageOpts: PageOpts) {
         try {
             let img = await this.getPageScreenshot(pageOpts);
-            let { tenantName, appName, pageName } = pageOpts;
+            let { appName, pageName } = pageOpts;
             console.info('Saving screenshot for ', pageOpts);
-            let path = `${tenantName}/${appName}/static/${pageName}.png`;
+            let path = `${appName}/static/${pageName}.png`;
             await this.writeFile(`${FRMDB_ENV_DIR}/${path}`, img);
             console.info('saved ', path);
         } catch (err) {
@@ -447,8 +455,8 @@ export class MetadataStore {
     }
 
     async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
-        let { tenantName, appName, pageName } = pageOpts;
-        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName + '.html' || 'index.html'}`);
+        let { appName, pageName } = pageOpts;
+        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName + '.html' || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
             features: {
@@ -463,9 +471,9 @@ export class MetadataStore {
         //<head> is managed like a special type of fragment
         {
             let headEl = pageDom.querySelector('head');
-            if (!headEl) throw new Error(`could not find head elem for ${tenantName}/${appName}/${pageName} with html ${pageHtml}`);
+            if (!headEl) throw new Error(`could not find head elem for ${appName}/${pageName} with html ${pageHtml}`);
 
-            let headHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/_head.html`);
+            let headHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/_head.html`);
             headEl.innerHTML = headHtml.replace('<head>', '').replace('</head>', '');
             setPageProperties(headEl, pageProps);
         }
@@ -476,7 +484,7 @@ export class MetadataStore {
 
             if (pageOpts.query?.frmdbRender === 'view' && '_scripts.html' === fragmentName) continue;
 
-            let fragmentHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${fragmentName}`);
+            let fragmentHtml = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${fragmentName}`);
             let fragmentDom = htmlTools.html2dom(fragmentHtml);
             if (isHTMLElement(fragmentDom)) {
                 let savedFragmentName = fragmentDom.getAttribute('data-frmdb-fragment');
@@ -497,15 +505,15 @@ export class MetadataStore {
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {
-        let { tenantName, appName, pageName } = parsePageUrl(deletedPagePath);
-        await this.delFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}.html`);
+        let { appName, pageName } = parsePageUrl(deletedPagePath);
+        await this.delFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/${pageName}.html`);
     }
 
-    async saveMediaObject(tenantName: string, appName: string, fileName: string, base64Content: string): Promise<void> {
-        await this.writeFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static/${fileName}`, new Buffer(base64Content, 'base64'));
+    async saveMediaObject(appName: string, fileName: string, base64Content: string): Promise<void> {
+        await this.writeFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static/${fileName}`, new Buffer(base64Content, 'base64'));
     }
 
-    async saveIcon(tenantName: string, appName: string, iconId: string): Promise<string> {
+    async saveIcon(appName: string, iconId: string): Promise<string> {
         let icon = await getPremiumIcon(iconId);
         let svgContent = await fetch(icon.svg_url, {
             headers: {
@@ -520,23 +528,23 @@ export class MetadataStore {
         return icon.name;
     }
 
-    async getMediaObjects(tenantName: string, appName: string) {
-        return this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/static`);
+    async getMediaObjects(appName: string) {
+        return this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/static`);
     }
 
-    async getAvailableIcons(tenantName: string, appName: string): Promise<$IconObjT[]> {
+    async getAvailableIcons(appName: string): Promise<$IconObjT[]> {
         let iconNames = await this.listDir(`${FRMDB_ENV_DIR}/icons/svg`);
         return iconNames.map(i => ({ _id: i.replace(/^.*\/svg\//, '').replace(/\.svg$/, '') }))
     }
 
-    async getApps(tenantName: string, appName: string): Promise<$AppObjT[]> {
-        let appDirs = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}`);
+    async getApps(appName: string): Promise<$AppObjT[]> {
+        let appDirs = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps`);
         return appDirs.map(i => ({ _id: i.replace(/^.*\//, '') }))
     }
 
-    async getPages(tenantName: string, appName: string): Promise<$PageObjT[]> {
+    async getPages(appName: string): Promise<$PageObjT[]> {
         let ret: $PageObjT[] = [];
-        let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/${tenantName}/${appName}`, /\.html$/);
+        let pageFiles = await this.listDir(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}`, /\.html$/);
         for (let pageFilePath of pageFiles) {
             let pageName = pageFilePath.replace(/^.*\//, '').replace(/\.html$/, '');
             if (pageName.indexOf('_') === 0) continue;
@@ -551,18 +559,18 @@ export class MetadataStore {
             const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
 
             let pageObj: $PageObjT = {
-                _id: `${tenantName}/${appName}/${pageName}`,
+                _id: `${appName}/${pageName}`,
                 name: pageName,
                 ...getPageProperties(htmlTools.doc),
-                screenshot: `/formuladb-env/${tenantName}/${appName}/static/${pageName}.png`,
+                screenshot: `/formuladb-env/frmdb-apps/${appName}/static/${pageName}.png`,
             }
             ret.push(pageObj);
         };
         return ret;
     }
 
-    async getTables(tenantName: string, appName: string): Promise<Entity[]> {
-        let schema = await this.getSchema(tenantName, appName);
+    async getTables(appName: string): Promise<Entity[]> {
+        let schema = await this.getSchema(appName);
         if (!schema) return [];
 
         return Object.values(schema.entities)
@@ -570,25 +578,6 @@ export class MetadataStore {
             ;
     }
 
-    async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {
-
-        let newGcFile = STORAGE.bucket('formuladb-env/static-assets').file(`${this.envName}/${tenantName}/${appName}/${name}`);
-
-        await new Promise((resolve, reject) => {
-            let stream = newGcFile.createWriteStream({
-                resumable: false,
-                validation: false,
-                contentType: "text/html",
-                metadata: {
-                    'Cache-Control': 'public, max-age=31536000'
-                }
-            });
-            stream.write(new Buffer(base64Content, 'base64'))
-            stream.end();
-            stream.on("finish", () => resolve(true));
-            stream.on("error", reject);
-        });
-    }
 }
 
 

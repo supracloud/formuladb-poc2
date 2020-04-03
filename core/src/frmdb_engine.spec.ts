@@ -293,7 +293,7 @@ describe('FrmdbEngine', () => {
     it("Should update views and compute new values of Observer when Observer field change", async (done) => {
         let schema = _.cloneDeep(stockReservationSchema);
         (schema.entities.B.props.sum__ as FormulaProperty).formula = 'SUMIF(A.val, b == @[_id]) + COUNTIF(A.val, b == @[_id])';
-        frmdbTStore = await getFrmdbEngineStore(schema,'', '');
+        frmdbTStore = await getFrmdbEngineStore(schema);
         frmdbEngine = new FrmdbEngine(frmdbTStore);
         await frmdbEngine.init();
 
@@ -308,7 +308,7 @@ describe('FrmdbEngine', () => {
     });
 
     it("Should compute account balance correctly for transfer transactions", async (done) => {
-        frmdbTStore = await getFrmdbEngineStore(accountTransferSchema, '', '');
+        frmdbTStore = await getFrmdbEngineStore(accountTransferSchema);
         frmdbEngine = new FrmdbEngine(frmdbTStore);
         await frmdbEngine.init();
 

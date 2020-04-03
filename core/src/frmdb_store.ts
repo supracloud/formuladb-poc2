@@ -22,7 +22,7 @@ export class FrmdbStore {
     private transactionsDB: KeyObjStoreI<MwzEvents>;
     protected dataKVSMap: Map<string, KeyTableStoreI<DataObj>> = new Map();
 
-    constructor(public tenantName: string, public appName: string, public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
+    constructor(public kvsFactory: KeyValueStoreFactoryI, public schema: Schema) {
     }
 
     public async init(schema: Schema) {
@@ -42,7 +42,7 @@ export class FrmdbStore {
     private async getDataKvs(entityId: string) {
         let ret = this.dataKVSMap.get(entityId);
         if (!ret) {
-            let entity = this.kvsFactory.metadataStore.getDefaultEntity(this.tenantName, this.appName, entityId) 
+            let entity = this.kvsFactory.metadataStore.getDefaultEntity(entityId) 
                 || this.schema.entities[entityId];
             if (!entity) {
                 console.error("getDataKvs unknown entity " + entityId, this.schema.entities);
@@ -107,7 +107,7 @@ export class FrmdbStore {
     public async putEntity(entity: Entity): Promise<Entity> {
         let kvs = await this.getDataKvs(entity._id);
         await kvs.updateEntity(entity);
-        let ret = await this.kvsFactory.metadataStore.putEntity(this.tenantName, this.appName, entity);
+        let ret = await this.kvsFactory.metadataStore.putEntity(entity);
         this.schema.entities[entity._id] = entity;
         return ret;
     }

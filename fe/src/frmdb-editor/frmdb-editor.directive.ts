@@ -69,7 +69,7 @@ class FrmdbEditorState {
     selectedTableId: string;
     tables: Entity[];
 
-    constructor(public tenantName: string, public appName: string) {
+    constructor(public appName: string) {
     }
 }
 
@@ -118,9 +118,8 @@ export class FrmdbEditorDirective {
     }
 
     init() {
-        let tenantName = BACKEND_SERVICE().tenantName;
         let appName = BACKEND_SERVICE().appName;
-        this.state = new FrmdbElementState(document.body, new FrmdbEditorState(tenantName, appName));
+        this.state = new FrmdbElementState(document.body, new FrmdbEditorState(appName));
 
         (window as any).$FRMDB_EDITOR = this;
         this.iframe = document.body.querySelector('iframe#app')! as HTMLIFrameElement;
@@ -292,8 +291,7 @@ export class FrmdbEditorDirective {
                 var basedOnApp = (newAppModal.querySelector("select[name=basedOnApp]") as HTMLSelectElement).value;
                 if (typeof basedOnApp !== 'string') { console.warn("Invalid base app name", basedOnApp); return }
 
-                let tenantName = BACKEND_SERVICE().tenantName;
-                BACKEND_SERVICE().putEvent(new ServerEventNewApp(tenantName, appName, basedOnApp != '-' ? basedOnApp : undefined))
+                BACKEND_SERVICE().putEvent(new ServerEventNewApp(appName, basedOnApp != '-' ? basedOnApp : undefined))
                     .then(async (ev: ServerEventNewEntity) => {
                         if (ev.state_ != 'ABORT') {
                             newAppModal.querySelector('.alert')!.classList.replace('d-block', 'd-none');

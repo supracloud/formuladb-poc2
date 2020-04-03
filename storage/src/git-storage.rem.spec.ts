@@ -3,7 +3,7 @@ import { GitStorage } from "./git-storage";
 describe('git-storage', () => {
     it("should get list of files", async (done) => {
         let gitStorage = new GitStorage();
-        let hotelBookingFiles = await gitStorage.getFiles('frmdb-apps', 'hotel_booking');
+        let hotelBookingFiles = await gitStorage.getFiles('hotel_booking');
 
         expect(hotelBookingFiles as any).toContain(jasmine.objectContaining({
             "name": "booking.html",
@@ -24,7 +24,7 @@ describe('git-storage', () => {
     it("should get page content", async (done) => {
         let gitStorage = new GitStorage();
 
-        let page = await gitStorage.getPageContent('frmdb-apps', 'hotel_booking', 'index.html');
+        let page = await gitStorage.getPageContent('hotel_booking', 'index.html');
         expect(page).toContain('<h2>Relax Your Mind</h2>');
 
         done();

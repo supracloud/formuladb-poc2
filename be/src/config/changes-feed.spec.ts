@@ -25,13 +25,13 @@ describe('changes-feed', () => {
 
         fetchMock.post(/\/formuladb-api\/changes-feed/, []);
         fetchMock.get('/formuladb-api/test-tenant/test_app', {
-            _id: "test-app", description: "test-app-desc",
+            _id: "kvsf-test-app-for-specs", description: "kvsf-test-app-for-specs-desc",
             pages: [
                 { name: "index", html: "index.html" },
             ],
         });
         fetchMock.get('/formuladb-api/test-tenant/test_app/schema', {
-            _id: "FRMDB_SCHEMA~~test-app",
+            _id: "FRMDB_SCHEMA~~kvsf-test-app-for-specs",
             entities: {
                 A: {
                     _id: 'A', 

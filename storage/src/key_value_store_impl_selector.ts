@@ -27,13 +27,13 @@ export async function getKeyValueStoreFactory(): Promise<KeyValueStoreFactoryI> 
     }
 }
 
-export async function getFrmdbEngineStore(schema: Schema, tenantName: string, appName: string): Promise<FrmdbEngineStore> {
+export async function getFrmdbEngineStore(schema: Schema): Promise<FrmdbEngineStore> {
     let kvsFactory = await getKeyValueStoreFactory();
-    return new FrmdbEngineStore(tenantName, appName, kvsFactory, schema);
+    return new FrmdbEngineStore(kvsFactory, schema);
 }
 
-export async function getFrmdbEngine(schema: Schema, tenantName: string, appName: string): Promise<FrmdbEngine> {
-    return new FrmdbEngine(await getFrmdbEngineStore(schema, tenantName, appName));
+export async function getFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
+    return new FrmdbEngine(await getFrmdbEngineStore(schema));
 }
 
 
@@ -42,7 +42,7 @@ export async function getTestFrmdbEngineStore(schema: Schema): Promise<FrmdbEngi
     fs.mkdirSync('/tmp/frmdb-metadata-store-for-specs', { recursive: true });
     console.log("mkdir finished")
     let kvsFactory = await getKeyValueStoreFactory();
-    return new FrmdbEngineStore('spec-apps', 'test-app', kvsFactory, schema);
+    return new FrmdbEngineStore(kvsFactory, schema);
 }
 export async function getTestFrmdbEngine(schema: Schema): Promise<FrmdbEngine> {
     return new FrmdbEngine(await getTestFrmdbEngineStore(schema));

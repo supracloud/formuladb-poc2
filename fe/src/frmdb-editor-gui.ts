@@ -18,7 +18,7 @@ import { Undo } from "./frmdb-editor/undo";
 // 		const appName = 'hotel-booking';
 // 		const themeOptions = jQuery('[aria-labelledby="frmdb-editor-color-palette-select"]');
 // 		let themeChangeButton: any = null;
-// 		fetch(`/${BACKEND_SERVICE().tenantName}/${BACKEND_SERVICE().appName}/theme.yaml`).then(re => re.text().then(themesYamlStr => {
+// 		fetch(`/${BACKEND_SERVICE().appName}/theme.yaml`).then(re => re.text().then(themesYamlStr => {
 // 			let themes = jsyaml.safeLoad(themesYamlStr);
 // 			themes.forEach(t => {
 // 				if (!themeChangeButton) {

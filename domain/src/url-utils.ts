@@ -4,7 +4,6 @@ export interface PageOpts {
     primaryColor: string;
     secondaryColor: string;
     theme: string;
-    tenantName: string;
     appName: string;
     pageName: string;
     query?: {
@@ -13,24 +12,23 @@ export interface PageOpts {
 }
 
 export function parsePageUrl(path: string): PageOpts {
-    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)\/(.+?)\/(.+?)\/(.+?)\.html/);
-    if (m && m.length == 9) {
+    let m = path.match(/^\/([a-z]{2})-(.+?)-([0-9a-f]+?)-([0-9a-f]+?)-(.+?)\/(.+?)\/(.+?)\.html/);
+    if (m && m.length == 8) {
         return {
             lang: m[1],
             look: m[2],
             primaryColor: m[3],
             secondaryColor: m[4],
             theme: m[5],
-            tenantName: m[6],
-            appName: m[7],
-            pageName: m[8],
+            appName: m[6],
+            pageName: m[7],
         }
-    } else throw new Error(`Page Pathname ${path} not formatted as expected /:lang-:look-:primary-:secondary-:theme/:tenant/:app/:page.html`)
+    } else throw new Error(`Page Pathname ${path} not formatted as expected /:lang-:look-:primary-:secondary-:theme/:app/:page.html`)
 }
 
 export function makeUrlPath(pageOpts: PageOpts) {
-    let {lang, look, primaryColor, secondaryColor, theme, tenantName, appName, pageName} = pageOpts;
-    return `/${lang}-${look}-${primaryColor}-${secondaryColor}-${theme}/${tenantName}/${appName}/${pageName}.html`;
+    let {lang, look, primaryColor, secondaryColor, theme, appName, pageName} = pageOpts;
+    return `/${lang}-${look}-${primaryColor}-${secondaryColor}-${theme}/${appName}/${pageName}.html`;
 }
 
 

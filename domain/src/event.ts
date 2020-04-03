@@ -64,7 +64,7 @@ export class ServerEventDeletedFormData extends MwzEvent {
 export class ServerEventNewApp extends MwzEvent {
     readonly type_ = "ServerEventNewApp";
 
-    constructor(public tenantName: string, public appName: string, public basedOnApp?: string) {
+    constructor(public appName: string, public basedOnApp?: string) {
         super();
     }
 }
@@ -130,7 +130,7 @@ export class ServerEventPutPageHtml extends MwzEvent {
 export class ServerEventPutMediaObject extends MwzEvent {
     readonly type_ = "ServerEventPutMediaObject";
 
-    constructor(public tenantName: string, public appName: string, public fileName: string, public base64Content: string) {
+    constructor(public appName: string, public fileName: string, public base64Content: string) {
         super();
     }
 }
@@ -139,7 +139,7 @@ export class ServerEventPutIcon extends MwzEvent {
     readonly type_ = "ServerEventPutIcon";
     savedIconClass?: string;
 
-    constructor(public tenantName: string, public appName: string, public iconId: string) {
+    constructor(public appName: string, public iconId: string) {
         super();
     }
 }
