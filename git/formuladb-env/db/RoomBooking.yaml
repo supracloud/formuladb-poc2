@@ -70,6 +70,4 @@ props:
         name: number_of_available_rooms
         propType_: FORMULA
         formula: total_number_of_rooms - number_of_booked_rooms
-    sadasd:
-        propType_: STRING
-        name: sadasd
+

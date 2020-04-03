@@ -17,6 +17,18 @@ spec:
       - name: check-db-ready
         image: postgres:11
         command: ['sh', '-c', 'until pg_isready -h db -p 5432 -t 1; do echo waiting for database; sleep 2; done;']
+      - name: init-git
+        image: registry.gitlab.com/metawiz/febe/formuladb-be
+        command: ['bash', 'scripts/init-git.sh']
+        volumeMounts:
+        - mountPath: /wwwroot/git
+          name: git-persistence
+      - name: init-db
+        image: registry.gitlab.com/metawiz/febe/formuladb-be
+        command: ['bash', 'scripts/init-db.sh']
+        volumeMounts:
+        - mountPath: /wwwroot/git
+          name: git-persistence
       containers:
       - env:
         # - name: DEBUG

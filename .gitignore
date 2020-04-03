@@ -1,4 +1,5 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+.FRMDB_ENV_GIT_VOLUME_INIT_DONE
 
 # compiled output
 dist-be

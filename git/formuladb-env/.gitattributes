@@ -10,5 +10,5 @@ static/**/*.svg filter=lfs diff=lfs merge=lfs -text
 **/*.otf filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text
 css/**.css filter=lfs diff=lfs merge=lfs -text
-db/pg_dump.sql.gz filter=lfs diff=lfs merge=lfs -text
+**/*.gz filter=lfs diff=lfs merge=lfs -text
 *.mp4 filter=lfs diff=lfs merge=lfs -text

@@ -1,7 +1,7 @@
 set -ex
 
 echo "###################################################################"
-echo "Starting formuladb-be for env: $FRMDB_ENV_NAME"
+echo "Init git for formuladb-be for env: $FRMDB_ENV_NAME"
 echo "###################################################################"
 ls -ltr /wwwroot/git/formuladb-env || true
 ls -ltr /wwwroot/formuladb
@@ -38,7 +38,7 @@ else
 
     cd /wwwroot/git/formuladb-env
     if [[ "`git branch|grep '^*'|cut -d ' ' -f2`" == "${FRMDB_ENV_NAME}" ]]; then
-        git pull origin ${FRMDB_ENV_NAME}
+        git pull origin ${FRMDB_ENV_NAME} -Xtheirs
     else
         git config user.email "git.bot@formuladb.io"
         git config user.name "Git Bot"
@@ -47,17 +47,4 @@ else
         git commit -m "new branch ${FRMDB_ENV_NAME}"
         git push --atomic --set-upstream origin "${FRMDB_ENV_NAME}"
     fi
-fi
-
-if [ -n "$BUILD_DEVELOPMENT" -o "staging" = "${FRMDB_ENV_NAME}" ]; then
-    psql -e -h db -U postgres < /wwwroot/git/formuladb-env/db/pg_dump.schema.sql 
-    for csv in /wwwroot/git/formuladb-env/db/*.csv; do 
-        ls -lh $csv
-        t=`basename $csv|sed -e 's/\.csv$//'`
-        cat $csv | psql -h db -U postgres -c "
-            CREATE TEMP TABLE tmp_table ON COMMIT DROP AS SELECT * FROM ${t} WITH NO DATA;
-            COPY tmp_table FROM STDIN WITH CSV HEADER;
-            INSERT INTO ${t} SELECT * FROM tmp_table ON CONFLICT DO NOTHING;
-        " || true
-    done
 fi

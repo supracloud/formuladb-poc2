@@ -3,8 +3,8 @@
     "version": "0.0.22",
     "description": "FormulaDB low code platform",
     "scripts": {
-        "start": "bash scripts/init-be.sh && node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
-        "start_dev": "bash scripts/init-be.sh && nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
+        "start": "node --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
+        "start_dev": "nodemon --watch /dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
         "_rem_precompile": "patch --merge node_modules/protractor/built/index.d.ts  e2e/protractor.patch",
         "compile": "tsc --sourceMap -p .",
         "start-dev-fe": "BUILD_DEVELOPMENT=1 FRMDB_ENV_ROOT_DIR=$PWD nodemon --watch dist-be --inspect=0.0.0.0:9231 dist-be/frmdb-be.js",
