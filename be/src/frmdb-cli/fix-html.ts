@@ -3,7 +3,7 @@ import { HTMLTools, isHTMLElement } from "@core/html-tools";
 import * as fs from 'fs';
 import { cleanupDocumentDOM } from "@core/page-utils";
 
-export function replaceCssClassWithTag(filePath: string, name: string) {
+function replaceCssClassWithTag(filePath: string, name: string) {
     let html = fs.readFileSync(filePath).toString();
     const jsdom = new JSDOM(html, {}, {
         features: {
@@ -40,7 +40,7 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
         newEl.append(htmlTools.doc.createElement('frmdb-t-section-divider'));
         el.parentElement!.replaceChild(newEl, el);
     }
-    
+
     for (let el of Array.from(cleanedUpDOM.querySelectorAll(`section.my-5.py-5.frmdb-section-dark.frmdb-bg-tint-parallax.frmdb-bg-tint-secondary-75`))) {
         let newEl = htmlTools.doc.createElement('frmdb-t-section-cards-icon');
         newEl.innerHTML = el.innerHTML;
@@ -55,7 +55,7 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
 
     for (let el of Array.from(cleanedUpDOM.querySelectorAll(`frmdb-t-main[style*="--frmdb-bg-img"]`))) {
         let imgVar = el.getAttribute("style");
-        if (imgVar && (el.parentElement!.getAttribute("style")||'').indexOf('--frmdb-bg-img') < 0) {
+        if (imgVar && (el.parentElement!.getAttribute("style") || '').indexOf('--frmdb-bg-img') < 0) {
             el.parentElement!.setAttribute("style", imgVar);
         }
         el.removeAttribute('style');
@@ -63,4 +63,26 @@ export function replaceCssClassWithTag(filePath: string, name: string) {
 
     let newHtml = htmlTools.document2html(cleanedUpDOM);
     fs.writeFileSync(filePath, newHtml);
+}
+
+export function fixHtml(fileNames: string[]) {
+    for (let filePath of fileNames) {
+        if (!filePath.match(/.*\.html$/)) { console.warn(filePath, "is not html"); continue }
+        console.log("processing file", filePath);
+        replaceCssClassWithTag(filePath, 'frmdb-t-card-media-main');
+        replaceCssClassWithTag(filePath, 'frmdb-t-aside');
+        replaceCssClassWithTag(filePath, 'frmdb-t-card-action');
+        replaceCssClassWithTag(filePath, 'frmdb-t-card-deck');
+        replaceCssClassWithTag(filePath, 'frmdb-t-card-icon-main');
+        replaceCssClassWithTag(filePath, 'frmdb-t-card-note');
+        replaceCssClassWithTag(filePath, 'frmdb-t-cover');
+        replaceCssClassWithTag(filePath, 'frmdb-t-footer');
+        replaceCssClassWithTag(filePath, 'frmdb-t-header');
+        replaceCssClassWithTag(filePath, 'frmdb-t-img');
+        replaceCssClassWithTag(filePath, 'frmdb-t-main');
+        replaceCssClassWithTag(filePath, 'frmdb-t-main-nav');
+        replaceCssClassWithTag(filePath, 'frmdb-t-media-section-main');
+        replaceCssClassWithTag(filePath, 'frmdb-t-section-cards-icon');
+        replaceCssClassWithTag(filePath, 'frmdb-t-section-divider');
+    }
 }

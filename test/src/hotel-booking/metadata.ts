@@ -7,8 +7,8 @@ import { Pn, EntityProperty, EntityStateGraph, Schema } from "@domain/metadata/e
 import { $User, $Dictionary } from "@domain/metadata/default-metadata";
 import { App } from "@domain/app";
 
-export const RoomType = {
-    _id: "RoomType",
+export const Room_Type = {
+    _id: "Room_Type",
     isEditable: true,
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
@@ -40,7 +40,7 @@ export const Room = {
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         nb: { name: "nb", propType_: Pn.NUMBER, allowNull: false } as EntityProperty,
-        room_type: { name: "room_type", propType_: Pn.REFERENCE_TO, referencedEntityName: RoomType._id, referencedPropertyName: '_id' } as EntityProperty,
+        room_type: { name: "room_type", propType_: Pn.REFERENCE_TO, referencedEntityName: Room_Type._id, referencedPropertyName: '_id' } as EntityProperty,
     }
 };
 
@@ -95,7 +95,7 @@ export const HotelBookingApp: App = {
 export const HotelBookingSchema: Schema = {
     _id: 'FRMDB_SCHEMA~~formuladb-examples--' + HotelBookingApp._id,
     entities: {
-        [RoomType._id]: RoomType,
+        [Room_Type._id]: Room_Type,
         [Room._id]: Room,
         [Booking._id]: Booking,
         [$User._id]: $User,

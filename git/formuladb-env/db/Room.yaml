@@ -12,5 +12,5 @@ props:
     room_type:
         name: room_type
         propType_: REFERENCE_TO
-        referencedEntityName: RoomType
+        referencedEntityName: Room_Type
         referencedPropertyName: _id

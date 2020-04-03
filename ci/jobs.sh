@@ -37,7 +37,7 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 2; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
-    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/frmdb-apps/hotel-booking/schema" | grep 'RoomType'; do 
+    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/frmdb-apps/hotel-booking/schema" | grep 'Room_Type'; do 
         echo "== be not started yet ==================================================="
         kubectl -n "$NAMESPACE" logs service/be
         sleep 10; 
@@ -93,7 +93,7 @@ function test_e2e {
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    while ! curl $URL/formuladb-api/frmdb-apps/hotel-booking/schema | grep 'RoomType'; do sleep 2; done
+    while ! curl $URL/formuladb-api/frmdb-apps/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
 
     target=headless
     if uname -a | grep 'Linux.*Microsoft'; then 

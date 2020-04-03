@@ -23,12 +23,12 @@ spec:
         volumeMounts:
         - mountPath: /wwwroot/git
           name: git-persistence
-      - name: init-db
-        image: registry.gitlab.com/metawiz/febe/formuladb-be
-        command: ['bash', 'scripts/init-db.sh']
-        volumeMounts:
-        - mountPath: /wwwroot/git
-          name: git-persistence
+      # - name: init-db
+      #   image: registry.gitlab.com/metawiz/febe/formuladb-be
+      #   command: ['bash', 'scripts/init-db.sh']
+      #   volumeMounts:
+      #   - mountPath: /wwwroot/git
+      #     name: git-persistence
       containers:
       - env:
         # - name: DEBUG

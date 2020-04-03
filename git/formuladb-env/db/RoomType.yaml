@@ -1,4 +1,4 @@
-_id: RoomType
+_id: Room_Type
 isEditable: true
 props:
     _id:

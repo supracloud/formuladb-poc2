@@ -5,6 +5,11 @@ import { Schema, Entity, isEntity, Pn } from "@domain/metadata/entity";
 import { KeyValueStoreFactoryI, KeyObjStoreI, KeyTableStoreI } from "@storage/key_value_store_i";
 import * as _ from "lodash";
 import * as fs from 'fs';
+import * as zlib from 'zlib';
+import * as stream from 'stream';
+import * as parse from 'csv-parse';
+
+
 import * as jsyaml from 'js-yaml';
 import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image } from "@domain/metadata/default-metadata";
 
@@ -142,10 +147,20 @@ export class MetadataStore {
         return schema;
     }
 
-    public async getSchema(tenantName: string, appName: string): Promise<Schema | null> {
-        let schemaNoEntities: SchemaEntityList = this.fromYaml(
-            await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`)
-        );
+    public async getSchema(tenantName: string | null, appName: string | null): Promise<Schema | null> {
+        let schemaNoEntities: SchemaEntityList;
+        if (null == tenantName) {
+            let entityFiles = await this.listDir(`${FRMDB_ENV_DIR}/db`, /[A-Z].*\.html$/);
+
+            schemaNoEntities = {
+                _id: 'FRMDB_SCHEMA~~COMPLETE_DB',
+                entityIds: entityFiles.map(entityFile => entityFile.replace(/.*\//, '')),
+            };
+        }
+        else {
+            schemaNoEntities = this.fromYaml(
+                await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/schema.yaml`));
+        }
         let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => {
             if (entityId == '$User') return entityId;
             if (entityId == '$Currency') return entityId;
@@ -170,7 +185,7 @@ export class MetadataStore {
         entitiesDictionary[$App._id] = $App;
         entitiesDictionary[$Table._id] = $Table;
         entitiesDictionary[$Page._id] = $Page;
-        
+
         let schema: Schema = {
             _id: schemaNoEntities._id,
             entities: entitiesDictionary,
@@ -197,6 +212,21 @@ export class MetadataStore {
         let str = await this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`);
         let entity: Entity = this.fromYaml(str);
         return entity;
+    }
+
+    public async getEntityBackupData(entityId: string): Promise<stream.Readable> {
+        let csvRawStream: stream.Readable;
+        if (process.env.BUILD_DEVELOPMENT) {
+            csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv`);
+        } else {
+            let source = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId}.csv.gz`);
+            let gunzip = zlib.createGunzip();
+            stream.pipeline(source, gunzip);
+            csvRawStream = gunzip;
+        }
+        const csvParser = parse();
+        csvRawStream.pipe(csvParser);
+        return csvParser;
     }
 
     public async putEntity(tenantName: string, appName: string, entity: Entity): Promise<Entity> {
@@ -254,7 +284,7 @@ export class MetadataStore {
     }
 
     async setPageProperties(pageOpts: PageOpts, newPageObj: $PageObjT, startPageName: string) {
-        let {tenantName, appName} = pageOpts;
+        let { tenantName, appName } = pageOpts;
         let content;
         if ('$LANDING-PAGE$' === startPageName) {
             content = await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/base-app/landing-page.html`);
@@ -290,7 +320,7 @@ export class MetadataStore {
     }
 
     async savePageHtml(pageOpts: PageOpts, html: string): Promise<void> {
-        let {tenantName, appName, pageName} = pageOpts;
+        let { tenantName, appName, pageName } = pageOpts;
         let pagePath = `${tenantName}/${appName}/${pageName}.html`;
 
         const jsdom = new JSDOM(html, {}, {
@@ -351,7 +381,7 @@ export class MetadataStore {
     async setPageScreenshot(pageOpts: PageOpts) {
         try {
             let img = await this.getPageScreenshot(pageOpts);
-            let {tenantName, appName, pageName} = pageOpts;
+            let { tenantName, appName, pageName } = pageOpts;
             console.info('Saving screenshot for ', pageOpts);
             let path = `${tenantName}/${appName}/static/${pageName}.png`;
             await this.writeFile(`${FRMDB_ENV_DIR}/${path}`, img);
@@ -396,7 +426,7 @@ export class MetadataStore {
         const page = await browser.newPage();
         await page.goto('http://localhost:3000' + url);
         console.info("generate screenshot for ", url);
-        let img: Buffer = await page.screenshot({encoding: "binary"});
+        let img: Buffer = await page.screenshot({ encoding: "binary" });
         console.info("close browser ", url);
         await browser.close();
         return img;
@@ -406,14 +436,14 @@ export class MetadataStore {
         let browser = await this.runPuppeteer();
         const page = await browser.newPage();
         await page.goto('http://localhost:3000' + makeUrlPath(pageOpts));
-        let pdf: Buffer = await page.pdf({format: 'A4'});
+        let pdf: Buffer = await page.pdf({ format: 'A4' });
         await browser.close();
         return pdf;
     }
 
     async getPageHtml(pageOpts: PageOpts, dictionaryCache: Map<string, $DictionaryObjT>): Promise<string> {
-        let {tenantName, appName, pageName} = pageOpts;
-        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName+'.html' || 'index.html'}`);
+        let { tenantName, appName, pageName } = pageOpts;
+        let pageHtml = await this.readFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName + '.html' || 'index.html'}`);
 
         const jsdom = new JSDOM(pageHtml, {}, {
             features: {
@@ -462,7 +492,7 @@ export class MetadataStore {
     }
 
     async deletePage(deletedPagePath: string): Promise<void> {
-        let {tenantName, appName, pageName} = parsePageUrl(deletedPagePath);
+        let { tenantName, appName, pageName } = parsePageUrl(deletedPagePath);
         await this.delFile(`${FRMDB_ENV_DIR}/${tenantName}/${appName}/${pageName}.html`);
     }
 
@@ -515,7 +545,7 @@ export class MetadataStore {
             });
             const htmlTools = new HTMLTools(jsdom.window.document, new jsdom.window.DOMParser());
 
-            let pageObj: $PageObjT = { 
+            let pageObj: $PageObjT = {
                 _id: `${tenantName}/${appName}/${pageName}`,
                 name: pageName,
                 ...getPageProperties(htmlTools.doc),
@@ -532,7 +562,7 @@ export class MetadataStore {
 
         return Object.values(schema.entities)
             // .filter(e => ! [$App._id, $Table._id, $Page._id, $Icon._id, $Image._id].includes(e._id))
-        ;
+            ;
     }
 
     async saveMediaObjectInGcloud(tenantName: string, appName: string, mediaType: string, name: string, base64Content: string): Promise<void> {
@@ -562,9 +592,9 @@ async function execShell(cmd: string): Promise<{ error: Error, stdout: string | 
     return new Promise((resolve, reject) => {
         exec(cmd, (error, stdout, stderr) => {
             if (error) {
-                reject({error, stdout, stderr});
+                reject({ error, stdout, stderr });
             }
-            resolve({error, stdout, stderr});
+            resolve({ error, stdout, stderr });
         });
     });
 }

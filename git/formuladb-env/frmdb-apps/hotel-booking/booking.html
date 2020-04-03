@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-<body data-frmdb-record="RoomBooking~~__FRMDB_NEW_RECORD__" class="frmdb-editor-normal">
+<body data-frmdb-record="Room_Booking~~__FRMDB_NEW_RECORD__" class="frmdb-editor-normal">
     <header class="frmdb-t-header" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
         <div class="jumbotron">
             <h1 class="display-4">Book Now</h1>
@@ -24,7 +24,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group date">
-                                        <input type="date" class="form-control" placeholder="Arrival Date" required="" name="$FRMDB.RoomBooking[].start_date" data-frmdb-value="$FRMDB.RoomBooking[].start_date">
+                                        <input type="date" class="form-control" placeholder="Arrival Date" required="" name="$FRMDB.Room_Booking[].start_date" data-frmdb-value="$FRMDB.Room_Booking[].start_date">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="frmdb-i-calendar" aria-hidden="true"></i>
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group date">
-                                        <input type="date" class="form-control" placeholder="Departure Date" required="" name="$FRMDB.RoomBooking[].end_date" data-frmdb-value="$FRMDB.RoomBooking[].end_date">
+                                        <input type="date" class="form-control" placeholder="Departure Date" required="" name="$FRMDB.Room_Booking[].end_date" data-frmdb-value="$FRMDB.Room_Booking[].end_date">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="frmdb-i-calendar" aria-hidden="true"></i>
@@ -46,12 +46,12 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" name="$FRMDB.RoomBooking[].nb_adults" data-frmdb-value="$FRMDB.RoomBooking[].nb_adults">
+                                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" name="$FRMDB.Room_Booking[].nb_adults" data-frmdb-value="$FRMDB.Room_Booking[].nb_adults">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" title="Nb Children" value="0" name="$FRMDB.RoomBooking[].nb_children" data-frmdb-value="$FRMDB.RoomBooking[].nb_children">
+                                        <input type="number" class="form-control" title="Nb Children" value="0" name="$FRMDB.Room_Booking[].nb_children" data-frmdb-value="$FRMDB.Room_Booking[].nb_children">
                                     </div>
                                 </div>
                             </div>
@@ -75,12 +75,12 @@
                 <h2 class="title_color">Available Rooms</h2>
                 <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast,</p>
                 <div class="card-deck frmdb-cards-3">
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~07-Ball">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~07-Ball">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/interior-2685521_1920.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/interior-2685521_1920.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Ball Room</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Ball Room</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -93,12 +93,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~06-Conference">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~06-Conference">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/living-room-581073_1920.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/living-room-581073_1920.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Conference Room</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Conference Room</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -111,12 +111,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~05-EconomySigle">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~05-EconomySigle">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/bedroom-1872196_1920.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/bedroom-1872196_1920.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Economy Sigle</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Economy Sigle</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -129,12 +129,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~04-EconomyDouble">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~04-EconomyDouble">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/room4.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/room4.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Economy Double</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Economy Double</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -147,12 +147,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~03-Honeymoon">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~03-Honeymoon">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/room3.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/room3.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Honeymoon Suit</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Honeymoon Suit</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -165,12 +165,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~02-SigleDeluxe">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~02-SigleDeluxe">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/room2.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/room2.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Single Deluxe Room</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Single Deluxe Room</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>
@@ -183,12 +183,12 @@
                             </span>
                         </div>
                     </div>
-                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[]" data-frmdb-record="RoomType~~01-DoubleDeluxe">
+                    <div class="frmdb-t-card-media-main" data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[]" data-frmdb-record="Room_Type~~01-DoubleDeluxe">
                         <div class="frmdb-t-img overflow-hidden">
-                            <img src="theme/image/room1.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].picture">
+                            <img src="theme/image/room1.jpg" alt="" data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].picture">
                         </div>
                         <div class="card-body">
-                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.RoomType[].name">Double Deluxe Room</h5>
+                            <h5 data-frmdb-value="$FRMDB.$REFERENCE_TO_OPTIONS.Room_Type[].name">Double Deluxe Room</h5>
                             <h6>Card 1 subtitle</h6>
                             <p>Quisque ornare, quam a blandit malesuada</p>
                         </div>

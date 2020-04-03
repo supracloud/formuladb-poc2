@@ -60,14 +60,9 @@ configBe = {
         path: path.resolve(__dirname, 'dist-be'),
         filename: 'frmdb-be.js'
     },
-};
-
-configFrmdbCli = {
-    ...configBaseNode,
-    entry: './tsc-out/storage/src/frmdb-cli.js',
-    output: {
-        path: path.resolve(__dirname, 'dist-be'),
-        filename: 'frmdb-cli.js'
+    stats: {
+        // Ignore warnings due to yarg's dynamic module loading
+        warningsFilter: [/node_modules\/yargs/]
     },
 };
 
@@ -100,7 +95,6 @@ configFe = {
 
 module.exports = [
     configBe,
-    configFrmdbCli,
     // configDataGrid, 
     configFe,
     // configFrmdbEditor

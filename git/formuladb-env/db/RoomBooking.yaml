@@ -1,4 +1,4 @@
-_id: RoomBooking
+_id: Room_Booking
 isEditable: true
 stateGraph:
     nodes:
@@ -28,7 +28,7 @@ props:
     room_type:
         name: room_type
         propType_: REFERENCE_TO
-        referencedEntityName: RoomType
+        referencedEntityName: Room_Type
         referencedPropertyName: _id
     start_date:
         name: start_date
@@ -57,13 +57,13 @@ props:
     total_number_of_rooms:
         name: total_number_of_rooms
         propType_: REFERENCE_TO
-        referencedEntityName: RoomType
+        referencedEntityName: Room_Type
         referencedPropertyName: total_number_of_rooms
     number_of_booked_rooms:
         name: number_of_booked_rooms
         propType_: FORMULA
         formula: >-
-            COUNTIF(RoomBooking, AND(room_type == @[room_type],
+            COUNTIF(Room_Booking, AND(room_type == @[room_type],
             INTERSECTS(DATERANGE(start_date, end_date),DATERANGE(@[start_date],
             @[end_date]))))
     number_of_available_rooms:
