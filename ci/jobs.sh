@@ -95,8 +95,9 @@ function test_e2e {
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
     while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
 
-    npm run test-parallel -- --baseUrl="$URL" || true
-    bash check_success_rate.sh junit/xmlresults.xml $SUCCESS_RATE
+    TARGET=headless npm test -- --specs \
+        tsc-out/docs/1-Intro/6-editor-tables-list.e2e.js \
+        tsc-out/docs/0-GetStarted/7-list-of-pages.e2e.js
 }
 
 function e2e_dev_env {
