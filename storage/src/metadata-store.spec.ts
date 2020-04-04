@@ -18,6 +18,7 @@ import { getTestFrmdbEngineStore } from "./key_value_store_impl_selector";
 import { FrmdbEngineStore } from "@core/frmdb_engine_store";
 import { parsePageUrl, PageOpts } from '@domain/url-utils';
 import { $DictionaryObjT } from '@domain/metadata/default-metadata.js';
+import { generateUUID } from '@domain/uuid';
 
 const templatePage =  /*html*/`
 <!DOCTYPE html>
@@ -33,25 +34,27 @@ const templatePage =  /*html*/`
 
 describe('MetadataStore', () => {
     let frmdbEngineStore: FrmdbEngineStore;
+    let envDir;
     let dictionaryCache: Map<string, $DictionaryObjT> = new Map<string, $DictionaryObjT>()
         .set('main content', { 'fr': "contenu principal" } as $DictionaryObjT);
 
     function resetEnv() {
-        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps");
-        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
-        rimraf.sync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes");
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/css");
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app", { recursive: true });
-        fs.mkdirSync("/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/kvsf-test-app-for-specs", { recursive: true });
-        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Clean.json', JSON.stringify(CleanTheme));
-        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/themes/Frames.json', JSON.stringify(FramesTheme));
-        fs.writeFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/base-app/landing-page.html', templatePage);
-        fs.copyFileSync('./git/formuladb-env/css/basic-1a1a1a-ffffff.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/basic-1a1a1a-ffffff.css');
-        fs.copyFileSync('./git/formuladb-env/css/lux-cb8670-363636.css', '/tmp/frmdb-metadata-store-for-specs/formuladb-env/css/lux-cb8670-363636.css');
+        rimraf.sync(`${envDir}/frmdb-apps`);
+        rimraf.sync(`${envDir}/themes`);
+        rimraf.sync(`${envDir}/css`);
+        fs.mkdirSync(`${envDir}/themes`);
+        fs.mkdirSync(`${envDir}/css`);
+        fs.mkdirSync(`${envDir}/frmdb-apps/base-app`, { recursive: true });
+        fs.mkdirSync(`${envDir}/frmdb-apps/kvsf-test-app-for-specs`, { recursive: true });
+        fs.writeFileSync(`${envDir}/themes/Clean.json`, JSON.stringify(CleanTheme));
+        fs.writeFileSync(`${envDir}/themes/Frames.json`, JSON.stringify(FramesTheme));
+        fs.writeFileSync(`${envDir}/frmdb-apps/base-app/landing-page.html`, templatePage);
+        fs.copyFileSync('./git/formuladb-env/css/basic-1a1a1a-ffffff.css', `${envDir}/css/basic-1a1a1a-ffffff.css`);
+        fs.copyFileSync('./git/formuladb-env/css/lux-cb8670-363636.css', `${envDir}/css/lux-cb8670-363636.css`);
     }
     beforeAll(async () => {
         frmdbEngineStore = await getTestFrmdbEngineStore({ _id: "FRMDB_SCHEMA", entities: {} });
+        envDir = frmdbEngineStore.kvsFactory.metadataStore.envDir;
         resetEnv();
     });
 
@@ -94,7 +97,7 @@ describe('MetadataStore', () => {
             parsePageUrl('/na-basic-1a1a1a-ffffff-Clean/kvsf-test-app-for-specs/test.html'),
             PageHtmlFromClientBrowser);
 
-        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/test.html', /*html*/`
+        expectSavedPageToEqual(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/test.html`, /*html*/`
 <!DOCTYPE html>
 <html>
 <head>
@@ -122,7 +125,7 @@ describe('MetadataStore', () => {
 
     it("Should save head fragment", async () => {
 
-        let headHtml = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/_head.html', 'utf8');
+        let headHtml = fs.readFileSync(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/_head.html`, 'utf8');
         expect(headHtml).toEqual(/*html*/`<head>
 <title>FormulaDB - Build Applications Without Code</title>
 <meta name="description" content="Some page description">
@@ -132,7 +135,7 @@ describe('MetadataStore', () => {
     });
 
     it("Should save nav fragment", async () => {
-        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/_nav.html', /*html*/`
+        expectSavedPageToEqual(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/_nav.html`, /*html*/`
             <nav class="navbar" data-frmdb-fragment="_nav.html">
                 nav content
             </nav>
@@ -140,7 +143,7 @@ describe('MetadataStore', () => {
     });
 
     it("Should save scripts fragment", async () => {
-        expectSavedPageToEqual('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/_scripts.html', /*html*/`
+        expectSavedPageToEqual(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/_scripts.html`, /*html*/`
             <div style="display: none; pointer-events: none;" data-frmdb-fragment="_scripts.html">
                 <script src="/formuladb-env/plugins/vendor/js/jquery-3.4.1.min.js"></script>
             </div>
@@ -222,7 +225,7 @@ describe('MetadataStore', () => {
             parsePageUrl(`/en-basic-1a1a1a-ffffff-Frames/kvsf-test-app-for-specs/${page1Obj.name}.html`),
             page1Obj, "$LANDING-PAGE$");
 
-        let savedPage = fs.readFileSync('/tmp/frmdb-metadata-store-for-specs/formuladb-env/frmdb-apps/kvsf-test-app-for-specs/new-page.html').toString();
+        let savedPage = fs.readFileSync(`${envDir}/frmdb-apps/kvsf-test-app-for-specs/new-page.html`).toString();
         let expected = htmlTools.normalizeHTMLDoc(/*html*/`
             <!DOCTYPE html>
             <html>

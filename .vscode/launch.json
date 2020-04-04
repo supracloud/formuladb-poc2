@@ -52,6 +52,30 @@
             ]
         },
         {
+            "name": "jasmine fe",
+            "type": "node",
+            "runtimeArgs": [
+                "--trace-warnings",
+                "--debug-brk",
+                "--inspect=0.0.0.0:9232"
+            ],
+            "env": {
+                "DEBUG": "formuladb:*"
+            },
+            "protocol": "inspector",
+            "port": 9232,
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "program": "${workspaceFolder}/jasmine.js",
+            "args": [
+                "browser"
+            ],
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/tsc-out/**/*.js",
+            ]
+        },
+        {
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",

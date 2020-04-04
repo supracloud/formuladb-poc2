@@ -42,6 +42,8 @@ export class MetadataStore {
     constructor(private envName: string, public kvsFactory: KeyValueStoreFactoryI) {
     }
 
+    public get envDir() { return FRMDB_ENV_DIR; }
+    
     private async writeFile(fileName: string, content: string | Buffer) {
         await new Promise((resolve, reject) => {
             let dirName = path.dirname(fileName);

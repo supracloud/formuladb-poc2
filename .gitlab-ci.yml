@@ -1,18 +1,12 @@
 stages:
   - build
-  - test
-  - test
-  - bundle
+  - test_and_bundle
   - build_images_and_deploy_dev
-  - test_postgres
-  - test_stress
-  # - e2e_dev_env
+  - testpg_and_testpg_and_stress_and_e2e_dev_env
   - build_images_and_deploy_staging
   - e2e_staging
   - build_images_and_deploy_production
   - e2e_production
-  # - e2e_all_example_apps
-  # - e2e_staging_with_videos
   - cleanup
 
 .cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
@@ -43,7 +37,7 @@ build:
   <<: *cache_node_modules_and_artifacts
 
 bundle:
-  stage: bundle
+  stage: test_and_bundle
   script:
     - npm run bundle
   <<: *cache_node_modules_and_artifacts
@@ -56,26 +50,26 @@ build_images_and_deploy_dev:
   <<: *cache_node_modules_and_artifacts
 
 test_mem:
-  stage: test
+  stage: test_and_bundle
   script:
     - npm test
   <<: *cache_node_modules_and_artifacts
 
 test_fe:
-  stage: test
+  stage: test_and_bundle
   script:
     - npm run test:fe
   <<: *cache_node_modules_and_artifacts
 
 test_postgres:
-  stage: test_postgres
+  stage: testpg_and_stress_and_e2e_dev_env
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
 test_stress:
-  stage: test_stress
+  stage: testpg_and_stress_and_e2e_dev_env
   retry: 2
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
@@ -92,8 +86,8 @@ test_api:
     when: always    
   <<: *cache_node_modules_and_artifacts
 
-.e2e_dev_env:
-  stage: e2e_dev_env
+testpg_and_stress_and_e2e_dev_env:
+  stage: testpg_and_stress_and_e2e_dev_env
   retry: 2
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"

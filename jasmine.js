@@ -15,7 +15,9 @@ require.extensions['.scss'] = function (module, filename) {
     module.exports = '';//we would need to run sass to make this work
 }
 
-process.env.FRMDB_ENV_ROOT_DIR = "/tmp/frmdb-metadata-store-for-specs";
+if (!process.env.FRMDB_ENV_ROOT_DIR) {
+    process.env.FRMDB_ENV_ROOT_DIR = "/tmp/frmdb-metadata-store-for-specs";
+}
 process.env.GOOGLE_APPLICATION_CREDENTIALS = `${process.cwd()}/ci/FormulaDB-storage-full.json`;
 
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
@@ -141,6 +143,11 @@ if (specificTsFile && specificTsFile.match(/\.spec\.ts$/)) {
     if (specificTsFile.indexOf('fe/src') == 0) {
         setJsdomGlobals();
     }
+} else if (specificTsFile && specificTsFile.match(/fe\/src\/.*\.ts$/)) {
+    setJsdomGlobals();
+    specFiles = [
+        "tsc-out/fe/**/*.spec.js",
+    ].concat(ignoredSpecFiles);
 } else if (specificTsFile === "browser") {
     setJsdomGlobals();
     specFiles = [
