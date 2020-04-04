@@ -39,7 +39,7 @@ function build_images_and_deploy {
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
     while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/frmdb-apps/hotel-booking/schema" | grep 'Room_Type'; do 
         echo "== be not started yet ==================================================="
-        kubectl -n "$NAMESPACE" logs service/be
+        kubectl -n "$NAMESPACE" logs service/be | head -100
         sleep 10; 
     done
 }
@@ -95,12 +95,7 @@ function test_e2e {
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
     while ! curl $URL/formuladb-api/frmdb-apps/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
 
-    target=headless
-    if uname -a | grep 'Linux.*Microsoft'; then 
-        target=""
-    fi
-
-    TARGET=$target npm test -- --baseUrl="$URL" || true
+    npm run test-parallel -- --baseUrl="$URL" || true
     bash check_success_rate.sh junit/xmlresults.xml $SUCCESS_RATE
 }
 
@@ -141,7 +136,7 @@ function cleanup {
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
-    namespacesToDelete=`kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [2-9][0-9]d$'|egrep -o "[0-9a-f]{40}" || true`
+    namespacesToDelete=`kubectl get namespaces|egrep '[0-9a-f]{40} .*Active.*  [0-9][0-9]*[0-9]d$'|egrep -o "n[0-9a-f]{40}" || true`
     if [[ -n "$namespacesToDelete" ]]; then kubectl delete namespace $namespacesToDelete; fi
 }
 

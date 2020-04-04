@@ -119,7 +119,7 @@ function runCmd(cmd: string, ...args: string[]) {
     });
 
     prc.on('close', function (code) {
-        console.log('process exit code ' + code);
+        if (code) console.error('process exit code ' + code);
     });
 }
 
