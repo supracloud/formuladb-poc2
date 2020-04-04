@@ -58,7 +58,12 @@ rsync-deploy() {
 #chmod 700 ~/.ssh
 ssh-ci() {
     #ssh -i ./ssh/frmdb.id_rsa root@34.73.93.144
-    ssh -i ~/.ssh/frmdb.id_rsa root@34.76.177.179
+    #ssh -i ~/.ssh/frmdb.id_rsa root@34.76.177.179
+    ssh -i ~/.ssh/frmdb.id_rsa root@35.187.103.135
+}
+
+ssh-acr-dev() {
+    ssh -i ~/.ssh/frmdb.id_rsa alexandru_cristu@34.71.250.129
 }
 
 ssh-demo() {

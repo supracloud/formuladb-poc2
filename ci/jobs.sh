@@ -37,7 +37,7 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 2; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
-    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/frmdb-apps/hotel-booking/schema" | grep 'Room_Type'; do 
+    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema" | grep 'Room_Type'; do 
         echo "== be not started yet ==================================================="
         kubectl -n "$NAMESPACE" logs service/be | head -100
         sleep 10; 
@@ -93,7 +93,7 @@ function test_e2e {
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    while ! curl $URL/formuladb-api/frmdb-apps/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
+    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
 
     npm run test-parallel -- --baseUrl="$URL" || true
     bash check_success_rate.sh junit/xmlresults.xml $SUCCESS_RATE
@@ -102,7 +102,7 @@ function test_e2e {
 function e2e_dev_env {
     set -x
 
-    if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/frmdb-apps/formuladb-io/schema | grep 'SampleApp'; then
+    if ! curl http://$FRMDB_ENV_NAME.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; then
         echo "== ERROR: be not started yet ! "
         kubectl -n "$FRMDB_ENV_NAME" logs service/be
     fi
@@ -115,7 +115,7 @@ function build_images_and_deploy_staging {
 }
 
 function e2e_staging {
-    while ! curl -s https://staging.formuladb.io/formuladb-api/frmdb-apps/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
     # how to upgrade test data without deleting existing user data?
     test_e2e staging "https://staging.formuladb.io" 100
 }
@@ -125,7 +125,7 @@ function build_images_and_deploy_production {
 }
 
 function e2e_production {
-    while ! curl -s https://staging.formuladb.io/formuladb-api/frmdb-apps/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
+    while ! curl -s https://staging.formuladb.io/formuladb-api/formuladb-io/schema | grep 'SampleApp'; do sleep 2; done
     #WARNING: make sure only safe tests
     echo test_e2e production "https://formuladb.io" 100
 }

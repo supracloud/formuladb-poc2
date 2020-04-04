@@ -6,7 +6,7 @@ if [ -z "$FRMDB_APP_NAME" ]; then echo "Usage: create-app.sh FRMDB_ENV_NAME FRMD
 
 for appName in "${FRMDB_APP_NAME}" "${FRMDB_APP_NAME}----db" "${FRMDB_APP_NAME}----obj"; do
     curl -v --request POST --header 'PRIVATE-TOKEN: RER-gkXZCCi8irBNsUgL' --header "Content-Type: application/json" \
-        --data '{"path": "formuladb-env/frmdb-apps/'${appName}'"}' \
+        --data '{"path": "formuladb-env/'${appName}'"}' \
         'https://gitlab.com/api/v4/projects'
 done
 
