@@ -2,7 +2,7 @@ stages:
   - build
   - test_and_bundle
   - build_images_and_deploy_dev
-  - testpg_and_testpg_and_stress_and_e2e_dev_env
+  - testpg_and_stress_and_e2e_dev_env
   - build_images_and_deploy_staging
   - e2e_staging
   - build_images_and_deploy_production
@@ -77,7 +77,7 @@ test_stress:
   <<: *cache_node_modules_and_artifacts
 
 test_api:
-  stage: test_stress
+  stage: testpg_and_stress_and_e2e_dev_env
   script:
     - bash api-tests.sh
   artifacts:
@@ -86,7 +86,7 @@ test_api:
     when: always    
   <<: *cache_node_modules_and_artifacts
 
-testpg_and_stress_and_e2e_dev_env:
+e2e_dev_env:
   stage: testpg_and_stress_and_e2e_dev_env
   retry: 2
   script:
