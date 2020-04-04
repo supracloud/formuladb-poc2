@@ -22,7 +22,7 @@
         "_rem_watch-rsync": "sleep 15; while true; do sleep 3; bash rsync.sh 2>/dev/null; done",
         "live-server": "concurrently -k \"npm run watch-rsync\" \"bash serve.sh\" ",
         "-rem-watch-live-server": "bash serve.sh",
-        "serve-tmux": "bash ci/prepare-dev.sh && tmux new-session 'npm run watch-x-compile' ';' split-window -h 'npm run watch-x-bundle' ';' split-window -h 'npm run watch-skaffold' ';' select-layout tiled",
+        "serve-tmux": "bash ci/prepare-dev.sh && tmux set -g status off ';' new-session 'npm run watch-x-compile' ';' split-window -h 'npm run watch-x-bundle' ';' split-window -h 'npm run watch-skaffold' ';' select-layout tiled",
         "serve": "bash ci/prepare-dev.sh && concurrently -k \"npm:watch-*\" ",
         "serve-fe": "bash ci/prepare-dev.sh && concurrently -k \"npm:watch-x-*\" \"npm run start-dev-fe\" ",
         "test": "node jasmine.js",

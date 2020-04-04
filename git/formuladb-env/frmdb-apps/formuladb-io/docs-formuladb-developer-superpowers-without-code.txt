@@ -1,0 +1,13 @@
+In FormulaDB everything is a Table. Things you usually find in dedicated, often specific and complicate screens in other platform, in FormulaDB you will find them in a regular table. 
+
+Users roles and permissions are stored in regular tables. Email/sms notifications can be manipulated as regular tables.
+
+Working with tables is pretty intuitive for most people:
+- Add/Delete/Modify rows
+- Add/Delete/Modify simple columns
+
+Even a bit more advanced knowledge is pretty easy to acquire:
+- Add/Delete/Modify columns with simple formulas like basic arithmetic on number and dates 
+- Add/Delete/Modify columns with formulas that compute aggregations, e.g. SUMIF, COUNTIF
+
+Developer superpowers without coding will follow
