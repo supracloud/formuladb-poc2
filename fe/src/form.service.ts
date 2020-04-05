@@ -39,9 +39,13 @@ export class FormService {
             if (!pObj) return;
             let {parentEl, parentObj} = pObj;
             if (null === parentObj) { console.info("Parent obj not found for " + inputEl); return; }
-            this.validateOnClient(parentEl, parentObj);
     
-            // this.debounced_newRecordCache(inputEl);
+            if (inputEl.closest('form[method="GET]')) {
+                //not using localStorage...method=GET means we are using URL parameters
+                this.validateOnClient(parentEl, parentObj);
+            } else {
+                this.debounced_newRecordCache(inputEl);
+            }
             this.debounced_manageInput(inputEl);
         });
 

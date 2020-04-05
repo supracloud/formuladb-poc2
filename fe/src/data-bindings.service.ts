@@ -87,7 +87,10 @@ export class DataBindingsService {
     }
 
     public updateDOMWithUrlParameters() {
-        let urlParams = new URLSearchParams(getWindow(this.rootEl).location.search);
+        let wnd = getWindow(this.rootEl);
+        let searchStr = wnd.location.search;
+        console.log("updateDOMWithUrlParameters", wnd, searchStr);
+        let urlParams = new URLSearchParams(searchStr);
         urlParams.forEach((val, key) => {
             let elems: (HTMLInputElement|HTMLSelectElement)[] = Array.from(
                 this.rootEl.querySelectorAll(`input[data-frmdb-value$=":${key}"],input[data-frmdb-value="${key}"]`));

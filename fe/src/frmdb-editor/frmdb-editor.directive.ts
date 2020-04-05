@@ -93,10 +93,24 @@ export class FrmdbEditorDirective {
         return this.iframe.contentWindow!.document;
     }
 
-    updateStateFromUrl(newPageOpts: PageOpts, newPath: string) {
+    setIframeSrc(newUrl: URL) {
+        let searchStr = '';
+        if (newUrl.search) {
+            let p = new URLSearchParams(newUrl.search);
+            p.delete('frmdbRender');
+            searchStr = '?' + p.toString();
+        }
+        
+        if (this.iframe?.contentWindow?.location?.pathname != newUrl.pathname) {
+            this.iframe.src = newUrl.pathname + searchStr;
+        }
+
+    }
+
+    updateStateFromUrl(newPageOpts: PageOpts, newUrl: URL) {
         let { appName } = newPageOpts;
 
-        if (this.iframe.src != newPath) this.iframe.src = newPath;
+        this.setIframeSrc(newUrl);
 
         if (this.state.data.selectedAppName != appName) {
             RESET_BACKEND_SERVICE();
@@ -153,7 +167,7 @@ export class FrmdbEditorDirective {
 
         //FIXME: Ugly Workaround for e2e where onload is not getting called:
         setTimeout(ff, 2000);
-        this.iframe.src = window.location.pathname;
+        this.setIframeSrc(new URL(window.location.href));
 
         let newPageOpts = parsePageUrl(window.location.pathname);
         this.state.emitChange({
@@ -179,7 +193,7 @@ export class FrmdbEditorDirective {
         })
 
         registerFrmdbEditorRouterHandler('editor-iframe-src',
-            (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newPath),
+            (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newUrl),
             () => this.checkSafeNavigation()
         );
     }

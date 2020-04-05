@@ -96,7 +96,7 @@ export class ThemeCustomizerComponent extends HTMLElement {
         await this.fetchCssFiles();
         await this.fetchThemeNames();
         this.updateState(parsePageUrl(window.location.pathname));
-        registerFrmdbEditorRouterHandler("theme-customizer", (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
+        registerFrmdbEditorRouterHandler("theme-customizer", (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
             this.updateState(newPageOpts);
         });
     }

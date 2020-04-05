@@ -29,7 +29,7 @@ export function isDataObj(param): param is DataObj {
 }
 export function parseDataObjIdES5(_id) {
     if (!_id) return null;
-    var m = _id.match(/^([$\w_]+)~~([-_ \/&\w~@\.]+)$/);
+    var m = _id.match(/^([$\w_]+)~~([-_ \/&\w~@\.\$]+)$/);
     if (null != m) {
         return {
             entityId: m[1]!,
@@ -42,7 +42,7 @@ function _parseDataObjId(_id: string | undefined): DataObjId | null {
     return parseDataObjIdES5(_id);
 }
 export function isNewDataObjId(_id: string): boolean {
-    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('__FRMDB_NEW_RECORD__');
+    return _id.endsWith('~~') || _id.endsWith('__') || _id.endsWith('$FRMDB_NEW_RECORD');
 }
 export function isNewTopLevelDataObjId(_id: string): boolean {
     return _id.endsWith('~~');

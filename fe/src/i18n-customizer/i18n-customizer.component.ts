@@ -79,7 +79,7 @@ class I18nCustomizerComponent extends HTMLElement {
 
     init() {
         this.updateState(parsePageUrl(window.location.pathname));
-        registerFrmdbEditorRouterHandler("i18n-customizer", (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
+        registerFrmdbEditorRouterHandler("i18n-customizer", (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => {
             this.updateState(newPageOpts);
         });
     }

@@ -13,7 +13,7 @@ import * as _ from 'lodash';
 import { CircularJSON } from "@domain/json-stringify";
 
 import { isKeyValueError } from "@domain/key_value_obj";
-import { generateUUID } from "@domain/uuid";
+import { generateUUID, generateTimestampUUID } from "@domain/uuid";
 import { CompiledFormula } from "@domain/metadata/execution_plan";
 import { evalExpression } from "@functions/map_reduce_utils";
 import { FailedValidation, FrmdbEngineTools } from "./frmdb_engine_tools";
@@ -355,7 +355,7 @@ export class FrmdbTransactionRunner {
     public async preComputeOnly(event: events.ServerEventPreComputeFormData) {
         let isNewObj: boolean = false;
         if (isNewDataObjId(event.obj._id)) {
-            event.obj._id = event.obj._id.replace('__FRMDB_NEW_RECORD__', '') + generateUUID();
+            event.obj._id = event.obj._id.replace('$FRMDB_NEW_RECORD', '') + generateUUID();
             isNewObj = true;
         }
         let originalObj = _.cloneDeep(event.obj);
@@ -369,11 +369,12 @@ export class FrmdbTransactionRunner {
 
         let transacDAG;
         try {
+            event._id == event._id || generateTimestampUUID();
 
             let isNewObj: boolean = false;
             if (isNewDataObjId(event.obj._id)) {
                 if (event.type_ === "ServerEventDeletedFormData") throw new Error("Deleting a new object is not possible " + event.obj._id);
-                event.obj._id = event.obj._id.replace('__FRMDB_NEW_RECORD__', '') + generateUUID();
+                event.obj._id = event.obj._id.replace('$FRMDB_NEW_RECORD', '') + generateUUID();
                 isNewObj = true;
             }
             let originalObj = _.cloneDeep(event.obj);

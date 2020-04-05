@@ -20,7 +20,7 @@ export function navigateTo(relativePathOrHref: string) {
     let url = new URL(relativePathOrHref, window.location.href);
     let newHref = url.href + (url.search ? '' : existingSearch);
     window.history.pushState({ urlHref: newHref }, `FormulaDB: ${url.pathname}`, newHref);
-    apply(oldPageOpts, url);
+    setTimeout(() => apply(oldPageOpts, url), 0);
 }
 
 export function navigateEditorToPage(pageName: string) {
@@ -31,11 +31,11 @@ export function navigateEditorToAppAndPage(appName: string, pageName: string, se
     navigateTo(`../${appName}/${pageName}.html${search}`);
 }
 
-const Validators: { [name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean } = {};
-const Handlers: { [name: string]: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void } = {};
+const Validators: { [name: string]: (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean } = {};
+const Handlers: { [name: string]: (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void } = {};
 export function registerFrmdbEditorRouterHandler(name: string,
-    handler: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void,
-    validator?: (newPath: string, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean) {
+    handler: (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => void,
+    validator?: (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => boolean) {
 
     Handlers[name] = handler;
     if (validator) Validators[name] = validator;
@@ -44,14 +44,14 @@ export function registerFrmdbEditorRouterHandler(name: string,
 function apply(oldPageOpts: PageOpts, url: URL) {
     let newPageOpts = parsePageUrl(url.pathname);
     for (let handler of Object.values(Handlers)) {
-        handler(url.pathname, oldPageOpts, newPageOpts);
+        handler(url, oldPageOpts, newPageOpts);
     }
 }
 function validate(url: URL): boolean {
     let oldPageOpts = parsePageUrl(window.location.pathname);
     let newPageOpts = parsePageUrl(url.pathname);
     for (let validator of Object.values(Validators)) {
-        let ret = validator(url.pathname, oldPageOpts, newPageOpts);
+        let ret = validator(url, oldPageOpts, newPageOpts);
         if (!ret) return false;
     }
     return true;
