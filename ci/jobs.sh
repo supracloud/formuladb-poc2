@@ -54,6 +54,8 @@ function test_postgres {
     docker run -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5434; do sleep 1; done
     PGPORT=5434 FRMDB_STORAGE=postgres npm test
+    kill %1
+    kill %1
 }
 
 function test_stress {
@@ -63,6 +65,8 @@ function test_stress {
     docker run -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5435; do sleep 1; done
     PGPORT=5435 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
+    kill %1
+    kill %1
 }
 
 function test_e2e {
