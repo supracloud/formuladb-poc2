@@ -99,7 +99,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     }
     public forceReloadData() {
         if (this.gridApi) {
-            this.gridApi.purgeServerSideCache();
+            this.gridApi.purgeInfiniteCache();
         }
     }
 

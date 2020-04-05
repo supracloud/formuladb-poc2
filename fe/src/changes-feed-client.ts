@@ -2,9 +2,8 @@ import * as events from "@domain/event";
 import { generateTimestampUUID } from "@domain/uuid";
 import { inIframe } from "@core/dom-utils";
 import { waitUntil } from "@domain/ts-utils";
-
-const CLIENT_ID = generateTimestampUUID();
-
+import { CLIENT_ID } from "./client-id";
+import { centralizedLog } from "./logging.service";
 
 const Handlers: { [name: string]: (events: events.MwzEvents[]) => Promise<void> } = {};
 (window as any).$FRMDB_CHANGES_FEED_HANDLERS$ = Handlers;
@@ -14,12 +13,9 @@ export function stopChangesFeedLoop() {
     Stop = true;
 }
 
-let AlreadyStarted = false;
 export async function changesFeedLoop() {
     if (Stop) return;
-    if (AlreadyStarted) return;
-    console.warn("changesFeedLoop START", new Date(), document?.defaultView?.location?.href, AlreadyStarted);
-    AlreadyStarted = true;
+    console.warn(`[${CLIENT_ID}] changesFeedLoop START`, new Date(), document?.defaultView?.location?.href);
 
     let response = await fetch(`/formuladb-api/changes-feed/${CLIENT_ID}`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -33,7 +29,7 @@ export async function changesFeedLoop() {
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer', // no-referrer, *client
     });
-    console.log("changesFeedLoop response", response.status, response.statusText);
+    console.log(`[${CLIENT_ID}] changesFeedLoop response`, response.status, response.statusText);
 
     if (response.status == 502 || response.status == 504) {
         // Status 502 is a connection timeout error,
@@ -43,16 +39,21 @@ export async function changesFeedLoop() {
         await changesFeedLoop();
     } else if (response.status != 200) {
         // An error - let's show it
-        console.warn("Changes feed error:", response.statusText);
+        centralizedLog("Changes feed error:", response.statusText);
         // Reconnect in one second
         await new Promise(resolve => setTimeout(resolve, 1000));
         await changesFeedLoop();
     } else {
         // Get and show the message
         let events: events.MwzEvents[] = await response.json();
-        await Promise.all(Object.values(Handlers).map(h => h(events)));
+        if (events && events.length > 0) {
+            centralizedLog(`changesFeedLoop response events ` +
+                events.map(ev => ev._id + ':' + ev.updatedIds_?.join(',')).join('; '));
+            await Promise.all(Object.values(Handlers).map(h => h(events)));
+        }
+
         // Call subscribe() again to get the next message
-        await new Promise(resolve => setTimeout(resolve, 250));//release the connection for 250ms
+        await new Promise(resolve => setTimeout(resolve, 150));//release the connection for 250ms
         await changesFeedLoop();
     }
 }

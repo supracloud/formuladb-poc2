@@ -219,7 +219,7 @@ export class DataBindingsService {
             }
     
             for (let tableName of tableNames.values()) {
-                for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"]`))) {
+                for (let el of Array.from(this.rootEl.querySelectorAll(`[data-frmdb-table="$FRMDB.${tableName}[]"],[data-frmdb-table="$FRMDB.$REFERENCE_TO_OPTIONS.${tableName}[]"]`))) {
                     this.debouncedUpdateDOMForTable(el);
                 }
                 for (let el of Array.from(this.rootEl.querySelectorAll(`frmdb-data-grid[table-name="${tableName}"]`))) {

@@ -16,11 +16,19 @@ export function addEventToChangesFeed(event: events.MwzEvents) {
     }
 }
 
-function checkEventsForClient(clientId: string, resolve, reject) {
+const LONG_POLL_INTERVAL = 2000;
+function checkEventsForClient(pollIntervalStart: Date, clientId: string, resolve, reject) {
     if (Clients[clientId].eventsToSend.length > 0) {
         resolve(Clients[clientId].eventsToSend);
         Clients[clientId].eventsToSend = [];
-    } else setTimeout(() => checkEventsForClient(clientId, resolve, reject), 500);
+    } else {
+        let currentTime = new Date();
+        if (currentTime.getTime() - pollIntervalStart.getTime() > LONG_POLL_INTERVAL) {
+            resolve([]);
+        } else {
+            setTimeout(() => checkEventsForClient(pollIntervalStart, clientId, resolve, reject), 150);
+        }
+    }
 }
 export async function logPoll(clientId: string): Promise<events.MwzEvents[]> {
     if (!Clients[clientId]) {
@@ -31,7 +39,7 @@ export async function logPoll(clientId: string): Promise<events.MwzEvents[]> {
         };
     }
 
-    return new Promise((resolve, reject) => checkEventsForClient(clientId, resolve, reject));
+    return new Promise((resolve, reject) => checkEventsForClient(new Date(), clientId, resolve, reject));
 }
 
 export function setupChangesFeedRoutes(app: express.Express, kvsFactory: KeyValueStoreFactoryI) {

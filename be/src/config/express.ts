@@ -383,6 +383,11 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
+    app.post('/formuladb-api/:app/centralized-logging/add-event', async function (req, res, next) {
+        console.info(req.body);
+        res.status(200).send('');
+    });
+
     //all write operations are handled via events
     app.post('/formuladb-api/:app/event', async function (req, res, next) {
         return (await getFrmdbEngine(req.params.app))

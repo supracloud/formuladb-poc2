@@ -9,7 +9,7 @@ import { queryTableEditor, TableEditorComponent } from "@fe/table-editor/table-e
 import { UserDeleteColumn, FrmdbAddPageElementStart } from "@fe/frmdb-user-events";
 import { DATA_FRMDB_ATTRS_Enum } from "@fe/live-dom-template/dom-node";
 import { getParentObjId } from "@fe/form.service";
-import { entityNameFromDataObjId } from "@domain/metadata/data_obj";
+import { entityNameFromDataObjId, parseDataObjId } from "@domain/metadata/data_obj";
 import { CURRENT_COLUMN_HIGHLIGHT_STYLE } from "@domain/constants";
 
 import { FrmdbFeComponentI, queryFrmdbFe } from "@fe/fe.i";
@@ -59,6 +59,7 @@ import { FrmdbElementState } from "@fe/frmdb-element-state";
 import { serializeElemToObj, updateDOM } from "@fe/live-dom-template/live-dom-template";
 import { isHTMLElement } from "@core/html-tools";
 import { getPageProperties } from "@core/dom-utils";
+import * as events from "@domain/event";
 
 declare var $: null, jQuery: null;
 
@@ -393,6 +394,17 @@ export class FrmdbEditorDirective {
 
         onDoc('FrmdbColumnChanged', '*', (event) => {
             this.dataGrid.forceReloadData();
+        });
+
+        registerChangesFeedHandler("editorDataGridMonitor", async (events: events.MwzEvents[]) => {
+            for (let event of events) {
+                if (event.type_ === "ServerEventModifiedFormData") {
+                    let { entityId } = parseDataObjId(event.obj._id);
+                    if (this.state.data.selectedTableId == entityId) {
+                        this.dataGrid.forceReloadData();
+                    }
+                }
+            }
         });
 
     }
