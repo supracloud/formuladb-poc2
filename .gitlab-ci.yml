@@ -1,3 +1,6 @@
+variables:
+  GIT_DEPTH: 5
+
 stages:
   - build
   - test_and_bundle
@@ -64,7 +67,6 @@ test_fe:
 test_postgres:
   stage: test_and_bundle
   script:
-    - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
@@ -72,7 +74,6 @@ test_stress:
   stage: test_and_bundle
   retry: 2
   script:
-    - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
   <<: *cache_node_modules_and_artifacts
 
