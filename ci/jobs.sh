@@ -52,11 +52,12 @@ function test_postgres {
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
     while nc -z localhost 5434; do echo "port 5434 is busy, waiting..."; sleep 2; done
-    docker run -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
+    docker run -n "${FRMDB_ENV_NAME}-pg" -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5434; do sleep 1; done
     PGPORT=5434 FRMDB_STORAGE=postgres npm test
     kill %1
     kill %1
+    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
 }
 
 function test_stress {
@@ -64,11 +65,12 @@ function test_stress {
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=db -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 5432 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 5432:5432 &
     while nc -z localhost 5435; do echo "port 5435 is busy, waiting..."; sleep 2; done
-    docker run -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
+    docker run -n "${FRMDB_ENV_NAME}-stress" -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5435; do sleep 1; done
     PGPORT=5435 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
     kill %1
     kill %1
+    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
 }
 
 function test_e2e {
@@ -141,6 +143,7 @@ function e2e_production {
 function cleanup {
     set -x
     docker system prune -af
+    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
