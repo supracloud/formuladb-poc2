@@ -4,11 +4,11 @@ const parse = require('csv-parse');
 const fs = require('fs');
 
 (async () => {
-    let csvRawStream = fs.createReadStream(`git/formuladb-env/db/troom.csv`);
+    let csvRawStream = fs.createReadStream(`git/formuladb-env/db/t_dictionary.csv`);
 
   // Initialise the parser by generating random records
   const parser = csvRawStream.pipe(
-    parse({columns: true})
+    parse({columns: true, escape: '\\'})
   )
   // Intialise count
   let count = 0;

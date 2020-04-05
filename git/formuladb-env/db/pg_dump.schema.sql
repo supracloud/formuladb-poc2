@@ -143,6 +143,7 @@ ALTER TABLE public.f_9829 OWNER TO postgres;
 --
 
 CREATE TABLE public.t_currency (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
     code character varying
 );
 
@@ -556,6 +557,14 @@ ALTER TABLE ONLY public.f_9745
 
 ALTER TABLE ONLY public.f_9829
     ADD CONSTRAINT f_9829_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: t_currency t_currency_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_currency
+    ADD CONSTRAINT t_currency_pkey PRIMARY KEY (_id);
 
 
 --

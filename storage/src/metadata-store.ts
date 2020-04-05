@@ -43,7 +43,7 @@ export class MetadataStore {
     }
 
     public get envDir() { return FRMDB_ENV_DIR; }
-    
+
     private async writeFile(fileName: string, content: string | Buffer) {
         await new Promise((resolve, reject) => {
             let dirName = path.dirname(fileName);
@@ -161,18 +161,18 @@ export class MetadataStore {
             schemaNoEntities = this.fromYaml(
                 await this.readFile(`${FRMDB_ENV_DIR}/frmdb-apps/${appName}/schema.yaml`));
         }
-        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds.map(entityId => {
-            if (entityId == '$User') return entityId;
-            if (entityId == '$Currency') return entityId;
-            if (entityId == '$Dictionary') return entityId;
+        let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds
+            .filter(entityId => {
+                if (entityId.indexOf('$') >= 0) {
+                    console.warn(`Special entity ${entityId} not allowed here`);
+                    return false;
+                } else return true;
+            })
+            .map(entityId => {
+                return this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
+            }));
 
-            return this.readFile(`${FRMDB_ENV_DIR}/db/${entityId}.yaml`)
-        }));
         let entities: Entity[] = entitiesStr.map(entityStr => {
-            if (entityStr == '$User') return $User;
-            if (entityStr == '$Currency') return $Currency;
-            if (entityStr == '$Dictionary') return $Dictionary;
-
             try {
                 return this.fromYaml(entityStr)
             } catch (err) {
@@ -185,6 +185,9 @@ export class MetadataStore {
             acc[ent._id] = ent; return acc;
         }, {});
 
+        entitiesDictionary[$User._id] = $User;
+        entitiesDictionary[$Dictionary._id] = $Dictionary;
+        entitiesDictionary[$Currency._id] = $Currency;
         entitiesDictionary[$Icon._id] = $Icon;
         entitiesDictionary[$Image._id] = $Image;
         entitiesDictionary[$App._id] = $App;

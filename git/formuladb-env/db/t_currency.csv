@@ -1,4 +1,4 @@
-code,_id
-RON,$Currency~~1
-EUR,$Currency~~2
-USD,$Currency~~3
+_id,code
+$Currency~~1,RON
+$Currency~~2,EUR
+$Currency~~3,USD

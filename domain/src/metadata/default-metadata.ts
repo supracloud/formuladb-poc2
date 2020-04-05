@@ -70,6 +70,7 @@ export type $DictionaryObjT = {[K in keyof typeof _$Dictionary['props']]: string
 export const $Currency: Entity = {
     _id: "$Currency",
     props: {
+        _id: { name: "_id", propType_: Pn.STRING } as EntityProperty,
         code: { name: "code", propType_: Pn.STRING } as EntityProperty,
     },
 };

@@ -21,7 +21,7 @@ async function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
 }
 
 function entityId2TableName(entityId: string) {
-    return 't' + entityId.replace(/^$/, '_').toLowerCase();
+    return 't' + entityId.replace(/^\$/, '_').toLowerCase();
 }
 
 export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
@@ -38,8 +38,7 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
         console.log("loading test data for schema", schema);
         let records: any[] = [];
         for (let entity of Object.values(schema.entities)) {
-            if (entity._id.indexOf('$') == 0) continue;
-            console.log("loading test data for entity" + entity._id + " in table " + entityId2TableName(entity._id));
+            console.log("starting test data load for entity" + entity._id + " in table " + entityId2TableName(entity._id));
 
             let hasData = await exists(`${FRMDB_ENV_DIR}/db/${entityId2TableName(entity._id)}.csv`);
             if (!hasData) {
@@ -48,12 +47,10 @@ export async function initTestDb(kvsFactory: KeyValueStoreFactoryI) {
             }
             let csvRawStream = fs.createReadStream(`${FRMDB_ENV_DIR}/db/${entityId2TableName(entity._id)}.csv`);
 
-            let parser = csvRawStream.pipe(parse({ columns: true }));
+            let parser = csvRawStream.pipe(parse({ columns: true, escape: '\\' }));
             for await (const record of parser) {
                 records.push(record);
             }
-
-            console.log("finished loading test data for entity", entity._id);
         }
 
         await Promise.all(records.map(r => putObj(frmdbEngine, r)));

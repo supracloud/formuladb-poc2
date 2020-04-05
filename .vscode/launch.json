@@ -79,9 +79,9 @@
             "name": "FE serve",
             "type": "chrome",
             "request": "launch",
-            "url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/hotel-booking/booking.html?frmdbRender=editor&%24FRMDB.Room_Booking%5B%5D.start_date=2020-03-23&%24FRMDB.Room_Booking%5B%5D.end_date=2020-03-26&%24FRMDB.Room_Booking%5B%5D.nb_adults=1&%24FRMDB.Room_Booking%5B%5D.nb_children=0",
-            "__url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/hotel-booking/index.html?frmdbRender=editor",
-            "_url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/base-app/overlays.html",
+            "-url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/hotel-booking/booking.html?frmdbRender=editor&%24FRMDB.Room_Booking%5B%5D.start_date=2020-03-23&%24FRMDB.Room_Booking%5B%5D.end_date=2020-03-26&%24FRMDB.Room_Booking%5B%5D.nb_adults=1&%24FRMDB.Room_Booking%5B%5D.nb_children=0",
+            "url": "http://frmdb.localhost/en-basic-008cba-eeeeee-Clean/hotel-booking/index.html?frmdbRender=editor",
+            "--url": "http://frmdb.localhost/en-basic-cb8670-363636-Clean/base-app/overlays.html",
             "webRoot": "${workspaceFolder}",
             "trace": true,
             "sourceMapPathOverrides": {
