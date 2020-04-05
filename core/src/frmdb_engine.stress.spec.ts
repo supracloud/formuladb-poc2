@@ -125,7 +125,7 @@ describe('FrmdbEngine', () => {
         await putObj({ _id: 'A~~', b: 'B~~1', val: val } as DataObj);
     }
 
-    for (let TestRun = 1; TestRun <= 5; TestRun++) {
+    for (let TestRun = 1; TestRun <= 2; TestRun++) {
 
         it("Should allow consistent concurrent transactions " + TestRun, async (done) => {
             await frmdbEngine.init();
