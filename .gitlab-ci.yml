@@ -12,16 +12,6 @@ stages:
   - e2e_production
   - cleanup
 
-.cache_node_modules_and_artifacts: &cache_node_modules_and_artifacts
-  cache:
-    key: ${CI_COMMIT_SHA}
-    paths:
-      - node_modules/
-      - tsc-out/
-      - dist-be/
-      - formuladb/
-      - formuladb-env/themes/formuladb/
-      - formuladb-e2e/
 
 .only_for_staging_and_production: &only_for_staging_and_production
   only:
@@ -37,13 +27,23 @@ build:
   script:
     - npm install
     - npm run compile
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
 
 bundle:
   stage: test_and_bundle
   script:
     - npm run bundle
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
 
 build_images_and_deploy_dev:
   stage: build_images_and_deploy_dev
@@ -51,32 +51,59 @@ build_images_and_deploy_dev:
     - ls dist-be tsc-out 
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
+      - formuladb-e2e/
 
 test_mem:
   stage: test_and_bundle
   script:
     - npm test
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+    policy: pull
 
 test_fe:
   stage: test_and_bundle
   script:
     - npm run test:fe
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+    policy: pull
 
 test_postgres:
   stage: build_images_and_deploy_dev
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+    policy: pull
 
 test_stress:
   stage: test_and_bundle
   retry: 2
   script:
     - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+    policy: pull
 
 test_api:
   stage: e2e_dev_env
@@ -86,7 +113,6 @@ test_api:
     reports:
       junit: api-tests.junit.xml
     when: always    
-  <<: *cache_node_modules_and_artifacts
 
 e2e_dev_env:
   stage: e2e_dev_env
@@ -94,7 +120,14 @@ e2e_dev_env:
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
+      - formuladb-e2e/
 
 build_images_and_deploy_staging:
   stage: build_images_and_deploy_staging
@@ -104,16 +137,32 @@ build_images_and_deploy_staging:
   environment:
     name: staging
     url: https://staging.formuladb.io
-  <<: *cache_node_modules_and_artifacts
   <<: *only_for_staging_and_production
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
+      - formuladb-e2e/
+    policy: pull
 
 e2e_staging:
   stage: e2e_staging
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
   <<: *only_for_staging_and_production
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
+      - formuladb-e2e/
+    policy: pull
 
 build_images_and_deploy_production:
   stage: build_images_and_deploy_production
@@ -123,32 +172,32 @@ build_images_and_deploy_production:
   environment:
     name: production
     url: https://formuladb.io
-  <<: *cache_node_modules_and_artifacts
   <<: *only_for_production
+  cache:
+    key: ${CI_COMMIT_SHA}
+    paths:
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
+      - formuladb-e2e/
+    policy: pull
 
 e2e_production:
   stage: e2e_production
   script:
     - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
     - ./ci/jobs.sh $CI_JOB_NAME
-  <<: *cache_node_modules_and_artifacts
   <<: *only_for_production
-
-.e2e_all_example_apps:
-  script:
-    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.com/metawiz/e2e.git
-
-.e2e_staging_with_videos:
-  stage: e2e_staging_with_videos
-  script:
-    - export KUBECONFIG="${PWD}/k8s/production-kube-config.conf"
-    - ./ci/jobs.sh $CI_JOB_NAME
-  artifacts:
-    expire_in: 1 week
+  cache:
+    key: ${CI_COMMIT_SHA}
     paths:
-      - e2e/protractor_videos/
-  <<: *cache_node_modules_and_artifacts
-  <<: *only_for_staging_and_production
+      - node_modules/
+      - tsc-out/
+      - dist-be/
+      - formuladb/
+      - formuladb-e2e/
+    policy: pull
 
 cleanup:
   stage: cleanup
