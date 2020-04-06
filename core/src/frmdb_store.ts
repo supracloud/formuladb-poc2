@@ -14,7 +14,7 @@ import * as _ from "lodash";
 import { CircularJSON } from "@domain/json-stringify";
 
 import { MapFunction, MapFunctionAndQueryT } from "@domain/metadata/execution_plan";
-import { $User, $Dictionary, isMetadataEntity } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, isMetadataEntity, getDefaultEntity } from "@domain/metadata/default-metadata";
 import { SimpleAddHocQuery } from "@domain/metadata/simple-add-hoc-query";
 import { I18nStore } from "./i18n-store";
 
@@ -42,7 +42,7 @@ export class FrmdbStore {
     private async getDataKvs(entityId: string) {
         let ret = this.dataKVSMap.get(entityId);
         if (!ret) {
-            let entity = this.kvsFactory.metadataStore.getDefaultEntity(entityId) 
+            let entity = getDefaultEntity(entityId) 
                 || this.schema.entities[entityId];
             if (!entity) {
                 console.error("getDataKvs unknown entity " + entityId, this.schema.entities);

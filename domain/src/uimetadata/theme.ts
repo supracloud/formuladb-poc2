@@ -10,3 +10,15 @@ export type ThemeCustomClasses = {
 export interface Theme {
     themeCustomClasses: ThemeCustomClasses;
 }
+
+export enum ThemeColors { 
+    primary = "primary",
+    secondary = "secondary",
+    success = "success",
+    danger = "danger",
+    warning = "warning",
+    info = "info",
+    light = "light",
+    dark = "dark",
+}
+export type ThemeNotificationSeverity = ThemeColors;

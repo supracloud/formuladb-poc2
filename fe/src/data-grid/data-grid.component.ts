@@ -319,7 +319,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
             case 'FORMULA':
                 return 'agTextColumnFilter';
             default:
-                return null;
+                return 'agTextColumnFilter';
         }
     }
 

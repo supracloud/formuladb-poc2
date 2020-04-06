@@ -9,7 +9,7 @@ import * as util from 'util';
 const exists = util.promisify(fs.exists);
 
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -193,6 +193,7 @@ export class MetadataStore {
         entitiesDictionary[$App._id] = $App;
         entitiesDictionary[$Table._id] = $Table;
         entitiesDictionary[$Page._id] = $Page;
+        entitiesDictionary[$System_Param._id] = $System_Param;
 
         let schema: Schema = {
             _id: schemaNoEntities._id,
@@ -203,17 +204,6 @@ export class MetadataStore {
 
     public getEntities(appName: string): Promise<Entity[]> {
         return this.getSchema(appName).then(s => s ? Object.values(s.entities) : []);
-    }
-
-    public getDefaultEntity(path: string): Entity | null {
-        switch (path) {
-            case $User._id:
-                return $User;
-            case $Dictionary._id:
-                return $Dictionary;
-            default:
-                return null;
-        }
     }
 
     public async getEntity(appName: string, entityId: string): Promise<Entity | null> {

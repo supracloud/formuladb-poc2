@@ -55,8 +55,6 @@ function test_postgres {
     docker run --name "${FRMDB_ENV_NAME}-pg" -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5434; do sleep 1; done
     PGPORT=5434 FRMDB_STORAGE=postgres npm test
-    kill %1
-    kill %1
     docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
 }
 
@@ -68,8 +66,6 @@ function test_stress {
     docker run --name "${FRMDB_ENV_NAME}-stress" -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5435; do sleep 1; done
     PGPORT=5435 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
-    kill %1
-    kill %1
     docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
 }
 

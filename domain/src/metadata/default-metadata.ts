@@ -45,6 +45,16 @@ export const _$User = {
 export const $User: Entity = _$User;
 export type $UserObjT = {[K in keyof typeof _$User['props']]: string};
 
+export const _$System_Param = {
+    _id: "$System_Param",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        value: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+    }
+};
+export const $System_Param: Entity = _$System_Param;
+export type $System_ParamObjT = {[K in keyof typeof _$System_Param['props']]: string};
+
 const _$Dictionary = {
     _id: "$Dictionary",
     props: {
@@ -98,7 +108,8 @@ const MetadataEntities = [
     $Image, 
     $App, 
     $Table,
-    $Page
+    $Page,
+    $System_Param
 ];
 const MetadataEntityNames = MetadataEntities.map(e => e._id);
 export function isMetadataEntity(tableName: string) {
@@ -109,10 +120,6 @@ export function isMetadataObject(tableName: string) {
     return MetadataEntityNames.includes(tableName);
 }
 
-export function isDefaultEntity(tableName: string) {
-    return isMetadataEntity(tableName) || [
-        $User._id, 
-        "$Role_TBD", 
-        $Dictionary._id, 
-    ].includes(tableName);
+export function getDefaultEntity(path: string): Entity | null {
+    return MetadataEntities.filter(e => e._id === path)[0];
 }

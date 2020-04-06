@@ -63,7 +63,15 @@ export class FormService {
             let inputEl: InputElem | null = form.querySelector('input,select,textarea');
             if (!inputEl) throw new Error("No input found for form " + form.outerHTML);
             let alertEl: HTMLElement | null = form.querySelector('[data-frmdb-submit-status]');
-            if (!alertEl) throw new Error("No alert found for form " + form.outerHTML);
+            if (!alertEl) {
+                alertEl = document.createElement('frmdb-alert');
+                alertEl.setAttribute('data-frmdb-submit-status', '');
+                alertEl.style.position = 'fixed';
+                alertEl.style.top = '0';
+                alertEl.style.right = '0';
+                alertEl.style.padding = '5px';
+                form.appendChild(alertEl);
+            } 
     
             this.manageInput(inputEl as InputElem)
             .then(event => {

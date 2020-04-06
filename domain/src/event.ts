@@ -25,7 +25,6 @@ export class MwzEvent implements KeyValueObj {
     notifMsg_?: string;
 
     constructor() {
-        this.clientId_ = generateUUID();
         this.state_ = 'BEGIN';
     }
 }

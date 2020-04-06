@@ -3,6 +3,7 @@ import './fragment/fragment.component';
 import { initFrmdb } from './init';
 import './form/form.component';
 import './icon/icon.components';
+import './alert/alert.component';
 
 import './directives/data-frmdb-select.directive';
 import './fe-functions';
