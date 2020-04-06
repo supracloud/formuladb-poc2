@@ -178,7 +178,8 @@ export { getAllElemsWithDataBindingAttrs } from './dom-node';
 
 export function serializeElemToObj(rootEl: HTMLElement): {} {
     let ret: any = {};
-    let prefix = rootEl.getAttribute('data-frmdb-table') || '';
+    let prefix = rootEl.getAttribute('data-frmdb-table') || rootEl.getAttribute('data-frmdb-record')?.replace(/~~.*/, '') || '';
+    let pagePrefix = prefix ? `$FRMDB.${prefix}` : '';
     for(let elem of getAllElemsWithDataBindingAttrs(rootEl)) {
         for (let i = 0; i < elem.attributes.length; i++) {
             let attr = elem.attributes[i];
@@ -197,8 +198,9 @@ export function serializeElemToObj(rootEl: HTMLElement): {} {
                 let alternateJsonKey = elem.getAttribute('data-frmdb-target-field');
                 if (alternateJsonKey) jsonKey = alternateJsonKey;
 
-                if (jsonKey.indexOf(prefix ? prefix + '.' : '') != 0) throw new Error("prefix not correct for key " + jsonKey + " attr " + attr.name + "=" + attr.value);
-                jsonKey = jsonKey.slice(prefix ? prefix.length + 1 : 0);
+                if (jsonKey.indexOf(prefix ? prefix + '.' : '') != 0 || jsonKey.indexOf(pagePrefix ? pagePrefix + '.' : '') != 0) throw new Error("prefix not correct for key " + jsonKey + " attr " + attr.name + "=" + attr.value);
+                if (prefix && jsonKey.indexOf(prefix) === 0) jsonKey = jsonKey.slice(prefix.length + 1);
+                else if (pagePrefix && jsonKey.indexOf(pagePrefix) === 0) jsonKey = jsonKey.slice(pagePrefix.length + 1);
                 if (jsonKey.indexOf('[]') >= 0) continue;
                 ret[jsonKey] = value;
             }

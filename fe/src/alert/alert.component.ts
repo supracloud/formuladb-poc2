@@ -1,49 +1,41 @@
 import { FrmdbElementState, camelCaseProp2kebabCaseAttr, kebabCaseAttr2CamelCaseProp } from "@fe/frmdb-element-state";
 import { onEventChildren } from "@fe/delegated-events";
 import { ThemeColors } from "@domain/uimetadata/theme";
-import { updateDOM } from "@fe/live-dom-template/live-dom-template";
-
-const HTML: string = /*html*/`
-<div class="alert alert-dismissible fade show" role="alert" 
-    data-frmdb-attr="class[${Object.keys(ThemeColors).join('|')}]:severity"
-    data-frmdb-attr="class.d-none:hidden"
->
-  <strong data-frmdb-value="eventTitle">some event!</strong>
-  <span data-frmdb-value="eventDetail">details of the event.</span>
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-`;
 
 const defaultState = {
     eventTitle: "some event!",
     eventDetail: "details of the event.",
-    severity: ThemeColors,
-    hidden: false,
+    severity: ThemeColors.success,
+    visible: "show",
 };
-export class AlertComponent extends HTMLElement {
-    state = new FrmdbElementState(this, defaultState);
-    static observedAttributes = Object.keys(defaultState)
-        .map(k => camelCaseProp2kebabCaseAttr(k));
 
-    public change(state: Partial<typeof defaultState>) {
-        for (let [k, v] of Object.entries(state)) {
-            this.setAttribute(camelCaseProp2kebabCaseAttr(k), v + '');
-        }
+export class AlertComponent extends HTMLElement {
+    state = defaultState;
+
+    render() {
+        this.innerHTML = /*html*/`
+            <div class="alert alert-dismissible alert-${this.state.severity} fade ${this.state.visible}" role="alert">
+                <strong>${this.state.eventTitle}</strong>
+                <span>${this.state.eventDetail}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            `
+    }
+
+    change(state: Partial<typeof defaultState>) {
+        Object.assign(this.state, state);
+        this.render();
     }
 
     connectedCallback() {
-        this.innerHTML = HTML;
-
+        this.render();
         onEventChildren(this, ['click'], '[data-dismiss="alert"]', () => {
-            this.state.emitChange({hidden: true});
+            this.change({visible: ""})
         });
     }
 
-    attributeChangedCallback(name: any, oldVal: any, newVal: any) {
-        this.state.emitChange({[kebabCaseAttr2CamelCaseProp(name)]: newVal});
-    }
 }
 
 customElements.define('frmdb-alert', AlertComponent);

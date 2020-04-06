@@ -54,20 +54,3 @@ props:
         name: cost
         propType_: FORMULA
         formula: days * 100
-    total_number_of_rooms:
-        name: total_number_of_rooms
-        propType_: REFERENCE_TO
-        referencedEntityName: Room_Type
-        referencedPropertyName: total_number_of_rooms
-    number_of_booked_rooms:
-        name: number_of_booked_rooms
-        propType_: FORMULA
-        formula: >-
-            COUNTIF(Room_Booking, AND(room_type == @[room_type],
-            INTERSECTS(DATERANGE(start_date, end_date),DATERANGE(@[start_date],
-            @[end_date]))))
-    number_of_available_rooms:
-        name: number_of_available_rooms
-        propType_: FORMULA
-        formula: total_number_of_rooms - number_of_booked_rooms
-

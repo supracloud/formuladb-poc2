@@ -14,6 +14,82 @@ import { getFrmdbEngineStore, getTestFrmdbEngineStore } from '@storage/key_value
 import { Schema, Pn, Entity } from "@domain/metadata/entity";
 import { $s2e } from "@functions/s2e";
 
+
+// _id: Room_Booking
+// isEditable: true
+// stateGraph:
+//     nodes:
+//         - PENDING
+//         - FINALIZED
+//         - CANCELLED
+//     transitions:
+//         -
+//             source: PENDING
+//             target: FINALIZED
+//         -
+//             source: PENDING
+//             target: CANCELLED
+//         -
+//             source: FINALIZED
+//             target: CANCELLED
+// props:
+//     _id:
+//         name: _id
+//         propType_: STRING
+//         allowNull: false
+//     guest:
+//         name: guest
+//         propType_: REFERENCE_TO
+//         referencedEntityName: $User
+//         referencedPropertyName: _id
+//     room_type:
+//         name: room_type
+//         propType_: REFERENCE_TO
+//         referencedEntityName: Room_Type
+//         referencedPropertyName: _id
+//     start_date:
+//         name: start_date
+//         propType_: DATETIME
+//         allowNull: false
+//     end_date:
+//         name: end_date
+//         propType_: DATETIME
+//         allowNull: false
+//     nb_adults:
+//         name: nb_adults
+//         propType_: NUMBER
+//         allowNull: false
+//     nb_children:
+//         name: nb_children
+//         propType_: NUMBER
+//         allowNull: false
+//     days:
+//         name: days
+//         propType_: FORMULA
+//         formula: 'DATEDIF(start_date, end_date, "D") + 1'
+//     cost:
+//         name: cost
+//         propType_: FORMULA
+//         formula: days * 100
+//     total_number_of_rooms:
+//         name: total_number_of_rooms
+//         propType_: REFERENCE_TO
+//         referencedEntityName: Room_Type
+//         referencedPropertyName: total_number_of_rooms
+//     number_of_booked_rooms:
+//         name: number_of_booked_rooms
+//         propType_: FORMULA
+//         formula: >-
+//             COUNTIF(Room_Booking, AND(room_type == @[room_type],
+//             INTERSECTS(DATERANGE(start_date, end_date),DATERANGE(@[start_date],
+//             @[end_date]))))
+//     number_of_available_rooms:
+//         name: number_of_available_rooms
+//         propType_: FORMULA
+//         formula: total_number_of_rooms - number_of_booked_rooms
+
+
+
 const ATable = {
     _id: 'A', props: {
         _id: { name: "_id", propType_: Pn.STRING },

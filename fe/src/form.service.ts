@@ -6,6 +6,8 @@ import { BACKEND_SERVICE, postData } from './backend.service';
 import { serializeElemToObj, updateDOM, getEntityPropertyNameFromEl, isFormEl, InputElem, getAllElemsWithDataBindingAttrs } from './live-dom-template/live-dom-template';
 import { ServerEventModifiedFormData, ServerEventPreComputeFormData } from '@domain/event';
 import { Pn, ReferenceToProperty } from '@domain/metadata/entity';
+import { AlertComponent } from './alert/alert.component';
+import { ThemeColors } from '@domain/uimetadata/theme';
 
 function currentTimestamp() {
     let d = new Date();
@@ -62,9 +64,9 @@ export class FormService {
 
             let inputEl: InputElem | null = form.querySelector('input,select,textarea');
             if (!inputEl) throw new Error("No input found for form " + form.outerHTML);
-            let alertEl: HTMLElement | null = form.querySelector('[data-frmdb-submit-status]');
+            let alertEl: AlertComponent = form.querySelector('frmdb-alert[data-frmdb-submit-status]') as AlertComponent;
             if (!alertEl) {
-                alertEl = document.createElement('frmdb-alert');
+                alertEl = document.createElement('frmdb-alert') as AlertComponent;
                 alertEl.setAttribute('data-frmdb-submit-status', '');
                 alertEl.style.position = 'fixed';
                 alertEl.style.top = '0';
@@ -73,18 +75,24 @@ export class FormService {
                 form.appendChild(alertEl);
             } 
     
-            this.manageInput(inputEl as InputElem)
+            this.manageInput(inputEl as InputElem, true)
             .then(event => {
                 if (event) {
                     alertEl!.classList.remove('d-none');
                     if (event.state_ === "ABORT") {
-                        alertEl!.innerText = event.error_ || '500 -> Internal Server Error';
-                        alertEl!.classList.add('alert-danger');
-                        alertEl!.classList.remove('alert-success');
+                        alertEl.change({
+                            severity: ThemeColors.warning,
+                            visible: "show",
+                            eventTitle: "Error saving form !",
+                            eventDetail: event.error_ || '500 -> Internal Server Error',
+                        });
                     } else {
-                        alertEl!.innerText = alertEl!.title;
-                        alertEl!.classList.add('alert-success');
-                        alertEl!.classList.remove('alert-danger');
+                        alertEl.change({
+                            severity: ThemeColors.success,
+                            visible: "show",
+                            eventTitle: "Changes Saved.",
+                            eventDetail: '',
+                        });
                     }
                 }
             });
@@ -95,7 +103,7 @@ export class FormService {
     private debounced_manageInput = _.debounce((inputEl: InputElem) => this.manageInput(inputEl), 350);
     private debounced_newRecordCache = _.debounce((inputEl: InputElem) => this.putObjInNewRecordCache(inputEl), 100);
 
-    async manageInput(inputEl: InputElem): Promise<ServerEventModifiedFormData|void> {
+    async manageInput(inputEl: InputElem, isSubmit?: boolean): Promise<ServerEventModifiedFormData|void> {
         let pObj = this.getParentObj(inputEl);
         if (!pObj) return;
         let {parentEl, parentObj} = pObj;
@@ -106,7 +114,7 @@ export class FormService {
                 control.dataset.frmdbPending = "";//TODO: set this only on dirty controls
             }
 
-            if (inputEl.closest('[data-frmdb-form-autosave]')) {
+            if (inputEl.closest('[data-frmdb-form-autosave]') || isSubmit) {
                 let event: ServerEventModifiedFormData = await BACKEND_SERVICE().putEvent(
                     new ServerEventModifiedFormData(parentObj)) as ServerEventModifiedFormData;
                 for (let control of getAllElemsWithDataBindingAttrs(parentEl)) {

@@ -21,4 +21,3 @@ export enum ThemeColors {
     light = "light",
     dark = "dark",
 }
-export type ThemeNotificationSeverity = ThemeColors;

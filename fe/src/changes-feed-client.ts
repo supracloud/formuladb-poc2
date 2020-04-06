@@ -15,7 +15,7 @@ export function stopChangesFeedLoop() {
 
 export async function changesFeedLoop() {
     if (Stop) return;
-    console.warn(`[${CLIENT_ID}] changesFeedLoop START`, new Date(), document?.defaultView?.location?.href);
+    // console.debug(`[${CLIENT_ID}] changesFeedLoop START`, new Date(), document?.defaultView?.location?.href);
 
     let response = await fetch(`/formuladb-api/changes-feed/${CLIENT_ID}`, {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -29,7 +29,7 @@ export async function changesFeedLoop() {
         redirect: 'follow', // manual, *follow, error
         referrer: 'no-referrer', // no-referrer, *client
     });
-    console.log(`[${CLIENT_ID}] changesFeedLoop response`, response.status, response.statusText);
+    // console.debug(`[${CLIENT_ID}] changesFeedLoop response`, response.status, response.statusText);
 
     if (response.status == 502 || response.status == 504) {
         // Status 502 is a connection timeout error,

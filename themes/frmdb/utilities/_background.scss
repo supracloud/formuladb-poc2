@@ -14,13 +14,16 @@
 }
 
 .frmdb-bg-1 {
+    background-repeat: no-repeat;
     background-image: var(--frmdb-bg-img);
 }
 .frmdb-bg-2 {
+    background-repeat: no-repeat;
     background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2);
     background-blend-mode: overlay;
 }
 .frmdb-bg-3 {
+    background-repeat: no-repeat;
     background-image: var(--frmdb-bg-img), var(--frmdb-bg-img-2), var(--frmdb-bg-img-3);
     background-blend-mode: overlay;
 }
