@@ -101,7 +101,7 @@ function test_e2e {
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
     while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
 
-    TARGET=headless npm test -- -- --specs \
+    npm run test-headless -- -- --specs \
         "tsc-out/docs/1-Intro/6-editor-tables-list.e2e.js,tsc-out/docs/0-GetStarted/7-list-of-pages.e2e.js"
 }
 

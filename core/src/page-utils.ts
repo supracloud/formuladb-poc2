@@ -38,10 +38,8 @@ export function cleanupDocumentDOM(doc: Document): HTMLElement {
             jsEl.parentElement.removeChild(jsEl);
         }
     }
-    for (let stEl of Array.from(cleanedUpDOM.getElementsByTagName('style'))) {
-        if ((stEl.textContent || '').indexOf('iframe#_hjRemoteVarsFrame') >= 0) {
-            stEl.parentElement!.removeChild(stEl);
-        }
+    for (let el of Array.from(cleanedUpDOM.querySelectorAll('iframe#_hjRemoteVarsFrame'))) {
+        el.parentElement!.removeChild(el);
     }
     for (let el of Array.from(cleanedUpDOM.querySelectorAll('.frmdb-editor-on'))) {
         el.classList.remove('frmdb-editor-on');
