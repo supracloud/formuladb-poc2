@@ -29,7 +29,7 @@ export function isDataObj(param): param is DataObj {
 }
 export function parseDataObjIdES5(_id) {
     if (!_id) return null;
-    var m = _id.match(/^([$\w_]+)~~(.+)$/);
+    var m = _id.match(/^([$\w_]+)~~((?:.|\n)+)$/);
     if (null != m) {
         return {
             entityId: m[1]!,

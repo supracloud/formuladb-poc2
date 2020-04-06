@@ -70,8 +70,10 @@ export async function i18nTranslateText(frdbEngine: FrmdbEngine, texts: string[]
     }
 
     let promises2 = Array.from(dirtyDictionaryEntries.values())
-        .map(dirtyDictEntry => frdbEngine.i18nStore.updateDictionaryEntry(dirtyDictEntry));
+        .map(dirtyDictEntry => frdbEngine.i18nStore
+            .updateDictionaryEntry(dirtyDictEntry)
+            .catch(ex => console.warn(ex)));
     await Promise.all(promises2);
-
+    
     return returnedTranslations;
 }

@@ -164,7 +164,6 @@ export class MetadataStore {
         let entitiesStr: string[] = await Promise.all(schemaNoEntities.entityIds
             .filter(entityId => {
                 if (entityId.indexOf('$') >= 0) {
-                    console.warn(`Special entity ${entityId} not allowed here`);
                     return false;
                 } else return true;
             })

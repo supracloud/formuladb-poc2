@@ -17,7 +17,7 @@ export class I18nStore {
         if (this.dictionaryCache) return this.dictionaryCache;
 
         let cacheInit = new LazyInit(async () => {
-            let all: $DictionaryObjT[] = 
+            let all: $DictionaryObjT[] =
                 await this.frmdbEngine.frmdbEngineStore.getDataListByPrefix($Dictionary._id + '~~') as $DictionaryObjT[];
             let dictCache = new Map();
             for (let dictEntry of all) {
@@ -31,10 +31,27 @@ export class I18nStore {
     }
 
     async updateDictionaryEntry(dictEntry: $DictionaryObjT) {
-        let existingEntry = await this.frmdbEngine.frmdbEngineStore.getDataObj(dictEntry._id);
-        await this.frmdbEngine.processEvent(
-            new ServerEventModifiedFormData(Object.assign(existingEntry, dictEntry)));
-        let dictCache = await this.getDictionaryCache();
-        dictCache.set(dictEntry._id, Object.assign(dictCache.get(dictEntry._id), dictEntry));
+        let dictCache, existingEntry;
+        try {
+            existingEntry = await this.frmdbEngine.frmdbEngineStore.getDataObj(dictEntry._id);
+        } catch (err) {
+            console.warn(err);
+        }
+        try {
+            await this.frmdbEngine.processEvent(
+                new ServerEventModifiedFormData(Object.assign(existingEntry || {}, dictEntry)));
+        } catch (err) {
+            console.warn(err);
+        }
+        try {
+            dictCache = await this.getDictionaryCache();
+        } catch (err) {
+            console.warn(err);
+        }
+        try {
+            dictCache.set(dictEntry._id, Object.assign(dictCache.get(dictEntry._id), dictEntry));
+        } catch (err) {
+            console.warn(err);
+        }
     }
 }
