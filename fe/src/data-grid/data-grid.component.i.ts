@@ -1,3 +1,5 @@
+import { DataObj } from "@domain/metadata/data_obj";
+
 export interface DataGridComponentI extends HTMLElement {
     highlightColumns: { 
         [tableName: string]: { 
@@ -9,6 +11,7 @@ export interface DataGridComponentI extends HTMLElement {
     };
     tableName?: string;
     selectedColumnName?: string;
+    selectedRow: DataObj;
     debouncedForceCellRefresh();
     initAgGrid();
     forceReloadData();

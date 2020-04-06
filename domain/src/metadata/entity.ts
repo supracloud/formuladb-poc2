@@ -109,6 +109,7 @@ export interface StringProperty {
 export interface BooleanProperty {
     propType_: Pn.BOOLEAN;
     name: string;
+    allowNull?: boolean;
 }
 export interface DocumentProperty {
     propType_: Pn.DOCUMENT;
@@ -118,6 +119,7 @@ export interface DocumentProperty {
 export interface DatetimeProperty {
     propType_: Pn.DATETIME;
     name: string;
+    timeMandatory?: boolean;
     allowNull?: boolean;
 }
 

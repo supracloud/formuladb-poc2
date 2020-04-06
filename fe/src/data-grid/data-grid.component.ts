@@ -153,6 +153,7 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
         },
         onRowClicked: (event: RowClickedEvent) => {
             this.selectedRow = event.data;
+            emit(this, { type: "UserSelectedRow", dataObj: event.data });
         },
         onCellFocused: (event: CellFocusedEvent) => {
             let newSelectedRowIdx = event.rowIndex;
@@ -408,10 +409,6 @@ export class DataGridComponent extends HTMLElement implements DataGridComponentI
     valueFormatter(params) {
         if (params.colDef.field === '_id') return ((params.value || '') + '').replace(/^.*~~/, '');
         else return params.value;
-    }
-
-    userSelectTableRow(dataObj: DataObj) {
-        emit(this, { type: "UserSelectedRow", dataObj });
     }
 
     getCellRenderer(col: TableColumn) {

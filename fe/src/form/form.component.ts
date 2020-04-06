@@ -34,6 +34,8 @@ export interface FormComponentState extends FormComponentAttr {
         nameI18n: string,
         disabled: boolean,
         cssWidth: CssWidth,
+        required: boolean,
+        inputType: "text" | "datetime-local" | "date" | "number",
     })[];
     dataObj: {},
 };
@@ -53,12 +55,20 @@ export class FormComponent extends FrmdbElementBase<FormComponentAttr, FormCompo
             let entity = await BACKEND_SERVICE().getEntity(entityId);
             let props: FormComponentState["props"] = [];
             for (let prop of Object.values(entity.props)) {
+                let inputType: "text" | "datetime-local" | "date" | "number" = "text";
+                if (prop.propType_ === Pn.DATETIME) {
+                    inputType = prop.timeMandatory ? "datetime-local" : "date";
+                } else if (prop.propType_ === Pn.NUMBER) {
+                    inputType = "number";
+                }
                 props.push({
                     ...prop,
                     isAutocomplete: prop.propType_ == Pn.REFERENCE_TO, 
                     isImage: prop.propType_ == Pn.IMAGE, 
                     nameI18n: I18N.tt(prop.name),
                     disabled: this.getDisabled(entity, prop),
+                    required: (prop as any).allowNull === false,
+                    inputType,
                     cssWidth: elvis(elvis(this.frmdbState.fields)[prop.name]).width || "col-12",
                 });
             }

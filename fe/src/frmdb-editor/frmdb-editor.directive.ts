@@ -398,7 +398,7 @@ export class FrmdbEditorDirective {
 
         registerChangesFeedHandler("editorDataGridMonitor", async (events: events.MwzEvents[]) => {
             for (let event of events) {
-                if (event.type_ === "ServerEventModifiedFormData") {
+                if (event.type_ === "ServerEventModifiedFormData" || event.type_ === "ServerEventDeletedFormData") {
                     let { entityId } = parseDataObjId(event.obj._id);
                     if (this.state.data.selectedTableId == entityId) {
                         this.dataGrid.forceReloadData();
@@ -466,7 +466,13 @@ export class FrmdbEditorDirective {
             formulaEditor.frmdbState.editedEntity = entity;
             formulaEditor.frmdbState.editedProperty = prop;
         });
-
+        onDoc("UserSelectedRow", "frmdb-data-grid", async (event) => {
+            let tableEditor: TableEditorComponent = queryTableEditor(document);
+            let dataGrid = queryDataGrid(document);
+            tableEditor.selectedRecord = dataGrid.selectedRow;
+        });
+        
+        
         onDoc("FrmdbFormulaEditorChangedColumnsHighlightEvent", "frmdb-formula-editor", async (event) => {
             let formulaEditor = queryFormulaEditor(document);
             let dataGrid = queryDataGrid(document);

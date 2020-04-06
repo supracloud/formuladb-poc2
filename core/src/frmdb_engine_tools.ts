@@ -53,9 +53,49 @@ export class FrmdbEngineTools {
             case Pn.NUMBER:
                 if ((propertyValue + '').match(/^[\d.]+$/) == null) {
                     return `Number expected for ${entityId}.${propertyName} = ${propertyValue}`;
-                }
+                } else if (property.allowNull === false && propertyValue == '') {
+                    return `Value is mandatory`;
+                } 
+                break;
+            case Pn.STRING:
+                if (property.allowNull === false && propertyValue == '') {
+                    return `Value is mandatory`;
+                }                
+                break;
+            case Pn.BOOLEAN:
+                if (property.allowNull === false && propertyValue == '') {
+                    return `Value is mandatory`;
+                }                
+                break;
+            case Pn.DOCUMENT:
+                if (property.allowNull === false && propertyValue == '') {
+                    return `Value is mandatory`;
+                }                
+                break;
+            case Pn.DATETIME:
+                if (property.allowNull === false && propertyValue == '') {
+                    return `Value is mandatory`;
+                }                
+                break;
+            case Pn.ACTION:
+                if (property.allowNull === false && propertyValue == '') {
+                    return `Value is mandatory`;
+                }                
+                break;
+            case Pn.IMAGE:
+                break;
+            case Pn.ATTACHMENT:
+                break;
+            case Pn.CHILD_TABLE:
+                break;
+            case Pn.REFERENCE_TO:
+                break;
+            case Pn.EXTENDS_ENTITY:
+                break;
+            case Pn.FORMULA:
                 break;
         }
+
         return null;
     }
 

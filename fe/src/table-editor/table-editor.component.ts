@@ -6,19 +6,32 @@
 import { onEvent, emit, onEventChildren } from '@fe/delegated-events';
 
 import '@fe/graph-editor/graph-editor.component';
+import { DataObj } from '@domain/metadata/data_obj';
+import { raiseNotification } from '@fe/notifications.service';
+import { ThemeColors } from '@domain/uimetadata/theme';
+import { ServerEventModifiedFormData, ServerEventDeletedFormData } from '@domain/event';
+import { BACKEND_SERVICE } from '@fe/backend.service';
 
 const html = require('raw-loader!@fe-assets/table-editor/table-editor.component.html').default;
 const css = require('!!raw-loader!sass-loader?sourceMap!@fe-assets/table-editor/table-editor.component.scss').default;
 
 export class TableEditorComponent extends HTMLElement {
     
+    selectedRecord: DataObj;
+
     init(): void {
         // calculate stats when new rows loaded, i.e. onModelUpdated
         // this.params.api.addEventListener('modelUpdated', this.updateTotals.bind(this));
         onEventChildren(this, 'click', '.excel-export', (e) => {this.excel(); e.preventDefault()});
-        onEventChildren(this, 'click', '.add-column-to-table-btn', (e) => { 
+        onEventChildren(this, 'click', '#add-column-to-table-btn', (e) => { 
             emit(this, {type: "FrmdbAddColumn"}); //WTF: why I have to explicitly emit from the host element?
             e.preventDefault()
+        });
+        onEventChildren(this, 'click', '#delete-row-btn', async (e) => { 
+            if (!this.selectedRecord) raiseNotification(ThemeColors.info, "Cannot delete row.", "Please select row in table first.")
+            let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
+                new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
+            
         });
 
         onEventChildren(this, 'click', '.nav-link[role="tab"]', (e: MouseEvent) => {

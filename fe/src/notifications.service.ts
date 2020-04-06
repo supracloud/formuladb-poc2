@@ -1,5 +1,6 @@
 import { ThemeColors } from "@domain/uimetadata/theme";
 import { AlertComponent } from "./alert/alert.component";
+import { MwzEvents } from "@domain/event";
 
 
 let NotificationContainer = document.createElement('div');
@@ -16,4 +17,12 @@ export function raiseNotification(severity: ThemeColors, title: string, msg: str
         severity: severity as any,
     });
     NotificationContainer.append(alertEl);
+}
+
+export function notifyUserAboutEvent(event: MwzEvents) {
+    if (event.state_ === "ABORT") {
+        raiseNotification(ThemeColors.warning, "Error", event.error_ || 'internal error processing event ' + event.type_);
+    } else {
+        raiseNotification(ThemeColors.success, "Success", event.type_);
+    }
 }

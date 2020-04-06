@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="frmdb_display_date" content="">
 </head>
-<body data-frmdb-record="Room_Booking~~$FRMDB_NEW_RECORD" class="frmdb-editor-normal">
+<body data-frmdb-record="Room_Booking~~$FRMDB_NEW_RECORD" data-frmdb-page-param="$FRMDB.PageParameters.new_room_booking" class="frmdb-editor-normal">
     <frmdb-t-header class="" style="--frmdb-bg-img: url('/formuladb-env/frmdb-apps/base-app/static/bg1.jpg')">
         <div class="jumbotron">
             <h1 class="display-4">Book Now</h1>
@@ -24,7 +24,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group date">
-                                        <input type="date" class="form-control" placeholder="Arrival Date" required="" name="$FRMDB.Room_Booking[].start_date" data-frmdb-value="$FRMDB.Room_Booking[].start_date" title="" data-frmdb-pending="">
+                                        <input type="date" class="form-control" placeholder="Arrival Date" required="" name="$FRMDB.PageParameters.new_room_booking.start_date" data-frmdb-value="$FRMDB.PageParameters.new_room_booking.start_date" title="" data-frmdb-pending="">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="frmdb-i-calendar" aria-hidden="true"></i>
@@ -34,7 +34,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group date">
-                                        <input type="date" class="form-control" placeholder="Departure Date" required="" name="$FRMDB.Room_Booking[].end_date" data-frmdb-value="$FRMDB.Room_Booking[].end_date" title="" data-frmdb-pending="">
+                                        <input type="date" class="form-control" placeholder="Departure Date" required="" name="$FRMDB.PageParameters.new_room_booking.end_date" data-frmdb-value="$FRMDB.PageParameters.new_room_booking.end_date" title="" data-frmdb-pending="">
                                         <div class="input-group-append">
                                             <span class="input-group-text">
                                                 <i class="frmdb-i-calendar" aria-hidden="true"></i>
@@ -46,12 +46,12 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" name="$FRMDB.Room_Booking[].nb_adults" data-frmdb-value="$FRMDB.Room_Booking[].nb_adults" title="" data-frmdb-pending="">
+                                        <input type="number" class="form-control" placeholder="Nb Adults" required="" max="4" name="$FRMDB.PageParameters.new_room_booking.nb_adults" data-frmdb-value="$FRMDB.PageParameters.new_room_booking.nb_adults" title="" data-frmdb-pending="">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
-                                        <input type="number" class="form-control" title="Nb Children" value="0" name="$FRMDB.Room_Booking[].nb_children" data-frmdb-value="$FRMDB.Room_Booking[].nb_children" data-frmdb-pending="">
+                                        <input type="number" class="form-control" title="Nb Children" value="0" name="$FRMDB.PageParameters.new_room_booking.nb_children" data-frmdb-value="$FRMDB.PageParameters.new_room_booking.nb_children" data-frmdb-pending="">
                                     </div>
                                 </div>
                             </div>
