@@ -55,7 +55,7 @@ function test_postgres {
     docker run --name "${FRMDB_ENV_NAME}-pg" -p5434:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5434; do sleep 1; done
     PGPORT=5434 FRMDB_STORAGE=postgres npm test
-    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
+    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker rm -f
 }
 
 function test_stress {
@@ -66,7 +66,7 @@ function test_stress {
     docker run --name "${FRMDB_ENV_NAME}-stress" -p5435:5432 -e POSTGRES_PASSWORD=postgres postgres:11 &
     while ! nc -z localhost 5435; do sleep 1; done
     PGPORT=5435 FRMDB_STORAGE=postgres npm test -- core/src/frmdb_engine.stress.spec.ts
-    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
+    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker rm -f
 }
 
 function test_e2e {
@@ -139,7 +139,7 @@ function e2e_production {
 function cleanup {
     set -x
     docker system prune -af
-    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker kill
+    docker ps|grep "${FRMDB_ENV_NAME}" |cut -d' ' -f1|xargs docker rm -f
     find /home/gitlab-runner/cache/ -type f -mmin +60 -delete
     # cleanup registry: BE development images in febe project
     bash ./ci/cleanup-docker-registry.sh mfDqKQ6zwhZaszaNpUys 4245551 398919 7
