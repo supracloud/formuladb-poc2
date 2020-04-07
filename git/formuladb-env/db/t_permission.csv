@@ -1,0 +1,2 @@
+_id,role,app_name,resource_entity_id,resource_id,permission,for_who,details
+$Permission~~1,$Page,$ANONYMOUS,0READ,ALL,by default anyone can view pages

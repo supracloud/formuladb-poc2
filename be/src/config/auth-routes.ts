@@ -3,16 +3,17 @@ import * as passport from "passport";
 import * as connectEnsureLogin from "connect-ensure-login";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
-import { $UserObjT } from "@domain/metadata/default-metadata";
+import { $UserObjT, DefaultSchema, PermissionType } from "@domain/metadata/default-metadata";
 import { Auth } from "./auth";
 import { FrmdbStore } from "@core/frmdb_store";
+import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 
 const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
 
 export class AuthRoutes {
     private auth: Auth;
-    constructor(frmdbStore: FrmdbStore) {
-        this.auth = new Auth(frmdbStore);
+    constructor(kvsFactory: KeyValueStoreFactoryI) {
+        this.auth = new Auth(new FrmdbStore(kvsFactory, DefaultSchema));
     }
 
     initPassport(app: express.Express) {
@@ -40,8 +41,7 @@ export class AuthRoutes {
 
         passport.deserializeUser<$UserObjT, string>(async (id, cb) => {
             try {
-                let up = await this.auth.usersAndPerms.get();
-                let user = await up.kvs$User.get(id);
+                let user = await this.auth.getUser(id);
                 if (!user) return cb(new Error("User " + id + " forbidden or not found !"));
                 return cb(null, user);
             } catch (err) {
@@ -87,31 +87,36 @@ export class AuthRoutes {
         });
     }
 
-    async authResource(method: "GET" | "POST" | "DELETE" | "PUT", resourceEntityId: string, resourceId: string,
-        req: express.Request, res: express.Response, next) 
+    async authResource(permission: PermissionType, appName: string, resourceEntityId: string, resourceId: string,
+        req: express.Request, res: express.Response, next): Promise<boolean>
     {
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
             let userRole = this.roleFromReq(req);
             let userId = (req.user as any)?._id;
 
             let authStatus = await this.auth.authResource({
+                appName,
                 userId,
                 userRole,
-                method,
+                permission,
                 resourceEntityId,
                 resourceId,
             });
 
             if (authStatus === "allowed") {
                 next();
+                return true;
             } else if (authStatus === "needs-login") {
                 needsLogin(req, res, next);
+                return false;
             } else if (authStatus === "off") {
                 req.user = { ...req.user, role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || '$ADMIN' };
-                next();    
+                next();
+                return false;
             } else {
                 res.status(403).send();
+                return false;
             }
-        }
+        } else return true;
     }
 }

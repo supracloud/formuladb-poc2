@@ -21,16 +21,16 @@ describe('auth', () => {
     }
 
     beforeEach(async () => {
-        frmdbEngine = await getTestFrmdbEngine({_id: "", entities: {
-            [$User._id]: $User,
-            [$Permission._id]: $Permission,
-        }});
+        frmdbEngine = await getTestFrmdbEngine({
+            _id: "", entities: {
+                [$User._id]: $User,
+                [$Permission._id]: $Permission,
+            }
+        });
+        await frmdbEngine.frmdbEngineStore.kvsFactory.clearAllForTestingPurposes();
         auth = new Auth(frmdbEngine.frmdbEngineStore);
-        console.log(await frmdbEngine.frmdbEngineStore.all($Permission._id));
-        await putObj({ _id: "$Permission~~1", resource_entity_id: $Page._id, role: "$ANONYMOUS", permission: "GET-all" } as $PermissionObjT);
-        console.log(await frmdbEngine.frmdbEngineStore.all($Permission._id));
 
-        authEnabledBak = process.env.FRMDB_AUTH_ENABLED ;
+        authEnabledBak = process.env.FRMDB_AUTH_ENABLED;
         process.env.FRMDB_AUTH_ENABLED = "true";
     });
 
@@ -39,13 +39,20 @@ describe('auth', () => {
     })
 
     it('authorize pages', async () => {
-        let authStatus = await auth.authResource({
-            userId: '',
-            userRole: "$ANONYMOUS",
-            method: "GET", 
-            resourceEntityId: $Page._id, 
-            resourceId: '/appName/index'
-        });
+        await putObj({ _id: "$Permission~~1", resource_entity_id: $Page._id, role: "$ANONYMOUS", permission: "0READ", for_who: "ROLE" } as $PermissionObjT);
+
+        let authStatus = await auth.authResource(
+            { userId: '', userRole: "$ANONYMOUS", permission: "0READ", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
+        expect(authStatus).toEqual("allowed");
+        authStatus = await auth.authResource(
+            { userId: '', userRole: "$ANONYMOUS", permission: "1WRITE", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
+        expect(authStatus).toEqual("needs-login");
+
+        authStatus = await auth.authResource(
+            { userId: '', userRole: "$ADMIN", permission: "0READ", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
+        expect(authStatus).toEqual("allowed");
+        authStatus = await auth.authResource(
+            { userId: '', userRole: "$ADMIN", permission: "1WRITE", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
         expect(authStatus).toEqual("allowed");
     });
 });

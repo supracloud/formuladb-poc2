@@ -181,7 +181,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/:page.html', async function (req, res, next) {
-        await authRoutes.authResource('GET', $Page._id, `${req.params.app}/${req.params.page}`, req, res, next);
+        if (! await authRoutes.authResource('0READ', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
         let query: PageOpts['query'] = req.query;
 
         let pageOpts = {
@@ -217,6 +217,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }));
         }
         else if (query?.frmdbRender === "editor") {
+            if (! await authRoutes.authResource('1WRITE', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {

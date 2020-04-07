@@ -1,4 +1,4 @@
-import { Entity, Pn, EntityProperty } from "@domain/metadata/entity";
+import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
 
 export const _$App = {
     _id: "$App",
@@ -49,19 +49,20 @@ export const _$Permission = {
     _id: "$Permission",
     props: {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        role: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        role: { name: "role", propType_: Pn.STRING } as EntityProperty,
+        app_name: { name: "app_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         resource_entity_id: { name: "resource_entity_id", propType_: Pn.STRING } as EntityProperty,
         resource_id: { name: "resource_id", propType_: Pn.STRING } as EntityProperty,
-        permission: { name: "name", propType_: Pn.STRING, enumValues: [
-            "GET-all", "POST-all", "DELETE-all", "PUT-all",
-            "GET-group", "POST-group", "DELETE-group", "PUT-group",
-            "GET-owner", "POST-owner", "DELETE-owner", "PUT-owner",
-        ] } as EntityProperty,
+        permission: { name: "name", propType_: Pn.STRING, enumValues: ["READ", "WRITE", "DELETE"]} as EntityProperty,
+        for_who: { name: "for_who", propType_: Pn.STRING, enumValues: ["OWNER", "ROLE", "ALL"]} as EntityProperty,
         details: { name: "details", propType_: Pn.STRING } as EntityProperty,
     }
 };
+export type PermissionType = "0READ" | "1WRITE";
 export const $Permission: Entity = _$Permission;
-export type $PermissionObjT = {[K in keyof typeof _$Permission['props']]: string};
+export type $PermissionObjT = {
+    [K in keyof typeof _$Permission['props']]: string
+} & {permission: PermissionType} & {for_who: "OWNER" | "ROLE" | "ALL"};
 
 export const _$System_Param = {
     _id: "$System_Param",
@@ -140,4 +141,9 @@ export function isMetadataObject(tableName: string) {
 
 export function getDefaultEntity(path: string): Entity | null {
     return MetadataEntities.filter(e => e._id === path)[0];
+}
+
+export const DefaultSchema: Schema = {
+    _id: 'FRMDB_SCHEMA~~DefaultSchema',
+    entities: MetadataEntities.reduce((acc, m) => {acc[m._id] = m; return acc}, {})
 }
