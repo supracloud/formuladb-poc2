@@ -1,132 +1,87 @@
 import * as express from "express";
 import * as passport from "passport";
 import * as connectEnsureLogin from "connect-ensure-login";
-import { KeyTableStoreI, KeyValueStoreFactoryI } from "@storage/key_value_store_i";
-import { BeUser } from "@domain/user";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
-import { $User } from "@domain/metadata/default-metadata";
+import { $User, $UserObjT, $PermissionObjT, $Permission } from "@domain/metadata/default-metadata";
+import { LazyInit } from "@domain/ts-utils";
+import { KeyTableStoreI, KeyValueStoreFactoryI } from "@storage/key_value_store_i";
+import { FrmdbStore } from "@core/frmdb_store";
 
-// /\/formuladb-env\/(?:apps|frmdb-apps|static|css|themes|icons|db)/, 
-const FREE_PATHS = [/\/assets/, /\/register/, /\/login/, /^\/$/];
-const ADMIN_PATHS = [/\/formuladb\/editor.html/];
-
-export function initPassport(app: express.Express,
-                             kvsFactory: KeyValueStoreFactoryI) {
-
-    var kvs$User: KeyTableStoreI<BeUser>;
-
-    async function getUserKvs(): Promise<KeyTableStoreI<BeUser>> {
-        if (!kvs$User) {
-            kvs$User = await kvsFactory.createKeyTableS<BeUser>($User);
-        }
-        return Promise.resolve(kvs$User);
-    }    
-    
-    passport.use(new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password'
-        },
-        async function (username, password, cb) {
-            try {
-                let userKVS = await getUserKvs();
-                let user = await userKVS.get('$User~~' + username);
-                if (!user) return cb(null, false);
-                let hashedPass = md5(password);
-                if (user.password != hashedPass) { return cb(null, false); }
-                return cb(null, user);
-            } catch (err) {
-                return cb(err);
-            }
-        }
-    ));
-
-    passport.serializeUser(function (user: BeUser, cb) {
-        cb(null, user._id);
-    });
-
-    passport.deserializeUser(async function (id, cb) {
-        try {
-            let userKVS = await getUserKvs();
-            let user = await userKVS.get(id);
-            if (!user) return cb(new Error("User " + id + " forbidden or not found !"));
-            return cb(null, user);
-        } catch (err) {
-            return cb(err);
-        }
-    });
-    app.use(passport.initialize());
-    app.use(passport.session());
+const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
+export type AuthStatus = "allowed" | "not-allowed" | "needs-login" | "off";
+export interface AuthInputData {
+    userId: string;
+    userRole: string;
+    method: "GET" | "POST" | "DELETE" | "PUT";
+    resourceEntityId: string;
+    resourceId: string;
 }
 
-export function handleAuth(app: express.Express) {
-    app.get('/isauthenticated', function(req, res) {
-        res.status(200).send({ isauthenticated: req.isAuthenticated() });
-    });
+export class Auth {
+    usersAndPerms: LazyInit<{
+        users: { [_id: string]: $UserObjT };
+        permissions: $PermissionObjT[];
+    }>;
 
-    app.get('/isadminauthenticated', function(req, res) {
-        res.status(200).send(
-            { isadminauthenticated: ('user' in req && 'role' in req.user && req.user.role === 'ADMIN') }
-        );
-    });
-
-    app.get('/isproductionenv', function(req, res) {
-        res.status(200).send({ isproductionenv: process.env.FRMDB_IS_PROD_ENV === "true" });
-    });
-
-    app.get('/login', function(req, res) {
-        res.sendFile('/wwwroot/git/formuladb-env/frmdb-apps/formuladb-io/login.html');
-    });
-
-    app.post('/login',
-    passport.authenticate('local', { failureRedirect: '/login' }),
-    function(req, res) {
-        res.redirect('/');
-    });
-
-    app.get('/logout', function(req, res) {
-        req.logout();
-        req.session.destroy(function (err) {
-            res.redirect('/');
-        });
-    });
-
-    if (process.env.FRMDB_AUTH_ENABLED === "true") {
-        console.log("auth enabled");
-        app.use(function (req, res, next) {
-
-            if (req.user && req.user.role && req.user.role === 'ADMIN') {
-                next();
-                return;
+    constructor(private frmdbStore: FrmdbStore) {
+        this.usersAndPerms = new LazyInit(async () => {
+            let users: { [_id: string]: $UserObjT } = {};
+            let usersList = await this.frmdbStore.all($User._id);
+            for (let user of usersList) {
+                users[user._id] = user;
             }
+            let permissions = await this.frmdbStore.all($Permission._id);
+            console.info("Permissions", permissions);
+            
+            return {
+                users,
+                permissions,
+            };
+        });
+    }
 
-            var adminpath = ADMIN_PATHS.some(function(regex) {
-                return regex.test(req.path);
-            });
-            if (adminpath && process.env.FRMDB_IS_PROD_ENV !== "true") {
-                // Check if user role is admin
-                if (!req.user || !req.user.role) {
-                    res.redirect('/login');
-                    return;
+    async getUser(userId: string): Promise<$UserObjT | null> {
+        let up = await this.usersAndPerms.get();
+        return up.users[userId];
+    }
+
+    permissionMatchesReq(inputData: AuthInputData, perm: $PermissionObjT) {
+        return (
+            perm.resource_id === inputData.resourceId 
+            || (perm.resource_entity_id === inputData.resourceEntityId && !perm.resource_id )
+        ) && inputData.userRole === perm.role
+    }
+
+    async authResource(inputData: AuthInputData): Promise<AuthStatus> {
+
+        if (process.env.FRMDB_AUTH_ENABLED === "true") {
+            console.log("auth enabled");
+
+            if (inputData.userRole === '$ADMIN') {
+                return "allowed";
+            } else {
+                let up = await this.usersAndPerms.get();
+                let ret: AuthStatus = "not-allowed";
+                for (let perm of up.permissions) {
+                    if (this.permissionMatchesReq(inputData, perm)) {
+                        if (perm.permission.indexOf(inputData.method) === 0) {
+                            if (perm.permission.indexOf('-all') > 0) { 
+                                ret = "allowed";
+                                break; 
+                            }
+                            else if (perm.permission.indexOf('-group') > 0) { 
+                                //TODO
+                            }
+                            else if (perm.permission.indexOf('-owner') > 0) { 
+                                //TODO
+                            } else throw new Error(`Unknown permission ${JSON.stringify(perm)}`);
+                        }
+                    } 
                 }
-                if (req.user.role !== 'ADMIN') {
-                    res.redirect('/');
-                    return;
-                }
+                if (!ret && inputData.userRole === '$ANONYMOUS') return "needs-login";
+                else return ret;
             }
-
-            var freepath = FREE_PATHS.some(function(regex) {
-                return regex.test(req.path);
-            });
-            if (! freepath) {
-                connectEnsureLogin.ensureLoggedIn('/login')(req, res, next);
-            } else next();
-        });
-
-    } else {
-        app.use(function (req, res, next) {
-            req.user = { role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || 'ADMIN' };
-            next();
-        });
+        } else return "off";
     }
 }

@@ -105,6 +105,7 @@ export interface StringProperty {
     name: string;
     defaultValue?: string;
     allowNull?: boolean;
+    enumValues?: string[];
 }
 export interface BooleanProperty {
     propType_: Pn.BOOLEAN;

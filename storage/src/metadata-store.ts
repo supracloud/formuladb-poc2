@@ -9,7 +9,7 @@ import * as util from 'util';
 const exists = util.promisify(fs.exists);
 
 import * as jsyaml from 'js-yaml';
-import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param } from "@domain/metadata/default-metadata";
+import { $User, $Dictionary, $Currency, $DictionaryObjT, $Icon, $IconObjT, $AppObjT, $PageObjT, $App, $Table, $Page, $Image, $System_Param, $Permission } from "@domain/metadata/default-metadata";
 
 const { JSDOM } = require('jsdom');
 import { HTMLTools, isHTMLElement } from "@core/html-tools";
@@ -193,6 +193,7 @@ export class MetadataStore {
         entitiesDictionary[$Table._id] = $Table;
         entitiesDictionary[$Page._id] = $Page;
         entitiesDictionary[$System_Param._id] = $System_Param;
+        entitiesDictionary[$Permission._id] = $Permission;
 
         let schema: Schema = {
             _id: schemaNoEntities._id,

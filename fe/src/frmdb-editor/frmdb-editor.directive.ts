@@ -491,6 +491,8 @@ export class FrmdbEditorDirective {
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;
 
+            if (entity._id.indexOf('$') === 0) { window.alert(`Default system table ${entity._id} cannot be modified.`); return}
+
             var newColumnModal = $FRMDB_MODAL('#new-column-modal');
             newColumnModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
             let colNameInput = newColumnModal.querySelector('input[name=columnName]') as HTMLInputElement;

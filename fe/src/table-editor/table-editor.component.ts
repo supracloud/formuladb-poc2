@@ -28,7 +28,7 @@ export class TableEditorComponent extends HTMLElement {
             e.preventDefault()
         });
         onEventChildren(this, 'click', '#delete-row-btn', async (e) => { 
-            if (!this.selectedRecord) raiseNotification(ThemeColors.info, "Cannot delete row.", "Please select row in table first.")
+            if (!this.selectedRecord) raiseNotification(ThemeColors.info, "Cannot delete row.", "Please select row first.")
             let event: ServerEventDeletedFormData = await BACKEND_SERVICE().putEvent(
                 new ServerEventDeletedFormData(this.selectedRecord)) as ServerEventDeletedFormData;
             

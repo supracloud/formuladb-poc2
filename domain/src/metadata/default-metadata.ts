@@ -45,6 +45,24 @@ export const _$User = {
 export const $User: Entity = _$User;
 export type $UserObjT = {[K in keyof typeof _$User['props']]: string};
 
+export const _$Permission = {
+    _id: "$Permission",
+    props: {
+        _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        role: { name: "role", propType_: Pn.STRING, allowNull: false } as EntityProperty,
+        resource_entity_id: { name: "resource_entity_id", propType_: Pn.STRING } as EntityProperty,
+        resource_id: { name: "resource_id", propType_: Pn.STRING } as EntityProperty,
+        permission: { name: "name", propType_: Pn.STRING, enumValues: [
+            "GET-all", "POST-all", "DELETE-all", "PUT-all",
+            "GET-group", "POST-group", "DELETE-group", "PUT-group",
+            "GET-owner", "POST-owner", "DELETE-owner", "PUT-owner",
+        ] } as EntityProperty,
+        details: { name: "details", propType_: Pn.STRING } as EntityProperty,
+    }
+};
+export const $Permission: Entity = _$Permission;
+export type $PermissionObjT = {[K in keyof typeof _$Permission['props']]: string};
+
 export const _$System_Param = {
     _id: "$System_Param",
     props: {
