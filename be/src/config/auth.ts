@@ -1,11 +1,6 @@
-import * as express from "express";
-import * as passport from "passport";
+import * as micromatch from 'micromatch';
 import * as connectEnsureLogin from "connect-ensure-login";
-import { Strategy as LocalStrategy } from "passport-local";
-import * as md5 from 'md5';
-import { $User, $UserObjT, $PermissionObjT, $Permission, PermissionType } from "@domain/metadata/default-metadata";
-import { LazyInit } from "@domain/ts-utils";
-import { KeyTableStoreI, KeyValueStoreFactoryI } from "@storage/key_value_store_i";
+import { $UserObjT, $PermissionObjT, $Permission, PermissionType } from "@domain/metadata/default-metadata";
 import { FrmdbStore } from "@core/frmdb_store";
 
 const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
@@ -42,6 +37,7 @@ export class Auth {
     }
     permissionMatchesReq(inputData: AuthInputData, perm: $PermissionObjT): boolean {
         if (perm.permission < inputData.permission) return false;
+        if (!micromatch.isMatch(inputData.appName, perm.app_name)) return false;
 
         if (perm.resource_id === inputData.resourceId) return true;
         else if (perm.resource_entity_id === inputData.resourceEntityId && !perm.resource_id) return true;

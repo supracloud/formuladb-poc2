@@ -1,3 +1,4 @@
+import { Optional } from 'utility-types';
 import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
 
 export const _$App = {
@@ -60,9 +61,10 @@ export const _$Permission = {
 };
 export type PermissionType = "0READ" | "1WRITE";
 export const $Permission: Entity = _$Permission;
-export type $PermissionObjT = {
-    [K in keyof typeof _$Permission['props']]: string
-} & {permission: PermissionType} & {for_who: "OWNER" | "ROLE" | "ALL"};
+type PermissionWithEnums = {
+        [K in keyof typeof _$Permission['props']]: string
+    } & {permission: PermissionType} & {for_who: "OWNER" | "ROLE" | "ALL"};
+export type $PermissionObjT = Optional<PermissionWithEnums,"resource_id" | "details">;
 
 export const _$System_Param = {
     _id: "$System_Param",

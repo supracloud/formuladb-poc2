@@ -16,7 +16,7 @@ describe('auth', () => {
     let auth: Auth;
     let authEnabledBak: string | undefined;
 
-    async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
+    async function putPerm(obj: $PermissionObjT): Promise<ServerEventModifiedFormData> {
         return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
 
@@ -39,7 +39,7 @@ describe('auth', () => {
     })
 
     it('authorize pages', async () => {
-        await putObj({ _id: "$Permission~~1", resource_entity_id: $Page._id, role: "$ANONYMOUS", permission: "0READ", for_who: "ROLE" } as $PermissionObjT);
+        await putPerm({ _id: "$Permission~~1", role: "$ANONYMOUS", app_name: "*", resource_entity_id: $Page._id, permission: "0READ", for_who: "ROLE" });
 
         let authStatus = await auth.authResource(
             { userId: '', userRole: "$ANONYMOUS", permission: "0READ", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
