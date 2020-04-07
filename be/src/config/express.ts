@@ -180,16 +180,16 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
-    app.get('/:lang-:look-:primary-:secondary-:theme/:app/:page.html', async function (req, res, next) {
+    async function readHtmlPage(defaultPageOpts: Partial<PageOpts>,  req: express.Request, res: express.Response, next) {
         if (! await authRoutes.authResource('0READ', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
         let query: PageOpts['query'] = req.query;
 
         let pageOpts = {
             lang: req.params.lang,
-            look: req.params.look,
-            primaryColor: req.params.primary,
-            secondaryColor: req.params.secondary,
-            theme: req.params.theme,
+            look: req.params.look || defaultPageOpts.look || 'basic',
+            primaryColor: req.params.primary || defaultPageOpts.primaryColor || 'ffc208',
+            secondaryColor: req.params.secondary || defaultPageOpts.secondaryColor || '353b41',
+            theme: req.params.theme || defaultPageOpts.theme || 'Clean',
             appName: req.params.app,
             pageName: req.params.page,
             query: req.query,
@@ -227,7 +227,22 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             res.set('Content-Type', 'text/html')
             res.send(pageHtml);
         }
+    }
+    app.get('/:lang-:look-:primary-:secondary-:theme/:app/:page.html', async function (req, res, next) {
+        readHtmlPage({}, req, res, next);
     });
+    app.get('/:lang/:app/:page.html', async function (req, res, next) {
+        let app = await kvsFactory.metadataStore.getApp(req.params.app);
+        let defaultPageOpts: Partial<PageOpts> = {};
+        if (app) {
+            defaultPageOpts.look = app.defaultLook;
+            defaultPageOpts.primaryColor = app.defaultPrimaryColor;
+            defaultPageOpts.secondaryColor = app.defaultSecondaryColor;
+            defaultPageOpts.theme = app.defaultTheme;
+        }
+        readHtmlPage(defaultPageOpts, req, res, next);
+    });
+    
     app.get('/:lang-:look-:primary-:secondary-:theme/:app/formuladb-look.css', async function (req, res, next) {
         let css = await kvsFactory.metadataStore.getLookCss({
             lang: req.params.land,

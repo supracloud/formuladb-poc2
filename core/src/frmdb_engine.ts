@@ -19,6 +19,7 @@ import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 import { I18nStore } from "./i18n-store";
 import { isMetadataObject, isMetadataEntity } from "@domain/metadata/default-metadata";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
+import { App } from "@domain/app";
 
 export class FrmdbEngine {
     private transactionRunner: FrmdbTransactionRunner;
@@ -117,6 +118,29 @@ export class FrmdbEngine {
     }
 
     private async putPageHtml(event: events.ServerEventPutPageHtml): Promise<events.MwzEvents> {
+        let app: App | null = await this.frmdbEngineStore.kvsFactory.metadataStore.getApp(event.pageOpts.appName);
+        if (app) {
+            let dirty: boolean = false;
+            if (app.defaultLook != event.pageOpts.look) {
+                app.defaultLook = event.pageOpts.look;
+                dirty = true;
+            }
+            if (app.defaultPrimaryColor != event.pageOpts.primaryColor) {
+                app.defaultPrimaryColor = event.pageOpts.primaryColor;
+                dirty = true;
+            }
+            if (app.defaultSecondaryColor != event.pageOpts.secondaryColor) {
+                app.defaultSecondaryColor = event.pageOpts.secondaryColor;
+                dirty = true;
+            }
+            if (app.defaultTheme != event.pageOpts.theme) {
+                app.defaultTheme = event.pageOpts.theme;
+                dirty = true;
+            }
+            if (dirty) {
+                await this.frmdbEngineStore.kvsFactory.metadataStore.putApp(event.pageOpts.appName, app);
+            }
+        }
         await this.frmdbEngineStore.kvsFactory.metadataStore.savePageHtml(event.pageOpts, event.pageHtml);
         return event;
     }

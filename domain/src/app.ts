@@ -5,4 +5,8 @@ export interface App extends KeyValueObj {
     homePage?: string;
     defaultLocale?: "en" | "ro";
     pages: string[];
+    defaultLook?: string;
+    defaultPrimaryColor?: string;
+    defaultSecondaryColor?: string;
+    defaultTheme?: string;
 }
