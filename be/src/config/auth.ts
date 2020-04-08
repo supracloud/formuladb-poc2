@@ -1,7 +1,9 @@
 import * as micromatch from 'micromatch';
 import * as connectEnsureLogin from "connect-ensure-login";
-import { $UserObjT, $PermissionObjT, $Permission, PermissionType } from "@domain/metadata/default-metadata";
+import { $UserObjT, $PermissionObjT, $Permission, PermissionType, $Table, $Page, $Image, $Icon, $App } from "@domain/metadata/default-metadata";
 import { FrmdbStore } from "@core/frmdb_store";
+import * as events from "@domain/event";
+import { parseDataObjId } from '@domain/metadata/data_obj';
 
 const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
 export type AuthStatus = "allowed" | "not-allowed" | "needs-login" | "off";
@@ -66,5 +68,39 @@ export class Auth {
                 } else return "allowed";
             }
         } else return "off";
+    }
+
+    async authEvent(userId: string, userRole: string, appName: string, event: events.MwzEvents): Promise<AuthStatus> {
+        switch (event.type_) {
+            case "ServerEventModifiedFormData":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: parseDataObjId(event.obj._id).entityId, resourceId: event.obj._id});
+            case "ServerEventDeletedFormData":
+                return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: parseDataObjId(event.obj._id).entityId, resourceId: event.obj._id});
+            case "ServerEventNewEntity":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Table._id, resourceId: event.entityId});
+            case "ServerEventDeleteEntity":
+                return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: $Table._id, resourceId: event.entityId});
+            case "ServerEventPreviewFormula":
+                return this.authResource({userId, userRole, permission: "2PREVIEWEDIT", appName, resourceEntityId: event.targetEntity._id, resourceId: event.targetPropertyName});
+            case "ServerEventSetProperty":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: event.targetEntity._id, resourceId: event.property.name});
+            case "ServerEventDeleteProperty":
+                return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: event.targetEntity._id, resourceId: event.propertyName});
+            case "ServerEventPutPageHtml":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Page._id, resourceId: `${$Page._id}~~${event.pageOpts.pageName}`});
+            case "ServerEventPutMediaObject":
+                //TODO media objects are still using hardcoded routes (/formuladb-api/:app/media), they are not implemented as metadata store entities
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Image._id, resourceId: `${$Image._id}~~${event.fileName}`});
+            case "ServerEventPutIcon":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Icon._id, resourceId: `${$Icon._id}~~${event.iconId}`});
+            case "ServerEventSetPage":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $Page._id, resourceId: `${$Page._id}~~${event.pageOpts.pageName}`});
+            case "ServerEventDeletePage":
+                return this.authResource({userId, userRole, permission: "7DELETE", appName, resourceEntityId: $Page._id, resourceId: `${$Page._id}~~${event.pageName}`});
+            case "ServerEventNewApp":
+                return this.authResource({userId, userRole, permission: "5WRITE", appName, resourceEntityId: $App._id, resourceId: `${$App._id}~~${event.appName}`});
+            default:
+                return Promise.reject("n/a event");
+        }
     }
 }

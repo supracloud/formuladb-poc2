@@ -181,7 +181,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.use('/formuladb/', express.static(`${FRMDB_DIR}/`));
 
     async function readHtmlPage(defaultPageOpts: Partial<PageOpts>,  req: express.Request, res: express.Response, next) {
-        if (! await authRoutes.authResource('0READ', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
+        let appName = req.params.app;
+        let pageName = req.params.page;
+        if (! await authRoutes.authResource('0READ', appName, $Page._id, pageName, req, res, next)) return;
         let query: PageOpts['query'] = req.query;
 
         let pageOpts = {
@@ -217,7 +219,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }));
         }
         else if (query?.frmdbRender === "editor") {
-            if (! await authRoutes.authResource('2PREVIEWEDIT', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
+            if (! await authRoutes.authResource('2PREVIEWEDIT', pageName, $Page._id, appName, req, res, next)) return;
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {

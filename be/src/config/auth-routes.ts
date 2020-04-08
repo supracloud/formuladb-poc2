@@ -5,7 +5,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as md5 from 'md5';
 import * as events from "@domain/event";
 import { $UserObjT, DefaultSchema, PermissionType, $Table, $Page, $Image, $Icon, $App } from "@domain/metadata/default-metadata";
-import { Auth } from "./auth";
+import { Auth, AuthStatus } from "./auth";
 import { FrmdbStore } from "@core/frmdb_store";
 import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { parseDataObjId } from "@domain/metadata/data_obj";
@@ -90,8 +90,7 @@ export class AuthRoutes {
     }
 
     async authResource(permission: PermissionType, appName: string, resourceEntityId: string, resourceId: string | undefined,
-        req: express.Request, res: express.Response, next): Promise<boolean>
-    {
+        req: express.Request, res: express.Response, next): Promise<boolean> {
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
             let userRole = this.roleFromReq(req);
             let userId = (req.user as any)?._id;
@@ -105,54 +104,32 @@ export class AuthRoutes {
                 resourceId,
             });
 
-            if (authStatus === "allowed") {
-                next();
-                return true;
-            } else if (authStatus === "needs-login") {
-                needsLogin(req, res, next);
-                return false;
-            } else if (authStatus === "off") {
-                req.user = { ...req.user, role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || '$ADMIN' };
-                next();
-                return false;
-            } else {
-                res.status(403).send();
-                return false;
-            }
+            return this.processAuthStatus(authStatus, req, res, next);
         } else return true;
     }
 
-    async authEvent(appName: string, event: events.MwzEvents, req: express.Request, res: express.Response, next): Promise<boolean> {
-        switch (event.type_) {
-            case "ServerEventModifiedFormData":
-                return this.authResource("5WRITE", appName, parseDataObjId(event.obj._id).entityId, event.obj._id, req, res, next);
-            case "ServerEventDeletedFormData":
-                return this.authResource("7DELETE", appName, parseDataObjId(event.obj._id).entityId, event.obj._id, req, res, next);
-            case "ServerEventNewEntity":
-                return this.authResource("5WRITE", appName, $Table._id, event.entityId, req, res, next);
-            case "ServerEventDeleteEntity":
-                return this.authResource("7DELETE", appName, $Table._id, event.entityId, req, res, next);
-            case "ServerEventPreviewFormula":
-                return this.authResource("2PREVIEWEDIT", appName, event.targetEntity._id, event.targetPropertyName, req, res, next);
-            case "ServerEventSetProperty":
-                return this.authResource("5WRITE", appName, event.targetEntity._id, event.property.name, req, res, next);
-            case "ServerEventDeleteProperty":
-                return this.authResource("7DELETE", appName, event.targetEntity._id, event.propertyName, req, res, next);
-            case "ServerEventPutPageHtml":
-                return this.authResource("5WRITE", appName, $Page._id, `${$Page._id}~~${event.pageOpts.pageName}`, req, res, next);
-            case "ServerEventPutMediaObject":
-                //TODO media objects are still using hardcoded routes (/formuladb-api/:app/media), they are not implemented as metadata store entities
-                return this.authResource("5WRITE", appName, $Image._id, `${$Image._id}~~${event.fileName}`, req, res, next);
-            case "ServerEventPutIcon":
-                return this.authResource("5WRITE", appName, $Icon._id, `${$Icon._id}~~${event.iconId}`, req, res, next);
-            case "ServerEventSetPage":
-                return this.authResource("5WRITE", appName, $Page._id, `${$Page._id}~~${event.pageOpts.pageName}`, req, res, next);
-            case "ServerEventDeletePage":
-                return this.authResource("7DELETE", appName, $Page._id, `${$Page._id}~~${event.pageName}`, req, res, next);
-            case "ServerEventNewApp":
-                return this.authResource("5WRITE", appName, $App._id, `${$App._id}~~${event.appName}`, req, res, next);
-            default:
-                return Promise.reject("n/a event");
+    processAuthStatus(authStatus: AuthStatus, req: express.Request, res: express.Response, next) {
+        if (authStatus === "allowed") {
+            return true;
+        } else if (authStatus === "needs-login") {
+            needsLogin(req, res, next);
+            return false;
+        } else if (authStatus === "off") {
+            req.user = { ...req.user, role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || '$ADMIN' };
+            return true;
+        } else {
+            res.status(403).send();
+            return false;
         }
+    }
+
+    async authEvent(appName: string, event: events.MwzEvents, req: express.Request, res: express.Response, next): Promise<boolean> {
+        if (process.env.FRMDB_AUTH_ENABLED === "true") {
+            let userRole = this.roleFromReq(req);
+            let userId = (req.user as any)?._id;
+
+            let authStatus = await this.auth.authEvent(userId, userRole, appName, event);
+            return this.processAuthStatus(authStatus, req, res, next);
+        } else return true;
     }
 }
