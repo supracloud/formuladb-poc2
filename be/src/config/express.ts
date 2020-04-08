@@ -183,7 +183,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     async function readHtmlPage(defaultPageOpts: Partial<PageOpts>,  req: express.Request, res: express.Response, next) {
         let appName = req.params.app;
         let pageName = req.params.page;
-        if (! await authRoutes.authResource('0READ', appName, $Page._id, pageName, req, res, next)) return;
+        if (! await authRoutes.authResource("page", '0READ', appName, $Page._id, pageName, req, res, next)) return;
         let query: PageOpts['query'] = req.query;
 
         let pageOpts = {
@@ -219,7 +219,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }));
         }
         else if (query?.frmdbRender === "editor") {
-            if (! await authRoutes.authResource('2PREVIEWEDIT', pageName, $Page._id, appName, req, res, next)) return;
+            if (! await authRoutes.authResource("api", '2PREVIEWEDIT', pageName, $Page._id, appName, req, res, next)) return;
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
@@ -330,6 +330,17 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
         }
     });
 
+    app.get('/formuladb-api/user', async function (req, res, next) {
+        try {
+            let userRole = authRoutes.roleFromReq(req);
+            let userId = authRoutes.userIdFromReq(req);
+            res.send({userId, userRole});
+        } catch (err) {
+            console.error(err);
+            next(err);
+        }
+    });
+    
     app.get('/formuladb-api/:app', async function (req, res, next) {
         try {
             let app: App | null = await kvsFactory.metadataStore.getApp(req.params.app);
@@ -415,7 +426,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     //all write operations are handled via events
     app.post('/formuladb-api/:app/event', async function (req, res, next) {
         let event = req.body;
-        if (! await authRoutes.authEvent(req.params.app, event, req, res, next)) return;
+        if (! await authRoutes.authEvent("api", req.params.app, event, req, res, next)) return;
         let userRole = authRoutes.roleFromReq(req);
         let userId = authRoutes.userIdFromReq(req);
         return (await getFrmdbEngine(req.params.app))

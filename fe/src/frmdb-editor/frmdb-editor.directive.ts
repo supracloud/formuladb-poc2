@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { onEvent, onDoc, getTarget, onEventChildren } from "@fe/delegated-events";
-import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService } from "@fe/backend.service";
+import { BACKEND_SERVICE, RESET_BACKEND_SERVICE, BackendService, getData } from "@fe/backend.service";
 import { Entity, EntityProperty, Pn } from "@domain/metadata/entity";
 import { ServerEventNewEntity, ServerEventSetPage, ServerEventPutPageHtml, ServerEventDeleteEntity, ServerEventDeletePage, ServerEventSetProperty, ServerEventDeleteProperty, ServerEventPutMediaObject, ServerEventNewApp } from "@domain/event";
 import { queryDataGrid, DataGridComponentI } from "@fe/data-grid/data-grid.component.i";
@@ -60,6 +60,8 @@ import { serializeElemToObj, updateDOM } from "@fe/live-dom-template/live-dom-te
 import { isHTMLElement } from "@core/html-tools";
 import { getPageProperties } from "@core/dom-utils";
 import * as events from "@domain/event";
+import { raiseNotification } from "@fe/notifications.service";
+import { ThemeColors } from "@domain/uimetadata/theme";
 
 declare var $: null, jQuery: null;
 
@@ -197,6 +199,12 @@ export class FrmdbEditorDirective {
             (newUrl: URL, oldPageOpts: PageOpts, newPageOpts: PageOpts) => this.updateStateFromUrl(newPageOpts, newUrl),
             () => this.checkSafeNavigation()
         );
+
+        getData('/formuladb-api/user').then((u: {userRole: string, userId: string}) => {
+            if (u.userRole === "$ANONYMOUS") {
+                raiseNotification(ThemeColors.warning, "WARNING this is a preview environment", 'To be able to save your modifications, please <a href="/login">Login</a> or <a href="/register">Register</a>')
+            }
+        })
     }
 
     public changeTable(a: HTMLAnchorElement) {
@@ -362,7 +370,7 @@ export class FrmdbEditorDirective {
         onEvent(document.body, 'click', '#save-btn, #save-btn *', async (event) => {
             await this.saveBlobs();
 
-            $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
+            await $SAVE_DOC_PAGE(window.location.pathname, this.frameDoc)
             .then(b => {
                 if (b) Undo.clear();
             });

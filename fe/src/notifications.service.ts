@@ -4,10 +4,13 @@ import { MwzEvents } from "@domain/event";
 
 
 let NotificationContainer = document.createElement('div');
+NotificationContainer.id = "frmdb-notification-container";
+document.body.appendChild(NotificationContainer);
 NotificationContainer.style.position = 'fixed';
 NotificationContainer.style.top = '0';
 NotificationContainer.style.right = '0';
 NotificationContainer.style.padding = '5px';
+NotificationContainer.style.zIndex = '56789';
 
 export function raiseNotification(severity: ThemeColors, title: string, msg: string) {
     let alertEl: AlertComponent = document.createElement('frmdb-alert') as AlertComponent;

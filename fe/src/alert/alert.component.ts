@@ -32,10 +32,9 @@ export class AlertComponent extends HTMLElement {
     connectedCallback() {
         this.render();
         onEventChildren(this, ['click'], '[data-dismiss="alert"]', () => {
-            this.change({visible: ""})
+            this.parentElement?.removeChild(this);
         });
     }
-
 }
 
 customElements.define('frmdb-alert', AlertComponent);

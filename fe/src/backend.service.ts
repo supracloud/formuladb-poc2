@@ -19,6 +19,8 @@ import { _textjoin_preComputeAggForObserverAndObservable } from "@core/frmdb_eng
 import { FrmdbLogger } from "@domain/frmdb-logger";
 import { APP_AND_TENANT_ROOT, _resetAppAndTenant } from "./app.service";
 import { waitUntil } from "@domain/ts-utils";
+import { raiseNotification } from "./notifications.service";
+import { ThemeColors } from "@domain/uimetadata/theme";
 const LOG = new FrmdbLogger('backend-service');
 
 export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
@@ -36,7 +38,18 @@ export function postData<IN, OUT>(url: string, data: IN): Promise<OUT> {
         referrer: 'no-referrer', // no-referrer, *client
         body: JSON.stringify(data), // body data type must match "Content-Type" header
     })
-        .then(response => response.json());
+        .then(async (response) => {
+            if (response.status === 200) {
+                let json = await response.json();
+                return json
+            } else {
+                let u: any = await getData('/formuladb-api/user');
+                if (response.status == 403 && u.userRole === "$ANONYMOUS") {
+                    raiseNotification(ThemeColors.warning, "Cannot save modifications in preview environment", 'Please <a href="/login">Login</a> or <a href="/register">Register</a>')
+                }
+                throw new Error(response.status + "-" + response.statusText);
+            }
+        });
 }
 
 export function getData<OUT>(url: string): Promise<OUT> {

@@ -11,6 +11,7 @@ import { KeyValueStoreFactoryI } from "@storage/key_value_store_i";
 import { parseDataObjId } from "@domain/metadata/data_obj";
 
 const needsLogin = connectEnsureLogin.ensureLoggedIn('/login');
+export type RequestType = "api" | "page";
 
 export class AuthRoutes {
     private auth: Auth;
@@ -93,7 +94,7 @@ export class AuthRoutes {
         });
     }
 
-    async authResource(permission: PermissionType, appName: string, resourceEntityId: string, resourceId: string | undefined,
+    async authResource(requestType: RequestType, permission: PermissionType, appName: string, resourceEntityId: string, resourceId: string | undefined,
         req: express.Request, res: express.Response, next): Promise<boolean> {
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
             let userRole = this.roleFromReq(req);
@@ -108,15 +109,16 @@ export class AuthRoutes {
                 resourceId,
             });
 
-            return this.processAuthStatus(authStatus, req, res, next);
+            return this.processAuthStatus(requestType, authStatus, req, res, next);
         } else return true;
     }
 
-    processAuthStatus(authStatus: AuthStatus, req: express.Request, res: express.Response, next) {
+    processAuthStatus(requestType: RequestType, authStatus: AuthStatus, req: express.Request, res: express.Response, next) {
         if (authStatus === "allowed") {
             return true;
         } else if (authStatus === "needs-login") {
-            needsLogin(req, res, next);
+            if (requestType === "page") needsLogin(req, res, next);
+            else res.status(403).send({});
             return false;
         } else if (authStatus === "off") {
             req.user = { ...req.user, role: process.env.FRMDB_AUTH_DISABLED_DEFAULT_ROLE || '$ADMIN' };
@@ -127,13 +129,13 @@ export class AuthRoutes {
         }
     }
 
-    async authEvent(appName: string, event: events.MwzEvents, req: express.Request, res: express.Response, next): Promise<boolean> {
+    async authEvent(requestType: RequestType, appName: string, event: events.MwzEvents, req: express.Request, res: express.Response, next): Promise<boolean> {
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
             let userRole = this.roleFromReq(req);
             let userId = this.userIdFromReq(req);
 
             let authStatus = await this.auth.authEvent(userId, userRole, appName, event);
-            return this.processAuthStatus(authStatus, req, res, next);
+            return this.processAuthStatus(requestType,authStatus, req, res, next);
         } else return true;
     }
 }
