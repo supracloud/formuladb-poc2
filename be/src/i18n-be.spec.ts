@@ -5,7 +5,7 @@ describe('I18nBe', () => {
 
     it("Should translate and cache the results in memory and in DB", async () => {
         let frmdbEngine = await getTestFrmdbEngine({_id: 'FRMDB_SCHEMA', entities: {}});
-        let res = await i18nTranslateText(frmdbEngine, ["Friendly"], 'fr');
+        let res = await i18nTranslateText('$ANONYMOUS', 'AnonymousUser', frmdbEngine, ["Friendly"], 'fr');
         expect(res).toEqual({'Friendly': 'Amical'})
     });
 });

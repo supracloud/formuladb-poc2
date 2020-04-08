@@ -20,12 +20,15 @@ import { tmpl } from "./tmpl";
 import { emit, onEvent } from "@fe/delegated-events";
 import { elvis } from "@core/elvis";
 import { BLOBS, FrmdbBlob } from "@fe/frmdb-editor/blobs";
+import { ComponentProperty, Component } from "./component-editor.component";
 
 declare var $: null;
 
 export abstract class Input extends HTMLElement {
 	abstract inputTagName: string;
 	value: string;
+	property: ComponentProperty;
+	component: Component;
 
 	init(data): void {
 		this.render(this.inputTagName, data);
@@ -711,7 +714,6 @@ export class SectionInput extends Input {
 	}
 
 	init(data) {
-		super.init(data);
 		this.render(/*html*/`
 			<label class="header border-bottom" data-header="{%=key%}" for="header_{%=key%}"><span>&ensp;{%=header%}</span> <div class="header-arrow"></div></label> 
 			<input class="header_check" type="checkbox" {% if (typeof expanded !== 'undefined' && expanded == false) { %} {% } else { %}checked="true"{% } %} id="header_{%=key%}"> 
@@ -764,15 +766,37 @@ export class ParamListInput extends Input {
 	static elemTagName = "frmdb-param-list-input";
 	inputTagName = "frmdb-param-list-input";
 
+	setValue(value) {}
+
+	getParameterValues() {
+		let ret: {name:string, value:string}[] = [];
+		for (let paramEl of Array.from(this.querySelectorAll('.parameter'))) {
+			let input = paramEl.querySelector('input') as HTMLInputElement;
+			let textarea = paramEl.querySelector('textarea') as HTMLTextAreaElement;
+			ret.push({name: input.value, value: textarea.value});
+		}
+		return ret;
+	}
+
 	init(data) {
-		super.init(data);
+		onEvent(this, 'change', 'input', (event: Event) => {
+			let input = event.target as HTMLInputElement;
+			emit(this, { type: "FrmdbModifyPageElement", value: input.value });
+		});
+		onEvent(this, 'change', 'textarea', (event: Event) => {
+			let textarea = event.target as HTMLTextAreaElement;
+			emit(this, { type: "FrmdbModifyPageElement", value: textarea.value });
+		});
+		
 		this.render(/*html*/`
 				{% for ( let [i, param] of params.entries() ) { %}
-					<div class="input-group">
-						<input name="{%=key%}_{%=i%}_paramName" type="text" class="form-control" value="{%=param.name%}"/>
-					</div>
-					<div class="input-group">
-						<textarea name="{%=key%}_{%=i%}_paramValue" rows="2" class="form-control">{%=param.value%}</textarea>
+					<div class="parameter">
+						<div class="input-group">
+							<input name="{%=key%}_{%=i%}_paramName" readonly disabled type="text" class="form-control" value="{%=param.name%}"/>
+						</div>
+						<div class="input-group">
+							<textarea name="{%=key%}_{%=i%}_paramValue" rows="1" class="form-control">{%=param.value%}</textarea>
+						</div>
 					</div>
 				{% } %}
 					

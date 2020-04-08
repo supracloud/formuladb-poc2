@@ -58,7 +58,10 @@ export class FrmdbEngine {
         return Promise.resolve(schema);
     }
 
-    public processEvent(event: events.MwzEvents): Promise<events.MwzEvents> {
+    public processEventAnonymous(event: events.MwzEvents): Promise<events.MwzEvents> {
+        return this.processEvent('$ANONYMOUS', 'AnounymousUserId', event);
+    }
+    public processEvent(userRole: string, userId: string, event: events.MwzEvents): Promise<events.MwzEvents> {
         event._id = Date.now() + '_' + generateUUID();
         console.log(new Date().toISOString() + "|" + event._id + "|BEGIN|" + CircularJSON.stringify(event));
 
@@ -67,6 +70,8 @@ export class FrmdbEngine {
                 if (isMetadataStoreObject(event.obj)) {
                     throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
                 }
+                event.obj.role = userId;
+                event.obj.owner = userId;
                 return this.transactionRunner.computeFormulasAndSave(event);
             case "ServerEventDeletedFormData":
                 if (isMetadataStoreObject(event.obj)) {

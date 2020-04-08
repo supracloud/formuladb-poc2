@@ -59,7 +59,7 @@ describe('Inventory Metadata', () => {
     });
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
 
     afterEach(function() {
@@ -142,7 +142,7 @@ describe('Inventory Metadata', () => {
         let pl1After = await frmdbTStore.getDataObj(pl1._id) as any;
         expect(pl1After).toEqual(jasmine.objectContaining({ordered_stock__: oi1_1.quantity + oi1_2.quantity}));
 
-        let ev: ServerEventPreviewFormula = await frmdbEngine.processEvent({
+        let ev: ServerEventPreviewFormula = await frmdbEngine.processEventAnonymous({
             _id: 'ABC123',
             type_: "ServerEventSetProperty",
             targetEntity: _.cloneDeep(ProductLocation),

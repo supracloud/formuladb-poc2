@@ -57,6 +57,10 @@ export class AuthRoutes {
     roleFromReq(req: express.Request): string {
         return (req.user as any)?.role || '$ANONYMOUS';
     }
+    
+    userIdFromReq(req: express.Request): string {
+        return (req.user as any)?._id;
+    }
 
     setupAuthRoutes(app: express.Express) {
         app.get('/isauthenticated', function (req, res) {
@@ -93,7 +97,7 @@ export class AuthRoutes {
         req: express.Request, res: express.Response, next): Promise<boolean> {
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
             let userRole = this.roleFromReq(req);
-            let userId = (req.user as any)?._id;
+            let userId = this.userIdFromReq(req);
 
             let authStatus = await this.auth.authResource({
                 appName,
@@ -126,7 +130,7 @@ export class AuthRoutes {
     async authEvent(appName: string, event: events.MwzEvents, req: express.Request, res: express.Response, next): Promise<boolean> {
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
             let userRole = this.roleFromReq(req);
-            let userId = (req.user as any)?._id;
+            let userId = this.userIdFromReq(req);
 
             let authStatus = await this.auth.authEvent(userId, userRole, appName, event);
             return this.processAuthStatus(authStatus, req, res, next);

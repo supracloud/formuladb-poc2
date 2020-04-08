@@ -23,7 +23,7 @@ interface Translation {
     detectedLanguageCode?: string;
 }
 
-export async function i18nTranslateText(frdbEngine: FrmdbEngine, texts: string[], toLangAndCountry: string) {
+export async function i18nTranslateText(userRole: string, userId: string, frdbEngine: FrmdbEngine, texts: string[], toLangAndCountry: string) {
     let toLang = toLangAndCountry.slice(0, 2);
     const batches: string[][] = [];
     let dictionaryCache = await frdbEngine.i18nStore.getDictionaryCache();
@@ -71,7 +71,7 @@ export async function i18nTranslateText(frdbEngine: FrmdbEngine, texts: string[]
 
     let promises2 = Array.from(dirtyDictionaryEntries.values())
         .map(dirtyDictEntry => frdbEngine.i18nStore
-            .updateDictionaryEntry(dirtyDictEntry)
+            .updateDictionaryEntry(userRole, userId, dirtyDictEntry)
             .catch(ex => console.warn(ex)));
     await Promise.all(promises2);
     

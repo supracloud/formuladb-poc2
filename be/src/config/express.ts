@@ -320,7 +320,9 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/translate', async (req, res, next) => {
         try {
             let coreFrmdbEngine = await getCoreFrmdbEngine();
-            let translations = await i18nTranslateText(coreFrmdbEngine, req.body.texts, req.body.to);
+            let userRole = authRoutes.roleFromReq(req);
+            let userId = authRoutes.userIdFromReq(req);
+                let translations = await i18nTranslateText(userRole, userId, coreFrmdbEngine, req.body.texts, req.body.to);
             res.json(translations);
         } catch (err) {
             console.error(err);
@@ -414,8 +416,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
     app.post('/formuladb-api/:app/event', async function (req, res, next) {
         let event = req.body;
         if (! await authRoutes.authEvent(req.params.app, event, req, res, next)) return;
+        let userRole = authRoutes.roleFromReq(req);
+        let userId = authRoutes.userIdFromReq(req);
         return (await getFrmdbEngine(req.params.app))
-            .processEvent(event)
+            .processEvent(userRole, userId, event)
             .then(notif => {
                 addEventToChangesFeed(notif);
                 res.json(notif);

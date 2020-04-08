@@ -14,7 +14,7 @@ const FRMDB_ENV_ROOT_DIR = process.env.FRMDB_ENV_ROOT_DIR || '/wwwroot/git';
 const FRMDB_ENV_DIR = `${FRMDB_ENV_ROOT_DIR}/formuladb-env`;
 
 async function putObj(frmdbEngine: FrmdbEngine, obj: KeyValueObj) {
-    let event = await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj));
+    let event = await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj));
     if (event.error_ || event.state_ === "ABORT") {
         throw new Error("Error saving object " + obj._id + "; " + event.error_);
     }

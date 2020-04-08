@@ -1,8 +1,8 @@
 import * as _ from "lodash";
 import { tmpl } from "./tmpl";
 import { Undo } from "../frmdb-editor/undo";
-import { Input, Inputs, createInput, SectionInput, ImageInput } from "./inputs";
-import { onEvent, emit } from "@fe/delegated-events";
+import { Input, Inputs, createInput, SectionInput, ImageInput, ParamListInput } from "./inputs";
+import { onEvent, emit, onEventChildren } from "@fe/delegated-events";
 import { FrmdbModifyPageElement } from "@fe/frmdb-user-events";
 import { ComponentsBase } from "./components-base";
 import { ComponentsBaseSyleClasses } from "./components-base-style-classes";
@@ -90,6 +90,18 @@ export class ComponentEditorComponent extends HTMLElement {
 		super();
 		
 		this.innerHTML = HTML;
+	}
+
+	connectedCallback() {	
+		console.log('ComponentEditorComponent connectedCallback');
+		onEventChildren(this, "FrmdbModifyPageElement", "*", (event: CustomEvent<FrmdbModifyPageElement>) => {
+			if (!this.selectedEl) return;
+			let propertyInput = event.target as Input;
+			let newSelectedEl = this.onPropertyChange(this.selectedEl, propertyInput, event.detail.value, propertyInput.component, propertyInput.property);
+			if (newSelectedEl != this.selectedEl) {
+				emit(this, {type: "FrmdbSelectPageElement", el: newSelectedEl});
+			}
+		})
 	}
 	
 	initializeComponents() {
@@ -333,6 +345,8 @@ export class ComponentEditorComponent extends HTMLElement {
 			}
 			
 			let propertyInput = createInput(property.inputtype);
+			propertyInput.property = property;
+			propertyInput.component = component;
 			propertyInput.init(property.data);
 			
 			if (property.init) {
@@ -358,13 +372,6 @@ export class ComponentEditorComponent extends HTMLElement {
 				
 				propertyInput.setValue(value);
 			}
-			
-			onEvent(propertyInput, "FrmdbModifyPageElement", "*", (event: { detail: FrmdbModifyPageElement }) => {
-				let newSelectedEl = this.onPropertyChange(selectedEl, propertyInput, event.detail.value, component, property);
-				if (newSelectedEl != selectedEl) {
-					emit(this, {type: "FrmdbSelectPageElement", el: newSelectedEl});
-				}
-			})
 			
 			if (property.inputtype == 'SectionInput') {
 				tab.appendChild(propertyInput);
@@ -397,6 +404,13 @@ export class ComponentEditorComponent extends HTMLElement {
 		if (property.inputtype === "ImageInput") {
 			let imgInput = input as ImageInput;
 			if (imgInput.frmdbBlob) imgInput.frmdbBlob.el = selectedEl;
+		}
+		else if (property.inputtype === "ParamListInput") {
+			let propertyInput: ParamListInput = input as ParamListInput;
+			let attrs = propertyInput.getParameterValues();
+			for (let attr of attrs) {
+				element.setAttribute(attr.name, attr.value);
+			}
 		}
 		
 		if (property.onChange) {

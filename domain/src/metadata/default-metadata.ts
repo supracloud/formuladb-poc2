@@ -1,6 +1,6 @@
 import { Optional } from 'utility-types';
 import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
-import { parseDataObjId, DataObj } from './data_obj';
+import { parseDataObjId, DataObj, entityNameFromDataObjId } from './data_obj';
 
 export const _$App = {
     _id: "$App",
@@ -144,11 +144,11 @@ export function isMetadataStoreEntity(tableName: string) {
     return MetadataStoreName.includes(tableName);
 }
 export function isMetadataStoreObject(obj: DataObj) {
-    let tableName = parseDataObjId(obj._id).entityId;
+    let tableName = entityNameFromDataObjId(obj._id);
     return isMetadataStoreEntity(tableName);
 }
 export function isMetadataObject(obj: DataObj) {
-    let tableName = parseDataObjId(obj._id).entityId;
+    let tableName = entityNameFromDataObjId(obj._id);
     return MetadataEntityNames.includes(tableName);
 }
 

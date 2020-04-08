@@ -17,7 +17,7 @@ describe('auth', () => {
     let authEnabledBak: string | undefined;
 
     async function putPerm(obj: $PermissionObjT): Promise<ServerEventModifiedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
 
     beforeEach(async () => {

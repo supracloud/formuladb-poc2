@@ -525,7 +525,7 @@ export class FrmdbEditorDirective {
             };
         });
 
-        onEvent(document.body, 'UserDeleteColumn', '*', (event: { detail: UserDeleteColumn }) => {
+        onEvent(document.body, 'UserDeleteColumn', '*', (event: CustomEvent<UserDeleteColumn>) => {
             let currentEntity: Entity | undefined = this.state.data.tables?.find(e => e._id == this.state.data.selectedTableId);
             if (!currentEntity) { console.warn(`Entity ${this.state.data.selectedTableId} does not exist`); return; }
             let entity: Entity = currentEntity;

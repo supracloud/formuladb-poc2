@@ -110,10 +110,10 @@ describe('FrmdbEngine', () => {
     }
 
     async function putObj(obj: KeyValueObj): Promise<ServerEventModifiedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventModifiedFormData(obj)) as ServerEventModifiedFormData;
     }
     async function delObj(obj: KeyValueObj): Promise<ServerEventDeletedFormData> {
-        return await frmdbEngine.processEvent(new ServerEventDeletedFormData(obj)) as ServerEventDeletedFormData;
+        return await frmdbEngine.processEventAnonymous(new ServerEventDeletedFormData(obj)) as ServerEventDeletedFormData;
     }
 
     afterEach(function () {
