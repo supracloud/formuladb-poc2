@@ -31,18 +31,6 @@ CREATE TABLE public.f_10010 (
 ALTER TABLE public.f_10010 OWNER TO postgres;
 
 --
--- Name: f_10820; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_10820 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_10820 OWNER TO postgres;
-
---
 -- Name: f_11552; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -127,18 +115,6 @@ CREATE TABLE public.f_9745 (
 ALTER TABLE public.f_9745 OWNER TO postgres;
 
 --
--- Name: f_9829; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.f_9829 (
-    _id character varying NOT NULL COLLATE pg_catalog."C",
-    val json
-);
-
-
-ALTER TABLE public.f_9829 OWNER TO postgres;
-
---
 -- Name: t_currency; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -173,6 +149,24 @@ CREATE TABLE public.t_dictionary (
 
 
 ALTER TABLE public.t_dictionary OWNER TO postgres;
+
+--
+-- Name: t_permission; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.t_permission (
+    _id character varying NOT NULL COLLATE pg_catalog."C",
+    role character varying,
+    app_name character varying,
+    resource_entity_id character varying,
+    resource_id character varying,
+    permission character varying,
+    for_who character varying,
+    details character varying
+);
+
+
+ALTER TABLE public.t_permission OWNER TO postgres;
 
 --
 -- Name: t_user; Type: TABLE; Schema: public; Owner: postgres
@@ -390,10 +384,7 @@ CREATE TABLE public.troom_booking (
     nb_adults numeric(12,5),
     nb_children numeric(12,5),
     days numeric(12,5),
-    cost character varying,
-    total_number_of_rooms character varying,
-    number_of_booked_rooms numeric(12,5),
-    number_of_available_rooms numeric(12,5)
+    cost character varying
 );
 
 
@@ -488,14 +479,6 @@ ALTER TABLE ONLY public.f_10010
 
 
 --
--- Name: f_10820 f_10820_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_10820
-    ADD CONSTRAINT f_10820_pkey PRIMARY KEY (_id);
-
-
---
 -- Name: f_11552 f_11552_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -552,14 +535,6 @@ ALTER TABLE ONLY public.f_9745
 
 
 --
--- Name: f_9829 f_9829_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.f_9829
-    ADD CONSTRAINT f_9829_pkey PRIMARY KEY (_id);
-
-
---
 -- Name: t_currency t_currency_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -573,6 +548,14 @@ ALTER TABLE ONLY public.t_currency
 
 ALTER TABLE ONLY public.t_dictionary
     ADD CONSTRAINT t_dictionary_pkey PRIMARY KEY (_id);
+
+
+--
+-- Name: t_permission t_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.t_permission
+    ADD CONSTRAINT t_permission_pkey PRIMARY KEY (_id);
 
 
 --

@@ -104,6 +104,15 @@ export const ComponentsBase: Partial<Component> = {
             tab: "left-panel-tab-content",
         },
         {
+            name: "Title",
+            key: "title",
+            htmlAttr: "title",
+            inline: true,
+            col: 12,
+            inputtype: "TextInput",
+            tab: "left-panel-tab-content",
+        },
+        {
             name: "Image",
             inline: true,
             col: 12,

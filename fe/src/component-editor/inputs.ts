@@ -85,7 +85,7 @@ export class TextareaInput extends Input {
 		super.init(data);
 		this.render(/*html*/`
 			<div>
-				<textarea name="{%=key%}" rows="4" class="form-control"/>
+				<textarea name="{%=key%}" rows="3" class="form-control"/>
 			</div>
 		`, data);
 	}
@@ -759,6 +759,28 @@ export class ListInput extends Input {
 	}
 }
 
+
+export class ParamListInput extends Input {
+	static elemTagName = "frmdb-param-list-input";
+	inputTagName = "frmdb-param-list-input";
+
+	init(data) {
+		super.init(data);
+		this.render(/*html*/`
+				{% for ( let [i, param] of params.entries() ) { %}
+					<div class="input-group">
+						<input name="{%=key%}_{%=i%}_paramName" type="text" class="form-control" value="{%=param.name%}"/>
+					</div>
+					<div class="input-group">
+						<textarea name="{%=key%}_{%=i%}_paramValue" rows="2" class="form-control">{%=param.value%}</textarea>
+					</div>
+				{% } %}
+					
+			</div>
+		`, data);
+	}
+}
+
 export const Inputs = {
 	'TextInput': TextInput,
 	'TextareaInput': TextareaInput,
@@ -783,6 +805,7 @@ export const Inputs = {
 	'ButtonInput': ButtonInput,
 	'SectionInput': SectionInput,
 	'ListInput': ListInput,
+	'ParamListInput': ParamListInput,
 };
 
 customElements.define("frmdb-text-input", TextInput);
@@ -807,6 +830,7 @@ customElements.define("frmdb-text-value-input", TextValueInput);
 customElements.define("frmdb-button-input", ButtonInput);
 customElements.define("frmdb-section-input", SectionInput);
 customElements.define("frmdb-list-input", ListInput);
+customElements.define("frmdb-param-list-input", ParamListInput);
 customElements.define("frmdb-responsive-class-select-input", ResponsiveClassSelectInput);
 
 export function createInput(inputtype: keyof typeof Inputs): Input {
