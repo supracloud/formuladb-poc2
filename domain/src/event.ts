@@ -71,7 +71,7 @@ export class ServerEventNewApp extends MwzEvent {
 export class ServerEventNewEntity extends MwzEvent {
     readonly type_ = "ServerEventNewEntity";
 
-    constructor(public path: string) {
+    constructor(public entityId: string) {
         super();
     }
 }
@@ -97,7 +97,7 @@ export class ServerEventSetPage extends MwzEvent {
 export class ServerEventDeletePage extends MwzEvent {
     readonly type_ = "ServerEventDeletePage";
 
-    constructor(public deletedPagePath: string) {
+    constructor(public pageName: string) {
         super();
     }
 }

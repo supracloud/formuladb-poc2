@@ -1,2 +1,2 @@
-_id,role,app_name,resource_entity_id,resource_id,name,for_who,details
-$Permission~~1,$ANONYMOUS,*,$Page,"","",ALL,by default anyone can view website pages
+_id,role,app_name,resource_entity_id,resource_id,permission,for_who,details
+$Permission~~1,$ANONYMOUS,*,$Page,"",2PREVIEWEDIT,ALL,by default anyone can view website pages

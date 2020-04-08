@@ -340,7 +340,7 @@ export class FrmdbEditorDirective {
                         if (ev.state_ != 'ABORT') {
                             newTableModal.querySelector('.alert')!.classList.replace('d-block', 'd-none')
                             $FRMDB_MODAL(newTableModal, "hide");
-                            this.state.emitChange({ selectedTableId: ev.path });
+                            this.state.emitChange({ selectedTableId: ev.entityId });
                         } else {
                             alert.classList.replace('d-none', 'd-block');
                             alert.innerHTML = ev.notifMsg_ || ev.error_ || JSON.stringify(ev);

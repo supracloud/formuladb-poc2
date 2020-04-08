@@ -45,14 +45,14 @@ describe('auth', () => {
             { userId: '', userRole: "$ANONYMOUS", permission: "0READ", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
         expect(authStatus).toEqual("allowed");
         authStatus = await auth.authResource(
-            { userId: '', userRole: "$ANONYMOUS", permission: "1WRITE", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
+            { userId: '', userRole: "$ANONYMOUS", permission: "5WRITE", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
         expect(authStatus).toEqual("needs-login");
 
         authStatus = await auth.authResource(
             { userId: '', userRole: "$ADMIN", permission: "0READ", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
         expect(authStatus).toEqual("allowed");
         authStatus = await auth.authResource(
-            { userId: '', userRole: "$ADMIN", permission: "1WRITE", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
+            { userId: '', userRole: "$ADMIN", permission: "5WRITE", appName: "appName", resourceEntityId: $Page._id, resourceId: '/appName/index' });
         expect(authStatus).toEqual("allowed");
     });
 });

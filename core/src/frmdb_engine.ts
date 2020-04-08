@@ -17,7 +17,7 @@ import { generateUUID } from "@domain/uuid";
 import { FrmdbEngineTools } from "./frmdb_engine_tools";
 import { FrmdbTransactionRunner } from "./frmdb_transaction_runner";
 import { I18nStore } from "./i18n-store";
-import { isMetadataObject, isMetadataEntity } from "@domain/metadata/default-metadata";
+import { isMetadataObject, isMetadataEntity, isMetadataStoreObject } from "@domain/metadata/default-metadata";
 import { getOptionsForReferenceToProperty } from "./getOptionsForReferenceToProperty";
 import { App } from "@domain/app";
 
@@ -64,12 +64,12 @@ export class FrmdbEngine {
 
         switch (event.type_) {
             case "ServerEventModifiedFormData":
-                if (isMetadataObject(event.obj._id)) {
+                if (isMetadataStoreObject(event.obj)) {
                     throw new Error('Save data in record storage not allowed for metadata objects ' + JSON.stringify(event));
                 }
                 return this.transactionRunner.computeFormulasAndSave(event);
             case "ServerEventDeletedFormData":
-                if (isMetadataObject(event.obj._id)) {
+                if (isMetadataStoreObject(event.obj)) {
                     throw new Error('Delete data in record storage not allowed for metadata objects ' + JSON.stringify(event));
                 }
                 return this.transactionRunner.computeFormulasAndSave(event);
@@ -169,13 +169,13 @@ export class FrmdbEngine {
     }
 
     private async deletePage(event: events.ServerEventDeletePage): Promise<events.MwzEvents> {
-        await this.frmdbEngineStore.kvsFactory.metadataStore.deletePage(event.deletedPagePath);
+        await this.frmdbEngineStore.kvsFactory.metadataStore.deletePage(event.pageName);
         return event;
     }
 
     private async newEntity(event: events.ServerEventNewEntity): Promise<events.MwzEvents> {
-        if (!event.path.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
-        let newEntity: Entity = { _id: event.path, props: {} };
+        if (!event.entityId.match(/[a-zA-Z_]+/)) return Promise.resolve({...event, state_: "ABORT", notifMsg_: "incorrect table name"});
+        let newEntity: Entity = { _id: event.entityId, props: {} };
 
         return this.frmdbEngineStore.kvsFactory.metadataStore.putEntity(newEntity)
             .then(() => {

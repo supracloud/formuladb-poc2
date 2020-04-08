@@ -29,7 +29,7 @@ import { createNewEnvironment, cleanupEnvironment } from "./env-manager";
 import { AuthRoutes } from "./auth-routes";
 import { setupChangesFeedRoutes, addEventToChangesFeed } from "./changes-feed-routes";
 import { searchPremiumIcons, PremiumIconRespose } from "@storage/icon-api";
-import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page } from "@domain/metadata/default-metadata";
+import { $Dictionary, isMetadataEntity, $UserObjT, $User, $PermissionObjT, $Permission, $Page, isMetadataStoreEntity } from "@domain/metadata/default-metadata";
 import { simpleAdHocQueryForMetadataEntities } from "./metadata-entities";
 import { PageOpts, makeUrlPath } from "@domain/url-utils";
 import { FrmdbRoutes } from "./api";
@@ -217,7 +217,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             }));
         }
         else if (query?.frmdbRender === "editor") {
-            if (! await authRoutes.authResource('1WRITE', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
+            if (! await authRoutes.authResource('2PREVIEWEDIT', req.params.app, $Page._id, `${req.params.app}/${req.params.page}`, req, res, next)) return;
             res.set('Content-Type', 'text/html')
             res.sendFile(`${FRMDB_DIR}/editor.html`);
         } else {
@@ -372,7 +372,7 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
             let query = req.body as SimpleAddHocQuery;
 
             let ret;
-            if (isMetadataEntity(req.params.table)) {
+            if (isMetadataStoreEntity(req.params.table)) {
                 ret = await simpleAdHocQueryForMetadataEntities(req.params.app, kvsFactory, req.params.table, query);
             } else {
                 ret = await (await getFrmdbEngine(req.params.app)).frmdbEngineStore.simpleAdHocQuery(req.params.table, query);
@@ -410,8 +410,10 @@ export default function (kvsFactory: KeyValueStoreFactoryI) {
 
     //all write operations are handled via events
     app.post('/formuladb-api/:app/event', async function (req, res, next) {
+        let event = req.body;
+        if (! await authRoutes.authEvent(req.params.app, event, req, res, next)) return;
         return (await getFrmdbEngine(req.params.app))
-            .processEvent(req.body)
+            .processEvent(event)
             .then(notif => {
                 addEventToChangesFeed(notif);
                 res.json(notif);

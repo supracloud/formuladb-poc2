@@ -10,8 +10,8 @@ export interface AuthInputData {
     userRole: string;
     permission: PermissionType;
     appName: string;
-    resourceEntityId: string;
-    resourceId: string;
+    resourceEntityId: '$ALL_RESOURCES$' | string;
+    resourceId?: string;
 }
 
 export class Auth {
@@ -39,7 +39,7 @@ export class Auth {
         if (perm.permission < inputData.permission) return false;
         if (!micromatch.isMatch(inputData.appName, perm.app_name)) return false;
 
-        if (perm.resource_id === inputData.resourceId) return true;
+        if (perm.resource_id === "$ALL_RESOURCES$" || perm.resource_id === inputData.resourceId) return true;
         else if (perm.resource_entity_id === inputData.resourceEntityId && !perm.resource_id) return true;
         else if (perm.role === inputData.userRole && !perm.resource_entity_id && !perm.resource_id) return true;
         else return false;
@@ -48,7 +48,6 @@ export class Auth {
     async authResource(inputData: AuthInputData): Promise<AuthStatus> {
 
         if (process.env.FRMDB_AUTH_ENABLED === "true") {
-            console.log("auth enabled");
 
             if (inputData.userRole === '$ADMIN') {
                 return "allowed";

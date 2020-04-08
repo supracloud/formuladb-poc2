@@ -1,5 +1,6 @@
 import { Optional } from 'utility-types';
 import { Entity, Pn, EntityProperty, Schema } from "@domain/metadata/entity";
+import { parseDataObjId, DataObj } from './data_obj';
 
 export const _$App = {
     _id: "$App",
@@ -52,18 +53,19 @@ export const _$Permission = {
         _id: { name: "_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         role: { name: "role", propType_: Pn.STRING } as EntityProperty,
         app_name: { name: "app_name", propType_: Pn.STRING, allowNull: false } as EntityProperty,
-        resource_entity_id: { name: "resource_entity_id", propType_: Pn.STRING } as EntityProperty,
+        resource_entity_id: { name: "resource_entity_id", propType_: Pn.STRING, allowNull: false } as EntityProperty,
         resource_id: { name: "resource_id", propType_: Pn.STRING } as EntityProperty,
-        permission: { name: "name", propType_: Pn.STRING, enumValues: ["READ", "WRITE", "DELETE"]} as EntityProperty,
+        permission: { name: "permission", propType_: Pn.STRING, enumValues: ["READ", "WRITE", "DELETE"]} as EntityProperty,
         for_who: { name: "for_who", propType_: Pn.STRING, enumValues: ["OWNER", "ROLE", "ALL"]} as EntityProperty,
         details: { name: "details", propType_: Pn.STRING } as EntityProperty,
     }
 };
-export type PermissionType = "0READ" | "1WRITE";
+export type PermissionType = "0READ" | "2PREVIEWEDIT" | "5WRITE" | "7DELETE";
 export const $Permission: Entity = _$Permission;
-type PermissionWithEnums = {
-        [K in keyof typeof _$Permission['props']]: string
-    } & {permission: PermissionType} & {for_who: "OWNER" | "ROLE" | "ALL"};
+type PermissionWithEnums = {[K in keyof typeof _$Permission['props']]: string} 
+    & {permission: PermissionType, resource_entity_id: "$ALL_RESOURCES$" | string} 
+    & {for_who: "OWNER" | "ROLE" | "ALL"}
+;
 export type $PermissionObjT = Optional<PermissionWithEnums,"resource_id" | "details">;
 
 export const _$System_Param = {
@@ -130,14 +132,23 @@ const MetadataEntities = [
     $App, 
     $Table,
     $Page,
-    $System_Param
+    $System_Param,
+    $Permission,
 ];
 const MetadataEntityNames = MetadataEntities.map(e => e._id);
+const MetadataStoreName = [$App._id, $Image._id, $Icon._id, $Page._id, $Table._id];
 export function isMetadataEntity(tableName: string) {
     return MetadataEntityNames.includes(tableName);
 }
-
-export function isMetadataObject(tableName: string) {
+export function isMetadataStoreEntity(tableName: string) {
+    return MetadataStoreName.includes(tableName);
+}
+export function isMetadataStoreObject(obj: DataObj) {
+    let tableName = parseDataObjId(obj._id).entityId;
+    return isMetadataStoreEntity(tableName);
+}
+export function isMetadataObject(obj: DataObj) {
+    let tableName = parseDataObjId(obj._id).entityId;
     return MetadataEntityNames.includes(tableName);
 }
 
