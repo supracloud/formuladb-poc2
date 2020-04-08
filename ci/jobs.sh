@@ -39,7 +39,7 @@ function build_images_and_deploy {
 
     while ! kubectl -n $NAMESPACE get pods | grep 'db-.*Running'; do sleep 2; done
     while ! kubectl -n $NAMESPACE get pods | grep 'be-.*Running'; do sleep 2; done
-    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema" | grep 'Room_Type'; do 
+    while ! curl -L "http://$NAMESPACE.formuladb.io/formuladb-api/hotel-booking/schema" | grep 'RoomType'; do 
         echo "== be not started yet ==================================================="
         kubectl -n "$NAMESPACE" logs service/be | head -100
         sleep 10; 
@@ -105,7 +105,7 @@ function test_e2e {
 
     # POD=`kubectl -n $FRMDB_ENV_NAME get pod -l service=be -o jsonpath='{.items[0].metadata.name}'`
     # nc -z localhost 8084 || kubectl -n $FRMDB_ENV_NAME port-forward $POD 8084:3000 &
-    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'Room_Type'; do sleep 2; done
+    while ! curl $URL/formuladb-api/hotel-booking/schema | grep 'RoomType'; do sleep 2; done
 
     npm run test-headless -- -- --specs \
         "tsc-out/docs/1-Intro/6-editor-tables-list.e2e.js,tsc-out/docs/0-GetStarted/7-list-of-pages.e2e.js"
